@@ -2,17 +2,21 @@
 // syndication) and measures how often each taxonomy skill appears per CareerMetro role.
 // Output is aggregate only: no posting text is stored, just titles, URLs and counts.
 // Usage: node scripts/jd-mining/mine.mjs <outDir>
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("../../", import.meta.url).pathname;
 const outDir = process.argv[2] ?? join(root, "data/jd-snapshot");
 const boards = JSON.parse(readFileSync(join(root, "scripts/jd-mining/boards.json"), "utf8"));
 const skills = JSON.parse(readFileSync(join(root, "src/content/skills.json"), "utf8"));
-const roleSlugs = readdirSync(join(root, "src/content/roles")).map((f) => f.replace(/\.json$/, ""));
+const certifications = JSON.parse(readFileSync(join(root, "src/content/certifications.json"), "utf8"));
 
 const SENIOR = /\b(director|head of|vice president|vp|principal|staff|chief|intern|internship)\b/i;
+// Order matters: the first matching role wins.
 const ROLE_TITLES = {
+  "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit)\b/i,
+  "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|incident respon|penetration|pen ?tester|appsec|application security|detection engineer|offensive security|red team|blue team)\b/i,
+  "database-architect": /\b(database (architect|administrator|engineer|reliability)|dba|data architect|data modeler)\b/i,
   "data-analyst": /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i,
   "business-analyst": /\bbusiness (systems )?analyst\b/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
@@ -32,7 +36,7 @@ const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|s
 function classify(title, text) {
   if (SENIOR.test(title)) return null;
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
-    if (!roleSlugs.includes(slug) || !re.test(title)) continue;
+    if (!re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
     if (slug === "qa-automation-engineer" && NOT_SOFTWARE.test(title)) continue;
     if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text)) continue;
@@ -59,6 +63,10 @@ const skillMatchers = skills.map((s) => {
     aliases: aliases.length ? bound(aliases.map(escape).join("|"), "i") : null,
   };
 });
+const certMatchers = certifications.map((c) => ({
+  id: c.id,
+  re: new RegExp(`(?<![A-Za-z0-9])(${[c.name, ...c.aliases].map((t) => escape(norm(t))).join("|")})(?![A-Za-z0-9])`, "i"),
+}));
 const hasSkill = (m, text) => m.name.test(text) || (m.aliases?.test(text) ?? false);
 const knownTerms = new Set(skills.flatMap((s) => [s.id, s.name, ...s.aliases].map(norm)));
 
@@ -111,7 +119,7 @@ for (const [ats, list] of Object.entries(boards)) {
   }
 }
 
-const roles = Object.fromEntries(roleSlugs.map((r) => [r, { postings: [], skillHits: {}, skillHitsIndia: {}, candidates: {} }]));
+const roles = Object.fromEntries(Object.keys(ROLE_TITLES).map((r) => [r, { postings: [], skillHits: {}, skillHitsIndia: {}, certHits: {}, candidates: {} }]));
 for (const p of postings) {
   const slug = classify(p.title, p.text);
   if (!slug) continue;
@@ -124,6 +132,9 @@ for (const p of postings) {
       if (india) r.skillHitsIndia[m.id] = (r.skillHitsIndia[m.id] ?? 0) + 1;
     }
   }
+  for (const c of certMatchers) {
+    if (c.re.test(p.text)) r.certHits[c.id] = (r.certHits[c.id] ?? 0) + 1;
+  }
   for (const tok of new Set(p.text.match(TECHY) ?? [])) {
     if (STOP.has(tok) || /^[A-Z0-9.+#]+$/.test(tok) || knownTerms.has(norm(tok))) continue;
     r.candidates[tok] = (r.candidates[tok] ?? 0) + 1;
@@ -134,6 +145,7 @@ mkdirSync(outDir, { recursive: true });
 const today = new Date().toISOString().slice(0, 10);
 const summary = { fetchedOn: today, totalPostings: postings.length, sources: sourceLog, roles: {} };
 const freqRows = [["role", "skill_id", "postings_with_skill", "role_postings", "share", "india_postings_with_skill", "india_role_postings", "india_share"]];
+const certRows = [["role", "cert_id", "postings_with_cert", "role_postings", "share"]];
 const candRows = [["role", "term", "postings", "role_postings", "share"]];
 const postingRows = [["role", "company", "title", "location", "india", "url"]];
 for (const [slug, r] of Object.entries(roles)) {
@@ -143,6 +155,9 @@ for (const [slug, r] of Object.entries(roles)) {
   for (const [id, c] of Object.entries(r.skillHits).sort((a, b) => b[1] - a[1])) {
     const ci = r.skillHitsIndia[id] ?? 0;
     freqRows.push([slug, id, c, n, n ? (c / n).toFixed(2) : "0", ci, nIn, nIn ? (ci / nIn).toFixed(2) : ""]);
+  }
+  for (const [id, c] of Object.entries(r.certHits).sort((a, b) => b[1] - a[1])) {
+    certRows.push([slug, id, c, n, n ? (c / n).toFixed(2) : "0"]);
   }
   Object.entries(r.candidates)
     .filter(([, c]) => n && c / n >= 0.08 && c >= 3)
@@ -154,6 +169,7 @@ for (const [slug, r] of Object.entries(roles)) {
 const csv = (rows) => rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
 writeFileSync(join(outDir, "summary.json"), JSON.stringify(summary, null, 2));
 writeFileSync(join(outDir, "role-skill-frequency.csv"), csv(freqRows));
+writeFileSync(join(outDir, "role-cert-frequency.csv"), csv(certRows));
 writeFileSync(join(outDir, "candidate-skills.csv"), csv(candRows));
 writeFileSync(join(outDir, "postings.csv"), csv(postingRows));
 console.log(JSON.stringify(summary.roles, null, 2));

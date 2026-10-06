@@ -545,8 +545,7 @@
       "prometheus",
       "grafana",
       "opentelemetry",
-      "datadog",
-      "splunk"
+      "datadog"
     ]
   },
   {
@@ -565,9 +564,9 @@
     "name": "Cloud security basics",
     "category": "cloud-devops",
     "aliases": [
-      "iam",
       "security groups",
-      "devsecops"
+      "devsecops",
+      "cloud security"
     ]
   },
   {
@@ -985,7 +984,6 @@
       "slos",
       "slis",
       "error budgets",
-      "incident response",
       "on-call"
     ]
   },
@@ -1009,6 +1007,296 @@
       "salesforce",
       "hubspot",
       "zoho crm"
+    ]
+  },
+  {
+    "id": "network-security",
+    "name": "Network security",
+    "category": "security",
+    "aliases": [
+      "firewalls",
+      "firewall",
+      "ids/ips",
+      "intrusion detection",
+      "vpn",
+      "network segmentation"
+    ]
+  },
+  {
+    "id": "siem",
+    "name": "SIEM and log analysis",
+    "category": "security",
+    "aliases": [
+      "siem",
+      "splunk",
+      "microsoft sentinel",
+      "qradar",
+      "elastic siem",
+      "log analysis"
+    ]
+  },
+  {
+    "id": "security-incident-response",
+    "name": "Security incident response",
+    "category": "security",
+    "aliases": [
+      "incident response",
+      "incident handling",
+      "dfir",
+      "digital forensics",
+      "forensics"
+    ]
+  },
+  {
+    "id": "vulnerability-management",
+    "name": "Vulnerability management",
+    "category": "security",
+    "aliases": [
+      "vulnerability assessment",
+      "vapt",
+      "nessus",
+      "qualys",
+      "tenable",
+      "patch management"
+    ]
+  },
+  {
+    "id": "penetration-testing",
+    "name": "Penetration testing",
+    "category": "security",
+    "aliases": [
+      "pentesting",
+      "pen testing",
+      "ethical hacking",
+      "burp suite",
+      "metasploit",
+      "red team"
+    ]
+  },
+  {
+    "id": "application-security",
+    "name": "Application security",
+    "category": "security",
+    "aliases": [
+      "appsec",
+      "owasp",
+      "owasp top 10",
+      "sast",
+      "dast",
+      "secure code review",
+      "threat modeling",
+      "threat modelling"
+    ]
+  },
+  {
+    "id": "threat-detection",
+    "name": "Threat detection and hunting",
+    "category": "security",
+    "aliases": [
+      "threat hunting",
+      "threat intelligence",
+      "mitre att&ck",
+      "mitre attack",
+      "detection engineering",
+      "security operations center",
+      "soc analyst"
+    ]
+  },
+  {
+    "id": "endpoint-security",
+    "name": "Endpoint security",
+    "category": "security",
+    "aliases": [
+      "edr",
+      "xdr",
+      "crowdstrike",
+      "sentinelone",
+      "defender for endpoint"
+    ]
+  },
+  {
+    "id": "identity-access-management",
+    "name": "Identity and access management",
+    "category": "security",
+    "aliases": [
+      "iam",
+      "active directory",
+      "sso",
+      "single sign-on",
+      "mfa",
+      "privileged access management",
+      "pam"
+    ]
+  },
+  {
+    "id": "risk-assessment",
+    "name": "Security risk assessment",
+    "category": "security",
+    "aliases": [
+      "risk assessment",
+      "risk management",
+      "third-party risk",
+      "vendor risk",
+      "tprm",
+      "risk register"
+    ]
+  },
+  {
+    "id": "compliance-frameworks",
+    "name": "Security compliance frameworks",
+    "category": "security",
+    "aliases": [
+      "iso 27001",
+      "iso/iec 27001",
+      "soc 2",
+      "soc2",
+      "pci dss",
+      "pci-dss",
+      "nist csf",
+      "nist 800-53",
+      "hipaa",
+      "gdpr",
+      "dpdp",
+      "rbi cyber security framework"
+    ]
+  },
+  {
+    "id": "security-policies",
+    "name": "Security policies and governance",
+    "category": "security",
+    "aliases": [
+      "security policy",
+      "security policies",
+      "information security policy",
+      "grc",
+      "governance, risk and compliance",
+      "isms"
+    ]
+  },
+  {
+    "id": "security-audits",
+    "name": "Security audits",
+    "category": "security",
+    "aliases": [
+      "it audit",
+      "security audit",
+      "internal audit",
+      "audit evidence",
+      "control testing",
+      "itgc"
+    ]
+  },
+  {
+    "id": "security-awareness",
+    "name": "Security awareness training",
+    "category": "security",
+    "aliases": [
+      "security awareness",
+      "phishing simulation"
+    ]
+  },
+  {
+    "id": "cryptography-basics",
+    "name": "Cryptography basics",
+    "category": "security",
+    "aliases": [
+      "encryption",
+      "pki",
+      "tls",
+      "key management"
+    ]
+  },
+  {
+    "id": "data-modeling",
+    "name": "Data modeling",
+    "category": "data",
+    "aliases": [
+      "data modelling",
+      "erd",
+      "entity relationship",
+      "dimensional modeling",
+      "dimensional modelling",
+      "star schema",
+      "kimball",
+      "data vault"
+    ]
+  },
+  {
+    "id": "query-optimization",
+    "name": "Query optimization and indexing",
+    "category": "data",
+    "aliases": [
+      "query optimization",
+      "query tuning",
+      "performance tuning",
+      "execution plans",
+      "indexing strategy",
+      "database performance"
+    ]
+  },
+  {
+    "id": "high-availability-dr",
+    "name": "Replication, high availability and recovery",
+    "category": "data",
+    "aliases": [
+      "replication",
+      "high availability",
+      "failover",
+      "sharding",
+      "partitioning",
+      "disaster recovery",
+      "backup and recovery",
+      "point-in-time recovery"
+    ]
+  },
+  {
+    "id": "oracle-database",
+    "name": "Oracle Database",
+    "category": "data",
+    "aliases": [
+      "oracle db",
+      "oracle database",
+      "oracle rac",
+      "oracle 19c",
+      "rman"
+    ]
+  },
+  {
+    "id": "cloud-databases",
+    "name": "Managed cloud databases",
+    "category": "data",
+    "aliases": [
+      "amazon rds",
+      "aws rds",
+      "aurora",
+      "azure sql",
+      "cloud sql",
+      "cosmos db",
+      "alloydb",
+      "cloud spanner"
+    ]
+  },
+  {
+    "id": "data-governance",
+    "name": "Data governance",
+    "category": "data",
+    "aliases": [
+      "master data management",
+      "mdm",
+      "data catalog",
+      "data lineage",
+      "data stewardship"
+    ]
+  },
+  {
+    "id": "database-security",
+    "name": "Database security",
+    "category": "data",
+    "aliases": [
+      "database security",
+      "row-level security",
+      "data masking",
+      "auditing database access"
     ]
   }
 ]

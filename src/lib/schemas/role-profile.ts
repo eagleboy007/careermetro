@@ -8,6 +8,14 @@ export const roleSkill = z.object({
   expectation: z.string().min(1),
 });
 
+export const roleCertification = z.object({
+  certId: z.string().min(1),
+  /** recommended: the best-value pick for this role. optional: worth it for some employers or later in a career. */
+  importance: z.enum(["recommended", "optional"]),
+  /** Why it helps, in plain words. */
+  why: z.string().min(1),
+});
+
 export const roleProfile = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
@@ -16,6 +24,7 @@ export const roleProfile = z.object({
     maxYears: z.number().int().positive(),
   }),
   skills: z.array(roleSkill).min(3),
+  certifications: z.array(roleCertification).default([]),
   sources: z
     .array(
       z.object({

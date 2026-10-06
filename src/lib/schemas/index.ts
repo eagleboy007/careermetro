@@ -1,3 +1,4 @@
+export * from "./certification";
 export * from "./gap";
 export * from "./profile";
 export * from "./role-profile";

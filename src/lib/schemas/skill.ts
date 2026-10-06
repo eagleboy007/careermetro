@@ -13,6 +13,7 @@ export const skillCategory = z.enum([
   "design",
   "tools",
   "workplace",
+  "security",
 ]);
 
 /** One entry in the skill taxonomy. Aliases are matched exactly (after lowercasing) before any fuzzy matching. */

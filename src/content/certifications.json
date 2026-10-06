@@ -1,0 +1,602 @@
+[
+  {
+    "id": "aws-cloud-practitioner",
+    "name": "AWS Certified Cloud Practitioner",
+    "issuer": "Amazon Web Services",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "aws cloud practitioner",
+      "clf-c02"
+    ]
+  },
+  {
+    "id": "aws-solutions-architect-associate",
+    "name": "AWS Certified Solutions Architect \u2013 Associate",
+    "issuer": "Amazon Web Services",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "aws solutions architect",
+      "aws certified solutions architect",
+      "saa-c03"
+    ]
+  },
+  {
+    "id": "aws-developer-associate",
+    "name": "AWS Certified Developer \u2013 Associate",
+    "issuer": "Amazon Web Services",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "aws certified developer",
+      "aws developer associate"
+    ]
+  },
+  {
+    "id": "aws-devops-professional",
+    "name": "AWS Certified DevOps Engineer \u2013 Professional",
+    "issuer": "Amazon Web Services",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "aws devops engineer",
+      "aws certified devops"
+    ]
+  },
+  {
+    "id": "aws-security-specialty",
+    "name": "AWS Certified Security \u2013 Specialty",
+    "issuer": "Amazon Web Services",
+    "level": "specialty",
+    "cost": "paid",
+    "aliases": [
+      "aws security specialty",
+      "aws certified security"
+    ]
+  },
+  {
+    "id": "aws-ml-engineer-associate",
+    "name": "AWS Certified Machine Learning Engineer \u2013 Associate",
+    "issuer": "Amazon Web Services",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "aws certified machine learning",
+      "aws machine learning"
+    ]
+  },
+  {
+    "id": "azure-fundamentals",
+    "name": "Microsoft Certified: Azure Fundamentals (AZ-900)",
+    "issuer": "Microsoft",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "az-900",
+      "azure fundamentals"
+    ]
+  },
+  {
+    "id": "azure-administrator",
+    "name": "Microsoft Certified: Azure Administrator Associate (AZ-104)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "az-104",
+      "azure administrator"
+    ]
+  },
+  {
+    "id": "azure-devops-expert",
+    "name": "Microsoft Certified: DevOps Engineer Expert (AZ-400)",
+    "issuer": "Microsoft",
+    "level": "expert",
+    "cost": "paid",
+    "aliases": [
+      "az-400",
+      "azure devops engineer"
+    ]
+  },
+  {
+    "id": "azure-database-admin",
+    "name": "Microsoft Certified: Azure Database Administrator Associate (DP-300)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "dp-300",
+      "azure database administrator"
+    ]
+  },
+  {
+    "id": "azure-data-scientist",
+    "name": "Microsoft Certified: Azure Data Scientist Associate (DP-100)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "dp-100",
+      "azure data scientist"
+    ]
+  },
+  {
+    "id": "power-bi-data-analyst",
+    "name": "Microsoft Certified: Power BI Data Analyst Associate (PL-300)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "pl-300",
+      "da-100",
+      "power bi data analyst"
+    ]
+  },
+  {
+    "id": "gcp-associate-cloud-engineer",
+    "name": "Google Cloud Associate Cloud Engineer",
+    "issuer": "Google Cloud",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "associate cloud engineer"
+    ]
+  },
+  {
+    "id": "gcp-professional-ml-engineer",
+    "name": "Google Cloud Professional Machine Learning Engineer",
+    "issuer": "Google Cloud",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "professional machine learning engineer"
+    ]
+  },
+  {
+    "id": "gcp-professional-database-engineer",
+    "name": "Google Cloud Professional Cloud Database Engineer",
+    "issuer": "Google Cloud",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "professional cloud database engineer"
+    ]
+  },
+  {
+    "id": "cka",
+    "name": "Certified Kubernetes Administrator (CKA)",
+    "issuer": "CNCF / Linux Foundation",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cka",
+      "certified kubernetes administrator"
+    ]
+  },
+  {
+    "id": "ckad",
+    "name": "Certified Kubernetes Application Developer (CKAD)",
+    "issuer": "CNCF / Linux Foundation",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ckad",
+      "certified kubernetes application developer"
+    ]
+  },
+  {
+    "id": "terraform-associate",
+    "name": "HashiCorp Certified: Terraform Associate",
+    "issuer": "HashiCorp",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "terraform associate",
+      "hashicorp certified"
+    ]
+  },
+  {
+    "id": "google-data-analytics",
+    "name": "Google Data Analytics Professional Certificate",
+    "issuer": "Google (Coursera)",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "google data analytics certificate",
+      "google data analytics professional certificate"
+    ]
+  },
+  {
+    "id": "tableau-desktop-specialist",
+    "name": "Tableau Desktop Specialist",
+    "issuer": "Tableau (Salesforce)",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "tableau desktop specialist",
+      "tableau certified"
+    ]
+  },
+  {
+    "id": "snowflake-snowpro-core",
+    "name": "SnowPro Core Certification",
+    "issuer": "Snowflake",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "snowpro",
+      "snowpro core"
+    ]
+  },
+  {
+    "id": "databricks-data-engineer-associate",
+    "name": "Databricks Certified Data Engineer Associate",
+    "issuer": "Databricks",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "databricks certified",
+      "databricks certification"
+    ]
+  },
+  {
+    "id": "oracle-sql-associate",
+    "name": "Oracle Database SQL Certified Associate",
+    "issuer": "Oracle",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "oracle database sql certified associate",
+      "1z0-071"
+    ]
+  },
+  {
+    "id": "oracle-dba-professional",
+    "name": "Oracle Database Administration Certified Professional",
+    "issuer": "Oracle",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "oracle certified professional dba",
+      "oracle dba certification",
+      "ocp dba"
+    ]
+  },
+  {
+    "id": "mongodb-dba",
+    "name": "MongoDB Certified DBA Associate",
+    "issuer": "MongoDB",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "mongodb certified dba",
+      "mongodb dba"
+    ]
+  },
+  {
+    "id": "mongodb-developer",
+    "name": "MongoDB Certified Developer Associate",
+    "issuer": "MongoDB",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "mongodb certified developer"
+    ]
+  },
+  {
+    "id": "oracle-java-professional",
+    "name": "Oracle Certified Professional: Java SE 17 Developer",
+    "issuer": "Oracle",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ocp java",
+      "oracle certified professional java",
+      "java se 17 developer",
+      "ocpjp"
+    ]
+  },
+  {
+    "id": "meta-front-end-developer",
+    "name": "Meta Front-End Developer Professional Certificate",
+    "issuer": "Meta (Coursera)",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "meta front-end developer"
+    ]
+  },
+  {
+    "id": "istqb-foundation",
+    "name": "ISTQB Certified Tester Foundation Level (CTFL)",
+    "issuer": "ISTQB",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "istqb",
+      "ctfl",
+      "istqb foundation"
+    ]
+  },
+  {
+    "id": "istqb-test-automation",
+    "name": "ISTQB Certified Tester Test Automation Engineering (CT-TAE)",
+    "issuer": "ISTQB",
+    "level": "advanced",
+    "cost": "paid",
+    "aliases": [
+      "ct-tae",
+      "istqb test automation"
+    ]
+  },
+  {
+    "id": "cspo",
+    "name": "Certified Scrum Product Owner (CSPO)",
+    "issuer": "Scrum Alliance",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "cspo",
+      "certified scrum product owner"
+    ]
+  },
+  {
+    "id": "pspo",
+    "name": "Professional Scrum Product Owner (PSPO I)",
+    "issuer": "Scrum.org",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "pspo",
+      "professional scrum product owner"
+    ]
+  },
+  {
+    "id": "csm",
+    "name": "Certified ScrumMaster (CSM)",
+    "issuer": "Scrum Alliance",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "certified scrummaster",
+      "certified scrum master"
+    ]
+  },
+  {
+    "id": "pmp",
+    "name": "Project Management Professional (PMP)",
+    "issuer": "PMI",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "pmp",
+      "project management professional"
+    ]
+  },
+  {
+    "id": "ecba",
+    "name": "Entry Certificate in Business Analysis (ECBA)",
+    "issuer": "IIBA",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "ecba"
+    ]
+  },
+  {
+    "id": "ccba",
+    "name": "Certification of Capability in Business Analysis (CCBA)",
+    "issuer": "IIBA",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "ccba"
+    ]
+  },
+  {
+    "id": "cbap",
+    "name": "Certified Business Analysis Professional (CBAP)",
+    "issuer": "IIBA",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cbap"
+    ]
+  },
+  {
+    "id": "pmi-pba",
+    "name": "PMI Professional in Business Analysis (PMI-PBA)",
+    "issuer": "PMI",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "pmi-pba"
+    ]
+  },
+  {
+    "id": "google-ads-search",
+    "name": "Google Ads Search Certification",
+    "issuer": "Google Skillshop",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "google ads certification",
+      "google ads certified",
+      "google ads search certification"
+    ]
+  },
+  {
+    "id": "google-analytics-cert",
+    "name": "Google Analytics Certification",
+    "issuer": "Google Skillshop",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "google analytics certification",
+      "google analytics certified",
+      "ga4 certification"
+    ]
+  },
+  {
+    "id": "hubspot-inbound-marketing",
+    "name": "HubSpot Inbound Marketing Certification",
+    "issuer": "HubSpot Academy",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "hubspot certification",
+      "hubspot certified",
+      "inbound marketing certification"
+    ]
+  },
+  {
+    "id": "meta-digital-marketing-associate",
+    "name": "Meta Certified Digital Marketing Associate",
+    "issuer": "Meta",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "meta certified",
+      "meta blueprint",
+      "facebook blueprint"
+    ]
+  },
+  {
+    "id": "isc2-cc",
+    "name": "ISC2 Certified in Cybersecurity (CC)",
+    "issuer": "ISC2",
+    "level": "entry",
+    "cost": null,
+    "aliases": [
+      "certified in cybersecurity",
+      "isc2 cc"
+    ]
+  },
+  {
+    "id": "comptia-security-plus",
+    "name": "CompTIA Security+",
+    "issuer": "CompTIA",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "security+",
+      "comptia security+",
+      "sec+"
+    ]
+  },
+  {
+    "id": "comptia-cysa-plus",
+    "name": "CompTIA CySA+",
+    "issuer": "CompTIA",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "cysa+",
+      "comptia cysa+"
+    ]
+  },
+  {
+    "id": "ceh",
+    "name": "Certified Ethical Hacker (CEH)",
+    "issuer": "EC-Council",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "ceh",
+      "certified ethical hacker"
+    ]
+  },
+  {
+    "id": "oscp",
+    "name": "Offensive Security Certified Professional (OSCP)",
+    "issuer": "OffSec",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "oscp"
+    ]
+  },
+  {
+    "id": "gcih",
+    "name": "GIAC Certified Incident Handler (GCIH)",
+    "issuer": "GIAC",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "gcih"
+    ]
+  },
+  {
+    "id": "cissp",
+    "name": "Certified Information Systems Security Professional (CISSP)",
+    "issuer": "ISC2",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cissp"
+    ]
+  },
+  {
+    "id": "ccsp",
+    "name": "Certified Cloud Security Professional (CCSP)",
+    "issuer": "ISC2",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ccsp"
+    ]
+  },
+  {
+    "id": "cism",
+    "name": "Certified Information Security Manager (CISM)",
+    "issuer": "ISACA",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cism"
+    ]
+  },
+  {
+    "id": "cisa",
+    "name": "Certified Information Systems Auditor (CISA)",
+    "issuer": "ISACA",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cisa"
+    ]
+  },
+  {
+    "id": "crisc",
+    "name": "Certified in Risk and Information Systems Control (CRISC)",
+    "issuer": "ISACA",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "crisc"
+    ]
+  },
+  {
+    "id": "iso27001-lead-auditor",
+    "name": "ISO/IEC 27001 Lead Auditor",
+    "issuer": "Accredited training bodies (e.g. PECB, BSI)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "iso 27001 lead auditor",
+      "27001 lead auditor"
+    ]
+  },
+  {
+    "id": "iso27001-lead-implementer",
+    "name": "ISO/IEC 27001 Lead Implementer",
+    "issuer": "Accredited training bodies (e.g. PECB, BSI)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "iso 27001 lead implementer",
+      "27001 lead implementer"
+    ]
+  }
+]
