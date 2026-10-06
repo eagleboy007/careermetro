@@ -10,121 +10,121 @@
       "skillId": "javascript",
       "importance": "required",
       "expectation": "Use modern JavaScript on both client and server",
-      "postingShare": null
+      "postingShare": 0.41
     },
     {
       "skillId": "typescript",
       "importance": "required",
       "expectation": "Use TypeScript across the stack",
-      "postingShare": null
+      "postingShare": 0.51
     },
     {
       "skillId": "react",
       "importance": "required",
       "expectation": "Build React front ends with hooks and routing",
-      "postingShare": null
+      "postingShare": 0.59
     },
     {
       "skillId": "nodejs",
       "importance": "required",
       "expectation": "Build Node.js and Express APIs with validation and error handling",
-      "postingShare": null
+      "postingShare": 0.24
     },
     {
       "skillId": "rest-apis",
       "importance": "required",
       "expectation": "Design REST APIs used by your own front end",
-      "postingShare": null
+      "postingShare": 0.19
     },
     {
       "skillId": "sql",
       "importance": "required",
       "expectation": "Write SQL for relational databases",
-      "postingShare": null
+      "postingShare": 0.34
     },
     {
       "skillId": "nosql",
       "importance": "required",
       "expectation": "Model data in MongoDB with sensible indexes",
-      "postingShare": null
+      "postingShare": 0.18
     },
     {
       "skillId": "html-css",
       "importance": "required",
       "expectation": "Build responsive layouts",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "git",
       "importance": "required",
       "expectation": "Work with branches, pull requests and code review",
-      "postingShare": null
+      "postingShare": 0.21
     },
     {
       "skillId": "data-structures-algorithms",
       "importance": "required",
       "expectation": "Solve easy and medium DSA problems in interviews",
-      "postingShare": null
+      "postingShare": 0.03
     },
     {
       "skillId": "python",
       "importance": "nice_to_have",
       "expectation": "Use Python on the back end, which many full-stack teams do",
-      "postingShare": null
+      "postingShare": 0.41
     },
     {
       "skillId": "aws",
       "importance": "nice_to_have",
       "expectation": "Deploy to AWS or a similar cloud",
-      "postingShare": null
+      "postingShare": 0.18
     },
     {
       "skillId": "docker",
       "importance": "nice_to_have",
       "expectation": "Run the app locally and in production with Docker",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "kubernetes",
       "importance": "nice_to_have",
       "expectation": "Understand how your app runs on Kubernetes",
-      "postingShare": null
+      "postingShare": 0.17
     },
     {
       "skillId": "ci-cd",
       "importance": "nice_to_have",
       "expectation": "Ship through an automated pipeline",
-      "postingShare": null
+      "postingShare": 0.18
     },
     {
       "skillId": "graphql",
       "importance": "nice_to_have",
       "expectation": "Build or consume a GraphQL API",
-      "postingShare": null
+      "postingShare": 0.14
     },
     {
       "skillId": "llm-apps",
       "importance": "nice_to_have",
       "expectation": "Add an AI feature using an LLM API",
-      "postingShare": null
+      "postingShare": 0.29
     },
     {
       "skillId": "system-design",
       "importance": "nice_to_have",
       "expectation": "Discuss trade-offs in a basic system design round",
-      "postingShare": null
+      "postingShare": 0.18
     },
     {
       "skillId": "nextjs",
       "importance": "nice_to_have",
       "expectation": "Build full-stack apps with Next.js",
-      "postingShare": null
+      "postingShare": 0.04
     },
     {
       "skillId": "unit-testing",
       "importance": "nice_to_have",
       "expectation": "Write unit and API tests",
-      "postingShare": null
+      "postingShare": 0.03
     }
   ],
   "certifications": [
@@ -143,6 +143,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 105 public job postings (7 in India) from 30 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

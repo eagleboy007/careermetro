@@ -10,103 +10,103 @@
       "skillId": "sql",
       "importance": "required",
       "expectation": "Write joins, group-bys and subqueries on real business tables without help",
-      "postingShare": null
+      "postingShare": 0.91
     },
     {
       "skillId": "data-visualization",
       "importance": "required",
       "expectation": "Build clear dashboards and charts that answer a business question",
-      "postingShare": null
+      "postingShare": 0.75
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Use Python for analysis when spreadsheets are not enough",
-      "postingShare": null
+      "postingShare": 0.72
     },
     {
       "skillId": "statistics",
       "importance": "required",
       "expectation": "Explain averages, distributions and significance to a non-technical manager",
-      "postingShare": null
+      "postingShare": 0.34
     },
     {
       "skillId": "data-cleaning",
       "importance": "required",
       "expectation": "Find and fix duplicates, missing values and inconsistent formats",
-      "postingShare": null
+      "postingShare": 0.28
     },
     {
       "skillId": "excel",
       "importance": "required",
       "expectation": "Clean and analyse a few thousand rows in Excel or Google Sheets, still expected by most Indian employers",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "communication",
       "importance": "required",
       "expectation": "Present findings as a short story with a clear recommendation",
-      "postingShare": null
+      "postingShare": 0.59
     },
     {
       "skillId": "tableau",
       "importance": "nice_to_have",
       "expectation": "Build a Tableau dashboard, the most-mentioned BI tool in global postings",
-      "postingShare": null
+      "postingShare": 0.53
     },
     {
       "skillId": "power-bi",
       "importance": "nice_to_have",
       "expectation": "Build a Power BI dashboard with basic DAX, the most common BI tool in Indian postings",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "looker",
       "importance": "nice_to_have",
       "expectation": "Explore data in Looker or Looker Studio",
-      "postingShare": null
+      "postingShare": 0.19
     },
     {
       "skillId": "sql-window-functions",
       "importance": "nice_to_have",
       "expectation": "Use window functions and CTEs for running totals, ranks and cohorts",
-      "postingShare": null
+      "postingShare": 0.03
     },
     {
       "skillId": "cloud-data-warehouse",
       "importance": "nice_to_have",
       "expectation": "Query data in Snowflake, BigQuery or Redshift",
-      "postingShare": null
+      "postingShare": 0.25
     },
     {
       "skillId": "dbt",
       "importance": "nice_to_have",
       "expectation": "Turn SQL queries into tested dbt models",
-      "postingShare": null
+      "postingShare": 0.22
     },
     {
       "skillId": "etl",
       "importance": "nice_to_have",
       "expectation": "Understand how data reaches your tables and spot pipeline problems",
-      "postingShare": null
+      "postingShare": 0.19
     },
     {
       "skillId": "ab-testing",
       "importance": "nice_to_have",
       "expectation": "Read the result of a simple A/B test",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "llm-apps",
       "importance": "nice_to_have",
       "expectation": "Use AI assistants to speed up queries and analysis, and check their output",
-      "postingShare": null
+      "postingShare": 0.25
     },
     {
       "skillId": "excel-pivot-lookup",
       "importance": "nice_to_have",
       "expectation": "Build pivot tables and use XLOOKUP or INDEX-MATCH",
-      "postingShare": null
+      "postingShare": 0
     }
   ],
   "certifications": [
@@ -130,6 +130,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 32 public job postings (7 in India) from 17 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

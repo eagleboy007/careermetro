@@ -10,103 +10,103 @@
       "skillId": "linux",
       "importance": "required",
       "expectation": "Administer Linux servers and write shell scripts",
-      "postingShare": null
+      "postingShare": 0.46
     },
     {
       "skillId": "ci-cd",
       "importance": "required",
       "expectation": "Build CI/CD pipelines with Jenkins, GitHub Actions or GitLab CI",
-      "postingShare": null
+      "postingShare": 0.42
     },
     {
       "skillId": "docker",
       "importance": "required",
       "expectation": "Write Dockerfiles and run multi-container apps",
-      "postingShare": null
+      "postingShare": 0.35
     },
     {
       "skillId": "kubernetes",
       "importance": "required",
       "expectation": "Deploy and troubleshoot workloads on Kubernetes",
-      "postingShare": null
+      "postingShare": 0.71
     },
     {
       "skillId": "aws",
       "importance": "required",
       "expectation": "Set up core AWS services: EC2, S3, IAM, VPC and load balancers",
-      "postingShare": null
+      "postingShare": 0.6
     },
     {
       "skillId": "terraform",
       "importance": "required",
       "expectation": "Provision infrastructure with Terraform",
-      "postingShare": null
+      "postingShare": 0.58
     },
     {
       "skillId": "monitoring",
       "importance": "required",
       "expectation": "Set up metrics, logs and alerts with Prometheus and Grafana",
-      "postingShare": null
+      "postingShare": 0.66
     },
     {
       "skillId": "sre-practices",
       "importance": "required",
       "expectation": "Define SLOs, join an on-call rotation and run incident reviews",
-      "postingShare": null
+      "postingShare": 0.73
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Automate operations tasks in Python",
-      "postingShare": null
+      "postingShare": 0.64
     },
     {
       "skillId": "networking-basics",
       "importance": "required",
       "expectation": "Debug DNS, ports, load balancers and firewalls",
-      "postingShare": null
+      "postingShare": 0.25
     },
     {
       "skillId": "git",
       "importance": "required",
       "expectation": "Manage repositories, branching and access",
-      "postingShare": null
+      "postingShare": 0.27
     },
     {
       "skillId": "go",
       "importance": "nice_to_have",
       "expectation": "Read and write Go, used for many infrastructure tools",
-      "postingShare": null
+      "postingShare": 0.59
     },
     {
       "skillId": "gcp",
       "importance": "nice_to_have",
       "expectation": "Work on Google Cloud as a second cloud",
-      "postingShare": null
+      "postingShare": 0.43
     },
     {
       "skillId": "azure",
       "importance": "nice_to_have",
       "expectation": "Work on Azure as a second cloud",
-      "postingShare": null
+      "postingShare": 0.3
     },
     {
       "skillId": "gitops",
       "importance": "nice_to_have",
       "expectation": "Deploy with Argo CD or Flux",
-      "postingShare": null
+      "postingShare": 0.22
     },
     {
       "skillId": "cloud-security",
       "importance": "nice_to_have",
       "expectation": "Apply IAM least privilege and basic security hardening",
-      "postingShare": null
+      "postingShare": 0.09
     },
     {
       "skillId": "system-design",
       "importance": "nice_to_have",
       "expectation": "Discuss reliability trade-offs in a design review",
-      "postingShare": null
+      "postingShare": 0.37
     }
   ],
   "certifications": [
@@ -140,6 +140,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 92 public job postings (13 in India) from 41 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

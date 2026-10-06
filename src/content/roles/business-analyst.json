@@ -10,85 +10,85 @@
       "skillId": "requirements-gathering",
       "importance": "required",
       "expectation": "Run requirement workshops and write a clear BRD or FRD",
-      "postingShare": null
+      "postingShare": 0.2
     },
     {
       "skillId": "prd-writing",
       "importance": "required",
       "expectation": "Write user stories with acceptance criteria developers can build from",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "process-mapping",
       "importance": "required",
       "expectation": "Draw as-is and to-be process flows",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "sql",
       "importance": "required",
       "expectation": "Pull and check data with basic SQL queries",
-      "postingShare": null
+      "postingShare": 0.4
     },
     {
       "skillId": "stakeholder-management",
       "importance": "required",
       "expectation": "Keep business and tech teams aligned on scope and timelines",
-      "postingShare": null
+      "postingShare": 0.2
     },
     {
       "skillId": "agile-scrum",
       "importance": "required",
       "expectation": "Work inside Scrum ceremonies and maintain a backlog in Jira",
-      "postingShare": null
+      "postingShare": 0.3
     },
     {
       "skillId": "uat",
       "importance": "required",
       "expectation": "Plan and run user acceptance testing with business users",
-      "postingShare": null
+      "postingShare": 0.2
     },
     {
       "skillId": "communication",
       "importance": "required",
       "expectation": "Write crisp status mails and present to senior stakeholders",
-      "postingShare": null
+      "postingShare": 0.9
     },
     {
       "skillId": "data-visualization",
       "importance": "nice_to_have",
       "expectation": "Build a simple dashboard to track a process KPI",
-      "postingShare": null
+      "postingShare": 0.4
     },
     {
       "skillId": "excel",
       "importance": "nice_to_have",
       "expectation": "Analyse data and build trackers in Excel",
-      "postingShare": null
+      "postingShare": 0.1
     },
     {
       "skillId": "crm-tools",
       "importance": "nice_to_have",
       "expectation": "Understand CRM systems such as Salesforce, a common BA specialisation",
-      "postingShare": null
+      "postingShare": 0.6
     },
     {
       "skillId": "business-case",
       "importance": "nice_to_have",
       "expectation": "Put together a cost-benefit view for a change request",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "domain-bfsi",
       "importance": "nice_to_have",
       "expectation": "Understand banking or insurance processes, a common BA domain in India",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "wireframing",
       "importance": "nice_to_have",
       "expectation": "Sketch screens to clarify a requirement",
-      "postingShare": null
+      "postingShare": 0.1
     }
   ],
   "certifications": [
@@ -117,6 +117,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 10 public job postings (1 in India) from 9 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06. Small sample, so treat the shares as rough.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

@@ -10,97 +10,97 @@
       "skillId": "html-css",
       "importance": "required",
       "expectation": "Build responsive layouts with semantic HTML and modern CSS",
-      "postingShare": null
+      "postingShare": 0.52
     },
     {
       "skillId": "javascript",
       "importance": "required",
       "expectation": "Use modern JavaScript confidently, including async code",
-      "postingShare": null
+      "postingShare": 0.78
     },
     {
       "skillId": "typescript",
       "importance": "required",
       "expectation": "Type components and API responses with TypeScript",
-      "postingShare": null
+      "postingShare": 0.81
     },
     {
       "skillId": "react",
       "importance": "required",
       "expectation": "Build React apps with hooks, forms and routing",
-      "postingShare": null
+      "postingShare": 0.85
     },
     {
       "skillId": "state-management",
       "importance": "required",
       "expectation": "Manage shared state with Context, Redux or a similar library",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "rest-apis",
       "importance": "required",
       "expectation": "Call APIs and handle loading, error and empty states",
-      "postingShare": null
+      "postingShare": 0.15
     },
     {
       "skillId": "git",
       "importance": "required",
       "expectation": "Work with branches, pull requests and code review",
-      "postingShare": null
+      "postingShare": 0.41
     },
     {
       "skillId": "communication",
       "importance": "required",
       "expectation": "Explain UI decisions to designers and back-end engineers",
-      "postingShare": null
+      "postingShare": 0.63
     },
     {
       "skillId": "unit-testing",
       "importance": "nice_to_have",
       "expectation": "Test components with Jest and Testing Library",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "accessibility",
       "importance": "nice_to_have",
       "expectation": "Meet basic WCAG accessibility guidelines",
-      "postingShare": null
+      "postingShare": 0.07
     },
     {
       "skillId": "graphql",
       "importance": "nice_to_have",
       "expectation": "Fetch data with GraphQL",
-      "postingShare": null
+      "postingShare": 0.3
     },
     {
       "skillId": "nextjs",
       "importance": "nice_to_have",
       "expectation": "Build pages with Next.js and server rendering",
-      "postingShare": null
+      "postingShare": 0.19
     },
     {
       "skillId": "ci-cd",
       "importance": "nice_to_have",
       "expectation": "Get your code through CI checks and preview deploys",
-      "postingShare": null
+      "postingShare": 0.26
     },
     {
       "skillId": "web-performance",
       "importance": "nice_to_have",
       "expectation": "Measure and improve Core Web Vitals",
-      "postingShare": null
+      "postingShare": 0.07
     },
     {
       "skillId": "playwright-cypress",
       "importance": "nice_to_have",
       "expectation": "Write end-to-end tests with Playwright or Cypress",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "figma",
       "importance": "nice_to_have",
       "expectation": "Turn Figma designs into pixel-accurate UI",
-      "postingShare": null
+      "postingShare": 0.04
     }
   ],
   "certifications": [
@@ -114,6 +114,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 27 public job postings (2 in India) from 13 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

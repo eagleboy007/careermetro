@@ -1,0 +1,934 @@
+{
+  "fetchedOn": "2026-10-06",
+  "totalPostings": 12439,
+  "sources": [
+    {
+      "ats": "greenhouse",
+      "board": "airbnb",
+      "jobs": 160,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "stripe",
+      "jobs": 729,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "dropbox",
+      "jobs": 35,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "databricks",
+      "jobs": 885,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "figma",
+      "jobs": 156,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "gitlab",
+      "jobs": 209,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cloudflare",
+      "jobs": 418,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "datadog",
+      "jobs": 435,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "mongodb",
+      "jobs": 394,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "twilio",
+      "jobs": 131,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "okta",
+      "jobs": 375,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "coinbase",
+      "jobs": 225,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "robinhood",
+      "jobs": 160,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "reddit",
+      "jobs": 148,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "pinterest",
+      "jobs": 177,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "lyft",
+      "jobs": 196,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "instacart",
+      "jobs": 122,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "asana",
+      "jobs": 97,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "elastic",
+      "jobs": 413,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "grammarly",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "duolingo",
+      "jobs": 60,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "squarespace",
+      "jobs": 32,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "affirm",
+      "jobs": 187,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "brex",
+      "jobs": 287,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "gusto",
+      "jobs": 94,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "chime",
+      "jobs": 65,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "discord",
+      "jobs": 48,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "airtable",
+      "jobs": 4,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "webflow",
+      "jobs": 24,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "intercom",
+      "jobs": 105,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "postman",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "browserstack",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "phonepe",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "razorpaysoftwareprivatelimited",
+      "jobs": 25,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "groww",
+      "jobs": 7,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "meesho",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "inmobi",
+      "jobs": 70,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sharechat",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "druva",
+      "jobs": 35,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "mindtickle",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "chargebee",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "hackerrank",
+      "jobs": 28,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "whatfix",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "innovaccer",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sprinklr",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "uber",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "toast",
+      "jobs": 328,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "samsara",
+      "jobs": 239,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "zscaler",
+      "jobs": 363,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "hubspot",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "wise",
+      "jobs": 15,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "monzo",
+      "jobs": 67,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "n26",
+      "jobs": 45,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "canonical",
+      "jobs": 311,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "celonis",
+      "jobs": 224,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "contentful",
+      "jobs": 18,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "miro",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "personio",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "deliveroo",
+      "jobs": 195,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "skyscanner",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "agoda",
+      "jobs": 295,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "grab",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "abnormalsecurity",
+      "jobs": 81,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "wizinc",
+      "jobs": 130,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "huntress",
+      "jobs": 36,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "arcticwolf",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "netskope",
+      "jobs": 154,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "lookout",
+      "jobs": 4,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "exabeam",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "tanium",
+      "jobs": 54,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sumologic",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "rubrik",
+      "jobs": 131,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cockroachlabs",
+      "jobs": 18,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "singlestore",
+      "jobs": 43,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "yugabyte",
+      "jobs": 16,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "couchbase",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "redis",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "imperva",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "onetrust",
+      "jobs": 93,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "securonix",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cyble",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "cred",
+      "jobs": 8,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "spotify",
+      "jobs": 75,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "palantir",
+      "jobs": 314,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "plaid",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "zeta",
+      "jobs": 25,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "upstox",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "jupiter",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "slice",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "dream11",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "swiggy",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "paytm",
+      "jobs": 176,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "zoomcar",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "atlan",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "rippling",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "eventbrite",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "kpmg",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "outreach",
+      "jobs": 26,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "highspot",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "mistral",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "anyscale",
+      "jobs": 1,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "binance",
+      "jobs": 302,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "snyk",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "appsecure",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "sprinto",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "zepto",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "notion",
+      "jobs": 133,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "ramp",
+      "jobs": 161,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "linear",
+      "jobs": 31,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "openai",
+      "jobs": 824,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "vercel",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "supabase",
+      "jobs": 51,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "deel",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "posthog",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "retool",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "confluent",
+      "jobs": 17,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "clickhouse",
+      "jobs": 194,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "perplexity",
+      "jobs": 129,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "cohere",
+      "jobs": 130,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "replit",
+      "jobs": 71,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "sentry",
+      "jobs": 43,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "neon",
+      "jobs": 4,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "plane",
+      "jobs": 33,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "hasura",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "multiplier",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "atlys",
+      "jobs": 51,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "tide",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "1password",
+      "jobs": 69,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "vanta",
+      "jobs": 82,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "drata",
+      "jobs": 35,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "chainguard",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "semgrep",
+      "jobs": 13,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "socket",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "planetscale",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "timescale",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "scrut",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    }
+  ],
+  "roles": {
+    "information-security-analyst": {
+      "postings": 23,
+      "indiaPostings": 1,
+      "companies": 15
+    },
+    "cyber-security-analyst": {
+      "postings": 135,
+      "indiaPostings": 6,
+      "companies": 50
+    },
+    "database-architect": {
+      "postings": 3,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "data-analyst": {
+      "postings": 32,
+      "indiaPostings": 7,
+      "companies": 17
+    },
+    "business-analyst": {
+      "postings": 10,
+      "indiaPostings": 1,
+      "companies": 9
+    },
+    "java-backend-developer": {
+      "postings": 49,
+      "indiaPostings": 5,
+      "companies": 13
+    },
+    "frontend-developer": {
+      "postings": 27,
+      "indiaPostings": 2,
+      "companies": 13
+    },
+    "full-stack-developer": {
+      "postings": 105,
+      "indiaPostings": 7,
+      "companies": 30
+    },
+    "data-scientist": {
+      "postings": 117,
+      "indiaPostings": 3,
+      "companies": 35
+    },
+    "product-manager": {
+      "postings": 271,
+      "indiaPostings": 16,
+      "companies": 59
+    },
+    "qa-automation-engineer": {
+      "postings": 19,
+      "indiaPostings": 1,
+      "companies": 10
+    },
+    "devops-engineer": {
+      "postings": 92,
+      "indiaPostings": 13,
+      "companies": 41
+    },
+    "digital-marketing-executive": {
+      "postings": 47,
+      "indiaPostings": 6,
+      "companies": 28
+    }
+  }
+}

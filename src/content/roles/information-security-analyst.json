@@ -10,79 +10,79 @@
       "skillId": "compliance-frameworks",
       "importance": "required",
       "expectation": "Map controls to ISO 27001, SOC 2, PCI DSS or India's DPDP Act",
-      "postingShare": null
+      "postingShare": 0.61
     },
     {
       "skillId": "security-policies",
       "importance": "required",
       "expectation": "Write and maintain security policies and an ISMS",
-      "postingShare": null
+      "postingShare": 0.61
     },
     {
       "skillId": "risk-assessment",
       "importance": "required",
       "expectation": "Run risk assessments, including third-party vendor risk",
-      "postingShare": null
+      "postingShare": 0.39
     },
     {
       "skillId": "security-audits",
       "importance": "required",
       "expectation": "Prepare audit evidence and test controls",
-      "postingShare": null
+      "postingShare": 0.22
     },
     {
       "skillId": "identity-access-management",
       "importance": "required",
       "expectation": "Run access reviews and joiner-mover-leaver checks",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "stakeholder-management",
       "importance": "required",
       "expectation": "Get engineering and business teams to close findings",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "communication",
       "importance": "required",
       "expectation": "Write clear findings and present risk to leadership",
-      "postingShare": null
+      "postingShare": 0.57
     },
     {
       "skillId": "cloud-security",
       "importance": "nice_to_have",
       "expectation": "Understand cloud controls on AWS, Azure or GCP",
-      "postingShare": null
+      "postingShare": 0.26
     },
     {
       "skillId": "python",
       "importance": "nice_to_have",
       "expectation": "Automate evidence collection with scripts",
-      "postingShare": null
+      "postingShare": 0.26
     },
     {
       "skillId": "security-incident-response",
       "importance": "nice_to_have",
       "expectation": "Know how incidents are handled and reported",
-      "postingShare": null
+      "postingShare": 0.13
     },
     {
       "skillId": "security-awareness",
       "importance": "nice_to_have",
       "expectation": "Run security awareness and phishing programmes",
-      "postingShare": null
+      "postingShare": 0.04
     },
     {
       "skillId": "data-governance",
       "importance": "nice_to_have",
       "expectation": "Support data classification and privacy work",
-      "postingShare": null
+      "postingShare": 0.04
     },
     {
       "skillId": "excel",
       "importance": "nice_to_have",
       "expectation": "Track controls and risks in spreadsheets",
-      "postingShare": null
+      "postingShare": 0.04
     }
   ],
   "certifications": [
@@ -121,6 +121,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 23 public job postings (1 in India) from 15 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,

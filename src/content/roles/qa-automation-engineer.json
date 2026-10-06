@@ -10,91 +10,91 @@
       "skillId": "manual-testing",
       "importance": "required",
       "expectation": "Design test cases and run functional and regression testing",
-      "postingShare": null
+      "postingShare": 0.63
     },
     {
       "skillId": "test-planning",
       "importance": "required",
       "expectation": "Write a test plan and know where testing fits in the release cycle",
-      "postingShare": null
+      "postingShare": 0
     },
     {
       "skillId": "selenium",
       "importance": "required",
       "expectation": "Build and maintain a Selenium WebDriver suite, still the most common tool in Indian QA teams",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Write automation code in Python with pytest",
-      "postingShare": null
+      "postingShare": 0.53
     },
     {
       "skillId": "api-testing",
       "importance": "required",
       "expectation": "Test APIs with Postman and automate them",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "sql",
       "importance": "required",
       "expectation": "Verify data with SQL queries",
-      "postingShare": null
+      "postingShare": 0.21
     },
     {
       "skillId": "bug-tracking",
       "importance": "required",
       "expectation": "Write clear, reproducible bug reports in Jira",
-      "postingShare": null
+      "postingShare": 0.21
     },
     {
       "skillId": "git",
       "importance": "required",
       "expectation": "Keep test code in Git with pull requests",
-      "postingShare": null
+      "postingShare": 0.32
     },
     {
       "skillId": "communication",
       "importance": "required",
       "expectation": "Explain risk and test results to developers and managers",
-      "postingShare": null
+      "postingShare": 0.63
     },
     {
       "skillId": "java",
       "importance": "nice_to_have",
       "expectation": "Write automation in Java with TestNG, common in Indian QA teams",
-      "postingShare": null
+      "postingShare": 0.26
     },
     {
       "skillId": "playwright-cypress",
       "importance": "nice_to_have",
       "expectation": "Automate with Playwright or Cypress",
-      "postingShare": null
+      "postingShare": 0.11
     },
     {
       "skillId": "ci-cd",
       "importance": "nice_to_have",
       "expectation": "Run test suites in a CI pipeline",
-      "postingShare": null
+      "postingShare": 0.47
     },
     {
       "skillId": "linux",
       "importance": "nice_to_have",
       "expectation": "Run and debug tests on Linux machines",
-      "postingShare": null
+      "postingShare": 0.32
     },
     {
       "skillId": "performance-testing",
       "importance": "nice_to_have",
       "expectation": "Run a load test with JMeter or k6",
-      "postingShare": null
+      "postingShare": 0.21
     },
     {
       "skillId": "unit-testing",
       "importance": "nice_to_have",
       "expectation": "Understand developer unit tests and where they stop",
-      "postingShare": null
+      "postingShare": 0.16
     }
   ],
   "certifications": [
@@ -113,6 +113,10 @@
     {
       "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
+    },
+    {
+      "description": "Skill shares measured on 19 public job postings (1 in India) from 10 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06. Small sample, so treat the shares as rough.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
     }
   ],
   "reviewedBy": null,
