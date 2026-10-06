@@ -9,77 +9,127 @@
     {
       "skillId": "java",
       "importance": "required",
-      "expectation": "Write clean Java 17+ using collections, streams and exceptions"
+      "expectation": "Write clean Java 17+ using collections, streams and exceptions",
+      "postingShare": null
     },
     {
       "skillId": "oop",
       "importance": "required",
-      "expectation": "Apply object-oriented design and common design patterns"
+      "expectation": "Apply object-oriented design and common design patterns",
+      "postingShare": null
     },
     {
       "skillId": "spring-boot",
       "importance": "required",
-      "expectation": "Build and test a Spring Boot service end to end"
+      "expectation": "Build and test a Spring Boot service end to end, the default Java stack in India",
+      "postingShare": null
     },
     {
       "skillId": "rest-apis",
       "importance": "required",
-      "expectation": "Design REST endpoints with proper status codes, validation and pagination"
+      "expectation": "Design REST endpoints with proper status codes, validation and pagination",
+      "postingShare": null
     },
     {
       "skillId": "sql",
       "importance": "required",
-      "expectation": "Write efficient queries and understand indexes"
+      "expectation": "Write efficient queries and understand indexes",
+      "postingShare": null
     },
     {
-      "skillId": "orm-databases",
+      "skillId": "nosql",
       "importance": "required",
-      "expectation": "Model tables and use JPA or Hibernate without N+1 problems"
+      "expectation": "Use a cache or NoSQL store such as Redis or MongoDB where it fits",
+      "postingShare": null
     },
     {
       "skillId": "data-structures-algorithms",
       "importance": "required",
-      "expectation": "Solve medium-level DSA problems in interviews"
+      "expectation": "Solve medium-level DSA problems in interviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Discuss trade-offs in a system design round",
+      "postingShare": null
     },
     {
       "skillId": "unit-testing",
       "importance": "required",
-      "expectation": "Write JUnit tests with mocks for service code"
+      "expectation": "Write JUnit tests with mocks for service code",
+      "postingShare": null
     },
     {
       "skillId": "git",
       "importance": "required",
-      "expectation": "Work with branches, pull requests and code review"
-    },
-    {
-      "skillId": "microservices",
-      "importance": "nice_to_have",
-      "expectation": "Split a system into services and handle failures between them"
+      "expectation": "Work with branches, pull requests and code review",
+      "postingShare": null
     },
     {
       "skillId": "messaging-queues",
       "importance": "nice_to_have",
-      "expectation": "Produce and consume events with Kafka or RabbitMQ"
+      "expectation": "Produce and consume events with Kafka or RabbitMQ",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "nice_to_have",
+      "expectation": "Split a system into services and handle failures between them",
+      "postingShare": null
     },
     {
       "skillId": "docker",
       "importance": "nice_to_have",
-      "expectation": "Package a service in a Docker image"
+      "expectation": "Package a service in a Docker image",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and debug a service on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Add logs, metrics and traces so you can debug production",
+      "postingShare": null
     },
     {
       "skillId": "aws",
       "importance": "nice_to_have",
-      "expectation": "Deploy a service on AWS"
+      "expectation": "Deploy a service on AWS",
+      "postingShare": null
     },
     {
-      "skillId": "system-design",
+      "skillId": "go",
       "importance": "nice_to_have",
-      "expectation": "Discuss trade-offs in a basic system design round"
+      "expectation": "Pick up Go, which many backend teams use alongside Java",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Ship through an automated build and deploy pipeline",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "recommended",
+      "why": "Shows you can build and deploy on AWS, which most backend roles touch"
+    },
+    {
+      "certId": "oracle-java-professional",
+      "importance": "optional",
+      "why": "Valued by some service companies and enterprise employers in India"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

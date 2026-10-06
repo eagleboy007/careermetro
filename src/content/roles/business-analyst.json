@@ -9,72 +9,113 @@
     {
       "skillId": "requirements-gathering",
       "importance": "required",
-      "expectation": "Run requirement workshops and write a clear BRD or FRD"
+      "expectation": "Run requirement workshops and write a clear BRD or FRD",
+      "postingShare": null
     },
     {
       "skillId": "prd-writing",
       "importance": "required",
-      "expectation": "Write user stories with acceptance criteria developers can build from"
+      "expectation": "Write user stories with acceptance criteria developers can build from",
+      "postingShare": null
     },
     {
       "skillId": "process-mapping",
       "importance": "required",
-      "expectation": "Draw as-is and to-be process flows"
+      "expectation": "Draw as-is and to-be process flows",
+      "postingShare": null
     },
     {
       "skillId": "sql",
       "importance": "required",
-      "expectation": "Pull and check data with basic SQL queries"
-    },
-    {
-      "skillId": "excel",
-      "importance": "required",
-      "expectation": "Analyse data and build trackers in Excel"
+      "expectation": "Pull and check data with basic SQL queries",
+      "postingShare": null
     },
     {
       "skillId": "stakeholder-management",
       "importance": "required",
-      "expectation": "Keep business and tech teams aligned on scope and timelines"
+      "expectation": "Keep business and tech teams aligned on scope and timelines",
+      "postingShare": null
     },
     {
       "skillId": "agile-scrum",
       "importance": "required",
-      "expectation": "Work inside Scrum ceremonies and maintain a backlog in Jira"
+      "expectation": "Work inside Scrum ceremonies and maintain a backlog in Jira",
+      "postingShare": null
     },
     {
       "skillId": "uat",
       "importance": "required",
-      "expectation": "Plan and run user acceptance testing with business users"
+      "expectation": "Plan and run user acceptance testing with business users",
+      "postingShare": null
     },
     {
       "skillId": "communication",
       "importance": "required",
-      "expectation": "Write crisp status mails and present to senior stakeholders"
+      "expectation": "Write crisp status mails and present to senior stakeholders",
+      "postingShare": null
     },
     {
-      "skillId": "power-bi",
+      "skillId": "data-visualization",
       "importance": "nice_to_have",
-      "expectation": "Build a simple dashboard to track a process KPI"
+      "expectation": "Build a simple dashboard to track a process KPI",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Analyse data and build trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Understand CRM systems such as Salesforce, a common BA specialisation",
+      "postingShare": null
     },
     {
       "skillId": "business-case",
       "importance": "nice_to_have",
-      "expectation": "Put together a cost-benefit view for a change request"
+      "expectation": "Put together a cost-benefit view for a change request",
+      "postingShare": null
     },
     {
       "skillId": "domain-bfsi",
       "importance": "nice_to_have",
-      "expectation": "Understand banking or insurance processes, a common BA domain in India"
+      "expectation": "Understand banking or insurance processes, a common BA domain in India",
+      "postingShare": null
     },
     {
       "skillId": "wireframing",
       "importance": "nice_to_have",
-      "expectation": "Sketch screens to clarify a requirement"
+      "expectation": "Sketch screens to clarify a requirement",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ecba",
+      "importance": "recommended",
+      "why": "An entry-level IIBA credential that shows you know the BA basics"
+    },
+    {
+      "certId": "cspo",
+      "importance": "optional",
+      "why": "Useful for BAs who act as product owners in agile teams"
+    },
+    {
+      "certId": "ccba",
+      "importance": "optional",
+      "why": "The next IIBA step once you have about two years of BA work"
+    },
+    {
+      "certId": "cbap",
+      "importance": "optional",
+      "why": "A senior IIBA credential for experienced BAs"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

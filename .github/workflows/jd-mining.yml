@@ -27,6 +27,8 @@ jobs:
       - name: Push results to the data/jd-snapshot branch
         run: |
           cd "$RUNNER_TEMP/jd-snapshot"
+          # This branch holds data only, so tell Vercel not to build a preview for it.
+          echo '{"git":{"deploymentEnabled":false}}' > vercel.json
           git init -q -b data/jd-snapshot
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

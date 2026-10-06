@@ -9,82 +9,132 @@
     {
       "skillId": "python",
       "importance": "required",
-      "expectation": "Write clean, reusable Python for analysis and modelling"
-    },
-    {
-      "skillId": "pandas",
-      "importance": "required",
-      "expectation": "Prepare and explore data with pandas"
+      "expectation": "Write clean, reusable Python for analysis and modelling",
+      "postingShare": null
     },
     {
       "skillId": "sql",
       "importance": "required",
-      "expectation": "Pull training data with SQL, including window functions"
+      "expectation": "Pull training data with SQL, including window functions",
+      "postingShare": null
     },
     {
       "skillId": "statistics",
       "importance": "required",
-      "expectation": "Use hypothesis tests, confidence intervals and regression correctly"
+      "expectation": "Use hypothesis tests, confidence intervals and regression correctly",
+      "postingShare": null
     },
     {
       "skillId": "machine-learning",
       "importance": "required",
-      "expectation": "Build, tune and explain classical models such as trees and gradient boosting"
+      "expectation": "Build, tune and explain classical models such as trees and gradient boosting",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "Design experiments and read A/B test results correctly",
+      "postingShare": null
     },
     {
       "skillId": "scikit-learn",
       "importance": "required",
-      "expectation": "Use scikit-learn pipelines end to end"
-    },
-    {
-      "skillId": "feature-engineering",
-      "importance": "required",
-      "expectation": "Create useful features and avoid data leakage"
+      "expectation": "Use scikit-learn pipelines end to end",
+      "postingShare": null
     },
     {
       "skillId": "model-evaluation",
       "importance": "required",
-      "expectation": "Pick the right metric and validate models properly"
+      "expectation": "Pick the right metric and validate models properly",
+      "postingShare": null
+    },
+    {
+      "skillId": "feature-engineering",
+      "importance": "required",
+      "expectation": "Create useful features and avoid data leakage",
+      "postingShare": null
     },
     {
       "skillId": "communication",
       "importance": "required",
-      "expectation": "Explain a model's results and limits to business teams"
-    },
-    {
-      "skillId": "deep-learning",
-      "importance": "nice_to_have",
-      "expectation": "Train a neural network with PyTorch or TensorFlow"
-    },
-    {
-      "skillId": "nlp",
-      "importance": "nice_to_have",
-      "expectation": "Work with text data"
+      "expectation": "Explain a model's results and limits to business teams",
+      "postingShare": null
     },
     {
       "skillId": "llm-apps",
       "importance": "nice_to_have",
-      "expectation": "Build a simple LLM or RAG prototype"
+      "expectation": "Build and evaluate an LLM or RAG prototype",
+      "postingShare": null
     },
     {
-      "skillId": "mlops",
+      "skillId": "deep-learning",
       "importance": "nice_to_have",
-      "expectation": "Deploy and monitor a model"
+      "expectation": "Train a neural network with PyTorch or TensorFlow",
+      "postingShare": null
     },
     {
-      "skillId": "ab-testing",
+      "skillId": "nlp",
       "importance": "nice_to_have",
-      "expectation": "Design and read an A/B test"
+      "expectation": "Work with text data",
+      "postingShare": null
+    },
+    {
+      "skillId": "pandas",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and explore data with pandas",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Show results in clear charts",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "nice_to_have",
+      "expectation": "Pass a coding round",
+      "postingShare": null
     },
     {
       "skillId": "spark",
       "importance": "nice_to_have",
-      "expectation": "Process large data with PySpark or Databricks"
+      "expectation": "Process large data with PySpark or Databricks",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Query data in Snowflake or BigQuery",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and monitor a model",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Helps if you want to move toward deploying models on AWS"
+    },
+    {
+      "certId": "azure-data-scientist",
+      "importance": "optional",
+      "why": "Useful for employers that run on Azure"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "A harder exam; worth it once you have deployed models on Google Cloud"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

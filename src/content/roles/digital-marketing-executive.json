@@ -7,64 +7,115 @@
   },
   "skills": [
     {
-      "skillId": "seo",
+      "skillId": "performance-marketing",
       "importance": "required",
-      "expectation": "Do keyword research and on-page SEO for a website"
+      "expectation": "Run paid campaigns to a target CAC or ROAS",
+      "postingShare": null
     },
     {
       "skillId": "sem-google-ads",
       "importance": "required",
-      "expectation": "Set up and optimise Google Ads search campaigns"
+      "expectation": "Set up and optimise Google Ads search campaigns",
+      "postingShare": null
     },
     {
       "skillId": "social-media-marketing",
       "importance": "required",
-      "expectation": "Plan and run Meta and LinkedIn campaigns"
+      "expectation": "Plan and run Meta and LinkedIn campaigns",
+      "postingShare": null
     },
     {
       "skillId": "web-analytics",
       "importance": "required",
-      "expectation": "Track campaigns in GA4 and Google Tag Manager"
+      "expectation": "Track campaigns in GA4 and Google Tag Manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo",
+      "importance": "required",
+      "expectation": "Do keyword research and on-page SEO for a website",
+      "postingShare": null
     },
     {
       "skillId": "content-marketing",
       "importance": "required",
-      "expectation": "Write posts, ads and landing page copy"
+      "expectation": "Write posts, ads and landing page copy",
+      "postingShare": null
     },
     {
-      "skillId": "excel",
+      "skillId": "ab-testing",
       "importance": "required",
-      "expectation": "Report campaign numbers in Excel or Google Sheets"
+      "expectation": "Test ad creatives and landing pages",
+      "postingShare": null
     },
     {
       "skillId": "communication",
       "importance": "required",
-      "expectation": "Explain campaign results to a manager or client"
+      "expectation": "Explain campaign results to a manager or client",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a CRM such as HubSpot or Salesforce to manage leads",
+      "postingShare": null
     },
     {
       "skillId": "email-marketing",
       "importance": "nice_to_have",
-      "expectation": "Run email campaigns and simple automations"
+      "expectation": "Run email campaigns and simple automations",
+      "postingShare": null
     },
     {
-      "skillId": "performance-marketing",
+      "skillId": "product-metrics",
       "importance": "nice_to_have",
-      "expectation": "Optimise for ROAS and CAC across channels"
+      "expectation": "Read LTV, CAC and cohort numbers",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Report campaign numbers in Excel or Google Sheets",
+      "postingShare": null
     },
     {
       "skillId": "data-visualization",
       "importance": "nice_to_have",
-      "expectation": "Build a simple marketing dashboard"
+      "expectation": "Build a simple marketing dashboard",
+      "postingShare": null
     },
     {
-      "skillId": "ab-testing",
+      "skillId": "sql",
       "importance": "nice_to_have",
-      "expectation": "Test ad creatives and landing pages"
+      "expectation": "Pull campaign data with basic SQL",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "google-ads-search",
+      "importance": "recommended",
+      "why": "Free from Google Skillshop and expected by most agencies"
+    },
+    {
+      "certId": "google-analytics-cert",
+      "importance": "recommended",
+      "why": "Free from Google Skillshop and shows you can measure results"
+    },
+    {
+      "certId": "hubspot-inbound-marketing",
+      "importance": "optional",
+      "why": "Free and useful for content and inbound roles"
+    },
+    {
+      "certId": "meta-digital-marketing-associate",
+      "importance": "optional",
+      "why": "Useful for social-media-heavy roles"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

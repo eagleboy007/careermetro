@@ -9,67 +9,110 @@
     {
       "skillId": "html-css",
       "importance": "required",
-      "expectation": "Build responsive layouts with semantic HTML and modern CSS"
+      "expectation": "Build responsive layouts with semantic HTML and modern CSS",
+      "postingShare": null
     },
     {
       "skillId": "javascript",
       "importance": "required",
-      "expectation": "Use modern JavaScript confidently, including async code"
+      "expectation": "Use modern JavaScript confidently, including async code",
+      "postingShare": null
     },
     {
       "skillId": "typescript",
       "importance": "required",
-      "expectation": "Type components and API responses with TypeScript"
+      "expectation": "Type components and API responses with TypeScript",
+      "postingShare": null
     },
     {
       "skillId": "react",
       "importance": "required",
-      "expectation": "Build React apps with hooks, forms and routing"
+      "expectation": "Build React apps with hooks, forms and routing",
+      "postingShare": null
     },
     {
       "skillId": "state-management",
       "importance": "required",
-      "expectation": "Manage shared state with Context, Redux or a similar library"
+      "expectation": "Manage shared state with Context, Redux or a similar library",
+      "postingShare": null
     },
     {
       "skillId": "rest-apis",
       "importance": "required",
-      "expectation": "Call APIs and handle loading, error and empty states"
+      "expectation": "Call APIs and handle loading, error and empty states",
+      "postingShare": null
     },
     {
       "skillId": "git",
       "importance": "required",
-      "expectation": "Work with branches, pull requests and code review"
+      "expectation": "Work with branches, pull requests and code review",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain UI decisions to designers and back-end engineers",
+      "postingShare": null
     },
     {
       "skillId": "unit-testing",
-      "importance": "required",
-      "expectation": "Test components with Jest and Testing Library"
-    },
-    {
-      "skillId": "nextjs",
       "importance": "nice_to_have",
-      "expectation": "Build pages with Next.js and server rendering"
-    },
-    {
-      "skillId": "web-performance",
-      "importance": "nice_to_have",
-      "expectation": "Measure and improve Core Web Vitals"
+      "expectation": "Test components with Jest and Testing Library",
+      "postingShare": null
     },
     {
       "skillId": "accessibility",
       "importance": "nice_to_have",
-      "expectation": "Meet basic WCAG accessibility guidelines"
+      "expectation": "Meet basic WCAG accessibility guidelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphql",
+      "importance": "nice_to_have",
+      "expectation": "Fetch data with GraphQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "nextjs",
+      "importance": "nice_to_have",
+      "expectation": "Build pages with Next.js and server rendering",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Get your code through CI checks and preview deploys",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "nice_to_have",
+      "expectation": "Measure and improve Core Web Vitals",
+      "postingShare": null
+    },
+    {
+      "skillId": "playwright-cypress",
+      "importance": "nice_to_have",
+      "expectation": "Write end-to-end tests with Playwright or Cypress",
+      "postingShare": null
     },
     {
       "skillId": "figma",
       "importance": "nice_to_have",
-      "expectation": "Turn Figma designs into pixel-accurate UI"
+      "expectation": "Turn Figma designs into pixel-accurate UI",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "meta-front-end-developer",
+      "importance": "optional",
+      "why": "A structured beginner course with a certificate; a strong portfolio matters more"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

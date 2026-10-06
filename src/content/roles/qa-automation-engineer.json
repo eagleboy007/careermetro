@@ -9,67 +9,109 @@
     {
       "skillId": "manual-testing",
       "importance": "required",
-      "expectation": "Design test cases and run functional and regression testing"
+      "expectation": "Design test cases and run functional and regression testing",
+      "postingShare": null
     },
     {
       "skillId": "test-planning",
       "importance": "required",
-      "expectation": "Write a test plan and know where testing fits in the release cycle"
+      "expectation": "Write a test plan and know where testing fits in the release cycle",
+      "postingShare": null
     },
     {
       "skillId": "selenium",
       "importance": "required",
-      "expectation": "Build and maintain a Selenium WebDriver suite"
+      "expectation": "Build and maintain a Selenium WebDriver suite, still the most common tool in Indian QA teams",
+      "postingShare": null
     },
     {
-      "skillId": "java",
+      "skillId": "python",
       "importance": "required",
-      "expectation": "Write automation code in Java with TestNG or JUnit"
+      "expectation": "Write automation code in Python with pytest",
+      "postingShare": null
     },
     {
       "skillId": "api-testing",
       "importance": "required",
-      "expectation": "Test APIs with Postman and automate them with Rest Assured"
-    },
-    {
-      "skillId": "bug-tracking",
-      "importance": "required",
-      "expectation": "Write clear, reproducible bug reports in Jira"
+      "expectation": "Test APIs with Postman and automate them",
+      "postingShare": null
     },
     {
       "skillId": "sql",
       "importance": "required",
-      "expectation": "Verify data with SQL queries"
+      "expectation": "Verify data with SQL queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Write clear, reproducible bug reports in Jira",
+      "postingShare": null
     },
     {
       "skillId": "git",
       "importance": "required",
-      "expectation": "Keep test code in Git with pull requests"
+      "expectation": "Keep test code in Git with pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain risk and test results to developers and managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Write automation in Java with TestNG, common in Indian QA teams",
+      "postingShare": null
     },
     {
       "skillId": "playwright-cypress",
       "importance": "nice_to_have",
-      "expectation": "Automate with Playwright or Cypress"
+      "expectation": "Automate with Playwright or Cypress",
+      "postingShare": null
     },
     {
       "skillId": "ci-cd",
       "importance": "nice_to_have",
-      "expectation": "Run test suites in a CI pipeline"
+      "expectation": "Run test suites in a CI pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Run and debug tests on Linux machines",
+      "postingShare": null
     },
     {
       "skillId": "performance-testing",
       "importance": "nice_to_have",
-      "expectation": "Run a load test with JMeter or k6"
+      "expectation": "Run a load test with JMeter or k6",
+      "postingShare": null
     },
     {
-      "skillId": "python",
+      "skillId": "unit-testing",
       "importance": "nice_to_have",
-      "expectation": "Write automation in Python with pytest"
+      "expectation": "Understand developer unit tests and where they stop",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-foundation",
+      "importance": "recommended",
+      "why": "Widely recognised by Indian employers and covers the core testing vocabulary"
+    },
+    {
+      "certId": "istqb-test-automation",
+      "importance": "optional",
+      "why": "The automation-focused ISTQB step after the foundation level"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

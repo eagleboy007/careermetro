@@ -9,77 +9,139 @@
     {
       "skillId": "javascript",
       "importance": "required",
-      "expectation": "Use modern JavaScript on both client and server"
+      "expectation": "Use modern JavaScript on both client and server",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "required",
+      "expectation": "Use TypeScript across the stack",
+      "postingShare": null
     },
     {
       "skillId": "react",
       "importance": "required",
-      "expectation": "Build React front ends with hooks and routing"
+      "expectation": "Build React front ends with hooks and routing",
+      "postingShare": null
     },
     {
       "skillId": "nodejs",
       "importance": "required",
-      "expectation": "Build Node.js and Express APIs with validation and error handling"
+      "expectation": "Build Node.js and Express APIs with validation and error handling",
+      "postingShare": null
     },
     {
       "skillId": "rest-apis",
       "importance": "required",
-      "expectation": "Design REST APIs used by your own front end"
-    },
-    {
-      "skillId": "nosql",
-      "importance": "required",
-      "expectation": "Model data in MongoDB with sensible indexes"
+      "expectation": "Design REST APIs used by your own front end",
+      "postingShare": null
     },
     {
       "skillId": "sql",
       "importance": "required",
-      "expectation": "Write basic SQL for relational databases"
+      "expectation": "Write SQL for relational databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "required",
+      "expectation": "Model data in MongoDB with sensible indexes",
+      "postingShare": null
     },
     {
       "skillId": "html-css",
       "importance": "required",
-      "expectation": "Build responsive layouts"
+      "expectation": "Build responsive layouts",
+      "postingShare": null
     },
     {
       "skillId": "git",
       "importance": "required",
-      "expectation": "Work with branches, pull requests and code review"
+      "expectation": "Work with branches, pull requests and code review",
+      "postingShare": null
     },
     {
       "skillId": "data-structures-algorithms",
       "importance": "required",
-      "expectation": "Solve easy and medium DSA problems in interviews"
+      "expectation": "Solve easy and medium DSA problems in interviews",
+      "postingShare": null
     },
     {
-      "skillId": "typescript",
+      "skillId": "python",
       "importance": "nice_to_have",
-      "expectation": "Use TypeScript across the stack"
-    },
-    {
-      "skillId": "nextjs",
-      "importance": "nice_to_have",
-      "expectation": "Build full-stack apps with Next.js"
-    },
-    {
-      "skillId": "docker",
-      "importance": "nice_to_have",
-      "expectation": "Run the app locally and in production with Docker"
+      "expectation": "Use Python on the back end, which many full-stack teams do",
+      "postingShare": null
     },
     {
       "skillId": "aws",
       "importance": "nice_to_have",
-      "expectation": "Deploy to AWS or a similar cloud"
+      "expectation": "Deploy to AWS or a similar cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run the app locally and in production with Docker",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Understand how your app runs on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Ship through an automated pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphql",
+      "importance": "nice_to_have",
+      "expectation": "Build or consume a GraphQL API",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Add an AI feature using an LLM API",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Discuss trade-offs in a basic system design round",
+      "postingShare": null
+    },
+    {
+      "skillId": "nextjs",
+      "importance": "nice_to_have",
+      "expectation": "Build full-stack apps with Next.js",
+      "postingShare": null
     },
     {
       "skillId": "unit-testing",
       "importance": "nice_to_have",
-      "expectation": "Write unit and API tests"
+      "expectation": "Write unit and API tests",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "recommended",
+      "why": "Shows you can build and deploy on AWS"
+    },
+    {
+      "certId": "mongodb-developer",
+      "importance": "optional",
+      "why": "Useful proof of MongoDB skills for MERN roles"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

@@ -1,0 +1,157 @@
+{
+  "slug": "cyber-security-analyst",
+  "title": "Cyber Security Analyst",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Explain TCP/IP, DNS, ports and common protocols, and read packet captures",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work comfortably on the Linux command line",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write scripts to automate log checks and enrichment",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Investigate alerts and write searches in a SIEM such as Splunk or Sentinel",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Recognise attacker techniques using MITRE ATT&CK",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Triage, contain and document a security incident",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "required",
+      "expectation": "Run scans, prioritise findings and track fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-security",
+      "importance": "required",
+      "expectation": "Know the OWASP Top 10 and spot common code flaws",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Understand security on a major cloud such as AWS",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear incident notes and explain risk to non-specialists",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "nice_to_have",
+      "expectation": "Manage access with Active Directory, SSO and MFA",
+      "postingShare": null
+    },
+    {
+      "skillId": "penetration-testing",
+      "importance": "nice_to_have",
+      "expectation": "Test systems with tools such as Burp Suite and Metasploit",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Use an EDR tool such as CrowdStrike or Defender",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Review cloud IAM and network settings",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Understand security on Azure",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "nice_to_have",
+      "expectation": "Explain encryption, TLS and certificates",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Know what ISO 27001 and SOC 2 ask of a security team",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "comptia-security-plus",
+      "importance": "recommended",
+      "why": "The most common entry-level security certificate worldwide"
+    },
+    {
+      "certId": "isc2-cc",
+      "importance": "recommended",
+      "why": "A beginner-friendly ISC2 certificate, a good first step before Security+"
+    },
+    {
+      "certId": "ceh",
+      "importance": "optional",
+      "why": "Often listed by Indian employers, especially service companies"
+    },
+    {
+      "certId": "comptia-cysa-plus",
+      "importance": "optional",
+      "why": "The analyst-focused step after Security+"
+    },
+    {
+      "certId": "oscp",
+      "importance": "optional",
+      "why": "Highly respected for penetration testing roles; a hard, hands-on exam"
+    },
+    {
+      "certId": "gcih",
+      "importance": "optional",
+      "why": "Respected for incident response roles"
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "A senior certificate that needs five years of experience; plan for it later"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

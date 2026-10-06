@@ -9,72 +9,136 @@
     {
       "skillId": "linux",
       "importance": "required",
-      "expectation": "Administer Linux servers and write shell scripts"
-    },
-    {
-      "skillId": "git",
-      "importance": "required",
-      "expectation": "Manage repositories, branching and access"
+      "expectation": "Administer Linux servers and write shell scripts",
+      "postingShare": null
     },
     {
       "skillId": "ci-cd",
       "importance": "required",
-      "expectation": "Build CI/CD pipelines with Jenkins, GitHub Actions or GitLab CI"
+      "expectation": "Build CI/CD pipelines with Jenkins, GitHub Actions or GitLab CI",
+      "postingShare": null
     },
     {
       "skillId": "docker",
       "importance": "required",
-      "expectation": "Write Dockerfiles and run multi-container apps"
+      "expectation": "Write Dockerfiles and run multi-container apps",
+      "postingShare": null
     },
     {
       "skillId": "kubernetes",
       "importance": "required",
-      "expectation": "Deploy and troubleshoot workloads on Kubernetes"
+      "expectation": "Deploy and troubleshoot workloads on Kubernetes",
+      "postingShare": null
     },
     {
       "skillId": "aws",
       "importance": "required",
-      "expectation": "Set up core AWS services: EC2, S3, IAM, VPC and load balancers"
+      "expectation": "Set up core AWS services: EC2, S3, IAM, VPC and load balancers",
+      "postingShare": null
     },
     {
       "skillId": "terraform",
       "importance": "required",
-      "expectation": "Provision infrastructure with Terraform"
+      "expectation": "Provision infrastructure with Terraform",
+      "postingShare": null
     },
     {
       "skillId": "monitoring",
       "importance": "required",
-      "expectation": "Set up metrics, logs and alerts with Prometheus and Grafana"
+      "expectation": "Set up metrics, logs and alerts with Prometheus and Grafana",
+      "postingShare": null
+    },
+    {
+      "skillId": "sre-practices",
+      "importance": "required",
+      "expectation": "Define SLOs, join an on-call rotation and run incident reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate operations tasks in Python",
+      "postingShare": null
     },
     {
       "skillId": "networking-basics",
       "importance": "required",
-      "expectation": "Debug DNS, ports, load balancers and firewalls"
+      "expectation": "Debug DNS, ports, load balancers and firewalls",
+      "postingShare": null
     },
     {
-      "skillId": "azure",
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Manage repositories, branching and access",
+      "postingShare": null
+    },
+    {
+      "skillId": "go",
       "importance": "nice_to_have",
-      "expectation": "Work on Azure as a second cloud"
+      "expectation": "Read and write Go, used for many infrastructure tools",
+      "postingShare": null
     },
     {
       "skillId": "gcp",
       "importance": "nice_to_have",
-      "expectation": "Work on Google Cloud as a second cloud"
+      "expectation": "Work on Google Cloud as a second cloud",
+      "postingShare": null
     },
     {
-      "skillId": "python",
+      "skillId": "azure",
       "importance": "nice_to_have",
-      "expectation": "Automate operations tasks in Python"
+      "expectation": "Work on Azure as a second cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "gitops",
+      "importance": "nice_to_have",
+      "expectation": "Deploy with Argo CD or Flux",
+      "postingShare": null
     },
     {
       "skillId": "cloud-security",
       "importance": "nice_to_have",
-      "expectation": "Apply IAM least privilege and basic security hardening"
+      "expectation": "Apply IAM least privilege and basic security hardening",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Discuss reliability trade-offs in a design review",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "The most requested cloud certificate for DevOps roles in India"
+    },
+    {
+      "certId": "cka",
+      "importance": "recommended",
+      "why": "A hands-on Kubernetes exam that employers respect"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Quick proof of infrastructure-as-code basics"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Useful for employers that run on Azure"
+    },
+    {
+      "certId": "aws-devops-professional",
+      "importance": "optional",
+      "why": "A senior AWS credential once you have run production pipelines"
     }
   ],
   "sources": [
     {
-      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
       "url": null
     }
   ],

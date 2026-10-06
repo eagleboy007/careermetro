@@ -6,6 +6,8 @@ export const roleSkill = z.object({
   importance: z.enum(["required", "nice_to_have"]),
   /** What the role expects in plain words, shown next to each gap. */
   expectation: z.string().min(1),
+  /** Share of analysed public job postings for this role that mention the skill, or null when not measured. */
+  postingShare: z.number().min(0).max(1).nullable().default(null),
 });
 
 export const roleCertification = z.object({

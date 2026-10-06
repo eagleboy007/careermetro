@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { normalizeSkillTerm, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, normalizeSkillTerm, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -28,6 +28,13 @@ describe("skill taxonomy", () => {
   });
 });
 
+describe("certifications", () => {
+  it("has unique ids", () => {
+    const ids = certifications.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
 describe("role profiles", () => {
   const known = new Set(skills.map((s) => s.id));
 
@@ -39,6 +46,13 @@ describe("role profiles", () => {
   it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s uses only known skills, once each", (_, role) => {
     const ids = role.skills.map((s) => s.skillId);
     expect(ids.filter((id) => !known.has(id))).toEqual([]);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s recommends only known certifications, once each", (_, role) => {
+    const knownCerts = new Set(certifications.map((c) => c.id));
+    const ids = role.certifications.map((c) => c.certId);
+    expect(ids.filter((id) => !knownCerts.has(id))).toEqual([]);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
