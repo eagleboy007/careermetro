@@ -27,11 +27,14 @@ const ROLE_TITLES = {
 const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive"]);
 const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 
+const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
+
 function classify(title, text) {
   if (SENIOR.test(title)) return null;
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
     if (!roleSlugs.includes(slug) || !re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
+    if (slug === "qa-automation-engineer" && NOT_SOFTWARE.test(title)) continue;
     if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text)) continue;
     return slug;
   }
@@ -44,11 +47,19 @@ const plain = (html) => decode(decode(html ?? "")).replace(/<[^>]+>/g, " ").repl
 const norm = (s) => s.toLowerCase().replace(/\s+/g, " ").trim();
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// One regex per skill over its id, name and aliases. Word-ish boundaries that allow "c++", "node.js", "ci/cd".
+// One matcher per skill over its name and aliases, case-insensitive. Names that are also plain English
+// words ("excel at", "go to") are matched case-sensitively.
+const CASE_SENSITIVE_NAMES = new Set(["excel", "go"]);
 const skillMatchers = skills.map((s) => {
-  const terms = [...new Set([s.name, ...s.aliases, s.id.replace(/-/g, " ")].map(norm))].filter((t) => t.length > 1);
-  return { id: s.id, re: new RegExp(`(?<![a-z0-9])(${terms.map(escape).join("|")})(?![a-z0-9])`, "i") };
+  const aliases = [...new Set(s.aliases.map(norm))].filter((t) => t.length > 1);
+  const bound = (body, flags) => new RegExp(`(?<![A-Za-z0-9])(${body})(?![A-Za-z0-9])`, flags);
+  return {
+    id: s.id,
+    name: bound(escape(s.name), CASE_SENSITIVE_NAMES.has(s.id) ? "" : "i"),
+    aliases: aliases.length ? bound(aliases.map(escape).join("|"), "i") : null,
+  };
 });
+const hasSkill = (m, text) => m.name.test(text) || (m.aliases?.test(text) ?? false);
 const knownTerms = new Set(skills.flatMap((s) => [s.id, s.name, ...s.aliases].map(norm)));
 
 async function getJson(url) {
@@ -82,10 +93,10 @@ const fetchers = {
   },
 };
 
-// Candidate new skills: tech-looking tokens (mixed case, digits, dots or plus signs) not already in the taxonomy.
-const TECHY = /\b([A-Z][a-zA-Z0-9]*[A-Z0-9.+#][a-zA-Z0-9.+#]*|[A-Z][a-z]+(?:\.js|JS|DB|QL)|[A-Z]{2,6})\b/g;
-const STOP = new Set(["US", "USA", "UK", "EU", "AI", "ML", "OR", "AND", "THE", "EEO", "HR", "CEO", "CTO", "PTO", "OTE", "USD", "INR", "LLC", "INC", "FAQ", "IT", "ID", "OK", "WFH", "APAC", "EMEA", "NA", "GDPR", "DEI"]);
-
+// Candidate new skills: tech-looking tokens (inner capitals, digits, dots or plus signs) not already in the
+// taxonomy. All-caps words are skipped: in postings they are mostly headings, places and legal acronyms.
+const TECHY = /\b[A-Za-z][a-z0-9]*(?:[A-Z][a-z0-9]*|\.js|\+\+|#)+[a-zA-Z0-9]*\b/g;
+const STOP = new Set(["LinkedIn", "YouTube", "TikTok", "DoorDash", "SeatGeek", "OpenAI", "iOS", "eBay", "PhD", "McKinsey", "UeA", "PayPal", "GitHub", "WhatsApp"]);
 const sourceLog = [];
 const postings = [];
 for (const [ats, list] of Object.entries(boards)) {
@@ -108,13 +119,13 @@ for (const p of postings) {
   const india = INDIA.test(p.location);
   r.postings.push({ title: p.title, company: p.company, location: p.location, url: p.url, india });
   for (const m of skillMatchers) {
-    if (m.re.test(p.text) || m.re.test(p.title)) {
+    if (hasSkill(m, p.text) || hasSkill(m, p.title)) {
       r.skillHits[m.id] = (r.skillHits[m.id] ?? 0) + 1;
       if (india) r.skillHitsIndia[m.id] = (r.skillHitsIndia[m.id] ?? 0) + 1;
     }
   }
   for (const tok of new Set(p.text.match(TECHY) ?? [])) {
-    if (STOP.has(tok) || knownTerms.has(norm(tok))) continue;
+    if (STOP.has(tok) || /^[A-Z0-9.+#]+$/.test(tok) || knownTerms.has(norm(tok))) continue;
     r.candidates[tok] = (r.candidates[tok] ?? 0) + 1;
   }
 }

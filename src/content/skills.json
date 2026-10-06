@@ -15,7 +15,8 @@
     "aliases": [
       "core java",
       "java 17",
-      "java se"
+      "java se",
+      "jvm"
     ]
   },
   {
@@ -88,7 +89,8 @@
       "github",
       "gitlab",
       "version control",
-      "bitbucket"
+      "bitbucket",
+      "git"
     ]
   },
   {
@@ -99,7 +101,8 @@
       "unix",
       "bash",
       "shell scripting",
-      "shell"
+      "shell",
+      "linux"
     ]
   },
   {
@@ -110,7 +113,10 @@
       "html",
       "css",
       "html5",
-      "css3"
+      "css3",
+      "scss",
+      "sass",
+      "tailwind"
     ]
   },
   {
@@ -158,7 +164,6 @@
     "name": "REST API design",
     "category": "web",
     "aliases": [
-      "rest",
       "restful apis",
       "rest api",
       "api design",
@@ -200,7 +205,8 @@
     "category": "web",
     "aliases": [
       "microservice architecture",
-      "service oriented architecture"
+      "service oriented architecture",
+      "microservices"
     ]
   },
   {
@@ -235,7 +241,9 @@
       "mongodb",
       "redis",
       "dynamodb",
-      "cassandra"
+      "cassandra",
+      "nosql",
+      "elasticsearch"
     ]
   },
   {
@@ -318,7 +326,9 @@
       "descriptive statistics",
       "inferential statistics",
       "hypothesis testing",
-      "probability"
+      "probability",
+      "statistical analysis",
+      "statistical modeling"
     ]
   },
   {
@@ -399,7 +409,8 @@
     "category": "ml",
     "aliases": [
       "natural language processing",
-      "text mining"
+      "text mining",
+      "nlp"
     ]
   },
   {
@@ -412,7 +423,11 @@
       "prompt engineering",
       "rag",
       "retrieval augmented generation",
-      "llms"
+      "llms",
+      "llm",
+      "large language models",
+      "chatgpt",
+      "openai api"
     ]
   },
   {
@@ -460,7 +475,8 @@
     "name": "Microsoft Azure",
     "category": "cloud-devops",
     "aliases": [
-      "azure cloud"
+      "azure cloud",
+      "azure"
     ]
   },
   {
@@ -504,7 +520,9 @@
       "continuous delivery",
       "jenkins",
       "github actions",
-      "gitlab ci"
+      "gitlab ci",
+      "circleci",
+      "ci/cd"
     ]
   },
   {
@@ -526,8 +544,9 @@
       "observability",
       "prometheus",
       "grafana",
-      "logging",
-      "alerting"
+      "opentelemetry",
+      "datadog",
+      "splunk"
     ]
   },
   {
@@ -660,9 +679,7 @@
     "category": "product",
     "aliases": [
       "prioritization",
-      "roadmap",
-      "rice",
-      "moscow"
+      "roadmap"
     ]
   },
   {
@@ -673,7 +690,10 @@
       "kpis",
       "north star metric",
       "funnel analysis",
-      "retention analysis"
+      "retention analysis",
+      "ltv",
+      "cohort analysis",
+      "unit economics"
     ]
   },
   {
@@ -836,8 +856,7 @@
     "aliases": [
       "google analytics",
       "ga4",
-      "google tag manager",
-      "gtm"
+      "google tag manager"
     ]
   },
   {
@@ -858,7 +877,9 @@
     "aliases": [
       "communication skills",
       "presentation skills",
-      "business communication"
+      "business communication",
+      "communication",
+      "communicator"
     ]
   },
   {
@@ -869,6 +890,125 @@
       "analytical thinking",
       "problem solving",
       "critical thinking"
+    ]
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "category": "programming",
+    "aliases": [
+      "golang",
+      "go language"
+    ]
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "category": "programming",
+    "aliases": [
+      "kotlin"
+    ]
+  },
+  {
+    "id": "cpp",
+    "name": "C++",
+    "category": "programming",
+    "aliases": [
+      "c++",
+      "cpp"
+    ]
+  },
+  {
+    "id": "csharp-dotnet",
+    "name": "C# and .NET",
+    "category": "programming",
+    "aliases": [
+      "c#",
+      ".net",
+      "dotnet",
+      "asp.net"
+    ]
+  },
+  {
+    "id": "scala",
+    "name": "Scala",
+    "category": "programming",
+    "aliases": [
+      "scala"
+    ]
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL",
+    "category": "web",
+    "aliases": [
+      "graphql",
+      "apollo"
+    ]
+  },
+  {
+    "id": "cloud-data-warehouse",
+    "name": "Cloud data warehouses",
+    "category": "data",
+    "aliases": [
+      "snowflake",
+      "bigquery",
+      "redshift",
+      "synapse"
+    ]
+  },
+  {
+    "id": "dbt",
+    "name": "dbt",
+    "category": "data",
+    "aliases": [
+      "dbt",
+      "data build tool"
+    ]
+  },
+  {
+    "id": "looker",
+    "name": "Looker",
+    "category": "data",
+    "aliases": [
+      "looker",
+      "looker studio"
+    ]
+  },
+  {
+    "id": "sre-practices",
+    "name": "SRE practices",
+    "category": "cloud-devops",
+    "aliases": [
+      "sre",
+      "site reliability",
+      "slos",
+      "slis",
+      "error budgets",
+      "incident response",
+      "on-call"
+    ]
+  },
+  {
+    "id": "gitops",
+    "name": "GitOps",
+    "category": "cloud-devops",
+    "aliases": [
+      "gitops",
+      "argocd",
+      "argo cd",
+      "flux"
+    ]
+  },
+  {
+    "id": "crm-tools",
+    "name": "CRM tools",
+    "category": "marketing",
+    "aliases": [
+      "crm",
+      "salesforce",
+      "hubspot",
+      "zoho crm"
     ]
   }
 ]
