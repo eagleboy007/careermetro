@@ -1,0 +1,83 @@
+{
+  "slug": "devops-engineer",
+  "title": "DevOps / Cloud Engineer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer Linux servers and write shell scripts"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Manage repositories, branching and access"
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Build CI/CD pipelines with Jenkins, GitHub Actions or GitLab CI"
+    },
+    {
+      "skillId": "docker",
+      "importance": "required",
+      "expectation": "Write Dockerfiles and run multi-container apps"
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Deploy and troubleshoot workloads on Kubernetes"
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Set up core AWS services: EC2, S3, IAM, VPC and load balancers"
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Provision infrastructure with Terraform"
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "required",
+      "expectation": "Set up metrics, logs and alerts with Prometheus and Grafana"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Debug DNS, ports, load balancers and firewalls"
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Work on Azure as a second cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "nice_to_have",
+      "expectation": "Work on Google Cloud as a second cloud"
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate operations tasks in Python"
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Apply IAM least privilege and basic security hardening"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

@@ -1,0 +1,78 @@
+{
+  "slug": "qa-automation-engineer",
+  "title": "QA Automation Engineer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "manual-testing",
+      "importance": "required",
+      "expectation": "Design test cases and run functional and regression testing"
+    },
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Write a test plan and know where testing fits in the release cycle"
+    },
+    {
+      "skillId": "selenium",
+      "importance": "required",
+      "expectation": "Build and maintain a Selenium WebDriver suite"
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write automation code in Java with TestNG or JUnit"
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "required",
+      "expectation": "Test APIs with Postman and automate them with Rest Assured"
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Write clear, reproducible bug reports in Jira"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Verify data with SQL queries"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep test code in Git with pull requests"
+    },
+    {
+      "skillId": "playwright-cypress",
+      "importance": "nice_to_have",
+      "expectation": "Automate with Playwright or Cypress"
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run test suites in a CI pipeline"
+    },
+    {
+      "skillId": "performance-testing",
+      "importance": "nice_to_have",
+      "expectation": "Run a load test with JMeter or k6"
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Write automation in Python with pytest"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

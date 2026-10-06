@@ -1,0 +1,88 @@
+{
+  "slug": "java-backend-developer",
+  "title": "Java Backend Developer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write clean Java 17+ using collections, streams and exceptions"
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Apply object-oriented design and common design patterns"
+    },
+    {
+      "skillId": "spring-boot",
+      "importance": "required",
+      "expectation": "Build and test a Spring Boot service end to end"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design REST endpoints with proper status codes, validation and pagination"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write efficient queries and understand indexes"
+    },
+    {
+      "skillId": "orm-databases",
+      "importance": "required",
+      "expectation": "Model tables and use JPA or Hibernate without N+1 problems"
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Solve medium-level DSA problems in interviews"
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write JUnit tests with mocks for service code"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches, pull requests and code review"
+    },
+    {
+      "skillId": "microservices",
+      "importance": "nice_to_have",
+      "expectation": "Split a system into services and handle failures between them"
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Produce and consume events with Kafka or RabbitMQ"
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package a service in a Docker image"
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy a service on AWS"
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Discuss trade-offs in a basic system design round"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

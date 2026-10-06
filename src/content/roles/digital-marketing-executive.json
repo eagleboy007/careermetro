@@ -1,0 +1,73 @@
+{
+  "slug": "digital-marketing-executive",
+  "title": "Digital Marketing Executive",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "seo",
+      "importance": "required",
+      "expectation": "Do keyword research and on-page SEO for a website"
+    },
+    {
+      "skillId": "sem-google-ads",
+      "importance": "required",
+      "expectation": "Set up and optimise Google Ads search campaigns"
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "required",
+      "expectation": "Plan and run Meta and LinkedIn campaigns"
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "required",
+      "expectation": "Track campaigns in GA4 and Google Tag Manager"
+    },
+    {
+      "skillId": "content-marketing",
+      "importance": "required",
+      "expectation": "Write posts, ads and landing page copy"
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Report campaign numbers in Excel or Google Sheets"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain campaign results to a manager or client"
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Run email campaigns and simple automations"
+    },
+    {
+      "skillId": "performance-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Optimise for ROAS and CAC across channels"
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build a simple marketing dashboard"
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Test ad creatives and landing pages"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

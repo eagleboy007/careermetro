@@ -1,0 +1,78 @@
+{
+  "slug": "frontend-developer",
+  "title": "Frontend Developer (React)",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Build responsive layouts with semantic HTML and modern CSS"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Use modern JavaScript confidently, including async code"
+    },
+    {
+      "skillId": "typescript",
+      "importance": "required",
+      "expectation": "Type components and API responses with TypeScript"
+    },
+    {
+      "skillId": "react",
+      "importance": "required",
+      "expectation": "Build React apps with hooks, forms and routing"
+    },
+    {
+      "skillId": "state-management",
+      "importance": "required",
+      "expectation": "Manage shared state with Context, Redux or a similar library"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call APIs and handle loading, error and empty states"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches, pull requests and code review"
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Test components with Jest and Testing Library"
+    },
+    {
+      "skillId": "nextjs",
+      "importance": "nice_to_have",
+      "expectation": "Build pages with Next.js and server rendering"
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "nice_to_have",
+      "expectation": "Measure and improve Core Web Vitals"
+    },
+    {
+      "skillId": "accessibility",
+      "importance": "nice_to_have",
+      "expectation": "Meet basic WCAG accessibility guidelines"
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Turn Figma designs into pixel-accurate UI"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

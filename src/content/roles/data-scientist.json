@@ -1,0 +1,93 @@
+{
+  "slug": "data-scientist",
+  "title": "Data Scientist",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean, reusable Python for analysis and modelling"
+    },
+    {
+      "skillId": "pandas",
+      "importance": "required",
+      "expectation": "Prepare and explore data with pandas"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Pull training data with SQL, including window functions"
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Use hypothesis tests, confidence intervals and regression correctly"
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Build, tune and explain classical models such as trees and gradient boosting"
+    },
+    {
+      "skillId": "scikit-learn",
+      "importance": "required",
+      "expectation": "Use scikit-learn pipelines end to end"
+    },
+    {
+      "skillId": "feature-engineering",
+      "importance": "required",
+      "expectation": "Create useful features and avoid data leakage"
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Pick the right metric and validate models properly"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain a model's results and limits to business teams"
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "nice_to_have",
+      "expectation": "Train a neural network with PyTorch or TensorFlow"
+    },
+    {
+      "skillId": "nlp",
+      "importance": "nice_to_have",
+      "expectation": "Work with text data"
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Build a simple LLM or RAG prototype"
+    },
+    {
+      "skillId": "mlops",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and monitor a model"
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Design and read an A/B test"
+    },
+    {
+      "skillId": "spark",
+      "importance": "nice_to_have",
+      "expectation": "Process large data with PySpark or Databricks"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

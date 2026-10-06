@@ -1,0 +1,88 @@
+{
+  "slug": "full-stack-developer",
+  "title": "Full Stack Developer (MERN)",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Use modern JavaScript on both client and server"
+    },
+    {
+      "skillId": "react",
+      "importance": "required",
+      "expectation": "Build React front ends with hooks and routing"
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Build Node.js and Express APIs with validation and error handling"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design REST APIs used by your own front end"
+    },
+    {
+      "skillId": "nosql",
+      "importance": "required",
+      "expectation": "Model data in MongoDB with sensible indexes"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write basic SQL for relational databases"
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Build responsive layouts"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches, pull requests and code review"
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Solve easy and medium DSA problems in interviews"
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Use TypeScript across the stack"
+    },
+    {
+      "skillId": "nextjs",
+      "importance": "nice_to_have",
+      "expectation": "Build full-stack apps with Next.js"
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run the app locally and in production with Docker"
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy to AWS or a similar cloud"
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write unit and API tests"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

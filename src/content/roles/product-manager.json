@@ -1,0 +1,83 @@
+{
+  "slug": "product-manager",
+  "title": "Product Manager",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "product-discovery",
+      "importance": "required",
+      "expectation": "Run user interviews and turn findings into problem statements"
+    },
+    {
+      "skillId": "prd-writing",
+      "importance": "required",
+      "expectation": "Write PRDs and user stories engineers can build from"
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Prioritise a roadmap with a clear framework and explain the trade-offs"
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Define success metrics and read funnels and retention"
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align engineering, design and business on decisions"
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run a product backlog in an agile team"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clearly and present to leadership"
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Break down ambiguous problems in case-style interviews"
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull your own product data with SQL"
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Run experiments and read the results"
+    },
+    {
+      "skillId": "wireframing",
+      "importance": "nice_to_have",
+      "expectation": "Sketch flows and low-fidelity screens"
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Review and comment on designs in Figma"
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Understand what AI features can and cannot do"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

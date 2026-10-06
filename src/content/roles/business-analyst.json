@@ -1,0 +1,83 @@
+{
+  "slug": "business-analyst",
+  "title": "Business Analyst",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run requirement workshops and write a clear BRD or FRD"
+    },
+    {
+      "skillId": "prd-writing",
+      "importance": "required",
+      "expectation": "Write user stories with acceptance criteria developers can build from"
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Draw as-is and to-be process flows"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Pull and check data with basic SQL queries"
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Analyse data and build trackers in Excel"
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Keep business and tech teams aligned on scope and timelines"
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Work inside Scrum ceremonies and maintain a backlog in Jira"
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Plan and run user acceptance testing with business users"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write crisp status mails and present to senior stakeholders"
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build a simple dashboard to track a process KPI"
+    },
+    {
+      "skillId": "business-case",
+      "importance": "nice_to_have",
+      "expectation": "Put together a cost-benefit view for a change request"
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Understand banking or insurance processes, a common BA domain in India"
+    },
+    {
+      "skillId": "wireframing",
+      "importance": "nice_to_have",
+      "expectation": "Sketch screens to clarify a requirement"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from manual reading of public job descriptions for this role in India (Bengaluru, Hyderabad, Pune, Mumbai, NCR). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}
