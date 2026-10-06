@@ -1,0 +1,34 @@
+name: Migrate database
+
+# Applies pending Drizzle migrations to the Supabase database after a merge to main.
+# Needs the repository secret DATABASE_MIGRATION_URL (Supabase session pooler, port 5432).
+on:
+  push:
+    branches: [main]
+    paths: ["drizzle/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: migrate
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+    steps:
+      - name: Skip when the database secret is not set yet
+        if: env.DATABASE_URL == ''
+        run: echo "::warning::DATABASE_MIGRATION_URL is not set; skipping migrations."
+      - uses: actions/checkout@v4
+        if: env.DATABASE_URL != ''
+      - uses: actions/setup-node@v4
+        if: env.DATABASE_URL != ''
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: env.DATABASE_URL != ''
+      - run: npm run db:migrate
+        if: env.DATABASE_URL != ''
