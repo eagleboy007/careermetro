@@ -11,6 +11,7 @@ const boards = JSON.parse(readFileSync(join(root, "scripts/jd-mining/boards.json
 const skills = JSON.parse(readFileSync(join(root, "src/content/skills.json"), "utf8"));
 const certifications = JSON.parse(readFileSync(join(root, "src/content/certifications.json"), "utf8"));
 
+const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executive|recruit(er|ing)|partner manager)\b/i;
 const SENIOR = /\b(director|head of|vice president|vp|principal|staff|chief|intern|internship)\b/i;
 // Order matters: the first matching role wins.
 const ROLE_TITLES = {
@@ -34,7 +35,7 @@ const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgao
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
 
 function classify(title, text) {
-  if (SENIOR.test(title)) return null;
+  if (SENIOR.test(title) || NOT_IN_SCOPE.test(title)) return null;
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
     if (!re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
@@ -120,9 +121,14 @@ for (const [ats, list] of Object.entries(boards)) {
 }
 
 const roles = Object.fromEntries(Object.keys(ROLE_TITLES).map((r) => [r, { postings: [], skillHits: {}, skillHitsIndia: {}, certHits: {}, candidates: {} }]));
+// The same posting is often listed once per city; count it once.
+const seen = new Set();
 for (const p of postings) {
   const slug = classify(p.title, p.text);
   if (!slug) continue;
+  const key = `${p.company}|${norm(p.title)}`;
+  if (seen.has(key)) continue;
+  seen.add(key);
   const r = roles[slug];
   const india = INDIA.test(p.location);
   r.postings.push({ title: p.title, company: p.company, location: p.location, url: p.url, india });
