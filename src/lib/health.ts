@@ -2,8 +2,11 @@ import { APIError } from "@anthropic-ai/sdk";
 import { costUsd, type Usage } from "@/lib/ai/cost";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { describeAiError } from "@/lib/ai/errors";
+import { PARSE_MODEL } from "@/lib/resume/parse";
 
-export const HEALTH_MODEL = "claude-opus-5-5";
+/** The ping uses the parse model, so it proves access to the model uploads need. */
+export const HEALTH_MODEL = PARSE_MODEL;
+export const HEALTH_PURPOSE = "health-check";
 
 export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model_access" | "down";
 export type Health = { ok: boolean; database: "ok" | "down"; claude: ClaudeStatus };
@@ -47,7 +50,7 @@ async function checkClaude(deps: HealthDeps): Promise<ClaudeStatus> {
     call = { model: HEALTH_MODEL, inputTokens: 0, outputTokens: 0, costUsd: 0 };
   }
   await deps
-    .record({ purpose: "health-check", promptVersion: "health-check/none", inputRefs: {}, latencyMs: Date.now() - started, ok: status === "ok", ...call })
+    .record({ purpose: HEALTH_PURPOSE, promptVersion: "health-check/none", inputRefs: {}, latencyMs: Date.now() - started, ok: status === "ok", ...call })
     .catch((error) => console.error("health: logging the call failed:", error instanceof Error ? error.name : typeof error));
   return status;
 }

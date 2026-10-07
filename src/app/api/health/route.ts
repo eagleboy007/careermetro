@@ -27,10 +27,14 @@ function runCheck(): Promise<Health> {
     },
     pingClaude: async () => {
       const client = new Anthropic({ timeout: 15_000, maxRetries: 0 });
-      const response = await client.messages.create({
+      // The same request shape as the parse call, so the ping also proves access to the fallback beta.
+      const response = await client.beta.messages.create({
         model: HEALTH_MODEL,
-        max_tokens: 1,
+        max_tokens: 16,
         messages: [{ role: "user", content: "Reply with OK." }],
+        output_config: { effort: "low" },
+        betas: ["server-side-fallback-2026-07-01"],
+        fallbacks: "default",
       });
       return { model: response.model, usage: response.usage };
     },
