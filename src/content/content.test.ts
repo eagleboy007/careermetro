@@ -22,6 +22,23 @@ describe("skill taxonomy", () => {
     expect(clashes).toEqual([]);
   });
 
+  it("marks as ambiguous only its own names and aliases", () => {
+    const stray = skills.flatMap((s) => {
+      const own = new Set([s.name, ...s.aliases].map(normalizeSkillTerm));
+      return s.ambiguous.filter((t) => !own.has(normalizeSkillTerm(t))).map((t) => `${s.id}: ${t}`);
+    });
+    expect(stray).toEqual([]);
+  });
+
+  it("implies only known skills, without cycles", () => {
+    const byId = new Map(skills.map((s) => [s.id, s]));
+    const unknown = skills.flatMap((s) => s.implies.filter((id) => !byId.has(id)).map((id) => `${s.id} → ${id}`));
+    expect(unknown).toEqual([]);
+    const reaches = (from: string, to: string, seen = new Set<string>()): boolean =>
+      (byId.get(from)?.implies ?? []).some((id) => id === to || (!seen.has(id) && (seen.add(id), reaches(id, to, seen))));
+    expect(skills.filter((s) => reaches(s.id, s.id)).map((s) => s.id)).toEqual([]);
+  });
+
   it("resolves aliases regardless of case and spacing", () => {
     expect(skillIdByTerm.get(normalizeSkillTerm("  MS  Excel "))).toBe("excel");
     expect(skillIdByTerm.get(normalizeSkillTerm("PySpark"))).toBe("spark");
