@@ -134,8 +134,10 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
   try {
     reserved = await reserve(db, input, extracted.type);
   } catch (error) {
-    // 55P03 is lock_not_available: too many uploads at once. Treat it like a busy day rather than a crash.
-    if (pgCode(error) === "55P03") return BUSY;
+    // 55P03 is lock_not_available: too many uploads at once. A retry soon will work, unlike a spent budget.
+    if (pgCode(error) === "55P03") {
+      return { ok: false, status: 503, code: "crowded", message: "Lots of people are uploading right now. Please try again in a minute." };
+    }
     throw error;
   }
   if (typeof reserved !== "string") return reserved;
