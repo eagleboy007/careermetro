@@ -36,6 +36,12 @@ describe("maskPii", () => {
     ["9876543210", "[PHONE]"],
     ["(022) 2345 6789", "[PHONE]"],
     ["+1 415 555 0134", "[PHONE]"],
+    ["+91 987-654-3210", "[PHONE]"],
+    ["987 654 3210", "[PHONE]"],
+    ["+91 98 76 54 32 10", "[PHONE]"],
+    ["+91 (987) 654-3210", "[PHONE]"],
+    ["9876-543-210", "[PHONE]"],
+    ["Mobile: +919876543210", "Mobile: [PHONE]"],
     ["Aadhaar: 2345 6789 0123", "Aadhaar: [ID]"],
     ["PAN ABCDE1234F", "PAN [ID]"],
     ["DOB: 14/03/1998", "[DATE OF BIRTH]"],
@@ -48,6 +54,11 @@ describe("maskPii", () => {
   it("leaves years, percentages and amounts alone", () => {
     const line = "Grew revenue 2019-2023 by 35% to Rs 12,00,000 across 1200 stores";
     expect(maskPii(line).text).toBe(line);
+  });
+
+  it("keeps sentences that happen to contain a six-digit number", () => {
+    const line = "- Reduced main database load by 120000 rows per day in phase 2";
+    expect(maskPii(["Priya", "", "EXPERIENCE", "Analyst", "Example Ltd", "2022", "Notes", "More", "x", line].join("\n")).text).toContain(line);
   });
 
   it("only treats header lines as addresses unless they carry a PIN code", () => {
