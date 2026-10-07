@@ -1,0 +1,75 @@
+{
+  "id": "java-backend-service-company",
+  "roleSlug": "java-backend-developer",
+  "persona": "Java developer at an IT services firm maintaining a legacy monolith",
+  "resumeText": "Karthik Subramanian | Chennai | karthik.s@example.com\n\nEXPERIENCE\nSoftware Engineer, Coromandel IT Services, Chennai (2023 - present)\n- Maintain a Java 8 monolith for an insurance client using Spring MVC and Hibernate on Oracle.\n- Added REST endpoints for policy lookup and wrote SQL queries to fix slow reports.\n- Use Git with pull requests and code review in Bitbucket.\n- Fixed production defects raised in Jira within agreed SLAs.\n\nEDUCATION\nBE Computer Science, Anna University, 2023\n\nSKILLS\nJava, Spring, Hibernate, Oracle SQL, Git, Jira\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Maintain a Java 8 monolith"
+      },
+      {
+        "skillId": "spring-boot",
+        "quote": "Spring MVC"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Hibernate on Oracle"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Added REST endpoints for policy lookup"
+      },
+      {
+        "skillId": "sql",
+        "quote": "wrote SQL queries to fix slow reports"
+      },
+      {
+        "skillId": "git",
+        "quote": "Use Git with pull requests and code review in Bitbucket"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Fixed production defects raised in Jira"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "java",
+        "status": "outdated"
+      },
+      {
+        "skillId": "spring-boot",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "missing"
+      },
+      {
+        "skillId": "nosql",
+        "status": "missing"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "missing"
+      },
+      {
+        "skillId": "system-design",
+        "status": "missing"
+      },
+      {
+        "skillId": "unit-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "messaging-queues",
+      "docker",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}

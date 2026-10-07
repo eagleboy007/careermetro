@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
-import { normalizeForMatch, verifyProfile } from "./verify";
+import { containsPhrase, normalizeForMatch, verifyProfile } from "./verify";
 
 const resume = `Priya Sharma
 Data Analyst, Example Retail Pvt Ltd, Pune (Jun 2022 - Present)
@@ -47,6 +47,54 @@ describe("verifyProfile", () => {
     expect(profile.education).toHaveLength(1);
     expect(profile.certifications).toEqual(["Google Data Analytics Professional Certificate"]);
     expect(report).toEqual({ droppedSkills: ["Tableau"], droppedQuotes: 2, droppedRoles: 1, droppedOther: 2 });
+  });
+
+  it("matches skills and employers as whole words only", () => {
+    const parsed: Profile = {
+      ...base,
+      roles: [...base.roles, { title: "Data Analyst", employer: "Example", start: null, end: null, highlights: [] }],
+      skills: [
+        { name: "Go", lastUsed: null, evidence: [] },
+        { name: "Excel", lastUsed: null, evidence: [] },
+      ],
+    };
+    const { profile, report } = verifyProfile(parsed, resume);
+    expect(profile.skills.map((s) => s.name)).toEqual(["Excel"]);
+    expect(report.droppedSkills).toEqual(["Go"]);
+    expect(profile.roles).toHaveLength(2);
+  });
+
+  it("pairs a title only with an employer printed next to it", () => {
+    const text = `Data Analyst
+Example Retail Pvt Ltd, 2022 - Present
+Built reports
+
+Projects
+Weekly dashboards
+Volunteer at Pune Food Bank
+Sales forecasts`;
+    const parsed: Profile = {
+      ...base,
+      roles: [
+        { title: "Data Analyst", employer: "Example Retail Pvt Ltd", start: null, end: null, highlights: [] },
+        { title: "Data Analyst", employer: "Pune Food Bank", start: null, end: null, highlights: [] },
+      ],
+      skills: [],
+      education: [],
+      certifications: [],
+    };
+    const { profile, report } = verifyProfile(parsed, text);
+    expect(profile.roles.map((r) => r.employer)).toEqual(["Example Retail Pvt Ltd"]);
+    expect(report.droppedRoles).toBe(1);
+  });
+
+  it("treats symbol edges such as C++ and .NET as boundaries", () => {
+    expect(containsPhrase("c++, .net and go", "c++")).toBe(true);
+    expect(containsPhrase("worked in .net core", ".net")).toBe(true);
+    expect(containsPhrase("javascript", "java")).toBe(false);
+    expect(containsPhrase("java, javascript", "java")).toBe(true);
+    expect(containsPhrase("डेटा विश्लेषण", "डेटा")).toBe(true);
+    expect(containsPhrase("डेटा", "डेट")).toBe(false);
   });
 
   it("normalizes quotes, dashes and spacing", () => {

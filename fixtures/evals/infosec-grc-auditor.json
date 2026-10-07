@@ -1,0 +1,55 @@
+{
+  "id": "infosec-grc-auditor",
+  "roleSlug": "information-security-analyst",
+  "persona": "IT auditor at a consulting firm moving into an in-house GRC role",
+  "resumeText": "Neha Gupta | New Delhi | neha.gupta@example.com\n\nEXPERIENCE\nIT Audit Associate, Yamuna Assurance LLP, New Delhi (2023 - present)\n- Tested IT general controls (ITGC) for 8 clients, including access reviews and change management.\n- Collected audit evidence and wrote findings with risk ratings for client management.\n- Supported an ISO 27001 readiness assessment for a fintech client.\n- Mapped client controls to the RBI cyber security framework.\n- Followed up with client IT teams until findings were closed.\n\nEDUCATION\nBCom (Hons), Delhi University, 2023\nPursuing CISA\n\nSKILLS\nITGC testing, ISO 27001, risk assessment, Excel\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "security-audits",
+        "quote": "Tested IT general controls (ITGC) for 8 clients"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "including access reviews and change management"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "wrote findings with risk ratings for client management"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Supported an ISO 27001 readiness assessment"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Followed up with client IT teams until findings were closed"
+      },
+      {
+        "skillId": "communication",
+        "quote": "wrote findings with risk ratings for client management"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-policies",
+        "status": "missing"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cloud-security",
+      "python",
+      "siem"
+    ]
+  },
+  "reviewedBy": null
+}

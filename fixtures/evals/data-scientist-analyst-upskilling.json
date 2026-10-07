@@ -1,0 +1,75 @@
+{
+  "id": "data-scientist-analyst-upskilling",
+  "roleSlug": "data-scientist",
+  "persona": "Data analyst with three years of SQL who has done ML courses",
+  "resumeText": "Priya Nair | Hyderabad | priya.nair@example.com\n\nEXPERIENCE\nData Analyst, Deccan Retail Ltd, Hyderabad (2023 - present)\n- Write SQL with window functions on BigQuery to build weekly sales and churn tables.\n- Built a Python script with pandas to forecast store demand; reduced stock-outs in a 10-store pilot.\n- Ran t-tests to compare two loyalty offers and explained the result to the marketing head.\n\nPROJECTS\n- Customer churn model (course project): logistic regression and random forest in scikit-learn, compared using ROC AUC.\n\nEDUCATION\nBSc Statistics, Osmania University, 2023\n\nSKILLS\nSQL, BigQuery, Python, pandas, scikit-learn, Tableau\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Write SQL with window functions on BigQuery"
+      },
+      {
+        "skillId": "sql-window-functions",
+        "quote": "SQL with window functions"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "BigQuery"
+      },
+      {
+        "skillId": "python",
+        "quote": "Built a Python script with pandas to forecast store demand"
+      },
+      {
+        "skillId": "pandas",
+        "quote": "pandas to forecast store demand"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "Ran t-tests to compare two loyalty offers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "explained the result to the marketing head"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "logistic regression and random forest in scikit-learn"
+      },
+      {
+        "skillId": "scikit-learn",
+        "quote": "random forest in scikit-learn"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "compared using ROC AUC"
+      },
+      {
+        "skillId": "tableau",
+        "quote": "Tableau"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "machine-learning",
+        "status": "weak"
+      },
+      {
+        "skillId": "ab-testing",
+        "status": "missing"
+      },
+      {
+        "skillId": "feature-engineering",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "deep-learning",
+      "mlops",
+      "spark"
+    ]
+  },
+  "reviewedBy": null
+}

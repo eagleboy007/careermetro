@@ -6,9 +6,16 @@ import { ReadinessCard } from "@/components/route/readiness-card";
 import { SkillCoverageBar } from "@/components/route/skill-coverage-bar";
 import { ProfileEditor } from "@/components/resume/profile-editor";
 import { UploadForm } from "@/components/resume/upload-form";
+import { CertificationList } from "@/components/roles/certification-list";
+import { DraftNotice } from "@/components/roles/draft-notice";
+import { PostingShareBar } from "@/components/roles/posting-share-bar";
+import { RoleCard } from "@/components/roles/role-card";
+import { RoleSkillList } from "@/components/roles/role-skill-list";
+import { SiteHeader } from "@/components/site/site-header";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
+import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
 
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
@@ -77,6 +84,46 @@ const exampleProfile: Profile = {
   certifications: ["Google Data Analytics Professional Certificate"],
 };
 
+const exampleRoleSkills: RoleSkillView[] = [
+  { skillId: "sql", name: "SQL", expectation: "Joins, grouping and window functions on real tables", postingShare: 0.91 },
+  { skillId: "excel", name: "Excel", expectation: "Pivot tables and lookups", postingShare: 0.48 },
+  { skillId: "storytelling", name: "Data storytelling", expectation: "Explain a finding to a non-technical manager", postingShare: null },
+];
+
+const exampleCerts: RoleCertificationView[] = [
+  {
+    id: "pl-300",
+    name: "Power BI Data Analyst Associate (PL-300)",
+    issuer: "Microsoft",
+    level: "associate",
+    cost: "paid",
+    importance: "recommended",
+    why: "Widely named in Indian analyst postings.",
+  },
+  {
+    id: "google-data-analytics",
+    name: "Google Data Analytics Certificate",
+    issuer: "Google",
+    level: "entry",
+    cost: "free",
+    importance: "optional",
+    why: "A structured start if you are new to data.",
+  },
+];
+
+const exampleRole: RoleView = {
+  slug: "data-analyst",
+  title: "Data Analyst",
+  experience: "Up to 3 years",
+  required: exampleRoleSkills,
+  niceToHave: [],
+  certifications: exampleCerts,
+  postingsAnalysed: 120,
+  sources: [{ description: "Example source", url: null }],
+  reviewed: false,
+  updatedOn: "2026-10-06",
+};
+
 const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good"] as const;
 
 export default function DesignPage() {
@@ -86,6 +133,11 @@ export default function DesignPage() {
         <Logo />
         <span className="font-mono text-xs uppercase tracking-wider text-muted">Design system</span>
       </header>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Site header</h2>
+        <SiteHeader />
+      </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Color</h2>
@@ -145,6 +197,21 @@ export default function DesignPage() {
           <SkillCoverageBar met={9} total={14} />
           <SkillCoverageBar met={11} total={14} />
         </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Roles</h2>
+        <DraftNotice />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <RoleCard role={exampleRole} />
+        </div>
+        <div className="grid max-w-md gap-3">
+          <PostingShareBar share={0.91} />
+          <PostingShareBar share={0.2} />
+          <PostingShareBar share={null} />
+        </div>
+        <RoleSkillList skills={exampleRoleSkills} />
+        <CertificationList certifications={exampleCerts} />
+        <CertificationList certifications={[]} />
       </section>
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">

@@ -1,0 +1,68 @@
+{
+  "id": "devops-sysadmin-transition",
+  "roleSlug": "devops-engineer",
+  "persona": "Linux system administrator moving into DevOps",
+  "resumeText": "Imran Shaikh | Ahmedabad | imran.shaikh@example.com\n\nEXPERIENCE\nSystem Administrator, Sabarmati Data Centre Services, Ahmedabad (2020 - present)\n- Administer 120 RHEL and Ubuntu servers; automate patching with Bash scripts and cron.\n- Built Jenkins pipelines to build and deploy two Java applications.\n- Run internal apps in Docker containers with docker-compose.\n- Set up Nagios monitoring and alerts for disk, CPU and service health.\n- Troubleshoot DNS, firewall rules and load balancer issues with the network team.\n- Was on the on-call rotation and wrote incident reports after outages.\n\nJunior System Administrator, Sabarmati Data Centre Services (2019 - 2020)\n\nEDUCATION\nBSc IT, Gujarat University, 2019\n\nCERTIFICATIONS\nRHCSA (2021)\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "linux",
+        "quote": "Administer 120 RHEL and Ubuntu servers"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Built Jenkins pipelines to build and deploy two Java applications"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Run internal apps in Docker containers with docker-compose"
+      },
+      {
+        "skillId": "monitoring",
+        "quote": "Set up Nagios monitoring and alerts"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot DNS, firewall rules and load balancer issues"
+      },
+      {
+        "skillId": "sre-practices",
+        "quote": "Was on the on-call rotation and wrote incident reports after outages"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sre-practices",
+        "status": "weak"
+      },
+      {
+        "skillId": "kubernetes",
+        "status": "missing"
+      },
+      {
+        "skillId": "aws",
+        "status": "missing"
+      },
+      {
+        "skillId": "terraform",
+        "status": "missing"
+      },
+      {
+        "skillId": "python",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "aws",
+      "terraform",
+      "go"
+    ]
+  },
+  "reviewedBy": null
+}

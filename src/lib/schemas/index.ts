@@ -1,4 +1,5 @@
 export * from "./certification";
+export * from "./eval-case";
 export * from "./gap";
 export * from "./profile";
 export * from "./role-profile";

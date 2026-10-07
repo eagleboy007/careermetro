@@ -1,6 +1,7 @@
 import "server-only";
 import mammoth from "mammoth";
 import { extractText, getDocumentProxy } from "unpdf";
+import { inflateRawSync } from "node:zlib";
 
 /** FR-4: uploads above this size are refused before any parsing. 4 MB, because Vercel functions accept request bodies up to 4.5 MB. */
 export const MAX_RESUME_BYTES = 4 * 1024 * 1024;
@@ -58,7 +59,69 @@ async function pdfText(bytes: Uint8Array): Promise<string> {
   return text.join("\n\n");
 }
 
+/** Zip-bomb limits for DOCX files. Real resumes unpack to well under 1 MB of XML. */
+const MAX_ZIP_ENTRIES = 1000;
+const MAX_ZIP_ENTRY_BYTES = 10 * 1024 * 1024;
+const MAX_ZIP_TOTAL_BYTES = 40 * 1024 * 1024;
+
+const unreadable = () =>
+  new ResumeError("unreadable", "We couldn't open this file. Try saving it again as PDF, or paste the text instead.");
+
+/**
+ * Inflates every entry of a DOCX archive with a hard output cap before mammoth sees it, so a small upload
+ * cannot expand into gigabytes. Sizes declared in the archive are checked against the real output, because
+ * an attacker can write any number there. ZIP64 archives are refused; Word never needs them for a resume.
+ */
+export function checkDocxArchive(bytes: Uint8Array): void {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let eocd = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 22 - 0xffff); i--) {
+    if (view.getUint32(i, true) === 0x06054b50) {
+      eocd = i;
+      break;
+    }
+  }
+  if (eocd < 0) throw unreadable();
+
+  const entries = view.getUint16(eocd + 10, true);
+  const dirOffset = view.getUint32(eocd + 16, true);
+  if (entries === 0xffff || dirOffset === 0xffffffff || entries > MAX_ZIP_ENTRIES) throw unreadable();
+
+  let total = 0;
+  let at = dirOffset;
+  for (let n = 0; n < entries; n++) {
+    if (at + 46 > bytes.length || view.getUint32(at, true) !== 0x02014b50) throw unreadable();
+    const method = view.getUint16(at + 10, true);
+    const compressed = view.getUint32(at + 20, true);
+    const declared = view.getUint32(at + 24, true);
+    const nameLength = view.getUint16(at + 28, true);
+    const next = at + 46 + nameLength + view.getUint16(at + 30, true) + view.getUint16(at + 32, true);
+    const local = view.getUint32(at + 42, true);
+    if (compressed === 0xffffffff || declared === 0xffffffff || local === 0xffffffff) throw unreadable();
+    if (declared > MAX_ZIP_ENTRY_BYTES || total + declared > MAX_ZIP_TOTAL_BYTES) throw unreadable();
+    if (local + 30 > bytes.length || view.getUint32(local, true) !== 0x04034b50) throw unreadable();
+
+    const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+    const data = bytes.subarray(start, start + compressed);
+    if (data.length !== compressed) throw unreadable();
+    let size: number;
+    if (method === 0) size = compressed;
+    else if (method === 8) {
+      try {
+        size = inflateRawSync(data, { maxOutputLength: Math.min(declared, MAX_ZIP_ENTRY_BYTES) + 1 }).length;
+      } catch {
+        throw unreadable();
+      }
+    } else throw unreadable();
+    if (size !== declared) throw unreadable();
+
+    total += size;
+    at = next;
+  }
+}
+
 async function docxText(bytes: Uint8Array): Promise<string> {
+  checkDocxArchive(bytes);
   const { value } = await mammoth.extractRawText({ buffer: Buffer.from(bytes) });
   return value;
 }

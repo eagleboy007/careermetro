@@ -90,6 +90,33 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     expect(create).not.toHaveBeenCalled();
   });
 
+  it("lets only the allowed number of parallel uploads through", async () => {
+    const s = `${session}-race`;
+    const { client: c, create } = client(JSON.stringify(parsed));
+    create.mockImplementation(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      return { model: "claude-opus-5-5", stop_reason: "end_turn", usage: { input_tokens: 3000, output_tokens: 1000 }, content: [{ type: "text", text: JSON.stringify(parsed) }] };
+    });
+    const results = await Promise.all(
+      Array.from({ length: 6 }, (_, i) => ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-${i}` }, { db: db!, client: c })),
+    );
+    for (const r of results) if (r.ok) created.push(r.resumeId);
+    expect(results.filter((r) => r.ok)).toHaveLength(LIMITS.perSessionPerDay);
+    expect(results.filter((r) => !r.ok && r.status === 429)).toHaveLength(6 - LIMITS.perSessionPerDay);
+  });
+
+  it("marks the resume failed when the model call errors, and logs the call", async () => {
+    const s = `${session}-throw`;
+    const { client: c, create } = client(JSON.stringify(parsed));
+    create.mockRejectedValueOnce(new Error("boom"));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c });
+    expect(result).toMatchObject({ ok: false, status: 503, code: "unavailable" });
+    const rows = await db!.select().from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, s));
+    created.push(...rows.map((r) => r.id));
+    expect(rows.map((r) => r.status)).toEqual(["failed"]);
+  });
+
   it("pauses parsing once the daily budget is spent", async () => {
     vi.stubEnv("PARSE_DAILY_BUDGET_USD", "0");
     const { client: c, create } = client(JSON.stringify(parsed));

@@ -9,6 +9,11 @@ import { verifyProfile, type VerifyReport } from "./verify";
 
 export const PARSE_MODEL = "claude-opus-5-5";
 const MAX_ATTEMPTS = 2;
+/** The upload route's maxDuration is 120 s; parsing must finish well inside it, leaving time to save the result. */
+export const PARSE_DEADLINE_MS = 100_000;
+const ATTEMPT_TIMEOUT_MS = 50_000;
+/** A retry is only worth starting with at least this much of the deadline left. */
+const MIN_ATTEMPT_MS = 30_000;
 
 export type ParseClient = Pick<Anthropic, "beta">;
 
@@ -35,7 +40,7 @@ export function readProfile(content: Anthropic.Beta.BetaContentBlock[]): Profile
 
 let defaultClient: Anthropic | undefined;
 function getClient(): Anthropic {
-  defaultClient ??= new Anthropic({ timeout: 60_000, maxRetries: 1 });
+  defaultClient ??= new Anthropic({ timeout: ATTEMPT_TIMEOUT_MS, maxRetries: 0 });
   return defaultClient;
 }
 
@@ -43,16 +48,21 @@ function getClient(): Anthropic {
  * FR-5: turns masked resume text into a profile with one model call, retried once if the output is malformed (FR-14).
  * The text must already be masked with maskPii. The result is verified against that same text (AI-5).
  * inputRefs identifies the resume for the ai_calls log and must hold ids only.
+ * Never throws for a failed call: every attempt, including one that errors, is returned in `calls` for logging.
  */
 export async function parseResume(
   maskedText: string,
   inputRefs: Record<string, string>,
   client: ParseClient = getClient(),
+  deadlineMs = PARSE_DEADLINE_MS,
 ): Promise<ParseResult> {
   const prompt = loadPrompt("parse-resume");
   const calls: AiCallRecord[] = [];
+  const deadline = Date.now() + deadlineMs;
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const remaining = deadline - Date.now();
+    if (attempt > 1 && remaining < MIN_ATTEMPT_MS) break;
     const started = Date.now();
     const record = (model: string, usage: Parameters<typeof costUsd>[1] | null, ok: boolean) =>
       calls.push({
@@ -69,22 +79,25 @@ export async function parseResume(
 
     let response;
     try {
-      response = await client.beta.messages.create({
-        model: PARSE_MODEL,
-        max_tokens: 16_000,
-        system: prompt.text,
-        messages: [{ role: "user", content: wrapResume(maskedText) }],
-        output_config: { effort: "medium", format: betaZodOutputFormat(profileSchema) },
-        // Re-runs a refused request on a fallback model chosen by the API, inside the same call.
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
-      });
+      const timeout = Math.max(1_000, Math.min(ATTEMPT_TIMEOUT_MS, remaining));
+      response = await client.beta.messages.create(
+        {
+          model: PARSE_MODEL,
+          max_tokens: 16_000,
+          system: prompt.text,
+          messages: [{ role: "user", content: wrapResume(maskedText) }],
+          output_config: { effort: "medium", format: betaZodOutputFormat(profileSchema) },
+          // Re-runs a refused request on a fallback model chosen by the API, inside the same call.
+          betas: ["server-side-fallback-2026-07-01"],
+          fallbacks: "default",
+        },
+        { timeout },
+      );
     } catch (error) {
       record(PARSE_MODEL, null, false);
-      if (error instanceof Anthropic.APIError) {
-        return { ok: false, reason: "unavailable", calls };
-      }
-      throw error;
+      // The error's name only: SDK messages are not expected to hold resume text, but nothing here needs them.
+      console.error("parse-resume call failed:", error instanceof Error ? error.name : typeof error);
+      return { ok: false, reason: "unavailable", calls };
     }
 
     if (response.stop_reason === "refusal") {

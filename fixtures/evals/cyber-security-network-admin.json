@@ -1,0 +1,71 @@
+{
+  "id": "cyber-security-network-admin",
+  "roleSlug": "cyber-security-analyst",
+  "persona": "Network administrator preparing for a SOC analyst role",
+  "resumeText": "Aditya Kumar | Gurugram | aditya.kumar@example.com\n\nEXPERIENCE\nNetwork Administrator, Aravalli Manufacturing Ltd, Gurugram (2022 - present)\n- Manage Fortinet firewalls, VPN access and VLAN network segmentation for 3 plants.\n- Review firewall and Windows event logs in Splunk for failed logins and unusual traffic.\n- Ran Nessus vulnerability scans every quarter and tracked patching with the IT team.\n- Handled a ransomware phishing incident: isolated the laptop, reset credentials and wrote the incident report.\n- Manage user accounts and group policies in Active Directory.\n\nEDUCATION\nBTech Electronics and Communication, Amity University, 2022\n\nCERTIFICATIONS\nCCNA (2022)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "network-security",
+        "quote": "Manage Fortinet firewalls, VPN access and VLAN network segmentation"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "VLAN network segmentation for 3 plants"
+      },
+      {
+        "skillId": "siem",
+        "quote": "Review firewall and Windows event logs in Splunk"
+      },
+      {
+        "skillId": "vulnerability-management",
+        "quote": "Ran Nessus vulnerability scans every quarter"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "isolated the laptop, reset credentials and wrote the incident report"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Manage user accounts and group policies in Active Directory"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "linux",
+        "status": "missing"
+      },
+      {
+        "skillId": "python",
+        "status": "missing"
+      },
+      {
+        "skillId": "threat-detection",
+        "status": "missing"
+      },
+      {
+        "skillId": "security-incident-response",
+        "status": "weak"
+      },
+      {
+        "skillId": "application-security",
+        "status": "missing"
+      },
+      {
+        "skillId": "aws",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "penetration-testing",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}
