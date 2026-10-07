@@ -26,11 +26,9 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1 });
 
 try {
   const summary = await sql.begin(async (tx) => {
-    for (const s of skills) {
-      await tx`
-        insert into skills (id, name, category) values (${s.id}, ${s.name}, ${s.category})
-        on conflict (id) do update set name = excluded.name, category = excluded.category`;
-    }
+    await tx`
+      insert into skills ${tx(skills, "id", "name", "category")}
+      on conflict (id) do update set name = excluded.name, category = excluded.category`;
 
     const aliases = [
       ...new Map(
