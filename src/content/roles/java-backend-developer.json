@@ -1,0 +1,142 @@
+{
+  "slug": "java-backend-developer",
+  "title": "Java Backend Developer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write clean Java 17+ using collections, streams and exceptions",
+      "postingShare": 1
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Apply object-oriented design and common design patterns",
+      "postingShare": 0.04
+    },
+    {
+      "skillId": "spring-boot",
+      "importance": "required",
+      "expectation": "Build and test a Spring Boot service end to end, the default Java stack in India",
+      "postingShare": 0.29
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design REST endpoints with proper status codes, validation and pagination",
+      "postingShare": 0.12
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write efficient queries and understand indexes",
+      "postingShare": 0.43
+    },
+    {
+      "skillId": "nosql",
+      "importance": "required",
+      "expectation": "Use a cache or NoSQL store such as Redis or MongoDB where it fits",
+      "postingShare": 0.67
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Solve medium-level DSA problems in interviews",
+      "postingShare": 0.39
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Discuss trade-offs in a system design round",
+      "postingShare": 0.53
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write JUnit tests with mocks for service code",
+      "postingShare": 0
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches, pull requests and code review",
+      "postingShare": 0.16
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Produce and consume events with Kafka or RabbitMQ",
+      "postingShare": 0.43
+    },
+    {
+      "skillId": "microservices",
+      "importance": "nice_to_have",
+      "expectation": "Split a system into services and handle failures between them",
+      "postingShare": 0.31
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package a service in a Docker image",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and debug a service on Kubernetes",
+      "postingShare": 0.37
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Add logs, metrics and traces so you can debug production",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy a service on AWS",
+      "postingShare": 0.22
+    },
+    {
+      "skillId": "go",
+      "importance": "nice_to_have",
+      "expectation": "Pick up Go, which many backend teams use alongside Java",
+      "postingShare": 0.49
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Ship through an automated build and deploy pipeline",
+      "postingShare": 0.27
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "recommended",
+      "why": "Shows you can build and deploy on AWS, which most backend roles touch"
+    },
+    {
+      "certId": "oracle-java-professional",
+      "importance": "optional",
+      "why": "Valued by some service companies and enterprise employers in India"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    },
+    {
+      "description": "Skill shares measured on 49 public job postings (5 in India) from 13 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

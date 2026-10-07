@@ -1,0 +1,128 @@
+{
+  "slug": "digital-marketing-executive",
+  "title": "Digital Marketing Executive",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "performance-marketing",
+      "importance": "required",
+      "expectation": "Run paid campaigns to a target CAC or ROAS",
+      "postingShare": 0.66
+    },
+    {
+      "skillId": "sem-google-ads",
+      "importance": "required",
+      "expectation": "Set up and optimise Google Ads search campaigns",
+      "postingShare": 0.32
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "required",
+      "expectation": "Plan and run Meta and LinkedIn campaigns",
+      "postingShare": 0.09
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "required",
+      "expectation": "Track campaigns in GA4 and Google Tag Manager",
+      "postingShare": 0.04
+    },
+    {
+      "skillId": "seo",
+      "importance": "required",
+      "expectation": "Do keyword research and on-page SEO for a website",
+      "postingShare": 0.15
+    },
+    {
+      "skillId": "content-marketing",
+      "importance": "required",
+      "expectation": "Write posts, ads and landing page copy",
+      "postingShare": 0.17
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "Test ad creatives and landing pages",
+      "postingShare": 0.51
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain campaign results to a manager or client",
+      "postingShare": 0.62
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a CRM such as HubSpot or Salesforce to manage leads",
+      "postingShare": 0.45
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Run email campaigns and simple automations",
+      "postingShare": 0.26
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "nice_to_have",
+      "expectation": "Read LTV, CAC and cohort numbers",
+      "postingShare": 0.43
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Report campaign numbers in Excel or Google Sheets",
+      "postingShare": 0.06
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build a simple marketing dashboard",
+      "postingShare": 0.13
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull campaign data with basic SQL",
+      "postingShare": 0.19
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "google-ads-search",
+      "importance": "recommended",
+      "why": "Free from Google Skillshop and expected by most agencies"
+    },
+    {
+      "certId": "google-analytics-cert",
+      "importance": "recommended",
+      "why": "Free from Google Skillshop and shows you can measure results"
+    },
+    {
+      "certId": "hubspot-inbound-marketing",
+      "importance": "optional",
+      "why": "Free and useful for content and inbound roles"
+    },
+    {
+      "certId": "meta-digital-marketing-associate",
+      "importance": "optional",
+      "why": "Useful for social-media-heavy roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    },
+    {
+      "description": "Skill shares measured on 47 public job postings (6 in India) from 28 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

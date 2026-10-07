@@ -1,0 +1,147 @@
+{
+  "slug": "data-scientist",
+  "title": "Data Scientist",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean, reusable Python for analysis and modelling",
+      "postingShare": 0.84
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Pull training data with SQL, including window functions",
+      "postingShare": 0.71
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Use hypothesis tests, confidence intervals and regression correctly",
+      "postingShare": 0.48
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Build, tune and explain classical models such as trees and gradient boosting",
+      "postingShare": 0.6
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "Design experiments and read A/B test results correctly",
+      "postingShare": 0.55
+    },
+    {
+      "skillId": "scikit-learn",
+      "importance": "required",
+      "expectation": "Use scikit-learn pipelines end to end",
+      "postingShare": 0.09
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Pick the right metric and validate models properly",
+      "postingShare": 0.03
+    },
+    {
+      "skillId": "feature-engineering",
+      "importance": "required",
+      "expectation": "Create useful features and avoid data leakage",
+      "postingShare": 0.07
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain a model's results and limits to business teams",
+      "postingShare": 0.57
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Build and evaluate an LLM or RAG prototype",
+      "postingShare": 0.37
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "nice_to_have",
+      "expectation": "Train a neural network with PyTorch or TensorFlow",
+      "postingShare": 0.18
+    },
+    {
+      "skillId": "nlp",
+      "importance": "nice_to_have",
+      "expectation": "Work with text data",
+      "postingShare": 0.12
+    },
+    {
+      "skillId": "pandas",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and explore data with pandas",
+      "postingShare": 0.03
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Show results in clear charts",
+      "postingShare": 0.28
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "nice_to_have",
+      "expectation": "Pass a coding round",
+      "postingShare": 0.24
+    },
+    {
+      "skillId": "spark",
+      "importance": "nice_to_have",
+      "expectation": "Process large data with PySpark or Databricks",
+      "postingShare": 0.07
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Query data in Snowflake or BigQuery",
+      "postingShare": 0.16
+    },
+    {
+      "skillId": "mlops",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and monitor a model",
+      "postingShare": 0.04
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Helps if you want to move toward deploying models on AWS"
+    },
+    {
+      "certId": "azure-data-scientist",
+      "importance": "optional",
+      "why": "Useful for employers that run on Azure"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "A harder exam; worth it once you have deployed models on Google Cloud"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    },
+    {
+      "description": "Skill shares measured on 117 public job postings (3 in India) from 35 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

@@ -6,6 +6,16 @@ export const roleSkill = z.object({
   importance: z.enum(["required", "nice_to_have"]),
   /** What the role expects in plain words, shown next to each gap. */
   expectation: z.string().min(1),
+  /** Share of analysed public job postings for this role that mention the skill, or null when not measured. */
+  postingShare: z.number().min(0).max(1).nullable().default(null),
+});
+
+export const roleCertification = z.object({
+  certId: z.string().min(1),
+  /** recommended: the best-value pick for this role. optional: worth it for some employers or later in a career. */
+  importance: z.enum(["recommended", "optional"]),
+  /** Why it helps, in plain words. */
+  why: z.string().min(1),
 });
 
 export const roleProfile = z.object({
@@ -16,6 +26,7 @@ export const roleProfile = z.object({
     maxYears: z.number().int().positive(),
   }),
   skills: z.array(roleSkill).min(3),
+  certifications: z.array(roleCertification).default([]),
   sources: z
     .array(
       z.object({

@@ -1,0 +1,124 @@
+{
+  "slug": "product-manager",
+  "title": "Product Manager",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "product-discovery",
+      "importance": "required",
+      "expectation": "Run user interviews and turn findings into problem statements",
+      "postingShare": 0.08
+    },
+    {
+      "skillId": "prd-writing",
+      "importance": "required",
+      "expectation": "Write PRDs and user stories engineers can build from",
+      "postingShare": 0.08
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Prioritise a roadmap with a clear framework and explain the trade-offs",
+      "postingShare": 0.73
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Define success metrics and read funnels and retention",
+      "postingShare": 0.11
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align engineering, design and business on decisions",
+      "postingShare": 0.1
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run a product backlog in an agile team",
+      "postingShare": 0.09
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clearly and present to leadership",
+      "postingShare": 0.62
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Break down ambiguous problems in case-style interviews",
+      "postingShare": 0.06
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Understand what AI features can and cannot do, and how to judge their quality",
+      "postingShare": 0.2
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "nice_to_have",
+      "expectation": "Work with ML teams on data-driven features",
+      "postingShare": 0.26
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Run experiments and read the results",
+      "postingShare": 0.19
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull your own product data with SQL",
+      "postingShare": 0.16
+    },
+    {
+      "skillId": "wireframing",
+      "importance": "nice_to_have",
+      "expectation": "Sketch flows and low-fidelity screens",
+      "postingShare": 0.1
+    },
+    {
+      "skillId": "ux-research",
+      "importance": "nice_to_have",
+      "expectation": "Plan a simple usability test",
+      "postingShare": 0.08
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Review and comment on designs in Figma",
+      "postingShare": 0.03
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cspo",
+      "importance": "optional",
+      "why": "Common in Indian job posts for product owner roles; teaches agile product basics"
+    },
+    {
+      "certId": "pspo",
+      "importance": "optional",
+      "why": "An alternative to CSPO with a harder exam and no renewal fee"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    },
+    {
+      "description": "Skill shares measured on 271 public job postings (16 in India) from 59 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}

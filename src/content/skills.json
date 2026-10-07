@@ -1,0 +1,1302 @@
+[
+  {
+    "id": "python",
+    "name": "Python",
+    "category": "programming",
+    "aliases": [
+      "python3",
+      "py"
+    ]
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "category": "programming",
+    "aliases": [
+      "core java",
+      "java 17",
+      "java se",
+      "jvm"
+    ]
+  },
+  {
+    "id": "javascript",
+    "name": "JavaScript",
+    "category": "programming",
+    "aliases": [
+      "js",
+      "es6",
+      "ecmascript"
+    ]
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "category": "programming",
+    "aliases": [
+      "ts"
+    ]
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "category": "data",
+    "aliases": [
+      "structured query language",
+      "mysql",
+      "postgresql",
+      "postgres",
+      "t-sql",
+      "pl/sql",
+      "sql server"
+    ]
+  },
+  {
+    "id": "sql-window-functions",
+    "name": "SQL window functions and CTEs",
+    "category": "data",
+    "aliases": [
+      "window functions",
+      "cte",
+      "common table expressions"
+    ]
+  },
+  {
+    "id": "data-structures-algorithms",
+    "name": "Data structures and algorithms",
+    "category": "programming",
+    "aliases": [
+      "dsa",
+      "data structures",
+      "algorithms"
+    ]
+  },
+  {
+    "id": "oop",
+    "name": "Object-oriented design",
+    "category": "programming",
+    "aliases": [
+      "object oriented programming",
+      "oops",
+      "object-oriented programming"
+    ]
+  },
+  {
+    "id": "git",
+    "name": "Git and version control",
+    "category": "tools",
+    "aliases": [
+      "github",
+      "gitlab",
+      "version control",
+      "bitbucket",
+      "git"
+    ]
+  },
+  {
+    "id": "linux",
+    "name": "Linux command line",
+    "category": "cloud-devops",
+    "aliases": [
+      "unix",
+      "bash",
+      "shell scripting",
+      "shell",
+      "linux"
+    ]
+  },
+  {
+    "id": "html-css",
+    "name": "HTML and CSS",
+    "category": "web",
+    "aliases": [
+      "html",
+      "css",
+      "html5",
+      "css3",
+      "scss",
+      "sass",
+      "tailwind"
+    ]
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "category": "web",
+    "aliases": [
+      "react.js",
+      "reactjs",
+      "react js"
+    ]
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "category": "web",
+    "aliases": [
+      "next js",
+      "nextjs"
+    ]
+  },
+  {
+    "id": "nodejs",
+    "name": "Node.js",
+    "category": "web",
+    "aliases": [
+      "node",
+      "node js",
+      "express",
+      "express.js"
+    ]
+  },
+  {
+    "id": "spring-boot",
+    "name": "Spring Boot",
+    "category": "web",
+    "aliases": [
+      "spring",
+      "spring framework",
+      "spring mvc"
+    ]
+  },
+  {
+    "id": "rest-apis",
+    "name": "REST API design",
+    "category": "web",
+    "aliases": [
+      "restful apis",
+      "rest api",
+      "api design",
+      "web services"
+    ]
+  },
+  {
+    "id": "web-performance",
+    "name": "Web performance",
+    "category": "web",
+    "aliases": [
+      "core web vitals",
+      "page speed",
+      "lighthouse"
+    ]
+  },
+  {
+    "id": "accessibility",
+    "name": "Web accessibility",
+    "category": "web",
+    "aliases": [
+      "a11y",
+      "wcag"
+    ]
+  },
+  {
+    "id": "state-management",
+    "name": "Front-end state management",
+    "category": "web",
+    "aliases": [
+      "redux",
+      "zustand",
+      "context api"
+    ]
+  },
+  {
+    "id": "microservices",
+    "name": "Microservices",
+    "category": "web",
+    "aliases": [
+      "microservice architecture",
+      "service oriented architecture",
+      "microservices"
+    ]
+  },
+  {
+    "id": "system-design",
+    "name": "System design",
+    "category": "programming",
+    "aliases": [
+      "high level design",
+      "hld",
+      "low level design",
+      "lld",
+      "scalability"
+    ]
+  },
+  {
+    "id": "orm-databases",
+    "name": "Relational database design",
+    "category": "data",
+    "aliases": [
+      "database design",
+      "normalization",
+      "jpa",
+      "hibernate",
+      "orm"
+    ]
+  },
+  {
+    "id": "nosql",
+    "name": "NoSQL databases",
+    "category": "data",
+    "aliases": [
+      "mongodb",
+      "redis",
+      "dynamodb",
+      "cassandra",
+      "nosql",
+      "elasticsearch"
+    ]
+  },
+  {
+    "id": "messaging-queues",
+    "name": "Message queues",
+    "category": "web",
+    "aliases": [
+      "kafka",
+      "rabbitmq",
+      "sqs",
+      "event streaming"
+    ]
+  },
+  {
+    "id": "excel",
+    "name": "Excel",
+    "category": "tools",
+    "aliases": [
+      "ms excel",
+      "microsoft excel",
+      "advanced excel",
+      "spreadsheets",
+      "google sheets"
+    ]
+  },
+  {
+    "id": "excel-pivot-lookup",
+    "name": "Excel pivot tables and lookups",
+    "category": "tools",
+    "aliases": [
+      "pivot tables",
+      "vlookup",
+      "xlookup",
+      "index match"
+    ]
+  },
+  {
+    "id": "power-bi",
+    "name": "Power BI",
+    "category": "data",
+    "aliases": [
+      "powerbi",
+      "microsoft power bi",
+      "dax"
+    ]
+  },
+  {
+    "id": "tableau",
+    "name": "Tableau",
+    "category": "data",
+    "aliases": [
+      "tableau desktop"
+    ]
+  },
+  {
+    "id": "data-visualization",
+    "name": "Data visualization",
+    "category": "data",
+    "aliases": [
+      "dashboards",
+      "dashboarding",
+      "charts",
+      "data storytelling"
+    ]
+  },
+  {
+    "id": "pandas",
+    "name": "pandas",
+    "category": "data",
+    "aliases": [
+      "python pandas",
+      "dataframes"
+    ]
+  },
+  {
+    "id": "statistics",
+    "name": "Statistics",
+    "category": "data",
+    "aliases": [
+      "descriptive statistics",
+      "inferential statistics",
+      "hypothesis testing",
+      "probability",
+      "statistical analysis",
+      "statistical modeling"
+    ]
+  },
+  {
+    "id": "ab-testing",
+    "name": "A/B testing",
+    "category": "data",
+    "aliases": [
+      "experimentation",
+      "split testing",
+      "ab tests"
+    ]
+  },
+  {
+    "id": "data-cleaning",
+    "name": "Data cleaning",
+    "category": "data",
+    "aliases": [
+      "data wrangling",
+      "data preparation",
+      "data quality"
+    ]
+  },
+  {
+    "id": "etl",
+    "name": "ETL and data pipelines",
+    "category": "data",
+    "aliases": [
+      "elt",
+      "data pipelines",
+      "airflow",
+      "data integration"
+    ]
+  },
+  {
+    "id": "spark",
+    "name": "Apache Spark",
+    "category": "data",
+    "aliases": [
+      "pyspark",
+      "spark sql",
+      "databricks"
+    ]
+  },
+  {
+    "id": "machine-learning",
+    "name": "Machine learning",
+    "category": "ml",
+    "aliases": [
+      "ml",
+      "supervised learning",
+      "unsupervised learning"
+    ]
+  },
+  {
+    "id": "scikit-learn",
+    "name": "scikit-learn",
+    "category": "ml",
+    "aliases": [
+      "sklearn",
+      "scikit learn"
+    ]
+  },
+  {
+    "id": "deep-learning",
+    "name": "Deep learning",
+    "category": "ml",
+    "aliases": [
+      "neural networks",
+      "dl",
+      "pytorch",
+      "tensorflow",
+      "keras"
+    ]
+  },
+  {
+    "id": "nlp",
+    "name": "Natural language processing",
+    "category": "ml",
+    "aliases": [
+      "natural language processing",
+      "text mining",
+      "nlp"
+    ]
+  },
+  {
+    "id": "llm-apps",
+    "name": "LLM application building",
+    "category": "ml",
+    "aliases": [
+      "generative ai",
+      "genai",
+      "prompt engineering",
+      "rag",
+      "retrieval augmented generation",
+      "llms",
+      "llm",
+      "large language models",
+      "chatgpt",
+      "openai api"
+    ]
+  },
+  {
+    "id": "feature-engineering",
+    "name": "Feature engineering",
+    "category": "ml",
+    "aliases": [
+      "feature selection"
+    ]
+  },
+  {
+    "id": "model-evaluation",
+    "name": "Model evaluation",
+    "category": "ml",
+    "aliases": [
+      "cross validation",
+      "precision recall",
+      "roc auc",
+      "model validation"
+    ]
+  },
+  {
+    "id": "mlops",
+    "name": "MLOps",
+    "category": "ml",
+    "aliases": [
+      "model deployment",
+      "mlflow",
+      "model monitoring"
+    ]
+  },
+  {
+    "id": "aws",
+    "name": "AWS",
+    "category": "cloud-devops",
+    "aliases": [
+      "amazon web services",
+      "ec2",
+      "s3",
+      "lambda"
+    ]
+  },
+  {
+    "id": "azure",
+    "name": "Microsoft Azure",
+    "category": "cloud-devops",
+    "aliases": [
+      "azure cloud",
+      "azure"
+    ]
+  },
+  {
+    "id": "gcp",
+    "name": "Google Cloud",
+    "category": "cloud-devops",
+    "aliases": [
+      "google cloud platform",
+      "gcp"
+    ]
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "category": "cloud-devops",
+    "aliases": [
+      "containers",
+      "containerization",
+      "dockerfile"
+    ]
+  },
+  {
+    "id": "kubernetes",
+    "name": "Kubernetes",
+    "category": "cloud-devops",
+    "aliases": [
+      "k8s",
+      "eks",
+      "aks",
+      "gke",
+      "helm"
+    ]
+  },
+  {
+    "id": "ci-cd",
+    "name": "CI/CD pipelines",
+    "category": "cloud-devops",
+    "aliases": [
+      "ci cd",
+      "continuous integration",
+      "continuous delivery",
+      "jenkins",
+      "github actions",
+      "gitlab ci",
+      "circleci",
+      "ci/cd"
+    ]
+  },
+  {
+    "id": "terraform",
+    "name": "Infrastructure as code",
+    "category": "cloud-devops",
+    "aliases": [
+      "terraform",
+      "iac",
+      "cloudformation",
+      "ansible"
+    ]
+  },
+  {
+    "id": "monitoring",
+    "name": "Monitoring and observability",
+    "category": "cloud-devops",
+    "aliases": [
+      "observability",
+      "prometheus",
+      "grafana",
+      "opentelemetry",
+      "datadog"
+    ]
+  },
+  {
+    "id": "networking-basics",
+    "name": "Networking basics",
+    "category": "cloud-devops",
+    "aliases": [
+      "tcp/ip",
+      "dns",
+      "load balancing",
+      "vpc"
+    ]
+  },
+  {
+    "id": "cloud-security",
+    "name": "Cloud security basics",
+    "category": "cloud-devops",
+    "aliases": [
+      "security groups",
+      "devsecops",
+      "cloud security"
+    ]
+  },
+  {
+    "id": "manual-testing",
+    "name": "Manual testing",
+    "category": "testing",
+    "aliases": [
+      "functional testing",
+      "test cases",
+      "test case design",
+      "regression testing"
+    ]
+  },
+  {
+    "id": "selenium",
+    "name": "Selenium",
+    "category": "testing",
+    "aliases": [
+      "selenium webdriver",
+      "webdriver"
+    ]
+  },
+  {
+    "id": "playwright-cypress",
+    "name": "Playwright or Cypress",
+    "category": "testing",
+    "aliases": [
+      "playwright",
+      "cypress"
+    ]
+  },
+  {
+    "id": "api-testing",
+    "name": "API testing",
+    "category": "testing",
+    "aliases": [
+      "postman",
+      "rest assured",
+      "rest-assured"
+    ]
+  },
+  {
+    "id": "unit-testing",
+    "name": "Unit testing",
+    "category": "testing",
+    "aliases": [
+      "junit",
+      "pytest",
+      "jest",
+      "testng",
+      "tdd"
+    ]
+  },
+  {
+    "id": "performance-testing",
+    "name": "Performance testing",
+    "category": "testing",
+    "aliases": [
+      "jmeter",
+      "load testing",
+      "gatling",
+      "k6"
+    ]
+  },
+  {
+    "id": "test-planning",
+    "name": "Test planning and strategy",
+    "category": "testing",
+    "aliases": [
+      "test plan",
+      "test strategy",
+      "stlc"
+    ]
+  },
+  {
+    "id": "bug-tracking",
+    "name": "Bug tracking",
+    "category": "tools",
+    "aliases": [
+      "jira",
+      "defect tracking",
+      "bug reporting"
+    ]
+  },
+  {
+    "id": "product-discovery",
+    "name": "Product discovery",
+    "category": "product",
+    "aliases": [
+      "user interviews",
+      "customer discovery",
+      "problem discovery"
+    ]
+  },
+  {
+    "id": "prd-writing",
+    "name": "Writing product requirements",
+    "category": "product",
+    "aliases": [
+      "prd",
+      "product requirements document",
+      "user stories",
+      "requirements writing"
+    ]
+  },
+  {
+    "id": "roadmapping",
+    "name": "Roadmapping and prioritization",
+    "category": "product",
+    "aliases": [
+      "prioritization",
+      "roadmap"
+    ]
+  },
+  {
+    "id": "product-metrics",
+    "name": "Product metrics",
+    "category": "product",
+    "aliases": [
+      "kpis",
+      "north star metric",
+      "funnel analysis",
+      "retention analysis",
+      "ltv",
+      "cohort analysis",
+      "unit economics"
+    ]
+  },
+  {
+    "id": "agile-scrum",
+    "name": "Agile and Scrum",
+    "category": "product",
+    "aliases": [
+      "agile",
+      "scrum",
+      "sprint planning",
+      "kanban"
+    ]
+  },
+  {
+    "id": "stakeholder-management",
+    "name": "Stakeholder management",
+    "category": "workplace",
+    "aliases": [
+      "stakeholder communication",
+      "cross-functional collaboration"
+    ]
+  },
+  {
+    "id": "wireframing",
+    "name": "Wireframing",
+    "category": "design",
+    "aliases": [
+      "wireframes",
+      "mockups",
+      "prototyping"
+    ]
+  },
+  {
+    "id": "figma",
+    "name": "Figma",
+    "category": "design",
+    "aliases": [
+      "figma design"
+    ]
+  },
+  {
+    "id": "ux-research",
+    "name": "UX research",
+    "category": "design",
+    "aliases": [
+      "usability testing",
+      "user research"
+    ]
+  },
+  {
+    "id": "requirements-gathering",
+    "name": "Requirements gathering",
+    "category": "business",
+    "aliases": [
+      "requirement elicitation",
+      "brd",
+      "business requirements",
+      "frd"
+    ]
+  },
+  {
+    "id": "process-mapping",
+    "name": "Process mapping",
+    "category": "business",
+    "aliases": [
+      "bpmn",
+      "flowcharts",
+      "as-is to-be",
+      "process modelling"
+    ]
+  },
+  {
+    "id": "business-case",
+    "name": "Business cases and cost-benefit analysis",
+    "category": "business",
+    "aliases": [
+      "cost benefit analysis",
+      "business case",
+      "roi analysis"
+    ]
+  },
+  {
+    "id": "domain-bfsi",
+    "name": "Banking and financial services domain",
+    "category": "business",
+    "aliases": [
+      "bfsi",
+      "banking domain",
+      "fintech domain"
+    ]
+  },
+  {
+    "id": "uat",
+    "name": "User acceptance testing",
+    "category": "business",
+    "aliases": [
+      "uat",
+      "acceptance testing"
+    ]
+  },
+  {
+    "id": "seo",
+    "name": "SEO",
+    "category": "marketing",
+    "aliases": [
+      "search engine optimization",
+      "on-page seo",
+      "off-page seo",
+      "technical seo"
+    ]
+  },
+  {
+    "id": "sem-google-ads",
+    "name": "Google Ads and SEM",
+    "category": "marketing",
+    "aliases": [
+      "google ads",
+      "sem",
+      "ppc",
+      "adwords",
+      "paid search"
+    ]
+  },
+  {
+    "id": "social-media-marketing",
+    "name": "Social media marketing",
+    "category": "marketing",
+    "aliases": [
+      "smm",
+      "meta ads",
+      "facebook ads",
+      "instagram marketing",
+      "linkedin ads"
+    ]
+  },
+  {
+    "id": "content-marketing",
+    "name": "Content marketing",
+    "category": "marketing",
+    "aliases": [
+      "content writing",
+      "copywriting",
+      "blogging"
+    ]
+  },
+  {
+    "id": "email-marketing",
+    "name": "Email marketing",
+    "category": "marketing",
+    "aliases": [
+      "email campaigns",
+      "mailchimp",
+      "marketing automation"
+    ]
+  },
+  {
+    "id": "web-analytics",
+    "name": "Web analytics",
+    "category": "marketing",
+    "aliases": [
+      "google analytics",
+      "ga4",
+      "google tag manager"
+    ]
+  },
+  {
+    "id": "performance-marketing",
+    "name": "Performance marketing",
+    "category": "marketing",
+    "aliases": [
+      "paid marketing",
+      "roas",
+      "cac",
+      "growth marketing"
+    ]
+  },
+  {
+    "id": "communication",
+    "name": "Written and verbal communication",
+    "category": "workplace",
+    "aliases": [
+      "communication skills",
+      "presentation skills",
+      "business communication",
+      "communication",
+      "communicator"
+    ]
+  },
+  {
+    "id": "problem-solving",
+    "name": "Structured problem solving",
+    "category": "workplace",
+    "aliases": [
+      "analytical thinking",
+      "problem solving",
+      "critical thinking"
+    ]
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "category": "programming",
+    "aliases": [
+      "golang",
+      "go language"
+    ]
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "category": "programming",
+    "aliases": [
+      "kotlin"
+    ]
+  },
+  {
+    "id": "cpp",
+    "name": "C++",
+    "category": "programming",
+    "aliases": [
+      "c++",
+      "cpp"
+    ]
+  },
+  {
+    "id": "csharp-dotnet",
+    "name": "C# and .NET",
+    "category": "programming",
+    "aliases": [
+      "c#",
+      ".net",
+      "dotnet",
+      "asp.net"
+    ]
+  },
+  {
+    "id": "scala",
+    "name": "Scala",
+    "category": "programming",
+    "aliases": [
+      "scala"
+    ]
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL",
+    "category": "web",
+    "aliases": [
+      "graphql",
+      "apollo"
+    ]
+  },
+  {
+    "id": "cloud-data-warehouse",
+    "name": "Cloud data warehouses",
+    "category": "data",
+    "aliases": [
+      "snowflake",
+      "bigquery",
+      "redshift",
+      "synapse"
+    ]
+  },
+  {
+    "id": "dbt",
+    "name": "dbt",
+    "category": "data",
+    "aliases": [
+      "dbt",
+      "data build tool"
+    ]
+  },
+  {
+    "id": "looker",
+    "name": "Looker",
+    "category": "data",
+    "aliases": [
+      "looker",
+      "looker studio"
+    ]
+  },
+  {
+    "id": "sre-practices",
+    "name": "SRE practices",
+    "category": "cloud-devops",
+    "aliases": [
+      "sre",
+      "site reliability",
+      "slos",
+      "slis",
+      "error budgets",
+      "on-call"
+    ]
+  },
+  {
+    "id": "gitops",
+    "name": "GitOps",
+    "category": "cloud-devops",
+    "aliases": [
+      "gitops",
+      "argocd",
+      "argo cd",
+      "flux"
+    ]
+  },
+  {
+    "id": "crm-tools",
+    "name": "CRM tools",
+    "category": "marketing",
+    "aliases": [
+      "crm",
+      "salesforce",
+      "hubspot",
+      "zoho crm"
+    ]
+  },
+  {
+    "id": "network-security",
+    "name": "Network security",
+    "category": "security",
+    "aliases": [
+      "firewalls",
+      "firewall",
+      "ids/ips",
+      "intrusion detection",
+      "vpn",
+      "network segmentation"
+    ]
+  },
+  {
+    "id": "siem",
+    "name": "SIEM and log analysis",
+    "category": "security",
+    "aliases": [
+      "siem",
+      "splunk",
+      "microsoft sentinel",
+      "qradar",
+      "elastic siem",
+      "log analysis"
+    ]
+  },
+  {
+    "id": "security-incident-response",
+    "name": "Security incident response",
+    "category": "security",
+    "aliases": [
+      "incident response",
+      "incident handling",
+      "dfir",
+      "digital forensics",
+      "forensics"
+    ]
+  },
+  {
+    "id": "vulnerability-management",
+    "name": "Vulnerability management",
+    "category": "security",
+    "aliases": [
+      "vulnerability assessment",
+      "vapt",
+      "nessus",
+      "qualys",
+      "tenable",
+      "patch management"
+    ]
+  },
+  {
+    "id": "penetration-testing",
+    "name": "Penetration testing",
+    "category": "security",
+    "aliases": [
+      "pentesting",
+      "pen testing",
+      "ethical hacking",
+      "burp suite",
+      "metasploit",
+      "red team"
+    ]
+  },
+  {
+    "id": "application-security",
+    "name": "Application security",
+    "category": "security",
+    "aliases": [
+      "appsec",
+      "owasp",
+      "owasp top 10",
+      "sast",
+      "dast",
+      "secure code review",
+      "threat modeling",
+      "threat modelling"
+    ]
+  },
+  {
+    "id": "threat-detection",
+    "name": "Threat detection and hunting",
+    "category": "security",
+    "aliases": [
+      "threat hunting",
+      "threat intelligence",
+      "mitre att&ck",
+      "mitre attack",
+      "detection engineering",
+      "security operations center",
+      "soc analyst"
+    ]
+  },
+  {
+    "id": "endpoint-security",
+    "name": "Endpoint security",
+    "category": "security",
+    "aliases": [
+      "edr",
+      "xdr",
+      "crowdstrike",
+      "sentinelone",
+      "defender for endpoint"
+    ]
+  },
+  {
+    "id": "identity-access-management",
+    "name": "Identity and access management",
+    "category": "security",
+    "aliases": [
+      "iam",
+      "active directory",
+      "sso",
+      "single sign-on",
+      "mfa",
+      "privileged access management",
+      "pam"
+    ]
+  },
+  {
+    "id": "risk-assessment",
+    "name": "Security risk assessment",
+    "category": "security",
+    "aliases": [
+      "risk assessment",
+      "risk management",
+      "third-party risk",
+      "vendor risk",
+      "tprm",
+      "risk register"
+    ]
+  },
+  {
+    "id": "compliance-frameworks",
+    "name": "Security compliance frameworks",
+    "category": "security",
+    "aliases": [
+      "iso 27001",
+      "iso/iec 27001",
+      "soc 2",
+      "soc2",
+      "pci dss",
+      "pci-dss",
+      "nist csf",
+      "nist 800-53",
+      "hipaa",
+      "gdpr",
+      "dpdp",
+      "rbi cyber security framework"
+    ]
+  },
+  {
+    "id": "security-policies",
+    "name": "Security policies and governance",
+    "category": "security",
+    "aliases": [
+      "security policy",
+      "security policies",
+      "information security policy",
+      "grc",
+      "governance, risk and compliance",
+      "isms"
+    ]
+  },
+  {
+    "id": "security-audits",
+    "name": "Security audits",
+    "category": "security",
+    "aliases": [
+      "it audit",
+      "security audit",
+      "internal audit",
+      "audit evidence",
+      "control testing",
+      "itgc"
+    ]
+  },
+  {
+    "id": "security-awareness",
+    "name": "Security awareness training",
+    "category": "security",
+    "aliases": [
+      "security awareness",
+      "phishing simulation"
+    ]
+  },
+  {
+    "id": "cryptography-basics",
+    "name": "Cryptography basics",
+    "category": "security",
+    "aliases": [
+      "encryption",
+      "pki",
+      "tls",
+      "key management"
+    ]
+  },
+  {
+    "id": "data-modeling",
+    "name": "Data modeling",
+    "category": "data",
+    "aliases": [
+      "data modelling",
+      "erd",
+      "entity relationship",
+      "dimensional modeling",
+      "dimensional modelling",
+      "star schema",
+      "kimball",
+      "data vault"
+    ]
+  },
+  {
+    "id": "query-optimization",
+    "name": "Query optimization and indexing",
+    "category": "data",
+    "aliases": [
+      "query optimization",
+      "query tuning",
+      "performance tuning",
+      "execution plans",
+      "indexing strategy",
+      "database performance"
+    ]
+  },
+  {
+    "id": "high-availability-dr",
+    "name": "Replication, high availability and recovery",
+    "category": "data",
+    "aliases": [
+      "replication",
+      "high availability",
+      "failover",
+      "sharding",
+      "partitioning",
+      "disaster recovery",
+      "backup and recovery",
+      "point-in-time recovery"
+    ]
+  },
+  {
+    "id": "oracle-database",
+    "name": "Oracle Database",
+    "category": "data",
+    "aliases": [
+      "oracle db",
+      "oracle database",
+      "oracle rac",
+      "oracle 19c",
+      "rman"
+    ]
+  },
+  {
+    "id": "cloud-databases",
+    "name": "Managed cloud databases",
+    "category": "data",
+    "aliases": [
+      "amazon rds",
+      "aws rds",
+      "aurora",
+      "azure sql",
+      "cloud sql",
+      "cosmos db",
+      "alloydb",
+      "cloud spanner"
+    ]
+  },
+  {
+    "id": "data-governance",
+    "name": "Data governance",
+    "category": "data",
+    "aliases": [
+      "master data management",
+      "mdm",
+      "data catalog",
+      "data lineage",
+      "data stewardship"
+    ]
+  },
+  {
+    "id": "database-security",
+    "name": "Database security",
+    "category": "data",
+    "aliases": [
+      "database security",
+      "row-level security",
+      "data masking",
+      "auditing database access"
+    ]
+  }
+]

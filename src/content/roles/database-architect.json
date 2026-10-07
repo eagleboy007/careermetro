@@ -1,0 +1,162 @@
+{
+  "slug": "database-architect",
+  "title": "Database Architect",
+  "experienceBand": {
+    "minYears": 5,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write and review complex SQL across large schemas",
+      "postingShare": 0.67
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design logical and physical data models, including dimensional models",
+      "postingShare": 0
+    },
+    {
+      "skillId": "orm-databases",
+      "importance": "required",
+      "expectation": "Normalise relational schemas and choose the right keys and constraints",
+      "postingShare": 0
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "required",
+      "expectation": "Read execution plans and fix slow queries with the right indexes",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Design replication, failover, backups and disaster recovery",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "cloud-databases",
+      "importance": "required",
+      "expectation": "Choose and run managed databases such as RDS, Aurora, Azure SQL or Cloud SQL",
+      "postingShare": 0
+    },
+    {
+      "skillId": "nosql",
+      "importance": "required",
+      "expectation": "Decide when a document, key-value or wide-column store fits better than SQL",
+      "postingShare": 0
+    },
+    {
+      "skillId": "database-security",
+      "importance": "required",
+      "expectation": "Secure databases with roles, encryption, masking and auditing",
+      "postingShare": 0
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Design data architecture for scale and explain the trade-offs",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run and tune databases on Linux",
+      "postingShare": 0.67
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Run Oracle Database, still common in Indian banks and enterprises",
+      "postingShare": 0
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Design for Snowflake, BigQuery or Redshift",
+      "postingShare": 0
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "nice_to_have",
+      "expectation": "Set up data ownership, lineage and quality rules",
+      "postingShare": 0
+    },
+    {
+      "skillId": "etl",
+      "importance": "nice_to_have",
+      "expectation": "Design pipelines that feed analytical stores",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate database operations with scripts",
+      "postingShare": 1
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Provision databases as code",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Monitor database health and capacity",
+      "postingShare": 0.33
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Design on AWS data services",
+      "postingShare": 1
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-database-admin",
+      "importance": "recommended",
+      "why": "A practical credential for running SQL databases on Azure"
+    },
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "Covers AWS data and architecture choices that database architects make"
+    },
+    {
+      "certId": "oracle-dba-professional",
+      "importance": "optional",
+      "why": "Valued by enterprises and banks that run Oracle"
+    },
+    {
+      "certId": "gcp-professional-database-engineer",
+      "importance": "optional",
+      "why": "For architects working on Google Cloud"
+    },
+    {
+      "certId": "mongodb-dba",
+      "importance": "optional",
+      "why": "For teams that run MongoDB at scale"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "For architects working on analytical platforms"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions and Indian hiring practice. Awaiting domain-expert review.",
+      "url": null
+    },
+    {
+      "description": "Skill shares measured on 3 public job postings (0 in India) from 3 companies on Greenhouse, Lever and Ashby job boards, fetched 2026-10-06. Small sample, so treat the shares as rough.",
+      "url": "https://github.com/eagleboy007/careermetro/tree/main/data/jd-snapshots/2026-10-06"
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-06"
+}
