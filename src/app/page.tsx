@@ -1,6 +1,8 @@
-import { FileText, Route, Target } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+import { ArrowRight, FileText, Route, Target } from "lucide-react";
+import Link from "next/link";
+import { SiteHeader } from "@/components/site/site-header";
 import { WaitlistForm } from "@/components/waitlist/waitlist-form";
+import { roleViews } from "@/lib/role-view";
 
 const steps = [
   { Icon: FileText, title: "Upload your resume", text: "We read your real experience and you check what we found." },
@@ -11,12 +13,7 @@ const steps = [
 export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-4 pb-20">
-      <header className="flex items-center justify-between border-b border-line py-5">
-        <Logo />
-        <a href="#waitlist" className="text-sm font-medium text-muted hover:text-ink">
-          Join the waitlist
-        </a>
-      </header>
+      <SiteHeader />
 
       <section className="flex max-w-2xl flex-col gap-5">
         <p className="font-mono text-xs uppercase tracking-wider text-muted">For job seekers in India</p>
@@ -40,6 +37,20 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section aria-labelledby="roles-title" className="flex flex-col gap-3">
+        <h2 id="roles-title" className="text-2xl font-semibold">
+          See what each role asks for
+        </h2>
+        <p className="max-w-2xl text-muted">
+          A first draft, built from public job postings, of the skills and certifications employers ask for across{" "}
+          {roleViews.length} roles, from data analyst to cyber security analyst.
+        </p>
+        <Link href="/roles" className="inline-flex w-fit items-center gap-1.5 font-medium underline underline-offset-4 hover:text-ink">
+          Browse roles
+          <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
       </section>
 
       <section id="waitlist" aria-labelledby="waitlist-title" className="flex max-w-2xl flex-col gap-4 rounded-lg border border-line bg-surface p-6">
