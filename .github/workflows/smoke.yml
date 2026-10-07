@@ -1,0 +1,31 @@
+name: Smoke check
+
+# After Vercel finishes a production deploy, open /api/health on it. A red run means the live site
+# can't reach the database or Claude (for example a missing key or an empty credit balance).
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Site to check, for example https://careermetro.vercel.app"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check /api/health
+        env:
+          SITE: ${{ github.event.deployment_status.environment_url || inputs.url }}
+        run: |
+          code=$(curl -sS --max-time 30 --retry 2 --retry-all-errors -o health.json -w "%{http_code}" "${SITE%/}/api/health" || true)
+          body=$(cat health.json 2>/dev/null)
+          echo "HTTP $code: $body"
+          echo "Health of ${SITE}: HTTP $code \`$body\`" >> "$GITHUB_STEP_SUMMARY"
+          test "$code" = 200
