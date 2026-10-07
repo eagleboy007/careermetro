@@ -61,19 +61,27 @@ export const waitlistEntries = pgTable("waitlist_entries", {
 
 export const parseStatus = pgEnum("parse_status", ["uploaded", "parsing", "parsed", "partial", "failed"]);
 
-export const resumes = pgTable("resumes", {
-  id: id(),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  /** Anonymous first analysis (FR-2): deleted after 24 hours unless claimed. */
-  anonymousSessionId: text("anonymous_session_id"),
-  storageKey: text("storage_key"),
-  mimeType: text("mime_type").notNull(),
-  sizeBytes: integer("size_bytes").notNull(),
-  status: parseStatus("status").notNull().default("uploaded"),
-  createdAt: createdAt(),
-  /** Raw file removed after 30 days (SEC-5); the confirmed profile is kept. */
-  fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }).notNull(),
-});
+export const resumes = pgTable(
+  "resumes",
+  {
+    id: id(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    /** Anonymous first analysis (FR-2): deleted after 24 hours unless claimed. */
+    anonymousSessionId: text("anonymous_session_id"),
+    storageKey: text("storage_key"),
+    mimeType: text("mime_type").notNull(),
+    sizeBytes: integer("size_bytes").notNull(),
+    status: parseStatus("status").notNull().default("uploaded"),
+    /** The consent the user gave at upload (SEC-1). */
+    consentId: uuid("consent_id").references(() => consents.id),
+    /** Keyed hash of the uploader's IP and the day, for daily upload limits. Can't be reversed or linked across days. */
+    clientHash: text("client_hash"),
+    createdAt: createdAt(),
+    /** When the raw file must be removed (SEC-5). Null when no file was kept, the default: text is read in memory. */
+    fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }),
+  },
+  (t) => [index("resumes_anonymous_session").on(t.anonymousSessionId), index("resumes_client_hash").on(t.clientHash, t.createdAt)],
+);
 
 /** Versioned: every user correction creates a new row. */
 export const profiles = pgTable(
