@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
-import { matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
 
-const dataAnalyst = roleProfiles.find((r) => r.slug === "data-analyst")!;
+const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
+const dataAnalyst = role("data-analyst");
 const now = new Date("2026-10-07T00:00:00Z");
 
 const profile = (patch: Partial<Profile>): Profile => ({
@@ -73,5 +74,90 @@ describe("matchProfile", () => {
   it("gives the same result for the same input", () => {
     const p = profile({ skills: [{ name: "Excel", lastUsed: null, evidence: ["Built pivot tables for the monthly payables report"] }] });
     expect(matchProfile(p, dataAnalyst, now)).toEqual(matchProfile(p, dataAnalyst, now));
+  });
+
+  const job = (highlights: string[], start = "2023-01", end: string | null = null) => ({ title: "Engineer", employer: "Example Pvt Ltd", start, end, highlights });
+  const scan = (slug: string, highlights: string[]) => matchProfile(profile({ roles: [job(highlights)] }), role(slug), now);
+
+  it("counts real job bullets that name several tools as use, not as a list", () => {
+    expect(statusOf(scan("devops-engineer", ["Built CI/CD pipelines using Jenkins/GitHub Actions for 40 microservices"]), "ci-cd")).toBe("met");
+    expect(statusOf(scan("java-backend-developer", ["Developed payment APIs using Java, Spring Boot, MySQL and Kafka for an HDFC project"]), "java")).toBe("met");
+    expect(statusOf(scan("devops-engineer", ["Automated Jenkins builds"]), "ci-cd")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Wrote SQL queries"]), "sql")).toBe("met");
+    const listed = profile({
+      roles: [job([])],
+      skills: [{ name: "Java", lastUsed: null, evidence: ["Developed payment APIs using Java, Spring Boot, MySQL and Kafka for an HDFC project"] }],
+    });
+    expect(statusOf(matchProfile(listed, role("java-backend-developer"), now), "java")).toBe("met");
+  });
+
+  it("still treats skills sections as lists", () => {
+    expect(isListLine("SKILLS: SQL, Excel, Power BI")).toBe(true);
+    expect(isListLine("SQL, Excel, Power BI, Tableau, Jira, SAP")).toBe(true);
+    expect(isListLine("Python (Pandas, NumPy)")).toBe(true);
+    expect(isListLine("MS-Excel")).toBe(true);
+    expect(isListLine("Tracked KPIs, churn, and NPS weekly for the leadership team")).toBe(false);
+  });
+
+  it("treats learning or wanting a skill as interest, not use", () => {
+    expect(statusOf(scan("data-analyst", ["Currently learning Python through an NPTEL course"]), "python")).toBe("weak");
+    expect(statusOf(scan("data-analyst", ["Keen to learn Python for report automation"]), "python")).toBe("weak");
+    expect(statusOf(scan("devops-engineer", ["Basic exposure to AWS and Azure cloud"]), "aws")).toBe("weak");
+    expect(statusOf(scan("data-scientist", ["Built a churn model with machine learning on 2 lakh customer rows"]), "machine-learning")).toBe("met");
+  });
+
+  it("doesn't read ordinary words as skills", () => {
+    expect(statusOf(scan("devops-engineer", ["Tracked 300 shipping containers per week at JNPT port"]), "docker")).toBe("missing");
+    expect(statusOf(scan("data-scientist", ["Shared weekly RAG status reports"]), "llm-apps")).not.toBe("met");
+    expect(statusOf(scan("frontend-developer", ["Had to react quickly to customer escalations"]), "react")).toBe("missing");
+    expect(statusOf(scan("full-stack-developer", ["Coordinated Blue Dart Express shipments"]), "nodejs")).toBe("missing");
+    expect(statusOf(scan("devops-engineer", ["Supported the Shell India procurement team"]), "linux")).toBe("missing");
+    expect(statusOf(scan("java-backend-developer", ["Joined the platform team in spring 2023"]), "spring-boot")).toBe("missing");
+    // Listed by the parser, the same words count.
+    const listed = profile({ skills: [{ name: "React", lastUsed: null, evidence: ["Built React dashboards for 3 clients"] }] });
+    expect(statusOf(matchProfile(listed, role("frontend-developer"), now), "react")).toBe("met");
+  });
+
+  it("lets a narrower skill show its broader one", () => {
+    expect(statusOf(scan("data-analyst", ["Prepared branch MIS using pivot tables and VLOOKUP every month"]), "excel")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Cleaned 2 lakh rows of loan data with pandas dataframes"]), "python")).toBe("met");
+    expect(statusOf(scan("java-backend-developer", ["Built order services in Spring Boot for 2 million users"]), "java")).toBe("met");
+  });
+
+  it("maps a listed skill written differently from the taxonomy, so it is weak rather than missing", () => {
+    const p = profile({
+      skills: [
+        { name: "MS-Excel", lastUsed: null, evidence: ["MS-Excel"] },
+        { name: "Python (Pandas, NumPy)", lastUsed: null, evidence: ["Python (Pandas, NumPy)"] },
+      ],
+    });
+    const r = matchProfile(p, dataAnalyst, now);
+    expect(statusOf(r, "excel")).toBe("weak");
+    expect(statusOf(r, "python")).toBe("weak");
+  });
+
+  it("dates an older job with no end date by the next job's start, and compares to the month", () => {
+    const p = profile({
+      roles: [job(["Owned the sales dashboards"], "2021-04"), job(["Wrote SQL queries for branch reports"], "2012-06", null)],
+    });
+    expect(statusOf(matchProfile(p, dataAnalyst, now), "sql")).toBe("outdated");
+    const ended = (end: string) => profile({ roles: [job(["Wrote SQL queries for branch reports"], "2019-01", end)] });
+    expect(statusOf(matchProfile(ended("2022-01"), dataAnalyst, now), "sql")).toBe("outdated");
+    expect(statusOf(matchProfile(ended("2023-01"), dataAnalyst, now), "sql")).toBe("met");
+  });
+
+  it("dates a parser quote that is part of a longer bullet by that bullet's job", () => {
+    const p = profile({
+      roles: [job(["Built Python scripts to merge branch reports for 40 branches"], "2014-01", "2019-03")],
+      skills: [{ name: "Python", lastUsed: null, evidence: ["Built Python scripts to merge branch reports"] }],
+    });
+    expect(statusOf(matchProfile(p, dataAnalyst, now), "python")).toBe("outdated");
+  });
+
+  it("uses the newest job when a skill appears in both an old and a recent one", () => {
+    const p = profile({
+      roles: [job(["Wrote SQL for the loan book"], "2023-01"), job(["Wrote SQL queries for branch reports"], "2012-01", "2016-01")],
+    });
+    expect(matchProfile(p, dataAnalyst, now).met.find((s) => s.skillId === "sql")?.resumeQuote).toBe("Wrote SQL for the loan book");
   });
 });
