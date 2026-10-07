@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { afterAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import type { Profile } from "@/lib/schemas";
 import { ingestResume } from "./ingest";
@@ -39,7 +39,10 @@ const client = {
 describe.skipIf(!db)("resume store (database)", () => {
   const session = `store-${Date.now()}`;
   const created: string[] = [];
+  // Spend from earlier runs against the same database must not trip the budget.
+  beforeAll(() => vi.stubEnv("PARSE_DAILY_BUDGET_USD", "1000000"));
   afterAll(async () => {
+    vi.unstubAllEnvs();
     if (created.length) await db!.delete(schema.resumes).where(inArray(schema.resumes.id, created));
     await sqlClient!.end();
   });
