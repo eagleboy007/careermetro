@@ -31,11 +31,35 @@ export async function getResumeForSession(resumeId: string, sessionId: string, d
   return row ? { resumeId, version: row.version, confirmed: row.confirmed, profile: row.data } : null;
 }
 
-/** FR-6: saves the user's corrected profile as a new confirmed version. Returns the new version, or null if not theirs. */
-export async function confirmProfile(resumeId: string, sessionId: string, profile: Profile, db: Db = getDb()): Promise<number | null> {
+/** A resume keeps at most this many profile versions; each save adds one. */
+export const MAX_PROFILE_VERSIONS = 20;
+
+export type ConfirmResult = { ok: true; version: number } | { ok: false; reason: "not_found" | "conflict" | "too_many" };
+
+/**
+ * FR-6: saves the user's corrected profile as a new confirmed version.
+ * Evidence quotes and highlights are kept only if the parsed profile already had them: the user can remove
+ * them but not add new ones, so every quote still comes from the resume (AI-5).
+ */
+export async function confirmProfile(resumeId: string, sessionId: string, profile: Profile, db: Db = getDb()): Promise<ConfirmResult> {
   const current = await getResumeForSession(resumeId, sessionId, db);
-  if (!current) return null;
+  if (!current) return { ok: false, reason: "not_found" };
+  if (current.version >= MAX_PROFILE_VERSIONS) return { ok: false, reason: "too_many" };
+
+  const known = new Set([...current.profile.roles.flatMap((r) => r.highlights), ...current.profile.skills.flatMap((s) => s.evidence)]);
+  const data: Profile = {
+    ...profile,
+    roles: profile.roles.map((r) => ({ ...r, highlights: r.highlights.filter((h) => known.has(h)) })),
+    skills: profile.skills.map((s) => ({ ...s, evidence: s.evidence.filter((q) => known.has(q)) })),
+  };
   const version = current.version + 1;
-  await db.insert(profiles).values({ resumeId, version, data: profile, confirmedByUser: true });
-  return version;
+  try {
+    await db.insert(profiles).values({ resumeId, version, data, confirmedByUser: true });
+  } catch (error) {
+    // 23505: another save took this version number first, for example from a second tab.
+    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
+    if (code === "23505") return { ok: false, reason: "conflict" };
+    throw error;
+  }
+  return { ok: true, version };
 }

@@ -4,6 +4,7 @@ import { FileText, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { readApiReply } from "@/lib/api-reply";
 
 type Mode = "file" | "text";
 type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string };
@@ -38,8 +39,8 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
     if (demo) return;
     try {
       const res = await fetch("/api/resume", { method: "POST", body: form });
-      const data = (await res.json()) as { ok: boolean; resumeId?: string; error?: string };
-      if (data.ok && data.resumeId) {
+      const data = await readApiReply(res);
+      if (data.ok && typeof data.resumeId === "string") {
         router.push(`/resume/${data.resumeId}`);
         return;
       }
@@ -53,13 +54,12 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
-      <div role="tablist" aria-label="How to add your resume" className="flex gap-2">
+      <div role="group" aria-label="How to add your resume" className="flex gap-2">
         {(["file", "text"] as const).map((m) => (
           <button
             key={m}
             type="button"
-            role="tab"
-            aria-selected={mode === m}
+            aria-pressed={mode === m}
             onClick={() => setMode(m)}
             className={`rounded-full px-3.5 py-1.5 text-sm font-medium ${
               mode === m ? "bg-ink text-bg" : "border border-line text-muted hover:text-ink"
@@ -109,7 +109,7 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
       )}
 
       <label className="flex items-start gap-2.5 text-sm text-muted">
-        <input name="consent" value="yes" type="checkbox" required className="mt-1 accent-[var(--accent)]" />
+        <input name="consent" value="yes" type="checkbox" required className="mt-1 accent-[var(--ink)]" />
         <span>
           I agree that CareerMetro reads my resume to show my skill gaps. Phone, email and address are removed first. The rest
           is sent to Anthropic, our AI provider, and is never used to train models. Without an account, everything is deleted

@@ -63,15 +63,30 @@ describe.skipIf(!db)("resume store (database)", () => {
 
   it("saves a confirmed profile as a new version", async () => {
     const id = await upload(`${session}-c`);
-    expect(await confirmProfile(id, `${session}-c`, parsed, db!)).toBe(2);
+    expect(await confirmProfile(id, `${session}-c`, parsed, db!)).toEqual({ ok: true, version: 2 });
     expect(await getResumeForSession(id, `${session}-c`, db!)).toMatchObject({ version: 2, confirmed: true });
-    expect(await confirmProfile(id, `${session}-x`, parsed, db!)).toBeNull();
+    expect(await confirmProfile(id, `${session}-x`, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
+  });
+
+  it("keeps only evidence the parsed profile already had", async () => {
+    const id = await upload(`${session}-e`);
+    const edited: Profile = { ...parsed, skills: [{ name: "SQL", lastUsed: null, evidence: ["Invented quote"] }] };
+    await confirmProfile(id, `${session}-e`, edited, db!);
+    const saved = await getResumeForSession(id, `${session}-e`, db!);
+    expect(saved?.profile.skills).toEqual([{ name: "SQL", lastUsed: null, evidence: [] }]);
+  });
+
+  it("reports a conflict when two saves race for the same version", async () => {
+    const id = await upload(`${session}-r`);
+    const results = await Promise.all([1, 2, 3].map(() => confirmProfile(id, `${session}-r`, parsed, db!)));
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    expect(results.filter((r) => !r.ok && r.reason === "conflict").length).toBeGreaterThan(0);
   });
 
   it("hides anonymous resumes older than 24 hours before cleanup runs", async () => {
     const id = await upload(`${session}-old`);
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, id));
     expect(await getResumeForSession(id, `${session}-old`, db!)).toBeNull();
-    expect(await confirmProfile(id, `${session}-old`, parsed, db!)).toBeNull();
+    expect(await confirmProfile(id, `${session}-old`, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
   });
 });
