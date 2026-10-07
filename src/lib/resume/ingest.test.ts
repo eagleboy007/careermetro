@@ -38,7 +38,11 @@ describe.skipIf(!db)("ingestResume (database)", () => {
   const session = `test-${Date.now()}`;
   const created: string[] = [];
 
-  beforeEach(() => vi.unstubAllEnvs());
+  beforeEach(() => {
+    vi.unstubAllEnvs();
+    // Spend from earlier runs against the same database must not trip the budget in unrelated tests.
+    vi.stubEnv("PARSE_DAILY_BUDGET_USD", "1000000");
+  });
   afterAll(async () => {
     if (created.length) await db!.delete(schema.resumes).where(inArray(schema.resumes.id, created));
     await sqlClient!.end();
@@ -146,7 +150,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c });
     release();
     await holder;
-    expect(result).toMatchObject({ ok: false, status: 503, code: "busy" });
+    expect(result).toMatchObject({ ok: false, status: 503, code: "crowded" });
     expect(create).not.toHaveBeenCalled();
   });
 
