@@ -1,0 +1,63 @@
+{
+  "id": "database-architect-oracle-dba",
+  "roleSlug": "database-architect",
+  "persona": "Senior Oracle DBA aiming for a cloud database architect role",
+  "resumeText": "Suresh Iyer | Bengaluru | suresh.iyer@example.com\n\nEXPERIENCE\nLead Database Administrator, Kaveri Bank Technology Centre, Bengaluru (2019 - present)\n- Run 40 Oracle 19c databases including Oracle RAC clusters for core banking.\n- Designed Data Guard replication and tested disaster recovery twice a year.\n- Tune slow PL/SQL and SQL using execution plans and new indexes; cut batch time by 35%.\n- Designed the schema and ERD for a new loan origination system.\n- Set up database auditing and data masking for test copies of customer data.\n- Automate backups with RMAN and shell scripts on Linux.\n\nDatabase Administrator, Nilgiri Software Services (2017 - 2019)\n- Maintained SQL Server and MySQL databases for retail clients.\n\nEDUCATION\nMCA, Bangalore University, 2016\n\nCERTIFICATIONS\nOracle Database Administration Certified Professional\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "oracle-database",
+        "quote": "Run 40 Oracle 19c databases including Oracle RAC clusters"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Designed Data Guard replication and tested disaster recovery"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "using execution plans and new indexes"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Tune slow PL/SQL and SQL"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed the schema and ERD for a new loan origination system"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Designed the schema"
+      },
+      {
+        "skillId": "database-security",
+        "quote": "Set up database auditing and data masking"
+      },
+      {
+        "skillId": "linux",
+        "quote": "RMAN and shell scripts on Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cloud-databases",
+        "status": "missing"
+      },
+      {
+        "skillId": "nosql",
+        "status": "missing"
+      },
+      {
+        "skillId": "system-design",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "cloud-data-warehouse",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}
