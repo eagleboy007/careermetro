@@ -6,7 +6,7 @@ import { recordAiCalls } from "@/lib/ai/log";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
-import { parseResume, type ParseClient } from "./parse";
+import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
 
 export const RESUME_POLICY_VERSION = "2026-10-draft";
 export const LIMITS = {
@@ -34,6 +34,8 @@ export type IngestInput = {
   as?: "text";
   sessionId: string;
   clientHash: string;
+  /** When the request began, so extraction and waiting for the lock come out of the parse deadline. */
+  startedAt?: number;
 };
 
 export type IngestResult =
@@ -47,7 +49,14 @@ const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T0
 
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-async function checkLimits(tx: Tx, sessionId: string, hash: string): Promise<IngestResult | null> {
+const BUSY: IngestResult = {
+  ok: false,
+  status: 503,
+  code: "busy",
+  message: "We've reached today's capacity for the beta. Please try again tomorrow.",
+};
+
+async function checkLimits(tx: Db | Tx, sessionId: string, hash: string): Promise<IngestResult | null> {
   const recent = new Date(Date.now() - IN_FLIGHT_MINUTES * 60 * 1000);
   // Uploads still being parsed are rows already, so they count toward the per-session and per-client limits.
   const [[bySession], [byClient], [spent], [inFlight]] = await Promise.all([
@@ -60,30 +69,16 @@ async function checkLimits(tx: Tx, sessionId: string, hash: string): Promise<Ing
     return { ok: false, status: 429, code: "rate_limited", message: "You've reached today's limit for resume uploads. Please try again tomorrow." };
   }
   if (Number(spent.usd ?? 0) + inFlight.n * LIMITS.inFlightParseUsd >= LIMITS.dailyBudgetUsd()) {
-    return { ok: false, status: 503, code: "busy", message: "We've reached today's capacity for the beta. Please try again tomorrow." };
+    return BUSY;
   }
   return null;
 }
 
-/**
- * The upload flow (FR-4 to FR-6): read text in memory, mask, check limits and reserve a row, parse, verify and
- * store an unconfirmed profile. Resume text is never stored or logged; only the verified profile is kept.
- */
-export async function ingestResume(input: IngestInput, deps: { db?: Db; client?: ParseClient } = {}): Promise<IngestResult> {
-  const db = deps.db ?? getDb();
-
-  let extracted;
-  try {
-    extracted = await extractResumeText(input.bytes, input.as);
-  } catch (error) {
-    if (error instanceof ResumeError) {
-      return { ok: false, status: error.code === "too_large" ? 413 : 422, code: error.code, message: error.message };
-    }
-    throw error;
-  }
-  const masked = maskPii(extracted.text).text;
-
-  const reserved = await db.transaction(async (tx) => {
+/** Checks limits and inserts the consent and a "parsing" resume row under one lock. Returns the resume id. */
+function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestResult | string> {
+  return db.transaction(async (tx) => {
+    // Waiting uploads hold a pooled connection, so give up quickly rather than queue.
+    await tx.execute(sql`set local lock_timeout = '5s'`);
     await tx.execute(sql`select pg_advisory_xact_lock(${RESERVE_LOCK_KEY})`);
     const limited = await checkLimits(tx, input.sessionId, input.clientHash);
     if (limited) return limited;
@@ -98,18 +93,57 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
         anonymousSessionId: input.sessionId,
         clientHash: input.clientHash,
         consentId: consent.id,
-        mimeType: MIME[extracted.type],
+        mimeType: MIME[type],
         sizeBytes: input.bytes.length,
         status: "parsing",
       })
       .returning({ id: resumes.id });
     return resume.id;
   });
+}
+
+const pgCode = (error: unknown): string | undefined => {
+  const cause = error instanceof Error ? (error.cause as { code?: string } | undefined) : undefined;
+  return cause?.code ?? (error as { code?: string } | null)?.code;
+};
+
+/**
+ * The upload flow (FR-4 to FR-6): read text in memory, mask, check limits and reserve a row, parse, verify and
+ * store an unconfirmed profile. Resume text is never stored or logged; only the verified profile is kept.
+ */
+export async function ingestResume(input: IngestInput, deps: { db?: Db; client?: ParseClient } = {}): Promise<IngestResult> {
+  const db = deps.db ?? getDb();
+  const startedAt = input.startedAt ?? Date.now();
+
+  // A quick check without the lock, so a client already over its limit can't make us extract file after file.
+  const early = await checkLimits(db, input.sessionId, input.clientHash);
+  if (early) return early;
+
+  let extracted;
+  try {
+    extracted = await extractResumeText(input.bytes, input.as);
+  } catch (error) {
+    if (error instanceof ResumeError) {
+      return { ok: false, status: error.code === "too_large" ? 413 : 422, code: error.code, message: error.message };
+    }
+    throw error;
+  }
+  const masked = maskPii(extracted.text).text;
+
+  let reserved;
+  try {
+    reserved = await reserve(db, input, extracted.type);
+  } catch (error) {
+    // 55P03 is lock_not_available: too many uploads at once. Treat it like a busy day rather than a crash.
+    if (pgCode(error) === "55P03") return BUSY;
+    throw error;
+  }
   if (typeof reserved !== "string") return reserved;
   const resumeId = reserved;
 
   try {
-    const result = await parseResume(masked, { resumeId, purpose: "anonymous-upload" }, deps.client);
+    const deadline = PARSE_DEADLINE_MS - (Date.now() - startedAt);
+    const result = await parseResume(masked, { resumeId, purpose: "anonymous-upload" }, deps.client, deadline);
     const callIds = await recordAiCalls(result.calls, db);
 
     if (!result.ok) {

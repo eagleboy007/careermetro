@@ -117,6 +117,39 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     expect(rows.map((r) => r.status)).toEqual(["failed"]);
   });
 
+  it("refuses an over-limit client before reading the file", async () => {
+    const s = `${session}-early`;
+    const { client: c, create } = client(JSON.stringify(parsed));
+    for (let i = 0; i < LIMITS.perSessionPerDay; i++) {
+      const r = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-${i}` }, { db: db!, client: c });
+      if (r.ok) created.push(r.resumeId);
+    }
+    create.mockClear();
+    // Unreadable bytes would give 422 if they were extracted; the limit answers first.
+    const result = await ingestResume({ bytes: new TextEncoder().encode("GIF89a"), sessionId: s, clientHash: `h-${s}-x` }, { db: db!, client: c });
+    expect(result).toMatchObject({ ok: false, status: 429 });
+  });
+
+  it("answers busy instead of queueing when the reservation lock is held", { timeout: 15_000 }, async () => {
+    const s = `${session}-lock`;
+    const { client: c, create } = client(JSON.stringify(parsed));
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    let locked!: () => void;
+    const isLocked = new Promise<void>((resolve) => (locked = resolve));
+    const holder = sqlClient!.begin(async (tx) => {
+      await tx`select pg_advisory_xact_lock(${0x63_6d_72_73})`;
+      locked();
+      await held;
+    });
+    await isLocked;
+    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c });
+    release();
+    await holder;
+    expect(result).toMatchObject({ ok: false, status: 503, code: "busy" });
+    expect(create).not.toHaveBeenCalled();
+  });
+
   it("pauses parsing once the daily budget is spent", async () => {
     vi.stubEnv("PARSE_DAILY_BUDGET_USD", "0");
     const { client: c, create } = client(JSON.stringify(parsed));
