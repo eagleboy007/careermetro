@@ -2,8 +2,8 @@ import { ingestResume } from "@/lib/resume/ingest";
 import { MAX_RESUME_BYTES } from "@/lib/resume/extract";
 import { clientHash, clientIp, ensureSessionId, isSameOrigin } from "@/lib/session";
 
-// Reading a resume takes one model call of roughly 10 to 30 seconds.
-export const maxDuration = 60;
+// Reading a resume takes one model call of roughly 10 to 40 seconds; parseResume gives up after 100 seconds.
+export const maxDuration = 120;
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 
