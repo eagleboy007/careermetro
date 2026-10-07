@@ -40,3 +40,4 @@ Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surfa
 - `npm run dev` — local app at http://localhost:3000
 - `npm run db:generate` — create a migration after changing `src/db/schema.ts`
 - `npm run db:migrate` — apply migrations to `DATABASE_URL`
+- `npm run eval:parse` — run the parse prompt over `fixtures/evals` with the real API (needs `ANTHROPIC_API_KEY`, about $1)
