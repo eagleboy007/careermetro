@@ -112,7 +112,7 @@ describe("buildGapAnalysis", () => {
     const empty = matchProfile({ ...profile, roles: [], skills: [] }, role, new Date("2026-10-07T00:00:00Z"));
     const a = buildGapAnalysis(empty, null);
     expect(a.gaps).toHaveLength(SHOWN_GAPS);
-    expect(a.gaps.every((g) => g.resumeQuote === null && g.explanation.startsWith("Nothing in your resume shows"))).toBe(true);
+    expect(a.gaps.every((g) => g.resumeQuote === null && g.explanation.startsWith("This role expects you to"))).toBe(true);
     expect(a.readiness.explanation).toContain("rough estimate");
   });
 });

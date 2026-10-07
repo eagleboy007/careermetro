@@ -16,7 +16,9 @@ export function GapCard({ gap }: { gap: Gap }) {
               {gap.resumeQuote}
             </q>
           </>
-        ) : null}
+        ) : (
+          <span>Nothing in your resume shows this.</span>
+        )}
         <span>{gap.explanation}</span>
       </div>
     </article>

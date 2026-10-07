@@ -18,7 +18,8 @@ export function templateExplanation(g: MatchedSkill): string {
     case "outdated":
       return `The latest use of ${g.skillName} on your resume is more than ${YEARS[OUTDATED_AFTER_YEARS] ?? OUTDATED_AFTER_YEARS} years old. ${expects}`;
     default:
-      return `Nothing in your resume shows ${g.skillName}. ${expects}`;
+      // The Gaps card already says nothing in the resume shows it.
+      return expects;
   }
 }
 
@@ -49,6 +50,7 @@ export function buildGapAnalysis(match: MatchResult, explanations: Explanations 
       explanation: explanations?.bySkill.get(g.skillId) ?? templateExplanation(g),
     })),
     metSkillIds: match.met.map((m) => m.skillId),
+    niceToHave: match.niceToHave.map(({ skillId, skillName, status }) => ({ skillId, skillName, status })),
     readiness: {
       headline: readinessHeadline(match),
       explanation: explanations?.readiness ?? templateReadiness(match),

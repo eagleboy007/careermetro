@@ -1,9 +1,8 @@
 "use client";
 
 import { Check, Plus, Quote, X } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
 import type { Profile } from "@/lib/schemas";
 
@@ -247,13 +246,12 @@ export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: s
               <Check size={18} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
               Saved
             </p>
-            <p className="text-sm text-muted">
-              Next you&apos;ll pick a role and see your gaps. That step is being built now. Meanwhile, see{" "}
-              <Link href="/roles" className="underline underline-offset-2 hover:text-ink">
-                what each role asks for
-              </Link>
-              .
-            </p>
+            <p className="text-sm text-muted">Next, pick the role you&apos;re aiming for and see your gaps.</p>
+            {!demo && (
+              <ButtonLink href={`/resume/${resumeId}/role`} className="mt-2 self-start">
+                Pick a role
+              </ButtonLink>
+            )}
           </div>
         ) : (
           <Button type="button" onClick={save} disabled={state.kind === "saving"} className="self-start">
