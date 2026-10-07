@@ -2,6 +2,7 @@ import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { costUsd } from "@/lib/ai/cost";
+import { describeAiError } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { profile as profileSchema, type Profile } from "@/lib/schemas";
@@ -95,8 +96,8 @@ export async function parseResume(
       );
     } catch (error) {
       record(PARSE_MODEL, null, false);
-      // The error's name only: SDK messages are not expected to hold resume text, but nothing here needs them.
-      console.error("parse-resume call failed:", error instanceof Error ? error.name : typeof error);
+      // Never the message: it could echo the request, which holds resume text.
+      console.error("parse-resume call failed:", describeAiError(error));
       return { ok: false, reason: "unavailable", calls };
     }
 

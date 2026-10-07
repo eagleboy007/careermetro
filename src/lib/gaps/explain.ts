@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { costUsd } from "@/lib/ai/cost";
+import { describeAiError } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import type { GapAnalysis } from "@/lib/schemas";
@@ -111,7 +112,7 @@ export async function explainGaps(
       { timeout: TIMEOUT_MS },
     );
   } catch (error) {
-    console.error("explain-gaps call failed:", error instanceof Error ? error.name : typeof error);
+    console.error("explain-gaps call failed:", describeAiError(error));
     return template(record(EXPLAIN_MODEL, null, false));
   }
 
