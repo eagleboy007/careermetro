@@ -9,16 +9,20 @@ export type Explanations = { readiness: string; bySkill: Map<string, string> };
 
 /** A plain sentence for a gap, used when the model's explanation is not available. */
 export function templateExplanation(g: MatchedSkill): string {
-  const expects = g.requirement.replace(/\.$/, "");
+  // Role expectations are written as instructions ("Write user stories..."), so they follow "expects you to".
+  const task = g.requirement.replace(/\.$/, "").replace(/^(\p{Lu})(?=\p{Ll})/u, (c) => c.toLowerCase());
+  const expects = `This role expects you to ${task}.`;
   switch (g.status) {
     case "weak":
-      return `Your resume lists ${g.skillName} but shows no example of using it. This role expects: ${expects}.`;
+      return `Your resume names ${g.skillName} but shows no example of using it. ${expects}`;
     case "outdated":
-      return `Your resume last shows ${g.skillName} more than ${OUTDATED_AFTER_YEARS} years ago. This role expects: ${expects}.`;
+      return `The latest use of ${g.skillName} on your resume is more than ${YEARS[OUTDATED_AFTER_YEARS] ?? OUTDATED_AFTER_YEARS} years old. ${expects}`;
     default:
-      return `Nothing in your resume shows ${g.skillName}. This role expects: ${expects}.`;
+      return `Nothing in your resume shows ${g.skillName}. ${expects}`;
   }
 }
+
+const YEARS: Record<number, string> = { 3: "three", 4: "four", 5: "five" };
 
 export function readinessHeadline(match: MatchResult): string {
   const { requiredMet, requiredTotal } = match.readiness;
@@ -35,7 +39,7 @@ export function templateReadiness(match: MatchResult): string {
 /** The stored and displayed analysis: the matcher's decisions with the model's words, or template words. */
 export function buildGapAnalysis(match: MatchResult, explanations: Explanations | null): GapAnalysis {
   return gapAnalysis.parse({
-    roleProfileId: match.roleSlug,
+    roleSlug: match.roleSlug,
     gaps: match.gaps.slice(0, SHOWN_GAPS).map((g) => ({
       skillId: g.skillId,
       skillName: g.skillName,

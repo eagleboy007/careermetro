@@ -11,7 +11,7 @@ import type { MatchResult } from "./match";
 
 export const EXPLAIN_MODEL = "claude-opus-5-5";
 /** The Gaps page waits on this call, so it gets one short attempt and the template covers any failure. */
-const TIMEOUT_MS = 30_000;
+const TIMEOUT_MS = 15_000;
 
 export type ExplainClient = Pick<Anthropic, "beta">;
 
@@ -38,7 +38,8 @@ export function wrapAnalysis(match: MatchResult, roleTitle: string): string {
       roleExpects: g.requirement,
     })),
   };
-  const json = JSON.stringify(data, null, 2).replace(/<\/?analysis>/gi, (tag) => tag.replace("<", "&lt;").replace(">", "&gt;"));
+  // Every "<" becomes a JSON escape, so no tag variant inside a quote can end the block; the JSON still parses.
+  const json = JSON.stringify(data, null, 2).replace(/</g, "\\u003c");
   return `<analysis>\n${json}\n</analysis>`;
 }
 
