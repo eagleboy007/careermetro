@@ -9,6 +9,7 @@ const fail = (status: number, error: string) => Response.json({ ok: false, error
 
 /** Upload a resume as a file or pasted text (FR-4). Responds with the id of the parsed, unconfirmed resume. */
 export async function POST(request: Request) {
+  const startedAt = Date.now();
   if (!isSameOrigin(request)) return fail(403, "Please upload from the CareerMetro website.");
 
   const declared = Number(request.headers.get("content-length") ?? 0);
@@ -33,7 +34,16 @@ export async function POST(request: Request) {
   }
 
   const sessionId = await ensureSessionId();
-  const result = await ingestResume({ bytes, as, sessionId, clientHash: clientHash(clientIp(request)) });
+  let result;
+  try {
+    result = await ingestResume({ bytes, as, sessionId, clientHash: clientHash(clientIp(request)), startedAt });
+  } catch (error) {
+    // Database errors carry query parameters, which can hold profile text quoted from the resume.
+    // Log only the error's name and code, never its message.
+    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
+    console.error("resume upload failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    return fail(500, "Something went wrong reading your resume. Please try again.");
+  }
   if (!result.ok) return fail(result.status, result.message);
   return Response.json({ ok: true, resumeId: result.resumeId });
 }
