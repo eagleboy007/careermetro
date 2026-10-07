@@ -22,8 +22,8 @@ jobs:
     steps:
       - name: Check /api/health
         env:
-          # PRODUCTION_URL (a repository variable) is the public domain; without it, the deploy's own URL is used.
-          SITE: ${{ inputs.url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url }}
+          # The public domain, which Vercel Deployment Protection doesn't cover. PRODUCTION_URL (a repository variable) overrides it.
+          SITE: ${{ inputs.url || vars.PRODUCTION_URL || 'https://careermetro.vercel.app' }}
           # Only needed if Vercel Deployment Protection covers the URL above.
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: |
@@ -36,4 +36,5 @@ jobs:
           fi
           echo "HTTP $code: $body"
           echo "Health of ${SITE}: HTTP $code: $body" >> "$GITHUB_STEP_SUMMARY"
-          test "$code" = 200
+          # An annotation, so the result can be read from the checks API without downloading logs.
+          if [ "$code" = 200 ]; then echo "::notice title=Health::HTTP $code: $body"; else echo "::error title=Health::HTTP $code: $body"; exit 1; fi
