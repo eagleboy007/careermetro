@@ -1,11 +1,11 @@
 name: Migrate database
 
-# Applies pending Drizzle migrations to the Supabase database after a merge to main.
+# Applies pending Drizzle migrations, then loads skills and role profiles, after a merge to main.
 # Needs the repository secret DATABASE_MIGRATION_URL (Supabase session pooler, port 5432).
 on:
   push:
     branches: [main]
-    paths: ["drizzle/**"]
+    paths: ["drizzle/**", "src/content/**", "scripts/seed-content.mjs"]
   workflow_dispatch:
 
 concurrency:
@@ -34,4 +34,6 @@ jobs:
         if: env.DATABASE_URL != ''
         run: node scripts/check-database-url.mjs
       - run: npm run db:migrate
+        if: env.DATABASE_URL != ''
+      - run: npm run db:seed
         if: env.DATABASE_URL != ''
