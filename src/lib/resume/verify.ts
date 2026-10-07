@@ -1,13 +1,19 @@
 import type { Profile } from "@/lib/schemas";
 
-/** Lowercases and collapses whitespace and bullet symbols so a quote matches however the text was wrapped. */
+/**
+ * Lowercases and collapses whitespace and bullet symbols so a quote matches however the text was wrapped.
+ * NFKC folds PDF ligatures ("ﬁ") and the styled bold or italic letters some templates use into plain letters,
+ * and a full stop after a word is dropped so "Pvt. Ltd." matches "Pvt Ltd".
+ */
 export function normalizeForMatch(text: string): string {
   return text
+    .normalize("NFKC")
     .toLowerCase()
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, '"')
     .replace(/[–—]/g, "-")
     .replace(/(^|\n)\s*[-•*▪●◦]\s*/g, "$1")
+    .replace(/(\p{L})\.(?=\s|,|$)/gu, "$1")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -24,15 +30,20 @@ export function containsPhrase(haystack: string, needle: string): boolean {
   const needsStart = WORD.test(needle[0]);
   const needsEnd = WORD.test(needle[needle.length - 1]);
   for (let at = haystack.indexOf(needle); at >= 0; at = haystack.indexOf(needle, at + 1)) {
-    const before = at > 0 ? haystack[at - 1] : "";
-    const after = haystack[at + needle.length] ?? "";
+    // Read whole code points, so a letter outside the Basic Multilingual Plane counts as one character.
+    const before = Array.from(haystack.slice(Math.max(0, at - 2), at)).at(-1) ?? "";
+    const next = haystack.codePointAt(at + needle.length);
+    const after = next === undefined ? "" : String.fromCodePoint(next);
     if ((!needsStart || !WORD.test(before)) && (!needsEnd || !WORD.test(after))) return true;
   }
   return false;
 }
 
-/** How many consecutive non-blank lines a role's title and employer, or a degree and its institution, may span. */
-const PAIR_WINDOW = 3;
+/**
+ * How many consecutive non-blank lines a role's title and employer, or a degree and its institution, may span.
+ * Six covers headers like "Employer / City / Dates / Title" with room to spare.
+ */
+const PAIR_WINDOW = 6;
 
 export type VerifyReport = {
   /** Skills removed because none of their evidence, nor their name, appears in the resume. */
@@ -70,8 +81,13 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
       return false;
     });
 
-  const roles = parsed.roles.flatMap((r) => {
-    if (!foundTogether(r.title, r.employer)) {
+  // A later title at an employer already confirmed by a nearby title (a promotion listed further down) only
+  // needs the title itself to be in the resume.
+  const paired = parsed.roles.map((r) => foundTogether(r.title, r.employer));
+  const confirmedEmployers = new Set(parsed.roles.filter((_, i) => paired[i]).map((r) => normalizeForMatch(r.employer)));
+  const roles = parsed.roles.flatMap((r, i) => {
+    const promotion = confirmedEmployers.has(normalizeForMatch(r.employer)) && found(r.title);
+    if (!paired[i] && !promotion) {
       report.droppedRoles++;
       return [];
     }

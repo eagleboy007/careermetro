@@ -71,6 +71,9 @@ Built reports
 
 Projects
 Weekly dashboards
+Monthly reviews
+Store visits
+Stock reports
 Volunteer at Pune Food Bank
 Sales forecasts`;
     const parsed: Profile = {
@@ -86,6 +89,45 @@ Sales forecasts`;
     const { profile, report } = verifyProfile(parsed, text);
     expect(profile.roles.map((r) => r.employer)).toEqual(["Example Retail Pvt Ltd"]);
     expect(report.droppedRoles).toBe(1);
+  });
+
+  it("keeps roles from common Indian resume layouts", () => {
+    const text = `Infosys Limited
+Bengaluru, Karnataka
+Jan 2020 - Present
+Senior Systems Engineer
+- Migrated 40 batch jobs to Spark
+- Cut nightly run time by 2 hours
+- Mentored 3 new joiners
+- Wrote runbooks for the support team
+- Automated release notes
+Systems Engineer
+- Supported the payments platform
+Tata Consultancy Services Ltd.
+Pune | Jun 2018 - Dec 2019
+Assistant Systems Engineer`;
+    const role = (title: string, employer: string) => ({ title, employer, start: null, end: null, highlights: [] });
+    const parsed: Profile = {
+      ...base,
+      roles: [
+        role("Senior Systems Engineer", "Infosys Limited"),
+        role("Systems Engineer", "Infosys Limited"),
+        role("Assistant Systems Engineer", "Tata Consultancy Services Ltd"),
+        role("Team Lead", "Infosys Limited"),
+      ],
+      skills: [],
+      education: [],
+      certifications: [],
+    };
+    const { profile, report } = verifyProfile(parsed, text);
+    expect(profile.roles.map((r) => r.title)).toEqual(["Senior Systems Engineer", "Systems Engineer", "Assistant Systems Engineer"]);
+    expect(report.droppedRoles).toBe(1);
+  });
+
+  it("matches ligatures, styled letters and letters outside the BMP", () => {
+    expect(containsPhrase(normalizeForMatch("AWS Certiﬁed"), normalizeForMatch("aws certified"))).toBe(true);
+    expect(containsPhrase(normalizeForMatch("𝐏𝐲𝐭𝐡𝐨𝐧, SQL"), "python")).toBe(true);
+    expect(containsPhrase("𝒜go", "go")).toBe(false);
   });
 
   it("treats symbol edges such as C++ and .NET as boundaries", () => {
