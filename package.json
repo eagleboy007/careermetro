@@ -13,6 +13,7 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "drizzle-orm": "^0.45.3",
     "lucide-react": "^1.52.0",
     "mammoth": "^1.13.0",
