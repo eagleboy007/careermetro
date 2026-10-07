@@ -20,7 +20,7 @@ export type HealthDeps = {
   record: (call: AiCallRecord) => Promise<void>;
 };
 
-/** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key or error messages. */
+/** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
   const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
   return { ok: database === "ok" && claude === "ok", database, claude, ...(error ? { claudeError: error } : {}) };
@@ -49,7 +49,12 @@ async function checkClaude(deps: HealthDeps): Promise<{ status: ClaudeStatus; er
   } catch (error) {
     status = classify(error);
     failure = describeAiError(error);
-    if (error instanceof APIError && error.status === 400) failure += ` reason=${error.message.slice(0, 300)}`;
+    if (error instanceof APIError && error.status === 400) {
+      // The API's own message, not the SDK's, which repeats the whole JSON body.
+      const body = error.error as { error?: { message?: unknown } } | undefined;
+      const reason = typeof body?.error?.message === "string" ? body.error.message : error.message;
+      failure += ` reason=${reason.slice(0, 300)}`;
+    }
     console.error("health: claude check failed:", failure);
     call = { model: HEALTH_MODEL, inputTokens: 0, outputTokens: 0, costUsd: 0 };
   }
