@@ -160,4 +160,61 @@ describe("matchProfile", () => {
     });
     expect(matchProfile(p, dataAnalyst, now).met.find((s) => s.skillId === "sql")?.resumeQuote).toBe("Wrote SQL for the loan book");
   });
+
+  it("never reads a short word inside a longer skill name as a skill", () => {
+    const named = (name: string, quote: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [quote] }] }), role(slug), now), id);
+    expect(named("Go-to-market strategy", "Led go-to-market strategy for 3 product launches", "devops-engineer", "go")).toBe("missing");
+    expect(named("Lambda expressions", "Used lambda expressions to simplify batch jobs", "devops-engineer", "aws")).toBe("missing");
+    expect(named("React Native", "Built a React Native app for field agents", "frontend-developer", "react")).toBe("missing");
+    expect(named("Spring Batch", "Ran Spring Batch jobs for nightly settlement", "java-backend-developer", "spring-boot")).toBe("missing");
+  });
+
+  it("reads short bullets and 'Worked on' bullets as use", () => {
+    expect(statusOf(scan("data-analyst", ["Built Power BI dashboards"]), "power-bi")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Created Excel pivot tables"]), "excel")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Did SQL query optimization"]), "sql")).toBe("met");
+    expect(statusOf(scan("java-backend-developer", ["Worked on Java, Spring Boot, Hibernate, MySQL, Kafka, Docker, Kubernetes"]), "java")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Migrated legacy tools: replaced Excel macros with Python scripts"]), "python")).toBe("met");
+  });
+
+  it("reads skills summaries as lists", () => {
+    expect(isListLine("Proficient in MS Office (Word, Excel, PowerPoint)")).toBe(true);
+    expect(isListLine("Key skills used: Selenium, TestNG")).toBe(true);
+    expect(isListLine("Technical Skills: Java, Spring Boot, Hibernate, MySQL, AWS")).toBe(true);
+  });
+
+  it("doesn't let a generic alias of a narrower skill show the broader one", () => {
+    expect(statusOf(scan("data-analyst", ["Performance tuning of JVM for Java applications"]), "sql")).toBe("missing");
+    expect(statusOf(scan("data-analyst", ["Worked with dataframes in Spark using Scala"]), "python")).toBe("missing");
+    expect(statusOf(scan("data-analyst", ["Ran pricing experimentation with sales team"]), "statistics")).toBe("missing");
+  });
+
+  it("takes the list order as newest first when a start date is missing", () => {
+    const p = profile({ roles: [job(["Owned the sales dashboards"], null as unknown as string), job(["Wrote SQL queries for branch reports"], "2012-06")] });
+    expect(statusOf(matchProfile(p, dataAnalyst, now), "sql")).toBe("outdated");
+  });
+
+  it("only demotes the clause that is about learning", () => {
+    expect(statusOf(scan("data-analyst", ["Built SQL dashboards for customers interested in home loans"]), "sql")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Mentored aspiring analysts on SQL and Power BI"]), "sql")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Delivered a course on Python to 200 interns"]), "python")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Learning and Development: ran Python training for 50 freshers"]), "python")).toBe("met");
+    const r = scan("data-analyst", ["Automated MIS in Python; now learning Power BI"]);
+    expect(statusOf(r, "python")).toBe("met");
+    expect(statusOf(r, "power-bi")).toBe("weak");
+  });
+
+  it("finds AWS from S3 in a sentence", () => {
+    expect(statusOf(scan("devops-engineer", ["Wrote Lambda functions for S3 events"]), "aws")).toBe("met");
+  });
+
+  it("matches a long resume quickly", () => {
+    const highlights = Array.from({ length: 60 }, (_, i) => `Built ${i} Power BI dashboards and SQL pipelines in Python for the retail sales team across 40 stores`);
+    const skills = Array.from({ length: 40 }, (_, i) => ({ name: `Skill ${i}`, lastUsed: null, evidence: [highlights[i]] }));
+    const p = profile({ roles: [job(highlights)], skills });
+    const t = performance.now();
+    matchProfile(p, dataAnalyst, now);
+    expect(performance.now() - t).toBeLessThan(500);
+  });
 });

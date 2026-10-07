@@ -46,6 +46,9 @@ type Evidence = { quote: string | null; listedOnly: boolean; months: number | nu
 
 const skillById = new Map(taxonomy.map((s) => [s.id, s]));
 
+/** Long enough to trust in a sentence: three letters, or a symbol or digit as in "C++", ".NET" or "S3". */
+const distinctive = (t: string) => t.replace(/[^\p{L}\p{N}]/gu, "").length >= 3 || /[+#.\d]/.test(t);
+
 /**
  * Terms safe to look for in free text. One- and two-letter names such as "R", "Go" or "C", and terms marked
  * ambiguous because they are also ordinary words ("react", "containers"), are only trusted when the parser
@@ -57,8 +60,7 @@ function scanTerms(skillId: string): string[] {
   const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
   return [s.name, ...s.aliases]
     .map(normalizeForMatch)
-    .filter((t) => !ambiguous.has(t))
-    .filter((t) => t.replace(/[^\p{L}\p{N}]/gu, "").length >= 3 || /[+#.]/.test(t));
+    .filter((t) => !ambiguous.has(t) && distinctive(t));
 }
 
 /** "2022" or "2022-03" as months since year 0. A bare year counts as its December, the generous reading. */
@@ -75,11 +77,20 @@ const tokens = (text: string) =>
     .map((t) => t.replace(/\.+$/, ""))
     .filter(Boolean);
 
+type TermTokens = { skillId: string; tokens: string[]; safe: boolean };
+
 /** Every taxonomy term as tokens, longest first, so "power bi" wins over a shorter overlapping term. */
-const termTokens: { skillId: string; tokens: string[] }[] = taxonomy
-  .flatMap((s) => [s.id.replace(/-/g, " "), s.name, ...s.aliases].map((t) => ({ skillId: s.id, tokens: tokens(t) })))
+const termTokens: TermTokens[] = taxonomy
+  .flatMap((s) => {
+    const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
+    return [s.id.replace(/-/g, " "), s.name, ...s.aliases].map((t) => {
+      const n = normalizeForMatch(t);
+      return { skillId: s.id, tokens: tokens(t), safe: !ambiguous.has(n) && distinctive(n) };
+    });
+  })
   .filter((t) => t.tokens.length > 0)
   .sort((a, b) => b.tokens.length - a.tokens.length);
+const safeTermTokens = termTokens.filter((t) => t.safe);
 
 /** Words that say nothing about use, so they don't stop a line from being a plain list of skills. */
 const FILLER = new Set(
@@ -87,12 +98,12 @@ const FILLER = new Set(
 );
 
 /** The taxonomy skills named in a short text, such as a skill name "Python (Pandas, NumPy)", and the words left over. */
-function readTerms(text: string): { skillIds: Set<string>; tokenCount: number; leftover: number } {
+function readTerms(text: string, terms: TermTokens[] = termTokens): { skillIds: Set<string>; tokenCount: number; leftover: number } {
   const words = tokens(text);
   const covered = new Array<boolean>(words.length).fill(false);
   const skillIds = new Set<string>();
   for (let i = 0; i < words.length; i++) {
-    for (const t of termTokens) {
+    for (const t of terms) {
       if (t.tokens.every((w, k) => words[i + k] === w)) {
         skillIds.add(t.skillId);
         t.tokens.forEach((_, k) => (covered[i + k] = true));
@@ -100,39 +111,67 @@ function readTerms(text: string): { skillIds: Set<string>; tokenCount: number; l
       }
     }
   }
-  const leftover = words.filter((w, i) => !covered[i] && !FILLER.has(w)).length;
+  const leftover = words.filter((w, i) => !covered[i] && !FILLER.has(w) && !/^\d+$/.test(w)).length;
   return { skillIds, tokenCount: words.length, leftover };
 }
 
-const LIST_HEADER = /^[^:]{0,40}\b(skills?|tools|technolog(y|ies)|tech stack|languages|software|platforms|frameworks|competenc(y|ies)|expertise|proficien(t|cy)(\s+in)?)\s*:/i;
+/** Bullets start with what the person did: "Built", "Worked on", "Automated". */
+const NOT_ACTIONS = new Set(["skilled", "experienced", "versed", "certified", "specialized", "specialised", "interested", "advanced", "required"]);
+const ACTIONS = new Set("built wrote led ran made did set drove won worked work build write lead run make own owned use used".split(" "));
+function startsWithAction(text: string): boolean {
+  const first = tokens(text)[0] ?? "";
+  return !NOT_ACTIONS.has(first) && (ACTIONS.has(first) || /^\p{L}{3,}ed$/u.test(first));
+}
 
-/**
- * A line that only names skills, such as "SQL, Excel, Power BI" or "Skills: Java, Spring", shows no use of them.
- * A real bullet ("Built CI/CD pipelines using Jenkins/GitHub Actions") has words beyond the skill names.
- */
-export function isListLine(line: string): boolean {
-  if (LIST_HEADER.test(line)) return true;
-  const { tokenCount, leftover } = readTerms(line);
+/** Phrases that open a skills summary rather than describe work: "Proficient in MS Office (Word, Excel)". */
+const SUMMARY_START = /^\s*(proficient (in|with)|skilled (in|with)|well[- ]versed (in|with)|expertise in|knowledge of|key skills( used)?|skills used|tools used|technologies used|tech stack)\b/i;
+/** A label before a colon, as in "Technical skills: Java, SQL" or "Tools: Jira". */
+const LIST_HEADER = /^([^:]{0,40}):\s*([\s\S]*)$/;
+
+function isPlainList(text: string): boolean {
+  if (startsWithAction(text)) return false;
+  const { tokenCount, leftover } = readTerms(text);
   if (tokenCount <= 4 && leftover <= 1) return true;
-  const parts = line.split(/[,|•·;]/).filter((p) => p.trim()).length;
+  const parts = text.split(/[,|•·;]/).filter((p) => p.trim()).length;
   return parts >= 3 && leftover / Math.max(tokenCount, 1) < 0.25;
 }
 
-/** Lines about learning or wanting a skill show interest, not use: "Currently learning Python on NPTEL". */
+/**
+ * A line that only names skills, such as "SQL, Excel, Power BI" or "Skills: Java, Spring", shows no use of them.
+ * A real bullet ("Built CI/CD pipelines using Jenkins/GitHub Actions", "Worked on Java, Spring Boot, Kafka")
+ * starts with what the person did, or has words beyond the skill names.
+ */
+export function isListLine(line: string): boolean {
+  if (startsWithAction(line)) return false;
+  if (SUMMARY_START.test(line)) return true;
+  const header = LIST_HEADER.exec(line);
+  if (header && /\b(skills?|tools|technolog(y|ies)|stack|languages|software|platforms|frameworks|competenc(y|ies)|expertise|proficien(t|cy))\b/i.test(header[1]))
+    return !startsWithAction(header[2]);
+  return isPlainList(line);
+}
+
+/**
+ * Clauses about learning or wanting a skill show interest, not use: "Currently learning Python on NPTEL".
+ * Some phrases only count at the start of a clause, so "Mentored aspiring analysts on SQL" is still use.
+ */
 const LEARNING = new RegExp(
   [
-    "^\\s*learning\\b",
-    "\\b(currently|now|am|presently) (learning|studying)\\b",
-    "\\b(keen|eager|want|wanting|willing|plan|planning|hoping|looking) to (learn|explore|gain|build skills)\\b",
+    "\\b(currently|now|presently|am) (learning|studying)\\b",
+    "\\b(keen|eager|want|wanting|willing|plan|planning|hoping|looking) to (learn|explore)\\b",
     "\\b(basic|some|limited|little) (exposure|knowledge|understanding|familiarity)\\b",
-    "\\bfamiliar(ity)? with\\b",
-    "\\baspiring\\b",
-    "\\binterested in\\b",
     "\\b(enrolled|pursuing|doing|taking) (in )?an? (online )?(course|certification|program)\\b",
-    "\\bcourse (on|in)\\b",
+    "^\\s*(i am |i'm |am )?(learning (?!and\\b|&)|studying\\b|aspiring\\b|interested in\\b|familiar(ity)? with\\b)",
   ].join("|"),
   "i",
 );
+
+/** The clauses of a line: "Automated MIS in Python; now learning Power BI" has two. */
+const clauses = (line: string) => normalizeForMatch(line).split(/;|\.\s|\s\bbut\b\s|,\s*(?=(?:now|currently|also)\b)/);
+
+/** True when the clause that names the skill is about learning it. With no terms, any clause counts. */
+function learningAbout(line: string, terms: string[]): boolean {
+  return clauses(line).some((c) => LEARNING.test(c) && (terms.length === 0 || terms.some((t) => containsPhrase(c, t))));
+}
 
 const statusRank = { missing: 0, outdated: 1, weak: 2, met: 3 } as const;
 
@@ -145,17 +184,21 @@ function withImplied(skillId: string): string[] {
 
 /**
  * When each job's highlights were last true: the end date, now for the current job, and for an older job
- * with no end date the start of the next newer job (the parser gives no end for "Present" and for "not stated").
+ * with no end date the start of the next newer job (the parser gives no end both for "Present" and for
+ * "not stated"). When any start date is missing, the list order decides which job is current, since resumes
+ * list the newest first. A job with no dates at all counts as recent: nothing says it is old.
  */
 function roleMonths(roles: Profile["roles"], nowMonths: number): (number | null)[] {
   const starts = roles.map((r) => toMonths(r.start));
+  const allKnown = starts.every((m) => m !== null);
   const known = starts.filter((m): m is number => m !== null);
-  const newest = known.length ? Math.max(...known) : null;
+  const newest = allKnown && known.length ? Math.max(...known) : null;
   return roles.map((r, i) => {
     if (r.end) return toMonths(r.end);
     const start = starts[i];
-    if (start === null) return i === 0 ? nowMonths : null;
-    if (start === newest) return nowMonths;
+    if (allKnown ? start === newest : i === 0) return nowMonths;
+    if (start === null) return null;
+    if (!allKnown) return start;
     const nextNewer = known.filter((m) => m > start);
     return nextNewer.length ? Math.min(...nextNewer) : start;
   });
@@ -169,42 +212,53 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   const nowMonths = now.getUTCFullYear() * 12 + now.getUTCMonth();
   const evidence = new Map<string, Evidence[]>();
   const add = (skillId: string, e: Evidence) => {
-    for (const id of withImplied(skillId)) evidence.set(id, [...(evidence.get(id) ?? []), e]);
+    for (const id of withImplied(skillId)) {
+      const list = evidence.get(id);
+      if (list) list.push(e);
+      else evidence.set(id, [e]);
+    }
   };
 
   // When was each highlight last true? The same bullet under two jobs keeps the newer date.
   const dated: { text: string; months: number | null }[] = [];
   const ends = roleMonths(profile.roles, nowMonths);
   profile.roles.forEach((r, i) => r.highlights.forEach((h) => dated.push({ text: normalizeForMatch(h), months: ends[i] })));
+  const monthsCache = new Map<string, number | null>();
   const lineMonths = (quote: string): number | null => {
     const q = normalizeForMatch(quote);
+    if (monthsCache.has(q)) return monthsCache.get(q)!;
     const hits = dated.filter((d) => d.text === q || containsPhrase(d.text, q)).map((d) => d.months);
-    if (hits.length === 0 || hits.includes(null)) return null;
-    return Math.max(...(hits as number[]));
+    const months = hits.length === 0 || hits.includes(null) ? null : Math.max(...(hits as number[]));
+    monthsCache.set(q, months);
+    return months;
   };
-  const usage = (line: string) => !isListLine(line) && !LEARNING.test(line);
 
-  // 1. Skills the parser listed, mapped by exact name or alias, else by the taxonomy terms in the name ("MS-Excel").
+  // 1. Skills the parser listed, mapped by exact name or alias, else by the distinctive taxonomy terms that
+  //    make up the whole name ("MS-Excel", "Python (Pandas, NumPy)"), never by a word inside a longer name.
   for (const s of profile.skills) {
     const exact = taxonomyId(s.name);
-    const ids = exact ? [exact] : [...readTerms(s.name).skillIds];
+    const read = exact ? null : readTerms(s.name, safeTermTokens);
+    const ids = exact ? [exact] : read && read.leftover <= 1 ? [...read.skillIds] : [];
     const lastUsed = toMonths(s.lastUsed);
-    const used = s.evidence.filter(usage);
     for (const id of ids) {
+      const terms = [normalizeForMatch(s.name), ...scanTerms(id)];
+      const used = s.evidence.filter((q) => !isListLine(q) && !learningAbout(q, terms));
       if (used.length === 0) add(id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed });
       for (const q of used) add(id, { quote: q, listedOnly: false, months: lastUsed ?? lineMonths(q) });
     }
   }
 
   // 2. Role skills (and their narrower skills) named in highlights or evidence lines, even if the parser didn't list them.
-  const lines = [...profile.roles.flatMap((r) => r.highlights), ...profile.skills.flatMap((s) => s.evidence)].filter((l) => !isListLine(l));
+  const lines = [...new Set([...profile.roles.flatMap((r) => r.highlights), ...profile.skills.flatMap((s) => s.evidence)])]
+    .filter((l) => !isListLine(l))
+    .map((line) => ({ line, text: normalizeForMatch(line) }));
   const wanted = new Set(role.skills.map((rs) => rs.skillId));
   for (const s of taxonomy) {
     if (!withImplied(s.id).some((id) => wanted.has(id))) continue;
     const terms = scanTerms(s.id);
-    for (const line of lines) {
-      const text = normalizeForMatch(line);
-      if (terms.some((t) => containsPhrase(text, t))) add(s.id, { quote: line, listedOnly: LEARNING.test(line), months: lineMonths(line) });
+    for (const { line, text } of lines) {
+      const hit = terms.filter((t) => containsPhrase(text, t));
+      if (hit.length) add(s.id, { quote: line, listedOnly: learningAbout(line, hit), months: lineMonths(line) });
     }
   }
 
