@@ -16,6 +16,8 @@ export const LIMITS = {
   dailyBudgetUsd: () => Number(process.env.PARSE_DAILY_BUDGET_USD ?? 5),
   /** What a parse still running is assumed to cost when checking the budget. A typical one costs 5 to 8 cents. */
   inFlightParseUsd: 0.2,
+  /** How long an upload waits for the reservation lock before answering "crowded". */
+  reserveLockTimeoutMs: 5_000,
 };
 
 /** Serializes the limit check and the reservation, so parallel uploads can't all pass the same count. */
@@ -78,7 +80,7 @@ async function checkLimits(tx: Db | Tx, sessionId: string, hash: string): Promis
 function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestResult | string> {
   return db.transaction(async (tx) => {
     // Waiting uploads hold a pooled connection, so give up quickly rather than queue.
-    await tx.execute(sql`set local lock_timeout = '5s'`);
+    await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(LIMITS.reserveLockTimeoutMs)}`));
     await tx.execute(sql`select pg_advisory_xact_lock(${RESERVE_LOCK_KEY})`);
     const limited = await checkLimits(tx, input.sessionId, input.clientHash);
     if (limited) return limited;

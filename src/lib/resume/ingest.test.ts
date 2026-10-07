@@ -134,8 +134,11 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     expect(result).toMatchObject({ ok: false, status: 429 });
   });
 
-  it("answers busy instead of queueing when the reservation lock is held", { timeout: 15_000 }, async () => {
+  it("answers busy instead of queueing when the reservation lock is held", async () => {
     const s = `${session}-lock`;
+    // A short wait keeps the lock from stalling other database test files that run alongside this one.
+    const original = LIMITS.reserveLockTimeoutMs;
+    LIMITS.reserveLockTimeoutMs = 200;
     const { client: c, create } = client(JSON.stringify(parsed));
     let release!: () => void;
     const held = new Promise<void>((resolve) => (release = resolve));
@@ -147,7 +150,9 @@ describe.skipIf(!db)("ingestResume (database)", () => {
       await held;
     });
     await isLocked;
-    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c }).finally(() => {
+      LIMITS.reserveLockTimeoutMs = original;
+    });
     release();
     await holder;
     expect(result).toMatchObject({ ok: false, status: 503, code: "crowded" });
