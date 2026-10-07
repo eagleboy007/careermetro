@@ -25,6 +25,9 @@ export function RolePicker({ resumeId, roles, demo = false }: { resumeId: string
           className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted"
         />
       </label>
+      <p aria-live="polite" className="sr-only">
+        {q ? `${shown.length} ${shown.length === 1 ? "role" : "roles"} found` : ""}
+      </p>
       {shown.length === 0 ? (
         <p className="text-sm text-muted">No role matches “{query}”. Try a shorter word.</p>
       ) : (

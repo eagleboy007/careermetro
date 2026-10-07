@@ -25,8 +25,17 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   const role = roleProfiles.find((r) => r.slug === slug);
   if (!role) notFound();
   const sessionId = await readSessionId();
-  const result = sessionId ? await getGapsForSession(id, sessionId, role) : ({ ok: false, reason: "not_found" } as const);
+  let result: Awaited<ReturnType<typeof getGapsForSession>>;
+  try {
+    result = sessionId ? await getGapsForSession(id, sessionId, role) : { ok: false, reason: "not_found" };
+  } catch (error) {
+    // Database errors carry query parameters, which can hold resume quotes. Log only the name and code.
+    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
+    console.error("gap analysis failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    return <TryAgain />;
+  }
   if (!result.ok && result.reason === "not_found") return <ResumeNotFound />;
+  if (!result.ok && result.reason === "busy") return <TryAgain />;
   if (!result.ok) {
     return (
       <p className="rounded-lg border border-line bg-surface p-5 text-sm">
@@ -68,6 +77,14 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         {" · "}Your learning path for these gaps is the next step we&apos;re building.
       </p>
     </div>
+  );
+}
+
+function TryAgain() {
+  return (
+    <p role="alert" className="rounded-lg border border-line bg-surface p-5 text-sm">
+      We couldn&apos;t work out your gaps just now. Please reload the page in a minute.
+    </p>
   );
 }
 

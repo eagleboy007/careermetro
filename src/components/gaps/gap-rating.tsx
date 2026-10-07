@@ -33,7 +33,7 @@ export function GapRating({ analysisId, initial, demo = false }: { analysisId: s
   return (
     <fieldset className="m-0 flex min-w-0 flex-col gap-3 rounded-lg border border-line bg-surface p-4">
       <legend className="float-left mb-1 font-semibold">Are these gaps right?</legend>
-      <div role="group" aria-label="Rate from 1, not at all, to 5, spot on" className="clear-left flex flex-wrap gap-2">
+      <div className="clear-left flex flex-wrap gap-2">
         {LABELS.map((label, i) => {
           const value = i + 1;
           const chosen = rating === value;

@@ -47,7 +47,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
 
   beforeEach(() => {
     vi.unstubAllEnvs();
-    vi.stubEnv("PARSE_DAILY_BUDGET_USD", "1000000");
+    vi.stubEnv("EXPLAIN_DAILY_BUDGET_USD", "1000000");
   });
   afterAll(async () => {
     if (created.length) await db!.delete(schema.resumes).where(inArray(schema.resumes.id, created));
@@ -81,7 +81,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
   });
 
   it("uses template sentences without calling the model once the budget is spent", async () => {
-    vi.stubEnv("PARSE_DAILY_BUDGET_USD", "0");
+    vi.stubEnv("EXPLAIN_DAILY_BUDGET_USD", "0");
     const { session, resumeId } = await seed();
     const { client, create } = explainClient();
     const r = await getGapsForSession(resumeId, session, role, { db: db!, client });
@@ -112,5 +112,31 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(await rateAnalysis(r.analysisId, session, 4, db!)).toBe(true);
     const again = await getGapsForSession(resumeId, session, role, { db: db! });
     expect(again).toMatchObject({ ok: true, rating: 4 });
+  });
+
+  it("calls the model once and stores one row when the page loads several times at once", async () => {
+    const { session, resumeId } = await seed();
+    const { client, create } = explainClient();
+    const results = await Promise.all(Array.from({ length: 4 }, () => getGapsForSession(resumeId, session, role, { db: db!, client })));
+    expect(create).toHaveBeenCalledTimes(1);
+    const ids = new Set(results.map((r) => (r.ok ? r.analysisId : r.reason)));
+    expect(ids.size).toBe(1);
+  });
+
+  it("makes a fresh analysis after the user confirms a new profile version", async () => {
+    const { session, resumeId } = await seed();
+    const { client } = explainClient();
+    const first = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    await db!.insert(schema.profiles).values({ resumeId, version: 2, data: { ...profile, skills: [{ name: "Python", lastUsed: null, evidence: [] }] }, confirmedByUser: true });
+    const second = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    expect(first.ok && second.ok && first.analysisId !== second.analysisId).toBe(true);
+  });
+
+  it("won't rate an analysis once its resume is past 24 hours", async () => {
+    const { session, resumeId } = await seed();
+    const r = await getGapsForSession(resumeId, session, role, { db: db!, client: explainClient().client });
+    if (!r.ok) throw new Error(r.reason);
+    await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, resumeId));
+    expect(await rateAnalysis(r.analysisId, session, 3, db!)).toBe(false);
   });
 });

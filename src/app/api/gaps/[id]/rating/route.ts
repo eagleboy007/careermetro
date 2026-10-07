@@ -6,6 +6,7 @@ const fail = (status: number, error: string) => Response.json({ ok: false, error
 /** Saves the answer to "Are these gaps right?" (1 to 5), the beta's accuracy measure. */
 export async function PUT(request: Request, { params }: RouteContext<"/api/gaps/[id]/rating">) {
   if (!isSameOrigin(request)) return fail(403, "Please rate from the CareerMetro website.");
+  if (Number(request.headers.get("content-length") ?? 0) > 200) return fail(400, "Pick a number from 1 to 5.");
   const body = await request.text().catch(() => "");
   if (body.length > 200) return fail(400, "Pick a number from 1 to 5.");
   let rating: unknown = null;
