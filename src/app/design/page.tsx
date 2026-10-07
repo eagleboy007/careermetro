@@ -4,10 +4,12 @@ import { PathSteps, type PathStepView } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
 import { SkillCoverageBar } from "@/components/route/skill-coverage-bar";
+import { ProfileEditor } from "@/components/resume/profile-editor";
+import { UploadForm } from "@/components/resume/upload-form";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
-import type { Gap } from "@/lib/schemas";
+import type { Gap, Profile } from "@/lib/schemas";
 
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
 
@@ -54,6 +56,26 @@ const exampleSteps: PathStepView[] = [
   { title: "One Power BI project", hours: 6, closes: "Weak evidence" },
   { title: "Add both projects to your resume", hours: 3 },
 ];
+
+const exampleProfile: Profile = {
+  headline: "Data Analyst",
+  totalYearsExperience: 3,
+  roles: [
+    {
+      title: "Data Analyst",
+      employer: "Example Retail Pvt Ltd",
+      start: "2022-06",
+      end: null,
+      highlights: ["Wrote SQL queries for weekly sales reports across 40 stores"],
+    },
+  ],
+  skills: [
+    { name: "SQL", lastUsed: null, evidence: ["Wrote SQL queries for weekly sales reports across 40 stores"] },
+    { name: "Power BI", lastUsed: null, evidence: [] },
+  ],
+  education: [{ qualification: "B.Com", institution: "Example University", year: "2021" }],
+  certifications: ["Google Data Analytics Professional Certificate"],
+};
 
 const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good"] as const;
 
@@ -122,6 +144,16 @@ export default function DesignPage() {
           <SkillCoverageBar met={3} total={14} />
           <SkillCoverageBar met={9} total={14} />
           <SkillCoverageBar met={11} total={14} />
+        </div>
+      </section>
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Resume upload</h2>
+          <UploadForm demo />
+        </div>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Resume check</h2>
+          <ProfileEditor resumeId="example" initial={exampleProfile} demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>
