@@ -10,9 +10,20 @@ on:
       - "src/lib/resume/verify.ts"
       - "src/lib/resume/mask.ts"
       - "src/lib/schemas/profile.ts"
+      - "src/lib/ai/**"
+      - "src/content/**"
+      - "package-lock.json"
       - "src/evals/**"
       - "fixtures/evals/**"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push replaces a run in progress instead of paying for both.
+concurrency:
+  group: eval-parse-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   eval:

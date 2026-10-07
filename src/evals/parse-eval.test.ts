@@ -21,19 +21,24 @@ describe("runParseEval", () => {
     const expectedIds = c.expected.skills.map((s) => s.skillId);
     const bad = c.expected.mustNotClaim[0];
     const names = [expectedIds[0], ...(bad ? [bad] : []), "Totally Made Up Skill"];
-    const report = await runParseEval([c], async () => ({ profile: profileWith(names), calls: [call] }), { promptVersion: "parse-resume/v1", model: "m" });
+    const report = await runParseEval([c], async () => ({ profile: profileWith([...names, "Totally Made Up Skill"]), droppedSkills: ["Kubernetes"], calls: [call] }), {
+      promptVersion: "parse-resume/v1",
+      model: "m",
+    });
 
     expect(report.cases[0].parseRecall).toBeCloseTo(1 / new Set(expectedIds).size);
     expect(report.cases[0].hallucinations).toEqual(bad ? [bad] : []);
     expect(report.cases[0].unmapped).toEqual(["Totally Made Up Skill"]);
+    expect(report.cases[0].dropped).toEqual(["Kubernetes"]);
     expect(report.costUsd).toBeCloseTo(0.05);
     expect(formatParseEval(report)).toContain(c.id);
     expect(formatParseEval(report)).not.toContain(c.resumeText.slice(0, 40));
   });
 
   it("counts a failed parse as zero recall", async () => {
-    const report = await runParseEval(cases.slice(0, 2), async () => ({ profile: null, calls: [] }), { promptVersion: "v", model: "m" });
+    const report = await runParseEval(cases.slice(0, 2), async () => ({ profile: null, reason: "refused", calls: [] }), { promptVersion: "v", model: "m" });
     expect(report.failed).toBe(2);
+    expect(formatParseEval(report)).toContain("failed (refused)");
     expect(report.meanRecall).toBe(0);
   });
 });
