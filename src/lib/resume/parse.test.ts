@@ -76,6 +76,28 @@ describe("parseResume", () => {
     expect(result.calls).toHaveLength(2);
   });
 
+  it("bounds each attempt by the time left before the deadline", async () => {
+    const { client, create } = fakeClient({ text: JSON.stringify(good) });
+    await parseResume(resume, {}, client);
+    expect(create.mock.calls[0][1].timeout).toBeLessThanOrEqual(50_000);
+  });
+
+  it("skips the retry when too little time is left", async () => {
+    const { client, create } = fakeClient({ text: "{not json" }, { text: JSON.stringify(good) });
+    const result = await parseResume(resume, {}, client, 20_000);
+    expect(result).toMatchObject({ ok: false, reason: "malformed" });
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(result.calls).toHaveLength(1);
+  });
+
+  it("returns any failed call, even an unexpected error, so it is still logged", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { client } = fakeClient(new TypeError("fetch failed"));
+    const result = await parseResume(resume, {}, client);
+    expect(result).toMatchObject({ ok: false, reason: "unavailable" });
+    expect(result.calls).toEqual([expect.objectContaining({ ok: false, inputTokens: 0 })]);
+  });
+
   it("reports a refusal without retrying", async () => {
     const { client, create } = fakeClient({ stop_reason: "refusal", text: "" });
     const result = await parseResume(resume, {}, client);
