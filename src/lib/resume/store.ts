@@ -7,16 +7,16 @@ import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
 
 type Db = ReturnType<typeof getDb>;
 
-export type ResumeForReview = { resumeId: string; version: number; confirmed: boolean; profile: Profile };
+export type ResumeForReview = { resumeId: string; profileId: string; version: number; confirmed: boolean; profile: Profile };
 
 /**
  * The latest profile of a resume, only if it belongs to this anonymous session. Anyone else gets null, as if it
  * didn't exist. Anonymous resumes past their 24 hours are hidden even before the daily cleanup deletes them (FR-2).
  */
-export async function getResumeForSession(resumeId: string, sessionId: string, db: Db = getDb()): Promise<ResumeForReview | null> {
+export async function getResumeForSession(resumeId: string, sessionId: string, db: Pick<Db, "select"> = getDb()): Promise<ResumeForReview | null> {
   if (!/^[0-9a-f-]{36}$/i.test(resumeId)) return null;
   const [row] = await db
-    .select({ version: profiles.version, confirmed: profiles.confirmedByUser, data: profiles.data })
+    .select({ profileId: profiles.id, version: profiles.version, confirmed: profiles.confirmedByUser, data: profiles.data })
     .from(profiles)
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
     .where(
@@ -28,7 +28,7 @@ export async function getResumeForSession(resumeId: string, sessionId: string, d
     )
     .orderBy(desc(profiles.version))
     .limit(1);
-  return row ? { resumeId, version: row.version, confirmed: row.confirmed, profile: row.data } : null;
+  return row ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: row.data } : null;
 }
 
 /** A resume keeps at most this many profile versions; each save adds one. */

@@ -23,6 +23,8 @@ export const gapAnalysis = z.object({
   roleSlug: z.string().min(1),
   gaps: z.array(gap).max(10),
   metSkillIds: z.array(z.string()),
+  /** Nice-to-have skills and where the resume stands on each, for the "bonus" list. */
+  niceToHave: z.array(z.object({ skillId: z.string().min(1), skillName: z.string().min(1), status: gapStatus })).default([]),
   readiness: z.object({
     headline: z.string().min(1),
     explanation: z.string().min(1),

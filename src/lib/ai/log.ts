@@ -16,7 +16,7 @@ export type AiCallRecord = {
 };
 
 /** Stores call records and returns their ids in the same order. */
-export async function recordAiCalls(records: AiCallRecord[], db = getDb()): Promise<string[]> {
+export async function recordAiCalls(records: AiCallRecord[], db: Pick<ReturnType<typeof getDb>, "insert"> = getDb()): Promise<string[]> {
   if (records.length === 0) return [];
   const rows = await db
     .insert(aiCalls)

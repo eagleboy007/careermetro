@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { CoveredSkills } from "@/components/gaps/covered-skills";
+import { GapRating } from "@/components/gaps/gap-rating";
+import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
 import { GapCard } from "@/components/route/gap-card";
 import { PathSteps, type PathStepView } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
@@ -21,6 +24,10 @@ import type { Gap, Profile } from "@/lib/schemas";
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
 
 // Example data only: shows every component in a realistic state.
+const exampleRoleOptions: RoleOption[] = [
+  { slug: "data-analyst", title: "Data Analyst", experience: "Up to 3 years", topSkills: ["SQL", "Excel", "Power BI"] },
+  { slug: "business-analyst", title: "Business Analyst", experience: "1 to 5 years", topSkills: ["Requirements gathering", "SQL", "Agile and Scrum"] },
+];
 const exampleGaps: Gap[] = [
   {
     skillId: "sql-window-functions",
@@ -212,6 +219,25 @@ export default function DesignPage() {
         <RoleSkillList skills={exampleRoleSkills} />
         <CertificationList certifications={exampleCerts} />
         <CertificationList certifications={[]} />
+      </section>
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Role picker</h2>
+          <RolePicker resumeId="example" roles={exampleRoleOptions} demo />
+        </div>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Covered skills and rating</h2>
+          <CoveredSkills
+            title="Skills your resume already shows"
+            open
+            skills={[
+              { skillId: "sql", skillName: "SQL", status: "met" },
+              { skillId: "excel", skillName: "Excel", status: "met" },
+            ]}
+          />
+          <CoveredSkills title="Nice to have" skills={[{ skillId: "python", skillName: "Python", status: "missing" }]} />
+          <GapRating analysisId="example" initial={null} demo />
+        </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
