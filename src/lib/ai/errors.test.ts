@@ -1,4 +1,4 @@
-import { APIConnectionTimeoutError, APIError } from "@anthropic-ai/sdk";
+import { APIConnectionError, APIConnectionTimeoutError, APIError, APIUserAbortError } from "@anthropic-ai/sdk";
 import { describe, expect, it } from "vitest";
 import { describeAiError } from "./errors";
 
@@ -11,12 +11,14 @@ describe("describeAiError", () => {
       new Headers({ "request-id": "req_123" }),
     );
     const text = describeAiError(error);
-    expect(text).toBe("AuthenticationError status=401 type=authentication_error request_id=req_123");
+    expect(text).toBe("api_error status=401 type=authentication_error request_id=req_123");
     expect(text).not.toContain("secret detail");
   });
 
-  it("names a timeout without a status", () => {
-    expect(describeAiError(new APIConnectionTimeoutError())).toBe("APIConnectionTimeoutError");
+  it("labels errors that have no status", () => {
+    expect(describeAiError(new APIConnectionTimeoutError())).toBe("timeout");
+    expect(describeAiError(new APIConnectionError({ message: "fetch failed" }))).toBe("connection");
+    expect(describeAiError(new APIUserAbortError())).toBe("aborted");
   });
 
   it("gives only the name of any other error", () => {

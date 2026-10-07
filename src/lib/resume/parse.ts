@@ -96,7 +96,7 @@ export async function parseResume(
       );
     } catch (error) {
       record(PARSE_MODEL, null, false);
-      // Name, status, type and request id only: SDK messages are not expected to hold resume text, but nothing here needs them.
+      // Never the message: it could echo the request, which holds resume text.
       console.error("parse-resume call failed:", describeAiError(error));
       return { ok: false, reason: "unavailable", calls };
     }
