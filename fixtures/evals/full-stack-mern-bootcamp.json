@@ -1,0 +1,64 @@
+{
+  "id": "full-stack-mern-bootcamp",
+  "roleSlug": "full-stack-developer",
+  "persona": "Mechanical engineer who finished a MERN bootcamp",
+  "resumeText": "Arjun Verma | Indore | arjun.verma@example.com\n\nPROJECTS\n- ShopLite (MERN bootcamp capstone): React front end, Node.js and Express API, MongoDB for products and orders.\n- Designed REST endpoints for cart and checkout with input validation.\n- Deployed the app on Render; code on GitHub with feature branches.\n- Solved 150 LeetCode problems, mostly arrays, strings and hash maps.\n\nEDUCATION\nBE Mechanical Engineering, RGPV, 2025\nFull Stack Web Development Bootcamp, 2026\n\nSKILLS\nJavaScript, React, Node.js, Express, MongoDB, HTML, CSS, Git\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "react",
+        "quote": "React front end"
+      },
+      {
+        "skillId": "nodejs",
+        "quote": "Node.js and Express API"
+      },
+      {
+        "skillId": "nosql",
+        "quote": "MongoDB for products and orders"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Designed REST endpoints for cart and checkout with input validation"
+      },
+      {
+        "skillId": "git",
+        "quote": "code on GitHub with feature branches"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Solved 150 LeetCode problems, mostly arrays, strings and hash maps"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "JavaScript"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "HTML, CSS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "typescript",
+        "status": "missing"
+      },
+      {
+        "skillId": "sql",
+        "status": "missing"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "typescript",
+      "sql",
+      "docker",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "business-analyst-ops-to-ba",
+  "roleSlug": "business-analyst",
+  "persona": "Bank operations officer who has informally gathered requirements",
+  "resumeText": "Rahul Menon | Kochi | rahul.menon@example.com\n\nEXPERIENCE\nSenior Operations Officer, Malabar Co-operative Bank, Kochi (2022 - present)\n- Collected requirements from branch staff for a new loan-tracking screen and wrote them up as a requirements document for the IT vendor.\n- Coordinated between branch managers and the IT vendor to agree scope and go-live dates.\n- Led user acceptance testing with 12 branch users before the loan-tracking release.\n- Wrote weekly status mails to the regional head on project progress.\n\nOperations Officer, Malabar Co-operative Bank (2020 - 2022)\n- Processed account opening and KYC checks for retail customers.\n\nEDUCATION\nMBA (Finance), Cochin University of Science and Technology, 2020\n\nSKILLS\nMS Excel, MS Word, core banking (Finacle), requirement documentation\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Collected requirements from branch staff for a new loan-tracking screen"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Coordinated between branch managers and the IT vendor to agree scope and go-live dates"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Led user acceptance testing with 12 branch users"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Wrote weekly status mails to the regional head"
+      },
+      {
+        "skillId": "excel",
+        "quote": "MS Excel"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Processed account opening and KYC checks for retail customers"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "prd-writing",
+        "status": "missing"
+      },
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "sql",
+        "status": "missing"
+      },
+      {
+        "skillId": "agile-scrum",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "agile-scrum",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

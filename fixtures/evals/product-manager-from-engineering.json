@@ -1,0 +1,63 @@
+{
+  "id": "product-manager-from-engineering",
+  "roleSlug": "product-manager",
+  "persona": "Backend engineer who acted as product owner for an internal tool",
+  "resumeText": "Vikram Desai | Mumbai | vikram.desai@example.com\n\nEXPERIENCE\nSenior Software Engineer, Konkan Fintech, Mumbai (2021 - present)\n- Acted as product owner for the internal reconciliation tool; interviewed 15 finance users to find their biggest delays.\n- Wrote user stories with acceptance criteria and groomed the backlog with the team.\n- Ran two-week sprints as part of a Scrum team.\n- Agreed priorities each quarter with finance and operations heads.\n- Tracked weekly active users and time-to-reconcile after each release.\n\nSoftware Engineer, Konkan Fintech (2019 - 2021)\n- Built payment APIs in Java and Spring Boot.\n\nEDUCATION\nBTech Computer Engineering, VJTI Mumbai, 2019\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "product-discovery",
+        "quote": "interviewed 15 finance users to find their biggest delays"
+      },
+      {
+        "skillId": "prd-writing",
+        "quote": "Wrote user stories with acceptance criteria"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Ran two-week sprints as part of a Scrum team"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agreed priorities each quarter with finance and operations heads"
+      },
+      {
+        "skillId": "roadmapping",
+        "quote": "Agreed priorities each quarter"
+      },
+      {
+        "skillId": "product-metrics",
+        "quote": "Tracked weekly active users and time-to-reconcile after each release"
+      },
+      {
+        "skillId": "java",
+        "quote": "Built payment APIs in Java and Spring Boot"
+      },
+      {
+        "skillId": "spring-boot",
+        "quote": "Spring Boot"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "roadmapping",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ab-testing",
+      "figma",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}
