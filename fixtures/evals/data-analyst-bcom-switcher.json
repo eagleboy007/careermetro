@@ -1,0 +1,59 @@
+{
+  "id": "data-analyst-bcom-switcher",
+  "roleSlug": "data-analyst",
+  "persona": "BCom graduate in accounts operations moving into analytics",
+  "resumeText": "Ananya Rao | Pune | ananya.rao@example.com\n\nSUMMARY\nAccounts executive with 2 years in month-end reporting, learning analytics in the evenings.\n\nEXPERIENCE\nAccounts Executive, Sahyadri Logistics Pvt Ltd, Pune (Jul 2024 - present)\n- Prepare the monthly vendor payables report in Excel using pivot tables and VLOOKUP for 1,200+ invoices.\n- Cleaned duplicate vendor records and fixed inconsistent GST numbers before each audit.\n- Present a one-page summary of overdue payments to the finance manager every Monday.\n\nPROJECTS\n- Sales dashboard (self-study): built a Power BI dashboard on a public retail dataset showing monthly revenue by region.\n- Completed an online SQL course; wrote SELECT queries with WHERE and GROUP BY on a sample database.\n\nEDUCATION\nBCom, Savitribai Phule Pune University, 2024\n\nSKILLS\nExcel, Power BI, Tally, basic SQL\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "excel",
+        "quote": "Prepare the monthly vendor payables report in Excel using pivot tables and VLOOKUP"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "pivot tables and VLOOKUP"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "Cleaned duplicate vendor records and fixed inconsistent GST numbers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present a one-page summary of overdue payments to the finance manager every Monday"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "built a Power BI dashboard on a public retail dataset"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "dashboard on a public retail dataset showing monthly revenue by region"
+      },
+      {
+        "skillId": "sql",
+        "quote": "wrote SELECT queries with WHERE and GROUP BY on a sample database"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql",
+        "status": "weak"
+      },
+      {
+        "skillId": "python",
+        "status": "missing"
+      },
+      {
+        "skillId": "statistics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "tableau",
+      "statistics"
+    ]
+  },
+  "reviewedBy": null
+}

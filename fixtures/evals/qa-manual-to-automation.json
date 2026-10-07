@@ -1,0 +1,67 @@
+{
+  "id": "qa-manual-to-automation",
+  "roleSlug": "qa-automation-engineer",
+  "persona": "Manual tester starting test automation",
+  "resumeText": "Meera Joshi | Noida | meera.joshi@example.com\n\nEXPERIENCE\nQA Engineer, Yamuna Software Labs, Noida (2023 - present)\n- Wrote and ran 400+ test cases for regression testing of a banking web app.\n- Log defects in Jira with steps to reproduce, screenshots and expected results.\n- Test REST APIs manually in Postman before each release.\n- Started a Selenium WebDriver suite in Java for the login and payments flows (25 scripts).\n- Verify transaction data with SQL queries on MySQL.\n\nEDUCATION\nBCA, Amity University, 2023\n\nSKILLS\nManual testing, Jira, Postman, Selenium, Java, MySQL\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "manual-testing",
+        "quote": "Wrote and ran 400+ test cases for regression testing"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Log defects in Jira with steps to reproduce"
+      },
+      {
+        "skillId": "api-testing",
+        "quote": "Test REST APIs manually in Postman"
+      },
+      {
+        "skillId": "selenium",
+        "quote": "Started a Selenium WebDriver suite in Java"
+      },
+      {
+        "skillId": "java",
+        "quote": "Selenium WebDriver suite in Java"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Verify transaction data with SQL queries on MySQL"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "selenium",
+        "status": "weak"
+      },
+      {
+        "skillId": "api-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "test-planning",
+        "status": "missing"
+      },
+      {
+        "skillId": "python",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "ci-cd",
+      "playwright-cypress"
+    ]
+  },
+  "reviewedBy": null
+}
