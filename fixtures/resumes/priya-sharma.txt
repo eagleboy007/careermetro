@@ -1,0 +1,27 @@
+Priya Sharma
+Data Analyst | Pune, Maharashtra
++91 98765 43210 | priya.sharma.example@gmail.com
+Flat 12B, Lotus Residency, Baner Road, Pune 411045
+linkedin.com/in/priya-sharma-example
+
+SUMMARY
+Data analyst with 3 years of experience in retail sales reporting. Current CTC 6.5 LPA, notice period 30 days.
+
+EXPERIENCE
+Data Analyst, Example Retail Pvt Ltd, Pune (Jun 2022 - Present)
+- Wrote SQL queries for weekly sales reports across 40 stores
+- Built Excel dashboards with pivot tables for regional managers
+- Cleaned duplicate customer records, cutting report errors by 15%
+
+Junior Analyst, Sample Analytics LLP, Mumbai (Jul 2021 - May 2022)
+- Prepared monthly MIS reports in Excel
+- Used Python (pandas) to merge vendor files
+
+EDUCATION
+B.Com, Savitribai Phule Pune University, 2021
+
+SKILLS
+SQL, Excel, Python, Power BI, Communication
+
+CERTIFICATIONS
+Google Data Analytics Professional Certificate
