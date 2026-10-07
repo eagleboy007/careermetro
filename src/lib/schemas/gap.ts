@@ -19,7 +19,8 @@ export const gap = z.object({
 export type Gap = z.infer<typeof gap>;
 
 export const gapAnalysis = z.object({
-  roleProfileId: z.string().min(1),
+  /** The role profile's slug; analyses from a pasted job description will need their own field. */
+  roleSlug: z.string().min(1),
   gaps: z.array(gap).max(10),
   metSkillIds: z.array(z.string()),
   readiness: z.object({
