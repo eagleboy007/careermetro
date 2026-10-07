@@ -40,8 +40,15 @@ describe("checkHealth", () => {
     [new APIConnectionError({ message: "fetch failed" }), "down"],
   ])("classifies %s", async (error, claude) => {
     const d = deps({ pingClaude: vi.fn(async () => Promise.reject(error)) });
-    expect(await checkHealth(d)).toEqual({ ok: false, database: "ok", claude });
+    expect(await checkHealth(d)).toMatchObject({ ok: false, database: "ok", claude, claudeError: expect.any(String) });
     expect(d.record).toHaveBeenCalledWith(expect.objectContaining({ ok: false, costUsd: 0 }));
+  });
+
+  it("gives the API's reason for a rejected ping", async () => {
+    const d = deps({ pingClaude: vi.fn(async () => Promise.reject(apiError(400, "invalid_request_error", "fallbacks: unknown field"))) });
+    const health = await checkHealth(d);
+    expect(health.claude).toBe("down");
+    expect(health.claudeError).toMatch(/^api_error status=400 type=invalid_request_error reason=.*fallbacks: unknown field/);
   });
 
   it("reports a database that is down, and still checks Claude", async () => {

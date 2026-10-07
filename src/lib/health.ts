@@ -9,7 +9,8 @@ export const HEALTH_MODEL = PARSE_MODEL;
 export const HEALTH_PURPOSE = "health-check";
 
 export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model_access" | "down";
-export type Health = { ok: boolean; database: "ok" | "down"; claude: ClaudeStatus };
+/** claudeError names a failed ping (status, type and, for a rejected request, the API's reason). The ping's input is fixed text, so the reason can't hold user data. */
+export type Health = { ok: boolean; database: "ok" | "down"; claude: ClaudeStatus; claudeError?: string };
 
 export type HealthDeps = {
   hasKey: boolean;
@@ -21,8 +22,8 @@ export type HealthDeps = {
 
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key or error messages. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
-  const [database, claude] = await Promise.all([checkDb(deps), checkClaude(deps)]);
-  return { ok: database === "ok" && claude === "ok", database, claude };
+  const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
+  return { ok: database === "ok" && claude === "ok", database, claude, ...(error ? { claudeError: error } : {}) };
 }
 
 async function checkDb(deps: HealthDeps): Promise<Health["database"]> {
@@ -35,10 +36,11 @@ async function checkDb(deps: HealthDeps): Promise<Health["database"]> {
   }
 }
 
-async function checkClaude(deps: HealthDeps): Promise<ClaudeStatus> {
-  if (!deps.hasKey) return "no_key";
+async function checkClaude(deps: HealthDeps): Promise<{ status: ClaudeStatus; error?: string }> {
+  if (!deps.hasKey) return { status: "no_key" };
   const started = Date.now();
   let status: ClaudeStatus;
+  let failure: string | undefined;
   let call: Pick<AiCallRecord, "model" | "inputTokens" | "outputTokens" | "costUsd">;
   try {
     const { model, usage } = await deps.pingClaude();
@@ -46,13 +48,15 @@ async function checkClaude(deps: HealthDeps): Promise<ClaudeStatus> {
     call = { model, inputTokens: usage.input_tokens, outputTokens: usage.output_tokens, costUsd: costUsd(model, usage) };
   } catch (error) {
     status = classify(error);
-    console.error("health: claude check failed:", describeAiError(error));
+    failure = describeAiError(error);
+    if (error instanceof APIError && error.status === 400) failure += ` reason=${error.message.slice(0, 300)}`;
+    console.error("health: claude check failed:", failure);
     call = { model: HEALTH_MODEL, inputTokens: 0, outputTokens: 0, costUsd: 0 };
   }
   await deps
     .record({ purpose: HEALTH_PURPOSE, promptVersion: "health-check/none", inputRefs: {}, latencyMs: Date.now() - started, ok: status === "ok", ...call })
     .catch((error) => console.error("health: logging the call failed:", error instanceof Error ? error.name : typeof error));
-  return status;
+  return { status, error: failure };
 }
 
 function classify(error: unknown): ClaudeStatus {
