@@ -1,0 +1,39 @@
+name: Smoke check
+
+# After Vercel finishes a production deploy, open /api/health on it. A red run means the live site
+# can't reach the database or Claude (for example a missing key or an empty credit balance).
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Site to check, for example https://careermetro.vercel.app"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check /api/health
+        env:
+          # PRODUCTION_URL (a repository variable) is the public domain; without it, the deploy's own URL is used.
+          SITE: ${{ inputs.url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url }}
+          # Only needed if Vercel Deployment Protection covers the URL above.
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          headers=()
+          if [ -n "$BYPASS" ]; then headers=(-H "x-vercel-protection-bypass: $BYPASS"); fi
+          code=$(curl -sS --max-time 30 --retry 2 --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health" || true)
+          body=$(head -c 300 health.json 2>/dev/null)
+          if [ "$code" = 401 ] || [ "$code" = 403 ]; then
+            body="Vercel Deployment Protection blocked the check. Set the PRODUCTION_URL variable or the VERCEL_AUTOMATION_BYPASS_SECRET secret."
+          fi
+          echo "HTTP $code: $body"
+          echo "Health of ${SITE}: HTTP $code: $body" >> "$GITHUB_STEP_SUMMARY"
+          test "$code" = 200

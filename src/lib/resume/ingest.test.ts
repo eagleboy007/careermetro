@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, gte, inArray, ne, sum } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -165,6 +165,26 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     const result = await ingestResume({ bytes, as: "text", sessionId: `${session}-b`, clientHash: `h-${session}-b` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 503, code: "busy" });
     expect(create).not.toHaveBeenCalled();
+  });
+
+  it("leaves health pings out of the daily budget", async () => {
+    const [ping] = await db!
+      .insert(schema.aiCalls)
+      .values({ purpose: "health-check", model: "claude-opus-5-5", promptVersion: "health-check/none", inputRefs: {}, inputTokens: 0, outputTokens: 0, costUsd: "9999", latencyMs: 1, ok: true })
+      .returning({ id: schema.aiCalls.id });
+    try {
+      const [{ usd }] = await db!
+        .select({ usd: sum(schema.aiCalls.costUsd) })
+        .from(schema.aiCalls)
+        .where(and(gte(schema.aiCalls.createdAt, new Date(new Date().setUTCHours(0, 0, 0, 0))), ne(schema.aiCalls.purpose, "health-check")));
+      vi.stubEnv("PARSE_DAILY_BUDGET_USD", String(Number(usd ?? 0) + 100));
+      const { client: c } = client(JSON.stringify(parsed));
+      const result = await ingestResume({ bytes, as: "text", sessionId: `${session}-h`, clientHash: `h-${session}-h` }, { db: db!, client: c });
+      expect(result).toMatchObject({ ok: true });
+      if (result.ok) created.push(result.resumeId);
+    } finally {
+      await db!.delete(schema.aiCalls).where(eq(schema.aiCalls.id, ping.id));
+    }
   });
 
   it("rejects unreadable input before storing anything", async () => {

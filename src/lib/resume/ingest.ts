@@ -1,8 +1,9 @@
 import "server-only";
-import { and, count, eq, gte, isNull, lt, sql, sum } from "drizzle-orm";
+import { and, count, eq, gte, isNull, lt, ne, sql, sum } from "drizzle-orm";
 import { getDb } from "@/db";
 import { aiCalls, consents, profiles, resumes } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
+import { HEALTH_PURPOSE } from "@/lib/health";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
@@ -64,7 +65,8 @@ async function checkLimits(tx: Db | Tx, sessionId: string, hash: string): Promis
   const [[bySession], [byClient], [spent], [inFlight]] = await Promise.all([
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.anonymousSessionId, sessionId), gte(resumes.createdAt, dayAgo()))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.clientHash, hash), gte(resumes.createdAt, startOfUtcDay()))),
-    tx.select({ usd: sum(aiCalls.costUsd) }).from(aiCalls).where(gte(aiCalls.createdAt, startOfUtcDay())),
+    // Health pings are left out, so a flood of /api/health requests can't pause uploads.
+    tx.select({ usd: sum(aiCalls.costUsd) }).from(aiCalls).where(and(gte(aiCalls.createdAt, startOfUtcDay()), ne(aiCalls.purpose, HEALTH_PURPOSE))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.status, "parsing"), gte(resumes.createdAt, recent))),
   ]);
   if (bySession.n >= LIMITS.perSessionPerDay || byClient.n >= LIMITS.perClientPerDay) {
