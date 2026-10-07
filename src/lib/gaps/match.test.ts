@@ -217,4 +217,39 @@ describe("matchProfile", () => {
     matchProfile(p, dataAnalyst, now);
     expect(performance.now() - t).toBeLessThan(500);
   });
+
+  it("reads skills and coursework lines as lists, whatever their first word", () => {
+    for (const line of [
+      "Related Coursework: Data Structures, DBMS, Python, Machine Learning",
+      "Preferred Tools: Excel, Tableau",
+      "Structured Query Language, Excel, Power BI",
+      "Applied Statistics, Python, R, SQL",
+      "Python (Pandas, NumPy, Matplotlib)",
+      "MS Office (Word, Excel, PowerPoint)",
+      "Embedded C, RTOS, Linux",
+    ])
+      expect(isListLine(line), line).toBe(true);
+    const p = profile({ skills: [{ name: "Python (Pandas, NumPy, Matplotlib)", lastUsed: null, evidence: ["Python (Pandas, NumPy, Matplotlib)"] }] });
+    expect(statusOf(matchProfile(p, dataAnalyst, now), "python")).toBe("weak");
+  });
+
+  it("reads present-tense bullets as use", () => {
+    expect(statusOf(scan("data-analyst", ["Creating Power BI dashboards"]), "power-bi")).toBe("met");
+    expect(statusOf(scan("data-analyst", ["Develop Power BI dashboards"]), "power-bi")).toBe("met");
+  });
+
+  it("dates an older job with no end by the nearest newer known start", () => {
+    const p = profile({
+      roles: [job(["Owned the sales dashboards"], "2025-06"), job(["Ran branch audits"], null as unknown as string), job(["Wrote SQL queries for branch reports"], "2021-03")],
+    });
+    expect(statusOf(matchProfile(p, dataAnalyst, now), "sql")).toBe("met");
+  });
+
+  it("treats courses and exposure as learning, and splits 'and now learning'", () => {
+    expect(statusOf(scan("data-analyst", ["Exposure to SQL, Python, Tableau in college projects"]), "sql")).toBe("weak");
+    expect(statusOf(scan("data-analyst", ["Completed NPTEL course on Python"]), "python")).toBe("weak");
+    const r = scan("data-analyst", ["Automated MIS in Python and now learning Power BI"]);
+    expect(statusOf(r, "python")).toBe("met");
+    expect(statusOf(r, "power-bi")).toBe("weak");
+  });
 });

@@ -115,26 +115,28 @@ function readTerms(text: string, terms: TermTokens[] = termTokens): { skillIds: 
   return { skillIds, tokenCount: words.length, leftover };
 }
 
-/** Bullets start with what the person did: "Built", "Worked on", "Automated". */
-const NOT_ACTIONS = new Set(["skilled", "experienced", "versed", "certified", "specialized", "specialised", "interested", "advanced", "required"]);
-const ACTIONS = new Set("built wrote led ran made did set drove won worked work build write lead run make own owned use used".split(" "));
+/** Bullets start with what the person did: "Built", "Worked on", "Automated", "Creating", "Develop". */
+const NOT_ACTIONS = new Set("skilled experienced versed certified specialized specialised interested advanced required preferred related applied structured distributed embedded".split(" "));
+/** Verbs that open a bullet even when the rest is a list of tools: "Worked on Java, Spring Boot, Kafka". */
+const STRONG_ACTIONS = new Set(
+  "worked built developed created wrote implemented designed managed led handled used migrated deployed maintained delivered".split(" "),
+);
+const ACTIONS = new Set(
+  [
+    ...STRONG_ACTIONS,
+    ..."wrote led ran made did set drove won own owned work build write lead run make use develop manage handle create prepare design implement maintain support analyse analyze automate test deploy monitor conduct coordinate perform execute".split(" "),
+  ],
+);
 function startsWithAction(text: string): boolean {
   const first = tokens(text)[0] ?? "";
-  return !NOT_ACTIONS.has(first) && (ACTIONS.has(first) || /^\p{L}{3,}ed$/u.test(first));
+  return !NOT_ACTIONS.has(first) && (ACTIONS.has(first) || /^\p{L}{3,}ed$/u.test(first) || /^\p{L}{3,}ing$/u.test(first));
 }
 
 /** Phrases that open a skills summary rather than describe work: "Proficient in MS Office (Word, Excel)". */
 const SUMMARY_START = /^\s*(proficient (in|with)|skilled (in|with)|well[- ]versed (in|with)|expertise in|knowledge of|key skills( used)?|skills used|tools used|technologies used|tech stack)\b/i;
-/** A label before a colon, as in "Technical skills: Java, SQL" or "Tools: Jira". */
+/** A label before a colon, as in "Technical skills: Java, SQL", "Tools: Jira" or "Related coursework: DBMS". */
 const LIST_HEADER = /^([^:]{0,40}):\s*([\s\S]*)$/;
-
-function isPlainList(text: string): boolean {
-  if (startsWithAction(text)) return false;
-  const { tokenCount, leftover } = readTerms(text);
-  if (tokenCount <= 4 && leftover <= 1) return true;
-  const parts = text.split(/[,|•·;]/).filter((p) => p.trim()).length;
-  return parts >= 3 && leftover / Math.max(tokenCount, 1) < 0.25;
-}
+const HEADER_WORDS = /\b(skills?|tools|technolog(y|ies)|stack|languages|software|platforms|frameworks|competenc(y|ies)|expertise|proficien(t|cy)|course(s|work)?|subjects|areas)\b/i;
 
 /**
  * A line that only names skills, such as "SQL, Excel, Power BI" or "Skills: Java, Spring", shows no use of them.
@@ -142,12 +144,17 @@ function isPlainList(text: string): boolean {
  * starts with what the person did, or has words beyond the skill names.
  */
 export function isListLine(line: string): boolean {
-  if (startsWithAction(line)) return false;
-  if (SUMMARY_START.test(line)) return true;
   const header = LIST_HEADER.exec(line);
-  if (header && /\b(skills?|tools|technolog(y|ies)|stack|languages|software|platforms|frameworks|competenc(y|ies)|expertise|proficien(t|cy))\b/i.test(header[1]))
-    return !startsWithAction(header[2]);
-  return isPlainList(line);
+  if (header && HEADER_WORDS.test(header[1])) return !startsWithAction(header[2]);
+  if (SUMMARY_START.test(line)) return true;
+  // Three or more short items is a list whatever the words are ("Python (Pandas, NumPy, Matplotlib)",
+  // "Applied Statistics, Python, R, SQL"), unless it opens with a clear verb.
+  const parts = line.split(/[,|•·;]/).filter((p) => p.trim());
+  if (parts.length >= 3 && parts.every((p) => tokens(p).length <= 3)) return !STRONG_ACTIONS.has(tokens(line)[0] ?? "");
+  if (startsWithAction(line)) return false;
+  const { tokenCount, leftover } = readTerms(line);
+  if (tokenCount <= 4 && leftover <= 1) return true;
+  return parts.length >= 3 && leftover / Math.max(tokenCount, 1) < 0.25;
 }
 
 /**
@@ -160,13 +167,14 @@ const LEARNING = new RegExp(
     "\\b(keen|eager|want|wanting|willing|plan|planning|hoping|looking) to (learn|explore)\\b",
     "\\b(basic|some|limited|little) (exposure|knowledge|understanding|familiarity)\\b",
     "\\b(enrolled|pursuing|doing|taking) (in )?an? (online )?(course|certification|program)\\b",
-    "^\\s*(i am |i'm |am )?(learning (?!and\\b|&)|studying\\b|aspiring\\b|interested in\\b|familiar(ity)? with\\b)",
+    "^\\s*(completed|did|took|attended|finished) (an? |the )?([\\w-]+ )?(course|certification|workshop|bootcamp)\\b",
+    "^\\s*(i am |i'm |am )?(learning (?!and\\b|&)|studying\\b|aspiring\\b|interested in\\b|familiar(ity)? with\\b|exposure to\\b)",
   ].join("|"),
   "i",
 );
 
 /** The clauses of a line: "Automated MIS in Python; now learning Power BI" has two. */
-const clauses = (line: string) => normalizeForMatch(line).split(/;|\.\s|\s\bbut\b\s|,\s*(?=(?:now|currently|also)\b)/);
+const clauses = (line: string) => normalizeForMatch(line).split(/;|\.\s|\s\bbut\b\s|(?:,|\sand)\s*(?=(?:now|currently|also)\b)/);
 
 /** True when the clause that names the skill is about learning it. With no terms, any clause counts. */
 function learningAbout(line: string, terms: string[]): boolean {
@@ -198,7 +206,7 @@ function roleMonths(roles: Profile["roles"], nowMonths: number): (number | null)
     const start = starts[i];
     if (allKnown ? start === newest : i === 0) return nowMonths;
     if (start === null) return null;
-    if (!allKnown) return start;
+    if (!allKnown) return starts.slice(0, i).reverse().find((m): m is number => m !== null) ?? start;
     const nextNewer = known.filter((m) => m > start);
     return nextNewer.length ? Math.min(...nextNewer) : start;
   });
@@ -234,11 +242,12 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   };
 
   // 1. Skills the parser listed, mapped by exact name or alias, else by the distinctive taxonomy terms that
-  //    make up the whole name ("MS-Excel", "Python (Pandas, NumPy)"), never by a word inside a longer name.
+  //    make up the whole name or its list items ("MS-Excel", "Python (Pandas, NumPy)"), never by a word inside
+  //    a longer name such as "Go-to-market strategy".
   for (const s of profile.skills) {
     const exact = taxonomyId(s.name);
     const read = exact ? null : readTerms(s.name, safeTermTokens);
-    const ids = exact ? [exact] : read && read.leftover <= 1 ? [...read.skillIds] : [];
+    const ids = exact ? [exact] : read && (read.leftover <= 1 || isListLine(s.name)) ? [...read.skillIds] : [];
     const lastUsed = toMonths(s.lastUsed);
     for (const id of ids) {
       const terms = [normalizeForMatch(s.name), ...scanTerms(id)];
