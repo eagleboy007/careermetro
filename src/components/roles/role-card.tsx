@@ -17,7 +17,7 @@ export function RoleCard({ role }: { role: RoleView }) {
       <p className="font-mono text-xs uppercase tracking-wider text-muted">
         {role.experience} · {role.required.length} core skills · {role.certifications.length} certifications
       </p>
-      <p className="text-sm text-muted">Most asked: {top.join(", ")}</p>
+      {top.length > 0 && <p className="text-sm text-muted">Most asked: {top.join(", ")}</p>}
     </Link>
   );
 }

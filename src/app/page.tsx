@@ -44,8 +44,8 @@ export default function Home() {
           See what each role asks for
         </h2>
         <p className="max-w-2xl text-muted">
-          We measured which skills and certifications employers ask for across {roleViews.length} roles, from data analyst to
-          cyber security analyst.
+          A first draft, built from public job postings, of the skills and certifications employers ask for across{" "}
+          {roleViews.length} roles, from data analyst to cyber security analyst.
         </p>
         <Link href="/roles" className="inline-flex w-fit items-center gap-1.5 font-medium underline underline-offset-4 hover:text-ink">
           Browse roles
