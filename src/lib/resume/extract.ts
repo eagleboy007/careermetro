@@ -3,8 +3,8 @@ import mammoth from "mammoth";
 import { extractText, getDocumentProxy } from "unpdf";
 import { inflateRawSync } from "node:zlib";
 
-/** FR-4: uploads above this size are refused before any parsing. */
-export const MAX_RESUME_BYTES = 5 * 1024 * 1024;
+/** FR-4: uploads above this size are refused before any parsing. 4 MB, because Vercel functions accept request bodies up to 4.5 MB. */
+export const MAX_RESUME_BYTES = 4 * 1024 * 1024;
 const MAX_PDF_PAGES = 10;
 const MIN_TEXT_CHARS = 200;
 const MAX_TEXT_CHARS = 40_000;
@@ -132,7 +132,7 @@ async function docxText(bytes: Uint8Array): Promise<string> {
  */
 export async function extractResumeText(bytes: Uint8Array, as?: "text"): Promise<{ type: ResumeType; text: string }> {
   if (bytes.length > MAX_RESUME_BYTES) {
-    throw new ResumeError("too_large", "This file is larger than 5 MB. Please upload a smaller file.");
+    throw new ResumeError("too_large", "This file is larger than 4 MB. Please upload a smaller file.");
   }
 
   let type: ResumeType;

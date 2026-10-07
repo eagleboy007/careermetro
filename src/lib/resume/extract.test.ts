@@ -70,7 +70,7 @@ describe("extractResumeText", () => {
     expect(text).toContain("Priya Sharma");
   });
 
-  it("rejects files over 5 MB", async () => {
+  it("rejects files over 4 MB", async () => {
     await expect(extractResumeText(new Uint8Array(MAX_RESUME_BYTES + 1))).rejects.toMatchObject({ code: "too_large" });
   });
 
