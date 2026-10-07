@@ -1,0 +1,55 @@
+{
+  "id": "digital-marketing-fresher",
+  "roleSlug": "digital-marketing-executive",
+  "persona": "Mass media graduate with an internship and free certifications",
+  "resumeText": "Riya Sharma | Jaipur | riya.sharma@example.com\n\nINTERNSHIP\nDigital Marketing Intern, Pink City Travels, Jaipur (Jan 2026 - Jun 2026)\n- Ran Instagram and Facebook ad campaigns with a Rs 20,000 monthly budget.\n- Wrote blog posts and captions for the travel packages page.\n- Did keyword research and on-page SEO for 10 landing pages.\n- Tracked website traffic and campaign clicks in Google Analytics (GA4).\n- Shared a weekly results report with the founder.\n\nEDUCATION\nBA Mass Media, University of Rajasthan, 2026\n\nCERTIFICATIONS\nGoogle Ads Search Certification; Google Analytics Certification\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "social-media-marketing",
+        "quote": "Ran Instagram and Facebook ad campaigns"
+      },
+      {
+        "skillId": "content-marketing",
+        "quote": "Wrote blog posts and captions"
+      },
+      {
+        "skillId": "seo",
+        "quote": "Did keyword research and on-page SEO for 10 landing pages"
+      },
+      {
+        "skillId": "web-analytics",
+        "quote": "Tracked website traffic and campaign clicks in Google Analytics (GA4)"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Shared a weekly results report with the founder"
+      },
+      {
+        "skillId": "performance-marketing",
+        "quote": "Rs 20,000 monthly budget"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "performance-marketing",
+        "status": "weak"
+      },
+      {
+        "skillId": "sem-google-ads",
+        "status": "missing"
+      },
+      {
+        "skillId": "ab-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sem-google-ads",
+      "email-marketing",
+      "crm-tools"
+    ]
+  },
+  "reviewedBy": null
+}

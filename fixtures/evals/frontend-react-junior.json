@@ -1,0 +1,59 @@
+{
+  "id": "frontend-react-junior",
+  "roleSlug": "frontend-developer",
+  "persona": "Self-taught React developer with one freelance year",
+  "resumeText": "Sneha Kulkarni | Bengaluru | sneha.k@example.com\n\nEXPERIENCE\nFreelance Web Developer (2025 - present)\n- Built responsive marketing sites for 6 local businesses with HTML, CSS and Tailwind.\n- Built a React booking app with hooks, React Router and form validation for a yoga studio.\n- Fetched class schedules from a REST API and showed loading and error states.\n- Explain design trade-offs to clients on weekly calls.\n\nPROJECTS\n- Movie search app in JavaScript using async/await and the OMDb API.\n\nSKILLS\nHTML, CSS, JavaScript, React, Tailwind, Figma, GitHub\n",
+  "expected": {
+    "totalYearsExperience": 1,
+    "skills": [
+      {
+        "skillId": "html-css",
+        "quote": "Built responsive marketing sites for 6 local businesses with HTML, CSS and Tailwind"
+      },
+      {
+        "skillId": "react",
+        "quote": "Built a React booking app with hooks, React Router and form validation"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Fetched class schedules from a REST API and showed loading and error states"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Movie search app in JavaScript using async/await"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explain design trade-offs to clients on weekly calls"
+      },
+      {
+        "skillId": "figma",
+        "quote": "Figma"
+      },
+      {
+        "skillId": "git",
+        "quote": "GitHub"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "typescript",
+        "status": "missing"
+      },
+      {
+        "skillId": "state-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "typescript",
+      "nextjs",
+      "unit-testing"
+    ]
+  },
+  "reviewedBy": null
+}
