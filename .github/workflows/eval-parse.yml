@@ -1,0 +1,52 @@
+name: Parse eval
+
+# Runs the real resume-parse prompt over the synthetic eval resumes (AI-4). It costs about $1 a run,
+# so it runs only when the parser, its prompt or the eval set changes, or by hand.
+on:
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "src/lib/resume/parse.ts"
+      - "src/lib/resume/verify.ts"
+      - "src/lib/resume/mask.ts"
+      - "src/lib/schemas/profile.ts"
+      - "src/lib/ai/**"
+      - "src/content/**"
+      - "package-lock.json"
+      - "src/evals/**"
+      - "fixtures/evals/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push replaces a run in progress instead of paying for both.
+concurrency:
+  group: eval-parse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run the parse eval
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY is not set as an Actions secret, so the parse eval was skipped." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          npm run eval:parse
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: parse-eval
+          path: eval-results/
+          if-no-files-found: ignore
