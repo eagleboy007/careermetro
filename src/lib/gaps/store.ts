@@ -120,7 +120,7 @@ export async function getGapsForSession(
  * own analyses, and only while its resume is still within its 24 hours.
  */
 export async function rateAnalysis(analysisId: string, sessionId: string, rating: number, db: Db = getDb()): Promise<boolean> {
-  if (!/^[0-9a-f-]{36}$/i.test(analysisId) || !Number.isInteger(rating) || rating < 1 || rating > 5) return false;
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(analysisId) || !Number.isInteger(rating) || rating < 1 || rating > 5) return false;
   const own = db
     .select({ id: profiles.id })
     .from(profiles)

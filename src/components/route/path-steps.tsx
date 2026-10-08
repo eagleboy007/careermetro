@@ -1,23 +1,36 @@
 import { BookOpen, Check, CirclePlay, Clock } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type PathStepView = {
+  key: string;
   title: string;
   hours: number;
+  /** The week the step starts in, at the chosen weekly hours. */
+  week?: number;
+  /** Why this step, tied to the gap. */
+  reason?: string;
   closes?: string;
   doneOn?: string;
-  resources?: { title: string; provider: string; kind: "video" | "course" | "article"; url: string }[];
+  resources?: { title: string; provider: string; kind: string; url: string }[];
   proofTask?: string;
+  /** A control for the step, such as Mark done. */
+  action?: ReactNode;
 };
 
-export function PathSteps({ steps, currentIndex }: { steps: PathStepView[]; currentIndex: number }) {
+/**
+ * The learning path (FR-16). A step with doneOn is done; the first step not done is the current one.
+ * Steps not yet done show their reason, free resources and proof task; done steps stay compact.
+ */
+export function PathSteps({ steps }: { steps: PathStepView[] }) {
+  const currentIndex = steps.findIndex((s) => !s.doneOn);
   return (
     <ol className="flex flex-col">
       {steps.map((step, i) => {
-        const done = i < currentIndex;
+        const done = Boolean(step.doneOn);
         const now = i === currentIndex;
         const last = i === steps.length - 1;
         return (
-          <li key={step.title} className="relative grid grid-cols-[28px_1fr] gap-3 pb-[18px]">
+          <li key={step.key} className="relative grid grid-cols-[28px_1fr] gap-3 pb-[18px]">
             {!last && (
               <span
                 aria-hidden="true"
@@ -38,6 +51,7 @@ export function PathSteps({ steps, currentIndex }: { steps: PathStepView[]; curr
             <div className="flex min-w-0 flex-col gap-1.5">
               <p className="font-semibold">{step.title}</p>
               <p className="flex flex-wrap gap-3 text-xs text-muted">
+                {step.week !== undefined && <span className="font-mono uppercase tracking-wider">Week {step.week}</span>}
                 <span className="inline-flex items-center gap-1">
                   <Clock size={14} strokeWidth={1.75} aria-hidden="true" />
                   {step.hours} hrs
@@ -45,7 +59,8 @@ export function PathSteps({ steps, currentIndex }: { steps: PathStepView[]; curr
                 {step.doneOn && <span>Done {step.doneOn}</span>}
                 {step.closes && <span>Closes: {step.closes}</span>}
               </p>
-              {now &&
+              {!done && step.reason && <p className="text-sm">{step.reason}</p>}
+              {!done &&
                 step.resources?.map((r) => {
                   const Icon = r.kind === "video" ? CirclePlay : BookOpen;
                   return (
@@ -61,11 +76,12 @@ export function PathSteps({ steps, currentIndex }: { steps: PathStepView[]; curr
                     </a>
                   );
                 })}
-              {now && step.proofTask && (
+              {!done && step.proofTask && (
                 <p className="border-l-2 border-accent pl-2.5 text-[13px]">
                   <span className="font-semibold">Prove it:</span> {step.proofTask}
                 </p>
               )}
+              {step.action}
             </div>
           </li>
         );

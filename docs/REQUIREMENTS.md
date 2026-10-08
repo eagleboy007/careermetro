@@ -72,7 +72,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 - FR-15: Generate a path of at most 6 steps, sized to the user's stated weekly hours (default 5 hrs/week).
 - FR-16: Each step: skill, reason tied to a gap, curated resources (prefer free and India-accessible), time estimate, one proof-of-skill task (mini project or exercise).
 - FR-17: Resources come from a maintained catalog with link-health checks. The model selects from the catalog and never invents URLs.
-- FR-18: User can mark steps done; path and readiness update.
+- FR-18: User can mark steps done; path progress updates. Progress is kept when the weekly hours change. Readiness changes only once a step's proof task is checked (Practice), because a self-reported tick is not evidence.
 
 ### 5.5b Resume builder
 - FR-19: Generate an improved resume draft from the parsed profile, rewriting bullets for the target role. Never fabricate experience or skills; anything the model adds as a suggestion is flagged for the user to confirm.

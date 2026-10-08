@@ -10,6 +10,7 @@ import { GapCard } from "@/components/route/gap-card";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
 import { SiteHeader } from "@/components/site/site-header";
+import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
 import { getGapsForSession } from "@/lib/gaps/store";
 import { readSessionId } from "@/lib/session";
@@ -69,12 +70,18 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
       ) : null}
       <CoveredSkills title="Skills your resume already shows" skills={met} />
       <CoveredSkills title="Nice to have" skills={analysis.niceToHave} />
+      {analysis.gaps.length > 0 && (
+        <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
+          <p className="font-semibold">Close these gaps step by step</p>
+          <p className="text-sm text-muted">A short plan with free resources and a small task to prove each skill, sized to your week.</p>
+          <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
+        </section>
+      )}
       <GapRating analysisId={analysisId} initial={rating} />
       <p className="text-sm text-muted">
         <Link href={`/resume/${id}/role`} className="underline underline-offset-2 hover:text-ink">
           Pick another role
         </Link>
-        {" · "}Your learning path for these gaps is the next step we&apos;re building.
       </p>
     </div>
   );
