@@ -2,6 +2,7 @@ export * from "./certification";
 export * from "./eval-case";
 export * from "./gap";
 export * from "./profile";
+export * from "./resource";
 export * from "./role-profile";
 export * from "./skill";
 export * from "./waitlist";

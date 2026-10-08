@@ -1,5 +1,6 @@
-// Loads the skill taxonomy and role profiles from src/content into the database. Safe to re-run:
-// skills are upserted, aliases are replaced, and a role profile gets a new version only when it changed.
+// Loads the skill taxonomy, role profiles and resource catalog from src/content into the database. Safe to re-run:
+// skills are upserted, aliases are replaced, a role profile gets a new version only when it changed, and resources
+// are upserted by URL. A resource removed from the catalog is marked unhealthy so new paths skip it; old paths keep it.
 // Usage: DATABASE_URL=... node scripts/seed-content.mjs
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -17,6 +18,7 @@ const canonical = (v) =>
 const normalize = (term) => term.trim().toLowerCase().replace(/\s+/g, " ");
 
 const skills = read("src/content/skills.json");
+const resources = read("src/content/resources.json").map((r) => ({ ...r, free: r.free ?? true }));
 const roles = readdirSync(join(root, "src/content/roles"))
   .filter((f) => f.endsWith(".json"))
   .map((f) => read(`src/content/roles/${f}`));
@@ -48,9 +50,30 @@ try {
         values (${role.slug}, ${(latest?.version ?? 0) + 1}, ${tx.json(role)}, ${role.reviewedBy !== null}, ${role.updatedOn})`;
       added += 1;
     }
-    return { skills: skills.length, aliases: aliases.length, roles: roles.length, newRoleVersions: added };
+    // Updating keeps healthy and last_checked_at, which belong to the link check.
+    await tx`
+      insert into resources ${tx(
+        resources.map((r) => ({ title: r.title, url: r.url, provider: r.provider, kind: r.kind, skill_ids: r.skillIds, minutes: r.minutes, free: r.free })),
+        "title", "url", "provider", "kind", "skill_ids", "minutes", "free",
+      )}
+      on conflict (url) do update set title = excluded.title, provider = excluded.provider, kind = excluded.kind,
+        skill_ids = excluded.skill_ids, minutes = excluded.minutes, free = excluded.free`;
+    const retired = await tx`
+      update resources set healthy = false where healthy and url not in ${tx(resources.map((r) => r.url))} returning id`;
+
+    return {
+      skills: skills.length,
+      aliases: aliases.length,
+      roles: roles.length,
+      newRoleVersions: added,
+      resources: resources.length,
+      retired: retired.length,
+    };
   });
-  console.log(`Seeded ${summary.skills} skills, ${summary.aliases} aliases; ${summary.newRoleVersions} of ${summary.roles} role profiles got a new version.`);
+  console.log(
+    `Seeded ${summary.skills} skills, ${summary.aliases} aliases; ${summary.newRoleVersions} of ${summary.roles} role profiles got a new version; ` +
+      `${summary.resources} resources (${summary.retired} retired).`,
+  );
 } finally {
   await sql.end();
 }
