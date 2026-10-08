@@ -108,12 +108,21 @@ export async function getPathForSession(
           .select({ id: resources.id, skillIds: resources.skillIds, minutes: resources.minutes, free: resources.free, healthy: resources.healthy, title: resources.title, provider: resources.provider })
           .from(resources)
           .where(eq(resources.healthy, true));
+        // The model call holds this transaction's connection for up to 20 s, as on the Gaps page. Fine for the beta;
+        // later, call the model outside the transaction and re-check for a stored path after taking the lock.
         const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
         const titles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
         const worded = (await mayWrite(tx, sessionId))
           ? await writePath(plan, role.title, titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
           : { path: plan, calls: [] };
         const callIds = await recordAiCalls(worded.calls, tx);
+        // Steps already done at another hours setting stay done here (FR-18).
+        const doneRows = await tx
+          .select({ skillId: pathSteps.skillId, doneAt: pathSteps.doneAt })
+          .from(pathSteps)
+          .innerJoin(paths, eq(paths.id, pathSteps.pathId))
+          .where(and(eq(paths.gapAnalysisId, gaps.analysisId), isNotNull(pathSteps.doneAt)));
+        const doneBySkill = new Map(doneRows.map((r) => [r.skillId, r.doneAt]));
         const [row] = await tx
           .insert(paths)
           .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds[0] ?? null })
@@ -127,6 +136,7 @@ export async function getPathForSession(
             hours: s.hours,
             resourceIds: s.resourceIds,
             proofTask: s.proofTask,
+            doneAt: doneBySkill.get(s.skillId) ?? null,
           })),
         );
         pathId = row.id;
@@ -186,20 +196,25 @@ async function readPath(
   };
 }
 
-/** FR-18: marks one of this session's path steps done or not done, while its resume is within its 24 hours. */
+/**
+ * FR-18: marks one of this session's path steps done or not done, while its resume is within its 24 hours. The same
+ * skill's step in the paths for other hours settings changes with it, so progress survives a change of hours.
+ */
 export async function markStepDone(stepId: string, sessionId: string, done: boolean, db: Db = getDb()): Promise<boolean> {
-  if (!/^[0-9a-f-]{36}$/i.test(stepId)) return false;
-  const own = db
-    .select({ id: paths.id })
-    .from(paths)
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(stepId)) return false;
+  const [step] = await db
+    .select({ skillId: pathSteps.skillId, gapAnalysisId: paths.gapAnalysisId })
+    .from(pathSteps)
+    .innerJoin(paths, eq(paths.id, pathSteps.pathId))
     .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(eq(resumes.anonymousSessionId, sessionId), notExpired()));
-  const updated = await db
+    .where(and(eq(pathSteps.id, stepId), eq(resumes.anonymousSessionId, sessionId), notExpired()));
+  if (!step) return false;
+  const sameAnalysis = db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, step.gapAnalysisId));
+  await db
     .update(pathSteps)
     .set({ doneAt: done ? new Date() : null })
-    .where(and(eq(pathSteps.id, stepId), inArray(pathSteps.pathId, own)))
-    .returning({ id: pathSteps.id });
-  return updated.length === 1;
+    .where(and(eq(pathSteps.skillId, step.skillId), inArray(pathSteps.pathId, sameAnalysis)));
+  return true;
 }

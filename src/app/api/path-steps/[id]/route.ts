@@ -7,6 +7,7 @@ const NOT_FOUND = "We couldn't find this step. Your path may have expired.";
 /** FR-18: marks one of this session's path steps done ({ "done": true }) or not done ({ "done": false }). */
 export async function PUT(request: Request, { params }: RouteContext<"/api/path-steps/[id]">) {
   if (!isSameOrigin(request)) return fail(403, "Please update your path from the CareerMetro website.");
+  if (Number(request.headers.get("content-length") ?? 0) > 100) return fail(400, "Send done as true or false.");
   const body = await request.text().catch(() => "");
   if (body.length > 100) return fail(400, "Send done as true or false.");
   let done: unknown = null;

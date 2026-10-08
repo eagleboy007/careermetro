@@ -79,7 +79,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
           <Link
             key={h}
             href={`/resume/${id}/path/${slug}?hours=${h}`}
-            aria-current={h === path.weeklyHours ? "true" : undefined}
+            aria-current={h === path.weeklyHours ? "page" : undefined}
+            aria-label={`${h} hours a week`}
             className={`rounded-full border px-3 py-1 font-mono text-xs ${
               h === path.weeklyHours ? "border-ink bg-ink text-bg" : "border-line hover:border-ink"
             }`}
@@ -109,7 +110,7 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
           doneOn: s.doneAt ? dayMonth.format(new Date(s.doneAt)) : undefined,
           resources: s.resources,
           proofTask: s.proofTask,
-          action: <MarkDone stepId={s.id} done={Boolean(s.doneAt)} />,
+          action: <MarkDone stepId={s.id} title={s.skillName} done={Boolean(s.doneAt)} />,
         }))}
       />
       {path.deferredCount > 0 && (

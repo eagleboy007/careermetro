@@ -128,6 +128,7 @@ describe.skipIf(!db)("paths (database)", () => {
     const step = r.path.steps[0];
     expect(await markStepDone(step.id, "someone-else", true, db!)).toBe(false);
     expect(await markStepDone("not-a-uuid", session, true, db!)).toBe(false);
+    expect(await markStepDone("-".repeat(36), session, true, db!)).toBe(false);
     expect(await markStepDone(step.id, session, true, db!)).toBe(true);
 
     const after = await getPathForSession(resumeId, session, role, 5, { db: db! });
@@ -136,5 +137,24 @@ describe.skipIf(!db)("paths (database)", () => {
     expect(await markStepDone(step.id, session, false, db!)).toBe(true);
     const undone = await getPathForSession(resumeId, session, role, 5, { db: db! });
     expect(undone.ok && undone.path.doneCount).toBe(0);
+  });
+
+  it("keeps progress when the weekly hours change", async () => {
+    const { session, resumeId } = await seed();
+    const five = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    if (!five.ok) throw new Error(five.reason);
+    const first = five.path.steps[0];
+    expect(await markStepDone(first.id, session, true, db!)).toBe(true);
+
+    // A path made after the step was done starts with it done.
+    const ten = await getPathForSession(resumeId, session, role, 10, { db: db! });
+    if (!ten.ok) throw new Error(ten.reason);
+    expect(ten.path.steps.find((s) => s.skillId === first.skillId)?.doneAt).not.toBeNull();
+
+    // Undoing it at 10 hours undoes it at 5 hours too.
+    const tenStep = ten.path.steps.find((s) => s.skillId === first.skillId)!;
+    expect(await markStepDone(tenStep.id, session, false, db!)).toBe(true);
+    const fiveAgain = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    expect(fiveAgain.ok && fiveAgain.path.doneCount).toBe(0);
   });
 });

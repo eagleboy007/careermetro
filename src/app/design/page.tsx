@@ -57,7 +57,7 @@ const exampleGaps: Gap[] = [
 ];
 
 const exampleSteps: PathStepView[] = [
-  { key: "pandas", title: "Refresh pandas basics", hours: 4, week: 1, doneOn: "3 Oct", action: <MarkDone stepId="demo-1" done demo /> },
+  { key: "pandas", title: "Refresh pandas basics", hours: 4, week: 1, doneOn: "3 Oct", action: <MarkDone stepId="demo-1" title="pandas basics" done demo /> },
   {
     key: "sql",
     title: "SQL window functions",
@@ -70,9 +70,9 @@ const exampleSteps: PathStepView[] = [
       { title: "Advanced SQL", provider: "Kaggle Learn", kind: "course", url: "https://www.kaggle.com/learn/advanced-sql" },
     ],
     proofTask: "rank the top 5 products per month from a sample sales table.",
-    action: <MarkDone stepId="demo-2" done={false} demo />,
+    action: <MarkDone stepId="demo-2" title="SQL window functions" done={false} demo />,
   },
-  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Weak evidence", action: <MarkDone stepId="demo-3" done={false} demo /> },
+  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Weak evidence", action: <MarkDone stepId="demo-3" title="Power BI project" done={false} demo /> },
 ];
 
 const exampleProfile: Profile = {
