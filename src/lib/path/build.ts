@@ -30,6 +30,7 @@ const defaultProofTasks = new Map(catalogProofTasks.map((t) => [t.skillId, t.tas
 export function buildPath(input: PathInput): PlannedPath {
   const weeklyHours = weeklyHoursSchema.parse(input.weeklyHours);
   if (input.gaps.length === 0) throw new Error("buildPath needs at least one gap");
+  if (new Set(input.gaps.map((g) => g.skillId)).size !== input.gaps.length) throw new Error("buildPath got a gap twice");
   const implies = new Map((input.skills ?? taxonomy).map((s) => [s.id, s.implies]));
   const proofTasks = input.proofTasks ?? defaultProofTasks;
 
@@ -37,16 +38,19 @@ export function buildPath(input: PathInput): PlannedPath {
   const budget = weeklyHours * MAX_WEEKS;
   const steps: PlannedStep[] = [];
   const deferredSkillIds: string[] = [];
+  const usedResourceIds = new Set<string>();
   let hoursBefore = 0;
 
   for (const g of ordered) {
-    const chosen = pickResources(g.skillId, input.resources);
+    const chosen = pickResources(g, input.resources, usedResourceIds);
     const hours = stepHours(g, chosen);
-    // Always keep the first step; after that, stop at 6 steps or once a step would start after the last week.
-    if (steps.length > 0 && (steps.length >= MAX_STEPS || hoursBefore >= budget)) {
+    // Always keep the first step. After that, stop at 6 steps or at the first step that would end after the last
+    // week; everything after it waits too, so a kept step never loses a prerequisite placed before it.
+    if (deferredSkillIds.length > 0 || (steps.length > 0 && (steps.length >= MAX_STEPS || hoursBefore + hours > budget))) {
       deferredSkillIds.push(g.skillId);
       continue;
     }
+    for (const r of chosen) usedResourceIds.add(r.id);
     steps.push({
       position: steps.length + 1,
       skillId: g.skillId,
@@ -72,17 +76,30 @@ export function buildPath(input: PathInput): PlannedPath {
 
 /**
  * Keeps the gaps' ranking, except that a gap goes before any gap that builds on it: a skill implies the broader
- * skills it rests on (Next.js → React → JavaScript), so JavaScript is learned before Next.js.
+ * skills it rests on (Next.js → React → JavaScript), so JavaScript is learned before Next.js. When one gap rests on
+ * several others, they keep their own ranking among themselves.
  */
 function prerequisitesFirst(gaps: Gap[], implies: ReadonlyMap<string, string[]>): Gap[] {
   const byId = new Map(gaps.map((g) => [g.skillId, g]));
+  const rank = new Map(gaps.map((g, i) => [g.skillId, i]));
+  // The best rank of any gap reachable from a skill, so a non-gap link in a chain sorts by the gap behind it.
+  const reach = new Map<string, number>();
+  const reachRank = (id: string, seen: Set<string>): number => {
+    const known = reach.get(id);
+    if (known !== undefined) return known;
+    if (seen.has(id)) return Infinity;
+    seen.add(id);
+    const best = Math.min(rank.get(id) ?? Infinity, ...(implies.get(id) ?? []).map((b) => reachRank(b, seen)));
+    reach.set(id, best);
+    return best;
+  };
   const placed = new Set<string>();
   const out: Gap[] = [];
   const place = (skillId: string, visiting: Set<string>) => {
     if (placed.has(skillId) || visiting.has(skillId)) return;
     visiting.add(skillId);
-    // Walk the whole chain, so a prerequisite two links away is found even when the middle skill is not a gap.
-    for (const broader of implies.get(skillId) ?? []) place(broader, visiting);
+    const broader = [...(implies.get(skillId) ?? [])].sort((a, b) => reachRank(a, new Set()) - reachRank(b, new Set()));
+    for (const b of broader) place(b, visiting);
     const g = byId.get(skillId);
     if (g) {
       placed.add(skillId);
@@ -93,12 +110,22 @@ function prerequisitesFirst(gaps: Gap[], implies: ReadonlyMap<string, string[]>)
   return out;
 }
 
-/** Healthy catalog links for the skill: free first, then shortest. */
-function pickResources(skillId: string, resources: CatalogResource[]): CatalogResource[] {
-  return resources
-    .filter((r) => r.healthy && r.skillIds.includes(skillId))
-    .sort((a, b) => Number(b.free) - Number(a.free) || a.minutes - b.minutes || a.id.localeCompare(b.id))
-    .slice(0, MAX_RESOURCES_PER_STEP);
+/**
+ * Healthy catalog links for the skill, free first, then shortest: the fewest that cover the gap's estimate, at most 3.
+ * A link already used by an earlier step is not repeated.
+ */
+function pickResources(g: Gap, resources: CatalogResource[], used: ReadonlySet<string>): CatalogResource[] {
+  const candidates = resources
+    .filter((r) => r.healthy && r.skillIds.includes(g.skillId) && !used.has(r.id))
+    .sort((a, b) => Number(b.free) - Number(a.free) || a.minutes - b.minutes || a.id.localeCompare(b.id));
+  const chosen: CatalogResource[] = [];
+  let minutes = 0;
+  for (const r of candidates) {
+    if (chosen.length >= MAX_RESOURCES_PER_STEP || minutes >= HOURS_BY_STATUS[g.status] * 60) break;
+    chosen.push(r);
+    minutes += r.minutes;
+  }
+  return chosen;
 }
 
 /** The resources' length, capped by the Gaps estimate for this kind of gap; the estimate when there are none. */

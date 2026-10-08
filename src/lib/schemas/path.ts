@@ -19,7 +19,7 @@ export const plannedStep = z.object({
   /** The week this step starts in, counting from 1, at the chosen weekly hours. */
   week: z.number().int().positive(),
   /** Catalog resource ids (database uuids), best first. Empty when the catalog has no healthy link for the skill. */
-  resourceIds: z.array(z.string().uuid()).max(3),
+  resourceIds: z.array(z.uuid()).max(3),
   reason: z.string().min(1),
   proofTask: z.string().min(1),
 });

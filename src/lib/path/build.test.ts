@@ -37,8 +37,20 @@ describe("buildPath", () => {
   });
 
   it("puts a prerequisite before the skill that builds on it, following chains", () => {
-    const path = buildPath({ ...base, gaps: [gap("nextjs"), gap("sql"), gap("javascript")], resources: [] });
+    const path = buildPath({ ...base, weeklyHours: 10, gaps: [gap("nextjs"), gap("sql"), gap("javascript")], resources: [] });
     expect(path.steps.map((s) => s.skillId)).toEqual(["javascript", "nextjs", "sql"]);
+  });
+
+  it("keeps the gaps' ranking among several prerequisites of one gap", () => {
+    const tied = [...skills, { id: "x", implies: ["sql", "excel"] }];
+    const path = buildPath({ ...base, weeklyHours: 10, skills: tied, gaps: [gap("x"), gap("excel"), gap("sql")], resources: [] });
+    expect(path.steps.map((s) => s.skillId)).toEqual(["excel", "sql", "x"]);
+  });
+
+  it("does not loop on a cycle in the taxonomy", () => {
+    const cyclic = [{ id: "a", implies: ["b"] }, { id: "b", implies: ["a"] }];
+    const path = buildPath({ ...base, skills: cyclic, gaps: [gap("a"), gap("b")], resources: [] });
+    expect(path.steps.map((s) => s.skillId).sort()).toEqual(["a", "b"]);
   });
 
   it("has at most 6 steps and lists the rest as deferred", () => {
@@ -61,6 +73,21 @@ describe("buildPath", () => {
     expect(step.resourceIds).toEqual([uuid(4), uuid(6), uuid(1)]);
   });
 
+  it("takes the fewest resources that cover the gap estimate", () => {
+    const resources = [res(1, ["sql"], 300), res(2, ["sql"], 30), res(3, ["sql"], 600)];
+    const [step] = buildPath({ ...base, gaps: [gap("sql", "weak")], resources }).steps;
+    // A weak gap is 4 hours: 30 + 300 minutes cover it, so the 600-minute course is left out.
+    expect(step.resourceIds).toEqual([uuid(2), uuid(1)]);
+    expect(step.hours).toBe(4);
+  });
+
+  it("does not repeat a resource shared by two gaps", () => {
+    const resources = [res(1, ["sql", "excel"], 600), res(2, ["excel"], 120)];
+    const steps = buildPath({ ...base, weeklyHours: 10, gaps: [gap("sql"), gap("excel")], resources }).steps;
+    expect(steps.map((s) => s.resourceIds)).toEqual([[uuid(1)], [uuid(2)]]);
+    expect(steps.map((s) => s.hours)).toEqual([10, 2]);
+  });
+
   it("sizes a step from its resources, capped by the gap estimate, and at least 1 hour", () => {
     const resources = [res(1, ["sql"], 50), res(2, ["excel"], 3000)];
     const steps = buildPath({ ...base, gaps: [gap("sql", "missing"), gap("excel", "weak"), gap("javascript", "outdated")], resources }).steps;
@@ -71,16 +98,23 @@ describe("buildPath", () => {
     ]);
   });
 
-  it("places steps in weeks at the chosen hours and defers what starts after week 6", () => {
-    // Each missing gap with no resources is 12 hours; at 3 hours a week that is 4 weeks per step.
-    const path = buildPath({ ...base, weeklyHours: 3, gaps: [gap("a"), gap("b"), gap("c")], resources: [] });
+  it("places steps in weeks at the chosen hours and defers what would end after week 6", () => {
+    // Each missing gap with no resources is 12 hours; at 3 hours a week the budget is 18 hours.
+    const path = buildPath({ ...base, weeklyHours: 3, gaps: [gap("a"), gap("b", "weak"), gap("c"), gap("d", "weak")], resources: [] });
     expect(path.steps.map((s) => [s.skillId, s.week])).toEqual([
       ["a", 1],
       ["b", 5],
     ]);
-    expect(path.deferredSkillIds).toEqual(["c"]);
-    expect(path.totalHours).toBe(24);
-    expect(path.weeks).toBe(8);
+    // d would fit on its own, but it waits behind c so a later step never jumps ahead of an earlier one.
+    expect(path.deferredSkillIds).toEqual(["c", "d"]);
+    expect(path.totalHours).toBe(16);
+    expect(path.weeks).toBe(6);
+  });
+
+  it("keeps a step that ends exactly at the end of week 6", () => {
+    const path = buildPath({ ...base, weeklyHours: 3, gaps: [gap("a", "outdated"), gap("b", "outdated"), gap("c", "outdated")], resources: [] });
+    expect(path.steps.map((s) => s.skillId)).toEqual(["a", "b", "c"]);
+    expect(path.weeks).toBe(6);
   });
 
   it("always keeps the first step, however long", () => {
@@ -95,9 +129,10 @@ describe("buildPath", () => {
     expect(steps[1].proofTask).toContain("EXCEL");
   });
 
-  it("rejects weekly hours outside the offered choices and an empty gap list", () => {
+  it("rejects weekly hours outside the offered choices, an empty gap list and a repeated gap", () => {
     expect(() => buildPath({ ...base, weeklyHours: 4, gaps: [gap("sql")], resources: [] })).toThrow();
     expect(() => buildPath({ ...base, gaps: [], resources: [] })).toThrow();
+    expect(() => buildPath({ ...base, gaps: [gap("sql"), gap("sql")], resources: [] })).toThrow();
   });
 
   it("uses the real catalog by default and finds resources for a real gap", () => {
