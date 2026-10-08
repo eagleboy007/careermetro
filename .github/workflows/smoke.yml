@@ -31,9 +31,11 @@ jobs:
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           CHECK: ${{ inputs.check }}
         run: |
+          # A parse check is slow and cached server-side, so retrying it only waits for the same answer.
+          RETRIES=2; if [ -n "$CHECK" ]; then RETRIES=0; fi
           headers=()
           if [ -n "$BYPASS" ]; then headers=(-H "x-vercel-protection-bypass: $BYPASS"); fi
-          code=$(curl -sS --max-time 120 --retry 2 --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health${CHECK:+?check=$CHECK}" || true)
+          code=$(curl -sS --max-time 120 --retry "${RETRIES}" --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health${CHECK:+?check=$CHECK}" || true)
           body=$(head -c 1000 health.json 2>/dev/null)
           if [ "$code" = 401 ] || [ "$code" = 403 ]; then
             body="Vercel Deployment Protection blocked the check. Set the PRODUCTION_URL variable or the VERCEL_AUTOMATION_BYPASS_SECRET secret."
