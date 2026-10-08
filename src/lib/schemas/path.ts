@@ -20,8 +20,8 @@ export const plannedStep = z.object({
   week: z.number().int().positive(),
   /** Catalog resource ids (database uuids), best first. Empty when the catalog has no healthy link for the skill. */
   resourceIds: z.array(z.uuid()).max(3),
-  reason: z.string().min(1),
-  proofTask: z.string().min(1),
+  reason: z.string().min(1).max(400),
+  proofTask: z.string().min(1).max(400),
 });
 export type PlannedStep = z.infer<typeof plannedStep>;
 

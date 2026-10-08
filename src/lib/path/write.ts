@@ -22,9 +22,16 @@ export const writePathOutput = z.object({
 
 export type WritePathResult = { path: PlannedPath; source: "model" | "template"; calls: AiCallRecord[] };
 
-const LINK = /https?:\/\/|www\.|\.(com|org|in|io)\b/i;
+/**
+ * A web address: a scheme, "www.", or a lowercase domain followed by a path (youtu.be/x, kaggle.com/learn).
+ * A bare site name such as data.gov.in is allowed, as are words like B.Com, Node.js or Socket.IO.
+ */
+const LINK = /https?:\/\/|\bwww\.|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,6}\/\S/;
 
-/** The fixed steps as data for the model: titles of the chosen resources, never their URLs (FR-17). */
+/**
+ * The fixed steps as data for the model: titles of the chosen resources, never their URLs (FR-17). Pass a plan
+ * fresh from buildPath, so `gap` holds the Gaps page explanation and not wording the model already wrote.
+ */
 export function wrapPath(plan: PlannedPath, roleTitle: string, titles: ResourceTitles): string {
   const data = {
     role: roleTitle,
