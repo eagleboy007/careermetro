@@ -1,0 +1,2519 @@
+[
+  {
+    "title": "How Not To Run an A/B Test",
+    "url": "https://www.evanmiller.org/how-not-to-run-an-ab-test.html",
+    "provider": "Evan Miller",
+    "kind": "docs",
+    "skillIds": [
+      "ab-testing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to Meet WCAG (Quick Reference)",
+    "url": "https://www.w3.org/WAI/WCAG22/quickref/",
+    "provider": "W3C WAI",
+    "kind": "docs",
+    "skillIds": [
+      "accessibility"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn Accessibility",
+    "url": "https://web.dev/learn/accessibility",
+    "provider": "web.dev",
+    "kind": "course",
+    "skillIds": [
+      "accessibility"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Agile Coach: agile and Scrum guides",
+    "url": "https://www.atlassian.com/agile",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "agile-scrum"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "How to do Scrum with Jira",
+    "url": "https://www.atlassian.com/agile/tutorials/how-to-do-scrum-with-jira",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "agile-scrum",
+      "bug-tracking"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "The Scrum Guide",
+    "url": "https://scrumguides.org/scrum-guide.html",
+    "provider": "Scrum.org and Scrum Inc.",
+    "kind": "docs",
+    "skillIds": [
+      "agile-scrum"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Postman Learning Center",
+    "url": "https://learning.postman.com/",
+    "provider": "Postman",
+    "kind": "docs",
+    "skillIds": [
+      "api-testing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "REST Assured",
+    "url": "https://rest-assured.io/",
+    "provider": "REST Assured",
+    "kind": "docs",
+    "skillIds": [
+      "api-testing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "OWASP Cheat Sheet Series",
+    "url": "https://cheatsheetseries.owasp.org/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "application-security"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "OWASP Top 10",
+    "url": "https://owasp.org/www-project-top-ten/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "application-security"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Web Security Academy",
+    "url": "https://portswigger.net/web-security",
+    "provider": "PortSwigger",
+    "kind": "practice",
+    "skillIds": [
+      "application-security",
+      "penetration-testing"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "AWS Cloud Practitioner Essentials",
+    "url": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/134/aws-cloud-practitioner-essentials",
+    "provider": "AWS Skill Builder",
+    "kind": "course",
+    "skillIds": [
+      "aws"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "AWS Well-Architected Framework",
+    "url": "https://aws.amazon.com/architecture/well-architected/",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "aws",
+      "system-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Microsoft Certified: Azure Fundamentals (AZ-900) study guide",
+    "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "azure"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Bug writing guidelines",
+    "url": "https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html",
+    "provider": "Mozilla",
+    "kind": "docs",
+    "skillIds": [
+      "bug-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Jira guides",
+    "url": "https://www.atlassian.com/software/jira/guides",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "bug-tracking"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Introduction to Corporate Finance (audit free)",
+    "url": "https://www.coursera.org/learn/wharton-finance",
+    "provider": "Wharton on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "business-case"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "The Green Book: appraisal and evaluation guidance",
+    "url": "https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government",
+    "provider": "HM Treasury",
+    "kind": "docs",
+    "skillIds": [
+      "business-case"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "GitHub Actions documentation",
+    "url": "https://docs.github.com/en/actions",
+    "provider": "GitHub",
+    "kind": "docs",
+    "skillIds": [
+      "ci-cd"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Jenkins Pipeline",
+    "url": "https://www.jenkins.io/doc/book/pipeline/",
+    "provider": "Jenkins",
+    "kind": "docs",
+    "skillIds": [
+      "ci-cd"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "BigQuery sandbox",
+    "url": "https://cloud.google.com/bigquery/docs/sandbox",
+    "provider": "Google Cloud",
+    "kind": "practice",
+    "skillIds": [
+      "cloud-data-warehouse"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Snowflake documentation",
+    "url": "https://docs.snowflake.com/",
+    "provider": "Snowflake",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-data-warehouse"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Amazon RDS User Guide",
+    "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-databases"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Azure SQL documentation",
+    "url": "https://learn.microsoft.com/en-us/azure/azure-sql/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-databases"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cloud SQL documentation",
+    "url": "https://cloud.google.com/sql/docs",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-databases"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Azure security fundamentals",
+    "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-security",
+      "azure"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Purdue Online Writing Lab",
+    "url": "https://owl.purdue.edu/owl/purdue_owl.html",
+    "provider": "Purdue OWL",
+    "kind": "docs",
+    "skillIds": [
+      "communication"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Technical Writing courses",
+    "url": "https://developers.google.com/tech-writing",
+    "provider": "Google for Developers",
+    "kind": "course",
+    "skillIds": [
+      "communication"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Cybersecurity Framework (CSF) 2.0",
+    "url": "https://www.nist.gov/cyberframework",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-frameworks",
+      "security-policies",
+      "risk-assessment"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "ISO/IEC 27001 overview",
+    "url": "https://www.iso.org/standard/27001",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-frameworks",
+      "security-policies"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "SOC 2: Trust Services Criteria overview",
+    "url": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
+    "provider": "AICPA & CIMA",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-frameworks",
+      "security-audits"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Content Marketing course",
+    "url": "https://academy.hubspot.com/courses/content-marketing",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "content-marketing"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Admin Beginner trail",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/force_com_admin_beginner",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "crm-tools"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "HubSpot Knowledge Base",
+    "url": "https://knowledge.hubspot.com/",
+    "provider": "HubSpot",
+    "kind": "docs",
+    "skillIds": [
+      "crm-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cryptography I (audit free)",
+    "url": "https://www.coursera.org/learn/crypto",
+    "provider": "Stanford on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "cryptography-basics"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "How Let's Encrypt works",
+    "url": "https://letsencrypt.org/how-it-works/",
+    "provider": "Let's Encrypt",
+    "kind": "docs",
+    "skillIds": [
+      "cryptography-basics"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Data Cleaning",
+    "url": "https://www.kaggle.com/learn/data-cleaning",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-cleaning"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "OpenRefine documentation",
+    "url": "https://openrefine.org/docs",
+    "provider": "OpenRefine",
+    "kind": "docs",
+    "skillIds": [
+      "data-cleaning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Data protection framework (DPDP Act, 2023)",
+    "url": "https://www.meity.gov.in/data-protection-framework",
+    "provider": "MeitY, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "data-governance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Microsoft Purview documentation",
+    "url": "https://learn.microsoft.com/en-us/purview/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-governance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Database Management System (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105175",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "data-modeling",
+      "orm-databases"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Dimensional modeling techniques",
+    "url": "https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/",
+    "provider": "Kimball Group",
+    "kind": "docs",
+    "skillIds": [
+      "data-modeling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Prisma's Data Guide",
+    "url": "https://www.prisma.io/dataguide",
+    "provider": "Prisma",
+    "kind": "docs",
+    "skillIds": [
+      "data-modeling",
+      "orm-databases"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "6.006 Introduction to Algorithms",
+    "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "data-structures-algorithms"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "LeetCode problem set",
+    "url": "https://leetcode.com/problemset/",
+    "provider": "LeetCode",
+    "kind": "practice",
+    "skillIds": [
+      "data-structures-algorithms"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Data Visualization",
+    "url": "https://www.kaggle.com/learn/data-visualization",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-visualization"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Database roles",
+    "url": "https://www.postgresql.org/docs/current/user-manag.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "database-security"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Database Security Cheat Sheet",
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Database_Security_Cheat_Sheet.html",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "database-security"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SQL Injection Prevention Cheat Sheet",
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "database-security"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "dbt Fundamentals",
+    "url": "https://learn.getdbt.com/courses/dbt-fundamentals",
+    "provider": "dbt Labs",
+    "kind": "course",
+    "skillIds": [
+      "dbt"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "What is dbt?",
+    "url": "https://docs.getdbt.com/docs/introduction",
+    "provider": "dbt Labs",
+    "kind": "docs",
+    "skillIds": [
+      "dbt"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn the Basics (PyTorch tutorial)",
+    "url": "https://pytorch.org/tutorials/beginner/basics/intro.html",
+    "provider": "PyTorch",
+    "kind": "docs",
+    "skillIds": [
+      "deep-learning"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Practical Deep Learning for Coders",
+    "url": "https://course.fast.ai/",
+    "provider": "fast.ai",
+    "kind": "course",
+    "skillIds": [
+      "deep-learning"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Docker Compose",
+    "url": "https://docs.docker.com/compose/",
+    "provider": "Docker",
+    "kind": "docs",
+    "skillIds": [
+      "docker"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Get started with Docker",
+    "url": "https://docs.docker.com/get-started/",
+    "provider": "Docker",
+    "kind": "docs",
+    "skillIds": [
+      "docker"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Financial Education",
+    "url": "https://rbi.org.in/FinancialEducation/Home.aspx",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "domain-bfsi"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Varsity: markets and finance modules",
+    "url": "https://zerodha.com/varsity/",
+    "provider": "Zerodha Varsity",
+    "kind": "course",
+    "skillIds": [
+      "domain-bfsi"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Email Marketing course",
+    "url": "https://academy.hubspot.com/courses/email-marketing",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "email-marketing"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Email sender guidelines",
+    "url": "https://support.google.com/a/answer/81126",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "email-marketing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Microsoft Defender for Endpoint documentation",
+    "url": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-endpoint",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "endpoint-security"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Sysmon",
+    "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "endpoint-security"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Apache Airflow documentation",
+    "url": "https://airflow.apache.org/docs/",
+    "provider": "Apache Airflow",
+    "kind": "docs",
+    "skillIds": [
+      "etl"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Data Engineering Zoomcamp",
+    "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp",
+    "provider": "DataTalks.Club",
+    "kind": "course",
+    "skillIds": [
+      "etl",
+      "cloud-data-warehouse"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "Excel tutorials",
+    "url": "https://edu.gcfglobal.org/en/excel/",
+    "provider": "GCFGlobal",
+    "kind": "course",
+    "skillIds": [
+      "excel"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Create a PivotTable to analyze worksheet data",
+    "url": "https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "excel-pivot-lookup"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Intro to PivotTables",
+    "url": "https://edu.gcfglobal.org/en/excel/intro-to-pivottables/1/",
+    "provider": "GCFGlobal",
+    "kind": "docs",
+    "skillIds": [
+      "excel-pivot-lookup",
+      "excel"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "XLOOKUP function",
+    "url": "https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "excel-pivot-lookup"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Feature Engineering",
+    "url": "https://www.kaggle.com/learn/feature-engineering",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "feature-engineering"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Intermediate Machine Learning",
+    "url": "https://www.kaggle.com/learn/intermediate-machine-learning",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "feature-engineering"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Figma Help Center",
+    "url": "https://help.figma.com/hc/en-us",
+    "provider": "Figma",
+    "kind": "docs",
+    "skillIds": [
+      "figma",
+      "wireframing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Figma YouTube channel",
+    "url": "https://www.youtube.com/@Figma",
+    "provider": "Figma",
+    "kind": "video",
+    "skillIds": [
+      "figma"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cloud Digital Leader certification guide",
+    "url": "https://cloud.google.com/learn/certification/cloud-digital-leader",
+    "provider": "Google Cloud",
+    "kind": "course",
+    "skillIds": [
+      "gcp"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Google Cloud overview",
+    "url": "https://cloud.google.com/docs/overview",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "gcp"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Learn Git Branching",
+    "url": "https://learngitbranching.js.org/",
+    "provider": "Learn Git Branching",
+    "kind": "practice",
+    "skillIds": [
+      "git"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Pro Git",
+    "url": "https://git-scm.com/book/en/v2",
+    "provider": "Git",
+    "kind": "docs",
+    "skillIds": [
+      "git"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Argo CD documentation",
+    "url": "https://argo-cd.readthedocs.io/en/stable/",
+    "provider": "Argo Project",
+    "kind": "docs",
+    "skillIds": [
+      "gitops"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Get started with Flux",
+    "url": "https://fluxcd.io/flux/get-started/",
+    "provider": "Flux",
+    "kind": "docs",
+    "skillIds": [
+      "gitops"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "A Tour of Go",
+    "url": "https://go.dev/tour/",
+    "provider": "Go",
+    "kind": "course",
+    "skillIds": [
+      "go"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Go by Example",
+    "url": "https://gobyexample.com/",
+    "provider": "Go by Example",
+    "kind": "docs",
+    "skillIds": [
+      "go"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Apollo Odyssey tutorials",
+    "url": "https://www.apollographql.com/tutorials/",
+    "provider": "Apollo GraphQL",
+    "kind": "course",
+    "skillIds": [
+      "graphql"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Learn GraphQL",
+    "url": "https://graphql.org/learn/",
+    "provider": "GraphQL Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "graphql"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Backup and restore",
+    "url": "https://www.postgresql.org/docs/current/backup.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "high-availability-dr"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Disaster recovery of workloads on AWS",
+    "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-workloads-on-aws.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "high-availability-dr"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "High availability, load balancing, and replication",
+    "url": "https://www.postgresql.org/docs/current/high-availability.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "high-availability-dr"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn web development",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development",
+    "provider": "MDN Web Docs",
+    "kind": "course",
+    "skillIds": [
+      "html-css"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Responsive Web Design",
+    "url": "https://www.freecodecamp.org/learn/2022/responsive-web-design/",
+    "provider": "freeCodeCamp",
+    "kind": "course",
+    "skillIds": [
+      "html-css"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Security best practices in IAM",
+    "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "identity-access-management",
+      "cloud-security",
+      "aws"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is Microsoft Entra ID?",
+    "url": "https://learn.microsoft.com/en-us/entra/fundamentals/whatis",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "identity-access-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Java Programming MOOC",
+    "url": "https://java-programming.mooc.fi/",
+    "provider": "University of Helsinki",
+    "kind": "course",
+    "skillIds": [
+      "java",
+      "oop"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "Learn Java",
+    "url": "https://dev.java/learn/",
+    "provider": "Oracle (dev.java)",
+    "kind": "docs",
+    "skillIds": [
+      "java"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "JavaScript Guide",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+    "provider": "MDN Web Docs",
+    "kind": "docs",
+    "skillIds": [
+      "javascript"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "The Modern JavaScript Tutorial",
+    "url": "https://javascript.info/",
+    "provider": "javascript.info",
+    "kind": "docs",
+    "skillIds": [
+      "javascript"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Learn Kubernetes basics",
+    "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/",
+    "provider": "Kubernetes",
+    "kind": "course",
+    "skillIds": [
+      "kubernetes"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Monitoring, logging, and debugging",
+    "url": "https://kubernetes.io/docs/tasks/debug/",
+    "provider": "Kubernetes",
+    "kind": "docs",
+    "skillIds": [
+      "kubernetes"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Bandit wargame",
+    "url": "https://overthewire.org/wargames/bandit/",
+    "provider": "OverTheWire",
+    "kind": "practice",
+    "skillIds": [
+      "linux"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Linux Journey",
+    "url": "https://linuxjourney.com/",
+    "provider": "Linux Journey",
+    "kind": "course",
+    "skillIds": [
+      "linux"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Anthropic courses",
+    "url": "https://github.com/anthropics/courses",
+    "provider": "Anthropic",
+    "kind": "course",
+    "skillIds": [
+      "llm-apps"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "LLM Course",
+    "url": "https://huggingface.co/learn/llm-course",
+    "provider": "Hugging Face",
+    "kind": "course",
+    "skillIds": [
+      "llm-apps",
+      "nlp"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Looker Studio Help",
+    "url": "https://support.google.com/looker-studio/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "looker"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Intro to Machine Learning",
+    "url": "https://www.kaggle.com/learn/intro-to-machine-learning",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "machine-learning"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Machine Learning Crash Course",
+    "url": "https://developers.google.com/machine-learning/crash-course",
+    "provider": "Google for Developers",
+    "kind": "course",
+    "skillIds": [
+      "machine-learning"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Exploratory testing",
+    "url": "https://www.atlassian.com/continuous-delivery/software-testing/exploratory-testing",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "manual-testing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Types of software testing",
+    "url": "https://www.atlassian.com/continuous-delivery/software-testing/types-of-software-testing",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "manual-testing",
+      "test-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Apache Kafka quickstart",
+    "url": "https://kafka.apache.org/quickstart",
+    "provider": "Apache Kafka",
+    "kind": "docs",
+    "skillIds": [
+      "messaging-queues"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Confluent Developer courses",
+    "url": "https://developer.confluent.io/courses/",
+    "provider": "Confluent",
+    "kind": "course",
+    "skillIds": [
+      "messaging-queues"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Microservice architecture patterns",
+    "url": "https://microservices.io/patterns/",
+    "provider": "microservices.io",
+    "kind": "docs",
+    "skillIds": [
+      "microservices"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Microservices",
+    "url": "https://martinfowler.com/articles/microservices.html",
+    "provider": "Martin Fowler",
+    "kind": "docs",
+    "skillIds": [
+      "microservices"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Made With ML",
+    "url": "https://madewithml.com/",
+    "provider": "Made With ML",
+    "kind": "course",
+    "skillIds": [
+      "mlops"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "MLOps Zoomcamp",
+    "url": "https://github.com/DataTalksClub/mlops-zoomcamp",
+    "provider": "DataTalks.Club",
+    "kind": "course",
+    "skillIds": [
+      "mlops"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Metrics and scoring: quantifying the quality of predictions",
+    "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+    "provider": "scikit-learn",
+    "kind": "docs",
+    "skillIds": [
+      "model-evaluation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Getting started with Prometheus",
+    "url": "https://prometheus.io/docs/prometheus/latest/getting_started/",
+    "provider": "Prometheus",
+    "kind": "docs",
+    "skillIds": [
+      "monitoring"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Grafana tutorials",
+    "url": "https://grafana.com/tutorials/",
+    "provider": "Grafana Labs",
+    "kind": "course",
+    "skillIds": [
+      "monitoring"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Cloudflare Learning Center",
+    "url": "https://www.cloudflare.com/learning/",
+    "provider": "Cloudflare",
+    "kind": "docs",
+    "skillIds": [
+      "networking-basics",
+      "cryptography-basics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Networking Basics",
+    "url": "https://www.netacad.com/courses/networking-basics",
+    "provider": "Cisco Networking Academy",
+    "kind": "course",
+    "skillIds": [
+      "networking-basics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Wireshark User's Guide",
+    "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+    "provider": "Wireshark",
+    "kind": "docs",
+    "skillIds": [
+      "networking-basics"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Learn Next.js",
+    "url": "https://nextjs.org/learn",
+    "provider": "Vercel",
+    "kind": "course",
+    "skillIds": [
+      "nextjs"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "CS224N: Natural Language Processing with Deep Learning",
+    "url": "https://web.stanford.edu/class/cs224n/",
+    "provider": "Stanford University",
+    "kind": "course",
+    "skillIds": [
+      "nlp"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "Express error handling",
+    "url": "https://expressjs.com/en/guide/error-handling.html",
+    "provider": "Express",
+    "kind": "docs",
+    "skillIds": [
+      "nodejs"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn Node.js",
+    "url": "https://nodejs.org/en/learn",
+    "provider": "Node.js",
+    "kind": "docs",
+    "skillIds": [
+      "nodejs"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Data modeling",
+    "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+    "provider": "MongoDB",
+    "kind": "docs",
+    "skillIds": [
+      "nosql"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "MongoDB University",
+    "url": "https://learn.mongodb.com/",
+    "provider": "MongoDB",
+    "kind": "course",
+    "skillIds": [
+      "nosql"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Design patterns",
+    "url": "https://refactoring.guru/design-patterns",
+    "provider": "Refactoring.Guru",
+    "kind": "docs",
+    "skillIds": [
+      "oop"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Oracle Database documentation",
+    "url": "https://docs.oracle.com/en/database/oracle/oracle-database/",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-database"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Oracle Live SQL",
+    "url": "https://livesql.oracle.com/",
+    "provider": "Oracle",
+    "kind": "practice",
+    "skillIds": [
+      "oracle-database"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Constraints",
+    "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "orm-databases"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "10 minutes to pandas",
+    "url": "https://pandas.pydata.org/docs/user_guide/10min.html",
+    "provider": "pandas",
+    "kind": "docs",
+    "skillIds": [
+      "pandas"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Data Analysis with Python",
+    "url": "https://www.freecodecamp.org/learn/data-analysis-with-python/",
+    "provider": "freeCodeCamp",
+    "kind": "course",
+    "skillIds": [
+      "pandas",
+      "data-visualization"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Pandas",
+    "url": "https://www.kaggle.com/learn/pandas",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "pandas"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Metasploit Unleashed",
+    "url": "https://www.offsec.com/metasploit-unleashed/",
+    "provider": "OffSec",
+    "kind": "course",
+    "skillIds": [
+      "penetration-testing"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Web Security Testing Guide",
+    "url": "https://owasp.org/www-project-web-security-testing-guide/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "penetration-testing"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Digital Marketing",
+    "url": "https://learndigital.withgoogle.com/digitalgarage/course/digital-marketing",
+    "provider": "Google Digital Garage",
+    "kind": "course",
+    "skillIds": [
+      "performance-marketing",
+      "seo",
+      "content-marketing"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Google Ads Help Center",
+    "url": "https://support.google.com/google-ads/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "performance-marketing",
+      "sem-google-ads"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Meta Blueprint",
+    "url": "https://www.facebook.com/business/learn",
+    "provider": "Meta",
+    "kind": "course",
+    "skillIds": [
+      "performance-marketing",
+      "social-media-marketing"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Getting started with JMeter",
+    "url": "https://jmeter.apache.org/usermanual/get-started.html",
+    "provider": "Apache JMeter",
+    "kind": "docs",
+    "skillIds": [
+      "performance-testing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Grafana k6 documentation",
+    "url": "https://grafana.com/docs/k6/latest/",
+    "provider": "Grafana Labs",
+    "kind": "docs",
+    "skillIds": [
+      "performance-testing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Cypress documentation",
+    "url": "https://docs.cypress.io/",
+    "provider": "Cypress",
+    "kind": "docs",
+    "skillIds": [
+      "playwright-cypress"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Playwright: Installation and first test",
+    "url": "https://playwright.dev/docs/intro",
+    "provider": "Playwright",
+    "kind": "docs",
+    "skillIds": [
+      "playwright-cypress"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Test Automation University",
+    "url": "https://testautomationu.applitools.com/",
+    "provider": "Applitools",
+    "kind": "course",
+    "skillIds": [
+      "playwright-cypress",
+      "selenium",
+      "api-testing"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "DAX reference",
+    "url": "https://learn.microsoft.com/en-us/dax/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "power-bi"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Get started with Power BI Desktop",
+    "url": "https://learn.microsoft.com/en-us/power-bi/fundamentals/desktop-getting-started",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "power-bi"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Power BI Data Analyst (PL-300) study guide and learning paths",
+    "url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-bi"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "User stories with examples and a template",
+    "url": "https://www.atlassian.com/agile/project-management/user-stories",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "prd-writing"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Creative Problem Solving (audit free)",
+    "url": "https://www.coursera.org/learn/creative-problem-solving",
+    "provider": "University of Minnesota on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Interviewing: case and problem-solving practice",
+    "url": "https://www.mckinsey.com/careers/interviewing",
+    "provider": "McKinsey & Company",
+    "kind": "practice",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "BPMN tutorial and examples",
+    "url": "https://camunda.com/bpmn/",
+    "provider": "Camunda",
+    "kind": "docs",
+    "skillIds": [
+      "process-mapping"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Process mapping guide",
+    "url": "https://www.lucidchart.com/pages/process-mapping",
+    "provider": "Lucidchart",
+    "kind": "docs",
+    "skillIds": [
+      "process-mapping"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "User interviews 101",
+    "url": "https://www.nngroup.com/articles/user-interviews/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "product-discovery"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "User research",
+    "url": "https://www.gov.uk/service-manual/user-research",
+    "provider": "GOV.UK Service Manual",
+    "kind": "docs",
+    "skillIds": [
+      "product-discovery",
+      "ux-research"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "16 Startup Metrics",
+    "url": "https://a16z.com/16-startup-metrics/",
+    "provider": "Andreessen Horowitz",
+    "kind": "docs",
+    "skillIds": [
+      "product-metrics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Product analytics documentation",
+    "url": "https://posthog.com/docs/product-analytics",
+    "provider": "PostHog",
+    "kind": "docs",
+    "skillIds": [
+      "product-metrics"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Python",
+    "url": "https://www.kaggle.com/learn/python",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "python"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "The Python Tutorial",
+    "url": "https://docs.python.org/3/tutorial/",
+    "provider": "Python Software Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "python"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "CMU 15-445/645 Database Systems",
+    "url": "https://15445.courses.cs.cmu.edu/",
+    "provider": "Carnegie Mellon University",
+    "kind": "course",
+    "skillIds": [
+      "query-optimization"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Use The Index, Luke",
+    "url": "https://use-the-index-luke.com/",
+    "provider": "Markus Winand",
+    "kind": "docs",
+    "skillIds": [
+      "query-optimization"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Using EXPLAIN",
+    "url": "https://www.postgresql.org/docs/current/using-explain.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "query-optimization"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Full Stack Open",
+    "url": "https://fullstackopen.com/en/",
+    "provider": "University of Helsinki",
+    "kind": "course",
+    "skillIds": [
+      "react",
+      "nodejs",
+      "rest-apis"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "Learn React",
+    "url": "https://react.dev/learn",
+    "provider": "React",
+    "kind": "docs",
+    "skillIds": [
+      "react"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Product requirements: what goes into a PRD",
+    "url": "https://www.atlassian.com/agile/product-management/requirements",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "requirements-gathering",
+      "prd-writing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Software Engineering (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105182",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "requirements-gathering",
+      "uat"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Writing user stories",
+    "url": "https://www.gov.uk/service-manual/agile-delivery/writing-user-stories",
+    "provider": "GOV.UK Service Manual",
+    "kind": "docs",
+    "skillIds": [
+      "requirements-gathering",
+      "prd-writing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Microsoft REST API Guidelines",
+    "url": "https://github.com/microsoft/api-guidelines",
+    "provider": "Microsoft",
+    "kind": "docs",
+    "skillIds": [
+      "rest-apis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Using the Fetch API",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch",
+    "provider": "MDN Web Docs",
+    "kind": "docs",
+    "skillIds": [
+      "rest-apis"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "OWASP Risk Rating Methodology",
+    "url": "https://owasp.org/www-community/OWASP_Risk_Rating_Methodology",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "risk-assessment"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SP 800-30 Rev. 1: Guide for Conducting Risk Assessments",
+    "url": "https://csrc.nist.gov/pubs/sp/800/30/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "risk-assessment"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Product roadmaps guide",
+    "url": "https://www.atlassian.com/agile/product-management/product-roadmaps",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "roadmapping"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "RICE: simple prioritization for product managers",
+    "url": "https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/",
+    "provider": "Intercom",
+    "kind": "docs",
+    "skillIds": [
+      "roadmapping"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Machine learning in Python with scikit-learn (MOOC)",
+    "url": "https://inria.github.io/scikit-learn-mooc/",
+    "provider": "Inria",
+    "kind": "course",
+    "skillIds": [
+      "scikit-learn",
+      "model-evaluation"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Pipelines and composite estimators",
+    "url": "https://scikit-learn.org/stable/modules/compose.html",
+    "provider": "scikit-learn",
+    "kind": "docs",
+    "skillIds": [
+      "scikit-learn",
+      "feature-engineering"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "scikit-learn User Guide",
+    "url": "https://scikit-learn.org/stable/user_guide.html",
+    "provider": "scikit-learn",
+    "kind": "docs",
+    "skillIds": [
+      "scikit-learn"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "CIS Critical Security Controls",
+    "url": "https://www.cisecurity.org/controls",
+    "provider": "Center for Internet Security",
+    "kind": "docs",
+    "skillIds": [
+      "security-audits"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SP 800-53A Rev. 5: Assessing Security and Privacy Controls",
+    "url": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-audits"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Cyber Swachhta Kendra",
+    "url": "https://www.csk.gov.in/",
+    "provider": "CERT-In",
+    "kind": "docs",
+    "skillIds": [
+      "security-awareness"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Phishing Quiz",
+    "url": "https://phishingquiz.withgoogle.com/",
+    "provider": "Google Jigsaw",
+    "kind": "practice",
+    "skillIds": [
+      "security-awareness"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CERT-In: incident reporting and advisories",
+    "url": "https://www.cert-in.org.in/",
+    "provider": "CERT-In",
+    "kind": "docs",
+    "skillIds": [
+      "security-incident-response"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Incident management handbook",
+    "url": "https://www.atlassian.com/incident-management",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "security-incident-response",
+      "sre-practices"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SP 800-61 Rev. 3: Incident Response Recommendations",
+    "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-incident-response"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Security policy templates",
+    "url": "https://www.sans.org/information-security-policy/",
+    "provider": "SANS Institute",
+    "kind": "docs",
+    "skillIds": [
+      "security-policies"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Page object models",
+    "url": "https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/",
+    "provider": "Selenium",
+    "kind": "docs",
+    "skillIds": [
+      "selenium"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Selenium documentation",
+    "url": "https://www.selenium.dev/documentation/",
+    "provider": "Selenium",
+    "kind": "docs",
+    "skillIds": [
+      "selenium"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Google Skillshop (Google Ads and Analytics certifications)",
+    "url": "https://skillshop.withgoogle.com/",
+    "provider": "Google Skillshop",
+    "kind": "course",
+    "skillIds": [
+      "sem-google-ads"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "SEO Starter Guide",
+    "url": "https://developers.google.com/search/docs/fundamentals/seo-starter-guide",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "seo"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Boss of the SOC v3 dataset",
+    "url": "https://github.com/splunk/botsv3",
+    "provider": "Splunk",
+    "kind": "practice",
+    "skillIds": [
+      "siem",
+      "threat-detection"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Free Splunk courses",
+    "url": "https://www.splunk.com/en_us/training/free-courses/overview.html",
+    "provider": "Splunk",
+    "kind": "course",
+    "skillIds": [
+      "siem"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Social Media Marketing course",
+    "url": "https://academy.hubspot.com/courses/social-media",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "social-media-marketing"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "PySpark getting started",
+    "url": "https://spark.apache.org/docs/latest/api/python/getting_started/index.html",
+    "provider": "Apache Spark",
+    "kind": "docs",
+    "skillIds": [
+      "spark"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Spark quick start",
+    "url": "https://spark.apache.org/docs/latest/quick-start.html",
+    "provider": "Apache Spark",
+    "kind": "docs",
+    "skillIds": [
+      "spark"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Building a RESTful web service",
+    "url": "https://spring.io/guides/gs/rest-service",
+    "provider": "Spring",
+    "kind": "docs",
+    "skillIds": [
+      "spring-boot"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Testing the web layer",
+    "url": "https://spring.io/guides/gs/testing-web",
+    "provider": "Spring",
+    "kind": "docs",
+    "skillIds": [
+      "spring-boot"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Intro to SQL",
+    "url": "https://www.kaggle.com/learn/intro-to-sql",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "sql"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "PostgreSQL tutorial",
+    "url": "https://www.postgresql.org/docs/current/tutorial.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "sql"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "SQLBolt interactive SQL lessons",
+    "url": "https://sqlbolt.com/",
+    "provider": "SQLBolt",
+    "kind": "practice",
+    "skillIds": [
+      "sql"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Advanced SQL",
+    "url": "https://www.kaggle.com/learn/advanced-sql",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "sql-window-functions"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Window functions tutorial",
+    "url": "https://www.postgresql.org/docs/current/tutorial-window.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "sql-window-functions"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Site Reliability Engineering (book)",
+    "url": "https://sre.google/sre-book/table-of-contents/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "sre-practices"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Atlassian Team Playbook",
+    "url": "https://www.atlassian.com/team-playbook",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "stakeholder-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Foundations of Project Management (audit free)",
+    "url": "https://www.coursera.org/learn/project-management-foundations",
+    "provider": "Google on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "stakeholder-management"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Managing state",
+    "url": "https://react.dev/learn/managing-state",
+    "provider": "React",
+    "kind": "docs",
+    "skillIds": [
+      "state-management",
+      "react"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Redux Essentials tutorial",
+    "url": "https://redux.js.org/tutorials/essentials/part-1-overview-concepts",
+    "provider": "Redux",
+    "kind": "docs",
+    "skillIds": [
+      "state-management"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "OpenIntro Statistics (free textbook)",
+    "url": "https://www.openintro.org/book/os/",
+    "provider": "OpenIntro",
+    "kind": "docs",
+    "skillIds": [
+      "statistics",
+      "ab-testing"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Statistics and probability",
+    "url": "https://www.khanacademy.org/math/statistics-probability",
+    "provider": "Khan Academy",
+    "kind": "course",
+    "skillIds": [
+      "statistics"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Azure Architecture Center",
+    "url": "https://learn.microsoft.com/en-us/azure/architecture/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "system-design",
+      "microservices"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "The System Design Primer",
+    "url": "https://github.com/donnemartin/system-design-primer",
+    "provider": "Donne Martin",
+    "kind": "docs",
+    "skillIds": [
+      "system-design"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Free Tableau training videos",
+    "url": "https://www.tableau.com/learn/training",
+    "provider": "Tableau",
+    "kind": "video",
+    "skillIds": [
+      "tableau"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Get started with Tableau Desktop",
+    "url": "https://help.tableau.com/current/guides/get-started-tutorial/en-us/get-started-tutorial-home.htm",
+    "provider": "Tableau",
+    "kind": "docs",
+    "skillIds": [
+      "tableau"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Get started with Terraform on AWS",
+    "url": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started",
+    "provider": "HashiCorp",
+    "kind": "course",
+    "skillIds": [
+      "terraform"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Terraform tutorials",
+    "url": "https://developer.hashicorp.com/terraform/tutorials",
+    "provider": "HashiCorp",
+    "kind": "course",
+    "skillIds": [
+      "terraform"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "The Practical Test Pyramid",
+    "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
+    "provider": "Martin Fowler",
+    "kind": "docs",
+    "skillIds": [
+      "test-planning"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "MITRE ATT&CK",
+    "url": "https://attack.mitre.org/",
+    "provider": "MITRE",
+    "kind": "docs",
+    "skillIds": [
+      "threat-detection"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "React TypeScript Cheatsheet",
+    "url": "https://react-typescript-cheatsheet.netlify.app/",
+    "provider": "React TypeScript Cheatsheets",
+    "kind": "docs",
+    "skillIds": [
+      "typescript"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The TypeScript Handbook",
+    "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+    "provider": "TypeScript",
+    "kind": "docs",
+    "skillIds": [
+      "typescript"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Certified Tester Foundation Level (CTFL) syllabus",
+    "url": "https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+    "provider": "ISTQB",
+    "kind": "docs",
+    "skillIds": [
+      "uat",
+      "manual-testing",
+      "test-planning"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Getting started with Jest",
+    "url": "https://jestjs.io/docs/getting-started",
+    "provider": "Jest",
+    "kind": "docs",
+    "skillIds": [
+      "unit-testing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "JUnit 5 User Guide",
+    "url": "https://junit.org/junit5/docs/current/user-guide/",
+    "provider": "JUnit",
+    "kind": "docs",
+    "skillIds": [
+      "unit-testing",
+      "java"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "React Testing Library",
+    "url": "https://testing-library.com/docs/react-testing-library/intro/",
+    "provider": "Testing Library",
+    "kind": "docs",
+    "skillIds": [
+      "unit-testing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Foundations of User Experience (UX) Design (audit free)",
+    "url": "https://www.coursera.org/learn/foundations-user-experience-design",
+    "provider": "Google on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "ux-research"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Usability testing 101",
+    "url": "https://www.nngroup.com/articles/usability-testing-101/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "ux-research"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Common Vulnerability Scoring System (CVSS)",
+    "url": "https://www.first.org/cvss/",
+    "provider": "FIRST",
+    "kind": "docs",
+    "skillIds": [
+      "vulnerability-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Known Exploited Vulnerabilities Catalog",
+    "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+    "provider": "CISA",
+    "kind": "docs",
+    "skillIds": [
+      "vulnerability-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Google Analytics demo account",
+    "url": "https://support.google.com/analytics/answer/6367342",
+    "provider": "Google",
+    "kind": "practice",
+    "skillIds": [
+      "web-analytics"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Google Analytics Help",
+    "url": "https://support.google.com/analytics/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "web-analytics"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Tag Manager Help",
+    "url": "https://support.google.com/tagmanager/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "web-analytics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn Performance",
+    "url": "https://web.dev/learn/performance",
+    "provider": "web.dev",
+    "kind": "course",
+    "skillIds": [
+      "web-performance"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Web Vitals",
+    "url": "https://web.dev/articles/vitals",
+    "provider": "web.dev",
+    "kind": "docs",
+    "skillIds": [
+      "web-performance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Build Wireframes and Low-Fidelity Prototypes (audit free)",
+    "url": "https://www.coursera.org/learn/wireframes-low-fidelity-prototypes",
+    "provider": "Google on Coursera",
+    "kind": "course",
+    "skillIds": [
+      "wireframing"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Wireframing academy",
+    "url": "https://balsamiq.com/learn/",
+    "provider": "Balsamiq",
+    "kind": "docs",
+    "skillIds": [
+      "wireframing"
+    ],
+    "minutes": 120,
+    "free": true
+  }
+]
