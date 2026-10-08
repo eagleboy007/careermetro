@@ -9,6 +9,9 @@ on:
       url:
         description: "Site to check, for example https://careermetro.vercel.app"
         required: true
+      check:
+        description: "Optional deeper check, for example parse (runs the real resume-parse request on a synthetic resume)"
+        required: false
 
 permissions:
   contents: read
@@ -26,10 +29,11 @@ jobs:
           SITE: ${{ inputs.url || vars.PRODUCTION_URL || 'https://careermetro.vercel.app' }}
           # Only needed if Vercel Deployment Protection covers the URL above.
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          CHECK: ${{ inputs.check }}
         run: |
           headers=()
           if [ -n "$BYPASS" ]; then headers=(-H "x-vercel-protection-bypass: $BYPASS"); fi
-          code=$(curl -sS --max-time 30 --retry 2 --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health" || true)
+          code=$(curl -sS --max-time 120 --retry 2 --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health${CHECK:+?check=$CHECK}" || true)
           body=$(head -c 1000 health.json 2>/dev/null)
           if [ "$code" = 401 ] || [ "$code" = 403 ]; then
             body="Vercel Deployment Protection blocked the check. Set the PRODUCTION_URL variable or the VERCEL_AUTOMATION_BYPASS_SECRET secret."

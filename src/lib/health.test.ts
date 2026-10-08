@@ -1,6 +1,6 @@
 import { APIConnectionError, APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import { checkHealth, type HealthDeps } from "./health";
+import { checkHealth, checkParse, type HealthDeps } from "./health";
 
 const usage = { input_tokens: 8, output_tokens: 1 };
 
@@ -60,5 +60,22 @@ describe("checkHealth", () => {
   it("does not fail the check when logging the call fails", async () => {
     const d = deps({ record: vi.fn(async () => Promise.reject(new Error("insert failed"))) });
     expect(await checkHealth(d)).toEqual({ ok: true, database: "ok", claude: "ok" });
+  });
+});
+
+describe("checkParse", () => {
+  it("is ok when the parse succeeds", async () => {
+    const result = { ok: true, profile: {}, report: {}, calls: [] } as never;
+    expect(await checkParse(async () => result)).toEqual({ ok: true, parse: "ok" });
+  });
+
+  it("gives the reason when the parse request is rejected", async () => {
+    const error = apiError(400, "invalid_request_error", "output_config.format: schema too complex");
+    const health = await checkParse(async () => ({ ok: false, reason: "unavailable", error, calls: [] }));
+    expect(health).toEqual({ ok: false, parse: "down", parseError: expect.stringMatching(/status=400 .*reason=output_config\.format: schema too complex$/) });
+  });
+
+  it("names a malformed result", async () => {
+    expect(await checkParse(async () => ({ ok: false, reason: "malformed", calls: [] }))).toEqual({ ok: false, parse: "malformed" });
   });
 });
