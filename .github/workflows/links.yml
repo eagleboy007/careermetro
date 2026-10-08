@@ -1,7 +1,7 @@
 name: Link check
 
-# Checks every link in the resource catalog. On pull requests it only reports. The daily run also records results
-# in the database (needs the repository secret DATABASE_MIGRATION_URL), so new paths skip dead links.
+# Checks every link in the resource catalog. On pull requests it fails on a dead link. The daily run records results
+# in the database instead (needs the repository secret DATABASE_MIGRATION_URL), so new paths skip dead links.
 on:
   schedule:
     - cron: "30 1 * * *" # 07:00 IST

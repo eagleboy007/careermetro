@@ -4,7 +4,8 @@
 // skip dead links. A link is marked unhealthy only after two dead checks in a row, and not at all when so many links
 // look dead that the runner's network is the likelier cause. A site that blocks robots (401, 403, 429) is reported as
 // a warning and leaves healthy unchanged. The recording run exits 0 on dead links: the healthy flag already keeps them
-// out of paths, and with over 200 outside sites one timeout would otherwise fail the daily run and send an email.
+// out of paths, and with over 200 outside sites one timeout would otherwise fail the daily run and send an email. It
+// still fails when it could not record the results or when so many links look dead that the run can't be trusted.
 // Usage: node scripts/check-links.mjs            (report only)
 //        DATABASE_URL=... node scripts/check-links.mjs
 import { readFileSync } from "node:fs";
@@ -77,6 +78,7 @@ const count = (state) => results.filter((r) => r.state === state).length;
 const summary = `${results.length} links: ${count("ok")} ok, ${count("blocked")} blocked the checker, ${count("dead")} dead.`;
 console.log(`::notice title=Link check::${summary}`);
 
+let recordFailed = false;
 if (process.env.DATABASE_URL) {
   const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1 });
   try {
@@ -84,7 +86,14 @@ if (process.env.DATABASE_URL) {
       const rows = await tx`select id, url from resources where url in ${tx(results.map((r) => r.url))}`;
       const idByUrl = new Map(rows.map((r) => [r.url, r.id]));
       const checked = results.filter((r) => idByUrl.has(r.url));
-      if (checked.length === 0) return;
+      if (checked.length === 0) {
+        console.log(`::error title=Link check::No catalog link is in the resources table; run the seed first.`);
+        recordFailed = true;
+        return;
+      }
+      if (checked.length < results.length) {
+        console.log(`::warning title=Link check::${results.length - checked.length} catalog links are not in the resources table.`);
+      }
       // The previous check of each link, read before this run's rows go in.
       const previous = await tx`
         select distinct on (resource_id) resource_id, detail from resource_checks
@@ -101,6 +110,7 @@ if (process.env.DATABASE_URL) {
 
       if (count("dead") > results.length * MAX_DEAD_SHARE) {
         console.log(`::error title=Link check::Too many dead links to trust this run; healthy flags were left unchanged.`);
+        recordFailed = true;
         return;
       }
       const ok = checked.filter((r) => r.state === "ok").map((r) => idByUrl.get(r.url));
@@ -109,10 +119,10 @@ if (process.env.DATABASE_URL) {
       if (dead.length) await tx`update resources set healthy = false where id in ${tx(dead)}`;
       console.log(`Marked ${dead.length} links unhealthy after two dead checks in a row.`);
     });
-    console.log("Recorded the results in the database.");
+    if (!recordFailed) console.log("Recorded the results in the database.");
   } finally {
     await sql.end();
   }
 }
 
-if (count("dead") > 0 && !process.env.DATABASE_URL) process.exit(1);
+if (recordFailed || (count("dead") > 0 && !process.env.DATABASE_URL)) process.exit(1);
