@@ -96,6 +96,8 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 - FR-29: Organizations, seats, and admin role.
 - FR-30: Aggregate skill-gap dashboard per team (no individual resume visible to admins without that employee's explicit consent).
 - FR-31: Assign a role profile or path to a team; track completion.
+- FR-32 (later, added 2026-10-08): Document verification for background checks. A candidate connects DigiLocker and consents per document; we check name, date of birth and photo against issued documents (Aadhaar via e-Aadhaar, PAN, marksheets and certificates). Needs DigiLocker requester onboarding (directly through API Setu or via a licensed provider), which has its own audit duties. Store only what the check needs: never the full Aadhaar number (last 4 digits at most), no copies of documents beyond the employer's retention rule, and a consent record per document. Address may not be returned by DigiLocker's user profile, so confirm the source before promising address checks.
+- FR-33 (later, added 2026-10-08): AI first-round interviewer for employers. A lifelike video agent runs a structured level-1 interview, records it with the candidate's consent, and gives the employer a transcript, a scored summary against the role profile and the recording to review. Candidates are told up front that the interviewer is an AI, and a human makes the hiring decision. Candidate vendor: Tavus (its Conversational Video Interface today; its new Griffin model, a research preview announced 2026-10-01, when it opens up). Evaluate cost, India data residency, bias testing and recording consent before building.
 
 ## 6. Data model (high level)
 
