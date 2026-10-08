@@ -1,6 +1,19 @@
 import { z } from "zod";
-import { certification, roleProfile, skill, type Certification, type RoleProfile, type Skill } from "@/lib/schemas";
+import {
+  certification,
+  proofTask,
+  resource,
+  roleProfile,
+  skill,
+  type Certification,
+  type ProofTask,
+  type Resource,
+  type RoleProfile,
+  type Skill,
+} from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import proofTasksJson from "./proof-tasks.json";
+import resourcesJson from "./resources.json";
 import skillsJson from "./skills.json";
 import businessAnalyst from "./roles/business-analyst.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
@@ -21,6 +34,12 @@ export const skills: Skill[] = z.array(skill).parse(skillsJson);
 
 /** Certifications that role profiles can recommend. */
 export const certifications: Certification[] = z.array(certification).parse(certificationsJson);
+
+/** The reviewed resource catalog (FR-17). Seeded into the resources table; paths link only to these. */
+export const resources: Resource[] = z.array(resource).parse(resourcesJson);
+
+/** Fallback proof-of-skill tasks, one per skill, for when the model is not available. */
+export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z

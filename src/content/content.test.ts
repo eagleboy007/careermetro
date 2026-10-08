@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { certifications, normalizeSkillTerm, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, normalizeSkillTerm, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -76,5 +76,36 @@ describe("role profiles", () => {
   it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s has at least 5 required skills and a valid band", (_, role) => {
     expect(role.skills.filter((s) => s.importance === "required").length).toBeGreaterThanOrEqual(5);
     expect(role.experienceBand.minYears).toBeLessThan(role.experienceBand.maxYears);
+  });
+});
+
+describe("resource catalog", () => {
+  const known = new Set(skills.map((s) => s.id));
+  const roleSkills = [...new Set(roleProfiles.flatMap((r) => r.skills.filter((s) => s.importance === "required").map((s) => s.skillId)))];
+
+  it("has unique URLs", () => {
+    const urls = resources.map((r) => r.url);
+    expect(urls.filter((u, i) => urls.indexOf(u) !== i)).toEqual([]);
+  });
+
+  it("links only to known skills", () => {
+    expect(resources.flatMap((r) => r.skillIds.filter((id) => !known.has(id)).map((id) => `${r.url} → ${id}`))).toEqual([]);
+  });
+
+  it("lists only free resources without tracking or referral parameters", () => {
+    expect(resources.filter((r) => !r.free).map((r) => r.url)).toEqual([]);
+    expect(resources.filter((r) => /[?&](utm_[a-z]+|ref|affiliate|aff|couponCode)=/i.test(r.url)).map((r) => r.url)).toEqual([]);
+  });
+
+  it("covers every required skill of every role", () => {
+    const covered = new Set(resources.flatMap((r) => r.skillIds));
+    expect(roleSkills.filter((id) => !covered.has(id))).toEqual([]);
+  });
+
+  it("has one fallback proof task for every required skill, and only for known skills", () => {
+    const ids = proofTasks.map((t) => t.skillId);
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+    expect(ids.filter((id) => !known.has(id))).toEqual([]);
+    expect(roleSkills.filter((id) => !ids.includes(id))).toEqual([]);
   });
 });
