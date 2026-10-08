@@ -20,7 +20,9 @@ export type ParseClient = Pick<Anthropic, "beta">;
 
 export type ParseResult =
   | { ok: true; profile: Profile; report: VerifyReport; calls: AiCallRecord[] }
-  | { ok: false; reason: "refused" | "malformed" | "unavailable"; calls: AiCallRecord[] };
+  | { ok: false; reason: "refused" | "malformed"; calls: AiCallRecord[] }
+  /** error is the failed call's error, for the health check only: callers with real resumes must not log or return it. */
+  | { ok: false; reason: "unavailable"; error: unknown; calls: AiCallRecord[] };
 
 /** Wraps the resume so the model reads it as data (AI-7). A closing tag inside the resume can't end the block early. */
 export function wrapResume(maskedText: string): string {
@@ -98,7 +100,7 @@ export async function parseResume(
       record(PARSE_MODEL, null, false);
       // Never the message: it could echo the request, which holds resume text.
       console.error("parse-resume call failed:", describeAiError(error));
-      return { ok: false, reason: "unavailable", calls };
+      return { ok: false, reason: "unavailable", error, calls };
     }
 
     if (response.stop_reason === "refusal") {
