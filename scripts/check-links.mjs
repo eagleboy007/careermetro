@@ -1,8 +1,10 @@
-// Checks every link in the resource catalog (FR-17). Prints a GitHub annotation per problem and exits 1 when a link is dead.
+// Checks every link in the resource catalog (FR-17). Prints a GitHub annotation per problem. In report-only mode (pull
+// requests) it exits 1 when a link is dead, so a bad new link is caught before merge.
 // With DATABASE_URL set it also records each result in resource_checks and updates resources.healthy, so new paths
 // skip dead links. A link is marked unhealthy only after two dead checks in a row, and not at all when so many links
 // look dead that the runner's network is the likelier cause. A site that blocks robots (401, 403, 429) is reported as
-// a warning and leaves healthy unchanged.
+// a warning and leaves healthy unchanged. The recording run exits 0 on dead links: the healthy flag already keeps them
+// out of paths, and with over 200 outside sites one timeout would otherwise fail the daily run and send an email.
 // Usage: node scripts/check-links.mjs            (report only)
 //        DATABASE_URL=... node scripts/check-links.mjs
 import { readFileSync } from "node:fs";
@@ -113,4 +115,4 @@ if (process.env.DATABASE_URL) {
   }
 }
 
-if (count("dead") > 0) process.exit(1);
+if (count("dead") > 0 && !process.env.DATABASE_URL) process.exit(1);
