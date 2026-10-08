@@ -163,6 +163,10 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 2. **Phase 1 (week 3-8):** resume ingest -> gap analysis -> upskilling path. Private beta with 50 users. Evals gate every release.
 3. **Phase 2 (week 9-14):** resume builder, interview practice, readiness dashboard, 30+ role profiles, first 50 SEO pages.
 4. **Phase 3 (week 15+):** B2B team shuttle, listing feed integration, voice interview practice.
+5. **Later (not scheduled, added 2026-10-08):**
+   - **Gaps per job description:** compare a resume with the job a user actually applies for, not only our role profiles, since requirements differ by company (for example, not every Cyber Security Analyst L1 job needs Python).
+   - **More learning materials:** keep growing the resource catalog beyond the first set of free links.
+   - **Elite tier (paid subscription):** paid learning materials, a community, deeper interview prep and similar extras. The free product stays free; billing code waits until this phase is scheduled.
 
 ## 13. Success metrics
 
