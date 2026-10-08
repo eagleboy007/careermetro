@@ -1,14 +1,19 @@
 // Checks every link in the resource catalog (FR-17). Prints a GitHub annotation per problem and exits 1 when a link is dead.
 // With DATABASE_URL set it also records each result in resource_checks and updates resources.healthy, so new paths
-// skip dead links. A site that blocks robots (401, 403, 429) is reported as a warning and leaves healthy unchanged.
+// skip dead links. A link is marked unhealthy only after two dead checks in a row, and not at all when so many links
+// look dead that the runner's network is the likelier cause. A site that blocks robots (401, 403, 429) is reported as
+// a warning and leaves healthy unchanged.
 // Usage: node scripts/check-links.mjs            (report only)
 //        DATABASE_URL=... node scripts/check-links.mjs
 import { readFileSync } from "node:fs";
 import postgres from "postgres";
 
 const resources = JSON.parse(readFileSync(new URL("../src/content/resources.json", import.meta.url), "utf8"));
-const TIMEOUT_MS = 20_000;
+const TIMEOUT_MS = 15_000;
 const CONCURRENCY = 8;
+const ATTEMPTS = 3;
+/** Above this share of dead links, skip the healthy updates: a runner network problem must not empty every path. */
+const MAX_DEAD_SHARE = 0.2;
 const BLOCKED = new Set([401, 403, 429]);
 const headers = {
   "user-agent": "Mozilla/5.0 (compatible; CareerMetroLinkCheck/1.0; +https://careermetro.vercel.app)",
@@ -21,18 +26,33 @@ async function request(url, method) {
   return response.status;
 }
 
+async function once(url) {
+  // Many servers refuse, mishandle or hang on HEAD; ask again with GET before calling a link dead.
+  try {
+    const status = await request(url, "HEAD");
+    if (status < 400) return status;
+  } catch {
+    // fall through to GET
+  }
+  return request(url, "GET");
+}
+
 /** @returns {Promise<{ state: "ok" | "blocked" | "dead", detail: string }>} */
 async function check(url) {
-  try {
-    let status = await request(url, "HEAD");
-    // Many servers refuse or mishandle HEAD; ask again with GET before calling a link dead.
-    if (status >= 400) status = await request(url, "GET");
-    if (status < 400) return { state: "ok", detail: `${status}` };
-    return { state: BLOCKED.has(status) ? "blocked" : "dead", detail: `${status}` };
-  } catch (error) {
-    const cause = error?.cause?.code ?? error?.name ?? "error";
-    return { state: "dead", detail: cause };
+  let result;
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      const status = await once(url);
+      if (status < 400) return { state: "ok", detail: `${status}` };
+      result = { state: BLOCKED.has(status) ? "blocked" : "dead", detail: `${status}` };
+      // A 4xx other than 408 is an answer, not a hiccup; retry only timeouts, network errors and 5xx.
+      if (status < 500 && status !== 408) return result;
+    } catch (error) {
+      result = { state: "dead", detail: error?.cause?.code ?? error?.name ?? "error" };
+    }
+    if (attempt < ATTEMPTS) await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
   }
+  return result;
 }
 
 const results = new Array(resources.length);
@@ -63,17 +83,29 @@ if (process.env.DATABASE_URL) {
       const idByUrl = new Map(rows.map((r) => [r.url, r.id]));
       const checked = results.filter((r) => idByUrl.has(r.url));
       if (checked.length === 0) return;
+      // The previous check of each link, read before this run's rows go in.
+      const previous = await tx`
+        select distinct on (resource_id) resource_id, detail from resource_checks
+        where resource_id in ${tx(checked.map((r) => idByUrl.get(r.url)))}
+        order by resource_id, checked_at desc`;
+      const deadBefore = new Set(previous.filter((p) => p.detail?.startsWith("dead")).map((p) => p.resource_id));
+
       await tx`
         insert into resource_checks ${tx(
           checked.map((r) => ({ resource_id: idByUrl.get(r.url), ok: r.state === "ok", detail: `${r.state} ${r.detail}` })),
           "resource_id", "ok", "detail",
         )}`;
-      for (const state of ["ok", "dead"]) {
-        const ids = checked.filter((r) => r.state === state).map((r) => idByUrl.get(r.url));
-        if (ids.length) await tx`update resources set healthy = ${state === "ok"}, last_checked_at = now() where id in ${tx(ids)}`;
+      await tx`update resources set last_checked_at = now() where id in ${tx(checked.map((r) => idByUrl.get(r.url)))}`;
+
+      if (count("dead") > results.length * MAX_DEAD_SHARE) {
+        console.log(`::error title=Link check::Too many dead links to trust this run; healthy flags were left unchanged.`);
+        return;
       }
-      const blocked = checked.filter((r) => r.state === "blocked").map((r) => idByUrl.get(r.url));
-      if (blocked.length) await tx`update resources set last_checked_at = now() where id in ${tx(blocked)}`;
+      const ok = checked.filter((r) => r.state === "ok").map((r) => idByUrl.get(r.url));
+      const dead = checked.filter((r) => r.state === "dead").map((r) => idByUrl.get(r.url)).filter((id) => deadBefore.has(id));
+      if (ok.length) await tx`update resources set healthy = true where id in ${tx(ok)}`;
+      if (dead.length) await tx`update resources set healthy = false where id in ${tx(dead)}`;
+      console.log(`Marked ${dead.length} links unhealthy after two dead checks in a row.`);
     });
     console.log("Recorded the results in the database.");
   } finally {

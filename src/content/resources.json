@@ -325,18 +325,6 @@
     "free": true
   },
   {
-    "title": "ISO/IEC 27001 overview",
-    "url": "https://www.iso.org/standard/27001",
-    "provider": "ISO",
-    "kind": "docs",
-    "skillIds": [
-      "compliance-frameworks",
-      "security-policies"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "SOC 2: Trust Services Criteria overview",
     "url": "https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2",
     "provider": "AICPA & CIMA",
@@ -721,18 +709,6 @@
     "kind": "docs",
     "skillIds": [
       "excel-pivot-lookup"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Intro to PivotTables",
-    "url": "https://edu.gcfglobal.org/en/excel/intro-to-pivottables/1/",
-    "provider": "GCFGlobal",
-    "kind": "docs",
-    "skillIds": [
-      "excel-pivot-lookup",
-      "excel"
     ],
     "minutes": 30,
     "free": true
@@ -1372,17 +1348,6 @@
     "free": true
   },
   {
-    "title": "Oracle Live SQL",
-    "url": "https://livesql.oracle.com/",
-    "provider": "Oracle",
-    "kind": "practice",
-    "skillIds": [
-      "oracle-database"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Constraints",
     "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
     "provider": "PostgreSQL",
@@ -1531,19 +1496,6 @@
     "free": true
   },
   {
-    "title": "Test Automation University",
-    "url": "https://testautomationu.applitools.com/",
-    "provider": "Applitools",
-    "kind": "course",
-    "skillIds": [
-      "playwright-cypress",
-      "selenium",
-      "api-testing"
-    ],
-    "minutes": 1200,
-    "free": true
-  },
-  {
     "title": "DAX reference",
     "url": "https://learn.microsoft.com/en-us/dax/",
     "provider": "Microsoft Learn",
@@ -1596,17 +1548,6 @@
       "problem-solving"
     ],
     "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "Interviewing: case and problem-solving practice",
-    "url": "https://www.mckinsey.com/careers/interviewing",
-    "provider": "McKinsey & Company",
-    "kind": "practice",
-    "skillIds": [
-      "problem-solving"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
@@ -1696,17 +1637,6 @@
       "python"
     ],
     "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "CMU 15-445/645 Database Systems",
-    "url": "https://15445.courses.cs.cmu.edu/",
-    "provider": "Carnegie Mellon University",
-    "kind": "course",
-    "skillIds": [
-      "query-optimization"
-    ],
-    "minutes": 2400,
     "free": true
   },
   {
@@ -2396,17 +2326,6 @@
     "free": true
   },
   {
-    "title": "Foundations of User Experience (UX) Design (audit free)",
-    "url": "https://www.coursera.org/learn/foundations-user-experience-design",
-    "provider": "Google on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "ux-research"
-    ],
-    "minutes": 900,
-    "free": true
-  },
-  {
     "title": "Usability testing 101",
     "url": "https://www.nngroup.com/articles/usability-testing-101/",
     "provider": "Nielsen Norman Group",
@@ -2492,17 +2411,6 @@
       "web-performance"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Build Wireframes and Low-Fidelity Prototypes (audit free)",
-    "url": "https://www.coursera.org/learn/wireframes-low-fidelity-prototypes",
-    "provider": "Google on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "wireframing"
-    ],
-    "minutes": 1200,
     "free": true
   },
   {

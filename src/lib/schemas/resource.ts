@@ -6,13 +6,13 @@ import { z } from "zod";
  */
 export const resource = z.object({
   title: z.string().min(1).max(160),
-  url: z
-    .string()
-    .url()
-    .refine((u) => u.startsWith("https://"), "must be https"),
+  url: z.url({ protocol: /^https$/ }),
   provider: z.string().min(1).max(60),
   kind: z.enum(["course", "docs", "video", "practice"]),
-  skillIds: z.array(z.string().min(1)).min(1),
+  skillIds: z
+    .array(z.string().min(1))
+    .min(1)
+    .refine((ids) => new Set(ids).size === ids.length, "lists a skill twice"),
   minutes: z.number().int().positive().max(6000),
   free: z.boolean().default(true),
 });
