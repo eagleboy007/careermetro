@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   description:
     "Upload your resume, pick a target role, and see the exact skills you are missing, with a short path to close them.",
 };
+
+// viewport-fit=cover lets fixed bars pad for the phone home indicator (safe-area insets).
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

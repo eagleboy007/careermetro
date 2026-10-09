@@ -14,11 +14,11 @@ export type ShellUser = { name: string; initials: string; streakDays: number; to
  * The signed-in frame: top bar with the main sections on desktop, a tab bar on phones (under 760 px), and the avatar
  * menu. Sections that are not built yet show as "Soon" and are not links.
  */
-export function AppShell({ user, children }: { user: ShellUser; children: ReactNode }) {
+export function AppShell({ user, children, embedded = false }: { user: ShellUser; children: ReactNode; embedded?: boolean }) {
   const path = usePathname();
   const active = (item: NavItem) => path === item.href || path.startsWith(`${item.href}/`);
   return (
-    <div className="flex min-h-full flex-col">
+    <div className={`flex flex-col ${embedded ? "relative min-h-full" : "min-h-full"}`}>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1240px] items-center gap-4 px-4 py-3">
           <Link href="/today" aria-label="CareerMetro, Today">
@@ -36,7 +36,10 @@ export function AppShell({ user, children }: { user: ShellUser; children: ReactN
         </div>
       </header>
       <main className="mx-auto w-full max-w-[1240px] flex-1 px-4 pb-24 pt-6 min-[760px]:pb-10">{children}</main>
-      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface min-[760px]:hidden">
+      <nav
+        aria-label="Main tabs"
+        className={`${embedded ? "absolute" : "fixed"} inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] min-[760px]:hidden`}
+      >
         <ul className="grid grid-cols-5">
           {TAB_NAV.map((item) => (
             <li key={item.key}>
@@ -52,7 +55,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: ReactN
 function TopLink({ item, active }: { item: NavItem; active: boolean }) {
   if (!item.built) {
     return (
-      <span aria-disabled="true" className="cursor-default rounded-full px-3 py-1.5 text-muted/70">
+      <span className="cursor-default rounded-full px-3 py-1.5 text-muted/70">
         {item.label}
         <span className="sr-only">, coming soon</span>
       </span>
@@ -79,7 +82,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
   const base = "flex flex-col items-center gap-0.5 py-2 text-[0.68rem] font-medium";
   if (!item.built) {
     return (
-      <span aria-disabled="true" className={`${base} text-muted/60`}>
+      <span className={`${base} text-muted/60`}>
         {body}
         <span className="sr-only">, coming soon</span>
       </span>
@@ -103,6 +106,10 @@ function AvatarMenu({ user }: { user: ShellUser }) {
     const onClick = (e: MouseEvent) => {
       if (!wrap.current?.contains(e.target as Node)) setOpen(false);
     };
+    const onFocus = (e: FocusEvent) => {
+      if (!wrap.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("focusin", onFocus);
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setOpen(false);
@@ -113,6 +120,7 @@ function AvatarMenu({ user }: { user: ShellUser }) {
     return () => {
       document.removeEventListener("click", onClick);
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener("focusin", onFocus);
     };
   }, [open]);
 
@@ -136,21 +144,32 @@ function AvatarMenu({ user }: { user: ShellUser }) {
         className="shadow-raised absolute right-0 top-[calc(100%+8px)] z-30 flex w-56 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5"
       >
         <p className="px-2.5 pb-1.5 pt-1 text-sm font-semibold">{user.name}</p>
-        <span aria-disabled="true" className={`${row} text-muted`}>
-          <User size={16} strokeWidth={1.75} aria-hidden="true" />
-          Your profile <span className="ml-auto font-mono text-[0.62rem] uppercase">Soon</span>
-        </span>
-        {MENU_NAV.map((item) => (
-          <span key={item.key} aria-disabled="true" className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
-            <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
-            {item.label} <span className="ml-auto font-mono text-[0.62rem] uppercase">Soon</span>
-          </span>
-        ))}
-        <span aria-disabled="true" className={`${row} border-t border-line text-muted`}>
-          <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
-          Sign out <span className="ml-auto font-mono text-[0.62rem] uppercase">Soon</span>
-        </span>
+        <ul className="flex flex-col gap-0.5">
+          <li className={`${row} text-muted`}>
+            <User size={16} strokeWidth={1.75} aria-hidden="true" />
+            Your profile <Soon />
+          </li>
+          {MENU_NAV.map((item) => (
+            <li key={item.key} className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
+              <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+              {item.label} <Soon />
+            </li>
+          ))}
+          <li className={`${row} border-t border-line text-muted`}>
+            <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
+            Sign out <Soon />
+          </li>
+        </ul>
       </div>
     </div>
+  );
+}
+
+function Soon() {
+  return (
+    <span className="ml-auto font-mono text-[0.62rem] uppercase">
+      <span aria-hidden="true">Soon</span>
+      <span className="sr-only">, coming soon</span>
+    </span>
   );
 }
