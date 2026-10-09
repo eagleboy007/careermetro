@@ -6,8 +6,8 @@ import { ProfileEditor } from "@/components/resume/profile-editor";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
-import { getResumeForSession } from "@/lib/resume/store";
-import { readSessionId } from "@/lib/session";
+import { getResumeForOwner } from "@/lib/resume/store";
+import { readOwner } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Check your resume · CareerMetro", robots: { index: false } };
 
@@ -15,8 +15,8 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
   // Per-request data: the resume lookup reads the clock and the session cookie.
   await connection();
   const { id } = await params;
-  const sessionId = await readSessionId();
-  const resume = sessionId ? await getResumeForSession(id, sessionId) : null;
+  const owner = await readOwner();
+  const resume = owner ? await getResumeForOwner(id, owner) : null;
 
   if (!resume) return <ResumeNotFound />;
   return (

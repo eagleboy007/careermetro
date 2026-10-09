@@ -7,7 +7,7 @@ import * as schema from "@/db/schema";
 import type { Profile } from "@/lib/schemas";
 import { ingestResume } from "./ingest";
 import type { ParseClient } from "./parse";
-import { confirmProfile, getResumeForSession } from "./store";
+import { confirmProfile, getResumeForOwner } from "./store";
 
 // Runs against a real Postgres with migrations applied, like ingest.test.ts.
 const url = process.env.TEST_DATABASE_URL;
@@ -48,7 +48,7 @@ describe.skipIf(!db)("resume store (database)", () => {
   });
 
   async function upload(s: string) {
-    const r = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client });
+    const r = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}` }, { db: db!, client });
     if (!r.ok) throw new Error(`setup failed: ${r.code}`);
     created.push(r.resumeId);
     return r.resumeId;
@@ -56,29 +56,29 @@ describe.skipIf(!db)("resume store (database)", () => {
 
   it("shows a resume only to the session that uploaded it", async () => {
     const id = await upload(session);
-    expect(await getResumeForSession(id, session, db!)).toMatchObject({ resumeId: id, version: 1, confirmed: false });
-    expect(await getResumeForSession(id, `${session}-other`, db!)).toBeNull();
-    expect(await getResumeForSession("not-a-uuid", session, db!)).toBeNull();
+    expect(await getResumeForOwner(id, { sessionId: session }, db!)).toMatchObject({ resumeId: id, version: 1, confirmed: false });
+    expect(await getResumeForOwner(id, { sessionId: `${session}-other` }, db!)).toBeNull();
+    expect(await getResumeForOwner("not-a-uuid", { sessionId: session }, db!)).toBeNull();
   });
 
   it("saves a confirmed profile as a new version", async () => {
     const id = await upload(`${session}-c`);
-    expect(await confirmProfile(id, `${session}-c`, parsed, db!)).toEqual({ ok: true, version: 2 });
-    expect(await getResumeForSession(id, `${session}-c`, db!)).toMatchObject({ version: 2, confirmed: true });
-    expect(await confirmProfile(id, `${session}-x`, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
+    expect(await confirmProfile(id, { sessionId: `${session}-c` }, parsed, db!)).toEqual({ ok: true, version: 2 });
+    expect(await getResumeForOwner(id, { sessionId: `${session}-c` }, db!)).toMatchObject({ version: 2, confirmed: true });
+    expect(await confirmProfile(id, { sessionId: `${session}-x` }, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
   });
 
   it("keeps only evidence the parsed profile already had", async () => {
     const id = await upload(`${session}-e`);
     const edited: Profile = { ...parsed, skills: [{ name: "SQL", lastUsed: null, evidence: ["Invented quote"] }] };
-    await confirmProfile(id, `${session}-e`, edited, db!);
-    const saved = await getResumeForSession(id, `${session}-e`, db!);
+    await confirmProfile(id, { sessionId: `${session}-e` }, edited, db!);
+    const saved = await getResumeForOwner(id, { sessionId: `${session}-e` }, db!);
     expect(saved?.profile.skills).toEqual([{ name: "SQL", lastUsed: null, evidence: [] }]);
   });
 
   it("reports a conflict when two saves race for the same version", async () => {
     const id = await upload(`${session}-r`);
-    const results = await Promise.all([1, 2, 3].map(() => confirmProfile(id, `${session}-r`, parsed, db!)));
+    const results = await Promise.all([1, 2, 3].map(() => confirmProfile(id, { sessionId: `${session}-r` }, parsed, db!)));
     expect(results.filter((r) => r.ok)).toHaveLength(1);
     expect(results.filter((r) => !r.ok && r.reason === "conflict").length).toBeGreaterThan(0);
   });
@@ -86,7 +86,7 @@ describe.skipIf(!db)("resume store (database)", () => {
   it("hides anonymous resumes older than 24 hours before cleanup runs", async () => {
     const id = await upload(`${session}-old`);
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, id));
-    expect(await getResumeForSession(id, `${session}-old`, db!)).toBeNull();
-    expect(await confirmProfile(id, `${session}-old`, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
+    expect(await getResumeForOwner(id, { sessionId: `${session}-old` }, db!)).toBeNull();
+    expect(await confirmProfile(id, { sessionId: `${session}-old` }, parsed, db!)).toEqual({ ok: false, reason: "not_found" });
   });
 });

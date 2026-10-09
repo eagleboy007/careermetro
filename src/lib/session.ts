@@ -1,10 +1,10 @@
 import "server-only";
 import { createHmac, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
+import { ANONYMOUS_TTL_HOURS, type Owner } from "@/lib/owner";
 
 /** Cookie for the anonymous first analysis (FR-2). It lives as long as the data it points to. */
 export const SESSION_COOKIE = "cm_session";
-export const ANONYMOUS_TTL_HOURS = 24;
 
 const SESSION_ID = /^[A-Za-z0-9_-]{43}$/;
 
@@ -27,6 +27,17 @@ export async function ensureSessionId(): Promise<string> {
     maxAge: ANONYMOUS_TTL_HOURS * 60 * 60,
   });
   return id;
+}
+
+/** Who is asking: the anonymous session, or null when there is none. */
+export async function readOwner(): Promise<Owner | null> {
+  const sessionId = await readSessionId();
+  return sessionId ? { sessionId } : null;
+}
+
+/** Who is asking, creating an anonymous session if needed. Call only from a route handler or server action. */
+export async function ensureOwner(): Promise<Owner> {
+  return { sessionId: await ensureSessionId() };
 }
 
 /**

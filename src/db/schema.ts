@@ -13,6 +13,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import type { GapAnalysis, Profile, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
@@ -27,15 +28,26 @@ export const organizations = pgTable("organizations", {
   createdAt: createdAt(),
 });
 
-export const users = pgTable("users", {
-  id: id(),
-  email: text("email").notNull().unique(),
-  name: text("name"),
-  organizationId: uuid("organization_id").references(() => organizations.id),
-  weeklyHours: integer("weekly_hours").notNull().default(5),
-  createdAt: createdAt(),
-  deletionRequestedAt: timestamp("deletion_requested_at", { withTimezone: true }),
-});
+export const users = pgTable(
+  "users",
+  {
+    id: id(),
+    email: text("email").notNull().unique(),
+    name: text("name"),
+    /** The sign-in provider's id for this user. No foreign key to the provider's tables, so it can be swapped. */
+    authSubject: text("auth_subject").unique(),
+    /** When the user ticked "I am 18 or older" at sign-up. */
+    ageConfirmedAt: timestamp("age_confirmed_at", { withTimezone: true }),
+    /** Updated at most once a day; drives the inactive-account policy. */
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
+    organizationId: uuid("organization_id").references(() => organizations.id),
+    weeklyHours: integer("weekly_hours").notNull().default(5),
+    createdAt: createdAt(),
+    deletionRequestedAt: timestamp("deletion_requested_at", { withTimezone: true }),
+  },
+  // Matching by email when the provider changes must ignore case.
+  (t) => [uniqueIndex("users_email_lower").on(sql`lower(${t.email})`)],
+);
 
 /** What the user agreed to and when (DPDP Act, SEC-1). */
 export const consents = pgTable("consents", {
@@ -80,7 +92,11 @@ export const resumes = pgTable(
     /** When the raw file must be removed (SEC-5). Null when no file was kept, the default: text is read in memory. */
     fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }),
   },
-  (t) => [index("resumes_anonymous_session").on(t.anonymousSessionId), index("resumes_client_hash").on(t.clientHash, t.createdAt)],
+  (t) => [
+    index("resumes_anonymous_session").on(t.anonymousSessionId),
+    index("resumes_client_hash").on(t.clientHash, t.createdAt),
+    index("resumes_user").on(t.userId),
+  ],
 );
 
 /** Versioned: every user correction creates a new row. */

@@ -7,7 +7,7 @@ import * as schema from "@/db/schema";
 import type { Profile } from "@/lib/schemas";
 import { SHOWN_GAPS } from "./analysis";
 import type { ExplainClient } from "./explain";
-import { GAP_LIMITS, getGapsForSession, rateAnalysis } from "./store";
+import { GAP_LIMITS, getGapsForOwner, rateAnalysis } from "./store";
 
 // Runs against a real Postgres with migrations applied, like ingest.test.ts.
 const url = process.env.TEST_DATABASE_URL;
@@ -57,7 +57,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
   it("explains, stores and then reuses the analysis, logging the call", async () => {
     const { session, resumeId } = await seed();
     const { client, create } = explainClient();
-    const first = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     if (!first.ok) throw new Error(first.reason);
     expect(first.analysis.gaps).toHaveLength(SHOWN_GAPS);
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
@@ -68,56 +68,56 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(call).toMatchObject({ purpose: "explain-gaps", promptVersion: "explain-gaps/v1", ok: true });
     expect(JSON.stringify(call)).not.toContain("branch reports");
 
-    const again = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(again).toMatchObject({ ok: true, analysisId: first.analysisId });
     expect(create).toHaveBeenCalledTimes(1);
   });
 
   it("hides other sessions' resumes and waits for a confirmed profile", async () => {
     const { resumeId } = await seed();
-    expect(await getGapsForSession(resumeId, "someone-else", role, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+    expect(await getGapsForOwner(resumeId, { sessionId: "someone-else" }, role, { db: db! })).toEqual({ ok: false, reason: "not_found" });
     const unconfirmed = await seed(false);
-    expect(await getGapsForSession(unconfirmed.resumeId, unconfirmed.session, role, { db: db! })).toEqual({ ok: false, reason: "not_confirmed" });
+    expect(await getGapsForOwner(unconfirmed.resumeId, { sessionId: unconfirmed.session }, role, { db: db! })).toEqual({ ok: false, reason: "not_confirmed" });
   });
 
   it("uses template sentences without calling the model once the budget is spent", async () => {
     vi.stubEnv("EXPLAIN_DAILY_BUDGET_USD", "0");
     const { session, resumeId } = await seed();
     const { client, create } = explainClient();
-    const r = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(create).not.toHaveBeenCalled();
     expect(r.ok && r.analysis.gaps[0].explanation).toMatch(/^This role expects you to|^Your resume names|^The latest use/);
   });
 
   it("stops explaining past the per-session daily count", async () => {
     const { session, resumeId } = await seed();
-    const original = GAP_LIMITS.explainedPerSessionPerDay;
-    GAP_LIMITS.explainedPerSessionPerDay = 1;
+    const original = GAP_LIMITS.explainedPerOwnerPerDay;
+    GAP_LIMITS.explainedPerOwnerPerDay = 1;
     try {
       const { client, create } = explainClient();
-      await getGapsForSession(resumeId, session, role, { db: db!, client });
-      await getGapsForSession(resumeId, session, roleProfiles.find((r) => r.slug === "business-analyst")!, { db: db!, client });
+      await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+      await getGapsForOwner(resumeId, { sessionId: session }, roleProfiles.find((r) => r.slug === "business-analyst")!, { db: db!, client });
       expect(create).toHaveBeenCalledTimes(1);
     } finally {
-      GAP_LIMITS.explainedPerSessionPerDay = original;
+      GAP_LIMITS.explainedPerOwnerPerDay = original;
     }
   });
 
   it("saves a rating only for the session's own analysis and only from 1 to 5", async () => {
     const { session, resumeId } = await seed();
-    const r = await getGapsForSession(resumeId, session, role, { db: db!, client: explainClient().client });
+    const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
     if (!r.ok) throw new Error(r.reason);
-    expect(await rateAnalysis(r.analysisId, "someone-else", 4, db!)).toBe(false);
-    expect(await rateAnalysis(r.analysisId, session, 6, db!)).toBe(false);
-    expect(await rateAnalysis(r.analysisId, session, 4, db!)).toBe(true);
-    const again = await getGapsForSession(resumeId, session, role, { db: db! });
+    expect(await rateAnalysis(r.analysisId, { sessionId: "someone-else" }, 4, db!)).toBe(false);
+    expect(await rateAnalysis(r.analysisId, { sessionId: session }, 6, db!)).toBe(false);
+    expect(await rateAnalysis(r.analysisId, { sessionId: session }, 4, db!)).toBe(true);
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db! });
     expect(again).toMatchObject({ ok: true, rating: 4 });
   });
 
   it("calls the model once and stores one row when the page loads several times at once", async () => {
     const { session, resumeId } = await seed();
     const { client, create } = explainClient();
-    const results = await Promise.all(Array.from({ length: 4 }, () => getGapsForSession(resumeId, session, role, { db: db!, client })));
+    const results = await Promise.all(Array.from({ length: 4 }, () => getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client })));
     expect(create).toHaveBeenCalledTimes(1);
     const ids = new Set(results.map((r) => (r.ok ? r.analysisId : r.reason)));
     expect(ids.size).toBe(1);
@@ -126,17 +126,17 @@ describe.skipIf(!db)("gap analyses (database)", () => {
   it("makes a fresh analysis after the user confirms a new profile version", async () => {
     const { session, resumeId } = await seed();
     const { client } = explainClient();
-    const first = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     await db!.insert(schema.profiles).values({ resumeId, version: 2, data: { ...profile, skills: [{ name: "Python", lastUsed: null, evidence: [] }] }, confirmedByUser: true });
-    const second = await getGapsForSession(resumeId, session, role, { db: db!, client });
+    const second = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(first.ok && second.ok && first.analysisId !== second.analysisId).toBe(true);
   });
 
   it("won't rate an analysis once its resume is past 24 hours", async () => {
     const { session, resumeId } = await seed();
-    const r = await getGapsForSession(resumeId, session, role, { db: db!, client: explainClient().client });
+    const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
     if (!r.ok) throw new Error(r.reason);
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, resumeId));
-    expect(await rateAnalysis(r.analysisId, session, 3, db!)).toBe(false);
+    expect(await rateAnalysis(r.analysisId, { sessionId: session }, 3, db!)).toBe(false);
   });
 });

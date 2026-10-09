@@ -1,31 +1,25 @@
 import "server-only";
-import { and, desc, eq, gt, isNotNull, or } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { profiles, resumes } from "@/db/schema";
+import { ownsResume, type Owner } from "@/lib/owner";
 import type { Profile } from "@/lib/schemas";
-import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
 
 type Db = ReturnType<typeof getDb>;
 
 export type ResumeForReview = { resumeId: string; profileId: string; version: number; confirmed: boolean; profile: Profile };
 
 /**
- * The latest profile of a resume, only if it belongs to this anonymous session. Anyone else gets null, as if it
- * didn't exist. Anonymous resumes past their 24 hours are hidden even before the daily cleanup deletes them (FR-2).
+ * The latest profile of a resume, only if it belongs to this owner (see `ownsResume`). Anyone else gets null, as if
+ * it didn't exist.
  */
-export async function getResumeForSession(resumeId: string, sessionId: string, db: Pick<Db, "select"> = getDb()): Promise<ResumeForReview | null> {
+export async function getResumeForOwner(resumeId: string, owner: Owner, db: Pick<Db, "select"> = getDb()): Promise<ResumeForReview | null> {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(resumeId)) return null;
   const [row] = await db
     .select({ profileId: profiles.id, version: profiles.version, confirmed: profiles.confirmedByUser, data: profiles.data })
     .from(profiles)
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(
-      and(
-        eq(resumes.id, resumeId),
-        eq(resumes.anonymousSessionId, sessionId),
-        or(gt(resumes.createdAt, new Date(Date.now() - ANONYMOUS_TTL_HOURS * 3600_000)), isNotNull(resumes.userId)),
-      ),
-    )
+    .where(and(eq(resumes.id, resumeId), ownsResume(owner)))
     .orderBy(desc(profiles.version))
     .limit(1);
   return row ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: row.data } : null;
@@ -41,8 +35,8 @@ export type ConfirmResult = { ok: true; version: number } | { ok: false; reason:
  * Evidence quotes and highlights are kept only if the parsed profile already had them: the user can remove
  * them but not add new ones, so every quote still comes from the resume (AI-5).
  */
-export async function confirmProfile(resumeId: string, sessionId: string, profile: Profile, db: Db = getDb()): Promise<ConfirmResult> {
-  const current = await getResumeForSession(resumeId, sessionId, db);
+export async function confirmProfile(resumeId: string, owner: Owner, profile: Profile, db: Db = getDb()): Promise<ConfirmResult> {
+  const current = await getResumeForOwner(resumeId, owner, db);
   if (!current) return { ok: false, reason: "not_found" };
   if (current.version >= MAX_PROFILE_VERSIONS) return { ok: false, reason: "too_many" };
 

@@ -12,8 +12,8 @@ import { ReadinessCard } from "@/components/route/readiness-card";
 import { SiteHeader } from "@/components/site/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
-import { getGapsForSession } from "@/lib/gaps/store";
-import { readSessionId } from "@/lib/session";
+import { getGapsForOwner } from "@/lib/gaps/store";
+import { readOwner } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Your gaps · CareerMetro", robots: { index: false } };
 
@@ -25,10 +25,10 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   const { id, slug } = await params;
   const role = roleProfiles.find((r) => r.slug === slug);
   if (!role) notFound();
-  const sessionId = await readSessionId();
-  let result: Awaited<ReturnType<typeof getGapsForSession>>;
+  const owner = await readOwner();
+  let result: Awaited<ReturnType<typeof getGapsForOwner>>;
   try {
-    result = sessionId ? await getGapsForSession(id, sessionId, role) : { ok: false, reason: "not_found" };
+    result = owner ? await getGapsForOwner(id, owner, role) : { ok: false, reason: "not_found" };
   } catch (error) {
     // Database errors carry query parameters, which can hold resume quotes. Log only the name and code.
     const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;

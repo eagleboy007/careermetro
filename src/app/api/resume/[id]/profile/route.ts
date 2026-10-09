@@ -1,6 +1,6 @@
 import { profile as profileSchema } from "@/lib/schemas";
 import { confirmProfile } from "@/lib/resume/store";
-import { isSameOrigin, readSessionId } from "@/lib/session";
+import { isSameOrigin, readOwner } from "@/lib/session";
 
 /** A corrected profile is a few KB; anything far larger is not one. */
 const MAX_BODY_BYTES = 64 * 1024;
@@ -26,12 +26,12 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/resum
     return fail(400, where);
   }
 
-  const sessionId = await readSessionId();
-  if (!sessionId) return fail(404, "We couldn't find this resume. It may have expired.");
+  const owner = await readOwner();
+  if (!owner) return fail(404, "We couldn't find this resume. It may have expired.");
   const { id } = await params;
   let result;
   try {
-    result = await confirmProfile(id, sessionId, parsed.data);
+    result = await confirmProfile(id, owner, parsed.data);
   } catch (error) {
     // Database errors carry query parameters, which hold the profile. Log only the name and code.
     const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;

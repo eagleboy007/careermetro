@@ -1,6 +1,6 @@
 import { ingestResume } from "@/lib/resume/ingest";
 import { MAX_RESUME_BYTES } from "@/lib/resume/extract";
-import { clientHash, clientIp, ensureSessionId, isSameOrigin } from "@/lib/session";
+import { clientHash, clientIp, ensureOwner, isSameOrigin } from "@/lib/session";
 
 // Reading a resume takes one model call of roughly 10 to 40 seconds; parseResume gives up after 100 seconds.
 export const maxDuration = 120;
@@ -33,10 +33,10 @@ export async function POST(request: Request) {
     return fail(400, "Please choose a file or paste your resume.");
   }
 
-  const sessionId = await ensureSessionId();
+  const owner = await ensureOwner();
   let result;
   try {
-    result = await ingestResume({ bytes, as, sessionId, clientHash: clientHash(clientIp(request)), startedAt });
+    result = await ingestResume({ bytes, as, owner, clientHash: clientHash(clientIp(request)), startedAt });
   } catch (error) {
     // Database errors carry query parameters, which can hold profile text quoted from the resume.
     // Log only the error's name and code, never its message.

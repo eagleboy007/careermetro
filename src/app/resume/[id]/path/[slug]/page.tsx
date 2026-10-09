@@ -9,9 +9,9 @@ import { PathSteps } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
 import { roleProfiles } from "@/content";
-import { getPathForSession } from "@/lib/path/store";
+import { getPathForOwner } from "@/lib/path/store";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas";
-import { readSessionId } from "@/lib/session";
+import { readOwner } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Your path · CareerMetro", robots: { index: false } };
 
@@ -30,10 +30,10 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   const role = roleProfiles.find((r) => r.slug === slug);
   if (!role) notFound();
   const hours = readHours((await searchParams).hours);
-  const sessionId = await readSessionId();
-  let result: Awaited<ReturnType<typeof getPathForSession>>;
+  const owner = await readOwner();
+  let result: Awaited<ReturnType<typeof getPathForOwner>>;
   try {
-    result = sessionId ? await getPathForSession(id, sessionId, role, hours) : { ok: false, reason: "not_found" };
+    result = owner ? await getPathForOwner(id, owner, role, hours) : { ok: false, reason: "not_found" };
   } catch (error) {
     // Database errors carry query parameters. Log only the name and code.
     const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;

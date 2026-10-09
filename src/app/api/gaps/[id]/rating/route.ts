@@ -1,5 +1,5 @@
 import { rateAnalysis } from "@/lib/gaps/store";
-import { isSameOrigin, readSessionId } from "@/lib/session";
+import { isSameOrigin, readOwner } from "@/lib/session";
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 
@@ -15,11 +15,11 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/gaps/
   } catch {}
   if (typeof rating !== "number" || !Number.isInteger(rating) || rating < 1 || rating > 5) return fail(400, "Pick a number from 1 to 5.");
 
-  const sessionId = await readSessionId();
-  if (!sessionId) return fail(404, "We couldn't find these gaps. They may have expired.");
+  const owner = await readOwner();
+  if (!owner) return fail(404, "We couldn't find these gaps. They may have expired.");
   const { id } = await params;
   try {
-    if (await rateAnalysis(id, sessionId, rating)) return Response.json({ ok: true });
+    if (await rateAnalysis(id, owner, rating)) return Response.json({ ok: true });
   } catch (error) {
     console.error("gap rating failed:", error instanceof Error ? error.name : typeof error);
     return fail(500, "Something went wrong saving your answer. Please try again.");

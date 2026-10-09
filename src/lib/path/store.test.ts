@@ -5,7 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 import { roleProfiles, skills } from "@/content";
 import * as schema from "@/db/schema";
 import type { Profile } from "@/lib/schemas";
-import { getPathForSession, markStepDone, PATH_LIMITS } from "./store";
+import { getPathForOwner, markStepDone, PATH_LIMITS } from "./store";
 import type { WriteClient } from "./write";
 
 // Runs against a real Postgres with migrations applied, like the gaps store tests.
@@ -72,7 +72,7 @@ describe.skipIf(!db)("paths (database)", () => {
   it("builds, words, stores and then reuses a path, logging the call", async () => {
     const { session, resumeId } = await seed();
     const { client, create } = writeClient();
-    const first = await getPathForSession(resumeId, session, role, 5, { db: db!, client });
+    const first = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
     if (!first.ok) throw new Error(first.reason);
     expect(first.path.weeklyHours).toBe(5);
     expect(first.path.steps.length).toBeGreaterThan(0);
@@ -85,15 +85,15 @@ describe.skipIf(!db)("paths (database)", () => {
     expect(call).toMatchObject({ purpose: "write-path", promptVersion: "write-path/v1", ok: true });
     expect(JSON.stringify(call)).not.toContain("branch reports");
 
-    const again = await getPathForSession(resumeId, session, role, 5, { db: db!, client });
+    const again = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
     expect(again.ok && again.path.pathId).toBe(first.path.pathId);
     expect(create).toHaveBeenCalledTimes(1);
   });
 
   it("makes a separate path for other weekly hours", async () => {
     const { session, resumeId } = await seed();
-    const five = await getPathForSession(resumeId, session, role, 5, { db: db! });
-    const ten = await getPathForSession(resumeId, session, role, 10, { db: db! });
+    const five = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
+    const ten = await getPathForOwner(resumeId, { sessionId: session }, role, 10, { db: db! });
     expect(five.ok && ten.ok && five.path.pathId !== ten.path.pathId).toBe(true);
   });
 
@@ -101,7 +101,7 @@ describe.skipIf(!db)("paths (database)", () => {
     vi.stubEnv("WRITE_PATH_DAILY_BUDGET_USD", "0");
     const { session, resumeId } = await seed();
     const { client, create } = writeClient();
-    const r = await getPathForSession(resumeId, session, role, 5, { db: db!, client });
+    const r = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
     expect(create).not.toHaveBeenCalled();
     expect(r.ok && r.path.steps[0].reason).not.toMatch(/^Worded /);
   });
@@ -109,52 +109,52 @@ describe.skipIf(!db)("paths (database)", () => {
   it("stops wording paths past the per-session daily count", async () => {
     const { session, resumeId } = await seed();
     const { client, create } = writeClient();
-    const original = PATH_LIMITS.wordedPerSessionPerDay;
-    PATH_LIMITS.wordedPerSessionPerDay = 1;
+    const original = PATH_LIMITS.wordedPerOwnerPerDay;
+    PATH_LIMITS.wordedPerOwnerPerDay = 1;
     try {
-      await getPathForSession(resumeId, session, role, 5, { db: db!, client });
-      await getPathForSession(resumeId, session, role, 8, { db: db!, client });
+      await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
+      await getPathForOwner(resumeId, { sessionId: session }, role, 8, { db: db!, client });
     } finally {
-      PATH_LIMITS.wordedPerSessionPerDay = original;
+      PATH_LIMITS.wordedPerOwnerPerDay = original;
     }
     expect(create).toHaveBeenCalledTimes(1);
   });
 
   it("hides other sessions' paths and lets only the owner mark a step done", async () => {
     const { session, resumeId } = await seed();
-    expect(await getPathForSession(resumeId, "someone-else", role, 5, { db: db! })).toEqual({ ok: false, reason: "not_found" });
-    const r = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    expect(await getPathForOwner(resumeId, { sessionId: "someone-else" }, role, 5, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+    const r = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
     if (!r.ok) throw new Error(r.reason);
     const step = r.path.steps[0];
-    expect(await markStepDone(step.id, "someone-else", true, db!)).toBe(false);
-    expect(await markStepDone("not-a-uuid", session, true, db!)).toBe(false);
-    expect(await markStepDone("-".repeat(36), session, true, db!)).toBe(false);
-    expect(await markStepDone(step.id, session, true, db!)).toBe(true);
+    expect(await markStepDone(step.id, { sessionId: "someone-else" }, true, db!)).toBe(false);
+    expect(await markStepDone("not-a-uuid", { sessionId: session }, true, db!)).toBe(false);
+    expect(await markStepDone("-".repeat(36), { sessionId: session }, true, db!)).toBe(false);
+    expect(await markStepDone(step.id, { sessionId: session }, true, db!)).toBe(true);
 
-    const after = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    const after = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
     expect(after.ok && after.path.doneCount).toBe(1);
     expect(after.ok && after.path.steps[0].doneAt).not.toBeNull();
-    expect(await markStepDone(step.id, session, false, db!)).toBe(true);
-    const undone = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    expect(await markStepDone(step.id, { sessionId: session }, false, db!)).toBe(true);
+    const undone = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
     expect(undone.ok && undone.path.doneCount).toBe(0);
   });
 
   it("keeps progress when the weekly hours change", async () => {
     const { session, resumeId } = await seed();
-    const five = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    const five = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
     if (!five.ok) throw new Error(five.reason);
     const first = five.path.steps[0];
-    expect(await markStepDone(first.id, session, true, db!)).toBe(true);
+    expect(await markStepDone(first.id, { sessionId: session }, true, db!)).toBe(true);
 
     // A path made after the step was done starts with it done.
-    const ten = await getPathForSession(resumeId, session, role, 10, { db: db! });
+    const ten = await getPathForOwner(resumeId, { sessionId: session }, role, 10, { db: db! });
     if (!ten.ok) throw new Error(ten.reason);
     expect(ten.path.steps.find((s) => s.skillId === first.skillId)?.doneAt).not.toBeNull();
 
     // Undoing it at 10 hours undoes it at 5 hours too.
     const tenStep = ten.path.steps.find((s) => s.skillId === first.skillId)!;
-    expect(await markStepDone(tenStep.id, session, false, db!)).toBe(true);
-    const fiveAgain = await getPathForSession(resumeId, session, role, 5, { db: db! });
+    expect(await markStepDone(tenStep.id, { sessionId: session }, false, db!)).toBe(true);
+    const fiveAgain = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
     expect(fiveAgain.ok && fiveAgain.path.doneCount).toBe(0);
   });
 });
