@@ -16,5 +16,6 @@ Upload a resume, pick a target role, see the exact skills you're missing and a s
 
 ## Docs
 
+- `docs/README.md`: index of every design, brand file, plan and review sheet
 - `docs/REQUIREMENTS.md`: product requirements
 - `CLAUDE.md`: decisions, design rules and working agreements

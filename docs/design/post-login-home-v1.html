@@ -1,0 +1,729 @@
+<title>CareerMetro Signed-in Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a spec page around one live mock. The mock is an app shell (sidebar + top bar + home grid) inside a resizable frame;
+   container queries switch it to the phone layout, so "Phone" in the toolbar and a real phone show the same thing.
+   Tokens are copied 1:1 from src/app/globals.css. */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceff4; --ink:#12151c; --muted:#586072; --line:#dce0e8;
+  --accent:#2448f5; --accent-soft:#e6ebff; --on-accent:#ffffff;
+  --good:#11805b; --good-soft:#e2f4ec; --warn:#9a5800; --warn-soft:#fff0d8; --bad:#c0342a; --bad-soft:#fde7e5;
+  --shadow:rgba(18,21,28,0.35);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Geist","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:20px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --good:#4cc79a; --good-soft:#11302a; --warn:#f0b45a; --warn-soft:#382a12; --bad:#ff7e71; --bad-soft:#3a1a18;
+  --shadow:rgba(0,0,0,0.6); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --good:#4cc79a; --good-soft:#11302a; --warn:#f0b45a; --warn-soft:#382a12; --bad:#ff7e71; --bad-soft:#3a1a18;
+  --shadow:rgba(0,0,0,0.6); color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.55; padding-inline:16px; padding-block:0 64px; margin:0;}
+.page{max-width:1240px; margin:0 auto; display:flex; flex-direction:column; gap:40px;}
+h1,h2,h3,h4{font-family:var(--display); font-weight:650; letter-spacing:-0.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+button{font:inherit; color:inherit;}
+a{color:inherit;}
+.muted{color:var(--muted);}
+.label{font-family:var(--mono); font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);}
+.icon{width:20px; height:20px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+/* ---------- spec page chrome ---------- */
+.top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:20px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.brand{display:inline-flex; align-items:center; gap:10px; font-family:var(--display); font-weight:650; font-size:1.1rem; letter-spacing:-0.02em;}
+.mark{width:34px; height:18px;}
+.intro{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:32px; align-items:end;}
+.intro h1{font-size:clamp(1.9rem,4.5vw,3rem); line-height:1.05;}
+.intro p{color:var(--muted); max-width:62ch; margin-top:12px;}
+@media (max-width:820px){ .intro{grid-template-columns:1fr;} }
+
+.toolbar{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; padding:12px 14px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); position:sticky; top:env(safe-area-inset-top,0px); z-index:5;}
+.tgroup{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.seg{display:inline-flex; background:var(--surface-2); border-radius:999px; padding:3px; gap:2px;}
+.seg button{border:0; background:transparent; padding:5px 12px; border-radius:999px; font-size:0.82rem; font-weight:550; color:var(--muted); cursor:pointer;}
+.seg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 2px var(--shadow);}
+.check{display:inline-flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:550; cursor:pointer;}
+.check input{accent-color:var(--accent); width:16px; height:16px;}
+
+.stage{display:flex; justify-content:center;}
+.frame{width:100%; container-type:inline-size; container-name:app; transition:max-width .3s ease;}
+.frame.phone{max-width:390px;}
+.cap{font-size:0.8rem; color:var(--muted); text-align:center; margin-top:10px;}
+
+/* ---------- the app mock ---------- */
+.app{background:var(--bg); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; box-shadow:0 30px 60px -40px var(--shadow); display:grid; grid-template-columns:232px minmax(0,1fr); min-height:760px; position:relative;}
+.side{position:relative; background:var(--surface); border-right:1px solid var(--line); padding:20px 12px; display:flex; flex-direction:column; gap:2px;}
+.side .brand{font-size:1.02rem; padding:0 8px 18px;}
+.navlabel{font-family:var(--mono); font-size:0.66rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); padding:14px 10px 6px;}
+.nav{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--r-sm); font-size:0.88rem; color:var(--muted); text-decoration:none;}
+.nav:hover{background:var(--surface-2); color:var(--ink);}
+.nav .icon{width:18px; height:18px;}
+.nav.on{background:var(--accent-soft); color:var(--ink); font-weight:550;}
+.nav.on .icon{color:var(--accent);}
+.nav .soon{margin-left:auto; font-family:var(--mono); font-size:0.62rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); background:var(--surface-2); padding:1px 6px; border-radius:999px;}
+.nav .dot{margin-left:auto; width:7px; height:7px; border-radius:50%; background:var(--accent);}
+.side-foot{margin-top:auto; display:flex; flex-direction:column; gap:2px; padding-top:16px;}
+
+.mainwrap{display:flex; flex-direction:column; min-width:0;}
+.bar{display:flex; align-items:center; gap:12px; padding:14px 24px; border-bottom:1px solid var(--line); background:var(--surface);}
+.bar .brand{display:none; font-size:1rem;}
+.search{flex:1; max-width:440px; display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:0.86rem; background:var(--bg);}
+.search .icon{width:17px; height:17px;}
+.search kbd{margin-left:auto; font-family:var(--mono); font-size:0.68rem; border:1px solid var(--line); border-radius:4px; padding:0 5px;}
+.bar-end{margin-left:auto; display:flex; align-items:center; gap:10px;}
+.iconbtn{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; position:relative; cursor:pointer; color:var(--ink);}
+.iconbtn .icon{width:18px; height:18px;}
+.iconbtn .pip{position:absolute; top:7px; right:8px; width:7px; height:7px; border-radius:50%; background:var(--accent); border:2px solid var(--surface);}
+.avatar{width:36px; height:36px; border-radius:50%; background:var(--surface-2); color:var(--ink); display:grid; place-items:center; font-family:var(--mono); font-size:0.74rem; font-weight:500; flex-shrink:0;}
+.avatar.lg{width:52px; height:52px; font-size:0.95rem;}
+.avatar.sm{width:32px; height:32px; font-size:0.7rem;}
+
+.main{padding:24px; display:flex; flex-direction:column; gap:20px; min-width:0;}
+.hello{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;}
+.hello h2{font-size:1.7rem; line-height:1.15;}
+.hello p{color:var(--muted); font-size:0.9rem; margin-top:4px;}
+.target-line{display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;}
+.target-line b{color:var(--ink); font-weight:600;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font-weight:550; font-size:0.86rem; padding:9px 15px; border-radius:999px; border:1px solid transparent; cursor:pointer; text-decoration:none; white-space:nowrap;}
+.btn .icon{width:17px; height:17px;}
+.btn-primary{background:var(--accent); color:var(--on-accent);}
+.btn-ghost{background:var(--surface); border-color:var(--line); color:var(--ink);}
+.btn-quiet{background:transparent; color:var(--muted); padding-inline:8px;}
+.btn-sm{padding:6px 11px; font-size:0.8rem;}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:20px; display:flex; flex-direction:column; gap:16px; min-width:0; position:relative;}
+.card-head{display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.card-head h3{font-size:1.05rem; letter-spacing:-0.01em;}
+.link{display:inline-flex; align-items:center; gap:4px; font-size:0.82rem; font-weight:550; color:var(--muted); text-decoration:none; white-space:nowrap;}
+.link:hover{color:var(--ink);}
+.link .icon{width:15px; height:15px;}
+
+/* route stepper (matches progress-route.tsx) */
+.route{display:flex; align-items:flex-start; position:relative; padding-top:2px;}
+.route::before{content:""; position:absolute; left:10%; right:10%; top:9px; height:2px; background:var(--line);}
+.route .fill{position:absolute; left:10%; top:9px; height:2px; background:var(--accent); width:var(--done,40%); transition:width .5s ease;}
+.stop{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; font-size:0.78rem; color:var(--muted); text-align:center;}
+.stop i{width:18px; height:18px; border-radius:50%; background:var(--surface); border:2px solid var(--line); display:grid; place-items:center;}
+.stop i .icon{width:11px; height:11px; stroke-width:3; color:var(--on-accent); display:none;}
+.stop.done i{background:var(--accent); border-color:var(--accent);}
+.stop.done i .icon{display:block;}
+.stop.now i{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft);}
+.stop.now{color:var(--ink); font-weight:600;}
+.stop small{font-family:var(--mono); font-size:0.66rem; color:var(--muted); font-weight:400;}
+
+.grid{display:grid; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); gap:20px; align-items:start;}
+.col{display:flex; flex-direction:column; gap:20px; min-width:0;}
+.row3{display:grid; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); gap:20px; align-items:start;}
+
+/* next step */
+.next{display:grid; grid-template-columns:44px minmax(0,1fr); gap:14px;}
+.stepno{width:44px; height:44px; border-radius:50%; border:2px solid var(--accent); color:var(--accent); display:grid; place-items:center; font-family:var(--mono); font-size:0.85rem;}
+.next-body{display:flex; flex-direction:column; gap:10px; min-width:0;}
+.next-body h4{font-size:1.15rem;}
+.meta{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:0.8rem; color:var(--muted);}
+.meta span{display:inline-flex; align-items:center; gap:5px;}
+.meta .icon{width:14px; height:14px;}
+.res{display:flex; align-items:center; gap:10px; font-size:0.86rem; padding:10px 12px; border-radius:var(--r-sm); background:var(--surface-2); text-decoration:none;}
+.res .icon{width:18px; height:18px; color:var(--muted);}
+.res b{font-weight:550;}
+.res .ext{margin-left:auto;}
+.task{font-size:0.86rem; border-left:2px solid var(--accent); padding-left:12px;}
+.task .label{display:block; margin-bottom:2px;}
+.actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.pathbar{display:flex; align-items:center; gap:10px; font-size:0.8rem; color:var(--muted); padding-top:14px; border-top:1px solid var(--line);}
+.meter{flex:1; height:6px; border-radius:999px; background:var(--surface-2); overflow:hidden; min-width:60px;}
+.meter i{display:block; height:100%; background:var(--accent); border-radius:999px;}
+.tabnum{font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:0.76rem;}
+
+/* chips */
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:0.74rem; font-weight:550; padding:2px 9px; border-radius:999px; white-space:nowrap;}
+.chip .icon{width:13px; height:13px;}
+.chip.missing{background:var(--bad-soft); color:var(--bad);}
+.chip.weak{background:var(--warn-soft); color:var(--warn);}
+.chip.met{background:var(--good-soft); color:var(--good);}
+.chip.neutral{background:var(--surface-2); color:var(--muted);}
+.elite{font-family:var(--mono); font-size:0.64rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:2px 7px; border-radius:999px; font-weight:500;}
+
+/* gaps list */
+.gaps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column;}
+.gaps li{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; padding:12px 0; border-top:1px solid var(--line); align-items:center;}
+.gaps li:first-child{border-top:0; padding-top:0;}
+.gaps b{font-weight:600; font-size:0.92rem;}
+.gaps .ev{grid-column:1 / -1; font-size:0.8rem; color:var(--muted);}
+.gaps q{quotes:none; font-family:var(--mono); font-size:0.72rem; color:var(--ink); background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+.tally{display:flex; gap:6px; flex-wrap:wrap;}
+
+/* readiness */
+.ready{background:var(--accent-soft); border-radius:var(--r-md); padding:14px 16px; display:flex; flex-direction:column; gap:4px;}
+.ready b{font-family:var(--display); font-size:1.05rem; font-weight:650; letter-spacing:-0.01em;}
+.ready span{font-size:0.85rem;}
+.stack{display:flex; height:10px; border-radius:999px; overflow:hidden; gap:2px;}
+.stack i{display:block; height:100%;}
+.stack .g{background:var(--good);} .stack .w{background:var(--warn);} .stack .b{background:var(--bad);}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:0.78rem; color:var(--muted);}
+.legend span{display:inline-flex; align-items:center; gap:6px;}
+.legend i{width:8px; height:8px; border-radius:50%;}
+
+/* profile */
+.who{display:flex; gap:12px; align-items:center;}
+.who-name{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-weight:600;}
+.who-name .tick{width:17px; height:17px; color:var(--accent);}
+.who small{display:block; font-size:0.8rem; color:var(--muted); font-weight:400;}
+.kv{display:flex; flex-direction:column; gap:8px; font-size:0.84rem;}
+.kv div{display:flex; justify-content:space-between; gap:10px; align-items:center;}
+.kv dt{color:var(--muted);}
+.kv dd{margin:0; display:inline-flex; align-items:center; gap:6px; text-align:right;}
+.certs{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+.certs li{display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:9px 10px; border:1px solid var(--line); border-radius:var(--r-sm);}
+.certs li .icon{width:17px; height:17px; color:var(--muted);}
+.certs li > span:not(.chip){min-width:0; flex:1;}
+.certs li small{display:block; color:var(--muted); font-size:0.74rem;}
+.certs li.add{border-style:dashed; color:var(--muted); justify-content:center;}
+.subhead{display:flex; justify-content:space-between; align-items:center; font-size:0.82rem; font-weight:600;}
+.subhead span:last-child{font-weight:400; color:var(--muted);}
+
+/* builder */
+.drafts{display:flex; flex-direction:column; gap:8px;}
+.draft{display:flex; gap:10px; align-items:center; font-size:0.84rem;}
+.draft .doc{width:34px; height:42px; border:1px solid var(--line); border-radius:4px; background:var(--surface-2); display:flex; flex-direction:column; gap:3px; padding:6px 5px; flex-shrink:0;}
+.draft .doc i{display:block; height:2px; background:var(--line); border-radius:2px;}
+.draft > span:not(.doc){flex:1; min-width:0;}
+.draft small{display:block; color:var(--muted); font-size:0.74rem;}
+
+/* library */
+.shelf{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+.item{border:1px solid var(--line); border-radius:var(--r-md); padding:14px; display:flex; flex-direction:column; gap:8px; min-width:0;}
+.item-top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+.kind{display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.66rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);}
+.kind .icon{width:14px; height:14px;}
+.save{width:30px; height:30px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; color:var(--muted); cursor:pointer;}
+.save .icon{width:17px; height:17px;}
+.save[aria-pressed="true"]{color:var(--accent);}
+.save[aria-pressed="true"] .icon{fill:currentColor;}
+.item b{font-weight:600; font-size:0.9rem; line-height:1.35;}
+.item .meta{margin-top:auto;}
+.locked{display:flex; gap:12px; align-items:center; padding:12px 14px; border-radius:var(--r-md); background:var(--surface-2); font-size:0.84rem; color:var(--muted);}
+.locked .icon{color:var(--muted);}
+.locked b{color:var(--ink); font-weight:600;}
+
+/* network */
+.people{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;}
+.people li{display:flex; align-items:center; gap:10px;}
+.people li > span:not(.avatar){flex:1; min-width:0; font-size:0.86rem; font-weight:550;}
+.people small{display:block; font-weight:400; color:var(--muted); font-size:0.76rem;}
+.privacy{display:flex; gap:10px; align-items:flex-start; font-size:0.8rem; color:var(--muted); padding:10px 12px; border-radius:var(--r-sm); background:var(--surface-2);}
+.privacy .icon{width:16px; height:16px; color:var(--good); margin-top:2px;}
+
+/* first sign-in */
+.welcome{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:20px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:20px; align-items:center; position:relative;}
+.welcome h3{font-size:1.15rem;}
+.welcome p{font-size:0.88rem; color:var(--muted); margin-top:6px;}
+.setup{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+.setup li{display:flex; align-items:center; gap:10px; font-size:0.86rem; padding:10px 12px; border-radius:var(--r-sm); background:var(--surface-2);}
+.setup li .ring{width:20px; height:20px; border-radius:50%; border:2px solid var(--line); display:grid; place-items:center; flex-shrink:0;}
+.setup li.done .ring{background:var(--accent); border-color:var(--accent);}
+.setup li.done .ring .icon{width:12px; height:12px; color:var(--on-accent); stroke-width:3;}
+.setup li.done span{color:var(--muted); text-decoration:line-through;}
+.setup li span{flex:1;}
+
+/* empty (no resume) */
+.empty{background:var(--surface); border:1px dashed var(--line); border-radius:var(--r-lg); padding:36px 24px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px; position:relative;}
+.empty .bigicon{width:56px; height:56px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center;}
+.empty .bigicon .icon{width:26px; height:26px;}
+.empty h3{font-size:1.3rem;}
+.empty p{max-width:46ch; color:var(--muted); font-size:0.9rem;}
+.empty-mini{font-size:0.84rem; color:var(--muted); padding:16px; border:1px dashed var(--line); border-radius:var(--r-md); text-align:center;}
+
+/* phone tab bar */
+.tabs{display:none;}
+
+/* state visibility: hide what does not belong to the current state */
+.app[data-state="returning"] [data-only]:not([data-only~="returning"]),
+.app[data-state="new"] [data-only]:not([data-only~="new"]),
+.app[data-state="empty"] [data-only]:not([data-only~="empty"]){display:none !important;}
+.app[data-state="empty"] .stop small{visibility:hidden;}
+.app:not(.is-elite) [data-elite="on"], .app.is-elite [data-elite="off"]{display:none !important;}
+
+/* dev markers */
+.pin{position:absolute; top:-9px; left:14px; z-index:2; font-family:var(--mono); font-size:0.66rem; font-weight:500; background:var(--ink); color:var(--bg); padding:1px 7px; border-radius:999px; letter-spacing:0.04em; display:none;}
+.show-pins .pin{display:inline-block;}
+.side .pin{top:8px; left:auto; right:8px;}
+
+/* ---------- phone layout (container query) ---------- */
+@container app (max-width: 760px){
+  .app{grid-template-columns:1fr; border-radius:28px; min-height:0;}
+  .side{display:none;}
+  .bar{padding:12px 16px; position:relative;}
+  .bar .brand{display:inline-flex;}
+  .search{display:none;}
+  .main{padding:16px; gap:16px; padding-bottom:88px;}
+  .hello h2{font-size:1.4rem;}
+  .hello .btn{display:none;}
+  .grid, .row3, .welcome{grid-template-columns:1fr; gap:16px;}
+  .col{gap:16px;}
+  .card{padding:16px; border-radius:var(--r-md);}
+  .shelf{grid-template-columns:1fr;}
+  .stop{font-size:0.7rem;}
+  .stop small{display:none;}
+  .next{grid-template-columns:1fr;}
+  .stepno{width:36px; height:36px; font-size:0.78rem;}
+  .tabs{display:flex; position:absolute; left:0; right:0; bottom:0; background:var(--surface); border-top:1px solid var(--line); padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px));}
+  .tabs a{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:0.68rem; color:var(--muted); text-decoration:none; padding:4px 0;}
+  .tabs a .icon{width:21px; height:21px;}
+  .tabs a.on{color:var(--accent); font-weight:600;}
+  .side-only{display:none;}
+}
+
+/* ---------- spec ---------- */
+.spec{display:flex; flex-direction:column; gap:20px;}
+.spec-head{display:flex; flex-direction:column; gap:6px;}
+.spec-head h2{font-size:1.5rem;}
+.spec-head p{color:var(--muted); max-width:70ch;}
+.table-wrap{overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);}
+table{width:100%; border-collapse:collapse; font-size:0.85rem; min-width:860px;}
+th{text-align:left; font-family:var(--mono); font-size:0.68rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); font-weight:500; padding:10px 12px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
+tr:last-child td{border-bottom:0;}
+td code, .notes code{font-family:var(--mono); font-size:0.76rem; background:var(--surface-2); padding:1px 5px; border-radius:4px; word-break:break-word;}
+td .pin{display:inline-block; position:static;}
+.tag{display:inline-block; font-family:var(--mono); font-size:0.64rem; letter-spacing:0.05em; text-transform:uppercase; padding:1px 7px; border-radius:999px; background:var(--surface-2); color:var(--muted); white-space:nowrap;}
+.tag.new{background:var(--accent-soft); color:var(--accent);}
+.notes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px;}
+@media (max-width:900px){ .notes{grid-template-columns:1fr;} }
+.note{display:flex; flex-direction:column; gap:8px; padding-top:14px; border-top:2px solid var(--ink);}
+.note h3{font-size:1rem;}
+.note ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:0.88rem; color:var(--muted);}
+.note li b{color:var(--ink); font-weight:600;}
+.foot{font-size:0.8rem; color:var(--muted); border-top:1px solid var(--line); padding-top:16px;}
+
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<!-- Lucide outline icons (stroke 1.75), inlined as symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/><path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><path d="M8 18h1"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-userplus" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+  <symbol id="i-badge" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+  <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-docs" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 2v7.31L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 34 18"><path d="M5 13h10l6-8h8" fill="none" stroke-width="2.5"/><circle cx="5" cy="13" r="3.5" fill="var(--bg)" stroke-width="2.5"/><circle cx="29" cy="5" r="3.5" stroke="var(--accent)" fill="var(--accent)" stroke-width="2.5"/></symbol>
+</svg>
+
+<div class="page">
+  <header class="top">
+    <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+    <span class="label">Signed-in home · mock v1 · 8 Oct 2026</span>
+  </header>
+
+  <section class="intro">
+    <div>
+      <span class="label">For development</span>
+      <h1>What a job seeker sees right after signing in.</h1>
+      <p>One screen answers "where am I on my route, and what do I do next?" The route and next step sit first; profile, library, resume builder and network follow. Every person and resume here is made up.</p>
+    </div>
+    <p class="muted" style="font-size:0.88rem">Use the toolbar to switch between the three account states, turn the Elite tag on, and see the phone layout. Numbered pins match the build table below the mock.</p>
+  </section>
+
+  <div class="toolbar" role="group" aria-label="Mock controls">
+    <div class="tgroup">
+      <span class="label">State</span>
+      <div class="seg" id="seg-state">
+        <button type="button" data-v="returning" aria-pressed="true">Returning</button>
+        <button type="button" data-v="new" aria-pressed="false">First sign-in</button>
+        <button type="button" data-v="empty" aria-pressed="false">No resume yet</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="label">Frame</span>
+      <div class="seg" id="seg-frame">
+        <button type="button" data-v="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-v="phone" aria-pressed="false">Phone</button>
+      </div>
+    </div>
+    <label class="check" for="t-elite"><input type="checkbox" id="t-elite">Elite member</label>
+    <label class="check" for="t-pins"><input type="checkbox" id="t-pins" checked>Build pins</label>
+  </div>
+
+  <div>
+  <div class="stage">
+    <div class="frame" id="frame">
+      <div class="app show-pins" id="app" data-state="returning">
+
+        <!-- 1 · Sidebar -->
+        <aside class="side" aria-label="Main">
+          <span class="pin">1</span>
+          <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+          <a class="nav on" href="#home"><svg class="icon"><use href="#i-house"/></svg>Home</a>
+          <span class="navlabel">Your route</span>
+          <a class="nav" href="#resume"><svg class="icon"><use href="#i-file"/></svg>Resume</a>
+          <a class="nav" href="#gaps"><svg class="icon"><use href="#i-target"/></svg>Gaps</a>
+          <a class="nav" href="#path"><svg class="icon"><use href="#i-route"/></svg>Path<i class="dot" data-only="returning new" aria-label="In progress"></i></a>
+          <a class="nav" href="#practice"><svg class="icon"><use href="#i-msg"/></svg>Practice<span class="soon">Soon</span></a>
+          <a class="nav" href="#match"><svg class="icon"><use href="#i-brief"/></svg>Match<span class="soon">Soon</span></a>
+          <span class="navlabel">Your space</span>
+          <a class="nav" href="#library"><svg class="icon"><use href="#i-book"/></svg>Library</a>
+          <a class="nav" href="#builder"><svg class="icon"><use href="#i-pen"/></svg>Resume builder</a>
+          <a class="nav" href="#network"><svg class="icon"><use href="#i-users"/></svg>Network</a>
+          <a class="nav" href="#profile"><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+          <div class="side-foot">
+            <a class="nav" href="#settings"><svg class="icon"><use href="#i-settings"/></svg>Settings</a>
+          </div>
+        </aside>
+
+        <div class="mainwrap">
+          <!-- 2 · Top bar -->
+          <header class="bar" style="position:relative">
+            <span class="pin">2</span>
+            <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+            <div class="search"><svg class="icon"><use href="#i-search"/></svg>Search skills, resources and people<kbd>/</kbd></div>
+            <div class="bar-end">
+              <button class="iconbtn" type="button" aria-label="Notifications, 2 new"><svg class="icon"><use href="#i-bell"/></svg><i class="pip"></i></button>
+              <span class="avatar" aria-label="Account menu">PN</span>
+            </div>
+          </header>
+
+          <main class="main">
+            <!-- greeting -->
+            <div class="hello">
+              <div>
+                <h2>Good evening, Priya</h2>
+                <p class="target-line" data-only="returning new">Aiming for <b>Cyber Security Analyst</b> · 0 to 4 years · from your resume of 6 Oct</p>
+                <p data-only="empty">Start with your resume. Your gaps and path come from it.</p>
+              </div>
+              <a class="btn btn-ghost" href="#role" data-only="returning new"><svg class="icon"><use href="#i-target"/></svg>Change role</a>
+            </div>
+
+            <!-- 10 · first sign-in welcome -->
+            <section class="welcome" data-only="new" aria-label="Finish setting up">
+              <span class="pin">10</span>
+              <div>
+                <span class="label">Signed in with Google</span>
+                <h3>Your analysis is saved to your account.</h3>
+                <p>The resume and gaps you ran before signing in are now yours to keep. Three quick things finish setting you up.</p>
+              </div>
+              <ul class="setup">
+                <li class="done"><i class="ring"><svg class="icon"><use href="#i-check"/></svg></i><span>Confirm you are 18 or older</span></li>
+                <li><i class="ring"></i><span>Pick a profile handle</span><a class="btn btn-ghost btn-sm" href="#handle">Pick</a></li>
+                <li><i class="ring"></i><span>Choose who sees your profile (Private now)</span><a class="btn btn-ghost btn-sm" href="#vis">Review</a></li>
+              </ul>
+            </section>
+
+            <!-- empty: no resume -->
+            <section class="empty" data-only="empty" aria-label="Upload your resume">
+              <span class="pin">11</span>
+              <span class="bigicon"><svg class="icon"><use href="#i-upload"/></svg></span>
+              <h3>Upload your resume to see your gaps</h3>
+              <p>PDF or Word, up to 5 MB. We read it, compare it with the role you pick and show what is missing, with the line from your resume as evidence.</p>
+              <div class="actions" style="justify-content:center">
+                <a class="btn btn-primary" href="#upload"><svg class="icon"><use href="#i-upload"/></svg>Upload resume</a>
+                <a class="btn btn-ghost" href="#builder"><svg class="icon"><use href="#i-pen"/></svg>No resume? Build one free</a>
+              </div>
+            </section>
+
+            <!-- 3 · route -->
+            <section class="card" aria-label="Your route">
+              <span class="pin">3</span>
+              <div class="card-head"><h3>Your route</h3><span class="label" data-only="returning">Path 3 of 9 steps</span><span class="label" data-only="new">Gaps ready</span><span class="label" data-only="empty">Not started</span></div>
+              <div class="route" id="route" style="--done:40%">
+                <i class="fill"></i>
+                <div class="stop done" data-k="resume"><i><svg class="icon"><use href="#i-check"/></svg></i>Resume<small>6 Oct</small></div>
+                <div class="stop done" data-k="gaps"><i><svg class="icon"><use href="#i-check"/></svg></i>Gaps<small>10 to close</small></div>
+                <div class="stop now" data-k="path"><i><svg class="icon"><use href="#i-check"/></svg></i>Path<small>6 h a week</small></div>
+                <div class="stop" data-k="practice"><i><svg class="icon"><use href="#i-check"/></svg></i>Practice<small>soon</small></div>
+                <div class="stop" data-k="match"><i><svg class="icon"><use href="#i-check"/></svg></i>Match<small>soon</small></div>
+              </div>
+            </section>
+
+            <div class="grid" data-only="returning new">
+              <div class="col">
+                <!-- 4 · next step -->
+                <section class="card" aria-label="Next on your path" data-only="returning">
+                  <span class="pin">4</span>
+                  <div class="card-head"><h3>Next on your path</h3><a class="link" href="#path">Full path<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                  <div class="next">
+                    <span class="stepno">4</span>
+                    <div class="next-body">
+                      <div class="tally"><span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span><span class="chip neutral">Required</span></div>
+                      <h4>Investigate alerts in a SIEM</h4>
+                      <div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>About 10 hours</span><span><svg class="icon"><use href="#i-route"/></svg>Weeks 3 to 4</span></div>
+                      <a class="res" href="#res"><svg class="icon"><use href="#i-play"/></svg><span><b>Free Splunk courses</b> · Splunk · course</span><svg class="icon ext"><use href="#i-ext"/></svg></a>
+                      <p class="task"><span class="label">Proof task</span>Write three searches over the Boss of the SOC v3 dataset and explain each hit in two lines. Add the link to your profile.</p>
+                      <div class="actions">
+                        <button class="btn btn-primary" type="button" id="markdone"><svg class="icon"><use href="#i-check"/></svg>Mark done</button>
+                        <a class="btn btn-quiet" href="#skip">Skip for now</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pathbar"><span class="tabnum">3/9</span><span class="meter"><i style="width:33%"></i></span><span>About 5 weeks left at 6 h a week</span></div>
+                </section>
+
+                <section class="card" aria-label="Build your path" data-only="new">
+                  <span class="pin">4</span>
+                  <div class="card-head"><h3>Next: build your path</h3></div>
+                  <p class="muted" style="font-size:0.9rem">Tell us how many hours a week you have. We order your 10 gaps and pick a free resource and a proof task for each.</p>
+                  <div class="actions">
+                    <div class="seg" aria-label="Hours a week"><button type="button" aria-pressed="false">3 h</button><button type="button" aria-pressed="true">6 h</button><button type="button" aria-pressed="false">10 h</button></div>
+                    <a class="btn btn-primary" href="#path"><svg class="icon"><use href="#i-route"/></svg>Build my path</a>
+                  </div>
+                </section>
+
+                <!-- 5 · gaps -->
+                <section class="card" aria-label="Your gaps">
+                  <span class="pin">5</span>
+                  <div class="card-head"><h3>Gaps to close</h3><a class="link" href="#gaps">All 17 skills<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                  <ul class="gaps">
+                    <li><b>SIEM (Splunk or Sentinel)</b><span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span><span class="ev">No SIEM tool appears in your resume.</span></li>
+                    <li><b>Threat detection (MITRE ATT&amp;CK)</b><span class="chip weak"><svg class="icon"><use href="#i-contrast"/></svg>Weak evidence</span><span class="ev">You wrote <q>monitored security alerts for 40 users</q> but name no techniques.</span></li>
+                    <li><b>Python scripting</b><span class="chip weak"><svg class="icon"><use href="#i-contrast"/></svg>Weak evidence</span><span class="ev">Listed under skills; no project or job uses it.</span></li>
+                    <li><b>AWS security</b><span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span><span class="ev">No cloud platform appears in your resume.</span></li>
+                  </ul>
+                </section>
+              </div>
+
+              <div class="col">
+                <!-- 6 · readiness -->
+                <section class="card" aria-label="Readiness">
+                  <span class="pin">6</span>
+                  <div class="ready"><b>Strong on the basics, two core tools to go.</b><span>Networking, Linux and incident notes are solid. A SIEM and one cloud platform are what most job posts for this role ask for next.</span></div>
+                  <div class="stack" role="img" aria-label="Required skills: 5 met, 2 weak, 3 missing"><i class="g" style="flex:5"></i><i class="w" style="flex:2"></i><i class="b" style="flex:3"></i></div>
+                  <div class="legend"><span><i style="background:var(--good)"></i>5 met</span><span><i style="background:var(--warn)"></i>2 weak</span><span><i style="background:var(--bad)"></i>3 missing</span><span>of 10 required</span></div>
+                </section>
+
+                <!-- 7 · profile -->
+                <section class="card" aria-label="Your profile">
+                  <span class="pin">7</span>
+                  <div class="card-head"><h3>Your profile</h3><a class="link" href="#profile">Edit<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                  <div class="who">
+                    <span class="avatar lg">PN</span>
+                    <div>
+                      <div class="who-name">Priya Nair <span class="elite" data-elite="on">Elite</span></div>
+                      <small>IT support, moving to security · Pune</small>
+                    </div>
+                  </div>
+                  <dl class="kv" style="margin:0">
+                    <div><dt>Handle</dt><dd class="tabnum" data-only="returning">@priya-nair</dd><dd data-only="new" class="muted">Not set</dd></div>
+                    <div><dt>Who can see it</dt><dd><svg class="icon" style="width:15px;height:15px"><use href="#i-lock"/></svg>Private</dd></div>
+                    <div><dt>Identity</dt><dd><span class="chip neutral">Not verified</span></dd></div>
+                  </dl>
+                  <div class="subhead"><span>Certifications</span><span data-only="returning">2 of 5 · 1 verified</span><span data-only="new">0 of 5</span></div>
+                  <ul class="certs" data-only="returning">
+                    <li><svg class="icon"><use href="#i-award"/></svg><span>ISC2 Certified in Cybersecurity (CC)<small>ISC2 · checked by Credly badge link</small></span><span class="chip met" style="flex:0 0 auto"><svg class="icon"><use href="#i-badge"/></svg>Verified</span></li>
+                    <li><svg class="icon"><use href="#i-award"/></svg><span>CompTIA Security+<small>CompTIA · in progress</small></span><a class="btn btn-ghost btn-sm" href="#credly"><svg class="icon"><use href="#i-link"/></svg>Add Credly link</a></li>
+                    <li class="add"><svg class="icon"><use href="#i-plus"/></svg>Add a certification</li>
+                  </ul>
+                  <ul class="certs" data-only="new"><li class="add"><svg class="icon"><use href="#i-plus"/></svg>Add up to 5 certifications</li></ul>
+                </section>
+              </div>
+            </div>
+
+            <div class="row3" data-only="returning new">
+              <!-- 8 · library -->
+              <section class="card" aria-label="Library for your gaps">
+                <span class="pin">8</span>
+                <div class="card-head"><h3>Library: for your gaps</h3><a class="link" href="#library"><span data-only="returning">My library (4)</span><span data-only="new">Browse 217 free</span><svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                <div class="shelf">
+                  <article class="item">
+                    <div class="item-top"><span class="kind"><svg class="icon"><use href="#i-flask"/></svg>Practice</span><button class="save" type="button" aria-pressed="false" aria-label="Save Boss of the SOC v3 dataset"><svg class="icon"><use href="#i-bookmark"/></svg></button></div>
+                    <b>Boss of the SOC v3 dataset</b>
+                    <div class="meta"><span>Splunk</span><span><svg class="icon"><use href="#i-clock"/></svg>8 h</span></div>
+                    <span class="chip missing" style="align-self:flex-start">SIEM</span>
+                  </article>
+                  <article class="item">
+                    <div class="item-top"><span class="kind"><svg class="icon"><use href="#i-docs"/></svg>Docs</span><button class="save" type="button" aria-pressed="true" aria-label="Saved: MITRE ATT&amp;CK"><svg class="icon"><use href="#i-bookmark"/></svg></button></div>
+                    <b>MITRE ATT&amp;CK</b>
+                    <div class="meta"><span>MITRE</span><span><svg class="icon"><use href="#i-clock"/></svg>3 h</span></div>
+                    <span class="chip weak" style="align-self:flex-start">Threat detection</span>
+                  </article>
+                  <article class="item">
+                    <div class="item-top"><span class="kind"><svg class="icon"><use href="#i-play"/></svg>Course</span><button class="save" type="button" aria-pressed="false" aria-label="Save AWS Cloud Practitioner Essentials"><svg class="icon"><use href="#i-bookmark"/></svg></button></div>
+                    <b>AWS Cloud Practitioner Essentials</b>
+                    <div class="meta"><span>AWS Skill Builder</span><span><svg class="icon"><use href="#i-clock"/></svg>6 h</span></div>
+                    <span class="chip missing" style="align-self:flex-start">AWS</span>
+                  </article>
+                </div>
+                <div class="locked"><svg class="icon"><use href="#i-lock"/></svg><span><b>Elite shelf</b> · expert-checked SOC playbooks and mock tests. <span data-elite="off">Comes with Elite, later.</span><span data-elite="on">Opens for you when it launches.</span></span></div>
+              </section>
+
+              <div class="col">
+                <!-- 9 · resume builder -->
+                <section class="card" aria-label="Resume builder">
+                  <span class="pin">9</span>
+                  <div class="card-head"><h3>Resume builder</h3><span class="label">Free</span></div>
+                  <div class="drafts" data-only="returning">
+                    <div class="draft"><span class="doc"><i></i><i></i><i style="width:60%"></i><i></i></span><span>Security analyst, from my profile<small>Edited yesterday · 2 suggestions to confirm</small></span><a class="link" href="#draft">Open</a></div>
+                  </div>
+                  <p class="muted" style="font-size:0.84rem" data-only="new">Start from your profile, a few pointers or a pasted job post. You get a clean, ATS-friendly draft as PDF or Word.</p>
+                  <div class="actions"><a class="btn btn-ghost btn-sm" href="#newdraft"><svg class="icon"><use href="#i-plus"/></svg>New draft</a><span class="muted tabnum" style="font-size:0.74rem" data-only="returning">4 of 5 left today</span><span class="muted tabnum" style="font-size:0.74rem" data-only="new">5 a day</span></div>
+                </section>
+
+                <!-- 12 · network -->
+                <section class="card" aria-label="People aiming for your role">
+                  <span class="pin">12</span>
+                  <div class="card-head"><h3>Aiming for the same role</h3><a class="link" href="#network">More<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                  <ul class="people">
+                    <li><span class="avatar sm">AM</span><span>Arjun Mehta<small>SOC trainee · Bengaluru</small></span><button class="btn btn-ghost btn-sm" type="button">Follow</button></li>
+                    <li><span class="avatar sm">SK</span><span>Sneha Kulkarni<small>Help desk to security · Pune</small></span><button class="btn btn-ghost btn-sm" type="button">Follow</button></li>
+                  </ul>
+                  <p class="privacy"><svg class="icon"><use href="#i-shield"/></svg><span>You are hidden from search until you choose otherwise in Profile.</span></p>
+                </section>
+              </div>
+            </div>
+
+            <!-- empty state: portal still reachable -->
+            <div class="row3" data-only="empty">
+              <section class="card" aria-label="Library">
+                <span class="pin">8</span>
+                <div class="card-head"><h3>Library</h3><a class="link" href="#library">Browse 217 free<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                <p class="empty-mini">Once your gaps are in, the resources that close them show up here first.</p>
+              </section>
+              <section class="card" aria-label="Your profile">
+                <span class="pin">7</span>
+                <div class="card-head"><h3>Your profile</h3><a class="link" href="#profile">Set up<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                <div class="who"><span class="avatar lg">PN</span><div><div class="who-name">Priya Nair <span class="elite" data-elite="on">Elite</span></div><small>Private · no handle yet</small></div></div>
+              </section>
+            </div>
+          </main>
+        </div>
+
+        <!-- phone tab bar -->
+        <nav class="tabs" aria-label="Main">
+          <a class="on" href="#home"><svg class="icon"><use href="#i-house"/></svg>Home</a>
+          <a href="#path"><svg class="icon"><use href="#i-route"/></svg>Path</a>
+          <a href="#library"><svg class="icon"><use href="#i-book"/></svg>Library</a>
+          <a href="#network"><svg class="icon"><use href="#i-users"/></svg>Network</a>
+          <a href="#profile"><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <p class="cap">Example data only. Priya Nair and the other people shown are made up.</p>
+  </div>
+
+  <section class="spec" aria-labelledby="spec-h">
+    <div class="spec-head">
+      <span class="label">Build notes</span>
+      <h2 id="spec-h">What to build, and where the data comes from</h2>
+      <p>Pins match the mock. "Exists" means a component is already in the repo and should be reused. Tables marked New come from the platform plan and still need Milin's sign-off on the data model before any migration.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pin</th><th>Block</th><th>Component</th><th>Data</th><th>Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pin">1</span></td><td>Sidebar</td><td><code>components/app/app-shell.tsx</code> <span class="tag new">New</span></td><td>Session (Supabase Auth)</td><td>Groups: Your route (Resume, Gaps, Path, Practice, Match) and Your space (Library, Resume builder, Network, Profile). Practice and Match show "Soon" until built. Below 760px it becomes the bottom tab bar (Home, Path, Library, Network, Profile).</td></tr>
+          <tr><td><span class="pin">2</span></td><td>Top bar</td><td><code>app-shell.tsx</code></td><td>Notifications (later)</td><td>Search covers skills, resources and people; "/" focuses it. Avatar opens Profile, Settings, Download my data, Sign out.</td></tr>
+          <tr><td><span class="pin">3</span></td><td>Your route</td><td><code>route/progress-route.tsx</code> <span class="tag">Exists</span></td><td><code>resumes</code>, <code>gap_analyses</code>, path progress</td><td>Cobalt fill only. Each stop links to its step for the latest resume and role.</td></tr>
+          <tr><td><span class="pin">4</span></td><td>Next on your path</td><td><code>route/path-steps.tsx</code>, <code>route/mark-done.tsx</code> <span class="tag">Exists</span></td><td>Path builder output, saved progress</td><td>First step not done. Mark done moves to the next step in place. If no path yet, show "Build my path" with the hours picker.</td></tr>
+          <tr><td><span class="pin">5</span></td><td>Gaps to close</td><td><code>route/gap-card.tsx</code>, <code>ui/status-chip.tsx</code> <span class="tag">Exists</span></td><td><code>gap_analyses</code></td><td>Top 4 open gaps, required first, then missing before weak. Evidence line quotes the resume; never log it.</td></tr>
+          <tr><td><span class="pin">6</span></td><td>Readiness</td><td><code>route/readiness-card.tsx</code> <span class="tag">Exists</span> + status bar</td><td><code>gap_analyses.readiness</code></td><td>Words, never a bare score (FR-13). The bar counts required skills by status.</td></tr>
+          <tr><td><span class="pin">7</span></td><td>Your profile</td><td><code>components/profile/profile-summary.tsx</code> <span class="tag new">New</span></td><td><code>public_profiles</code>, <code>entitlements</code>, certifications <span class="tag new">New</span></td><td>Elite tag (paid or granted by hand) and Verified (identity checked) are separate and never merged. A certification shows Verified only after its Credly badge name and issuer match.</td></tr>
+          <tr><td><span class="pin">8</span></td><td>Library: for your gaps</td><td><code>components/library/resource-card.tsx</code> <span class="tag new">New</span></td><td><code>resources</code>, <code>saved_resources</code> <span class="tag new">New</span></td><td>3 healthy resources for open gaps not already on the path step. Bookmark saves. Links open the source; we never host content. Elite shelf is a locked teaser only.</td></tr>
+          <tr><td><span class="pin">9</span></td><td>Resume builder</td><td><code>components/builder/draft-list.tsx</code> <span class="tag new">New</span></td><td><code>resume_drafts</code> <span class="tag new">New</span></td><td>Latest draft plus count of suggestions waiting to be confirmed. Shows drafts left today (5 a day).</td></tr>
+          <tr><td><span class="pin">10</span></td><td>Finish setting up</td><td><code>components/app/setup-checklist.tsx</code> <span class="tag new">New</span></td><td><code>users.age_confirmed_at</code>, handle, visibility</td><td>Only on the first sign-in after an anonymous analysis is moved to the account. Hides once all three are done.</td></tr>
+          <tr><td><span class="pin">11</span></td><td>No resume yet</td><td>Reuse <code>resume/upload-form.tsx</code> <span class="tag">Exists</span></td><td>None</td><td>Replaces blocks 4 to 6 and 9 to 12. Second action sends people without a resume to the builder.</td></tr>
+          <tr><td><span class="pin">12</span></td><td>Aiming for the same role</td><td><code>components/network/people-list.tsx</code> <span class="tag new">New</span></td><td><code>follows</code> <span class="tag new">New</span>, opted-in profiles</td><td>Only people who opted into search. Follow is one-way. No feed or posts in v1.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notes">
+      <div class="note">
+        <h3>Route and layout</h3>
+        <ul>
+          <li><b>Route:</b> <code>/home</code>. Signed-in visits to <code>/</code> redirect here.</li>
+          <li><b>Desktop:</b> 232px sidebar, main grid 1.65fr / 1fr, 20px gaps, 24px padding.</li>
+          <li><b>Phone (&lt;760px):</b> one column, bottom tab bar, 16px padding, search moves behind an icon.</li>
+          <li>Light first; every color uses the tokens in <code>globals.css</code>.</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>Color and type rules</h3>
+        <ul>
+          <li><b>Cobalt</b> only for progress: route fill, current step, Mark done, active nav.</li>
+          <li><b>Red, amber, green</b> only for gap status and the readiness bar. Verified certifications use green because they are a met check.</li>
+          <li>Bricolage Grotesque for headings, Geist for text, Geist Mono for labels and counts. Lucide icons at stroke 1.75.</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>Privacy</h3>
+        <ul>
+          <li>Profiles start Private and hidden from search.</li>
+          <li>Phone, email, salary and notice period never appear on public views.</li>
+          <li>Resume quotes render on this page only; they never go into logs or analytics.</li>
+          <li>Settings carries Download my data and Delete my account.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="foot">Built from the vision map, the platform plan (accounts to network) and design concept v1. Source: careermetro/post-login-home-v1.html in the project files.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var app=document.getElementById('app'), frame=document.getElementById('frame'), route=document.getElementById('route');
+  var routeState={
+    returning:{done:40, stops:['done','done','now','','']},
+    new:{done:20, stops:['done','done','now','','']},
+    empty:{done:0, stops:['now','','','','']}
+  };
+  function seg(id,fn){
+    var g=document.getElementById(id);
+    g.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b) return;
+      g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed', x===b?'true':'false');});
+      fn(b.dataset.v);
+    });
+  }
+  function setState(v){
+    app.dataset.state=v;
+    var s=routeState[v]; route.style.setProperty('--done', s.done+'%');
+    route.querySelectorAll('.stop').forEach(function(el,i){ el.className='stop'+(s.stops[i]?' '+s.stops[i]:''); });
+  }
+  seg('seg-state', setState);
+  seg('seg-frame', function(v){ frame.classList.toggle('phone', v==='phone'); });
+  document.getElementById('t-elite').addEventListener('change',function(e){ app.classList.toggle('is-elite', e.target.checked); });
+  document.getElementById('t-pins').addEventListener('change',function(e){ app.classList.toggle('show-pins', e.target.checked); });
+  document.querySelectorAll('.save').forEach(function(b){ b.addEventListener('click',function(){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true'); }); });
+  document.querySelectorAll('.app .seg').forEach(function(g){ g.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed', x===b?'true':'false');}); }); });
+  var md=document.getElementById('markdone');
+  md.addEventListener('click',function(){ md.innerHTML='<svg class="icon"><use href="#i-check"/></svg>Done. Next: Threat detection'; md.disabled=true; });
+  document.querySelectorAll('.app a[href^="#"]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); }); });
+})();
+</script>

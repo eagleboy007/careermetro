@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerMetro — Your route to the job you actually want</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E141F;
+    --ink-2:#151D2C;
+    --ink-3:#1C2537;
+    --paper:#EAE6D8;
+    --paper-dim:#D9D4C3;
+    --text-hi:#F4F2EA;
+    --text-lo:#9AA3B5;
+    --line-red:#D6543F;
+    --line-amber:#E7A73C;
+    --line-blue:#3E7CB1;
+    --line-violet:#8175CE;
+    --line-green:#3F9C7D;
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text-hi);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.01em;
+    font-weight:700;
+    color:var(--text-hi);
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:inherit; text-decoration:none;}
+  img,svg{display:block; max-width:100%;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  section{padding:110px 0;}
+  @media (max-width:720px){ section{padding:72px 0;} }
+
+  ::selection{ background:var(--line-amber); color:var(--ink); }
+
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--line-amber);
+    outline-offset:3px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(14,20,31,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; max-width:1180px; margin:0 auto;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk'; font-weight:700; font-size:1.05rem;
+    color:var(--text-hi);
+  }
+  .logo .badge{
+    width:30px; height:30px; border-radius:50%;
+    background:conic-gradient(from 220deg, var(--line-red), var(--line-amber), var(--line-blue), var(--line-violet), var(--line-green), var(--line-red));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-size:0.6rem; font-weight:600;
+    color:var(--ink);
+  }
+  .logo .badge span{
+    background:var(--ink); color:var(--text-hi); width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:0.55rem;
+  }
+  nav ul{list-style:none; display:flex; gap:32px;}
+  nav ul a{
+    font-size:0.85rem; color:var(--text-lo); transition:color 0.2s;
+  }
+  nav ul a:hover{color:var(--text-hi);}
+  .nav-links{display:flex; align-items:center; gap:32px;}
+  @media (max-width:720px){ .nav-links ul{display:none;} }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 20px;
+    font-family:'JetBrains Mono'; font-size:0.78rem; font-weight:500;
+    border-radius:var(--radius);
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform 0.15s ease, background 0.2s;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{ background:var(--line-amber); color:var(--ink); }
+  .btn-primary:hover{ background:#f0b556; }
+  .btn-ghost{ border-color:rgba(255,255,255,0.25); color:var(--text-hi); }
+  .btn-ghost:hover{ border-color:rgba(255,255,255,0.55); }
+
+  /* ---------- eyebrow ---------- */
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono'; font-size:0.72rem; letter-spacing:0.08em;
+    color:var(--line-amber); text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:''; width:7px; height:7px; border-radius:50%; background:var(--line-amber);
+    box-shadow:0 0 0 3px rgba(231,167,60,0.2);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:96px 0 60px;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(214,84,63,0.12), transparent),
+      radial-gradient(ellipse 800px 500px at 100% 0%, rgba(63,156,125,0.10), transparent);
+  }
+  .hero h1{
+    font-size:clamp(2.3rem, 5.4vw, 4.1rem);
+    line-height:1.04;
+    max-width:15ch;
+  }
+  .hero-sub{
+    margin-top:24px; max-width:52ch;
+    font-size:1.08rem; color:var(--text-lo);
+  }
+  .hero-actions{ display:flex; gap:14px; margin-top:36px; flex-wrap:wrap; }
+
+  /* ---------- route line (signature element) ---------- */
+  .route-panel{
+    margin-top:88px;
+    background:var(--ink-2);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:6px;
+    padding:44px 40px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  .route-panel::after{
+    content:'LIVE ROUTE PREVIEW';
+    position:absolute; top:16px; right:20px;
+    font-family:'JetBrains Mono'; font-size:0.62rem; letter-spacing:0.08em;
+    color:var(--text-lo);
+  }
+  .route-line{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    position:relative; padding-top:6px;
+  }
+  .route-line::before{
+    content:'';
+    position:absolute; top:20px; left:2%; right:2%; height:4px; border-radius:2px;
+    background:linear-gradient(90deg,
+      var(--line-red) 0%, var(--line-red) 20%,
+      var(--line-amber) 20%, var(--line-amber) 40%,
+      var(--line-blue) 40%, var(--line-blue) 60%,
+      var(--line-violet) 60%, var(--line-violet) 80%,
+      var(--line-green) 80%, var(--line-green) 100%);
+  }
+  .station{
+    position:relative; z-index:1;
+    display:flex; flex-direction:column; align-items:center;
+    width:20%; text-align:center;
+    opacity:0; transform:translateY(10px);
+    transition:opacity 0.5s ease, transform 0.5s ease;
+  }
+  .station.in{ opacity:1; transform:translateY(0); }
+  .station .dot{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--dot-color); border:4px solid var(--ink-2);
+    box-shadow:0 0 0 2px var(--dot-color);
+    margin-bottom:14px;
+  }
+  .station .st-name{
+    font-family:'JetBrains Mono'; font-size:0.72rem; font-weight:600;
+    color:var(--text-hi); letter-spacing:0.01em; margin-bottom:6px;
+  }
+  .station .st-note{
+    font-size:0.76rem; color:var(--text-lo); max-width:120px;
+  }
+
+  @media (max-width:760px){
+    .route-line{ flex-direction:column; align-items:flex-start; gap:34px; padding-left:26px; }
+    .route-line::before{
+      top:2px; bottom:2px; left:11px; right:auto; width:4px; height:auto;
+      background:linear-gradient(180deg,
+        var(--line-red) 0%, var(--line-red) 20%,
+        var(--line-amber) 20%, var(--line-amber) 40%,
+        var(--line-blue) 40%, var(--line-blue) 60%,
+        var(--line-violet) 60%, var(--line-violet) 80%,
+        var(--line-green) 80%, var(--line-green) 100%);
+    }
+    .station{ width:100%; flex-direction:row; text-align:left; align-items:center; margin-left:-26px; }
+    .station .dot{ margin-bottom:0; margin-right:16px; flex-shrink:0; }
+    .station .st-note{ max-width:none; }
+  }
+
+  /* ---------- section headers ---------- */
+  .sec-head{ max-width:62ch; margin-bottom:56px; }
+  .sec-head h2{ font-size:clamp(1.7rem,3vw,2.4rem); }
+  .sec-head p{ color:var(--text-lo); margin-top:14px; font-size:1.02rem; }
+
+  /* ---------- competitor lines ---------- */
+  .other-lines{ background:var(--ink-2); }
+  .lines-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  @media (max-width:860px){ .lines-grid{ grid-template-columns:1fr; } }
+  .line-card{
+    background:var(--ink); border:1px solid rgba(255,255,255,0.08);
+    border-radius:6px; padding:28px 24px 24px; position:relative;
+  }
+  .line-card .stub{
+    height:4px; width:100%; border-radius:2px; margin-bottom:22px;
+    background:var(--stub-color);
+    position:relative;
+  }
+  .line-card .stub::after{
+    content:''; position:absolute; right:0; top:50%; transform:translate(50%,-50%);
+    width:12px; height:12px; border-radius:50%; background:var(--ink);
+    border:3px solid var(--stub-color);
+  }
+  .line-card .stub-label{
+    font-family:'JetBrains Mono'; font-size:0.65rem; color:var(--text-lo);
+    display:flex; justify-content:space-between; margin-top:8px;
+  }
+  .line-card h3{ font-size:1.1rem; margin-top:14px; }
+  .line-card p{ color:var(--text-lo); font-size:0.92rem; margin-top:10px; }
+  .line-card .terminus{
+    margin-top:16px; font-family:'JetBrains Mono'; font-size:0.7rem;
+    color:var(--stub-color); letter-spacing:0.02em;
+  }
+
+  .gap-callout{
+    margin-top:44px; padding:24px 26px; background:var(--ink);
+    border-left:3px solid var(--line-green); border-radius:4px;
+  }
+  .gap-callout p{ color:var(--text-hi); font-size:0.98rem; }
+  .gap-callout .mono{ color:var(--line-green); font-size:0.7rem; display:block; margin-bottom:8px; }
+
+  /* ---------- stops / how it works ---------- */
+  .stops{ counter-reset:stop; }
+  .stop{
+    display:grid; grid-template-columns:120px 1fr; gap:30px;
+    padding:34px 0; border-top:1px solid rgba(255,255,255,0.09);
+    align-items:start;
+  }
+  .stop:last-child{ border-bottom:1px solid rgba(255,255,255,0.09); }
+  @media (max-width:640px){ .stop{ grid-template-columns:1fr; gap:12px; } }
+  .stop-tag{
+    font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--stop-color);
+    display:flex; align-items:center; gap:10px;
+  }
+  .stop-tag::before{
+    content:''; width:10px; height:10px; border-radius:50%; background:var(--stop-color);
+    flex-shrink:0;
+  }
+  .stop h3{ font-size:1.25rem; margin-bottom:8px; }
+  .stop p{ color:var(--text-lo); max-width:56ch; font-size:0.96rem; }
+
+  /* ---------- two ways to ride ---------- */
+  .ride-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media (max-width:800px){ .ride-grid{ grid-template-columns:1fr; } }
+  .ride-card{
+    background:var(--paper); color:var(--ink);
+    border-radius:6px; padding:36px 32px;
+  }
+  .ride-card .mono{ font-size:0.7rem; color:#6b6252; display:block; margin-bottom:16px; }
+  .ride-card h3{ color:var(--ink); font-size:1.4rem; margin-bottom:14px; }
+  .ride-card p{ color:#4a4438; font-size:0.95rem; margin-bottom:20px; }
+  .ride-card ul{ list-style:none; }
+  .ride-card li{
+    font-size:0.88rem; color:#4a4438; padding:9px 0;
+    border-top:1px solid rgba(0,0,0,0.1);
+    display:flex; gap:10px;
+  }
+  .ride-card li:first-of-type{ border-top:none; }
+  .ride-card li::before{ content:'—'; color:#948a75; flex-shrink:0; }
+
+  /* ---------- waitlist / ticket ---------- */
+  .waitlist{ background:var(--ink-2); }
+  .ticket{
+    max-width:640px; margin:0 auto;
+    background:var(--ink);
+    border:1px dashed rgba(255,255,255,0.25);
+    border-radius:8px; padding:44px 40px;
+    position:relative;
+  }
+  .ticket-head{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:28px; padding-bottom:20px; border-bottom:1px dashed rgba(255,255,255,0.2);
+  }
+  .ticket-head .mono{ font-size:0.7rem; color:var(--text-lo); }
+  .ticket h2{ text-align:center; font-size:1.7rem; margin-bottom:10px; }
+  .ticket-sub{ text-align:center; color:var(--text-lo); font-size:0.95rem; margin-bottom:30px; }
+  .ticket-form{ display:flex; gap:10px; flex-wrap:wrap; }
+  .ticket-form input{
+    flex:1; min-width:200px;
+    background:var(--ink-2); border:1px solid rgba(255,255,255,0.15);
+    color:var(--text-hi); padding:13px 16px; border-radius:var(--radius);
+    font-family:'Inter'; font-size:0.92rem;
+  }
+  .ticket-form input::placeholder{ color:var(--text-lo); }
+  .ticket-note{
+    margin-top:16px; font-size:0.78rem; color:var(--text-lo);
+  }
+  .ticket-success{
+    display:none; text-align:center; padding:20px 0;
+  }
+  .ticket-success .mono{ color:var(--line-green); font-size:0.75rem; display:block; margin-bottom:10px; }
+  .ticket-success h3{ font-size:1.3rem; }
+
+  /* ---------- footer ---------- */
+  footer{ padding:48px 0; border-top:1px solid rgba(255,255,255,0.08); }
+  .foot-row{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  }
+  footer .mono{ font-size:0.72rem; color:var(--text-lo); }
+  footer .disclaimer{
+    margin-top:22px; font-size:0.78rem; color:var(--text-lo); max-width:70ch;
+    padding-top:22px; border-top:1px solid rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <span class="badge"><span>CM</span></span>
+      CAREERMETRO
+    </div>
+    <div class="nav-links">
+      <ul>
+        <li><a href="#route">The route</a></li>
+        <li><a href="#other-lines">Other lines</a></li>
+        <li><a href="#ride">For you / your team</a></li>
+      </ul>
+      <a href="#waitlist" class="btn btn-primary">Board the waitlist</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">AI career transit · built for the India job market</span>
+    <h1>Every career has a route.<br>We just read the map for you.</h1>
+    <p class="hero-sub">Upload your resume and your target role. CareerMetro reads the actual gap between where you stand and where that job starts, then builds you a short, specific path there — not another course catalog to get lost in.</p>
+    <div class="hero-actions">
+      <a href="#waitlist" class="btn btn-primary">Board the waitlist</a>
+      <a href="#route" class="btn btn-ghost">See how the route works</a>
+    </div>
+
+    <div class="route-panel" id="route">
+      <div class="route-line">
+        <div class="station" style="--dot-color:var(--line-red)">
+          <div class="dot"></div>
+          <div class="st-name">RESUME ST.</div>
+          <div class="st-note">You upload where you are today</div>
+        </div>
+        <div class="station" style="--dot-color:var(--line-amber)">
+          <div class="dot"></div>
+          <div class="st-name">SKILL GAP JN.</div>
+          <div class="st-note">3 gaps found vs. your target role</div>
+        </div>
+        <div class="station" style="--dot-color:var(--line-blue)">
+          <div class="dot"></div>
+          <div class="st-name">UPSKILL LINE</div>
+          <div class="st-note">A path, not a catalog — 3 weeks</div>
+        </div>
+        <div class="station" style="--dot-color:var(--line-violet)">
+          <div class="dot"></div>
+          <div class="st-name">INTERVIEW YD.</div>
+          <div class="st-note">AI-coached practice for that role</div>
+        </div>
+        <div class="station" style="--dot-color:var(--line-green)">
+          <div class="dot"></div>
+          <div class="st-name">JOB MATCH TERM.</div>
+          <div class="st-note">Roles that fit where you stand now</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="other-lines" id="other-lines">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The gap in the network</span>
+      <h2>Other lines don't reach your stop.</h2>
+      <p>Job search, learning content, and courses are all real, well-run lines. None of them terminate at "here is your specific gap, and here is the short way to close it" — especially not tuned to the India market.</p>
+    </div>
+
+    <div class="lines-grid">
+      <div class="line-card" style="--stub-color:var(--line-red)">
+        <div class="stub"></div>
+        <div class="stub-label"><span>NAUKRI LINE</span><span>terminates early</span></div>
+        <h3>Search, not skill-coaching</h3>
+        <p>Strong at matching listings to keywords. No car on the train that tells you what's missing from your resume, or how to close it.</p>
+        <div class="terminus">— line ends at "here are some listings"</div>
+      </div>
+      <div class="line-card" style="--stub-color:var(--line-blue)">
+        <div class="stub"></div>
+        <div class="stub-label"><span>LINKEDIN LEARNING</span><span>terminates early</span></div>
+        <h3>Content-heavy, not gap-aware</h3>
+        <p>A huge library of courses. It doesn't read your resume against a real target role and tell you which three modules actually matter.</p>
+        <div class="terminus">— line ends at "browse the catalog"</div>
+      </div>
+      <div class="line-card" style="--stub-color:var(--line-violet)">
+        <div class="stub"></div>
+        <div class="stub-label"><span>UPGRAD / COURSERA</span><span>terminates early</span></div>
+        <h3>Course-first, not market-reactive</h3>
+        <p>Built around finishing a program, on the program's schedule — not around what's actually moving in the job market this quarter.</p>
+        <div class="terminus">— line ends at "enroll in a program"</div>
+      </div>
+    </div>
+
+    <div class="gap-callout">
+      <span class="mono">CAREERMETRO LINE — full route</span>
+      <p>Reads your actual resume plus your actual target role, names the specific gap, and hands you a short personalized path — genuinely thin in the India market today.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stops-section">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Every stop on the route</span>
+      <h2>How the route gets built</h2>
+      <p>Five stops, in order — because the order is the point. Each one only works because of what the last one found.</p>
+    </div>
+
+    <div class="stops">
+      <div class="stop" style="--stop-color:var(--line-red)">
+        <div class="stop-tag">RESUME ST.</div>
+        <div>
+          <h3>Upload your resume</h3>
+          <p>You share where you are today — real experience, real title, real skills. No forms to fill in from scratch; the resume is the starting station.</p>
+        </div>
+      </div>
+      <div class="stop" style="--stop-color:var(--line-amber)">
+        <div class="stop-tag">SKILL GAP JN.</div>
+        <div>
+          <h3>See your specific gap</h3>
+          <p>CareerMetro reads your resume against your named target role in your actual market, and names the two or three concrete gaps — not a generic "improve your skills" note.</p>
+        </div>
+      </div>
+      <div class="stop" style="--stop-color:var(--line-blue)">
+        <div class="stop-tag">UPSKILL LINE</div>
+        <div>
+          <h3>Follow a short, personal path</h3>
+          <p>A focused upskilling path sized to the gap that was actually found — days or weeks, not a semester-long catalog you have to navigate yourself.</p>
+        </div>
+      </div>
+      <div class="stop" style="--stop-color:var(--line-violet)">
+        <div class="stop-tag">INTERVIEW YD.</div>
+        <div>
+          <h3>Practice for the room you'll be in</h3>
+          <p>AI-coached interview practice tuned to the role and the gap you closed — so the questions feel like the ones you'll actually get asked.</p>
+        </div>
+      </div>
+      <div class="stop" style="--stop-color:var(--line-green)">
+        <div class="stop-tag">JOB MATCH TERM.</div>
+        <div>
+          <h3>Match to roles you're ready for</h3>
+          <p>Not every listing — the ones that fit where you stand right now, so the applications you send are ones you're actually positioned to win.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ride">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Two ways to ride</span>
+      <h2>Built to reach people two ways</h2>
+      <p>The individual product earns riders through long-tail "how to get X job" content — a real, provable channel. The team product sells alongside work most companies already budget for.</p>
+    </div>
+
+    <div class="ride-grid">
+      <div class="ride-card">
+        <span class="mono">INDIVIDUAL PASS</span>
+        <h3>For one rider, one route</h3>
+        <p>Self-serve. You bring a resume and a target role, CareerMetro builds the route. Grows organically through search — "how to get a [role] job in [city]" content that ranks because it's genuinely specific.</p>
+        <ul>
+          <li>Resume + target role in, personal route out</li>
+          <li>Grown through SEO and long-tail content, not paid spend</li>
+          <li>Priced for an individual job seeker</li>
+        </ul>
+      </div>
+      <div class="ride-card">
+        <span class="mono">TEAM SHUTTLE</span>
+        <h3>For a whole department</h3>
+        <p>Sold to companies for employee upskilling — closer to an existing consulting motion than a new one. One dashboard shows skill gaps across a team, not just one resume at a time.</p>
+        <ul>
+          <li>Aggregate skill-gap view across a team or department</li>
+          <li>Sold direct, alongside existing advisory relationships</li>
+          <li>Priced per seat, billed to L&D or HR budget</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="waitlist" id="waitlist">
+  <div class="wrap">
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="mono">CAREERMETRO · BOARDING PASS</span>
+        <span class="mono" id="ticket-date"></span>
+      </div>
+      <div id="ticket-form-state">
+        <h2>Get on the first train</h2>
+        <p class="ticket-sub">No live product yet — this reserves your seat for the first route we open.</p>
+        <form class="ticket-form" id="waitlist-form">
+          <input type="email" id="waitlist-email" placeholder="you@email.com" required>
+          <button type="submit" class="btn btn-primary">Reserve seat</button>
+        </form>
+        <p class="ticket-note">One email, no spam — just a note when the first route opens.</p>
+      </div>
+      <div class="ticket-success" id="ticket-success">
+        <span class="mono">SEAT CONFIRMED</span>
+        <h3>You're on the manifest.</h3>
+        <p class="ticket-sub" style="margin-top:10px;">We'll write to you when the first route opens for boarding.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="logo"><span class="badge"><span>CM</span></span>CAREERMETRO</div>
+      <span class="mono">RESUME → GAP → PATH → PRACTICE → MATCH</span>
+    </div>
+    <p class="disclaimer">CareerMetro is a concept route map, built to scope one idea from a wider brainstorm — not a live product. This page exists to make the idea concrete enough to critique: does the route actually feel worth boarding?</p>
+  </div>
+</footer>
+
+<script>
+  // reveal stations on load / scroll into view
+  const stations = document.querySelectorAll('.station');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'), i*90);
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.3});
+  stations.forEach(s=>io.observe(s));
+
+  // mock waitlist submit
+  const form = document.getElementById('waitlist-form');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    document.getElementById('ticket-form-state').style.display = 'none';
+    document.getElementById('ticket-success').style.display = 'block';
+  });
+
+  // ticket "issue date"
+  document.getElementById('ticket-date').textContent =
+    new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+</script>
+
+</body>
+</html>

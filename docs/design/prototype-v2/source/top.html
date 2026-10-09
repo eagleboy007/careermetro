@@ -1,0 +1,264 @@
+<div class="page">
+  <header class="proto-top">
+    <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+    <span class="label">Prototype v2 · signed-in app · 8 Oct 2026</span>
+  </header>
+
+  <section class="proto-intro">
+    <h1>A career app people open every evening.</h1>
+    <p>The signed-in app is a ride, not a feed. Each day has one short ride that moves your train toward the next stop, a quick signal check to keep skills warm, and a departure board of roles you are getting closer to. The map shows your whole line and the people crossing it.</p>
+    <div class="try"><b>Try:</b>
+      <span class="k"><svg class="icon"><use href="#i-check"/></svg>Tick today's tasks</span>
+      <span class="k"><svg class="icon"><use href="#i-q"/></svg>Answer the signal check</span>
+      <span class="k"><svg class="icon"><use href="#i-brief"/></svg>Search and apply in Departures</span>
+      <span class="k"><svg class="icon"><use href="#i-map"/></svg>Open Map, tap a station</span>
+      <span class="k"><svg class="icon"><use href="#i-user"/></svg>Tap your avatar for your profile</span>
+      <span class="k"><svg class="icon"><use href="#i-users"/></svg>Switch User: first sign-up, no resume</span>
+    </div>
+  </section>
+
+  <div class="toolbar" role="group" aria-label="Prototype controls">
+    <div class="tgroup">
+      <span class="label">Frame</span>
+      <div class="seg" id="seg-frame">
+        <button type="button" data-v="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-v="phone" aria-pressed="false">Phone</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="label">User</span>
+      <div class="seg" id="seg-state">
+        <button type="button" data-s="returning" aria-pressed="true">Returning</button>
+        <button type="button" data-s="first" aria-pressed="false">First sign-up</button>
+        <button type="button" data-s="noresume" aria-pressed="false">No resume</button>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" type="button" id="reset"><svg class="icon"><use href="#i-route"/></svg>Reset today</button>
+    <button class="btn btn-ghost btn-sm devbtn" type="button" id="devopen" style="margin-left:auto"><svg class="icon"><use href="#i-code"/></svg>Dev notes</button>
+  </div>
+
+  <div>
+  <div class="stage">
+    <div class="frame" id="frame">
+      <div class="app" id="app" data-view="today" data-state="returning">
+        <header class="bar">
+          <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+          <nav class="topnav" aria-label="Main">
+            <a class="on" href="#today" data-go="today">Today</a>
+            <a href="#map" data-go="map">Map</a>
+            <a href="#departures" data-go="jobs">Departures</a>
+            <a href="#arrivals" data-go="arr">Arrivals<span class="tabcount arrcount">3</span></a>
+            <a href="#timetable" data-go="evt">Timetable</a>
+            <a href="#junction" data-go="junction">Junction</a>
+            <a href="#network" data-go="network">Network</a>
+            <a href="#library" data-go="other">Library</a>
+          </nav>
+          <div class="bar-end">
+            <span class="streak-w hide-nores"><button type="button" class="ridechip" id="streak-btn" aria-expanded="false" aria-controls="streak-pop" aria-label="Your streak, tap for details"><svg class="icon"><use href="#i-train"/></svg><span class="num" id="streak">12</span><span class="t" id="streak-t">-day streak</span></button><div class="streak-pop" id="streak-pop" hidden></div></span>
+            <button class="iconbtn" type="button" aria-label="Notifications, 2 new"><svg class="icon"><use href="#i-bell"/></svg><i class="pip"></i></button>
+            <a class="avatar" href="#me" data-go="me" aria-label="Your profile">PN</a>
+          </div>
+        </header>
+
+        <!-- ================= TODAY ================= -->
+        <div class="view view-today" aria-label="Today">
+                    <!-- First sign-up: resume just read -->
+          <section class="hero hero-first span2 st-first" aria-label="Welcome">
+            <div class="hero-main">
+              <div class="eyebrow"><span class="ridechip"><svg class="icon"><use href="#i-route"/></svg>Day 1</span><span class="label">Signed up just now · resume read</span></div>
+              <h2>Welcome aboard, Priya. <em>Your line is drawn.</em></h2>
+              <p class="sub">We read your resume against Cyber Security Analyst. Here is where you stand, and your first ride is ready.</p>
+              <div class="tally" id="tally">
+                <div class="tl good"><b data-to="14">0</b><span>skills you already have</span></div>
+                <div class="tl bad"><b data-to="11">0</b><span>gaps to close</span></div>
+                <div class="tl acc"><b data-to="9">0</b><span>goals on your line</span></div>
+                <div class="tl"><b data-to="1">0</b><span>role you could board today</span></div>
+              </div>
+              <h3 class="hero-h3">Your first ride · Pitstop 1, about 30 min</h3>
+              <ul class="tasks" id="ftasks">
+                <li><label class="task-i" for="f1"><input type="checkbox" id="f1"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Read the OWASP Top 10 in plain words</b><small>OWASP official docs · article</small></span><span class="mins">15 min</span></label></li>
+                <li><label class="task-i" for="f2"><input type="checkbox" id="f2"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Pick 3 of the risks you have seen at work</b><small>Proof task, part 1 · two lines each</small></span><span class="mins">15 min</span></label></li>
+              </ul>
+            </div>
+            <div class="hero-side">
+              <span class="label">Set up in three taps</span>
+              <ol class="setup">
+                <li class="done"><span class="sd"><svg class="icon"><use href="#i-check"/></svg></span><div><b>Resume read</b><small>14 skills found, 11 gaps, all with evidence</small></div></li>
+                <li><span class="sd">2</span><div><b>Hours a week for learning</b>
+                  <div class="ptype hours" id="hours" role="group" aria-label="Hours a week"><button type="button" aria-pressed="false" data-h="3">3 h</button><button type="button" aria-pressed="true" data-h="5">5 h</button><button type="button" aria-pressed="false" data-h="8">8 h</button><button type="button" aria-pressed="false" data-h="12">12 h</button></div>
+                  <small id="hours-t">At 5 hours a week your line takes about 14 weeks.</small></div></li>
+                <li><span class="sd">3</span><div><b>Let people on your line find you</b><label class="switch" style="margin-top:6px"><input type="checkbox" id="f-find"><i></i>Show me in people lists</label><small>Off by default. Name and status only; never your resume.</small></div></li>
+              </ol>
+            </div>
+          </section>
+
+          <!-- Signed up, no resume yet -->
+          <section class="hero hero-nores span2 st-nores" aria-label="Add your resume">
+            <div class="hero-main">
+              <div class="eyebrow"><span class="label">Signed up · one step left</span></div>
+              <h2>Hi Priya. Your line starts with <em>your resume.</em></h2>
+              <p class="sub">Upload it and in under a minute you see which skills you already have for the role, which are missing, and a goal for each gap, with pitstops to fill it.</p>
+              <div class="rolepick"><span class="label">Target role</span>
+                <div class="ptype" id="rolepick" role="group" aria-label="Target role"><button type="button" aria-pressed="true">Cyber Security Analyst</button><button type="button" aria-pressed="false">Data Analyst</button><button type="button" aria-pressed="false">Cloud Engineer</button><button type="button" aria-pressed="false">More roles</button></div>
+              </div>
+              <div class="drop" id="drop">
+                <span class="drop-ic"><svg class="icon"><use href="#i-upload"/></svg></span>
+                <b>Drop your resume here</b>
+                <small>PDF or DOCX, up to 5 MB. Read once to find your skills; never shown to anyone.</small>
+                <div class="actions"><button class="btn btn-primary" type="button" data-parse><svg class="icon"><use href="#i-file"/></svg>Choose file</button><button class="btn btn-ghost" type="button" data-parse>Try a sample resume</button></div>
+                <a class="link" href="#builder">No resume yet? Build one in about 10 minutes<svg class="icon"><use href="#i-arrow"/></svg></a>
+              </div>
+              <ol class="parse" id="parse" aria-live="polite">
+                <li><span class="pd"></span>Reading your resume</li>
+                <li><span class="pd"></span>Finding your skills<small>14 found</small></li>
+                <li><span class="pd"></span>Comparing with Cyber Security Analyst<small>11 gaps</small></li>
+                <li><span class="pd"></span>Drawing your line<small>9 goals</small></li>
+              </ol>
+            </div>
+            <div class="hero-side">
+              <h3 class="hero-h3">Help in your journey to reach your destination</h3>
+              <svg class="ghostline" viewBox="0 0 272 60" aria-hidden="true"><path d="M10 44 H90 L130 16 H250"/><circle cx="10" cy="44" r="7"/><circle cx="50" cy="44" r="7"/><circle cx="90" cy="44" r="7"/><circle cx="130" cy="16" r="7"/><circle cx="170" cy="16" r="7"/><circle cx="210" cy="16" r="7"/><rect x="236" y="7" width="26" height="18" rx="9"/></svg>
+              <ul class="get">
+                <li><svg class="icon"><use href="#i-target"/></svg><span><b>Gaps with evidence</b><small>Each gap quotes the line in your resume it came from.</small></span></li>
+                <li><svg class="icon"><use href="#i-route"/></svg><span><b>A goal for each gap</b><small>Free courses get you ready; proof fills the gap.</small></span></li>
+                <li><svg class="icon"><use href="#i-brief"/></svg><span><b>Roles you are getting closer to</b><small>From public job boards and posts you paste.</small></span></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="ride span2 st-ret" id="ride" aria-label="Today's ride">
+            <div class="burst" id="burst" aria-hidden="true"></div>
+            <div class="ride-main">
+              <div class="eyebrow"><span class="streak-w"><button type="button" class="ridechip" id="pit-btn" aria-expanded="false" aria-controls="pit-pop"><svg class="icon"><use href="#i-route"/></svg><span id="stopchip">Pitstop 4 of 11</span><svg class="icon" style="color:var(--muted)"><use href="#i-q"/></svg></button><div class="streak-pop pit-pop" id="pit-pop" hidden><b>Goals and pitstops</b><p>Each goal is one gap between you and your destination, like SIEM. The app suggests the pitstops for each goal, usually two: <b>learn</b> (a free course, with daily tasks like videos, reading and practice) and <b>prove</b>.</p><p>Only the prove pitstop fills the gap: a skill check, a certification, or work experience backed by a course or certificate. Then the goal is met and your train moves to the next one.</p><p class="muted">Your destination is your next role, not your last. Reach it and you pick the next one.</p></div></span><span class="label">Thursday · today's ride, about 50 min</span></div>
+              <h2 id="ride-title">Evening, Priya. This week is about <em>your SIEM goal.</em></h2>
+              <p class="sub" id="ride-sub">Two pitstops: learn it with the free Splunk course (Pitstop 4, this week's tasks), then prove it (Pitstop 5) to fill the gap.</p>
+
+              <div class="miniline" id="miniline" aria-hidden="true">
+                <svg viewBox="0 0 600 74" preserveAspectRatio="none" id="mlsvg"></svg>
+                <div class="train" id="train"><span class="car"><svg class="icon"><use href="#i-train"/></svg>You</span><span class="stem"></span></div>
+              </div>
+
+              <ul class="tasks" id="tasks">
+                <li><label class="task-i" for="t1"><input type="checkbox" id="t1"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Watch Splunk Fundamentals, module 2</b><small>Free Splunk courses · video</small></span><span class="mins">25 min</span></label></li>
+                <li><label class="task-i" for="t2"><input type="checkbox" id="t2"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Write your first search on the BOTS v3 data</b><small>Practice, part 1 of 3 · paste the search when done</small></span><span class="mins">20 min</span></label></li>
+                <li><label class="task-i locked" for="t3"><input type="checkbox" id="t3" disabled><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Answer today's signal check</b><small>One question, just below</small></span><span class="mins">2 min</span></label></li>
+              </ul>
+              <div class="proof" id="proof" aria-live="polite"></div>
+              <div class="cleared-banner" role="status"><svg class="icon"><use href="#i-check"/></svg><span>SIEM goal met with proof. Your train moved on to your threat detection goal: Pitstop 6, learn MITRE ATT&amp;CK.</span></div>
+            </div>
+
+            <div class="ride-side">
+              <div class="ring-wrap">
+                <div class="ring"><svg viewBox="0 0 100 100"><circle class="bgc" cx="50" cy="50" r="42"/><circle class="fgc" id="ringfg" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="158.3"/></svg><div class="mid"><div><b id="ringnum">2/5</b><small>tasks</small></div></div></div>
+                <p class="ring-txt"><b>SIEM prep this week</b><span id="ringtxt">Tasks get you ready. Proof fills the gap.</span></p>
+              </div>
+              <div class="week">
+                <span class="label">This week</span>
+                <div class="week-row">
+                  <span class="wd on"><i><svg class="icon"><use href="#i-check"/></svg></i>M</span>
+                  <span class="wd on"><i><svg class="icon"><use href="#i-check"/></svg></i>T</span>
+                  <span class="wd on"><i><svg class="icon"><use href="#i-check"/></svg></i>W</span>
+                  <span class="wd today" id="wd-today"><i><svg class="icon"><use href="#i-check"/></svg></i>T</span>
+                  <span class="wd"><i></i>F</span>
+                  <span class="wd"><i></i>S</span>
+                  <span class="wd"><i></i>S</span>
+                </div>
+                <span class="muted" style="font-size:0.78rem">A ride is any one task. Miss a day and the count pauses; it never resets to zero.</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="tcol">
+            <section class="tcard st-nores" aria-label="While you decide">
+              <div class="tcard-head"><h3>While you decide</h3></div>
+              <p class="muted" style="font-size:0.9rem">Everything except your own line works without a resume.</p>
+              <ul class="get">
+                <li><svg class="icon"><use href="#i-msg"/></svg><span><b><a href="#junction" data-go="junction">Read Junction</a></b><small>Questions and wins from people on the same roles. 214 posts this week.</small></span></li>
+                <li><svg class="icon"><use href="#i-map"/></svg><span><b><a href="#map" data-go="map">Explore role lines</a></b><small>See the goals other roles take, before you pick yours.</small></span></li>
+                <li><svg class="icon"><use href="#i-user"/></svg><span><b><a href="#me" data-go="me">Set up your profile</a></b><small>Status and interests now; skills fill in from your resume.</small></span></li>
+              </ul>
+            </section>
+
+            <section class="tcard hide-nores" aria-label="Signal check">
+              <div class="tcard-head"><h3>Signal check</h3><span class="chip weak"><svg class="icon"><use href="#i-contrast"/></svg>Threat detection</span><span class="label">1 question</span></div>
+              <p class="q">Your SIEM shows 46 failed logins to one account from <code>203.0.113.7</code> in two minutes, then one success. Which MITRE ATT&amp;CK technique fits best?</p>
+              <div class="opts" id="opts">
+                <button class="opt" type="button" data-ok="1"><span class="key">A</span><span class="ot">Brute Force<small>T1110</small></span></button>
+                <button class="opt" type="button"><span class="key">B</span><span class="ot">Phishing<small>T1566</small></span></button>
+                <button class="opt" type="button"><span class="key">C</span><span class="ot">Network Service Discovery<small>T1046</small></span></button>
+                <button class="opt" type="button"><span class="key">D</span><span class="ot">Command and Scripting Interpreter<small>T1059</small></span></button>
+              </div>
+              <div class="explain" id="explain"><svg class="icon"><use href="#i-bulb"/></svg><span id="explain-t">Many failed logins, then a success from one source, is password guessing: T1110. Next, check what the account did after it logged in (T1078 Valid Accounts).</span></div>
+              <div class="qfoot"><span>From your threat detection goal · warms you up for Pitstop 6</span><a class="link" href="#junction" data-go="junction" style="margin-left:auto">Discuss on Junction<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+            </section>
+
+            <section class="tcard hide-nores" aria-label="Your goals">
+              <div class="tcard-head"><h3>Your goals</h3><button type="button" class="trk-chip" id="trk-btn" aria-expanded="false" aria-controls="trk"><span class="label">Track</span><span id="trk-name">SOC and detection</span><svg class="icon"><use href="#i-arrow"/></svg></button><a class="link" href="#map" data-go="map">Open map<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+              <div class="trk" id="trk" hidden>
+                <p class="trk-q">Your destination is Cyber Security Analyst. What kind of work do you want there? Your goals come from the track you pick.</p>
+                <div class="trk-list" id="trk-list">
+                  <button type="button" class="pit-opt" data-trk="soc" aria-pressed="true"><b>SOC and detection</b><small>Watch alerts, find attacks · 9 goals</small></button>
+                  <button type="button" class="pit-opt" data-trk="grc" aria-pressed="false"><b>GRC and compliance</b><small>ISO 27001, risk, audits · 7 goals, 2 met</small></button>
+                  <button type="button" class="pit-opt" data-trk="data" aria-pressed="false"><b>Data protection</b><small>DLP, privacy, DPDP Act · 8 goals</small></button>
+                  <button type="button" class="pit-opt" data-trk="appsec" aria-pressed="false"><b>Application security</b><small>Secure code, testing · 6 goals, 1 met</small></button>
+                  <button type="button" class="pit-opt" data-trk="cloud" aria-pressed="false"><b>Cloud security</b><small>AWS or Azure, IAM · 8 goals, 1 met</small></button>
+                </div>
+                <div class="trk-prev" id="trk-prev" aria-live="polite"></div>
+              </div>
+              <ul class="signals" id="signals">
+                <li class="sig missing" data-g="siem"><button type="button"><span class="lamp"><i></i><i></i><i></i></span><b>SIEM (Splunk or Sentinel)</b><span class="st">Missing · 2 pitstops</span></button><div class="more-i"><span>No SIEM tool appears in your resume. Today's ride is on it.</span><ol class="gpits"><li class="now" id="gp-4"><span class="pn">4</span><span>Learn: free Splunk course</span><small>2 of 5 tasks</small></li><li id="gp-5"><span class="pn">5</span><span>Prove: skill check, certificate or work</span><small>fills the gap</small></li></ol><div class="nfm-w"><button type="button" class="nfm" data-nfm="siem">Not for me</button></div></div></li>
+                <li class="sig weak" data-g="threat"><button type="button"><span class="lamp"><i></i><i></i><i></i></span><b>Threat detection</b><span class="st">Weak · 2 pitstops</span></button><div class="more-i"><span>You wrote <q>monitored security alerts for 40 users</q> but name no techniques.</span><ol class="gpits"><li><span class="pn">6</span><span>Learn: MITRE ATT&amp;CK</span><small>about 4 h</small></li><li><span class="pn">7</span><span>Prove: skill check or certificate</span><small>fills the gap</small></li></ol><div class="gsug"><svg class="icon"><use href="#i-bulb"/></svg><span><b>Suggested pitstop: Blue team labs</b>Hands-on detection practice before you prove it.</span><button class="btn btn-ghost btn-sm" type="button" data-gsug="threat"><svg class="icon"><use href="#i-plus"/></svg>Add</button></div><div class="nfm-w"><button type="button" class="nfm" data-nfm="threat">Not for me</button></div></div></li>
+                <li class="sig weak" data-g="python"><button type="button"><span class="lamp"><i></i><i></i><i></i></span><b>Python scripting</b><span class="st">Weak · 1 pitstop</span></button><div class="more-i"><span>Listed under skills; no project or job uses it. Since it is on your resume, the app starts with a prove pitstop.</span><ol class="gpits"><li><span class="pn">8</span><span>Prove: skill check or a script you wrote</span><small>fills the gap</small></li></ol><div class="gsug"><svg class="icon"><use href="#i-bulb"/></svg><span><b>Suggested pitstop: Python for logs</b>Add a learn pitstop first if you feel rusty.</span><button class="btn btn-ghost btn-sm" type="button" data-gsug="python"><svg class="icon"><use href="#i-plus"/></svg>Add</button></div><div class="nfm-w"><button type="button" class="nfm" data-nfm="python">Not for me</button></div></div></li>
+                <li class="sig missing" data-g="aws"><button type="button"><span class="lamp"><i></i><i></i><i></i></span><b>AWS security</b><span class="st">Missing · 1 pitstop</span></button><div class="more-i"><span>Cloud basics (Pitstop 3) covered the ground, so this goal is one prove pitstop: IAM and logging.</span><ol class="gpits"><li><span class="pn">9</span><span>Prove: AWS certification or IAM skill check</span><small>fills the gap</small></li></ol><div class="nfm-w"><button type="button" class="nfm" data-nfm="aws">Not for me</button></div></div></li>
+              </ul>
+              <p class="goal-more st-ret" id="goal-more">2 more goals after these: incident response and alert triage. <a class="link" href="#map" data-go="map">See all on the map</a></p>
+              <div class="gap-sug st-ret" id="gap-sug"><svg class="icon"><use href="#i-bulb"/></svg><span><b>Suggested goal: Networking basics</b>Wireshark shows up in 6 of the 14 SOC Analyst L1 posts in Pune, and it is not on your line yet.</span><button class="btn btn-ghost btn-sm" type="button" id="sugpit"><svg class="icon"><use href="#i-plus"/></svg>Add goal</button></div>
+              <div class="greened st-ret"><span>Goals met with proof this month:</span><span class="chip met"><svg class="icon"><use href="#i-check"/></svg>Application security</span><span class="chip met"><svg class="icon"><use href="#i-check"/></svg>Vulnerability management</span></div>
+            </section>
+          </div>
+
+          <div class="tcol">
+            <section class="tcard srch-off srch-off-today" aria-label="Job search is off"><svg class="icon"><use href="#i-train"/></svg><span><b>Job search is off.</b> Your ride keeps going. Departures come back when you switch it on.</span><button class="btn btn-ghost btn-sm" type="button" data-srch-on>Turn on</button></section>
+            <section class="board" aria-label="Departures: roles you are heading toward">
+              <div class="board-head"><h3>Departures</h3><span>roles you're heading toward</span><a class="alljobs hide-nores" href="#departures" data-go="jobs">All departures<svg class="icon"><use href="#i-arrow"/></svg></a><span class="clock" id="clock">19:42</span></div>
+              <div class="brows" id="brows"></div>
+              <div class="board-lock st-nores"><svg class="icon"><use href="#i-lock"/></svg><span>Add your resume to see which of these you could board.</span></div>
+              <div class="board-foot">From public job-board feeds and job posts you paste. Tap a row to see what stands between you and it.</div>
+            </section>
+
+            <section class="tcard" aria-label="Timetable">
+              <div class="tcard-head"><h3>Timetable</h3><span class="label">near you</span><a class="link" href="#timetable" data-go="evt">All events<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+              <ul class="evt-teaser">
+                <li><span class="evt-date"><span>Sat</span><b>11</b></span><span>Hunting with a SIEM: hands-on lab night<small>Baner, Pune · free · your SIEM goal</small></span></li>
+                <li><span class="evt-date"><span>Tue</span><b>14</b></span><span>MITRE ATT&amp;CK mapping for beginners<small>Online · free · your threat detection goal</small></span></li>
+              </ul>
+            </section>
+
+            <section class="tcard hide-nores" aria-label="On your line">
+              <div class="tcard-head"><h3>On your line right now</h3></div>
+              <div class="riders">
+                <div class="stack-av"><span class="avatar">AM</span><span class="avatar">SK</span><span class="avatar">RV</span><span class="avatar">DI</span><span class="avatar">+3</span></div>
+                <p class="st-ret"><b>7 people</b> are on the SIEM goal with you.</p><p class="st-first"><b>9 people</b> started this line this week, like you.</p>
+              </div>
+              <div class="tip st-ret"><span class="avatar">AM</span><div>"Do module 2 before you touch BOTS. The searches make sense after that."<small>Arjun Mehta met the SIEM goal two weeks ago</small></div></div>
+              <div class="actions"><a class="btn btn-ghost btn-sm" href="#junction" data-go="junction"><svg class="icon"><use href="#i-msg"/></svg>Ask on Junction</a><a class="btn btn-quiet btn-sm" href="#network" data-go="network">See people<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- ================= MAP ================= -->
+        <div class="view view-map" aria-label="Map">
+          <div class="map-stage">
+            <div class="map-head"><h2>Your journey</h2><div class="seg hide-nores" id="seg-mapmode" role="group" aria-label="Which map"><button type="button" data-m="role" aria-pressed="true">Role line</button><button type="button" data-m="life" aria-pressed="false">Life line</button></div><span class="label hide-nores role-only" id="pitcount">Cyber Security Analyst · 9 goals, 11 pitstops</span><div class="seg life-only" id="seg-zoom" role="group" aria-label="Time range"><button type="button" data-z="recent" aria-pressed="false">Last 5 years</button><button type="button" data-z="all" aria-pressed="true">Whole career</button></div><div class="seg life-only proto-seg" id="seg-lifeuser" role="group" aria-label="Sample profile (prototype only)"><span class="label">Sample</span><button type="button" data-u="priya" aria-pressed="true">Priya · 3 yrs</button><button type="button" data-u="ravi" aria-pressed="false">Ravi · 15 yrs</button></div><div class="actions hide-nores role-only"><button class="btn btn-ghost btn-sm" type="button" id="addpit"><svg class="icon"><use href="#i-plus"/></svg>Add a pitstop</button><button class="btn btn-ghost btn-sm" type="button" id="replay"><svg class="icon"><use href="#i-play"/></svg>Replay my ride</button></div></div>
+            <p class="map-note hide-nores role-only">Each goal is one gap, named under its pitstops. A goal can have several pitstops: learn (free courses and daily tasks) then prove. Only a prove pitstop (a skill check, certification or confirmed work experience) fills the gap and moves your train to the next goal. Your destination is your next role, not your last.</p>
+            <button type="button" class="life-earlier life-only" id="life-earlier" hidden></button>
+            <div class="map-scroll">
+              <div class="map-lock st-nores"><svg class="icon"><use href="#i-map"/></svg><b>Your map draws itself from your resume</b><span>Until then, the lines of other roles are here to explore.</span><a class="btn btn-primary btn-sm" href="#today" data-go="today">Add resume</a></div>
+              <svg class="map-svg" id="mapsvg" viewBox="0 0 1400 560" role="group" aria-label="Metro map of your path"></svg>
+              <svg class="map-svg life-svg life-only" id="lifesvg" viewBox="0 0 1440 540" role="group" aria-label="Life line: work, education, certificates and interests by year"></svg>
+            </div>
+            <div class="legend2 hide-nores role-only"><span><i style="background:var(--accent)"></i>Gaps filled with proof ✓</span><span><i class="dash acc"></i>Getting ready (prep)</span><span><i style="background:var(--line)"></i>Still ahead</span><span><i style="background:var(--muted);opacity:.3"></i>Other people's lines</span><span><i class="c" style="border:2px solid var(--ink)"></i>Tap any stop</span></div>
+            <div class="legend2 life-only"><span><i style="background:var(--accent)"></i>Your journey</span><span><i style="background:var(--ink)"></i>Work</span><span><i style="background:var(--muted)"></i>Education and certificates</span><span><i class="dash"></i>Interests</span><span><i class="lk"></i>Where one fed another</span></div>
+          </div>
+          <aside class="sheet" id="sheet" aria-live="polite"></aside>
+        </div>
