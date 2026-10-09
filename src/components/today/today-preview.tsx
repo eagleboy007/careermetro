@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { USER_STATES, type Departure, type GoalsSummary, type Ride, type RideTask, type RideWeek, type UserState } from "@/lib/schemas";
+import { SignalCheckCard } from "./signal-check";
+import { USER_STATES, type Departure, type GoalsSummary, type Ride, type RideTask, type RideWeek, type SignalCheck, type UserState } from "@/lib/schemas";
 import { USER_STATE_LABELS } from "@/lib/today/fixtures";
 import { DeparturesBoard } from "./departures-board";
 import { GoalsCard } from "./goals-card";
@@ -19,10 +20,12 @@ export type TodayData = {
   tally: FirstTally;
   firstTasks: RideTask[];
   lineHours: number;
+  signalCheck: SignalCheck;
 };
 
 /** The Today screen for one user state. The server picks the state; `upload` is the upload form for No resume. */
 export function TodayView({ state, data, upload }: { state: UserState; data: TodayData; upload: ReactNode }) {
+  const [signalAnswered, setSignalAnswered] = useState(false);
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="lg:col-span-2">
@@ -30,9 +33,10 @@ export function TodayView({ state, data, upload }: { state: UserState; data: Tod
         {state === "first" && (
           <WelcomeHero name={data.name} role={data.role} tally={data.tally} firstTasks={data.firstTasks} lineHours={data.lineHours} />
         )}
-        {state === "returning" && <RideCard name={data.name} ride={data.ride} week={data.week} />}
+        {state === "returning" && <RideCard name={data.name} ride={data.ride} week={data.week} signalAnswered={signalAnswered} />}
       </div>
       <div className="flex min-w-0 flex-col gap-4">
+        {state === "returning" && <SignalCheckCard check={data.signalCheck} onAnswer={() => setSignalAnswered(true)} />}
         <DeparturesBoard rows={data.departures} locked={state === "no_resume"} />
       </div>
       <div className="flex min-w-0 flex-col gap-4">

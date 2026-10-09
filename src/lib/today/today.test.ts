@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { departure, goalsSummary, ride, rideWeek, streak } from "@/lib/schemas";
+import { departure, goalsSummary, ride, rideWeek, signalCheck, streak } from "@/lib/schemas";
 import { departureTone, departureWhen, streakLabel } from "./board";
-import { exampleDepartures, exampleGoals, exampleRide, exampleStreak, exampleWeek } from "./fixtures";
+import { exampleDepartures, exampleGoals, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
 
 describe("Today fixtures", () => {
   it("match the Today schemas", () => {
@@ -68,5 +68,19 @@ describe("Today schema checks", () => {
     const g = exampleGoals.goals[0];
     const twoNow = { ...g, pitstops: g.pitstops.map((p) => ({ ...p, state: "now" as const })) };
     expect(goalsSummary.safeParse({ ...exampleGoals, goals: [twoNow] }).success).toBe(false);
+  });
+});
+
+describe("signal check schema", () => {
+  it("accepts the example and needs the right answer among the options", () => {
+    expect(() => signalCheck.parse(exampleSignalCheck)).not.toThrow();
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: exampleSignalCheck.options.slice(0, 1) }).success).toBe(false);
+    const noB = exampleSignalCheck.options.filter((o) => o.key !== "B");
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: noB }).success).toBe(false);
+  });
+
+  it("rejects repeated option keys", () => {
+    const [a, b] = exampleSignalCheck.options;
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: [a, { ...b, key: "A" }, b] }).success).toBe(false);
   });
 });

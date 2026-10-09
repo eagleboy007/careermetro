@@ -16,7 +16,7 @@ export const rideTask = z.object({
   detail: z.string().max(120),
   minutes: z.number().int().min(1).max(240),
   done: z.boolean(),
-  /** A task that opens once the day's other tasks are ticked, such as the signal check. */
+  /** Ticked by the app, not by hand: the signal check task is done when the question is answered. */
   locked: z.boolean().default(false),
 });
 
@@ -57,6 +57,23 @@ export const departure = z.object({
   note: z.string().max(200),
 });
 
+/** One question a day from the Practice bank, for the current or next goal's skill. No score is shown. */
+export const signalCheck = z
+  .object({
+    skillName: z.string().min(1).max(80),
+    status: goalStatus.exclude(["met"]),
+    question: z.string().min(10).max(400),
+    options: z
+      .array(z.object({ key: z.enum(["A", "B", "C", "D"]), label: z.string().min(1).max(120), detail: z.string().max(60).optional() }))
+      .min(2)
+      .max(4),
+    correctKey: z.enum(["A", "B", "C", "D"]),
+    explanation: z.string().max(400),
+    from: z.string().max(120),
+  })
+  .refine((c) => c.options.some((o) => o.key === c.correctKey), { message: "the right answer must be one of the options", path: ["correctKey"] })
+  .refine((c) => new Set(c.options.map((o) => o.key)).size === c.options.length, { message: "option keys repeat", path: ["options"] });
+
 export const goalPitstop = z.object({
   number: z.number().int().min(1),
   kind: pitstopKind,
@@ -94,4 +111,5 @@ export type RideWeek = z.infer<typeof rideWeek>;
 export type Streak = z.infer<typeof streak>;
 export type Departure = z.infer<typeof departure>;
 export type Goal = z.infer<typeof goal>;
+export type SignalCheck = z.infer<typeof signalCheck>;
 export type GoalsSummary = z.infer<typeof goalsSummary>;
