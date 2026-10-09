@@ -20,13 +20,33 @@ export const rideTask = z.object({
   locked: z.boolean().default(false),
 });
 
+/** The prove pitstop after this week's learn pitstop: any one option fills the gap. Only proof moves the train. */
+export const provePitstop = z.object({
+  pitstop: z.number().int().min(1),
+  why: z.string().min(1).max(200),
+  options: z
+    .array(
+      z.object({
+        kind: z.enum(["check", "cert", "work"]),
+        title: z.string().min(1).max(60),
+        detail: z.string().min(1).max(200),
+        action: z.string().min(1).max(30),
+      }),
+    )
+    .min(1)
+    .max(3),
+});
+
 export const ride = z
   .object({
     pitstop: z.number().int().min(1),
     pitstopCount: z.number().int().min(1),
     goalName: z.string().min(1).max(80),
     title: z.string().min(1).max(160),
+    /** The end of the title shown in the progress colour, like "your SIEM goal." Empty for none. */
+    titleEmphasis: z.string().max(80).default(""),
     summary: z.string().max(300),
+    prove: provePitstop.nullable().default(null),
     tasks: z.array(rideTask).min(1).max(3),
     /** Prep tasks for this pitstop this week, including today's. */
     weekTasksDone: z.number().int().min(0),
@@ -35,6 +55,14 @@ export const ride = z
   .refine((r) => r.pitstop <= r.pitstopCount, {
     message: "pitstop is past the last pitstop",
     path: ["pitstop"],
+  })
+  .refine((r) => r.title.endsWith(r.titleEmphasis), {
+    message: "the emphasis must be the end of the title",
+    path: ["titleEmphasis"],
+  })
+  .refine((r) => !r.prove || r.prove.pitstop > r.pitstop, {
+    message: "the prove pitstop comes after this pitstop",
+    path: ["prove"],
   })
   .refine((r) => r.weekTasksDone <= r.weekTasksTotal, {
     message: "more tasks done than planned",
@@ -135,11 +163,37 @@ export const goal = z.object({
   suggestion: z.object({ title: z.string().max(80), detail: z.string().max(200) }).nullable(),
 });
 
-export const goalsSummary = z.object({
-  track: z.string().min(1).max(60),
-  goals: z.array(goal).max(20),
-  moreCount: z.number().int().min(0),
-  metThisMonth: z.array(z.string().max(80)).max(10),
+export const goalsSummary = z
+  .object({
+    track: z.string().min(1).max(60),
+    goals: z.array(goal).max(20),
+    moreCount: z.number().int().min(0),
+    /** Names of the goals after these, when there are only a few. */
+    moreNames: z.array(z.string().max(80)).max(5).default([]),
+    /** A goal the role's job posts ask for that is not on the line yet. Added with one tap. */
+    suggestedGoal: z.object({ name: z.string().min(1).max(80), reason: z.string().min(1).max(200) }).nullable().default(null),
+    metThisMonth: z.array(z.string().max(80)).max(10),
+  })
+  .refine((g) => g.moreNames.length <= g.moreCount, {
+    message: "more names than goals left",
+    path: ["moreNames"],
+  });
+
+/** Timetable teaser on Today: the next local or online events for the user's goals. */
+export const eventTeaser = z.object({
+  id: z.string().min(1).max(60),
+  day: z.string().min(2).max(3),
+  date: z.number().int().min(1).max(31),
+  title: z.string().min(1).max(100),
+  detail: z.string().max(120),
+});
+
+/** People on the same goal right now. Opted-in profiles only; initials, never contact details. */
+export const onYourLine = z.object({
+  goalName: z.string().min(1).max(80),
+  count: z.number().int().min(0),
+  initials: z.array(z.string().min(1).max(3)).max(4),
+  tip: z.object({ initials: z.string().min(1).max(3), quote: z.string().min(1).max(200), who: z.string().min(1).max(120) }).nullable(),
 });
 
 export type UserState = z.infer<typeof userState>;
@@ -152,3 +206,6 @@ export type Departure = z.infer<typeof departure>;
 export type Goal = z.infer<typeof goal>;
 export type SignalCheck = z.infer<typeof signalCheck>;
 export type GoalsSummary = z.infer<typeof goalsSummary>;
+export type ProvePitstop = z.infer<typeof provePitstop>;
+export type EventTeaser = z.infer<typeof eventTeaser>;
+export type OnYourLine = z.infer<typeof onYourLine>;

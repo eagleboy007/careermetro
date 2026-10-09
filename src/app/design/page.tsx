@@ -26,10 +26,12 @@ import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-
 import type { Gap, Profile } from "@/lib/schemas";
 import {
   exampleDepartures,
+  exampleEvents,
   exampleFirstTally,
   exampleFirstTasks,
   exampleGoals,
   exampleName,
+  exampleOnYourLine,
   exampleRide,
   exampleSignalCheck,
   exampleRole as exampleTargetRole,
@@ -160,6 +162,9 @@ const exampleToday: TodayData = {
   firstTasks: exampleFirstTasks,
   lineHours: 46,
   signalCheck: exampleSignalCheck,
+  events: exampleEvents,
+  onYourLine: exampleOnYourLine,
+  greeting: "Evening",
 };
 
 const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line"] as const;
