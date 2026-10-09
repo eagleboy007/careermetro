@@ -8,7 +8,15 @@ import { StreakChip } from "@/components/today/streak-chip";
 import { Logo } from "@/components/ui/logo";
 import { MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
 
-export type ShellUser = { name: string; initials: string; streakDays: number; todayCounted: boolean; showStreak: boolean };
+export type ShellUser = {
+  name: string;
+  initials: string;
+  streakDays: number;
+  todayCounted: boolean;
+  showStreak: boolean;
+  /** False on example data, where there is no session to end. */
+  canSignOut: boolean;
+};
 
 /**
  * The signed-in frame: top bar with the main sections on desktop, a tab bar on phones (under 760 px), and the avatar
@@ -155,9 +163,20 @@ function AvatarMenu({ user }: { user: ShellUser }) {
               {item.label} <Soon />
             </li>
           ))}
-          <li className={`${row} border-t border-line text-muted`}>
-            <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
-            Sign out <Soon />
+          <li className="border-t border-line pt-0.5">
+            {user.canSignOut ? (
+              <form method="post" action="/auth/sign-out">
+                <button type="submit" className={`${row} w-full text-left hover:bg-surface-2`}>
+                  <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
+                  Sign out
+                </button>
+              </form>
+            ) : (
+              <span className={`${row} text-muted`}>
+                <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
+                Sign out <Soon />
+              </span>
+            )}
           </li>
         </ul>
       </div>

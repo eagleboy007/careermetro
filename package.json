@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.3",
     "drizzle-orm": "^0.45.3",
     "lucide-react": "^1.52.0",
     "mammoth": "^1.13.0",

@@ -47,7 +47,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 ## 5. Functional requirements
 
 ### 5.1 Accounts and onboarding
-- FR-1: Sign in with Google and email magic link. Phone OTP (India) as a fast follow.
+- FR-1: Sign in with Google or an emailed 6-digit code (the email also carries a link). First sign-up asks for an "I am 18 or older" tick and records an account consent. Phone OTP (India) waits on TRAI DLT registration.
 - FR-2: A first-time user can run one gap analysis before creating an account (reduces drop-off); results are saved on signup.
 - FR-3: User can delete their account and all stored resume data from settings (see privacy).
 
@@ -152,7 +152,7 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 - **App:** Next.js (App Router) + TypeScript, Tailwind with design tokens, deployed on Vercel or an India-region container host.
 - **Data:** PostgreSQL (with pgvector for skill/role matching), Prisma or Drizzle.
 - **Files:** S3-compatible private bucket (AWS Mumbai region).
-- **Auth:** Auth.js or Clerk (Google + magic link + phone OTP).
+- **Auth:** Supabase Auth (decided 2026-10-09), behind `src/lib/auth/` only. Our own `users.id` is the identity; no foreign key to the provider.
 - **AI:** Claude API (Anthropic SDK) with schema-validated outputs (Zod).
 - **Jobs:** a queue for parsing and analysis (e.g. Inngest, BullMQ, or a managed queue).
 - **Docs/PDF:** server-side PDF and DOCX generation for the resume export.
