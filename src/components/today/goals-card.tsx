@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check, Lightbulb } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { Goal, GoalStatus, GoalsSummary } from "@/lib/schemas";
 
@@ -53,6 +53,7 @@ export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref
 }
 
 function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle: () => void }) {
+  const detailId = useId();
   const lamp = LAMP[goal.status];
   const count = goal.pitstops.length;
   return (
@@ -60,6 +61,7 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
       <button
         type="button"
         aria-expanded={open}
+        aria-controls={detailId}
         onClick={onToggle}
         className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-0.5 px-3.5 py-2.5 text-left text-[0.88rem]"
       >
@@ -75,7 +77,7 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
         </span>
       </button>
       {open && (
-        <div className="flex flex-col gap-2 px-3.5 pb-3 text-[0.82rem] text-muted sm:pl-14">
+        <div id={detailId} className="flex flex-col gap-2 px-3.5 pb-3 text-[0.82rem] text-muted sm:pl-14">
           <p>{goal.evidence}</p>
           {goal.quote && (
             <p>
@@ -91,7 +93,14 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
                       p.state === "done" ? "bg-accent text-on-accent" : p.state === "now" ? "border-2 border-accent text-ink" : "border border-line"
                     }`}
                   >
-                    {p.state === "done" ? <Check size={12} strokeWidth={3} aria-label="done" /> : p.number}
+                    {p.state === "done" ? (
+                      <>
+                        <Check size={12} strokeWidth={1.75} aria-hidden="true" />
+                        <span className="sr-only">done</span>
+                      </>
+                    ) : (
+                      p.number
+                    )}
                   </span>
                   <span>{p.title}</span>
                   <small className="col-start-2 font-mono text-[0.68rem] font-normal">{p.state === "now" ? `you are here · ${p.note}` : p.note}</small>

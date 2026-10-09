@@ -16,11 +16,12 @@ export const rideTask = z.object({
   detail: z.string().max(120),
   minutes: z.number().int().min(1).max(240),
   done: z.boolean(),
-  /** A task that unlocks later in the day, such as the signal check. */
+  /** A task that opens once the day's other tasks are ticked, such as the signal check. */
   locked: z.boolean().default(false),
 });
 
-export const ride = z.object({
+export const ride = z
+  .object({
   pitstop: z.number().int().min(1),
   pitstopCount: z.number().int().min(1),
   goalName: z.string().min(1).max(80),
@@ -30,10 +31,15 @@ export const ride = z.object({
   /** Prep tasks for this pitstop this week, including today's. */
   weekTasksDone: z.number().int().min(0),
   weekTasksTotal: z.number().int().min(1),
-});
+})
+  .refine((r) => r.pitstop <= r.pitstopCount, { message: "pitstop is past the last pitstop", path: ["pitstop"] })
+  .refine((r) => r.weekTasksDone <= r.weekTasksTotal, { message: "more tasks done than planned", path: ["weekTasksDone"] });
 
 /** Monday to Sunday of this week: whether the day was a ride (one task ticked) and which day is today. */
-export const rideWeek = z.array(z.object({ label: z.string().length(1), rode: z.boolean(), today: z.boolean() })).length(7);
+export const rideWeek = z
+  .array(z.object({ label: z.string().length(1), rode: z.boolean(), today: z.boolean() }))
+  .length(7)
+  .refine((days) => days.filter((d) => d.today).length === 1, { message: "exactly one day is today" });
 
 export const streak = z.object({
   /** Days ridden in a row; a missed day pauses the count and never resets it. 0 before the first ride. */
@@ -66,7 +72,10 @@ export const goal = z.object({
   /** Why: quotes the resume line when there is one. */
   evidence: z.string().max(300),
   quote: z.string().max(200).nullable(),
-  pitstops: z.array(goalPitstop).max(6),
+  pitstops: z
+    .array(goalPitstop)
+    .max(6)
+    .refine((ps) => ps.filter((p) => p.state === "now").length <= 1, { message: "at most one pitstop is current" }),
   suggestion: z.object({ title: z.string().max(80), detail: z.string().max(200) }).nullable(),
 });
 

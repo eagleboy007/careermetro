@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Route } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type RideTask } from "@/lib/schemas";
 import { TaskList } from "./task-list";
 
@@ -29,7 +29,7 @@ export function WelcomeHero({
   onHours?: (hours: number) => void;
   onFindable?: (on: boolean) => void;
 }) {
-  const [done, setDone] = useState<Set<string>>(new Set());
+  const [done, setDone] = useState(() => new Set(firstTasks.filter((t) => t.done).map((t) => t.id)));
   const [hours, setHours] = useState<number>(DEFAULT_WEEKLY_HOURS);
   const [findable, setFindable] = useState(false);
   const weeks = Math.max(1, Math.ceil(lineHours / hours));
@@ -52,7 +52,7 @@ export function WelcomeHero({
           <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Signed up just now · resume read</span>
         </div>
         <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05]">
-          Welcome aboard, {name}. <span className="text-accent">Your line is drawn.</span>
+          Welcome aboard, {name}. Your line is drawn.
         </h2>
         <p className="max-w-[54ch] text-[0.95rem] text-muted">
           We read your resume against {role}. Here is where you stand, and your first ride is ready.
@@ -60,7 +60,7 @@ export function WelcomeHero({
         <dl className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
           <Tally value={tally.skillsFound} label="skills you already have" dot="bg-good" />
           <Tally value={tally.gaps} label="gaps to close" dot="bg-bad" />
-          <Tally value={tally.goals} label="goals on your line" dot="bg-accent" />
+          <Tally value={tally.goals} label="goals on your line" dot="bg-ink" />
           <Tally value={tally.boardable} label={tally.boardable === 1 ? "role you could board today" : "roles you could board today"} dot="bg-line" />
         </dl>
         <h3 className="text-base font-semibold">
@@ -123,8 +123,10 @@ function Tally({ value, label, dot }: { value: number; label: string; dot: strin
   const shown = useCountUp(value);
   return (
     <div className="flex flex-col gap-1 rounded-md border border-line bg-bg px-3.5 py-3">
-      <span className={`size-2.5 rounded-full ${dot}`} aria-hidden="true" />
-      <dt className="order-2 text-[0.78rem] leading-snug text-muted">{label}</dt>
+      <dt className="order-2 text-[0.78rem] leading-snug text-muted">
+        <span className={`mb-1 block size-2.5 rounded-full ${dot}`} aria-hidden="true" />
+        {label}
+      </dt>
       <dd className="order-1 font-display text-[2rem] font-semibold leading-none tracking-[-0.03em] tabular-nums">
         <span aria-hidden="true">{shown}</span>
         <span className="sr-only">{value}</span>
@@ -136,10 +138,13 @@ function Tally({ value, label, dot }: { value: number; label: string; dot: strin
 /** Counts up to the value once, unless the user prefers reduced motion. */
 function useCountUp(value: number): number {
   const [shown, setShown] = useState(value);
-  useEffect(() => {
+  // Layout effect: reset to 0 before the first paint, so the number doesn't flash its final value first.
+  useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || value === 0) return;
     let frame = 0;
     const start = performance.now();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- must reset before paint; a later frame would flash the value
+    setShown(0);
     const step = (now: number) => {
       const t = Math.min(1, (now - start) / 900);
       setShown(Math.round(value * (1 - (1 - t) ** 3)));
@@ -159,7 +164,14 @@ function Setup({ n, done = false, title, children }: { n: number; done?: boolean
           done ? "border-accent bg-accent text-on-accent" : "border-line bg-surface text-muted"
         }`}
       >
-        {done ? <Check size={14} strokeWidth={3} aria-label="done" /> : n}
+        {done ? (
+          <>
+            <Check size={14} strokeWidth={1.75} aria-hidden="true" />
+            <span className="sr-only">done</span>
+          </>
+        ) : (
+          n
+        )}
       </span>
       <div className="flex min-w-0 flex-col gap-1.5">
         <b className={`text-[0.9rem] font-semibold ${done ? "text-muted" : ""}`}>{title}</b>

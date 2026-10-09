@@ -52,3 +52,21 @@ describe("board words", () => {
     expect(streakLabel(12)).toBe("12-day streak");
   });
 });
+
+describe("Today schema checks", () => {
+  it("reject a pitstop past the last one and more tasks done than planned", () => {
+    expect(ride.safeParse({ ...exampleRide, pitstop: 10, pitstopCount: 9 }).success).toBe(false);
+    expect(ride.safeParse({ ...exampleRide, weekTasksDone: 6, weekTasksTotal: 5 }).success).toBe(false);
+  });
+
+  it("need exactly one today in the week", () => {
+    expect(rideWeek.safeParse(exampleWeek.map((d) => ({ ...d, today: false }))).success).toBe(false);
+    expect(rideWeek.safeParse(exampleWeek.map((d) => ({ ...d, today: true }))).success).toBe(false);
+  });
+
+  it("allow at most one current pitstop per goal", () => {
+    const g = exampleGoals.goals[0];
+    const twoNow = { ...g, pitstops: g.pitstops.map((p) => ({ ...p, state: "now" as const })) };
+    expect(goalsSummary.safeParse({ ...exampleGoals, goals: [twoNow] }).success).toBe(false);
+  });
+});

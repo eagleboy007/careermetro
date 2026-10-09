@@ -23,8 +23,9 @@ export function RideCard({
   onToggle?: (taskId: string, done: boolean) => void;
 }) {
   const [done, setDone] = useState(() => new Set(ride.tasks.filter((t) => t.done).map((t) => t.id)));
-  const fresh = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
-  const weekDone = Math.min(ride.weekTasksTotal, ride.weekTasksDone + fresh);
+  const added = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
+  const removed = ride.tasks.filter((t) => !done.has(t.id) && t.done).length;
+  const weekDone = Math.max(0, Math.min(ride.weekTasksTotal, ride.weekTasksDone + added - removed));
   const share = weekDone / ride.weekTasksTotal;
   const rodeToday = done.size > 0;
 
@@ -32,11 +33,15 @@ export function RideCard({
     const next = new Set(done);
     const on = !next.has(id);
     if (on) next.add(id);
-    else next.delete(id);
-    // The locked task (signal check) opens once every other task is ticked.
+    else {
+      next.delete(id);
+      // Unticking an open task locks the signal check again, so it can't stay ticked behind a disabled box.
+      if (!ride.tasks.find((t) => t.id === id)?.locked) for (const t of ride.tasks) if (t.locked) next.delete(t.id);
+    }
     setDone(next);
     onToggle?.(id, on);
   }
+  // The locked task (signal check) opens once every other task is ticked.
   const tasks = ride.tasks.map((t) => ({ ...t, locked: t.locked && ride.tasks.some((o) => !o.locked && !done.has(o.id)) }));
 
   return (
@@ -71,6 +76,7 @@ export function RideCard({
                 fill="none"
                 strokeWidth="9"
                 strokeLinecap="round"
+                opacity={share === 0 ? 0 : 1}
                 strokeDasharray={RING}
                 strokeDashoffset={RING * (1 - share)}
                 className="stroke-accent transition-[stroke-dashoffset] duration-700"
@@ -102,7 +108,7 @@ export function RideCard({
                       on ? "bg-accent" : d.today ? "border-2 border-dashed border-accent bg-surface" : "bg-surface-2"
                     }`}
                   >
-                    {on && <Check size={13} strokeWidth={3} className="text-on-accent" aria-hidden="true" />}
+                    {on && <Check size={13} strokeWidth={1.75} className="text-on-accent" aria-hidden="true" />}
                   </span>
                   <span>
                     {d.label}

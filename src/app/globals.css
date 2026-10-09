@@ -132,7 +132,7 @@ h3 {
 }
 
 /* Raised things only: the board, the train, popovers. */
-.shadow-raised {
+@utility shadow-raised {
   box-shadow: 0 20px 40px -30px var(--shadow);
 }
 
