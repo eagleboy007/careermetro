@@ -1,0 +1,197 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-org" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4M10 10h4M10 14h4M10 18h4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-kanban" viewBox="0 0 24 24"><path d="M6 5v11M12 5v6M18 5v14"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></symbol>
+</svg>
+
+<div class="proto" role="region" aria-label="Prototype controls">
+  <span class="label">Prototype · view as</span>
+  <div class="seg" id="role-seg" role="group" aria-label="View as">
+    <button type="button" data-role="admin" aria-pressed="true">Recruiter admin</button>
+    <button type="button" data-role="hiring" aria-pressed="false">Hiring HR</button>
+    <button type="button" data-role="interviewer" aria-pressed="false">Interviewer</button>
+    <button type="button" data-role="unverified" aria-pressed="false">HR, not verified yet</button>
+    <button type="button" data-role="none" aria-pressed="false">Any user</button>
+  </div>
+  <span class="sp"></span>
+  <span class="label">All people and companies are made up</span>
+</div>
+
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="logo"><i></i>CareerMetro</div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" data-p="personal">Today</a>
+      <a href="#" data-p="personal">Map</a>
+      <a href="#" data-p="personal">Departures</a>
+      <a href="#" data-p="personal">Arrivals</a>
+      <a href="#" data-p="personal">Junction</a>
+      <a href="#" id="inbox-tab"><svg class="icon sm"><use href="#i-msg"/></svg>Inbox<span class="badge" id="inbox-n">2</span></a>
+      <span class="sep" id="corp-sep"></span>
+      <a href="#" class="corp on" id="corp-tab"><svg class="icon sm"><use href="#i-org"/></svg>Corporate</a>
+    </nav>
+    <div class="me"><span class="nm small" id="me-name">Anita Rao</span><span class="avatar" id="me-av">AR</span></div>
+  </div>
+</header>
+
+<div id="personal-note" class="ws" hidden>
+  <div></div>
+  <div class="main"><div class="card empty">
+    <span class="label">Personal app</span>
+    <h2>This is your own CareerMetro, as in prototype v2.</h2>
+    <p class="muted">Your ride, goals, Departures and profile stay yours. Your company never sees them, even when you have Corporate access.</p>
+    <button class="btn" type="button" id="back-corp">Back to Corporate</button>
+  </div></div>
+</div>
+
+<div class="ws" id="ws">
+  <aside class="rail">
+    <div class="org"><span class="lg">K</span><div><b>Kavach Cyber Labs</b><span class="chip good"><svg class="icon sm"><use href="#i-check"/></svg>Verified company</span></div></div>
+    <nav class="subnav" aria-label="Corporate">
+      <button type="button" data-v="overview" aria-current="page"><svg class="icon"><use href="#i-grid"/></svg>Overview</button>
+      <button type="button" data-v="jobs"><svg class="icon"><use href="#i-kanban"/></svg>Jobs<span class="n" id="n-jobs">3</span></button>
+      <button type="button" data-v="interviews"><svg class="icon"><use href="#i-cal"/></svg>Interviews<span class="n">5</span></button>
+      <button type="button" data-v="messages"><svg class="icon"><use href="#i-msg"/></svg>Messages<span class="n" id="n-msg">2</span></button>
+      <button type="button" data-v="team"><svg class="icon"><use href="#i-users"/></svg>Team and access</button>
+      <button type="button" data-v="notes"><svg class="icon"><use href="#i-docs"/></svg>Logic and dev notes</button>
+    </nav>
+    <div class="rolebox"><span class="label">Your access</span><b id="role-name">Recruiter admin</b><span class="muted" id="role-desc">Manages the team, all jobs and company verification.</span></div>
+  </aside>
+
+  <main class="main" id="main">
+    <!-- Overview -->
+    <section class="view" data-view="overview" aria-label="Overview">
+      <div class="pagehead"><div><span class="label">Thursday 9 Oct</span><h1 id="hello">Good evening, Anita.</h1><p class="muted">Applications that came through CareerMetro. Applications on your own careers site are not shown here.</p></div>
+      <button class="btn primary" type="button" data-admin-hiring id="post-job"><svg class="icon"><use href="#i-plus"/></svg>Post a job</button></div>
+      <div class="grid3">
+        <div class="card"><span class="label">New this week</span><h2 class="tab-num">11 applications</h2><p class="small muted">4 by Express apply, with verified identity</p></div>
+        <div class="card"><span class="label">Waiting on you</span><h2 class="tab-num">3 decisions</h2><p class="small muted">Reviews older than 5 days, plus one offer reply</p></div>
+        <div class="card"><span class="label">Interviews</span><h2 class="tab-num">2 today, 3 this week</h2><p class="small muted">Across 3 interviewers</p></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="pagehead"><h3>Open jobs</h3><span class="label">Applicants by stage</span></div><div id="ov-jobs"></div></div>
+        <div class="card"><h3>Today</h3><ul class="clean agenda" id="ov-agenda"></ul>
+          <h3 style="margin-top:14px">Needs a decision</h3>
+          <ul class="clean todo">
+            <li><span class="dot warn" style="margin-top:7px"></span><span><b>Meera Joshi</b> has waited 6 days in Applied for SOC analyst L1.</span></li>
+            <li><span class="dot warn" style="margin-top:7px"></span><span><b>Arjun Mehta</b> has not replied to the offer. It expires on 14 Oct.</span></li>
+            <li><span class="dot off" style="margin-top:7px"></span><span>Write feedback for <b>Kavya Reddy</b>, Level 2 team round, 8 Oct.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jobs: pipeline -->
+    <section class="view" data-view="jobs" aria-label="Jobs" hidden>
+      <div class="pagehead">
+        <div><span class="label">Job</span>
+          <div class="jobbar"><select id="job-sel" aria-label="Choose a job"></select><span class="facts" id="job-facts"></span></div>
+        </div>
+        <div class="toolbar"><button class="btn sm" type="button" data-admin-hiring>Edit job and criteria</button><button class="btn sm" type="button" data-admin-hiring>Pause job</button></div>
+      </div>
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="Search applicants by name or skill" aria-label="Search applicants">
+        <select id="f-proof" aria-label="Filter"><option value="all">Everyone</option><option value="ready">All required skills proved</option><option value="express">Express apply only</option><option value="id">Identity verified</option></select>
+        <span class="muted small" id="assigned-note" hidden>You see only the candidates assigned to you.</span>
+      </div>
+      <div class="board-wrap"><div class="lanes" id="lanes"></div></div>
+      <p class="small muted">Moving a card changes the stage on the candidate's own Arrivals page. Level 1 AI interview is on for this job, and each job can turn it off.</p>
+    </section>
+
+    <!-- Interviews -->
+    <section class="view" data-view="interviews" aria-label="Interviews" hidden>
+      <div class="pagehead"><div><span class="label">Schedule an interview</span><h1 id="sch-title">Priya Nair · SOC analyst L1</h1><p class="muted" id="sch-sub">Level 2 team round, 45 minutes. Pick a slot the candidate offered that is free for the interviewer.</p></div></div>
+      <div class="sched">
+        <div class="card" style="display:flex; flex-direction:column; gap:10px">
+          <div class="pagehead"><h3>Week of 13 Oct</h3><div class="legend"><span><i style="background:var(--good-soft); border:1px dashed var(--good)"></i>Candidate is free</span><span><i style="background:var(--surface-2)"></i>Interviewer busy</span><span><i style="background:repeating-linear-gradient(135deg,var(--surface-2) 0 4px,transparent 4px 8px)"></i>Candidate busy</span></div></div>
+          <div class="cal-wrap"><div class="cal" id="cal"></div></div>
+          <p class="small muted">The candidate's own calendar shows only as "busy". Other companies' interviews are never shown here.</p>
+        </div>
+        <div class="card" style="display:flex; flex-direction:column; gap:12px">
+          <h3>Interviewers</h3>
+          <ul class="clean people" id="iv-list"></ul>
+          <div class="field"><label for="iv-kind">Round</label><select id="iv-kind"><option>Level 2 team, 45 min, video</option><option>Level 2 team, 45 min, in person (Pune)</option><option>HR round, 30 min, video</option></select></div>
+          <div class="hidden-note" id="pick-note"><svg class="icon"><use href="#i-clock"/></svg><span>Pick a green slot.</span></div>
+          <button class="btn primary" type="button" id="send-inv" disabled>Send invite</button>
+          <p class="small muted">The candidate confirms on their Arrivals page. The interviewer gets it on their own CareerMetro calendar and by email.</p>
+        </div>
+      </div>
+      <div class="card"><h3>This week across the team</h3><ul class="clean agenda" id="iv-week"></ul></div>
+    </section>
+
+    <!-- Corporate messages -->
+    <section class="view" data-view="messages" aria-label="Messages" hidden>
+      <div class="pagehead"><div><span class="label">Messages with applicants</span><h1>Messages</h1><p class="muted">One conversation per application. Everyone on the job's team can read it, so nothing is lost when someone moves on. Candidates see it in their Inbox and on Arrivals.</p></div></div>
+      <div class="inbox two" id="co-inbox"></div>
+    </section>
+
+    <!-- Team -->
+    <section class="view" data-view="team" aria-label="Team and access" hidden>
+      <div class="pagehead"><div><span class="label">Team and access</span><h1>Who can hire for Kavach</h1><p class="muted">Every person here signs in with their own CareerMetro account. Access is a role on that account, and it starts after they confirm a work email on <span class="mono">kavachcyber.in</span>.</p></div></div>
+      <div class="card" id="invite-card" style="display:flex; flex-direction:column; gap:10px">
+        <h3>Give someone access</h3>
+        <div class="invite"><input id="inv-q" placeholder="Search CareerMetro people by name or handle" aria-label="Search people"><select id="inv-role" aria-label="Role"><option>Hiring HR</option><option>Interviewer</option><option>Recruiter admin</option></select><button class="btn primary" type="button" id="inv-btn">Give access</button></div>
+        <p class="small muted">They see a Corporate tab on their next visit and confirm their work email with a one-time code. Until then their access shows as pending.</p>
+      </div>
+      <div class="card table-wrap"><table><thead><tr><th>Person</th><th>Role</th><th>Work email</th><th>Jobs</th><th></th></tr></thead><tbody id="team-rows"></tbody></table></div>
+      <div class="perm">
+        <div class="card"><span class="chip">Recruiter admin</span><ul><li>Everything a Hiring HR can do, on every job</li><li>Gives and removes access, changes roles</li><li>Company profile and verification</li><li>At least two admins per company</li></ul></div>
+        <div class="card"><span class="chip">Hiring HR</span><ul><li>Posts jobs and sets Express apply criteria</li><li>Moves applicants on jobs they own or are added to</li><li>Schedules interviews, assigns interviewers</li><li>Makes offers</li></ul></div>
+        <div class="card"><span class="chip">Interviewer</span><ul><li>Sees only candidates assigned to them</li><li>Profile, resume and match for that job</li><li>Writes feedback</li><li>Cannot move stages or see other jobs</li></ul></div>
+      </div>
+    </section>
+
+    <!-- Verify (shown for unverified HR) -->
+    <section class="view" data-view="verify" aria-label="Confirm your work email" hidden>
+      <div class="verify card">
+        <div class="steps" aria-hidden="true"><span class="on" id="st1"></span><span id="st2"></span><span id="st3"></span></div>
+        <div id="v1">
+          <span class="label">One time · step 1 of 2</span>
+          <h2>Anita Rao gave you Hiring HR access at Kavach Cyber Labs.</h2>
+          <p class="muted" style="margin-top:6px">Confirm you work there with your work email. We send a 6-digit code. Your personal account and profile stay as they are.</p>
+          <div class="field" style="margin-top:14px"><label for="w-email">Work email</label><div class="inline"><input id="w-email" type="email" value="farhan.shaikh@kavachcyber.in" autocomplete="off"><button class="btn primary" type="button" id="send-code"><svg class="icon"><use href="#i-mail"/></svg>Send code</button></div><span class="err" id="email-err" hidden>Use an email on kavachcyber.in, the domain Kavach verified.</span></div>
+        </div>
+        <div id="v2" hidden>
+          <span class="label">Step 2 of 2</span>
+          <h2>Enter the code we sent to farhan.shaikh@kavachcyber.in</h2>
+          <p class="muted" style="margin-top:6px">It works for 10 minutes. For the prototype, type any 6 digits.</p>
+          <div class="otp" style="margin-top:14px" id="otp"></div>
+          <div class="inline" style="margin-top:12px"><button class="btn primary" type="button" id="verify-btn" disabled>Confirm</button><button class="btn quiet" type="button">Send a new code</button></div>
+        </div>
+        <div id="v3" hidden>
+          <span class="label">Done</span>
+          <h2>You're in. Kavach Cyber Labs is now in your Corporate tab.</h2>
+          <p class="muted" style="margin-top:6px">We'll ask again only if your work email stops working or you join another company.</p>
+          <button class="btn primary" type="button" id="to-ws" style="margin-top:14px">Open Corporate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notes -->
+    <section class="view notes" data-view="notes" aria-label="Logic and dev notes" hidden></section>
+  </main>
+</div>
+
+<div id="inbox-view" class="ws" hidden style="grid-template-columns:minmax(0,1fr)">
+  <div class="main">
+    <div class="pagehead"><div><span class="label" id="inbox-who">Your Inbox</span><h1>Inbox</h1><p class="muted" id="inbox-sub">Messages with people and with companies you applied to. Your phone number and email are never shared from here.</p></div></div>
+    <div class="inbox" id="me-inbox"></div>
+  </div>
+</div>
+
+<div id="none-view" class="ws" hidden>
+  <div></div>
+  <div class="main"><div class="card empty">
+    <span class="label">Any user</span>
+    <h2>No Corporate tab.</h2>
+    <p class="muted">Most people only see their own app: Today, Map, Departures, Arrivals and Junction. The Corporate tab appears only after a company's Recruiter admin gives them access.</p>
+    <p class="muted">A person who is looking for a job is hidden from their own company's recruiters, even if those recruiters have Corporate access.</p>
+  </div></div>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="d-name"></aside>
+<div class="toast" id="toast" hidden role="status"></div>

@@ -1,0 +1,128 @@
+
+/* ---------- departures page ---------- */
+.app[data-view="jobs"] .view-jobs{display:grid;}
+.view-jobs{grid-template-columns:minmax(0,1fr) 360px; gap:0; min-width:0; min-height:700px;}
+.jobs-main{display:flex; flex-direction:column; gap:16px; padding:24px 28px 40px; min-width:0;}
+.jobs-clock{align-self:flex-end;}
+.jfilters{display:flex; gap:14px; align-items:center; flex-wrap:wrap; justify-content:space-between;}
+#jf-tab{align-self:flex-start;}
+#jf-tab .n{font-family:var(--mono); font-size:0.72rem; color:var(--muted); margin-left:4px;}
+.jlist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+.job{display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; align-items:start; padding:16px; border:1px solid var(--line); border-radius:18px; background:var(--surface); cursor:pointer; transition:border-color .2s, transform .2s;}
+.job:hover{border-color:var(--muted);}
+.job.sel{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+.job:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.logo{width:44px; height:44px; border-radius:12px; background:var(--surface-2); display:grid; place-items:center; font-family:var(--display); font-weight:650; font-size:1rem; color:var(--ink);}
+.job-main{display:flex; flex-direction:column; gap:6px; min-width:0;}
+.job-main b{font-weight:600; font-size:0.98rem;}
+.job-meta{font-size:0.8rem; color:var(--muted); display:flex; gap:6px; flex-wrap:wrap;}
+.job-chips{display:flex; gap:6px; flex-wrap:wrap;}
+.job-end{display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
+.when{font-family:var(--mono); font-size:0.7rem; letter-spacing:.06em; text-transform:uppercase; padding:4px 8px; border-radius:6px; white-space:nowrap; background:var(--surface-2); color:var(--muted);}
+.when.now{background:var(--good-soft); color:var(--good);}
+.when.soon{background:var(--warn-soft); color:var(--warn);}
+.when.applied{background:var(--accent-soft); color:var(--accent);}
+.savebtn{border:1px solid var(--line); background:transparent; border-radius:10px; width:34px; height:34px; display:grid; place-items:center; cursor:pointer; color:var(--muted);}
+.savebtn .icon{width:16px; height:16px;}
+.savebtn[aria-pressed="true"]{color:var(--accent); border-color:var(--accent); background:var(--accent-soft);}
+.savebtn[aria-pressed="true"] .icon{fill:currentColor;}
+.jempty{color:var(--muted); font-size:0.9rem; padding:20px; text-align:center; border:1px dashed var(--line); border-radius:16px;}
+
+.jdetail{border-left:1px solid var(--line); background:var(--surface); padding:24px 22px 40px; display:flex; flex-direction:column; gap:16px; min-width:0;}
+.jd-head{display:flex; gap:12px; align-items:center;}
+.jd-head h3{font-size:1.3rem; line-height:1.15;}
+.jd-head small{display:block; color:var(--muted); font-size:0.8rem; margin-top:2px;}
+.ready{border-radius:16px; padding:14px; background:var(--bg); border:1px solid var(--line); display:flex; flex-direction:column; gap:6px;}
+.ready b{font-family:var(--display); font-size:1.15rem; letter-spacing:-0.01em;}
+.ready span{color:var(--muted); font-size:0.84rem;}
+.jd-sec{display:flex; flex-direction:column; gap:8px;}
+.jd-sec h4{font-family:var(--mono); font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:.05em; color:var(--muted);}
+.jd-sec .chips{display:flex; gap:6px; flex-wrap:wrap;}
+.jd-sec p{font-size:0.86rem; color:var(--muted);}
+.jd-actions{display:flex; flex-direction:column; gap:8px;}
+.jd-actions .btn{justify-content:center;}
+.jd-note{font-size:0.76rem; color:var(--muted); display:flex; gap:6px; align-items:flex-start;}
+.jd-note .icon{width:14px; height:14px; margin-top:2px; flex:none;}
+.track{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0;}
+.track li{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:0.86rem; color:var(--muted); position:relative;}
+.track li button{all:unset; display:flex; align-items:center; gap:10px; cursor:pointer; width:100%;}
+.track li button:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+.track .td{width:18px; height:18px; border-radius:50%; border:2px solid var(--line); background:var(--surface); flex:none;}
+.track li.on{color:var(--ink); font-weight:550;}
+.track li.on .td{background:var(--accent); border-color:var(--accent);}
+.paste{display:flex; flex-direction:column; gap:10px; padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--surface); margin-top:6px;}
+.paste textarea{width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:12px; padding:10px 12px; font:inherit; font-size:0.88rem; background:var(--bg); color:var(--ink); resize:vertical;}
+.paste textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+.paste .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.paste-out{display:flex; flex-direction:column; gap:8px; padding:12px; border-radius:12px; background:var(--bg); font-size:0.86rem;}
+.paste-out .chips{display:flex; gap:6px; flex-wrap:wrap;}
+.app[data-state="noresume"] .paste{display:none;}
+.board-head .alljobs{margin-left:12px; color:var(--board-ink); font-size:0.76rem; text-decoration:none; display:inline-flex; gap:4px; align-items:center;}
+.board-head .alljobs .icon{width:13px; height:13px;}
+
+@container app (max-width: 760px){
+  .view-jobs{grid-template-columns:1fr; min-height:0; padding-bottom:84px;}
+  .jobs-main{padding:16px 14px 8px;}
+  .jdetail{border-left:0; border-top:1px solid var(--line); padding:20px 16px;}
+  .job{grid-template-columns:36px minmax(0,1fr); gap:10px; padding:14px;}
+  .logo{width:36px; height:36px; border-radius:10px; font-size:0.85rem;}
+  .job-end{grid-column:2; flex-direction:row; align-items:center; justify-content:space-between;}
+}
+.jdetail > div{position:sticky; top:16px;}
+@container app (max-width: 760px){ .jdetail > div{position:static;} }
+.job-end .savebtn{margin-left:auto;}
+
+/* express apply + elite prep */
+.chip.xp .icon{color:var(--ink);}
+.xover{position:absolute; inset:0; z-index:30; background:color-mix(in srgb, var(--ink) 35%, transparent); display:none; justify-content:center; align-items:flex-start; padding:20px 16px;}
+.xover.open{display:flex;}
+.xcard{width:min(560px,100%); background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:22px; display:flex; flex-direction:column; gap:16px; animation:pop .35s cubic-bezier(.3,1.4,.5,1);}
+.xhead{display:flex; gap:12px; align-items:flex-start;}
+.xhead h3{font-size:1.25rem; line-height:1.15;}
+.xhead small{display:block; color:var(--muted); font-size:0.82rem; margin-top:3px;}
+.xhead .iconbtn{margin-left:auto; flex:none;}
+.xgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.xf{display:flex; flex-direction:column; gap:4px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:var(--bg); min-width:0;}
+.xf > span{font-family:var(--mono); font-size:0.66rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); display:flex; gap:6px; align-items:center;}
+.xf > span .icon{width:12px; height:12px; color:var(--good);}
+.xf b, .xf input{font-weight:550; font-size:0.88rem; font:inherit; border:0; background:transparent; color:var(--ink); padding:0; outline:none; min-width:0;}
+.xf input:focus{box-shadow:0 2px 0 var(--accent);}
+.xf.wide{grid-column:1 / -1;}
+.xf .chips{display:flex; gap:6px; flex-wrap:wrap;}
+.xf textarea{border:0; background:transparent; font:inherit; font-size:0.86rem; color:var(--ink); resize:vertical; outline:none; min-height:64px;}
+.xconsent{display:flex; gap:10px; align-items:flex-start; font-size:0.82rem; color:var(--muted);}
+.xconsent input{margin-top:3px; accent-color:var(--accent);}
+.xfoot{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.xfoot .btn-primary[disabled]{opacity:.45; cursor:not-allowed;}
+.xsent{display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:20px 6px;}
+.xsent .big{width:56px; height:56px; border-radius:50%; background:var(--accent); color:var(--on-accent); display:grid; place-items:center; animation:pop .5s cubic-bezier(.3,1.6,.5,1);}
+.xsent .big .icon{width:28px; height:28px; stroke-width:2.5;}
+.xsent b{font-family:var(--display); font-size:1.3rem;}
+.xsent p{color:var(--muted); font-size:0.88rem; max-width:40ch;}
+.prep{border:1px solid var(--line); border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:10px;}
+.prep-h{display:flex; align-items:center; gap:8px;}
+.prep-h b{font-weight:600; font-size:0.92rem;}
+.prep ol{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:0.84rem;}
+.prep li.lock{filter:blur(3.5px); user-select:none; color:var(--muted);}
+.prep .btn{align-self:flex-start;}
+@container app (max-width: 760px){ .xgrid{grid-template-columns:1fr;} .xcard{padding:18px 16px;} }
+
+.paste-out[hidden]{display:none;}
+.xhead .logo, .jd-head .logo{flex:none;}
+
+.crit{border:1px solid var(--line); border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:10px;}
+.crit-h{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+.crit-h b{font-weight:600; font-size:0.92rem;}
+.crit-h span{font-size:0.8rem; color:var(--muted);}
+.crit ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+.crit li{display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; font-size:0.84rem; align-items:start;}
+.crit .cd{width:20px; height:20px; border-radius:50%; border:2px solid var(--line); display:grid; place-items:center; box-sizing:border-box;}
+.crit li.ok .cd{background:var(--good); border-color:var(--good); color:var(--on-accent);}
+.crit .cd .icon{width:12px; height:12px; stroke-width:3;}
+.crit li:not(.ok) .ct{color:var(--ink);}
+.crit li.ok .ct{color:var(--muted);}
+.crit .ct button.link{display:flex; gap:4px; align-items:center; margin-top:4px; background:none; border:0; padding:0; font:inherit; font-size:0.8rem; cursor:pointer;}
+.crit .ct button.link .icon{width:12px; height:12px;}
+.crit small{font-size:0.74rem; color:var(--muted);}
+.jd-actions .btn[disabled]{opacity:.5; cursor:not-allowed;}
+.crit .ct button.link{white-space:normal; color:var(--ink); text-decoration:underline; text-underline-offset:3px; text-align:left;}

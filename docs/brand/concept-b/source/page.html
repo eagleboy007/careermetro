@@ -1,0 +1,185 @@
+<title>careermetro Logo B</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500;700&display=swap">
+<style>
+/* A second logo direction for side-by-side comparison with the brand book (the line). */
+:root{--bg:#f4f5f8;--surface:#fff;--surface-2:#eceef3;--ink:#12151c;--muted:#586072;--line:#dce0e8;--accent:#2448f5;--accent-soft:#e6ebff;--flap-top:#12151c;--flap-bot:#2448f5;--seam:var(--bg);--night:#0c0e13;--cobalt-fixed:#2448f5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0e13;--surface:#151821;--surface-2:#1c202b;--ink:#eceef3;--muted:#9aa2b4;--line:#2a2f3c;--accent:#7e94ff;--accent-soft:#1d2452;--flap-top:#2a2f3a;--flap-bot:#4a63ff}}
+:root[data-theme="dark"]{--bg:#0c0e13;--surface:#151821;--surface-2:#1c202b;--ink:#eceef3;--muted:#9aa2b4;--line:#2a2f3c;--accent:#7e94ff;--accent-soft:#1d2452;--flap-top:#2a2f3a;--flap-bot:#4a63ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 64px}
+h1,h2,h3{font-family:"Bricolage Grotesque",Geist,sans-serif;letter-spacing:-0.025em;margin:0}
+h1{font-size:clamp(36px,6vw,60px);line-height:1.02}
+h2{font-size:clamp(26px,3.4vw,34px);line-height:1.1}
+h3{font-size:18px}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
+section{margin-top:64px}
+.head{display:grid;grid-template-columns:110px 1fr;gap:12px;margin-bottom:22px}
+.head p{max-width:640px;margin-top:8px;color:var(--muted)}
+@media (max-width:700px){.head{grid-template-columns:1fr}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+small{display:block;color:var(--muted);font-size:13px;margin-top:8px}
+svg{max-width:100%;height:auto}
+
+/* Hero: a departures board that flips to the brand name */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;margin-top:40px}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
+.board{background:var(--night);border-radius:24px;padding:26px 22px;color:#eceef3}
+.board .row{display:flex;justify-content:space-between;font:500 12px "Geist Mono",monospace;letter-spacing:.1em;color:#8b93a7;margin-bottom:14px}
+.flaps{display:flex;gap:4px;flex-wrap:nowrap}
+.flap{position:relative;flex:1 1 0;max-width:44px;aspect-ratio:3/4.2;border-radius:6px;background:#1f2430;display:grid;place-items:center;font:700 clamp(16px,3.4vw,30px) "Geist Mono",monospace;color:#eceef3;overflow:hidden}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:var(--night)}
+.flap.go{background:#2448f5}
+.flap.spin{animation:tick .09s linear}
+@keyframes tick{0%{transform:scaleY(1)}50%{transform:scaleY(.55)}100%{transform:scaleY(1)}}
+.board .foot{display:flex;justify-content:space-between;margin-top:16px;font:500 13px "Geist Mono",monospace;color:#8b93a7}
+.board .foot b{color:#7e94ff;font-weight:500}
+.replay{margin-top:12px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font:500 13px Geist,sans-serif;cursor:pointer}
+
+/* Live tile flip */
+.livetile{width:min(220px,60vw);margin:0 auto;perspective:600px}
+.livetile svg{display:block;width:100%}
+
+.panel{border-radius:20px;border:1px solid var(--line);display:grid;place-items:center;padding:34px 20px;min-height:150px}
+.p-white{background:#fff}.p-night{background:var(--night);border-color:transparent}.p-surface{background:var(--surface)}
+.icons{display:flex;align-items:flex-end;justify-content:center;gap:22px;flex-wrap:wrap}
+.icons .c{text-align:center;font-size:12px;color:var(--muted)}
+.meaning{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+.meaning li{display:grid;grid-template-columns:28px 1fr;gap:10px}
+.meaning .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:500 11px "Geist Mono",monospace}
+
+/* App bar mock */
+.appbar{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 16px;flex-wrap:wrap}
+.appbar .nav{display:flex;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.appbar .nav span{padding:4px 10px;border-radius:999px}
+.appbar .nav .on{background:var(--surface-2);color:var(--ink)}
+.notif{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border-radius:18px;padding:14px}
+.notif .t{font-weight:600;font-size:14px}.notif .b{font-size:14px;color:var(--muted)}
+
+/* Compare table */
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{text-align:left;padding:12px 10px;border-top:1px solid var(--line);vertical-align:top}
+.cmp th{font:500 12px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:0}
+.cmp td:first-child{color:var(--muted);width:24%}
+.tag{display:inline-block;font:500 11px "Geist Mono",monospace;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.scroll{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){.flap.spin{animation:none}}
+</style>
+
+<div class="wrap">
+  <div class="top"><span class="mono">careermetro · logo option B · the board</span><span class="mono">For comparison with option A, the line</span></div>
+
+  <div class="hero">
+    <div>
+      <div class="board" aria-label="Departures board that flips to careermetro">
+        <div class="row"><span>NEXT DEPARTURE</span><span>PLATFORM 1</span></div>
+        <div class="flaps" id="flaps"></div>
+        <div class="foot"><span>SOC ANALYST L1</span><b>ON TIME</b></div>
+      </div>
+      <button class="replay" id="replay">Play again</button>
+    </div>
+    <div>
+      <span class="mono">Option B</span>
+      <h1 style="margin-top:10px">The board flips to your next stop.</h1>
+      <p class="muted" style="margin-top:16px;max-width:460px">Option A draws the journey. Option B is the moment of arrival: one tile of a station departures board, caught mid-flip. The top half is today in ink, the bottom half has already turned cobalt. The letter is the c of careermetro, so the icon is also our initial.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="head"><span class="mono">01 · Mark</span><div><h2>One tile, two halves</h2><p>It's a square split by the seam every split-flap display has, so it works where square marks live: app icons, profile photos, browser tabs.</p></div></div>
+    <div class="grid2">
+      <div class="card" style="display:grid;place-items:center">
+        <div class="livetile" id="livetile">{{MARK_BIG}}</div>
+        <small style="text-align:center">On the website the top flap can drop once, on first load.</small>
+      </div>
+      <div class="card">
+        <ul class="meaning">
+          <li><span class="n">1</span><div><b>Ink top: today.</b> <span class="muted">Where your resume puts you now.</span></div></li>
+          <li><span class="n">2</span><div><b>The seam: the flip.</b> <span class="muted">Proof is what turns the board. A course doesn't flip it, a passed skill check or a certificate does.</span></div></li>
+          <li><span class="n">3</span><div><b>Cobalt bottom: the next stop.</b> <span class="muted">Cobalt still means progress, as it does everywhere in the product.</span></div></li>
+          <li><span class="n">4</span><div><b>The c.</b> <span class="muted">Our initial, set in Bricolage Grotesque Bold, the same face as the headings.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="mono">02 · Logo</span><div><h2>Wordmark with a seam</h2><p>The name is set in Geist Mono Bold, the typeface the app already uses for the departures board, with the same thin seam running through every letter. It reads as a board without spelling it out.</p></div></div>
+    <div class="panel p-white">{{LOGO}}</div>
+    <div class="grid2" style="margin-top:16px">
+      <div><div class="panel p-night">{{LOGO_DARK}}</div><small>On dark: the top flap lightens to graphite so the seam still shows.</small></div>
+      <div><div class="panel p-surface"><div class="icons">
+        <div class="c">{{ICON_96}}<br>96</div><div class="c">{{FAV_32}}<br>32</div><div class="c">{{FAV_16}}<br>16</div></div></div><small>The c still reads at 16 px. That's the main thing B does better than A.</small></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="mono">03 · In use</span><div><h2>Where you'd see it</h2></div></div>
+    <div class="appbar">{{LOGO_SM}}<div class="nav"><span class="on">Today</span><span>Map</span><span>Departures</span><span>Arrivals</span></div></div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="notif">{{ICON_40}}<div><div class="t">careermetro</div><div class="b">Your SIEM skill check is booked for 18:00. One stop to SOC Analyst L1.</div></div></div>
+      <div class="notif">{{ICON_40}}<div><div class="t">careermetro</div><div class="b">Proof accepted. Your board just flipped: Splunk is filled.</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="mono">04 · Compare</span><div><h2>A or B</h2><p>Both use the same colours and the same rule that cobalt means progress. Either can launch.</p></div></div>
+    <div class="grid2">
+      <div class="panel p-white" style="gap:10px">{{A_LOGO}}<span class="mono" style="color:#586072">A · the line</span></div>
+      <div class="panel p-white" style="gap:10px">{{LOGO_SM2}}<span class="mono" style="color:#586072">B · the board</span></div>
+    </div>
+    <div class="card scroll" style="margin-top:16px">
+      <table class="cmp">
+        <tr><th></th><th>A · the line</th><th>B · the board</th></tr>
+        <tr><td>Story</td><td>The whole journey: where you are, the climb, the destination. It can grow into the visual flow and the map.</td><td>The moment you arrive. It ties to the Departures and Arrivals screens.</td></tr>
+        <tr><td>Small sizes</td><td>Good down to 24 px. At 16 px it reads as a tick.</td><td>The icon is strongest: a letter in a tile reads at any size. The wordmark is weaker, because below about 20 px the seam can look like crossed-out text.</td></tr>
+        <tr><td>Ownable</td><td>Line-and-dot marks are common in career and analytics apps.</td><td>Letter tiles are common. The seam and the ink-to-cobalt split are what make it ours, so it needs the same trade mark search.</td></tr>
+        <tr><td>Motion</td><td>The line draws itself.</td><td>The tile flips, and the wordmark can flip letter by letter.</td></tr>
+        <tr><td>Feels like</td><td>Calm, product, trustworthy.</td><td>Louder and more playful, closer to a consumer app.</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <span class="tag">MY PICK</span>
+      <p style="margin-top:10px">A as the logo, because it is the product's idea and it doubles as your visual flow. If you prefer B, the strongest use of it is as the app icon and the motion on the Departures screen, with A's wordmark beside it. Mixing them in one lockup would be one idea too many.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="mono">05 · Files</span><div><h2>Saved with the rest</h2><p>In the project files under careermetro/brand/concept-b: logo.svg, logo-on-dark.svg, mark.svg, mark-on-dark.svg, app-icon.svg, favicon.svg. Option A stays in careermetro/brand.</p></div></div>
+  </section>
+</div>
+
+<script>
+// Departures board: each flap cycles through letters, then settles on the brand name.
+(function(){
+  var word="careermetro", chars="abcdefghijklmnopqrstuvwxyz", box=document.getElementById("flaps");
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function build(){box.innerHTML="";for(var i=0;i<word.length;i++){var f=document.createElement("div");f.className="flap";f.textContent=" ";box.appendChild(f)}}
+  function run(){
+    build();var flaps=box.children;
+    if(reduce){for(var i=0;i<flaps.length;i++){flaps[i].textContent=word[i]}flaps[0].classList.add("go");return}
+    Array.prototype.forEach.call(flaps,function(f,i){
+      var n=6+i*2,k=0;
+      var t=setInterval(function(){
+        f.classList.remove("spin");void f.offsetWidth;f.classList.add("spin");
+        if(k>=n){clearInterval(t);f.textContent=word[i];if(i===0)f.classList.add("go");return}
+        f.textContent=chars[Math.floor(Math.random()*chars.length)];k++;
+      },70);
+    });
+  }
+  document.getElementById("replay").addEventListener("click",run);
+  run();
+  // One flip of the big tile's top half on load.
+  var top=document.querySelector("#livetile .flip-top");
+  if(top&&!reduce&&top.animate){top.style.transformOrigin="24px 24px";top.animate([{transform:"rotateX(0deg)"},{transform:"rotateX(-90deg)",offset:.5},{transform:"rotateX(0deg)"}],{duration:900,delay:500,easing:"ease-in-out"})}
+})();
+</script>

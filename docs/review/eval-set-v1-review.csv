@@ -1,0 +1,222 @@
+Case,Target role,Candidate,Resume (synthetic),Skills the resume shows,Expected gaps,Reviewer: agree / change,Reviewer notes
+business-analyst-ops-to-ba,Business Analyst,Bank operations officer who has informally gathered requirements,"Rahul Menon | Kochi | rahul.menon@example.com
+
+EXPERIENCE
+Senior Operations Officer, Malabar Co-operative Bank, Kochi (2022 - present)
+- Collected requirements from branch staff for a new loan-tracking screen and wrote them up as a requirements document for the IT vendor.
+- Coordinated between branch managers and the IT vendor to agree scope and go-live dates.
+- Led user acceptance testing with 12 branch users before the loan-tracking release.
+- Wrote weekly status mails to the regional head on project progress.
+
+Operations Officer, Malabar Co-operative Bank (2020 - 2022)
+- Processed account opening and KYC checks for retail customers.
+
+EDUCATION
+MBA (Finance), Cochin University of Science and Technology, 2020
+
+SKILLS
+MS Excel, MS Word, core banking (Finacle), requirement documentation
+",Requirements gathering; Stakeholder management; User acceptance testing; Written and verbal communication; Excel; Banking and financial services domain,Writing product requirements (missing); Process mapping (missing); SQL (missing); Agile and Scrum (missing),,
+cyber-security-network-admin,Cyber Security Analyst,Network administrator preparing for a SOC analyst role,"Aditya Kumar | Gurugram | aditya.kumar@example.com
+
+EXPERIENCE
+Network Administrator, Aravalli Manufacturing Ltd, Gurugram (2022 - present)
+- Manage Fortinet firewalls, VPN access and VLAN network segmentation for 3 plants.
+- Review firewall and Windows event logs in Splunk for failed logins and unusual traffic.
+- Ran Nessus vulnerability scans every quarter and tracked patching with the IT team.
+- Handled a ransomware phishing incident: isolated the laptop, reset credentials and wrote the incident report.
+- Manage user accounts and group policies in Active Directory.
+
+EDUCATION
+BTech Electronics and Communication, Amity University, 2022
+
+CERTIFICATIONS
+CCNA (2022)
+",Network security; Networking basics; SIEM and log analysis; Vulnerability management; Security incident response; Identity and access management,Linux command line (missing); Python (missing); Threat detection and hunting (missing); Security incident response (weak); Application security (missing); AWS (missing); Written and verbal communication (missing),,
+data-analyst-bcom-switcher,Data Analyst,BCom graduate in accounts operations moving into analytics,"Ananya Rao | Pune | ananya.rao@example.com
+
+SUMMARY
+Accounts executive with 2 years in month-end reporting, learning analytics in the evenings.
+
+EXPERIENCE
+Accounts Executive, Sahyadri Logistics Pvt Ltd, Pune (Jul 2024 - present)
+- Prepare the monthly vendor payables report in Excel using pivot tables and VLOOKUP for 1,200+ invoices.
+- Cleaned duplicate vendor records and fixed inconsistent GST numbers before each audit.
+- Present a one-page summary of overdue payments to the finance manager every Monday.
+
+PROJECTS
+- Sales dashboard (self-study): built a Power BI dashboard on a public retail dataset showing monthly revenue by region.
+- Completed an online SQL course; wrote SELECT queries with WHERE and GROUP BY on a sample database.
+
+EDUCATION
+BCom, Savitribai Phule Pune University, 2024
+
+SKILLS
+Excel, Power BI, Tally, basic SQL
+",Excel; Excel pivot tables and lookups; Data cleaning; Written and verbal communication; Power BI; Data visualization; SQL,SQL (weak); Python (missing); Statistics (missing),,
+data-scientist-analyst-upskilling,Data Scientist,Data analyst with three years of SQL who has done ML courses,"Priya Nair | Hyderabad | priya.nair@example.com
+
+EXPERIENCE
+Data Analyst, Deccan Retail Ltd, Hyderabad (2023 - present)
+- Write SQL with window functions on BigQuery to build weekly sales and churn tables.
+- Built a Python script with pandas to forecast store demand; reduced stock-outs in a 10-store pilot.
+- Ran t-tests to compare two loyalty offers and explained the result to the marketing head.
+
+PROJECTS
+- Customer churn model (course project): logistic regression and random forest in scikit-learn, compared using ROC AUC.
+
+EDUCATION
+BSc Statistics, Osmania University, 2023
+
+SKILLS
+SQL, BigQuery, Python, pandas, scikit-learn, Tableau
+",SQL; SQL window functions and CTEs; Cloud data warehouses; Python; pandas; Statistics; Written and verbal communication; Machine learning; scikit-learn; Model evaluation; Tableau,Machine learning (weak); A/B testing (missing); Feature engineering (missing),,
+database-architect-oracle-dba,Database Architect,Senior Oracle DBA aiming for a cloud database architect role,"Suresh Iyer | Bengaluru | suresh.iyer@example.com
+
+EXPERIENCE
+Lead Database Administrator, Kaveri Bank Technology Centre, Bengaluru (2019 - present)
+- Run 40 Oracle 19c databases including Oracle RAC clusters for core banking.
+- Designed Data Guard replication and tested disaster recovery twice a year.
+- Tune slow PL/SQL and SQL using execution plans and new indexes; cut batch time by 35%.
+- Designed the schema and ERD for a new loan origination system.
+- Set up database auditing and data masking for test copies of customer data.
+- Automate backups with RMAN and shell scripts on Linux.
+
+Database Administrator, Nilgiri Software Services (2017 - 2019)
+- Maintained SQL Server and MySQL databases for retail clients.
+
+EDUCATION
+MCA, Bangalore University, 2016
+
+CERTIFICATIONS
+Oracle Database Administration Certified Professional
+","Oracle Database; Replication, high availability and recovery; Query optimization and indexing; SQL; Data modeling; Relational database design; Database security; Linux command line",Managed cloud databases (missing); NoSQL databases (missing); System design (missing),,
+devops-sysadmin-transition,DevOps / Cloud Engineer,Linux system administrator moving into DevOps,"Imran Shaikh | Ahmedabad | imran.shaikh@example.com
+
+EXPERIENCE
+System Administrator, Sabarmati Data Centre Services, Ahmedabad (2020 - present)
+- Administer 120 RHEL and Ubuntu servers; automate patching with Bash scripts and cron.
+- Built Jenkins pipelines to build and deploy two Java applications.
+- Run internal apps in Docker containers with docker-compose.
+- Set up Nagios monitoring and alerts for disk, CPU and service health.
+- Troubleshoot DNS, firewall rules and load balancer issues with the network team.
+- Was on the on-call rotation and wrote incident reports after outages.
+
+Junior System Administrator, Sabarmati Data Centre Services (2019 - 2020)
+
+EDUCATION
+BSc IT, Gujarat University, 2019
+
+CERTIFICATIONS
+RHCSA (2021)
+",Linux command line; CI/CD pipelines; Docker; Monitoring and observability; Networking basics; SRE practices,SRE practices (weak); Kubernetes (missing); AWS (missing); Infrastructure as code (missing); Python (missing); Git and version control (missing),,
+digital-marketing-fresher,Digital Marketing Executive,Mass media graduate with an internship and free certifications,"Riya Sharma | Jaipur | riya.sharma@example.com
+
+INTERNSHIP
+Digital Marketing Intern, Pink City Travels, Jaipur (Jan 2026 - Jun 2026)
+- Ran Instagram and Facebook ad campaigns with a Rs 20,000 monthly budget.
+- Wrote blog posts and captions for the travel packages page.
+- Did keyword research and on-page SEO for 10 landing pages.
+- Tracked website traffic and campaign clicks in Google Analytics (GA4).
+- Shared a weekly results report with the founder.
+
+EDUCATION
+BA Mass Media, University of Rajasthan, 2026
+
+CERTIFICATIONS
+Google Ads Search Certification; Google Analytics Certification
+",Social media marketing; Content marketing; SEO; Web analytics; Written and verbal communication; Performance marketing,Performance marketing (weak); Google Ads and SEM (missing); A/B testing (missing),,
+frontend-react-junior,Frontend Developer (React),Self-taught React developer with one freelance year,"Sneha Kulkarni | Bengaluru | sneha.k@example.com
+
+EXPERIENCE
+Freelance Web Developer (2025 - present)
+- Built responsive marketing sites for 6 local businesses with HTML, CSS and Tailwind.
+- Built a React booking app with hooks, React Router and form validation for a yoga studio.
+- Fetched class schedules from a REST API and showed loading and error states.
+- Explain design trade-offs to clients on weekly calls.
+
+PROJECTS
+- Movie search app in JavaScript using async/await and the OMDb API.
+
+SKILLS
+HTML, CSS, JavaScript, React, Tailwind, Figma, GitHub
+",HTML and CSS; React; REST API design; JavaScript; Written and verbal communication; Figma; Git and version control,TypeScript (missing); Front-end state management (missing); Git and version control (weak),,
+full-stack-mern-bootcamp,Full Stack Developer (MERN),Mechanical engineer who finished a MERN bootcamp,"Arjun Verma | Indore | arjun.verma@example.com
+
+PROJECTS
+- ShopLite (MERN bootcamp capstone): React front end, Node.js and Express API, MongoDB for products and orders.
+- Designed REST endpoints for cart and checkout with input validation.
+- Deployed the app on Render; code on GitHub with feature branches.
+- Solved 150 LeetCode problems, mostly arrays, strings and hash maps.
+
+EDUCATION
+BE Mechanical Engineering, RGPV, 2025
+Full Stack Web Development Bootcamp, 2026
+
+SKILLS
+JavaScript, React, Node.js, Express, MongoDB, HTML, CSS, Git
+",React; Node.js; NoSQL databases; REST API design; Git and version control; Data structures and algorithms; JavaScript; HTML and CSS,TypeScript (missing); SQL (missing); Data structures and algorithms (weak),,
+infosec-grc-auditor,Information Security Analyst (GRC),IT auditor at a consulting firm moving into an in-house GRC role,"Neha Gupta | New Delhi | neha.gupta@example.com
+
+EXPERIENCE
+IT Audit Associate, Yamuna Assurance LLP, New Delhi (2023 - present)
+- Tested IT general controls (ITGC) for 8 clients, including access reviews and change management.
+- Collected audit evidence and wrote findings with risk ratings for client management.
+- Supported an ISO 27001 readiness assessment for a fintech client.
+- Mapped client controls to the RBI cyber security framework.
+- Followed up with client IT teams until findings were closed.
+
+EDUCATION
+BCom (Hons), Delhi University, 2023
+Pursuing CISA
+
+SKILLS
+ITGC testing, ISO 27001, risk assessment, Excel
+",Security audits; Identity and access management; Security risk assessment; Security compliance frameworks; Stakeholder management; Written and verbal communication; Excel,Security policies and governance (missing); Security compliance frameworks (weak),,
+java-backend-service-company,Java Backend Developer,Java developer at an IT services firm maintaining a legacy monolith,"Karthik Subramanian | Chennai | karthik.s@example.com
+
+EXPERIENCE
+Software Engineer, Coromandel IT Services, Chennai (2023 - present)
+- Maintain a Java 8 monolith for an insurance client using Spring MVC and Hibernate on Oracle.
+- Added REST endpoints for policy lookup and wrote SQL queries to fix slow reports.
+- Use Git with pull requests and code review in Bitbucket.
+- Fixed production defects raised in Jira within agreed SLAs.
+
+EDUCATION
+BE Computer Science, Anna University, 2023
+
+SKILLS
+Java, Spring, Hibernate, Oracle SQL, Git, Jira
+",Java; Spring Boot; Relational database design; REST API design; SQL; Git and version control; Bug tracking,Java (outdated); Spring Boot (weak); Object-oriented design (missing); NoSQL databases (missing); Data structures and algorithms (missing); System design (missing); Unit testing (missing),,
+product-manager-from-engineering,Product Manager,Backend engineer who acted as product owner for an internal tool,"Vikram Desai | Mumbai | vikram.desai@example.com
+
+EXPERIENCE
+Senior Software Engineer, Konkan Fintech, Mumbai (2021 - present)
+- Acted as product owner for the internal reconciliation tool; interviewed 15 finance users to find their biggest delays.
+- Wrote user stories with acceptance criteria and groomed the backlog with the team.
+- Ran two-week sprints as part of a Scrum team.
+- Agreed priorities each quarter with finance and operations heads.
+- Tracked weekly active users and time-to-reconcile after each release.
+
+Software Engineer, Konkan Fintech (2019 - 2021)
+- Built payment APIs in Java and Spring Boot.
+
+EDUCATION
+BTech Computer Engineering, VJTI Mumbai, 2019
+",Product discovery; Writing product requirements; Agile and Scrum; Stakeholder management; Roadmapping and prioritization; Product metrics; Java; Spring Boot,Roadmapping and prioritization (weak); Written and verbal communication (missing); Structured problem solving (missing),,
+qa-manual-to-automation,QA Automation Engineer,Manual tester starting test automation,"Meera Joshi | Noida | meera.joshi@example.com
+
+EXPERIENCE
+QA Engineer, Yamuna Software Labs, Noida (2023 - present)
+- Wrote and ran 400+ test cases for regression testing of a banking web app.
+- Log defects in Jira with steps to reproduce, screenshots and expected results.
+- Test REST APIs manually in Postman before each release.
+- Started a Selenium WebDriver suite in Java for the login and payments flows (25 scripts).
+- Verify transaction data with SQL queries on MySQL.
+
+EDUCATION
+BCA, Amity University, 2023
+
+SKILLS
+Manual testing, Jira, Postman, Selenium, Java, MySQL
+",Manual testing; Bug tracking; API testing; Selenium; Java; SQL,Selenium (weak); API testing (weak); Test planning and strategy (missing); Python (missing); Git and version control (missing); Written and verbal communication (missing),,
