@@ -31,6 +31,7 @@ import {
   exampleGoals,
   exampleName,
   exampleRide,
+  exampleSignalCheck,
   exampleRole as exampleTargetRole,
   exampleWeek,
 } from "@/lib/today/fixtures";
@@ -158,6 +159,7 @@ const exampleToday: TodayData = {
   tally: exampleFirstTally,
   firstTasks: exampleFirstTasks,
   lineHours: 46,
+  signalCheck: exampleSignalCheck,
 };
 
 const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line"] as const;

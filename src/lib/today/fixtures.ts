@@ -1,4 +1,4 @@
-import type { Departure, GoalsSummary, Ride, RideTask, RideWeek, Streak, UserState } from "@/lib/schemas";
+import type { Departure, GoalsSummary, Ride, RideTask, RideWeek, SignalCheck, Streak, UserState } from "@/lib/schemas";
 
 // Synthetic example data for the design page and the Today preview. Every person, company and number is made up.
 
@@ -112,3 +112,18 @@ export const exampleFirstTasks: RideTask[] = [
   { id: "f1", title: "Read what window functions do, in plain words", detail: "PostgreSQL docs · article", minutes: 15, done: false, locked: false },
   { id: "f2", title: "List 3 reports at work that rank or compare rows", detail: "Proof task, part 1 · two lines each", minutes: 15, done: false, locked: false },
 ];
+
+export const exampleSignalCheck: SignalCheck = {
+  skillName: "SQL window functions",
+  status: "missing",
+  question: "You need each product's sales next to its rank within its month, without losing any rows. Which do you use?",
+  options: [
+    { key: "A", label: "GROUP BY month, product", detail: "aggregate" },
+    { key: "B", label: "RANK() OVER (PARTITION BY month ORDER BY sales DESC)", detail: "window function" },
+    { key: "C", label: "A self join on month", detail: "join" },
+    { key: "D", label: "ORDER BY month, sales DESC", detail: "sort" },
+  ],
+  correctKey: "B",
+  explanation: "A window function ranks rows within each month and keeps every row. GROUP BY would collapse them into one row per group.",
+  from: "From your SQL window functions goal · warms you up for Pitstop 5",
+};

@@ -27,7 +27,7 @@ export function TaskList({ tasks, done, onToggle }: { tasks: RideTask[]; done: R
                 <b className={`text-[0.9rem] font-medium ${checked ? "text-muted line-through decoration-line" : ""}`}>{t.title}</b>
                 <small className="text-[0.76rem] text-muted">
                   {t.detail}
-                  {t.locked ? " · opens after your other tasks" : ""}
+                  {t.locked ? " · ticks itself when you answer it" : ""}
                 </small>
               </span>
               <span className="whitespace-nowrap font-mono text-[0.72rem] text-muted">{t.minutes} min</span>

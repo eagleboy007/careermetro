@@ -16,13 +16,17 @@ export function RideCard({
   ride,
   week,
   onToggle,
+  signalAnswered = false,
 }: {
   name: string;
   ride: Ride;
   week: RideWeek;
   onToggle?: (taskId: string, done: boolean) => void;
+  /** The signal check was answered today: that ticks the ride's locked task. */
+  signalAnswered?: boolean;
 }) {
-  const [done, setDone] = useState(() => new Set(ride.tasks.filter((t) => t.done).map((t) => t.id)));
+  const [ticked, setTicked] = useState(() => new Set(ride.tasks.filter((t) => t.done && !t.locked).map((t) => t.id)));
+  const done = new Set([...ticked, ...ride.tasks.filter((t) => t.locked && (t.done || signalAnswered)).map((t) => t.id)]);
   const added = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
   const removed = ride.tasks.filter((t) => !done.has(t.id) && t.done).length;
   const weekDone = Math.max(0, Math.min(ride.weekTasksTotal, ride.weekTasksDone + added - removed));
@@ -30,19 +34,13 @@ export function RideCard({
   const rodeToday = done.size > 0;
 
   function toggle(id: string) {
-    const next = new Set(done);
+    const next = new Set(ticked);
     const on = !next.has(id);
     if (on) next.add(id);
-    else {
-      next.delete(id);
-      // Unticking an open task locks the signal check again, so it can't stay ticked behind a disabled box.
-      if (!ride.tasks.find((t) => t.id === id)?.locked) for (const t of ride.tasks) if (t.locked) next.delete(t.id);
-    }
-    setDone(next);
+    else next.delete(id);
+    setTicked(next);
     onToggle?.(id, on);
   }
-  // The locked task (signal check) opens once every other task is ticked.
-  const tasks = ride.tasks.map((t) => ({ ...t, locked: t.locked && ride.tasks.some((o) => !o.locked && !done.has(o.id)) }));
 
   return (
     <section aria-label="Today's ride" className="grid gap-7 overflow-hidden rounded-[24px] border border-line bg-surface px-4 py-5 md:grid-cols-[minmax(0,1fr)_300px] md:px-7 md:py-6">
@@ -61,7 +59,7 @@ export function RideCard({
         </h2>
         <p className="max-w-[52ch] text-[0.95rem] text-muted">{ride.summary}</p>
         <MiniLine pitstop={ride.pitstop} count={ride.pitstopCount} share={share} />
-        <TaskList tasks={tasks} done={done} onToggle={toggle} />
+        <TaskList tasks={ride.tasks} done={done} onToggle={toggle} />
       </div>
 
       <div className="flex min-w-0 flex-col gap-4 border-t border-line pt-4 md:border-l md:border-t-0 md:pl-7 md:pt-0">

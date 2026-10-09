@@ -10,6 +10,7 @@ import {
   exampleGoals,
   exampleName,
   exampleRide,
+  exampleSignalCheck,
   exampleRole,
   exampleWeek,
 } from "@/lib/today/fixtures";
@@ -27,6 +28,7 @@ const data: TodayData = {
   tally: exampleFirstTally,
   firstTasks: exampleFirstTasks,
   lineHours: 46,
+  signalCheck: exampleSignalCheck,
 };
 
 function readState(value: string | string[] | undefined): UserState {
