@@ -50,7 +50,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
 
   it("stores a verified, unconfirmed profile and logs the call without resume text", async () => {
     const { client: c, create } = client(JSON.stringify(parsed));
-    const result = await ingestResume({ bytes, as: "text", sessionId: session, clientHash: `h-${session}` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: session }, clientHash: `h-${session}` }, { db: db!, client: c });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     created.push(result.resumeId);
@@ -74,7 +74,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
 
   it("marks the resume failed when the model output can't be used", async () => {
     const { client: c } = client("not json");
-    const result = await ingestResume({ bytes, as: "text", sessionId: `${session}-f`, clientHash: `h-${session}-f` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-f` }, clientHash: `h-${session}-f` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 422, code: "unparsed" });
     const rows = await db!.select().from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, `${session}-f`));
     created.push(...rows.map((r) => r.id));
@@ -84,12 +84,12 @@ describe.skipIf(!db)("ingestResume (database)", () => {
   it("refuses uploads past the per-session limit without calling the model", async () => {
     const s = `${session}-limit`;
     const { client: c, create } = client(JSON.stringify(parsed));
-    for (let i = 0; i < LIMITS.perSessionPerDay; i++) {
-      const r = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-${i}` }, { db: db!, client: c });
+    for (let i = 0; i < LIMITS.perOwnerPerDay; i++) {
+      const r = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}-${i}` }, { db: db!, client: c });
       if (r.ok) created.push(r.resumeId);
     }
     create.mockClear();
-    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-x` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}-x` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 429 });
     expect(create).not.toHaveBeenCalled();
   });
@@ -102,11 +102,11 @@ describe.skipIf(!db)("ingestResume (database)", () => {
       return { model: "claude-opus-5-5", stop_reason: "end_turn", usage: { input_tokens: 3000, output_tokens: 1000 }, content: [{ type: "text", text: JSON.stringify(parsed) }] };
     });
     const results = await Promise.all(
-      Array.from({ length: 6 }, (_, i) => ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-${i}` }, { db: db!, client: c })),
+      Array.from({ length: 6 }, (_, i) => ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}-${i}` }, { db: db!, client: c })),
     );
     for (const r of results) if (r.ok) created.push(r.resumeId);
-    expect(results.filter((r) => r.ok)).toHaveLength(LIMITS.perSessionPerDay);
-    expect(results.filter((r) => !r.ok && r.status === 429)).toHaveLength(6 - LIMITS.perSessionPerDay);
+    expect(results.filter((r) => r.ok)).toHaveLength(LIMITS.perOwnerPerDay);
+    expect(results.filter((r) => !r.ok && r.status === 429)).toHaveLength(6 - LIMITS.perOwnerPerDay);
   });
 
   it("marks the resume failed when the model call errors, and logs the call", async () => {
@@ -114,7 +114,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     const { client: c, create } = client(JSON.stringify(parsed));
     create.mockRejectedValueOnce(new Error("boom"));
     vi.spyOn(console, "error").mockImplementation(() => {});
-    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 503, code: "unavailable" });
     const rows = await db!.select().from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, s));
     created.push(...rows.map((r) => r.id));
@@ -124,13 +124,13 @@ describe.skipIf(!db)("ingestResume (database)", () => {
   it("refuses an over-limit client before reading the file", async () => {
     const s = `${session}-early`;
     const { client: c, create } = client(JSON.stringify(parsed));
-    for (let i = 0; i < LIMITS.perSessionPerDay; i++) {
-      const r = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}-${i}` }, { db: db!, client: c });
+    for (let i = 0; i < LIMITS.perOwnerPerDay; i++) {
+      const r = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}-${i}` }, { db: db!, client: c });
       if (r.ok) created.push(r.resumeId);
     }
     create.mockClear();
     // Unreadable bytes would give 422 if they were extracted; the limit answers first.
-    const result = await ingestResume({ bytes: new TextEncoder().encode("GIF89a"), sessionId: s, clientHash: `h-${s}-x` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes: new TextEncoder().encode("GIF89a"), owner: { sessionId: s }, clientHash: `h-${s}-x` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 429 });
   });
 
@@ -150,7 +150,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
       await held;
     });
     await isLocked;
-    const result = await ingestResume({ bytes, as: "text", sessionId: s, clientHash: `h-${s}` }, { db: db!, client: c }).finally(() => {
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}` }, { db: db!, client: c }).finally(() => {
       LIMITS.reserveLockTimeoutMs = original;
     });
     release();
@@ -162,7 +162,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
   it("pauses parsing once the daily budget is spent", async () => {
     vi.stubEnv("PARSE_DAILY_BUDGET_USD", "0");
     const { client: c, create } = client(JSON.stringify(parsed));
-    const result = await ingestResume({ bytes, as: "text", sessionId: `${session}-b`, clientHash: `h-${session}-b` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-b` }, clientHash: `h-${session}-b` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 503, code: "busy" });
     expect(create).not.toHaveBeenCalled();
   });
@@ -179,7 +179,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
         .where(and(gte(schema.aiCalls.createdAt, new Date(new Date().setUTCHours(0, 0, 0, 0))), ne(schema.aiCalls.purpose, "health-check")));
       vi.stubEnv("PARSE_DAILY_BUDGET_USD", String(Number(usd ?? 0) + 100));
       const { client: c } = client(JSON.stringify(parsed));
-      const result = await ingestResume({ bytes, as: "text", sessionId: `${session}-h`, clientHash: `h-${session}-h` }, { db: db!, client: c });
+      const result = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-h` }, clientHash: `h-${session}-h` }, { db: db!, client: c });
       expect(result).toMatchObject({ ok: true });
       if (result.ok) created.push(result.resumeId);
     } finally {
@@ -189,7 +189,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
 
   it("rejects unreadable input before storing anything", async () => {
     const { client: c } = client(JSON.stringify(parsed));
-    const result = await ingestResume({ bytes: new TextEncoder().encode("GIF89a"), sessionId: `${session}-g`, clientHash: `h-${session}-g` }, { db: db!, client: c });
+    const result = await ingestResume({ bytes: new TextEncoder().encode("GIF89a"), owner: { sessionId: `${session}-g` }, clientHash: `h-${session}-g` }, { db: db!, client: c });
     expect(result).toMatchObject({ ok: false, status: 422, code: "unsupported_type" });
     const rows = await db!.select().from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, `${session}-g`));
     expect(rows).toHaveLength(0);
@@ -197,7 +197,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
 
   it("deletes anonymous resumes and their profiles after 24 hours", async () => {
     const { client: c } = client(JSON.stringify(parsed));
-    const r = await ingestResume({ bytes, as: "text", sessionId: `${session}-old`, clientHash: `h-${session}-old` }, { db: db!, client: c });
+    const r = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-old` }, clientHash: `h-${session}-old` }, { db: db!, client: c });
     if (!r.ok) throw new Error("setup failed");
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, r.resumeId));
     expect(await deleteExpiredAnonymousResumes(db!)).toBeGreaterThanOrEqual(1);

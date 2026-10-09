@@ -4,14 +4,14 @@ import { getDb } from "@/db";
 import { aiCalls, consents, profiles, resumes } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
 import { HEALTH_PURPOSE } from "@/lib/health";
-import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
+import { ANONYMOUS_TTL_HOURS, uploadedBy, type Owner } from "@/lib/owner";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
 
 export const RESUME_POLICY_VERSION = "2026-10-draft";
 export const LIMITS = {
-  perSessionPerDay: 3,
+  perOwnerPerDay: 3,
   perClientPerDay: 20,
   /** Total model spend per UTC day, across all users, before parsing pauses (AI-6). Override with PARSE_DAILY_BUDGET_USD. */
   dailyBudgetUsd: () => Number(process.env.PARSE_DAILY_BUDGET_USD ?? 5),
@@ -35,7 +35,8 @@ const MIME: Record<ResumeType, string> = {
 export type IngestInput = {
   bytes: Uint8Array;
   as?: "text";
-  sessionId: string;
+  /** A signed-in user owns the resume from the start; an anonymous one belongs to the browser session for 24 hours. */
+  owner: Owner;
   clientHash: string;
   /** When the request began, so extraction and waiting for the lock come out of the parse deadline. */
   startedAt?: number;
@@ -59,17 +60,17 @@ const BUSY: IngestResult = {
   message: "We've reached today's capacity for the beta. Please try again tomorrow.",
 };
 
-async function checkLimits(tx: Db | Tx, sessionId: string, hash: string): Promise<IngestResult | null> {
+async function checkLimits(tx: Db | Tx, owner: Owner, hash: string): Promise<IngestResult | null> {
   const recent = new Date(Date.now() - IN_FLIGHT_MINUTES * 60 * 1000);
-  // Uploads still being parsed are rows already, so they count toward the per-session and per-client limits.
-  const [[bySession], [byClient], [spent], [inFlight]] = await Promise.all([
-    tx.select({ n: count() }).from(resumes).where(and(eq(resumes.anonymousSessionId, sessionId), gte(resumes.createdAt, dayAgo()))),
+  // Uploads still being parsed are rows already, so they count toward the per-owner and per-client limits.
+  const [[byOwnerCount], [byClient], [spent], [inFlight]] = await Promise.all([
+    tx.select({ n: count() }).from(resumes).where(and(uploadedBy(owner), gte(resumes.createdAt, dayAgo()))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.clientHash, hash), gte(resumes.createdAt, startOfUtcDay()))),
     // Health pings are left out, so a flood of /api/health requests can't pause uploads.
     tx.select({ usd: sum(aiCalls.costUsd) }).from(aiCalls).where(and(gte(aiCalls.createdAt, startOfUtcDay()), ne(aiCalls.purpose, HEALTH_PURPOSE))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.status, "parsing"), gte(resumes.createdAt, recent))),
   ]);
-  if (bySession.n >= LIMITS.perSessionPerDay || byClient.n >= LIMITS.perClientPerDay) {
+  if (byOwnerCount.n >= LIMITS.perOwnerPerDay || byClient.n >= LIMITS.perClientPerDay) {
     return { ok: false, status: 429, code: "rate_limited", message: "You've reached today's limit for resume uploads. Please try again tomorrow." };
   }
   if (Number(spent.usd ?? 0) + inFlight.n * LIMITS.inFlightParseUsd >= LIMITS.dailyBudgetUsd()) {
@@ -84,7 +85,7 @@ function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestRe
     // Waiting uploads hold a pooled connection, so give up quickly rather than queue.
     await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(LIMITS.reserveLockTimeoutMs)}`));
     await tx.execute(sql`select pg_advisory_xact_lock(${RESERVE_LOCK_KEY})`);
-    const limited = await checkLimits(tx, input.sessionId, input.clientHash);
+    const limited = await checkLimits(tx, input.owner, input.clientHash);
     if (limited) return limited;
 
     const [consent] = await tx
@@ -94,7 +95,8 @@ function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestRe
     const [resume] = await tx
       .insert(resumes)
       .values({
-        anonymousSessionId: input.sessionId,
+        userId: input.owner.userId ?? null,
+        anonymousSessionId: input.owner.sessionId ?? null,
         clientHash: input.clientHash,
         consentId: consent.id,
         mimeType: MIME[type],
@@ -120,7 +122,7 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
   const startedAt = input.startedAt ?? Date.now();
 
   // A quick check without the lock, so a client already over its limit can't make us extract file after file.
-  const early = await checkLimits(db, input.sessionId, input.clientHash);
+  const early = await checkLimits(db, input.owner, input.clientHash);
   if (early) return early;
 
   let extracted;

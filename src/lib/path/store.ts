@@ -1,12 +1,12 @@
 import "server-only";
-import { and, asc, count, desc, eq, gt, gte, inArray, isNotNull, or, sql, sum } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, sql, sum } from "drizzle-orm";
 import { getDb } from "@/db";
 import { aiCalls, gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
 import { skills } from "@/content";
 import { recordAiCalls } from "@/lib/ai/log";
-import { getGapsForSession, type GapsForSession } from "@/lib/gaps/store";
+import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
+import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import type { GapStatus, RoleProfile } from "@/lib/schemas";
-import { ANONYMOUS_TTL_HOURS } from "@/lib/session";
 import { buildPath } from "./build";
 import { writePath, type WriteClient } from "./write";
 
@@ -14,8 +14,8 @@ type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 export const PATH_LIMITS = {
-  /** Model-worded paths per anonymous session per day; after that the path keeps template wording. */
-  wordedPerSessionPerDay: 15,
+  /** Model-worded paths per user or anonymous session per day; after that the path keeps template wording. */
+  wordedPerOwnerPerDay: 15,
   /** Spend on path wording per UTC day, across all users, kept apart from the other budgets (AI-6). */
   dailyBudgetUsd: () => Number(process.env.WRITE_PATH_DAILY_BUDGET_USD ?? 2),
   lockTimeoutMs: 30_000,
@@ -46,16 +46,15 @@ export type PathView = {
   deferredCount: number;
 };
 
-export type PathForSession =
+export type PathForOwner =
   | { ok: true; path: PathView }
-  | { ok: false; reason: Extract<GapsForSession, { ok: false }>["reason"] | "no_gaps" };
+  | { ok: false; reason: Extract<GapsForOwner, { ok: false }>["reason"] | "no_gaps" };
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
-const notExpired = () => or(gt(resumes.createdAt, new Date(Date.now() - ANONYMOUS_TTL_HOURS * 3600_000)), isNotNull(resumes.userId));
 
-/** True when this session may spend on another worded path: under its daily count and under the wording budget. */
-async function mayWrite(tx: Tx, sessionId: string): Promise<boolean> {
+/** True when this owner may spend on another worded path: under its daily count and under the wording budget. */
+async function mayWrite(tx: Tx, owner: Owner): Promise<boolean> {
   const [[mine], [spent]] = await Promise.all([
     tx
       .select({ n: count() })
@@ -63,29 +62,29 @@ async function mayWrite(tx: Tx, sessionId: string): Promise<boolean> {
       .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
       .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(eq(resumes.anonymousSessionId, sessionId), isNotNull(paths.aiCallId), gte(paths.createdAt, startOfUtcDay()))),
+      .where(and(uploadedBy(owner), isNotNull(paths.aiCallId), gte(paths.createdAt, startOfUtcDay()))),
     tx
       .select({ usd: sum(aiCalls.costUsd) })
       .from(aiCalls)
       .where(and(eq(aiCalls.purpose, "write-path"), gte(aiCalls.createdAt, startOfUtcDay()))),
   ]);
-  return mine.n < PATH_LIMITS.wordedPerSessionPerDay && Number(spent.usd ?? 0) < PATH_LIMITS.dailyBudgetUsd();
+  return mine.n < PATH_LIMITS.wordedPerOwnerPerDay && Number(spent.usd ?? 0) < PATH_LIMITS.dailyBudgetUsd();
 }
 
 /**
- * FR-15 to FR-18: this session's learning path for a role at the chosen weekly hours. Reuses the stored path for
+ * FR-15 to FR-18: this owner's learning path for a role at the chosen weekly hours. Reuses the stored path for
  * the same gap analysis and hours; otherwise builds it in code, asks the model to word it (or keeps template
- * wording past the limits) and stores it. Runs under a per-session lock, like the Gaps page.
+ * wording past the limits) and stores it. Runs under a per-owner lock, like the Gaps page.
  */
-export async function getPathForSession(
+export async function getPathForOwner(
   resumeId: string,
-  sessionId: string,
+  owner: Owner,
   role: RoleProfile,
   weeklyHours: number,
   deps: { db?: Db; client?: WriteClient; now?: Date } = {},
-): Promise<PathForSession> {
+): Promise<PathForOwner> {
   const db = deps.db ?? getDb();
-  const gaps = await getGapsForSession(resumeId, sessionId, role, { db, now: deps.now });
+  const gaps = await getGapsForOwner(resumeId, owner, role, { db, now: deps.now });
   if (!gaps.ok) return gaps;
   if (gaps.analysis.gaps.length === 0) return { ok: false, reason: "no_gaps" };
   const statusBySkill = new Map(gaps.analysis.gaps.map((g) => [g.skillId, g.status]));
@@ -93,7 +92,7 @@ export async function getPathForSession(
   try {
     return await db.transaction(async (tx) => {
       await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(PATH_LIMITS.lockTimeoutMs)}`));
-      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-path:${sessionId}`}))`);
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-path:${ownerKey(owner)}`}))`);
 
       const [stored] = await tx
         .select({ id: paths.id })
@@ -112,7 +111,7 @@ export async function getPathForSession(
         // later, call the model outside the transaction and re-check for a stored path after taking the lock.
         const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
         const titles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
-        const worded = (await mayWrite(tx, sessionId))
+        const worded = (await mayWrite(tx, owner))
           ? await writePath(plan, role.title, titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
           : { path: plan, calls: [] };
         const callIds = await recordAiCalls(worded.calls, tx);
@@ -197,10 +196,10 @@ async function readPath(
 }
 
 /**
- * FR-18: marks one of this session's path steps done or not done, while its resume is within its 24 hours. The same
+ * FR-18: marks one of the owner's path steps done or not done (an anonymous one only within its 24 hours). The same
  * skill's step in the paths for other hours settings changes with it, so progress survives a change of hours.
  */
-export async function markStepDone(stepId: string, sessionId: string, done: boolean, db: Db = getDb()): Promise<boolean> {
+export async function markStepDone(stepId: string, owner: Owner, done: boolean, db: Db = getDb()): Promise<boolean> {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(stepId)) return false;
   const [step] = await db
     .select({ skillId: pathSteps.skillId, gapAnalysisId: paths.gapAnalysisId })
@@ -209,7 +208,7 @@ export async function markStepDone(stepId: string, sessionId: string, done: bool
     .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(eq(pathSteps.id, stepId), eq(resumes.anonymousSessionId, sessionId), notExpired()));
+    .where(and(eq(pathSteps.id, stepId), ownsResume(owner)));
   if (!step) return false;
   const sameAnalysis = db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, step.gapAnalysisId));
   await db
