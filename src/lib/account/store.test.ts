@@ -10,7 +10,7 @@ import { ingestResume, LIMITS } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile, getResumeForOwner } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
-import { roleProfiles } from "@/content";
+import { roleProfiles, skills } from "@/content";
 import { claimAnonymousResumes, createAccount, findAccount, touchLastSeen } from "./store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests.
@@ -45,7 +45,9 @@ describe.skipIf(!db)("account store (database)", () => {
   const userIds: string[] = [];
   const role = roleProfiles[0];
   const limits = { explain: GAP_LIMITS.explainedPerOwnerPerDay, word: PATH_LIMITS.wordedPerOwnerPerDay };
-  beforeAll(() => {
+  beforeAll(async () => {
+    // CI's database has migrations but no content, and path steps reference skills.
+    await db!.insert(schema.skills).values(skills.map(({ id, name, category }) => ({ id, name, category }))).onConflictDoNothing();
     vi.stubEnv("PARSE_DAILY_BUDGET_USD", "1000000");
     // Template wording only: these tests are about who sees what, not the model.
     GAP_LIMITS.explainedPerOwnerPerDay = 0;
