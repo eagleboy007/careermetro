@@ -22,24 +22,42 @@ export const rideTask = z.object({
 
 export const ride = z
   .object({
-  pitstop: z.number().int().min(1),
-  pitstopCount: z.number().int().min(1),
-  goalName: z.string().min(1).max(80),
-  title: z.string().min(1).max(160),
-  summary: z.string().max(300),
-  tasks: z.array(rideTask).min(1).max(3),
-  /** Prep tasks for this pitstop this week, including today's. */
-  weekTasksDone: z.number().int().min(0),
-  weekTasksTotal: z.number().int().min(1),
-})
-  .refine((r) => r.pitstop <= r.pitstopCount, { message: "pitstop is past the last pitstop", path: ["pitstop"] })
-  .refine((r) => r.weekTasksDone <= r.weekTasksTotal, { message: "more tasks done than planned", path: ["weekTasksDone"] });
+    pitstop: z.number().int().min(1),
+    pitstopCount: z.number().int().min(1),
+    goalName: z.string().min(1).max(80),
+    title: z.string().min(1).max(160),
+    summary: z.string().max(300),
+    tasks: z.array(rideTask).min(1).max(3),
+    /** Prep tasks for this pitstop this week, including today's. */
+    weekTasksDone: z.number().int().min(0),
+    weekTasksTotal: z.number().int().min(1),
+  })
+  .refine((r) => r.pitstop <= r.pitstopCount, {
+    message: "pitstop is past the last pitstop",
+    path: ["pitstop"],
+  })
+  .refine((r) => r.weekTasksDone <= r.weekTasksTotal, {
+    message: "more tasks done than planned",
+    path: ["weekTasksDone"],
+  })
+  .refine((r) => r.tasks.every((t, i) => !t.locked || i === r.tasks.length - 1), {
+    message: "only the last task can be locked",
+    path: ["tasks"],
+  });
 
 /** Monday to Sunday of this week: whether the day was a ride (one task ticked) and which day is today. */
 export const rideWeek = z
-  .array(z.object({ label: z.string().length(1), rode: z.boolean(), today: z.boolean() }))
+  .array(
+    z.object({
+      label: z.string().length(1),
+      rode: z.boolean(),
+      today: z.boolean(),
+    }),
+  )
   .length(7)
-  .refine((days) => days.filter((d) => d.today).length === 1, { message: "exactly one day is today" });
+  .refine((days) => days.filter((d) => d.today).length === 1, {
+    message: "exactly one day is today",
+  });
 
 export const streak = z.object({
   /** Days ridden in a row; a missed day pauses the count and never resets it. 0 before the first ride. */
@@ -53,7 +71,14 @@ export const departure = z.object({
   where: z.string().max(60),
   /** Required gaps left; 0 is "Boarding now". */
   gapsLeft: z.number().int().min(0),
-  gaps: z.array(z.object({ status: goalStatus.exclude(["met"]), name: z.string().min(1).max(60) })).max(10),
+  gaps: z
+    .array(
+      z.object({
+        status: goalStatus.exclude(["met"]),
+        name: z.string().min(1).max(60),
+      }),
+    )
+    .max(10),
   note: z.string().max(200),
 });
 
@@ -64,15 +89,27 @@ export const signalCheck = z
     status: goalStatus.exclude(["met"]),
     question: z.string().min(10).max(400),
     options: z
-      .array(z.object({ key: z.enum(["A", "B", "C", "D"]), label: z.string().min(1).max(120), detail: z.string().max(60).optional() }))
+      .array(
+        z.object({
+          key: z.enum(["A", "B", "C", "D"]),
+          label: z.string().min(1).max(120),
+          detail: z.string().max(60).optional(),
+        }),
+      )
       .min(2)
       .max(4),
     correctKey: z.enum(["A", "B", "C", "D"]),
-    explanation: z.string().max(400),
-    from: z.string().max(120),
+    explanation: z.string().min(1).max(400),
+    from: z.string().min(1).max(120),
   })
-  .refine((c) => c.options.some((o) => o.key === c.correctKey), { message: "the right answer must be one of the options", path: ["correctKey"] })
-  .refine((c) => new Set(c.options.map((o) => o.key)).size === c.options.length, { message: "option keys repeat", path: ["options"] });
+  .refine((c) => c.options.some((o) => o.key === c.correctKey), {
+    message: "the right answer must be one of the options",
+    path: ["correctKey"],
+  })
+  .refine((c) => c.options.every((o, i) => o.key === "ABCD"[i]), {
+    message: "options are keyed A, B, C, D in order",
+    path: ["options"],
+  });
 
 export const goalPitstop = z.object({
   number: z.number().int().min(1),
@@ -92,7 +129,9 @@ export const goal = z.object({
   pitstops: z
     .array(goalPitstop)
     .max(6)
-    .refine((ps) => ps.filter((p) => p.state === "now").length <= 1, { message: "at most one pitstop is current" }),
+    .refine((ps) => ps.filter((p) => p.state === "now").length <= 1, {
+      message: "at most one pitstop is current",
+    }),
   suggestion: z.object({ title: z.string().max(80), detail: z.string().max(200) }).nullable(),
 });
 

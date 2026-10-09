@@ -32,7 +32,13 @@ describe("Today schemas", () => {
   });
 
   it("keep met out of a departure's gaps", () => {
-    expect(departure.safeParse({ ...exampleDepartures[0], gapsLeft: 1, gaps: [{ status: "met", name: "SQL" }] }).success).toBe(false);
+    expect(
+      departure.safeParse({
+        ...exampleDepartures[0],
+        gapsLeft: 1,
+        gaps: [{ status: "met", name: "SQL" }],
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -66,7 +72,10 @@ describe("Today schema checks", () => {
 
   it("allow at most one current pitstop per goal", () => {
     const g = exampleGoals.goals[0];
-    const twoNow = { ...g, pitstops: g.pitstops.map((p) => ({ ...p, state: "now" as const })) };
+    const twoNow = {
+      ...g,
+      pitstops: g.pitstops.map((p) => ({ ...p, state: "now" as const })),
+    };
     expect(goalsSummary.safeParse({ ...exampleGoals, goals: [twoNow] }).success).toBe(false);
   });
 });
@@ -74,13 +83,53 @@ describe("Today schema checks", () => {
 describe("signal check schema", () => {
   it("accepts the example and needs the right answer among the options", () => {
     expect(() => signalCheck.parse(exampleSignalCheck)).not.toThrow();
-    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: exampleSignalCheck.options.slice(0, 1) }).success).toBe(false);
-    const noB = exampleSignalCheck.options.filter((o) => o.key !== "B");
-    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: noB }).success).toBe(false);
+    expect(
+      signalCheck.safeParse({
+        ...exampleSignalCheck,
+        options: exampleSignalCheck.options.slice(0, 1),
+      }).success,
+    ).toBe(false);
+    expect(
+      signalCheck.safeParse({
+        ...exampleSignalCheck,
+        options: exampleSignalCheck.options.slice(0, 2),
+        correctKey: "D",
+      }).success,
+    ).toBe(false);
   });
 
-  it("rejects repeated option keys", () => {
-    const [a, b] = exampleSignalCheck.options;
-    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: [a, { ...b, key: "A" }, b] }).success).toBe(false);
+  it("needs options keyed A, B, C, D in order", () => {
+    const [a, b, c] = exampleSignalCheck.options;
+    expect(
+      signalCheck.safeParse({
+        ...exampleSignalCheck,
+        options: [a, { ...b, key: "A" }, c],
+      }).success,
+    ).toBe(false);
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, options: [b, a, c] }).success).toBe(false);
+  });
+
+  it("needs an explanation and a source", () => {
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, explanation: "" }).success).toBe(false);
+    expect(signalCheck.safeParse({ ...exampleSignalCheck, from: "" }).success).toBe(false);
+  });
+});
+
+describe("ride locked task", () => {
+  it("allows only the last task to be locked", () => {
+    const tasks = exampleRide.tasks.map((t) => ({ ...t, locked: false }));
+    const last = tasks.length - 1;
+    expect(
+      ride.safeParse({
+        ...exampleRide,
+        tasks: tasks.map((t, i) => ({ ...t, locked: i === last })),
+      }).success,
+    ).toBe(true);
+    expect(
+      ride.safeParse({
+        ...exampleRide,
+        tasks: tasks.map((t, i) => ({ ...t, locked: i === 0 })),
+      }).success,
+    ).toBe(false);
   });
 });

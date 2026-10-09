@@ -25,7 +25,7 @@ export function RideCard({
   /** The signal check was answered today: that ticks the ride's locked task. */
   signalAnswered?: boolean;
 }) {
-  const [ticked, setDone] = useState(() => new Set(ride.tasks.filter((t) => t.done && !t.locked).map((t) => t.id)));
+  const [ticked, setTicked] = useState(() => new Set(ride.tasks.filter((t) => t.done && !t.locked).map((t) => t.id)));
   const done = new Set([...ticked, ...ride.tasks.filter((t) => t.locked && (t.done || signalAnswered)).map((t) => t.id)]);
   const added = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
   const removed = ride.tasks.filter((t) => !done.has(t.id) && t.done).length;
@@ -38,10 +38,9 @@ export function RideCard({
     const on = !next.has(id);
     if (on) next.add(id);
     else next.delete(id);
-    setDone(next);
+    setTicked(next);
     onToggle?.(id, on);
   }
-  const tasks = ride.tasks;
 
   return (
     <section aria-label="Today's ride" className="grid gap-7 overflow-hidden rounded-[24px] border border-line bg-surface px-4 py-5 md:grid-cols-[minmax(0,1fr)_300px] md:px-7 md:py-6">
@@ -60,7 +59,7 @@ export function RideCard({
         </h2>
         <p className="max-w-[52ch] text-[0.95rem] text-muted">{ride.summary}</p>
         <MiniLine pitstop={ride.pitstop} count={ride.pitstopCount} share={share} />
-        <TaskList tasks={tasks} done={done} onToggle={toggle} />
+        <TaskList tasks={ride.tasks} done={done} onToggle={toggle} />
       </div>
 
       <div className="flex min-w-0 flex-col gap-4 border-t border-line pt-4 md:border-l md:border-t-0 md:pl-7 md:pt-0">
