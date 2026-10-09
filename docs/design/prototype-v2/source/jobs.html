@@ -1,0 +1,38 @@
+        <!-- ================= DEPARTURES (/departures) ================= -->
+        <div class="view view-jobs" aria-label="Departures">
+          <div class="jobs-main">
+            <div class="pagehead">
+              <div><h2>Departures</h2><p>Roles from public company job boards and posts you paste. Apply on the company's site, or in one tap with Express apply where the company takes it.</p></div>
+              <div class="ph-r"><label class="switch srch-sw"><input type="checkbox" class="srch-in" checked><i></i>Looking for a job</label><span class="label jobs-clock">Updated 19:42 · <span id="jobs-total">0</span> roles</span></div>
+            </div>
+            <div class="srch-off me-empty"><svg class="icon"><use href="#i-route"/></svg><span><b>Job search is off.</b> Departures and Arrivals are paused: no job alerts, no Express apply, and companies can't find you. Your daily rides and your map keep going.</span><button class="btn btn-ghost btn-sm" type="button" data-srch-on>Turn on job search</button></div>
+
+
+            <label class="search"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="job-q" placeholder="Search role, skill or company" aria-label="Search roles"></label>
+
+            <div class="jfilters" role="group" aria-label="Filters">
+              <div class="ptype" id="jf-city"><button type="button" aria-pressed="true" data-v="">Any city</button><button type="button" aria-pressed="false" data-v="Pune">Pune</button><button type="button" aria-pressed="false" data-v="Bengaluru">Bengaluru</button><button type="button" aria-pressed="false" data-v="Hyderabad">Hyderabad</button><button type="button" aria-pressed="false" data-v="Remote">Remote</button></div>
+              <div class="ptype" id="jf-type"><button type="button" aria-pressed="true" data-v="">Any type</button><button type="button" aria-pressed="false" data-v="Full time">Full time</button><button type="button" aria-pressed="false" data-v="Part time">Part time</button><button type="button" aria-pressed="false" data-v="Freelance">Freelance</button></div>
+              <label class="switch"><input type="checkbox" id="jf-now"><i></i>Boarding now only</label>
+            </div>
+
+            <div class="seg" id="jf-tab" role="group" aria-label="Show">
+              <button type="button" aria-pressed="true" data-t="all">All</button>
+              <button type="button" aria-pressed="false" data-t="saved">Saved <span class="n" id="n-saved">0</span></button>
+              <button type="button" aria-pressed="false" data-t="applied">Applied <span class="n" id="n-applied">0</span></button>
+            </div>
+
+            <ul class="jlist" id="jlist"></ul>
+            <p class="jempty" id="jempty" hidden>No roles match. Try another city or type, or clear the search.</p>
+
+            <section class="paste" aria-label="Paste a job post">
+              <div class="me-h"><h3>Saw a role somewhere else?</h3><span class="label">paste the job post</span></div>
+              <textarea id="paste-t" rows="3" placeholder="Paste the full job description here. We compare it with your resume and show the gaps for this one role."></textarea>
+              <div class="actions"><button class="btn btn-primary btn-sm" type="button" id="paste-go"><svg class="icon"><use href="#i-target"/></svg>Check my gaps</button><span class="muted" style="font-size:0.78rem">The post is saved to your Departures; it is never shared.</span></div>
+              <div class="paste-out" id="paste-out" hidden></div>
+            </section>
+          </div>
+
+          <aside class="jdetail" id="jdetail" aria-live="polite"></aside>
+        </div>
+

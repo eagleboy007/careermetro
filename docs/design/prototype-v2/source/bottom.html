@@ -1,0 +1,143 @@
+
+        <nav class="tabs" aria-label="Main">
+          <a class="on" href="#today" data-go="today"><svg class="icon"><use href="#i-sun"/></svg>Today</a>
+          <a href="#map" data-go="map"><svg class="icon"><use href="#i-map"/></svg>Map</a>
+          <a href="#departures" data-go="jobs"><svg class="icon"><use href="#i-brief"/></svg>Departures</a>
+          <a href="#arrivals" data-go="arr"><svg class="icon"><use href="#i-cal"/></svg>Arrivals</a>
+          <a href="#junction" data-go="junction"><svg class="icon"><use href="#i-msg"/></svg>Junction</a>
+                    </nav>
+        <div class="toast" id="toast" role="status"><svg class="icon"><use href="#i-check"/></svg><span id="toast-t"></span></div>
+      </div>
+    </div>
+  </div>
+  <p class="cap">Example data only. Priya Nair and everyone else shown are made up.</p>
+  </div>
+
+  <p class="foot">Prototype v2, 8 Oct 2026. Built on the tokens in <code>src/app/globals.css</code>, plus one proposed token set for the departure board. Source: careermetro/careermetro-prototype-v2.html in the project files.</p>
+</div>
+
+<aside class="dev" id="dev" aria-label="Dev notes" aria-hidden="true">
+  <div class="dev-head"><h2>Dev notes</h2><button class="btn btn-ghost btn-sm" type="button" id="devclose"><svg class="icon"><use href="#i-x"/></svg>Close</button></div>
+  <div class="dev-body">
+    <section>
+      <h3>Routes</h3>
+      <ul>
+        <li><b>/today</b> is the signed-in home. Signed-in visits to <code>/</code> land here.</li>
+        <li><b>/map</b>, <b>/junction</b>, <b>/network</b>, <b>/u/[handle]</b> (someone's profile), <b>/library</b>.</li>
+        <li><b>/departures</b> is the full jobs page.</li>
+        <li>Phone: bottom tab bar under 760px; same routes.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Today</h3>
+      <ul>
+        <li><b>One pitstop = one gap</b> (Milin, 2026-10-08). Daily and weekly tasks (videos, reading, practice tests, signal checks) are prep: they move the train toward the pitstop and fill the weekly ring, but never mark a gap filled.</li>
+        <li><b>A gap is filled only by proof</b>, any one of: (1) a skill check for that skill (timed, on camera, retake after 7 days); (2) a certification the role profile accepts for that skill, verified with the issuer or Credly; (3) work experience: a role on the profile where the skill was used, backed by a course or certificate on the resume, and confirmed by a manager or colleague (status pending until confirmed). Store proofs in a gap_proofs table (type, evidence, verified_at, verifier). Only then does gap status turn met and the train pass the pitstop.</li>
+        <li><b>Ride card.</b> Today's ride is the next 2 to 3 prep tasks, picked by plain code from the path builder and the user's hours a week. When the week's prep is done, the proof card highlights the skill check.</li>
+        <li><b>Streak.</b> One ticked task counts as a ride for that day. A missed day pauses the count; it never resets. Store per-day rows, not a counter.</li>
+        <li><b>Signal check.</b> One question a day from the Practice bank for the next stop's skill. Answering ticks the last task. No score shown.</li>
+        <li><b>Departure board.</b> Roles from public ATS feeds and pasted job posts, ordered by gaps left. "Boarding now" means 0 required gaps. Readiness is words, never a percentage (FR-13).</li>
+        <li><b>Your goals</b> (was "Signals", then "Your gaps"): one goal per gap, with red, amber or green lamps (gap status only). Tapping a goal shows the quoted resume evidence and the goal's pitstops in order. The app suggests the pitstops per goal: a missing skill usually gets learn then prove; a weak skill already on the resume can start at prove. Each goal can show one suggested extra pitstop (e.g. labs) that the user adds with one tap. Below: goals met with proof this month, and a suggested new goal (skills common in job posts for the target role but not on the line; plain counting over saved and board posts). The daily Signal check asks one question from the current or next goal.</li>
+        <li><b>Tracks</b>: a destination role has tracks (for security: SOC and detection, GRC and compliance, Data protection, Application security, Cloud security). The track chip on Your goals switches them; gaps are recalculated against the chosen track's skill list, proof carries over, and Departures filters to that track. Each skill in a track is <code>required</code>, <code>one_of</code> (a group such as Splunk or Sentinel) or <code>nice</code>.</li>
+        <li><b>Not for me</b> on each goal: <code>nice</code> means remove it, with no change to the match; <code>one_of</code> means swap within the group (Sentinel for Splunk), pitstops update and the match is unchanged; <code>required</code> shows how many target posts ask for it and offers other tracks or "Skip anyway". A skipped goal stays a gap, and the roles that need it stay amber. Goals the user adds are marked "Your choice": own pitstops and proof, shown on the profile, never in the match. Needs role-profile and data-model approval.</li>
+        <li><b>On your line.</b> Counts people on the same goal as you, opted-in profiles only.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>How Your goals is filled, for any role</h3>
+      <p>Nothing on this card is written for cyber security. Priya's goals are one user's output. The same code fills it for a frontend developer, a data analyst or a digital marketer. Matching is deterministic code; the model only parses the resume and writes the "why" lines.</p>
+      <ul>
+        <li><b>1. Inputs.</b> Resume skills, each with the line it came from (parse prompt). The destination role and track the user picked. Job posts for that role and track in the user's city (pasted and public ATS feeds), refreshed weekly.</li>
+        <li><b>2. Default track.</b> For each track of the destination role, score = required skills already met or listed / required skills. Preselect the highest; show the rest with their goal counts. The user can switch any time.</li>
+        <li><b>3. Skill list for the track.</b> Each skill in the track has a level (<code>required</code>, <code>one_of</code> with a group, <code>nice</code>) and a weight = share of the track's posts that ask for it. Levels come from the hand-written role profile, reviewed by a domain expert; weights come from posts.</li>
+        <li><b>4. Gap status per skill.</b> <code>met</code> = accepted proof, or used in a job or project on the resume. <code>weak</code> = listed but never used. <code>missing</code> = not on the resume. A <code>one_of</code> group is met when any member is met.</li>
+        <li><b>5. Which gaps become goals.</b> Every required or one_of gap, plus nice gaps with weight of 30% or more. Plus goals the user adds ("Your choice", never counted in the match).</li>
+        <li><b>6. Order.</b> Prerequisites first (a skill graph, e.g. Cloud basics before AWS security; HTML and CSS before React), then higher weight, then less effort. A goal already in progress never moves; new gaps are appended.</li>
+        <li><b>7. Pitstops per goal.</b> Missing: learn then prove. Weak: prove only, with an optional learn pitstop suggested. Learn pitstops draw from the curated free resource bank for that skill; prove pitstops list the accepted proofs for that skill (skill check, named certifications, confirmed work).</li>
+        <li><b>8. Suggestions.</b> Extra pitstop per goal: the next unused resource for that skill (labs, projects). Suggested new goal: a skill in 30% or more of the user's saved and board posts that is not in the track list.</li>
+        <li><b>9. Not for me.</b> Behaviour follows the level (see Today above). Every skip, swap and removal is stored, so a recompute never brings it back.</li>
+        <li><b>10. Recompute when</b> the resume changes, the destination or track changes, a proof is accepted, or the weekly post refresh changes a weight by more than 10 points.</li>
+        <li><b>11. Role with no profile yet.</b> Build a draft profile from at least 5 pasted posts for that role (skills extracted by the parse prompt, levels by frequency: 70% or more = required, 30 to 70% = nice), mark the card "Draft profile", and queue it for expert review.</li>
+        <li><b>Examples.</b> Frontend developer: tracks Frontend, Full-stack, Mobile; React (one_of with Vue, Angular), accessibility (nice). Data analyst: tracks BI and reporting, Product analytics; SQL required, Power BI one_of Tableau. Digital marketing: tracks SEO, Performance, Content; Google Ads one_of Meta Ads.</li>
+        <li><b>Data (needs approval before build).</b> New: <code>role_tracks</code>, <code>role_track_skills</code> (level, group_id, weight), <code>skill_prereqs</code>, <code>user_goals</code> (skill_id, source gap or user, status, skipped_at, swapped_to). Changed: <code>path_steps</code> gets goal_id and kind (learn or prove). Uses <code>gap_proofs</code> from the proof plan.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Departures</h3>
+      <ul>
+        <li><b>Work type</b>: every role is Full time, Part time or Freelance (from the post; default Full time). Filter next to city; shown in each row and in the detail with hours or project length. Part time and freelance roles still show gaps and readiness the same way. Freelance work the client confirms can become work proof for a goal. Profile setting "Open to" (any mix of the three) sets the default filter and alerts.</li>
+        <li><b>/departures</b>: search (role, skill, company), city filter, "Boarding now only", and All / Saved / Applied tabs. Each role shows readiness in words and its gaps with the stop that closes them.</li>
+        <li>Roles come from public company job boards (ATS feeds) and posts the user pastes. Never from sites whose terms forbid it.</li>
+        <li><b>Apply on company site</b> opens the company's careers page; we record "applied" and the user moves it through Heard back, Interview, Offer.</li>
+        <li><b>Express apply</b> (roles marked with the bolt) sends a prefilled packet: contact, skills for the role, verified certificates, proof tasks, resume and an editable drafted note. Nothing is sent until the user ticks the consent line naming that one company; log each consent. Only for companies that accept it (employer partners, or an ATS apply API the employer enabled). Gaps and path are never sent.</li>
+        <li><b>Express criteria</b>: each employer sets its own gate per role, e.g. identity verified with DigiLocker, named skills verified by proof tasks, a role skill check at a level (shown in words, never a number), a certificate, notice period, and how many gaps are allowed. Express apply stays disabled until all are met; unmet ones link straight to the fix (verify, take the check, or the stop that closes the gap).</li>
+        <li><b>Interview prep</b> per role: one question free, all five plus model answers and a timed mock round with Elite.</li>
+        <li><b>Saved</b> roles notify when they are one gap away. <b>Paste a job post</b> runs the same gap check against that one post.</li>
+              </ul>
+    </section>
+    <section>
+      <h3>Arrivals</h3>
+      <ul>
+        <li><b>/arrivals</b>: applications a company has moved forward. Lanes: Shortlisted, Level 1 AI interview, Level 2 team, Offer; plus a 10-day strip and a Next up card for the nearest date. "Not this time" keeps closed ones with the company's note and the stop that would help.</li>
+        <li>Stages and dates come from the employer side (partner employers or ATS status updates); for company-site applications the user can enter them.</li>
+        <li><b>Level 1 AI video interview</b>: the company sets the questions and topics. Before it starts, say it is an AI; record only with consent; offer a person instead; a person at the company decides. Pre-check camera and mic. Practice round with the same topics is Elite.</li>
+        <li><b>Looking for a job</b> switch (profiles.job_search boolean), on Departures, Arrivals and /me. Off pauses Departures and Arrivals (no job alerts, no Express apply, hidden from employer search) and hides the Today board; rides, streak, map and Junction keep running. Status suggests "Working at X"; the user can change it.</li>
+        <li><b>Notice period</b> (private): days plus resignation date once the user confirms they resigned. Countdown to last working day; employers see only "Can join from" date. Searching stays open after an offer is accepted, until the joining date. Express apply notice rules compare against days left. Never on a profile.</li>
+        <li>Phone tabs: Today, Map, Departures, Arrivals, Junction. Network and Library move to the profile menu on phone.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Timetable (local events)</h3>
+      <ul>
+        <li><b>Name.</b> "Timetable" fits the metro words (Departures, Arrivals) and says "what is on, and when". Alternatives if Milin prefers: Meetups, Happenings, Platform events.</li>
+        <li><b>What gets in.</b> Only events whose topic matches one of the user's goals or interests (same skill taxonomy as goals; interests map to topics). Nothing sponsored, no general tech talks.</li>
+        <li><b>Where.</b> City and radius come from the profile (default 25 km), never device location. Online events are on by default; events outside the radius are hidden until the user turns them on.</li>
+        <li><b>Sources.</b> Organisers' own public event pages and feeds whose terms allow reuse, events suggested by organisers and members (checked before they show), and partner communities. No scraping of sites whose terms forbid it. Events carry the source link.</li>
+        <li><b>Prep, not proof.</b> "I'm going" on an event tied to a goal adds an optional prep task on Today. Attending never fills a gap.</li>
+        <li><b>Digest.</b> One Monday message, only when something matches; off is one tap.</li>
+        <li><b>Compliance.</b> Member-suggested events are user content, so they fall under the same intermediary rules as Junction (pending item 15): moderation and grievance handling before launch.</li>
+        <li><b>Data (needs approval).</b> <code>events</code> (title, kind, start, end, city, lat/lng, online, cost, source_url, status), <code>event_topics</code> (skill or interest id), <code>event_rsvps</code> (user_id, event_id).</li>
+      </ul>
+    </section>
+    <section>
+      <h3>User states</h3>
+      <ul>
+        <li><b>Returning</b>: has a resume and a line; Today shows the ride.</li>
+        <li><b>First sign-up</b>: resume just read. Today shows a welcome with a count-up of skills, gaps and stops, the first ride (Pitstop 1, two tasks) and three setup taps: hours a week (changes the estimate), people lists opt-in. Streak chip reads "Day 1" until a task is ticked.</li>
+        <li><b>No resume</b>: signed up without one. Today shows target role chips and the upload drop zone (PDF or DOCX, 5 MB); parse progress runs in four steps, then the user lands in First sign-up. Board, map and skills stay locked with a reason. Pick state from the server: no resume row means No resume; a resume but no ride yet means First sign-up.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Your profile</h3>
+      <ul>
+        <li><b>Your stories</b> (after Experience): every piece of work as a STAR story (Situation, Task, Action, Result), sorted into six common competencies: Ownership, Problem solving, Delivering results, Learning, Working with others, Speaking up. A story can sit in more than one box. Board or List layout.</li>
+        <li><b>SMART check</b> on each story (Specific, Measurable, Achievable, Relevant, Time-bound): a checklist with one hint for the missing letter, never a score. Relevant is judged against the user's destination role.</li>
+        <li><b>Sources</b>: drafted by the model from resume lines, then edited by the user; stories from proved goals are added automatically ("From your goal"); stories backed by work proof show "Confirmed". Freshers start with college projects, internships and volunteering; empty boxes show a prompt. Resume text never goes to logs.</li>
+        <li><b>Who sees it</b>: part of the profile, so recruiters and hiring teams see it when they open the profile, under the same visibility settings as the rest. Common competencies only; no company-specific labels. Data (needs approval): <code>stories</code> (user_id, title, s, t, a, r, source, confirmed), <code>story_competencies</code>.</li>
+        <li><b>/me</b>, opened from the avatar. Journey timeline, skills by gap status (have, weak, missing), interests, proof tasks, certifications (Credly), resume file, and who-sees-what switches.</li>
+        <li><b>Experience</b>: current role (marked Current) and past roles with dates, a few lines each, skills used and which gaps they gave evidence for; education last. Filled from the parsed resume, editable, with Add role for people without one. Shown on others' profiles too.</li>
+        <li><b>View as others</b> hides private sections and edit controls; it is what <b>/u/[handle]</b> shows to a stranger. Gaps show to connections only unless the user turns that on.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Map</h3>
+      <ul>
+        <li>SVG drawn from the path: Resume, Gaps, 11 pitstops across 9 goals, Practice, Match. Cobalt for done, line colour for ahead.</li>
+        <li><b>Goals and pitstops</b>: a goal is one gap; a pitstop is a halt on the way to it. Each pitstop has a kind: <code>learn</code> (free courses plus daily or weekly tasks) or <code>prove</code> (skill check, certification, confirmed work). Data: <code>path_steps</code> gets <code>gap_id</code> and <code>kind</code>; several steps per gap. A gap is filled only when its prove step has an accepted <code>gap_proofs</code> row; finishing learn steps never fills it. Map labels are "N · LEARN" or "N · PROVE" with the goal name below; done ones get a check, the current one a dotted prep stretch with the train. Users can add pitstops to a goal, or a whole new goal, drawn as spurs (<code>source = 'user'</code>); user goals never change the gap match. Destination = next role, not the last. Needs data-model approval before build.</li>
+        <li>Other lines are other role profiles that share a skill with the user's path; the crossing is the shared skill. Counts come from opted-in users.</li>
+        <li>Every pitstop is a button with a visible focus ring; the side panel is <code>aria-live</code>.</li>
+        <li><b>Life line</b> (switch at the top of Map): years along the bottom; rows for Journey, Education, Work, Certificates and Interests. Only big moments, never pitstops or prep tasks. Journey starts when the user finished their first education (from the resume), not when they joined; "Joined CareerMetro" is a point on it. Dotted links show where one fed another.</li>
+        <li><b>Long careers.</b> Rows are fixed, so more years only add width. Zoom: "Last 5 years" (default when the career is over 7 years; earlier moments behind a "N earlier moments" button) and "Whole career" (recent 5 years get 64% of the width, earlier years share the rest on a shaded band; a row with 3 or more earlier moments groups them into one numbered dot that opens a list). Year labels thin out when years get narrow. Phone scrolls sideways and opens at Now. The "Sample" switch is prototype only.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Rules kept</h3>
+      <ul>
+        <li>Cobalt means progress only. Red, amber and green mean gap status only. The board's "boarding now" uses green because it means zero gaps.</li>
+        <li>New tokens to add if adopted: <code>--board</code>, <code>--board-ink</code>, <code>--board-dim</code>, <code>--board-line</code>.</li>
+        <li>Motion respects reduced-motion; the flap board and confetti turn off.</li>
+        <li>Network, Junction and profiles carry over from the line view with names and self-set status.</li>
+      </ul>
+    </section>
+  </div>
+</aside>

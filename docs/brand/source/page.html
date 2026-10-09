@@ -1,0 +1,273 @@
+<title>careermetro Brand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single brand book column with wide specimen panels; panels that show a fixed background (dark, cobalt) keep it in both themes. */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceff4; --ink:#12151c; --muted:#586072; --line:#dce0e8;
+  --accent:#2448f5; --accent-soft:#e6ebff; --on-accent:#ffffff;
+  --good:#11805b; --warn:#9a5800; --bad:#c0342a;
+  --night:#0c0e13; --night-ink:#eceef3; --cobalt-fixed:#2448f5; --paper-fixed:#f4f5f8; --ink-fixed:#12151c;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --sans:"Geist","Segoe UI",system-ui,sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13; --good:#4cc79a; --warn:#f0b45a; --bad:#ff7e71; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13; --good:#4cc79a; --warn:#f0b45a; --bad:#ff7e71; color-scheme:dark; }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.55; margin:0}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:20px; padding-block:28px 80px; display:flex; flex-direction:column; gap:72px}
+h1,h2,h3{font-family:var(--display); letter-spacing:-0.025em; text-wrap:balance; margin:0; line-height:1.05}
+h1{font-size:clamp(2.6rem,7vw,5.2rem); font-weight:700}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem); font-weight:700}
+h3{font-size:1.1rem; letter-spacing:-0.015em}
+p{margin:0; max-width:66ch}
+.lbl{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted)}
+.muted{color:var(--muted)}
+.sec{display:flex; flex-direction:column; gap:22px}
+.sec-h{display:grid; grid-template-columns:120px minmax(0,1fr); gap:18px; align-items:baseline}
+.sec-h .lbl{padding-top:6px}
+.sec-h div{display:flex; flex-direction:column; gap:10px}
+.top{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap}
+.hero{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:40px; align-items:center}
+.hero .stage{background:var(--surface); border:1px solid var(--line); border-radius:28px; aspect-ratio:1/1; max-width:100%; display:grid; place-items:center; position:relative; overflow:hidden}
+.hero .stage svg{width:72%; height:auto}
+.hero .copy{display:flex; flex-direction:column; gap:18px}
+.hero .copy h1 em{font-style:normal; color:var(--accent)}
+.domain{font-family:var(--mono); font-size:0.95rem}
+.panel{border-radius:20px; padding:36px; display:grid; place-items:center; min-height:170px; border:1px solid var(--line)}
+.panel svg{max-width:100%; height:auto}
+.p-light{background:var(--paper-fixed)} .p-white{background:#ffffff} .p-night{background:var(--night); border-color:transparent} .p-cobalt{background:var(--cobalt-fixed); border-color:transparent}
+.grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+.grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+.grid4{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px}
+.cap{display:flex; flex-direction:column; gap:8px}
+.cap small{color:var(--muted); font-size:0.84rem}
+.anat{display:grid; grid-template-columns:minmax(0,340px) minmax(0,1fr); gap:32px; align-items:center}
+.anat .box{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:10px; display:grid; place-items:center}
+.anat ol{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px; counter-reset:a}
+.anat li{display:grid; grid-template-columns:30px minmax(0,1fr); gap:12px; align-items:baseline}
+.anat li::before{counter-increment:a; content:counter(a); font-family:var(--mono); font-size:0.8rem; width:24px; height:24px; border-radius:50%; border:1px solid var(--line); display:grid; place-items:center}
+.anat b{font-family:var(--display); font-size:1.05rem}
+.sizes{display:flex; align-items:flex-end; gap:28px; flex-wrap:wrap}
+.sizes .cap{align-items:center}
+.icons{display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap}
+.icons .cap{align-items:center}
+.sw{border-radius:16px; overflow:hidden; border:1px solid var(--line); background:var(--surface); display:flex; flex-direction:column}
+.sw .chip{height:96px}
+.sw .t{padding:12px 14px; display:flex; flex-direction:column; gap:2px; font-size:0.86rem}
+.sw .t b{font-family:var(--display); font-size:1rem}
+.sw code{font-family:var(--mono); font-size:0.76rem; color:var(--muted)}
+.type{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+.type .card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:22px; display:flex; flex-direction:column; gap:12px}
+.spec-d{font-family:var(--display); font-size:3.4rem; font-weight:700; letter-spacing:-0.035em; line-height:1}
+.spec-s{font-family:var(--sans); font-size:1.4rem; line-height:1.3}
+.spec-m{font-family:var(--mono); font-size:1.05rem; letter-spacing:0.04em}
+.voice{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+.voice .card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:20px; display:flex; flex-direction:column; gap:10px}
+.voice ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px}
+.say{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:6px 14px; font-size:0.92rem}
+.say .y{color:var(--ink)} .say .n{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--line)}
+.dont{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px}
+.dont .card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:10px}
+.dont .card .demo{height:90px; display:grid; place-items:center; background:var(--surface-2); border-radius:10px; overflow:hidden}
+.dont small{font-size:0.84rem; color:var(--muted)}
+.clear{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:30px; display:grid; place-items:center}
+.clear .z{outline:1.5px dashed var(--accent); outline-offset:0; padding:22px; position:relative}
+.ctx{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px}
+.appbar{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 16px; display:flex; align-items:center; gap:18px; overflow:hidden}
+.appbar nav{display:flex; gap:4px; font-size:0.86rem; color:var(--muted); flex-wrap:wrap}
+.appbar nav span{padding:5px 10px; border-radius:999px}
+.appbar nav span.on{background:var(--surface-2); color:var(--ink)}
+.phone{background:linear-gradient(160deg,#1d2452,#0c0e13); border-radius:28px; padding:28px 22px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px 10px; min-height:250px; align-content:start}
+.phone .app{display:flex; flex-direction:column; align-items:center; gap:6px; font-size:0.7rem; color:#eceef3}
+.phone .app i{width:52px; height:52px; border-radius:13px; background:rgba(255,255,255,0.12); display:block}
+.phone .app svg{width:52px; height:52px}
+.bcard{aspect-ratio:1.75/1; border-radius:14px; padding:22px; display:flex; flex-direction:column; justify-content:space-between; max-width:100%}
+.bcard.f{background:var(--cobalt-fixed); color:#fff}
+.bcard.b{background:#ffffff; color:var(--ink-fixed); border:1px solid #dce0e8}
+.bcard .n{font-family:var(--display); font-weight:700; font-size:1.2rem; letter-spacing:-0.02em}
+.bcard .r{font-size:0.82rem; color:#586072}
+.bcard .m{font-family:var(--mono); font-size:0.74rem; color:#586072}
+.files{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:6px 18px}
+.files div{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.4fr); gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:0.9rem}
+.files div:first-child{border-top:0}
+.files code{font-family:var(--mono); font-size:0.82rem}
+.alts{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+.alts .card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:20px; display:flex; flex-direction:column; gap:10px}
+.alts .card.pick{outline:2px solid var(--ink); outline-offset:-1px}
+.foot{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:20px; font-size:0.86rem; color:var(--muted)}
+@media (max-width:900px){
+  .hero,.anat,.ctx{grid-template-columns:minmax(0,1fr)}
+  .grid3,.type,.alts{grid-template-columns:minmax(0,1fr)}
+  .grid4,.dont{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sec-h{grid-template-columns:minmax(0,1fr); gap:6px}
+}
+@media (max-width:560px){
+  .grid2,.voice,.grid4,.dont{grid-template-columns:minmax(0,1fr)}
+  .panel{padding:22px}
+  .say{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion: no-preference){
+  .hero .stage .dest{animation:arrive 2.8s ease-in-out infinite; transform-origin:40px 17px}
+  @keyframes arrive{0%,60%,100%{transform:scale(1)} 75%{transform:scale(1.18)}}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    {{LOCK_SM}}
+    <span class="lbl">Brand book · v1 · October 2026</span>
+  </header>
+
+  <section class="hero" aria-label="The mark">
+    <div class="stage">
+      <svg viewBox="0 0 48 48" role="img" aria-label="careermetro mark"><path d="M8 31H18L32 17H40" fill="none" stroke="var(--ink)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--surface)" stroke="var(--ink)" stroke-width="4.4"/><circle class="dest" cx="40" cy="17" r="6.6" fill="var(--accent)"/></svg>
+    </div>
+    <div class="copy">
+      <span class="lbl">careermetro.com</span>
+      <h1>Your next role, <em>one pitstop at a time.</em></h1>
+      <p class="muted">The mark is one metro line. It leaves where you are today, runs level while you get ready, climbs once you prove a skill, and arrives at a cobalt stop: your next role. It is the same journey the app draws for every person, reduced to a shape you can read at 16 pixels.</p>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s1">
+    <div class="sec-h"><span class="lbl">01 · Mark</span><div><h2 id="s1">How the mark is built</h2><p class="muted">Drawn on a 48-unit grid with the 45 degree angle every metro map uses. One stroke weight, round ends, two stops.</p></div></div>
+    <div class="anat">
+      <div class="box">{{MARK_GRID}}</div>
+      <ol>
+        <li><span><b>Where you are.</b> An open ring: the origin stop, drawn in ink. It is where your resume puts you today.</span></li>
+        <li><span><b>Getting ready.</b> A level run. Courses and daily tasks move you along without changing your level.</span></li>
+        <li><span><b>Proof.</b> The 45 degree climb. In careermetro only proof (a skill check, a certificate, confirmed work) moves you up, and the line rises only here.</span></li>
+        <li><span><b>Your next role.</b> A solid cobalt stop. Cobalt means progress everywhere in the product, so it appears in the mark only at the destination.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s2">
+    <div class="sec-h"><span class="lbl">02 · Logo</span><div><h2 id="s2">Lockups</h2><p class="muted">The wordmark is set lowercase in Bricolage Grotesque Bold with tightened spacing, and drawn as outlines so it never depends on a font. One word, no capital M: it reads as a single place, like the domain.</p></div></div>
+    <div class="panel p-white">{{LOGO}}</div>
+    <div class="grid2">
+      <div class="cap"><div class="panel p-night">{{LOGO_DARK}}</div><small>On dark: ink becomes near white, the destination turns to light cobalt.</small></div>
+      <div class="cap"><div class="panel p-cobalt">{{LOGO_COBALT}}</div><small>On cobalt: all white. Use for campaign moments, not inside the app.</small></div>
+    </div>
+    <div class="grid3">
+      <div class="cap"><div class="panel p-white">{{STACK}}</div><small>Stacked, for square spaces such as a profile photo frame or a stall banner.</small></div>
+      <div class="cap"><div class="panel" style="min-height:170px;background:var(--surface)"><div class="sizes">
+        <div class="cap">{{MARK_96}}<small>96</small></div><div class="cap">{{MARK_48}}<small>48</small></div><div class="cap">{{MARK_24}}<small>24</small></div></div></div><small>The mark alone, when the name is already on screen nearby.</small></div>
+      <div class="cap"><div class="clear"><div class="z">{{LOCK_SM}}</div></div><small>Clear space: keep the height of the destination stop free on every side. Minimum width 96 px for the lockup, 16 px for the mark.</small></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s3">
+    <div class="sec-h"><span class="lbl">03 · Icon</span><div><h2 id="s3">App icon and favicon</h2><p class="muted">A cobalt tile with the line in white. The favicon thickens the stroke so the climb still reads at 16 px in a browser tab.</p></div></div>
+    <div class="panel p-light"><div class="icons">
+      <div class="cap"><svg viewBox="0 0 512 512" width="160" height="160">{{ICON}}</svg><small>App icon · 512</small></div>
+      <div class="cap"><svg viewBox="0 0 512 512" width="160" height="160">{{ICON_N}}</svg><small>Dark home screens</small></div>
+      <div class="cap"><svg viewBox="0 0 512 512" width="60" height="60">{{ICON}}</svg><small>60</small></div>
+      <div class="cap"><svg viewBox="0 0 32 32" width="32" height="32">{{FAV}}</svg><small>Favicon 32</small></div>
+      <div class="cap"><svg viewBox="0 0 32 32" width="16" height="16">{{FAV}}</svg><small>16</small></div>
+    </div></div>
+  </section>
+
+  <section class="sec" aria-labelledby="s4">
+    <div class="sec-h"><span class="lbl">04 · Colour</span><div><h2 id="s4">One accent, used for one meaning</h2><p class="muted">The same tokens as the product (src/app/globals.css). Cobalt is progress, so it is the brand colour. Red, amber and green belong to gap status inside the app and never appear in marketing.</p></div></div>
+    <div class="grid4">
+      <div class="sw"><div class="chip" style="background:#2448f5"></div><div class="t"><b>Cobalt</b><code>#2448F5 · dark #7E94FF</code><span class="muted">Brand, progress, the destination</span></div></div>
+      <div class="sw"><div class="chip" style="background:#12151c"></div><div class="t"><b>Ink</b><code>#12151C · dark #ECEEF3</code><span class="muted">Text, the line, the logo</span></div></div>
+      <div class="sw"><div class="chip" style="background:#f4f5f8; border-bottom:1px solid #dce0e8"></div><div class="t"><b>Platform</b><code>#F4F5F8 · dark #0C0E13</code><span class="muted">Page background</span></div></div>
+      <div class="sw"><div class="chip" style="background:#e6ebff"></div><div class="t"><b>Cobalt soft</b><code>#E6EBFF · dark #1D2452</code><span class="muted">Highlights behind progress</span></div></div>
+    </div>
+    <div class="grid4">
+      <div class="sw"><div class="chip" style="background:#586072; height:44px"></div><div class="t"><b>Muted</b><code>#586072</code></div></div>
+      <div class="sw"><div class="chip" style="background:#dce0e8; height:44px"></div><div class="t"><b>Line</b><code>#DCE0E8</code></div></div>
+      <div class="sw"><div class="chip" style="height:44px; background:linear-gradient(90deg,#c0342a 0 33%,#9a5800 33% 66%,#11805b 66%)"></div><div class="t"><b>Gap status</b><code>In the app only</code></div></div>
+      <div class="sw"><div class="chip" style="background:#12151c; height:44px"></div><div class="t"><b>Board</b><code>#12151C, the departures board</code></div></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s5">
+    <div class="sec-h"><span class="lbl">05 · Type</span><div><h2 id="s5">Three faces, three jobs</h2><p class="muted">All three are free under the SIL Open Font License, so they can be used on the site, in the app and in print without fees.</p></div></div>
+    <div class="type">
+      <div class="card"><span class="lbl">Headings · Bricolage Grotesque</span><span class="spec-d">Pitstop 4</span><p class="muted">Bold and semi-bold for headings, the wordmark and big numbers. Tight spacing, never all caps.</p></div>
+      <div class="card"><span class="lbl">Text · Geist</span><span class="spec-s">Prove SIEM with a skill check, and the gap is filled.</span><p class="muted">Regular and medium for everything you read.</p></div>
+      <div class="card"><span class="lbl">Labels · Geist Mono</span><span class="spec-m">4 · PROVE · 18:00 · PUNE</span><p class="muted">Labels, times, map tags and the departures board, in capitals with letter spacing.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s6">
+    <div class="sec-h"><span class="lbl">06 · Voice</span><div><h2 id="s6">How careermetro talks</h2><p class="muted">Like a friend who has done the commute before: plain, specific and calm. Metro words only where they help.</p></div></div>
+    <div class="voice">
+      <div class="card"><h3>Rules</h3><ul>
+        <li>Say what to do next, in words. Readiness is never a score or a percentage.</li>
+        <li>Use the five step names as they are: Resume, Gaps, Path, Practice, Match.</li>
+        <li>Metro words that earn their place: line, pitstop, Departures, Arrivals, Timetable. Not every sentence needs one.</li>
+        <li>Never name or compare other job sites. Say "job portals".</li>
+        <li>Write for India: lakh, notice period, Pune, NPTEL. English first, Hindi later.</li>
+      </ul></div>
+      <div class="card"><h3>Say this, not that</h3><div class="say">
+        <span class="y">Two skills between you and this role.</span><span class="n">You are 72% match!</span>
+        <span class="y">Prove SIEM to fill the gap.</span><span class="n">Unlock your SIEM achievement</span>
+        <span class="y">This week: the free Splunk course.</span><span class="n">Supercharge your career journey</span>
+        <span class="y">Your next role, one pitstop at a time.</span><span class="n">India's #1 AI career platform</span>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s7">
+    <div class="sec-h"><span class="lbl">07 · Care</span><div><h2 id="s7">Keep the mark intact</h2></div></div>
+    <div class="dont">
+      <div class="card"><div class="demo"><svg viewBox="0 0 48 48" width="70" height="70"><path d="M8 31H18L32 17H40" fill="none" stroke="#c0342a" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--surface-2)" stroke="#c0342a" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="#11805b"/></svg></div><small>No status colours. Red and green mean gaps, not the brand.</small></div>
+      <div class="card"><div class="demo"><svg viewBox="0 0 48 48" width="70" height="70"><defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#8a3ffc"/><stop offset="1" stop-color="#2448f5"/></linearGradient></defs><path d="M8 31H18L32 17H40" fill="none" stroke="url(#gg)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--surface-2)" stroke="url(#gg)" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="url(#gg)"/></svg></div><small>No gradients, glows or shadows on the mark.</small></div>
+      <div class="card"><div class="demo"><svg viewBox="0 0 48 48" width="70" height="70"><g transform="rotate(30 24 24)"><path d="M8 31H18L32 17H40" fill="none" stroke="var(--ink)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="var(--accent)"/></g></svg></div><small>Never rotate or flip it. The line always climbs left to right.</small></div>
+      <div class="card"><div class="demo"><svg viewBox="0 0 48 48" width="70" height="70"><path d="M8 31H18L32 17H40" fill="none" stroke="var(--ink)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="var(--accent)"/><path d="M14 38l20-28" stroke="var(--muted)" stroke-width="1"/><circle cx="40" cy="31" r="5" fill="var(--accent)"/></svg></div><small>Don't add stops, stars or extra lines. Two stops, one climb.</small></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s8">
+    <div class="sec-h"><span class="lbl">08 · In use</span><div><h2 id="s8">In the product and outside it</h2></div></div>
+    <div class="appbar">{{LOCK_SM}}<nav><span class="on">Today</span><span>Map</span><span>Departures</span><span>Arrivals</span><span>Junction</span></nav></div>
+    <div class="ctx">
+      <div class="cap"><div style="border-radius:16px; overflow:hidden; border:1px solid var(--line)"><svg viewBox="0 0 1200 630" style="width:100%; height:auto; display:block">{{SOCIAL}}</svg></div><small>Link preview for careermetro.com (1200 × 630).</small></div>
+      <div class="cap"><div class="phone">
+        <div class="app"><i></i>Phone</div><div class="app"><i></i>Photos</div><div class="app"><svg viewBox="0 0 512 512">{{ICON}}</svg>careermetro</div><div class="app"><i></i>Maps</div>
+        <div class="app"><i></i>Mail</div><div class="app"><i></i>Notes</div><div class="app"><i></i>Clock</div><div class="app"><i></i>Files</div>
+      </div><small>Installed from the website (a web app), on a home screen.</small></div>
+    </div>
+    <div class="grid2">
+      <div class="bcard f"><svg viewBox="0 0 330 60" style="width:62%; height:auto">{{LOGO_COBALT}}</svg><span style="font-family:var(--mono); font-size:0.8rem; opacity:0.85">careermetro.com</span></div>
+      <div class="bcard b"><svg viewBox="0 0 48 48" width="44" height="44"><path d="M8 31H18L32 17H40" fill="none" stroke="#12151c" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="#fff" stroke="#12151c" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="#2448f5"/></svg><div><div class="n">Milin Shah</div><div class="r">Founder</div><div class="m" style="margin-top:8px">hello@careermetro.com</div></div></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s9">
+    <div class="sec-h"><span class="lbl">09 · Options</span><div><h2 id="s9">What else was tried</h2><p class="muted">Three other directions, and why the line won.</p></div></div>
+    <div class="alts">
+      <div class="card">{{ALT1}}<h3>Route C</h3><p class="muted">A "C" drawn as a progress ring with a stop at the end. Friendly, but it reads as a loading spinner and loses the metro.</p></div>
+      <div class="card">{{ALT2}}<h3>Interchange</h3><p class="muted">Two lines crossing at a station, for community. Too busy at 16 px, and it says "network" more than "your next role".</p></div>
+      <div class="card">{{ALT3}}<h3>Station sign</h3><p class="muted">A ring with a bar. Instantly "metro", but too close to a famous transit sign, which is a trademark risk. Ruled out.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="s10">
+    <div class="sec-h"><span class="lbl">10 · Files</span><div><h2 id="s10">Files and next steps</h2><p class="muted">Saved in the project files under careermetro/brand. The wordmark is outlined, so the SVGs need no fonts.</p></div></div>
+    <div class="files">
+      <div><code>logo.svg</code><span>Horizontal lockup, for light backgrounds</span></div>
+      <div><code>logo-on-dark.svg · logo-on-cobalt.svg</code><span>For dark and cobalt backgrounds</span></div>
+      <div><code>logo-stacked.svg</code><span>Square spaces</span></div>
+      <div><code>mark.svg · mark-on-dark.svg</code><span>The mark alone</span></div>
+      <div><code>app-icon.svg · app-icon-night.svg</code><span>512 px app icon (web app manifest, app stores later)</span></div>
+      <div><code>favicon.svg</code><span>Browser tab icon</span></div>
+      <div><code>social-card.svg</code><span>Link preview for careermetro.com</span></div>
+    </div>
+    <p class="muted">Before printing or registering: run a trade mark search for "careermetro" and the mark with the Indian Trade Marks Registry (classes 35, 41 and 42), then file. The current product logo in the repo is an earlier version of this same idea, so switching to it is a small change.</p>
+  </section>
+
+  <footer class="foot"><span>careermetro brand book v1</span><span>Fonts: Bricolage Grotesque, Geist, Geist Mono (SIL Open Font License)</span></footer>
+</div>

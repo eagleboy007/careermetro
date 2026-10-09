@@ -1,0 +1,84 @@
+        <!-- ================= YOUR PROFILE (/me) ================= -->
+        <div class="view view-me" aria-label="Your profile">
+          <div class="jcol">
+            <div class="me-preview" id="me-preview" role="status"><svg class="icon"><use href="#i-eye"/></svg><span>You are seeing your profile the way other people see it. Private fields are hidden.</span><button class="btn btn-ghost btn-sm" type="button" id="me-preview-off">Back to editing</button></div>
+            <div class="phead">
+              <span class="avatar me-av">PN</span>
+              <div class="phead-main">
+                <h2>Priya Nair<svg class="icon tick" aria-label="Identity verified"><use href="#i-badge"/></svg></h2>
+                <span class="status lg" id="me-status"><svg class="icon"><use href="#i-search"/></svg>Looking for a next role</span>
+                <p><span style="font-family:var(--mono);font-size:0.78rem">@priya-n</span> · Pune · <span id="me-aim">aiming for Cyber Security Analyst</span></p>
+              </div>
+              <div class="actions"><button class="btn btn-ghost" type="button" id="me-preview-on"><svg class="icon"><use href="#i-eye"/></svg>View as others</button><a class="btn btn-quiet me-edit" href="#network" data-go="network"><svg class="icon"><use href="#i-pen"/></svg>Change status</a></div>
+            </div>
+            <div class="pstrip" id="me-strip"></div>
+
+            <section class="me-sec" aria-label="Your journey">
+              <div class="me-h"><h3>Your journey</h3><span class="label" id="me-jlabel"></span><a class="link me-edit" href="#map" data-go="map">Open map<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+              <ol class="jline" id="me-jline"></ol>
+            </section>
+
+            <section class="me-sec" aria-label="Experience">
+              <div class="me-h"><h3>Experience</h3><span class="label" id="me-explabel">2 years 4 months · from your resume</span><a class="link me-edit" href="#addrole">+ Add role</a></div>
+              <div id="me-exp"></div>
+            </section>
+
+            <section class="me-sec" aria-label="Your stories">
+              <div class="me-h"><h3>Your stories</h3><span class="label" id="me-storycount"></span><button class="link me-edit nfm-link" type="button" data-story-add>+ Add story</button></div>
+              <p class="muted st-intro">Every piece of work you have done, as a short Situation, Task, Action, Result story, sorted into what interviewers ask about. Recruiters see it when they open your profile.</p>
+              <div class="st-bar">
+                <div class="seg" id="st-view" role="group" aria-label="Layout"><button type="button" data-sv="board" aria-pressed="true">Board</button><button type="button" data-sv="list" aria-pressed="false">List</button></div>
+              </div>
+              <div id="me-stories"></div>
+            </section>
+
+            <section class="me-sec" aria-label="Education">
+              <div class="me-h"><h3>Education</h3><span class="label">from your resume</span><a class="link me-edit" href="#addedu">+ Add</a></div>
+              <div id="me-edu"></div>
+            </section>
+
+            <section class="me-sec" aria-label="Your skills">
+              <div class="me-h"><h3>Skills</h3><span class="label">from your resume and proof tasks</span></div>
+              <div id="me-skills"></div>
+            </section>
+
+            <section class="me-sec" aria-label="Your interests">
+              <div class="me-h"><h3>Interests</h3><span class="label">anything, not only work</span></div>
+              <div class="tags"><a href="#i">AI</a><a href="#i">Design</a><a href="#i">Marketing</a><a href="#i">Public speaking</a><a href="#i" class="add me-edit">+ Add</a></div>
+            </section>
+
+            <section class="me-sec" aria-label="Proof of work">
+              <div class="me-h"><h3>Proof of work</h3><span class="label">tasks you finished on your path</span></div>
+              <div id="me-proof"></div>
+            </section>
+          </div>
+
+          <aside class="prail" aria-label="Your settings">
+            <section class="me-edit">
+              <h3>Resume<span class="label">private</span></h3>
+              <div id="me-resume"></div>
+            </section>
+            <section>
+              <h3>Certifications<span class="label" id="me-certn">1 verified</span></h3>
+              <ul class="certs">
+                <li><svg class="icon"><use href="#i-award"/></svg><span>Google Cybersecurity Certificate<small>Coursera · Credly badge checked</small></span><span class="chip met"><svg class="icon"><use href="#i-badge"/></svg>Verified</span></li>
+              </ul>
+              <a class="btn btn-ghost btn-sm me-edit" href="#credly" style="margin-top:10px"><svg class="icon"><use href="#i-link"/></svg>Add from Credly</a>
+            </section>
+            <section class="me-edit">
+              <h3>Who sees what</h3>
+              <div class="me-vis">
+                <label class="switch"><input type="checkbox" class="srch-in" checked><i></i>Looking for a job</label>
+                <label class="switch"><input type="checkbox" checked><i></i>Show me in people lists</label>
+                <label class="switch"><input type="checkbox" checked><i></i>Show my stop on the map</label>
+                <label class="switch"><input type="checkbox"><i></i>Show my gaps to everyone</label>
+                <small>Job search off pauses Departures and Arrivals; your journey keeps going. Gaps are shown to connections only while this is off.</small>
+              </div>
+            </section>
+            <section>
+              <h3>Never shown</h3>
+              <p class="privacy"><svg class="icon"><use href="#i-shield"/></svg><span>Phone, email, salary, notice period and resume text are never on a profile.</span></p>
+            </section>
+          </aside>
+        </div>
+

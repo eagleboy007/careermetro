@@ -1,0 +1,1161 @@
+<title>CareerMetro Home, Line View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the metro line IS the page. One vertical route runs down the left of the main column; each stop (Resume, Gaps,
+   Path, Practice, Match) opens inline, and the current stop is the only loud thing on screen. "Your space" is a quiet rail.
+   No sidebar, no card grid. Tokens copied 1:1 from src/app/globals.css. */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceff4; --ink:#12151c; --muted:#586072; --line:#dce0e8;
+  --accent:#2448f5; --accent-soft:#e6ebff; --on-accent:#ffffff;
+  --good:#11805b; --good-soft:#e2f4ec; --warn:#9a5800; --warn-soft:#fff0d8; --bad:#c0342a; --bad-soft:#fde7e5;
+  --shadow:rgba(18,21,28,0.35);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Geist","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:20px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --good:#4cc79a; --good-soft:#11302a; --warn:#f0b45a; --warn-soft:#382a12; --bad:#ff7e71; --bad-soft:#3a1a18;
+  --shadow:rgba(0,0,0,0.6); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --good:#4cc79a; --good-soft:#11302a; --warn:#f0b45a; --warn-soft:#382a12; --bad:#ff7e71; --bad-soft:#3a1a18;
+  --shadow:rgba(0,0,0,0.6); color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.55; padding-inline:16px; padding-block:0 64px; margin:0;}
+.page{max-width:1240px; margin:0 auto; display:flex; flex-direction:column; gap:36px;}
+h1,h2,h3,h4{font-family:var(--display); font-weight:650; letter-spacing:-0.02em; text-wrap:balance; margin:0;}
+p{margin:0;}
+button{font:inherit; color:inherit;}
+a{color:inherit;}
+.muted{color:var(--muted);}
+.label{font-family:var(--mono); font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);}
+.icon{width:20px; height:20px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.num{font-variant-numeric:tabular-nums; font-family:var(--mono);}
+
+/* spec chrome */
+.top{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:20px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.brand{display:inline-flex; align-items:center; gap:10px; font-family:var(--display); font-weight:650; font-size:1.1rem; letter-spacing:-0.02em; text-decoration:none;}
+.mark{width:34px; height:18px;}
+.intro{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:32px; align-items:end;}
+.intro h1{font-size:clamp(1.9rem,4.5vw,3rem); line-height:1.05;}
+.intro p{color:var(--muted); max-width:60ch; margin-top:12px;}
+@media (max-width:820px){ .intro{grid-template-columns:1fr;} }
+.toolbar{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; padding:12px 14px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); position:sticky; top:env(safe-area-inset-top,0px); z-index:5;}
+.tgroup{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.seg{display:inline-flex; background:var(--surface-2); border-radius:999px; padding:3px; gap:2px;}
+.seg button{border:0; background:transparent; padding:5px 12px; border-radius:999px; font-size:0.82rem; font-weight:550; color:var(--muted); cursor:pointer;}
+.seg button[aria-pressed="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 2px var(--shadow);}
+.check{display:inline-flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:550; cursor:pointer;}
+.check input{accent-color:var(--accent); width:16px; height:16px;}
+.toolbar .link{margin-left:auto;}
+.stage{display:flex; justify-content:center;}
+.frame{width:100%; container-type:inline-size; container-name:app; transition:max-width .3s ease;}
+.frame.phone{max-width:390px;}
+.cap{font-size:0.8rem; color:var(--muted); text-align:center; margin-top:10px;}
+
+/* ---------- app ---------- */
+.app{background:var(--bg); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; box-shadow:0 30px 60px -40px var(--shadow); position:relative; min-height:720px;}
+.bar{display:flex; align-items:center; gap:28px; padding:14px 28px; border-bottom:1px solid var(--line); background:var(--surface);}
+.topnav{display:flex; gap:4px; margin-left:8px;}
+.topnav a{padding:7px 12px; border-radius:999px; font-size:0.88rem; color:var(--muted); text-decoration:none;}
+.topnav a.on{background:var(--accent-soft); color:var(--ink); font-weight:550;}
+.bar-end{margin-left:auto; display:flex; align-items:center; gap:10px;}
+.iconbtn{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; position:relative; cursor:pointer; color:var(--ink);}
+.iconbtn .icon{width:18px; height:18px;}
+.iconbtn .pip{position:absolute; top:7px; right:8px; width:7px; height:7px; border-radius:50%; background:var(--accent); border:2px solid var(--surface);}
+.avatar{width:36px; height:36px; border-radius:50%; background:var(--surface-2); color:var(--ink); display:grid; place-items:center; font-family:var(--mono); font-size:0.74rem; font-weight:500; flex-shrink:0;}
+.avatar.lg{width:48px; height:48px; font-size:0.9rem;}
+.avatar.sm{width:30px; height:30px; font-size:0.66rem;}
+
+.main{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:48px; padding:32px 28px 40px; min-width:0;}
+.col{min-width:0; display:flex; flex-direction:column; gap:28px;}
+
+.hello{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;}
+.hello h2{font-size:2rem; line-height:1.1;}
+.hello p{color:var(--muted); font-size:0.92rem; margin-top:6px;}
+.hello b{color:var(--ink); font-weight:600;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font-weight:550; font-size:0.86rem; padding:9px 15px; border-radius:999px; border:1px solid transparent; cursor:pointer; text-decoration:none; white-space:nowrap;}
+.btn .icon{width:17px; height:17px;}
+.btn-primary{background:var(--accent); color:var(--on-accent);}
+.btn-ghost{background:var(--surface); border-color:var(--line); color:var(--ink);}
+.btn-quiet{background:transparent; color:var(--muted); padding-inline:8px;}
+.btn-sm{padding:6px 11px; font-size:0.8rem;}
+.link{display:inline-flex; align-items:center; gap:4px; font-size:0.82rem; font-weight:550; color:var(--muted); text-decoration:none; white-space:nowrap;}
+.link:hover{color:var(--ink);}
+.link .icon{width:15px; height:15px;}
+
+/* ---- the line ---- */
+.line{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; position:relative;}
+.line::before{content:""; position:absolute; left:15px; top:16px; bottom:16px; width:2px; background:var(--line);}
+.line .track{position:absolute; left:15px; top:16px; width:2px; background:var(--accent); height:var(--done,0%);}
+.stop{display:grid; grid-template-columns:32px minmax(0,1fr); gap:0 20px; padding-bottom:32px; position:relative;}
+.stop:last-child{padding-bottom:0;}
+.dot{width:32px; height:32px; border-radius:50%; background:var(--bg); border:2px solid var(--line); display:grid; place-items:center; color:var(--muted); position:relative; z-index:1;}
+.dot .icon{width:15px; height:15px;}
+.stop.done .dot{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
+.stop.done .dot .icon{stroke-width:2.5;}
+.stop.now .dot{border-color:var(--accent); color:var(--accent); background:var(--surface); box-shadow:0 0 0 5px var(--accent-soft);}
+.stop-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; min-height:32px; align-content:center;}
+.stop-head h3{font-size:1.2rem; letter-spacing:-0.015em;}
+.stop.soon .stop-head h3{color:var(--muted);}
+.stop-head .state{font-family:var(--mono); font-size:0.7rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);}
+.stop-head .link{margin-left:auto;}
+.stop-body{grid-column:2; display:flex; flex-direction:column; gap:14px; padding-top:10px; min-width:0;}
+.stop.soon .stop-body{color:var(--muted); font-size:0.88rem;}
+.flat{font-size:0.9rem; color:var(--muted); display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.flat .icon{width:16px; height:16px;}
+.flat b{color:var(--ink); font-weight:550;}
+
+/* gaps stop */
+.readyline{display:flex; flex-direction:column; gap:8px;}
+.readyline b{font-family:var(--display); font-size:1.05rem; font-weight:650; letter-spacing:-0.01em;}
+.stack{display:flex; height:8px; border-radius:999px; overflow:hidden; gap:2px; max-width:420px;}
+.stack i{display:block; height:100%;}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:0.78rem; color:var(--muted);}
+.legend span{display:inline-flex; align-items:center; gap:6px;}
+.legend i{width:8px; height:8px; border-radius:50%;}
+.gaprow{display:flex; flex-wrap:wrap; gap:8px;}
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:0.76rem; font-weight:550; padding:3px 10px; border-radius:999px; white-space:nowrap;}
+.chip .icon{width:13px; height:13px;}
+.chip.missing{background:var(--bad-soft); color:var(--bad);}
+.chip.weak{background:var(--warn-soft); color:var(--warn);}
+.chip.met{background:var(--good-soft); color:var(--good);}
+.chip.neutral{background:var(--surface-2); color:var(--muted);}
+
+/* path stop: the one card on the page */
+.now-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:22px; display:flex; flex-direction:column; gap:14px; min-width:0;}
+.now-card .eyebrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.now-card h4{font-size:1.35rem; letter-spacing:-0.02em;}
+.meta{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:0.8rem; color:var(--muted);}
+.meta span{display:inline-flex; align-items:center; gap:5px;}
+.meta .icon{width:14px; height:14px;}
+.res{display:flex; align-items:center; gap:10px; font-size:0.88rem; padding:11px 13px; border-radius:var(--r-sm); background:var(--surface-2); text-decoration:none;}
+.res .icon{width:18px; height:18px; color:var(--muted);}
+.res b{font-weight:550;}
+.res .ext{margin-left:auto;}
+.task{font-size:0.88rem; border-left:2px solid var(--accent); padding-left:12px;}
+.task .label{display:block; margin-bottom:2px;}
+.actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.pathbar{display:flex; align-items:center; gap:10px; font-size:0.8rem; color:var(--muted); padding-top:14px; border-top:1px solid var(--line);}
+.meter{flex:1; height:6px; border-radius:999px; background:var(--surface-2); overflow:hidden; min-width:60px;}
+.meter i{display:block; height:100%; background:var(--accent); border-radius:999px;}
+.after{display:flex; flex-direction:column; gap:6px; font-size:0.86rem; color:var(--muted);}
+.after span{display:flex; gap:10px; align-items:baseline;}
+.after .n{font-family:var(--mono); font-size:0.72rem; width:1.6em;}
+
+/* ---- rail ---- */
+.rail{display:flex; flex-direction:column; gap:0; min-width:0;}
+.rail-head{font-family:var(--mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); padding-bottom:12px; border-bottom:1px solid var(--line);}
+.rail section{padding:18px 0; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:12px; min-width:0;}
+.rail section:last-child{border-bottom:0;}
+.rail h3{font-size:0.95rem; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.rail h3 .link{font-weight:550;}
+.who{display:flex; gap:12px; align-items:center;}
+.who-name{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-weight:600;}
+.who small{display:block; font-size:0.78rem; color:var(--muted); font-weight:400;}
+.elite{font-family:var(--mono); font-size:0.64rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); padding:2px 7px; border-radius:999px; font-weight:500;}
+.kv{display:flex; flex-direction:column; gap:7px; font-size:0.82rem; margin:0;}
+.kv div{display:flex; justify-content:space-between; gap:10px; align-items:center;}
+.kv dt{color:var(--muted);}
+.kv dd{margin:0; display:inline-flex; align-items:center; gap:6px;}
+.kv dd .icon{width:14px; height:14px;}
+.certs{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
+.certs li{display:flex; align-items:center; gap:8px; font-size:0.82rem;}
+.certs li > span:not(.chip){flex:1; min-width:0;}
+.certs li small{display:block; color:var(--muted); font-size:0.72rem;}
+.certs .icon{width:16px; height:16px; color:var(--muted);}
+.rows{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+.rows li{display:flex; align-items:center; gap:10px; font-size:0.84rem;}
+.rows li > span:not(.avatar):not(.kind):not(.chip):not(.doc){flex:1; min-width:0;}
+.rows li small{display:block; color:var(--muted); font-size:0.72rem; font-weight:400;}
+.rows b{font-weight:550;}
+.kind{width:30px; height:30px; border-radius:var(--r-sm); background:var(--surface-2); color:var(--muted); display:grid; place-items:center; flex-shrink:0;}
+.kind .icon{width:15px; height:15px;}
+.save{width:28px; height:28px; border-radius:50%; border:0; background:transparent; display:grid; place-items:center; color:var(--muted); cursor:pointer; flex-shrink:0;}
+.save .icon{width:16px; height:16px;}
+.save[aria-pressed="true"]{color:var(--accent);}
+.save[aria-pressed="true"] .icon{fill:currentColor;}
+.locked{display:flex; gap:10px; align-items:center; font-size:0.8rem; color:var(--muted);}
+.locked .icon{width:16px; height:16px;}
+.locked b{color:var(--ink); font-weight:550;}
+.privacy{display:flex; gap:8px; align-items:flex-start; font-size:0.78rem; color:var(--muted);}
+.privacy .icon{width:15px; height:15px; color:var(--good); margin-top:2px;}
+.doc{width:30px; height:38px; border:1px solid var(--line); border-radius:4px; background:var(--surface-2); display:flex; flex-direction:column; gap:3px; padding:6px 5px; flex-shrink:0;}
+.doc i{display:block; height:2px; background:var(--line); border-radius:2px;}
+[data-elite]{display:none !important;}
+.app.is-elite [data-elite="on"]{display:inline-flex !important;}
+.app:not(.is-elite) [data-elite="off"]{display:inline !important;}
+
+/* phone */
+.tabs{display:none;}
+@container app (max-width: 760px){
+  .app{border-radius:28px; min-height:0;}
+  .bar{padding:12px 16px; gap:12px;}
+  .topnav{display:none;}
+  .main{grid-template-columns:1fr; gap:28px; padding:20px 16px 96px;}
+  .hello h2{font-size:1.5rem;}
+  .hello .btn{display:none;}
+  .stop{gap:0 14px; padding-bottom:26px;}
+  .stop-head h3{font-size:1.1rem;}
+  .now-card{padding:16px; border-radius:var(--r-md);}
+  .now-card h4{font-size:1.15rem;}
+  .tabs{display:flex; position:absolute; left:0; right:0; bottom:0; background:var(--surface); border-top:1px solid var(--line); padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px));}
+  .tabs a{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:0.68rem; color:var(--muted); text-decoration:none; padding:4px 0;}
+  .tabs a .icon{width:21px; height:21px;}
+  .tabs a.on{color:var(--accent); font-weight:600;}
+}
+
+
+/* ---- views ---- */
+.view{display:none;}
+.app[data-view="home"] .view-home{display:grid;}
+.app[data-view="network"] .view-network{display:flex;}
+.app[data-view="other"] .view-other{display:flex;}
+.view-network{flex-direction:column; gap:28px; padding:32px 28px 40px; min-width:0; max-width:880px;}
+.view-other{flex-direction:column; gap:10px; padding:64px 28px; align-items:center; text-align:center; color:var(--muted);}
+.view-other h2{font-size:1.4rem; color:var(--ink);}
+.pagehead{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;}
+.pagehead h2{font-size:2rem; line-height:1.1;}
+.pagehead p{color:var(--muted); font-size:0.92rem; margin-top:6px;}
+.vis{display:flex; align-items:center; gap:14px; padding:14px 16px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); flex-wrap:wrap;}
+.vis .icon{color:var(--good);}
+.vis > span{flex:1; min-width:200px; font-size:0.88rem;}
+.vis b{font-weight:600;}
+.vis small{display:block; color:var(--muted); font-size:0.78rem;}
+.switch{display:inline-flex; align-items:center; gap:8px; font-size:0.84rem; font-weight:550; cursor:pointer; white-space:nowrap;}
+.switch i{width:36px; height:20px; border-radius:999px; background:var(--line); position:relative; transition:background .2s;}
+.switch i::after{content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--surface); transition:left .2s;}
+.switch input{position:absolute; opacity:0; width:0; height:0;}
+.switch input:checked + i{background:var(--accent);}
+.switch input:checked + i::after{left:18px;}
+.switch input:focus-visible + i{outline:2px solid var(--accent); outline-offset:2px;}
+.search{display:flex; align-items:center; gap:10px; padding:11px 14px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--muted); font-size:0.9rem;}
+.search .icon{width:18px; height:18px;}
+.search input{flex:1; min-width:0; border:0; background:transparent; font:inherit; color:var(--ink); outline:none;}
+.netsec{display:flex; flex-direction:column; gap:12px;}
+.netsec-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+.netsec-head h3{font-size:1.1rem;}
+.netsec-head .count{font-family:var(--mono); font-size:0.72rem; color:var(--muted);}
+.netsec-head .link{margin-left:auto;}
+.plist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column;}
+.plist li{display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:14px; align-items:center; padding:14px 0; border-top:1px solid var(--line);}
+.plist li:first-child{border-top:0; padding-top:0;}
+.plist .avatar{width:40px; height:40px; font-size:0.76rem;}
+.pname{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-weight:600; font-size:0.92rem;}
+.pname .tick{width:15px; height:15px; color:var(--good);}
+.pname .handle{font-family:var(--mono); font-size:0.72rem; color:var(--muted); font-weight:400;}
+.pwhy{font-size:0.8rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:2px;}
+.pwhy .chip{font-size:0.7rem; padding:1px 8px;}
+.pact{display:flex; align-items:center; gap:6px;}
+.more{width:32px; height:32px; border-radius:50%; border:0; background:transparent; color:var(--muted); display:grid; place-items:center; cursor:pointer;}
+.more .icon{width:18px; height:18px;}
+.menu{position:absolute; right:0; top:36px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:6px; display:none; flex-direction:column; min-width:170px; z-index:3; box-shadow:0 12px 30px -16px var(--shadow);}
+.menu.open{display:flex;}
+.menu button{border:0; background:transparent; text-align:left; padding:8px 10px; border-radius:var(--r-sm); font-size:0.84rem; cursor:pointer; display:flex; gap:8px; align-items:center;}
+.menu button:hover{background:var(--surface-2);}
+.menu button .icon{width:15px; height:15px; color:var(--muted);}
+.menu button.danger{color:var(--bad);}
+.menu button.danger .icon{color:var(--bad);}
+.pact-wrap{position:relative;}
+.mentor{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:16px; align-items:center; padding:18px 20px; border:1px dashed var(--line); border-radius:var(--r-lg);}
+.mentor h3{font-size:1.05rem; display:flex; align-items:center; gap:8px;}
+.mentor p{font-size:0.86rem; color:var(--muted); margin-top:4px; max-width:60ch;}
+.mentor .tag{font-family:var(--mono); font-size:0.64rem; letter-spacing:0.05em; text-transform:uppercase; padding:1px 7px; border-radius:999px; background:var(--surface-2); color:var(--muted);}
+.mfaces{display:flex;}
+.mfaces .avatar{margin-left:-8px; border:2px solid var(--bg);}
+.mfaces .avatar:first-child{margin-left:0;}
+.empty-net{font-size:0.86rem; color:var(--muted); padding:18px; border:1px dashed var(--line); border-radius:var(--r-md); text-align:center;}
+@container app (max-width: 760px){
+  .view-network{padding:20px 16px 96px; gap:22px;}
+  .pagehead h2{font-size:1.5rem;}
+  .plist li{grid-template-columns:36px minmax(0,1fr); gap:10px 12px;}
+  .plist li .pact-wrap{grid-column:2;}
+  .mentor{grid-template-columns:1fr;}
+}
+
+
+/* ---- Junction (posting board) ---- */
+.app[data-view="junction"] .view-junction{display:grid;}
+.view-junction{grid-template-columns:minmax(0,1fr) 300px; gap:40px; padding:32px 28px 40px; min-width:0;}
+.jcol{display:flex; flex-direction:column; gap:20px; min-width:0;}
+.compose{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:16px 18px; display:flex; flex-direction:column; gap:12px;}
+.compose-top{display:flex; gap:12px; align-items:flex-start;}
+.compose textarea{flex:1; min-width:0; border:0; background:transparent; font:inherit; color:var(--ink); resize:none; min-height:56px; outline:none; line-height:1.5;}
+.compose textarea::placeholder{color:var(--muted);}
+.compose-foot{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:10px; border-top:1px solid var(--line);}
+.ptype{display:inline-flex; gap:4px; flex-wrap:wrap;}
+.ptype button{border:1px solid var(--line); background:transparent; border-radius:999px; padding:4px 11px; font-size:0.78rem; font-weight:550; color:var(--muted); cursor:pointer; display:inline-flex; gap:5px; align-items:center;}
+.ptype button .icon{width:13px; height:13px;}
+.ptype button[aria-pressed="true"]{background:var(--surface-2); color:var(--ink); border-color:transparent;}
+.compose-foot .btn{margin-left:auto;}
+.compose-foot .hint{font-size:0.74rem; color:var(--muted); width:100%;}
+.filters{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.filters .seg{background:var(--surface);}
+.filters .label{margin-left:auto;}
+.posts{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
+.posts[hidden]{display:none;}
+.post{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:18px 20px; display:grid; grid-template-columns:44px minmax(0,1fr); gap:16px; min-width:0;}
+.post.pinned{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+.vote{display:flex; flex-direction:column; align-items:center; gap:2px;}
+.vote button{width:44px; height:44px; border-radius:var(--r-md); border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; cursor:pointer; color:var(--muted);}
+.vote button .icon{width:18px; height:18px;}
+.vote button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+.vote b{font-family:var(--mono); font-size:0.8rem; font-weight:500; font-variant-numeric:tabular-nums;}
+.pbody{display:flex; flex-direction:column; gap:10px; min-width:0;}
+.pmeta{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.8rem; color:var(--muted);}
+.pmeta .avatar{width:26px; height:26px; font-size:0.6rem;}
+.pmeta b{color:var(--ink); font-weight:600; font-size:0.86rem;}
+.pmeta .tick{width:14px; height:14px; color:var(--good);}
+.pmeta .more{margin-left:auto;}
+.pmeta .pact-wrap{margin-left:auto;}
+.pmeta .pact-wrap .more{margin-left:0;}
+.ptag{display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.66rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); background:var(--surface-2); padding:2px 8px; border-radius:999px;}
+.ptag .icon{width:12px; height:12px;}
+.ptag.pin{color:var(--accent); background:var(--accent-soft);}
+.post h4{font-size:1.08rem; letter-spacing:-0.015em; line-height:1.3;}
+.post p{font-size:0.9rem; max-width:62ch;}
+.post .quote{font-size:0.84rem; color:var(--muted); border-left:2px solid var(--line); padding-left:12px;}
+.attach{display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:10px 12px; border-radius:var(--r-sm); background:var(--surface-2); max-width:520px;}
+.attach .icon{width:17px; height:17px; color:var(--muted);}
+.attach b{font-weight:550;}
+.attach .chip{margin-left:auto;}
+.pacts{display:flex; align-items:center; gap:4px; flex-wrap:wrap; padding-top:6px;}
+.pacts button{border:0; background:transparent; display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-size:0.8rem; font-weight:550; color:var(--muted); cursor:pointer;}
+.pacts button:hover{background:var(--surface-2); color:var(--ink);}
+.pacts button .icon{width:16px; height:16px;}
+.pacts button[aria-pressed="true"]{color:var(--ink);}
+.pacts button[aria-pressed="true"] .icon{fill:currentColor;}
+.pacts .n{font-family:var(--mono); font-size:0.74rem; font-weight:500;}
+.reply{display:grid; grid-template-columns:26px minmax(0,1fr); gap:10px; font-size:0.84rem; padding:10px 12px; border-radius:var(--r-md); background:var(--surface-2);}
+.reply .avatar{width:26px; height:26px; font-size:0.6rem;}
+.reply b{font-weight:600;}
+.reply small{color:var(--muted); margin-left:6px;}
+.reply .link{margin-top:4px;}
+.jrail{display:flex; flex-direction:column; min-width:0;}
+.jrail section{padding:18px 0; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:10px;}
+.jrail section:first-child{padding-top:0;}
+.jrail section:last-child{border-bottom:0;}
+.jrail h3{font-size:0.95rem; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.stats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;}
+.stat{display:flex; flex-direction:column; gap:0; padding:10px 12px; border:1px solid var(--line); border-radius:var(--r-md);}
+.stat b{font-family:var(--display); font-size:1.3rem; font-weight:650; font-variant-numeric:tabular-nums;}
+.stat span{font-size:0.72rem; color:var(--muted);}
+.tags{display:flex; flex-wrap:wrap; gap:6px;}
+.tags a{text-decoration:none; font-size:0.78rem; padding:4px 10px; border-radius:999px; background:var(--surface-2); color:var(--ink);}
+.tags a .n{font-family:var(--mono); font-size:0.68rem; color:var(--muted); margin-left:4px;}
+.rules{margin:0; padding-left:18px; font-size:0.82rem; color:var(--muted); display:flex; flex-direction:column; gap:5px;}
+.rules b{color:var(--ink); font-weight:550;}
+.gov{display:flex; gap:10px; align-items:flex-start; font-size:0.78rem; color:var(--muted);}
+.gov .icon{width:15px; height:15px; color:var(--good); margin-top:2px;}
+@container app (max-width: 760px){
+  .view-junction{grid-template-columns:1fr; gap:24px; padding:20px 16px 96px;}
+  .post{padding:14px; grid-template-columns:36px minmax(0,1fr); gap:12px; border-radius:var(--r-md);}
+  .vote button{width:36px; height:36px;}
+  .pmeta .meta-when{display:none;}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+
+
+.ptag.interest{color:var(--ink); background:var(--surface-2); text-transform:none; letter-spacing:0; font-family:var(--body); font-size:0.72rem; font-weight:550;}
+.tagline{width:100%; padding-top:8px; border-top:1px solid var(--line); gap:6px;}
+.addint{display:flex; gap:6px;}
+.addint input{flex:1; min-width:0; font:inherit; font-size:0.82rem; padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink);}
+.addint input::placeholder{color:var(--muted);}
+
+
+.shared{font-size:0.78rem; color:var(--muted); white-space:nowrap;}
+.shared b{font-family:var(--mono); font-weight:500; color:var(--ink);}
+.plink{text-decoration:none;}
+.plink:hover{text-decoration:underline;}
+/* ---- someone else's profile ---- */
+.app[data-view="profile"] .view-profile{display:grid;}
+.view-profile{grid-template-columns:minmax(0,1fr) 300px; gap:40px; padding:24px 28px 40px; min-width:0;}
+.crumb{display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; color:var(--muted); text-decoration:none;}
+.crumb .icon{width:15px; height:15px; transform:rotate(180deg);}
+.phead{display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;}
+.phead .avatar{width:72px; height:72px; font-size:1.2rem;}
+.phead-main{flex:1; min-width:220px; display:flex; flex-direction:column; gap:4px;}
+.phead-main h2{font-size:1.7rem; line-height:1.1; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.phead-main h2 .tick{width:20px; height:20px; color:var(--good);}
+.phead-main .handle{font-family:var(--mono); font-size:0.78rem; color:var(--muted);}
+.phead-main p{font-size:0.92rem; color:var(--muted);}
+.phead .actions{align-self:center;}
+.pstrip{display:flex; gap:24px; flex-wrap:wrap; font-size:0.82rem; color:var(--muted); padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.pstrip b{font-family:var(--mono); font-weight:500; color:var(--ink); margin-right:4px;}
+.common{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:20px; display:flex; flex-direction:column; gap:18px;}
+.common > h3{font-size:1.15rem; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+.common > h3 .label{font-size:0.68rem;}
+.cblock{display:grid; grid-template-columns:150px minmax(0,1fr); gap:6px 16px; padding-top:14px; border-top:1px solid var(--line);}
+.cblock:first-of-type{border-top:0; padding-top:0;}
+.cblock h4{font-size:0.9rem; display:flex; flex-direction:column; gap:2px;}
+.cblock h4 small{font-family:var(--mono); font-size:0.68rem; font-weight:400; color:var(--muted);}
+.cbody{display:flex; flex-direction:column; gap:8px; min-width:0;}
+.cbody .tags a{cursor:default;}
+.cbody p{font-size:0.84rem; color:var(--muted);}
+.twin{display:grid; grid-template-columns:28px minmax(0,1fr); gap:0 12px; position:relative;}
+.twin::before{content:""; position:absolute; left:13px; top:14px; bottom:14px; width:2px; background:var(--line);}
+.twin > div{display:contents;}
+.twin .d{width:28px; height:28px; border-radius:50%; background:var(--bg); border:2px solid var(--line); display:grid; place-items:center; position:relative; z-index:1; font-family:var(--mono); font-size:0.7rem; color:var(--muted);}
+.twin .d.both{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
+.twin .d.you{border-color:var(--accent); color:var(--accent);}
+.twin .t{font-size:0.84rem; padding:4px 0 14px; display:flex; flex-direction:column; gap:2px;}
+.twin .t small{color:var(--muted); font-size:0.76rem;}
+.faces{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.faces .avatar{width:32px; height:32px; font-size:0.66rem; margin-left:-10px; border:2px solid var(--surface);}
+.faces .avatar:first-child{margin-left:0;}
+.faces span.t{font-size:0.82rem; color:var(--muted); margin-left:4px;}
+.prail{display:flex; flex-direction:column; min-width:0;}
+.prail section{padding:18px 0; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:10px;}
+.prail section:first-child{padding-top:0;}
+.prail section:last-child{border-bottom:0;}
+.prail h3{font-size:0.95rem; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.prail .privacy{margin-top:4px;}
+.ppost{display:flex; flex-direction:column; gap:4px; font-size:0.84rem; padding:10px 12px; border:1px solid var(--line); border-radius:var(--r-md);}
+.ppost b{font-weight:600;}
+.ppost small{color:var(--muted); font-size:0.74rem;}
+@container app (max-width: 760px){
+  .view-profile{grid-template-columns:1fr; gap:24px; padding:16px 16px 96px;}
+  .cblock{grid-template-columns:1fr;}
+  .phead .avatar{width:56px; height:56px; font-size:1rem;}
+  .phead-main h2{font-size:1.4rem;}
+  .shared{white-space:normal;}
+}
+
+
+.status{display:inline-flex; align-items:center; gap:5px; font-size:0.76rem; font-weight:500; color:var(--muted); background:var(--surface-2); padding:2px 9px; border-radius:999px; font-family:var(--body);}
+.status .icon{width:13px; height:13px;}
+.status.lg{font-size:0.84rem; align-self:flex-start; padding:3px 11px;}
+.pname .plink{font-weight:600;}
+
+
+.statsel{font:inherit; font-size:0.8rem; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px 8px; max-width:170px;}
+.mycard{display:flex; flex-direction:column; gap:10px; padding:14px 16px; border:1px dashed var(--line); border-radius:var(--r-md);}
+.mycard-row{display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:14px; align-items:center;}
+.mycard-row .avatar{width:40px; height:40px; font-size:0.76rem;}
+.statusedit{display:flex; flex-direction:column; gap:10px; padding-top:10px; border-top:1px solid var(--line);}
+@container app (max-width: 760px){ .mycard-row{grid-template-columns:36px minmax(0,1fr);} .mycard-row .link{grid-column:2;} }
+
+
+.rec{display:flex; flex-direction:column; gap:10px; padding:20px 22px; border-radius:var(--r-lg); background:var(--accent-soft);}
+.rec h2{font-size:1.3rem;}
+.rec ol{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:0.9rem; max-width:75ch;}
+.rec b{font-weight:600;}
+
+/* notes */
+.notes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px;}
+@media (max-width:900px){ .notes{grid-template-columns:1fr;} }
+.note{display:flex; flex-direction:column; gap:8px; padding-top:14px; border-top:2px solid var(--ink);}
+.note h3{font-size:1rem;}
+.note ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; font-size:0.88rem; color:var(--muted);}
+.note li b{color:var(--ink); font-weight:600;}
+.note code{font-family:var(--mono); font-size:0.76rem; background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+.spec-head{display:flex; flex-direction:column; gap:6px;}
+.spec-head h2{font-size:1.5rem;}
+.spec-head p{color:var(--muted); max-width:70ch;}
+.foot{font-size:0.8rem; color:var(--muted); border-top:1px solid var(--line); padding-top:16px;}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+  <symbol id="i-badge" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+  <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-docs" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 2v7.31L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="m18 5-2.414-2.414A2 2 0 0 0 14.172 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/><path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><path d="M8 18h1"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-7.333-2A6 6 0 0 0 5 14.8"/><path d="M4 22"/></symbol>
+  <symbol id="i-userx" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5"/><path d="m22 8-5 5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m5 15 7-7 7 7"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
+  <symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></symbol>
+  <symbol id="i-pinned" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 34 18"><path d="M5 13h10l6-8h8" fill="none" stroke-width="2.5"/><circle cx="5" cy="13" r="3.5" fill="var(--bg)" stroke-width="2.5"/><circle cx="29" cy="5" r="3.5" stroke="var(--accent)" fill="var(--accent)" stroke-width="2.5"/></symbol>
+</svg>
+
+<div class="page">
+  <header class="top">
+    <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+    <span class="label">Signed-in home · line view · 8 Oct 2026</span>
+  </header>
+
+  <section class="intro">
+    <div>
+      <span class="label">A second take, for comparison</span>
+      <h1>The line is the page.</h1>
+      <p>The first mock laid the home out as a dashboard of cards. This one takes the brand's own idea literally: one route runs down the page, each stop opens where it sits, and the stop you are at is the only thing that asks for attention. Everything else is a quiet rail on the right. Same tokens, fonts and icons as the live app.</p>
+    </div>
+    <p class="muted" style="font-size:0.88rem">Same example person as v1 (Priya, aiming for Cyber Security Analyst) so the two can be compared block for block. The build table in v1 still applies; the notes below say what changes.</p>
+  </section>
+
+  <div class="toolbar" role="group" aria-label="Mock controls">
+    <div class="tgroup">
+      <span class="label">Frame</span>
+      <div class="seg" id="seg-frame">
+        <button type="button" data-v="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-v="phone" aria-pressed="false">Phone</button>
+      </div>
+    </div>
+    <label class="check" for="t-elite"><input type="checkbox" id="t-elite">Elite member</label>
+    <a class="link" href="https://claude.ai/artifact/L3uVYuyJH4rUUh829Vv3iJ">Open v1, the card layout<svg class="icon"><use href="#i-ext"/></svg></a>
+  </div>
+
+  <div>
+  <div class="stage">
+    <div class="frame" id="frame">
+      <div class="app" id="app" data-view="home">
+        <header class="bar">
+          <span class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</span>
+          <nav class="topnav" aria-label="Main">
+            <a class="on" href="#home" data-go="home">Home</a>
+            <a href="#library" data-go="other">Library</a>
+            <a href="#builder" data-go="other">Resume builder</a>
+            <a href="#network" data-go="network">Network</a>
+            <a href="#junction" data-go="junction">Junction</a>
+          </nav>
+          <div class="bar-end">
+            <button class="iconbtn" type="button" aria-label="Notifications, 2 new"><svg class="icon"><use href="#i-bell"/></svg><i class="pip"></i></button>
+            <span class="avatar" aria-label="Account menu">PN</span>
+          </div>
+        </header>
+
+        <div class="main view view-home">
+          <div class="col">
+            <div class="hello">
+              <div>
+                <h2>Good evening, Priya.</h2>
+                <p>You are at <b>Path</b>, step 4 of 9, on the way to <b>Cyber Security Analyst</b>.</p>
+              </div>
+              <a class="btn btn-ghost" href="#role"><svg class="icon"><use href="#i-target"/></svg>Change role</a>
+            </div>
+
+            <ol class="line" style="--done:46%">
+              <i class="track"></i>
+
+              <li class="stop done">
+                <span class="dot"><svg class="icon"><use href="#i-check"/></svg></span>
+                <div class="stop-head"><h3>Resume</h3><span class="state">Done · 6 Oct</span><a class="link" href="#resume">Replace</a></div>
+                <div class="stop-body">
+                  <p class="flat"><svg class="icon"><use href="#i-file"/></svg><b>Priya_Nair_resume.pdf</b><span>14 skills found · 2 years IT support</span></p>
+                </div>
+              </li>
+
+              <li class="stop done">
+                <span class="dot"><svg class="icon"><use href="#i-check"/></svg></span>
+                <div class="stop-head"><h3>Gaps</h3><span class="state">10 of 17 skills to work on</span><a class="link" href="#gaps">All skills<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                <div class="stop-body">
+                  <div class="readyline">
+                    <b>Strong on the basics, two core tools to go.</b>
+                    <div class="stack" role="img" aria-label="Required skills: 5 met, 2 weak, 3 missing"><i style="flex:5;background:var(--good)"></i><i style="flex:2;background:var(--warn)"></i><i style="flex:3;background:var(--bad)"></i></div>
+                    <div class="legend"><span><i style="background:var(--good)"></i>5 met</span><span><i style="background:var(--warn)"></i>2 weak</span><span><i style="background:var(--bad)"></i>3 missing</span><span>of 10 required</span></div>
+                  </div>
+                  <div class="gaprow">
+                    <span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>SIEM</span>
+                    <span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>AWS security</span>
+                    <span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Vulnerability management</span>
+                    <span class="chip weak"><svg class="icon"><use href="#i-contrast"/></svg>Threat detection</span>
+                    <span class="chip weak"><svg class="icon"><use href="#i-contrast"/></svg>Python</span>
+                    <span class="chip neutral">+5 nice to have</span>
+                  </div>
+                </div>
+              </li>
+
+              <li class="stop now">
+                <span class="dot"><svg class="icon"><use href="#i-route"/></svg></span>
+                <div class="stop-head"><h3>Path</h3><span class="state">You are here · 6 h a week</span><a class="link" href="#path">Full path<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+                <div class="stop-body">
+                  <div class="now-card">
+                    <div class="eyebrow"><span class="label">Step 4 of 9</span><span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span><span class="chip neutral">Required</span></div>
+                    <h4>Investigate alerts in a SIEM</h4>
+                    <div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>About 10 hours</span><span><svg class="icon"><use href="#i-route"/></svg>Weeks 3 to 4</span></div>
+                    <a class="res" href="#res"><svg class="icon"><use href="#i-play"/></svg><span><b>Free Splunk courses</b> · Splunk · course</span><svg class="icon ext"><use href="#i-ext"/></svg></a>
+                    <p class="task"><span class="label">Proof task</span>Write three searches over the Boss of the SOC v3 dataset and explain each hit in two lines. Add the link to your profile.</p>
+                    <div class="actions">
+                      <button class="btn btn-primary" type="button" id="markdone"><svg class="icon"><use href="#i-check"/></svg>Mark done</button>
+                      <a class="btn btn-quiet" href="#skip">Skip for now</a>
+                    </div>
+                    <div class="pathbar"><span class="num" style="font-size:0.76rem">3/9</span><span class="meter"><i style="width:33%"></i></span><span>About 5 weeks left</span></div>
+                  </div>
+                  <div class="after">
+                    <span><i class="n">5</i>Recognise attacker techniques with MITRE ATT&amp;CK · 4 h</span>
+                    <span><i class="n">6</i>Automate a log check in Python · 6 h</span>
+                  </div>
+                </div>
+              </li>
+
+              <li class="stop soon">
+                <span class="dot"><svg class="icon"><use href="#i-msg"/></svg></span>
+                <div class="stop-head"><h3>Practice</h3><span class="state">Opens after step 6</span></div>
+                <div class="stop-body"><p>A short set of interview questions on the gaps you just closed.</p></div>
+              </li>
+
+              <li class="stop soon">
+                <span class="dot"><svg class="icon"><use href="#i-brief"/></svg></span>
+                <div class="stop-head"><h3>Match</h3><span class="state">Soon</span></div>
+                <div class="stop-body"><p>Roles and pasted job posts scored against your updated profile.</p></div>
+              </li>
+            </ol>
+          </div>
+
+          <aside class="rail" aria-label="Your space">
+            <div class="rail-head">Your space</div>
+
+            <section>
+              <h3>Profile<a class="link" href="#profile">Edit</a></h3>
+              <div class="who">
+                <span class="avatar lg">PN</span>
+                <div><div class="who-name">Priya Nair <span class="elite" data-elite="on">Elite</span></div><small>IT support, moving to security · Pune</small></div>
+              </div>
+              <dl class="kv">
+                <div><dt>Handle</dt><dd class="num" style="font-size:0.78rem">@priya-nair</dd></div>
+                <div><dt>Status</dt><dd><select id="my-status" class="statsel" aria-label="Your status"><option>Looking for a next role</option><option>Working at…</option><option>Freelance</option><option>Studying</option><option>Hide status</option></select></dd></div>
+                <div><dt>Visible to</dt><dd><svg class="icon"><use href="#i-lock"/></svg>Only you</dd></div>
+                <div><dt>Identity</dt><dd><span class="chip neutral">Not verified</span></dd></div>
+              </dl>
+              <ul class="certs">
+                <li><svg class="icon"><use href="#i-award"/></svg><span>ISC2 Certified in Cybersecurity<small>Credly badge checked</small></span><span class="chip met"><svg class="icon"><use href="#i-badge"/></svg>Verified</span></li>
+                <li><svg class="icon"><use href="#i-award"/></svg><span>CompTIA Security+<small>In progress</small></span><a class="link" href="#credly"><svg class="icon"><use href="#i-link"/></svg>Add Credly link</a></li>
+              </ul>
+            </section>
+
+            <section>
+              <h3>Library, for your gaps<a class="link" href="#library">Saved (4)</a></h3>
+              <ul class="rows">
+                <li><span class="kind"><svg class="icon"><use href="#i-flask"/></svg></span><span><b>Boss of the SOC v3 dataset</b><small>Splunk · practice · 8 h · SIEM</small></span><button class="save" type="button" aria-pressed="false" aria-label="Save"><svg class="icon"><use href="#i-bookmark"/></svg></button></li>
+                <li><span class="kind"><svg class="icon"><use href="#i-docs"/></svg></span><span><b>MITRE ATT&amp;CK</b><small>MITRE · docs · 3 h · Threat detection</small></span><button class="save" type="button" aria-pressed="true" aria-label="Saved"><svg class="icon"><use href="#i-bookmark"/></svg></button></li>
+                <li><span class="kind"><svg class="icon"><use href="#i-play"/></svg></span><span><b>AWS Cloud Practitioner Essentials</b><small>AWS Skill Builder · course · 6 h · AWS</small></span><button class="save" type="button" aria-pressed="false" aria-label="Save"><svg class="icon"><use href="#i-bookmark"/></svg></button></li>
+              </ul>
+              <p class="locked"><svg class="icon"><use href="#i-lock"/></svg><span><b>Elite shelf</b> · expert-checked SOC playbooks. <span data-elite="off">With Elite, later.</span><span data-elite="on">Opens when it launches.</span></span></p>
+            </section>
+
+            <section>
+              <h3>Resume builder<span class="label">Free</span></h3>
+              <ul class="rows">
+                <li><span class="doc"><i></i><i></i><i style="width:60%"></i><i></i></span><span><b>Security analyst, from my profile</b><small>Edited yesterday · 2 suggestions to confirm</small></span><a class="link" href="#draft">Open</a></li>
+              </ul>
+              <div class="actions"><a class="btn btn-ghost btn-sm" href="#newdraft"><svg class="icon"><use href="#i-plus"/></svg>New draft</a><span class="muted num" style="font-size:0.72rem">4 of 5 left today</span></div>
+            </section>
+
+            <section>
+              <h3>Aiming for the same role<a class="link" href="#network" data-go="network">More</a></h3>
+              <ul class="rows">
+                <li><span class="avatar sm">AM</span><span><b>Arjun Mehta</b><small>Working at Kavach Cyber Labs</small></span><button class="btn btn-ghost btn-sm" type="button">Follow</button></li>
+                <li><span class="avatar sm">SK</span><span><b>Sneha Kulkarni</b><small>Working at Deccan Data Services</small></span><button class="btn btn-ghost btn-sm" type="button">Follow</button></li>
+              </ul>
+              <p class="privacy"><svg class="icon"><use href="#i-shield"/></svg><span>You are hidden from search until you choose otherwise.</span></p>
+            </section>
+          </aside>
+        </div>
+
+        <div class="view view-network" aria-label="Network">
+          <div class="pagehead">
+            <div><h2>Network</h2><p>People on the same route as you. Posts and ideas live on <a href="#junction" data-go="junction">Junction</a>; this page is who you follow and who you ask.</p></div>
+            <a class="btn btn-ghost" href="#invite"><svg class="icon"><use href="#i-link"/></svg>Copy invite link</a>
+          </div>
+
+          <div class="vis">
+            <svg class="icon"><use href="#i-shield"/></svg>
+            <span><b>You are hidden from search.</b><small>People can find you only if you turn this on. Your phone, email, salary and notice period never show, whatever you choose.</small></span>
+            <label class="switch"><input type="checkbox" id="t-find"><i></i>Let people find me</label>
+          </div>
+
+                    <div class="mycard">
+            <span class="label">How you appear to others</span>
+            <div class="mycard-row"><span class="avatar">PN</span><div><div class="pname"><span class="plink">Priya Nair</span><span class="status" id="mycard-status"><svg class="icon"><use href="#i-search"/></svg>Looking for a next role</span></div><div class="pwhy"><span>Pune</span><span class="shared">plus shared skills and interests, counted for each viewer</span></div></div><a class="link" href="#edit" id="mycard-edit">Change status</a></div>
+            <div class="statusedit" id="statusedit" hidden>
+              <div class="ptype" role="group" aria-label="Your status">
+                <button type="button" aria-pressed="false" data-st="work"><svg class="icon"><use href="#i-brief"/></svg>Working at</button>
+                <button type="button" aria-pressed="false" data-st="free"><svg class="icon"><use href="#i-pen"/></svg>Freelance</button>
+                <button type="button" aria-pressed="true" data-st="look"><svg class="icon"><use href="#i-search"/></svg>Looking for a next role</button>
+                <button type="button" aria-pressed="false" data-st="study"><svg class="icon"><use href="#i-book"/></svg>Studying</button>
+                <button type="button" aria-pressed="false" data-st="none">No status</button>
+              </div>
+              <div class="addint" id="company-row" hidden><input type="text" id="company" placeholder="Company name" aria-label="Company name"></div>
+              <p class="muted" style="font-size:0.78rem">Each person sets their own status. People find you by name; your handle is on your profile link.</p>
+            </div>
+          </div>
+
+          <label class="search"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="net-search" placeholder="Search people by name or handle" aria-label="Search people"></label>
+
+          <section class="netsec">
+            <div class="netsec-head"><h3>Requests</h3><span class="count">1 waiting</span></div>
+            <ul class="plist">
+              <li>
+                <span class="avatar">RV</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Rahul Verma</a><span class="status"><svg class="icon"><use href="#i-search"/></svg>Looking for a next role</span></div><div class="pwhy"><span>Wants to connect · Hyderabad</span><span class="shared"><b>3</b> shared skills · <b>1</b> shared interest</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-primary btn-sm" type="button" data-toggle="Accept|Connected">Accept</button><button class="btn btn-quiet btn-sm" type="button">Ignore</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+            </ul>
+          </section>
+
+          <section class="netsec">
+            <div class="netsec-head"><h3>Aiming for your role</h3><span class="count">Cyber Security Analyst · 0 to 4 years</span><a class="link" href="#more">Show more<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+            <ul class="plist">
+              <li>
+                <span class="avatar">AM</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Arjun Mehta</a><span class="status"><svg class="icon"><use href="#i-brief"/></svg>Working at Kavach Cyber Labs</span></div><div class="pwhy"><span>Bengaluru</span><span class="shared"><b>6</b> shared skills · <b>2</b> shared interests</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-ghost btn-sm" type="button" data-toggle="Follow|Following">Follow</button><button class="btn btn-primary btn-sm" type="button" data-toggle="Connect|Requested">Connect</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+              <li>
+                <span class="avatar">SK</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Sneha Kulkarni</a><span class="status"><svg class="icon"><use href="#i-brief"/></svg>Working at Deccan Data Services</span></div><div class="pwhy"><span>Pune</span><span class="shared"><b>5</b> shared skills · <b>1</b> shared interest</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-ghost btn-sm" type="button" data-toggle="Follow|Following">Follow</button><button class="btn btn-primary btn-sm" type="button" data-toggle="Connect|Requested">Connect</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+              <li>
+                <span class="avatar">DI</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Divya Iyer</a><svg class="icon tick" aria-label="Identity verified"><use href="#i-badge"/></svg><span class="status"><svg class="icon"><use href="#i-pen"/></svg>Freelance</span></div><div class="pwhy"><span>Chennai</span><span class="shared"><b>4</b> shared skills · <b>3</b> shared interests</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-ghost btn-sm" type="button" data-toggle="Follow|Following">Follow</button><button class="btn btn-primary btn-sm" type="button" data-toggle="Connect|Requested">Connect</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+            </ul>
+          </section>
+
+          <section class="netsec">
+            <div class="netsec-head"><h3>Your connections</h3><span class="count">2</span><a class="link" href="#all">All<svg class="icon"><use href="#i-arrow"/></svg></a></div>
+            <ul class="plist">
+              <li>
+                <span class="avatar">KS</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Karan Singh</a><span class="status"><svg class="icon"><use href="#i-brief"/></svg>Working at Deccan Data Services</span></div><div class="pwhy"><span>Former colleague · Pune</span><span class="shared"><b>7</b> shared skills · <b>0</b> shared interests</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-ghost btn-sm" type="button" disabled title="Messages come later">Message</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+              <li>
+                <span class="avatar">NB</span>
+                <div><div class="pname"><a href="#profile" data-go="profile" class="plink">Neha Bhat</a><span class="status"><svg class="icon"><use href="#i-search"/></svg>Looking for a next role</span></div><div class="pwhy"><span>Mumbai</span><span class="shared"><b>2</b> shared skills · <b>2</b> shared interests</span></div></div>
+                <div class="pact-wrap"><div class="pact"><button class="btn btn-ghost btn-sm" type="button" disabled title="Messages come later">Message</button><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button></div>
+                  <div class="menu"><button type="button" data-go="profile"><svg class="icon"><use href="#i-user"/></svg>View profile</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+              </li>
+            </ul>
+            <p class="empty-net">You follow 4 people. Following is one-way; connecting needs the other person to accept.</p>
+          </section>
+
+          <section class="netsec">
+            <div class="mentor">
+              <div>
+                <h3><svg class="icon"><use href="#i-cal"/></svg>Mentors<span class="tag">After the beta</span></h3>
+                <p>Book an hour with someone who already does the job: role prep, your interview questions, a look at your resume. Paid per session, open to free members. Mentors are vetted before they appear here.</p>
+              </div>
+              <div class="mfaces"><span class="avatar">VR</span><span class="avatar">PK</span><span class="avatar">AS</span></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="view view-junction" aria-label="Junction">
+          <div class="jcol">
+            <div class="pagehead">
+              <div><h2>Junction</h2><p>Where routes cross. Share an idea, ask the people ahead of you, post a win. Votes move good posts up.</p></div>
+            </div>
+
+            <div class="compose">
+              <div class="compose-top"><span class="avatar">PN</span><textarea id="compose" placeholder="Share an idea, a question or a win with people on your route…" aria-label="Write a post"></textarea></div>
+              <div class="compose-foot">
+                <div class="ptype" role="group" aria-label="Post type">
+                  <button type="button" aria-pressed="true"><svg class="icon"><use href="#i-bulb"/></svg>Idea</button>
+                  <button type="button" aria-pressed="false"><svg class="icon"><use href="#i-q"/></svg>Question</button>
+                  <button type="button" aria-pressed="false"><svg class="icon"><use href="#i-trophy"/></svg>Win</button>
+                  <button type="button" aria-pressed="false"><svg class="icon"><use href="#i-book"/></svg>Resource</button>
+                </div>
+                <button class="btn btn-primary btn-sm" type="button" id="postbtn"><svg class="icon"><use href="#i-arrow"/></svg>Post to Junction</button>
+                <div class="ptype tagline" role="group" aria-label="Post to"><span class="label" style="align-self:center">Post to</span><button type="button" aria-pressed="true">My route</button><button type="button" aria-pressed="false">AI</button><button type="button" aria-pressed="false">Design</button><button type="button" aria-pressed="false">Marketing</button><button type="button" aria-pressed="false">Public speaking</button></div>
+                <span class="hint">Posts show your name and handle. A post can be pinned to your profile. No phone numbers, email addresses or job-portal screenshots.</span>
+              </div>
+            </div>
+
+            <div class="filters">
+              <div class="seg" id="seg-feed">
+                <button type="button" aria-pressed="true" data-feed="route">Top this week</button>
+                <button type="button" aria-pressed="false" data-feed="route">New</button>
+                <button type="button" aria-pressed="false" data-feed="route">My route</button>
+                <button type="button" aria-pressed="false" data-feed="interests">My interests</button>
+                <button type="button" aria-pressed="false" data-feed="route">Following</button>
+              </div>
+              <span class="label" id="feed-label">Cyber Security Analyst · 0 to 4 years</span>
+            </div>
+
+            <ol class="posts" data-feed="route">
+              <li class="post pinned">
+              <div class="vote"><button type="button" aria-pressed="true" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>128</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">DI</span><b>Divya Iyer</b><svg class="icon tick" aria-label="Identity verified"><use href="#i-badge"/></svg><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@divya-iyer</span><span class="meta-when">· 3 d ago</span><span class="ptag pin"><svg class="icon"><use href="#i-pinned"/></svg>Pinned this week</span><span class="ptag"><svg class="icon"><use href="#i-book"/></svg>Resource</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Divya</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Closing the SIEM gap without paying for a lab: the order that worked for me</h4>
+                <p>Splunk Fundamentals (free) first, then the BOTS v3 dataset for a weekend, then write three searches you can explain in an interview. I attached the exact dataset; it is the same one on your Path.</p>
+                <div class="attach"><svg class="icon"><use href="#i-flask"/></svg><span><b>Boss of the SOC v3 dataset</b> · Splunk · practice</span><span class="chip missing">SIEM</span></div>
+                <div class="reply"><span class="avatar">DI</span><div><b>Divya Iyer</b><small>2 h ago · 9 votes</small><div>Do the Splunk Fundamentals course first, or BOTS will feel like reading another language. Took me a weekend.</div><a class="link" href="#replies">11 more comments<svg class="icon"><use href="#i-arrow"/></svg></a></div></div>
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">12</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">31</span></button>
+                  <button type="button" aria-pressed="true" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>46</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">AM</span><b>Arjun Mehta</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@arjun-m</span><span class="meta-when">· 1 d ago</span><span class="ptag"><svg class="icon"><use href="#i-trophy"/></svg>Win</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Arjun</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Finished my Python proof task and got a SOC L1 interview call the same week</h4>
+                <p>The proof task was a 40-line script that reads auth logs and flags 5 failed logins in a minute. The interviewer asked me to walk through it. Mark your proof tasks done; they are better than a certificate line.</p>
+                <p class="quote">Step 6 of 9 · Automate a log check in Python · proof task done</p>
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">18</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">9</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>23</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">SK</span><b>Sneha Kulkarni</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@sneha-k</span><span class="meta-when">· 2 d ago</span><span class="ptag"><svg class="icon"><use href="#i-q"/></svg>Question</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Sneha</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>AWS or Azure first for a Cyber Security Analyst role in Pune?</h4>
+                <p>Both are nice-to-have on the role profile. I have 6 hours a week. Which one shows up more in actual job posts here?</p>
+                <div class="reply"><span class="avatar">PN</span><div><b>Priya Nair</b><small>yesterday · 4 votes</small><div>I have the same gap. Following this one.</div></div></div>
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">7</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">2</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>11</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">RV</span><b>Rahul Verma</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@rahul-v</span><span class="meta-when">· 5 d ago</span><span class="ptag"><svg class="icon"><use href="#i-bulb"/></svg>Idea</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Rahul</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Weekly study group for the Boss of the SOC dataset, Sunday 8 pm?</h4>
+                <p>Four of us are on the same Path step. One call a week, each person explains one search. Reply if you are in.</p>
+                
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">9</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">4</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+            </ol>
+            <ol class="posts" data-feed="interests" hidden>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>74</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">MK</span><b>Meera Krishnan</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@meera-k</span><span class="meta-when">· 1 d ago</span><span class="ptag interest">AI</span><span class="ptag"><svg class="icon"><use href="#i-book"/></svg>Resource</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Meera</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Free AI course that actually teaches you to build, not just prompt</h4>
+                <p>Four weeks, one small project a week: a classifier, a RAG notebook, an agent, a demo. All on Kaggle and Hugging Face, nothing to pay. I am on week 2 and posting notes here.</p>
+                <div class="attach"><svg class="icon"><use href="#i-play"/></svg><span><b>Intro to Machine Learning</b> · Kaggle Learn · course</span><span class="chip neutral">3 h</span></div>
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">21</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">14</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>39</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">TS</span><b>Tanvi Shah</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@tanvi-s</span><span class="meta-when">· 2 d ago</span><span class="ptag interest">Design</span><span class="ptag"><svg class="icon"><use href="#i-bulb"/></svg>Idea</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Tanvi</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Rebuilt my resume as a one-page design case study. Recruiters noticed.</h4>
+                <p>Same facts, laid out like a product page: problem, what I did, result. Happy to share the template if people want it. Not a designer by job; design is a side interest.</p>
+                
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">16</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">22</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>27</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">AM</span><b>Arjun Mehta</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@arjun-m</span><span class="meta-when">· 3 d ago</span><span class="ptag interest">Marketing</span><span class="ptag"><svg class="icon"><use href="#i-q"/></svg>Question</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Arjun</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Anyone done a marketing basics course that is not just ads?</h4>
+                <p>Looking at Google Digital Garage and HubSpot Academy. Which one explains positioning and messaging, not only campaigns?</p>
+                <div class="reply"><span class="avatar">PN</span><div><b>Priya Nair</b><small>yesterday · 6 votes</small><div>HubSpot Academy, the inbound marketing one. Skip the certificate, do the exercises.</div></div></div>
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">8</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">3</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+              <li class="post">
+              <div class="vote"><button type="button" aria-pressed="false" aria-label="Upvote" data-vote><svg class="icon"><use href="#i-up"/></svg></button><b>15</b></div>
+              <div class="pbody">
+                <div class="pmeta"><span class="avatar">RV</span><b>Rahul Verma</b><span class="handle" style="font-family:var(--mono);font-size:0.72rem">@rahul-v</span><span class="meta-when">· 4 d ago</span><span class="ptag interest">Public speaking</span><span class="ptag"><svg class="icon"><use href="#i-trophy"/></svg>Win</span>
+                  <div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-bookmark"/></svg>Save</button><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Mute Rahul</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div>
+                </div>
+                <h4>Gave my first talk at a college meetup. Shaking, but did it.</h4>
+                <p>Twenty minutes on how I got from help desk to studying security. Public speaking is on my interests list for a reason. Next one in November.</p>
+                
+                <div class="pacts">
+                  <button type="button"><svg class="icon"><use href="#i-msg"/></svg>Comment <span class="n">12</span></button>
+                  <button type="button" data-toggle="Reshare|Reshared"><svg class="icon"><use href="#i-share"/></svg>Reshare <span class="n">5</span></button>
+                  <button type="button" aria-pressed="false" data-save><svg class="icon"><use href="#i-bookmark"/></svg>Save</button>
+                </div>
+              </div>
+            </li>
+            </ol>
+            <a class="btn btn-ghost" href="#more" style="align-self:center">Show more</a>
+          </div>
+
+          <aside class="jrail" aria-label="About Junction">
+            <section>
+              <h3>Your posts</h3>
+              <div class="stats"><div class="stat"><b>2</b><span>posts</span></div><div class="stat"><b>34</b><span>votes</span></div><div class="stat"><b>3</b><span>reshares</span></div></div>
+              <a class="link" href="#mine">See your posts and comments<svg class="icon"><use href="#i-arrow"/></svg></a>
+            </section>
+            <section>
+              <h3>Your interests<a class="link" href="#edit-interests">Edit</a></h3>
+              <p class="muted" style="font-size:0.8rem">Anything you want to learn or talk about, job or not. Posts tagged with these show under My interests.</p>
+              <div class="tags" id="interest-tags"><a href="#i">AI<span class="n">41</span></a><a href="#i">Design<span class="n">18</span></a><a href="#i">Marketing<span class="n">12</span></a><a href="#i">Public speaking<span class="n">7</span></a></div>
+              <form class="addint" id="addint"><input type="text" id="newint" placeholder="Add an interest, e.g. Photography" aria-label="Add an interest"><button class="btn btn-ghost btn-sm" type="submit"><svg class="icon"><use href="#i-plus"/></svg>Add</button></form>
+            </section>
+            <section>
+              <h3>On your route this week</h3>
+              <div class="tags"><a href="#t">SIEM<span class="n">24</span></a><a href="#t">Proof tasks<span class="n">17</span></a><a href="#t">Interview calls<span class="n">12</span></a><a href="#t">Security+<span class="n">9</span></a><a href="#t">Pune<span class="n">6</span></a></div>
+            </section>
+            <section>
+              <h3>House rules</h3>
+              <ul class="rules">
+                <li><b>Be specific.</b> Say what you did and what happened.</li>
+                <li><b>No personal data.</b> Not yours, not anyone else's.</li>
+                <li><b>No recruiter spam</b> or paid promotions.</li>
+                <li><b>Report</b> anything off; every post and comment has a Report action.</li>
+              </ul>
+              <p class="gov"><svg class="icon"><use href="#i-shield"/></svg><span>Reports are answered within 72 hours. Grievance officer and complaint steps are on the Settings page.</span></p>
+            </section>
+          </aside>
+        </div>
+
+        <div class="view view-profile" aria-label="Profile: Arjun Mehta">
+          <div class="jcol">
+            <a class="crumb" href="#network" data-go="network"><svg class="icon"><use href="#i-arrow"/></svg>Network</a>
+            <div class="phead">
+              <span class="avatar">AM</span>
+              <div class="phead-main">
+                <h2>Arjun Mehta<svg class="icon tick" aria-label="Identity verified"><use href="#i-badge"/></svg><span class="elite">Elite</span></h2>
+                <span class="status lg"><svg class="icon"><use href="#i-brief"/></svg>Working at Kavach Cyber Labs</span>
+                <p><span style="font-family:var(--mono);font-size:0.78rem">@arjun-m</span> · Bengaluru · aiming for Cyber Security Analyst</p>
+              </div>
+              <div class="actions"><button class="btn btn-ghost" type="button" data-toggle="Follow|Following">Follow</button><button class="btn btn-primary" type="button" data-toggle="Connect|Requested">Connect</button><div class="pact-wrap"><button class="more" type="button" aria-label="More actions" data-menu><svg class="icon"><use href="#i-dots"/></svg></button><div class="menu"><button type="button"><svg class="icon"><use href="#i-link"/></svg>Copy profile link</button><button type="button"><svg class="icon"><use href="#i-ban"/></svg>Block</button><button type="button" class="danger"><svg class="icon"><use href="#i-flag"/></svg>Report</button></div></div></div>
+            </div>
+            <div class="pstrip"><span><b>6</b>shared skills</span><span><b>2</b>shared interests</span><span><b>3</b>shared gaps</span><span><b>4</b>people in common</span><span><b>12</b>posts on Junction</span></div>
+
+            <section class="common" aria-label="In common with you">
+              <h3>In common with you<span class="label">Only Arjun's public fields are used</span></h3>
+
+              <div class="cblock">
+                <h4>Interests<small>2 of your 4</small></h4>
+                <div class="cbody"><div class="tags"><a href="#i">AI</a><a href="#i">Public speaking</a></div><p>Arjun also lists Chess and Cricket analytics.</p></div>
+              </div>
+
+              <div class="cblock">
+                <h4>Skills<small>6 you both have</small></h4>
+                <div class="cbody"><div class="tags"><a href="#s">Networking basics</a><a href="#s">Linux</a><a href="#s">Incident notes</a><a href="#s">Vulnerability scans</a><a href="#s">Communication</a><a href="#s">Windows admin</a></div><p>Arjun has SIEM met, which is your next step. Ask him.</p></div>
+              </div>
+
+              <div class="cblock">
+                <h4>Gaps and path<small>same role, 2 steps apart</small></h4>
+                <div class="cbody">
+                  <div class="twin">
+                    <div><span class="d both"><svg class="icon" style="width:12px;height:12px;stroke-width:3"><use href="#i-check"/></svg></span><span class="t">Resume and Gaps<small>Both done. 3 gaps in common: SIEM, AWS security, Threat detection.</small></span></div>
+                    <div><span class="d you">4</span><span class="t">You: Investigate alerts in a SIEM<small>Your current step. Arjun marked it done 2 weeks ago.</small></span></div>
+                    <div><span class="d">6</span><span class="t">Arjun: Automate a log check in Python<small>His current step. You reach it in about 3 weeks.</small></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cblock">
+                <h4>Network<small>4 people in common</small></h4>
+                <div class="cbody"><div class="faces"><span class="avatar">SK</span><span class="avatar">DI</span><span class="avatar">RV</span><span class="avatar">NB</span><span class="t">Sneha, Divya, Rahul and Neha. Both of you are in the Sunday SOC study group.</span></div></div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="prail" aria-label="About Arjun">
+            <section>
+              <h3>Certifications<span class="label">2 verified</span></h3>
+              <ul class="certs">
+                <li><svg class="icon"><use href="#i-award"/></svg><span>CompTIA Security+<small>CompTIA · Credly badge checked</small></span><span class="chip met"><svg class="icon"><use href="#i-badge"/></svg>Verified</span></li>
+                <li><svg class="icon"><use href="#i-award"/></svg><span>ISC2 Certified in Cybersecurity<small>ISC2 · Credly badge checked</small></span><span class="chip met"><svg class="icon"><use href="#i-badge"/></svg>Verified</span></li>
+              </ul>
+            </section>
+            <section>
+              <h3>On Junction<a class="link" href="#junction" data-go="junction">All 12</a></h3>
+              <div class="ppost"><b>Finished my Python proof task and got a SOC L1 interview call the same week</b><small>Win · 46 votes · 18 comments</small></div>
+              <div class="ppost"><b>Anyone done a marketing basics course that is not just ads?</b><small>Question · Marketing · 27 votes</small></div>
+            </section>
+            <section>
+              <h3>Not shown</h3>
+              <p class="privacy"><svg class="icon"><use href="#i-shield"/></svg><span>Phone, email, salary and notice period are never on a profile. Arjun's resume and private fields stay his.</span></p>
+            </section>
+          </aside>
+        </div>
+
+        <div class="view view-other">
+          <h2>Not drawn yet</h2>
+          <p>Library, Resume builder and your own Profile get their own mocks next. Home, Network, Junction and another person's profile are drawn so far.</p>
+          <a class="btn btn-ghost" href="#home" data-go="home">Back to Home</a>
+        </div>
+
+        <nav class="tabs" aria-label="Main">
+          <a class="on" href="#home" data-go="home"><svg class="icon"><use href="#i-house"/></svg>Home</a>
+          <a href="#library" data-go="other"><svg class="icon"><use href="#i-book"/></svg>Library</a>
+          <a href="#builder" data-go="other"><svg class="icon"><use href="#i-pen"/></svg>Builder</a>
+          <a href="#junction" data-go="junction"><svg class="icon"><use href="#i-msg"/></svg>Junction</a>
+          <a href="#network" data-go="network"><svg class="icon"><use href="#i-users"/></svg>Network</a>
+          <a href="#profile" data-go="other"><svg class="icon"><use href="#i-user"/></svg>Profile</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <p class="cap">Example data only. Priya Nair and the other people shown are made up.</p>
+  </div>
+
+  <section class="spec-head">
+    <span class="label">Compared with the first design (v1, the card dashboard)</span>
+    <h2>Fewer boxes, one spine.</h2>
+    <p>Both mocks show the same blocks and use the same components and tables, so the v1 build table still applies. The difference is composition.</p>
+  </section>
+  <div class="notes">
+    <div class="note">
+      <h3>Structure</h3>
+      <ul>
+        <li><b>No sidebar.</b> The five steps are not navigation; they are the page. Top nav carries only Home, Library, Resume builder and Network; Profile sits under the avatar.</li>
+        <li><b>One card.</b> Only the current stop is boxed. Done stops collapse to a line; future stops are grey and say when they open.</li>
+        <li><b>Junction.</b> The posting board Milin asked for on 8 Oct: posts with votes, comments, reshares and Save; types Idea, Question, Win, Resource; filters Top, New, My route, My interests, Following; interests are anything a person wants to learn or talk about, job-related or not, and tag both posts and the feed; Report on every post. Once users post, the app is an intermediary under India's IT Rules 2021: a named grievance officer, complaints answered in 24 to 72 hours, and someone moderating. The rail shows where that lives.</li>
+        <li><b>People and profiles.</b> A person in any list shows only two numbers: shared skills and shared interests. Opening the profile shows what you have in common (interests, skills, gaps and where each of you is on the path, people in common) plus their public fields: certifications and Junction posts. Private fields never appear.</li>
+        <li><b>How people appear.</b> In every list (requests, suggestions, connections) a person shows as their name plus a status they set themselves: Working at a company, Freelance, Looking for a next role, Studying, or none. Names are what people search by; the handle stays on the profile and its link.</li>
+        <li><b>Rail, not grid.</b> Profile, Library, Builder and People are one narrow column separated by rules, 320px on desktop, stacked under the line on a phone.</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h3>Where this line view does better</h3>
+      <ul>
+        <li>The eye lands on one action, <b>Mark done</b>, and nothing competes with it.</li>
+        <li>The greeting says where you are in words ("at Path, step 4 of 9"), so the route needs no separate stepper widget.</li>
+        <li>It scales: when Practice and Match launch, they fill in where they already stand, with no layout change.</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h3>Where the first design (cards) does better</h3>
+      <ul>
+        <li>The dashboard shows the portal (Library, Builder, Network) at equal weight; here they are secondary by design.</li>
+        <li>v1 handles first sign-in and no-resume states in place; here the line would simply start at Resume with an upload prompt at that stop (not drawn).</li>
+        <li>A sidebar is what most people expect from an app shell; a top nav is lighter but holds fewer items.</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="rec" aria-label="Recommendation">
+    <span class="label">Recommendation</span>
+    <h2>Build the line view, and borrow three things from v1.</h2>
+    <ol>
+      <li><b>Keep this layout</b> for Home: the route down the page, one card for the current step, the quiet rail, plus Network, Junction and profiles as drawn here.</li>
+      <li><b>Take v1's first sign-in and no-resume states.</b> In the line view they become the Resume stop: a setup checklist after first sign-in, an upload prompt when there is no resume yet.</li>
+      <li><b>Take v1's build table</b> (which component and data each block uses) as the developer's checklist.</li>
+      <li><b>Add a "More" menu</b> to the top bar if it grows past five items, so the lighter nav never runs out of room.</li>
+    </ol>
+  </section>
+  <p class="foot">Line view by Fable, 8 Oct 2026. Same tokens as <code>src/app/globals.css</code>. Source: careermetro/post-login-home-fable-v1.html in the project files.</p>
+</div>
+
+<script>
+(function(){
+  var app=document.getElementById('app'), frame=document.getElementById('frame');
+  var g=document.getElementById('seg-frame');
+  g.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed', x===b?'true':'false');});
+    frame.classList.toggle('phone', b.dataset.v==='phone');
+  });
+  document.getElementById('t-elite').addEventListener('change',function(e){ app.classList.toggle('is-elite', e.target.checked); });
+  document.querySelectorAll('.save').forEach(function(b){ b.addEventListener('click',function(){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true'); }); });
+  var md=document.getElementById('markdone');
+  md.addEventListener('click',function(){ md.innerHTML='<svg class="icon"><use href="#i-check"/></svg>Done. Next: MITRE ATT&CK'; md.disabled=true; });
+
+  function go(v){
+    app.dataset.view=v;
+    document.querySelectorAll('.app [data-go]').forEach(function(a){ var lit=(v==='profile')?'network':v; a.classList.toggle('on', a.dataset.go===lit && !!a.closest('.topnav, .tabs')); });
+    app.scrollIntoView({block:'start', behavior:'smooth'});
+  }
+  document.querySelectorAll('.app [data-go]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); document.querySelectorAll('.menu.open').forEach(function(x){x.classList.remove('open');}); go(a.dataset.go); }); });
+  document.querySelectorAll('.app [data-toggle]').forEach(function(b){ var t=b.dataset.toggle.split('|'); b.addEventListener('click',function(){ var on=b.textContent.trim()===t[0]; b.textContent=on?t[1]:t[0]; b.classList.toggle('btn-primary', !on && b.dataset.primary==='1'); if(on){ b.classList.remove('btn-primary'); b.classList.add('btn-ghost'); } }); if(b.classList.contains('btn-primary')) b.dataset.primary='1'; });
+  document.querySelectorAll('.app [data-menu]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); var m=b.closest('.pact-wrap').querySelector('.menu'); var open=m.classList.contains('open'); document.querySelectorAll('.menu.open').forEach(function(x){x.classList.remove('open');}); if(!open) m.classList.add('open'); }); });
+  document.addEventListener('click',function(){ document.querySelectorAll('.menu.open').forEach(function(x){x.classList.remove('open');}); });
+  var find=document.getElementById('t-find'); find.addEventListener('change',function(){ var v=find.closest('.vis'); v.querySelector('b').textContent=find.checked?'People can find you by name or handle.':'You are hidden from search.'; });
+
+  document.querySelectorAll('.app [data-vote]').forEach(function(b){ b.addEventListener('click',function(){ var on=b.getAttribute('aria-pressed')==='true'; b.setAttribute('aria-pressed', on?'false':'true'); var n=b.parentNode.querySelector('b'); n.textContent=(+n.textContent)+(on?-1:1); }); });
+  document.querySelectorAll('.app [data-save]').forEach(function(b){ b.addEventListener('click',function(){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true'); }); });
+  var pb=document.getElementById('postbtn'), ta=document.getElementById('compose');
+  pb.addEventListener('click',function(){ if(!ta.value.trim()){ ta.focus(); return; } pb.innerHTML='<svg class="icon"><use href="#i-check"/></svg>Posted'; pb.disabled=true; ta.value=''; setTimeout(function(){ pb.innerHTML='<svg class="icon"><use href="#i-arrow"/></svg>Post to Junction'; pb.disabled=false; },1800); });
+  document.querySelectorAll('.app .ptype').forEach(function(g){ g.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed', x===b?'true':'false');}); }); });
+
+  var feedLabel=document.getElementById('feed-label');
+  document.getElementById('seg-feed').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var f=b.dataset.feed;
+    document.querySelectorAll('.posts[data-feed]').forEach(function(l){ l.hidden=(l.dataset.feed!==f); });
+    feedLabel.textContent = f==='interests' ? 'AI · Design · Marketing · Public speaking' : 'Cyber Security Analyst · 0 to 4 years';
+  });
+  var af=document.getElementById('addint'), ni=document.getElementById('newint');
+  af.addEventListener('submit',function(e){ e.preventDefault(); var v=ni.value.trim(); if(!v) return; var a=document.createElement('a'); a.href='#i'; a.innerHTML=v.replace(/[<>&]/g,'')+'<span class="n">0</span>'; document.getElementById('interest-tags').appendChild(a); ni.value=''; });
+
+  var se=document.getElementById('statusedit'), ce=document.getElementById('company-row'), ci=document.getElementById('company'), ms=document.getElementById('mycard-status');
+  var stIcon={work:'i-brief',free:'i-pen',look:'i-search',study:'i-book'};
+  var cur='look';
+  function paint(){ if(cur==='none'){ ms.hidden=true; return; } ms.hidden=false; var t= cur==='work' ? 'Working at '+(ci.value.trim()||'your company') : cur==='free' ? 'Freelance' : cur==='study' ? 'Studying' : 'Looking for a next role'; ms.innerHTML='<svg class="icon"><use href="#'+stIcon[cur]+'"/></svg>'+t.replace(/[<>&]/g,''); }
+  document.getElementById('mycard-edit').addEventListener('click',function(e){ e.preventDefault(); se.hidden=!se.hidden; });
+  se.querySelector('.ptype').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; se.querySelectorAll('[data-st]').forEach(function(x){x.setAttribute('aria-pressed', x===b?'true':'false');}); cur=b.dataset.st; ce.hidden=(cur!=='work'); if(cur==='work') ci.focus(); paint(); });
+  ci.addEventListener('input',paint);
+  document.querySelectorAll('.app a[href^="#"]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); }); });
+})();
+</script>

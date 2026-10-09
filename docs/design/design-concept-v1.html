@@ -1,0 +1,411 @@
+<title>CareerMetro Design Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..700&family=Geist:wght@400..600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one calm column of foundations, then real screens in device frames; a single cobalt "route" accent carries progress everywhere. */
+:root{
+  --bg:#F4F5F8; --surface:#FFFFFF; --surface-2:#ECEFF4; --ink:#12151C; --muted:#586072; --line:#DCE0E8;
+  --accent:#2448F5; --accent-soft:#E6EBFF; --on-accent:#FFFFFF;
+  --good:#11805B; --good-soft:#E2F4EC; --warn:#9A5800; --warn-soft:#FFF0D8; --bad:#C0342A; --bad-soft:#FDE7E5;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:20px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0C0E13; --surface:#14171F; --surface-2:#1B1F29; --ink:#ECEEF3; --muted:#9AA2B3; --line:#2A2F3B;
+  --accent:#7E94FF; --accent-soft:#1D2452; --on-accent:#0C0E13;
+  --good:#4CC79A; --good-soft:#11302A; --warn:#F0B45A; --warn-soft:#382A12; --bad:#FF7E71; --bad-soft:#3A1A18;
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0C0E13; --surface:#14171F; --surface-2:#1B1F29; --ink:#ECEEF3; --muted:#9AA2B3; --line:#2A2F3B;
+  --accent:#7E94FF; --accent-soft:#1D2452; --on-accent:#0C0E13;
+  --good:#4CC79A; --good-soft:#11302A; --warn:#F0B45A; --warn-soft:#382A12; --bad:#FF7E71; --bad-soft:#3A1A18;
+  color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.55; padding-inline:16px; padding-block:0 64px;}
+.wrap{max-width:1120px; margin:0 auto; display:flex; flex-direction:column; gap:72px;}
+h1,h2,h3{font-family:var(--display); font-weight:650; letter-spacing:-0.02em; text-wrap:balance; margin:0;}
+h1{font-size:clamp(2rem,5vw,3.4rem); line-height:1.05;}
+h2{font-size:1.6rem;}
+h3{font-size:1.05rem; letter-spacing:-0.01em;}
+p{margin:0; max-width:65ch;}
+.muted{color:var(--muted);}
+.label{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);}
+.icon{width:20px; height:20px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+/* top */
+.top{display:flex; align-items:center; justify-content:space-between; padding-block:20px; border-bottom:1px solid var(--line);}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:650; font-size:1.15rem; letter-spacing:-0.02em;}
+.mark{width:34px; height:18px;}
+.hero{display:grid; grid-template-columns:1.2fr 1fr; gap:40px; align-items:end;}
+.hero p{font-size:1.08rem; color:var(--muted); margin-top:16px;}
+.principles{display:grid; gap:12px; list-style:none; margin:0; padding:0;}
+.principles li{display:flex; gap:12px; align-items:flex-start; padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);}
+.principles li .icon{color:var(--accent); margin-top:2px;}
+.principles b{display:block; font-weight:600;}
+.principles span{color:var(--muted); font-size:0.9rem;}
+@media (max-width:820px){ .hero{grid-template-columns:1fr;} }
+
+section{display:flex; flex-direction:column; gap:28px;}
+.sec-head{display:flex; flex-direction:column; gap:8px;}
+
+/* foundations */
+.found{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px;}
+@media (max-width:820px){ .found{grid-template-columns:1fr;} }
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:24px; display:flex; flex-direction:column; gap:18px; min-width:0;}
+.swatches{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;}
+.sw{display:flex; flex-direction:column; gap:6px; font-size:0.8rem;}
+.sw i{display:block; height:52px; border-radius:var(--r-sm); border:1px solid var(--line);}
+.sw small{font-family:var(--mono); color:var(--muted); font-size:0.7rem;}
+.type-row{display:flex; align-items:baseline; justify-content:space-between; gap:16px; border-bottom:1px solid var(--line); padding-bottom:12px;}
+.type-row:last-child{border-bottom:0; padding-bottom:0;}
+.type-row small{font-family:var(--mono); color:var(--muted); font-size:0.7rem; white-space:nowrap;}
+.icons{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px;}
+.ic{display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 4px; border-radius:var(--r-sm); background:var(--surface-2); font-size:0.72rem; color:var(--muted); text-align:center;}
+.ic .icon{width:24px; height:24px; color:var(--ink);}
+@media (max-width:480px){ .icons{grid-template-columns:repeat(4,minmax(0,1fr));} .swatches{grid-template-columns:repeat(2,minmax(0,1fr));} }
+.comp-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+
+.btn{display:inline-flex; align-items:center; gap:8px; font:inherit; font-weight:550; font-size:0.9rem; padding:10px 16px; border-radius:999px; border:1px solid transparent; cursor:pointer;}
+.btn .icon{width:18px; height:18px;}
+.btn-primary{background:var(--accent); color:var(--on-accent);}
+.btn-ghost{background:transparent; border-color:var(--line); color:var(--ink);}
+.chip{display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:550; padding:3px 10px; border-radius:999px;}
+.chip .icon{width:14px; height:14px;}
+.chip.missing{background:var(--bad-soft); color:var(--bad);}
+.chip.weak{background:var(--warn-soft); color:var(--warn);}
+.chip.met{background:var(--good-soft); color:var(--good);}
+.chip.neutral{background:var(--surface-2); color:var(--muted);}
+.field{display:flex; flex-direction:column; gap:6px; flex:1; min-width:200px;}
+.field label{font-size:0.8rem; font-weight:550;}
+.field input{font:inherit; padding:10px 12px; border-radius:var(--r-sm); border:1px solid var(--line); background:var(--surface); color:var(--ink);}
+
+/* route stepper */
+.route{display:flex; align-items:flex-start; position:relative; padding-top:2px;}
+.route::before{content:""; position:absolute; left:10%; right:10%; top:9px; height:2px; background:var(--line);}
+.route .fill{position:absolute; left:10%; top:9px; height:2px; background:var(--accent); width:var(--done,30%);}
+.stop{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; font-size:0.7rem; color:var(--muted);}
+.stop i{width:16px; height:16px; border-radius:50%; background:var(--surface); border:2px solid var(--line);}
+.stop.done i{background:var(--accent); border-color:var(--accent);}
+.stop.now i{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft);}
+.stop.now{color:var(--ink); font-weight:600;}
+
+/* screens */
+.screens{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; align-items:start;}
+@media (max-width:820px){ .screens{grid-template-columns:1fr;} }
+.screen-cap{display:flex; flex-direction:column; gap:4px; margin-bottom:12px;}
+.phone{max-width:380px; width:100%; margin:0 auto; background:var(--surface); border:1px solid var(--line); border-radius:32px; padding:20px 18px 24px; display:flex; flex-direction:column; gap:18px; box-shadow:0 1px 0 var(--line), 0 24px 48px -32px rgba(18,21,28,0.35);}
+.app-bar{display:flex; align-items:center; justify-content:space-between;}
+.app-bar .brand{font-size:1rem;}
+.avatar{width:30px; height:30px; border-radius:50%; background:var(--surface-2); display:grid; place-items:center; font-size:0.72rem; font-weight:600; color:var(--muted);}
+.target{display:flex; flex-direction:column; gap:4px;}
+.target h3{font-size:1.25rem;}
+.ready{background:var(--accent-soft); border-radius:var(--r-md); padding:14px 16px; display:flex; flex-direction:column; gap:4px;}
+.ready b{font-family:var(--display); font-size:1.05rem; font-weight:650;}
+.ready span{font-size:0.86rem; color:var(--ink);}
+.gaps{display:flex; flex-direction:column; gap:10px;}
+.gap{border:1px solid var(--line); border-radius:var(--r-md); padding:14px; display:flex; flex-direction:column; gap:8px;}
+.gap-top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+.gap-top b{font-weight:600; font-size:0.95rem;}
+.evidence{font-size:0.84rem; color:var(--muted); display:grid; gap:4px;}
+.evidence q{quotes:none; color:var(--ink); font-family:var(--mono); font-size:0.76rem; background:var(--surface-2); padding:2px 6px; border-radius:4px;}
+.met-row{display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:0.8rem; color:var(--muted);}
+
+.steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column;}
+.step{display:grid; grid-template-columns:28px 1fr; gap:12px; padding-bottom:18px; position:relative;}
+.step:not(:last-child)::before{content:""; position:absolute; left:13px; top:28px; bottom:0; width:2px; background:var(--line);}
+.step.done:not(:last-child)::before{background:var(--accent);}
+.step .n{width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-family:var(--mono); font-size:0.75rem; border:2px solid var(--line); background:var(--surface); color:var(--muted);}
+.step.done .n{background:var(--accent); border-color:var(--accent); color:var(--on-accent);}
+.step.done .n .icon{width:14px; height:14px; stroke-width:2.5;}
+.step.now .n{border-color:var(--accent); color:var(--accent);}
+.step-body{display:flex; flex-direction:column; gap:6px; min-width:0;}
+.step-body b{font-weight:600;}
+.meta{display:flex; flex-wrap:wrap; gap:12px; font-size:0.78rem; color:var(--muted);}
+.meta span{display:inline-flex; align-items:center; gap:4px;}
+.meta .icon{width:14px; height:14px;}
+.res{display:flex; align-items:center; gap:8px; font-size:0.82rem; padding:8px 10px; border-radius:var(--r-sm); background:var(--surface-2);}
+.res .icon{width:16px; height:16px; color:var(--muted);}
+.task{font-size:0.82rem; border-left:2px solid var(--accent); padding-left:10px;}
+
+.desk{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; box-shadow:0 24px 48px -36px rgba(18,21,28,0.35);}
+.desk-bar{display:flex; gap:6px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+.desk-bar i{width:10px; height:10px; border-radius:50%; background:var(--line);}
+.desk-body{display:grid; grid-template-columns:200px minmax(0,1fr);}
+@media (max-width:760px){ .desk-body{grid-template-columns:1fr;} .side{display:none !important;} }
+.side{border-right:1px solid var(--line); padding:20px 14px; display:flex; flex-direction:column; gap:4px;}
+.side .brand{font-size:1rem; margin-bottom:16px; padding-inline:8px;}
+.nav{display:flex; align-items:center; gap:10px; padding:8px; border-radius:var(--r-sm); font-size:0.88rem; color:var(--muted);}
+.nav.on{background:var(--accent-soft); color:var(--ink); font-weight:550;}
+.nav.on .icon{color:var(--accent);}
+.main{padding:24px; display:flex; flex-direction:column; gap:20px; min-width:0;}
+.main-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;}
+.kpis{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px;}
+@media (max-width:520px){ .kpis{grid-template-columns:1fr;} }
+.kpi{border:1px solid var(--line); border-radius:var(--r-md); padding:14px 16px; display:flex; flex-direction:column; gap:2px;}
+.kpi b{font-family:var(--display); font-size:1.6rem; font-weight:650; font-variant-numeric:tabular-nums;}
+.kpi span{font-size:0.8rem; color:var(--muted);}
+.table-wrap{overflow-x:auto;}
+table{width:100%; border-collapse:collapse; font-size:0.86rem; min-width:520px;}
+th{text-align:left; font-family:var(--mono); font-size:0.7rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); font-weight:500; padding:8px 10px; border-bottom:1px solid var(--line);}
+td{padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:middle;}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:0.8rem; white-space:nowrap;}
+.bar{height:8px; border-radius:999px; background:var(--surface-2); overflow:hidden; min-width:120px;}
+.bar i{display:block; height:100%; border-radius:999px; background:var(--accent);}
+.bar i.low{background:var(--warn);}
+.privacy{display:flex; gap:10px; align-items:flex-start; font-size:0.84rem; color:var(--muted); padding:12px 14px; border-radius:var(--r-md); background:var(--surface-2);}
+.privacy .icon{color:var(--good); margin-top:1px;}
+.example{font-family:var(--mono); font-size:0.68rem; color:var(--muted);}
+.notes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;}
+@media (max-width:820px){ .notes{grid-template-columns:1fr;} }
+.note{display:flex; flex-direction:column; gap:6px; padding-top:14px; border-top:2px solid var(--ink);}
+.note p{font-size:0.9rem; color:var(--muted);}
+@media (prefers-reduced-motion: no-preference){ .route .fill{transition:width .6s ease;} }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/><path d="M8 10h8"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 5a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></symbol>
+  <symbol id="i-half" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 34 18"><path d="M5 13h10l6-8h8" fill="none" stroke-width="2.5"/><circle cx="5" cy="13" r="3.5" fill="var(--bg)" stroke-width="2.5"/><circle cx="29" cy="5" r="3.5" stroke="var(--accent)" fill="var(--accent)" stroke-width="2.5"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</div>
+    <span class="label">Design concept v1 · Phase 0</span>
+  </header>
+
+  <div class="hero">
+    <div>
+      <span class="label">Direction</span>
+      <h1>Calm, clear and built around one line of progress.</h1>
+      <p>A light, airy interface with one cobalt accent. That accent always means "your progress": the line you move along, the steps you finish, the gaps you close. Everything else stays quiet, so the same system works for a job seeker on a phone and an HR lead on a laptop.</p>
+    </div>
+    <ul class="principles">
+      <li><svg class="icon"><use href="#i-route"/></svg><div><b>One accent, one meaning</b><span>Cobalt marks progress only. Red, amber and green are kept for gap status.</span></div></li>
+      <li><svg class="icon"><use href="#i-file"/></svg><div><b>Evidence before scores</b><span>Every gap quotes the line of the resume it came from.</span></div></li>
+      <li><svg class="icon"><use href="#i-team"/></svg><div><b>Same parts, two audiences</b><span>Gap chips, bars and steps are shared by the personal and team views.</span></div></li>
+    </ul>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <span class="label">Foundations</span>
+      <h2>Color, type, icons and parts</h2>
+    </div>
+    <div class="found">
+      <div class="panel">
+        <h3>Color</h3>
+        <div class="swatches">
+          <div class="sw"><i style="background:var(--accent)"></i>Cobalt<small>progress, actions</small></div>
+          <div class="sw"><i style="background:var(--ink)"></i>Ink<small>text</small></div>
+          <div class="sw"><i style="background:var(--surface-2)"></i>Mist<small>quiet surfaces</small></div>
+          <div class="sw"><i style="background:var(--bg)"></i>Paper<small>page</small></div>
+          <div class="sw"><i style="background:var(--bad)"></i>Missing<small>gap status</small></div>
+          <div class="sw"><i style="background:var(--warn)"></i>Weak<small>gap status</small></div>
+          <div class="sw"><i style="background:var(--good)"></i>Met<small>gap status</small></div>
+          <div class="sw"><i style="background:var(--accent-soft)"></i>Cobalt tint<small>highlights</small></div>
+        </div>
+        <p class="muted" style="font-size:0.85rem">Every color has a light and dark value. Switch your device to dark mode to see the dark set.</p>
+      </div>
+      <div class="panel">
+        <h3>Type</h3>
+        <div class="type-row"><span style="font-family:var(--display);font-weight:650;font-size:1.9rem;letter-spacing:-0.02em">Close the gap</span><small>Bricolage Grotesque · headings</small></div>
+        <div class="type-row"><span>Your resume shows SQL for reporting. The role asks for window functions.</span><small>Geist · text</small></div>
+        <div class="type-row"><span style="font-family:var(--mono);font-size:0.8rem">6 HRS · STEP 2 OF 4</span><small>Geist Mono · labels</small></div>
+      </div>
+      <div class="panel">
+        <h3>Icons</h3>
+        <div class="icons">
+          <div class="ic"><svg class="icon"><use href="#i-upload"/></svg>Resume</div>
+          <div class="ic"><svg class="icon"><use href="#i-target"/></svg>Gaps</div>
+          <div class="ic"><svg class="icon"><use href="#i-route"/></svg>Path</div>
+          <div class="ic"><svg class="icon"><use href="#i-chat"/></svg>Practice</div>
+          <div class="ic"><svg class="icon"><use href="#i-brief"/></svg>Match</div>
+          <div class="ic"><svg class="icon"><use href="#i-team"/></svg>Team</div>
+        </div>
+        <p class="muted" style="font-size:0.85rem">Outline icons on a 24px grid with one stroke weight. The app will use the open-source Lucide set, which follows the same style.</p>
+      </div>
+      <div class="panel">
+        <h3>Parts</h3>
+        <div class="comp-row">
+          <button class="btn btn-primary" type="button"><svg class="icon"><use href="#i-upload"/></svg>Upload resume</button>
+          <button class="btn btn-ghost" type="button">Paste a job description</button>
+        </div>
+        <div class="comp-row">
+          <span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span>
+          <span class="chip weak"><svg class="icon"><use href="#i-half"/></svg>Weak evidence</span>
+          <span class="chip met"><svg class="icon"><use href="#i-check"/></svg>Met</span>
+          <span class="chip neutral"><svg class="icon"><use href="#i-clock"/></svg>Outdated</span>
+        </div>
+        <div class="comp-row">
+          <div class="field"><label for="role">Target role</label><input id="role" value="Data Analyst, Bengaluru"></div>
+        </div>
+        <div class="route" style="--done:40%" aria-label="Progress: step 3 of 5">
+          <span class="fill"></span>
+          <div class="stop done"><i></i>Resume</div>
+          <div class="stop done"><i></i>Gaps</div>
+          <div class="stop now"><i></i>Path</div>
+          <div class="stop"><i></i>Practice</div>
+          <div class="stop"><i></i>Match</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="label">Job seeker · phone</span>
+      <h2>The two screens that matter most</h2>
+      <p class="muted">The metro idea stays as one simple progress line with plain step names (Resume, Gaps, Path, Practice, Match) instead of station names.</p>
+    </div>
+    <div class="screens">
+      <div>
+        <div class="screen-cap"><h3>Your gaps</h3><span class="muted" style="font-size:0.88rem">Shown right after the resume is checked</span></div>
+        <div class="phone">
+          <div class="app-bar"><div class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</div><span class="avatar">PR</span></div>
+          <div class="route" style="--done:20%">
+            <span class="fill"></span>
+            <div class="stop done"><i></i>Resume</div>
+            <div class="stop now"><i></i>Gaps</div>
+            <div class="stop"><i></i>Path</div>
+            <div class="stop"><i></i>Practice</div>
+            <div class="stop"><i></i>Match</div>
+          </div>
+          <div class="target">
+            <span class="label">Target role</span>
+            <h3>Data Analyst</h3>
+            <span class="muted" style="font-size:0.84rem">Bengaluru · 2 to 4 years · profile updated 2 Oct 2026</span>
+          </div>
+          <div class="ready">
+            <b>You're close: 3 gaps to close</b>
+            <span>About 4 weeks at 5 hours a week. You already meet 7 of the 10 core skills.</span>
+          </div>
+          <div class="gaps">
+            <div class="gap">
+              <div class="gap-top"><b>SQL window functions</b><span class="chip missing"><svg class="icon"><use href="#i-alert"/></svg>Missing</span></div>
+              <div class="evidence">Your resume: <q>Wrote SQL queries for weekly sales reports</q>The role asks for window functions and CTEs.</div>
+            </div>
+            <div class="gap">
+              <div class="gap-top"><b>Power BI dashboards</b><span class="chip weak"><svg class="icon"><use href="#i-half"/></svg>Weak evidence</span></div>
+              <div class="evidence">Listed under skills, but no project or result shows it.</div>
+            </div>
+            <div class="gap">
+              <div class="gap-top"><b>Python (pandas)</b><span class="chip neutral"><svg class="icon"><use href="#i-clock"/></svg>Outdated</span></div>
+              <div class="evidence">Last used in your 2021 role. Most listings ask for recent use.</div>
+            </div>
+          </div>
+          <div class="met-row"><span>Met:</span><span class="chip met">Excel</span><span class="chip met">Statistics</span><span class="chip met">Reporting</span><span>+4</span></div>
+          <button class="btn btn-primary" type="button" style="justify-content:center">Build my path<svg class="icon"><use href="#i-arrow"/></svg></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="screen-cap"><h3>Your path</h3><span class="muted" style="font-size:0.88rem">Up to 6 steps, sized to your weekly hours</span></div>
+        <div class="phone">
+          <div class="app-bar"><div class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</div><span class="avatar">PR</span></div>
+          <div class="route" style="--done:40%">
+            <span class="fill"></span>
+            <div class="stop done"><i></i>Resume</div>
+            <div class="stop done"><i></i>Gaps</div>
+            <div class="stop now"><i></i>Path</div>
+            <div class="stop"><i></i>Practice</div>
+            <div class="stop"><i></i>Match</div>
+          </div>
+          <div class="target">
+            <span class="label">Step 2 of 4 · 19 hours total</span>
+            <h3>Your path to Data Analyst</h3>
+          </div>
+          <ol class="steps">
+            <li class="step done"><span class="n"><svg class="icon"><use href="#i-check"/></svg></span>
+              <div class="step-body"><b>Refresh pandas basics</b><div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>4 hrs</span><span>Done 3 Oct</span></div></div></li>
+            <li class="step now"><span class="n">2</span>
+              <div class="step-body"><b>SQL window functions</b>
+                <div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>6 hrs</span><span>Closes: Missing gap</span></div>
+                <div class="res"><svg class="icon"><use href="#i-play"/></svg>Window functions playlist · YouTube · free</div>
+                <div class="res"><svg class="icon"><use href="#i-book"/></svg>Advanced SQL lessons · Kaggle Learn · free</div>
+                <div class="task"><b style="font-weight:600">Prove it:</b> rank the top 5 products per month from a sample sales table.</div>
+              </div></li>
+            <li class="step"><span class="n">3</span>
+              <div class="step-body"><b>One Power BI project</b><div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>6 hrs</span><span>Closes: Weak evidence</span></div></div></li>
+            <li class="step"><span class="n">4</span>
+              <div class="step-body"><b>Add both projects to your resume</b><div class="meta"><span><svg class="icon"><use href="#i-clock"/></svg>3 hrs</span></div></div></li>
+          </ol>
+          <button class="btn btn-primary" type="button" style="justify-content:center"><svg class="icon"><use href="#i-check"/></svg>Mark step 2 done</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="label">Team lead · laptop · Phase 3</span>
+      <h2>The same parts, scaled up for a team</h2>
+      <p class="muted">Designed now so the system already fits B2B; it gets built in Phase 3.</p>
+    </div>
+    <div class="desk">
+      <div class="desk-bar"><i></i><i></i><i></i></div>
+      <div class="desk-body">
+        <nav class="side" aria-label="Team navigation">
+          <div class="brand"><svg class="icon mark"><use href="#i-mark"/></svg>careermetro</div>
+          <span class="nav on"><svg class="icon"><use href="#i-grid"/></svg>Overview</span>
+          <span class="nav"><svg class="icon"><use href="#i-team"/></svg>People</span>
+          <span class="nav"><svg class="icon"><use href="#i-route"/></svg>Paths</span>
+          <span class="nav"><svg class="icon"><use href="#i-target"/></svg>Role profiles</span>
+        </nav>
+        <div class="main">
+          <div class="main-head">
+            <div><span class="label">Analytics team · 14 people</span><h3 style="font-size:1.4rem;margin-top:4px">Skills against Senior Data Analyst</h3></div>
+            <button class="btn btn-primary" type="button"><svg class="icon"><use href="#i-route"/></svg>Assign a path</button>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><b>68%</b><span>of core skills met across the team</span></div>
+            <div class="kpi"><b>2</b><span>skills most of the team is missing</span></div>
+            <div class="kpi"><b>6 of 14</b><span>finished their assigned path</span></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Skill</th><th>People who meet it</th><th></th><th>Most common gap</th></tr></thead>
+              <tbody>
+                <tr><td>Experiment design</td><td><div class="bar"><i class="low" style="width:21%"></i></div></td><td class="num">3 / 14</td><td><span class="chip missing">Missing</span></td></tr>
+                <tr><td>Power BI dashboards</td><td><div class="bar"><i class="low" style="width:36%"></i></div></td><td class="num">5 / 14</td><td><span class="chip weak">Weak evidence</span></td></tr>
+                <tr><td>SQL window functions</td><td><div class="bar"><i style="width:64%"></i></div></td><td class="num">9 / 14</td><td><span class="chip missing">Missing</span></td></tr>
+                <tr><td>Stakeholder storytelling</td><td><div class="bar"><i style="width:71%"></i></div></td><td class="num">10 / 14</td><td><span class="chip weak">Weak evidence</span></td></tr>
+                <tr><td>Python (pandas)</td><td><div class="bar"><i style="width:79%"></i></div></td><td class="num">11 / 14</td><td><span class="chip neutral">Outdated</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="privacy"><svg class="icon"><use href="#i-lock"/></svg>Team leads see totals only. A person's resume and gaps stay private unless they choose to share them.</div>
+        </div>
+      </div>
+    </div>
+    <span class="example">All names, numbers and dates on this page are examples.</span>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="label">What this changes</span><h2>Decisions in this concept</h2></div>
+    <div class="notes">
+      <div class="note"><h3>Light first, dark ready</h3><p>Light suits long reading on phones in daylight. Every color has a dark value from day one.</p></div>
+      <div class="note"><h3>Plain step names</h3><p>Resume, Gaps, Path, Practice, Match. The progress line keeps the metro feel without the word play.</p></div>
+      <div class="note"><h3>One component kit</h3><p>Chips, bars, steps and the progress line serve both the personal app and the team dashboard.</p></div>
+    </div>
+  </section>
+</div>

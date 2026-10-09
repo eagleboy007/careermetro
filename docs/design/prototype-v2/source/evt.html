@@ -1,0 +1,36 @@
+        <!-- ================= TIMETABLE (/timetable) ================= -->
+        <div class="view view-evt" aria-label="Timetable">
+          <div class="evt-main">
+            <div class="pagehead">
+              <div><h2>Timetable</h2><p>Meetups, workshops and conferences near you, picked only from your goals and your interests.</p></div>
+              <div class="ph-r"><button type="button" class="trk-chip" id="evt-where"><svg class="icon"><use href="#i-pin"/></svg><span id="evt-where-t">Pune · within 25 km</span></button></div>
+            </div>
+            <div class="evt-filters">
+              <div class="seg" id="evt-seg" role="group" aria-label="Show"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="goal" aria-pressed="false">My goals</button><button type="button" data-f="int" aria-pressed="false">My interests</button></div>
+              <label class="switch"><input type="checkbox" id="evt-online" checked><i></i>Include online</label>
+              <label class="switch"><input type="checkbox" id="evt-far"><i></i>Show outside 25 km</label>
+            </div>
+            <div id="evt-list" class="evt-list" aria-live="polite"></div>
+          </div>
+          <aside class="evt-rail" aria-label="About the Timetable">
+            <section class="tcard">
+              <div class="tcard-head"><h3>Why you see these</h3></div>
+              <ul class="evt-why">
+                <li><svg class="icon"><use href="#i-target"/></svg><span><b>Your goals</b>SIEM, Threat detection, Python, AWS security</span></li>
+                <li><svg class="icon"><use href="#i-bulb"/></svg><span><b>Your interests</b>AI, Design, Marketing, Public speaking</span></li>
+                <li><svg class="icon"><use href="#i-pin"/></svg><span><b>Your city</b>Pune, from your profile. We never track where you are.</span></li>
+              </ul>
+              <p class="muted evt-small">Nothing else gets in: no sponsored events, no random tech talks. Going to an event can count as a prep task for a goal. It never fills a gap on its own.</p>
+            </section>
+            <section class="tcard">
+              <div class="tcard-head"><h3>Every Monday</h3></div>
+              <label class="switch"><input type="checkbox" id="evt-digest" checked><i></i>Send me this week's events</label>
+              <p class="muted evt-small">One message on Monday morning, only if something matches.</p>
+            </section>
+            <section class="tcard">
+              <div class="tcard-head"><h3>Know an event?</h3></div>
+              <p class="muted evt-small">Organisers and members can suggest one. It shows up after a quick check.</p>
+              <button class="btn btn-ghost btn-sm" type="button" id="evt-suggest"><svg class="icon"><use href="#i-plus"/></svg>Suggest an event</button>
+            </section>
+          </aside>
+        </div>

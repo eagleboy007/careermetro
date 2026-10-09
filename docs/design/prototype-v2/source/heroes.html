@@ -1,0 +1,64 @@
+          <!-- First sign-up: resume just read -->
+          <section class="hero hero-first span2 st-first" aria-label="Welcome">
+            <div class="hero-main">
+              <div class="eyebrow"><span class="ridechip"><svg class="icon"><use href="#i-route"/></svg>Day 1</span><span class="label">Signed up just now · resume read</span></div>
+              <h2>Welcome aboard, Priya. <em>Your line is drawn.</em></h2>
+              <p class="sub">We read your resume against Cyber Security Analyst. Here is where you stand, and your first ride is ready.</p>
+              <div class="tally" id="tally">
+                <div class="tl good"><b data-to="14">0</b><span>skills you already have</span></div>
+                <div class="tl bad"><b data-to="11">0</b><span>gaps to close</span></div>
+                <div class="tl acc"><b data-to="9">0</b><span>short stops on your line</span></div>
+                <div class="tl"><b data-to="1">0</b><span>role you could board today</span></div>
+              </div>
+              <h3 class="hero-h3">Your first ride · Stop 1, about 30 min</h3>
+              <ul class="tasks" id="ftasks">
+                <li><label class="task-i" for="f1"><input type="checkbox" id="f1"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Read the OWASP Top 10 in plain words</b><small>OWASP official docs · article</small></span><span class="mins">15 min</span></label></li>
+                <li><label class="task-i" for="f2"><input type="checkbox" id="f2"><span class="box"><svg class="icon"><use href="#i-check"/></svg></span><span class="tt"><b>Pick 3 of the risks you have seen at work</b><small>Proof task, part 1 · two lines each</small></span><span class="mins">15 min</span></label></li>
+              </ul>
+            </div>
+            <div class="hero-side">
+              <span class="label">Set up in three taps</span>
+              <ol class="setup">
+                <li class="done"><span class="sd"><svg class="icon"><use href="#i-check"/></svg></span><div><b>Resume read</b><small>14 skills found, 11 gaps, all with evidence</small></div></li>
+                <li><span class="sd">2</span><div><b>Hours a week for learning</b>
+                  <div class="ptype hours" id="hours" role="group" aria-label="Hours a week"><button type="button" aria-pressed="false" data-h="3">3 h</button><button type="button" aria-pressed="true" data-h="5">5 h</button><button type="button" aria-pressed="false" data-h="8">8 h</button><button type="button" aria-pressed="false" data-h="12">12 h</button></div>
+                  <small id="hours-t">At 5 hours a week your line takes about 14 weeks.</small></div></li>
+                <li><span class="sd">3</span><div><b>Let people on your line find you</b><label class="switch" style="margin-top:6px"><input type="checkbox" id="f-find"><i></i>Show me in people lists</label><small>Off by default. Name and status only; never your resume.</small></div></li>
+              </ol>
+            </div>
+          </section>
+
+          <!-- Signed up, no resume yet -->
+          <section class="hero hero-nores span2 st-nores" aria-label="Add your resume">
+            <div class="hero-main">
+              <div class="eyebrow"><span class="label">Signed up · one step left</span></div>
+              <h2>Hi Priya. Your line starts with <em>your resume.</em></h2>
+              <p class="sub">Upload it and in under a minute you see which skills you already have for the role, which are missing, and a path of short stops to close them.</p>
+              <div class="rolepick"><span class="label">Target role</span>
+                <div class="ptype" id="rolepick" role="group" aria-label="Target role"><button type="button" aria-pressed="true">Cyber Security Analyst</button><button type="button" aria-pressed="false">Data Analyst</button><button type="button" aria-pressed="false">Cloud Engineer</button><button type="button" aria-pressed="false">More roles</button></div>
+              </div>
+              <div class="drop" id="drop">
+                <span class="drop-ic"><svg class="icon"><use href="#i-upload"/></svg></span>
+                <b>Drop your resume here</b>
+                <small>PDF or DOCX, up to 5 MB. Read once to find your skills; never shown to anyone.</small>
+                <div class="actions"><button class="btn btn-primary" type="button" data-parse><svg class="icon"><use href="#i-file"/></svg>Choose file</button><button class="btn btn-ghost" type="button" data-parse>Try a sample resume</button></div>
+                <a class="link" href="#builder">No resume yet? Build one in about 10 minutes<svg class="icon"><use href="#i-arrow"/></svg></a>
+              </div>
+              <ol class="parse" id="parse" aria-live="polite">
+                <li><span class="pd"></span>Reading your resume</li>
+                <li><span class="pd"></span>Finding your skills<small>14 found</small></li>
+                <li><span class="pd"></span>Comparing with Cyber Security Analyst<small>11 gaps</small></li>
+                <li><span class="pd"></span>Drawing your line<small>9 stops</small></li>
+              </ol>
+            </div>
+            <div class="hero-side">
+              <span class="label">What you get</span>
+              <svg class="ghostline" viewBox="0 0 260 60" aria-hidden="true"><path d="M10 44 H90 L130 16 H250"/><circle cx="10" cy="44" r="7"/><circle cx="50" cy="44" r="7"/><circle cx="90" cy="44" r="7"/><circle cx="130" cy="16" r="7"/><circle cx="170" cy="16" r="7"/><circle cx="210" cy="16" r="7"/><rect x="236" y="7" width="26" height="18" rx="9"/></svg>
+              <ul class="get">
+                <li><svg class="icon"><use href="#i-target"/></svg><span><b>Gaps with evidence</b><small>Each gap quotes the line in your resume it came from.</small></span></li>
+                <li><svg class="icon"><use href="#i-route"/></svg><span><b>A line of short stops</b><small>Free courses and one proof task per stop.</small></span></li>
+                <li><svg class="icon"><use href="#i-brief"/></svg><span><b>Roles you are getting closer to</b><small>From public job boards and posts you paste.</small></span></li>
+              </ul>
+            </div>
+          </section>
+
