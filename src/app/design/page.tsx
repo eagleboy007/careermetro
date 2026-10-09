@@ -19,6 +19,12 @@ import { SiteHeader } from "@/components/site/site-header";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
+import { Lamp } from "@/components/today/lamp";
+import { RideProvider } from "@/components/today/ride-state";
+import { StreakChip } from "@/components/today/streak-chip";
+import { TodayScreen } from "@/components/today/today-screen";
+import { UserStateSwitch } from "@/components/today/user-state-switch";
+import { todayFixture } from "@/lib/today/fixture";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
 
@@ -135,7 +141,11 @@ const exampleRole: RoleView = {
   updatedOn: "2026-10-06",
 };
 
-const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good"] as const;
+const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line"] as const;
+
+const returning = todayFixture("returning");
+const firstSignup = todayFixture("first_signup");
+const noResume = todayFixture("no_resume");
 
 export default function DesignPage() {
   return (
@@ -251,6 +261,36 @@ export default function DesignPage() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
+        </div>
+      </section>
+      <section className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl font-semibold">Today</h2>
+          <p className="text-sm text-muted">The signed-in home in its three user states. Tick tasks and answer the signal check to move the train.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <UserStateSwitch current="returning" basePath="/today" />
+          <RideProvider tasks={[]}>
+            <StreakChip rideDays={12} rodeToday={false} />
+            <StreakChip rideDays={0} rodeToday={false} />
+          </RideProvider>
+          <Lamp status="missing" label />
+          <Lamp status="weak" label />
+          <Lamp status="met" label />
+        </div>
+        <h3 className="font-mono text-xs uppercase tracking-wider text-muted">Returning</h3>
+        <RideProvider tasks={returning.ride?.tasks ?? []}>
+          <TodayScreen view={returning} greeting="Evening, Priya." dayLabel="Thursday" clock="19:42" demo />
+        </RideProvider>
+        <h3 className="font-mono text-xs uppercase tracking-wider text-muted">First sign-up</h3>
+        <RideProvider tasks={firstSignup.ride?.tasks ?? []}>
+          <TodayScreen view={firstSignup} greeting="Evening, Priya." dayLabel="Thursday" clock="19:42" demo />
+        </RideProvider>
+        <h3 className="font-mono text-xs uppercase tracking-wider text-muted">No resume</h3>
+        <TodayScreen view={noResume} greeting="Evening, Priya." dayLabel="Thursday" clock="19:42" demo />
+        <h3 className="font-mono text-xs uppercase tracking-wider text-muted">Job search off</h3>
+        <div className="max-w-md">
+          <TodayScreen view={{ ...noResume, state: "returning", jobSearch: false }} greeting="" dayLabel="" clock="" demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>

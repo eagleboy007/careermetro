@@ -17,7 +17,7 @@ Read `docs/REQUIREMENTS.md` before any design or implementation work. It is the 
 
 ## Design system
 
-Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surface`, `surface-2`, `ink`, `muted`, `line`, `accent`, `accent-soft`, `on-accent`, `good`, `warn`, `bad` (plus `-soft`).
+Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surface`, `surface-2`, `ink`, `muted`, `line`, `accent`, `accent-soft`, `on-accent`, `good`, `warn`, `bad` (plus `-soft`), and `board`, `board-ink`, `board-dim`, `board-line` for the Departures board (always dark) plus `shadow` for raised things.
 
 - Cobalt (`accent`) means progress only. Red, amber and green are for gap status only.
 - Fonts: Bricolage Grotesque for headings, Geist for text, Geist Mono for labels.
