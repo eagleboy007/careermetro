@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { SiteHeader } from "@/components/site/site-header";
 import { authConfig, safeNext } from "@/lib/auth/config";
+import { testSignInEnabled } from "@/lib/auth/test-user";
 import { SignInForm } from "./sign-in-form";
+import { TestUserForm } from "./test-user-form";
 
 export const metadata: Metadata = { title: "Sign in · CareerMetro", robots: { index: false } };
 
@@ -17,6 +19,7 @@ async function SignIn({ searchParams }: PageProps<"/sign-in">) {
   const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
   const next = safeNext(one(params.next));
   const error = ERRORS[one(params.error) ?? ""] ?? null;
+  if (!authConfig() && testSignInEnabled()) return <TestUserForm next={next} />;
   if (!authConfig()) {
     return <p className="rounded-lg border border-line bg-surface p-5 text-sm">Sign-in isn&apos;t switched on yet. Please check back soon.</p>;
   }
