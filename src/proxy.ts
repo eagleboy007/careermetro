@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { authConfig } from "@/lib/auth/config";
 import { refreshSession } from "@/lib/auth/proxy-session";
+import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/auth/test-user";
 import { signedInPreviewEnabled } from "@/lib/preview";
 
 /** Signed-in screens and the sign-in flow. Add new signed-in routes here. */
@@ -34,8 +35,10 @@ export async function proxy(request: NextRequest) {
   if (!signedInPreviewEnabled()) {
     return under(path, SIGNED_IN_PREFIXES) ? new NextResponse(null, { status: 404 }) : NextResponse.next();
   }
-  const { response, signedIn } = await refreshSession(request);
-  if (!authConfig()) return response;
+  const { response, signedIn: withProvider } = await refreshSession(request);
+  // Until the real sign-in has its keys, previews use the stand-in test user instead.
+  if (!authConfig() && !testSignInEnabled()) return response;
+  const signedIn = withProvider || testUserIdentity(request.cookies.get(TEST_USER_COOKIE)?.value) !== null;
   if (!signedIn && under(path, NEEDS_SIGN_IN)) {
     const url = new URL("/sign-in", request.url);
     url.searchParams.set("next", path + request.nextUrl.search);

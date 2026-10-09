@@ -5,6 +5,7 @@ import { AppShell, type ShellUser } from "@/components/app/app-shell";
 import { touchLastSeen } from "@/lib/account/store";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount, currentIdentity } from "@/lib/auth/server";
+import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
 
@@ -17,14 +18,15 @@ const initials = (name: string) =>
     .join("") || "?";
 
 /**
- * Signed-in screens, behind the preview flag until Today runs on real data. With sign-in set up, the person must have
- * an account (the proxy already sent signed-out visitors to /sign-in); without it, the screens show example data.
+ * Signed-in screens, behind the preview flag until Today runs on real data. With sign-in set up, or the test sign-in on
+ * a preview, the person must have an account (the proxy already sent signed-out visitors to /sign-in); otherwise the
+ * screens show example data.
  */
 async function Shell({ children }: { children: React.ReactNode }) {
   await connection();
   if (!signedInPreviewEnabled()) notFound();
   let user: ShellUser;
-  if (authConfig()) {
+  if (authConfig() || testSignInEnabled()) {
     const account = await currentAccount();
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     await touchLastSeen(account.id);

@@ -1,10 +1,12 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { afterSignIn } from "@/lib/auth/after-sign-in";
 import { safeNext } from "@/lib/auth/config";
 import { googleSignInUrl, requestOrigin, sendEmailCode, verifyEmailCode } from "@/lib/auth/server";
+import { TEST_USER_COOKIE, TEST_USER_MAX_AGE_SECONDS, testSignInEnabled, testUserCookie } from "@/lib/auth/test-user";
 
 export type EmailStep = { stage: "email" | "code"; email: string; error: string | null };
 
@@ -42,5 +44,28 @@ export async function emailStep(state: EmailStep, formData: FormData): Promise<E
   if (!code.success) return { ...state, error: "Enter the code from the email, digits only." };
   const verified = await verifyEmailCode(state.email, code.data);
   if (!verified.ok) return { ...state, error: "That code didn't work. It may have expired: ask for a new one." };
+  redirect(await afterSignIn(next));
+}
+
+export type TestStep = { error: string | null };
+
+const testSchema = z.object({ name: z.string().trim().min(1).max(80), email: emailSchema });
+
+/** The stand-in sign-in on previews: a name and an email, no check. Off once the real sign-in has its keys. */
+export async function continueAsTestUser(_: TestStep, formData: FormData): Promise<TestStep> {
+  if (!testSignInEnabled()) return { error: "Test sign-in is off here." };
+  const next = safeNext(String(formData.get("next") ?? ""));
+  const parsed = testSchema.safeParse({
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? "").trim().toLowerCase(),
+  });
+  if (!parsed.success) return { error: "Please enter a name and a valid email address." };
+  (await cookies()).set(TEST_USER_COOKIE, testUserCookie(parsed.data), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: TEST_USER_MAX_AGE_SECONDS,
+  });
   redirect(await afterSignIn(next));
 }
