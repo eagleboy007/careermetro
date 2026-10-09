@@ -19,8 +19,20 @@ import { SiteHeader } from "@/components/site/site-header";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
+import { StreakChip } from "@/components/today/streak-chip";
+import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
+import {
+  exampleDepartures,
+  exampleFirstTally,
+  exampleFirstTasks,
+  exampleGoals,
+  exampleName,
+  exampleRide,
+  exampleRole as exampleTargetRole,
+  exampleWeek,
+} from "@/lib/today/fixtures";
 
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
 
@@ -135,7 +147,19 @@ const exampleRole: RoleView = {
   updatedOn: "2026-10-06",
 };
 
-const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good"] as const;
+const exampleToday: TodayData = {
+  name: exampleName,
+  role: exampleTargetRole,
+  ride: exampleRide,
+  week: exampleWeek,
+  departures: exampleDepartures,
+  goals: exampleGoals,
+  tally: exampleFirstTally,
+  firstTasks: exampleFirstTasks,
+  lineHours: 46,
+};
+
+const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line"] as const;
 
 export default function DesignPage() {
   return (
@@ -177,6 +201,17 @@ export default function DesignPage() {
         <div className="max-w-md">
           <ProgressRoute current="Path" />
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Today (signed in)</h2>
+        <p className="text-sm text-muted">The signed-in home for each user state. Switch states to see each one.</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <StreakChip days={0} todayCounted={false} />
+          <StreakChip days={11} todayCounted={false} />
+          <StreakChip days={12} todayCounted />
+        </div>
+        <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
       </section>
 
       <section className="grid gap-8 md:grid-cols-2">
