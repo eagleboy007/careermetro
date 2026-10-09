@@ -3,7 +3,7 @@ import { and, count, desc, eq, gte, inArray, isNotNull, sql, sum } from "drizzle
 import { getDb } from "@/db";
 import { aiCalls, gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
-import { ownerKey, ownsResume, type Owner } from "@/lib/owner";
+import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { gapAnalysis, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis } from "./analysis";
@@ -36,7 +36,7 @@ async function mayExplain(tx: Tx, owner: Owner): Promise<boolean> {
       .from(gapAnalyses)
       .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(ownsResume(owner), isNotNull(gapAnalyses.aiCallId), gte(gapAnalyses.createdAt, startOfUtcDay()))),
+      .where(and(uploadedBy(owner), isNotNull(gapAnalyses.aiCallId), gte(gapAnalyses.createdAt, startOfUtcDay()))),
     tx
       .select({ usd: sum(aiCalls.costUsd) })
       .from(aiCalls)

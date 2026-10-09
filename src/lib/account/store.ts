@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, gt, isNull, lt, or, sql } from "drizzle-orm";
+import { and, eq, gt, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { consents, resumes, users } from "@/db/schema";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/owner";
@@ -9,8 +9,11 @@ type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 export const ACCOUNT_POLICY_VERSION = "2026-10-draft";
 
-/** What the sign-in provider tells us about a signed-in person. Nothing else from the provider is stored. */
-export type Identity = { subject: string; email: string; name: string | null };
+/**
+ * What the sign-in provider tells us about a signed-in person. Nothing else from the provider is stored.
+ * `emailVerified` is true when the provider proved the person controls the email (Google, or an emailed code).
+ */
+export type Identity = { subject: string; email: string; emailVerified: boolean; name: string | null };
 
 export type Account = { id: string; email: string; name: string | null };
 
@@ -28,13 +31,14 @@ export async function findAccount(subject: string, db: Pick<Db, "select"> = getD
 
 /**
  * Moves this browser's anonymous analyses (FR-2) to the user: resume, gaps and path follow, since they hang off the
- * resume. Only unclaimed resumes within their 24 hours move. The session id is cleared, so the old cookie no longer
- * reaches them after sign-out.
+ * resume, and the upload consent is linked to the user too. Only unclaimed resumes within their 24 hours move. Once
+ * claimed, the session no longer reaches them (see `ownsResume`); the session id stays only so the session's daily
+ * limits still count them.
  */
 export async function claimAnonymousResumes(userId: string, sessionId: string, db: Db | Tx = getDb()): Promise<number> {
   const claimed = await db
     .update(resumes)
-    .set({ userId, anonymousSessionId: null })
+    .set({ userId })
     .where(
       and(
         eq(resumes.anonymousSessionId, sessionId),
@@ -42,16 +46,18 @@ export async function claimAnonymousResumes(userId: string, sessionId: string, d
         gt(resumes.createdAt, new Date(Date.now() - ANONYMOUS_TTL_HOURS * 3600_000)),
       ),
     )
-    .returning({ id: resumes.id });
+    .returning({ id: resumes.id, consentId: resumes.consentId });
+  const consentIds = claimed.flatMap((r) => (r.consentId ? [r.consentId] : []));
+  if (consentIds.length) await db.update(consents).set({ userId }).where(and(inArray(consents.id, consentIds), isNull(consents.userId)));
   return claimed.length;
 }
 
-export type CreateAccountResult = { ok: true; account: Account } | { ok: false; reason: "email_taken" };
+export type CreateAccountResult = { ok: true; account: Account } | { ok: false; reason: "email_taken" | "email_unverified" };
 
 /**
  * Finishes sign-up after the person ticked "I am 18 or older": creates the user (or links an existing one with the
- * same email and no sign-in yet, for a later change of provider), records the account consent and claims this
- * browser's anonymous analyses. Safe to call twice: a second call returns the same account.
+ * same verified email and no sign-in yet, for a later change of provider), records the account consent and claims
+ * this browser's anonymous analyses. Safe to call twice: a second call claims and returns the same account.
  */
 export async function createAccount(
   identity: Identity,
@@ -60,10 +66,14 @@ export async function createAccount(
 ): Promise<CreateAccountResult> {
   const email = normalEmail(identity.email);
   return db.transaction(async (tx) => {
-    // One sign-up per email at a time, so two tabs can't both insert.
+    // One sign-up per sign-in and per email at a time, so two tabs can't both insert. Always subject, then email.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-account-sub:${identity.subject}`}))`);
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-account:${email}`}))`);
     const existing = await findAccount(identity.subject, tx);
-    if (existing) return { ok: true, account: existing } as const;
+    if (existing) {
+      if (input.sessionId) await claimAnonymousResumes(existing.id, input.sessionId, tx);
+      return { ok: true, account: existing } as const;
+    }
 
     const [byEmail] = await tx
       .select({ id: users.id, authSubject: users.authSubject })
@@ -71,11 +81,13 @@ export async function createAccount(
       .where(sql`lower(${users.email}) = ${email}`)
       .limit(1);
     if (byEmail?.authSubject) return { ok: false, reason: "email_taken" } as const;
+    // Linking hands over an existing user's data, so only a proven email may do it.
+    if (byEmail && !identity.emailVerified) return { ok: false, reason: "email_unverified" } as const;
 
     const now = new Date();
     const values = { authSubject: identity.subject, name: input.name, ageConfirmedAt: now, lastSeenAt: now };
     const [row] = byEmail
-      ? await tx.update(users).set(values).where(eq(users.id, byEmail.id)).returning({ id: users.id, email: users.email, name: users.name })
+      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning({ id: users.id, email: users.email, name: users.name })
       : await tx.insert(users).values({ email, ...values }).returning({ id: users.id, email: users.email, name: users.name });
     await tx.insert(consents).values({ userId: row.id, email, purpose: "account", policyVersion: ACCOUNT_POLICY_VERSION });
     if (input.sessionId) await claimAnonymousResumes(row.id, input.sessionId, tx);

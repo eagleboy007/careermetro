@@ -5,7 +5,7 @@ import { aiCalls, gapAnalyses, paths, pathSteps, profiles, resources, resumes } 
 import { skills } from "@/content";
 import { recordAiCalls } from "@/lib/ai/log";
 import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
-import { ownerKey, ownsResume, type Owner } from "@/lib/owner";
+import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import type { GapStatus, RoleProfile } from "@/lib/schemas";
 import { buildPath } from "./build";
 import { writePath, type WriteClient } from "./write";
@@ -62,7 +62,7 @@ async function mayWrite(tx: Tx, owner: Owner): Promise<boolean> {
       .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
       .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(ownsResume(owner), isNotNull(paths.aiCallId), gte(paths.createdAt, startOfUtcDay()))),
+      .where(and(uploadedBy(owner), isNotNull(paths.aiCallId), gte(paths.createdAt, startOfUtcDay()))),
     tx
       .select({ usd: sum(aiCalls.costUsd) })
       .from(aiCalls)

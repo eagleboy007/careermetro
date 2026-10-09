@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { aiCalls, consents, profiles, resumes } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
 import { HEALTH_PURPOSE } from "@/lib/health";
-import { ANONYMOUS_TTL_HOURS, type Owner } from "@/lib/owner";
+import { ANONYMOUS_TTL_HOURS, uploadedBy, type Owner } from "@/lib/owner";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
@@ -53,10 +53,6 @@ const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T0
 
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-/** Every upload by this owner, claimed or not, for the daily upload count. */
-const byOwner = (owner: Owner) =>
-  owner.userId !== undefined ? eq(resumes.userId, owner.userId) : eq(resumes.anonymousSessionId, owner.sessionId);
-
 const BUSY: IngestResult = {
   ok: false,
   status: 503,
@@ -68,7 +64,7 @@ async function checkLimits(tx: Db | Tx, owner: Owner, hash: string): Promise<Ing
   const recent = new Date(Date.now() - IN_FLIGHT_MINUTES * 60 * 1000);
   // Uploads still being parsed are rows already, so they count toward the per-owner and per-client limits.
   const [[byOwnerCount], [byClient], [spent], [inFlight]] = await Promise.all([
-    tx.select({ n: count() }).from(resumes).where(and(byOwner(owner), gte(resumes.createdAt, dayAgo()))),
+    tx.select({ n: count() }).from(resumes).where(and(uploadedBy(owner), gte(resumes.createdAt, dayAgo()))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.clientHash, hash), gte(resumes.createdAt, startOfUtcDay()))),
     // Health pings are left out, so a flood of /api/health requests can't pause uploads.
     tx.select({ usd: sum(aiCalls.costUsd) }).from(aiCalls).where(and(gte(aiCalls.createdAt, startOfUtcDay()), ne(aiCalls.purpose, HEALTH_PURPOSE))),

@@ -24,7 +24,15 @@ export function ownsResume(owner: Owner, now = Date.now()): SQL {
   )!;
 }
 
-/** A stable key for per-owner locks and daily limits. */
+/**
+ * Every resume this owner uploaded, for daily limits. A session keeps counting the resumes it uploaded after they
+ * were claimed, so signing up and out can't reset its limits.
+ */
+export function uploadedBy(owner: Owner): SQL {
+  return owner.userId !== undefined ? eq(resumes.userId, owner.userId) : eq(resumes.anonymousSessionId, owner.sessionId);
+}
+
+/** A stable key for per-owner locks. */
 export function ownerKey(owner: Owner): string {
   return owner.userId !== undefined ? `u:${owner.userId}` : `s:${owner.sessionId}`;
 }

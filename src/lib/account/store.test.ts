@@ -4,9 +4,9 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
-import { GAP_LIMITS, getGapsForOwner } from "@/lib/gaps/store";
-import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
-import { ingestResume } from "@/lib/resume/ingest";
+import { GAP_LIMITS, getGapsForOwner, rateAnalysis } from "@/lib/gaps/store";
+import { getPathForOwner, markStepDone, PATH_LIMITS } from "@/lib/path/store";
+import { ingestResume, LIMITS } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile, getResumeForOwner } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
@@ -59,7 +59,7 @@ describe.skipIf(!db)("account store (database)", () => {
     await sqlClient!.end();
   });
 
-  const identity = (n: string) => ({ subject: `${run}-${n}`, email: `${run}-${n}@Example.test`, name: "Test User" });
+  const identity = (n: string) => ({ subject: `${run}-${n}`, email: `${run}-${n}@Example.test`, emailVerified: true, name: "Test User" });
 
   async function signUp(n: string, sessionId: string | null = null) {
     const r = await createAccount(identity(n), { name: "Test User", sessionId }, db!);
@@ -86,11 +86,15 @@ describe.skipIf(!db)("account store (database)", () => {
     expect(await findAccount(identity("new").subject, db!)).toEqual(a);
   });
 
-  it("links an existing user with the same email and no sign-in, and refuses one already linked", async () => {
-    const [old] = await db!.insert(schema.users).values({ email: `${run}-link@example.test` }).returning({ id: schema.users.id });
+  it("links an existing user with the same verified email in any case, and refuses one already linked", async () => {
+    const [old] = await db!.insert(schema.users).values({ email: `${run}-LINK@example.TEST` }).returning({ id: schema.users.id });
     userIds.push(old.id);
+    expect(await createAccount({ ...identity("link"), emailVerified: false }, { name: null, sessionId: null }, db!)).toEqual({
+      ok: false,
+      reason: "email_unverified",
+    });
     const linked = await createAccount(identity("link"), { name: null, sessionId: null }, db!);
-    expect(linked).toMatchObject({ ok: true, account: { id: old.id } });
+    expect(linked).toMatchObject({ ok: true, account: { id: old.id, email: `${run}-link@example.test` } });
     const other = await createAccount({ ...identity("link"), subject: `${run}-link-2` }, { name: null, sessionId: null }, db!);
     expect(other).toEqual({ ok: false, reason: "email_taken" });
   });
@@ -105,15 +109,59 @@ describe.skipIf(!db)("account store (database)", () => {
     expect(await getResumeForOwner(resumeId, { sessionId: session }, db!)).toBeNull();
     const gaps = await getGapsForOwner(resumeId, owner, role, { db: db! });
     expect(gaps.ok).toBe(true);
+    if (!gaps.ok) throw new Error(gaps.reason);
     const path = await getPathForOwner(resumeId, owner, role, 5, { db: db! });
-    expect(path.ok || path.reason === "no_gaps").toBe(true);
+    if (!path.ok) throw new Error(path.reason);
+    const stepId = path.path.steps[0].id;
+    const old = { sessionId: session };
+    expect(await rateAnalysis(gaps.analysisId, old, 4, db!)).toBe(false);
+    expect(await markStepDone(stepId, old, true, db!)).toBe(false);
+    expect(await rateAnalysis(gaps.analysisId, owner, 4, db!)).toBe(true);
+    expect(await markStepDone(stepId, owner, true, db!)).toBe(true);
+    const [consent] = await db!
+      .select({ userId: schema.consents.userId })
+      .from(schema.consents)
+      .innerJoin(schema.resumes, eq(schema.resumes.consentId, schema.consents.id))
+      .where(eq(schema.resumes.id, resumeId));
+    expect(consent.userId).toBe(user.id);
+  });
+
+  it("claims a later anonymous analysis when an existing user signs up again from another browser", async () => {
+    const user = await signUp("again");
+    const session = `${run}-again-2`;
+    const resumeId = await upload(session);
+    expect(await createAccount(identity("again"), { name: null, sessionId: session }, db!)).toMatchObject({ ok: true });
+    expect(await getResumeForOwner(resumeId, { userId: user.id }, db!)).toMatchObject({ resumeId });
+  });
+
+  it("keeps counting a session's uploads after they are claimed, and gives a user their own limit", async () => {
+    const session = `${run}-limit`;
+    for (let i = 0; i < LIMITS.perOwnerPerDay; i++) await upload(session);
+    const user = await signUp("limit", session);
+    const again = await ingestResume({ bytes, as: "text", owner: { sessionId: session }, clientHash: `h-${session}-x` }, { db: db!, client });
+    expect(again).toMatchObject({ ok: false, status: 429 });
+    const asUser = await ingestResume({ bytes, as: "text", owner: { userId: user.id }, clientHash: `h-${session}-u` }, { db: db!, client });
+    expect(asUser).toMatchObject({ ok: false, status: 429 });
+    const fresh = await signUp("limit-fresh");
+    const own = await ingestResume({ bytes, as: "text", owner: { userId: fresh.id }, clientHash: `h-${run}-fresh` }, { db: db!, client });
+    if (!own.ok) throw new Error(own.code);
+    const [row] = await db!.select().from(schema.resumes).where(eq(schema.resumes.id, own.resumeId));
+    expect(row).toMatchObject({ userId: fresh.id, anonymousSessionId: null });
+  });
+
+  it("lets two tabs finish sign-up at once without a second user", async () => {
+    const results = await Promise.all([1, 2, 3].map(() => createAccount(identity("race"), { name: null, sessionId: null }, db!)));
+    const ids = new Set(results.map((r) => (r.ok ? r.account.id : r.reason)));
+    expect(ids.size).toBe(1);
+    userIds.push(...ids);
   });
 
   it("keeps one user's resume, gaps and path away from another user", async () => {
     const session = `${run}-mine`;
     const resumeId = await upload(session);
     await confirmProfile(resumeId, { sessionId: session }, parsed, db!);
-    await signUp("mine", session);
+    const rightful = await signUp("mine", session);
+    expect(await getResumeForOwner(resumeId, { userId: rightful.id }, db!)).toMatchObject({ resumeId });
     const stranger = await signUp("stranger");
     const owner = { userId: stranger.id };
     expect(await getResumeForOwner(resumeId, owner, db!)).toBeNull();
