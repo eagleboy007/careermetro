@@ -1,6 +1,7 @@
 import "server-only";
 import { createHmac, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
+import { currentAccount } from "@/lib/auth/server";
 import { ANONYMOUS_TTL_HOURS, type Owner } from "@/lib/owner";
 
 /** Cookie for the anonymous first analysis (FR-2). It lives as long as the data it points to. */
@@ -29,15 +30,21 @@ export async function ensureSessionId(): Promise<string> {
   return id;
 }
 
-/** Who is asking: the anonymous session, or null when there is none. */
+/**
+ * Who is asking: the signed-in user, else the anonymous session, else null. A signed-in visitor is never their
+ * session, so their claimed analyses and anything they upload belong to the account.
+ */
 export async function readOwner(): Promise<Owner | null> {
+  const account = await currentAccount();
+  if (account) return { userId: account.id };
   const sessionId = await readSessionId();
   return sessionId ? { sessionId } : null;
 }
 
 /** Who is asking, creating an anonymous session if needed. Call only from a route handler or server action. */
 export async function ensureOwner(): Promise<Owner> {
-  return { sessionId: await ensureSessionId() };
+  const account = await currentAccount();
+  return account ? { userId: account.id } : { sessionId: await ensureSessionId() };
 }
 
 /**

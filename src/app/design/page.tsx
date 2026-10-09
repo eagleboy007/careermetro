@@ -221,7 +221,7 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
         <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu. Sections not built yet show as Soon.</p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true }}>
+          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>
