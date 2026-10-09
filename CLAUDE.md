@@ -6,6 +6,8 @@ Web app for job seekers in India: resume plus target role in, specific skill gap
 
 Read `docs/REQUIREMENTS.md` before any design or implementation work. It is the contract; update it when a requirement changes.
 
+For the signed-in app (sign-up, Today, goals, map, jobs, profile), build from `docs/design/post-login-handoff.md`. It collects the prototype's screens, rules, fonts and tokens.
+
 ## Decisions already made (2026-10-06)
 
 - B2C first. `organizations` exists in the schema only; team features are Phase 3.
