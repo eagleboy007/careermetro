@@ -47,8 +47,7 @@ export function SignInForm({ next, error }: { next: string; error: string | null
         ) : (
           <>
             <p className="text-sm text-muted">
-              We sent a code to <strong className="font-medium text-ink">{state.email}</strong>. It works for 1 hour. You can also tap the link
-              in the email.
+              We sent a code to <strong className="font-medium text-ink">{state.email}</strong>. It works for 1 hour.
             </p>
             <label className="flex flex-col gap-1.5 text-sm font-medium">
               Code

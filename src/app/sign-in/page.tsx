@@ -8,7 +8,7 @@ import { SignInForm } from "./sign-in-form";
 export const metadata: Metadata = { title: "Sign in · CareerMetro", robots: { index: false } };
 
 const ERRORS: Record<string, string> = {
-  link: "That sign-in link didn't work. It may have expired or been used already. Please try again.",
+  link: "That Google sign-in didn't finish. Please try again, or use your email.",
   google: "We couldn't reach Google just now. Please try again, or use your email.",
 };
 

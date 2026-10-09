@@ -27,7 +27,7 @@ export async function emailStep(state: EmailStep, formData: FormData): Promise<E
   if (state.stage === "email" || formData.get("intent") === "resend") {
     const parsed = emailSchema.safeParse(String(formData.get("email") ?? state.email).trim().toLowerCase());
     if (!parsed.success) return { stage: "email", email: String(formData.get("email") ?? ""), error: "Please enter a valid email address." };
-    const sent = await sendEmailCode(parsed.data, await requestOrigin(), next);
+    const sent = await sendEmailCode(parsed.data);
     if (!sent.ok) {
       return {
         stage: "email",

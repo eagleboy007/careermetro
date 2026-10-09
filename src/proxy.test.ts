@@ -15,7 +15,7 @@ describe("proxy", () => {
     refresh.mockReset();
   });
 
-  it("answers 404 for signed-in screens in production without the preview flag, and does no auth work", async () => {
+  it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
     for (const p of ["/today", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
@@ -46,6 +46,7 @@ describe("proxy", () => {
     expect(home.headers.get("location")).toBe("https://careermetro.test/today");
     expect(home.cookies.get("sb-x-auth-token")?.value).toBe("new");
     expect((await proxy(req("/today"))).headers.get("x-middleware-next")).toBe("1");
+    expect((await proxy(req("/sign-in"))).headers.get("location")).toBe("https://careermetro.test/today");
   });
 
   it("skips static files", () => {
@@ -53,5 +54,6 @@ describe("proxy", () => {
     expect(re.test("/today")).toBe(true);
     expect(re.test("/_next/static/chunk.js")).toBe(false);
     expect(re.test("/logo.svg")).toBe(false);
+    expect(re.test("/api/resume")).toBe(false);
   });
 });

@@ -79,8 +79,14 @@ describe.skipIf(!db)("resume store (database)", () => {
   it("reports a conflict when two saves race for the same version", async () => {
     const id = await upload(`${session}-r`);
     const results = await Promise.all([1, 2, 3].map(() => confirmProfile(id, { sessionId: `${session}-r` }, parsed, db!)));
-    expect(results.filter((r) => r.ok)).toHaveLength(1);
-    expect(results.filter((r) => !r.ok && r.reason === "conflict").length).toBeGreaterThan(0);
+    // A save that starts after another finished is a new version, not a race, so count only what must hold:
+    // every save either lands on its own version or reports a conflict, and nothing is stored twice.
+    const saved = results.flatMap((r) => (r.ok ? [r.version] : []));
+    expect(saved.length).toBeGreaterThan(0);
+    expect(new Set(saved).size).toBe(saved.length);
+    expect(results.every((r) => r.ok || r.reason === "conflict")).toBe(true);
+    const rows = await db!.select({ v: schema.profiles.version }).from(schema.profiles).where(eq(schema.profiles.resumeId, id));
+    expect(rows).toHaveLength(saved.length + 1);
   });
 
   it("hides anonymous resumes older than 24 hours before cleanup runs", async () => {

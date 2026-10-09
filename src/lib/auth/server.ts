@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { cache } from "react";
 import { findAccount, type Account, type Identity } from "@/lib/account/store";
 import { identityFromClaims } from "./claims";
+import { signedInPreviewEnabled } from "@/lib/preview";
 import { authConfig, hasAuthCookie } from "./config";
 
 /*
@@ -31,6 +32,8 @@ async function client() {
 
 /** Who is signed in with the provider, verified. Null when signed out or when sign-in is not set up. Once per request. */
 export const currentIdentity = cache(async (): Promise<Identity | null> => {
+  // Sign-in is preview-only until Today runs on real data; production does no auth work at all.
+  if (!signedInPreviewEnabled()) return null;
   const jar = await cookies();
   if (!hasAuthCookie(jar.getAll().map((c) => c.name))) return null;
   const supabase = await client();
@@ -58,14 +61,14 @@ export async function googleSignInUrl(origin: string, next: string): Promise<str
   return error ? null : data.url;
 }
 
-/** Emails a 6-digit code (and a link to /auth/callback). Creates the provider's user on first use. */
-export async function sendEmailCode(email: string, origin: string, next: string): Promise<AuthStep> {
+/**
+ * Emails a 6-digit code. Creates the provider's user on first use. There is deliberately no sign-in link: a link
+ * signs in whoever opens it, so someone could send theirs to another person and collect that person's analysis.
+ */
+export async function sendEmailCode(email: string): Promise<AuthStep> {
   const supabase = await client();
   if (!supabase) return { ok: false, reason: "not_configured" };
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: true, emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
-  });
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
   return error ? { ok: false, reason: "rejected" } : { ok: true };
 }
 
@@ -77,22 +80,16 @@ export async function verifyEmailCode(email: string, code: string): Promise<Auth
   return error ? { ok: false, reason: "rejected" } : { ok: true };
 }
 
-/** Finishes a Google redirect (`code`) or an email link (`token_hash`). */
-export async function completeRedirect(params: URLSearchParams): Promise<AuthStep> {
+/**
+ * Finishes a Google redirect. The code only works with the verifier cookie this browser got when it started the
+ * sign-in (PKCE), so a link made in another browser can't sign this one in.
+ */
+export async function completeGoogleRedirect(code: string | null): Promise<AuthStep> {
   const supabase = await client();
   if (!supabase) return { ok: false, reason: "not_configured" };
-  const code = params.get("code");
-  const tokenHash = params.get("token_hash");
-  const type = params.get("type");
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    return error ? { ok: false, reason: "rejected" } : { ok: true };
-  }
-  if (tokenHash && (type === "email" || type === "magiclink" || type === "signup")) {
-    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
-    return error ? { ok: false, reason: "rejected" } : { ok: true };
-  }
-  return { ok: false, reason: "rejected" };
+  if (!code) return { ok: false, reason: "rejected" };
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  return error ? { ok: false, reason: "rejected" } : { ok: true };
 }
 
 /** Ends the session on this device and clears its cookies. */

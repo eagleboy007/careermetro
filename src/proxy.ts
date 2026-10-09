@@ -14,6 +14,11 @@ const under = (path: string, prefixes: string[]) => prefixes.some((p) => path ==
 function redirectKeeping(response: NextResponse, url: URL): NextResponse {
   const redirect = NextResponse.redirect(url);
   for (const cookie of response.cookies.getAll()) redirect.cookies.set(cookie);
+  // A refreshed session must not be cached on the way back.
+  for (const name of ["cache-control", "expires", "pragma"]) {
+    const value = response.headers.get(name);
+    if (value) redirect.headers.set(name, value);
+  }
   return redirect;
 }
 
@@ -36,11 +41,12 @@ export async function proxy(request: NextRequest) {
     url.searchParams.set("next", path + request.nextUrl.search);
     return redirectKeeping(response, url);
   }
-  if (signedIn && path === "/") return redirectKeeping(response, new URL("/today", request.url));
+  if (signedIn && (path === "/" || path === "/sign-in")) return redirectKeeping(response, new URL("/today", request.url));
   return response;
 }
 
 export const config = {
-  // Everything but static files, so a session can be refreshed on any page that reads it.
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|woff2?)$).*)"],
+  // Every page, so a session can be refreshed wherever it is read. API routes can set cookies themselves, and leaving
+  // them out keeps uploads from passing through the proxy.
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|woff2?)$).*)"],
 };

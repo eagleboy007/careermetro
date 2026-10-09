@@ -11,17 +11,36 @@ export function FinishForm({ next, name }: { next: string; name: string | null }
   return (
     <form action={action} className="flex flex-col gap-5">
       <input type="hidden" name="next" value={next} />
-      <label className="flex flex-col gap-1.5 text-sm font-medium">
-        Your name
-        <input name="name" autoComplete="name" maxLength={80} defaultValue={name ?? ""} className={`${field} font-normal`} />
-        <span className="font-normal text-muted">Shown on your profile. You can change it later.</span>
-      </label>
+      <div className="flex flex-col gap-1.5 text-sm">
+        <label htmlFor="finish-name" className="font-medium">
+          Your name
+        </label>
+        <input
+          id="finish-name"
+          name="name"
+          autoComplete="name"
+          maxLength={80}
+          defaultValue={name ?? ""}
+          aria-describedby="finish-name-hint"
+          className={field}
+        />
+        <span id="finish-name-hint" className="text-muted">
+          Shown on your profile. You can change it later.
+        </span>
+      </div>
       <label className="flex items-start gap-2.5 text-sm text-muted">
-        <input name="age" value="yes" type="checkbox" required className="mt-1 accent-[var(--ink)]" />
+        <input
+          name="age"
+          value="yes"
+          type="checkbox"
+          required
+          aria-describedby={state.error ? "finish-error" : undefined}
+          className="mt-1 accent-[var(--ink)]"
+        />
         <span>I am 18 or older and agree to the terms and privacy policy.</span>
       </label>
       {state.error && (
-        <p role="alert" className="text-sm text-bad">
+        <p id="finish-error" role="alert" className="text-sm text-bad">
           {state.error}
         </p>
       )}
