@@ -17,6 +17,7 @@ export function TestUserForm({ next }: { next: string }) {
         Real sign-in (Google or an emailed code) isn&apos;t switched on yet. Type any name and email to try the signed-in screens. Nothing is
         checked, and this never appears on the live site.
       </p>
+      <p className="text-sm text-muted">Please don&apos;t upload a real resume here: anyone who types the same email sees it.</p>
       <input type="hidden" name="next" value={next} />
       <label className="flex flex-col gap-1.5 text-sm font-medium">
         Name

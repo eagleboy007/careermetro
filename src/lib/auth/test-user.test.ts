@@ -8,6 +8,8 @@ describe("test sign-in", () => {
     expect(testSignInEnabled({})).toBe(true);
     expect(testSignInEnabled(preview)).toBe(true);
     expect(testSignInEnabled({ VERCEL_ENV: "production", TODAY_PREVIEW: "1" })).toBe(false);
+    expect(testSignInEnabled({ NODE_ENV: "production" })).toBe(false);
+    expect(testSignInEnabled({ NODE_ENV: "production", VERCEL_ENV: "preview" })).toBe(true);
     expect(testSignInEnabled({ ...preview, NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBe(false);
   });
 

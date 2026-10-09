@@ -10,9 +10,13 @@ import { authConfig } from "./config";
 export const TEST_USER_COOKIE = "cm_test_user";
 const MAX_AGE_DAYS = 30;
 
-/** True on local and preview deployments until the real sign-in has its keys. Never in production. */
+/**
+ * True on Vercel previews and local development until the real sign-in has its keys. Fails closed: a production
+ * build anywhere other than a Vercel preview never offers it.
+ */
 export function testSignInEnabled(env: Record<string, string | undefined> = process.env): boolean {
-  return env.VERCEL_ENV !== "production" && !authConfig(env);
+  const previewOrDev = env.VERCEL_ENV === "preview" || (env.VERCEL_ENV !== "production" && env.NODE_ENV !== "production");
+  return previewOrDev && !authConfig(env);
 }
 
 function key(env: Record<string, string | undefined>): string {
