@@ -19,6 +19,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
+import { AppShell } from "@/components/app/app-shell";
 import { StreakChip } from "@/components/today/streak-chip";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
@@ -212,6 +213,16 @@ export default function DesignPage() {
           <StreakChip days={12} todayCounted />
         </div>
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
+        <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu. Sections not built yet show as Soon.</p>
+        <div className="h-96 rounded-lg border border-line">
+          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true }}>
+            <p className="text-sm text-muted">Page content goes here.</p>
+          </AppShell>
+        </div>
       </section>
 
       <section className="grid gap-8 md:grid-cols-2">

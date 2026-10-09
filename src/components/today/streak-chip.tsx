@@ -46,7 +46,7 @@ export function StreakChip({ days, todayCounted }: { days: number; todayCounted:
         aria-controls={popId}
         aria-label={`${streakLabel(days)}. Show details`}
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[0.8rem] font-semibold text-ink"
+        className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent-soft px-3 py-1.5 text-[0.8rem] font-semibold text-ink"
       >
         <TrainFront size={16} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
         {days === 0 ? (
