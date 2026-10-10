@@ -198,9 +198,9 @@ describe.skipIf(!db)("ingestResume (database)", () => {
   it("caps files that fail to read per client, though they never become rows", async () => {
     const { client: c, create } = client(JSON.stringify(parsed));
     const owner = { sessionId: `${session}-f` };
-    const clientHash = `h-${session}-f`;
+    const clientHash = `h-${session}-failed-reads`;
     const bad = { bytes: new TextEncoder().encode("GIF89a"), owner, clientHash };
-    for (let i = 0; i < 10; i++) expect(await ingestResume(bad, { db: db!, client: c })).toMatchObject({ code: "unsupported_type" });
+    for (let i = 0; i < 30; i++) expect(await ingestResume(bad, { db: db!, client: c })).toMatchObject({ code: "unsupported_type" });
     expect(await ingestResume(bad, { db: db!, client: c })).toMatchObject({ ok: false, status: 429, code: "rate_limited" });
     // A good file from the same client is refused too until the window passes, and the model is never called.
     expect(await ingestResume({ bytes, as: "text", owner, clientHash }, { db: db!, client: c })).toMatchObject({ code: "rate_limited" });

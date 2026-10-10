@@ -54,8 +54,11 @@ const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T0
 
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-/** Files that couldn't be read, per client per day on one server instance (T18). */
-export const failedReads = windowLimiter(10, 24 * 60 * 60 * 1000);
+/**
+ * Files that couldn't be read, per client per day on one server instance (T18). Generous, because a college or
+ * mobile network puts many people behind one address. A soft cap: requests at the same moment can pass it slightly.
+ */
+export const failedReads = windowLimiter(30, 24 * 60 * 60 * 1000);
 
 const BUSY: IngestResult = {
   ok: false,
@@ -138,7 +141,8 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
     extracted = await extractResumeText(input.bytes, input.as);
   } catch (error) {
     if (error instanceof ResumeError) {
-      failedReads.take(input.clientHash);
+      // A file refused for its size was never read, so it costs nothing.
+      if (error.code !== "too_large") failedReads.take(input.clientHash);
       return { ok: false, status: error.code === "too_large" ? 413 : 422, code: error.code, message: error.message };
     }
     throw error;

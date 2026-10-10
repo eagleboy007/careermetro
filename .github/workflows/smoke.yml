@@ -41,7 +41,7 @@ jobs:
           code=$(curl -sS --max-time 120 --retry "${RETRIES}" --retry-all-errors "${headers[@]}" -o health.json -w "%{http_code}" "${SITE%/}/api/health${CHECK:+?check=$CHECK}" || true)
           body=$(head -c 1000 health.json 2>/dev/null)
           if [ "$code" = 401 ] && [ -n "$CHECK" ] && [ -z "$CRON_SECRET" ]; then
-            body="The parse check needs the CRON_SECRET repository secret (the same value as in Vercel)."
+            body="HTTP 401: the parse check needs the CRON_SECRET repository secret (the same value as in Vercel), unless Vercel Deployment Protection blocked it."
           elif [ "$code" = 401 ] || [ "$code" = 403 ]; then
             body="Vercel Deployment Protection blocked the check. Set the PRODUCTION_URL variable or the VERCEL_AUTOMATION_BYPASS_SECRET secret."
           fi
