@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
-import { certificationsIn, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { certificationsIn, contentHash, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -232,6 +232,12 @@ describe("matchProfile", () => {
       skills: [{ name: "Splunk", lastUsed: "2018-06", evidence: ["Handled incidents for 14 clients"] }],
     });
     expect(statusOf(matchProfile(fragment, role("soc-analyst-l2"), now), "siem")).toBe("outdated");
+  });
+
+  it("puts a hash of the skill and certification lists in the matcher version (T34)", () => {
+    expect(MATCHER_VERSION).toMatch(/^matcher\/v\d+\+[0-9a-f]{8}$/);
+    expect(contentHash("a")).not.toBe(contentHash("b"));
+    expect(contentHash(JSON.stringify({ aliases: ["misp"] }))).not.toBe(contentHash(JSON.stringify({ aliases: ["misp", "x"] })));
   });
 
   it("reads ITGC audits, IOC checks and cyber risk reporting as their skills (T32)", () => {

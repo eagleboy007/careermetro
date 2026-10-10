@@ -4,7 +4,24 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v7";
+const RULES_VERSION = "matcher/v7";
+
+/** FNV-1a over the text, as 8 hex digits. Enough to tell two versions of the content apart; not for security. */
+export function contentHash(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, "0");
+}
+
+/**
+ * The rules plus the skill and certification lists they read. A new alias or certification changes the version, so a
+ * stored analysis is checked again (and carried over when it still reads the same). Role edits are pinned separately by
+ * the role profile's own version.
+ */
+export const MATCHER_VERSION = `${RULES_VERSION}+${contentHash(JSON.stringify([taxonomy, certifications]))}`;
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
