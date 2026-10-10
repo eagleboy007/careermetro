@@ -173,6 +173,9 @@ describe("maskPii", () => {
     "Certificate UC-123456",
     "Expected 60000 - 80000 per month",
     "Salary range 70000\u201390000",
+    "Expected 75000 / 95000",
+    "Stipend 65000 - 85000",
+    "Processed 60000 - 90000 rows a day",
     "JEE Main rank 102345",
     "Near real-time pipeline, 500000 events/day",
     "Assistant, India Post, Post Office Savings Bank, 2019",
@@ -312,3 +315,12 @@ describe("maskPii", () => {
     expect(performance.now() - start).toBeLessThan(50);
   });
 });
+
+describe("phones split or run together (T26)", () => {
+  it.each(["98765 - 43210", "98765 / 43210", "98765/43210", "919876543210", "Call 919876543210 after 6"])("masks %s", (line) => {
+    const text = maskPii(`Asha Rao\nData Analyst\n\nEXPERIENCE\nAnalyst, Example Ltd\n2022\n${line}`).text.split("\n").at(-1);
+    expect(text).toContain("[PHONE]");
+    expect(text).not.toMatch(/\d{5}/);
+  });
+});
+
