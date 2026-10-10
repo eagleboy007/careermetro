@@ -178,6 +178,15 @@ describe("matchProfile", () => {
     expect(listed("Data analysis using Python", "data-analyst", "python")).not.toBe("missing");
   });
 
+  it("counts evidence for a looser name only where the quote names the skill, and skips names not about using it", () => {
+    const pair = (name: string, quote: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [quote] }] }), role(slug), now), id);
+    expect(pair("Selenium IDE record playback", "Recorded smoke tests with a record-and-playback tool", "qa-automation-engineer", "selenium")).toBe("weak");
+    expect(pair("SQL Server Management Studio", "Wrote SQL views for the finance team", "data-analyst", "sql")).toBe("met");
+    expect(pair("SQL Injection testing", "Tested login forms for injection flaws using Burp Suite", "data-analyst", "sql")).toBe("missing");
+    expect(pair("Teaching Python to kids", "Volunteer weekend teacher at a local NGO", "data-analyst", "python")).toBe("missing");
+  });
+
   // T12: "algorithms" in a sentence is not data structures and algorithms.
   it("doesn't read DSA from machine learning or encryption algorithms", () => {
     expect(statusOf(scan("java-backend-developer", ["Tuned machine learning algorithms for fraud scoring"]), "data-structures-algorithms")).toBe("missing");
