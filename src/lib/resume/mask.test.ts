@@ -368,3 +368,17 @@ describe("phones split or run together (T26)", () => {
   });
 });
 
+
+describe("emails split around the @ (T30)", () => {
+  it.each(["neha.sharma.dev@\nexample.com", "neha.sharma.dev@ example.com", "neha.sharma.dev\n@example.com", "neha.sharma.dev @\r\n example.com"])(
+    "masks %j",
+    (email) => {
+      const out = maskPii(`Neha Sharma\nEmail: ${email}\nJava Developer`).text;
+      expect(out).toBe("Neha Sharma\nEmail: [EMAIL]\nJava Developer");
+    },
+  );
+
+  it("still keeps an @ that is not an address", () => {
+    expect(maskPii("Built a chatbot @ scale for 2 lakh users").text).toBe("Built a chatbot @ scale for 2 lakh users");
+  });
+});
