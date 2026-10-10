@@ -115,6 +115,23 @@ describe("maskPii", () => {
     expect(lastLine(late(line))).toBe("[ADDRESS]");
   });
 
+  it("ends an address block at the next heading or job line", () => {
+    const one = ["Asha Rao", "Address:", "14 Station Rd, Kota", "Experience", "Analyst, Example Ltd", "Jun 2022 - Present", "- Built dashboards"];
+    expect(maskPii(one.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", ...one.slice(3)]);
+    const two = ["Asha Rao", "Address -", "Kota", "Data Analyst", "Summary", "Analyst with 3 years in SQL"];
+    expect(maskPii(two.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", ...two.slice(3)]);
+    expect(maskPii(two.join("\n")).counts.address).toBe(2);
+  });
+
+  it("drops the PIN from a place line with a 2019-2023 range, keeping the rest", () => {
+    expect(lastLine(late("2019-2023, Analyst, Infosys, Pune 411057"))).toBe("2019-2023, Analyst, Infosys, Pune [PIN]");
+  });
+
+  it("masks a labelled Aadhaar number even with a wrong check digit, and a guardian line with no comma", () => {
+    expect(maskPii("Aadhaar No: 2345 6789 0123").text).toBe("Aadhaar No: [ID]");
+    expect(lastLine(late("S/O Ramesh Rao 14 Station Rd Kota"))).toBe("[ADDRESS]");
+  });
+
   it("masks an address written under its label over several lines", () => {
     const text = ["Asha Rao", "Address:", "14, Shanti Kunj, Gali No. 4", "Laxmi Nagar", "Delhi", "", "EXPERIENCE", "Analyst, Example Ltd"].join("\n");
     expect(maskPii(text).text).toBe(
@@ -129,9 +146,35 @@ describe("maskPii", () => {
   });
 
   it.each([
-    "Skills: SQL, Excel, Power BI, Tableau, 100000 rows, 250000 rows",
+    "Skills: SQL, Excel, Power BI, Tableau, 100000 rows, 250000",
     "AWS Certified Solutions Architect, Credential ID 123456",
-    "Built ETL for 12 states, processed 500000 records",
+    "Built ETL for 12 states, processed 500000",
+    // Second review: work lines that look a little like addresses, phones or PINs.
+    "S3, EC2, Lambda; processed 500000 events",
+    "Q3, grew revenue to 120000 units",
+    "2021, Reduced costs by 150000 per month",
+    "B2, C1 levels, 100000 learners",
+    "G20, hosted 100000 delegates, 2023",
+    "Built Address-lookup API with Google Maps",
+    "• Address-verification service for KYC",
+    "Fixed address - bar bug in Chrome",
+    "- Memory Address: debugging in C",
+    "Bitcoin Address: wallet tooling",
+    "Current CTC 650000",
+    "Expected CTC: 900000",
+    "Saved ₹ 500000",
+    "USD 250000",
+    "Total revenue 450000",
+    "Handled 120000",
+    "AIR 102345",
+    "GATE score 750, rank 104567",
+    "Batch size 512, steps 100000",
+    "Rows processed: 250000",
+    "Certificate UC-123456",
+    "Expected 60000 - 80000 per month",
+    "Salary range 70000\u201390000",
+    "JEE Main rank 102345",
+    "Near real-time pipeline, 500000 events/day",
     "Assistant, India Post, Post Office Savings Bank, 2019",
     "C/O Analytics project: built a churn model",
     "Scores: 7 - 8 - 9 - 6 - 7 - 8 - 9 - 6 - 7 - 8",
@@ -143,6 +186,7 @@ describe("maskPii", () => {
   });
 
   it.each([
+    "080 \u2013 2345 6789",
     "+91 (22) 2345 6789",
     "0091-22-2345-6789",
     "0091 (22) 2345 6789",
@@ -157,6 +201,8 @@ describe("maskPii", () => {
   it("stays fast on a long run with no spaces", () => {
     const started = performance.now();
     maskPii("a".repeat(80_000));
+    maskPii(" ".repeat(80_000));
+    maskPii(`Address:${" ".repeat(80_000)}x`);
     expect(performance.now() - started).toBeLessThan(500);
   });
 });
