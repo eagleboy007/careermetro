@@ -11,35 +11,35 @@
       "importance": "required",
       "expectation": "Expert in one backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "backend-language"
     },
     {
       "skillId": "go",
       "importance": "required",
       "expectation": "Expert in one backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "backend-language"
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Expert in one backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "backend-language"
     },
     {
       "skillId": "nodejs",
       "importance": "required",
       "expectation": "Expert in one backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "backend-language"
     },
     {
       "skillId": "csharp-dotnet",
       "importance": "required",
       "expectation": "Expert in one backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "backend-language"
     },
     {
       "skillId": "system-design",
@@ -116,7 +116,7 @@
   ],
   "groups": [
     {
-      "id": "language",
+      "id": "backend-language",
       "label": "A backend language (Java, Go, Python, Node.js or C#)"
     }
   ],

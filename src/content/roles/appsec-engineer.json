@@ -47,28 +47,28 @@
       "importance": "required",
       "expectation": "Read and fix code in a main backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "review-language"
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Read and fix code in a main backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "review-language"
     },
     {
       "skillId": "javascript",
       "importance": "required",
       "expectation": "Read and fix code in a main backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "review-language"
     },
     {
       "skillId": "go",
       "importance": "required",
       "expectation": "Read and fix code in a main backend language",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "review-language"
     },
     {
       "skillId": "cloud-security",
@@ -85,7 +85,7 @@
   ],
   "groups": [
     {
-      "id": "language",
+      "id": "review-language",
       "label": "A language to review code in (Java, Python, JavaScript or Go)"
     }
   ],

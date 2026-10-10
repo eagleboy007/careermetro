@@ -41,14 +41,14 @@
       "importance": "required",
       "expectation": "Write tooling in Go or Python",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "tooling-language"
     },
     {
       "skillId": "python",
       "importance": "required",
       "expectation": "Write tooling in Go or Python",
       "postingShare": null,
-      "oneOf": "language"
+      "oneOf": "tooling-language"
     },
     {
       "skillId": "terraform",
@@ -104,7 +104,7 @@
   ],
   "groups": [
     {
-      "id": "language",
+      "id": "tooling-language",
       "label": "A language for tooling (Go or Python)"
     },
     {

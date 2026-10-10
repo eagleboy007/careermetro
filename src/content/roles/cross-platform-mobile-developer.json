@@ -11,14 +11,14 @@
       "importance": "required",
       "expectation": "Build a production app in a cross-platform framework",
       "postingShare": null,
-      "oneOf": "framework"
+      "oneOf": "cross-platform-framework"
     },
     {
       "skillId": "react-native",
       "importance": "required",
       "expectation": "Build a production app in a cross-platform framework",
       "postingShare": null,
-      "oneOf": "framework"
+      "oneOf": "cross-platform-framework"
     },
     {
       "skillId": "rest-apis",
@@ -65,7 +65,7 @@
   ],
   "groups": [
     {
-      "id": "framework",
+      "id": "cross-platform-framework",
       "label": "A cross-platform framework (Flutter or React Native)"
     }
   ],

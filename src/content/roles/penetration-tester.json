@@ -41,14 +41,14 @@
       "importance": "required",
       "expectation": "Write small exploit or automation scripts",
       "postingShare": null,
-      "oneOf": "scripting"
+      "oneOf": "scripting-language"
     },
     {
       "skillId": "scripting-bash",
       "importance": "required",
       "expectation": "Write small exploit or automation scripts",
       "postingShare": null,
-      "oneOf": "scripting"
+      "oneOf": "scripting-language"
     },
     {
       "skillId": "cloud-security",
@@ -65,7 +65,7 @@
   ],
   "groups": [
     {
-      "id": "scripting",
+      "id": "scripting-language",
       "label": "A scripting language (Python or Bash)"
     }
   ],
