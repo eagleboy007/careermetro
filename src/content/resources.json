@@ -3315,5 +3315,16 @@
     ],
     "minutes": 1560,
     "free": true
+  },
+  {
+    "title": "EDPB Guidelines 9/2022 on personal data breach notification (version 2.0)",
+    "url": "https://www.edpb.europa.eu/system/files/2023-04/edpb_guidelines_202209_personal_data_breach_notification_v2.0_en.pdf",
+    "provider": "European Data Protection Board",
+    "kind": "docs",
+    "skillIds": [
+      "data-breach-response"
+    ],
+    "minutes": 90,
+    "free": true
   }
 ]
