@@ -8,6 +8,12 @@
     "aliases": [
       "aws cloud practitioner",
       "clf-c02"
+    ],
+    "proves": [
+      "aws"
+    ],
+    "partial": [
+      "cloud-security"
     ]
   },
   {
@@ -20,6 +26,16 @@
       "aws solutions architect",
       "aws certified solutions architect",
       "saa-c03"
+    ],
+    "proves": [
+      "aws",
+      "system-design"
+    ],
+    "partial": [
+      "cloud-security",
+      "networking-basics",
+      "cloud-databases",
+      "high-availability-dr"
     ]
   },
   {
@@ -31,6 +47,14 @@
     "aliases": [
       "aws certified developer",
       "aws developer associate"
+    ],
+    "proves": [
+      "aws"
+    ],
+    "partial": [
+      "ci-cd",
+      "rest-apis",
+      "nosql"
     ]
   },
   {
@@ -42,6 +66,16 @@
     "aliases": [
       "aws devops engineer",
       "aws certified devops"
+    ],
+    "proves": [
+      "aws",
+      "ci-cd"
+    ],
+    "partial": [
+      "monitoring",
+      "sre-practices",
+      "high-availability-dr",
+      "security-incident-response"
     ]
   },
   {
@@ -53,6 +87,16 @@
     "aliases": [
       "aws security specialty",
       "aws certified security"
+    ],
+    "proves": [
+      "aws",
+      "cloud-security"
+    ],
+    "partial": [
+      "identity-access-management",
+      "security-incident-response",
+      "threat-detection",
+      "cryptography-basics"
     ]
   },
   {
@@ -62,8 +106,17 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "aws certified machine learning",
-      "aws machine learning"
+      "aws certified machine learning engineer",
+      "aws machine learning engineer",
+      "mla-c01"
+    ],
+    "proves": [
+      "mlops"
+    ],
+    "partial": [
+      "aws",
+      "machine-learning",
+      "model-evaluation"
     ]
   },
   {
@@ -75,7 +128,11 @@
     "aliases": [
       "az-900",
       "azure fundamentals"
-    ]
+    ],
+    "proves": [
+      "azure"
+    ],
+    "partial": []
   },
   {
     "id": "azure-administrator",
@@ -86,6 +143,14 @@
     "aliases": [
       "az-104",
       "azure administrator"
+    ],
+    "proves": [
+      "azure"
+    ],
+    "partial": [
+      "identity-access-management",
+      "networking-basics",
+      "monitoring"
     ]
   },
   {
@@ -97,6 +162,15 @@
     "aliases": [
       "az-400",
       "azure devops engineer"
+    ],
+    "proves": [
+      "ci-cd",
+      "azure"
+    ],
+    "partial": [
+      "git",
+      "monitoring",
+      "terraform"
     ]
   },
   {
@@ -108,6 +182,16 @@
     "aliases": [
       "dp-300",
       "azure database administrator"
+    ],
+    "proves": [
+      "cloud-databases"
+    ],
+    "partial": [
+      "azure",
+      "sql",
+      "query-optimization",
+      "high-availability-dr",
+      "database-security"
     ]
   },
   {
@@ -119,6 +203,14 @@
     "aliases": [
       "dp-100",
       "azure data scientist"
+    ],
+    "proves": [
+      "machine-learning"
+    ],
+    "partial": [
+      "azure",
+      "mlops",
+      "model-evaluation"
     ]
   },
   {
@@ -131,6 +223,14 @@
       "pl-300",
       "da-100",
       "power bi data analyst"
+    ],
+    "proves": [
+      "power-bi"
+    ],
+    "partial": [
+      "data-visualization",
+      "data-modeling",
+      "data-cleaning"
     ]
   },
   {
@@ -141,6 +241,14 @@
     "cost": "paid",
     "aliases": [
       "associate cloud engineer"
+    ],
+    "proves": [
+      "gcp"
+    ],
+    "partial": [
+      "kubernetes",
+      "identity-access-management",
+      "monitoring"
     ]
   },
   {
@@ -151,6 +259,15 @@
     "cost": "paid",
     "aliases": [
       "professional machine learning engineer"
+    ],
+    "proves": [
+      "machine-learning",
+      "mlops"
+    ],
+    "partial": [
+      "gcp",
+      "model-evaluation",
+      "feature-engineering"
     ]
   },
   {
@@ -161,6 +278,14 @@
     "cost": "paid",
     "aliases": [
       "professional cloud database engineer"
+    ],
+    "proves": [
+      "cloud-databases"
+    ],
+    "partial": [
+      "gcp",
+      "high-availability-dr",
+      "data-modeling"
     ]
   },
   {
@@ -172,6 +297,13 @@
     "aliases": [
       "cka",
       "certified kubernetes administrator"
+    ],
+    "proves": [
+      "kubernetes"
+    ],
+    "partial": [
+      "linux",
+      "networking-basics"
     ]
   },
   {
@@ -183,6 +315,12 @@
     "aliases": [
       "ckad",
       "certified kubernetes application developer"
+    ],
+    "proves": [
+      "kubernetes"
+    ],
+    "partial": [
+      "docker"
     ]
   },
   {
@@ -192,9 +330,12 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "terraform associate",
-      "hashicorp certified"
-    ]
+      "terraform associate"
+    ],
+    "proves": [
+      "terraform"
+    ],
+    "partial": []
   },
   {
     "id": "google-data-analytics",
@@ -205,6 +346,14 @@
     "aliases": [
       "google data analytics certificate",
       "google data analytics professional certificate"
+    ],
+    "proves": [],
+    "partial": [
+      "sql",
+      "data-cleaning",
+      "data-visualization",
+      "tableau",
+      "excel"
     ]
   },
   {
@@ -214,8 +363,13 @@
     "level": "entry",
     "cost": "paid",
     "aliases": [
-      "tableau desktop specialist",
-      "tableau certified"
+      "tableau desktop specialist"
+    ],
+    "proves": [
+      "tableau"
+    ],
+    "partial": [
+      "data-visualization"
     ]
   },
   {
@@ -227,6 +381,12 @@
     "aliases": [
       "snowpro",
       "snowpro core"
+    ],
+    "proves": [
+      "cloud-data-warehouse"
+    ],
+    "partial": [
+      "sql"
     ]
   },
   {
@@ -236,8 +396,15 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "databricks certified",
-      "databricks certification"
+      "databricks data engineer associate"
+    ],
+    "proves": [
+      "spark",
+      "etl"
+    ],
+    "partial": [
+      "sql",
+      "data-governance"
     ]
   },
   {
@@ -249,6 +416,12 @@
     "aliases": [
       "oracle database sql certified associate",
       "1z0-071"
+    ],
+    "proves": [
+      "sql"
+    ],
+    "partial": [
+      "oracle-database"
     ]
   },
   {
@@ -261,6 +434,14 @@
       "oracle certified professional dba",
       "oracle dba certification",
       "ocp dba"
+    ],
+    "proves": [
+      "oracle-database"
+    ],
+    "partial": [
+      "high-availability-dr",
+      "database-security",
+      "query-optimization"
     ]
   },
   {
@@ -272,6 +453,13 @@
     "aliases": [
       "mongodb certified dba",
       "mongodb dba"
+    ],
+    "proves": [
+      "nosql"
+    ],
+    "partial": [
+      "high-availability-dr",
+      "database-security"
     ]
   },
   {
@@ -282,6 +470,12 @@
     "cost": "paid",
     "aliases": [
       "mongodb certified developer"
+    ],
+    "proves": [
+      "nosql"
+    ],
+    "partial": [
+      "data-modeling"
     ]
   },
   {
@@ -295,6 +489,12 @@
       "oracle certified professional java",
       "java se 17 developer",
       "ocpjp"
+    ],
+    "proves": [
+      "java"
+    ],
+    "partial": [
+      "oop"
     ]
   },
   {
@@ -305,6 +505,12 @@
     "cost": "paid",
     "aliases": [
       "meta front-end developer"
+    ],
+    "proves": [],
+    "partial": [
+      "html-css",
+      "javascript",
+      "react"
     ]
   },
   {
@@ -317,6 +523,13 @@
       "istqb",
       "ctfl",
       "istqb foundation"
+    ],
+    "proves": [
+      "manual-testing",
+      "test-planning"
+    ],
+    "partial": [
+      "bug-tracking"
     ]
   },
   {
@@ -328,6 +541,13 @@
     "aliases": [
       "ct-tae",
       "istqb test automation"
+    ],
+    "proves": [],
+    "partial": [
+      "selenium",
+      "playwright-cypress",
+      "api-testing",
+      "test-planning"
     ]
   },
   {
@@ -339,6 +559,10 @@
     "aliases": [
       "cspo",
       "certified scrum product owner"
+    ],
+    "proves": [],
+    "partial": [
+      "agile-scrum"
     ]
   },
   {
@@ -350,6 +574,12 @@
     "aliases": [
       "pspo",
       "professional scrum product owner"
+    ],
+    "proves": [
+      "agile-scrum"
+    ],
+    "partial": [
+      "roadmapping"
     ]
   },
   {
@@ -360,7 +590,12 @@
     "cost": "paid",
     "aliases": [
       "certified scrummaster",
-      "certified scrum master"
+      "certified scrum master",
+      "csm"
+    ],
+    "proves": [],
+    "partial": [
+      "agile-scrum"
     ]
   },
   {
@@ -372,6 +607,13 @@
     "aliases": [
       "pmp",
       "project management professional"
+    ],
+    "proves": [
+      "stakeholder-management"
+    ],
+    "partial": [
+      "agile-scrum",
+      "risk-assessment"
     ]
   },
   {
@@ -382,6 +624,11 @@
     "cost": "paid",
     "aliases": [
       "ecba"
+    ],
+    "proves": [],
+    "partial": [
+      "requirements-gathering",
+      "process-mapping"
     ]
   },
   {
@@ -392,6 +639,14 @@
     "cost": "paid",
     "aliases": [
       "ccba"
+    ],
+    "proves": [
+      "requirements-gathering"
+    ],
+    "partial": [
+      "process-mapping",
+      "stakeholder-management",
+      "uat"
     ]
   },
   {
@@ -402,6 +657,15 @@
     "cost": "paid",
     "aliases": [
       "cbap"
+    ],
+    "proves": [
+      "requirements-gathering",
+      "process-mapping",
+      "stakeholder-management"
+    ],
+    "partial": [
+      "business-case",
+      "uat"
     ]
   },
   {
@@ -412,6 +676,14 @@
     "cost": "paid",
     "aliases": [
       "pmi-pba"
+    ],
+    "proves": [
+      "requirements-gathering"
+    ],
+    "partial": [
+      "process-mapping",
+      "stakeholder-management",
+      "business-case"
     ]
   },
   {
@@ -424,6 +696,12 @@
       "google ads certification",
       "google ads certified",
       "google ads search certification"
+    ],
+    "proves": [
+      "sem-google-ads"
+    ],
+    "partial": [
+      "performance-marketing"
     ]
   },
   {
@@ -436,7 +714,11 @@
       "google analytics certification",
       "google analytics certified",
       "ga4 certification"
-    ]
+    ],
+    "proves": [
+      "web-analytics"
+    ],
+    "partial": []
   },
   {
     "id": "hubspot-inbound-marketing",
@@ -445,9 +727,14 @@
     "level": "entry",
     "cost": "free",
     "aliases": [
-      "hubspot certification",
-      "hubspot certified",
-      "inbound marketing certification"
+      "inbound marketing certification",
+      "hubspot inbound marketing"
+    ],
+    "proves": [],
+    "partial": [
+      "content-marketing",
+      "email-marketing",
+      "crm-tools"
     ]
   },
   {
@@ -457,9 +744,14 @@
     "level": "entry",
     "cost": "paid",
     "aliases": [
-      "meta certified",
       "meta blueprint",
-      "facebook blueprint"
+      "meta digital marketing associate"
+    ],
+    "proves": [
+      "social-media-marketing"
+    ],
+    "partial": [
+      "performance-marketing"
     ]
   },
   {
@@ -471,6 +763,13 @@
     "aliases": [
       "certified in cybersecurity",
       "isc2 cc"
+    ],
+    "proves": [],
+    "partial": [
+      "security-policies",
+      "networking-basics",
+      "security-incident-response",
+      "identity-access-management"
     ]
   },
   {
@@ -483,6 +782,17 @@
       "security+",
       "comptia security+",
       "sec+"
+    ],
+    "proves": [
+      "network-security"
+    ],
+    "partial": [
+      "threat-detection",
+      "identity-access-management",
+      "cryptography-basics",
+      "vulnerability-management",
+      "security-incident-response",
+      "risk-assessment"
     ]
   },
   {
@@ -494,6 +804,14 @@
     "aliases": [
       "cysa+",
       "comptia cysa+"
+    ],
+    "proves": [
+      "threat-detection",
+      "vulnerability-management",
+      "security-incident-response"
+    ],
+    "partial": [
+      "siem"
     ]
   },
   {
@@ -505,6 +823,12 @@
     "aliases": [
       "ceh",
       "certified ethical hacker"
+    ],
+    "proves": [],
+    "partial": [
+      "penetration-testing",
+      "vulnerability-management",
+      "network-security"
     ]
   },
   {
@@ -515,6 +839,13 @@
     "cost": "paid",
     "aliases": [
       "oscp"
+    ],
+    "proves": [
+      "penetration-testing"
+    ],
+    "partial": [
+      "linux",
+      "vulnerability-management"
     ]
   },
   {
@@ -525,6 +856,12 @@
     "cost": "paid",
     "aliases": [
       "gcih"
+    ],
+    "proves": [
+      "security-incident-response"
+    ],
+    "partial": [
+      "threat-detection"
     ]
   },
   {
@@ -535,6 +872,22 @@
     "cost": "paid",
     "aliases": [
       "cissp"
+    ],
+    "proves": [
+      "risk-assessment",
+      "security-policies",
+      "identity-access-management",
+      "network-security",
+      "compliance-frameworks"
+    ],
+    "partial": [
+      "security-incident-response",
+      "cryptography-basics",
+      "application-security",
+      "security-audits",
+      "vulnerability-management",
+      "security-awareness",
+      "stakeholder-management"
     ]
   },
   {
@@ -545,6 +898,15 @@
     "cost": "paid",
     "aliases": [
       "ccsp"
+    ],
+    "proves": [
+      "cloud-security"
+    ],
+    "partial": [
+      "identity-access-management",
+      "compliance-frameworks",
+      "data-governance",
+      "risk-assessment"
     ]
   },
   {
@@ -555,6 +917,16 @@
     "cost": "paid",
     "aliases": [
       "cism"
+    ],
+    "proves": [
+      "risk-assessment",
+      "security-policies"
+    ],
+    "partial": [
+      "security-incident-response",
+      "compliance-frameworks",
+      "stakeholder-management",
+      "security-awareness"
     ]
   },
   {
@@ -565,6 +937,14 @@
     "cost": "paid",
     "aliases": [
       "cisa"
+    ],
+    "proves": [
+      "security-audits",
+      "compliance-frameworks"
+    ],
+    "partial": [
+      "risk-assessment",
+      "security-policies"
     ]
   },
   {
@@ -575,6 +955,13 @@
     "cost": "paid",
     "aliases": [
       "crisc"
+    ],
+    "proves": [
+      "risk-assessment"
+    ],
+    "partial": [
+      "compliance-frameworks",
+      "security-policies"
     ]
   },
   {
@@ -586,6 +973,13 @@
     "aliases": [
       "iso 27001 lead auditor",
       "27001 lead auditor"
+    ],
+    "proves": [
+      "security-audits"
+    ],
+    "partial": [
+      "compliance-frameworks",
+      "security-policies"
     ]
   },
   {
@@ -597,6 +991,13 @@
     "aliases": [
       "iso 27001 lead implementer",
       "27001 lead implementer"
+    ],
+    "proves": [
+      "compliance-frameworks",
+      "security-policies"
+    ],
+    "partial": [
+      "risk-assessment"
     ]
   }
 ]

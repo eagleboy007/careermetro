@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
-import { isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { certificationsIn, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -278,3 +278,99 @@ describe("matchProfile", () => {
     expect(statusOf(r, "power-bi")).toBe("weak");
   });
 });
+
+describe("certifications on the resume", () => {
+  const infosec = role("information-security-analyst");
+
+  it("a held CISSP meets the skills it tests and makes the ones it touches weak", () => {
+    const r = matchProfile(profile({ certifications: ["CISSP – ISC2, 2024"] }), infosec, now);
+    for (const id of ["compliance-frameworks", "security-policies", "risk-assessment", "identity-access-management"]) expect(statusOf(r, id)).toBe("met");
+    expect(statusOf(r, "security-audits")).toBe("weak");
+    expect(statusOf(r, "stakeholder-management")).toBe("weak");
+    expect(r.met.find((m) => m.skillId === "risk-assessment")?.resumeQuote).toBe("CISSP – ISC2, 2024");
+  });
+
+  it("a certification being prepared for counts for nothing", () => {
+    for (const line of [
+      "Pursuing CISSP",
+      "CISSP (exam due March 2027)",
+      "Preparing for PL-300",
+      "CISSP, appearing Nov 2026",
+      "CISSP – exam scheduled",
+      "Will take CISSP in December",
+      "CISSP (result awaited)",
+      "CISSP: not yet cleared",
+      "Registered for CISSP",
+      "CISSP 2027",
+      "Preparing for: CISSP, CISA",
+      "Pursuing CISA, CISM",
+      "Preparing for CISSP, CISA",
+      "Planning to take CISSP, CISM next year",
+      "Not CISSP certified",
+      "CISSP (In Progress)",
+      "CISSP – in progress",
+      "AWS Solutions Architect Associate - In-progress",
+      "CISSP (pending)",
+      "CISSP (ongoing)",
+    ]) {
+      expect(certificationsIn(line, now), line).toEqual([]);
+    }
+    const r = matchProfile(profile({ certifications: ["Pursuing CISSP"] }), infosec, now);
+    expect(statusOf(r, "risk-assessment")).toBe("missing");
+  });
+
+  it("an old pass reads as outdated, and a weak touch never downgrades a met skill", () => {
+    const old = matchProfile(profile({ certifications: ["CISSP 2015"] }), infosec, now);
+    expect(statusOf(old, "risk-assessment")).toBe("outdated");
+    const both = matchProfile(profile({ certifications: ["Microsoft PL-300", "Tableau Desktop Specialist"] }), dataAnalyst, now);
+    expect(statusOf(both, "power-bi")).toBe("met");
+    expect(statusOf(both, "data-visualization")).not.toBe("missing");
+  });
+
+  it("matches a certification by its full name too", () => {
+    expect(certificationsIn("Microsoft Certified: Power BI Data Analyst Associate", now).map((c) => c.cert.id)).toContain("power-bi-data-analyst");
+  });
+
+  const held = (line: string) => certificationsIn(line, now).map((c) => ({ id: c.cert.id, months: c.months }));
+  const ym = (y: number, m: number) => y * 12 + m - 1;
+
+  it("words that sound like plans but describe a held certificate keep it", () => {
+    for (const line of [
+      "CISSP (ongoing CPE credits)",
+      "CISSP, 2019; attempted 40 hands-on labs",
+      "CISSP – target audience: SOC teams, 2022",
+      "CISSP – CPE in progress",
+      "CISSP (endorsement pending), 2025",
+    ]) {
+      expect(held(line).map((h) => h.id), line).toContain("cissp");
+    }
+  });
+
+  it("reads each certificate on a mixed line on its own", () => {
+    expect(held("CISSP (2019), CISA - pursuing").map((h) => h.id)).toEqual(["cissp"]);
+    expect(held("Pursuing CISA; CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
+    expect(held("CISSP, 2019, CISA, appearing Nov 2026")).toEqual([{ id: "cissp", months: ym(2019, 12) }]);
+    expect(held("Pursuing CISA, CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
+    expect(held("CISA 2020, Not CISSP").map((h) => h.id)).toEqual(["cisa"]);
+  });
+
+  it("takes the pass date, not expiry, ID digits or a standard's version", () => {
+    expect(held("CISSP, Mar 2022, valid till Mar 2025")).toEqual([{ id: "cissp", months: ym(2022, 3) }]);
+    expect(held("CISSP (expires 2027)")).toEqual([{ id: "cissp", months: null }]);
+    expect(held("CISSP, credential ID 2015-88321, 2023")).toEqual([{ id: "cissp", months: ym(2023, 12) }]);
+    expect(held("CISSP 03/2021")).toEqual([{ id: "cissp", months: ym(2021, 3) }]);
+    expect(held("CISSP Mar 2024 – Mar 2027")).toEqual([{ id: "cissp", months: ym(2024, 3) }]);
+    expect(held("CISSP, 2012-2016")).toEqual([{ id: "cissp", months: ym(2016, 12) }]);
+    expect(held("CISSP (2016-2019)")).toEqual([{ id: "cissp", months: ym(2019, 12) }]);
+    expect(held("CISSP 2026")).toEqual([{ id: "cissp", months: ym(2026, 10) }]);
+    const iso = certificationsIn("ISO/IEC 27001:2013 Lead Auditor", now);
+    expect(iso.length).toBeGreaterThan(0);
+    expect(iso.every((c) => c.months === null)).toBe(true);
+  });
+
+  it("an old pass whose dates are an expiry still reads as recent, and a pass year this year is not a plan", () => {
+    const r = matchProfile(profile({ certifications: ["CISSP – valid until 2028"] }), infosec, now);
+    expect(statusOf(r, "risk-assessment")).toBe("met");
+  });
+});
+
