@@ -87,7 +87,6 @@ export type RideInput = {
   doneThisWeek: ReadonlySet<string>;
 };
 
-/** The goal today's ride is on, and how to read each goal's tasks. Null once every goal is proved. */
 /** The task that sends someone to the departures board when there is nothing left to learn or prove. */
 export function boardTask(title: string): RideTask {
   return { id: "all-proved", title, detail: "See the roles you can board now", minutes: 5, done: false, locked: true, signal: false, href: "/departures" };
@@ -107,6 +106,7 @@ export function arrivedRide(pitstops: number): Ride {
   });
 }
 
+/** The goal today's ride is on, and how to read each goal's tasks. Null once every goal is proved. */
 function position(input: RideInput) {
   const open = input.goals.filter((g) => !g.proved);
   if (!open.length) return null;

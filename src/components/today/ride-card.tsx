@@ -109,9 +109,9 @@ export function RideCard({
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
                 <b className="font-display text-2xl font-semibold leading-none tabular-nums">
-                  {weekDone}/{ride.weekTasksTotal}
+                  {arrived ? ride.pitstopCount : `${weekDone}/${ride.weekTasksTotal}`}
                 </b>
-                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">tasks</small>
+                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">{arrived ? "proved" : "tasks"}</small>
               </div>
             </div>
           </div>
@@ -187,7 +187,7 @@ function MiniLine({ pitstop, count, share }: { pitstop: number; count: number; s
             />
             <span
               className={`absolute top-[56px] -translate-x-1/2 font-mono text-[10.5px] uppercase tracking-[0.04em] ${
-                s.n === pitstop ? "font-semibold text-ink" : "hidden text-muted min-[1100px]:inline"
+                s.n === pitstop || (s.key === "practice" && pitstop > count) ? "font-semibold text-ink" : "hidden text-muted min-[1100px]:inline"
               }`}
               style={{ left: `${x(i)}%` }}
             >

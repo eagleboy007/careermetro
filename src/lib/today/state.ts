@@ -22,7 +22,7 @@ export type TodayState =
       tally: FirstTally;
       lineHours: number;
       firstTasks: RideTask[];
-      /** Null once every goal is proved. */
+      /** Null when the line has no goals. */
       goals: GoalsSummary | null;
     }
   | {
@@ -40,7 +40,7 @@ export type TodayState =
  * version of a resume's profile. A newer upload that is still being read, or was left half-done, doesn't hide it.
  * No resume: nothing current yet. `unfinishedResumeId` is the newest resume that was read but has no current gaps
  * (never shown, or the profile was corrected since), so Today can send the person back to finish it.
- * Returning: the person has ridden at least one day (ticked a task) and has a goal left to ride. First's tasks are
+ * Returning: the person has ridden at least one day (ticked a task), or has proved every goal. First's tasks are
  * the first ride's tasks, so a tick there carries over.
  */
 export async function todayStateFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<TodayState> {
@@ -58,7 +58,7 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
   const result = analysis.result;
   const role = { slug: result.roleSlug, title: roleProfiles.find((r) => r.slug === result.roleSlug)?.title ?? result.roleSlug };
   const today = await todayRideFor(userId, now, db, role.title);
-  if (today && today.streak.days > 0) {
+  if (today && (today.streak.days > 0 || today.ride.pitstop > today.ride.pitstopCount)) {
     return { state: "returning", resumeId: analysis.resumeId, role, ride: today.ride, goals: today.goals, week: today.week, streak: today.streak };
   }
   const gaps = result.gaps.length;
