@@ -71,6 +71,39 @@ Tableau Desktop Specialist, lifetime`;
     ]);
   });
 
+  it("never takes a date from the next certificate, an expiry, the name, or a month the resume doesn't print", () => {
+    const text = `CISSP
+CISA 2019
+CISM, valid till 2028
+PMP
+Certified ScrumMaster 2021-2023
+ISO/IEC 27001:2013 Lead Auditor
+Azure Fundamentals, Mar 2024
+AWS Cloud Practitioner 2022`;
+    const c = (name: string, earned: string | null, expires: string | null = null) => ({ name, earned, expires });
+    const certs = [
+      c("CISSP", "2019"),
+      c("CISA", "2019-07"),
+      c("CISM", "2028", "2028"),
+      c("PMP", "2021", "2023"),
+      c("Certified ScrumMaster", "2021", "2023"),
+      c("ISO/IEC 27001:2013 Lead Auditor", "2013"),
+      c("Azure Fundamentals", "2024-03"),
+      c("AWS Cloud Practitioner", "2022-01"),
+    ];
+    const { profile } = verifyProfile({ ...base, roles: [], skills: [], education: [], certifications: certs }, text);
+    expect(profile.certifications).toEqual([
+      c("CISSP", null),
+      c("CISA", "2019"),
+      c("CISM", null, "2028"),
+      c("PMP", null, null),
+      c("Certified ScrumMaster", "2021", "2023"),
+      c("ISO/IEC 27001:2013 Lead Auditor", null),
+      c("Azure Fundamentals", "2024-03"),
+      c("AWS Cloud Practitioner", "2022"),
+    ]);
+  });
+
   it("matches skills and employers as whole words only", () => {
     const parsed: Profile = {
       ...base,

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const yearMonth = z
   .string()
-  .regex(/^\d{4}(-\d{2})?$/, "Use YYYY or YYYY-MM");
+  .regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/, "Use YYYY or YYYY-MM");
 
 /**
  * A certification and, when the resume or the user gives them, when it was passed and when it expires. expires is

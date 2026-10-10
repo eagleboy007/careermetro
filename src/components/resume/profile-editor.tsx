@@ -9,10 +9,10 @@ import type { Profile } from "@/lib/schemas";
 const field = "w-full min-w-0 rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink";
 const label = "flex min-w-0 flex-col gap-1 text-xs font-medium text-muted";
 
-const DATE = /^\d{4}(-\d{2})?$/;
+const DATE = /^\d{4}(-(0[1-9]|1[0-2]))?$/;
 
 /** What would stop the profile saving, in words the user can act on. Empty means it can be saved. */
-export function profileProblems(p: Profile): string[] {
+export function profileProblems(p: Profile, now = new Date()): string[] {
   const problems: string[] = [];
   p.roles.forEach((r, i) => {
     const name = r.title.trim() || r.employer.trim() || `Job ${i + 1}`;
@@ -32,6 +32,8 @@ export function profileProblems(p: Profile): string[] {
     // A bare year is read generously: passed in its January, expiring in its December.
     const [from, to] = [c.earned && `${c.earned}-01`.slice(0, 7), c.expires !== "none" && c.expires && `${c.expires}-12`.slice(0, 7)];
     if (from && to && dates.every((d) => DATE.test(d!)) && to < from) problems.push(`${name}: it can't expire before it was passed.`);
+    const thisMonth = now.toISOString().slice(0, 7);
+    if (from && DATE.test(c.earned!) && from > thisMonth) problems.push(`${name}: the pass date is in the future. Add it once you've passed.`);
   });
   return problems;
 }

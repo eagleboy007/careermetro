@@ -37,5 +37,10 @@ describe("profileProblems", () => {
       "CISSP: it can't expire before it was passed.",
       "Certification 3: add its name, or remove it.",
     ]);
+    const now = new Date("2026-10-10T00:00:00Z");
+    expect(profileProblems({ ...base, certifications: [cert("2024-13", null), cert("2026-11", null), cert("2026", null)] }, now)).toEqual([
+      'CISSP: write "2024-13" as YYYY or YYYY-MM, like 2024-03.',
+      "CISSP: the pass date is in the future. Add it once you've passed.",
+    ]);
   });
 });
