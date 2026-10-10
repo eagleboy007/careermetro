@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v4";
+export const MATCHER_VERSION = "matcher/v5";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -50,6 +50,30 @@ const skillById = new Map(taxonomy.map((s) => [s.id, s]));
 const distinctive = (t: string) => t.replace(/[^\p{L}\p{N}]/gu, "").length >= 3 || /[+#.\d]/.test(t);
 
 /**
+ * The everyday forms of a normalised term, itself first: British and American spellings ("prioritisation",
+ * "prioritized"), and for a term of two or more words the plural of its last word ("product roadmaps"), or the test
+ * itself for testing ("a/b test"). Single words keep their form, so "excel" never reads "excels at".
+ */
+export function inflections(term: string): string[] {
+  const words = term.split(" ");
+  const options = words.map((word, i) => {
+    const forms = new Set([word]);
+    const ize = /^(\p{L}{3,})i[sz](ation|e|ed|es|ing)$/u.exec(word);
+    if (ize) {
+      // The last word also takes its other forms: "prioritization" reads "prioritized"; earlier words only respell.
+      const ends = i === words.length - 1 ? ["ation", "e", "ed", "es", "ing"] : [ize[2]];
+      for (const z of ["s", "z"]) for (const end of ends) forms.add(`${ize[1]}i${z}${end}`);
+    } else if (i === words.length - 1 && words.length > 1) {
+      // Only "testing": "data engineering" must not read "data engineers", a job title.
+      if (word === "testing") forms.add("test").add("tests");
+      else if (/\p{L}{3,}$/u.test(word) && !/(?:s|ing)$/.test(word)) forms.add(/(?:x|ch|sh)$/.test(word) ? `${word}es` : `${word}s`);
+    }
+    return [...forms];
+  });
+  return options.reduce<string[]>((acc, forms) => acc.flatMap((p) => forms.map((f) => (p ? `${p} ${f}` : f))), [""]);
+}
+
+/**
  * Terms safe to look for in free text. One- and two-letter names such as "R", "Go" or "C", and terms marked
  * ambiguous because they are also ordinary words ("react", "containers"), are only trusted when the parser
  * listed the skill, because in a sentence they match far too much.
@@ -60,7 +84,8 @@ function scanTerms(skillId: string): string[] {
   const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
   return [s.name, ...s.aliases]
     .map(normalizeForMatch)
-    .filter((t) => !ambiguous.has(t) && distinctive(t));
+    .filter((t) => !ambiguous.has(t) && distinctive(t))
+    .flatMap(inflections);
 }
 
 /** "2022" or "2022-03" as months since year 0. A bare year counts as its December, the generous reading. */
@@ -83,9 +108,10 @@ type TermTokens = { skillId: string; tokens: string[]; safe: boolean };
 const termTokens: TermTokens[] = taxonomy
   .flatMap((s) => {
     const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
-    return [s.id.replace(/-/g, " "), s.name, ...s.aliases].map((t) => {
+    return [s.id.replace(/-/g, " "), s.name, ...s.aliases].flatMap((t) => {
       const n = normalizeForMatch(t);
-      return { skillId: s.id, tokens: tokens(t), safe: !ambiguous.has(n) && distinctive(n) };
+      const safe = !ambiguous.has(n) && distinctive(n);
+      return inflections(n).map((v) => ({ skillId: s.id, tokens: tokens(v), safe }));
     });
   })
   .filter((t) => t.tokens.length > 0)
