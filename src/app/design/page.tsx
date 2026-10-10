@@ -22,7 +22,7 @@ import { StatusChip } from "@/components/ui/status-chip";
 import { AppShell } from "@/components/app/app-shell";
 import { StreakChip } from "@/components/today/streak-chip";
 import { MetroMap } from "@/components/map/metro-map";
-import { exampleMapLine } from "@/lib/map/fixtures";
+import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
@@ -226,8 +226,8 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Map (signed in)</h2>
-        <p className="text-sm text-muted">The line drawn from the gaps and the path. Tap a pitstop for its panel. Below it, the map before a resume.</p>
-        <MetroMap line={exampleMapLine} />
+        <p className="text-sm text-muted">The line drawn from the gaps and the path, and the Life line. Tap a pitstop or moment for its panel. Below it, the map before a resume.</p>
+        <MetroMap line={exampleMapLine} life={exampleLifeLine} />
         <MetroMap line={null} />
       </section>
 

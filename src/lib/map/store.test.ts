@@ -10,8 +10,8 @@ import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
 import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
-import { mapLine, type Profile } from "@/lib/schemas";
-import { mapLineFor, otherLines } from "./store";
+import { lifeLine, mapLine, type Profile } from "@/lib/schemas";
+import { lifeLineFor, mapLineFor, otherLines } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -99,6 +99,12 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     if (after!.goals.length > 1) expect(after!.goals[1].learnDone).toBe(false);
     expect(after!.goals.every((g) => !g.proved)).toBe(true);
     expect(mapLine.safeParse(after).success).toBe(true);
+
+    const life = await lifeLineFor(userId, new Date(), db!);
+    expect(lifeLine.safeParse(life).success).toBe(true);
+    expect(life).toMatchObject({ destination: role.title });
+    expect(life!.moments.some((m) => m.id === "joined")).toBe(true);
+    expect(await lifeLineFor(await user("nolife"), new Date(), db!)).toBeNull();
   });
 
   it("gives each person their own line, even when someone else's analysis is newer", async () => {

@@ -1,12 +1,14 @@
 "use client";
 
-import { ArrowRight, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert, Users } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
 import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
-import type { MapLine } from "@/lib/schemas";
+import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
+import type { LifeLine, MapLine } from "@/lib/schemas";
+import { LifeLegend, LifeSheet, LifeSvg } from "./life-line";
 
-const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
 const NAME_MAX = 18;
 const short = (s: string) => (s.length > NAME_MAX ? `${s.slice(0, NAME_MAX - 1).trimEnd()}…` : s);
 
@@ -16,39 +18,56 @@ type Pitstop = Extract<Station, { kind: PitstopKind }>;
  * The Map (handoff section 7): the person's line as an SVG, with a side panel for the pitstop they tap. `line` is null
  * before there is a resume; the map then shows a locked card over an empty grid.
  */
-export function MetroMap({ line }: { line: MapLine | null }) {
+export function MetroMap({ line, life = null }: { line: MapLine | null; life?: LifeLine | null }) {
   const layout = useMemo(() => (line ? layoutLine(line) : null), [line]);
+  const [mode, setMode] = useState<"role" | "life">("role");
+  const [zoom, setZoom] = useState<LifeZoom>(() => (life ? defaultZoom(life) : "all"));
+  const lifeLayout = useMemo(() => (life ? layoutLife(life, zoom) : null), [life, zoom]);
+  const [lifeSelected, setLifeSelected] = useState<string | null>(null);
+  const showLife = mode === "life" && life !== null && lifeLayout !== null;
   const [selected, setSelected] = useState<string | null>(() => layout?.stations.find((s) => s.state === "now")?.id ?? null);
   const [replay, setReplay] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
 
   // On a narrow screen the map scrolls sideways; open it with the train in view.
+  // The Life line opens at Now.
   useEffect(() => {
     const box = scroller.current;
-    const now = layout?.stations.find((s) => s.state === "now");
-    if (!box || !layout || !now || box.scrollWidth <= box.clientWidth) return;
-    box.scrollLeft = (layout.train.x / layout.width) * box.scrollWidth - box.clientWidth / 2;
-  }, [layout]);
+    if (!box || box.scrollWidth <= box.clientWidth) return;
+    if (showLife) box.scrollLeft = box.scrollWidth;
+    else if (layout) box.scrollLeft = (layout.train.x / layout.width) * box.scrollWidth - box.clientWidth / 2;
+  }, [layout, showLife, zoom]);
 
   return (
     <div className={`grid min-w-0 ${line ? "min-[960px]:min-h-[700px] min-[960px]:grid-cols-[minmax(0,1fr)_320px]" : ""}`}>
       <div className={`flex min-w-0 flex-col gap-3 pb-6 ${line ? "min-[960px]:border-r min-[960px]:border-line min-[960px]:pr-6" : ""}`}>
         <div className="flex flex-wrap items-center gap-3">
           <h2 className="text-[1.5rem] font-semibold">Your journey</h2>
-          <div role="group" aria-label="Which map" className="inline-flex gap-0.5 rounded-full bg-surface-2 p-[3px]">
-            <button type="button" aria-pressed="true" className={seg}>
-              Role line
-            </button>
-            <button type="button" aria-pressed="false" disabled className={`${seg} cursor-not-allowed`}>
-              Life line · soon
-            </button>
-          </div>
-          {line && layout && (
+          {line && (
+            <div role="group" aria-label="Which map" className="inline-flex gap-0.5 rounded-full bg-surface-2 p-[3px]">
+              <button type="button" aria-pressed={mode === "role"} className={seg} onClick={() => setMode("role")}>
+                Role line
+              </button>
+              <button type="button" aria-pressed={mode === "life"} disabled={!life} className={`${seg} disabled:cursor-not-allowed`} onClick={() => setMode("life")}>
+                Life line
+              </button>
+            </div>
+          )}
+          {showLife && (
+            <div role="group" aria-label="Time range" className="inline-flex gap-0.5 rounded-full bg-surface-2 p-[3px]">
+              {(["recent", "all"] as const).map((z) => (
+                <button key={z} type="button" aria-pressed={zoom === z} className={seg} onClick={() => setZoom(z)}>
+                  {z === "recent" ? "Last 5 years" : "Whole career"}
+                </button>
+              ))}
+            </div>
+          )}
+          {!showLife && line && layout && (
             <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">
               {line.role.title} · {plural(layout.goalCount, "goal")}, {plural(layout.pitstopCount, "pitstop")}
             </span>
           )}
-          {line && (
+          {!showLife && line && (
             <div className="flex flex-wrap gap-2 min-[960px]:ml-auto">
               <button type="button" disabled className={`${ghost} cursor-not-allowed opacity-60`}>
                 <Plus size={16} {...ICON} />
@@ -61,7 +80,20 @@ export function MetroMap({ line }: { line: MapLine | null }) {
             </div>
           )}
         </div>
-        {line && (
+        {showLife && lifeLayout.hidden && (
+          <button
+            type="button"
+            onClick={() => setZoom("all")}
+            className="inline-flex items-center gap-2.5 self-start rounded-full border border-dashed border-line bg-surface px-3.5 py-2 text-[0.84rem] text-muted"
+          >
+            <ArrowLeft size={16} {...ICON} />
+            <span>
+              <b className="font-semibold text-ink">{lifeLayout.hidden.count} earlier moments</b>, {lifeLayout.hidden.fromYear} to {lifeLayout.hidden.toYear}
+            </span>
+            <span className="font-medium text-accent">Show whole career</span>
+          </button>
+        )}
+        {!showLife && line && (
           <p className="max-w-[72ch] text-[0.86rem] text-muted">
             Each goal is one gap, named under its pitstops. A goal can have several pitstops: learn (free courses and daily tasks) then prove. Only a prove
             pitstop (a skill check, certification or confirmed work experience) fills the gap and moves your train to the next goal. Your destination is your
@@ -70,14 +102,17 @@ export function MetroMap({ line }: { line: MapLine | null }) {
         )}
 
         <div ref={scroller} className="relative overflow-x-auto rounded-[20px] border border-line bg-surface">
-          {layout && line ? (
+          {showLife ? (
+            <LifeSvg layout={lifeLayout} selected={lifeSelected} onSelect={setLifeSelected} />
+          ) : layout && line ? (
             <MapSvg layout={layout} line={line} selected={selected} onSelect={setSelected} replay={replay} />
           ) : (
             <LockedMap />
           )}
         </div>
 
-        {line && (
+        {showLife && <LifeLegend />}
+        {!showLife && line && (
           <ul className="flex flex-wrap items-center gap-4 text-[0.78rem] text-muted" aria-label="Key">
             <Key swatch="bg-accent">Ridden: learned, or proved ✓</Key>
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
@@ -92,26 +127,15 @@ export function MetroMap({ line }: { line: MapLine | null }) {
       </div>
 
       {line && layout && (
-        <aside aria-live="polite" aria-label="Pitstop details" className="flex min-w-0 flex-col gap-3.5 border-t border-line bg-surface px-4 py-5 min-[960px]:border-t-0 min-[960px]:p-[22px]">
-          <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} />
+        <aside aria-live="polite" aria-label={showLife ? "Moment details" : "Pitstop details"} className="flex min-w-0 flex-col gap-3.5 border-t border-line bg-surface px-4 py-5 min-[960px]:border-t-0 min-[960px]:p-[22px]">
+          {showLife ? (
+            <LifeSheet key={`life-${lifeSelected ?? "none"}`} id={lifeSelected} line={life} layout={lifeLayout} onSelect={setLifeSelected} onZoom={() => setZoom("recent")} />
+          ) : (
+            <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} />
+          )}
         </aside>
       )}
     </div>
-  );
-}
-
-const seg =
-  "rounded-full px-3 py-[5px] text-[0.82rem] font-[550] text-muted aria-pressed:bg-surface aria-pressed:text-ink aria-pressed:shadow-[0_1px_2px_var(--shadow)]";
-const ghost = "inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-2 text-[0.84rem] font-medium text-ink hover:bg-surface-2";
-
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
-
-function Key({ swatch, children }: { swatch: string; children: ReactNode }) {
-  return (
-    <li className="inline-flex items-center gap-[7px]">
-      <i className={`inline-block h-1.5 w-[22px] rounded-full ${swatch}`} />
-      {children}
-    </li>
   );
 }
 
@@ -342,8 +366,6 @@ function LockedMap() {
 
 /* ---------- side panel ---------- */
 
-type Item = { Icon: typeof BookOpen; title: string; detail: string };
-
 function Sheet({ id, layout, line }: { id: string | null; layout: Layout; line: MapLine }) {
   const station = layout.stations.find((s) => s.id === id);
   const crossing = layout.crossings.find((c) => `x-${c.slug}` === id);
@@ -467,57 +489,3 @@ function Sheet({ id, layout, line }: { id: string | null; layout: Layout; line: 
     </Panel>
   );
 }
-
-function Panel({ kicker, title, children }: { kicker: string; title: string; children: ReactNode }) {
-  return (
-    <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-3.5 [&>p]:text-[0.88rem] [&>p]:text-muted">
-      <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{kicker}</span>
-      <h3 className="text-[1.35rem] font-semibold leading-[1.15]">{title}</h3>
-      {children}
-    </div>
-  );
-}
-
-const Label = ({ children }: { children: ReactNode }) => (
-  <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{children}</span>
-);
-
-function List({ items }: { items: Item[] }) {
-  return (
-    <ul className="flex flex-col gap-1.5">
-      {items.map(({ Icon, title, detail }, i) => (
-        <li key={i} className="flex items-center gap-2.5 rounded-md bg-surface-2 px-[11px] py-[9px] text-[0.84rem]">
-          <Icon size={16} className="shrink-0 text-muted" {...ICON} />
-          <span className="min-w-0 flex-1">{title}</span>
-          <small className="max-w-[45%] text-right font-mono text-[0.7rem] text-muted">{detail}</small>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Cta({ href, ghost: isGhost = false, children }: { href: string; ghost?: boolean; children: ReactNode }) {
-  return (
-    <div className="flex">
-      <Link
-        href={href}
-        className={
-          isGhost
-            ? ghost
-            : "inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-2 text-[0.84rem] font-medium text-on-accent hover:opacity-90"
-        }
-      >
-        {children}
-        <ArrowRight size={16} {...ICON} />
-      </Link>
-    </div>
-  );
-}
-
-const Soon = ({ children }: { children: ReactNode }) => (
-  <span className="inline-flex items-center gap-2 text-[0.84rem] font-medium text-muted">
-    <Users size={16} {...ICON} />
-    {children} · soon
-  </span>
-);
-
