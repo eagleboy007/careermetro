@@ -283,4 +283,32 @@ describe("maskPii", () => {
       expect(maskPii(lines.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", next, "SUMMARY"]);
     }
   });
+
+  // Fifth review: "Add" is also a verb.
+  it.each([
+    "Add: Docker, Kubernetes to the CI stack",
+    "- Add: value to clients, partners",
+    "Add: 3 new KPIs, cut churn",
+    "Add – 2 more dashboards",
+    "Address: customer escalations, churn analysis",
+  ])("keeps %s", (line) => {
+    expect(lastLine(late(line))).toBe(line);
+  });
+
+  it.each([
+    "Address: B-204 Green Park Andheri East Mumbai",
+    "Add: 14 Gandhi Chowk Hisar",
+    "Addr: Sai Krupa, Kothrud, Pune",
+    "Address: Sai Krupa Kothrud Pune Maharashtra",
+    "Address: Gandhi Chowk Hisar Haryana",
+  ])("masks %s with no comma or address word", (line) => {
+    expect(maskPii(`Asha Rao\nData Analyst\n${line}`).text.split("\n")[2]).toBe("[ADDRESS]");
+    expect(lastLine(late(line))).toBe("[ADDRESS]");
+  });
+
+  it("reads a long run of capitals after a label quickly", () => {
+    const start = performance.now();
+    maskPii(`Asha Rao\nAddress: A B ${"A".repeat(280)} x!`);
+    expect(performance.now() - start).toBeLessThan(50);
+  });
 });
