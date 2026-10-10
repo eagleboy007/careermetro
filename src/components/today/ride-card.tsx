@@ -147,17 +147,22 @@ export function RideCard({
   );
 }
 
+const MINI_LINE_PITSTOPS = 10;
+
 /** The whole line: every pitstop, then the Practice and Match stops, with the train on the stretch to the current pitstop. */
 function MiniLine({ pitstop, count, share }: { pitstop: number; count: number; share: number }) {
+  // A long line (a role with many gaps) shows a window of pitstops around the train, so the dots never touch on a phone.
+  const shown = Math.min(count, MINI_LINE_PITSTOPS);
+  const offset = Math.min(Math.max(0, pitstop - 3), count - shown);
   const stops: { key: string; label: string; n: number | null }[] = [
-    ...Array.from({ length: count }, (_, i) => ({ key: `p${i + 1}`, label: String(i + 1), n: i + 1 })),
+    ...Array.from({ length: shown }, (_, i) => ({ key: `p${offset + i + 1}`, label: String(offset + i + 1), n: offset + i + 1 })),
     { key: "practice", label: "Practice", n: null },
     { key: "match", label: "Match", n: null },
   ];
   const last = stops.length - 1;
   const x = (i: number) => 3.33 + (i / last) * 93.33;
-  const from = x(Math.max(0, pitstop - 2));
-  const to = x(pitstop - 1);
+  const from = x(Math.max(0, pitstop - 2 - offset));
+  const to = x(Math.max(0, pitstop - 1 - offset));
   const train = from + (to - from) * share * 0.94;
   return (
     <div className="relative mt-1 h-[74px]" aria-hidden="true">

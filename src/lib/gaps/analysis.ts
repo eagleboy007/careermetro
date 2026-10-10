@@ -2,7 +2,7 @@ import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 import type { MatchedSkill, MatchResult } from "./match";
 import { OUTDATED_AFTER_YEARS } from "./match";
 
-/** FR-11: the Gaps page shows the top five gaps, and the model explains those five; the rest get template words. */
+/** The Gaps page shows the top five gaps, and the model explains those five; the rest get template words. */
 export const SHOWN_GAPS = 5;
 
 export type Explanations = { readiness: string; bySkill: Map<string, string> };

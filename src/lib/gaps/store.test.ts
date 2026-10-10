@@ -73,6 +73,24 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(create).toHaveBeenCalledTimes(1);
   });
 
+  it("extends an analysis stored with only five gaps, keeping its id, rating and words, without the model", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS) };
+    await db!.update(schema.gapAnalyses).set({ result: five, userRating: 4 }).where(eq(schema.gapAnalyses.id, first.analysisId));
+
+    const { client, create } = explainClient();
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    if (!again.ok) throw new Error(again.reason);
+    expect(create).not.toHaveBeenCalled();
+    expect(again).toMatchObject({ analysisId: first.analysisId, rating: 4 });
+    expect(again.analysis.gaps.map((g) => g.explanation)).toEqual(first.analysis.gaps.map((g, i) => (i < SHOWN_GAPS ? g.explanation : expect.any(String))));
+    expect(again.analysis.gaps.length).toBe(first.analysis.gaps.length);
+    const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
+    expect((row.result as { gaps: unknown[] }).gaps).toHaveLength(first.analysis.gaps.length);
+  });
+
   it("hides other sessions' resumes and waits for a confirmed profile", async () => {
     const { resumeId } = await seed();
     expect(await getGapsForOwner(resumeId, { sessionId: "someone-else" }, role, { db: db! })).toEqual({ ok: false, reason: "not_found" });
