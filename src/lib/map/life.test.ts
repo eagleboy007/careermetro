@@ -26,7 +26,7 @@ describe("lifeFromProfile", () => {
           { title: "Intern", employer: "Ghats Logistics", start: "2024-01", end: "2024-05", highlights: [] },
         ],
         education: [{ qualification: "B.Com", institution: "Pune University", year: "2023" }],
-        certifications: ["Google Data Analytics"],
+        certifications: [{ name: "Google Data Analytics", earned: null, expires: null }],
       }),
       opts,
     );
@@ -92,7 +92,7 @@ describe("lifeFromProfile", () => {
           { qualification: "B.Com", institution: "Pune University", year: "2019 – 2022" },
           { qualification: "M.Com", institution: "Pune University", year: "2024 – Present" },
         ],
-        certifications: ["  ", "AWS Cloud Practitioner"],
+        certifications: [{ name: "  ", earned: null, expires: null }, { name: "AWS Cloud Practitioner", earned: null, expires: null }],
       }),
       opts,
     );

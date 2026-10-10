@@ -53,7 +53,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 
 ### 5.2 Resume ingestion
 - FR-4: Accept PDF, DOCX, plain text paste. Max 4 MB (Vercel caps function request bodies at 4.5 MB; changed from 5 MB on 2026-10-07).
-- FR-5: Extract into a structured profile: roles, employers, dates, skills, tools, education, certifications, achievements.
+- FR-5: Extract into a structured profile: roles, employers, dates, skills, tools, education, certifications (with pass date and expiry when stated; the user can mark a certificate as not expiring), achievements.
 - FR-6: Show the parsed profile and let the user fix mistakes before analysis. Never analyze silently on wrong parse.
 - FR-7: Handle Indian resume conventions (CTC mentions, notice period, multi-column templates, Hindi/English mixed text).
 

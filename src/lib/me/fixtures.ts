@@ -35,7 +35,7 @@ export const exampleMeResume: Profile = {
     { qualification: "B.Com", institution: "Savitribai Phule Pune University", year: "2020-2023" },
     { qualification: "Higher Secondary (Commerce)", institution: "Maharashtra State Board", year: "2020" },
   ],
-  certifications: ["Google Data Analytics Certificate"],
+  certifications: [{ name: "Google Data Analytics Certificate", earned: null, expires: null }],
 };
 
 const s = (x: Omit<Story, "hint" | "confirmed" | "fromGoal"> & Partial<Pick<Story, "hint" | "confirmed" | "fromGoal">>): Story =>

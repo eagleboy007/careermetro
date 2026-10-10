@@ -7,7 +7,7 @@ export type PromptName = "parse-resume" | "explain-gaps" | "write-path";
 export type Prompt = { name: PromptName; version: number; id: string; text: string };
 
 /** Current version of each prompt. Bump it after adding prompts/<name>/v<N>.md and running the evals. */
-export const PROMPT_VERSIONS: Record<PromptName, number> = { "parse-resume": 1, "explain-gaps": 1, "write-path": 1 };
+export const PROMPT_VERSIONS: Record<PromptName, number> = { "parse-resume": 2, "explain-gaps": 1, "write-path": 1 };
 
 const cache = new Map<string, Prompt>();
 

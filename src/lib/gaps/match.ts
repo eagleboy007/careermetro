@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v5";
+export const MATCHER_VERSION = "matcher/v6";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -262,6 +262,17 @@ function earnedMonths(text: string, nowMonths: number): number | null | "plan" {
   return latest === null && future ? "plan" : latest;
 }
 
+/**
+ * A certification's pass date field as months, or "plan" when it is ahead of `nowMonths` (a booked exam). A bare
+ * year counts as its December, so this year's pass is not "ahead" before December.
+ */
+function earnedField(date: string | null, nowMonths: number): number | null | "plan" {
+  const months = toMonths(date);
+  if (months === null) return null;
+  if (months <= nowMonths) return months;
+  return /^\d{4}$/.test(date!) && Number(date) * 12 <= nowMonths ? nowMonths : "plan";
+}
+
 /** The certifications a piece of text names, by full name or alias. */
 const certTerms = certifications.map((c) => ({ cert: c, terms: [c.name, ...c.aliases].map(normalizeForMatch).filter(Boolean) }));
 const namedIn = (text: string) => certTerms.filter(({ terms }) => terms.some((t) => containsPhrase(text, t))).map(({ cert }) => cert);
@@ -398,12 +409,17 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   // 3. Certifications on the resume: a held certification shows the skills it tests (met) and touches others (weak).
   //    A plan to sit one counts for nothing. This is only the resume read: a met skill can mark its goal met, never
   //    proved, since only accepted proof (gap_proofs) proves a goal and moves the train.
-  for (const line of profile.certifications) {
-    for (const { cert, months } of certificationsIn(line, now)) {
+  for (const c of profile.certifications) {
+    const passed = earnedField(c.earned, nowMonths);
+    if (passed === "plan") continue;
+    // A certificate past its expiry date shows what it tested only as weak: it was true once, it isn't current.
+    const expired = c.expires !== null && c.expires !== "none" && toMonths(c.expires)! < nowMonths;
+    for (const found of certificationsIn(c.name, now)) {
+      const months = passed ?? found.months;
       // With no pass date the certificate could be ten years old, so it shows the skills it tests only as weak and
       // never lifts an outdated skill to met.
-      for (const id of cert.proves) add(id, { quote: line, listedOnly: months === null, months });
-      for (const id of cert.partial) add(id, { quote: line, listedOnly: true, months });
+      for (const id of found.cert.proves) add(id, { quote: c.name, listedOnly: months === null || expired, months });
+      for (const id of found.cert.partial) add(id, { quote: c.name, listedOnly: true, months });
     }
   }
 

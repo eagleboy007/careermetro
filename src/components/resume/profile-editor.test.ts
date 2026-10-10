@@ -28,4 +28,14 @@ describe("profileProblems", () => {
       "MBA: add both a qualification and an institution, or remove it.",
     ]);
   });
+
+  it("checks certificate dates", () => {
+    const cert = (earned: string | null, expires: string | null) => ({ name: "CISSP", earned, expires });
+    expect(profileProblems({ ...base, certifications: [cert("2024", "2024"), cert("2024-03", "none"), cert(null, null)] })).toEqual([]);
+    expect(profileProblems({ ...base, certifications: [cert("March 2024", null), cert("2025-06", "2025-01"), { name: " ", earned: "2024", expires: null }] })).toEqual([
+      'CISSP: write "March 2024" as YYYY or YYYY-MM, like 2024-03.',
+      "CISSP: it can't expire before it was passed.",
+      "Certification 3: add its name, or remove it.",
+    ]);
+  });
 });

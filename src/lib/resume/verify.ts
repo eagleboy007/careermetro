@@ -45,6 +45,9 @@ export function containsPhrase(haystack: string, needle: string): boolean {
  */
 const PAIR_WINDOW = 6;
 
+/** Words that say a certification never expires. */
+const LIFETIME = ["lifetime", "no expiry", "no expiration", "does not expire", "doesn't expire", "never expires", "non-expiring"];
+
 export type VerifyReport = {
   /** Skills removed because none of their evidence, nor their name, appears in the resume. */
   droppedSkills: string[];
@@ -72,6 +75,11 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
   const foundTogether = (a: string, b: string) => {
     const [na, nb] = [normalizeForMatch(a), normalizeForMatch(b)];
     return windows.some((w) => containsPhrase(w, na) && containsPhrase(w, nb));
+  };
+  // A certificate's dates sit on the line that names it or the line after, never on the line before (another entry's).
+  const nextTo = (name: string, b: string) => {
+    const [na, nb] = [normalizeForMatch(name), normalizeForMatch(b)];
+    return lines.some((line, i) => containsPhrase(line, na) && containsPhrase(`${line} ${lines[i + 1] ?? ""}`, nb));
   };
   const report: VerifyReport = { droppedSkills: [], droppedQuotes: 0, droppedRoles: 0, droppedOther: 0 };
   const keepQuotes = (quotes: string[]) =>
@@ -109,10 +117,16 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
     return false;
   });
 
-  const certifications = parsed.certifications.filter((c) => {
-    if (found(c)) return true;
-    report.droppedOther++;
-    return false;
+  // A date is kept only when its year is printed on the certificate's line or the next, and "never expires" only when
+  // the resume says so there; otherwise it is cleared, since the model must not invent dates (AI-5).
+  const dated = (name: string, date: string | null) => (date && nextTo(name, date.slice(0, 4)) ? date : null);
+  const certifications = parsed.certifications.flatMap((c) => {
+    if (!found(c.name)) {
+      report.droppedOther++;
+      return [];
+    }
+    const lifetime = c.expires === "none" && LIFETIME.some((w) => nextTo(c.name, w));
+    return [{ name: c.name, earned: dated(c.name, c.earned), expires: lifetime ? ("none" as const) : c.expires === "none" ? null : dated(c.name, c.expires) }];
   });
 
   return { profile: { ...parsed, roles, skills, education, certifications }, report };
