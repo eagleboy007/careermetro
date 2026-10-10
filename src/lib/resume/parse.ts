@@ -26,7 +26,8 @@ export type ParseResult =
 
 /** Wraps the resume so the model reads it as data (AI-7). A closing tag inside the resume can't end the block early. */
 export function wrapResume(maskedText: string): string {
-  return `<resume>\n${maskedText.replace(/<\/?resume>/gi, (tag) => tag.replace("<", "&lt;").replace(">", "&gt;"))}\n</resume>`;
+  // Any tag spelled like the wrapper, with spaces or attributes too ("</resume >", "< /RESUME>"), loses its "<".
+  return `<resume>\n${maskedText.replace(/<(?=\s*\/?\s*resume\b)/gi, "&lt;")}\n</resume>`;
 }
 
 /** The profile from the response's text block, or null if it is missing, not JSON, or fails the schema. */

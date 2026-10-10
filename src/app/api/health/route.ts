@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import { recordAiCalls } from "@/lib/ai/log";
 import { checkHealth, checkParse, HEALTH_MODEL, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
 import { parseResume } from "@/lib/resume/parse";
+import { hasBearer } from "@/lib/secret";
 
 /** One real check per minute per instance at most: each costs a fraction of a cent, and the page is public. */
 const CACHE_MS = 60_000;
@@ -19,11 +20,15 @@ let parseCached: { at: number; result: Promise<ParseHealth> } | undefined;
 
 /**
  * Used by the post-deploy smoke check and by people: is the database up, and does the Claude key work?
- * With ?check=parse it instead runs the real resume-parse request on a synthetic resume.
+ * With ?check=parse it instead runs the real resume-parse request on a synthetic resume. That costs a few cents
+ * from the daily upload budget, so it needs the cron secret as a bearer token; the smoke workflow sends it.
  */
 export async function GET(request: Request) {
   await connection();
   if (new URL(request.url).searchParams.get("check") === "parse") {
+    if (!hasBearer(request, process.env.CRON_SECRET)) {
+      return Response.json({ ok: false, error: "The parse check needs the cron secret." }, { status: 401, headers: { "cache-control": "no-store" } });
+    }
     if (!parseCached || Date.now() - parseCached.at > PARSE_CACHE_MS) {
       parseCached = { at: Date.now(), result: runParseCheck() };
     }
@@ -65,7 +70,7 @@ function runCheck(): Promise<Health> {
 function runParseCheck(): Promise<ParseHealth> {
   return checkParse(async () => {
     const result = await parseResume(SYNTHETIC_RESUME, { check: "synthetic" });
-    // Logged as parse calls, so they count toward the daily upload budget: the page is public, and the budget caps what it can spend.
+    // Logged as parse calls, so they count toward the daily upload budget like any other parse.
     await recordAiCalls(result.calls).catch(() => {});
     return result;
   });
