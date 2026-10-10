@@ -322,7 +322,7 @@ describe("certifications on the resume", () => {
   it("an old pass reads as outdated, and a weak touch never downgrades a met skill", () => {
     const old = matchProfile(profile({ certifications: ["CISSP 2015"] }), infosec, now);
     expect(statusOf(old, "risk-assessment")).toBe("outdated");
-    const both = matchProfile(profile({ certifications: ["Microsoft PL-300", "Tableau Desktop Specialist"] }), dataAnalyst, now);
+    const both = matchProfile(profile({ certifications: ["Microsoft PL-300, 2025", "Tableau Desktop Specialist"] }), dataAnalyst, now);
     expect(statusOf(both, "power-bi")).toBe("met");
     expect(statusOf(both, "data-visualization")).not.toBe("missing");
   });
@@ -368,9 +368,19 @@ describe("certifications on the resume", () => {
     expect(iso.every((c) => c.months === null)).toBe(true);
   });
 
-  it("an old pass whose dates are an expiry still reads as recent, and a pass year this year is not a plan", () => {
+  it("a certificate with no pass date shows its skills only as weak, and never lifts an outdated skill", () => {
     const r = matchProfile(profile({ certifications: ["CISSP – valid until 2028"] }), infosec, now);
-    expect(statusOf(r, "risk-assessment")).toBe("met");
+    expect(statusOf(r, "risk-assessment")).toBe("weak");
+    const old = matchProfile(
+      profile({
+        roles: [{ title: "Security Analyst", employer: "Example Bank", start: "2014-01", end: "2017-06", highlights: ["Ran risk assessment for branch systems"] }],
+        certifications: ["CISSP"],
+      }),
+      infosec,
+      now,
+    );
+    expect(statusOf(old, "risk-assessment")).toBe("outdated");
+    expect(statusOf(matchProfile(profile({ certifications: ["CISSP, 2025"] }), infosec, now), "risk-assessment")).toBe("met");
   });
 });
 
