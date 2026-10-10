@@ -126,7 +126,14 @@ function isAddressLine(line: string, index: number): boolean {
   // "Address: customer escalations" is a sentence.
   if (label) {
     const rest = head.slice(label.index! + label[0].length);
-    if (/^\s{0,3}(?:$|[\d#A-Z"'])/.test(rest) || rest.includes(",") || ADDRESS_WORDS.test(rest)) return true;
+    if (/^\s*$/.test(rest)) return true;
+    // A clear address: a house number or quote first, an address word, a guardian ("c/o") or a PIN.
+    const clear = /^\s{0,3}[\d#"']/.test(rest) || ADDRESS_WORDS.test(rest) || /\b[cswd]\/o\b/i.test(rest) || PIN_CODE.test(rest);
+    // "Add:" and "Addr:" are also a verb ("Add: Docker, Kubernetes to the CI stack"), so they need a clear address.
+    const short = /\b(?:add|addr\.?)\s?[:\-–]/i.test(label[0]) && !/\baddress\b/i.test(label[0]);
+    const shortClear = ADDRESS_WORDS.test(rest) || /\b[cswd]\/o\b/i.test(rest) || PIN_CODE.test(rest) || HOUSE_START.test(rest);
+    const named = /^\s{0,3}[A-Z]/.test(rest) && (rest.includes(",") || rest.trim().split(/\s+/).length <= 3);
+    if (short ? shortClear : clear || named) return true;
   }
   if (line.length === 0 || line.length > 140 || /^[-•*]/.test(line)) return false;
   // A PIN code marks a whole address line only with an address word or a house number; elsewhere just the PIN goes.

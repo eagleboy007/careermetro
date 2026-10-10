@@ -283,4 +283,15 @@ describe("maskPii", () => {
       expect(maskPii(lines.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", next, "SUMMARY"]);
     }
   });
+
+  // Fifth review: "Add" is also a verb.
+  it.each([
+    "Add: Docker, Kubernetes to the CI stack",
+    "- Add: value to clients, partners",
+    "Add: 3 new KPIs, cut churn",
+    "Add – 2 more dashboards",
+    "Address: customer escalations, churn analysis",
+  ])("keeps %s", (line) => {
+    expect(lastLine(late(line))).toBe(line);
+  });
 });
