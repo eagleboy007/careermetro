@@ -23,7 +23,7 @@ describe("proxy", () => {
   it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
-    for (const p of ["/today", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
+    for (const p of ["/today", "/map", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
     expect((await proxy(req("/start"))).headers.get("x-middleware-next")).toBe("1");
     expect(refresh).not.toHaveBeenCalled();
   });
@@ -33,6 +33,7 @@ describe("proxy", () => {
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
     refresh.mockResolvedValue({ response: NextResponse.next(), signedIn: false });
     expect((await proxy(req("/today"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Ftoday");
+    expect((await proxy(req("/map"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fmap");
     expect((await proxy(req("/today", "forged.value"))).headers.get("location")).toContain("/sign-in");
     const cookie = testUserCookie({ email: "asha@example.com", name: "Asha" });
     expect((await proxy(req("/today", cookie))).headers.get("x-middleware-next")).toBe("1");

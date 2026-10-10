@@ -4,9 +4,9 @@ import { getDb } from "@/db";
 import { gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
-import { gapAnalysis, rideTask, type FirstTally, type RideTask } from "@/lib/schemas";
+import { gapAnalysis, rideTask, type FirstTally, type GapAnalysis, type RideTask } from "@/lib/schemas";
 
-type Db = Pick<ReturnType<typeof getDb>, "select">;
+export type Db = Pick<ReturnType<typeof getDb>, "select">;
 
 export type { FirstTally };
 
@@ -23,14 +23,11 @@ export type TodayState =
     };
 
 /**
- * First sign-up: the person has a gap analysis that is still current, made by today's matcher from the latest saved
- * version of a resume's profile. A newer upload that is still being read, or was left half-done, doesn't hide it.
- * No resume: nothing current yet. `unfinishedResumeId` is the newest resume that was read but has no current gaps
- * (never shown, or the profile was corrected since), so Today can send the person back to finish it.
- * Returning needs ride days (build step 6), so it is not picked here yet.
+ * The person's current gap analysis: the newest one made by today's matcher from the latest saved version of one of
+ * their resumes' profiles. Null when there is none, or it no longer reads.
  */
-export async function todayStateFor(userId: string, db: Db = getDb()): Promise<TodayState> {
-  const [analysis] = await db
+export async function currentAnalysis(userId: string, db: Db = getDb()): Promise<{ id: string; resumeId: string; result: GapAnalysis } | null> {
+  const [row] = await db
     .select({ id: gapAnalyses.id, result: gapAnalyses.result, resumeId: resumes.id })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
@@ -44,8 +41,20 @@ export async function todayStateFor(userId: string, db: Db = getDb()): Promise<T
     )
     .orderBy(desc(gapAnalyses.createdAt))
     .limit(1);
-  const parsed = analysis ? gapAnalysis.safeParse(analysis.result) : null;
-  if (!analysis || !parsed?.success) {
+  const parsed = row ? gapAnalysis.safeParse(row.result) : null;
+  return row && parsed?.success ? { id: row.id, resumeId: row.resumeId, result: parsed.data } : null;
+}
+
+/**
+ * First sign-up: the person has a gap analysis that is still current, made by today's matcher from the latest saved
+ * version of a resume's profile. A newer upload that is still being read, or was left half-done, doesn't hide it.
+ * No resume: nothing current yet. `unfinishedResumeId` is the newest resume that was read but has no current gaps
+ * (never shown, or the profile was corrected since), so Today can send the person back to finish it.
+ * Returning needs ride days (build step 6), so it is not picked here yet.
+ */
+export async function todayStateFor(userId: string, db: Db = getDb()): Promise<TodayState> {
+  const analysis = await currentAnalysis(userId, db);
+  if (!analysis) {
     const [unfinished] = await db
       .select({ id: resumes.id })
       .from(resumes)
@@ -55,7 +64,7 @@ export async function todayStateFor(userId: string, db: Db = getDb()): Promise<T
     return { state: "no_resume", unfinishedResumeId: unfinished?.id ?? null };
   }
 
-  const result = parsed.data;
+  const result = analysis.result;
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
   const gaps = result.gaps.length;
   return {

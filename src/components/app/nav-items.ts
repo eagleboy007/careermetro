@@ -6,7 +6,7 @@ export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIc
 /** Signed-in sections (handoff section 3). `built` is false until the screen exists; those show as "Soon". */
 export const NAV = {
   today: { key: "today", label: "Today", href: "/today", Icon: House, built: true },
-  map: { key: "map", label: "Map", href: "/map", Icon: MapIcon, built: false },
+  map: { key: "map", label: "Map", href: "/map", Icon: MapIcon, built: true },
   departures: { key: "departures", label: "Departures", href: "/departures", Icon: TrainFront, built: false },
   arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: false },
   timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: false },

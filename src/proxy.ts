@@ -5,9 +5,9 @@ import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/aut
 import { signedInPreviewEnabled } from "@/lib/preview";
 
 /** Signed-in screens and the sign-in flow. Add new signed-in routes here. */
-const SIGNED_IN_PREFIXES = ["/today", "/sign-in", "/sign-up", "/auth"];
+const SIGNED_IN_PREFIXES = ["/today", "/map", "/sign-in", "/sign-up", "/auth"];
 /** Screens that need someone signed in once sign-in is set up. */
-const NEEDS_SIGN_IN = ["/today"];
+const NEEDS_SIGN_IN = ["/today", "/map"];
 
 const under = (path: string, prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 
