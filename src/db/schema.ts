@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   date,
   index,
   integer,
@@ -14,7 +15,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import type { GapAnalysis, Profile, RoleProfile } from "@/lib/schemas";
+import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
+import type { GapAnalysis, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -221,6 +223,14 @@ export const resourceChecks = pgTable("resource_checks", {
   checkedAt: timestamp("checked_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const goalStatus = pgEnum("goal_status", GOAL_STATUSES);
+export const stepKind = pgEnum("step_kind", STEP_KINDS);
+export const stepSource = pgEnum("step_source", STEP_SOURCES);
+export const goalSource = pgEnum("goal_source", GOAL_SOURCES);
+export const proofType = pgEnum("proof_type", PROOF_TYPES);
+export const proofStatus = pgEnum("proof_status", PROOF_STATUSES);
+export const proofVerifier = pgEnum("proof_verifier", PROOF_VERIFIERS);
+
 export const paths = pgTable("paths", {
   id: id(),
   gapAnalysisId: uuid("gap_analysis_id")
@@ -247,8 +257,65 @@ export const pathSteps = pgTable(
     resourceIds: uuid("resource_ids").array().notNull(),
     proofTask: text("proof_task").notNull(),
     doneAt: timestamp("done_at", { withTimezone: true }),
+    /** The person's goal for this skill. Null on an anonymous visitor's path, which has no goals. */
+    goalId: uuid("goal_id").references(() => userGoals.id, { onDelete: "set null" }),
+    kind: stepKind("kind").notNull().default("learn"),
+    source: stepSource("source").notNull().default("app"),
   },
-  (t) => [uniqueIndex("path_steps_position").on(t.pathId, t.position)],
+  (t) => [uniqueIndex("path_steps_position").on(t.pathId, t.position), index("path_steps_goal").on(t.goalId)],
+);
+
+/* Goals and proof ----------------------------------------------------------- */
+
+/**
+ * One goal per person and skill (handoff section 6). Goals belong to the person, not to one resume, so a new upload
+ * keeps their order and proof. `swapped_to` and `skipped_at` are for "Not for me" (build step 10).
+ */
+export const userGoals = pgTable(
+  "user_goals",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    skillId: text("skill_id")
+      .notNull()
+      .references(() => skills.id),
+    source: goalSource("source").notNull().default("gap"),
+    status: goalStatus("status").notNull().default("active"),
+    position: integer("position").notNull(),
+    /** The analysis that first made this goal. */
+    gapAnalysisId: uuid("gap_analysis_id").references(() => gapAnalyses.id, { onDelete: "set null" }),
+    swappedTo: text("swapped_to").references(() => skills.id),
+    skippedAt: timestamp("skipped_at", { withTimezone: true }),
+    metAt: timestamp("met_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("user_goals_skill").on(t.userId, t.skillId)],
+);
+
+/**
+ * Proof that fills a gap. Only an accepted proof does; pending and rejected ones never change a goal. Proof is per
+ * skill, so it counts for every role that needs the skill. Evidence is structured and never holds resume text.
+ */
+export const gapProofs = pgTable(
+  "gap_proofs",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    skillId: text("skill_id")
+      .notNull()
+      .references(() => skills.id),
+    type: proofType("type").notNull(),
+    status: proofStatus("status").notNull().default("pending"),
+    evidence: jsonb("evidence").$type<ProofEvidence>().notNull(),
+    verifier: proofVerifier("verifier"),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("gap_proofs_user_skill").on(t.userId, t.skillId), check("gap_proofs_evidence_type", sql`${t.evidence}->>'type' = ${t.type}::text`)],
 );
 
 /* Audit ------------------------------------------------------------------- */

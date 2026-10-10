@@ -12,3 +12,4 @@ export * from "./map";
 export * from "./life";
 export * from "./departures";
 export * from "./me";
+export * from "./goals";

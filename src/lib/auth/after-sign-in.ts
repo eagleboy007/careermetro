@@ -1,5 +1,6 @@
 import "server-only";
 import { claimAnonymousResumes, findAccount, touchLastSeen } from "@/lib/account/store";
+import { syncCurrentGoals } from "@/lib/goals/store";
 import { readSessionId } from "@/lib/session";
 import { currentIdentity } from "./server";
 
@@ -13,7 +14,7 @@ export async function afterSignIn(next: string): Promise<string> {
   const account = await findAccount(identity.subject);
   if (!account) return `/sign-up/finish?next=${encodeURIComponent(next)}`;
   const sessionId = await readSessionId();
-  if (sessionId) await claimAnonymousResumes(account.id, sessionId);
+  if (sessionId && (await claimAnonymousResumes(account.id, sessionId)) > 0) await syncCurrentGoals(account.id);
   await touchLastSeen(account.id);
   return next;
 }

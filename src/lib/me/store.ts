@@ -6,7 +6,7 @@ import { skills } from "@/content";
 import { mapLineFor } from "@/lib/map/store";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
-import { currentAnalysis, type Db } from "@/lib/today/state";
+import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
@@ -15,7 +15,7 @@ const skillNames = new Map(skills.map((s) => [s.id, s.name]));
  * The signed-in person's own profile page: their account, the latest saved profile behind their current gaps, and their
  * line. Everything is read through the owner, so it only ever shows the person their own data. Null without an account.
  */
-export async function meFor(userId: string, now: Date, db: Db = getDb()): Promise<MeProfile | null> {
+export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
   const [[user], analysis] = await Promise.all([
     db.select({ name: users.name, email: users.email, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),

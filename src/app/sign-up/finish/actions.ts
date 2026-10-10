@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createAccount } from "@/lib/account/store";
 import { safeNext } from "@/lib/auth/config";
+import { syncCurrentGoals } from "@/lib/goals/store";
 import { currentIdentity } from "@/lib/auth/server";
 import { readSessionId } from "@/lib/session";
 
@@ -24,5 +25,6 @@ export async function finishSignUp(_: FinishState, formData: FormData): Promise<
           : "Please sign in with Google or an emailed code to confirm this email first.",
     };
   }
+  await syncCurrentGoals(result.account.id);
   redirect(next);
 }
