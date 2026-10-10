@@ -170,6 +170,22 @@ describe("matchProfile", () => {
     expect(named("Spring Batch", "Ran Spring Batch jobs for nightly settlement", "java-backend-developer", "spring-boot")).toBe("missing");
   });
 
+  // T11: listed names with a few extra words.
+  it("reads a short listed name with a few extra words", () => {
+    const listed = (name: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [] }] }), role(slug), now), id);
+    expect(listed("SQL Server Management Studio", "data-analyst", "sql")).not.toBe("missing");
+    expect(listed("Data analysis using Python", "data-analyst", "python")).not.toBe("missing");
+  });
+
+  // T12: "algorithms" in a sentence is not data structures and algorithms.
+  it("doesn't read DSA from machine learning or encryption algorithms", () => {
+    expect(statusOf(scan("java-backend-developer", ["Tuned machine learning algorithms for fraud scoring"]), "data-structures-algorithms")).toBe("missing");
+    expect(statusOf(scan("java-backend-developer", ["Implemented encryption algorithms for card data"]), "data-structures-algorithms")).toBe("missing");
+    const listed = matchProfile(profile({ skills: [{ name: "Algorithms", lastUsed: null, evidence: [] }] }), role("java-backend-developer"), now);
+    expect(statusOf(listed, "data-structures-algorithms")).not.toBe("missing");
+  });
+
   it("reads short bullets and 'Worked on' bullets as use", () => {
     expect(statusOf(scan("data-analyst", ["Built Power BI dashboards"]), "power-bi")).toBe("met");
     expect(statusOf(scan("data-analyst", ["Created Excel pivot tables"]), "excel")).toBe("met");
