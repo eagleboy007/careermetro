@@ -53,7 +53,7 @@ const PLACE_PIN =
 const PIN_LABELLED = /(\b(?:pin\s?code|pin|zip(?:\s?code)?)\s?[:\-]?\s?)[1-9]\d{2}\s?\d{3}\b/gi;
 /** Words only an address uses: with a place and PIN they make the whole line an address anywhere in the resume. */
 const STRONG_ADDRESS_WORDS =
-  /\b(?:flat|house no|h\.?\s?no|plot no|apartment|apts?|residency|society|chs|street|st\.|road|rd\.|lane|marg|nagar|colony|peth|village|vill\.|dist\.|tehsil|taluka|tal\b\.?|mandal|at post|p\.\s?o\.?)\b/i;
+  /\b(?:flat|house no|h\.?\s?no|plot no|apartment|apts?|residency|society|chs|street|st\.|road|rd\b\.?|lane|marg|nagar|colony|peth|village|vill\.|dist\.|tehsil|taluka|tal\b\.?|mandal|at post|p\.\s?o\.?)\b/i;
 /** Also job words ("Ward Manager", "Floor Manager", "District Coordinator"), so these count only in the header. */
 const ADDRESS_WORDS = new RegExp(
   `${STRONG_ADDRESS_WORDS.source}|\\b(?:plot|tower|wing|floor|sector|phase|layout|cross|near|opp\\.?|behind|ward|dist|district)\\b`,
@@ -70,7 +70,7 @@ const HOUSE_NUMBER = /^\s*(?:[A-Za-z]{1,2}[-/])?(?!(?:19|20)\d{2}\b)\d{1,4}(?:[-
  * and a colon or a spaced dash, so "Address-lookup API" or "Memory Address:" stay.
  */
 const ADDRESS_LABEL =
-  /^\s{0,8}(?:[-•*]\s{0,3})?(?:(?:res\.?|residential|permanent|current|present|correspondence|communication|postal|home|mailing|contact|local)\s+)?(?:address|addr\.?)\s?(?::|\s[-–]\s|[-–]\s*$)|^\s{0,8}(?:permanent|current|present|residential|postal|home|mailing)\s+address\s+(?=\d)/i;
+  /^\s{0,8}(?:[-•*]\s{0,3})?(?:(?:res\.?|residential|permanent|current|present|correspondence|communication|postal|home|mailing|contact|local)\s+)?(?:address|addr\.?|add|residence)\s?(?::[-–]?|[-–](?=\s|\d|$))|^\s{0,8}(?:permanent|current|present|residential|postal|home|mailing)\s+address\s+(?=\d)/i;
 /** A guardian the way Indian addresses name one: "C/o Ramesh Rao, ..." or "S/O Ramesh Rao 14 ...". */
 const GUARDIAN = /^\s*[CSDW]\/[Oo]\.?\s*[:\-]?\s*(?:(?:Mr|Mrs|Ms|Shri|Smt|Late)\.?\s+)?[A-Z][a-z]+(?:\s+[A-Z][a-z.]*){0,3}\s*(?:,|\d)/;
 /** A label line with nothing after it starts a block: the next few lines are the address. */
@@ -124,7 +124,10 @@ function isAddressLine(line: string, index: number): boolean {
   const label = head.match(ADDRESS_LABEL);
   // What follows the label starts like an address (a number, a capital, "#") or the address is on the next lines;
   // "Address: customer escalations" is a sentence.
-  if (label && /^\s{0,3}(?:$|[\d#A-Z])/.test(head.slice(label.index! + label[0].length))) return true;
+  if (label) {
+    const rest = head.slice(label.index! + label[0].length);
+    if (/^\s{0,3}(?:$|[\d#A-Z"'])/.test(rest) || rest.includes(",") || ADDRESS_WORDS.test(rest)) return true;
+  }
   if (line.length === 0 || line.length > 140 || /^[-•*]/.test(line)) return false;
   // A PIN code marks a whole address line only with an address word or a house number; elsewhere just the PIN goes.
   const flat = line.replace(/[ \t]{2,}/g, " ");
@@ -137,11 +140,13 @@ function isAddressLine(line: string, index: number): boolean {
  * Whether a line under an "Address:" label is still the address: short, not a heading or a dated line, and carrying a
  * comma, a number or an address word. A short line with none of those (a city) is the last line of the block.
  */
-function blockLine(line: string): "more" | "last" | "end" {
+function blockLine(line: string): "more" | "full" | "last" | "end" {
   const t = line.trim();
   if (!t || t.length > 80 || SECTION_NAME.test(t) || /^[A-Z][A-Z &/]{2,}:?$/.test(t) || /:\s*$/.test(t)) return "end";
   // A "Phone:" or "Skills:" line, a date or an email is the next part of the resume.
   if (/^[\p{L}][\p{L} .]{0,20}:/u.test(t) || /\b(?:19|20)\d{2}\b|@|\b(?:present|till date)\b/i.test(t)) return "end";
+  // A full address line (a number and a comma): only lines with an address word or a PIN may follow it.
+  if (/\d/.test(t) && t.includes(",")) return "full";
   if (/\d/.test(t) || ADDRESS_WORDS.test(t)) return "more";
   // A comma line ("Kota, Rajasthan") or a short one ("Delhi") ends the address.
   return t.includes(",") || t.split(/\s+/).length <= 2 ? "last" : "end";
@@ -164,6 +169,7 @@ export function maskPii(input: string): { text: string; counts: MaskCounts } {
         for (let k = 0; k < ADDRESS_BLOCK_LINES && i + 1 < source.length; k++) {
           const kind = blockLine(source[i + 1]);
           if (kind === "end") break;
+          if (k > 0 && blockLine(source[i]) === "full" && !ADDRESS_WORDS.test(source[i + 1]) && !PIN_CODE.test(source[i + 1])) break;
           i++;
           counts.address++;
           lines.push("[ADDRESS]");

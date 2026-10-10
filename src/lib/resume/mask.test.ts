@@ -259,4 +259,28 @@ describe("maskPii", () => {
     maskPii(Array.from({ length: 260 }, () => `,${" ".repeat(300)}x`).join("\n"));
     expect(performance.now() - started).toBeLessThan(500);
   });
+
+  // Fourth review.
+  it.each([
+    "Address :- 14 Station Rd, Kota",
+    "Address:- B-204, Green Park, Andheri (E), Mumbai",
+    "Address: flat 3, lotus residency, kothrud, pune",
+    "Address- 14 Station Rd, Kota",
+    "Address -14 Station Rd, Kota",
+    "Permanent Address- 14 Station Rd, Kota",
+    "Address: c/o Ramesh Rao, Kota",
+    'Address: "Sai Krupa", Kothrud, Pune',
+    "Add: 14 Station Rd, Kota",
+    "Residence: 14 Station Rd, Kota",
+  ])("masks %s in the header and further down", (line) => {
+    expect(maskPii(`Asha Rao\n${line}`).text.split("\n")[1]).toBe("[ADDRESS]");
+    expect(lastLine(late(line))).toBe("[ADDRESS]");
+  });
+
+  it("ends a block after a full address line", () => {
+    for (const next of ["Data Analyst", "SQL Python"]) {
+      const lines = ["Asha Rao", "Address:", "14 Station Rd, Kota", next, "SUMMARY"];
+      expect(maskPii(lines.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", next, "SUMMARY"]);
+    }
+  });
 });
