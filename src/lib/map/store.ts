@@ -6,6 +6,7 @@ import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
 import { syncGoals } from "@/lib/goals/store";
+import { goalName } from "@/lib/goals/name";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { lifeFromProfile } from "./life";
 
@@ -53,12 +54,13 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   );
   const goals: MapGoal[] = ordered.map((g) => {
     const step = stepBySkill.get(g.skillId);
+    const proved = goalBySkill.get(g.skillId)?.proved ?? false;
     return {
       skillId: g.skillId,
-      name: clip(g.skillName, 80),
+      name: clip(goalName(g, proved, result.roleSlug), 80),
       status: g.status,
       learnDone: Boolean(step?.doneAt),
-      proved: goalBySkill.get(g.skillId)?.proved ?? false,
+      proved,
       resources: (step?.resourceIds ?? [])
         .flatMap((id) => {
           const r = byId.get(id);
