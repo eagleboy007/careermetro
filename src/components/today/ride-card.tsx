@@ -108,10 +108,14 @@ export function RideCard({
             </svg>
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
-                <b className="font-display text-2xl font-semibold leading-none tabular-nums">
-                  {arrived ? ride.pitstopCount : `${weekDone}/${ride.weekTasksTotal}`}
-                </b>
-                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">{arrived ? "proved" : "tasks"}</small>
+                {arrived ? (
+                  <Check size={26} strokeWidth={1.75} className="mx-auto text-accent" aria-hidden="true" />
+                ) : (
+                  <b className="font-display text-2xl font-semibold leading-none tabular-nums">
+                    {weekDone}/{ride.weekTasksTotal}
+                  </b>
+                )}
+                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">{arrived ? "all proved" : "tasks"}</small>
               </div>
             </div>
           </div>
