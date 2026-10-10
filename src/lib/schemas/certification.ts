@@ -8,5 +8,8 @@ export const certification = z.object({
   level: z.enum(["entry", "associate", "professional", "specialty", "advanced", "expert"]),
   cost: z.enum(["free", "paid"]).nullable(),
   aliases: z.array(z.string().min(1)),
+  /** Skills that holding the certification shows (met), and skills it only touches (weak). Never fills a goal on its own. */
+  proves: z.array(z.string()).default([]),
+  partial: z.array(z.string()).default([]),
 });
 export type Certification = z.infer<typeof certification>;

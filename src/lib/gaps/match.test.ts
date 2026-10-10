@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
-import { isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { certificationsIn, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -278,3 +278,36 @@ describe("matchProfile", () => {
     expect(statusOf(r, "power-bi")).toBe("weak");
   });
 });
+
+describe("certifications on the resume", () => {
+  const infosec = role("information-security-analyst");
+
+  it("a held CISSP meets the skills it tests and makes the ones it touches weak", () => {
+    const r = matchProfile(profile({ certifications: ["CISSP – ISC2, 2024"] }), infosec, now);
+    for (const id of ["compliance-frameworks", "security-policies", "risk-assessment", "identity-access-management"]) expect(statusOf(r, id)).toBe("met");
+    expect(statusOf(r, "security-audits")).toBe("weak");
+    expect(statusOf(r, "stakeholder-management")).toBe("weak");
+    expect(r.met.find((m) => m.skillId === "risk-assessment")?.resumeQuote).toBe("CISSP – ISC2, 2024");
+  });
+
+  it("a certification being prepared for counts for nothing", () => {
+    for (const line of ["Pursuing CISSP", "CISSP (exam due March 2027)", "Preparing for PL-300"]) {
+      expect(certificationsIn(line)).toEqual([]);
+    }
+    const r = matchProfile(profile({ certifications: ["Pursuing CISSP"] }), infosec, now);
+    expect(statusOf(r, "risk-assessment")).toBe("missing");
+  });
+
+  it("an old pass reads as outdated, and a weak touch never downgrades a met skill", () => {
+    const old = matchProfile(profile({ certifications: ["CISSP 2015"] }), infosec, now);
+    expect(statusOf(old, "risk-assessment")).toBe("outdated");
+    const both = matchProfile(profile({ certifications: ["Microsoft PL-300", "Tableau Desktop Specialist"] }), dataAnalyst, now);
+    expect(statusOf(both, "power-bi")).toBe("met");
+    expect(statusOf(both, "data-visualization")).not.toBe("missing");
+  });
+
+  it("matches a certification by its full name too", () => {
+    expect(certificationsIn("Microsoft Certified: Power BI Data Analyst Associate").map((c) => c.id)).toContain("power-bi-data-analyst");
+  });
+});
+

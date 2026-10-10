@@ -63,7 +63,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
 
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
-    expect(row).toMatchObject({ matcherVersion: "matcher/v1" });
+    expect(row).toMatchObject({ matcherVersion: "matcher/v2" });
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
     expect(call).toMatchObject({ purpose: "explain-gaps", promptVersion: "explain-gaps/v1", ok: true });
     expect(JSON.stringify(call)).not.toContain("branch reports");

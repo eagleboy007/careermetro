@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { normalizeSkillTerm, skillIdByTerm, skills as taxonomy } from "@/content";
+import { certifications, normalizeSkillTerm, skillIdByTerm, skills as taxonomy } from "@/content";
 import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v1";
+export const MATCHER_VERSION = "matcher/v2";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -188,6 +188,23 @@ function learningAbout(line: string, terms: string[]): boolean {
   return clauses(line).some((c) => LEARNING.test(c) && (terms.length === 0 || terms.some((t) => containsPhrase(c, t))));
 }
 
+/** A certification line that is a plan, not a pass: "Pursuing CISSP", "CISA (exam due Mar 2027)". */
+const NOT_HELD = /\b(?:pursuing|preparing|preparation|in progress|ongoing|expected|appearing|planned|planning|target(?:ing)?|registered for|enrolled|studying|due|aspiring|attempt(?:ed|ing)?)\b/i;
+
+/** The certifications a resume line names, by full name or alias. */
+const certTerms = certifications.map((c) => ({ cert: c, terms: [c.name, ...c.aliases].map(normalizeForMatch).filter(Boolean) }));
+export function certificationsIn(line: string) {
+  const text = normalizeForMatch(line);
+  if (!text || NOT_HELD.test(line)) return [];
+  return certTerms.filter(({ terms }) => terms.some((t) => containsPhrase(text, t))).map(({ cert }) => cert);
+}
+
+/** The year a certification line gives ("CISSP, 2019"), as months, so an old pass reads as outdated. */
+function certMonths(line: string): number | null {
+  const years = [...line.matchAll(/\b(19[89]\d|20\d\d)\b/g)].map((m) => Number(m[1]));
+  return years.length ? Math.max(...years) * 12 + 11 : null;
+}
+
 const statusRank = { missing: 0, outdated: 1, weak: 2, met: 3 } as const;
 
 /** A skill and every broader skill it implies, following chains such as Next.js → React → JavaScript. */
@@ -281,6 +298,16 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
     for (const { line, text } of lines) {
       const hit = terms.filter((t) => containsPhrase(text, t));
       if (hit.length) add(s.id, { quote: line, listedOnly: learningAbout(line, hit), months: lineMonths(line) });
+    }
+  }
+
+  // 3. Certifications on the resume: a held certification shows the skills it tests (met) and touches others (weak).
+  //    A plan to sit one counts for nothing. Only accepted proof ever fills a goal; this is just the resume read.
+  for (const line of profile.certifications) {
+    const months = certMonths(line);
+    for (const cert of certificationsIn(line)) {
+      for (const id of cert.proves) add(id, { quote: line, listedOnly: false, months });
+      for (const id of cert.partial) add(id, { quote: line, listedOnly: true, months });
     }
   }
 
