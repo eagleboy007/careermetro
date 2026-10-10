@@ -11,16 +11,9 @@ export type Db = Pick<ReturnType<typeof getDb>, "select">;
  * whichever matcher made it: an older matcher's analysis stands until the Gaps page carries it over or replaces it, so
  * a matcher update never empties Today, Map or Me. Null when there is none, or it no longer reads.
  */
-export async function currentAnalysis(
-  userId: string,
-  db: Db = getDb(),
-): Promise<{ id: string; resumeId: string; result: GapAnalysis } | null> {
+export async function currentAnalysis(userId: string, db: Db = getDb()): Promise<{ id: string; resumeId: string; result: GapAnalysis } | null> {
   const [row] = await db
-    .select({
-      id: gapAnalyses.id,
-      result: gapAnalyses.result,
-      resumeId: resumes.id,
-    })
+    .select({ id: gapAnalyses.id, result: gapAnalyses.result, resumeId: resumes.id })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
@@ -34,7 +27,5 @@ export async function currentAnalysis(
     .orderBy(desc(gapAnalyses.createdAt))
     .limit(1);
   const parsed = row ? gapAnalysis.safeParse(row.result) : null;
-  return row && parsed?.success
-    ? { id: row.id, resumeId: row.resumeId, result: parsed.data }
-    : null;
+  return row && parsed?.success ? { id: row.id, resumeId: row.resumeId, result: parsed.data } : null;
 }
