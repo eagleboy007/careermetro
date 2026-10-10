@@ -305,4 +305,10 @@ describe("maskPii", () => {
     expect(maskPii(`Asha Rao\nData Analyst\n${line}`).text.split("\n")[2]).toBe("[ADDRESS]");
     expect(lastLine(late(line))).toBe("[ADDRESS]");
   });
+
+  it("reads a long run of capitals after a label quickly", () => {
+    const start = performance.now();
+    maskPii(`Asha Rao\nAddress: A B ${"A".repeat(280)} x!`);
+    expect(performance.now() - start).toBeLessThan(50);
+  });
 });

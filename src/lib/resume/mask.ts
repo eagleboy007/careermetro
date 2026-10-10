@@ -141,7 +141,7 @@ function isAddressLine(line: string, index: number): boolean {
       /^\s{0,3}(?:[A-Za-z]{1,2}[-/]?)?\d+[A-Za-z]?\s+[A-Z]/.test(rest);
     // Place names: capitalised with a comma, up to three words, or a run of capitalised words ("Sai Krupa Kothrud Pune").
     const named =
-      /^\s{0,3}[A-Z]/.test(rest) && (rest.includes(",") || rest.trim().split(/\s+/).length <= 3 || /^\s{0,3}(?:[A-Z][\w.-]*\s*){2,8}$/.test(rest));
+      /^\s{0,3}[A-Z]/.test(rest) && (rest.includes(",") || rest.trim().split(/\s+/).length <= 3 || /^\s{0,3}[A-Z][\w.-]*(?:\s+[A-Z][\w.-]*){1,7}\s*$/.test(rest));
     if (short ? shortClear : clear || named) return true;
   }
   if (line.length === 0 || line.length > 140 || /^[-•*]/.test(line)) return false;
