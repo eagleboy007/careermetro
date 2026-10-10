@@ -176,6 +176,20 @@ describe("maskPii", () => {
     "Expected 75000 / 95000",
     "Stipend 65000 - 85000",
     "Processed 60000 - 90000 rows a day",
+    "Kaggle score 78450 / 90000",
+    "Rank 61234 / 98765",
+    "Tickets 70001 - 70450 resolved",
+    "Employee IDs 60231 / 60298",
+    "Roll No. 72145/88321",
+    "Credential ID 917654321098",
+    "Txn 919876543210",
+    "Order #919876543210",
+    "Hall ticket 61234 - 78901",
+    "Invoice 90001/90002",
+    "Part numbers 77345 / 77346",
+    "Model 98765/43210 SKU",
+    "Out of 61234 / 98765",
+    "Scores 78450/90000",
     "JEE Main rank 102345",
     "Near real-time pipeline, 500000 events/day",
     "Assistant, India Post, Post Office Savings Bank, 2019",
@@ -317,7 +331,37 @@ describe("maskPii", () => {
 });
 
 describe("phones split or run together (T26)", () => {
-  it.each(["98765 - 43210", "98765 / 43210", "98765/43210", "919876543210", "Call 919876543210 after 6"])("masks %s", (line) => {
+  it.each([
+    "98765 - 43210",
+    "98765 / 43210",
+    "98765/43210",
+    "919876543210",
+    "Call 919876543210 after 6",
+    "Ph: 98700 / 43200",
+    "Contact 98700/43200",
+    "Ph: 98765 / 98712",
+    "98765 / 98712",
+    "Mob 98765/43210, 98712/43210",
+    // "No" and "ID" labels on a phone.
+    "Mobile No. 919876543210",
+    "Mobile No: 919876543210",
+    "Phone No.: 919876543210",
+    "Contact No 919876543210",
+    "Ph no 919876543210",
+    "WhatsApp ID 919876543210",
+    "Alternate No: 919876543210",
+    "Emergency No. 919876543210",
+    "Alternate No: 98765 / 43210",
+    "Alt. No. 98765/43210",
+    "Office No: 98765 - 43210",
+    "Res. No. 98765 / 43210",
+    "Emergency No - 98765/43210",
+    "Father's No. 98765/43210",
+    "No. 98765 / 43210",
+    "Mobile No 98765/43210",
+    "Contact no. 98765 - 43210",
+    "WhatsApp ID 98765/43210",
+  ])("masks %s", (line) => {
     const text = maskPii(`Asha Rao\nData Analyst\n\nEXPERIENCE\nAnalyst, Example Ltd\n2022\n${line}`).text.split("\n").at(-1);
     expect(text).toContain("[PHONE]");
     expect(text).not.toMatch(/\d{5}/);

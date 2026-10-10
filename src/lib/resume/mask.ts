@@ -16,17 +16,26 @@ const SEP = "[\\s().\\u2013\\u2014-]";
  * "98765 / 43210", "0091 98765 43210", "919876543210"), landlines with an STD code in brackets, and international numbers starting with +. A mobile is
  * exactly 10 digits starting with 6-9, so years, amounts and percentages don't match.
  */
+/**
+ * Words before a number pair that make it a score, rank or ID rather than a phone ("Rank 61234 / 98765"). Only
+ * compound labels for "No" and "ID", since "Mobile No." and "WhatsApp ID" are how Indian resumes label a phone.
+ */
+const COUNT_WORDS =
+  "scores?|rank|air|roll\\s?no|reg(?:istration)?\\s?no|ticket\\s?no|hall\\s?ticket|tickets?|employee\\s?ids?|credential\\s?id|txn\\s?id|order\\s?id|invoice(?:\\s?no)?|part(?:\\s?no)?|users|rows|out\\s?of|range\\s?of|txn|order|ref|model|sku";
+/** Labels that make the number after them a phone, whatever it looks like. */
+const PHONE_LABEL = "ph|phone|mob|mobile|tel|contact|whatsapp|cell|alternate|alt|emergency|office|residence";
 const PHONE = new RegExp(
   [
     // "98765 - 43210" only with a +91 or 0 in front, or a phone label before it, so "60000 - 80000" stays a salary range.
     `(?<![\\d+])(?:(?:\\+\\s?|00)91${SEP}{0,2}|0)\\(?[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
-    `(?<=\\b(?:ph|phone|mob|mobile|tel|contact|whatsapp|cell)\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
+    `(?<=\\b(?:${PHONE_LABEL})\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
+    `(?<=\\b(?:${PHONE_LABEL})\\b[^\\d\\n]{0,12})91[6-9]\\d{9}(?!\\d)`,
     // Not after a money word, so "Salary range 70000–90000" stays.
     `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?:(?:\\+\\s?|00)91${SEP}{0,2}|91${SEP}{1,2}|0)?\\(?[6-9](?:${SEP}{0,2}\\d){9}(?!\\d)`,
     // A bare "98765 - 43210" or "98765 / 43210": a salary range ("70000 - 90000") is two round numbers, so it stays.
-    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?![6-9]\\d{2}00\\s?[-\\u2013\\u2014/]\\s?\\d{3}00(?!\\d))[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
+    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$|${COUNT_WORDS})\\.?\\s?[:\\-]?\\s?)(?![6-9]\\d{2}00\\s?[-\\u2013\\u2014/]\\s?\\d{3}00(?!\\d))(?<pair>[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5})(?!\\d)`,
     // "919876543210": the country code run straight into the mobile.
-    `(?<![\\d+])91[6-9]\\d{9}(?!\\d)`,
+    `(?<![\\d+])(?<!\\b(?:${COUNT_WORDS})\\.?\\s?[:#\\-]?\\s?)91[6-9]\\d{9}(?!\\d)`,
     `\\(0\\d{2,4}\\)\\s?\\d{3,4}[\\s-]?\\d{4}\\b`,
     `\\+(?!\\s?91)\\d{1,3}[\\s-]?\\d{2,4}[\\s-]?\\d{3,4}[\\s-]?\\d{3,4}\\b`,
   ].join("|"),
@@ -84,6 +93,15 @@ const SECTION_NAME =
   /^\s*(?:experience|work experience|employment|summary|profile|objective|education|skills|technical skills|projects|certifications?|achievements|languages|personal details|contact|about me)\s*:?\s*$/i;
 /** Address lines are only looked for in the contact block at the top, unless the line carries a PIN code. */
 const HEADER_LINES = 8;
+
+/**
+ * A bare pair that reads as a run of IDs ("60231 / 60298", "70001 - 70450"): the second a little above the first.
+ * One mobile split 5-5 ("98765 / 98712") has its halves in any order, so it fails this about 1 time in 200.
+ */
+function isIdRange(pair: string): boolean {
+  const [a, b] = pair.split(/\D+/).filter(Boolean).map(Number);
+  return b > a && b - a <= 1000;
+}
 
 function replaceCounting(text: string, pattern: RegExp, replacement: string, onHit: () => void): string {
   return text.replace(pattern, () => {
@@ -230,6 +248,11 @@ export function maskPii(input: string): { text: string; counts: MaskCounts } {
     counts.phone++;
     return "[PHONE]";
   });
-  text = replaceCounting(text, PHONE, "[PHONE]", () => counts.phone++);
+  text = text.replace(PHONE, (match, ...args) => {
+    const pair = (args.at(-1) as { pair?: string }).pair;
+    if (pair && isIdRange(pair)) return match;
+    counts.phone++;
+    return "[PHONE]";
+  });
   return { text, counts };
 }
