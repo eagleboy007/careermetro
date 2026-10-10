@@ -21,15 +21,17 @@ export function MeView({ me }: { me: MeProfile }) {
   const [asOthers, setAsOthers] = useState(false);
   const back = useRef<HTMLButtonElement>(null);
   const view = useRef<HTMLButtonElement>(null);
-  const moved = useRef(false);
-  // The button pressed disappears, so focus moves to the one that undoes it (not on first render).
+  const pending = useRef(false);
+  // The button pressed disappears, so focus moves to the one that undoes it. Only after a press, never on load.
   useEffect(() => {
-    if (!moved.current) {
-      moved.current = true;
-      return;
-    }
+    if (!pending.current) return;
+    pending.current = false;
     (asOthers ? back : view).current?.focus();
   }, [asOthers]);
+  const toggle = (next: boolean) => {
+    pending.current = true;
+    setAsOthers(next);
+  };
   const own = !asOthers;
   const hasResume = me.resumeReadOn !== null;
   return (
@@ -39,7 +41,7 @@ export function MeView({ me }: { me: MeProfile }) {
           <div role="status" className="mb-1.5 flex flex-wrap items-center gap-2.5 rounded-[14px] bg-surface-2 px-3.5 py-2.5 text-[0.85rem]">
             <Eye size={16} {...ICON} className="shrink-0 text-muted" />
             <span className="flex-1">You are seeing your profile the way other people will. Private parts and your gaps are hidden.</span>
-            <button ref={back} type="button" className={`${ghost} px-[11px] py-1.5 text-[0.8rem]`} onClick={() => setAsOthers(false)}>
+            <button ref={back} type="button" className={`${ghost} px-[11px] py-1.5 text-[0.8rem]`} onClick={() => toggle(false)}>
               Back to editing
             </button>
           </div>
@@ -59,7 +61,7 @@ export function MeView({ me }: { me: MeProfile }) {
           </div>
           <div className="flex flex-wrap items-center gap-1 self-center">
             {own && (
-              <button ref={view} type="button" className={ghost} onClick={() => setAsOthers(true)}>
+              <button ref={view} type="button" className={ghost} onClick={() => toggle(true)}>
                 <Eye size={17} {...ICON} />
                 View as others
               </button>

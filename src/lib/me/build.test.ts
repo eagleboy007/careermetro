@@ -111,6 +111,7 @@ describe("meFromProfile", () => {
             { name: "excel", lastUsed: null, evidence: [] },
             { name: "Tableau", lastUsed: null, evidence: [] },
           ],
+          certifications: ["Tableau"],
         }),
         analysis: {
           roleSlug: "data-analyst",
@@ -125,6 +126,7 @@ describe("meFromProfile", () => {
       }),
     );
     expect(me.skills).toEqual({ have: ["EXCEL", "Tableau"], weak: ["Power BI"], missing: ["SQL"] });
+    expect(me.certifications).toEqual([{ name: "Tableau", verified: false }]);
   });
 
   it("never marks a resume certificate verified, and stays inside the schema for long input", () => {
@@ -141,7 +143,7 @@ describe("meFromProfile", () => {
             highlights: Array(12).fill(long),
           })),
           education: Array.from({ length: 20 }, () => ({ qualification: long, institution: long, year: long })),
-          certifications: [" ", "AWS Cloud Practitioner"],
+          certifications: [" ", "AWS Cloud Practitioner", " aws cloud practitioner "],
         }),
       }),
     );
