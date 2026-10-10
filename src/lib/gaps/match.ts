@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v2";
+export const MATCHER_VERSION = "matcher/v3";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -364,7 +364,9 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   //    proved, since only accepted proof (gap_proofs) proves a goal and moves the train.
   for (const line of profile.certifications) {
     for (const { cert, months } of certificationsIn(line, now)) {
-      for (const id of cert.proves) add(id, { quote: line, listedOnly: false, months });
+      // With no pass date the certificate could be ten years old, so it shows the skills it tests only as weak and
+      // never lifts an outdated skill to met.
+      for (const id of cert.proves) add(id, { quote: line, listedOnly: months === null, months });
       for (const id of cert.partial) add(id, { quote: line, listedOnly: true, months });
     }
   }
