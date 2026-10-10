@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { resumes } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { currentAnalysis, type Db } from "@/lib/gaps/current";
+import { boardTask } from "@/lib/ride/build";
 import { todayRideFor } from "@/lib/ride/store";
 import { clip } from "@/lib/text";
 import type { FirstTally, GoalsSummary, Ride, RideTask, RideWeek, Streak } from "@/lib/schemas";
@@ -67,18 +68,9 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
     role,
     tally: { skillsFound: result.metSkillIds.length, gaps, goals: gaps, boardable: gaps === 0 ? 1 : 0 },
     lineHours: Math.max(1, result.readiness.estimatedHours),
-    firstTasks: today?.ride.tasks ?? [ALL_PROVED],
+    // No goals at all: the resume already shows every required skill.
+    firstTasks: today?.ride.tasks ?? [boardTask("Your resume shows every skill this role requires")],
     goals: today?.goals ?? null,
   };
 }
 
-const ALL_PROVED: RideTask = {
-  id: "all-proved",
-  title: "Every goal on your line is proved",
-  detail: "See the roles you can board now",
-  minutes: 5,
-  done: false,
-  locked: true,
-  signal: false,
-  href: "/departures",
-};

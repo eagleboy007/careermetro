@@ -63,7 +63,8 @@ export const ride = z
     weekTasksDone: z.number().int().min(0),
     weekTasksTotal: z.number().int().min(1),
   })
-  .refine((r) => r.pitstop <= r.pitstopCount, {
+  // One past the last pitstop means every goal is proved and the train is heading to Practice and Match.
+  .refine((r) => r.pitstop <= r.pitstopCount + 1, {
     message: "pitstop is past the last pitstop",
     path: ["pitstop"],
   })

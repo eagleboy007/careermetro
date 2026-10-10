@@ -34,7 +34,7 @@ export function templateReadiness(match: MatchResult): string {
   const hours = match.readiness.estimatedHours;
   return hours === 0
     ? "Your resume shows every required skill for this role."
-    : `As a rough estimate, about ${hours} hours of focused work closes the rest.`;
+    : `As a rough estimate, about ${hours} hours of focused work gets you ready to prove the rest.`;
 }
 
 /**

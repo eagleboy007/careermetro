@@ -40,6 +40,8 @@ export function RideCard({
   const todayIndex = week.findIndex((d) => d.today);
   const today = DAYS[todayIndex] ?? null;
   const lead = ride.title.slice(0, ride.title.length - ride.titleEmphasis.length);
+  // Every goal proved: the train has passed the last pitstop.
+  const arrived = ride.pitstop > ride.pitstopCount;
 
   const clicks = useRef(new Map<string, number>());
 
@@ -114,8 +116,8 @@ export function RideCard({
             </div>
           </div>
           <p className="text-[0.86rem] text-muted">
-            <b className="mb-0.5 block text-[0.95rem] font-semibold text-ink">{ride.goalName} prep this week</b>
-            Tasks get you ready. Proof fills the gap.
+            <b className="mb-0.5 block text-[0.95rem] font-semibold text-ink">{arrived ? "Every gap filled" : `${ride.goalName} prep this week`}</b>
+            {arrived ? "Proof filled each one. Next: Practice, then Match." : "Tasks get you ready. Proof fills the gap."}
           </p>
         </div>
         <div className="flex flex-col gap-2">
@@ -241,7 +243,7 @@ function PitstopChip({ pitstop, count }: { pitstop: number; count: number }) {
         className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-[11px] py-1.5 text-[0.8rem] font-semibold"
       >
         <Route size={16} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
-        Pitstop {pitstop} of {count}
+        {pitstop > count ? `All ${count} pitstops done` : `Pitstop ${pitstop} of ${count}`}
         <CircleHelp size={14} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
         <span className="sr-only">, what is a pitstop?</span>
       </button>
