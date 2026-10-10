@@ -117,7 +117,7 @@ const built = meFromProfile({
 
 export const exampleMe: MeProfile = {
   ...built,
-  stats: [...built.stats.slice(0, 2), { value: "3", label: "gaps filled with proof" }],
+  stats: [...built.stats.slice(0, 2), { value: "3", label: "gaps filled with proof", private: false }],
   interests: ["Data", "Cricket stats", "Public speaking", "Marathi theatre"],
   stories: exampleStories,
   proofs: [

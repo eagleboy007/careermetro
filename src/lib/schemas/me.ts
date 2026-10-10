@@ -50,7 +50,8 @@ export const meProfile = z.object({
   name: z.string().min(1).max(120),
   /** Destination role, null before there is one. */
   aim: z.string().max(120).nullable(),
-  stats: z.array(z.object({ value: z.string().max(20), label: z.string().max(60) })).max(6),
+  /** `private` stats (the gap count) are hidden from others. */
+  stats: z.array(z.object({ value: z.string().max(20), label: z.string().max(60), private: z.boolean() })).max(6),
   journey: z.array(journeyStop).max(12),
   journeyLabel: z.string().max(120),
   experience: z.array(meExperience).max(20),

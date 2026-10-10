@@ -1,10 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { meProfile, type MapLine, type Profile } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
-import { duration, journeyFor, meFromProfile, type MeInput } from "./build";
+import { duration, journeyFor, meFromProfile, worked, type MeInput } from "./build";
 import { exampleMe } from "./fixtures";
 
-const profile = (p: Partial<Profile>): Profile => ({ headline: null, totalYearsExperience: null, roles: [], skills: [], education: [], certifications: [], ...p });
+const profile = (p: Partial<Profile>): Profile => ({
+  headline: null,
+  totalYearsExperience: null,
+  roles: [],
+  skills: [],
+  education: [],
+  certifications: [],
+  ...p,
+});
 const input = (p: Partial<MeInput>): MeInput => ({
   name: "Asha",
   profile: null,
@@ -23,6 +31,30 @@ describe("duration", () => {
     expect(duration(2024, 2024 + 5 / 12)).toBe("5 months");
     expect(duration(2024, 2025)).toBe("1 year");
     expect(duration(2024, 2024)).toBe("Under a month");
+  });
+});
+
+describe("worked", () => {
+  it("counts overlapping roles once and gaps between roles not at all", () => {
+    expect(
+      worked([
+        [2020, 2022],
+        [2021, 2023],
+      ]),
+    ).toBe(3);
+    expect(
+      worked([
+        [2020, 2024],
+        [2021, 2022],
+      ]),
+    ).toBe(4);
+    expect(
+      worked([
+        [2023, 2024],
+        [2020, 2021],
+      ]),
+    ).toBe(2);
+    expect(worked([])).toBe(0);
   });
 });
 
@@ -74,7 +106,12 @@ describe("meFromProfile", () => {
   it("sorts skills into have, weak and missing without repeats", () => {
     const me = meFromProfile(
       input({
-        profile: profile({ skills: [{ name: "excel", lastUsed: null, evidence: [] }, { name: "Tableau", lastUsed: null, evidence: [] }] }),
+        profile: profile({
+          skills: [
+            { name: "excel", lastUsed: null, evidence: [] },
+            { name: "Tableau", lastUsed: null, evidence: [] },
+          ],
+        }),
         analysis: {
           roleSlug: "data-analyst",
           gaps: [
@@ -96,7 +133,13 @@ describe("meFromProfile", () => {
       input({
         name: long,
         profile: profile({
-          roles: Array.from({ length: 30 }, (_, i) => ({ title: long, employer: long, start: `${2000 + (i % 20)}-01`, end: null, highlights: Array(12).fill(long) })),
+          roles: Array.from({ length: 30 }, (_, i) => ({
+            title: long,
+            employer: long,
+            start: `${2000 + (i % 20)}-01`,
+            end: null,
+            highlights: Array(12).fill(long),
+          })),
           education: Array.from({ length: 20 }, () => ({ qualification: long, institution: long, year: long })),
           certifications: [" ", "AWS Cloud Practitioner"],
         }),

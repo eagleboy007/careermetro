@@ -47,7 +47,10 @@ describe.skipIf(!db)("meFor (database)", () => {
   const role = roleProfiles[0];
   const explain = GAP_LIMITS.explainedPerOwnerPerDay;
   beforeAll(async () => {
-    await db!.insert(schema.skills).values(skills.map(({ id, name, category }) => ({ id, name, category }))).onConflictDoNothing();
+    await db!
+      .insert(schema.skills)
+      .values(skills.map(({ id, name, category }) => ({ id, name, category })))
+      .onConflictDoNothing();
     vi.stubEnv("PARSE_DAILY_BUDGET_USD", "1000000");
     GAP_LIMITS.explainedPerOwnerPerDay = 0;
   });
@@ -59,7 +62,10 @@ describe.skipIf(!db)("meFor (database)", () => {
   });
 
   async function user(n: string, name: string | null = null) {
-    const [row] = await db!.insert(schema.users).values({ email: `${run}-${n}@example.test`, name }).returning({ id: schema.users.id });
+    const [row] = await db!
+      .insert(schema.users)
+      .values({ email: `${run}-${n}@example.test`, name })
+      .returning({ id: schema.users.id });
     userIds.push(row.id);
     return row.id;
   }

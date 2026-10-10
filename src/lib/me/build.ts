@@ -30,6 +30,18 @@ export function duration(from: number, to: number): string {
   return [y && plural(y, "year"), m && plural(m, "month")].filter(Boolean).join(" ");
 }
 
+/** Years worked, counting overlapping roles (a promotion, a side project) once. */
+export function worked(spans: [number, number][]): number {
+  let total = 0;
+  let end = -Infinity;
+  for (const [a, b] of [...spans].sort((x, y) => x[0] - y[0])) {
+    if (b <= end) continue;
+    total += b - Math.max(a, end);
+    end = b;
+  }
+  return total;
+}
+
 /** The journey strip: signed up, resume read, then each goal on the line, then Match. */
 export function journeyFor(line: MapLine | null, opts: { joinedAt: Date; resumeReadAt: Date | null; gaps: number }): JourneyStop[] {
   const stops: JourneyStop[] = [{ state: "done", name: "Signed up", detail: monthLabel(opts.joinedAt) }];
@@ -51,7 +63,7 @@ export function journeyFor(line: MapLine | null, opts: { joinedAt: Date; resumeR
     } else stops.push({ state: "future", name: `${cut(g.name, 70)} goal`, detail: g.status === "missing" ? "Learn, then prove" : "Prove" });
   });
   const more = line.goals.length - GOAL_STOPS;
-  if (more > 0) stops.push({ state: "future", name: plural(more, "more goal"), detail: "On your map" });
+  if (more > 0) stops.push({ state: current >= GOAL_STOPS ? "now" : "future", name: plural(more, "more goal"), detail: "On your map" });
   stops.push({ state: current === -1 ? "now" : "future", name: "Match", detail: "Destination" });
   return stops;
 }
@@ -67,11 +79,11 @@ export function meFromProfile(input: MeInput): MeProfile {
   const roles = (profile?.roles ?? [])
     .map((r, i) => ({ r, i, start: readYearMonth(r.start), end: readYearMonth(r.end) }))
     .sort((a, b) => (b.start?.t ?? -Infinity) - (a.start?.t ?? -Infinity));
-  let months = 0;
+  const spans: [number, number][] = [];
   const experience = roles.map(({ r, i, start, end }) => {
     const current = !!start && !end;
     const until = end?.t ?? (start ? nowT : null);
-    if (start && until !== null) months += Math.max(0, Math.round((until - start.t) * 12));
+    if (start && until !== null && until > start.t) spans.push([start.t, until]);
     const dates = start ? `${start.label} to ${end ? end.label : "now"} · ${duration(start.t, until!)}` : (end?.label ?? "No dates on your resume");
     return {
       id: `role-${i}`,
@@ -103,14 +115,14 @@ export function meFromProfile(input: MeInput): MeProfile {
     name: cut(input.name, 120),
     aim: aim && cut(aim, 120),
     stats: [
-      { value: String(have.length), label: "skills found" },
-      { value: String(gaps.length), label: gaps.length === 1 ? "gap to your next role" : "gaps to your next role" },
-      { value: "0", label: "gaps filled with proof" },
+      { value: String(have.length), label: "skills found", private: false },
+      { value: String(gaps.length), label: gaps.length === 1 ? "gap to your next role" : "gaps to your next role", private: true },
+      { value: String(line?.goals.filter((g) => g.proved).length ?? 0), label: "gaps filled with proof", private: false },
     ],
     journey: journeyFor(line, { joinedAt: input.joinedAt, resumeReadAt: input.resumeReadAt, gaps: gaps.length }),
     journeyLabel: line ? `${line.role.title} · ${plural(line.goals.length, "goal")}` : "starts with your resume",
     experience: experience.slice(0, 20),
-    experienceTotal: months > 0 ? duration(0, months / 12) : null,
+    experienceTotal: worked(spans) > 0 ? duration(0, worked(spans)) : null,
     education: (profile?.education ?? [])
       .slice(0, 12)
       .map((e) => ({ qualification: cut(e.qualification, 160), institution: cut(e.institution, 160), year: cut(e.year ?? "", 40) })),

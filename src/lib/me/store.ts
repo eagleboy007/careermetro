@@ -33,7 +33,7 @@ export async function meFor(userId: string, now: Date, db: Db = getDb()): Promis
       ])
     : [null, [], null];
   return meFromProfile({
-    name: user.name ?? user.email.split("@")[0]!,
+    name: user.name?.trim() || user.email.split("@")[0] || "You",
     profile: resume?.profile ?? null,
     analysis: resume ? analysis!.result : null,
     line: resume ? line : null,

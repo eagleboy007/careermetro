@@ -2,7 +2,7 @@
 
 import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, PenLine, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { initials } from "@/lib/departures/filter";
@@ -19,33 +19,47 @@ const label = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
  */
 export function MeView({ me }: { me: MeProfile }) {
   const [asOthers, setAsOthers] = useState(false);
+  const back = useRef<HTMLButtonElement>(null);
+  const view = useRef<HTMLButtonElement>(null);
+  const moved = useRef(false);
+  // The button pressed disappears, so focus moves to the one that undoes it (not on first render).
+  useEffect(() => {
+    if (!moved.current) {
+      moved.current = true;
+      return;
+    }
+    (asOthers ? back : view).current?.focus();
+  }, [asOthers]);
   const own = !asOthers;
   const hasResume = me.resumeReadOn !== null;
   return (
     <div className="grid min-w-0 gap-6 min-[760px]:grid-cols-[minmax(0,1fr)_300px] min-[760px]:gap-10">
       <div className="flex min-w-0 flex-col">
         {asOthers && (
-          <div role="status" className="mb-1.5 flex flex-wrap items-center gap-2.5 rounded-[14px] bg-accent-soft px-3.5 py-2.5 text-[0.85rem]">
-            <Eye size={16} {...ICON} className="shrink-0 text-accent" />
+          <div role="status" className="mb-1.5 flex flex-wrap items-center gap-2.5 rounded-[14px] bg-surface-2 px-3.5 py-2.5 text-[0.85rem]">
+            <Eye size={16} {...ICON} className="shrink-0 text-muted" />
             <span className="flex-1">You are seeing your profile the way other people will. Private parts and your gaps are hidden.</span>
-            <button type="button" className={`${ghost} px-[11px] py-1.5 text-[0.8rem]`} onClick={() => setAsOthers(false)}>
+            <button ref={back} type="button" className={`${ghost} px-[11px] py-1.5 text-[0.8rem]`} onClick={() => setAsOthers(false)}>
               Back to editing
             </button>
           </div>
         )}
 
         <div className="flex flex-wrap items-start gap-[18px]">
-          <span aria-hidden="true" className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full bg-surface-2 font-mono text-[1.2rem] font-medium">
+          <span
+            aria-hidden="true"
+            className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full bg-surface-2 font-mono text-[1.2rem] font-medium"
+          >
             {initials(me.name)}
           </span>
           <div className="flex min-w-[220px] flex-1 flex-col gap-1">
-            <h2 className="text-[1.7rem] font-semibold leading-[1.1]">{me.name}</h2>
+            <h1 className="text-[1.7rem] font-semibold leading-[1.1]">{me.name}</h1>
             <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>
             <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>
           </div>
           <div className="flex flex-wrap items-center gap-1 self-center">
             {own && (
-              <button type="button" className={ghost} onClick={() => setAsOthers(true)}>
+              <button ref={view} type="button" className={ghost} onClick={() => setAsOthers(true)}>
                 <Eye size={17} {...ICON} />
                 View as others
               </button>
@@ -57,7 +71,7 @@ export function MeView({ me }: { me: MeProfile }) {
 
         <p className="mt-4 flex flex-wrap gap-x-6 gap-y-1 border-y border-line py-3 text-[0.82rem] text-muted">
           {me.stats
-            .filter((s) => own || !s.label.includes("next role"))
+            .filter((s) => own || !s.private)
             .map((s) => (
               <span key={s.label}>
                 <b className="mr-1 font-mono font-medium text-ink">{s.value}</b>
@@ -66,11 +80,18 @@ export function MeView({ me }: { me: MeProfile }) {
             ))}
         </p>
 
-        <Section first title="Your journey" note={me.journeyLabel} action={own && <More href="/map">Open map</More>}>
-          <Journey stops={me.journey} />
-        </Section>
+        {own && (
+          <Section first title="Your journey" note={me.journeyLabel} action={<More href="/map">Open map</More>}>
+            <Journey stops={me.journey} />
+          </Section>
+        )}
 
-        <Section title="Experience" note={me.experienceTotal ? `${me.experienceTotal} · from your resume` : "from your resume"} action={own && <Soonish>+ Add role</Soonish>}>
+        <Section
+          first={!own}
+          title="Experience"
+          note={me.experienceTotal ? `${me.experienceTotal} · from your resume` : "from your resume"}
+          action={own && <Soonish>+ Add role</Soonish>}
+        >
           {me.experience.length ? (
             <ul className="flex flex-col">
               {me.experience.map((e, i) => (
@@ -82,7 +103,11 @@ export function MeView({ me }: { me: MeProfile }) {
                   <div className="flex min-w-0 flex-col gap-1.5">
                     <div className="flex flex-wrap items-baseline gap-2">
                       <b className="text-[0.96rem] font-semibold">{e.title}</b>
-                      {e.current && <span className="rounded-full bg-surface-2 px-[7px] py-0.5 font-mono text-[0.64rem] uppercase tracking-[0.06em]">Current</span>}
+                      {e.current && (
+                        <span className="rounded-full bg-surface-2 px-[7px] py-0.5 font-mono text-[0.64rem] uppercase tracking-[0.06em]">
+                          Current
+                        </span>
+                      )}
                     </div>
                     <span className="text-[0.8rem] text-muted">
                       {e.employer} · {e.dates}
@@ -101,23 +126,22 @@ export function MeView({ me }: { me: MeProfile }) {
           ) : (
             <Empty Icon={FileText}>Your roles fill in from your resume.</Empty>
           )}
-          {!own && me.experience.some((e) => e.highlights.length) && <Note>Lines from your resume stay private. Your stories show what you did.</Note>}
+          {!own && me.experience.some((e) => e.highlights.length) && (
+            <Note>Lines from your resume stay private. Your stories show what you did.</Note>
+          )}
         </Section>
 
-        <Section
-          title="Your stories"
-          note={me.stories.length ? storyCount(me.stories) : "none yet"}
-          action={own && <Soonish>+ Add story</Soonish>}
-        >
+        <Section title="Your stories" note={me.stories.length ? storyCount(me.stories) : "none yet"} action={own && <Soonish>+ Add story</Soonish>}>
           <p className="text-[0.86rem] text-muted">
-            Every piece of work you have done, as a short Situation, Task, Action, Result story, sorted into what interviewers ask about. Recruiters see it when they
-            open your profile.
+            Every piece of work you have done, as a short Situation, Task, Action, Result story, sorted into what interviewers ask about. Recruiters
+            see it when they open your profile.
           </p>
           {me.stories.length ? (
             <Stories stories={me.stories} />
           ) : (
             <Empty Icon={PenLine}>
-              Your stories will be drafted from your resume, college projects, internships and goals you prove, and you edit them before they are saved · soon.
+              Your stories will be drafted from your resume, college projects, internships and goals you prove, and you edit them before they are
+              saved · soon.
             </Empty>
           )}
         </Section>
@@ -169,8 +193,8 @@ export function MeView({ me }: { me: MeProfile }) {
         <Section title="Proof of work" note="tasks you finished on your path">
           {me.proofs.length ? (
             <ul className="flex flex-col gap-2">
-              {me.proofs.map((p) => (
-                <li key={p.title} className="flex items-center gap-3 rounded-[14px] border border-line px-3.5 py-3">
+              {me.proofs.map((p, i) => (
+                <li key={i} className="flex items-center gap-3 rounded-[14px] border border-line px-3.5 py-3">
                   <FlaskConical size={18} {...ICON} className="shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
                     <b className="block text-[0.88rem] font-[550]">{p.title}</b>
@@ -185,7 +209,10 @@ export function MeView({ me }: { me: MeProfile }) {
         </Section>
       </div>
 
-      <aside aria-label="Your settings" className="flex min-w-0 flex-col [&>section:first-child]:pt-0 [&>section:last-child]:border-b-0 [&>section]:flex [&>section]:flex-col [&>section]:gap-2.5 [&>section]:border-b [&>section]:border-line [&>section]:py-[18px]">
+      <aside
+        aria-label="Your settings"
+        className="flex min-w-0 flex-col [&>section:first-child]:pt-0 [&>section:last-child]:border-b-0 [&>section]:flex [&>section]:flex-col [&>section]:gap-2.5 [&>section]:border-b [&>section]:border-line [&>section]:py-[18px]"
+      >
         {own && (
           <section>
             <RailHead name="Resume" note="private" />
@@ -211,12 +238,14 @@ export function MeView({ me }: { me: MeProfile }) {
           <RailHead name="Certifications" note={`${me.certifications.filter((c) => c.verified).length} verified`} />
           {me.certifications.length ? (
             <ul className="flex flex-col gap-1.5">
-              {me.certifications.map((c) => (
-                <li key={c.name} className="flex items-center gap-2 text-[0.82rem]">
+              {me.certifications.map((c, i) => (
+                <li key={i} className="flex items-center gap-2 text-[0.82rem]">
                   <BadgeCheck size={16} {...ICON} className="shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
                     {c.name}
-                    <small className="block text-[0.72rem] text-muted">{c.verified ? "Credly badge checked" : "From your resume, not checked yet"}</small>
+                    <small className="block text-[0.72rem] text-muted">
+                      {c.verified ? "Credly badge checked" : "From your resume, not checked yet"}
+                    </small>
                   </span>
                   {c.verified && <StatusChip status="met" label="Verified" />}
                 </li>
@@ -238,12 +267,17 @@ export function MeView({ me }: { me: MeProfile }) {
                 ["Show my gaps to everyone", false],
               ].map(([name, on]) => (
                 <li key={name as string} className="flex items-center gap-2">
-                  <i aria-hidden="true" className={`relative h-5 w-9 rounded-full opacity-50 after:absolute after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface ${on ? "bg-ink after:left-[18px]" : "bg-line after:left-0.5"}`} />
+                  <i
+                    aria-hidden="true"
+                    className={`relative h-5 w-9 rounded-full opacity-50 after:absolute after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface ${on ? "bg-ink after:left-[18px]" : "bg-line after:left-0.5"}`}
+                  />
                   {name} <span className="sr-only">{on ? "(on by default)" : "(off by default)"}</span>
                 </li>
               ))}
             </ul>
-            <small className="text-[0.74rem] text-muted">These switches come with the profile settings. Until then nobody else can see your profile.</small>
+            <small className="text-[0.74rem] text-muted">
+              These switches come with the profile settings. Until then nobody else can see your profile.
+            </small>
           </section>
         )}
         <section>
@@ -263,7 +297,19 @@ const storyCount = (stories: Story[]) => {
   return `${stories.length} ${stories.length === 1 ? "story" : "stories"}${empty ? ` · ${empty} ${empty === 1 ? "box" : "boxes"} empty` : ""}`;
 };
 
-function Section({ title, note, action, first = false, children }: { title: string; note?: string; action?: ReactNode; first?: boolean; children: ReactNode }) {
+function Section({
+  title,
+  note,
+  action,
+  first = false,
+  children,
+}: {
+  title: string;
+  note?: string;
+  action?: ReactNode;
+  first?: boolean;
+  children: ReactNode;
+}) {
   return (
     <section aria-label={title} className={`flex flex-col gap-3 ${first ? "pt-2" : "mt-5 border-t border-line pt-5"}`}>
       <div className="flex flex-wrap items-baseline gap-2.5">
@@ -382,7 +428,11 @@ function Stories({ stories }: { stories: Story[] }) {
         {STORY_BOXES.map((box) => {
           const inBox = stories.filter((s) => s.boxes.includes(box));
           return (
-            <section key={box} aria-label={box} className={`flex min-w-0 flex-col gap-2 rounded-[14px] ${view === "board" ? "bg-surface-2 p-2.5" : ""}`}>
+            <section
+              key={box}
+              aria-label={box}
+              className={`flex min-w-0 flex-col gap-2 rounded-[14px] ${view === "board" ? "bg-surface-2 p-2.5" : ""}`}
+            >
               <div className="flex items-baseline gap-2">
                 <b className="text-[0.88rem]">{box}</b>
                 <span className="font-mono text-[0.7rem] text-muted">{inBox.length}</span>
