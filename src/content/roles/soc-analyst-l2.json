@@ -1,0 +1,98 @@
+{
+  "slug": "soc-analyst-l2",
+  "title": "SOC Analyst (L2) / Incident Responder",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "track": "SOC",
+  "level": "mid",
+  "skills": [
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Write detection rules and complex searches; tune noisy alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Lead containment and eradication for an incident and write the report",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Hunt for attacker techniques across logs, endpoints and network data",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-intelligence",
+      "importance": "required",
+      "expectation": "Enrich IOCs and use threat feeds to scope an attack",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-forensics",
+      "importance": "nice_to_have",
+      "expectation": "Collect and analyse disk or memory evidence",
+      "postingShare": null
+    },
+    {
+      "skillId": "malware-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Run a sample in a sandbox and pull indicators",
+      "postingShare": null
+    },
+    {
+      "skillId": "soar",
+      "importance": "nice_to_have",
+      "expectation": "Build or improve an automation playbook",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "required",
+      "expectation": "Investigate and isolate hosts with EDR",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Investigate alerts in AWS, Azure or GCP logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script enrichment and parsing tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Brief stakeholders during an incident",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "comptia-cysa-plus",
+      "importance": "recommended",
+      "why": "Directly tests analyst and response skills"
+    },
+    {
+      "certId": "gcih",
+      "importance": "optional",
+      "why": "Respected incident handling certificate"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

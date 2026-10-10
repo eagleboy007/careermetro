@@ -1,0 +1,51 @@
+{
+  "id": "grc-manager-big4-auditor",
+  "roleSlug": "grc-manager",
+  "persona": "IT audit manager at a consulting firm moving to an in-house GRC head role",
+  "resumeText": "Farah Siddiqui | New Delhi | farah.siddiqui@example.com\n\nEXPERIENCE\nManager, IT Risk Advisory, Yamuna Assurance LLP, Gurugram (2020 - present)\n- Led ISO 27001 and SOC 2 readiness for 11 fintech and SaaS clients.\n- Ran IT general controls audits for listed companies and SEBI-regulated brokers.\n- Built enterprise risk registers and risk treatment plans with client CXOs.\n- Rewrote information security policy sets for 5 clients after gap assessments.\n- Managed a team of 6 consultants and reviewed every workpaper.\n- Agreed audit scope and timelines with client CFOs and CIOs.\n\nSenior Consultant, IT Audit, Rajpath Consulting, New Delhi (2016 - 2020)\n- Tested access, change and backup controls in SAP and core banking systems.\n\nEDUCATION\nBCom (Hons), Shri Ram College of Commerce, 2014; Chartered Accountant, 2016\n\nCERTIFICATIONS\nCISA (2018)\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Led ISO 27001 and SOC 2 readiness for 11 fintech and SaaS clients"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Ran IT general controls audits for listed companies"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Built enterprise risk registers and risk treatment plans"
+      },
+      {
+        "skillId": "security-policies",
+        "quote": "Rewrote information security policy sets for 5 clients"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 6 consultants"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agreed audit scope and timelines with client CFOs and CIOs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "third-party-risk",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cloud-security",
+      "data-privacy",
+      "business-continuity"
+    ]
+  },
+  "reviewedBy": null
+}

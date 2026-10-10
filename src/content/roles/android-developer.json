@@ -1,0 +1,75 @@
+{
+  "slug": "android-developer",
+  "title": "Android Developer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "track": "Mobile",
+  "level": "mid",
+  "skills": [
+    {
+      "skillId": "android",
+      "importance": "required",
+      "expectation": "Build screens with Jetpack Compose and handle the app lifecycle",
+      "postingShare": null
+    },
+    {
+      "skillId": "kotlin",
+      "importance": "required",
+      "expectation": "Write idiomatic Kotlin with coroutines",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call APIs with Retrofit and handle errors and offline states",
+      "postingShare": null
+    },
+    {
+      "skillId": "state-management",
+      "importance": "required",
+      "expectation": "Use ViewModel and a clear architecture such as MVVM",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write unit tests for view models",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-release",
+      "importance": "nice_to_have",
+      "expectation": "Publish and roll out a release on the Play Store",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Maintain older Java code",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "nice_to_have",
+      "expectation": "Find slow screens and memory leaks with profilers",
+      "postingShare": null
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

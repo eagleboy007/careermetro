@@ -1,0 +1,59 @@
+{
+  "id": "senior-ds-analytics-lead",
+  "roleSlug": "senior-data-scientist",
+  "persona": "Data scientist with 5 years at an e-commerce company aiming for senior",
+  "resumeText": "Divya Pillai | Bengaluru | divya.pillai@example.com\n\nEXPERIENCE\nData Scientist, Ulsoor Shopping, Bengaluru (2021 - present)\n- Built a delivery-time prediction model in Python with LightGBM, used on every order.\n- Engineered features from order, rider and weather data.\n- Designed and analysed 25 A/B tests on checkout changes with the product team.\n- Write SQL on a Snowflake warehouse for all analysis.\n- Translate business questions from category managers into analysis plans.\n\nAnalyst, Ulsoor Shopping (2020 - 2021)\n- Built weekly sales dashboards.\n\nEDUCATION\nMSc Mathematics and Computing, IIT Guwahati, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "model in Python with LightGBM"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Built a delivery-time prediction model"
+      },
+      {
+        "skillId": "feature-engineering",
+        "quote": "Engineered features from order, rider and weather data"
+      },
+      {
+        "skillId": "ab-testing",
+        "quote": "Designed and analysed 25 A/B tests"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "Designed and analysed 25 A/B tests"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL on a Snowflake warehouse"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Translate business questions from category managers into analysis plans"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "statistics",
+        "status": "weak"
+      },
+      {
+        "skillId": "model-evaluation",
+        "status": "missing"
+      },
+      {
+        "skillId": "technical-leadership",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "deep-learning",
+      "llm-apps",
+      "model-evaluation"
+    ]
+  },
+  "reviewedBy": null
+}

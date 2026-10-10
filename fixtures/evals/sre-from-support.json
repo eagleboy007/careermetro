@@ -1,0 +1,63 @@
+{
+  "id": "sre-from-support",
+  "roleSlug": "site-reliability-engineer",
+  "persona": "Production support engineer at a fintech moving to SRE",
+  "resumeText": "Nikhil Verma | Gurugram | nikhil.verma@example.com\n\nEXPERIENCE\nProduction Support Engineer, Aravalli Fintech, Gurugram (2020 - present)\n- On-call for the lending platform; led the response to 30+ P1 outages and wrote postmortems.\n- Built Grafana dashboards and Prometheus alerts for API latency and error rates.\n- Debug Java services running on Kubernetes with kubectl and logs.\n- Troubleshoot Linux hosts for CPU, memory and disk issues.\n- Maintain Jenkins pipelines for hotfix releases.\n\nEDUCATION\nBTech Computer Science, Guru Gobind Singh Indraprastha University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "incident-management",
+        "quote": "led the response to 30+ P1 outages and wrote postmortems"
+      },
+      {
+        "skillId": "monitoring",
+        "quote": "Built Grafana dashboards and Prometheus alerts"
+      },
+      {
+        "skillId": "observability",
+        "quote": "Prometheus alerts for API latency and error rates"
+      },
+      {
+        "skillId": "kubernetes",
+        "quote": "Debug Java services running on Kubernetes"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Troubleshoot Linux hosts for CPU, memory and disk issues"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Maintain Jenkins pipelines for hotfix releases"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "observability",
+        "status": "weak"
+      },
+      {
+        "skillId": "kubernetes",
+        "status": "weak"
+      },
+      {
+        "skillId": "sre-practices",
+        "status": "missing"
+      },
+      {
+        "skillId": "terraform",
+        "status": "missing"
+      },
+      {
+        "skillId": "system-design",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "terraform",
+      "go",
+      "sre-practices"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,51 @@
+{
+  "id": "android-java-to-compose",
+  "roleSlug": "android-developer",
+  "persona": "Android developer on older Java code learning Kotlin and Compose",
+  "resumeText": "Pooja Desai | Ahmedabad | pooja.desai@example.com\n\nEXPERIENCE\nAndroid Developer, Sabarmati Retail Tech, Ahmedabad (2023 - present)\n- Maintain a Java Android app with 2 lakh users built with XML layouts.\n- Integrated REST APIs with Retrofit and added offline caching with Room.\n- Moved two screens to Kotlin and started a Jetpack Compose pilot.\n- Use Git with feature branches and pull requests.\n- Published 14 releases on the Play Store with staged rollouts.\n\nEDUCATION\nBE Information Technology, LD College of Engineering, 2022\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "android",
+        "quote": "Maintain a Java Android app with 2 lakh users"
+      },
+      {
+        "skillId": "java",
+        "quote": "Maintain a Java Android app"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Integrated REST APIs with Retrofit"
+      },
+      {
+        "skillId": "kotlin",
+        "quote": "Moved two screens to Kotlin"
+      },
+      {
+        "skillId": "git",
+        "quote": "Use Git with feature branches and pull requests"
+      },
+      {
+        "skillId": "mobile-release",
+        "quote": "Published 14 releases on the Play Store with staged rollouts"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "kotlin",
+        "status": "weak"
+      },
+      {
+        "skillId": "state-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "swift-ios",
+      "flutter",
+      "unit-testing"
+    ]
+  },
+  "reviewedBy": null
+}

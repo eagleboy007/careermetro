@@ -1,0 +1,92 @@
+{
+  "slug": "engineering-manager",
+  "title": "Engineering Manager",
+  "experienceBand": {
+    "minYears": 8,
+    "maxYears": 20
+  },
+  "track": "Engineering leadership",
+  "level": "lead",
+  "skills": [
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, coach and run reviews for a team of 5 to 12",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Guide architecture and quality without writing all the code",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Judge designs for scale and risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run planning and delivery",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree scope and dates with product and business",
+      "postingShare": null
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Shape a quarterly roadmap with product",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Own on-call health and postmortems",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Tie engineering work to outcomes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Keep the delivery pipeline healthy and releases safe",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear updates for leadership",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Some service companies ask for it"
+    },
+    {
+      "certId": "csm",
+      "importance": "optional",
+      "why": "Agile delivery"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

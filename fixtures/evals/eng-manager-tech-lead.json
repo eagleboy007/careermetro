@@ -1,0 +1,67 @@
+{
+  "id": "eng-manager-tech-lead",
+  "roleSlug": "engineering-manager",
+  "persona": "Tech lead at an IT services company moving to engineering manager",
+  "resumeText": "Sanjay Reddy | Hyderabad | sanjay.reddy@example.com\n\nEXPERIENCE\nTechnical Lead, Golconda IT Services, Hyderabad (2018 - present)\n- Lead a team of 8 engineers on a retail client account; run their appraisals with the delivery manager.\n- Own the architecture and design reviews for the client's loyalty platform.\n- Run two-week Scrum sprints, planning and retrospectives.\n- Agree scope and release dates with the client's product owners.\n- Write weekly status reports for the client and our account head.\n- Set up Azure DevOps pipelines and release gates.\n\nSenior Software Engineer, Golconda IT Services (2015 - 2018)\n- Built .NET services for the client's point-of-sale system.\n\nEDUCATION\nBTech Electronics, JNTU Hyderabad, 2015\n",
+  "expected": {
+    "totalYearsExperience": 11,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Lead a team of 8 engineers"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Own the architecture and design reviews"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "architecture and design reviews for the client's loyalty platform"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Run two-week Scrum sprints"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agree scope and release dates with the client's product owners"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write weekly status reports"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Set up Azure DevOps pipelines and release gates"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Built .NET services"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "people-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "roadmapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "incident-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "product-metrics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "roadmapping",
+      "product-metrics",
+      "incident-management"
+    ]
+  },
+  "reviewedBy": null
+}

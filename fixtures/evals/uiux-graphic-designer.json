@@ -1,0 +1,55 @@
+{
+  "id": "uiux-graphic-designer",
+  "roleSlug": "ui-ux-designer",
+  "persona": "Graphic designer moving into product UI/UX",
+  "resumeText": "Tanvi Kulkarni | Pune | tanvi.kulkarni@example.com\n\nEXPERIENCE\nGraphic Designer, Peshwa Creative Studio, Pune (2022 - present)\n- Design social media creatives and landing pages in Figma for 20 brands.\n- Made low-fidelity wireframes for two client mobile apps.\n- Present design options to clients and explain the reasoning behind each.\n\nPROJECTS\n- Google UX Design Certificate capstone: interviewed 5 commuters and designed a bus pass app.\n\nEDUCATION\nBachelor of Design, MIT Institute of Design, Pune, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "figma",
+        "quote": "landing pages in Figma"
+      },
+      {
+        "skillId": "wireframing",
+        "quote": "Made low-fidelity wireframes"
+      },
+      {
+        "skillId": "interaction-design",
+        "quote": "Design social media creatives and landing pages"
+      },
+      {
+        "skillId": "ux-research",
+        "quote": "interviewed 5 commuters"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present design options to clients and explain the reasoning"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "interaction-design",
+        "status": "weak"
+      },
+      {
+        "skillId": "ux-research",
+        "status": "weak"
+      },
+      {
+        "skillId": "prototyping",
+        "status": "missing"
+      },
+      {
+        "skillId": "usability-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "prototyping",
+      "usability-testing",
+      "html-css"
+    ]
+  },
+  "reviewedBy": null
+}

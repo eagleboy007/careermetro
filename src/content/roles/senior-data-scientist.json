@@ -1,0 +1,104 @@
+{
+  "slug": "senior-data-scientist",
+  "title": "Senior Data Scientist",
+  "experienceBand": {
+    "minYears": 5,
+    "maxYears": 12
+  },
+  "track": "Data science",
+  "level": "senior",
+  "skills": [
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Pick, build and defend the right model",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Design experiments and avoid false conclusions",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "Run and read A/B tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean, tested analysis code",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write complex SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "feature-engineering",
+      "importance": "required",
+      "expectation": "Build strong features",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Choose metrics that match the business goal",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "nice_to_have",
+      "expectation": "Use deep learning where it helps",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Evaluate LLM features",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "nice_to_have",
+      "expectation": "Hand models to production",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Turn business questions into analysis and back",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Mentor juniors and review their work",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-data-scientist",
+      "importance": "optional",
+      "why": "Azure ML stack"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "GCP ML stack"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

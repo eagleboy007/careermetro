@@ -1,0 +1,119 @@
+{
+  "slug": "data-engineer",
+  "title": "Data Engineer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "track": "Data engineering",
+  "level": "mid",
+  "skills": [
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write complex, fast SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Build pipelines in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Design batch ETL/ELT pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "required",
+      "expectation": "Schedule and monitor pipelines with Airflow or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "required",
+      "expectation": "Process large data with Spark or PySpark",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Model and load data into Snowflake, BigQuery, Redshift or Databricks",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design star schemas and slowly changing dimensions",
+      "postingShare": null
+    },
+    {
+      "skillId": "dbt",
+      "importance": "nice_to_have",
+      "expectation": "Build tested transformations in dbt",
+      "postingShare": null
+    },
+    {
+      "skillId": "streaming-data",
+      "importance": "nice_to_have",
+      "expectation": "Build a Kafka or Kinesis stream",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "oneOfGroup": "cloud",
+      "expectation": "Work on at least one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "oneOfGroup": "cloud",
+      "expectation": "Work on at least one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "gcp",
+      "importance": "nice_to_have",
+      "oneOfGroup": "cloud",
+      "expectation": "Work on at least one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "nice_to_have",
+      "expectation": "Handle data quality checks and lineage",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Version pipelines in Git",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "recommended",
+      "why": "Common in Indian data engineering postings"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "Snowflake shops"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

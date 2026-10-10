@@ -1,0 +1,81 @@
+{
+  "slug": "ui-ux-designer",
+  "title": "UI/UX Designer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "track": "Product design",
+  "level": "mid",
+  "skills": [
+    {
+      "skillId": "figma",
+      "importance": "required",
+      "expectation": "Design screens and components in Figma",
+      "postingShare": null
+    },
+    {
+      "skillId": "wireframing",
+      "importance": "required",
+      "expectation": "Turn a problem into wireframes quickly",
+      "postingShare": null
+    },
+    {
+      "skillId": "interaction-design",
+      "importance": "required",
+      "expectation": "Design clear flows, states and visual hierarchy",
+      "postingShare": null
+    },
+    {
+      "skillId": "prototyping",
+      "importance": "required",
+      "expectation": "Build clickable prototypes to test ideas",
+      "postingShare": null
+    },
+    {
+      "skillId": "ux-research",
+      "importance": "required",
+      "expectation": "Plan and run user interviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "usability-testing",
+      "importance": "required",
+      "expectation": "Run a usability test and act on findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "design-systems",
+      "importance": "nice_to_have",
+      "expectation": "Use and extend a design system",
+      "postingShare": null
+    },
+    {
+      "skillId": "accessibility",
+      "importance": "nice_to_have",
+      "expectation": "Design for WCAG contrast and screen readers",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Understand what is easy or hard to build",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present and defend design decisions",
+      "postingShare": null
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}
