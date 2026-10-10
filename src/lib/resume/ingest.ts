@@ -5,6 +5,7 @@ import { aiCalls, consents, profiles, resumes } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
 import { HEALTH_PURPOSE } from "@/lib/health";
 import { ANONYMOUS_TTL_HOURS, uploadedBy, type Owner } from "@/lib/owner";
+import { windowLimiter } from "@/lib/rate-limit";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
@@ -52,6 +53,9 @@ const dayAgo = () => new Date(Date.now() - ANONYMOUS_TTL_HOURS * 60 * 60 * 1000)
 const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
 
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
+
+/** Files that couldn't be read, per client per day on one server instance (T18). */
+export const failedReads = windowLimiter(10, 24 * 60 * 60 * 1000);
 
 const BUSY: IngestResult = {
   ok: false,
@@ -125,11 +129,16 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
   const early = await checkLimits(db, input.owner, input.clientHash);
   if (early) return early;
 
+  // Files that fail to read never become rows, so the database limits don't see them. Cap them here instead.
+  if (!failedReads.allows(input.clientHash)) {
+    return { ok: false, status: 429, code: "rate_limited", message: "You've reached today's limit for resume uploads. Please try again tomorrow." };
+  }
   let extracted;
   try {
     extracted = await extractResumeText(input.bytes, input.as);
   } catch (error) {
     if (error instanceof ResumeError) {
+      failedReads.take(input.clientHash);
       return { ok: false, status: error.code === "too_large" ? 413 : 422, code: error.code, message: error.message };
     }
     throw error;
