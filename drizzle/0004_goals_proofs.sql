@@ -34,7 +34,7 @@ CREATE TABLE "user_goals" (
 --> statement-breakpoint
 ALTER TABLE "path_steps" ADD COLUMN "goal_id" uuid;--> statement-breakpoint
 ALTER TABLE "path_steps" ADD COLUMN "kind" "step_kind" DEFAULT 'learn' NOT NULL;--> statement-breakpoint
-ALTER TABLE "path_steps" ADD COLUMN "source" text DEFAULT 'app' NOT NULL;--> statement-breakpoint
+ALTER TABLE "path_steps" ADD COLUMN "source" "step_source" DEFAULT 'app' NOT NULL;--> statement-breakpoint
 ALTER TABLE "gap_proofs" ADD CONSTRAINT "gap_proofs_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "gap_proofs" ADD CONSTRAINT "gap_proofs_skill_id_skills_id_fk" FOREIGN KEY ("skill_id") REFERENCES "public"."skills"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_goals" ADD CONSTRAINT "user_goals_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

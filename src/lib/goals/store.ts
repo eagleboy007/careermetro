@@ -102,7 +102,6 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
   });
 }
 
-/** Records a proof the person sent. It waits as pending until it is checked, and fills nothing until accepted. */
 /**
  * Makes goals from the person's current analysis, if there is one. Runs after sign-in and sign-up, so an anonymous
  * analysis that moved to the account gets its goals at once. Never fails the caller: goals are made again on the
@@ -117,9 +116,21 @@ export async function syncCurrentGoals(userId: string, db: Db = getDb()): Promis
   }
 }
 
+/**
+ * Records a proof the person sent. It waits as pending until it is checked, and fills nothing until accepted. Work
+ * proof must point at a role on one of the person's own saved profiles.
+ */
 export async function addProof(userId: string, skillId: string, evidence: ProofEvidence, db: Db = getDb()): Promise<string | null> {
   const parsed = proofEvidence.safeParse(evidence);
   if (!parsed.success || !knownSkill.has(skillId)) return null;
+  if (parsed.data.type === "work") {
+    const [own] = await db
+      .select({ data: profiles.data })
+      .from(profiles)
+      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+      .where(and(eq(profiles.id, parsed.data.profileId), eq(resumes.userId, userId)));
+    if (!own || parsed.data.roleIndex >= (own.data.roles?.length ?? 0)) return null;
+  }
   const [row] = await db.insert(gapProofs).values({ userId, skillId, type: parsed.data.type, evidence: parsed.data }).returning({ id: gapProofs.id });
   return row.id;
 }

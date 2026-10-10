@@ -55,7 +55,14 @@ describe.skipIf(!db)("goals (database)", () => {
   /** A saved analysis for this user, with a path whose steps cover the given skills. */
   async function saved(userId: string, result: GapAnalysis, pathSkills: string[] = []) {
     const [resume] = await db!.insert(schema.resumes).values({ userId, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning();
-    const profile = { headline: null, totalYearsExperience: null, roles: [], skills: [], education: [], certifications: [] };
+    const profile = {
+      headline: null,
+      totalYearsExperience: null,
+      roles: [{ title: "Analyst", employer: "Example Co", start: "2023-01", end: null, highlights: [] }],
+      skills: [],
+      education: [],
+      certifications: [],
+    };
     const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
     const [ga] = await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result, matcherVersion: MATCHER_VERSION }).returning();
     if (pathSkills.length) {
@@ -129,7 +136,21 @@ describe.skipIf(!db)("goals (database)", () => {
     const theirs = await syncGoals(them, await saved(them, analysis([b])), db!);
     expect(theirs.map((g) => g.skillId)).toEqual([b]);
 
-    const proof = await addProof(me, a, { type: "work", profileId: "00000000-0000-4000-8000-000000000000", roleIndex: 0 }, db!);
+    // Work proof must point at a role on the person's own profile.
+    const [theirProfile] = await db!
+      .select({ id: schema.profiles.id })
+      .from(schema.profiles)
+      .innerJoin(schema.resumes, eq(schema.resumes.id, schema.profiles.resumeId))
+      .where(eq(schema.resumes.userId, them));
+    expect(await addProof(me, a, { type: "work", profileId: theirProfile.id, roleIndex: 0 }, db!)).toBeNull();
+    const [mine] = await db!
+      .select({ id: schema.profiles.id })
+      .from(schema.profiles)
+      .innerJoin(schema.resumes, eq(schema.resumes.id, schema.profiles.resumeId))
+      .where(eq(schema.resumes.userId, me));
+    expect(await addProof(me, a, { type: "work", profileId: mine.id, roleIndex: 1 }, db!)).toBeNull();
+    const proof = await addProof(me, a, { type: "work", profileId: mine.id, roleIndex: 0 }, db!);
+    expect(proof).not.toBeNull();
     expect(await setProofStatus(proof!, them, "accepted", "person", db!)).toBe(false);
     const [row] = await db!.select({ status: schema.gapProofs.status }).from(schema.gapProofs).where(eq(schema.gapProofs.id, proof!));
     expect(row.status).toBe("pending");

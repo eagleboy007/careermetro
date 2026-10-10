@@ -1,5 +1,5 @@
 {
-  "id": "d5015c4b-b882-4dde-be21-47addee8097e",
+  "id": "ac802435-aada-4b5c-9410-9193bed29f29",
   "prevId": "817245fc-b634-4ae4-ac81-795fdf92c594",
   "version": "7",
   "dialect": "postgresql",
@@ -633,7 +633,8 @@
         },
         "source": {
           "name": "source",
-          "type": "text",
+          "type": "step_source",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'app'"

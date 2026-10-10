@@ -260,9 +260,7 @@ export const pathSteps = pgTable(
     /** The person's goal for this skill. Null on an anonymous visitor's path, which has no goals. */
     goalId: uuid("goal_id").references(() => userGoals.id, { onDelete: "set null" }),
     kind: stepKind("kind").notNull().default("learn"),
-    source: text("source", { enum: ["app", "user"] })
-      .notNull()
-      .default("app"),
+    source: stepSource("source").notNull().default("app"),
   },
   (t) => [uniqueIndex("path_steps_position").on(t.pathId, t.position), index("path_steps_goal").on(t.goalId)],
 );
