@@ -217,7 +217,7 @@ export async function markStepDone(stepId: string, owner: Owner, done: boolean, 
     .where(and(eq(pathSteps.id, stepId), ownsResume(owner)));
   if (!step) return false;
   // The same skill on every one of the person's paths (other hours, earlier uploads) moves together, so a path built
-  // later starts from the same progress and an undo doesn't come back.
+  // later starts from the same progress and an undo doesn't come back. Marking again keeps the first date.
   const ownPaths = db
     .select({ id: paths.id })
     .from(paths)
@@ -227,7 +227,7 @@ export async function markStepDone(stepId: string, owner: Owner, done: boolean, 
     .where(ownsResume(owner));
   await db
     .update(pathSteps)
-    .set({ doneAt: done ? new Date() : null })
+    .set({ doneAt: done ? sql`coalesce(${pathSteps.doneAt}, now())` : null })
     .where(and(eq(pathSteps.skillId, step.skillId), eq(pathSteps.kind, "learn"), inArray(pathSteps.pathId, ownPaths)));
   return true;
 }
