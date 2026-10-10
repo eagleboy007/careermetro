@@ -102,6 +102,20 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
   });
 }
 
+/** The person's goals in order, read only: for checks that must not write, such as a tick. */
+export async function goalsOf(userId: string, db: Db = getDb()): Promise<UserGoal[]> {
+  const [rows, proved] = await Promise.all([
+    db
+      .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position })
+      .from(userGoals)
+      .where(eq(userGoals.userId, userId))
+      .orderBy(asc(userGoals.position), asc(userGoals.createdAt)),
+    provedSkills(userId, db),
+  ]);
+  const provedSet = new Set(proved);
+  return rows.map((r) => userGoal.parse({ ...r, proved: provedSet.has(r.skillId) }));
+}
+
 /**
  * Makes goals from the person's current analysis, if there is one. Runs after sign-in and sign-up, so an anonymous
  * analysis that moved to the account gets its goals at once. Never fails the caller: goals are made again on the

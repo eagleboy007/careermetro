@@ -19,9 +19,9 @@ const MAX_COURSES = 2;
 const SITTING_MINUTES = 25;
 
 const hoursLabel = (minutes: number) => (minutes < 60 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`);
-const OPEN_PATH = "open-path";
 
-/** The tasks of a goal's learn pitstop. Ids stay the same from day to day, so a tick is remembered. */
+/** The tasks of a goal's learn pitstop. Ids stay the same from day to day, so a tick is remembered. Before the
+ * person opens a path, a goal's one task is to open it. */
 function tasksOf(g: RideGoal): Omit<RideTask, "done">[] {
   const tasks: Omit<RideTask, "done">[] = g.resources.slice(0, MAX_COURSES).map((r) => ({
     id: `${g.goalId}:r:${r.id}`,
@@ -33,44 +33,57 @@ function tasksOf(g: RideGoal): Omit<RideTask, "done">[] {
   if (g.practice?.trim()) {
     tasks.push({ id: `${g.goalId}:practice`, title: clip(g.practice, 120), detail: clip(`Practice · ${g.name}`, 120), minutes: 20, locked: false });
   }
+  if (!tasks.length) {
+    tasks.push({
+      id: `${g.goalId}:open-path`,
+      title: clip(`Open your path for ${g.name}`, 120),
+      detail: "Free courses picked for your gaps",
+      minutes: 5,
+      locked: false,
+    });
+  }
   return tasks;
 }
 
 /** Every task id the person could tick on a line, for checking a tick. */
 export function taskIdsOf(goals: RideGoal[]): Set<string> {
-  return new Set([OPEN_PATH, ...goals.flatMap((g) => tasksOf(g).map((t) => t.id))]);
+  return new Set(goals.filter((g) => !g.proved).flatMap((g) => tasksOf(g).map((t) => t.id)));
 }
 
 /**
- * Today's ride (handoff section 5): the first goal not proved whose tasks are not all done, or, when every task is
- * done, the first goal still waiting for proof. Each goal is two pitstops, learn then prove; the train has passed the
- * pitstops of proved goals. Ticking tasks never proves a goal. Null once every goal is proved.
+ * Today's ride (handoff section 5): the first goal not proved with tasks left, or, when every task is done, the first
+ * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks
+ * stay so they can be taken back. Each goal is two pitstops, learn then prove; the train has passed the pitstops of
+ * proved goals. Ticking tasks never proves a goal. Null once every goal is proved.
  */
-export function buildRide(input: { goals: RideGoal[]; everDone: ReadonlySet<string>; doneThisWeek: ReadonlySet<string> }): Ride | null {
+export function buildRide(input: {
+  goals: RideGoal[];
+  /** Task ids ticked on an earlier day. */
+  doneBefore: ReadonlySet<string>;
+  /** Task ids ticked today. */
+  doneToday: ReadonlySet<string>;
+  doneThisWeek: ReadonlySet<string>;
+}): Ride | null {
   const open = input.goals.filter((g) => !g.proved);
   if (!open.length) return null;
-  const isDone = (g: RideGoal, id: string) => g.learnDone || input.everDone.has(id);
-  const unfinished = open.find((g) => tasksOf(g).some((t) => !isDone(g, t.id)));
+  const doneEarlier = (g: RideGoal, id: string) => g.learnDone || input.doneBefore.has(id);
+  const left = (g: RideGoal) => tasksOf(g).filter((t) => !doneEarlier(g, t.id));
+  // Today's ticks keep a goal current until tomorrow, so they can still be taken back.
+  const unfinished = open.find((g) => left(g).length > 0);
   const current = unfinished ?? open[0];
   const index = input.goals.indexOf(current);
   const pitstop = index * 2 + 1;
   const name = clip(current.name, 60);
 
-  let tasks: RideTask[] = tasksOf(current).map((t) => ({ ...t, done: isDone(current, t.id) }));
-  if (!tasks.length) {
-    tasks = [
-      {
-        id: OPEN_PATH,
-        title: clip(`Open your path for ${name}`, 120),
-        detail: "Free courses picked for your gaps",
-        minutes: 5,
-        done: input.everDone.has(OPEN_PATH),
-        locked: false,
-      },
-    ];
-  }
+  const today = left(current);
+  // Every task done: show them done, waiting for proof.
+  const tasks: RideTask[] = today.length
+    ? today.map((t) => ({ ...t, done: input.doneToday.has(t.id) }))
+    : tasksOf(current).map((t) => ({ ...t, done: true }));
+  // This week's share of the pitstop: tasks of this goal ticked this week, out of those plus the ones still open.
+  const weekDone = tasksOf(current).filter((t) => input.doneThisWeek.has(t.id)).length;
   const emphasis = `your ${name} goal.`;
-  const ready = !unfinished;
+  const ready = !unfinished && tasks.every((t) => t.done);
   return rideSchema.parse({
     pitstop,
     pitstopCount: input.goals.length * 2,
@@ -100,7 +113,7 @@ export function buildRide(input: { goals: RideGoal[]; everDone: ReadonlySet<stri
       ],
     },
     tasks,
-    weekTasksDone: tasks.filter((t) => input.doneThisWeek.has(t.id)).length,
-    weekTasksTotal: tasks.length,
+    weekTasksDone: weekDone,
+    weekTasksTotal: Math.max(1, weekDone + tasks.filter((t) => !t.done).length),
   });
 }

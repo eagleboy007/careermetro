@@ -104,7 +104,8 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
       tally: { skillsFound: gaps.analysis.metSkillIds.length, gaps: gaps.analysis.gaps.length, goals: gaps.analysis.gaps.length },
     });
     if (before.state !== "first") throw new Error("not first");
-    expect(before.firstTasks.map((t) => t.id)).toEqual(["open-path"]);
+    expect(before.firstTasks).toHaveLength(1);
+    expect(before.firstTasks[0].id).toMatch(/:open-path$/);
     expect(before.firstTasks[0].title).toMatch(/^Open your path for /);
 
     const path = await getPathForOwner(r.resumeId, owner, role, 5, { db: db! });
@@ -132,6 +133,12 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     const next = await todayStateFor(userId, tomorrow, db!);
     if (next.state !== "returning") throw new Error("not returning");
     expect(next.streak).toEqual({ days: 1, todayCounted: false });
+    // Yesterday's task is done for good: it leaves today's list, can't be ticked again for a new ride day, and
+    // unticking it today changes nothing.
+    expect(next.ride.tasks.some((t) => t.id === practice.id)).toBe(false);
+    expect(await tickTask(userId, practice.id, true, tomorrow, db!)).toBe(false);
+    expect(await tickTask(userId, practice.id, false, tomorrow, db!)).toBe(false);
+    expect(await db!.select().from(schema.rideDays).where(eq(schema.rideDays.userId, userId))).toHaveLength(1);
 
     // Only tasks on the person's own line count.
     expect(await tickTask(userId, "made-up:task", true, now, db!)).toBe(false);
@@ -181,7 +188,8 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     await db!.update(schema.pathSteps).set({ doneAt: new Date() }).where(eq(schema.pathSteps.pathId, path.path.pathId));
     const state = await todayStateFor(userId, now, db!);
     if (state.state !== "first") throw new Error("not first");
-    expect(state.firstTasks.every((t) => t.done)).toBe(true);
+    // Goals the path covered are done; the ride waits on them, or moves to a goal the path left for later.
+    expect(state.firstTasks.every((t) => t.done || t.id.endsWith(":open-path"))).toBe(true);
   });
 
   it("never reads another person's resume", async () => {
