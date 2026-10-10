@@ -1,0 +1,97 @@
+{
+  "slug": "penetration-tester",
+  "title": "Penetration Tester (VAPT)",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "penetration-testing",
+      "importance": "required",
+      "expectation": "Run web, network and API penetration tests end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "required",
+      "expectation": "Rate findings by CVSS and retest fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-security",
+      "importance": "required",
+      "expectation": "Exploit OWASP Top 10 issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Scan and enumerate networks with Nmap",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Kali Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write small exploit or automation scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write small exploit or automation scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Test cloud configurations",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write a clear VAPT report for CERT-In empanelled audits",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "scripting-language",
+      "label": "A scripting language (Python or Bash)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "oscp",
+      "importance": "recommended",
+      "why": "Hands-on exam respected by employers"
+    },
+    {
+      "certId": "ejpt",
+      "importance": "optional",
+      "why": "Hands-on entry certificate"
+    },
+    {
+      "certId": "ceh",
+      "importance": "optional",
+      "why": "Asked for in many Indian VAPT postings"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "flutter-freelancer",
+  "roleSlug": "cross-platform-mobile-developer",
+  "persona": "Freelance Flutter developer with apps on both stores",
+  "resumeText": "Imran Shaikh | Nagpur | imran.shaikh@example.com\n\nEXPERIENCE\nFreelance Mobile Developer (2023 - present)\n- Built 5 Flutter apps for local businesses, using Riverpod for state management.\n- Connected apps to Firebase and REST APIs with offline caching.\n- Released every app on both the Play Store and the App Store.\n- Keep all client code in Git with tagged releases.\n\nEDUCATION\nBSc Computer Science, Rashtrasant Tukadoji Maharaj Nagpur University, 2022\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "flutter",
+        "quote": "Built 5 Flutter apps for local businesses"
+      },
+      {
+        "skillId": "mobile-architecture",
+        "quote": "using Riverpod for state management"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Connected apps to Firebase and REST APIs"
+      },
+      {
+        "skillId": "mobile-release",
+        "quote": "Released every app on both the Play Store and the App Store"
+      },
+      {
+        "skillId": "git",
+        "quote": "Keep all client code in Git with tagged releases"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "unit-testing",
+      "react-native",
+      "swift-ios"
+    ]
+  },
+  "reviewedBy": null
+}

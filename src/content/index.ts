@@ -17,9 +17,14 @@ import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
 import skillsJson from "./skills.json";
 import androidDeveloper from "./roles/android-developer.json";
+import appsecEngineer from "./roles/appsec-engineer.json";
 import businessAnalyst from "./roles/business-analyst.json";
+import cloudEngineer from "./roles/cloud-engineer.json";
+import cloudSecurityEngineer from "./roles/cloud-security-engineer.json";
+import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
+import dataEngineer from "./roles/data-engineer.json";
 import dataScientist from "./roles/data-scientist.json";
 import databaseArchitect from "./roles/database-architect.json";
 import devopsEngineer from "./roles/devops-engineer.json";
@@ -31,10 +36,14 @@ import grcManager from "./roles/grc-manager.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
 import iosDeveloper from "./roles/ios-developer.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
+import mlEngineer from "./roles/ml-engineer.json";
+import penetrationTester from "./roles/penetration-tester.json";
 import privacyAnalyst from "./roles/privacy-analyst.json";
 import productManager from "./roles/product-manager.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
+import seniorBackendEngineer from "./roles/senior-backend-engineer.json";
 import seniorDataScientist from "./roles/senior-data-scientist.json";
+import siteReliabilityEngineer from "./roles/site-reliability-engineer.json";
 import socAnalystL2 from "./roles/soc-analyst-l2.json";
 import socLead from "./roles/soc-lead.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
@@ -56,9 +65,14 @@ export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
   .parse([
     androidDeveloper,
+    appsecEngineer,
     businessAnalyst,
+    cloudEngineer,
+    cloudSecurityEngineer,
+    crossPlatformMobileDeveloper,
     cyberSecurityAnalyst,
     dataAnalyst,
+    dataEngineer,
     dataScientist,
     databaseArchitect,
     devopsEngineer,
@@ -70,10 +84,14 @@ export const roleProfiles: RoleProfile[] = z
     informationSecurityAnalyst,
     iosDeveloper,
     javaBackendDeveloper,
+    mlEngineer,
+    penetrationTester,
     privacyAnalyst,
     productManager,
     qaAutomationEngineer,
+    seniorBackendEngineer,
     seniorDataScientist,
+    siteReliabilityEngineer,
     socAnalystL2,
     socLead,
     uiUxDesigner,

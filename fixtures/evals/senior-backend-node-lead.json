@@ -1,0 +1,63 @@
+{
+  "id": "senior-backend-node-lead",
+  "roleSlug": "senior-backend-engineer",
+  "persona": "Node.js developer with 6 years, ready for a senior backend role",
+  "resumeText": "Aisha Khan | Bengaluru | aisha.khan@example.com\n\nEXPERIENCE\nSoftware Engineer II, Koramangala Commerce, Bengaluru (2021 - present)\n- Designed the order service for 1 million orders a day after splitting the monolith into 7 microservices.\n- Use Kafka for order events between services.\n- Tuned slow Postgres queries with EXPLAIN plans and new indexes, cutting p95 latency by 60%.\n- Containerised services with Docker and deploy through GitHub Actions.\n- Mentor 3 junior engineers and lead design reviews.\n\nSoftware Engineer, Lalbagh Labs, Bengaluru (2019 - 2021)\n- Built Node.js REST APIs with MongoDB.\n\nEDUCATION\nBTech Computer Science, NIT Surathkal, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "system-design",
+        "quote": "Designed the order service for 1 million orders a day"
+      },
+      {
+        "skillId": "microservices",
+        "quote": "splitting the monolith into 7 microservices"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Use Kafka for order events"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Tuned slow Postgres queries with EXPLAIN plans"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Tuned slow Postgres queries"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Containerised services with Docker"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "deploy through GitHub Actions"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Mentor 3 junior engineers and lead design reviews"
+      },
+      {
+        "skillId": "nodejs",
+        "quote": "Built Node.js REST APIs"
+      },
+      {
+        "skillId": "nosql",
+        "quote": "with MongoDB"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "observability",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "observability",
+      "kubernetes",
+      "go"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -13,6 +13,8 @@ const mean = (key: "gapPrecision" | "gapRecall" | "statusAccuracy") => scores.re
 // 2026-10-10, 22 cases with 9 researched roles: precision 0.98, recall 0.68, status 1.00 (the first 13 cases still
 // 0.70). Every new miss is "light use" labelled weak ("researched breach rules", "installed EDR agents"); the matcher
 // reads any real quote as held, so judging depth is a matcher change of its own.
+// 2026-10-10, 31 cases after 9 roles with "one of these" groups: precision 0.98, recall 0.68, status 1.00. Group gaps
+// score under the group, whichever of its skills a label or the matcher names.
 describe("matcher eval", () => {
   it("finds the labelled gaps with few false alarms", () => {
     expect(mean("gapPrecision")).toBeGreaterThanOrEqual(0.9);

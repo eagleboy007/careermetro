@@ -1,0 +1,129 @@
+{
+  "slug": "ml-engineer",
+  "title": "Machine Learning Engineer",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write production-quality Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Train and tune classical models",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "required",
+      "expectation": "Train neural networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "pytorch",
+      "importance": "required",
+      "expectation": "Build and train models in PyTorch",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "required",
+      "expectation": "Deploy a model behind an API with monitoring",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Track experiments and automate retraining",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "required",
+      "expectation": "Containerise models",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Choose metrics and catch data leakage",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Build an LLM feature with evaluation",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "nice_to_have",
+      "expectation": "Build retrieval over embeddings",
+      "postingShare": null
+    },
+    {
+      "skillId": "ml-system-design",
+      "importance": "nice_to_have",
+      "expectation": "Design an end-to-end ML system",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Pull and prepare training data",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Use a cloud ML stack",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Use a cloud ML stack",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Use a cloud ML stack",
+      "postingShare": null,
+      "oneOf": "cloud"
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "AWS ML stack"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Google Cloud ML stack"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

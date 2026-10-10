@@ -1,0 +1,140 @@
+{
+  "slug": "site-reliability-engineer",
+  "title": "Site Reliability Engineer (SRE)",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "sre-practices",
+      "importance": "required",
+      "expectation": "Set SLOs and error budgets and act on them",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "required",
+      "expectation": "Instrument services with logs, metrics and traces",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Take part in on-call and write blameless postmortems",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Operate production Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Debug performance at the OS level",
+      "postingShare": null
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Write tooling in Go or Python",
+      "postingShare": null,
+      "oneOf": "tooling-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write tooling in Go or Python",
+      "postingShare": null,
+      "oneOf": "tooling-language"
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Manage infrastructure as code",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Build safe deploys with canaries and rollbacks",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "nice_to_have",
+      "expectation": "Debug network issues in the cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Design for availability and scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "nice_to_have",
+      "expectation": "Plan failover and disaster recovery",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Run services on a major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Run services on a major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Run services on a major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    }
+  ],
+  "groups": [
+    {
+      "id": "tooling-language",
+      "label": "A language for tooling (Go or Python)"
+    },
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cka",
+      "importance": "recommended",
+      "why": "Proves hands-on Kubernetes"
+    },
+    {
+      "certId": "prometheus-pca",
+      "importance": "optional",
+      "why": "Monitoring basics"
+    },
+    {
+      "certId": "aws-devops-professional",
+      "importance": "optional",
+      "why": "Senior AWS operations"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}
