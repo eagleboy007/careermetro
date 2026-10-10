@@ -176,6 +176,13 @@ describe("maskPii", () => {
     "Expected 75000 / 95000",
     "Stipend 65000 - 85000",
     "Processed 60000 - 90000 rows a day",
+    "Kaggle score 78450 / 90000",
+    "Rank 61234 / 98765",
+    "Tickets 70001 - 70450 resolved",
+    "Employee IDs 60231 / 60298",
+    "Roll No. 72145/88321",
+    "Credential ID 917654321098",
+    "Txn 919876543210",
     "JEE Main rank 102345",
     "Near real-time pipeline, 500000 events/day",
     "Assistant, India Post, Post Office Savings Bank, 2019",
@@ -317,7 +324,7 @@ describe("maskPii", () => {
 });
 
 describe("phones split or run together (T26)", () => {
-  it.each(["98765 - 43210", "98765 / 43210", "98765/43210", "919876543210", "Call 919876543210 after 6"])("masks %s", (line) => {
+  it.each(["98765 - 43210", "98765 / 43210", "98765/43210", "919876543210", "Call 919876543210 after 6", "Ph: 98700 / 43200", "Contact 98700/43200"])("masks %s", (line) => {
     const text = maskPii(`Asha Rao\nData Analyst\n\nEXPERIENCE\nAnalyst, Example Ltd\n2022\n${line}`).text.split("\n").at(-1);
     expect(text).toContain("[PHONE]");
     expect(text).not.toMatch(/\d{5}/);

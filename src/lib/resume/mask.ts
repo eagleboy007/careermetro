@@ -16,17 +16,19 @@ const SEP = "[\\s().\\u2013\\u2014-]";
  * "98765 / 43210", "0091 98765 43210", "919876543210"), landlines with an STD code in brackets, and international numbers starting with +. A mobile is
  * exactly 10 digits starting with 6-9, so years, amounts and percentages don't match.
  */
+/** Words before a number pair that make it a score, rank or ID rather than a phone ("Rank 61234 / 98765"). */
+const COUNT_WORDS = "score|rank|air|roll|no|ticket|tickets|id|ids|invoice|part|users|rows|of|txn|order|ref|model|sku";
 const PHONE = new RegExp(
   [
     // "98765 - 43210" only with a +91 or 0 in front, or a phone label before it, so "60000 - 80000" stays a salary range.
     `(?<![\\d+])(?:(?:\\+\\s?|00)91${SEP}{0,2}|0)\\(?[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
-    `(?<=\\b(?:ph|phone|mob|mobile|tel|contact|whatsapp|cell)\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
+    `(?<=\\b(?:ph|phone|mob|mobile|tel|contact|whatsapp|cell)\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
     // Not after a money word, so "Salary range 70000–90000" stays.
     `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?:(?:\\+\\s?|00)91${SEP}{0,2}|91${SEP}{1,2}|0)?\\(?[6-9](?:${SEP}{0,2}\\d){9}(?!\\d)`,
     // A bare "98765 - 43210" or "98765 / 43210": a salary range ("70000 - 90000") is two round numbers, so it stays.
-    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?![6-9]\\d{2}00\\s?[-\\u2013\\u2014/]\\s?\\d{3}00(?!\\d))[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
+    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$|${COUNT_WORDS})\\.?\\s?[:\\-]?\\s?)(?![6-9]\\d{2}00\\s?[-\\u2013\\u2014/]\\s?\\d{3}00(?!\\d))(?!([6-9]\\d)\\d{3}\\s?[-\\u2013\\u2014/]\\s?\\1\\d{3}(?!\\d))[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
     // "919876543210": the country code run straight into the mobile.
-    `(?<![\\d+])91[6-9]\\d{9}(?!\\d)`,
+    `(?<![\\d+])(?<!\\b(?:${COUNT_WORDS})\\.?\\s?[:#\\-]?\\s?)91[6-9]\\d{9}(?!\\d)`,
     `\\(0\\d{2,4}\\)\\s?\\d{3,4}[\\s-]?\\d{4}\\b`,
     `\\+(?!\\s?91)\\d{1,3}[\\s-]?\\d{2,4}[\\s-]?\\d{3,4}[\\s-]?\\d{3,4}\\b`,
   ].join("|"),
