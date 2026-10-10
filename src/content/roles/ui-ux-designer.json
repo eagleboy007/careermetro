@@ -5,8 +5,6 @@
     "minYears": 0,
     "maxYears": 5
   },
-  "track": "Product design",
-  "level": "mid",
   "skills": [
     {
       "skillId": "figma",

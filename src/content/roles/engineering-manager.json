@@ -5,8 +5,6 @@
     "minYears": 8,
     "maxYears": 20
   },
-  "track": "Engineering leadership",
-  "level": "lead",
   "skills": [
     {
       "skillId": "people-management",

@@ -5,8 +5,6 @@
     "minYears": 6,
     "maxYears": 15
   },
-  "track": "SOC",
-  "level": "lead",
   "skills": [
     {
       "skillId": "security-incident-response",

@@ -37,10 +37,6 @@
     ],
     "gaps": [
       {
-        "skillId": "statistics",
-        "status": "weak"
-      },
-      {
         "skillId": "model-evaluation",
         "status": "missing"
       },

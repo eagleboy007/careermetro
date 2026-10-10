@@ -5,8 +5,6 @@
     "minYears": 5,
     "maxYears": 12
   },
-  "track": "Data science",
-  "level": "senior",
   "skills": [
     {
       "skillId": "machine-learning",

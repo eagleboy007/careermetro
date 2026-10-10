@@ -5,8 +5,6 @@
     "minYears": 7,
     "maxYears": 18
   },
-  "track": "GRC",
-  "level": "lead",
   "skills": [
     {
       "skillId": "compliance-frameworks",

@@ -5,8 +5,6 @@
     "minYears": 2,
     "maxYears": 5
   },
-  "track": "SOC",
-  "level": "mid",
   "skills": [
     {
       "skillId": "siem",
