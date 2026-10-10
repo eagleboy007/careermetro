@@ -32,6 +32,23 @@ describe("matchProfile", () => {
     expect(matchResult.parse(r).matcherVersion).toBe(MATCHER_VERSION);
   });
 
+  it("never makes a context skill (communication, problem solving) a gap, but counts it when the resume shows it", () => {
+    const pm = role("product-manager");
+    const none = matchProfile(profile({}), pm, now);
+    for (const id of ["communication", "problem-solving", "stakeholder-management"]) expect(statusOf(none, id)).toBeUndefined();
+    expect(none.readiness.requiredTotal).toBe(pm.skills.filter((s) => s.importance === "required").length - 3);
+
+    const shown = matchProfile(
+      profile({
+        roles: [{ title: "Product Manager", employer: "Example Fintech", start: "2023-01", end: null, highlights: ["Led stakeholder management across risk and ops teams"] }],
+      }),
+      pm,
+      now,
+    );
+    expect(statusOf(shown, "stakeholder-management")).toBe("met");
+    expect(shown.readiness.requiredTotal).toBe(none.readiness.requiredTotal + 1);
+  });
+
   it("calls a skill that is only listed weak evidence", () => {
     const r = matchProfile(profile({ skills: [{ name: "SQL", lastUsed: null, evidence: ["SKILLS: SQL, Excel, Power BI"] }] }), dataAnalyst, now);
     expect(r.gaps.find((g) => g.skillId === "sql")).toMatchObject({ status: "weak", resumeQuote: "SKILLS: SQL, Excel, Power BI" });
@@ -286,7 +303,8 @@ describe("certifications on the resume", () => {
     const r = matchProfile(profile({ certifications: ["CISSP – ISC2, 2024"] }), infosec, now);
     for (const id of ["compliance-frameworks", "security-policies", "risk-assessment", "identity-access-management"]) expect(statusOf(r, id)).toBe("met");
     expect(statusOf(r, "security-audits")).toBe("weak");
-    expect(statusOf(r, "stakeholder-management")).toBe("weak");
+    // A context skill the certificate only touches is not shown: it is never a gap.
+    expect(statusOf(r, "stakeholder-management")).toBeUndefined();
     expect(r.met.find((m) => m.skillId === "risk-assessment")?.resumeQuote).toBe("CISSP – ISC2, 2024");
   });
 

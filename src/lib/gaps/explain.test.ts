@@ -6,7 +6,7 @@ import { buildGapAnalysis, SHOWN_GAPS, templateExplanation } from "./analysis";
 import { explainGaps, wrapAnalysis, type ExplainClient } from "./explain";
 import { matchProfile } from "./match";
 
-const role = roleProfiles.find((r) => r.slug === "data-analyst")!;
+const role = roleProfiles.find((r) => r.slug === "data-scientist")!;
 const profile: Profile = {
   headline: null,
   totalYearsExperience: 2,
