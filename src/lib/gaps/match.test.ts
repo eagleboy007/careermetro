@@ -220,6 +220,33 @@ describe("matchProfile", () => {
     expect(matchProfile(p, dataAnalyst, now).met.find((s) => s.skillId === "sql")?.resumeQuote).toBe("Wrote SQL for the loan book");
   });
 
+  it("keeps a skill from a long-running current job fresh even when the parser dates it to the job's start (T31)", () => {
+    const p = profile({
+      roles: [job(["Incident commander for 12 major incidents"], "2019-04")],
+      skills: [{ name: "Security incident response", lastUsed: "2019", evidence: ["Incident commander for 12 major incidents"] }],
+    });
+    expect(statusOf(matchProfile(p, role("soc-lead"), now), "security-incident-response")).toBe("met");
+    // A fragment that doesn't name the skill keeps the parser's date, even if a current bullet contains it.
+    const fragment = profile({
+      roles: [job(["Handled incidents for 14 clients"], "2021-01"), job(["Handled incidents for 14 clients using Splunk"], "2014-01", "2018-06")],
+      skills: [{ name: "Splunk", lastUsed: "2018-06", evidence: ["Handled incidents for 14 clients"] }],
+    });
+    expect(statusOf(matchProfile(fragment, role("soc-analyst-l2"), now), "siem")).toBe("outdated");
+  });
+
+  it("reads ITGC audits, IOC checks and cyber risk reporting as their skills (T32)", () => {
+    const quote = (q: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
+    expect(quote("Ran IT general controls audits for 4 banking clients", "grc-manager", "security-audits")).toBe("met");
+    // "IOCs" is also oil companies and the Olympic committee, so it counts only when the parser lists it as a skill.
+    expect(quote("Negotiated production sharing contracts with IOCs and NOCs", "soc-analyst-l2", "threat-intelligence")).toBe("missing");
+    const listed = profile({ skills: [{ name: "IOCs", lastUsed: null, evidence: ["Check IOCs against VirusTotal and AlienVault OTX feeds"] }] });
+    expect(statusOf(matchProfile(listed, role("soc-analyst-l2"), now), "threat-intelligence")).toBe("met");
+    expect(quote("Prepared daily market risk reporting for the treasury desk", "grc-manager", "risk-assessment")).toBe("missing");
+    expect(quote("Underwrote cyber risk policies for SME clients", "grc-manager", "risk-assessment")).toBe("missing");
+    expect(quote("Present the monthly cyber risk dashboard to the CISO", "grc-manager", "risk-assessment")).toBe("met");
+  });
+
   it("reads CTI in a call-centre line as nothing, and on-call work as SRE practice", () => {
     const quote = (q: string, slug: string, id: string) =>
       statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
