@@ -78,7 +78,14 @@ export function TodayView({
       <div className="min-w-0 min-[960px]:col-span-2">
         {state === "no_resume" && <NoResumeHero name={data.name} upload={upload} unfinishedHref={data.unfinishedHref} />}
         {state === "first" && (
-          <WelcomeHero name={data.name} role={data.role} tally={data.tally} firstTasks={data.firstTasks} lineHours={data.lineHours} />
+          <WelcomeHero
+            name={data.name}
+            role={data.role}
+            tally={data.tally}
+            firstTasks={data.firstTasks}
+            lineHours={data.lineHours}
+            onToggle={onToggleTask}
+          />
         )}
         {state === "returning" && (
           <RideCard

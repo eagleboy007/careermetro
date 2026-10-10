@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals } from "@/db/schema";
 import { skills } from "@/content";
 import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/today/state";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { planGoalSync } from "./sync";
 
 type Db = ReturnType<typeof getDb>;

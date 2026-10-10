@@ -11,7 +11,8 @@ export const goalStatus = z.enum(["missing", "weak", "met"]);
 export const pitstopKind = z.enum(["learn", "prove"]);
 
 export const rideTask = z.object({
-  id: z.string().min(1).max(60),
+  /** Stable across days so a tick is remembered: "<goal id>:r:<resource id>" or "<goal id>:practice". */
+  id: z.string().min(1).max(100),
   title: z.string().min(1).max(120),
   detail: z.string().max(120),
   minutes: z.number().int().min(1).max(240),

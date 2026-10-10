@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppShell, type ShellUser } from "@/components/app/app-shell";
 import { touchLastSeen } from "@/lib/account/store";
+import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount, currentIdentity } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
@@ -29,10 +30,17 @@ async function Shell({ children }: { children: React.ReactNode }) {
   if (authConfig() || testSignInEnabled()) {
     const account = await currentAccount();
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
-    await touchLastSeen(account.id);
+    const [, { streak }] = await Promise.all([touchLastSeen(account.id), rideStatsFor(account.id, new Date())]);
     const name = account.name ?? account.email.split("@")[0];
-    // Streak comes from the ride tables (build step 6).
-    user = { name, initials: initials(name), streakDays: 0, todayCounted: false, showStreak: false, canSignOut: true };
+    // The streak shows once the person has ridden a day.
+    user = {
+      name,
+      initials: initials(name),
+      streakDays: streak.days,
+      todayCounted: streak.todayCounted,
+      showStreak: streak.days > 0,
+      canSignOut: true,
+    };
   } else {
     user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false };
   }
