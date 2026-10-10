@@ -9,6 +9,8 @@ export type ParseOutcome = {
   reason?: string;
   /** Skills the model claimed that verification removed because the resume doesn't support them. */
   droppedSkills?: string[];
+  /** The name the parser read from the resume, for the name check. Counted, never printed. */
+  personName?: string | null;
   calls: AiCallRecord[];
 };
 
@@ -19,6 +21,8 @@ export type ParseCaseResult = {
   ok: boolean;
   reason?: string;
   parseRecall: number;
+  /** Whether the parser read the person's name (every eval resume prints one). */
+  nameRead: boolean;
   /** Skills the model invented that verification caught. The prompt's own hallucinations, before the safety net. */
   dropped: string[];
   hallucinations: string[];
@@ -36,6 +40,8 @@ export type ParseEvalReport = {
   cases: ParseCaseResult[];
   meanRecall: number;
   failed: number;
+  /** Cases where the parser read the person's name. */
+  namesRead: number;
   hallucinations: number;
   /** Skills verification removed, summed over cases. */
   dropped: number;
@@ -69,7 +75,7 @@ export async function runParseEval(
   concurrency = 4,
 ): Promise<ParseEvalReport> {
   const results = await mapLimit(cases, concurrency, async (c): Promise<ParseCaseResult> => {
-    const { profile, reason, droppedSkills = [], calls } = await parse(c.resumeText);
+    const { profile, reason, droppedSkills = [], personName = null, calls } = await parse(c.resumeText);
     const names = profile?.skills.map((s) => s.name) ?? [];
     const skillIds = [...new Set(names.map(resolveSkillId).filter((id): id is string => id !== undefined))];
     const score = scoreCase(c, { skillIds, gaps: [] });
@@ -79,6 +85,7 @@ export async function runParseEval(
       ok: profile !== null,
       ...(profile ? {} : { reason: reason ?? "failed" }),
       parseRecall: profile ? score.parseRecall : 0,
+      nameRead: !!personName,
       hallucinations: score.hallucinations,
       dropped: droppedSkills,
       missed: c.expected.skills.map((s) => s.skillId).filter((id) => !found.has(id)),
@@ -92,6 +99,7 @@ export async function runParseEval(
     cases: results,
     meanRecall: results.reduce((sum, r) => sum + r.parseRecall, 0) / Math.max(1, results.length),
     failed: results.filter((r) => !r.ok).length,
+    namesRead: results.filter((r) => r.nameRead).length,
     hallucinations: results.reduce((sum, r) => sum + r.hallucinations.length, 0),
     dropped: results.reduce((sum, r) => sum + r.dropped.length, 0),
     costUsd: results.reduce((sum, r) => sum + r.costUsd, 0),
@@ -109,7 +117,7 @@ export function formatParseEval(r: ParseEvalReport): string {
   return [
     `## Parse eval: ${r.promptVersion} on ${r.model}`,
     "",
-    `Mean skill recall ${pct(r.meanRecall)} · hallucinated skills ${r.hallucinations} · dropped by verification ${r.dropped} · failed parses ${r.failed} · cost $${r.costUsd.toFixed(2)}`,
+    `Mean skill recall ${pct(r.meanRecall)} · hallucinated skills ${r.hallucinations} · dropped by verification ${r.dropped} · failed parses ${r.failed} · names read ${r.namesRead} of ${r.cases.length} · cost $${r.costUsd.toFixed(2)}`,
     "",
     "| Case | Recall | Hallucinated | Dropped by verification | Missed | Not in taxonomy | Cost | Time |",
     "| --- | --- | --- | --- | --- | --- | --- | --- |",

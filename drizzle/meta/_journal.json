@@ -43,6 +43,13 @@
       "when": 1791629484772,
       "tag": "0005_ride_days",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791661579325,
+      "tag": "0006_resume_name_hashes",
+      "breakpoints": true
     }
   ]
 }

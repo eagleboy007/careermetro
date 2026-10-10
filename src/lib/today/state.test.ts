@@ -71,7 +71,7 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
   async function user(n: string) {
     const [row] = await db!
       .insert(schema.users)
-      .values({ email: `${run}-${n}@example.test` })
+      .values({ email: `${run}-${n}@example.test`, name: "Test User" })
       .returning({ id: schema.users.id });
     userIds.push(row.id);
     return row.id;

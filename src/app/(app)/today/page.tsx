@@ -5,7 +5,9 @@ import { PageLoading } from "@/components/app/page-loading";
 import { UploadForm } from "@/components/resume/upload-form";
 import { TodayView, type TodayData } from "@/components/today/today-preview";
 import { firstName } from "@/lib/account/name";
+import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
+import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { USER_STATES, type UserState } from "@/lib/schemas";
 import { greetingAt } from "@/lib/today/board";
 import { todayStateFor } from "@/lib/today/state";
@@ -49,7 +51,8 @@ function readState(value: string | string[] | undefined): UserState {
 }
 
 async function Today({ searchParams }: PageProps<"/today">) {
-  const requested = readState((await searchParams).state);
+  const params = await searchParams;
+  const requested = readState(params.state);
   await connection();
   const account = await currentAccount();
   const greeting = greetingAt(new Date());
@@ -83,6 +86,11 @@ async function Today({ searchParams }: PageProps<"/today">) {
         : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
   return (
     <div className="flex flex-col gap-4">
+      {params.notice === NAME_NOTICE && (
+        <p role="status" className="rounded-md border border-line bg-surface px-3.5 py-2 text-[0.8rem] text-ink">
+          {NAME_MISMATCH_MESSAGE}
+        </p>
+      )}
       <Banner>
         {found.state === "first"
           ? "Your welcome card and goals come from your resume. The rest is example data until we build it."

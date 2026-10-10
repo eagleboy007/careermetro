@@ -2,8 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { createAccount } from "@/lib/account/store";
+import { withNameNotice } from "@/lib/auth/after-sign-in";
 import { safeNext } from "@/lib/auth/config";
 import { syncCurrentGoals } from "@/lib/goals/store";
+import { hasUsableName } from "@/lib/resume/name-match";
 import { currentIdentity } from "@/lib/auth/server";
 import { readSessionId } from "@/lib/session";
 
@@ -15,7 +17,9 @@ export async function finishSignUp(_: FinishState, formData: FormData): Promise<
   const identity = await currentIdentity();
   if (!identity) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
   if (formData.get("age") !== "yes") return { error: "Please confirm you are 18 or older to create an account." };
-  const name = String(formData.get("name") ?? "").trim().slice(0, 80) || null;
+  const name = String(formData.get("name") ?? "").trim().slice(0, 80);
+  // The name is how we check a resume is the person's own before it joins the account.
+  if (!hasUsableName(name)) return { error: "Please add your name as it appears on your resume." };
   const result = await createAccount(identity, { name, sessionId: await readSessionId() });
   if (!result.ok) {
     return {
@@ -26,5 +30,5 @@ export async function finishSignUp(_: FinishState, formData: FormData): Promise<
     };
   }
   await syncCurrentGoals(result.account.id);
-  redirect(next);
+  redirect(result.refused ? withNameNotice(next) : next);
 }

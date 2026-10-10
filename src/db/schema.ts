@@ -90,6 +90,11 @@ export const resumes = pgTable(
     consentId: uuid("consent_id").references(() => consents.id),
     /** Keyed hash of the uploader's IP and the day, for daily upload limits. Can't be reversed or linked across days. */
     clientHash: text("client_hash"),
+    /**
+     * Keyed hashes of the words of the name printed on the resume, for the name check before it joins an account
+     * (src/lib/resume/name-match.ts). The name itself is never stored. Null when the resume shows no name.
+     */
+    nameHashes: text("name_hashes").array(),
     createdAt: createdAt(),
     /** When the raw file must be removed (SEC-5). Null when no file was kept, the default: text is read in memory. */
     fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }),

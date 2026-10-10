@@ -71,7 +71,7 @@ describe.skipIf(!db)("Today once every goal is proved (database)", () => {
   async function user(n: string) {
     const [row] = await db!
       .insert(schema.users)
-      .values({ email: `${run}-${n}@example.test` })
+      .values({ email: `${run}-${n}@example.test`, name: "Test User" })
       .returning({ id: schema.users.id });
     userIds.push(row.id);
     return row.id;

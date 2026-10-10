@@ -5,8 +5,9 @@ import { costUsd } from "@/lib/ai/cost";
 import { describeAiError } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
+import { z } from "zod";
 import { profile as profileSchema, type Profile } from "@/lib/schemas";
-import { verifyProfile, type VerifyReport } from "./verify";
+import { containsPhrase, normalizeForMatch, verifyProfile, type VerifyReport } from "./verify";
 
 export const PARSE_MODEL = "claude-opus-5-5";
 const MAX_ATTEMPTS = 2;
@@ -18,8 +19,16 @@ const MIN_ATTEMPT_MS = 30_000;
 
 export type ParseClient = Pick<Anthropic, "beta">;
 
+/**
+ * What the model returns: the profile plus the person's name as printed on the resume. The name is used once, for the
+ * name check before the resume joins an account (src/lib/resume/name-match.ts), and is never stored or logged.
+ */
+const parsedResume = profileSchema.extend({ personName: z.string().nullable() });
+// Reading tolerates a missing name (older mocks and fixtures) as "no name shown".
+const readSchema = profileSchema.extend({ personName: z.string().nullable().catch(null) });
+
 export type ParseResult =
-  | { ok: true; profile: Profile; report: VerifyReport; calls: AiCallRecord[] }
+  | { ok: true; profile: Profile; personName: string | null; report: VerifyReport; calls: AiCallRecord[] }
   | { ok: false; reason: "refused" | "malformed"; calls: AiCallRecord[] }
   /** error is the failed call's error, for the health check only: callers with real resumes must not log or return it. */
   | { ok: false; reason: "unavailable"; error: unknown; calls: AiCallRecord[] };
@@ -31,11 +40,11 @@ export function wrapResume(maskedText: string): string {
 }
 
 /** The profile from the response's text block, or null if it is missing, not JSON, or fails the schema. */
-export function readProfile(content: Anthropic.Beta.BetaContentBlock[]): Profile | null {
+export function readProfile(content: Anthropic.Beta.BetaContentBlock[]): (Profile & { personName: string | null }) | null {
   const text = content.find((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")?.text;
   if (!text) return null;
   try {
-    const result = profileSchema.safeParse(JSON.parse(text));
+    const result = readSchema.safeParse(JSON.parse(text));
     return result.success ? result.data : null;
   } catch {
     return null;
@@ -90,7 +99,7 @@ export async function parseResume(
           max_tokens: 16_000,
           system: prompt.text,
           messages: [{ role: "user", content: wrapResume(maskedText) }],
-          output_config: { effort: "medium", format: betaZodOutputFormat(profileSchema) },
+          output_config: { effort: "medium", format: betaZodOutputFormat(parsedResume) },
           // Re-runs a refused request on a fallback model chosen by the API, inside the same call.
           betas: ["server-side-fallback-2026-07-01"],
           fallbacks: "default",
@@ -112,8 +121,11 @@ export async function parseResume(
     const parsed = response.stop_reason === "max_tokens" ? null : readProfile(response.content);
     record(response.model, response.usage, parsed !== null);
     if (parsed) {
-      const { profile, report } = verifyProfile(parsed, maskedText);
-      return { ok: true, profile, report, calls };
+      const { personName, ...rest } = parsed;
+      const { profile, report } = verifyProfile(rest, maskedText);
+      // A name the resume doesn't print is dropped, like any other claim it doesn't support (AI-5).
+      const name = personName?.trim() && containsPhrase(normalizeForMatch(maskedText), normalizeForMatch(personName)) ? personName.trim() : null;
+      return { ok: true, profile, personName: name, report, calls };
     }
   }
   return { ok: false, reason: "malformed", calls };

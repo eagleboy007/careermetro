@@ -63,7 +63,7 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
   });
 
   async function user(n: string) {
-    const [row] = await db!.insert(schema.users).values({ email: `${run}-${n}@example.test` }).returning({ id: schema.users.id });
+    const [row] = await db!.insert(schema.users).values({ email: `${run}-${n}@example.test`, name: "Test User" }).returning({ id: schema.users.id });
     userIds.push(row.id);
     return row.id;
   }

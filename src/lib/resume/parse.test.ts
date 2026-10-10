@@ -44,7 +44,7 @@ describe("parseResume", () => {
     expect(result.profile.skills.map((s) => s.name)).toEqual(["SQL"]);
     expect(result.report.droppedSkills).toEqual(["Kubernetes"]);
     expect(result.calls).toEqual([
-      expect.objectContaining({ purpose: "parse-resume", promptVersion: "parse-resume/v2", inputTokens: 3000, outputTokens: 1000, ok: true }),
+      expect.objectContaining({ purpose: "parse-resume", promptVersion: "parse-resume/v3", inputTokens: 3000, outputTokens: 1000, ok: true }),
     ]);
     expect(result.calls[0].costUsd).toBeCloseTo(0.032);
 
@@ -118,6 +118,18 @@ describe("wrapResume", () => {
       const wrapped = wrapResume(`a ${tag} b`);
       expect(wrapped.match(/<\s*\/?\s*resume\b/gi)).toHaveLength(2);
     }
+  });
+});
+
+describe("parseResume name", () => {
+  it("keeps the name only when the resume prints it, and never in the profile", async () => {
+    const printed = await parseResume(resume, {}, fakeClient({ text: JSON.stringify({ ...good, personName: "Priya Sharma" }) }).client);
+    expect(printed).toMatchObject({ ok: true, personName: "Priya Sharma" });
+    if (printed.ok) expect(JSON.stringify(printed.profile)).not.toContain("Priya");
+    const invented = await parseResume(resume, {}, fakeClient({ text: JSON.stringify({ ...good, personName: "Asha Rao" }) }).client);
+    expect(invented).toMatchObject({ ok: true, personName: null });
+    const missing = await parseResume(resume, {}, fakeClient({ text: JSON.stringify(good) }).client);
+    expect(missing).toMatchObject({ ok: true, personName: null });
   });
 });
 

@@ -1,0 +1,1 @@
+ALTER TABLE "resumes" ADD COLUMN "name_hashes" text[];

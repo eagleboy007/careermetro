@@ -19,13 +19,14 @@ export function FinishForm({ next, name }: { next: string; name: string | null }
           id="finish-name"
           name="name"
           autoComplete="name"
+          required
           maxLength={80}
           defaultValue={name ?? ""}
           aria-describedby="finish-name-hint"
           className={field}
         />
         <span id="finish-name-hint" className="text-muted">
-          Shown on your profile. You can change it later.
+          As it appears on your resume. We use it to check a resume is yours before adding it to your account, and show it on your profile.
         </span>
       </div>
       <label className="flex items-start gap-2.5 text-sm text-muted">
