@@ -21,6 +21,8 @@ import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
 import { AppShell } from "@/components/app/app-shell";
 import { StreakChip } from "@/components/today/streak-chip";
+import { MetroMap } from "@/components/map/metro-map";
+import { exampleMapLine } from "@/lib/map/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
@@ -220,6 +222,13 @@ export default function DesignPage() {
           <StreakChip days={12} todayCounted />
         </div>
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Map (signed in)</h2>
+        <p className="text-sm text-muted">The line drawn from the gaps and the path. Tap a pitstop for its panel. Below it, the map before a resume.</p>
+        <MetroMap line={exampleMapLine} />
+        <MetroMap line={null} />
       </section>
 
       <section className="flex flex-col gap-4">
