@@ -227,6 +227,16 @@ describe("matchProfile", () => {
     expect(quote("Handled on-call rotation for payments platform and wrote postmortems", "devops-engineer", "sre-practices")).toBe("met");
   });
 
+  it("reads store marketing, an MVI post and data-explorer KQL as nothing, and Android ViewModels as architecture", () => {
+    const quote = (q: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
+    expect(quote("Built a habit tracker app, a personal project not yet on the App Store", "ios-developer", "mobile-release")).toBe("missing");
+    expect(quote("Managed Google Play Store ad campaigns", "android-developer", "mobile-release")).toBe("missing");
+    expect(quote("Worked as MVI at the RTO", "android-developer", "mobile-architecture")).toBe("missing");
+    expect(quote("Wrote KQL queries in Azure Data Explorer to analyse app telemetry", "soc-analyst-l2", "siem")).toBe("missing");
+    expect(quote("Moved screens to Android ViewModels with a repository layer", "android-developer", "mobile-architecture")).toBe("met");
+  });
+
   it("never reads a short word inside a longer skill name as a skill", () => {
     const named = (name: string, quote: string, slug: string, id: string) =>
       statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [quote] }] }), role(slug), now), id);

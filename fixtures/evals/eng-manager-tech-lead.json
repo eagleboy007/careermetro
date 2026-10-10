@@ -51,10 +51,6 @@
       {
         "skillId": "incident-management",
         "status": "missing"
-      },
-      {
-        "skillId": "product-metrics",
-        "status": "missing"
       }
     ],
     "mustNotClaim": [

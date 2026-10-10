@@ -50,14 +50,14 @@
     },
     {
       "skillId": "product-metrics",
-      "importance": "required",
+      "importance": "nice_to_have",
       "expectation": "Tie engineering work to outcomes",
       "postingShare": null
     },
     {
       "skillId": "ci-cd",
       "importance": "required",
-      "expectation": "Keep the delivery pipeline healthy and releases safe",
+      "expectation": "Own delivery health: release frequency, change failure rate and recovery time (DORA)",
       "postingShare": null
     },
     {

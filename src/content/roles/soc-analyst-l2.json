@@ -62,7 +62,7 @@
     },
     {
       "skillId": "python",
-      "importance": "required",
+      "importance": "nice_to_have",
       "expectation": "Script enrichment and parsing tasks",
       "postingShare": null
     },
@@ -83,6 +83,11 @@
       "certId": "gcih",
       "importance": "optional",
       "why": "Respected incident handling certificate"
+    },
+    {
+      "certId": "sc-200",
+      "importance": "optional",
+      "why": "Microsoft SOC stack"
     }
   ],
   "sources": [
