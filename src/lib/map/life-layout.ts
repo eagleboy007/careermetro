@@ -179,6 +179,10 @@ export function decimalYear(date: Date): number {
   return y + (date.getTime() - Date.UTC(y, 0, 1)) / (Date.UTC(y + 1, 0, 1) - Date.UTC(y, 0, 1));
 }
 
+const IST_OFFSET_MS = 330 * 60 * 1000;
+
+/** "Oct 2026" in India time, so a sign-up just after midnight IST on the 1st shows the new month (T24). */
 export function monthLabel(date: Date): string {
-  return `${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  const ist = new Date(date.getTime() + IST_OFFSET_MS);
+  return `${MONTHS[ist.getUTCMonth()]} ${ist.getUTCFullYear()}`;
 }

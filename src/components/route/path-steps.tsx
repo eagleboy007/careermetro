@@ -57,7 +57,7 @@ export function PathSteps({ steps }: { steps: PathStepView[] }) {
                   {step.hours} hrs
                 </span>
                 {step.doneOn && <span>Done {step.doneOn}</span>}
-                {step.closes && <span>Closes: {step.closes}</span>}
+                {step.closes && <span>Works toward: {step.closes}</span>}
               </p>
               {!done && step.reason && <p className="text-sm">{step.reason}</p>}
               {!done &&

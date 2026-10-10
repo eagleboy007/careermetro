@@ -29,7 +29,7 @@ export default async function RolePage({ params }: PageProps<"/roles/[slug]">) {
   if (!role) notFound();
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
       <SiteHeader />
       <section className="flex max-w-2xl flex-col gap-4">
         <Link href="/roles" className="inline-flex w-fit items-center gap-1.5 text-sm text-muted hover:text-ink">
@@ -88,6 +88,6 @@ export default async function RolePage({ params }: PageProps<"/roles/[slug]">) {
           ))}
         </ul>
       </section>
-    </div>
+    </main>
   );
 }

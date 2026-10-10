@@ -29,7 +29,7 @@ async function Finish({ searchParams }: PageProps<"/sign-up/finish">) {
 
 export default function FinishPage(props: PageProps<"/sign-up/finish">) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
       <div className="mx-auto flex w-full max-w-md flex-col gap-6">
         <h1 className="text-4xl font-semibold leading-[1.05]">Create your account</h1>
@@ -37,6 +37,6 @@ export default function FinishPage(props: PageProps<"/sign-up/finish">) {
           <Finish {...props} />
         </Suspense>
       </div>
-    </div>
+    </main>
   );
 }

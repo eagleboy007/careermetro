@@ -64,8 +64,7 @@ const MAX_ZIP_ENTRIES = 1000;
 const MAX_ZIP_ENTRY_BYTES = 10 * 1024 * 1024;
 const MAX_ZIP_TOTAL_BYTES = 40 * 1024 * 1024;
 
-const unreadable = () =>
-  new ResumeError("unreadable", "We couldn't open this file. Try saving it again as PDF, or paste the text instead.");
+const unreadable = () => new ResumeError("unreadable", "We couldn't open this file. Try saving it again as PDF, or paste the text instead.");
 
 /**
  * Inflates every entry of a DOCX archive with a hard output cap before mammoth sees it, so a small upload
@@ -158,7 +157,9 @@ export async function extractResumeText(bytes: Uint8Array, as?: "text"): Promise
   if (text.length < MIN_TEXT_CHARS) {
     throw new ResumeError(
       "too_little_text",
-      "We found almost no text in this file. If it is a scanned image, please paste the text instead.",
+      as === "text"
+        ? "That is very short for a resume. Please paste the whole resume, with your experience and skills."
+        : "We found almost no text in this file. If it is a scanned image, please paste the text instead.",
     );
   }
   if (text.length > MAX_TEXT_CHARS) {

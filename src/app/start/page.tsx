@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Add your resume · CareerMetro", rob
 
 export default function StartPage() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
       <ProgressRoute current="Resume" />
       <section className="flex flex-col gap-3">
@@ -18,6 +18,6 @@ export default function StartPage() {
         </p>
       </section>
       <UploadForm />
-    </div>
+    </main>
   );
 }
