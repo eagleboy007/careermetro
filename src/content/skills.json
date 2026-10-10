@@ -1101,7 +1101,8 @@
       "slos",
       "slis",
       "error budgets",
-      "error budget"
+      "error budget",
+      "on-call"
     ]
   },
   {
@@ -1438,7 +1439,9 @@
       "cyber threat intelligence",
       "ioc enrichment"
     ],
-    "ambiguous": [],
+    "ambiguous": [
+      "cti"
+    ],
     "implies": [
       "threat-detection"
     ],
@@ -1481,7 +1484,9 @@
       "security orchestration",
       "playbook automation"
     ],
-    "ambiguous": [],
+    "ambiguous": [
+      "soar"
+    ],
     "implies": [],
     "scoring": "gap"
   },
@@ -1801,15 +1806,13 @@
     "name": "Incident management and on-call",
     "category": "cloud-devops",
     "aliases": [
-      "on-call",
       "on call",
       "postmortem",
       "incident commander",
       "pagerduty"
     ],
     "ambiguous": [
-      "on call",
-      "on-call"
+      "on call"
     ],
     "implies": [],
     "scoring": "gap"
@@ -1912,7 +1915,9 @@
       "protopie"
     ],
     "ambiguous": [],
-    "implies": [],
+    "implies": [
+      "wireframing"
+    ],
     "scoring": "gap"
   },
   {
