@@ -1159,6 +1159,9 @@
       "elastic siem",
       "log analysis",
       "kql"
+    ],
+    "ambiguous": [
+      "kql"
     ]
   },
   {
@@ -1639,7 +1642,8 @@
     "aliases": [
       "android sdk",
       "android studio",
-      "jetpack compose"
+      "jetpack compose",
+      "android apps"
     ],
     "ambiguous": [],
     "implies": [],
@@ -1704,7 +1708,10 @@
       "play store",
       "app store"
     ],
-    "ambiguous": [],
+    "ambiguous": [
+      "app store",
+      "play store"
+    ],
     "implies": [],
     "scoring": "gap"
   },
@@ -1983,9 +1990,13 @@
       "flutter bloc",
       "riverpod",
       "jetpack viewmodel",
-      "swiftui mvvm"
+      "swiftui mvvm",
+      "viewmodels",
+      "view model"
     ],
-    "ambiguous": [],
+    "ambiguous": [
+      "mvi"
+    ],
     "implies": [],
     "scoring": "gap"
   },
@@ -1999,9 +2010,7 @@
       "personal data breach"
     ],
     "ambiguous": [],
-    "implies": [
-      "data-privacy"
-    ],
+    "implies": [],
     "scoring": "gap"
   }
 ]
