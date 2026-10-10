@@ -16,7 +16,7 @@ p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.re
 let i = 0;
 const settled = () =>
   p
-    .getByText(/Comparing your resume|Building your path|Loading/)
+    .getByText(/Comparing your resume|Building your path|Loading…/)
     .first()
     .waitFor({ state: "detached", timeout: 60000 })
     .catch(() => {});
@@ -50,10 +50,7 @@ await step("upload", async () => {
   await shot("review");
 });
 await step("confirm profile", async () => {
-  await p
-    .getByRole("button", { name: /confirm|looks right|save/i })
-    .first()
-    .click();
+  await p.getByRole("button", { name: "Looks right", exact: true }).click();
   const next = p.locator('main a[href$="/role"], a[href$="/role"]:not(header a)').first();
   await next.waitFor({ timeout: 15000 });
   await shot("confirmed");
@@ -87,11 +84,13 @@ await step("path hours", async () => {
   }
 });
 await step("mark path step done", async () => {
-  await p
-    .getByRole("button", { name: /^Mark .+ done$/ })
-    .first()
-    .click();
-  await p.waitForTimeout(1500);
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes("/api/path-steps/")),
+    p
+      .getByRole("button", { name: /^Mark .+ done$/ })
+      .first()
+      .click(),
+  ]);
   await p.reload();
   await settled();
   await p.getByText(/1 of \d+ steps done/).waitFor({ timeout: 10000 });
@@ -120,8 +119,10 @@ await step("today shows the person's own goals", async () => {
   if (names.includes("SQL window functions")) throw new Error("example goals shown");
 });
 await step("hours a week is saved", async () => {
-  await p.getByRole("group", { name: "Hours a week" }).getByRole("button", { name: "8 h" }).click();
-  await p.waitForTimeout(1200);
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/today")),
+    p.getByRole("group", { name: "Hours a week" }).getByRole("button", { name: "8 h" }).click(),
+  ]);
   await p.reload();
   await settled();
   await p.getByRole("group", { name: "Hours a week" }).getByRole("button", { name: "8 h", pressed: true }).waitFor({ timeout: 10000 });
