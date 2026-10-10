@@ -139,6 +139,26 @@ describe.skipIf(!db)("paths (database)", () => {
     expect(undone.ok && undone.path.doneCount).toBe(0);
   });
 
+  it("keeps progress after a corrected profile, and an undo there undoes it everywhere (T21)", async () => {
+    const { session, resumeId } = await seed();
+    const before = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
+    if (!before.ok) throw new Error(before.reason);
+    const first = before.path.steps[0];
+    expect(await markStepDone(first.id, { sessionId: session }, true, db!)).toBe(true);
+
+    // A corrected profile is a new version: new gaps, a new path, the same progress.
+    await db!.insert(schema.profiles).values({ resumeId, version: 2, data: { ...profile, headline: "MIS Lead" }, confirmedByUser: true });
+    const after = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
+    if (!after.ok) throw new Error(after.reason);
+    const again = after.path.steps.find((s) => s.skillId === first.skillId)!;
+    expect(again.id).not.toBe(first.id);
+    expect(again.doneAt).not.toBeNull();
+
+    expect(await markStepDone(again.id, { sessionId: session }, false, db!)).toBe(true);
+    const ten = await getPathForOwner(resumeId, { sessionId: session }, role, 10, { db: db! });
+    expect(ten.ok && ten.path.steps.find((s) => s.skillId === first.skillId)?.doneAt).toBeNull();
+  });
+
   it("keeps progress when the weekly hours change", async () => {
     const { session, resumeId } = await seed();
     const five = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
