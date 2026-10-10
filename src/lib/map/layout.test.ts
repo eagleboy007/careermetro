@@ -83,6 +83,17 @@ describe("layoutLine", () => {
     });
   });
 
+  it("starts each climb far enough on that a label above the station before it clears the climb", () => {
+    const l = layoutLine(exampleMapLine);
+    l.stations.forEach((s, i) => {
+      const next = l.stations[i + 1];
+      if (!next || next.y >= s.y || !s.above) return;
+      // Where the climb reaches the label's baseline (28 above the line), it is past the label's half width (90).
+      const climbStart = next.x - 20 - (s.y - next.y);
+      expect(climbStart + 28 - s.x).toBeGreaterThanOrEqual(90);
+    });
+  });
+
   it("moves on to Practice when every pitstop is proved", () => {
     const l = layoutLine({ goals: [goal("a", "weak", { proved: true })], otherLines: [] });
     expect(l.stations.find((s) => s.state === "now")?.id).toBe("practice");
@@ -109,6 +120,6 @@ describe("layoutLine", () => {
   it("labels pitstops by number and kind, with a tick once done", () => {
     const l = layoutLine(exampleMapLine);
     const labels = l.stations.flatMap((s) => (s.kind === "end" ? [] : [pitstopLabel(s)]));
-    expect(labels.slice(0, 5)).toEqual(["1 · PROVED ✓", "2 · PROVED ✓", "3 · PROVED ✓", "4 · LEARN", "5 · PROVE"]);
+    expect(labels.slice(0, 5)).toEqual(["1 · PROVE ✓", "2 · PROVE ✓", "3 · PROVE ✓", "4 · LEARN", "5 · PROVE"]);
   });
 });

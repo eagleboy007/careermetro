@@ -79,7 +79,7 @@ export function MetroMap({ line }: { line: MapLine | null }) {
 
         {line && (
           <ul className="flex flex-wrap items-center gap-4 text-[0.78rem] text-muted" aria-label="Key">
-            <Key swatch="bg-accent">Gaps filled with proof ✓</Key>
+            <Key swatch="bg-accent">Ridden: learned, or proved ✓</Key>
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
             <Key swatch="bg-line">Still ahead</Key>
             <Key swatch="bg-muted opacity-30">Other people&apos;s lines</Key>
@@ -146,7 +146,7 @@ function MapSvg({
       role="group"
       aria-label={`Metro map of your line to ${line.role.title}`}
       className="block h-auto w-full"
-      style={{ minWidth: Math.max(780, Math.round(layout.width * 0.55)) }}
+      style={{ minWidth: Math.max(780, Math.round(layout.width * 0.52)) }}
     >
       <g className="stroke-line opacity-50" aria-hidden="true">
         {layout.gridXs.map((x) => (
@@ -155,17 +155,14 @@ function MapSvg({
       </g>
 
       {layout.crossings.map((c) => (
-        <g key={c.slug} className="cursor-pointer outline-none" aria-label={`${c.title} line`} {...keyed(`x-${c.slug}`)}>
-          <path d={`M${c.station.x} 20 V540`} className="fill-none stroke-muted opacity-[0.22]" strokeWidth={7} strokeLinecap="round" />
-          <text
-            x={c.station.x + (c.labelAtTop ? -14 : 14)}
-            y={c.labelAtTop ? 40 : 534}
-            textAnchor={c.labelAtTop ? "end" : "start"}
-            className="fill-muted font-mono text-[11px] uppercase tracking-[0.06em]"
-          >
-            {c.title} line
-          </text>
-        </g>
+        <path
+          key={c.slug}
+          d={`M${c.station.x} 20 V540`}
+          aria-hidden="true"
+          className={`fill-none stroke-muted ${selected === `x-${c.slug}` ? "opacity-50" : "opacity-[0.22]"}`}
+          strokeWidth={7}
+          strokeLinecap="round"
+        />
       ))}
 
       <path d={layout.track} className="fill-none stroke-line" strokeWidth={10} strokeLinecap="round" strokeLinejoin="round" />
@@ -198,6 +195,32 @@ function MapSvg({
         <StationMark key={s.id} s={s} selected={selected === s.id} {...keyed(s.id)} />
       ))}
 
+      {layout.crossings.map((c) => {
+        const labelX = c.station.x + (c.labelAtTop ? -14 : 14);
+        const labelY = c.labelAtTop ? 40 : 534;
+        return (
+          <g key={c.slug} className="group cursor-pointer outline-none" aria-label={`${c.title} line`} {...keyed(`x-${c.slug}`)}>
+            {/* A wide, invisible strip along the line, so it is easy to tap. */}
+            <rect x={c.station.x - 14} y={20} width={28} height={c.station.y - 40} className="fill-transparent" />
+            <rect x={c.station.x - 14} y={c.station.y + 20} width={28} height={520 - c.station.y} className="fill-transparent" />
+            <text
+              x={labelX}
+              y={labelY}
+              textAnchor={c.labelAtTop ? "end" : "start"}
+              className={`font-mono text-[11px] uppercase tracking-[0.06em] group-focus-visible:fill-accent ${selected === `x-${c.slug}` ? "fill-ink" : "fill-muted"}`}
+            >
+              {c.title} line
+            </text>
+            <path
+              d={`M${c.station.x} 20 V540`}
+              className="fill-none stroke-accent opacity-0 group-focus-visible:opacity-60"
+              strokeWidth={2}
+              strokeDasharray="4 6"
+            />
+          </g>
+        );
+      })}
+
       <g
         key={`train-${replay}`}
         transform={`translate(${layout.train.x} ${layout.train.y - 42})`}
@@ -205,7 +228,7 @@ function MapSvg({
         aria-label="You are here"
         role="img"
       >
-        <circle cx={0} cy={42} r={14} className="origin-center fill-none stroke-accent [transform-box:fill-box] animate-[map-pulse_2s_ease-out_infinite]" strokeWidth={2} />
+        <circle cx={0} cy={42} r={14} className="origin-center fill-none stroke-accent [transform-box:fill-box] motion-safe:animate-[map-pulse_2s_ease-out_infinite]" strokeWidth={2} />
         <rect x={-30} y={-13} width={60} height={24} rx={12} className="fill-accent" />
         <path
           d="M-19 -5 h8 a2 2 0 0 1 2 2 v7 a2 2 0 0 1 -2 2 h-8 a2 2 0 0 1 -2 -2 v-7 a2 2 0 0 1 2 -2 z M-19 0 h12"
@@ -259,6 +282,7 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
             className={`fill-none stroke-accent opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`}
             strokeWidth={2}
           />
+          <circle cx={s.x} cy={s.y} r={22} className="fill-transparent" />
           <circle cx={s.x} cy={s.y} r={10} className={`${dotClass(s.state)} transition-[r] group-hover:[r:12px]`} strokeWidth={s.state === "now" ? 4.5 : 3.5} />
         </>
       )}
@@ -307,7 +331,7 @@ function LockedMap() {
       <div className="absolute left-1/2 top-1/2 flex w-[min(420px,88%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-[20px] border border-line bg-surface p-5 text-center">
         <MapIcon size={30} className="text-accent" {...ICON} />
         <b className="font-display text-[1.3rem] font-semibold tracking-[-0.02em]">Your map draws itself from your resume</b>
-        <span className="max-w-[40ch] text-[0.88rem] text-muted">Until then, the lines of other roles are here to explore.</span>
+        <span className="max-w-[40ch] text-[0.88rem] text-muted">Your line appears here, crossing the lines of other roles.</span>
         <Link href="/today" className="mt-1 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-2 text-[0.84rem] font-medium text-on-accent hover:opacity-90">
           Add resume
         </Link>

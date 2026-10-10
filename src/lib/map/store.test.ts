@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -87,16 +87,35 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     const path = await getPathForOwner(r.resumeId, owner, role, 5, { db: db! });
     if (!path.ok) throw new Error(path.reason);
     const first = path.path.steps[0];
-    await db!.update(schema.pathSteps).set({ doneAt: new Date() }).where(eq(schema.pathSteps.pathId, path.path.pathId));
+    // Mark only the first step done: only that goal's learning counts.
+    await db!
+      .update(schema.pathSteps)
+      .set({ doneAt: new Date() })
+      .where(and(eq(schema.pathSteps.pathId, path.path.pathId), eq(schema.pathSteps.position, first.position)));
     const after = await mapLineFor(userId, db!);
     expect(after!.pathOpened).toBe(true);
     expect(after!.goals.slice(0, path.path.steps.length).map((g) => g.skillId)).toEqual(path.path.steps.map((s) => s.skillId));
     expect(after!.goals[0]).toMatchObject({ skillId: first.skillId, learnDone: true, proved: false });
+    if (after!.goals.length > 1) expect(after!.goals[1].learnDone).toBe(false);
     expect(after!.goals.every((g) => !g.proved)).toBe(true);
     expect(mapLine.safeParse(after).success).toBe(true);
   });
 
-  it("never reads another person's line", async () => {
+  it("gives each person their own line, even when someone else's analysis is newer", async () => {
+    const mine = await user("mine");
+    const theirs = await user("theirs");
+    const ids: Record<string, string> = {};
+    for (const [userId, n] of [[mine, "mine"], [theirs, "theirs"]] as const) {
+      const owner = { userId };
+      const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-${n}` }, { db: db!, client });
+      if (!r.ok) throw new Error(r.code);
+      await confirmProfile(r.resumeId, owner, parsed, db!);
+      const gaps = await getGapsForOwner(r.resumeId, owner, role, { db: db! });
+      if (!gaps.ok) throw new Error(gaps.reason);
+      ids[userId] = r.resumeId;
+    }
+    expect((await mapLineFor(mine, db!))?.resumeId).toBe(ids[mine]);
+    expect((await mapLineFor(theirs, db!))?.resumeId).toBe(ids[theirs]);
     expect(await mapLineFor(await user("other"), db!)).toBeNull();
   });
 });
@@ -109,6 +128,7 @@ describe("otherLines", () => {
       .slice(0, 8)
       .map((s) => ({ skillId: s.skillId, name: s.skillId, status: "missing" as const, learnDone: false, proved: false, resources: [], practice: null }));
     const lines = otherLines(own.slug, goals);
+    expect(lines.length).toBeGreaterThan(0);
     expect(lines.length).toBeLessThanOrEqual(2);
     expect(lines.every((l) => l.slug !== own.slug)).toBe(true);
     expect(new Set(lines.map((l) => l.skillId)).size).toBe(lines.length);

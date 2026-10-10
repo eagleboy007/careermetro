@@ -43,9 +43,11 @@ export type Layout = {
 
 export const MAP_HEIGHT = 560;
 const START_X = 70;
-const STEP = 100;
-const FIRST_STEP = 110;
+const STEP = 90;
+const FIRST_STEP = 100;
 const CLIMB = 80;
+/** Level run before a climb: half a clipped name (about 90 units) less the height of a label above the line. */
+const CLIMB_LEAD = 64;
 const TOP_Y = 150;
 const MAX_CLIMBS = 3;
 /** Keeps the line in the same band of the map whatever the number of climbs. */
@@ -105,10 +107,11 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
     const firstOfGoal = i === 0 || pitstops[i - 1].goal !== p.goal;
     if (firstOfGoal) goalIndex += 1;
     if (firstOfGoal && climbAt.has(goalIndex)) {
-      // Level, a 45 degree climb, then level again into the station.
-      route.push({ x: x + 20, y });
-      route.push({ x: x + 20 + CLIMB, y: y - CLIMB });
-      x += 40 + CLIMB;
+      // Level, a 45 degree climb, then level again into the station. The level run before the climb is long enough
+      // that a label above the station before it ends before the climb reaches it.
+      route.push({ x: x + CLIMB_LEAD, y });
+      route.push({ x: x + CLIMB_LEAD + CLIMB, y: y - CLIMB });
+      x += CLIMB_LEAD + 20 + CLIMB;
       y -= CLIMB;
       climbed = true;
     } else {
@@ -187,8 +190,7 @@ function cut(points: Point[], share: number): Point[] {
   return out;
 }
 
-/** "4 · LEARN", "5 · PROVE", or with a tick once done. */
+/** "4 · LEARN" or "5 · PROVE", with a check once done (handoff section 7). */
 export function pitstopLabel(s: Extract<Station, { kind: PitstopKind }>): string {
-  if (s.state === "done") return `${s.n} · ${s.kind === "learn" ? "LEARNED" : "PROVED"} ✓`;
-  return `${s.n} · ${s.kind === "learn" ? "LEARN" : "PROVE"}`;
+  return `${s.n} · ${s.kind === "learn" ? "LEARN" : "PROVE"}${s.state === "done" ? " ✓" : ""}`;
 }
