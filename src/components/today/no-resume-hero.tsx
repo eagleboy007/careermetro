@@ -40,7 +40,7 @@ export function NoResumeHero({ name, upload, unfinishedHref }: { name: string; u
       <div className="flex min-w-0 flex-col gap-4">
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Signed up · one step left</span>
         <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
-          Hi {name}. Your line starts with <em className="not-italic text-accent">your resume.</em>
+          {name ? `Hi ${name}.` : "Hi."} Your line starts with <em className="not-italic text-accent">your resume.</em>
         </h2>
         <p className="max-w-[54ch] text-[0.95rem] text-muted">
           Upload it and in under a minute you see which skills you already have for the role, which are missing, and a goal for each

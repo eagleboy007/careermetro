@@ -117,7 +117,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     stats: [
       { value: String(have.length), label: "skills found", private: false },
       { value: String(gaps.length), label: gaps.length === 1 ? "gap to your next role" : "gaps to your next role", private: true },
-      { value: String(line?.goals.filter((g) => g.proved).length ?? 0), label: "goals proved", private: false },
+      { value: String(line?.goals.filter((g) => g.proved).length ?? 0), label: "goals proved", private: true },
     ],
     journey: journeyFor(line, { joinedAt: input.joinedAt, resumeReadAt: input.resumeReadAt, gaps: gaps.length }),
     journeyLabel: line ? `${line.role.title} · ${plural(line.goals.length, "goal")}` : "starts with your resume",

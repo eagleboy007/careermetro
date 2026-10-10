@@ -151,6 +151,11 @@ describe("meFromProfile", () => {
     expect(meProfile.safeParse(me).success).toBe(true);
   });
 
+  it("shows others only the skills count until who-sees-what switches exist (T19)", () => {
+    const me = meFromProfile(input({}));
+    expect(me.stats.filter((s) => !s.private).map((s) => s.label)).toEqual(["skills found"]);
+  });
+
   it("has nothing to say about stories, interests or proof yet", () => {
     const me = meFromProfile(input({}));
     expect([me.stories, me.interests, me.proofs]).toEqual([[], [], []]);
