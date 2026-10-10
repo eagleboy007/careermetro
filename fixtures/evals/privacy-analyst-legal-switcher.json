@@ -23,6 +23,10 @@
         "quote": "Prepared privacy notices and consent wording"
       },
       {
+        "skillId": "data-breach-response",
+        "quote": "Researched data breach notification rules across India, the EU and Singapore"
+      },
+      {
         "skillId": "communication",
         "quote": "Explain legal duties to product managers in short written notes"
       }
@@ -37,11 +41,11 @@
         "status": "weak"
       },
       {
-        "skillId": "data-governance",
-        "status": "missing"
+        "skillId": "data-breach-response",
+        "status": "weak"
       },
       {
-        "skillId": "security-incident-response",
+        "skillId": "data-governance",
         "status": "missing"
       }
     ],

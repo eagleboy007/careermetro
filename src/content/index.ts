@@ -15,6 +15,7 @@ import certificationsJson from "./certifications.json";
 import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
 import skillsJson from "./skills.json";
+import androidDeveloper from "./roles/android-developer.json";
 import businessAnalyst from "./roles/business-analyst.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
@@ -27,6 +28,7 @@ import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
 import grcManager from "./roles/grc-manager.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
+import iosDeveloper from "./roles/ios-developer.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
 import privacyAnalyst from "./roles/privacy-analyst.json";
 import productManager from "./roles/product-manager.json";
@@ -52,6 +54,7 @@ export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
 export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
   .parse([
+    androidDeveloper,
     businessAnalyst,
     cyberSecurityAnalyst,
     dataAnalyst,
@@ -64,6 +67,7 @@ export const roleProfiles: RoleProfile[] = z
     fullStackDeveloper,
     grcManager,
     informationSecurityAnalyst,
+    iosDeveloper,
     javaBackendDeveloper,
     privacyAnalyst,
     productManager,

@@ -3103,5 +3103,60 @@
     ],
     "minutes": 60,
     "free": true
+  },
+  {
+    "title": "Guide to app architecture",
+    "url": "https://developer.android.com/topic/architecture",
+    "provider": "Android Developers",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-architecture"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Flutter app architecture guide",
+    "url": "https://docs.flutter.dev/app-architecture",
+    "provider": "Flutter",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-architecture"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Bloc library documentation",
+    "url": "https://bloclibrary.dev/",
+    "provider": "Bloc",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-architecture"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "CERT-In directions under section 70B (cyber incident reporting within 6 hours)",
+    "url": "https://www.cert-in.org.in/Directions70B.jsp",
+    "provider": "CERT-In, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "data-breach-response"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "EDPB Guidelines 9/2022 on personal data breach notification",
+    "url": "https://www.edpb.europa.eu/system/files/2022-10/edpb_guidelines_202209_personal_data_breach_notification_targetedupdate_en.pdf",
+    "provider": "European Data Protection Board",
+    "kind": "docs",
+    "skillIds": [
+      "data-breach-response"
+    ],
+    "minutes": 120,
+    "free": true
   }
 ]

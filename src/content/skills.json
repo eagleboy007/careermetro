@@ -645,7 +645,8 @@
     "aliases": [
       "tcp/ip",
       "dns",
-      "load balancing"
+      "load balancing",
+      "nmap"
     ]
   },
   {
@@ -1156,7 +1157,8 @@
       "microsoft sentinel",
       "qradar",
       "elastic siem",
-      "log analysis"
+      "log analysis",
+      "kql"
     ]
   },
   {
@@ -1640,9 +1642,7 @@
       "jetpack compose"
     ],
     "ambiguous": [],
-    "implies": [
-      "kotlin"
-    ],
+    "implies": [],
     "scoring": "gap"
   },
   {
@@ -1700,7 +1700,9 @@
       "play store release",
       "app store connect",
       "play console",
-      "testflight"
+      "testflight",
+      "play store",
+      "app store"
     ],
     "ambiguous": [],
     "implies": [],
@@ -1809,7 +1811,8 @@
       "on call",
       "postmortem",
       "incident commander",
-      "pagerduty"
+      "pagerduty",
+      "postmortems"
     ],
     "ambiguous": [
       "on call"
@@ -1967,5 +1970,38 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "context"
+  },
+  {
+    "id": "mobile-architecture",
+    "name": "Mobile app architecture",
+    "category": "web",
+    "aliases": [
+      "mvvm",
+      "mvi",
+      "viewmodel",
+      "bloc pattern",
+      "flutter bloc",
+      "riverpod",
+      "jetpack viewmodel",
+      "swiftui mvvm"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-breach-response",
+    "name": "Personal data breach response",
+    "category": "security",
+    "aliases": [
+      "data breach notification",
+      "breach notification",
+      "personal data breach"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "data-privacy"
+    ],
+    "scoring": "gap"
   }
 ]

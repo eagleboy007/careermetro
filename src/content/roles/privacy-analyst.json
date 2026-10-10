@@ -43,9 +43,9 @@
       "postingShare": null
     },
     {
-      "skillId": "security-incident-response",
+      "skillId": "data-breach-response",
       "importance": "required",
-      "expectation": "Handle a personal data breach and meet notification timelines",
+      "expectation": "Run a personal data breach: assess harm and notify the Data Protection Board, CERT-In and users on time",
       "postingShare": null
     },
     {
@@ -55,7 +55,23 @@
       "postingShare": null
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "dsci-dcpp",
+      "importance": "recommended",
+      "why": "Indian privacy certificate covering the DPDP Act"
+    },
+    {
+      "certId": "iapp-cipp-e",
+      "importance": "optional",
+      "why": "Global standard for GDPR roles"
+    },
+    {
+      "certId": "iapp-cipm",
+      "importance": "optional",
+      "why": "Privacy programme management"
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
