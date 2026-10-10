@@ -244,6 +244,11 @@ describe("matchProfile", () => {
     expect(quote("Check IOCs against VirusTotal and AlienVault OTX feeds", "soc-analyst-l2", "threat-intelligence")).toBe("met");
     const listed = profile({ skills: [{ name: "IOCs", lastUsed: null, evidence: ["Check IOCs against VirusTotal and AlienVault OTX feeds"] }] });
     expect(statusOf(matchProfile(listed, role("soc-analyst-l2"), now), "threat-intelligence")).toBe("met");
+    // VirusTotal is also a helpdesk scan, MISP a farm scheme and "threat feed" a bank fraud bulletin.
+    expect(quote("Scanned user laptops with VirusTotal and Malwarebytes", "soc-analyst-l2", "threat-intelligence")).toBe("missing");
+    expect(quote("Coordinated MISP (Micro Irrigation Support Project) subsidy disbursal", "soc-analyst-l2", "threat-intelligence")).toBe("missing");
+    expect(quote("Fixed misp. entries in MIS reports", "soc-lead", "threat-detection")).toBe("missing");
+    expect(quote("Subscribed to the RBI threat feed of fraud alerts for branch banking", "soc-analyst-l2", "threat-intelligence")).toBe("missing");
     expect(quote("Prepared daily market risk reporting for the treasury desk", "grc-manager", "risk-assessment")).toBe("missing");
     expect(quote("Underwrote cyber risk policies for SME clients", "grc-manager", "risk-assessment")).toBe("missing");
     expect(quote("Present the monthly cyber risk dashboard to the CISO", "grc-manager", "risk-assessment")).toBe("met");

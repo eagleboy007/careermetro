@@ -1457,7 +1457,10 @@
     ],
     "ambiguous": [
       "cti",
-      "iocs"
+      "iocs",
+      "virustotal",
+      "misp",
+      "threat feed"
     ],
     "implies": [
       "threat-detection"
