@@ -121,9 +121,9 @@ const exampleProfile: Profile = {
 };
 
 const exampleRoleSkills: RoleSkillView[] = [
-  { skillId: "sql", name: "SQL", expectation: "Joins, grouping and window functions on real tables", postingShare: 0.91 },
-  { skillId: "excel", name: "Excel", expectation: "Pivot tables and lookups", postingShare: 0.48 },
-  { skillId: "storytelling", name: "Data storytelling", expectation: "Explain a finding to a non-technical manager", postingShare: null },
+  { skillId: "sql", name: "SQL", expectation: "Joins, grouping and window functions on real tables", postingShare: 0.91, context: false },
+  { skillId: "excel", name: "Excel", expectation: "Pivot tables and lookups", postingShare: 0.48, context: false },
+  { skillId: "storytelling", name: "Data storytelling", expectation: "Explain a finding to a non-technical manager", postingShare: null, context: false },
 ];
 
 const exampleCerts: RoleCertificationView[] = [

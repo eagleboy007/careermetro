@@ -99,6 +99,9 @@ describe("role profiles", () => {
     const required = role.skills.filter((s) => s.importance === "required").length;
     expect(required).toBeGreaterThanOrEqual(5);
     expect(required).toBeLessThanOrEqual(MAX_GAPS);
+    // Context skills (communication) are never gaps, so every role keeps five it can score.
+    const context = new Set(skills.filter((s) => s.scoring === "context").map((s) => s.id));
+    expect(role.skills.filter((s) => s.importance === "required" && !context.has(s.skillId)).length).toBeGreaterThanOrEqual(5);
     expect(role.experienceBand.minYears).toBeLessThan(role.experienceBand.maxYears);
   });
 });

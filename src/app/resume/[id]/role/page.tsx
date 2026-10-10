@@ -7,12 +7,12 @@ import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
 import { getResumeForOwner } from "@/lib/resume/store";
-import { roleViews } from "@/lib/role-view";
+import { roleViews, scoredSkills } from "@/lib/role-view";
 import { readOwner } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Pick a role · CareerMetro", robots: { index: false } };
 
-const options = roleViews.map((r) => ({ slug: r.slug, title: r.title, experience: r.experience, topSkills: r.required.slice(0, 3).map((s) => s.name) }));
+const options = roleViews.map((r) => ({ slug: r.slug, title: r.title, experience: r.experience, topSkills: scoredSkills(r).slice(0, 3).map((s) => s.name) }));
 
 async function Picker({ params }: { params: Promise<{ id: string }> }) {
   // Per-request data: the resume lookup reads the clock and the session cookie.
