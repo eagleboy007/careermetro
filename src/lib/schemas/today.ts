@@ -212,3 +212,6 @@ export type GoalsSummary = z.infer<typeof goalsSummary>;
 export type ProvePitstop = z.infer<typeof provePitstop>;
 export type EventTeaser = z.infer<typeof eventTeaser>;
 export type OnYourLine = z.infer<typeof onYourLine>;
+
+/** What the first sign-up hero counts from the person's own gap analysis. */
+export type FirstTally = { skillsFound: number; gaps: number; goals: number; boardable: number };

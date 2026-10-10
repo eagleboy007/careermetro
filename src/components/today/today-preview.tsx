@@ -16,7 +16,7 @@ import {
 import { USER_STATE_LABELS } from "@/lib/today/fixtures";
 import { DeparturesBoard } from "./departures-board";
 import { GoalsCard } from "./goals-card";
-import { NoResumeHero } from "./no-resume-hero";
+import { NoResumeHero, WhileYouDecide } from "./no-resume-hero";
 import { OnYourLineCard, TimetableTeaser } from "./rail-cards";
 import { RideCard } from "./ride-card";
 import { SignalCheckCard } from "./signal-check";
@@ -37,6 +37,8 @@ export type TodayData = {
   onYourLine: OnYourLine;
   /** "Morning", "Afternoon" or "Evening" in the user's time zone. */
   greeting: string;
+  /** No resume state: a resume that was read but whose gaps were never shown. */
+  unfinishedHref?: string | null;
 };
 
 /**
@@ -71,7 +73,7 @@ export function TodayView({
   return (
     <div className="grid items-start gap-4 min-[960px]:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] min-[960px]:gap-[22px]">
       <div className="min-w-0 min-[960px]:col-span-2">
-        {state === "no_resume" && <NoResumeHero name={data.name} upload={upload} />}
+        {state === "no_resume" && <NoResumeHero name={data.name} upload={upload} unfinishedHref={data.unfinishedHref} />}
         {state === "first" && (
           <WelcomeHero name={data.name} role={data.role} tally={data.tally} firstTasks={data.firstTasks} lineHours={data.lineHours} />
         )}
@@ -88,21 +90,18 @@ export function TodayView({
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
         {state === "no_resume" ? (
-          <section className="flex flex-col gap-2 rounded-[18px] border border-line bg-surface p-4 text-[0.88rem] md:rounded-[20px] md:px-[22px] md:py-5">
-            <h3 className="text-[1.08rem] font-semibold">Your goals</h3>
-            <p className="text-muted">Your goals come from your resume: one for each gap.</p>
-          </section>
+          <WhileYouDecide />
         ) : (
           <>
             <SignalCheckCard check={data.signalCheck} answered={answer.answered} pickedKey={answer.key} onAnswer={answerSignal} />
-            <GoalsCard summary={data.goals} />
+            <GoalsCard summary={data.goals} firstDay={state === "first"} />
           </>
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
         <DeparturesBoard rows={data.departures} locked={state === "no_resume"} />
         <TimetableTeaser events={data.events} />
-        {state !== "no_resume" && <OnYourLineCard line={data.onYourLine} />}
+        {state !== "no_resume" && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
       </div>
     </div>
   );

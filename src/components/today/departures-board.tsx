@@ -37,7 +37,7 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
           ))}
         <Clock />
       </div>
-      <ul className={locked ? "opacity-30" : undefined} aria-hidden={locked || undefined}>
+      <ul className={locked ? "pointer-events-none opacity-45 blur-[3px]" : undefined} aria-hidden={locked || undefined}>
         {rows.map((r, i) => {
           const isOpen = open === r.id;
           return (

@@ -34,7 +34,7 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
 }
 
 /** People on the same goal right now, from opted-in profiles. Junction and Network come later (build step 11). */
-export function OnYourLineCard({ line }: { line: OnYourLine }) {
+export function OnYourLineCard({ line, firstDay = false }: { line: OnYourLine; firstDay?: boolean }) {
   const extra = line.count - line.initials.length;
   return (
     <section aria-label="On your line" className={card}>
@@ -49,10 +49,10 @@ export function OnYourLineCard({ line }: { line: OnYourLine }) {
         </div>
         <p className="min-w-[180px] flex-1 text-[0.86rem]">
           <b className="font-semibold">{line.count === 1 ? "1 person" : `${line.count} people`}</b>{" "}
-          {line.count === 1 ? "is" : "are"} on the {line.goalName} goal with you.
+          {firstDay ? "started this line this week, like you." : `${line.count === 1 ? "is" : "are"} on the ${line.goalName} goal with you.`}
         </p>
       </div>
-      {line.tip && (
+      {!firstDay && line.tip && (
         <div className="flex items-start gap-2.5 rounded-[14px] bg-surface-2 px-3.5 py-3 text-[0.86rem]">
           <span className={`${avatar} size-[30px] bg-surface text-[0.62rem]`} aria-hidden="true">
             {line.tip.initials}

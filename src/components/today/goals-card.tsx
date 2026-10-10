@@ -12,8 +12,11 @@ const LAMP: Record<GoalStatus, { index: number; className: string; glow: string;
   met: { index: 2, className: "bg-good", glow: "shadow-[0_0_6px_var(--color-good)]", word: "Met" },
 };
 
-/** Your goals: one goal per gap, with red, amber or green lamps. Tapping a goal shows its evidence and its pitstops. */
-export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref?: string }) {
+/**
+ * Your goals: one goal per gap, with red, amber or green lamps. Tapping a goal shows its evidence and its pitstops.
+ * On the first day only the goals show, as in the prototype.
+ */
+export function GoalsCard({ summary, mapHref, firstDay = false }: { summary: GoalsSummary; mapHref?: string; firstDay?: boolean }) {
   const [open, setOpen] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const more = summary.moreCount === 1 ? "1 more goal" : `${summary.moreCount} more goals`;
@@ -43,7 +46,7 @@ export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref
           <GoalRow key={g.id} goal={g} open={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
         ))}
       </ul>
-      {summary.moreCount > 0 && (
+      {!firstDay && summary.moreCount > 0 && (
         <p className="mt-1 text-[0.8rem] text-muted">
           {more} after these{summary.moreNames.length > 0 ? `: ${joinNames(summary.moreNames)}.` : "."}{" "}
           {mapHref ? (
@@ -55,7 +58,7 @@ export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref
           )}
         </p>
       )}
-      {summary.suggestedGoal && (
+      {!firstDay && summary.suggestedGoal && (
         <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] border border-dashed border-line px-3.5 py-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
           <Lightbulb size={18} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
           <span className="flex flex-col gap-0.5 text-[0.82rem] text-muted">
@@ -72,7 +75,7 @@ export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref
           </button>
         </div>
       )}
-      {summary.metThisMonth.length > 0 && (
+      {!firstDay && summary.metThisMonth.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-[0.8rem] text-muted">
           <span>Goals met with proof this month:</span>
           {summary.metThisMonth.map((name) => (

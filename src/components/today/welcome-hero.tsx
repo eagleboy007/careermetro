@@ -2,10 +2,10 @@
 
 import { Check, Route } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
-import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type RideTask } from "@/lib/schemas";
+import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type FirstTally, type RideTask } from "@/lib/schemas";
 import { TaskList } from "./task-list";
 
-export type FirstTally = { skillsFound: number; gaps: number; goals: number; boardable: number };
+export type { FirstTally };
 
 /**
  * First sign-up: the resume was just read. Shows what was found, the first ride and three setup taps. `onHours` and
@@ -52,7 +52,7 @@ export function WelcomeHero({
           <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Signed up just now · resume read</span>
         </div>
         <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05]">
-          Welcome aboard, {name}. Your line is drawn.
+          Welcome aboard, {name}. <em className="not-italic text-accent">Your line is drawn.</em>
         </h2>
         <p className="max-w-[54ch] text-[0.95rem] text-muted">
           We read your resume against {role}. Here is where you stand, and your first ride is ready.
@@ -60,7 +60,7 @@ export function WelcomeHero({
         <dl className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
           <Tally value={tally.skillsFound} label="skills you already have" dot="bg-good" />
           <Tally value={tally.gaps} label="gaps to close" dot="bg-bad" />
-          <Tally value={tally.goals} label="goals on your line" dot="bg-ink" />
+          <Tally value={tally.goals} label="goals on your line" dot="bg-accent" />
           <Tally value={tally.boardable} label={tally.boardable === 1 ? "role you could board today" : "roles you could board today"} dot="bg-line" />
         </dl>
         <h3 className="text-base font-semibold">
@@ -122,9 +122,9 @@ export function WelcomeHero({
 function Tally({ value, label, dot }: { value: number; label: string; dot: string }) {
   const shown = useCountUp(value);
   return (
-    <div className="flex flex-col gap-1 rounded-md border border-line bg-bg px-3.5 py-3">
+    <div className="relative flex flex-col gap-1 rounded-md border border-line bg-bg px-3.5 pb-3 pt-6">
       <dt className="order-2 text-[0.78rem] leading-snug text-muted">
-        <span className={`mb-1 block size-2.5 rounded-full ${dot}`} aria-hidden="true" />
+        <span className={`absolute left-3.5 top-3 block size-2 rounded-full ${dot}`} aria-hidden="true" />
         {label}
       </dt>
       <dd className="order-1 font-display text-[2rem] font-semibold leading-none tracking-[-0.03em] tabular-nums">
