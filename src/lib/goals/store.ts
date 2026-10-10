@@ -1,13 +1,22 @@
 import "server-only";
-import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { gapProofs, paths, pathSteps, userGoals } from "@/db/schema";
+import { gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals } from "@/db/schema";
 import { skills } from "@/content";
 import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
+import { currentAnalysis } from "@/lib/today/state";
 import { planGoalSync } from "./sync";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
+
+/**
+ * Goal changes for one person run one at a time: syncing and checking proof both read proof, then change goals, so
+ * without this a proof rejected mid-sync could leave a goal met with no proof.
+ */
+async function lockPerson(tx: Tx, userId: string): Promise<void> {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-goals:${userId}`}))`);
+}
 
 const implies = new Map(skills.map((s) => [s.id, s.implies]));
 const knownSkill = new Set(skills.map((s) => s.id));
@@ -28,6 +37,15 @@ async function provedSkills(userId: string, db: Db | Tx): Promise<string[]> {
  */
 export async function syncGoals(userId: string, analysis: { id: string; result: GapAnalysis }, db: Db = getDb()): Promise<UserGoal[]> {
   return db.transaction(async (tx) => {
+    await lockPerson(tx, userId);
+    // Only the person's own analysis may make their goals or link path steps to them.
+    const [own] = await tx
+      .select({ id: gapAnalyses.id })
+      .from(gapAnalyses)
+      .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+      .where(and(eq(gapAnalyses.id, analysis.id), eq(resumes.userId, userId)));
+    if (!own) return [];
     const [existing, proved] = await Promise.all([
       tx
         .select({ skillId: userGoals.skillId, position: userGoals.position, status: userGoals.status, source: userGoals.source })
@@ -85,6 +103,20 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
 }
 
 /** Records a proof the person sent. It waits as pending until it is checked, and fills nothing until accepted. */
+/**
+ * Makes goals from the person's current analysis, if there is one. Runs after sign-in and sign-up, so an anonymous
+ * analysis that moved to the account gets its goals at once. Never fails the caller: goals are made again on the
+ * next visit to the Map.
+ */
+export async function syncCurrentGoals(userId: string, db: Db = getDb()): Promise<void> {
+  try {
+    const analysis = await currentAnalysis(userId, db);
+    if (analysis) await syncGoals(userId, analysis, db);
+  } catch (err) {
+    console.error("syncCurrentGoals failed", err instanceof Error ? err.name : "unknown");
+  }
+}
+
 export async function addProof(userId: string, skillId: string, evidence: ProofEvidence, db: Db = getDb()): Promise<string | null> {
   const parsed = proofEvidence.safeParse(evidence);
   if (!parsed.success || !knownSkill.has(skillId)) return null;
@@ -105,6 +137,7 @@ export async function setProofStatus(
   db: Db = getDb(),
 ): Promise<boolean> {
   return db.transaction(async (tx) => {
+    await lockPerson(tx, userId);
     const [proof] = await tx
       .update(gapProofs)
       .set({ status, verifier, verifiedAt: status === "pending" ? null : new Date() })

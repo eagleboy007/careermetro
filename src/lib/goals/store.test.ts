@@ -129,16 +129,42 @@ describe.skipIf(!db)("goals (database)", () => {
     const theirs = await syncGoals(them, await saved(them, analysis([b])), db!);
     expect(theirs.map((g) => g.skillId)).toEqual([b]);
 
-    const proof = await addProof(me, a, { type: "work", employer: "Acme", title: "Analyst" }, db!);
+    const proof = await addProof(me, a, { type: "work", profileId: "00000000-0000-4000-8000-000000000000", roleIndex: 0 }, db!);
     expect(await setProofStatus(proof!, them, "accepted", "person", db!)).toBe(false);
     const [row] = await db!.select({ status: schema.gapProofs.status }).from(schema.gapProofs).where(eq(schema.gapProofs.id, proof!));
     expect(row.status).toBe("pending");
+
+    // Someone else's analysis can't make goals or link its path steps to this person.
+    const foreign = await saved(them, analysis([c]), [c]);
+    expect(await syncGoals(me, foreign, db!)).toEqual([]);
+    const linked = await db!
+      .select({ goalId: schema.pathSteps.goalId })
+      .from(schema.pathSteps)
+      .innerJoin(schema.paths, eq(schema.paths.id, schema.pathSteps.pathId))
+      .where(eq(schema.paths.gapAnalysisId, foreign.id));
+    expect(linked).toEqual([{ goalId: null }]);
+  });
+
+  it("gives the same goals once when visits and proof checks happen at the same time", async () => {
+    const me = await user("race");
+    const ga = await saved(me, analysis([a, b, c]));
+    const proof = await addProof(me, a, { type: "skill_check", checkId: "c1" }, db!);
+    await setProofStatus(proof!, me, "accepted", "app", db!);
+    // Five visits and a rejection at once: every goal once, positions 1 to 3, and A not met without proof.
+    await Promise.all([...Array.from({ length: 5 }, () => syncGoals(me, ga, db!)), setProofStatus(proof!, me, "rejected", "app", db!)]);
+    const goals = await syncGoals(me, ga, db!);
+    expect(goals.map((g) => [g.skillId, g.position])).toEqual([
+      [a, 1],
+      [b, 2],
+      [c, 3],
+    ]);
+    expect(goals[0]).toMatchObject({ status: "active", proved: false });
   });
 
   it("refuses proof for an unknown skill or with free text instead of structured evidence", async () => {
     const me = await user("bad-proof");
     expect(await addProof(me, "not-a-skill", { type: "skill_check", checkId: "c1" }, db!)).toBeNull();
-    expect(await addProof(me, a, { type: "work", resumeText: "..." } as never, db!)).toBeNull();
+    expect(await addProof(me, a, { type: "work", employer: "Acme", title: "Copied from a resume" } as never, db!)).toBeNull();
   });
 
   it("deletes goals and proof with the account", async () => {

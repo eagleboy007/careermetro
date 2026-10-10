@@ -1,8 +1,10 @@
+CREATE TYPE "public"."goal_source" AS ENUM('gap', 'user');--> statement-breakpoint
 CREATE TYPE "public"."goal_status" AS ENUM('active', 'met', 'skipped');--> statement-breakpoint
 CREATE TYPE "public"."proof_status" AS ENUM('pending', 'accepted', 'rejected');--> statement-breakpoint
 CREATE TYPE "public"."proof_type" AS ENUM('skill_check', 'certification', 'work');--> statement-breakpoint
 CREATE TYPE "public"."proof_verifier" AS ENUM('app', 'credly', 'issuer', 'person');--> statement-breakpoint
 CREATE TYPE "public"."step_kind" AS ENUM('learn', 'prove');--> statement-breakpoint
+CREATE TYPE "public"."step_source" AS ENUM('app', 'user');--> statement-breakpoint
 CREATE TABLE "gap_proofs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -12,14 +14,15 @@ CREATE TABLE "gap_proofs" (
 	"evidence" jsonb NOT NULL,
 	"verifier" "proof_verifier",
 	"verified_at" timestamp with time zone,
-	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "gap_proofs_evidence_type" CHECK ("gap_proofs"."evidence"->>'type' = "gap_proofs"."type"::text)
 );
 --> statement-breakpoint
 CREATE TABLE "user_goals" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
 	"skill_id" text NOT NULL,
-	"source" text DEFAULT 'gap' NOT NULL,
+	"source" "goal_source" DEFAULT 'gap' NOT NULL,
 	"status" "goal_status" DEFAULT 'active' NOT NULL,
 	"position" integer NOT NULL,
 	"gap_analysis_id" uuid,

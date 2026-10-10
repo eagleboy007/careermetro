@@ -11,13 +11,16 @@ export const PROOF_TYPES = ["skill_check", "certification", "work"] as const;
 export const PROOF_STATUSES = ["pending", "accepted", "rejected"] as const;
 export const PROOF_VERIFIERS = ["app", "credly", "issuer", "person"] as const;
 export const STEP_KINDS = ["learn", "prove"] as const;
+/** `app` steps come from the path builder; `user` steps are ones the person added. */
+export const STEP_SOURCES = ["app", "user"] as const;
 
 export const goalState = z.enum(GOAL_STATUSES);
 export const proofStatus = z.enum(PROOF_STATUSES);
 
 /**
  * What a proof points at. Structured fields only, never resume text: a certificate's issuer and credential id, the
- * role on the person's profile a manager confirms, or the skill check they passed.
+ * role on the person's profile a manager confirms (by reference, so nothing is copied from the resume), or the skill
+ * check they passed.
  */
 export const proofEvidence = z.discriminatedUnion("type", [
   z.object({ type: z.literal("skill_check"), checkId: z.string().min(1).max(80) }),
@@ -32,8 +35,8 @@ export const proofEvidence = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("work"),
-    employer: z.string().trim().min(1).max(120),
-    title: z.string().trim().min(1).max(120),
+    profileId: z.uuid(),
+    roleIndex: z.number().int().min(0).max(49),
   }),
 ]);
 

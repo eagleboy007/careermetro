@@ -1,5 +1,5 @@
 {
-  "id": "ccf0b9fb-d353-4317-a65d-aa667791df3e",
+  "id": "d5015c4b-b882-4dde-be21-47addee8097e",
   "prevId": "817245fc-b634-4ae4-ac81-795fdf92c594",
   "version": "7",
   "dialect": "postgresql",
@@ -458,7 +458,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
+      "checkConstraints": {
+        "gap_proofs_evidence_type": {
+          "name": "gap_proofs_evidence_type",
+          "value": "\"gap_proofs\".\"evidence\"->>'type' = \"gap_proofs\".\"type\"::text"
+        }
+      },
       "isRLSEnabled": false
     },
     "public.job_descriptions": {
@@ -1400,7 +1405,8 @@
         },
         "source": {
           "name": "source",
-          "type": "text",
+          "type": "goal_source",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'gap'"
@@ -1716,6 +1722,14 @@
     }
   },
   "enums": {
+    "public.goal_source": {
+      "name": "goal_source",
+      "schema": "public",
+      "values": [
+        "gap",
+        "user"
+      ]
+    },
     "public.goal_status": {
       "name": "goal_status",
       "schema": "public",
@@ -1770,6 +1784,14 @@
       "values": [
         "learn",
         "prove"
+      ]
+    },
+    "public.step_source": {
+      "name": "step_source",
+      "schema": "public",
+      "values": [
+        "app",
+        "user"
       ]
     }
   },

@@ -1,6 +1,21 @@
-import { boolean, date, index, integer, jsonb, numeric, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  check,
+  date,
+  index,
+  integer,
+  jsonb,
+  numeric,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS } from "../lib/schemas/goals";
+import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
@@ -210,6 +225,8 @@ export const resourceChecks = pgTable("resource_checks", {
 
 export const goalStatus = pgEnum("goal_status", GOAL_STATUSES);
 export const stepKind = pgEnum("step_kind", STEP_KINDS);
+export const stepSource = pgEnum("step_source", STEP_SOURCES);
+export const goalSource = pgEnum("goal_source", GOAL_SOURCES);
 export const proofType = pgEnum("proof_type", PROOF_TYPES);
 export const proofStatus = pgEnum("proof_status", PROOF_STATUSES);
 export const proofVerifier = pgEnum("proof_verifier", PROOF_VERIFIERS);
@@ -266,7 +283,7 @@ export const userGoals = pgTable(
     skillId: text("skill_id")
       .notNull()
       .references(() => skills.id),
-    source: text("source", { enum: GOAL_SOURCES }).notNull().default("gap"),
+    source: goalSource("source").notNull().default("gap"),
     status: goalStatus("status").notNull().default("active"),
     position: integer("position").notNull(),
     /** The analysis that first made this goal. */
@@ -300,7 +317,7 @@ export const gapProofs = pgTable(
     verifiedAt: timestamp("verified_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
-  (t) => [index("gap_proofs_user_skill").on(t.userId, t.skillId)],
+  (t) => [index("gap_proofs_user_skill").on(t.userId, t.skillId), check("gap_proofs_evidence_type", sql`${t.evidence}->>'type' = ${t.type}::text`)],
 );
 
 /* Audit ------------------------------------------------------------------- */

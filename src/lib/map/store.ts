@@ -49,7 +49,7 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
 
   const goalBySkill = new Map(userGoals.map((g) => [g.skillId, g]));
   const ordered = [...result.gaps].sort(
-    (x, y) => (goalBySkill.get(x.skillId)?.position ?? Infinity) - (goalBySkill.get(y.skillId)?.position ?? Infinity),
+    (x, y) => (goalBySkill.get(x.skillId)?.position ?? Number.MAX_SAFE_INTEGER) - (goalBySkill.get(y.skillId)?.position ?? Number.MAX_SAFE_INTEGER),
   );
   const goals: MapGoal[] = ordered.map((g) => {
     const step = stepBySkill.get(g.skillId);
