@@ -9,6 +9,9 @@ import type { MeProfile } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
 
+/** Shown when someone has not given a name. Never a part of their email. */
+export const NO_NAME = "CareerMetro member";
+
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 
 /**
@@ -33,7 +36,8 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
       ])
     : [null, [], null];
   return meFromProfile({
-    name: user.name?.trim() || user.email.split("@")[0] || "You",
+    // The email is never shown, not even its first part (T6).
+    name: user.name?.trim() || NO_NAME,
     profile: resume?.profile ?? null,
     analysis: resume ? analysis!.result : null,
     line: resume ? line : null,

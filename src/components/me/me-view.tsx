@@ -57,7 +57,8 @@ export function MeView({ me }: { me: MeProfile }) {
           <div className="flex min-w-[220px] flex-1 flex-col gap-1">
             <h1 className="text-[1.7rem] font-semibold leading-[1.1]">{me.name}</h1>
             <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>
-            <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>
+            {/* The target role says the person is looking, so only they see it until who-sees-what switches exist. */}
+            {own && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-1 self-center">
             {own && (
