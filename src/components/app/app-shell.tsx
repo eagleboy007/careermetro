@@ -20,9 +20,10 @@ export type ShellUser = {
 
 /**
  * The signed-in frame: top bar with the main sections on desktop, a tab bar on phones (under 760 px), and the avatar
- * menu. Sections that are not built yet show as "Soon" and are not links.
+ * menu. Sections that are not built yet show as "Soon" and are not links. With no user yet (the account is still
+ * loading) the frame shows with an empty avatar, so a screen never opens blank.
  */
-export function AppShell({ user, children, embedded = false }: { user: ShellUser; children: ReactNode; embedded?: boolean }) {
+export function AppShell({ user, children, embedded = false }: { user: ShellUser | null; children: ReactNode; embedded?: boolean }) {
   const path = usePathname();
   const active = (item: NavItem) => path === item.href || path.startsWith(`${item.href}/`);
   return (
@@ -38,8 +39,8 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2.5">
-            {user.showStreak && <StreakChip days={user.streakDays} todayCounted={user.todayCounted} />}
-            <AvatarMenu user={user} />
+            {user?.showStreak && <StreakChip days={user.streakDays} todayCounted={user.todayCounted} />}
+            {user ? <AvatarMenu user={user} /> : <span aria-hidden="true" className="size-9 rounded-full bg-surface-2" />}
           </div>
         </div>
       </header>

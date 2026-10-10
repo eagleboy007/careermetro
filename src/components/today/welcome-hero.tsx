@@ -17,6 +17,7 @@ export function WelcomeHero({
   tally,
   firstTasks,
   lineHours,
+  weeklyHours = DEFAULT_WEEKLY_HOURS,
   onHours,
   onFindable,
   onToggle,
@@ -27,13 +28,16 @@ export function WelcomeHero({
   firstTasks: RideTask[];
   /** Estimated hours for the whole line, for the weeks estimate. */
   lineHours: number;
-  onHours?: (hours: number) => void;
+  /** The hours a week the person picked before. */
+  weeklyHours?: number;
+  /** Saves the hours a week. Without it the choice is only kept on screen (design page). */
+  onHours?: (hours: number) => void | Promise<boolean>;
   onFindable?: (on: boolean) => void;
   /** Saves a tick. Without it the card only keeps local state (design page). */
-  onToggle?: (taskId: string, done: boolean) => void;
+  onToggle?: (taskId: string, done: boolean) => void | Promise<boolean>;
 }) {
   const [done, setDone] = useState(() => new Set(firstTasks.filter((t) => t.done).map((t) => t.id)));
-  const [hours, setHours] = useState<number>(DEFAULT_WEEKLY_HOURS);
+  const [hours, setHours] = useState<number>(weeklyHours);
   const [findable, setFindable] = useState(false);
   const weeks = Math.max(1, Math.ceil(lineHours / hours));
 
@@ -43,7 +47,15 @@ export function WelcomeHero({
     if (on) next.add(id);
     else next.delete(id);
     setDone(next);
-    onToggle?.(id, on);
+    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept.
+    const undo = () =>
+      setDone((now) => {
+        const back = new Set(now);
+        if (on) back.delete(id);
+        else back.add(id);
+        return back;
+      });
+    Promise.resolve(onToggle?.(id, on)).then((saved) => saved === false && undo(), undo);
   }
 
   return (

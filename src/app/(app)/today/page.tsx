@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { UploadForm } from "@/components/resume/upload-form";
 import { TodayView, type TodayData } from "@/components/today/today-preview";
 import { currentAccount } from "@/lib/auth/server";
 import { USER_STATES, type UserState } from "@/lib/schemas";
 import { greetingAt } from "@/lib/today/board";
 import { todayStateFor } from "@/lib/today/state";
-import { tickRideTask } from "./actions";
+import { saveWeeklyHours, tickRideTask } from "./actions";
 import {
   exampleDepartures,
   exampleEvents,
@@ -65,20 +66,38 @@ async function Today({ searchParams }: PageProps<"/today">) {
   const name = account.name?.split(/\s+/)[0] ?? data.name;
   const own: TodayData =
     found.state === "first"
-      ? { ...data, name, greeting, role: found.role.title, tally: found.tally, lineHours: found.lineHours, firstTasks: found.firstTasks }
+      ? {
+          ...data,
+          name,
+          greeting,
+          role: found.role.title,
+          tally: found.tally,
+          lineHours: found.lineHours,
+          weeklyHours: account.weeklyHours,
+          firstTasks: found.firstTasks,
+          goals: found.goals ?? { track: found.role.title, goals: [], moreCount: 0, moreNames: [], suggestedGoal: null, metThisMonth: [] },
+        }
       : found.state === "returning"
-        ? { ...data, name, greeting, role: found.role.title, ride: found.ride, week: found.week }
+        ? { ...data, name, greeting, role: found.role.title, ride: found.ride, goals: found.goals, week: found.week }
         : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
   return (
     <div className="flex flex-col gap-4">
       <Banner>
         {found.state === "first"
-          ? "Your welcome card comes from your resume. The rest is example data until we build it."
+          ? "Your welcome card and goals come from your resume. The rest is example data until we build it."
           : found.state === "returning"
-            ? "Your ride, week and streak are your own. The other cards are example data until we build them."
+            ? "Your ride, goals, week and streak are your own. The other cards are example data until we build them."
             : "Add your resume to start. The cards below are example data until we build them."}
       </Banner>
-      <TodayView state={found.state} data={own} upload={<UploadForm />} departuresHref="/departures" onToggleTask={tickRideTask} />
+      <TodayView
+        state={found.state}
+        data={own}
+        upload={<UploadForm />}
+        departuresHref="/departures"
+        mapHref="/map"
+        onToggleTask={tickRideTask}
+        onHours={saveWeeklyHours}
+      />
     </div>
   );
 }
@@ -89,7 +108,7 @@ function Banner({ children }: { children: React.ReactNode }) {
 
 export default function TodayPage(props: PageProps<"/today">) {
   return (
-    <Suspense>
+    <Suspense fallback={<PageLoading />}>
       <Today {...props} />
     </Suspense>
   );

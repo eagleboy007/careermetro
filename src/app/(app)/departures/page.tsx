@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { currentAccount } from "@/lib/auth/server";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
@@ -28,7 +29,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
 
 export default function DeparturesPage(props: PageProps<"/departures">) {
   return (
-    <Suspense>
+    <Suspense fallback={<PageLoading />}>
       <DeparturesScreen {...props} />
     </Suspense>
   );

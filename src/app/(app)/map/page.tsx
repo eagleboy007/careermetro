@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { MetroMap } from "@/components/map/metro-map";
 import { currentAccount } from "@/lib/auth/server";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -37,7 +38,7 @@ function Banner({ children }: { children: React.ReactNode }) {
 
 export default function MapPage(props: PageProps<"/map">) {
   return (
-    <Suspense>
+    <Suspense fallback={<PageLoading />}>
       <MapScreen {...props} />
     </Suspense>
   );

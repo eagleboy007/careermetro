@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ride as rideSchema } from "@/lib/schemas";
-import { buildRide, taskIdsOf, type RideGoal } from "./build";
+import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
 
 const res = (id: string, minutes = 30) => ({ id, title: `Course ${id}`, provider: "Kaggle Learn", kind: "course", minutes });
 const goal = (p: Partial<RideGoal> & { goalId: string }): RideGoal => ({
@@ -12,8 +12,15 @@ const goal = (p: Partial<RideGoal> & { goalId: string }): RideGoal => ({
   learnDone: false,
   ...p,
 });
-const ride = (goals: RideGoal[], d: { before?: string[]; today?: string[]; week?: string[] } = {}) =>
-  buildRide({ goals, doneBefore: new Set(d.before ?? []), doneToday: new Set(d.today ?? []), doneThisWeek: new Set(d.week ?? []) });
+const BUILT: RidePath = { href: "/resume/r1/path/data-analyst", built: true };
+const ride = (goals: RideGoal[], d: { before?: string[]; today?: string[]; week?: string[]; path?: RidePath } = {}) =>
+  buildRide({
+    goals,
+    path: d.path ?? BUILT,
+    doneBefore: new Set(d.before ?? []),
+    doneToday: new Set(d.today ?? []),
+    doneThisWeek: new Set(d.week ?? []),
+  });
 const SQL = ["sql:r:sql-1", "sql:r:sql-2", "sql:practice"];
 
 describe("buildRide", () => {
@@ -55,12 +62,25 @@ describe("buildRide", () => {
     expect(r.summary).toMatch(/prove/i);
   });
 
-  it("treats a goal with no courses yet as unfinished, with its own open-path task", () => {
-    const r = ride([goal({ goalId: "sql", resources: [], practice: null }), goal({ goalId: "pbi" })])!;
+  it("before a path exists, links each goal to the Path page with a task that can't be ticked by hand", () => {
+    const none = { resources: [], practice: null };
+    const r = ride([goal({ goalId: "sql", ...none }), goal({ goalId: "pbi", ...none })], { path: { ...BUILT, built: false } })!;
     expect(r).toMatchObject({ goalName: "SQL" });
-    expect(r.tasks.map((t) => t.id)).toEqual(["sql:open-path"]);
+    expect(r.tasks).toMatchObject([{ id: "sql:open-path", locked: true, done: false, href: BUILT.href }]);
     expect(r.summary).not.toMatch(/are done/);
     expect(rideSchema.safeParse(r).success).toBe(true);
+  });
+
+  it("gives a goal the path left out one self-study task", () => {
+    const r = ride([goal({ goalId: "sql", resources: [], practice: null })])!;
+    expect(r.tasks).toMatchObject([{ id: "sql:self-study", locked: false, href: null }]);
+  });
+
+  it("fixes tasks done on an earlier day once the goal waits for proof, so they can't be unticked", () => {
+    const r = ride([goal({ goalId: "sql" })], { before: SQL })!;
+    expect(r.tasks.every((t) => t.done && t.locked)).toBe(true);
+    // Today's own ticks stay open to change until tomorrow.
+    expect(ride([goal({ goalId: "sql" })], { today: SQL })!.tasks.every((t) => t.done && !t.locked)).toBe(true);
   });
 
   it("builds valid tasks from real ids (a goal's and a course's uuid)", () => {
@@ -70,10 +90,55 @@ describe("buildRide", () => {
     expect(r.tasks[0].id).toBe(`${goalId}:r:7a6b5c4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d`);
   });
 
-  it("has nothing to ride once every goal is proved, and only open goals' tasks can be ticked", () => {
+  it("has nothing to ride once every goal is proved", () => {
     expect(ride([goal({ goalId: "sql", proved: true })])).toBeNull();
-    expect([...taskIdsOf([goal({ goalId: "sql", proved: true }), goal({ goalId: "pbi", resources: [], practice: null })])]).toEqual([
-      "pbi:open-path",
+  });
+});
+
+describe("buildGoalsSummary", () => {
+  const gaps = [
+    { skillId: "sql", skillName: "SQL", status: "missing" as const, resumeQuote: null, requirement: "r", explanation: "Nothing shows SQL." },
+    { skillId: "pbi", skillName: "PBI", status: "weak" as const, resumeQuote: "Power BI", requirement: "r", explanation: "Listed only." },
+  ];
+  const summary = (goals: RideGoal[], d: { before?: string[]; today?: string[] } = {}) =>
+    buildGoalsSummary({
+      goals,
+      path: BUILT,
+      doneBefore: new Set(d.before ?? []),
+      doneToday: new Set(d.today ?? []),
+      doneThisWeek: new Set(),
+      role: "Data Analyst",
+      gaps,
+    });
+
+  it("lists the person's own open goals with pitstops numbered as on the ride", () => {
+    const s = summary([goal({ goalId: "sql" }), goal({ goalId: "pbi", status: "weak" })], { today: ["sql:r:sql-1"] });
+    expect(s.track).toBe("Data Analyst");
+    expect(s.goals.map((g) => [g.name, g.status, g.evidence, g.quote])).toEqual([
+      ["SQL", "missing", "Nothing shows SQL.", null],
+      ["PBI", "weak", "Listed only.", "Power BI"],
     ]);
+    expect(s.goals[0].pitstops).toMatchObject([
+      { number: 1, kind: "learn", state: "now", note: "1 of 3 tasks" },
+      { number: 2, kind: "prove", state: "ahead" },
+    ]);
+    expect(s.goals[1].pitstops.map((p) => [p.number, p.state])).toEqual([
+      [3, "ahead"],
+      [4, "ahead"],
+    ]);
+  });
+
+  it("moves to the prove pitstop once learning is done, skips proved goals and counts the rest", () => {
+    const goals = ["a", "b", "c", "d", "e"].map((id) => goal({ goalId: id }));
+    goals[0].proved = true;
+    const s = summary(goals, { before: ["b:r:b-1", "b:r:b-2", "b:practice"] });
+    expect(s.goals.map((g) => g.name)).toEqual(["B", "C", "D"]);
+    // B waits for proof while the ride moves on to C.
+    expect(s.goals[0].pitstops.map((p) => p.state)).toEqual(["done", "ahead"]);
+    expect(s.goals[1].pitstops.map((p) => p.state)).toEqual(["now", "ahead"]);
+    // Once every goal's learning is done, the ride waits on the first goal's proof.
+    const all = goals.slice(1).flatMap((g) => [`${g.goalId}:r:${g.goalId}-1`, `${g.goalId}:r:${g.goalId}-2`, `${g.goalId}:practice`]);
+    expect(summary(goals, { before: all }).goals[0].pitstops.map((p) => p.state)).toEqual(["done", "now"]);
+    expect(s).toMatchObject({ moreCount: 1, moreNames: ["E"], metThisMonth: [] });
   });
 });

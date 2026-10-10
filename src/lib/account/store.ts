@@ -3,6 +3,7 @@ import { and, eq, gt, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { consents, resumes, users } from "@/db/schema";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/owner";
+import { WEEKLY_HOURS } from "@/lib/schemas";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -15,14 +16,14 @@ export const ACCOUNT_POLICY_VERSION = "2026-10-draft";
  */
 export type Identity = { subject: string; email: string; emailVerified: boolean; name: string | null };
 
-export type Account = { id: string; email: string; name: string | null };
+export type Account = { id: string; email: string; name: string | null; weeklyHours: number };
 
 const normalEmail = (email: string) => email.trim().toLowerCase();
 
 /** Our user for this sign-in, or null before they finish sign-up. */
 export async function findAccount(subject: string, db: Pick<Db, "select"> = getDb()): Promise<Account | null> {
   const [row] = await db
-    .select({ id: users.id, email: users.email, name: users.name })
+    .select({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours })
     .from(users)
     .where(eq(users.authSubject, subject))
     .limit(1);
@@ -87,8 +88,8 @@ export async function createAccount(
     const now = new Date();
     const values = { authSubject: identity.subject, name: input.name, ageConfirmedAt: now, lastSeenAt: now };
     const [row] = byEmail
-      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning({ id: users.id, email: users.email, name: users.name })
-      : await tx.insert(users).values({ email, ...values }).returning({ id: users.id, email: users.email, name: users.name });
+      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours })
+      : await tx.insert(users).values({ email, ...values }).returning({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours });
     await tx.insert(consents).values({ userId: row.id, email, purpose: "account", policyVersion: ACCOUNT_POLICY_VERSION });
     if (input.sessionId) await claimAnonymousResumes(row.id, input.sessionId, tx);
     return { ok: true, account: row } as const;
@@ -102,4 +103,11 @@ export async function touchLastSeen(userId: string, db: Db = getDb()): Promise<v
     .update(users)
     .set({ lastSeenAt: new Date() })
     .where(and(eq(users.id, userId), or(isNull(users.lastSeenAt), lt(users.lastSeenAt, dayAgo))));
+}
+
+/** Saves how many hours a week the person has for learning; only the offered choices are kept. */
+export async function setWeeklyHours(userId: string, hours: number, db: Pick<Db, "update"> = getDb()): Promise<boolean> {
+  if (!(WEEKLY_HOURS as readonly number[]).includes(hours)) return false;
+  const rows = await db.update(users).set({ weeklyHours: hours }).where(eq(users.id, userId)).returning({ id: users.id });
+  return rows.length > 0;
 }

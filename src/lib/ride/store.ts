@@ -3,9 +3,9 @@ import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays } from "@/db/schema";
 import { goalsOf, syncGoals } from "@/lib/goals/store";
-import type { GapAnalysis, Ride, RideWeek, Streak } from "@/lib/schemas";
+import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
-import { buildRide, taskIdsOf, type RideGoal } from "./build";
+import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
@@ -19,7 +19,7 @@ export async function rideGoalsFor(
   userId: string,
   db: Db = getDb(),
   { sync = true }: { sync?: boolean } = {},
-): Promise<{ result: GapAnalysis; goals: RideGoal[] } | null> {
+): Promise<{ result: GapAnalysis; goals: RideGoal[]; path: RidePath } | null> {
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return null;
   const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
@@ -68,7 +68,7 @@ export async function rideGoalsFor(
       },
     ];
   });
-  return { result: analysis.result, goals };
+  return { result: analysis.result, goals, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
 }
 
 const rode = sql`cardinality(${rideDays.taskIds}) > 0`;
@@ -106,38 +106,53 @@ export async function todayRideFor(
   userId: string,
   now: Date,
   db: Db = getDb(),
-): Promise<{ ride: Ride; week: RideWeek; streak: Streak; roleSlug: string } | null> {
+  role = "",
+): Promise<{ ride: Ride; goals: GoalsSummary; week: RideWeek; streak: Streak; roleSlug: string } | null> {
   const today = indiaDay(now);
   const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
   if (!line) return null;
-  const ride = buildRide({
+  const input = {
     goals: line.goals,
+    path: line.path,
     doneBefore: before,
     doneToday: new Set(stats.days.find((d) => d.day === today)?.taskIds ?? []),
     doneThisWeek: new Set(stats.days.flatMap((d) => d.taskIds)),
-  });
-  return ride ? { ride, week: stats.week, streak: stats.streak, roleSlug: line.result.roleSlug } : null;
+  };
+  const ride = buildRide(input);
+  if (!ride) return null;
+  const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps });
+  return { ride, goals, week: stats.week, streak: stats.streak, roleSlug: line.result.roleSlug };
 }
 
 /**
- * Ticks or unticks one of the person's ride tasks for today (India date). Only a task on their own line counts; any
- * other id is refused, and so is a task already done on an earlier day. Only today's ticks can be taken back.
- * Ticking the same task twice in a day keeps one ride day.
+ * Ticks or unticks one of the person's ride tasks for today (India date). Only a task on today's ride counts, as the
+ * person sees it: not another goal's task, not one done on an earlier day, and not one the app ticks itself. Only
+ * today's ticks can be taken back. Ticking the same task twice in a day keeps one ride day.
  */
 export async function tickTask(userId: string, taskId: string, on: boolean, now: Date, db: Db = getDb()): Promise<boolean> {
   if (typeof taskId !== "string" || taskId.length > 100) return false;
   const line = await rideGoalsFor(userId, db, { sync: false });
-  if (!line || !taskIdsOf(line.goals).has(taskId)) return false;
+  if (!line) return false;
   const day = indiaDay(now);
   return db.transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-ride:${userId}`}))`);
-    if (on && (await doneBefore(userId, day, tx)).has(taskId)) return false;
     const [row] = await tx
       .select({ taskIds: rideDays.taskIds })
       .from(rideDays)
       .where(and(eq(rideDays.userId, userId), eq(rideDays.day, day)));
-    if (!on && !row?.taskIds.includes(taskId)) return false;
-    const taskIds = toggled(row?.taskIds ?? [], taskId, on);
+    const today = row?.taskIds ?? [];
+    const ride = buildRide({
+      goals: line.goals,
+      path: line.path,
+      doneBefore: await doneBefore(userId, day, tx),
+      doneToday: new Set(today),
+      doneThisWeek: new Set(),
+    });
+    const task = ride?.tasks.find((t) => t.id === taskId);
+    if (!task || task.locked) return false;
+    // Already as asked, say from another tab: nothing to write.
+    if (task.done === on) return true;
+    const taskIds = toggled(today, taskId, on);
     await tx
       .insert(rideDays)
       .values({ userId, day, taskIds, updatedAt: now })

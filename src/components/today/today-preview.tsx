@@ -32,6 +32,8 @@ export type TodayData = {
   tally: FirstTally;
   firstTasks: RideTask[];
   lineHours: number;
+  /** The signed-in person's saved hours a week. */
+  weeklyHours?: number;
   signalCheck: SignalCheck;
   events: EventTeaser[];
   onYourLine: OnYourLine;
@@ -50,16 +52,22 @@ export function TodayView({
   data,
   upload,
   onToggleTask,
+  onHours,
   departuresHref,
+  mapHref,
 }: {
   state: UserState;
   data: TodayData;
   upload: ReactNode;
-  onToggleTask?: (taskId: string, done: boolean) => void;
+  onToggleTask?: (taskId: string, done: boolean) => void | Promise<boolean>;
+  /** Saves the hours a week picked on the welcome card. */
+  onHours?: (hours: number) => void | Promise<boolean>;
   /** Where "All departures" goes; without it the link is marked "soon". */
   departuresHref?: string;
+  /** Where Your goals' map links go; without it they are marked "soon". */
+  mapHref?: string;
 }) {
-  const lockedTask = data.ride.tasks.find((t) => t.locked);
+  const lockedTask = data.ride.tasks.find((t) => t.signal);
   // Answered earlier today when the locked task already came back done; the picked key is only known this visit.
   const [answer, setAnswer] = useState<{
     answered: boolean;
@@ -84,6 +92,8 @@ export function TodayView({
             tally={data.tally}
             firstTasks={data.firstTasks}
             lineHours={data.lineHours}
+            weeklyHours={data.weeklyHours}
+            onHours={onHours}
             onToggle={onToggleTask}
           />
         )}
@@ -104,7 +114,7 @@ export function TodayView({
         ) : (
           <>
             <SignalCheckCard check={data.signalCheck} answered={answer.answered} pickedKey={answer.key} onAnswer={answerSignal} />
-            <GoalsCard summary={data.goals} firstDay={state === "first"} />
+            <GoalsCard summary={data.goals} mapHref={mapHref} firstDay={state === "first"} />
           </>
         )}
       </div>
