@@ -111,7 +111,7 @@ describe("meFromProfile", () => {
             { name: "excel", lastUsed: null, evidence: [] },
             { name: "Tableau", lastUsed: null, evidence: [] },
           ],
-          certifications: ["Tableau"],
+          certifications: [{ name: "Tableau", earned: null, expires: null }],
         }),
         analysis: {
           roleSlug: "data-analyst",
@@ -143,7 +143,7 @@ describe("meFromProfile", () => {
             highlights: Array(12).fill(long),
           })),
           education: Array.from({ length: 20 }, () => ({ qualification: long, institution: long, year: long })),
-          certifications: [" ", "AWS Cloud Practitioner", " aws cloud practitioner "],
+          certifications: [{ name: " ", earned: null, expires: null }, { name: "AWS Cloud Practitioner", earned: null, expires: null }, { name: " aws cloud practitioner ", earned: null, expires: null }],
         }),
       }),
     );

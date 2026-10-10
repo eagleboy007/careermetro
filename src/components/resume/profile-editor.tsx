@@ -9,10 +9,10 @@ import type { Profile } from "@/lib/schemas";
 const field = "w-full min-w-0 rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink";
 const label = "flex min-w-0 flex-col gap-1 text-xs font-medium text-muted";
 
-const DATE = /^\d{4}(-\d{2})?$/;
+const DATE = /^\d{4}(-(0[1-9]|1[0-2]))?$/;
 
 /** What would stop the profile saving, in words the user can act on. Empty means it can be saved. */
-export function profileProblems(p: Profile): string[] {
+export function profileProblems(p: Profile, now = new Date()): string[] {
   const problems: string[] = [];
   p.roles.forEach((r, i) => {
     const name = r.title.trim() || r.employer.trim() || `Job ${i + 1}`;
@@ -23,6 +23,17 @@ export function profileProblems(p: Profile): string[] {
     if (!e.qualification.trim() || !e.institution.trim()) {
       problems.push(`${e.qualification.trim() || e.institution.trim() || `Education ${i + 1}`}: add both a qualification and an institution, or remove it.`);
     }
+  });
+  p.certifications.forEach((c, i) => {
+    const name = c.name.trim() || `Certification ${i + 1}`;
+    const dates = [c.earned, c.expires === "none" ? null : c.expires];
+    if (!c.name.trim() && dates.some(Boolean)) problems.push(`${name}: add its name, or remove it.`);
+    for (const d of dates) if (d && !DATE.test(d)) problems.push(`${name}: write "${d}" as YYYY or YYYY-MM, like 2024-03.`);
+    // A bare year is read generously: passed in its January, expiring in its December.
+    const [from, to] = [c.earned && `${c.earned}-01`.slice(0, 7), c.expires !== "none" && c.expires && `${c.expires}-12`.slice(0, 7)];
+    if (from && to && dates.every((d) => DATE.test(d!)) && to < from) problems.push(`${name}: it can't expire before it was passed.`);
+    const thisMonth = now.toISOString().slice(0, 7);
+    if (from && DATE.test(c.earned!) && from > thisMonth) problems.push(`${name}: the pass date is in the future. Add it once you've passed.`);
   });
   return problems;
 }
@@ -62,7 +73,7 @@ export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: s
     setProfile((p) => ({ ...p, [key]: value }));
     if (state.kind !== "editing" && state.kind !== "saving") setState({ kind: "editing" });
   };
-  const update = <K extends "roles" | "skills" | "education">(key: K, i: number, patch: Partial<Profile[K][number]>) =>
+  const update = <K extends "roles" | "skills" | "education" | "certifications">(key: K, i: number, patch: Partial<Profile[K][number]>) =>
     set(key, profile[key].map((item, j) => (j === i ? { ...item, ...patch } : item)) as Profile[K]);
   const remove = <K extends "roles" | "skills" | "education" | "certifications">(key: K, i: number) =>
     set(key, profile[key].filter((_, j) => j !== i) as Profile[K]);
@@ -85,7 +96,7 @@ export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: s
       totalYearsExperience: yearsText.trim() ? years : null,
       // Blank skill and certification rows hold nothing to lose.
       skills: profile.skills.filter((s) => s.name.trim()),
-      certifications: profile.certifications.map((c) => c.trim()).filter(Boolean),
+      certifications: profile.certifications.map((c) => ({ ...c, name: c.name.trim() })).filter((c) => c.name),
     };
     const error = demo ? null : await putProfile(resumeId, cleaned);
     setState(error ? { kind: "error", message: error } : { kind: "saved" });
@@ -216,18 +227,41 @@ export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: s
           </ul>
         </Section>
 
-        <Section title="Certifications">
+        <Section title="Certifications" hint="Add when you passed each one and when it expires. Tick “Doesn’t expire” if it never does.">
           {profile.certifications.length === 0 && <p className="text-sm text-muted">We didn&apos;t find any certifications.</p>}
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-3">
             {profile.certifications.map((c, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <input
-                  aria-label={`Certification${c ? `, ${c}` : ""}`}
-                  className={field}
-                  value={c}
-                  onChange={(e) => set("certifications", profile.certifications.map((x, j) => (j === i ? e.target.value : x)))}
-                />
-                <RemoveButton what={c} onClick={() => remove("certifications", i)} />
+              <li key={i} className="flex items-start gap-2 rounded-lg border border-line bg-surface p-4">
+                <div className="grid flex-1 gap-3 sm:grid-cols-[1fr_110px_110px]">
+                  <label className={label}>
+                    Certification
+                    <input className={field} value={c.name} onChange={(e) => update("certifications", i, { name: e.target.value })} />
+                  </label>
+                  <label className={label}>
+                    Passed
+                    <input className={field} value={c.earned ?? ""} placeholder="YYYY-MM" onChange={(e) => update("certifications", i, { earned: e.target.value.trim() || null })} />
+                  </label>
+                  <label className={label}>
+                    Expires
+                    <input
+                      className={field}
+                      value={c.expires === "none" ? "" : (c.expires ?? "")}
+                      placeholder={c.expires === "none" ? "Never" : "YYYY-MM"}
+                      disabled={c.expires === "none"}
+                      onChange={(e) => update("certifications", i, { expires: e.target.value.trim() || null })}
+                    />
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-muted sm:col-start-3">
+                    <input
+                      type="checkbox"
+                      checked={c.expires === "none"}
+                      onChange={(e) => update("certifications", i, { expires: e.target.checked ? "none" : null })}
+                      className="accent-[var(--ink)]"
+                    />
+                    Doesn&apos;t expire
+                  </label>
+                </div>
+                <RemoveButton what={c.name || "this certification"} onClick={() => remove("certifications", i)} />
               </li>
             ))}
           </ul>

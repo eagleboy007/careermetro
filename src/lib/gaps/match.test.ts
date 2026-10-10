@@ -342,7 +342,7 @@ describe("certifications on the resume", () => {
   const infosec = role("information-security-analyst");
 
   it("a held CISSP meets the skills it tests and makes the ones it touches weak", () => {
-    const r = matchProfile(profile({ certifications: ["CISSP – ISC2, 2024"] }), infosec, now);
+    const r = matchProfile(profile({ certifications: [{ name: "CISSP – ISC2, 2024", earned: null, expires: null }] }), infosec, now);
     for (const id of ["compliance-frameworks", "security-policies", "risk-assessment", "identity-access-management"]) expect(statusOf(r, id)).toBe("met");
     expect(statusOf(r, "security-audits")).toBe("weak");
     // A context skill the certificate only touches is not shown: it is never a gap.
@@ -375,14 +375,14 @@ describe("certifications on the resume", () => {
     ]) {
       expect(certificationsIn(line, now), line).toEqual([]);
     }
-    const r = matchProfile(profile({ certifications: ["Pursuing CISSP"] }), infosec, now);
+    const r = matchProfile(profile({ certifications: [{ name: "Pursuing CISSP", earned: null, expires: null }] }), infosec, now);
     expect(statusOf(r, "risk-assessment")).toBe("missing");
   });
 
   it("an old pass reads as outdated, and a weak touch never downgrades a met skill", () => {
-    const old = matchProfile(profile({ certifications: ["CISSP 2015"] }), infosec, now);
+    const old = matchProfile(profile({ certifications: [{ name: "CISSP 2015", earned: null, expires: null }] }), infosec, now);
     expect(statusOf(old, "risk-assessment")).toBe("outdated");
-    const both = matchProfile(profile({ certifications: ["Microsoft PL-300, 2025", "Tableau Desktop Specialist"] }), dataAnalyst, now);
+    const both = matchProfile(profile({ certifications: [{ name: "Microsoft PL-300, 2025", earned: null, expires: null }, { name: "Tableau Desktop Specialist", earned: null, expires: null }] }), dataAnalyst, now);
     expect(statusOf(both, "power-bi")).toBe("met");
     expect(statusOf(both, "data-visualization")).not.toBe("missing");
   });
@@ -429,18 +429,33 @@ describe("certifications on the resume", () => {
   });
 
   it("a certificate with no pass date shows its skills only as weak, and never lifts an outdated skill", () => {
-    const r = matchProfile(profile({ certifications: ["CISSP – valid until 2028"] }), infosec, now);
+    const r = matchProfile(profile({ certifications: [{ name: "CISSP – valid until 2028", earned: null, expires: null }] }), infosec, now);
     expect(statusOf(r, "risk-assessment")).toBe("weak");
     const old = matchProfile(
       profile({
         roles: [{ title: "Security Analyst", employer: "Example Bank", start: "2014-01", end: "2017-06", highlights: ["Ran risk assessment for branch systems"] }],
-        certifications: ["CISSP"],
+        certifications: [{ name: "CISSP", earned: null, expires: null }],
       }),
       infosec,
       now,
     );
     expect(statusOf(old, "risk-assessment")).toBe("outdated");
-    expect(statusOf(matchProfile(profile({ certifications: ["CISSP, 2025"] }), infosec, now), "risk-assessment")).toBe("met");
+    expect(statusOf(matchProfile(profile({ certifications: [{ name: "CISSP, 2025", earned: null, expires: null }] }), infosec, now), "risk-assessment")).toBe("met");
+  });
+
+  it("reads the pass date and expiry from the certificate's own fields", () => {
+    const status = (earned: string | null, expires: string | null) =>
+      statusOf(matchProfile(profile({ certifications: [{ name: "CISSP", earned, expires }] }), infosec, now), "risk-assessment");
+    expect(status("2024-03", null)).toBe("met");
+    expect(status("2026", "none")).toBe("met");
+    expect(status("2024", "2026")).toBe("met");
+    // Past its expiry: true once, not current.
+    expect(status("2023", "2025-06")).toBe("weak");
+    // An exam booked for later is a plan and counts for nothing.
+    expect(status("2027-02", null)).toBe("missing");
+    expect(status("2026-12", null)).toBe("missing");
+    // Long ago: the skill is outdated, as a dated line in the name would make it.
+    expect(status("2015", "none")).toBe("outdated");
   });
 });
 

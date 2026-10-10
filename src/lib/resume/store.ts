@@ -3,7 +3,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { profiles, resumes } from "@/db/schema";
 import { ownsResume, type Owner } from "@/lib/owner";
-import type { Profile } from "@/lib/schemas";
+import { storedProfile, type Profile } from "@/lib/schemas";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -22,7 +22,7 @@ export async function getResumeForOwner(resumeId: string, owner: Owner, db: Pick
     .where(and(eq(resumes.id, resumeId), ownsResume(owner)))
     .orderBy(desc(profiles.version))
     .limit(1);
-  return row ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: row.data } : null;
+  return row ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: storedProfile(row.data) } : null;
 }
 
 /** A resume keeps at most this many profile versions; each save adds one. */

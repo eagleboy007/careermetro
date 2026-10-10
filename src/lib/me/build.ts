@@ -131,7 +131,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     stories: [],
     proofs: [],
     certifications: (profile?.certifications ?? [])
-      .map((c) => c.trim())
+      .map((c) => c.name.trim())
       .filter((c, i, all) => c && all.findIndex((o) => o.toLowerCase() === c.toLowerCase()) === i)
       .slice(0, 30)
       .map((name) => ({ name: cut(name, 160), verified: false })),

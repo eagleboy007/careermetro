@@ -45,6 +45,30 @@ export function containsPhrase(haystack: string, needle: string): boolean {
  */
 const PAIR_WINDOW = 6;
 
+/** "valid till Mar 2028", "expires 2027": an expiry, not a pass date. */
+const EXPIRY_CLAUSE = /\b(valid|till|until|upto|up to|expir\w*|renew\w*)\b[^,;()|]*?\b\d{4}\b/g;
+
+const MONTH_NAMES = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+/**
+ * `date` ("YYYY" or "YYYY-MM") as far as one of the texts prints it: null when the year isn't there, the year alone
+ * when the month isn't. Texts are normalized.
+ */
+function printedDate(date: string | null, texts: string[]): string | null {
+  if (!date) return null;
+  const [year, month] = date.split("-");
+  const withYear = texts.filter((t) => containsPhrase(t, year));
+  if (!withYear.length) return null;
+  if (!month) return year;
+  const m = Number(month);
+  const numeric = new RegExp(`\\b0?${m}\\s*[/.-]\\s*${year}\\b|\\b${year}\\s*[/.-]\\s*0?${m}\\b`);
+  const named = new RegExp(`\\b${MONTH_NAMES[m - 1]}[a-z]*\\.?\\s*,?\\s*${year}\\b`);
+  return withYear.some((t) => numeric.test(t) || named.test(t)) ? date : year;
+}
+
+/** Words that say a certification never expires. */
+const LIFETIME = ["lifetime", "no expiry", "no expiration", "does not expire", "doesn't expire", "never expires", "non-expiring"];
+
 export type VerifyReport = {
   /** Skills removed because none of their evidence, nor their name, appears in the resume. */
   droppedSkills: string[];
@@ -72,6 +96,19 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
   const foundTogether = (a: string, b: string) => {
     const [na, nb] = [normalizeForMatch(a), normalizeForMatch(b)];
     return windows.some((w) => containsPhrase(w, na) && containsPhrase(w, nb));
+  };
+  // The text around a certificate, for checking its dates: the line that names it and, unless it names another of the
+  // certificates, the line after. Never the line before (another entry's). The name itself is removed, so a version
+  // year in it ("ISO/IEC 27001:2013") isn't read as a date.
+  const certNames = parsed.certifications.map((c) => normalizeForMatch(c.name)).filter(Boolean);
+  const around = (name: string) => {
+    const n = normalizeForMatch(name);
+    return lines.flatMap((line, i) => {
+      if (!containsPhrase(line, n)) return [];
+      const next = lines[i + 1] ?? "";
+      const own = certNames.some((other) => other !== n && !containsPhrase(n, other) && containsPhrase(next, other)) ? line : `${line} ${next}`;
+      return [own.split(n).join(" ")];
+    });
   };
   const report: VerifyReport = { droppedSkills: [], droppedQuotes: 0, droppedRoles: 0, droppedOther: 0 };
   const keepQuotes = (quotes: string[]) =>
@@ -109,10 +146,23 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
     return false;
   });
 
-  const certifications = parsed.certifications.filter((c) => {
-    if (found(c)) return true;
-    report.droppedOther++;
-    return false;
+  // A date is kept only when its year is printed by the certificate (a pass year never one that follows "valid till"),
+  // and its month only when printed too; "never expires" only when the resume says so there. Anything else is cleared,
+  // since the model must not invent dates (AI-5).
+  const certifications = parsed.certifications.flatMap((c) => {
+    if (!found(c.name)) {
+      report.droppedOther++;
+      return [];
+    }
+    const texts = around(c.name);
+    const lifetime = c.expires === "none" && texts.some((t) => LIFETIME.some((w) => containsPhrase(t, w)));
+    return [
+      {
+        name: c.name,
+        earned: printedDate(c.earned, texts.map((t) => t.replace(EXPIRY_CLAUSE, " "))),
+        expires: lifetime ? ("none" as const) : c.expires === "none" ? null : printedDate(c.expires, texts),
+      },
+    ];
   });
 
   return { profile: { ...parsed, roles, skills, education, certifications }, report };

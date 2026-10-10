@@ -44,7 +44,7 @@ describe("parseResume", () => {
     expect(result.profile.skills.map((s) => s.name)).toEqual(["SQL"]);
     expect(result.report.droppedSkills).toEqual(["Kubernetes"]);
     expect(result.calls).toEqual([
-      expect.objectContaining({ purpose: "parse-resume", promptVersion: "parse-resume/v1", inputTokens: 3000, outputTokens: 1000, ok: true }),
+      expect.objectContaining({ purpose: "parse-resume", promptVersion: "parse-resume/v2", inputTokens: 3000, outputTokens: 1000, ok: true }),
     ]);
     expect(result.calls[0].costUsd).toBeCloseTo(0.032);
 

@@ -18,7 +18,7 @@ const base: Profile = {
   ],
   skills: [{ name: "SQL", lastUsed: null, evidence: ["Wrote SQL queries for weekly sales reports across 40 stores"] }],
   education: [{ qualification: "B.Com", institution: "Savitribai Phule Pune University", year: "2021" }],
-  certifications: ["Google Data Analytics Professional Certificate"],
+  certifications: [{ name: "Google Data Analytics Professional Certificate", earned: null, expires: null }],
 };
 
 describe("verifyProfile", () => {
@@ -38,15 +38,70 @@ describe("verifyProfile", () => {
         { name: "Power BI", lastUsed: null, evidence: [] },
       ],
       education: [...base.education, { qualification: "MBA", institution: "IIM Ahmedabad", year: "2023" }],
-      certifications: [...base.certifications, "AWS Certified Solutions Architect"],
+      certifications: [...base.certifications, { name: "AWS Certified Solutions Architect", earned: null, expires: null }],
     };
     const { profile, report } = verifyProfile(invented, resume);
     expect(profile.roles.map((r) => r.employer)).toEqual(["Example Retail Pvt Ltd"]);
     expect(profile.skills.map((s) => s.name)).toEqual(["SQL", "Power BI"]);
     expect(profile.skills[0].evidence).toEqual([]);
     expect(profile.education).toHaveLength(1);
-    expect(profile.certifications).toEqual(["Google Data Analytics Professional Certificate"]);
+    expect(profile.certifications).toEqual(base.certifications);
     expect(report).toEqual({ droppedSkills: ["Tableau"], droppedQuotes: 2, droppedRoles: 1, droppedOther: 2 });
+  });
+
+  it("keeps a certificate's dates only when its line shows them", () => {
+    const text = `B.Com, Savitribai Phule Pune University, 2021
+Google Data Analytics Professional Certificate
+CISSP, Mar 2024, valid till 2027
+AWS Cloud Practitioner (2023) - no expiry
+Tableau Desktop Specialist, lifetime`;
+    const certs: Profile["certifications"] = [
+      // 2021 is printed on the line above, for the degree: not this certificate's year.
+      { name: "Google Data Analytics Professional Certificate", earned: "2021", expires: "none" },
+      { name: "CISSP", earned: "2024-03", expires: "2027" },
+      { name: "AWS Cloud Practitioner", earned: "2023", expires: "2026" },
+      { name: "Tableau Desktop Specialist", earned: null, expires: "none" },
+    ];
+    const { profile } = verifyProfile({ ...base, roles: [], skills: [], education: [], certifications: certs }, text);
+    expect(profile.certifications).toEqual([
+      { name: "Google Data Analytics Professional Certificate", earned: null, expires: null },
+      { name: "CISSP", earned: "2024-03", expires: "2027" },
+      { name: "AWS Cloud Practitioner", earned: "2023", expires: null },
+      { name: "Tableau Desktop Specialist", earned: null, expires: "none" },
+    ]);
+  });
+
+  it("never takes a date from the next certificate, an expiry, the name, or a month the resume doesn't print", () => {
+    const text = `CISSP
+CISA 2019
+CISM, valid till 2028
+PMP
+Certified ScrumMaster 2021-2023
+ISO/IEC 27001:2013 Lead Auditor
+Azure Fundamentals, Mar 2024
+AWS Cloud Practitioner 2022`;
+    const c = (name: string, earned: string | null, expires: string | null = null) => ({ name, earned, expires });
+    const certs = [
+      c("CISSP", "2019"),
+      c("CISA", "2019-07"),
+      c("CISM", "2028", "2028"),
+      c("PMP", "2021", "2023"),
+      c("Certified ScrumMaster", "2021", "2023"),
+      c("ISO/IEC 27001:2013 Lead Auditor", "2013"),
+      c("Azure Fundamentals", "2024-03"),
+      c("AWS Cloud Practitioner", "2022-01"),
+    ];
+    const { profile } = verifyProfile({ ...base, roles: [], skills: [], education: [], certifications: certs }, text);
+    expect(profile.certifications).toEqual([
+      c("CISSP", null),
+      c("CISA", "2019"),
+      c("CISM", null, "2028"),
+      c("PMP", null, null),
+      c("Certified ScrumMaster", "2021", "2023"),
+      c("ISO/IEC 27001:2013 Lead Auditor", null),
+      c("Azure Fundamentals", "2024-03"),
+      c("AWS Cloud Practitioner", "2022"),
+    ]);
   });
 
   it("matches skills and employers as whole words only", () => {

@@ -68,7 +68,7 @@ export function lifeFromProfile(profile: Profile, opts: { joinedAt: Date; now: D
     });
   });
 
-  for (const name of profile.certifications) if (name.trim()) undated.push({ row: "certificates", name: name.trim() });
+  for (const { name } of profile.certifications) if (name.trim()) undated.push({ row: "certificates", name: name.trim() });
 
   // Working life begins after the last education finished before the first job (a degree, not 10th standard), or at
   // the first job when there is none. With no job yet, after the latest education.

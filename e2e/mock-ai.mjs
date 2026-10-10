@@ -27,7 +27,7 @@ const profile = {
     { name: "Power BI", lastUsed: null, evidence: [] },
   ],
   education: [{ qualification: "B.Com", institution: "Savitribai Phule Pune University", year: "2021" }],
-  certifications: ["Google Data Analytics Professional Certificate"],
+  certifications: [{ name: "Google Data Analytics Professional Certificate", earned: null, expires: null }],
 };
 let n = 0;
 http

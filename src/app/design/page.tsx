@@ -117,7 +117,7 @@ const exampleProfile: Profile = {
     { name: "Power BI", lastUsed: null, evidence: [] },
   ],
   education: [{ qualification: "B.Com", institution: "Example University", year: "2021" }],
-  certifications: ["Google Data Analytics Professional Certificate"],
+  certifications: [{ name: "Google Data Analytics Professional Certificate", earned: null, expires: null }],
 };
 
 const exampleRoleSkills: RoleSkillView[] = [

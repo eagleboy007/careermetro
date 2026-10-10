@@ -26,7 +26,7 @@ describe("prompts", () => {
 
   it("loads a prompt with an id for the ai_calls log", () => {
     const p = loadPrompt("parse-resume");
-    expect(p.id).toBe("parse-resume/v1");
+    expect(p.id).toBe("parse-resume/v2");
     expect(p.text).toContain("<resume>");
   });
 });

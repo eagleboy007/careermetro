@@ -27,7 +27,7 @@ const parsed: Profile = {
   roles: [{ title: "Analyst", employer: "Acme", start: "2023-01", end: null, highlights: [] }],
   skills: [{ name: "SQL", lastUsed: null, evidence: [] }],
   education: [],
-  certifications: ["Made-up Certificate"],
+  certifications: [{ name: "Made-up Certificate", earned: null, expires: null }],
 };
 const client = {
   beta: {
