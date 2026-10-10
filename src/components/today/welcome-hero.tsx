@@ -88,7 +88,7 @@ export function WelcomeHero({
           <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Signed up just now · resume read</span>
         </div>
         <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05]">
-          Welcome aboard, {name}. <em className="not-italic text-accent">Your line is drawn.</em>
+          {name ? `Welcome aboard, ${name}.` : "Welcome aboard."} <em className="not-italic text-accent">Your line is drawn.</em>
         </h2>
         <p className="max-w-[54ch] text-[0.95rem] text-muted">
           We read your resume against {role}. Here is where you stand, and your first ride is ready.

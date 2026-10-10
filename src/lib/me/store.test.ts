@@ -10,7 +10,8 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import { meProfile, type Profile } from "@/lib/schemas";
-import { meFor, NO_NAME } from "./store";
+import { NO_NAME } from "@/lib/account/name";
+import { meFor } from "./store";
 
 vi.mock("server-only", () => ({}));
 

@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppShell, type ShellUser } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
+import { displayName } from "@/lib/account/name";
 import { touchLastSeen } from "@/lib/account/store";
 import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
@@ -32,7 +33,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     const account = await currentAccount();
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     const [, { streak }] = await Promise.all([touchLastSeen(account.id), rideStatsFor(account.id, new Date())]);
-    const name = account.name ?? account.email.split("@")[0];
+    const name = displayName(account.name);
     // The streak shows once the person has ridden a day.
     user = {
       name,

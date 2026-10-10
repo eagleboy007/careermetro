@@ -3,14 +3,12 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { resumes, users } from "@/db/schema";
 import { skills } from "@/content";
+import { displayName } from "@/lib/account/name";
 import { mapLineFor } from "@/lib/map/store";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
-
-/** Shown when someone has not given a name. Never a part of their email. */
-export const NO_NAME = "CareerMetro member";
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 
@@ -20,7 +18,7 @@ const skillNames = new Map(skills.map((s) => [s.id, s.name]));
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
   const [[user], analysis] = await Promise.all([
-    db.select({ name: users.name, email: users.email, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
+    db.select({ name: users.name, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
   ]);
   if (!user) return null;
@@ -37,7 +35,7 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
     : [null, [], null];
   return meFromProfile({
     // The email is never shown, not even its first part (T6).
-    name: user.name?.trim() || NO_NAME,
+    name: displayName(user.name),
     profile: resume?.profile ?? null,
     analysis: resume ? analysis!.result : null,
     line: resume ? line : null,
