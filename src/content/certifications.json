@@ -106,8 +106,9 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "aws certified machine learning",
-      "aws machine learning"
+      "aws certified machine learning engineer",
+      "aws machine learning engineer",
+      "mla-c01"
     ],
     "proves": [
       "mlops"
@@ -329,8 +330,7 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "terraform associate",
-      "hashicorp certified"
+      "terraform associate"
     ],
     "proves": [
       "terraform"
@@ -363,8 +363,7 @@
     "level": "entry",
     "cost": "paid",
     "aliases": [
-      "tableau desktop specialist",
-      "tableau certified"
+      "tableau desktop specialist"
     ],
     "proves": [
       "tableau"
@@ -397,8 +396,7 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "databricks certified",
-      "databricks certification"
+      "databricks data engineer associate"
     ],
     "proves": [
       "spark",
@@ -592,7 +590,8 @@
     "cost": "paid",
     "aliases": [
       "certified scrummaster",
-      "certified scrum master"
+      "certified scrum master",
+      "csm"
     ],
     "proves": [],
     "partial": [
@@ -728,9 +727,8 @@
     "level": "entry",
     "cost": "free",
     "aliases": [
-      "hubspot certification",
-      "hubspot certified",
-      "inbound marketing certification"
+      "inbound marketing certification",
+      "hubspot inbound marketing"
     ],
     "proves": [],
     "partial": [
@@ -746,9 +744,9 @@
     "level": "entry",
     "cost": "paid",
     "aliases": [
-      "meta certified",
       "meta blueprint",
-      "facebook blueprint"
+      "facebook blueprint",
+      "meta digital marketing associate"
     ],
     "proves": [
       "social-media-marketing"
