@@ -18,10 +18,13 @@ export const gap = z.object({
 });
 export type Gap = z.infer<typeof gap>;
 
+/** More required skills than any role profile lists; content tests keep roles under it. */
+export const MAX_GAPS = 20;
+
 export const gapAnalysis = z.object({
   /** The role profile's slug; analyses from a pasted job description will need their own field. */
   roleSlug: z.string().min(1),
-  gaps: z.array(gap).max(10),
+  gaps: z.array(gap).max(MAX_GAPS),
   metSkillIds: z.array(z.string()),
   /** Nice-to-have skills and where the resume stands on each, for the "bonus" list. */
   niceToHave: z.array(z.object({ skillId: z.string().min(1), skillName: z.string().min(1), status: gapStatus })).default([]),

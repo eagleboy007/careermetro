@@ -59,7 +59,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const { client, create } = explainClient();
     const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     if (!first.ok) throw new Error(first.reason);
-    expect(first.analysis.gaps).toHaveLength(SHOWN_GAPS);
+    expect(first.analysis.gaps.length).toBeGreaterThan(SHOWN_GAPS);
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
 
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));

@@ -2,7 +2,7 @@ import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 import type { MatchedSkill, MatchResult } from "./match";
 import { OUTDATED_AFTER_YEARS } from "./match";
 
-/** FR-11: the Gaps page shows the top five gaps. */
+/** FR-11: the Gaps page shows the top five gaps, and the model explains those five; the rest get template words. */
 export const SHOWN_GAPS = 5;
 
 export type Explanations = { readiness: string; bySkill: Map<string, string> };
@@ -37,11 +37,14 @@ export function templateReadiness(match: MatchResult): string {
     : `As a rough estimate, about ${hours} hours of focused work closes the rest.`;
 }
 
-/** The stored and displayed analysis: the matcher's decisions with the model's words, or template words. */
+/**
+ * The stored and displayed analysis: the matcher's decisions with the model's words, or template words. Every required
+ * gap is stored, because each one becomes a goal (handoff 6.5); only the Gaps page stops at the top five.
+ */
 export function buildGapAnalysis(match: MatchResult, explanations: Explanations | null): GapAnalysis {
   return gapAnalysis.parse({
     roleSlug: match.roleSlug,
-    gaps: match.gaps.slice(0, SHOWN_GAPS).map((g) => ({
+    gaps: match.gaps.map((g) => ({
       skillId: g.skillId,
       skillName: g.skillName,
       status: g.status,

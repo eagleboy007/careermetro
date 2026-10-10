@@ -1,6 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { MAX_GAPS } from "@/lib/schemas";
 import { certifications, normalizeSkillTerm, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
@@ -74,7 +75,9 @@ describe("role profiles", () => {
   });
 
   it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s has at least 5 required skills and a valid band", (_, role) => {
-    expect(role.skills.filter((s) => s.importance === "required").length).toBeGreaterThanOrEqual(5);
+    const required = role.skills.filter((s) => s.importance === "required").length;
+    expect(required).toBeGreaterThanOrEqual(5);
+    expect(required).toBeLessThanOrEqual(MAX_GAPS);
     expect(role.experienceBand.minYears).toBeLessThan(role.experienceBand.maxYears);
   });
 });

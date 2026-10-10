@@ -12,6 +12,7 @@ import { ReadinessCard } from "@/components/route/readiness-card";
 import { SiteHeader } from "@/components/site/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
+import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import { readOwner } from "@/lib/session";
 
@@ -49,6 +50,9 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   }
 
   const { analysis, analysisId, rating } = result;
+  // FR-11: five gaps up front; every other required gap is stored (each is a goal) and one tap away.
+  const top = analysis.gaps.slice(0, SHOWN_GAPS);
+  const rest = analysis.gaps.slice(SHOWN_GAPS);
   const met = analysis.metSkillIds.map((skillId) => ({ skillId, skillName: skillNames.get(skillId) ?? skillId, status: "met" as const }));
   return (
     <div className="flex flex-col gap-6">
@@ -60,11 +64,25 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
       {analysis.gaps.length > 0 ? (
         <section className="flex flex-col gap-3" aria-label="Top gaps">
           <h2 className="font-sans text-lg font-semibold tracking-normal">
-            {analysis.gaps.length === 1 ? "The gap to close" : `The ${analysis.gaps.length} gaps that matter most`}
+            {top.length === 1 ? "The gap to close" : `The ${top.length} gaps that matter most`}
           </h2>
-          {analysis.gaps.map((g) => (
+          {top.map((g) => (
             <GapCard key={g.skillId} gap={g} />
           ))}
+          {rest.length > 0 && (
+            <details className="group rounded-lg border border-line bg-surface">
+              <summary className="cursor-pointer list-none p-4 text-sm font-semibold marker:hidden">
+                {rest.length === 1 ? "1 more required skill" : `${rest.length} more required skills`}
+                <span className="ml-2 font-normal text-muted group-open:hidden">Show</span>
+                <span className="ml-2 hidden font-normal text-muted group-open:inline">Hide</span>
+              </summary>
+              <div className="flex flex-col gap-3 px-4 pb-4">
+                {rest.map((g) => (
+                  <GapCard key={g.skillId} gap={g} />
+                ))}
+              </div>
+            </details>
+          )}
           <p className="text-xs text-muted">Ordered by how often employers ask for each skill. Hours are a rough estimate.</p>
         </section>
       ) : null}
