@@ -1,11 +1,13 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
+import { connection } from "next/server";
 import { cache } from "react";
 import { findAccount, type Account, type Identity } from "@/lib/account/store";
 import { identityFromClaims } from "./claims";
 import { signedInPreviewEnabled } from "@/lib/preview";
 import { authConfig, hasAuthCookie } from "./config";
+import { TEST_USER_COOKIE, testUserIdentity } from "./test-user";
 
 /*
  * The only place that talks to the sign-in provider (Supabase Auth). The rest of the app asks for `currentIdentity`
@@ -34,7 +36,11 @@ async function client() {
 export const currentIdentity = cache(async (): Promise<Identity | null> => {
   // Sign-in is preview-only until Today runs on real data; production does no auth work at all.
   if (!signedInPreviewEnabled()) return null;
+  // Reading the time for the test user's expiry needs a request first.
+  await connection();
   const jar = await cookies();
+  const testUser = testUserIdentity(jar.get(TEST_USER_COOKIE)?.value);
+  if (testUser) return testUser;
   if (!hasAuthCookie(jar.getAll().map((c) => c.name))) return null;
   const supabase = await client();
   if (!supabase) return null;
@@ -94,6 +100,7 @@ export async function completeGoogleRedirect(code: string | null): Promise<AuthS
 
 /** Ends the session on this device and clears its cookies. */
 export async function signOut(): Promise<void> {
+  (await cookies()).delete(TEST_USER_COOKIE);
   const supabase = await client();
   await supabase?.auth.signOut({ scope: "local" });
 }

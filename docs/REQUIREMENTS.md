@@ -152,7 +152,7 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 - **App:** Next.js (App Router) + TypeScript, Tailwind with design tokens, deployed on Vercel or an India-region container host.
 - **Data:** PostgreSQL (with pgvector for skill/role matching), Prisma or Drizzle.
 - **Files:** S3-compatible private bucket (AWS Mumbai region).
-- **Auth:** Supabase Auth (decided 2026-10-09), behind `src/lib/auth/` only. Our own `users.id` is the identity; no foreign key to the provider.
+- **Auth:** Supabase Auth (decided 2026-10-09), behind `src/lib/auth/` only. Our own `users.id` is the identity; no foreign key to the provider. Until its keys are added, preview and local builds offer a stand-in "Continue as test user" sign-in (name and email, no check; emails get a `.test` ending so they never meet a real account). It switches off once the keys are set and never runs in production (decided 2026-10-09).
 - **AI:** Claude API (Anthropic SDK) with schema-validated outputs (Zod).
 - **Jobs:** a queue for parsing and analysis (e.g. Inngest, BullMQ, or a managed queue).
 - **Docs/PDF:** server-side PDF and DOCX generation for the resume export.
