@@ -3150,7 +3150,7 @@
   },
   {
     "title": "Programming, Data Structures and Algorithms using Python (NPTEL, IIT Madras)",
-    "url": "https://onlinecourses.nptel.ac.in/noc24_cs45/preview",
+    "url": "https://nptel.ac.in/courses/106106145",
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
@@ -3172,26 +3172,14 @@
     "free": true
   },
   {
-    "title": "Cloud Computing (NPTEL, IIT Kharagpur)",
-    "url": "https://nptel.ac.in/courses/106105167",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "aws",
-      "gcp",
-      "azure"
-    ],
-    "minutes": 1440,
-    "free": true
-  },
-  {
     "title": "Ethical Hacking (NPTEL, IIT Kharagpur)",
     "url": "https://nptel.ac.in/courses/106105217",
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
       "penetration-testing",
-      "network-security"
+      "networking-basics",
+      "cryptography-basics"
     ],
     "minutes": 2160,
     "free": true
@@ -3245,7 +3233,7 @@
     "free": true
   },
   {
-    "title": "Databases and SQL from Harvard CS50 (freeCodeCamp)",
+    "title": "Databases and SQL from Harvard CS50, 11 hours (freeCodeCamp)",
     "url": "https://www.freecodecamp.org/news/learn-databases-and-sql-from-harvard-university/",
     "provider": "freeCodeCamp",
     "kind": "video",
@@ -3253,7 +3241,7 @@
       "sql",
       "data-modeling"
     ],
-    "minutes": 900,
+    "minutes": 660,
     "free": true
   },
   {
@@ -3283,7 +3271,7 @@
     "free": true
   },
   {
-    "title": "PyTorch for Deep Learning and Machine Learning, 25 hours (freeCodeCamp, Daniel Bourke)",
+    "title": "PyTorch for Deep Learning and Machine Learning, 26 hours (freeCodeCamp, Daniel Bourke)",
     "url": "https://www.freecodecamp.org/news/learn-pytorch-for-deep-learning-in-day/",
     "provider": "freeCodeCamp",
     "kind": "video",
@@ -3291,7 +3279,7 @@
       "pytorch",
       "deep-learning"
     ],
-    "minutes": 1500,
+    "minutes": 1560,
     "free": true
   },
   {
