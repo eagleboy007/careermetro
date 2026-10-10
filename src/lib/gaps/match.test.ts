@@ -220,6 +220,13 @@ describe("matchProfile", () => {
     expect(matchProfile(p, dataAnalyst, now).met.find((s) => s.skillId === "sql")?.resumeQuote).toBe("Wrote SQL for the loan book");
   });
 
+  it("reads CTI in a call-centre line as nothing, and on-call work as SRE practice", () => {
+    const quote = (q: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
+    expect(quote("Worked on CTI-integrated dialer for the inbound process", "cyber-security-analyst", "threat-detection")).toBe("missing");
+    expect(quote("Handled on-call rotation for payments platform and wrote postmortems", "devops-engineer", "sre-practices")).toBe("met");
+  });
+
   it("never reads a short word inside a longer skill name as a skill", () => {
     const named = (name: string, quote: string, slug: string, id: string) =>
       statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [quote] }] }), role(slug), now), id);

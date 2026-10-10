@@ -999,5 +999,449 @@
     "partial": [
       "risk-assessment"
     ]
+  },
+  {
+    "id": "pcep",
+    "name": "PCEP \u2013 Certified Entry-Level Python Programmer",
+    "issuer": "Python Institute",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "pcep",
+      "pcep-30-02",
+      "certified entry-level python programmer"
+    ],
+    "proves": [
+      "python"
+    ],
+    "partial": []
+  },
+  {
+    "id": "pcap",
+    "name": "PCAP \u2013 Certified Associate Python Programmer",
+    "issuer": "Python Institute",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "pcap",
+      "pcap-31-03",
+      "certified associate python programmer"
+    ],
+    "proves": [
+      "python"
+    ],
+    "partial": [
+      "oop"
+    ]
+  },
+  {
+    "id": "mos-excel-associate",
+    "name": "Microsoft Office Specialist: Excel Associate (MO-200)",
+    "issuer": "Microsoft",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "mo-200",
+      "mos excel associate",
+      "microsoft office specialist excel associate"
+    ],
+    "proves": [
+      "excel"
+    ],
+    "partial": []
+  },
+  {
+    "id": "mos-excel-expert",
+    "name": "Microsoft Office Specialist: Excel Expert (MO-201)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "mo-201",
+      "mos excel expert",
+      "microsoft office specialist excel expert"
+    ],
+    "proves": [
+      "excel",
+      "excel-pivot-lookup"
+    ],
+    "partial": []
+  },
+  {
+    "id": "sc-200",
+    "name": "Microsoft Certified: Security Operations Analyst Associate (SC-200)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sc-200",
+      "security operations analyst associate"
+    ],
+    "proves": [
+      "siem",
+      "threat-detection"
+    ],
+    "partial": [
+      "security-incident-response",
+      "endpoint-security",
+      "soar"
+    ]
+  },
+  {
+    "id": "sc-300",
+    "name": "Microsoft Certified: Identity and Access Administrator Associate (SC-300)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sc-300",
+      "identity and access administrator associate"
+    ],
+    "proves": [
+      "identity-access-management"
+    ],
+    "partial": [
+      "azure"
+    ]
+  },
+  {
+    "id": "sc-900",
+    "name": "Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)",
+    "issuer": "Microsoft",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "sc-900",
+      "security, compliance, and identity fundamentals"
+    ],
+    "proves": [],
+    "partial": [
+      "identity-access-management",
+      "compliance-frameworks"
+    ]
+  },
+  {
+    "id": "splunk-core-user",
+    "name": "Splunk Core Certified User",
+    "issuer": "Splunk",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "splunk core certified user"
+    ],
+    "proves": [
+      "siem"
+    ],
+    "partial": []
+  },
+  {
+    "id": "comptia-network-plus",
+    "name": "CompTIA Network+",
+    "issuer": "CompTIA",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "comptia network+",
+      "network+",
+      "n10-009"
+    ],
+    "proves": [
+      "networking-basics"
+    ],
+    "partial": [
+      "network-security"
+    ]
+  },
+  {
+    "id": "ccna",
+    "name": "Cisco Certified Network Associate (CCNA)",
+    "issuer": "Cisco",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "ccna",
+      "cisco certified network associate",
+      "200-301"
+    ],
+    "proves": [
+      "networking-basics"
+    ],
+    "partial": [
+      "network-security",
+      "cloud-networking"
+    ]
+  },
+  {
+    "id": "rhcsa",
+    "name": "Red Hat Certified System Administrator (RHCSA)",
+    "issuer": "Red Hat",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "rhcsa",
+      "red hat certified system administrator",
+      "ex200"
+    ],
+    "proves": [
+      "linux"
+    ],
+    "partial": [
+      "scripting-bash"
+    ]
+  },
+  {
+    "id": "google-cybersecurity",
+    "name": "Google Cybersecurity Professional Certificate",
+    "issuer": "Google",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "google cybersecurity professional certificate",
+      "google cybersecurity certificate"
+    ],
+    "proves": [],
+    "partial": [
+      "siem",
+      "linux",
+      "networking-basics",
+      "security-incident-response"
+    ]
+  },
+  {
+    "id": "comptia-pentest-plus",
+    "name": "CompTIA PenTest+",
+    "issuer": "CompTIA",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "comptia pentest+",
+      "pentest+",
+      "pt0-003"
+    ],
+    "proves": [
+      "penetration-testing"
+    ],
+    "partial": [
+      "vulnerability-management"
+    ]
+  },
+  {
+    "id": "ejpt",
+    "name": "eLearnSecurity Junior Penetration Tester (eJPT)",
+    "issuer": "INE Security",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "ejpt",
+      "elearnsecurity junior penetration tester"
+    ],
+    "proves": [
+      "penetration-testing"
+    ],
+    "partial": [
+      "networking-basics"
+    ]
+  },
+  {
+    "id": "cks",
+    "name": "Certified Kubernetes Security Specialist (CKS)",
+    "issuer": "Linux Foundation",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cks",
+      "certified kubernetes security specialist"
+    ],
+    "proves": [
+      "kubernetes",
+      "cloud-security"
+    ],
+    "partial": [
+      "devsecops"
+    ]
+  },
+  {
+    "id": "aws-data-engineer-associate",
+    "name": "AWS Certified Data Engineer \u2013 Associate",
+    "issuer": "Amazon Web Services",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "aws certified data engineer associate",
+      "aws data engineer associate",
+      "dea-c01"
+    ],
+    "proves": [
+      "etl",
+      "aws"
+    ],
+    "partial": [
+      "cloud-data-warehouse",
+      "data-orchestration",
+      "streaming-data"
+    ]
+  },
+  {
+    "id": "github-foundations",
+    "name": "GitHub Foundations",
+    "issuer": "GitHub",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "github foundations certification",
+      "github foundations"
+    ],
+    "proves": [
+      "git"
+    ],
+    "partial": []
+  },
+  {
+    "id": "github-actions",
+    "name": "GitHub Actions certification",
+    "issuer": "GitHub",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "github actions certification",
+      "github actions certified"
+    ],
+    "proves": [
+      "ci-cd"
+    ],
+    "partial": []
+  },
+  {
+    "id": "prometheus-pca",
+    "name": "Prometheus Certified Associate (PCA)",
+    "issuer": "Linux Foundation",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "prometheus certified associate"
+    ],
+    "proves": [
+      "monitoring"
+    ],
+    "partial": [
+      "observability"
+    ]
+  },
+  {
+    "id": "dsci-dcpp",
+    "name": "DSCI Certified Privacy Professional (DCPP)",
+    "issuer": "Data Security Council of India",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "dcpp",
+      "dsci certified privacy professional"
+    ],
+    "proves": [
+      "data-privacy"
+    ],
+    "partial": [
+      "privacy-program-management",
+      "compliance-frameworks",
+      "data-governance"
+    ]
+  },
+  {
+    "id": "iapp-cipp-e",
+    "name": "Certified Information Privacy Professional/Europe (CIPP/E)",
+    "issuer": "IAPP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "cipp/e",
+      "cipp-e",
+      "certified information privacy professional/europe"
+    ],
+    "proves": [
+      "data-privacy"
+    ],
+    "partial": [
+      "compliance-frameworks"
+    ]
+  },
+  {
+    "id": "iapp-cipm",
+    "name": "Certified Information Privacy Manager (CIPM)",
+    "issuer": "IAPP",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cipm",
+      "certified information privacy manager"
+    ],
+    "proves": [
+      "privacy-program-management"
+    ],
+    "partial": [
+      "data-privacy",
+      "data-governance",
+      "security-policies"
+    ]
+  },
+  {
+    "id": "iso22301-lead-implementer",
+    "name": "ISO 22301 Lead Implementer",
+    "issuer": "Accredited training bodies (e.g. PECB, BSI)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "iso 22301 lead implementer",
+      "22301 lead implementer"
+    ],
+    "proves": [
+      "business-continuity"
+    ],
+    "partial": []
+  },
+  {
+    "id": "google-ux-design",
+    "name": "Google UX Design Professional Certificate",
+    "issuer": "Google",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "google ux design professional certificate",
+      "google ux design certificate"
+    ],
+    "proves": [],
+    "partial": [
+      "wireframing",
+      "figma",
+      "ux-research",
+      "prototyping"
+    ]
+  },
+  {
+    "id": "hubspot-seo",
+    "name": "HubSpot SEO Certification",
+    "issuer": "HubSpot Academy",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "hubspot seo certification"
+    ],
+    "proves": [],
+    "partial": [
+      "seo"
+    ]
+  },
+  {
+    "id": "google-ads-display",
+    "name": "Google Ads Display Certification",
+    "issuer": "Google",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "google ads display certification"
+    ],
+    "proves": [],
+    "partial": [
+      "performance-marketing"
+    ]
   }
 ]
