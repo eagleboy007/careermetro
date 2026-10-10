@@ -1,13 +1,14 @@
 import "server-only";
 import { and, count, eq, gte, isNull, lt, ne, sql, sum } from "drizzle-orm";
 import { getDb } from "@/db";
-import { aiCalls, consents, profiles, resumes } from "@/db/schema";
+import { aiCalls, consents, profiles, resumes, users } from "@/db/schema";
 import { recordAiCalls } from "@/lib/ai/log";
 import { HEALTH_PURPOSE } from "@/lib/health";
 import { ANONYMOUS_TTL_HOURS, uploadedBy, type Owner } from "@/lib/owner";
 import { windowLimiter } from "@/lib/rate-limit";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
+import { checkName, NAME_MISMATCH_MESSAGE, nameHashes } from "./name-match";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
 
 export const RESUME_POLICY_VERSION = "2026-10-draft";
@@ -174,9 +175,19 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
         : { ok: false, status: 422, code: "unparsed", message: "We couldn't read this resume. Try another format, or paste the text instead." };
     }
 
+    // Only keyed hashes of the name's words are kept, for the name check when the resume joins an account.
+    const hashes = nameHashes(result.personName);
+    if (input.owner.userId !== undefined) {
+      // A signed-in person's upload joins their account at once, so it is checked now (dev/resume-name-check-plan.md).
+      const [account] = await db.select({ name: users.name }).from(users).where(eq(users.id, input.owner.userId));
+      if (checkName(account?.name, hashes) === "mismatch") {
+        await db.update(resumes).set({ status: "failed" }).where(eq(resumes.id, resumeId));
+        return { ok: false, status: 422, code: "name_mismatch", message: NAME_MISMATCH_MESSAGE };
+      }
+    }
     await db.transaction(async (tx) => {
       await tx.insert(profiles).values({ resumeId, version: 1, data: result.profile, aiCallId: callIds.at(-1) });
-      await tx.update(resumes).set({ status: "parsed" }).where(eq(resumes.id, resumeId));
+      await tx.update(resumes).set({ status: "parsed", nameHashes: hashes }).where(eq(resumes.id, resumeId));
     });
     return { ok: true, resumeId };
   } catch (error) {

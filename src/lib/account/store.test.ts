@@ -39,6 +39,19 @@ const client = {
     },
   },
 } as unknown as ParseClient;
+// The same resume, read with the name it prints ("Priya Sharma"), for the name check.
+const namedClient = {
+  beta: {
+    messages: {
+      create: vi.fn().mockResolvedValue({
+        model: "claude-opus-5-5",
+        stop_reason: "end_turn",
+        usage: { input_tokens: 3000, output_tokens: 1000 },
+        content: [{ type: "text", text: JSON.stringify({ ...parsed, personName: "Priya Sharma" }) }],
+      }),
+    },
+  },
+} as unknown as ParseClient;
 
 describe.skipIf(!db)("account store (database)", () => {
   const run = `acct-${Date.now()}`;
@@ -80,7 +93,7 @@ describe.skipIf(!db)("account store (database)", () => {
     const a = await signUp("new");
     expect(a.email).toBe(`${run}-new@example.test`);
     const again = await createAccount(identity("new"), { name: null, sessionId: null }, db!);
-    expect(again).toEqual({ ok: true, account: a });
+    expect(again).toEqual({ ok: true, account: a, refused: 0 });
     const [row] = await db!.select().from(schema.users).where(eq(schema.users.id, a.id));
     expect(row.ageConfirmedAt).not.toBeNull();
     const rows = await db!.select().from(schema.consents).where(eq(schema.consents.userId, a.id));
@@ -177,10 +190,41 @@ describe.skipIf(!db)("account store (database)", () => {
     const stale = await upload(session);
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, stale));
     const user = await signUp("age");
-    expect(await claimAnonymousResumes(user.id, session, db!)).toBe(1);
+    expect(await claimAnonymousResumes(user.id, session, db!)).toEqual({ claimed: 1, refused: 0 });
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 30 * 24 * 3600_000) }).where(eq(schema.resumes.id, fresh));
     expect(await getResumeForOwner(fresh, { userId: user.id }, db!)).toMatchObject({ resumeId: fresh });
     await db!.delete(schema.resumes).where(eq(schema.resumes.id, stale));
+  });
+
+  it("adds a resume to an account only when the account's name matches the resume's", async () => {
+    const named = async (owner: { sessionId: string } | { userId: string }) =>
+      ingestResume({ bytes, as: "text", owner, clientHash: `h-name-${run}` }, { db: db!, client: namedClient });
+    const session = `${run}-name`;
+    const r = await named({ sessionId: session });
+    if (!r.ok) throw new Error(r.code);
+    const [row] = await db!.select({ hashes: schema.resumes.nameHashes }).from(schema.resumes).where(eq(schema.resumes.id, r.resumeId));
+    expect(row.hashes?.length).toBe(2);
+    expect(row.hashes!.join(" ")).not.toMatch(/priya|sharma/i);
+
+    // Someone else signing in on the same browser doesn't get it; it stays anonymous for its 24 hours.
+    const other = await createAccount({ ...identity("name-other"), name: "Asha Rao" }, { name: "Asha Rao", sessionId: session }, db!);
+    if (!other.ok) throw new Error(other.reason);
+    userIds.push(other.account.id);
+    expect(other.refused).toBe(1);
+    expect(await getResumeForOwner(r.resumeId, { userId: other.account.id }, db!)).toBeNull();
+    expect(await getResumeForOwner(r.resumeId, { sessionId: session }, db!)).toMatchObject({ resumeId: r.resumeId });
+
+    // The person it belongs to does, whatever the word order.
+    const owner = await createAccount({ ...identity("name-owner"), name: "Sharma Priya" }, { name: "Sharma Priya", sessionId: session }, db!);
+    if (!owner.ok) throw new Error(owner.reason);
+    userIds.push(owner.account.id);
+    expect(owner.refused).toBe(0);
+    expect(await getResumeForOwner(r.resumeId, { userId: owner.account.id }, db!)).toMatchObject({ resumeId: r.resumeId });
+
+    // A signed-in upload that shows another name is refused, not added.
+    const refused = await named({ userId: other.account.id });
+    expect(refused).toMatchObject({ ok: false, status: 422, code: "name_mismatch" });
+    expect(await named({ userId: owner.account.id })).toMatchObject({ ok: true });
   });
 
   it("records a visit at most once a day", async () => {

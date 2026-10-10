@@ -22,7 +22,7 @@ async function parseCase(text: string): Promise<ParseOutcome> {
     result = retry;
   }
   return result.ok
-    ? { profile: result.profile, droppedSkills: result.report.droppedSkills, calls: result.calls }
+    ? { profile: result.profile, droppedSkills: result.report.droppedSkills, personName: result.personName, calls: result.calls }
     : { profile: null, reason: result.reason, calls: result.calls };
 }
 
@@ -43,6 +43,7 @@ describe.skipIf(!process.env.ANTHROPIC_API_KEY)("parse eval", () => {
     console.log(summary);
 
     expect(report.failed).toBe(0);
+    expect(report.namesRead).toBe(report.cases.length);
     expect(report.cases.filter((c) => c.hallucinations.length > 0).map((c) => c.id)).toEqual([]);
     expect(report.meanRecall).toBeGreaterThanOrEqual(MIN_RECALL);
   });

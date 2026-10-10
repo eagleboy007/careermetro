@@ -68,7 +68,7 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     expect(profile.data.skills.map((s) => s.name)).toEqual(["SQL"]);
 
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, profile.aiCallId!));
-    expect(call).toMatchObject({ purpose: "parse-resume", promptVersion: "parse-resume/v2", ok: true });
+    expect(call).toMatchObject({ purpose: "parse-resume", promptVersion: "parse-resume/v3", ok: true });
     expect(JSON.stringify(call)).not.toContain("Priya");
   });
 

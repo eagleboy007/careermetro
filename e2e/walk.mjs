@@ -98,7 +98,7 @@ await step("mark path step done", async () => {
 });
 await step("sign in as test user (claims the anonymous resume)", async () => {
   await p.goto(BASE + "/today");
-  await p.locator('input[name="name"]').fill("Asha Rao");
+  await p.locator('input[name="name"]').fill("Priya Sharma");
   await p.locator('input[name="email"]').fill(`e2e-${Date.now()}@example.com`);
   await p.locator('form button[type="submit"]').last().click();
   await p.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: 15000 });
