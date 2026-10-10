@@ -48,7 +48,7 @@ export const exampleJobs: JobPost[] = [
     ],
     have: ["Excel pivot tables", "Reporting", "SQL joins"],
     goalsBefore: 2,
-    why: "Same two gaps as most junior analyst roles. Your ride this week closes the first.",
+    why: "Same two gaps as most junior analyst roles. Your ride this week works toward the first.",
     express: true,
   }),
   job({

@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { resumes } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { currentAnalysis, type Db } from "@/lib/gaps/current";
+import { boardTask } from "@/lib/ride/build";
 import { todayRideFor } from "@/lib/ride/store";
 import { clip } from "@/lib/text";
 import type { FirstTally, GoalsSummary, Ride, RideTask, RideWeek, Streak } from "@/lib/schemas";
@@ -21,7 +22,7 @@ export type TodayState =
       tally: FirstTally;
       lineHours: number;
       firstTasks: RideTask[];
-      /** Null once every goal is proved. */
+      /** Null when the line has no goals. */
       goals: GoalsSummary | null;
     }
   | {
@@ -39,7 +40,7 @@ export type TodayState =
  * version of a resume's profile. A newer upload that is still being read, or was left half-done, doesn't hide it.
  * No resume: nothing current yet. `unfinishedResumeId` is the newest resume that was read but has no current gaps
  * (never shown, or the profile was corrected since), so Today can send the person back to finish it.
- * Returning: the person has ridden at least one day (ticked a task) and has a goal left to ride. First's tasks are
+ * Returning: the person has ridden at least one day (ticked a task), or has proved every goal. First's tasks are
  * the first ride's tasks, so a tick there carries over.
  */
 export async function todayStateFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<TodayState> {
@@ -57,7 +58,7 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
   const result = analysis.result;
   const role = { slug: result.roleSlug, title: roleProfiles.find((r) => r.slug === result.roleSlug)?.title ?? result.roleSlug };
   const today = await todayRideFor(userId, now, db, role.title);
-  if (today && today.streak.days > 0) {
+  if (today && (today.streak.days > 0 || today.ride.pitstop > today.ride.pitstopCount)) {
     return { state: "returning", resumeId: analysis.resumeId, role, ride: today.ride, goals: today.goals, week: today.week, streak: today.streak };
   }
   const gaps = result.gaps.length;
@@ -67,18 +68,9 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
     role,
     tally: { skillsFound: result.metSkillIds.length, gaps, goals: gaps, boardable: gaps === 0 ? 1 : 0 },
     lineHours: Math.max(1, result.readiness.estimatedHours),
-    firstTasks: today?.ride.tasks ?? [ALL_PROVED],
+    // No goals at all: the resume already shows every required skill.
+    firstTasks: today?.ride.tasks ?? [boardTask("Your resume shows every skill this role requires")],
     goals: today?.goals ?? null,
   };
 }
 
-const ALL_PROVED: RideTask = {
-  id: "all-proved",
-  title: "Every goal on your line is proved",
-  detail: "See the roles you can board now",
-  minutes: 5,
-  done: false,
-  locked: true,
-  signal: false,
-  href: "/departures",
-};

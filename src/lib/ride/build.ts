@@ -87,6 +87,25 @@ export type RideInput = {
   doneThisWeek: ReadonlySet<string>;
 };
 
+/** The task that sends someone to the departures board when there is nothing left to learn or prove. */
+export function boardTask(title: string): RideTask {
+  return { id: "all-proved", title, detail: "See the roles you can board now", minutes: 5, done: false, locked: true, signal: false, href: "/departures" };
+}
+
+export function arrivedRide(pitstops: number): Ride {
+  return rideSchema.parse({
+    pitstop: pitstops + 1,
+    pitstopCount: pitstops,
+    goalName: "Practice",
+    title: "Every goal on your line is proved.",
+    titleEmphasis: "",
+    summary: "Next on your line: Practice, then Match. You can pick roles to board now.",
+    tasks: [boardTask("Every goal on your line is proved")],
+    weekTasksDone: 1,
+    weekTasksTotal: 1,
+  });
+}
+
 /** The goal today's ride is on, and how to read each goal's tasks. Null once every goal is proved. */
 function position(input: RideInput) {
   const open = input.goals.filter((g) => !g.proved);
@@ -104,11 +123,12 @@ function position(input: RideInput) {
  * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks
  * stay so they can be taken back until the day ends. A goal waiting for proof shows its tasks done and locked. Each
  * goal is two pitstops, learn then prove; the train has passed the pitstops of proved goals. Ticking tasks never
- * proves a goal. Null once every goal is proved.
+ * proves a goal. Once every goal is proved the train is at Match and the ride is one link to the roles to board; null
+ * only for a line with no goals.
  */
 export function buildRide(input: RideInput): Ride | null {
   const at = position(input);
-  if (!at) return null;
+  if (!at) return input.goals.length ? arrivedRide(input.goals.length * 2) : null;
   const { current, unfinished, tasksFor, left } = at;
   const index = input.goals.indexOf(current);
   const pitstop = index * 2 + 1;

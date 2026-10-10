@@ -91,8 +91,12 @@ describe("buildRide", () => {
     expect(r.tasks[0].id).toBe(`${goalId}:r:7a6b5c4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d`);
   });
 
-  it("has nothing to ride once every goal is proved", () => {
-    expect(ride([goal({ goalId: "sql", proved: true })])).toBeNull();
+  // T14: a rider who proved everything stays a returning rider, at Match, pointed at the roles to board.
+  it("arrives at Match once every goal is proved, and has nothing to ride with no goals", () => {
+    const r = ride([goal({ goalId: "sql", proved: true })]);
+    expect(r).toMatchObject({ pitstop: 3, pitstopCount: 2, goalName: "Practice", prove: null });
+    expect(r!.tasks).toEqual([expect.objectContaining({ id: "all-proved", locked: true, href: "/departures" })]);
+    expect(ride([])).toBeNull();
   });
 });
 

@@ -95,7 +95,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
       <CoveredSkills title="Nice to have" skills={analysis.niceToHave} />
       {analysis.gaps.length > 0 && (
         <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
-          <p className="font-semibold">Close these gaps step by step</p>
+          <p className="font-semibold">Work on these gaps step by step</p>
           <p className="text-sm text-muted">A short plan with free resources and a small task to prove each skill, sized to your week.</p>
           <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
         </section>

@@ -40,6 +40,8 @@ export function RideCard({
   const todayIndex = week.findIndex((d) => d.today);
   const today = DAYS[todayIndex] ?? null;
   const lead = ride.title.slice(0, ride.title.length - ride.titleEmphasis.length);
+  // Every goal proved: the train has passed the last pitstop.
+  const arrived = ride.pitstop > ride.pitstopCount;
 
   const clicks = useRef(new Map<string, number>());
 
@@ -106,16 +108,20 @@ export function RideCard({
             </svg>
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
-                <b className="font-display text-2xl font-semibold leading-none tabular-nums">
-                  {weekDone}/{ride.weekTasksTotal}
-                </b>
-                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">tasks</small>
+                {arrived ? (
+                  <Check size={26} strokeWidth={1.75} className="mx-auto text-accent" aria-hidden="true" />
+                ) : (
+                  <b className="font-display text-2xl font-semibold leading-none tabular-nums">
+                    {weekDone}/{ride.weekTasksTotal}
+                  </b>
+                )}
+                <small className="mt-1 block font-mono text-[0.6rem] uppercase tracking-[0.06em] text-muted">{arrived ? "all proved" : "tasks"}</small>
               </div>
             </div>
           </div>
           <p className="text-[0.86rem] text-muted">
-            <b className="mb-0.5 block text-[0.95rem] font-semibold text-ink">{ride.goalName} prep this week</b>
-            Tasks get you ready. Proof fills the gap.
+            <b className="mb-0.5 block text-[0.95rem] font-semibold text-ink">{arrived ? "Every gap filled" : `${ride.goalName} prep this week`}</b>
+            {arrived ? "Proof filled each one. Next: Practice, then Match." : "Tasks get you ready. Proof fills the gap."}
           </p>
         </div>
         <div className="flex flex-col gap-2">
@@ -185,7 +191,7 @@ function MiniLine({ pitstop, count, share }: { pitstop: number; count: number; s
             />
             <span
               className={`absolute top-[56px] -translate-x-1/2 font-mono text-[10.5px] uppercase tracking-[0.04em] ${
-                s.n === pitstop ? "font-semibold text-ink" : "hidden text-muted min-[1100px]:inline"
+                s.n === pitstop || (s.key === "practice" && pitstop > count) ? "font-semibold text-ink" : "hidden text-muted min-[1100px]:inline"
               }`}
               style={{ left: `${x(i)}%` }}
             >
@@ -241,7 +247,7 @@ function PitstopChip({ pitstop, count }: { pitstop: number; count: number }) {
         className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-[11px] py-1.5 text-[0.8rem] font-semibold"
       >
         <Route size={16} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
-        Pitstop {pitstop} of {count}
+        {pitstop > count ? `All ${count} pitstops done` : `Pitstop ${pitstop} of ${count}`}
         <CircleHelp size={14} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
         <span className="sr-only">, what is a pitstop?</span>
       </button>

@@ -23,12 +23,14 @@ import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { MetroMap } from "@/components/map/metro-map";
+import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
+import { RideCard } from "@/components/today/ride-card";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
 import {
@@ -227,6 +229,8 @@ export default function DesignPage() {
           <StreakChip days={12} todayCounted />
         </div>
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
+        <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
+        <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
       </section>
 
       <section className="flex flex-col gap-4">
