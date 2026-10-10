@@ -10,7 +10,7 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import { meProfile, type Profile } from "@/lib/schemas";
-import { meFor } from "./store";
+import { meFor, NO_NAME } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -73,7 +73,8 @@ describe.skipIf(!db)("meFor (database)", () => {
   it("is null without an account, and shows only the account before a resume", async () => {
     expect(await meFor("00000000-0000-4000-8000-000000000000", new Date(), db!)).toBeNull();
     const me = await meFor(await user("new"), new Date(), db!);
-    expect(me).toMatchObject({ name: `${run}-new`, aim: null, experience: [], resumeReadOn: null });
+    // T6: no name means a neutral label, never the part of the email before the @.
+    expect(me).toMatchObject({ name: NO_NAME, aim: null, experience: [], resumeReadOn: null });
     expect(me!.journey.at(-1)).toMatchObject({ name: "Add your resume" });
   });
 
