@@ -86,7 +86,7 @@ const exampleSteps: PathStepView[] = [
     title: "SQL window functions",
     hours: 6,
     week: 1,
-    closes: "Missing gap",
+    closes: "Missing skill",
     reason: "Analyst roles here rank and compare rows every week, and your resume shows joins but no window functions yet.",
     resources: [
       { title: "Window functions playlist", provider: "YouTube", kind: "video", url: "https://www.youtube.com/" },
@@ -95,7 +95,7 @@ const exampleSteps: PathStepView[] = [
     proofTask: "rank the top 5 products per month from a sample sales table.",
     action: <MarkDone stepId="demo-2" title="SQL window functions" done={false} demo />,
   },
-  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Weak evidence", action: <MarkDone stepId="demo-3" title="Power BI project" done={false} demo /> },
+  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Skill with weak evidence", action: <MarkDone stepId="demo-3" title="Power BI project" done={false} demo /> },
 ];
 
 const exampleProfile: Profile = {

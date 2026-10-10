@@ -36,7 +36,7 @@ async function Picker({ params }: { params: Promise<{ id: string }> }) {
 
 export default function RolePage({ params }: PageProps<"/resume/[id]/role">) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
       <ProgressRoute current="Gaps" />
       <section className="flex flex-col gap-3">
@@ -46,6 +46,6 @@ export default function RolePage({ params }: PageProps<"/resume/[id]/role">) {
       <Suspense fallback={<p className="text-sm text-muted">Loading roles…</p>}>
         <Picker params={params} />
       </Suspense>
-    </div>
+    </main>
   );
 }

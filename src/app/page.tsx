@@ -12,7 +12,7 @@ const steps = [
 
 export default function Home() {
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-4 pb-20">
       <SiteHeader />
 
       <section className="flex max-w-2xl flex-col gap-5">
@@ -60,6 +60,6 @@ export default function Home() {
         <p className="text-muted">We’re opening to a small group first. Join the list and we’ll write when your spot is ready.</p>
         <WaitlistForm />
       </section>
-    </div>
+    </main>
   );
 }

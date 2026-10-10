@@ -120,12 +120,12 @@ function TryAgain() {
 
 export default function GapsPage({ params }: PageProps<"/resume/[id]/gaps/[slug]">) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
       <ProgressRoute current="Gaps" />
       <Suspense fallback={<p className="text-sm text-muted">Comparing your resume with the role…</p>}>
         <Gaps params={params} />
       </Suspense>
-    </div>
+    </main>
   );
 }

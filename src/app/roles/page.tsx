@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RolesPage() {
   const postings = roleViews.reduce((sum, r) => sum + (r.postingsAnalysed ?? 0), 0);
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
       <SiteHeader />
       <section className="flex max-w-2xl flex-col gap-4">
         <p className="font-mono text-xs uppercase tracking-wider text-muted">{roleViews.length} roles</p>
@@ -32,6 +32,6 @@ export default function RolesPage() {
           </li>
         ))}
       </ul>
-    </div>
+    </main>
   );
 }

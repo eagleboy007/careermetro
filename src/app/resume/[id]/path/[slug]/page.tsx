@@ -16,7 +16,8 @@ import { readOwner } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Your path · CareerMetro", robots: { index: false } };
 
-const STATUS_LABEL = { missing: "Missing gap", weak: "Weak evidence", outdated: "Outdated" } as const;
+// Learning works toward a gap; only proof fills it, so the step never says it closes one.
+const STATUS_LABEL = { missing: "Missing skill", weak: "Skill with weak evidence", outdated: "Outdated skill" } as const;
 const dayMonth = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 
 /** The hours in the link, else the signed-in person's saved hours a week, else the default. */
@@ -142,12 +143,12 @@ function TryAgain() {
 
 export default function PathPage(props: PageProps<"/resume/[id]/path/[slug]">) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
       <ProgressRoute current="Path" />
       <Suspense fallback={<p className="text-sm text-muted">Building your path…</p>}>
         <Path {...props} />
       </Suspense>
-    </div>
+    </main>
   );
 }

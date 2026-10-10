@@ -99,6 +99,8 @@ describe("extractResumeText", () => {
 
   it("rejects a file with almost no text, such as a scanned image", async () => {
     await expect(extractResumeText(new TextEncoder().encode("Short"), "text")).rejects.toMatchObject({ code: "too_little_text" });
+    // T22: pasted text never hears about scanned images.
+    await expect(extractResumeText(new TextEncoder().encode("Short"), "text")).rejects.toThrow(/very short for a resume/);
   });
 
   it("accepts pasted text", async () => {
