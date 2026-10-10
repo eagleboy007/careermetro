@@ -55,7 +55,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Your own ride, goals and departures appear here as we build them.</Banner>
-        <TodayView state={requested} data={{ ...data, greeting }} upload={<UploadForm />} />
+        <TodayView state={requested} data={{ ...data, greeting }} upload={<UploadForm />} departuresHref="/departures" />
       </div>
     );
   }
@@ -73,7 +73,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
           ? "Your welcome card comes from your resume. The rest is example data until we build it."
           : "Add your resume to start. The cards below are example data until we build them."}
       </Banner>
-      <TodayView state={found.state} data={own} upload={<UploadForm />} />
+      <TodayView state={found.state} data={own} upload={<UploadForm />} departuresHref="/departures" />
     </div>
   );
 }
