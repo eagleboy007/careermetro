@@ -18,16 +18,19 @@ const ghostBtn = `${btn} border border-line bg-surface text-ink hover:bg-surface
 
 /**
  * Departures (handoff section 8): roles with readiness in words, search and filters, the person's Saved and Applied
- * lists, and a detail panel for the role they pick. `hasResume` false hides fit until there is a resume.
+ * lists, and a detail panel for the role they pick. `hasResume` false hides fit until there is a resume; `noFit`
+ * hides it with its own reason (a signed-in person, while the roles are still examples).
  */
 export function DeparturesView({
   jobs,
   hasResume = true,
   initialSaved = [],
   initialApplied = [],
+  noFit = null,
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
+  noFit?: string | null;
   initialSaved?: string[];
   initialApplied?: [string, number][];
 }) {
@@ -39,7 +42,9 @@ export function DeparturesView({
   const detailId = useId();
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied), [jobs, filters, saved, applied]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
-  const job = jobs.find((j) => j.id === selected) ?? null;
+  // The panel follows the list: a role the filters hide is not shown or changed.
+  const job = shown.find((j) => j.id === selected) ?? shown[0] ?? null;
+  const fit = hasResume && noFit === null;
   const set = (patch: Partial<DepartureFilters>) => setFilters((f) => ({ ...f, ...patch }));
 
   const toggleSave = (id: string) => {
@@ -47,9 +52,15 @@ export function DeparturesView({
     if (next.has(id)) next.delete(id);
     else next.add(id);
     setSaved(next);
-    setSaid(next.has(id) ? "Saved. We tell you when it is one gap away." : "Removed from saved.");
+    setSaid(next.has(id) ? "Saved." : "Removed from saved.");
   };
-  const setStage = (id: string, stage: number) => setApplied((m) => new Map(m).set(id, stage));
+  const setStage = (id: string, stage: number) =>
+    setApplied((m) => {
+      const next = new Map(m);
+      if (stage === 0) next.delete(id);
+      else next.set(id, stage);
+      return next;
+    });
 
   return (
     <div className="grid min-w-0 min-[760px]:min-h-[700px] min-[760px]:grid-cols-[minmax(0,1fr)_360px]">
@@ -62,10 +73,7 @@ export function DeparturesView({
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <span className="inline-flex cursor-not-allowed items-center gap-2 text-[0.84rem] font-[550] text-muted" title="Comes with Your profile">
-              <i className="relative h-5 w-9 rounded-full bg-accent opacity-50 after:absolute after:left-[18px] after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface" />
-              Looking for a job · soon
-            </span>
+            <span className="text-[0.84rem] font-[550] text-muted">Looking for a job switch · soon</span>
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">{plural(jobs.length, "role")}</span>
           </div>
         </div>
@@ -113,8 +121,9 @@ export function DeparturesView({
               <JobRow
                 key={j.id}
                 job={j}
-                hasResume={hasResume}
-                selected={j.id === selected}
+                fit={fit}
+                selected={j.id === job?.id}
+                detailId={detailId}
                 saved={saved.has(j.id)}
                 applied={applied.has(j.id)}
                 onOpen={() => {
@@ -131,7 +140,7 @@ export function DeparturesView({
           </p>
         )}
 
-        {hasResume && <PasteBox />}
+        {fit && <PasteBox />}
         <p role="status" className="sr-only">
           {said}
         </p>
@@ -139,7 +148,6 @@ export function DeparturesView({
 
       <aside
         id={detailId}
-        aria-live="polite"
         aria-label="Role details"
         className="flex min-w-0 flex-col gap-4 border-t border-line pt-5 min-[760px]:border-l min-[760px]:border-t-0 min-[760px]:pl-[22px] min-[760px]:pt-1"
       >
@@ -147,11 +155,12 @@ export function DeparturesView({
           <JobDetail
             key={job.id}
             job={job}
-            hasResume={hasResume}
+            fit={fit}
+            noFit={noFit ?? (hasResume ? null : NO_RESUME)}
             stage={applied.get(job.id) ?? 0}
             onStage={(s) => {
               setStage(job.id, s);
-              if (s === 1) setSaid(`Marked as applied to ${job.company}.`);
+              setSaid(s === 0 ? "No longer marked as applied." : s === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[s - 1]}.`);
             }}
           />
         )}
@@ -159,6 +168,8 @@ export function DeparturesView({
     </div>
   );
 }
+
+const NO_RESUME = "Add your resume and this shows what you have and what is missing for this role.";
 
 function Pills<T extends string>({ label, value, options, any, onPick }: { label: string; value: T | null; options: readonly T[]; any: string; onPick: (v: T | null) => void }) {
   return (
@@ -186,16 +197,18 @@ const Logo = ({ name, small = false }: { name: string; small?: boolean }) => (
 
 function JobRow({
   job,
-  hasResume,
+  fit,
   selected,
+  detailId,
   saved,
   applied,
   onOpen,
   onSave,
 }: {
   job: JobPost;
-  hasResume: boolean;
+  fit: boolean;
   selected: boolean;
+  detailId: string;
   saved: boolean;
   applied: boolean;
   onOpen: () => void;
@@ -211,7 +224,8 @@ function JobRow({
         <button
           type="button"
           onClick={onOpen}
-          aria-pressed={selected}
+          aria-current={selected || undefined}
+          aria-controls={detailId}
           className="text-left text-[0.98rem] font-semibold outline-none after:absolute after:inset-0 after:rounded-[18px] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-accent"
         >
           {job.role}
@@ -226,7 +240,7 @@ function JobRow({
           ))}
         </p>
         <div className="flex flex-wrap gap-1.5">
-          {hasResume && (job.gaps.length ? job.gaps.map((g) => <StatusChip key={g.name} status={g.status} label={g.name} />) : <StatusChip status="met" label="No required gaps" />)}
+          {fit && (job.gaps.length ? job.gaps.map((g) => <StatusChip key={g.name} status={g.status} label={g.name} />) : <StatusChip status="met" label="No required gaps" />)}
           {job.express && (
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium text-muted">
               <Zap size={14} {...ICON} className="text-ink" />
@@ -238,7 +252,7 @@ function JobRow({
       <div className="col-start-2 flex items-center justify-between gap-2.5 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
         {applied ? (
           <When className="bg-accent-soft text-accent">Applied</When>
-        ) : hasResume ? (
+        ) : fit ? (
           <When className={WHEN_TONE[tone]}>{departureWhen(job.goalsBefore)}</When>
         ) : (
           <span />
@@ -270,7 +284,20 @@ const Note = ({ Icon, children }: { Icon: typeof Clock; children: ReactNode }) =
   </p>
 );
 
-function JobDetail({ job, hasResume, stage, onStage }: { job: JobPost; hasResume: boolean; stage: number; onStage: (stage: number) => void }) {
+function JobDetail({
+  job,
+  fit,
+  noFit,
+  stage,
+  onStage,
+}: {
+  job: JobPost;
+  fit: boolean;
+  noFit: string | null;
+  stage: number;
+  onStage: (stage: number) => void;
+}) {
+  const site = `Apply on ${job.company}'s site`;
   return (
     <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-4 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-center gap-3">
@@ -284,7 +311,7 @@ function JobDetail({ job, hasResume, stage, onStage }: { job: JobPost; hasResume
         </div>
       </div>
 
-      {hasResume ? (
+      {fit ? (
         <>
           <div className="flex flex-col gap-1.5 rounded-lg border border-line bg-bg p-3.5">
             <b className="font-display text-[1.15rem] font-semibold tracking-[-0.01em]">{readiness(job)}</b>
@@ -316,10 +343,12 @@ function JobDetail({ job, hasResume, stage, onStage }: { job: JobPost; hasResume
       ) : (
         <div className="flex flex-col gap-1.5 rounded-lg border border-line bg-bg p-3.5">
           <b className="font-display text-[1.15rem] font-semibold">Fit unknown yet</b>
-          <span className="text-[0.84rem] text-muted">Add your resume and this shows what you have and what is missing for this role.</span>
-          <Link href="/today" className={`${primary} mt-1 self-start px-[11px] py-1.5 text-[0.8rem]`}>
-            Add resume
-          </Link>
+          <span className="text-[0.84rem] text-muted">{noFit}</span>
+          {noFit === NO_RESUME && (
+            <Link href="/today" className={`${primary} mt-1 self-start px-[11px] py-1.5 text-[0.8rem]`}>
+              Add resume
+            </Link>
+          )}
         </div>
       )}
 
@@ -342,36 +371,53 @@ function JobDetail({ job, hasResume, stage, onStage }: { job: JobPost; hasResume
               </li>
             ))}
           </ol>
-          <p className="text-[0.86rem] text-muted">Tap a step when it happens. Only you see this.</p>
+          <p className="text-[0.86rem] text-muted">
+            Tap a step when it happens. Only you see this.{" "}
+            {stage === 1 && (
+              <button type="button" onClick={() => onStage(0)} className="font-[550] text-ink underline underline-offset-2">
+                I didn&apos;t apply
+              </button>
+            )}
+          </p>
           <Soon>Ask people who work in this role</Soon>
         </section>
       ) : (
         <>
           <div className="flex flex-col gap-2">
-            {job.express && hasResume && (
+            {job.express && fit && (
               <button type="button" disabled className={`${primary} cursor-not-allowed opacity-60`}>
                 <Zap size={17} {...ICON} />
                 Express apply · soon
               </button>
             )}
-            <button type="button" onClick={() => onStage(1)} className={job.express && hasResume ? ghostBtn : primary}>
-              <ExternalLink size={17} {...ICON} />
-              Apply on {job.company}&apos;s site
-            </button>
+            {job.applyUrl ? (
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" onClick={() => onStage(1)} className={job.express && fit ? ghostBtn : primary}>
+                <ExternalLink size={17} {...ICON} />
+                {site}
+              </a>
+            ) : (
+              // Example roles have no posting to open, so the button only shows how tracking works.
+              <button type="button" onClick={() => onStage(1)} className={job.express && fit ? ghostBtn : primary}>
+                {site} · example
+              </button>
+            )}
           </div>
           <Note Icon={ShieldCheck}>
-            {hasResume
-              ? job.express
+            {!job.applyUrl
+              ? "An example role: this marks it as applied so you can see the tracking. Real roles open the company's own posting."
+              : fit && job.express
                 ? "Express apply will fill everything from your profile: skills, verified certificates, proof of work and resume. You review it and nothing is sent until you say so."
-                : "This company takes applications on its own site only. We note that you applied so you can track it here."
-              : "Opens the company's own careers page."}
+                : "Opens the company's own posting. We note that you applied so you can track it here."}
           </Note>
-          {hasResume && job.gaps.length > 0 && <Soon>Ask someone who got this role</Soon>}
+          {fit && job.gaps.length > 0 && <Soon>Ask someone who got this role</Soon>}
         </>
       )}
 
-      {hasResume && <Soon>Interview prep for this role</Soon>}
-      <Note Icon={Clock}>Posted {job.posted} on the company&apos;s public job board.</Note>
+      {fit && <Soon>Interview prep for this role</Soon>}
+      <Note Icon={Clock}>
+        Posted {job.posted}
+        {job.applyUrl ? " on the company's public job board." : "."}
+      </Note>
     </div>
   );
 }

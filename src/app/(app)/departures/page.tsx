@@ -12,15 +12,16 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const state = (await searchParams).state;
   await connection();
   const account = await currentAccount();
-  // Real roles need the job-post tables (dev/departures-plan.md). Until then everyone sees example roles, and a signed-in
-  // person sees fit only once they have gaps.
+  // Real roles need the job-post tables (dev/departures-plan.md). Until then everyone sees example roles. The example fit
+  // belongs to the example person, so a signed-in person never sees it as their own.
   const hasResume = account ? (await currentAnalysis(account.id)) !== null : state !== "no_resume";
+  const noFit = account && hasResume ? "Your fit for each role shows here once real roles come from company job boards." : null;
   return (
     <div className="flex flex-col gap-4">
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         Example roles for now. Real roles from public company job boards, and your own saved and applied lists, come next.
       </p>
-      <DeparturesView jobs={exampleJobs} hasResume={hasResume} initialSaved={account ? [] : exampleSaved} initialApplied={account ? [] : exampleApplied} />
+      <DeparturesView jobs={exampleJobs} hasResume={hasResume} noFit={noFit} initialSaved={account ? [] : exampleSaved} initialApplied={account ? [] : exampleApplied} />
     </div>
   );
 }

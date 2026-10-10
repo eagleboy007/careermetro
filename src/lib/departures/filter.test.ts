@@ -14,6 +14,12 @@ describe("example jobs", () => {
       expect(j.goalsBefore === 0).toBe(j.gaps.length === 0);
     }
   });
+  it("only take https postings", () => {
+    const base = { ...exampleJobs[0] };
+    expect(jobPost.safeParse({ ...base, applyUrl: "https://careers.example.com/1" }).success).toBe(true);
+    expect(jobPost.safeParse({ ...base, applyUrl: "javascript:alert(1)" }).success).toBe(false);
+    expect(jobPost.safeParse({ ...base, applyUrl: "http://careers.example.com/1" }).success).toBe(false);
+  });
 });
 
 describe("readiness", () => {

@@ -30,6 +30,8 @@ export const jobPost = z.object({
   destination: z.boolean().default(false),
   /** One plain sentence on how far away it is. */
   why: z.string().max(240),
+  /** The posting on the company's own site. Null in example data. */
+  applyUrl: z.url({ protocol: /^https$/ }).nullable().default(null),
   /** The company takes Express apply. Express apply itself comes with the employer side. */
   express: z.boolean().default(false),
 });
