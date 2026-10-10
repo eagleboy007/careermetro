@@ -3147,5 +3147,161 @@
     ],
     "minutes": 60,
     "free": true
+  },
+  {
+    "title": "Programming, Data Structures and Algorithms using Python (NPTEL, IIT Madras)",
+    "url": "https://nptel.ac.in/courses/106106145",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "python",
+      "data-structures-algorithms"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Introduction to Machine Learning (NPTEL, IIT Madras)",
+    "url": "https://nptel.ac.in/courses/106106139",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "machine-learning"
+    ],
+    "minutes": 2160,
+    "free": true
+  },
+  {
+    "title": "Ethical Hacking (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105217",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "penetration-testing",
+      "networking-basics",
+      "cryptography-basics"
+    ],
+    "minutes": 2160,
+    "free": true
+  },
+  {
+    "title": "Python for Data Science (NPTEL, IIT Madras)",
+    "url": "https://nptel.ac.in/courses/106106212",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "python",
+      "pandas",
+      "data-visualization"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Docker and Kubernetes course (freeCodeCamp, 4 hours)",
+    "url": "https://www.freecodecamp.org/news/course-on-docker-and-kubernetes/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "docker",
+      "kubernetes"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Docker Containers and Kubernetes Fundamentals (freeCodeCamp, 6 hours)",
+    "url": "https://www.freecodecamp.org/news/learn-docker-and-kubernetes-hands-on-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "docker",
+      "kubernetes"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "SQL and Databases full course (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/sql-and-databases-full-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "sql"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Databases and SQL from Harvard CS50, 11 hours (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/learn-databases-and-sql-from-harvard-university/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "sql",
+      "data-modeling"
+    ],
+    "minutes": 660,
+    "free": true
+  },
+  {
+    "title": "Data analysis bootcamp, 19 hours (freeCodeCamp, Alex the Analyst)",
+    "url": "https://www.freecodecamp.org/news/learn-data-analysis-with-comprehensive-19-hour-bootcamp/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "sql",
+      "excel",
+      "tableau",
+      "power-bi",
+      "python"
+    ],
+    "minutes": 1140,
+    "free": true
+  },
+  {
+    "title": "Linux basics crash course (freeCodeCamp, 3 hours)",
+    "url": "https://www.freecodecamp.org/news/learn-the-basics-of-the-linux-operating-system/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "linux"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "PyTorch for Deep Learning and Machine Learning, 26 hours (freeCodeCamp, Daniel Bourke)",
+    "url": "https://www.freecodecamp.org/news/learn-pytorch-for-deep-learning-in-day/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "pytorch",
+      "deep-learning"
+    ],
+    "minutes": 1560,
+    "free": true
+  },
+  {
+    "title": "Python for Beginners, full course in Hindi (CodeWithHarry)",
+    "url": "https://www.youtube.com/playlist?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg",
+    "provider": "CodeWithHarry",
+    "kind": "video",
+    "skillIds": [
+      "python"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "EDPB Guidelines 9/2022 on personal data breach notification (version 2.0)",
+    "url": "https://www.edpb.europa.eu/system/files/2023-04/edpb_guidelines_202209_personal_data_breach_notification_v2.0_en.pdf",
+    "provider": "European Data Protection Board",
+    "kind": "docs",
+    "skillIds": [
+      "data-breach-response"
+    ],
+    "minutes": 90,
+    "free": true
   }
 ]
