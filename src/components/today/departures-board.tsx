@@ -8,7 +8,8 @@ import type { Departure } from "@/lib/schemas";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
 const CHARS = "ABCDEFGHIJKLMNOPRSTUVWXYZ0123456789";
-const TONE = { now: "bg-board-good text-board", soon: "text-board-warn", later: "text-board-dim" } as const;
+// Matches the prototype: green for boarding now, amber and grey tags for the rest.
+const TONE = { now: "bg-board-good text-board", soon: "bg-warn-soft text-warn", later: "bg-surface-2 text-muted" } as const;
 
 /**
  * Departures: roles the user is heading toward, ordered by gaps left, on a split-flap board (always dark).
@@ -51,7 +52,7 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
               >
                 <Flap text={r.role} delay={i * 120} className="truncate font-medium" />
                 <span className="hidden truncate text-board-dim sm:block">{r.where}</span>
-                <span className={`whitespace-nowrap rounded-[4px] px-[7px] py-0.5 text-right font-medium ${TONE[departureTone(r.gapsLeft)]}`}>
+                <span className={`whitespace-nowrap rounded-[6px] px-2 py-1 text-right text-[0.7rem] font-medium tracking-[0.06em] ${TONE[departureTone(r.gapsLeft)]}`}>
                   <Flap text={departureWhen(r.gapsLeft)} delay={i * 120 + 200} />
                 </span>
               </button>
