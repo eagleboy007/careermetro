@@ -1,0 +1,1 @@
+ALTER TABLE "user_goals" ADD COLUMN "group_id" text;

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
-import { MAX_GAPS } from "@/lib/schemas";
+import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
 import { certifications, normalizeSkillTerm, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
@@ -113,13 +113,27 @@ describe("role profiles", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("gives a group id the same skills in every role, so a goal's group means one set", () => {
+    const seen = new Map<string, string>();
+    const clashes: string[] = [];
+    for (const r of roleProfiles) {
+      for (const g of skillGroups(r)) {
+        const set = [...g.skillIds].sort().join(",");
+        if (seen.has(g.id) && seen.get(g.id) !== set) clashes.push(`${r.slug}: ${g.id}`);
+        seen.set(g.id, seen.get(g.id) ?? set);
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+
   it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s has at least 5 required skills and a valid band", (_, role) => {
-    const required = role.skills.filter((s) => s.importance === "required").length;
-    expect(required).toBeGreaterThanOrEqual(5);
-    expect(required).toBeLessThanOrEqual(MAX_GAPS);
+    // A "one of these" group counts as one required skill.
+    const units = requiredUnits(role);
+    expect(units.length).toBeGreaterThanOrEqual(5);
+    expect(units.length).toBeLessThanOrEqual(MAX_GAPS);
     // Context skills (communication) are never gaps, so every role keeps five it can score.
     const context = new Set(skills.filter((s) => s.scoring === "context").map((s) => s.id));
-    expect(role.skills.filter((s) => s.importance === "required" && !context.has(s.skillId)).length).toBeGreaterThanOrEqual(5);
+    expect(units.filter((u) => u.some((id) => !context.has(id))).length).toBeGreaterThanOrEqual(5);
     expect(role.experienceBand.minYears).toBeLessThan(role.experienceBand.maxYears);
   });
 });

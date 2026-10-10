@@ -1,5 +1,5 @@
 import { certifications, roleProfiles, skills } from "@/content";
-import type { Certification, RoleProfile } from "@/lib/schemas";
+import { skillGroups, type Certification, type RoleProfile } from "@/lib/schemas";
 
 export type RoleSkillView = {
   skillId: string;
@@ -56,16 +56,26 @@ function byShare(a: RoleSkillView, b: RoleSkillView): number {
 }
 
 export function toRoleView(role: RoleProfile): RoleView {
+  // A "one of these" group shows once, under its label, at its most asked skill's share.
+  const groups = new Map(skillGroups(role).map((g) => [g.id, g]));
   const pick = (importance: "required" | "nice_to_have"): RoleSkillView[] =>
     role.skills
       .filter((s) => s.importance === importance)
-      .map((s) => ({
-        skillId: s.skillId,
-        name: skillNames.get(s.skillId) ?? s.skillId,
-        expectation: s.expectation,
-        postingShare: s.postingShare,
-        context: contextSkills.has(s.skillId),
-      }))
+      .flatMap((s): RoleSkillView[] => {
+        const g = s.oneOf ? groups.get(s.oneOf) : undefined;
+        if (g && g.skillIds[0] !== s.skillId) return [];
+        const shares = g ? role.skills.filter((m) => m.oneOf === g.id).map((m) => m.postingShare) : [s.postingShare];
+        const known = shares.filter((x): x is number => x !== null);
+        return [
+          {
+            skillId: s.skillId,
+            name: g?.label ?? skillNames.get(s.skillId) ?? s.skillId,
+            expectation: s.expectation,
+            postingShare: known.length ? Math.max(...known) : null,
+            context: contextSkills.has(s.skillId),
+          },
+        ];
+      })
       .sort(byShare);
 
   const certs = role.certifications.flatMap((rc) => {

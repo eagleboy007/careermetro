@@ -8,7 +8,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { explainGaps, type ExplainClient } from "./explain";
-import { MATCHER_VERSION, matchProfile, type MatchResult } from "./match";
+import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -134,7 +134,7 @@ export function sameReading(stored: GapAnalysis, match: MatchResult): boolean {
   if (stored.gaps.some((g, i) => g.skillId !== gaps[i].skillId || g.status !== gaps[i].status || g.resumeQuote !== gaps[i].resumeQuote)) {
     return false;
   }
-  const met = new Set(match.met.map((m) => m.skillId));
+  const met = new Set(metSkillIds(match));
   if (stored.metSkillIds.length !== met.size || stored.metSkillIds.some((id) => !met.has(id))) return false;
   const nice = new Map(match.niceToHave.map((m) => [m.skillId, m.status]));
   return stored.niceToHave.length === nice.size && stored.niceToHave.every((m) => nice.get(m.skillId) === m.status);
@@ -149,7 +149,7 @@ export function withEveryGap(stored: GapAnalysis, match: MatchResult): GapAnalys
   // since (a skill now outdated) keeps the stored analysis as it was rather than mixing old words with new numbers.
   if (stored.gaps.length !== SHOWN_GAPS || match.gaps.length <= SHOWN_GAPS) return stored;
   if (stored.gaps.some((g, i) => g.skillId !== match.gaps[i].skillId || g.status !== match.gaps[i].status)) return stored;
-  const met = new Set(match.met.map((m) => m.skillId));
+  const met = new Set(metSkillIds(match));
   if (stored.metSkillIds.length !== met.size || stored.metSkillIds.some((id) => !met.has(id))) return stored;
   const bySkill = new Map(stored.gaps.map((g) => [g.skillId, g.explanation]));
   return buildGapAnalysis(match, { readiness: stored.readiness.explanation, bySkill });

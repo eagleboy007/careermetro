@@ -15,6 +15,8 @@ export const gap = z.object({
   resumeQuote: z.string().min(1).nullable(),
   requirement: z.string().min(1),
   explanation: z.string().min(1),
+  /** Set when the gap stands for a "one of these" group: skillId is the suggested skill, and any skill of the group fills it. */
+  groupId: z.string().min(1).optional(),
 });
 export type Gap = z.infer<typeof gap>;
 

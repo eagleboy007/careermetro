@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
-import type { Profile } from "@/lib/schemas";
-import { certificationsIn, contentHash, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { roleProfile, type Profile } from "@/lib/schemas";
+import { certificationsIn, contentHash, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION, metSkillIds } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -516,3 +516,71 @@ describe("certifications on the resume", () => {
   });
 });
 
+describe("one of these groups", () => {
+  const member = (skillId: string, postingShare: number) => ({
+    skillId,
+    importance: "required",
+    oneOf: "cloud",
+    expectation: "Run workloads on one cloud",
+    postingShare,
+  });
+  const cloud = roleProfile.parse({
+    slug: "cloud-test",
+    title: "Cloud test role",
+    experienceBand: { minYears: 1, maxYears: 5 },
+    groups: [{ id: "cloud", label: "A cloud platform (AWS, Azure or GCP)" }],
+    skills: [
+      member("aws", 0.6),
+      member("azure", 0.3),
+      member("gcp", 0.2),
+      { skillId: "linux", importance: "required", expectation: "Run Linux servers" },
+      { skillId: "docker", importance: "required", expectation: "Build containers" },
+      { skillId: "terraform", importance: "required", expectation: "Write IaC" },
+      { skillId: "python", importance: "nice_to_have", expectation: "Automate" },
+    ],
+    sources: [{ description: "test", url: null }],
+    reviewedBy: null,
+    updatedOn: "2026-10-10",
+  });
+  const line = (text: string) =>
+    profile({ roles: [{ title: "Engineer", employer: "Example", start: "2024-01", end: null, highlights: [text] }] });
+
+  it("counts a group as one required skill, met by any of its skills", () => {
+    const r = matchProfile(line("Migrated 40 VMs to Azure and managed them for two years"), cloud, now);
+    expect(r.readiness.requiredTotal).toBe(4);
+    expect(r.met.map((m) => m.skillId)).toEqual(["azure"]);
+    expect(r.gaps.map((g) => g.skillId)).not.toContain("aws");
+    expect(r.groups).toEqual([{ id: "cloud", skillIds: ["aws", "azure", "gcp"] }]);
+  });
+
+  it("lists every shown skill of a met group as met, while counting the group once", () => {
+    const r = matchProfile(line("Migrated workloads from Azure to AWS over two years"), cloud, now);
+    expect(r.readiness.requiredMet).toBe(r.met.length);
+    expect(r.met.filter((m) => m.group)).toHaveLength(1);
+    expect(metSkillIds(r)).toEqual(expect.arrayContaining(["aws", "azure"]));
+  });
+
+  it("shows a group with no skill shown as one gap under its label, suggesting the skill most postings ask for", () => {
+    const r = matchProfile(line("Ran Linux servers for a bank"), cloud, now);
+    const g = r.gaps.find((x) => x.group?.id === "cloud")!;
+    expect(g).toMatchObject({ skillId: "aws", skillName: "A cloud platform (AWS, Azure or GCP)", status: "missing", resumeQuote: null });
+    expect(r.gaps.filter((x) => x.group).length).toBe(1);
+  });
+
+  it("keeps the strongest skill of a group as its gap, under that skill's name", () => {
+    const r = matchProfile(profile({ skills: [{ name: "GCP", lastUsed: null, evidence: [] }] }), cloud, now);
+    const g = r.gaps.find((x) => x.group?.id === "cloud")!;
+    expect(g).toMatchObject({ skillId: "gcp", skillName: "Google Cloud", status: "weak" });
+  });
+
+  it("rejects a group with one skill, a group skill that is not required, and an unknown group", () => {
+    const base = { slug: "x", title: "X", experienceBand: { minYears: 0, maxYears: 2 }, sources: [{ description: "t", url: null }], reviewedBy: null, updatedOn: "2026-10-10" };
+    const s = (skillId: string, extra = {}) => ({ skillId, importance: "required", expectation: "e", ...extra });
+    const groups = [{ id: "g", label: "One of" }];
+    const valid = (role: object) => roleProfile.safeParse({ ...base, ...role }).success;
+    expect(valid({ groups, skills: [s("aws", { oneOf: "g" }), s("linux"), s("docker")] })).toBe(false);
+    expect(valid({ groups, skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g", importance: "nice_to_have" }), s("linux")] })).toBe(false);
+    expect(valid({ skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g" }), s("linux")] })).toBe(false);
+    expect(valid({ groups, skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g" }), s("linux")] })).toBe(true);
+  });
+});

@@ -292,6 +292,8 @@ export const userGoals = pgTable(
     /** The analysis that first made this goal. */
     gapAnalysisId: uuid("gap_analysis_id").references(() => gapAnalyses.id, { onDelete: "set null" }),
     swappedTo: text("swapped_to").references(() => skills.id),
+    /** Set when the goal stands for a "one of these" group of the role: proof of any skill in the group fills it. */
+    groupId: text("group_id"),
     skippedAt: timestamp("skipped_at", { withTimezone: true }),
     metAt: timestamp("met_at", { withTimezone: true }),
     createdAt: createdAt(),

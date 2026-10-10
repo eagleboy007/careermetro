@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -6,7 +6,7 @@ import * as schema from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis } from "@/lib/schemas";
-import { addProof, setProofStatus, syncGoals } from "./store";
+import { addProof, goalsOf, setProofStatus, syncGoals } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -103,6 +103,58 @@ describe.skipIf(!db)("goals (database)", () => {
     expect(again.every((g) => !g.proved)).toBe(true);
     // Running it again changes nothing.
     expect(await syncGoals(me, await saved(me, analysis([d, c, b], [a])), db!)).toEqual(again);
+  });
+
+  it("makes one goal for a 'one of these' group, keeps it paired with the gap, and fills it with proof of any skill", async () => {
+    const me = await user("group");
+    const members = new Map([["pair", [a, b]]]);
+    const grouped = (
+      gapIds: string[],
+      groupSkill: string,
+      met: string[] = [],
+    ) => {
+      const base = analysis(gapIds, met);
+      return {
+        ...base,
+        gaps: base.gaps.map((g) =>
+          g.skillId === groupSkill ? { ...g, groupId: "pair" } : g,
+        ),
+      };
+    };
+    await syncGoals(me, await saved(me, grouped([a, c], a)), db!, members);
+    const [row] = await db!
+      .select({ groupId: schema.userGoals.groupId })
+      .from(schema.userGoals)
+      .where(
+        and(eq(schema.userGoals.userId, me), eq(schema.userGoals.skillId, a)),
+      );
+    expect(row.groupId).toBe("pair");
+    // The group's gap now suggests B: the same goal moves to B, keeping its place.
+    const moved = await syncGoals(
+      me,
+      await saved(me, grouped([b, c], b)),
+      db!,
+      members,
+    );
+    expect(moved.map((g) => [g.skillId, g.position, g.status])).toEqual([
+      [b, 1, "active"],
+      [c, 2, "active"],
+    ]);
+    // Accepted proof of A, the group's other skill, proves and meets it at once.
+    const proofId = (await addProof(
+      me,
+      a,
+      { type: "skill_check", checkId: "c-group" },
+      db!,
+    ))!;
+    expect(
+      await setProofStatus(proofId, me, "accepted", "app", db!, members),
+    ).toBe(true);
+    const after = await goalsOf(me, db!, members);
+    expect(after.find((g) => g.skillId === b)).toMatchObject({
+      status: "met",
+      proved: true,
+    });
   });
 
   it("fills a gap only with accepted proof, and carries proof over to a new role", async () => {

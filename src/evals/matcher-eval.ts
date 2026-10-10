@@ -30,8 +30,14 @@ export function runMatcherEval(cases: EvalCase[], now = new Date("2026-10-07T00:
     const role = roleProfiles.find((r) => r.slug === c.roleSlug);
     if (!role) throw new Error(`Eval case ${c.id} names unknown role ${c.roleSlug}`);
     const result = matchProfile(expectedProfile(c), role, now);
-    const gaps = result.gaps.map((g) => ({ skillId: g.skillId, status: g.status as "missing" | "weak" | "outdated" }));
-    const scoredCase = { ...c, expected: { ...c.expected, gaps: c.expected.gaps.filter((g) => !context.has(g.skillId)) } };
+    // A "one of these" group gap may name any of its skills on either side, so both score under the group.
+    const groupOf = new Map(result.groups.flatMap((g) => g.skillIds.map((id) => [id, `group:${g.id}`] as const)));
+    const key = (id: string) => groupOf.get(id) ?? id;
+    const gaps = result.gaps.map((g) => ({ skillId: key(g.skillId), status: g.status as "missing" | "weak" | "outdated" }));
+    const expectedGaps = c.expected.gaps
+      .filter((g) => !context.has(g.skillId))
+      .map((g) => ({ ...g, skillId: key(g.skillId) }));
+    const scoredCase = { ...c, expected: { ...c.expected, gaps: expectedGaps } };
     return { id: c.id, ...scoreCase(scoredCase, { skillIds: c.expected.skills.map((s) => s.skillId), gaps }) };
   });
 }

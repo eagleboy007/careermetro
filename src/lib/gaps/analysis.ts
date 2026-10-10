@@ -1,6 +1,6 @@
 import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 import type { MatchedSkill, MatchResult } from "./match";
-import { OUTDATED_AFTER_YEARS } from "./match";
+import { metSkillIds, OUTDATED_AFTER_YEARS } from "./match";
 
 /** The Gaps page shows the top five gaps, and the model explains those five; the rest get template words. */
 export const SHOWN_GAPS = 5;
@@ -51,8 +51,9 @@ export function buildGapAnalysis(match: MatchResult, explanations: Explanations 
       resumeQuote: g.resumeQuote,
       requirement: g.requirement,
       explanation: explanations?.bySkill.get(g.skillId) ?? templateExplanation(g),
+      ...(g.group ? { groupId: g.group.id } : {}),
     })),
-    metSkillIds: match.met.map((m) => m.skillId),
+    metSkillIds: metSkillIds(match),
     niceToHave: match.niceToHave.map(({ skillId, skillName, status }) => ({ skillId, skillName, status })),
     readiness: {
       headline: readinessHeadline(match),

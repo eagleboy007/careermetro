@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { certifications, normalizeSkillTerm, skillIdByTerm, skills as taxonomy } from "@/content";
 import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
-import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
+import { gapStatus, skillGroups, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-const RULES_VERSION = "matcher/v7";
+const RULES_VERSION = "matcher/v8";
 
 /** FNV-1a over the text, as 8 hex digits. Enough to tell two versions of the content apart; not for security. */
 export function contentHash(text: string): string {
@@ -38,6 +38,8 @@ export const matchedSkill = z.object({
   /** What the role expects, from the role profile. */
   requirement: z.string(),
   postingShare: z.number().nullable(),
+  /** Set when this row stands for a "one of these" group: the group's best skill, or the suggested one when none is shown. */
+  group: z.object({ id: z.string(), label: z.string(), skillIds: z.array(z.string()), met: z.array(z.string()) }).optional(),
 });
 export type MatchedSkill = z.infer<typeof matchedSkill>;
 
@@ -50,6 +52,8 @@ export const matchResult = z.object({
   met: z.array(matchedSkill),
   /** Nice-to-have skills with their status, for the "bonus" list. */
   niceToHave: z.array(matchedSkill),
+  /** The role's "one of these" groups and their skills. */
+  groups: z.array(z.object({ id: z.string(), skillIds: z.array(z.string()) })),
   readiness: z.object({
     requiredTotal: z.number().int(),
     requiredMet: z.number().int(),
@@ -470,7 +474,7 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
     return { status: "missing", resumeQuote: null };
   };
 
-  const rows = role.skills.map((rs) => ({
+  const rows: { importance: RoleProfile["skills"][number]["importance"]; row: MatchedSkill }[] = role.skills.map((rs) => ({
     importance: rs.importance,
     row: {
       skillId: rs.skillId,
@@ -483,10 +487,31 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   const byImportance = (a: MatchedSkill, b: MatchedSkill) =>
     (b.postingShare ?? -1) - (a.postingShare ?? -1) || statusRank[a.status] - statusRank[b.status];
 
+  // A "one of these" group counts once, as its strongest skill (ties go to the one more postings ask for). With none
+  // shown it is one gap under the group's label, suggesting the skill most postings ask for.
+  const groups = skillGroups(role);
+  const groupOf = new Map(groups.flatMap((g) => g.skillIds.map((id) => [id, g] as const)));
+  const strongest = (a: MatchedSkill, b: MatchedSkill) =>
+    statusRank[b.status] - statusRank[a.status] || (b.postingShare ?? -1) - (a.postingShare ?? -1);
+  const collapsed: typeof rows = [];
+  for (const r of rows) {
+    const g = groupOf.get(r.row.skillId);
+    if (!g) {
+      collapsed.push(r);
+      continue;
+    }
+    if (g.skillIds[0] !== r.row.skillId) continue;
+    const members = rows.filter((m) => g.skillIds.includes(m.row.skillId)).map((m) => m.row).sort(strongest);
+    const best = members[0];
+    const met = members.filter((m) => m.status === "met").map((m) => m.skillId);
+    const group = { id: g.id, label: g.label, skillIds: g.skillIds, met };
+    collapsed.push({ importance: "required", row: { ...best, skillName: best.status === "missing" ? g.label : best.skillName, group } });
+  }
+
   // A context skill (communication, problem solving) counts when the resume shows it and is never a gap: keywords
   // can't judge it, so Practice checks it instead.
   const scored = (r: MatchedSkill) => r.status === "met" || skillById.get(r.skillId)?.scoring !== "context";
-  const required = rows.filter((r) => r.importance === "required" && scored(r.row)).map((r) => r.row);
+  const required = collapsed.filter((r) => r.importance === "required" && scored(r.row)).map((r) => r.row);
   const gaps = required.filter((r) => r.status !== "met").sort(byImportance);
   const met = required.filter((r) => r.status === "met");
   return {
@@ -495,12 +520,18 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
     gaps,
     met,
     niceToHave: rows.filter((r) => r.importance === "nice_to_have" && scored(r.row)).map((r) => r.row).sort(byImportance),
+    groups: groups.map(({ id, skillIds }) => ({ id, skillIds })),
     readiness: {
       requiredTotal: required.length,
       requiredMet: met.length,
       estimatedHours: gaps.reduce((sum, g) => sum + HOURS_BY_STATUS[g.status as keyof typeof HOURS_BY_STATUS], 0),
     },
   };
+}
+
+/** Every required skill the resume shows: a met group counts once, but each of its shown skills is met. */
+export function metSkillIds(match: Pick<MatchResult, "met">): string[] {
+  return match.met.flatMap((m) => m.group?.met ?? [m.skillId]);
 }
 
 /** The taxonomy id for a skill name, by exact name or alias after lowercasing. */

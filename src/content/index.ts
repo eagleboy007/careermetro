@@ -4,6 +4,7 @@ import {
   proofTask,
   resource,
   roleProfile,
+  skillGroups,
   skill,
   type Certification,
   type ProofTask,
@@ -85,4 +86,12 @@ export function normalizeSkillTerm(term: string): string {
 /** Maps a normalized name or alias to its skill id. Exact match only. */
 export const skillIdByTerm: ReadonlyMap<string, string> = new Map(
   skills.flatMap((s) => [s.id, s.name, ...s.aliases].map((t) => [normalizeSkillTerm(t), s.id] as const)),
+);
+
+/**
+ * Every "one of these" group's skills by group id. A group id means the same set in every role (a content test checks
+ * it), so a goal can tell which proof fills it from its group id alone.
+ */
+export const skillGroupMembers: ReadonlyMap<string, string[]> = new Map(
+  roleProfiles.flatMap((r) => skillGroups(r).map((g) => [g.id, g.skillIds] as const)),
 );

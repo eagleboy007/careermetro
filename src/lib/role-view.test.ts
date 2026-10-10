@@ -12,9 +12,12 @@ describe("role views", () => {
   it("resolves every skill and certification to a display name", () => {
     for (const r of roleViews) {
       const profile = roleProfiles.find((p) => p.slug === r.slug)!;
-      expect(r.required.length + r.niceToHave.length).toBe(profile.skills.length);
+      // A "one of these" group shows once, under its label.
+      const grouped = profile.skills.filter((s) => s.oneOf).length;
+      expect(r.required.length + r.niceToHave.length).toBe(profile.skills.length - grouped + profile.groups.length);
       expect(r.certifications).toHaveLength(profile.certifications.length);
-      for (const s of [...r.required, ...r.niceToHave]) expect(s.name).toBe(skills.find((k) => k.id === s.skillId)?.name);
+      const labels = new Map(profile.groups.map((g) => [profile.skills.find((s) => s.oneOf === g.id)!.skillId, g.label]));
+      for (const s of [...r.required, ...r.niceToHave]) expect(s.name).toBe(labels.get(s.skillId) ?? skills.find((k) => k.id === s.skillId)?.name);
     }
   });
 
