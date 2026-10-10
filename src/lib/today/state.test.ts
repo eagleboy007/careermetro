@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -11,7 +11,7 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
-import { todayStateFor } from "./state";
+import { clip, todayStateFor } from "./state";
 
 vi.mock("server-only", () => ({}));
 
@@ -104,12 +104,60 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     const after = await todayStateFor(userId, db!);
     if (after.state !== "first") throw new Error("not first");
     const proof = after.firstTasks.at(-1)!;
-    expect(proof.title).toBe(path.path.steps[0].proofTask.slice(0, 120));
+    expect(proof.title).toBe(clip(path.path.steps[0].proofTask, 120));
     expect(proof.detail).toMatch(/^Proof task, part 1 · /);
+  });
+
+  it("keeps the analysed line when a newer upload is still being read or was left half-done", async () => {
+    const userId = await user("second");
+    const owner = { userId };
+    const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-second-a` }, { db: db!, client });
+    if (!r.ok) throw new Error(r.code);
+    await confirmProfile(r.resumeId, owner, parsed, db!);
+    const gaps = await getGapsForOwner(r.resumeId, owner, role, { db: db! });
+    if (!gaps.ok) throw new Error(gaps.reason);
+    await db!.insert(schema.resumes).values({ userId, status: "parsing", mimeType: "text/plain", sizeBytes: 10 });
+    const r2 = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-second-c` }, { db: db!, client });
+    if (!r2.ok) throw new Error(r2.code);
+    expect(await todayStateFor(userId, db!)).toMatchObject({ state: "first", resumeId: r.resumeId });
+  });
+
+  it("sends the person back to their gaps after they correct the profile", async () => {
+    const userId = await user("corrected");
+    const owner = { userId };
+    const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-corrected` }, { db: db!, client });
+    if (!r.ok) throw new Error(r.code);
+    await confirmProfile(r.resumeId, owner, parsed, db!);
+    const gaps = await getGapsForOwner(r.resumeId, owner, role, { db: db! });
+    if (!gaps.ok) throw new Error(gaps.reason);
+    await confirmProfile(r.resumeId, owner, { ...parsed, headline: "Senior Data Analyst" }, db!);
+    expect(await todayStateFor(userId, db!)).toEqual({ state: "no_resume", unfinishedResumeId: r.resumeId });
+  });
+
+  it("says the path is done once every step is marked done", async () => {
+    const userId = await user("done");
+    const owner = { userId };
+    const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-done` }, { db: db!, client });
+    if (!r.ok) throw new Error(r.code);
+    await confirmProfile(r.resumeId, owner, parsed, db!);
+    const path = await getPathForOwner(r.resumeId, owner, role, 5, { db: db! });
+    if (!path.ok) throw new Error(path.reason);
+    await db!.update(schema.pathSteps).set({ doneAt: new Date() }).where(eq(schema.pathSteps.pathId, path.path.pathId));
+    const state = await todayStateFor(userId, db!);
+    if (state.state !== "first") throw new Error("not first");
+    expect(state.firstTasks.map((t) => t.id)).toEqual(["path-done"]);
   });
 
   it("never reads another person's resume", async () => {
     const other = await user("other");
     expect(await todayStateFor(other, db!)).toEqual({ state: "no_resume", unfinishedResumeId: null });
+  });
+});
+
+describe("clip", () => {
+  it("keeps short text and cuts long text at a word break", () => {
+    expect(clip("  Short  text ", 20)).toBe("Short text");
+    expect(clip("Build a dashboard of failed logins, then write it up", 30)).toBe("Build a dashboard of failed…");
+    expect(clip("x".repeat(50), 10)).toBe(`${"x".repeat(9)}…`);
   });
 });

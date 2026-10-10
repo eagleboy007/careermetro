@@ -2,10 +2,8 @@
 
 import { Check, Route } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
-import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type RideTask } from "@/lib/schemas";
+import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type FirstTally, type RideTask } from "@/lib/schemas";
 import { TaskList } from "./task-list";
-
-import type { FirstTally } from "@/lib/today/state";
 
 export type { FirstTally };
 
@@ -125,8 +123,10 @@ function Tally({ value, label, dot }: { value: number; label: string; dot: strin
   const shown = useCountUp(value);
   return (
     <div className="relative flex flex-col gap-1 rounded-md border border-line bg-bg px-3.5 pb-3 pt-6">
-      <span className={`absolute left-3.5 top-3 block size-2 rounded-full ${dot}`} aria-hidden="true" />
-      <dt className="order-2 text-[0.78rem] leading-snug text-muted">{label}</dt>
+      <dt className="order-2 text-[0.78rem] leading-snug text-muted">
+        <span className={`absolute left-3.5 top-3 block size-2 rounded-full ${dot}`} aria-hidden="true" />
+        {label}
+      </dt>
       <dd className="order-1 font-display text-[2rem] font-semibold leading-none tracking-[-0.03em] tabular-nums">
         <span aria-hidden="true">{shown}</span>
         <span className="sr-only">{value}</span>

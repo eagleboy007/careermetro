@@ -2,7 +2,6 @@ import { ArrowRight, BriefcaseBusiness, Map as MapIcon, MessagesSquare, Route, T
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** Signed up, no resume yet: the line starts with the resume. `upload` is the upload form for the page it sits on. */
 /** Before the resume: what is open without one. The linked screens come in later build steps. */
 export function WhileYouDecide() {
   const items = [
@@ -34,6 +33,7 @@ export function WhileYouDecide() {
   );
 }
 
+/** Signed up, no resume yet: the line starts with the resume. `upload` is the upload form for the page it sits on. */
 export function NoResumeHero({ name, upload, unfinishedHref }: { name: string; upload: ReactNode; unfinishedHref?: string | null }) {
   return (
     <section aria-label="Add your resume" className="grid gap-7 overflow-hidden rounded-[24px] border border-line bg-surface px-4 py-5 md:grid-cols-[minmax(0,1fr)_300px] md:px-7 md:py-6">
