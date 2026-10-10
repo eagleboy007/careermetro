@@ -1255,7 +1255,9 @@
       "risk assessment",
       "risk management",
       "third-party risk",
-      "risk register"
+      "risk register",
+      "risk reporting",
+      "cyber risk"
     ],
     "ambiguous": [
       "risk management"
@@ -1302,7 +1304,8 @@
       "internal audit",
       "audit evidence",
       "control testing",
-      "itgc"
+      "itgc",
+      "it general controls"
     ],
     "ambiguous": [
       "internal audit"
@@ -1437,7 +1440,9 @@
     "aliases": [
       "cti",
       "cyber threat intelligence",
-      "ioc enrichment"
+      "ioc enrichment",
+      "iocs",
+      "threat feeds"
     ],
     "ambiguous": [
       "cti"

@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v6";
+export const MATCHER_VERSION = "matcher/v7";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -388,7 +388,11 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
       const names = (q: string) => !loose || scanTerms(id).some((t) => containsPhrase(normalizeForMatch(q), t));
       const used = s.evidence.filter((q) => !isListLine(q) && !learningAbout(q, terms) && names(q));
       if (used.length === 0) add(id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed });
-      for (const q of used) add(id, { quote: q, listedOnly: false, months: lastUsed ?? lineMonths(q) });
+      for (const q of used) {
+        // The parser's lastUsed can be a current job's start year; the job the quote comes from wins when it is newer.
+        const line = lineMonths(q);
+        add(id, { quote: q, listedOnly: false, months: lastUsed === null ? line : line === null ? lastUsed : Math.max(lastUsed, line) });
+      }
     }
   }
 

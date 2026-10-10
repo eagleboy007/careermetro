@@ -220,6 +220,22 @@ describe("matchProfile", () => {
     expect(matchProfile(p, dataAnalyst, now).met.find((s) => s.skillId === "sql")?.resumeQuote).toBe("Wrote SQL for the loan book");
   });
 
+  it("keeps a skill from a long-running current job fresh even when the parser dates it to the job's start (T31)", () => {
+    const p = profile({
+      roles: [job(["Incident commander for 12 major incidents"], "2019-04")],
+      skills: [{ name: "Security incident response", lastUsed: "2019", evidence: ["Incident commander for 12 major incidents"] }],
+    });
+    expect(statusOf(matchProfile(p, role("soc-lead"), now), "security-incident-response")).toBe("met");
+  });
+
+  it("reads ITGC audits, IOC checks and cyber risk reporting as their skills (T32)", () => {
+    const quote = (q: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
+    expect(quote("Ran IT general controls audits for 4 banking clients", "grc-manager", "security-audits")).toBe("met");
+    expect(quote("Check IOCs against VirusTotal and AlienVault OTX feeds", "soc-analyst-l2", "threat-intelligence")).toBe("met");
+    expect(quote("Present the monthly cyber risk dashboard to the CISO", "grc-manager", "risk-assessment")).toBe("met");
+  });
+
   it("reads CTI in a call-centre line as nothing, and on-call work as SRE practice", () => {
     const quote = (q: string, slug: string, id: string) =>
       statusOf(matchProfile(profile({ roles: [job([q], "2025-01")] }), role(slug), now), id);
