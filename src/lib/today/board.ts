@@ -16,3 +16,10 @@ export function departureTone(gapsLeft: number): DepartureTone {
 export function streakLabel(days: number): string {
   return days === 0 ? "Day 1" : `${days}-day streak`;
 }
+
+/** "Morning", "Afternoon" or "Evening" for the ride card, by the hour in India. */
+export function greetingAt(date: Date): "Morning" | "Afternoon" | "Evening" {
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(date));
+  if (hour >= 4 && hour < 12) return "Morning";
+  return hour >= 12 && hour < 17 ? "Afternoon" : "Evening";
+}

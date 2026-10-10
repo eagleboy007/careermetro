@@ -8,7 +8,8 @@ import type { Departure } from "@/lib/schemas";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
 const CHARS = "ABCDEFGHIJKLMNOPRSTUVWXYZ0123456789";
-const TONE = { now: "bg-board-good text-board", soon: "text-board-warn", later: "text-board-dim" } as const;
+// Matches the prototype: green for boarding now, amber and grey tags for the rest.
+const TONE = { now: "bg-board-good text-board", soon: "bg-warn-soft text-warn", later: "bg-surface-2 text-muted" } as const;
 
 /**
  * Departures: roles the user is heading toward, ordered by gaps left, on a split-flap board (always dark).
@@ -18,16 +19,23 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
   const [open, setOpen] = useState<string | null>(null);
   const boardId = useId();
   return (
-    <section aria-label="Departures: roles you are heading toward" className="shadow-raised relative flex min-w-0 flex-col gap-2.5 rounded-lg bg-board px-4 pb-3.5 pt-4 text-board-ink">
+    <section
+      aria-label="Departures: roles you are heading toward"
+      className="shadow-raised relative flex min-w-0 flex-col gap-2.5 rounded-[20px] bg-board px-[18px] pb-3.5 pt-[18px] text-board-ink"
+    >
       <div className="flex flex-wrap items-baseline gap-2.5">
-        <h3 className="font-mono text-[0.82rem] font-medium uppercase tracking-[0.14em]">Departures</h3>
+        <h3 className="font-mono! text-[0.82rem] font-medium uppercase tracking-[0.14em]!">Departures</h3>
         <span className="text-[0.76rem] text-board-dim">roles you&apos;re heading toward</span>
-        {allHref && !locked && (
-          <Link href={allHref} className="ml-auto inline-flex focus-visible:outline-board-ink items-center gap-1 text-[0.76rem]">
-            All departures
-            <ArrowRight size={13} strokeWidth={1.75} aria-hidden="true" />
-          </Link>
-        )}
+        {!locked &&
+          (allHref ? (
+            <Link href={allHref} className="ml-3 inline-flex items-center gap-1 text-[0.76rem] focus-visible:outline-board-ink">
+              All departures
+              <ArrowRight size={13} strokeWidth={1.75} aria-hidden="true" />
+            </Link>
+          ) : (
+            <span className="ml-3 text-[0.76rem] text-board-dim">All departures · soon</span>
+          ))}
+        <Clock />
       </div>
       <ul className={locked ? "opacity-30" : undefined} aria-hidden={locked || undefined}>
         {rows.map((r, i) => {
@@ -44,7 +52,7 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
               >
                 <Flap text={r.role} delay={i * 120} className="truncate font-medium" />
                 <span className="hidden truncate text-board-dim sm:block">{r.where}</span>
-                <span className={`whitespace-nowrap rounded-[4px] px-[7px] py-0.5 text-right font-medium ${TONE[departureTone(r.gapsLeft)]}`}>
+                <span className={`whitespace-nowrap rounded-[6px] px-2 py-1 text-right text-[0.7rem] font-medium tracking-[0.06em] ${TONE[departureTone(r.gapsLeft)]}`}>
                   <Flap text={departureWhen(r.gapsLeft)} delay={i * 120 + 200} />
                 </span>
               </button>
@@ -70,6 +78,23 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
         From public job-board feeds and job posts you paste. Tap a row to see what stands between you and it.
       </p>
     </section>
+  );
+}
+
+/** The board's clock, India time. Drawn after load so the server and browser never disagree. */
+function Clock() {
+  const [now, setNow] = useState<string | null>(null);
+  useEffect(() => {
+    const format = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
+    const tick = () => setNow(format.format(new Date()));
+    tick();
+    const timer = setInterval(tick, 15_000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <span className="ml-auto font-mono text-[0.78rem] tabular-nums" aria-hidden="true">
+      {now ?? "--:--"}
+    </span>
   );
 }
 

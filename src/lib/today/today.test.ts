@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { departure, goalsSummary, ride, rideWeek, signalCheck, streak } from "@/lib/schemas";
-import { departureTone, departureWhen, streakLabel } from "./board";
-import { exampleDepartures, exampleGoals, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
+import { departure, eventTeaser, goalsSummary, onYourLine, ride, rideWeek, signalCheck, streak } from "@/lib/schemas";
+import { departureTone, departureWhen, greetingAt, streakLabel } from "./board";
+import { exampleDepartures, exampleEvents, exampleGoals, exampleOnYourLine, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
 
 describe("Today fixtures", () => {
   it("match the Today schemas", () => {
@@ -10,6 +10,8 @@ describe("Today fixtures", () => {
     expect(() => streak.parse(exampleStreak)).not.toThrow();
     expect(() => goalsSummary.parse(exampleGoals)).not.toThrow();
     for (const d of exampleDepartures) expect(() => departure.parse(d)).not.toThrow();
+    for (const e of exampleEvents) expect(() => eventTeaser.parse(e)).not.toThrow();
+    expect(() => onYourLine.parse(exampleOnYourLine)).not.toThrow();
   });
 
   it("mark exactly one day as today", () => {
@@ -25,6 +27,22 @@ describe("Today schemas", () => {
   it("reject a ride with more than three tasks", () => {
     const task = exampleRide.tasks[0];
     expect(ride.safeParse({ ...exampleRide, tasks: [task, task, task, task] }).success).toBe(false);
+  });
+
+  it("reject a title emphasis that is not the end of the title, and a prove pitstop before this one", () => {
+    expect(ride.safeParse({ ...exampleRide, titleEmphasis: "This week" }).success).toBe(false);
+    expect(ride.safeParse({ ...exampleRide, prove: { ...exampleRide.prove!, pitstop: exampleRide.pitstop } }).success).toBe(false);
+    expect(ride.parse({ ...exampleRide, titleEmphasis: undefined, prove: undefined })).toMatchObject({ titleEmphasis: "", prove: null });
+  });
+
+  it("reject a way to prove listed twice, and more faces than people on the line", () => {
+    const [first] = exampleRide.prove!.options;
+    expect(ride.safeParse({ ...exampleRide, prove: { ...exampleRide.prove!, options: [first, first] } }).success).toBe(false);
+    expect(onYourLine.safeParse({ ...exampleOnYourLine, count: 2 }).success).toBe(false);
+  });
+
+  it("reject more named goals than goals left", () => {
+    expect(goalsSummary.safeParse({ ...exampleGoals, moreCount: 0, moreNames: ["Statistics"] }).success).toBe(false);
   });
 
   it("reject a week that is not seven days", () => {
@@ -131,5 +149,14 @@ describe("ride locked task", () => {
         tasks: tasks.map((t, i) => ({ ...t, locked: i === 0 })),
       }).success,
     ).toBe(false);
+  });
+});
+
+describe("greetingAt", () => {
+  it("greets by the hour in India", () => {
+    expect(greetingAt(new Date("2026-10-09T03:30:00Z"))).toBe("Morning"); // 09:00 IST
+    expect(greetingAt(new Date("2026-10-09T08:30:00Z"))).toBe("Afternoon"); // 14:00 IST
+    expect(greetingAt(new Date("2026-10-09T14:00:00Z"))).toBe("Evening"); // 19:30 IST
+    expect(greetingAt(new Date("2026-10-09T20:00:00Z"))).toBe("Evening"); // 01:30 IST
   });
 });
