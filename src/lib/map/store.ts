@@ -5,27 +5,24 @@ import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
+import { syncGoals } from "@/lib/goals/store";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { lifeFromProfile } from "./life";
 
 const MAX_OTHER_LINES = 2;
 
 /**
- * The signed-in person's line, from their current gap analysis and newest path. One goal per gap, in path order, then
- * the gaps the path left for later. Null before there is a current analysis (the No resume map).
- * Proof isn't stored yet (build step 5), so no goal is proved.
+ * The signed-in person's line, from their current gap analysis, their goals and newest path. One goal per gap, in
+ * the order of the person's goals, which stays put across new resumes. A goal is proved only by accepted proof.
+ * Null before there is a current analysis (the No resume map).
  */
-export async function mapLineFor(userId: string, db: Db = getDb()): Promise<MapLine | null> {
+export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<MapLine | null> {
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return null;
   const { result } = analysis;
+  const userGoals = await syncGoals(userId, analysis, db);
 
-  const [path] = await db
-    .select({ id: paths.id })
-    .from(paths)
-    .where(eq(paths.gapAnalysisId, analysis.id))
-    .orderBy(desc(paths.createdAt))
-    .limit(1);
+  const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
   const steps = path
     ? await db
         .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
@@ -36,18 +33,24 @@ export async function mapLineFor(userId: string, db: Db = getDb()): Promise<MapL
   const resourceIds = [...new Set(steps.flatMap((s) => s.resourceIds.slice(0, 3)))];
   const rows = resourceIds.length
     ? await db
-        .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, minutes: resources.minutes, healthy: resources.healthy })
+        .select({
+          id: resources.id,
+          title: resources.title,
+          provider: resources.provider,
+          kind: resources.kind,
+          minutes: resources.minutes,
+          healthy: resources.healthy,
+        })
         .from(resources)
         .where(inArray(resources.id, resourceIds))
     : [];
   const byId = new Map(rows.filter((r) => r.healthy && r.title.trim()).map((r) => [r.id, r]));
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
 
-  const inPath = steps.map((s) => s.skillId);
-  const ordered = [
-    ...inPath.flatMap((id) => result.gaps.filter((g) => g.skillId === id)),
-    ...result.gaps.filter((g) => !inPath.includes(g.skillId)),
-  ];
+  const goalBySkill = new Map(userGoals.map((g) => [g.skillId, g]));
+  const ordered = [...result.gaps].sort(
+    (x, y) => (goalBySkill.get(x.skillId)?.position ?? Infinity) - (goalBySkill.get(y.skillId)?.position ?? Infinity),
+  );
   const goals: MapGoal[] = ordered.map((g) => {
     const step = stepBySkill.get(g.skillId);
     return {
@@ -55,11 +58,13 @@ export async function mapLineFor(userId: string, db: Db = getDb()): Promise<MapL
       name: clip(g.skillName, 80),
       status: g.status,
       learnDone: Boolean(step?.doneAt),
-      proved: false,
-      resources: (step?.resourceIds ?? []).flatMap((id) => {
-        const r = byId.get(id);
-        return r ? [{ title: clip(r.title, 160), detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120) }] : [];
-      }).slice(0, 3),
+      proved: goalBySkill.get(g.skillId)?.proved ?? false,
+      resources: (step?.resourceIds ?? [])
+        .flatMap((id) => {
+          const r = byId.get(id);
+          return r ? [{ title: clip(r.title, 160), detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120) }] : [];
+        })
+        .slice(0, 3),
       practice: step?.proofTask.trim() ? clip(step.proofTask, 400) : null,
     };
   });
@@ -103,7 +108,6 @@ export function otherLines(roleSlug: string, goals: MapGoal[]): MapLine["otherLi
   }
   return out;
 }
-
 
 /**
  * The signed-in person's Life line, from the latest saved profile of the resume behind their current gaps and the day

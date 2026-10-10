@@ -11,6 +11,7 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import { lifeLine, mapLine, type Profile } from "@/lib/schemas";
+import { addProof, setProofStatus } from "@/lib/goals/store";
 import { lifeLineFor, mapLineFor, otherLines } from "./store";
 
 vi.mock("server-only", () => ({}));
@@ -71,7 +72,7 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(await mapLineFor(await user("new"), db!)).toBeNull();
   });
 
-  it("draws one goal per gap in path order, marks learning done from the path, and never marks a goal proved", async () => {
+  it("draws one goal per gap in path order, marks learning done from the path, and marks a goal proved only with accepted proof", async () => {
     const userId = await user("line");
     const owner = { userId };
     const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-line` }, { db: db!, client });
@@ -105,6 +106,14 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(life).toMatchObject({ destination: role.title });
     expect(life!.moments.some((m) => m.id === "joined")).toBe(true);
     expect(await lifeLineFor(await user("nolife"), new Date(), db!)).toBeNull();
+
+    // Accepted proof, and only accepted proof, marks the goal proved.
+    const proof = await addProof(userId, first.skillId, { type: "skill_check", checkId: "c1" }, db!);
+    expect((await mapLineFor(userId, db!))!.goals[0].proved).toBe(false);
+    await setProofStatus(proof!, userId, "accepted", "app", db!);
+    const proved = await mapLineFor(userId, db!);
+    expect(proved!.goals[0]).toMatchObject({ skillId: first.skillId, proved: true });
+    expect(proved!.goals.slice(1).every((g) => !g.proved)).toBe(true);
   });
 
   it("gives each person their own line, even when someone else's analysis is newer", async () => {

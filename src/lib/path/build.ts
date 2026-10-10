@@ -79,7 +79,7 @@ export function buildPath(input: PathInput): PlannedPath {
  * skills it rests on (Next.js → React → JavaScript), so JavaScript is learned before Next.js. When one gap rests on
  * several others, they keep their own ranking among themselves.
  */
-function prerequisitesFirst(gaps: Gap[], implies: ReadonlyMap<string, string[]>): Gap[] {
+export function prerequisitesFirst(gaps: Gap[], implies: ReadonlyMap<string, string[]>): Gap[] {
   const byId = new Map(gaps.map((g) => [g.skillId, g]));
   const rank = new Map(gaps.map((g, i) => [g.skillId, i]));
   // The best rank of any gap reachable from a skill, so a non-gap link in a chain sorts by the gap behind it.

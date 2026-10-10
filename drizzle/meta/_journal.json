@@ -29,6 +29,13 @@
       "when": 1791584802678,
       "tag": "0003_sign_in",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791627892352,
+      "tag": "0004_goals_proofs",
+      "breakpoints": true
     }
   ]
 }
