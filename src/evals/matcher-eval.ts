@@ -34,7 +34,9 @@ export function runMatcherEval(cases: EvalCase[], now = new Date("2026-10-07T00:
     const groupOf = new Map(result.groups.flatMap((g) => g.skillIds.map((id) => [id, `group:${g.id}`] as const)));
     const key = (id: string) => groupOf.get(id) ?? id;
     const gaps = result.gaps.map((g) => ({ skillId: key(g.skillId), status: g.status as "missing" | "weak" | "outdated" }));
-    const expectedGaps = c.expected.gaps.filter((g) => !context.has(g.skillId)).map((g) => ({ ...g, skillId: key(g.skillId) }));
+    const expectedGaps = c.expected.gaps
+      .filter((g) => !context.has(g.skillId))
+      .map((g) => ({ ...g, skillId: key(g.skillId) }));
     const scoredCase = { ...c, expected: { ...c.expected, gaps: expectedGaps } };
     return { id: c.id, ...scoreCase(scoredCase, { skillIds: c.expected.skills.map((s) => s.skillId), gaps }) };
   });

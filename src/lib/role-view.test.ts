@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles, skills } from "@/content";
-import {
-  formatExperience,
-  getRoleView,
-  postingsAnalysed,
-  roleViews,
-} from "./role-view";
+import { formatExperience, getRoleView, postingsAnalysed, roleViews } from "./role-view";
 
 describe("role views", () => {
   it("has one view per role profile, sorted by title", () => {
@@ -19,20 +14,10 @@ describe("role views", () => {
       const profile = roleProfiles.find((p) => p.slug === r.slug)!;
       // A "one of these" group shows once, under its label.
       const grouped = profile.skills.filter((s) => s.oneOf).length;
-      expect(r.required.length + r.niceToHave.length).toBe(
-        profile.skills.length - grouped + profile.groups.length,
-      );
+      expect(r.required.length + r.niceToHave.length).toBe(profile.skills.length - grouped + profile.groups.length);
       expect(r.certifications).toHaveLength(profile.certifications.length);
-      const labels = new Map(
-        profile.groups.map((g) => [
-          profile.skills.find((s) => s.oneOf === g.id)!.skillId,
-          g.label,
-        ]),
-      );
-      for (const s of [...r.required, ...r.niceToHave])
-        expect(s.name).toBe(
-          labels.get(s.skillId) ?? skills.find((k) => k.id === s.skillId)?.name,
-        );
+      const labels = new Map(profile.groups.map((g) => [profile.skills.find((s) => s.oneOf === g.id)!.skillId, g.label]));
+      for (const s of [...r.required, ...r.niceToHave]) expect(s.name).toBe(labels.get(s.skillId) ?? skills.find((k) => k.id === s.skillId)?.name);
     }
   });
 
@@ -45,38 +30,19 @@ describe("role views", () => {
 
   it("lists recommended certifications before optional ones", () => {
     for (const r of roleViews) {
-      const firstOptional = r.certifications.findIndex(
-        (c) => c.importance === "optional",
-      );
-      if (firstOptional >= 0)
-        expect(
-          r.certifications
-            .slice(firstOptional)
-            .every((c) => c.importance === "optional"),
-        ).toBe(true);
+      const firstOptional = r.certifications.findIndex((c) => c.importance === "optional");
+      if (firstOptional >= 0) expect(r.certifications.slice(firstOptional).every((c) => c.importance === "optional")).toBe(true);
     }
   });
 
   it("reads the posting count from the source line", () => {
-    expect(
-      postingsAnalysed([
-        {
-          description:
-            "Skill shares measured on 32 public job postings (7 in India).",
-          url: null,
-        },
-      ]),
-    ).toBe(32);
-    expect(
-      postingsAnalysed([{ description: "Drafted by hand.", url: null }]),
-    ).toBeNull();
+    expect(postingsAnalysed([{ description: "Skill shares measured on 32 public job postings (7 in India).", url: null }])).toBe(32);
+    expect(postingsAnalysed([{ description: "Drafted by hand.", url: null }])).toBeNull();
     expect(getRoleView("data-analyst")?.postingsAnalysed).toBeGreaterThan(0);
   });
 
   it("formats experience bands", () => {
-    expect(formatExperience({ minYears: 0, maxYears: 2 })).toBe(
-      "Up to 2 years",
-    );
+    expect(formatExperience({ minYears: 0, maxYears: 2 })).toBe("Up to 2 years");
     expect(formatExperience({ minYears: 3, maxYears: 8 })).toBe("3 to 8 years");
   });
 

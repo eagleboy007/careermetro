@@ -23,14 +23,7 @@ const ids = skills
 const [a, b, c, d, e] = ids;
 const analysis = (gapIds: string[], met: string[] = []): GapAnalysis => ({
   roleSlug: roleProfiles[0].slug,
-  gaps: gapIds.map((skillId) => ({
-    skillId,
-    skillName: skillId,
-    status: "missing",
-    resumeQuote: null,
-    requirement: "r",
-    explanation: "e",
-  })),
+  gaps: gapIds.map((skillId) => ({ skillId, skillName: skillId, status: "missing", resumeQuote: null, requirement: "r", explanation: "e" })),
   metSkillIds: met,
   niceToHave: [],
   readiness: { headline: "h", explanation: "e", estimatedHours: 10 },
@@ -46,8 +39,7 @@ describe.skipIf(!db)("goals (database)", () => {
       .onConflictDoNothing();
   });
   afterAll(async () => {
-    if (userIds.length)
-      await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
+    if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
     await sqlClient!.end();
   });
 
@@ -61,65 +53,25 @@ describe.skipIf(!db)("goals (database)", () => {
   }
 
   /** A saved analysis for this user, with a path whose steps cover the given skills. */
-  async function saved(
-    userId: string,
-    result: GapAnalysis,
-    pathSkills: string[] = [],
-  ) {
-    const [resume] = await db!
-      .insert(schema.resumes)
-      .values({
-        userId,
-        mimeType: "text/plain",
-        sizeBytes: 1,
-        status: "parsed",
-      })
-      .returning();
+  async function saved(userId: string, result: GapAnalysis, pathSkills: string[] = []) {
+    const [resume] = await db!.insert(schema.resumes).values({ userId, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning();
     const profile = {
       headline: null,
       totalYearsExperience: null,
-      roles: [
-        {
-          title: "Analyst",
-          employer: "Example Co",
-          start: "2023-01",
-          end: null,
-          highlights: [],
-        },
-      ],
+      roles: [{ title: "Analyst", employer: "Example Co", start: "2023-01", end: null, highlights: [] }],
       skills: [],
       education: [],
       certifications: [],
     };
-    const [p] = await db!
-      .insert(schema.profiles)
-      .values({
-        resumeId: resume.id,
-        version: 1,
-        data: profile,
-        confirmedByUser: true,
-      })
-      .returning();
-    const [ga] = await db!
-      .insert(schema.gapAnalyses)
-      .values({ profileId: p.id, result, matcherVersion: MATCHER_VERSION })
-      .returning();
+    const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
+    const [ga] = await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result, matcherVersion: MATCHER_VERSION }).returning();
     if (pathSkills.length) {
-      const [path] = await db!
-        .insert(schema.paths)
-        .values({ gapAnalysisId: ga.id, weeklyHours: 5 })
-        .returning();
-      await db!.insert(schema.pathSteps).values(
-        pathSkills.map((skillId, i) => ({
-          pathId: path.id,
-          position: i + 1,
-          skillId,
-          reason: "r",
-          hours: 2,
-          resourceIds: [],
-          proofTask: "t",
-        })),
-      );
+      const [path] = await db!.insert(schema.paths).values({ gapAnalysisId: ga.id, weeklyHours: 5 }).returning();
+      await db!
+        .insert(schema.pathSteps)
+        .values(
+          pathSkills.map((skillId, i) => ({ pathId: path.id, position: i + 1, skillId, reason: "r", hours: 2, resourceIds: [], proofTask: "t" })),
+        );
     }
     return { id: ga.id, result };
   }
@@ -134,27 +86,14 @@ describe.skipIf(!db)("goals (database)", () => {
       [c, 3, "active"],
     ]);
     const steps = await db!
-      .select({
-        skillId: schema.pathSteps.skillId,
-        goalId: schema.pathSteps.goalId,
-        kind: schema.pathSteps.kind,
-      })
+      .select({ skillId: schema.pathSteps.skillId, goalId: schema.pathSteps.goalId, kind: schema.pathSteps.kind })
       .from(schema.pathSteps)
       .innerJoin(schema.paths, eq(schema.paths.id, schema.pathSteps.pathId))
       .where(eq(schema.paths.gapAnalysisId, first.id));
-    expect(steps.map((s) => [s.goalId, s.kind])).toEqual(
-      steps.map((s) => [
-        goals.find((g) => g.skillId === s.skillId)!.id,
-        "learn",
-      ]),
-    );
+    expect(steps.map((s) => [s.goalId, s.kind])).toEqual(steps.map((s) => [goals.find((g) => g.skillId === s.skillId)!.id, "learn"]));
 
     // The new resume shows A and adds D as a gap: A is met, B and C keep their place, D goes last.
-    const again = await syncGoals(
-      me,
-      await saved(me, analysis([d, c, b], [a])),
-      db!,
-    );
+    const again = await syncGoals(me, await saved(me, analysis([d, c, b], [a])), db!);
     expect(again.map((g) => [g.skillId, g.position, g.status])).toEqual([
       [a, 1, "met"],
       [b, 2, "active"],
@@ -163,9 +102,7 @@ describe.skipIf(!db)("goals (database)", () => {
     ]);
     expect(again.every((g) => !g.proved)).toBe(true);
     // Running it again changes nothing.
-    expect(
-      await syncGoals(me, await saved(me, analysis([d, c, b], [a])), db!),
-    ).toEqual(again);
+    expect(await syncGoals(me, await saved(me, analysis([d, c, b], [a])), db!)).toEqual(again);
   });
 
   it("makes one goal for a 'one of these' group, keeps it paired with the gap, and fills it with proof of any skill", async () => {
@@ -224,42 +161,20 @@ describe.skipIf(!db)("goals (database)", () => {
     const me = await user("proof");
     const ga = await saved(me, analysis([a, b]));
     await syncGoals(me, ga, db!);
-    const proof = await addProof(
-      me,
-      a,
-      {
-        type: "certification",
-        issuer: "Example Board",
-        credentialId: "X-1",
-        url: null,
-      },
-      db!,
-    );
+    const proof = await addProof(me, a, { type: "certification", issuer: "Example Board", credentialId: "X-1", url: null }, db!);
     expect(proof).not.toBeNull();
 
-    const status = async () =>
-      (await syncGoals(me, ga, db!)).find((g) => g.skillId === a)!;
+    const status = async () => (await syncGoals(me, ga, db!)).find((g) => g.skillId === a)!;
     expect(await status()).toMatchObject({ status: "active", proved: false });
-    expect(await setProofStatus(proof!, me, "rejected", "issuer", db!)).toBe(
-      true,
-    );
+    expect(await setProofStatus(proof!, me, "rejected", "issuer", db!)).toBe(true);
     expect(await status()).toMatchObject({ status: "active", proved: false });
-    expect(await setProofStatus(proof!, me, "accepted", "issuer", db!)).toBe(
-      true,
-    );
+    expect(await setProofStatus(proof!, me, "accepted", "issuer", db!)).toBe(true);
     expect(await status()).toMatchObject({ status: "met", proved: true });
 
     // A new role that also needs A starts with it met.
     const goals = await syncGoals(me, await saved(me, analysis([e, a])), db!);
-    expect(goals.find((g) => g.skillId === a)).toMatchObject({
-      status: "met",
-      proved: true,
-      position: 1,
-    });
-    expect(goals.find((g) => g.skillId === e)).toMatchObject({
-      status: "active",
-      position: 3,
-    });
+    expect(goals.find((g) => g.skillId === a)).toMatchObject({ status: "met", proved: true, position: 1 });
+    expect(goals.find((g) => g.skillId === e)).toMatchObject({ status: "active", position: 3 });
 
     // Taking the acceptance back opens the goal again.
     await setProofStatus(proof!, me, "rejected", "issuer", db!);
@@ -277,49 +192,19 @@ describe.skipIf(!db)("goals (database)", () => {
     const [theirProfile] = await db!
       .select({ id: schema.profiles.id })
       .from(schema.profiles)
-      .innerJoin(
-        schema.resumes,
-        eq(schema.resumes.id, schema.profiles.resumeId),
-      )
+      .innerJoin(schema.resumes, eq(schema.resumes.id, schema.profiles.resumeId))
       .where(eq(schema.resumes.userId, them));
-    expect(
-      await addProof(
-        me,
-        a,
-        { type: "work", profileId: theirProfile.id, roleIndex: 0 },
-        db!,
-      ),
-    ).toBeNull();
+    expect(await addProof(me, a, { type: "work", profileId: theirProfile.id, roleIndex: 0 }, db!)).toBeNull();
     const [mine] = await db!
       .select({ id: schema.profiles.id })
       .from(schema.profiles)
-      .innerJoin(
-        schema.resumes,
-        eq(schema.resumes.id, schema.profiles.resumeId),
-      )
+      .innerJoin(schema.resumes, eq(schema.resumes.id, schema.profiles.resumeId))
       .where(eq(schema.resumes.userId, me));
-    expect(
-      await addProof(
-        me,
-        a,
-        { type: "work", profileId: mine.id, roleIndex: 1 },
-        db!,
-      ),
-    ).toBeNull();
-    const proof = await addProof(
-      me,
-      a,
-      { type: "work", profileId: mine.id, roleIndex: 0 },
-      db!,
-    );
+    expect(await addProof(me, a, { type: "work", profileId: mine.id, roleIndex: 1 }, db!)).toBeNull();
+    const proof = await addProof(me, a, { type: "work", profileId: mine.id, roleIndex: 0 }, db!);
     expect(proof).not.toBeNull();
-    expect(await setProofStatus(proof!, them, "accepted", "person", db!)).toBe(
-      false,
-    );
-    const [row] = await db!
-      .select({ status: schema.gapProofs.status })
-      .from(schema.gapProofs)
-      .where(eq(schema.gapProofs.id, proof!));
+    expect(await setProofStatus(proof!, them, "accepted", "person", db!)).toBe(false);
+    const [row] = await db!.select({ status: schema.gapProofs.status }).from(schema.gapProofs).where(eq(schema.gapProofs.id, proof!));
     expect(row.status).toBe("pending");
 
     // Someone else's analysis can't make goals or link its path steps to this person.
@@ -336,18 +221,10 @@ describe.skipIf(!db)("goals (database)", () => {
   it("gives the same goals once when visits and proof checks happen at the same time", async () => {
     const me = await user("race");
     const ga = await saved(me, analysis([a, b, c]));
-    const proof = await addProof(
-      me,
-      a,
-      { type: "skill_check", checkId: "c1" },
-      db!,
-    );
+    const proof = await addProof(me, a, { type: "skill_check", checkId: "c1" }, db!);
     await setProofStatus(proof!, me, "accepted", "app", db!);
     // Five visits and a rejection at once: every goal once, positions 1 to 3, and A not met without proof.
-    await Promise.all([
-      ...Array.from({ length: 5 }, () => syncGoals(me, ga, db!)),
-      setProofStatus(proof!, me, "rejected", "app", db!),
-    ]);
+    await Promise.all([...Array.from({ length: 5 }, () => syncGoals(me, ga, db!)), setProofStatus(proof!, me, "rejected", "app", db!)]);
     const goals = await syncGoals(me, ga, db!);
     expect(goals.map((g) => [g.skillId, g.position])).toEqual([
       [a, 1],
@@ -359,26 +236,8 @@ describe.skipIf(!db)("goals (database)", () => {
 
   it("refuses proof for an unknown skill or with free text instead of structured evidence", async () => {
     const me = await user("bad-proof");
-    expect(
-      await addProof(
-        me,
-        "not-a-skill",
-        { type: "skill_check", checkId: "c1" },
-        db!,
-      ),
-    ).toBeNull();
-    expect(
-      await addProof(
-        me,
-        a,
-        {
-          type: "work",
-          employer: "Acme",
-          title: "Copied from a resume",
-        } as never,
-        db!,
-      ),
-    ).toBeNull();
+    expect(await addProof(me, "not-a-skill", { type: "skill_check", checkId: "c1" }, db!)).toBeNull();
+    expect(await addProof(me, a, { type: "work", employer: "Acme", title: "Copied from a resume" } as never, db!)).toBeNull();
   });
 
   it("deletes goals and proof with the account", async () => {
@@ -386,17 +245,7 @@ describe.skipIf(!db)("goals (database)", () => {
     await syncGoals(me, await saved(me, analysis([a])), db!);
     await addProof(me, a, { type: "skill_check", checkId: "c1" }, db!);
     await db!.delete(schema.users).where(eq(schema.users.id, me));
-    expect(
-      await db!
-        .select()
-        .from(schema.userGoals)
-        .where(eq(schema.userGoals.userId, me)),
-    ).toEqual([]);
-    expect(
-      await db!
-        .select()
-        .from(schema.gapProofs)
-        .where(eq(schema.gapProofs.userId, me)),
-    ).toEqual([]);
+    expect(await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, me))).toEqual([]);
+    expect(await db!.select().from(schema.gapProofs).where(eq(schema.gapProofs.userId, me))).toEqual([]);
   });
 });
