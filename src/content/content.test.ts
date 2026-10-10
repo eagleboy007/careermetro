@@ -51,6 +51,27 @@ describe("certifications", () => {
     const ids = certifications.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("proves and touches only known skills, never the same skill both ways", () => {
+    const known = new Set(skills.map((s) => s.id));
+    const bad = certifications.flatMap((c) => [
+      ...[...c.proves, ...c.partial].filter((id) => !known.has(id)).map((id) => `${c.id}: unknown ${id}`),
+      ...c.proves.filter((id) => c.partial.includes(id)).map((id) => `${c.id}: ${id} in both`),
+    ]);
+    expect(bad).toEqual([]);
+  });
+
+  it("never gives one alias to two certifications", () => {
+    const seen = new Map<string, string>();
+    const clashes = certifications.flatMap((c) =>
+      [c.name, ...c.aliases].map(normalizeSkillTerm).flatMap((t) => {
+        const other = seen.get(t);
+        seen.set(t, c.id);
+        return other && other !== c.id ? [`${t}: ${other} and ${c.id}`] : [];
+      }),
+    );
+    expect(clashes).toEqual([]);
+  });
 });
 
 describe("role profiles", () => {

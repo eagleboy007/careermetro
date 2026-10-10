@@ -7,6 +7,7 @@ import * as schema from "@/db/schema";
 import type { Profile } from "@/lib/schemas";
 import { SHOWN_GAPS } from "./analysis";
 import type { ExplainClient } from "./explain";
+import { MATCHER_VERSION } from "./match";
 import { GAP_LIMITS, getGapsForOwner, rateAnalysis } from "./store";
 
 // Runs against a real Postgres with migrations applied, like ingest.test.ts.
@@ -63,7 +64,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
 
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
-    expect(row).toMatchObject({ matcherVersion: "matcher/v2" });
+    expect(row).toMatchObject({ matcherVersion: MATCHER_VERSION });
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
     expect(call).toMatchObject({ purpose: "explain-gaps", promptVersion: "explain-gaps/v1", ok: true });
     expect(JSON.stringify(call)).not.toContain("branch reports");
@@ -100,6 +101,38 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     await db!.update(schema.gapAnalyses).set({ result: moved }).where(eq(schema.gapAnalyses.id, first.analysisId));
     const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
     expect(again.ok && again.analysis.gaps).toHaveLength(SHOWN_GAPS);
+  });
+
+  it("carries an older matcher's analysis over when today's rules agree, keeping its id, rating and words", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    await db!.update(schema.gapAnalyses).set({ matcherVersion: "matcher/v1", userRating: 5 }).where(eq(schema.gapAnalyses.id, first.analysisId));
+
+    const { client, create } = explainClient();
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    expect(create).not.toHaveBeenCalled();
+    expect(again).toMatchObject({ ok: true, analysisId: first.analysisId, rating: 5, analysis: first.analysis });
+    const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
+    expect(row.matcherVersion).toBe(MATCHER_VERSION);
+  });
+
+  it("makes a fresh analysis when an older matcher's reading differs from today's", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    const moved = { ...first.analysis, gaps: first.analysis.gaps.map((g, i) => (i === 0 ? { ...g, status: g.status === "weak" ? ("outdated" as const) : ("weak" as const) } : g)) };
+    await db!.update(schema.gapAnalyses).set({ result: moved, matcherVersion: "matcher/v1" }).where(eq(schema.gapAnalyses.id, first.analysisId));
+
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!again.ok) throw new Error(again.reason);
+    expect(again.analysisId).not.toBe(first.analysisId);
+    expect(again.analysis.gaps[0].status).toBe(first.analysis.gaps[0].status);
+    const [old] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
+    expect(old.matcherVersion).toBe("matcher/v1");
+    // Today's analysis is the one found next time.
+    const third = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    expect(third).toMatchObject({ ok: true, analysisId: again.analysisId });
   });
 
   it("hides other sessions' resumes and waits for a confirmed profile", async () => {

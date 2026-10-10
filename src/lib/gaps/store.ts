@@ -5,7 +5,7 @@ import { aiCalls, gapAnalyses, profiles, resumes, roleProfiles } from "@/db/sche
 import { recordAiCalls } from "@/lib/ai/log";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
-import { gapAnalysis, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
+import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { explainGaps, type ExplainClient } from "./explain";
 import { MATCHER_VERSION, matchProfile, type MatchResult } from "./match";
@@ -74,24 +74,27 @@ export async function getGapsForOwner(
         .where(eq(roleProfiles.slug, role.slug))
         .orderBy(desc(roleProfiles.version))
         .limit(1);
+      // Today's matcher first; else the newest older one, which carries over when today's rules agree with it.
       const [stored] = await tx
-        .select({ id: gapAnalyses.id, result: gapAnalyses.result, rating: gapAnalyses.userRating })
+        .select({ id: gapAnalyses.id, result: gapAnalyses.result, rating: gapAnalyses.userRating, matcherVersion: gapAnalyses.matcherVersion })
         .from(gapAnalyses)
         .where(
           and(
             eq(gapAnalyses.profileId, resume.profileId),
-            eq(gapAnalyses.matcherVersion, MATCHER_VERSION),
             roleRow ? eq(gapAnalyses.roleProfileId, roleRow.id) : sql`${gapAnalyses.result}->>'roleSlug' = ${role.slug}`,
           ),
         )
-        .orderBy(desc(gapAnalyses.createdAt))
+        .orderBy(sql`${gapAnalyses.matcherVersion} = ${MATCHER_VERSION} desc`, desc(gapAnalyses.createdAt))
         .limit(1);
       const storedResult = stored ? gapAnalysis.safeParse(stored.result) : null;
       const match = matchProfile(resume.profile, role, deps.now);
-      if (stored && storedResult?.success) {
+      const current = stored?.matcherVersion === MATCHER_VERSION;
+      if (stored && storedResult?.success && (current || sameReading(storedResult.data, match))) {
         const analysis = withEveryGap(storedResult.data, match);
         // Kept under the same id, so the rating and the goals made from it carry over.
-        if (analysis !== storedResult.data) await tx.update(gapAnalyses).set({ result: analysis }).where(eq(gapAnalyses.id, stored.id));
+        if (analysis !== storedResult.data || !current) {
+          await tx.update(gapAnalyses).set({ result: analysis, matcherVersion: MATCHER_VERSION }).where(eq(gapAnalyses.id, stored.id));
+        }
         return { ok: true, analysisId: stored.id, analysis, rating: stored.rating } as const;
       }
 
@@ -117,6 +120,24 @@ export async function getGapsForOwner(
     if ((error as { cause?: { code?: string } })?.cause?.code === "55P03") return { ok: false, reason: "busy" };
     throw error;
   }
+}
+
+/**
+ * True when an analysis an older matcher stored says what today's matcher says: the same gaps in the same order, state
+ * and resume line (or the old top-five cut of them), the same met skills and the same nice-to-haves. Then it carries
+ * over under today's version with its words, rating and goals; otherwise the person gets a fresh analysis.
+ */
+export function sameReading(stored: GapAnalysis, match: MatchResult): boolean {
+  const gaps = match.gaps.slice(0, MAX_GAPS);
+  const n = stored.gaps.length;
+  if (n !== gaps.length && !(n === SHOWN_GAPS && gaps.length > SHOWN_GAPS)) return false;
+  if (stored.gaps.some((g, i) => g.skillId !== gaps[i].skillId || g.status !== gaps[i].status || g.resumeQuote !== gaps[i].resumeQuote)) {
+    return false;
+  }
+  const met = new Set(match.met.map((m) => m.skillId));
+  if (stored.metSkillIds.length !== met.size || stored.metSkillIds.some((id) => !met.has(id))) return false;
+  const nice = new Map(match.niceToHave.map((m) => [m.skillId, m.status]));
+  return stored.niceToHave.length === nice.size && stored.niceToHave.every((m) => nice.get(m.skillId) === m.status);
 }
 
 /**

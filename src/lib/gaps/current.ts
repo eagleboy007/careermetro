@@ -8,8 +8,9 @@ import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 export type Db = Pick<ReturnType<typeof getDb>, "select">;
 
 /**
- * The person's current gap analysis: the newest one made by today's matcher from the latest saved version of one of
- * their resumes' profiles. Null when there is none, or it no longer reads.
+ * The person's current gap analysis from the latest saved version of one of their resumes' profiles: the newest one
+ * made by today's matcher, else the newest older one until the Gaps page carries it over or replaces it, so a matcher
+ * update never empties Today, Map or Me. Null when there is none, or it no longer reads.
  */
 export async function currentAnalysis(userId: string, db: Db = getDb()): Promise<{ id: string; resumeId: string; result: GapAnalysis } | null> {
   const [row] = await db
@@ -20,11 +21,10 @@ export async function currentAnalysis(userId: string, db: Db = getDb()): Promise
     .where(
       and(
         eq(resumes.userId, userId),
-        eq(gapAnalyses.matcherVersion, MATCHER_VERSION),
         sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`,
       ),
     )
-    .orderBy(desc(gapAnalyses.createdAt))
+    .orderBy(sql`${gapAnalyses.matcherVersion} = ${MATCHER_VERSION} desc`, desc(gapAnalyses.createdAt))
     .limit(1);
   const parsed = row ? gapAnalysis.safeParse(row.result) : null;
   return row && parsed?.success ? { id: row.id, resumeId: row.resumeId, result: parsed.data } : null;
