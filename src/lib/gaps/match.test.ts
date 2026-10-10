@@ -9,6 +9,7 @@ import {
   matchProfile,
   matchResult,
   MATCHER_VERSION,
+  metSkillIds,
 } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
@@ -1422,6 +1423,30 @@ describe("one of these groups", () => {
     expect(r.groups).toEqual([
       { id: "cloud", skillIds: ["aws", "azure", "gcp"] },
     ]);
+  });
+
+  it("lists every shown skill of a met group as met, while counting the group once", () => {
+    const r = matchProfile(
+      line("Migrated workloads from Azure to AWS over two years"),
+      cloud,
+      now,
+    );
+    expect(r.readiness.requiredMet).toBe(r.met.length);
+    expect(r.met.filter((m) => m.group)).toHaveLength(1);
+    expect(metSkillIds(r).sort()).toEqual(
+      expect.arrayContaining(["aws", "azure"]),
+    );
+  });
+
+  it("lists every shown skill of a met group as met, while counting the group once", () => {
+    const r = matchProfile(
+      line("Migrated workloads from Azure to AWS over two years"),
+      cloud,
+      now,
+    );
+    expect(r.readiness.requiredMet).toBe(r.met.length);
+    expect(r.met.filter((m) => m.group)).toHaveLength(1);
+    expect(metSkillIds(r)).toEqual(expect.arrayContaining(["aws", "azure"]));
   });
 
   it("shows a group with no skill shown as one gap under its label, suggesting the skill most postings ask for", () => {

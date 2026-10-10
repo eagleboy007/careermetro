@@ -105,7 +105,7 @@ const built = meFromProfile({
       { skillId: "data-storytelling", skillName: "Data storytelling", status: "weak", resumeQuote: null, requirement: "r", explanation: "e" },
     ],
     metSkillIds: ["excel", "sql", "statistics"],
-    niceToHave: [], groups: [],
+    niceToHave: [],
     readiness: { headline: "h", explanation: "e", estimatedHours: 40 },
   },
   line: exampleMapLine,

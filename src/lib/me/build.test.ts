@@ -120,7 +120,7 @@ describe("meFromProfile", () => {
             { skillId: "pbi", skillName: "Power BI", status: "outdated", resumeQuote: null, requirement: "r", explanation: "e" },
           ],
           metSkillIds: ["excel"],
-          niceToHave: [], groups: [],
+          niceToHave: [],
           readiness: { headline: "h", explanation: "e", estimatedHours: 1 },
         },
       }),

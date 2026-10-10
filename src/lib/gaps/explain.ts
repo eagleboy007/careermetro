@@ -19,10 +19,16 @@ export type ExplainClient = Pick<Anthropic, "beta">;
 /** What the model must return: one explanation per gap, in the given order, plus a readiness line. */
 export const explainOutput = z.object({
   readiness: z.string().min(1).max(400),
-  gaps: z.array(z.object({ skillId: z.string(), explanation: z.string().min(1).max(400) })),
+  gaps: z.array(
+    z.object({ skillId: z.string(), explanation: z.string().min(1).max(400) }),
+  ),
 });
 
-export type ExplainResult = { analysis: GapAnalysis; source: "model" | "template"; calls: AiCallRecord[] };
+export type ExplainResult = {
+  analysis: GapAnalysis;
+  source: "model" | "template";
+  calls: AiCallRecord[];
+};
 
 /** The decided gaps as data for the model. Closing tags inside resume quotes can't end the block early. */
 export function wrapAnalysis(match: MatchResult, roleTitle: string): string {
@@ -45,8 +51,13 @@ export function wrapAnalysis(match: MatchResult, roleTitle: string): string {
 }
 
 /** The model's explanations if they cover exactly the given gaps in order, else null so the template is used. */
-export function readExplanations(content: Anthropic.Beta.BetaContentBlock[], match: MatchResult): Explanations | null {
-  const text = content.find((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")?.text;
+export function readExplanations(
+  content: Anthropic.Beta.BetaContentBlock[],
+  match: MatchResult,
+): Explanations | null {
+  const text = content.find(
+    (b): b is Anthropic.Beta.BetaTextBlock => b.type === "text",
+  )?.text;
   if (!text) return null;
   let parsed;
   try {
@@ -57,8 +68,12 @@ export function readExplanations(content: Anthropic.Beta.BetaContentBlock[], mat
   if (!parsed.success) return null;
   const expected = match.gaps.slice(0, SHOWN_GAPS).map((g) => g.skillId);
   const got = parsed.data.gaps.map((g) => g.skillId);
-  if (got.length !== expected.length || got.some((id, i) => id !== expected[i])) return null;
-  return { readiness: parsed.data.readiness, bySkill: new Map(parsed.data.gaps.map((g) => [g.skillId, g.explanation])) };
+  if (got.length !== expected.length || got.some((id, i) => id !== expected[i]))
+    return null;
+  return {
+    readiness: parsed.data.readiness,
+    bySkill: new Map(parsed.data.gaps.map((g) => [g.skillId, g.explanation])),
+  };
 }
 
 let defaultClient: Anthropic | undefined;
@@ -78,12 +93,20 @@ export async function explainGaps(
   inputRefs: Record<string, string>,
   client: ExplainClient = getClient(),
 ): Promise<ExplainResult> {
-  const template = (calls: AiCallRecord[]): ExplainResult => ({ analysis: buildGapAnalysis(match, null), source: "template", calls });
+  const template = (calls: AiCallRecord[]): ExplainResult => ({
+    analysis: buildGapAnalysis(match, null),
+    source: "template",
+    calls,
+  });
   if (match.gaps.length === 0) return template([]);
 
   const prompt = loadPrompt("explain-gaps");
   const started = Date.now();
-  const record = (model: string, usage: Parameters<typeof costUsd>[1] | null, ok: boolean): AiCallRecord[] => [
+  const record = (
+    model: string,
+    usage: Parameters<typeof costUsd>[1] | null,
+    ok: boolean,
+  ): AiCallRecord[] => [
     {
       purpose: "explain-gaps",
       model,
@@ -105,7 +128,10 @@ export async function explainGaps(
         max_tokens: 2_000,
         system: prompt.text,
         messages: [{ role: "user", content: wrapAnalysis(match, roleTitle) }],
-        output_config: { effort: "low", format: betaZodOutputFormat(explainOutput) },
+        output_config: {
+          effort: "low",
+          format: betaZodOutputFormat(explainOutput),
+        },
         betas: ["server-side-fallback-2026-07-01"],
         fallbacks: "default",
       },
@@ -116,8 +142,15 @@ export async function explainGaps(
     return template(record(EXPLAIN_MODEL, null, false));
   }
 
-  const explanations = response.stop_reason === "end_turn" ? readExplanations(response.content, match) : null;
+  const explanations =
+    response.stop_reason === "end_turn"
+      ? readExplanations(response.content, match)
+      : null;
   const calls = record(response.model, response.usage, explanations !== null);
   if (!explanations) return template(calls);
-  return { analysis: buildGapAnalysis(match, explanations), source: "model", calls };
+  return {
+    analysis: buildGapAnalysis(match, explanations),
+    source: "model",
+    calls,
+  };
 }

@@ -1,11 +1,27 @@
 import "server-only";
-import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals } from "@/db/schema";
-import { skills } from "@/content";
-import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
+import {
+  gapAnalyses,
+  gapProofs,
+  paths,
+  pathSteps,
+  profiles,
+  resumes,
+  userGoals,
+} from "@/db/schema";
+import { skillGroupMembers, skills } from "@/content";
+import {
+  userGoal,
+  proofEvidence,
+  type Gap,
+  type GapAnalysis,
+  type UserGoal,
+  type ProofEvidence,
+  type ProofStatus,
+} from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
-import { planGoalSync } from "./sync";
+import { fillingSkills, planGoalSync } from "./sync";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -15,7 +31,9 @@ type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
  * without this a proof rejected mid-sync could leave a goal met with no proof.
  */
 async function lockPerson(tx: Tx, userId: string): Promise<void> {
-  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-goals:${userId}`}))`);
+  await tx.execute(
+    sql`select pg_advisory_xact_lock(hashtext(${`cm-goals:${userId}`}))`,
+  );
 }
 
 const implies = new Map(skills.map((s) => [s.id, s.implies]));
@@ -35,7 +53,12 @@ async function provedSkills(userId: string, db: Db | Tx): Promise<string[]> {
  * steps to the goals, and returns every goal in order. Safe to run on every visit: it writes only what changed, and
  * two visits at once make the same goals once.
  */
-export async function syncGoals(userId: string, analysis: { id: string; result: GapAnalysis }, db: Db = getDb()): Promise<UserGoal[]> {
+export async function syncGoals(
+  userId: string,
+  analysis: { id: string; result: GapAnalysis },
+  db: Db = getDb(),
+  members: ReadonlyMap<string, string[]> = skillGroupMembers,
+): Promise<UserGoal[]> {
   return db.transaction(async (tx) => {
     await lockPerson(tx, userId);
     // Only the person's own analysis may make their goals or link path steps to them.
@@ -48,19 +71,27 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
     if (!own) return [];
     const [existing, proved] = await Promise.all([
       tx
-        .select({ skillId: userGoals.skillId, position: userGoals.position, status: userGoals.status, source: userGoals.source, groupId: userGoals.groupId })
+        .select({
+          skillId: userGoals.skillId,
+          position: userGoals.position,
+          status: userGoals.status,
+          source: userGoals.source,
+          groupId: userGoals.groupId,
+        })
         .from(userGoals)
         .where(eq(userGoals.userId, userId)),
       provedSkills(userId, tx),
     ]);
-    const gaps: Gap[] = analysis.result.gaps.filter((g) => knownSkill.has(g.skillId));
+    const gaps: Gap[] = analysis.result.gaps.filter((g) =>
+      knownSkill.has(g.skillId),
+    );
     const plan = planGoalSync({
       existing,
       gaps,
       metSkillIds: analysis.result.metSkillIds,
       provedSkillIds: proved,
       implies,
-      groups: analysis.result.groups,
+      members,
     });
 
     if (plan.insert.length) {
@@ -83,12 +114,30 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
     for (const u of plan.update) {
       await tx
         .update(userGoals)
-        .set({ status: u.status, metAt: u.status === "met" ? new Date() : null })
-        .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, u.skillId)));
+        .set({
+          ...(u.status
+            ? {
+                status: u.status,
+                metAt: u.status === "met" ? new Date() : null,
+              }
+            : {}),
+          ...(u.groupId ? { groupId: u.groupId } : {}),
+          ...(u.moveTo ? { skillId: u.moveTo } : {}),
+        })
+        .where(
+          and(eq(userGoals.userId, userId), eq(userGoals.skillId, u.skillId)),
+        );
     }
 
     const rows = await tx
-      .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position })
+      .select({
+        id: userGoals.id,
+        skillId: userGoals.skillId,
+        source: userGoals.source,
+        status: userGoals.status,
+        position: userGoals.position,
+        groupId: userGoals.groupId,
+      })
       .from(userGoals)
       .where(eq(userGoals.userId, userId))
       .orderBy(asc(userGoals.position), asc(userGoals.createdAt));
@@ -98,30 +147,71 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
       .select({ id: pathSteps.id, skillId: pathSteps.skillId })
       .from(pathSteps)
       .innerJoin(paths, eq(paths.id, pathSteps.pathId))
-      .where(and(eq(paths.gapAnalysisId, analysis.id), isNull(pathSteps.goalId)));
+      .where(
+        and(eq(paths.gapAnalysisId, analysis.id), isNull(pathSteps.goalId)),
+      );
     const goalBySkill = new Map(rows.map((r) => [r.skillId, r.id]));
     for (const [skillId, goalId] of goalBySkill) {
-      const ids = unlinked.filter((s) => s.skillId === skillId).map((s) => s.id);
-      if (ids.length) await tx.update(pathSteps).set({ goalId }).where(inArray(pathSteps.id, ids));
+      const ids = unlinked
+        .filter((s) => s.skillId === skillId)
+        .map((s) => s.id);
+      if (ids.length)
+        await tx
+          .update(pathSteps)
+          .set({ goalId })
+          .where(inArray(pathSteps.id, ids));
     }
 
-    const provedSet = new Set(proved);
-    return rows.map((r) => userGoal.parse({ ...r, proved: provedSet.has(r.skillId) }));
+    return withProved(rows, proved, members);
   });
 }
 
+/** Goals as the app reads them: a goal is proved when accepted proof covers its skill, or any skill of its group. */
+function withProved(
+  rows: {
+    id: string;
+    skillId: string;
+    source: "gap" | "user";
+    status: string;
+    position: number;
+    groupId: string | null;
+  }[],
+  proved: string[],
+  members: ReadonlyMap<string, string[]>,
+): UserGoal[] {
+  const provedSet = new Set(proved);
+  return rows.map(({ groupId, ...r }) =>
+    userGoal.parse({
+      ...r,
+      proved: fillingSkills({ skillId: r.skillId, groupId }, members).some(
+        (id) => provedSet.has(id),
+      ),
+    }),
+  );
+}
+
 /** The person's goals in order, read only: for checks that must not write, such as a tick. */
-export async function goalsOf(userId: string, db: Db = getDb()): Promise<UserGoal[]> {
+export async function goalsOf(
+  userId: string,
+  db: Db = getDb(),
+  members: ReadonlyMap<string, string[]> = skillGroupMembers,
+): Promise<UserGoal[]> {
   const [rows, proved] = await Promise.all([
     db
-      .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position })
+      .select({
+        id: userGoals.id,
+        skillId: userGoals.skillId,
+        source: userGoals.source,
+        status: userGoals.status,
+        position: userGoals.position,
+        groupId: userGoals.groupId,
+      })
       .from(userGoals)
       .where(eq(userGoals.userId, userId))
       .orderBy(asc(userGoals.position), asc(userGoals.createdAt)),
     provedSkills(userId, db),
   ]);
-  const provedSet = new Set(proved);
-  return rows.map((r) => userGoal.parse({ ...r, proved: provedSet.has(r.skillId) }));
+  return withProved(rows, proved, members);
 }
 
 /**
@@ -129,12 +219,18 @@ export async function goalsOf(userId: string, db: Db = getDb()): Promise<UserGoa
  * analysis that moved to the account gets its goals at once. Never fails the caller: goals are made again on the
  * next visit to the Map.
  */
-export async function syncCurrentGoals(userId: string, db: Db = getDb()): Promise<void> {
+export async function syncCurrentGoals(
+  userId: string,
+  db: Db = getDb(),
+): Promise<void> {
   try {
     const analysis = await currentAnalysis(userId, db);
     if (analysis) await syncGoals(userId, analysis, db);
   } catch (err) {
-    console.error("syncCurrentGoals failed", err instanceof Error ? err.name : "unknown");
+    console.error(
+      "syncCurrentGoals failed",
+      err instanceof Error ? err.name : "unknown",
+    );
   }
 }
 
@@ -142,7 +238,12 @@ export async function syncCurrentGoals(userId: string, db: Db = getDb()): Promis
  * Records a proof the person sent. It waits as pending until it is checked, and fills nothing until accepted. Work
  * proof must point at a role on one of the person's own saved profiles.
  */
-export async function addProof(userId: string, skillId: string, evidence: ProofEvidence, db: Db = getDb()): Promise<string | null> {
+export async function addProof(
+  userId: string,
+  skillId: string,
+  evidence: ProofEvidence,
+  db: Db = getDb(),
+): Promise<string | null> {
   const parsed = proofEvidence.safeParse(evidence);
   if (!parsed.success || !knownSkill.has(skillId)) return null;
   if (parsed.data.type === "work") {
@@ -150,10 +251,16 @@ export async function addProof(userId: string, skillId: string, evidence: ProofE
       .select({ data: profiles.data })
       .from(profiles)
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(eq(profiles.id, parsed.data.profileId), eq(resumes.userId, userId)));
-    if (!own || parsed.data.roleIndex >= (own.data.roles?.length ?? 0)) return null;
+      .where(
+        and(eq(profiles.id, parsed.data.profileId), eq(resumes.userId, userId)),
+      );
+    if (!own || parsed.data.roleIndex >= (own.data.roles?.length ?? 0))
+      return null;
   }
-  const [row] = await db.insert(gapProofs).values({ userId, skillId, type: parsed.data.type, evidence: parsed.data }).returning({ id: gapProofs.id });
+  const [row] = await db
+    .insert(gapProofs)
+    .values({ userId, skillId, type: parsed.data.type, evidence: parsed.data })
+    .returning({ id: gapProofs.id });
   return row.id;
 }
 
@@ -168,20 +275,53 @@ export async function setProofStatus(
   status: ProofStatus,
   verifier: "app" | "credly" | "issuer" | "person" | null,
   db: Db = getDb(),
+  members: ReadonlyMap<string, string[]> = skillGroupMembers,
 ): Promise<boolean> {
   return db.transaction(async (tx) => {
     await lockPerson(tx, userId);
     const [proof] = await tx
       .update(gapProofs)
-      .set({ status, verifier, verifiedAt: status === "pending" ? null : new Date() })
+      .set({
+        status,
+        verifier,
+        verifiedAt: status === "pending" ? null : new Date(),
+      })
       .where(and(eq(gapProofs.id, proofId), eq(gapProofs.userId, userId)))
       .returning({ skillId: gapProofs.skillId });
     if (!proof) return false;
-    const stillProved = (await provedSkills(userId, tx)).includes(proof.skillId);
-    await tx
-      .update(userGoals)
-      .set(stillProved ? { status: "met", metAt: new Date() } : { status: "active", metAt: null })
-      .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, proof.skillId), inArray(userGoals.status, stillProved ? ["active"] : ["met"])));
+    // The goal for this skill, and any goal for a group that has it. Each is met while accepted proof covers it.
+    const proved = new Set(await provedSkills(userId, tx));
+    const groups = [...members].filter(([, ids]) => ids.includes(proof.skillId)).map(([id]) => id);
+    const goals = await tx
+      .select({
+        id: userGoals.id,
+        skillId: userGoals.skillId,
+        groupId: userGoals.groupId,
+        status: userGoals.status,
+      })
+      .from(userGoals)
+      .where(
+        and(
+          eq(userGoals.userId, userId),
+          or(
+            eq(userGoals.skillId, proof.skillId),
+            groups.length ? inArray(userGoals.groupId, groups) : undefined,
+          ),
+        ),
+      );
+    for (const g of goals) {
+      const covered = fillingSkills(g, members).some((id) => proved.has(id));
+      if (covered && g.status === "active")
+        await tx
+          .update(userGoals)
+          .set({ status: "met", metAt: new Date() })
+          .where(eq(userGoals.id, g.id));
+      if (!covered && g.status === "met")
+        await tx
+          .update(userGoals)
+          .set({ status: "active", metAt: null })
+          .where(eq(userGoals.id, g.id));
+    }
     return true;
   });
 }
