@@ -91,6 +91,17 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect((row.result as { gaps: unknown[] }).gaps).toHaveLength(first.analysis.gaps.length);
   });
 
+  it("leaves a stored analysis alone when the date has changed the match since", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS) };
+    const moved = { ...five, gaps: five.gaps.map((g, i) => (i === 0 ? { ...g, status: g.status === "weak" ? ("outdated" as const) : ("weak" as const) } : g)) };
+    await db!.update(schema.gapAnalyses).set({ result: moved }).where(eq(schema.gapAnalyses.id, first.analysisId));
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    expect(again.ok && again.analysis.gaps).toHaveLength(SHOWN_GAPS);
+  });
+
   it("hides other sessions' resumes and waits for a confirmed profile", async () => {
     const { resumeId } = await seed();
     expect(await getGapsForOwner(resumeId, { sessionId: "someone-else" }, role, { db: db! })).toEqual({ ok: false, reason: "not_found" });

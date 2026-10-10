@@ -6,7 +6,7 @@ import { recordAiCalls } from "@/lib/ai/log";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { gapAnalysis, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
-import { buildGapAnalysis } from "./analysis";
+import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { explainGaps, type ExplainClient } from "./explain";
 import { MATCHER_VERSION, matchProfile, type MatchResult } from "./match";
 
@@ -124,8 +124,12 @@ export async function getGapsForOwner(
  * five, the rest are added with template words and the stored wording stays; no model call. Otherwise unchanged.
  */
 export function withEveryGap(stored: GapAnalysis, match: MatchResult): GapAnalysis {
-  if (match.gaps.length <= stored.gaps.length) return stored;
-  if (stored.gaps.some((g, i) => g.skillId !== match.gaps[i].skillId)) return stored;
+  // Only an exact old cut: five gaps, the same five in the same state, the same met skills. A match the date has moved
+  // since (a skill now outdated) keeps the stored analysis as it was rather than mixing old words with new numbers.
+  if (stored.gaps.length !== SHOWN_GAPS || match.gaps.length <= SHOWN_GAPS) return stored;
+  if (stored.gaps.some((g, i) => g.skillId !== match.gaps[i].skillId || g.status !== match.gaps[i].status)) return stored;
+  const met = new Set(match.met.map((m) => m.skillId));
+  if (stored.metSkillIds.length !== met.size || stored.metSkillIds.some((id) => !met.has(id))) return stored;
   const bySkill = new Map(stored.gaps.map((g) => [g.skillId, g.explanation]));
   return buildGapAnalysis(match, { readiness: stored.readiness.explanation, bySkill });
 }

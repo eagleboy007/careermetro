@@ -149,7 +149,7 @@ export function RideCard({
 
 const MINI_LINE_PITSTOPS = 10;
 
-/** The whole line: every pitstop, then the Practice and Match stops, with the train on the stretch to the current pitstop. */
+/** The line: its pitstops (a window of ten around the train on a long line), then the Practice and Match stops, with the train on the stretch to the current pitstop. */
 function MiniLine({ pitstop, count, share }: { pitstop: number; count: number; share: number }) {
   // A long line (a role with many gaps) shows a window of pitstops around the train, so the dots never touch on a phone.
   const shown = Math.min(count, MINI_LINE_PITSTOPS);
