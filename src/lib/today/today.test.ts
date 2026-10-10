@@ -35,6 +35,12 @@ describe("Today schemas", () => {
     expect(ride.parse({ ...exampleRide, titleEmphasis: undefined, prove: undefined })).toMatchObject({ titleEmphasis: "", prove: null });
   });
 
+  it("reject a way to prove listed twice, and more faces than people on the line", () => {
+    const [first] = exampleRide.prove!.options;
+    expect(ride.safeParse({ ...exampleRide, prove: { ...exampleRide.prove!, options: [first, first] } }).success).toBe(false);
+    expect(onYourLine.safeParse({ ...exampleOnYourLine, count: 2 }).success).toBe(false);
+  });
+
   it("reject more named goals than goals left", () => {
     expect(goalsSummary.safeParse({ ...exampleGoals, moreCount: 0, moreNames: ["Statistics"] }).success).toBe(false);
   });

@@ -34,7 +34,8 @@ export const provePitstop = z.object({
       }),
     )
     .min(1)
-    .max(3),
+    .max(3)
+    .refine((o) => new Set(o.map((x) => x.kind)).size === o.length, { message: "each way to prove appears once" }),
 });
 
 export const ride = z
@@ -189,12 +190,14 @@ export const eventTeaser = z.object({
 });
 
 /** People on the same goal right now. Opted-in profiles only; initials, never contact details. */
-export const onYourLine = z.object({
-  goalName: z.string().min(1).max(80),
-  count: z.number().int().min(0),
-  initials: z.array(z.string().min(1).max(3)).max(4),
-  tip: z.object({ initials: z.string().min(1).max(3), quote: z.string().min(1).max(200), who: z.string().min(1).max(120) }).nullable(),
-});
+export const onYourLine = z
+  .object({
+    goalName: z.string().min(1).max(80),
+    count: z.number().int().min(0),
+    initials: z.array(z.string().min(1).max(3)).max(4),
+    tip: z.object({ initials: z.string().min(1).max(3), quote: z.string().min(1).max(200), who: z.string().min(1).max(120) }).nullable(),
+  })
+  .refine((l) => l.initials.length <= l.count, { message: "more faces than people", path: ["initials"] });
 
 export type UserState = z.infer<typeof userState>;
 export type GoalStatus = z.infer<typeof goalStatus>;

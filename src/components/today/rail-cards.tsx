@@ -1,8 +1,8 @@
-import { ArrowRight, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import type { EventTeaser, OnYourLine } from "@/lib/schemas";
 
 const card = "flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5";
-const avatar = "grid shrink-0 place-items-center rounded-full bg-surface-2 font-mono font-medium text-ink";
+const avatar = "grid shrink-0 place-items-center rounded-full font-mono font-medium text-ink";
 
 /** Timetable teaser: the next events for the user's goals. The full Timetable comes later (build step 11). */
 export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
@@ -13,7 +13,6 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">near you</span>
         <span className="ml-auto inline-flex items-center gap-1 text-[0.82rem] font-semibold text-muted">
           All events · soon
-          <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />
         </span>
       </div>
       <ul className="flex flex-col gap-3">
@@ -43,7 +42,7 @@ export function OnYourLineCard({ line }: { line: OnYourLine }) {
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex" aria-hidden="true">
           {[...line.initials, ...(extra > 0 ? [`+${extra}`] : [])].map((i, n) => (
-            <span key={`${i}-${n}`} className={`${avatar} size-[34px] border-2 border-surface text-[0.66rem] ${n > 0 ? "-ml-[9px]" : ""}`}>
+            <span key={`${i}-${n}`} className={`${avatar} size-[34px] border-2 border-surface bg-surface-2 text-[0.66rem] ${n > 0 ? "-ml-[9px]" : ""}`}>
               {i}
             </span>
           ))}

@@ -64,7 +64,6 @@ export function GoalsCard({ summary, mapHref }: { summary: GoalsSummary; mapHref
           </span>
           <button
             type="button"
-            aria-pressed={added}
             onClick={() => setAdded((a) => !a)}
             className="col-start-2 inline-flex items-center gap-1.5 justify-self-start whitespace-nowrap rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold sm:col-start-3"
           >

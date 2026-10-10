@@ -166,7 +166,7 @@ function MiniLine({ pitstop, count, share }: { pitstop: number; count: number; s
             />
             <span
               className={`absolute top-[56px] -translate-x-1/2 font-mono text-[10.5px] uppercase tracking-[0.04em] ${
-                s.n === pitstop ? "font-semibold text-ink" : "hidden text-muted md:inline"
+                s.n === pitstop ? "font-semibold text-ink" : "hidden text-muted min-[1100px]:inline"
               }`}
               style={{ left: `${x(i)}%` }}
             >
@@ -207,7 +207,13 @@ function PitstopChip({ pitstop, count }: { pitstop: number; count: number }) {
     };
   }, [open]);
   return (
-    <span ref={wrap} className="relative">
+    <span
+      ref={wrap}
+      className="relative"
+      onBlur={(e) => {
+        if (!wrap.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
+      }}
+    >
       <button
         type="button"
         aria-expanded={open}
@@ -217,7 +223,8 @@ function PitstopChip({ pitstop, count }: { pitstop: number; count: number }) {
       >
         <Route size={16} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
         Pitstop {pitstop} of {count}
-        <CircleHelp size={14} strokeWidth={1.75} className="text-muted" aria-label="What is a pitstop?" />
+        <CircleHelp size={14} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
+        <span className="sr-only">, what is a pitstop?</span>
       </button>
       <div
         id={popId}
@@ -245,7 +252,10 @@ const PROVE_ICON = { check: Video, cert: Award, work: BriefcaseBusiness } as con
 function ProveBox({ prove, goalName }: { prove: ProvePitstop; goalName: string }) {
   const [asked, setAsked] = useState(false);
   return (
-    <div className="mt-1 flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface px-4 py-3.5" aria-label={`Pitstop ${prove.pitstop}, prove ${goalName}`}>
+    <section
+      className="mt-1 flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface px-4 py-3.5"
+      aria-label={`Pitstop ${prove.pitstop}, prove ${goalName}`}
+    >
       <div className="flex flex-wrap items-center gap-2.5">
         <b className="font-display text-[1.02rem] font-semibold">
           Pitstop {prove.pitstop} · Prove {goalName}
@@ -276,9 +286,9 @@ function ProveBox({ prove, goalName }: { prove: ProvePitstop; goalName: string }
           );
         })}
       </ul>
-      <p role="status" className="text-[0.8rem] text-muted empty:hidden">
+      <p role="status" className={`text-[0.8rem] text-muted ${asked ? "" : "sr-only"}`}>
         {asked ? "Proof opens in a later build. Your tasks above already count toward this goal." : ""}
       </p>
-    </div>
+    </section>
   );
 }
