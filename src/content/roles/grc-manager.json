@@ -1,0 +1,106 @@
+{
+  "slug": "grc-manager",
+  "title": "GRC Manager / Information Security Manager",
+  "experienceBand": {
+    "minYears": 7,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Own certification programmes such as ISO 27001, SOC 2 and PCI DSS",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Run the enterprise security risk process and report to the board",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "required",
+      "expectation": "Own the ISMS and the policy set",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Face external auditors and regulators (RBI, SEBI, IRDAI)",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Run the vendor risk programme",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Own BCP/DR tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate DPDP Act compliance with legal",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Govern cloud controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a team of analysts and auditors",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree risk treatment with business heads",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present risk posture to leadership",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cisa",
+      "importance": "recommended",
+      "why": "Proves audit depth and 5 years of experience"
+    },
+    {
+      "certId": "cism",
+      "importance": "recommended",
+      "why": "Security management with 5 years of experience"
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "Broad security leadership"
+    },
+    {
+      "certId": "crisc",
+      "importance": "optional",
+      "why": "Risk focus"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

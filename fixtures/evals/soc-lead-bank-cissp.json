@@ -1,0 +1,55 @@
+{
+  "id": "soc-lead-bank-cissp",
+  "roleSlug": "soc-lead",
+  "persona": "Senior incident handler at a bank, CISSP, aiming for SOC manager",
+  "resumeText": "Rajesh Menon | Mumbai | rajesh.menon@example.com\n\nEXPERIENCE\nDeputy Manager, Security Operations, Konkan Cooperative Bank, Mumbai (2019 - present)\n- Lead a team of 9 SOC analysts across three shifts; hired 4 and run monthly coaching sessions.\n- Incident commander for 12 major incidents including a card-skimming malware outbreak.\n- Own the QRadar use-case library and retired 40 noisy rules.\n- Measured detection coverage against MITRE ATT&CK and closed 18 coverage gaps.\n- Prepare CERT-In incident reports within 6 hours and RBI cyber security framework compliance evidence.\n- Present the monthly cyber risk dashboard to the CISO and the IT steering committee.\n- Work with branch operations, legal and the fraud team during incidents.\n\nSecurity Analyst, Deccan Infotech Services, Pune (2014 - 2019)\n- Monitored client networks and handled phishing and malware incidents.\n\nEDUCATION\nMCA, University of Mumbai, 2014\n\nCERTIFICATIONS\nCISSP (2020), GCIH (2018)\n",
+  "expected": {
+    "totalYearsExperience": 12,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Lead a team of 9 SOC analysts across three shifts"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "Incident commander for 12 major incidents"
+      },
+      {
+        "skillId": "siem",
+        "quote": "Own the QRadar use-case library"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Measured detection coverage against MITRE ATT&CK"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "RBI cyber security framework compliance evidence"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Present the monthly cyber risk dashboard to the CISO"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Work with branch operations, legal and the fraud team during incidents"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present the monthly cyber risk dashboard to the CISO and the IT steering committee"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "soar",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "soar",
+      "python",
+      "cloud-security"
+    ]
+  },
+  "reviewedBy": null
+}

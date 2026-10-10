@@ -448,6 +448,10 @@
     "task": "Using the free Splunk BOTS v3 dataset or a Sentinel free trial, write 3 searches that find suspicious logins or processes, and document each with a screenshot and what it detects."
   },
   {
+    "skillId": "soar",
+    "task": "In the free Shuffle or Tines community edition, build a playbook that takes a phishing alert, looks up its URL and sender in a threat feed, and opens a ticket with the verdict. Share the playbook export and a run screenshot."
+  },
+  {
     "skillId": "social-media-marketing",
     "task": "Write a 4-week Meta and LinkedIn campaign plan for a fictional brand with audiences, 6 ad creatives (copy plus mock visuals), budget split and KPIs."
   },

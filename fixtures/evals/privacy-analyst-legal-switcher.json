@@ -1,0 +1,55 @@
+{
+  "id": "privacy-analyst-legal-switcher",
+  "roleSlug": "privacy-analyst",
+  "persona": "Corporate lawyer moving into a DPDP Act privacy analyst role",
+  "resumeText": "Ananya Rao | Hyderabad | ananya.rao@example.com\n\nEXPERIENCE\nAssociate, Technology and Data Practice, Charminar Legal, Hyderabad (2022 - present)\n- Advised 9 clients on the Digital Personal Data Protection Act, 2023 and GDPR obligations.\n- Drafted data processing agreements and reviewed sub-processor terms for SaaS vendors.\n- Prepared privacy notices and consent wording for two consumer lending apps.\n- Built a records of processing template used across the practice.\n- Explain legal duties to product managers in short written notes.\n\nLegal Intern, Lakeview Law Chambers, Bengaluru (2021 - 2022)\n- Researched data breach notification rules across India, the EU and Singapore.\n\nEDUCATION\nBA LLB (Hons), NALSAR University of Law, 2022\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "data-privacy",
+        "quote": "Digital Personal Data Protection Act, 2023 and GDPR obligations"
+      },
+      {
+        "skillId": "third-party-risk",
+        "quote": "reviewed sub-processor terms for SaaS vendors"
+      },
+      {
+        "skillId": "privacy-program-management",
+        "quote": "Built a records of processing template"
+      },
+      {
+        "skillId": "security-policies",
+        "quote": "Prepared privacy notices and consent wording"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explain legal duties to product managers in short written notes"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "privacy-program-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "third-party-risk",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-governance",
+        "status": "missing"
+      },
+      {
+        "skillId": "security-incident-response",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "data-governance",
+      "python",
+      "siem"
+    ]
+  },
+  "reviewedBy": null
+}

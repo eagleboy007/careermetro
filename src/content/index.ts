@@ -22,12 +22,19 @@ import dataScientist from "./roles/data-scientist.json";
 import databaseArchitect from "./roles/database-architect.json";
 import devopsEngineer from "./roles/devops-engineer.json";
 import digitalMarketingExecutive from "./roles/digital-marketing-executive.json";
+import engineeringManager from "./roles/engineering-manager.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
+import grcManager from "./roles/grc-manager.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
+import privacyAnalyst from "./roles/privacy-analyst.json";
 import productManager from "./roles/product-manager.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
+import seniorDataScientist from "./roles/senior-data-scientist.json";
+import socAnalystL2 from "./roles/soc-analyst-l2.json";
+import socLead from "./roles/soc-lead.json";
+import uiUxDesigner from "./roles/ui-ux-designer.json";
 
 /** The skill taxonomy. Validated at import so a bad edit fails tests and the build. */
 export const skills: Skill[] = z.array(skill).parse(skillsJson);
@@ -52,12 +59,19 @@ export const roleProfiles: RoleProfile[] = z
     databaseArchitect,
     devopsEngineer,
     digitalMarketingExecutive,
+    engineeringManager,
     frontendDeveloper,
     fullStackDeveloper,
+    grcManager,
     informationSecurityAnalyst,
     javaBackendDeveloper,
+    privacyAnalyst,
     productManager,
     qaAutomationEngineer,
+    seniorDataScientist,
+    socAnalystL2,
+    socLead,
+    uiUxDesigner,
   ]);
 
 export function normalizeSkillTerm(term: string): string {

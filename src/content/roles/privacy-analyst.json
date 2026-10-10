@@ -1,0 +1,67 @@
+{
+  "slug": "privacy-analyst",
+  "title": "Data Protection / Privacy Analyst",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "data-privacy",
+      "importance": "required",
+      "expectation": "Apply India's DPDP Act 2023 and GDPR to real processing activities",
+      "postingShare": null
+    },
+    {
+      "skillId": "privacy-program-management",
+      "importance": "required",
+      "expectation": "Run DPIAs, keep records of processing and manage consent",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "required",
+      "expectation": "Classify data and track where personal data flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Review processors and data processing agreements",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Write privacy notices and internal policies",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Know ISO 27701 and how it extends ISO 27001",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Handle a personal data breach and meet notification timelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain privacy duties to product and legal teams",
+      "postingShare": null
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "soc-l2-mssp-analyst",
+  "roleSlug": "soc-analyst-l2",
+  "persona": "SOC L1 analyst at a managed security provider moving up to L2",
+  "resumeText": "Sneha Iyer | Bengaluru | sneha.iyer@example.com\n\nEXPERIENCE\nSecurity Analyst L1, Nilgiri Managed Security Services, Bengaluru (2023 - present)\n- Monitor alerts for 14 client environments in Microsoft Sentinel and write KQL queries to triage them.\n- Escalated 60+ confirmed incidents to L2 with full timelines; joined containment calls for two ransomware cases.\n- Map suspicious activity to MITRE ATT&CK techniques for the weekly threat summary.\n- Check IOCs against VirusTotal and AlienVault OTX feeds before escalation.\n- Write shift handover notes and client incident summaries in plain English.\n\nJunior IT Support, Kaveri Logistics, Mysuru (2022 - 2023)\n- Installed and checked Defender for Endpoint agents on 300 laptops.\n\nEDUCATION\nBSc Computer Science, Christ University, 2022\n\nCERTIFICATIONS\nCompTIA Security+ (2023)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "siem",
+        "quote": "write KQL queries to triage them"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "joined containment calls for two ransomware cases"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Map suspicious activity to MITRE ATT&CK techniques"
+      },
+      {
+        "skillId": "threat-intelligence",
+        "quote": "Check IOCs against VirusTotal and AlienVault OTX feeds"
+      },
+      {
+        "skillId": "endpoint-security",
+        "quote": "Installed and checked Defender for Endpoint agents"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write shift handover notes and client incident summaries in plain English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-incident-response",
+        "status": "weak"
+      },
+      {
+        "skillId": "threat-intelligence",
+        "status": "weak"
+      },
+      {
+        "skillId": "endpoint-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "python",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "digital-forensics",
+      "malware-analysis"
+    ]
+  },
+  "reviewedBy": null
+}

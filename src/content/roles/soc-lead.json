@@ -1,0 +1,89 @@
+{
+  "slug": "soc-lead",
+  "title": "SOC Lead / SOC Manager",
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Run major incidents and own the incident response plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Own the detection roadmap and SIEM coverage",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Measure detection coverage against MITRE ATT&CK",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Run shift rosters, hire and coach L1 and L2 analysts",
+      "postingShare": null
+    },
+    {
+      "skillId": "soar",
+      "importance": "required",
+      "expectation": "Drive automation to cut alert fatigue",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Report security risk and SLA metrics to leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Meet RBI, CERT-In and ISO 27001 reporting duties",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with IT, legal and business owners during incidents",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present incident reports to senior management",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cissp",
+      "importance": "recommended",
+      "why": "Common ask for security leadership roles"
+    },
+    {
+      "certId": "gcih",
+      "importance": "optional",
+      "why": "Hands-on incident handling depth"
+    },
+    {
+      "certId": "cism",
+      "importance": "optional",
+      "why": "Security management focus"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

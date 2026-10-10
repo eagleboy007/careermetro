@@ -8,7 +8,7 @@ export const roleSkill = z.object({
   expectation: z.string().min(1),
   /** Share of analysed public job postings for this role that mention the skill, or null when not measured. */
   postingShare: z.number().min(0).max(1).nullable().default(null),
-});
+}).strict();
 
 export const roleCertification = z.object({
   certId: z.string().min(1),
@@ -37,5 +37,5 @@ export const roleProfile = z.object({
     .min(1),
   reviewedBy: z.string().nullable(),
   updatedOn: z.iso.date(),
-});
+}).strict();
 export type RoleProfile = z.infer<typeof roleProfile>;
