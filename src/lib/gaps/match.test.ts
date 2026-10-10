@@ -307,6 +307,11 @@ describe("certifications on the resume", () => {
       "Preparing for CISSP, CISA",
       "Planning to take CISSP, CISM next year",
       "Not CISSP certified",
+      "CISSP (In Progress)",
+      "CISSP – in progress",
+      "AWS Solutions Architect Associate - In-progress",
+      "CISSP (pending)",
+      "CISSP (ongoing)",
     ]) {
       expect(certificationsIn(line, now), line).toEqual([]);
     }
@@ -346,6 +351,7 @@ describe("certifications on the resume", () => {
     expect(held("Pursuing CISA; CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
     expect(held("CISSP, 2019, CISA, appearing Nov 2026")).toEqual([{ id: "cissp", months: ym(2019, 12) }]);
     expect(held("Pursuing CISA, CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
+    expect(held("CISA 2020, Not CISSP").map((h) => h.id)).toEqual(["cisa"]);
   });
 
   it("takes the pass date, not expiry, ID digits or a standard's version", () => {

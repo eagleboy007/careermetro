@@ -190,10 +190,11 @@ function learningAbout(line: string, terms: string[]): boolean {
 
 /**
  * A clause that is a plan, not a pass: "Pursuing CISSP", "CISA, appearing Nov 2026", "AZ-104 – will take in March".
- * Kept to phrases about the exam itself, so "Attempted 40 labs" or "Ongoing CPE" leave a held certificate alone.
+ * Kept to phrases about the exam itself, so "Attempted 40 labs", "Ongoing CPE credits" or "endorsement pending" leave a
+ * held certificate alone.
  */
 const NOT_HELD =
-  /\b(?:pursuing|preparing|preparation|(?:exam|certification) in progress|expected|appearing|appear(?:ed)? (?:for|in)|to appear|scheduled|awaiting|awaited|(?:result|exam) pending|upcoming|applied for|planned|planning to|registered (?:for|to)|enrolled|studying for|aspiring|will (?:appear|take|sit|write|attempt|complete|give|clear)|not (?:yet|cleared|passed|completed)|^\s*not\b|part[ -]?(?:1|i)\b)/i;
+  /\b(?:pursuing|preparing|preparation|expected|appearing|appear(?:ed)? (?:for|in)|to appear|scheduled|awaiting|awaited|upcoming|applied for|planned|planning to|registered (?:for|to)|enrolled|studying for|aspiring|will (?:appear|take|sit|write|attempt|complete|give|clear)|not (?:yet|cleared|passed|completed)|part[ -]?(?:1|i)\b)|^\s*not\b|(?<!\b(?:cpe|credits?|endorsement)\s)\b(?:in[ -]progress|pending|ongoing)\b(?!\s(?:cpe|credits?|endorsement))/i;
 
 /** Dates that are not when the certificate was earned: its expiry or renewal, or digits inside an ID. */
 const NOT_EARNED_DATE =
