@@ -1449,11 +1449,18 @@
       "ioc enrichment",
       "iocs",
       "threat feeds",
-      "indicators of compromise"
+      "indicators of compromise",
+      "virustotal",
+      "alienvault otx",
+      "misp",
+      "threat feed"
     ],
     "ambiguous": [
       "cti",
-      "iocs"
+      "iocs",
+      "virustotal",
+      "misp",
+      "threat feed"
     ],
     "implies": [
       "threat-detection"
