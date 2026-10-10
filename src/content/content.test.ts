@@ -1,6 +1,8 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { inflections } from "@/lib/gaps/match";
+import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS } from "@/lib/schemas";
 import { certifications, normalizeSkillTerm, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
@@ -29,6 +31,22 @@ describe("skill taxonomy", () => {
       return s.ambiguous.filter((t) => !own.has(normalizeSkillTerm(t))).map((t) => `${s.id}: ${t}`);
     });
     expect(stray).toEqual([]);
+  });
+
+  it("never reads one term's plural or spelling as another skill", () => {
+    const owner = new Map<string, string>();
+    for (const s of skills) for (const t of [s.name, ...s.aliases]) owner.set(normalizeForMatch(t), s.id);
+    const clashes = skills.flatMap((s) =>
+      [s.name, ...s.aliases].flatMap((t) =>
+        inflections(normalizeForMatch(t)).flatMap((v) => {
+          const other = owner.get(v);
+          if (other && other !== s.id) return [`"${v}" → ${other} and ${s.id}`];
+          owner.set(v, s.id);
+          return [];
+        }),
+      ),
+    );
+    expect(clashes).toEqual([]);
   });
 
   it("implies only known skills, without cycles", () => {

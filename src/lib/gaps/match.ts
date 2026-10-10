@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v4";
+export const MATCHER_VERSION = "matcher/v5";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -49,18 +49,53 @@ const skillById = new Map(taxonomy.map((s) => [s.id, s]));
 /** Long enough to trust in a sentence: three letters, or a symbol or digit as in "C++", ".NET" or "S3". */
 const distinctive = (t: string) => t.replace(/[^\p{L}\p{N}]/gu, "").length >= 3 || /[+#.\d]/.test(t);
 
+/** "testing" reads "test" only after these: "an A/B test", "unit tests". Not "load tests" (a pile) or "acceptance tests" (switchgear). */
+const TEST_KINDS = new Set(["a/b", "ab", "split", "unit", "api", "penetration", "pen", "usability", "hypothesis", "regression"]);
+
+/**
+ * The everyday forms of a normalised term, itself first:
+ * - "-isation" and "-ization" respell either way ("normalisation"), and as the last of two or more words also take
+ *   their verb forms ("data visualised"). A single word keeps its noun, so "containerised cargo" never reads Docker.
+ * - The last of two or more words takes its plural ("product roadmaps", "data qualities").
+ * - "testing" after a kind of test also reads "test" and "tests" ("an A/B test").
+ * Single words otherwise keep their form, so "excel" never reads "excels at".
+ */
+export function inflections(term: string): string[] {
+  const words = term.split(" ");
+  const options = words.map((word, i) => {
+    const forms = new Set([word]);
+    const last = i === words.length - 1 && words.length > 1;
+    const ization = /^(\p{L}{3,})i[sz]ation$/u.exec(word);
+    if (ization) {
+      for (const z of ["s", "z"]) for (const end of last ? ["ation", "e", "ed", "es", "ing"] : ["ation"]) forms.add(`${ization[1]}i${z}${end}`);
+    } else if (last && word === "testing") {
+      if (TEST_KINDS.has(words[i - 1])) forms.add("test").add("tests");
+    } else if (last && /\p{L}{3,}$/u.test(word) && !/(?:s|ing)$/.test(word)) {
+      forms.add(/[^aeiou]y$/.test(word) ? `${word.slice(0, -1)}ies` : /(?:x|ch|sh)$/.test(word) ? `${word}es` : `${word}s`);
+    }
+    return [...forms];
+  });
+  return options.reduce<string[]>((acc, forms) => acc.flatMap((p) => forms.map((f) => (p ? `${p} ${f}` : f))), [""]);
+}
+
 /**
  * Terms safe to look for in free text. One- and two-letter names such as "R", "Go" or "C", and terms marked
  * ambiguous because they are also ordinary words ("react", "containers"), are only trusted when the parser
  * listed the skill, because in a sentence they match far too much.
  */
+const scanCache = new Map<string, string[]>();
 function scanTerms(skillId: string): string[] {
+  const cached = scanCache.get(skillId);
+  if (cached) return cached;
   const s = skillById.get(skillId);
   if (!s) return [];
   const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
-  return [s.name, ...s.aliases]
+  const terms = [s.name, ...s.aliases]
     .map(normalizeForMatch)
-    .filter((t) => !ambiguous.has(t) && distinctive(t));
+    .filter((t) => !ambiguous.has(t) && distinctive(t))
+    .flatMap(inflections);
+  scanCache.set(skillId, terms);
+  return terms;
 }
 
 /** "2022" or "2022-03" as months since year 0. A bare year counts as its December, the generous reading. */
@@ -83,9 +118,10 @@ type TermTokens = { skillId: string; tokens: string[]; safe: boolean };
 const termTokens: TermTokens[] = taxonomy
   .flatMap((s) => {
     const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
-    return [s.id.replace(/-/g, " "), s.name, ...s.aliases].map((t) => {
+    return [s.id.replace(/-/g, " "), s.name, ...s.aliases].flatMap((t) => {
       const n = normalizeForMatch(t);
-      return { skillId: s.id, tokens: tokens(t), safe: !ambiguous.has(n) && distinctive(n) };
+      const safe = !ambiguous.has(n) && distinctive(n);
+      return inflections(n).map((v) => ({ skillId: s.id, tokens: tokens(v), safe }));
     });
   })
   .filter((t) => t.tokens.length > 0)

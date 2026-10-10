@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
-import { certificationsIn, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
+import { certificationsIn, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -47,6 +47,48 @@ describe("matchProfile", () => {
     );
     expect(statusOf(shown, "stakeholder-management")).toBe("met");
     expect(shown.readiness.requiredTotal).toBe(none.readiness.requiredTotal + 1);
+  });
+
+  it("reads plurals, British spellings and the test in testing (T29)", () => {
+    const pm = role("product-manager");
+    const r = matchProfile(
+      profile({
+        roles: [
+          {
+            title: "Associate Product Manager",
+            employer: "Example Fintech",
+            start: "2024-01",
+            end: null,
+            highlights: ["Wrote PRDs and user stories in Jira; prioritised the backlog with RICE.", "Ran 14 user interviews and an A/B test on the onboarding screen that lifted completion by 9%."],
+          },
+        ],
+        skills: [{ name: "Product roadmaps", lastUsed: null, evidence: ["Product roadmaps, Jira, SQL, Mixpanel, Figma, stakeholder management"] }],
+      }),
+      pm,
+      now,
+    );
+    expect(statusOf(r, "roadmapping")).toBe("met");
+    if (pm.skills.some((s) => s.skillId === "ab-testing")) expect(statusOf(r, "ab-testing")).toBe("met");
+    expect(inflections("a/b testing")).toEqual(["a/b testing", "a/b test", "a/b tests"]);
+    expect(inflections("excel")).toEqual(["excel"]);
+    expect(inflections("data engineering")).toEqual(["data engineering"]);
+    expect(inflections("load testing")).toEqual(["load testing"]);
+    expect(inflections("containerization")).toEqual(["containerization", "containerisation"]);
+    expect(inflections("data quality")).toEqual(["data quality", "data qualities"]);
+  });
+
+  it("never reads everyday tests or -ised words from other trades as skills", () => {
+    const job = (line: string) => profile({ roles: [{ title: "Engineer", employer: "Example Infra", start: "2024-01", end: null, highlights: [line] }] });
+    for (const [line, slug, skill] of [
+      ["Conducted pile load tests for the metro viaduct foundations", "qa-automation-engineer", "performance-testing"],
+      ["Performed quality control tests on incoming raw materials as per IP", "information-security-analyst", "security-audits"],
+      ["Witnessed factory acceptance tests for HT switchgear panels", "business-analyst", "uat"],
+      ["Handled containerised cargo movement at JNPT", "devops-engineer", "docker"],
+      ["Normalised monthly sales figures across 12 regions in Excel", "database-architect", "orm-databases"],
+      ["Prioritised customer tickets in the support queue", "product-manager", "roadmapping"],
+    ] as const) {
+      expect(statusOf(matchProfile(job(line), role(slug), now), skill), line).not.toBe("met");
+    }
   });
 
   it("calls a skill that is only listed weak evidence", () => {

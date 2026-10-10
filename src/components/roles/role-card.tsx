@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { plural } from "@/components/map/map-parts";
 import { scoredSkills, type RoleView } from "@/lib/role-view";
 
 /** A role in the roles list. */
@@ -16,7 +17,7 @@ export function RoleCard({ role }: { role: RoleView }) {
         <ArrowRight size={18} strokeWidth={1.75} className="mt-1 shrink-0 text-muted group-hover:text-ink" aria-hidden="true" />
       </div>
       <p className="font-mono text-xs uppercase tracking-wider text-muted">
-        {role.experience} · {core.length} core skills · {role.certifications.length} certifications
+        {role.experience} · {plural(core.length, "core skill")} · {plural(role.certifications.length, "certification")}
       </p>
       {top.length > 0 && <p className="text-sm text-muted">Most asked: {top.join(", ")}</p>}
     </Link>
