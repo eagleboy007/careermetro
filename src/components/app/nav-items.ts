@@ -7,7 +7,7 @@ export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIc
 export const NAV = {
   today: { key: "today", label: "Today", href: "/today", Icon: House, built: true },
   map: { key: "map", label: "Map", href: "/map", Icon: MapIcon, built: true },
-  departures: { key: "departures", label: "Departures", href: "/departures", Icon: TrainFront, built: false },
+  departures: { key: "departures", label: "Departures", href: "/departures", Icon: TrainFront, built: true },
   arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: false },
   timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: false },
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },

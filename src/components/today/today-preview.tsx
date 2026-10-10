@@ -50,11 +50,14 @@ export function TodayView({
   data,
   upload,
   onToggleTask,
+  departuresHref,
 }: {
   state: UserState;
   data: TodayData;
   upload: ReactNode;
   onToggleTask?: (taskId: string, done: boolean) => void;
+  /** Where "All departures" goes; without it the link is marked "soon". */
+  departuresHref?: string;
 }) {
   const lockedTask = data.ride.tasks.find((t) => t.locked);
   // Answered earlier today when the locked task already came back done; the picked key is only known this visit.
@@ -99,7 +102,7 @@ export function TodayView({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
-        <DeparturesBoard rows={data.departures} locked={state === "no_resume"} />
+        <DeparturesBoard rows={data.departures} locked={state === "no_resume"} allHref={departuresHref} />
         <TimetableTeaser events={data.events} />
         {state !== "no_resume" && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
       </div>

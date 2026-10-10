@@ -10,3 +10,4 @@ export * from "./waitlist";
 export * from "./today";
 export * from "./map";
 export * from "./life";
+export * from "./departures";
