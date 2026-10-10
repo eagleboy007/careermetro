@@ -240,6 +240,8 @@ describe("matchProfile", () => {
     expect(quote("Ran IT general controls audits for 4 banking clients", "grc-manager", "security-audits")).toBe("met");
     // "IOCs" is also oil companies and the Olympic committee, so it counts only when the parser lists it as a skill.
     expect(quote("Negotiated production sharing contracts with IOCs and NOCs", "soc-analyst-l2", "threat-intelligence")).toBe("missing");
+    // Its tools name it in free text.
+    expect(quote("Check IOCs against VirusTotal and AlienVault OTX feeds", "soc-analyst-l2", "threat-intelligence")).toBe("met");
     const listed = profile({ skills: [{ name: "IOCs", lastUsed: null, evidence: ["Check IOCs against VirusTotal and AlienVault OTX feeds"] }] });
     expect(statusOf(matchProfile(listed, role("soc-analyst-l2"), now), "threat-intelligence")).toBe("met");
     expect(quote("Prepared daily market risk reporting for the treasury desk", "grc-manager", "risk-assessment")).toBe("missing");
