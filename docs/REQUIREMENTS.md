@@ -59,7 +59,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 
 ### 5.3 Target role and market data
 - FR-8: Target role is chosen from a curated **role profile library** (start with 30-50 high-demand India roles) or created by pasting a real job description.
-- FR-9: Each role profile holds: required skills, nice-to-have skills, tools, typical experience band, and a freshness date.
+- FR-9: Each role profile holds: required skills, nice-to-have skills, tools, typical experience band, and a freshness date. A role can mark a set of required skills as "one of these" (for example AWS, Azure or GCP): the set counts as one required skill, is met by any one of them, and becomes one goal that proof of any of them fills (approved 2026-10-10, dev/role-one-of-plan.md).
 - FR-10: Role profiles are refreshed on a schedule from licensed or permitted sources only (see open question OQ-1). Every profile shows "updated on <date>".
 
 ### 5.4 Skill-gap analysis

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles, skills } from "@/content";
+import { requiredUnits } from "@/lib/schemas";
 import { loadEvalCases } from "./cases";
 
 const cases = loadEvalCases();
@@ -31,10 +32,17 @@ describe("eval set", () => {
     const found = new Set(c.expected.skills.map((s) => s.skillId));
     const gapIds = c.expected.gaps.map((g) => g.skillId);
     expect(new Set(gapIds).size).toBe(gapIds.length);
-    const required = roles.get(c.roleSlug)!.skills.filter((s) => s.importance === "required").map((s) => s.skillId);
+    const units = requiredUnits(roles.get(c.roleSlug)!);
+    const required = units.flat();
     // A required skill is either met (found, no gap) or a gap. Gaps must point at required skills.
     expect(gapIds.filter((id) => !required.includes(id))).toEqual([]);
-    expect(required.filter((id) => !found.has(id) && !gapIds.includes(id))).toEqual([]);
+    // A "one of these" group is labelled once: met through any of its skills, or one gap naming one of them.
+    const unlabelled = units.filter((u) => {
+      const gaps = u.filter((id) => gapIds.includes(id)).length;
+      const met = u.some((id) => found.has(id) && !gapIds.includes(id));
+      return u.length === 1 ? !met && gaps === 0 : met === (gaps > 0) || gaps > 1;
+    });
+    expect(unlabelled).toEqual([]);
   });
 
   it.each(each)("%s keeps evidence and gap status consistent", (_, c) => {

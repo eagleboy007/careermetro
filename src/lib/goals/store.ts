@@ -48,13 +48,20 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
     if (!own) return [];
     const [existing, proved] = await Promise.all([
       tx
-        .select({ skillId: userGoals.skillId, position: userGoals.position, status: userGoals.status, source: userGoals.source })
+        .select({ skillId: userGoals.skillId, position: userGoals.position, status: userGoals.status, source: userGoals.source, groupId: userGoals.groupId })
         .from(userGoals)
         .where(eq(userGoals.userId, userId)),
       provedSkills(userId, tx),
     ]);
     const gaps: Gap[] = analysis.result.gaps.filter((g) => knownSkill.has(g.skillId));
-    const plan = planGoalSync({ existing, gaps, metSkillIds: analysis.result.metSkillIds, provedSkillIds: proved, implies });
+    const plan = planGoalSync({
+      existing,
+      gaps,
+      metSkillIds: analysis.result.metSkillIds,
+      provedSkillIds: proved,
+      implies,
+      groups: analysis.result.groups,
+    });
 
     if (plan.insert.length) {
       const now = new Date();
@@ -67,6 +74,7 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
             position: g.position,
             status: g.status,
             gapAnalysisId: analysis.id,
+            groupId: g.groupId,
             metAt: g.status === "met" ? now : null,
           })),
         )

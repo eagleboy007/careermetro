@@ -51,9 +51,11 @@ export function buildGapAnalysis(match: MatchResult, explanations: Explanations 
       resumeQuote: g.resumeQuote,
       requirement: g.requirement,
       explanation: explanations?.bySkill.get(g.skillId) ?? templateExplanation(g),
+      ...(g.group ? { groupId: g.group.id } : {}),
     })),
     metSkillIds: match.met.map((m) => m.skillId),
     niceToHave: match.niceToHave.map(({ skillId, skillName, status }) => ({ skillId, skillName, status })),
+    groups: match.groups,
     readiness: {
       headline: readinessHeadline(match),
       explanation: explanations?.readiness ?? templateReadiness(match),
