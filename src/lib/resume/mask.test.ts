@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { normalizeResumeText } from "./extract";
 import { maskPii } from "./mask";
 
 const fixture = readFileSync("fixtures/resumes/priya-sharma.txt", "utf8");
@@ -368,3 +369,39 @@ describe("phones split or run together (T26)", () => {
   });
 });
 
+
+describe("emails split around the @ (T30)", () => {
+  it.each(["neha.sharma.dev@\nexample.com", "neha.sharma.dev@ example.com", "neha.sharma.dev\n@example.com", "neha.sharma.dev@\r\n example.com"])(
+    "masks %j",
+    (email) => {
+      const out = maskPii(`Neha Sharma\nEmail: ${email}\nJava Developer`).text;
+      expect(out).toBe("Neha Sharma\nEmail: [EMAIL]\nJava Developer");
+    },
+  );
+
+  // What the docx and PDF readers actually hand over: table-cell paragraphs come out with a blank line between them.
+  it.each(["neha.test@\n\nexample.com", "neha.test\n\n@example.com", "neha.test@ \n \n example.co.in"])("masks %j after extraction", (email) => {
+    const out = maskPii(normalizeResumeText(`Neha Sharma\nEmail: ${email}\nJava Developer`)).text;
+    expect(out).toBe("Neha Sharma\nEmail: [EMAIL]\nJava Developer");
+  });
+
+  it("still keeps an @ that is not an address", () => {
+    expect(maskPii("Built a chatbot @ scale for 2 lakh users").text).toBe("Built a chatbot @ scale for 2 lakh users");
+  });
+
+  // "@" meaning "at", and code annotations on the next line, keep their words.
+  it.each([
+    "Senior Engineer @ Flipkart.com",
+    "Senior Engineer @\nFlipkart.com",
+    "SDE @\n\nAmazon.in",
+    "Intern @ Razorpay.in, built APIs",
+    "Mentor @ GeeksforGeeks.org (2 yrs)",
+    "Spring Boot\n@Autowired.inject",
+    "Python\n@pandas.DataFrame APIs",
+    "Kotlin\n@Composable.UI",
+    "Skills: Java, SQL\n@ Infosys.Ltd",
+    "Twitter: @neha_dev",
+  ])("keeps %j", (line) => {
+    expect(maskPii(line).text).toBe(line);
+  });
+});
