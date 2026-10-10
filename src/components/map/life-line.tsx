@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, CalendarClock, Route } from "lucide-react";
-import { LIFE_HEIGHT, LIFE_WIDTH, ROW_NAME, ROW_Y, type LifeLayout, type LifeStation } from "@/lib/map/life-layout";
+import { LIFE_HEIGHT, LIFE_WIDTH, ROW_NAME, ROW_Y, X0, type LifeLayout, type LifeStation } from "@/lib/map/life-layout";
 import { LIFE_ROWS, type LifeLine } from "@/lib/schemas";
 import { Key, Label, List, Panel, Soon } from "./map-parts";
 
@@ -23,11 +23,14 @@ export function LifeSvg({
       aria-label="Life line: work, education, certificates and interests by year"
       className="block h-auto w-full min-w-[860px]"
     >
+      {LIFE_ROWS.filter((row) => !filled.has(row)).length > 0 && (
+        <desc>{LIFE_ROWS.filter((row) => !filled.has(row)).map((row) => `${ROW_NAME[row]}: ${emptyText(row, layout)}`).join(". ")}</desc>
+      )}
       <g aria-hidden="true">
         {layout.splitX !== null && (
           <>
-            <rect x={170} y={36} width={layout.splitX - 170} height={454} className="fill-surface-2 opacity-60" />
-            <text x={178} y={484} className="fill-muted font-mono text-[12px] tracking-[0.08em]">
+            <rect x={X0} y={36} width={layout.splitX - X0} height={454} className="fill-surface-2 opacity-60" />
+            <text x={X0 + 8} y={484} className="fill-muted font-mono text-[12px] tracking-[0.08em]">
               EARLIER YEARS, SHOWN SMALLER
             </text>
           </>
@@ -42,7 +45,7 @@ export function LifeSvg({
             )}
           </g>
         ))}
-        <line x1={170} y1={496} x2={layout.endX} y2={496} className="stroke-ink" strokeWidth={1.5} />
+        <line x1={X0} y1={496} x2={layout.endX} y2={496} className="stroke-ink" strokeWidth={1.5} />
         <line x1={layout.nowX} y1={36} x2={layout.nowX} y2={496} className="stroke-ink" strokeWidth={1.5} strokeDasharray="4 5" />
         <text x={layout.nowX} y={522} textAnchor="middle" className="fill-ink font-mono text-[16px] font-medium tracking-[0.05em]">
           NOW
@@ -54,8 +57,8 @@ export function LifeSvg({
               {ROW_NAME[row].toUpperCase()}
             </text>
             {!filled.has(row) && (
-              <text x={190} y={ROW_Y[row] + 5} className="fill-muted text-[15px]">
-                {row === "interests" ? "Your interests show here · soon" : row === "certificates" ? "Certificates with a date show here · soon" : "Nothing dated yet"}
+              <text x={X0 + 20} y={ROW_Y[row] + 5} className="fill-muted text-[15px]">
+                {emptyText(row, layout)}
               </text>
             )}
           </g>
@@ -87,6 +90,15 @@ export function LifeSvg({
     </svg>
   );
 }
+
+const emptyText = (row: (typeof LIFE_ROWS)[number], layout: LifeLayout) =>
+  layout.earlierRows.includes(row)
+    ? "Earlier years only · show the whole career"
+    : row === "interests"
+      ? "Your interests show here · soon"
+      : row === "certificates"
+        ? "Certificates with a date show here · soon"
+        : "Nothing dated yet";
 
 const trackClass: Record<(typeof LIFE_ROWS)[number], string> = {
   journey: "stroke-accent",
@@ -222,8 +234,8 @@ export function LifeSheet({
       <Panel kicker={`${ROW_NAME[moment.row]} · ${moment.date}`} title={moment.heading}>
         {moment.detail && <p>{moment.detail}</p>}
         {moment.verified && (
-          <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-good-soft px-2.5 py-1 text-[0.78rem] font-medium text-good">
-            <BadgeCheck size={14} strokeWidth={1.75} aria-hidden />
+          <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem] font-medium text-ink">
+            <BadgeCheck size={14} strokeWidth={1.75} aria-hidden className="text-muted" />
             Verified
           </span>
         )}

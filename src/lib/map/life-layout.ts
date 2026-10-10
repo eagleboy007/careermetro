@@ -11,7 +11,7 @@ export type LifeZoom = "recent" | "all";
 
 export const LIFE_WIDTH = 1440;
 export const LIFE_HEIGHT = 540;
-const X0 = 170;
+export const X0 = 170;
 const X1 = 1300;
 const AHEAD = 0.35;
 const RECENT_YEARS = 5;
@@ -45,6 +45,8 @@ export type LifeLayout = {
   /** The journey runs on, dotted, to the destination. */
   ahead: { from: number; to: number } | null;
   stations: LifeStation[];
+  /** Rows whose moments are all older than the window shown. */
+  earlierRows: LifeRow[];
   hidden: { count: number; fromYear: number; toYear: number } | null;
 };
 
@@ -150,6 +152,7 @@ export function layoutLife(line: LifeLine, zoom: LifeZoom = defaultZoom(line)): 
     tracks,
     ahead: journey ? { from: journey.to, to: at(end) } : null,
     stations,
+    earlierRows: LIFE_ROWS.filter((row) => hiddenMoments.some((m) => m.row === row) && !visible.some((m) => m.row === row)),
     hidden: hiddenMoments.length
       ? { count: hiddenMoments.length, fromYear: Math.floor(Math.min(...hiddenMoments.map((m) => m.t))), toYear: Math.floor(from) }
       : null,

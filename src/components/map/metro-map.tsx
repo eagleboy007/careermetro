@@ -88,9 +88,9 @@ export function MetroMap({ line, life = null }: { line: MapLine | null; life?: L
           >
             <ArrowLeft size={16} {...ICON} />
             <span>
-              <b className="font-semibold text-ink">{lifeLayout.hidden.count} earlier moments</b>, {lifeLayout.hidden.fromYear} to {lifeLayout.hidden.toYear}
+              <b className="font-semibold text-ink">{plural(lifeLayout.hidden.count, "earlier moment")}</b>, {lifeLayout.hidden.fromYear} to {lifeLayout.hidden.toYear}
             </span>
-            <span className="font-medium text-accent">Show whole career</span>
+            <span className="font-medium text-ink underline underline-offset-2">Show whole career</span>
           </button>
         )}
         {!showLife && line && (

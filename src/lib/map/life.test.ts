@@ -60,6 +60,56 @@ describe("lifeFromProfile", () => {
   it("never places a moment in the future", () => {
     const line = lifeFromProfile(profile({ roles: [{ title: "Lead", employer: "Acme", start: "2030-01", end: null, highlights: [] }] }), opts);
     expect(line.moments.every((m) => m.t <= line.now)).toBe(true);
+    // A degree finishing this year sits at Now, not past it.
+    const early = lifeFromProfile(profile({ education: [{ qualification: "B.Tech", institution: "VJTI", year: "2026" }] }), {
+      ...opts,
+      now: new Date("2026-02-01T00:00:00Z"),
+    });
+    expect(early.moments.every((m) => m.t <= early.now)).toBe(true);
+  });
+
+  it("starts the journey after the last study before the first job, not 10th standard", () => {
+    const line = lifeFromProfile(
+      profile({
+        roles: [{ title: "Analyst", employer: "Acme", start: "2020-07", end: null, highlights: [] }],
+        education: [
+          { qualification: "SSC", institution: "State Board", year: "2014" },
+          { qualification: "B.E.", institution: "Mumbai University", year: "2016-2020" },
+          { qualification: "MBA", institution: "NMIMS", year: "2023" },
+        ],
+      }),
+      opts,
+    );
+    expect(line.moments.find((m) => m.id === "journey-start")).toMatchObject({ date: "2020" });
+    expect(line.moments.find((m) => m.id === "journey-start")?.detail).toContain("B.E.");
+  });
+
+  it("reads a year range as the year it ended, and keeps ongoing study, ancient years and blank names aside", () => {
+    const line = lifeFromProfile(
+      profile({
+        roles: [{ title: "Clerk", employer: "Acme", start: "0000", end: null, highlights: [] }],
+        education: [
+          { qualification: "B.Com", institution: "Pune University", year: "2019 – 2022" },
+          { qualification: "M.Com", institution: "Pune University", year: "2024 – Present" },
+        ],
+        certifications: ["  ", "AWS Cloud Practitioner"],
+      }),
+      opts,
+    );
+    expect(line.moments.find((m) => m.row === "education")).toMatchObject({ date: "2022" });
+    expect(line.moments.some((m) => m.t < 1950)).toBe(false);
+    expect(line.undated).toEqual([
+      { row: "education", name: "M.Com" },
+      { row: "work", name: "Clerk · Acme" },
+      { row: "certificates", name: "AWS Cloud Practitioner" },
+    ]);
+    expect(layoutLife(line).years.length).toBeLessThan(10);
+  });
+
+  it("stays inside the schema for a very long resume", () => {
+    const roles = Array.from({ length: 150 }, (_, i) => ({ title: `Role ${i}`, employer: "Acme", start: `${1960 + Math.floor(i / 3)}-01`, end: null, highlights: [] }));
+    const education = Array.from({ length: 40 }, (_, i) => ({ qualification: `Course ${i}`, institution: "X", year: String(1960 + i) }));
+    expect(() => lifeFromProfile(profile({ roles, education }), opts)).not.toThrow();
   });
 });
 
@@ -90,6 +140,8 @@ describe("layoutLife", () => {
     const l = layoutLife(long);
     expect(l.hidden).toEqual({ count: 6, fromYear: 2011, toYear: 2021 });
     expect(l.stations.map((s) => s.id)).toEqual(["w5"]);
+    // The journey's only moment is older, so its row says so rather than "nothing dated".
+    expect(l.earlierRows).toEqual(["journey"]);
   });
 
   it("groups 3 or more older moments in a row into one numbered dot on the whole career", () => {
