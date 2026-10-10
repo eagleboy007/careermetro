@@ -115,6 +115,13 @@ function readTerms(text: string, terms: TermTokens[] = termTokens): { skillIds: 
   return { skillIds, tokenCount: words.length, leftover };
 }
 
+/**
+ * A short listed name made of skill terms and a few other words: "SQL Server Management Studio", "Data analysis using
+ * Python". Longer names are more likely about something else that merely mentions a skill.
+ */
+const namesSkills = (read: { tokenCount: number; leftover: number }) => read.leftover <= 3 && read.tokenCount <= 6;
+const NOT_ABOUT_USE = /\b(?:injection|teaching|mentoring|coffee|reading|hobby|hobbies)\b/i;
+
 /** Bullets start with what the person did: "Built", "Worked on", "Automated", "Creating", "Develop". */
 const NOT_ACTIONS = new Set("skilled experienced versed certified specialized specialised interested advanced required preferred related applied structured distributed embedded".split(" "));
 /** Verbs that open a bullet even when the rest is a list of tools: "Worked on Java, Spring Boot, Kafka". */
@@ -247,11 +254,17 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   for (const s of profile.skills) {
     const exact = taxonomyId(s.name);
     const read = exact ? null : readTerms(s.name, safeTermTokens);
-    const ids = exact ? [exact] : read && (read.leftover <= 1 || isListLine(s.name)) ? [...read.skillIds] : [];
+    const list = !exact && isListLine(s.name);
+    // A name with a few extra words ("SQL Server Management Studio") must still be about the skill: not attacking it,
+    // teaching it or a hobby, and its evidence counts as use only where the quote names the skill itself.
+    const loose = !exact && !list && !!read && read.leftover > 1;
+    const named = exact || list || (!!read && namesSkills(read) && !(loose && NOT_ABOUT_USE.test(s.name)));
+    const ids = named && !exact ? [...read!.skillIds] : exact ? [exact] : [];
     const lastUsed = toMonths(s.lastUsed);
     for (const id of ids) {
       const terms = [normalizeForMatch(s.name), ...scanTerms(id)];
-      const used = s.evidence.filter((q) => !isListLine(q) && !learningAbout(q, terms));
+      const names = (q: string) => !loose || scanTerms(id).some((t) => containsPhrase(normalizeForMatch(q), t));
+      const used = s.evidence.filter((q) => !isListLine(q) && !learningAbout(q, terms) && names(q));
       if (used.length === 0) add(id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed });
       for (const q of used) add(id, { quote: q, listedOnly: false, months: lastUsed ?? lineMonths(q) });
     }

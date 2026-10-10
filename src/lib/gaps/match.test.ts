@@ -170,6 +170,31 @@ describe("matchProfile", () => {
     expect(named("Spring Batch", "Ran Spring Batch jobs for nightly settlement", "java-backend-developer", "spring-boot")).toBe("missing");
   });
 
+  // T11: listed names with a few extra words.
+  it("reads a short listed name with a few extra words", () => {
+    const listed = (name: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [] }] }), role(slug), now), id);
+    expect(listed("SQL Server Management Studio", "data-analyst", "sql")).not.toBe("missing");
+    expect(listed("Data analysis using Python", "data-analyst", "python")).not.toBe("missing");
+  });
+
+  it("counts evidence for a looser name only where the quote names the skill, and skips names not about using it", () => {
+    const pair = (name: string, quote: string, slug: string, id: string) =>
+      statusOf(matchProfile(profile({ skills: [{ name, lastUsed: null, evidence: [quote] }] }), role(slug), now), id);
+    expect(pair("Selenium IDE record playback", "Recorded smoke tests with a record-and-playback tool", "qa-automation-engineer", "selenium")).toBe("weak");
+    expect(pair("SQL Server Management Studio", "Wrote SQL views for the finance team", "data-analyst", "sql")).toBe("met");
+    expect(pair("SQL Injection testing", "Tested login forms for injection flaws using Burp Suite", "data-analyst", "sql")).toBe("missing");
+    expect(pair("Teaching Python to kids", "Volunteer weekend teacher at a local NGO", "data-analyst", "python")).toBe("missing");
+  });
+
+  // T12: "algorithms" in a sentence is not data structures and algorithms.
+  it("doesn't read DSA from machine learning or encryption algorithms", () => {
+    expect(statusOf(scan("java-backend-developer", ["Tuned machine learning algorithms for fraud scoring"]), "data-structures-algorithms")).toBe("missing");
+    expect(statusOf(scan("java-backend-developer", ["Implemented encryption algorithms for card data"]), "data-structures-algorithms")).toBe("missing");
+    const listed = matchProfile(profile({ skills: [{ name: "Algorithms", lastUsed: null, evidence: [] }] }), role("java-backend-developer"), now);
+    expect(statusOf(listed, "data-structures-algorithms")).not.toBe("missing");
+  });
+
   it("reads short bullets and 'Worked on' bullets as use", () => {
     expect(statusOf(scan("data-analyst", ["Built Power BI dashboards"]), "power-bi")).toBe("met");
     expect(statusOf(scan("data-analyst", ["Created Excel pivot tables"]), "excel")).toBe("met");
