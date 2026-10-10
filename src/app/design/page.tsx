@@ -24,6 +24,8 @@ import { StreakChip } from "@/components/today/streak-chip";
 import { MetroMap } from "@/components/map/metro-map";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { DeparturesView } from "@/components/departures/departures-view";
+import { MeView } from "@/components/me/me-view";
+import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
@@ -238,6 +240,12 @@ export default function DesignPage() {
         <p className="text-sm text-muted">Roles with readiness in words, filters, Saved and Applied, and the detail panel. Below it, the page before a resume.</p>
         <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
+        <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
+        <MeView me={exampleMe} />
       </section>
 
       <section className="flex flex-col gap-4">

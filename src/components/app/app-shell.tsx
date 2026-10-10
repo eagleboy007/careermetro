@@ -153,9 +153,11 @@ function AvatarMenu({ user }: { user: ShellUser }) {
       >
         <p className="px-2.5 pb-1.5 pt-1 text-sm font-semibold">{user.name}</p>
         <ul className="flex flex-col gap-0.5">
-          <li className={`${row} text-muted`}>
-            <User size={16} strokeWidth={1.75} aria-hidden="true" />
-            Your profile <Soon />
+          <li>
+            <Link href="/me" onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
+              <User size={16} strokeWidth={1.75} aria-hidden="true" />
+              Your profile
+            </Link>
           </li>
           {MENU_NAV.map((item) => (
             <li key={item.key} className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
