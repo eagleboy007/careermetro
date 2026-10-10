@@ -193,11 +193,14 @@ function learningAbout(line: string, terms: string[]): boolean {
  * Kept to phrases about the exam itself, so "Attempted 40 labs" or "Ongoing CPE" leave a held certificate alone.
  */
 const NOT_HELD =
-  /\b(?:pursuing|preparing|preparation|in progress|expected|appearing|appear(?:ed)? (?:for|in)|to appear|scheduled|awaiting|awaited|result pending|pending|upcoming|applied for|planned|planning to|registered (?:for|to)|enrolled|studying for|aspiring|will (?:appear|take|sit|write|attempt|complete|give|clear)|not (?:yet|cleared|passed|completed)|part[ -]?(?:1|i)\b)/i;
+  /\b(?:pursuing|preparing|preparation|(?:exam|certification) in progress|expected|appearing|appear(?:ed)? (?:for|in)|to appear|scheduled|awaiting|awaited|(?:result|exam) pending|upcoming|applied for|planned|planning to|registered (?:for|to)|enrolled|studying for|aspiring|will (?:appear|take|sit|write|attempt|complete|give|clear)|not (?:yet|cleared|passed|completed)|^\s*not\b|part[ -]?(?:1|i)\b)/i;
 
 /** Dates that are not when the certificate was earned: its expiry or renewal, or digits inside an ID. */
 const NOT_EARNED_DATE =
   /\b(?:valid(?:ity)?(?: (?:till|until|upto|up to|through|to))?|till|until|upto|expir(?:es|y|ing)|exp|renewal(?: due)?|renew(?: by)?|id|no|number|credential)\b[.:#-]? ?(?:on |by |in )?(?:[a-z]{3,9}\.? ?)?(?:\d{1,2}[/.-])?(?:19|20)\d\d\b/g;
+
+/** A standard's version ("27001:2013"), never a year range ("2012-2016"). */
+const VERSION_YEAR = /\b(?!(?:19|20)\d\d\b)(\d{3,5})[:-](?:19|20)\d\d\b/g;
 
 const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 const EARNED_DATE = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?[ ,'-]{0,2}|(\d{1,2})[/.-])?(19[89]\d|20\d\d)\b/g;
@@ -209,7 +212,7 @@ const EARNED_DATE = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]
  */
 function earnedMonths(text: string, nowMonths: number): number | null | "plan" {
   // Standard versions ("ISO 27001:2013") and expiry or ID digits are not pass dates.
-  const plain = text.toLowerCase().replace(/\b\d{3,5}[:-](?:19|20)\d\d\b/g, " ").replace(NOT_EARNED_DATE, " ");
+  const plain = text.toLowerCase().replace(VERSION_YEAR, " ").replace(NOT_EARNED_DATE, " ");
   let latest: number | null = null;
   let future = false;
   for (const [, name, num, year] of plain.matchAll(EARNED_DATE)) {
@@ -227,28 +230,34 @@ const certTerms = certifications.map((c) => ({ cert: c, terms: [c.name, ...c.ali
 const namedIn = (text: string) => certTerms.filter(({ terms }) => terms.some((t) => containsPhrase(text, t))).map(({ cert }) => cert);
 
 /**
- * The certifications a resume line shows as passed, with when. The line is read per certificate: each clause that names
- * one starts a group, and the clauses after it ("CISSP, 2019", "CISA, appearing Nov 2026") belong to it. A group with a
- * plan word, or a pass date after `now`, is a plan and counts for nothing; so is a whole line that opens with one
- * ("Preparing for: CISSP, CISA").
+ * The certifications a resume line shows as passed, with when. Each ";" part is read per certificate: each clause that
+ * names one starts a group, and the clauses after it ("CISSP, 2019", "CISA, appearing Nov 2026") belong to it. A group
+ * with a plan word, or only pass dates after `now`, is a plan and counts for nothing; so is a whole line that opens with
+ * one ("Preparing for: CISSP, CISA"), and a list a plan word opens ("Pursuing CISA, CISM") up to a dated certificate.
  */
 export function certificationsIn(line: string, now = new Date()): { cert: (typeof certifications)[number]; months: number | null }[] {
   const nowMonths = now.getUTCFullYear() * 12 + now.getUTCMonth();
   const lead = /^([^:]{0,40}):/.exec(line);
   if (lead && NOT_HELD.test(lead[1])) return [];
-  const groups: { certs: ReturnType<typeof namedIn>; text: string }[] = [];
-  for (const clause of line.split(/[;,]/)) {
-    // "ISO/IEC 27001:2013 Lead Auditor" names the same certificate as "ISO/IEC 27001 Lead Auditor".
-    const certs = namedIn(normalizeForMatch(clause.replace(/\b(\d{3,5})[:-](?:19|20)\d\d\b/g, "$1")));
-    if (certs.length || groups.length === 0) groups.push({ certs, text: clause });
-    else groups[groups.length - 1].text += `, ${clause}`;
-  }
   const out: { cert: (typeof certifications)[number]; months: number | null }[] = [];
-  for (const g of groups) {
-    if (!g.certs.length || NOT_HELD.test(g.text)) continue;
-    const months = earnedMonths(g.text, nowMonths);
-    if (months === "plan") continue;
-    for (const cert of g.certs) if (!out.some((o) => o.cert.id === cert.id)) out.push({ cert, months });
+  for (const part of line.split(";")) {
+    const groups: { certs: ReturnType<typeof namedIn>; text: string }[] = [];
+    for (const clause of part.split(",")) {
+      // "ISO/IEC 27001:2013 Lead Auditor" names the same certificate as "ISO/IEC 27001 Lead Auditor".
+      const certs = namedIn(normalizeForMatch(clause.replace(VERSION_YEAR, "$1")));
+      if (certs.length || groups.length === 0) groups.push({ certs, text: clause });
+      else groups[groups.length - 1].text += `, ${clause}`;
+    }
+    // A plan word before the first certificate ("Pursuing CISA, CISM") covers the ones after it, unless they give a date.
+    const opening = NOT_HELD.exec(groups[0].text);
+    let planned = !!opening && namedIn(normalizeForMatch(groups[0].text.slice(opening.index + opening[0].length))).length > 0;
+    for (const g of groups) {
+      if (!g.certs.length) continue;
+      const months = NOT_HELD.test(g.text) ? "plan" : earnedMonths(g.text, nowMonths);
+      if (months === "plan" || (planned && months === null)) continue;
+      planned = false;
+      for (const cert of g.certs) if (!out.some((o) => o.cert.id === cert.id)) out.push({ cert, months });
+    }
   }
   return out;
 }

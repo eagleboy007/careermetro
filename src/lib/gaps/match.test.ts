@@ -303,6 +303,10 @@ describe("certifications on the resume", () => {
       "Registered for CISSP",
       "CISSP 2027",
       "Preparing for: CISSP, CISA",
+      "Pursuing CISA, CISM",
+      "Preparing for CISSP, CISA",
+      "Planning to take CISSP, CISM next year",
+      "Not CISSP certified",
     ]) {
       expect(certificationsIn(line, now), line).toEqual([]);
     }
@@ -326,7 +330,13 @@ describe("certifications on the resume", () => {
   const ym = (y: number, m: number) => y * 12 + m - 1;
 
   it("words that sound like plans but describe a held certificate keep it", () => {
-    for (const line of ["CISSP (ongoing CPE credits)", "CISSP, 2019; attempted 40 hands-on labs", "CISSP – target audience: SOC teams, 2022"]) {
+    for (const line of [
+      "CISSP (ongoing CPE credits)",
+      "CISSP, 2019; attempted 40 hands-on labs",
+      "CISSP – target audience: SOC teams, 2022",
+      "CISSP – CPE in progress",
+      "CISSP (endorsement pending), 2025",
+    ]) {
       expect(held(line).map((h) => h.id), line).toContain("cissp");
     }
   });
@@ -335,6 +345,7 @@ describe("certifications on the resume", () => {
     expect(held("CISSP (2019), CISA - pursuing").map((h) => h.id)).toEqual(["cissp"]);
     expect(held("Pursuing CISA; CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
     expect(held("CISSP, 2019, CISA, appearing Nov 2026")).toEqual([{ id: "cissp", months: ym(2019, 12) }]);
+    expect(held("Pursuing CISA, CISSP 2021").map((h) => h.id)).toEqual(["cissp"]);
   });
 
   it("takes the pass date, not expiry, ID digits or a standard's version", () => {
@@ -343,6 +354,8 @@ describe("certifications on the resume", () => {
     expect(held("CISSP, credential ID 2015-88321, 2023")).toEqual([{ id: "cissp", months: ym(2023, 12) }]);
     expect(held("CISSP 03/2021")).toEqual([{ id: "cissp", months: ym(2021, 3) }]);
     expect(held("CISSP Mar 2024 – Mar 2027")).toEqual([{ id: "cissp", months: ym(2024, 3) }]);
+    expect(held("CISSP, 2012-2016")).toEqual([{ id: "cissp", months: ym(2016, 12) }]);
+    expect(held("CISSP (2016-2019)")).toEqual([{ id: "cissp", months: ym(2019, 12) }]);
     expect(held("CISSP 2026")).toEqual([{ id: "cissp", months: ym(2026, 10) }]);
     const iso = certificationsIn("ISO/IEC 27001:2013 Lead Auditor", now);
     expect(iso.length).toBeGreaterThan(0);
