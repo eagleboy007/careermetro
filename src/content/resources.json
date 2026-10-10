@@ -2785,9 +2785,9 @@
     "free": true
   },
   {
-    "title": "Autopsy documentation",
-    "url": "https://www.autopsy.com/documentation/",
-    "provider": "Autopsy",
+    "title": "Autopsy user guide",
+    "url": "https://sleuthkit.org/autopsy/docs/user-docs/latest/",
+    "provider": "The Sleuth Kit",
     "kind": "docs",
     "skillIds": [
       "digital-forensics"
