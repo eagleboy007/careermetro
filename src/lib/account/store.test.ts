@@ -11,7 +11,7 @@ import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile, getResumeForOwner } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
 import { roleProfiles, skills } from "@/content";
-import { claimAnonymousResumes, createAccount, findAccount, touchLastSeen } from "./store";
+import { claimAnonymousResumes, createAccount, findAccount, setWeeklyHours, touchLastSeen } from "./store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests.
 const url = process.env.TEST_DATABASE_URL;
@@ -193,5 +193,15 @@ describe.skipIf(!db)("account store (database)", () => {
     await touchLastSeen(user.id, db!);
     const [second] = await db!.select({ at: schema.users.lastSeenAt }).from(schema.users).where(eq(schema.users.id, user.id));
     expect(second.at!.getTime()).toBe(first.at!.getTime());
+  });
+
+  it("saves only an offered number of hours a week, and the account reads it back", async () => {
+    const user = await signUp("hours");
+    expect(user.weeklyHours).toBe(5);
+    expect(await setWeeklyHours(user.id, 8, db!)).toBe(true);
+    expect(await setWeeklyHours(user.id, 7, db!)).toBe(false);
+    expect(await setWeeklyHours("00000000-0000-4000-8000-000000000000", 8, db!)).toBe(false);
+    const [row] = await db!.select({ authSubject: schema.users.authSubject }).from(schema.users).where(eq(schema.users.id, user.id));
+    expect((await findAccount(row.authSubject!, db!))?.weeklyHours).toBe(8);
   });
 });

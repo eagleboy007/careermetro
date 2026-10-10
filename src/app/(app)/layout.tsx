@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppShell, type ShellUser } from "@/components/app/app-shell";
+import { PageLoading } from "@/components/app/page-loading";
 import { touchLastSeen } from "@/lib/account/store";
 import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
@@ -49,7 +50,13 @@ async function Shell({ children }: { children: React.ReactNode }) {
 
 export default function SignedInLayout({ children }: LayoutProps<"/">) {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <AppShell user={null}>
+          <PageLoading />
+        </AppShell>
+      }
+    >
       <Shell>{children}</Shell>
     </Suspense>
   );
