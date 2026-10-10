@@ -7,7 +7,7 @@ const EMAIL = /[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,253}\.[A-Za-z]{2,24}/g;
 const PROFILE_URL = /\b(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/[^\s|,;)]+/gi;
 const DATE_OF_BIRTH = /\b(?:DOB|D\.O\.B\.?|Date of Birth)\b\s*[:\-–]?\s*[^\n|]{4,30}?(?=\s*(?:\||\n|$))/gi;
 const AADHAAR = /(?<![+\d])\b[2-9]\d{3}[ -]?\d{4}[ -]?\d{4}\b/g;
-const AADHAAR_LABELLED = /(\b(?:aadhaa?r|uid)\b(?:\s?(?:no\.?|number))?\s?[:\-]?\s?)\d{4}[ -]?\d{4}[ -]?\d{4}\b/gi;
+const AADHAAR_LABELLED = /(\b(?:aadhaa?r|uid)\b(?:\s?card)?(?:\s?(?:no\.?|number))?\s?[:\-]?\s?)\d{4}[ -]?\d{4}[ -]?\d{4}\b/gi;
 const PAN = /\b[A-Z]{5}\d{4}[A-Z]\b/g;
 /** Separators people and PDF exports put between digit groups, en and em dashes included. */
 const SEP = "[\\s().\\u2013\\u2014-]";
@@ -22,7 +22,7 @@ const PHONE = new RegExp(
     `(?<![\\d+])(?:(?:\\+\\s?|00)91${SEP}{0,2}|0)\\(?[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
     `(?<=\\b(?:ph|phone|mob|mobile|tel|contact|whatsapp|cell)\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
     // Not after a money word, so "Salary range 70000–90000" stays.
-    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)[^\\d\\n]{0,12})(?:(?:\\+\\s?|00)91${SEP}{0,2}|91${SEP}{1,2}|0)?\\(?[6-9](?:${SEP}{0,2}\\d){9}(?!\\d)`,
+    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?:(?:\\+\\s?|00)91${SEP}{0,2}|91${SEP}{1,2}|0)?\\(?[6-9](?:${SEP}{0,2}\\d){9}(?!\\d)`,
     `\\(0\\d{2,4}\\)\\s?\\d{3,4}[\\s-]?\\d{4}\\b`,
     `\\+(?!\\s?91)\\d{1,3}[\\s-]?\\d{2,4}[\\s-]?\\d{3,4}[\\s-]?\\d{3,4}\\b`,
   ].join("|"),
@@ -48,12 +48,23 @@ const PIN_CODE = /\b[1-9]\d{2}\s?\d{3}\b/;
  * another capitalised word (or a state code after a comma), so "CTC 650000", "Handled 120000" keep their numbers.
  */
 const PLACE_PIN =
-  /(?<=(?:,\s*(?:\p{Lu}\p{Ll}{2,}|[A-Z]{2})|\b\p{Lu}\p{Ll}+\s+\p{Lu}\p{Ll}{2,})\s*[,\-–]?\s*)\b[1-9]\d{2}\s?\d{3}(?=\s*(?:,\s*(?:India|\p{Lu}\p{Ll}+(?:\s\p{Lu}\p{Ll}+)?)\s*)?\.?\s*$)/u;
-/** Words that make a line an address line when it also ends in a place and a PIN. */
-const ADDRESS_WORDS =
-  /\b(?:flat|house no|h\.?\s?no|plot|apartment|apts?|residency|society|chs|tower|wing|floor|street|st\.|road|rd\.|lane|marg|nagar|colony|sector|phase|layout|cross|near|opp\.?|behind|peth|ward|village|vill\.?|dist\.?|district|tehsil|taluka|tal\b\.?|mandal|at post|p\.\s?o\.?)\b/i;
-/** A flat or house number opening the line ("B-204,", "14,", "12/3A,"), never a year or a code like "S3,". */
-const HOUSE_START = /^\s*(?:[A-Za-z]{1,2}[-/])?(?!(?:19|20)\d{2}\b)\d{1,4}(?:[-/]\d{1,4})*[A-Za-z]?\s*,/;
+  /(?<=(?:,\s{0,3}(?:\p{Lu}\p{Ll}{2,}|[A-Z]{2})|\b\p{Lu}\p{Ll}+\s{1,3}\p{Lu}\p{Ll}{2,})\s{0,3}[,\-–]?\s{0,3})(?<!\b(?:Code|Id|ID|UID|No|Rank|Credential|Revenue|Users|Budget|Saved|Number|Size|Count|Score|Salary|Ctc)\s{0,3}[,\-–:]?\s{0,3})\b[1-9]\d{2}\s?\d{3}(?=\s{0,3}(?:[,(]?\s{0,3}(?:India|[A-Z]{2}|\p{Lu}\p{Ll}+(?:\s\p{Lu}\p{Ll}+)?)\)?\s{0,3})?\.?\s{0,3}(?:$|\|))/u;
+/** "Pincode: 411038", "PIN - 411 038": the number goes wherever the line is. */
+const PIN_LABELLED = /(\b(?:pin\s?code|pin|zip(?:\s?code)?)\s?[:\-]?\s?)[1-9]\d{2}\s?\d{3}\b/gi;
+/** Words only an address uses: with a place and PIN they make the whole line an address anywhere in the resume. */
+const STRONG_ADDRESS_WORDS =
+  /\b(?:flat|house no|h\.?\s?no|plot no|apartment|apts?|residency|society|chs|street|st\.|road|rd\.|lane|marg|nagar|colony|peth|village|vill\.|dist\.|tehsil|taluka|tal\b\.?|mandal|at post|p\.\s?o\.?)\b/i;
+/** Also job words ("Ward Manager", "Floor Manager", "District Coordinator"), so these count only in the header. */
+const ADDRESS_WORDS = new RegExp(
+  `${STRONG_ADDRESS_WORDS.source}|\\b(?:plot|tower|wing|floor|sector|phase|layout|cross|near|opp\\.?|behind|ward|dist|district)\\b`,
+  "i",
+);
+/**
+ * A flat or house number opening the line ("B-204,", "B204,", "14,", "12/3A,"), never a year. Codes like "S3," also
+ * fit, so this only counts next to a place and PIN; the header uses the stricter HOUSE_NUMBER.
+ */
+const HOUSE_START = /^\s*(?:[A-Za-z]{1,2}[-/]?)?(?!(?:19|20)\d{2}\b)\d{1,4}(?:[-/]\d{1,4})*[A-Za-z]?\s*,/;
+const HOUSE_NUMBER = /^\s*(?:[A-Za-z]{1,2}[-/])?(?!(?:19|20)\d{2}\b)\d{1,4}(?:[-/]\d{1,4})*[A-Za-z]?\s*,/;
 /**
  * Lines that say they are an address: "Address:", "Res. Address -", "Permanent Address 14 ...". Only these qualifiers,
  * and a colon or a spaced dash, so "Address-lookup API" or "Memory Address:" stay.
@@ -109,11 +120,16 @@ export function verhoeffValid(digits: string): boolean {
 function isAddressLine(line: string, index: number): boolean {
   // Capped, so a line of thousands of spaces from a PDF can't make the label check slow.
   const head = line.slice(0, 300);
-  if (ADDRESS_LABEL.test(head) || GUARDIAN.test(head)) return true;
+  if (GUARDIAN.test(head)) return true;
+  const label = head.match(ADDRESS_LABEL);
+  // What follows the label starts like an address (a number, a capital, "#") or the address is on the next lines;
+  // "Address: customer escalations" is a sentence.
+  if (label && /^\s{0,3}(?:$|[\d#A-Z])/.test(head.slice(label.index! + label[0].length))) return true;
   if (line.length === 0 || line.length > 140 || /^[-•*]/.test(line)) return false;
   // A PIN code marks a whole address line only with an address word or a house number; elsewhere just the PIN goes.
-  const hasPin = (ADDRESS_WORDS.test(line) || HOUSE_START.test(line)) && PLACE_PIN.test(line);
-  const headerAddress = index < HEADER_LINES && ADDRESS_WORDS.test(line) && /\d/.test(line);
+  const flat = line.replace(/[ \t]{2,}/g, " ");
+  const hasPin = (STRONG_ADDRESS_WORDS.test(flat) || HOUSE_START.test(flat)) && PLACE_PIN.test(flat);
+  const headerAddress = index < HEADER_LINES && /\d/.test(flat) && (ADDRESS_WORDS.test(flat) || HOUSE_NUMBER.test(flat));
   return hasPin || headerAddress;
 }
 
@@ -124,9 +140,11 @@ function isAddressLine(line: string, index: number): boolean {
 function blockLine(line: string): "more" | "last" | "end" {
   const t = line.trim();
   if (!t || t.length > 80 || SECTION_NAME.test(t) || /^[A-Z][A-Z &/]{2,}:?$/.test(t) || /:\s*$/.test(t)) return "end";
-  if (/\b(?:19|20)\d{2}\b|@|\b(?:present|till date)\b/i.test(t)) return "end";
-  if (/[,\d]/.test(t) || ADDRESS_WORDS.test(t)) return "more";
-  return t.split(/\s+/).length <= 2 ? "last" : "end";
+  // A "Phone:" or "Skills:" line, a date or an email is the next part of the resume.
+  if (/^[\p{L}][\p{L} .]{0,20}:/u.test(t) || /\b(?:19|20)\d{2}\b|@|\b(?:present|till date)\b/i.test(t)) return "end";
+  if (/\d/.test(t) || ADDRESS_WORDS.test(t)) return "more";
+  // A comma line ("Kota, Rajasthan") or a short one ("Delhi") ends the address.
+  return t.includes(",") || t.split(/\s+/).length <= 2 ? "last" : "end";
 }
 
 export function maskPii(input: string): { text: string; counts: MaskCounts } {
@@ -141,6 +159,8 @@ export function maskPii(input: string): { text: string; counts: MaskCounts } {
       lines.push("[ADDRESS]");
       // "Address:" alone on its line: the address follows on the next few lines, up to a blank line or heading.
       if (LABEL_ONLY.test(line.slice(0, 300)) && ADDRESS_LABEL.test(line.slice(0, 300))) {
+        // One blank line between the label and the address is fine.
+        if (i + 2 < source.length && source[i + 1].trim() === "" && blockLine(source[i + 2]) !== "end") lines.push(source[++i]);
         for (let k = 0; k < ADDRESS_BLOCK_LINES && i + 1 < source.length; k++) {
           const kind = blockLine(source[i + 1]);
           if (kind === "end") break;
@@ -150,10 +170,11 @@ export function maskPii(input: string): { text: string; counts: MaskCounts } {
           if (kind === "last" || PIN_CODE.test(source[i])) break;
         }
       }
-    } else if (line.length <= 300 && PLACE_PIN.test(line)) {
-      // Keep the line (it may name a job or a skill) and drop only the PIN code.
+    } else if (line.length <= 300 && PLACE_PIN.test(line.replace(/[ \t]{2,}/g, " "))) {
+      // Keep the line (it may name a job or a skill) and drop only the PIN code. Space runs from PDF layout are
+      // squeezed first, so the place check stays fast.
       counts.address++;
-      lines.push(line.replace(PLACE_PIN, "[PIN]"));
+      lines.push(line.replace(/[ \t]{2,}/g, " ").replace(PLACE_PIN, "[PIN]"));
     } else {
       lines.push(line);
     }
@@ -164,6 +185,10 @@ export function maskPii(input: string): { text: string; counts: MaskCounts } {
   text = replaceCounting(text, PROFILE_URL, "[PROFILE URL]", () => counts.profileUrl++);
   text = replaceCounting(text, DATE_OF_BIRTH, "[DATE OF BIRTH]", () => counts.dateOfBirth++);
   text = replaceCounting(text, PAN, "[ID]", () => counts.id++);
+  text = text.replace(PIN_LABELLED, (_, label: string) => {
+    counts.address++;
+    return `${label}[PIN]`;
+  });
   // After an Aadhaar label the number goes whatever its check digit, so a typo can't leak a real number.
   text = text.replace(AADHAAR_LABELLED, (_, label: string) => {
     counts.id++;

@@ -205,4 +205,58 @@ describe("maskPii", () => {
     maskPii(`Address:${" ".repeat(80_000)}x`);
     expect(performance.now() - started).toBeLessThan(500);
   });
+
+  // Third review.
+  it.each(["Notice: 30 days | CTC: NA | 9876543210", "Salary: NA, 9876543210", "Range: Pune | 98765 43210", "Current CTC: NA | Ph: 9876543210"])(
+    "masks the phone in %s",
+    (line) => {
+      expect(maskPii(line).text).toContain("[PHONE]");
+      expect(maskPii(line).text).not.toMatch(/\d{5}/);
+    },
+  );
+
+  it("keeps job and skills lines after an address block, and job lines with a ward or district", () => {
+    const one = ["Asha Rao", "Address:", "14 Station Rd", "Kota, Rajasthan", "Data Analyst, Example Ltd", "Experience"];
+    expect(maskPii(one.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "[ADDRESS]", "[ADDRESS]", ...one.slice(4)]);
+    const two = ["Asha Rao", "Address:", "Phone: 9876543210", "Skills: SQL, Python, 3 years"];
+    expect(maskPii(two.join("\n")).text.split("\n")).toEqual(["Asha Rao", "[ADDRESS]", "Phone: [PHONE]", "Skills: SQL, Python, 3 years"]);
+    expect(lastLine(late("Ward Manager, Apollo Hospitals, Chennai 600006"))).toBe("Ward Manager, Apollo Hospitals, Chennai [PIN]");
+    expect(lastLine(late("District Coordinator, NRLM, Sitapur 261001"))).toBe("District Coordinator, NRLM, Sitapur [PIN]");
+  });
+
+  it("masks flat numbers written without a dash, and a block after a blank line", () => {
+    expect(lastLine(late("B204, Green Park, Andheri, Mumbai 400069"))).toBe("[ADDRESS]");
+    expect(maskPii("Asha Rao\nPune\nA1, Sai Krupa, Kothrud, Pune 411038").text.split("\n")[2]).toBe("[ADDRESS]");
+    expect(maskPii("Asha Rao\n14, Gandhi Chowk, Hisar").text.split("\n")[1]).toBe("[ADDRESS]");
+    expect(maskPii("Asha Rao\nS3, EC2, Lambda").text.split("\n")[1]).toBe("S3, EC2, Lambda");
+    expect(maskPii("Asha Rao\nAddress:\n\n14 Station Rd, Kota\n\nEXPERIENCE").text.split("\n").slice(1, 4)).toEqual(["[ADDRESS]", "", "[ADDRESS]"]);
+  });
+
+  it.each([
+    ["Pincode: 411038", "Pincode: [PIN]"],
+    ["Andheri, Mumbai 400069 India", "Andheri, Mumbai [PIN] India"],
+    ["Kothrud, Pune 411038, MH", "Kothrud, Pune [PIN], MH"],
+    ["Aadhaar Card No: 2345 6789 0123", "Aadhaar Card No: [ID]"],
+  ])("masks %s", (line, masked) => {
+    expect(lastLine(late(line))).toBe(masked);
+  });
+
+  it.each([
+    "Employee Code 100234",
+    "Total Revenue 450000",
+    "Architect, ID 123456",
+    "Kaggle Grandmaster, Rank 123456",
+    "Team Size 12, Budget 500000",
+    "• Address: customer escalations within 24h",
+    "- Address – root causes of churn",
+  ])("keeps %s", (line) => {
+    expect(lastLine(late(line))).toBe(line);
+  });
+
+  it("stays fast on lines padded with spaces", () => {
+    const started = performance.now();
+    maskPii(Array.from({ length: 150 }, () => `Pune${" ".repeat(280)}Sept 2019`).join("\n"));
+    maskPii(Array.from({ length: 260 }, () => `,${" ".repeat(300)}x`).join("\n"));
+    expect(performance.now() - started).toBeLessThan(500);
+  });
 });
