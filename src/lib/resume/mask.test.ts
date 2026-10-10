@@ -42,7 +42,7 @@ describe("maskPii", () => {
     ["+91 (987) 654-3210", "[PHONE]"],
     ["9876-543-210", "[PHONE]"],
     ["Mobile: +919876543210", "Mobile: [PHONE]"],
-    ["Aadhaar: 2345 6789 0123", "Aadhaar: [ID]"],
+    ["Aadhaar: 2345 6789 0124", "Aadhaar: [ID]"],
     ["PAN ABCDE1234F", "PAN [ID]"],
     ["DOB: 14/03/1998", "[DATE OF BIRTH]"],
     ["Date of Birth - 14 March 1998", "[DATE OF BIRTH]"],
@@ -97,5 +97,66 @@ describe("maskPii", () => {
       expect(maskPii(line).text).toBe(line);
     }
   });
-});
 
+  // Review of the first fix: more address and phone forms, and lines that must survive.
+  const late = (line: string) =>
+    ["Asha Rao", "Data Analyst", "", "EXPERIENCE", "Analyst, Example Ltd", "2022", "Notes", "More", "x", line].join("\n");
+  const lastLine = (text: string) => maskPii(text).text.split("\n").at(-1);
+
+  it.each([
+    "Res. Address: 14 Station Rd, Kota",
+    "Correspondence Address: 14 Station Rd, Kota",
+    "Communication Address : 14 Station Rd, Kota",
+    "Addr: 14 Station Road, Kota",
+    "Permanent Address 14 Station Road, Kota",
+    "• Address: 14 Station Road, Kota",
+    `Address: ${"14 Station Road, ".repeat(10)}Kota`,
+  ])("masks the labelled line %s", (line) => {
+    expect(lastLine(late(line))).toBe("[ADDRESS]");
+  });
+
+  it("masks an address written under its label over several lines", () => {
+    const text = ["Asha Rao", "Address:", "14, Shanti Kunj, Gali No. 4", "Laxmi Nagar", "Delhi", "", "EXPERIENCE", "Analyst, Example Ltd"].join("\n");
+    expect(maskPii(text).text).toBe(
+      ["Asha Rao", "[ADDRESS]", "[ADDRESS]", "[ADDRESS]", "[ADDRESS]", "", "EXPERIENCE", "Analyst, Example Ltd"].join("\n"),
+    );
+  });
+
+  it("drops only the PIN from a locality line, so a job or skill on it survives", () => {
+    expect(lastLine(late("Software Engineer, Infosys, Pune, 411057"))).toBe("Software Engineer, Infosys, Pune, [PIN]");
+    expect(lastLine(late("Jan 2019 - Dec 2023, Bengaluru, 560001"))).toBe("Jan 2019 - Dec 2023, Bengaluru, [PIN]");
+    expect(lastLine(late("Kothrud Pune 411038"))).toBe("Kothrud Pune [PIN]");
+  });
+
+  it.each([
+    "Skills: SQL, Excel, Power BI, Tableau, 100000 rows, 250000 rows",
+    "AWS Certified Solutions Architect, Credential ID 123456",
+    "Built ETL for 12 states, processed 500000 records",
+    "Assistant, India Post, Post Office Savings Bank, 2019",
+    "C/O Analytics project: built a churn model",
+    "Scores: 7 - 8 - 9 - 6 - 7 - 8 - 9 - 6 - 7 - 8",
+    "Dates: 2019 2020 2021 2022",
+    "Email Address: [EMAIL]",
+    "IP address: 10.0.0.1",
+  ])("leaves %s alone", (line) => {
+    expect(lastLine(late(line))).toBe(line);
+  });
+
+  it.each([
+    "+91 (22) 2345 6789",
+    "0091-22-2345-6789",
+    "0091 (22) 2345 6789",
+    "02223456789",
+    "+91\u201398765\u201343210",
+    "91 98765 43210",
+    "+91-022-23456789",
+  ])("masks the phone number %s with nothing left over", (phone) => {
+    expect(maskPii(`Phone: ${phone} | Pune`).text).toBe("Phone: [PHONE] | Pune");
+  });
+
+  it("stays fast on a long run with no spaces", () => {
+    const started = performance.now();
+    maskPii("a".repeat(80_000));
+    expect(performance.now() - started).toBeLessThan(500);
+  });
+});
