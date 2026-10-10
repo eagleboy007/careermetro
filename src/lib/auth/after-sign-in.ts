@@ -1,6 +1,7 @@
 import "server-only";
 import { claimAnonymousResumes, findAccount, touchLastSeen } from "@/lib/account/store";
 import { syncCurrentGoals } from "@/lib/goals/store";
+import { hasUsableName } from "@/lib/resume/name-match";
 import { readSessionId } from "@/lib/session";
 import { currentIdentity } from "./server";
 
@@ -20,7 +21,8 @@ export async function afterSignIn(next: string): Promise<string> {
   const identity = await currentIdentity();
   if (!identity) return `/sign-in?next=${encodeURIComponent(next)}`;
   const account = await findAccount(identity.subject);
-  if (!account) return `/sign-up/finish?next=${encodeURIComponent(next)}`;
+  // No account yet, or one without a name to check resumes against: the finish step asks for it first.
+  if (!account || !hasUsableName(account.name)) return `/sign-up/finish?next=${encodeURIComponent(next)}`;
   const sessionId = await readSessionId();
   const claim = sessionId ? await claimAnonymousResumes(account.id, sessionId) : null;
   if (claim?.claimed) await syncCurrentGoals(account.id);

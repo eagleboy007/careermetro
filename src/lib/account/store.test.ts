@@ -227,6 +227,27 @@ describe.skipIf(!db)("account store (database)", () => {
     expect(await named({ userId: owner.account.id })).toMatchObject({ ok: true });
   });
 
+  it("leaves a resume still being read anonymous, and an account with no name claims nothing until it adds one", async () => {
+    const session = `${run}-unnamed`;
+    const resumeId = await upload(session);
+    // Still being read: its name isn't known yet, so a sign-in mid-read doesn't take it.
+    await db!.update(schema.resumes).set({ status: "parsing" }).where(eq(schema.resumes.id, resumeId));
+    const user = await signUp("unnamed");
+    expect(await claimAnonymousResumes(user.id, session, db!)).toEqual({ claimed: 0, refused: 0 });
+    await db!.update(schema.resumes).set({ status: "parsed" }).where(eq(schema.resumes.id, resumeId));
+
+    // An older account without a usable name claims nothing, and can't upload while signed in.
+    await db!.update(schema.users).set({ name: "R." }).where(eq(schema.users.id, user.id));
+    expect(await claimAnonymousResumes(user.id, session, db!)).toEqual({ claimed: 0, refused: 0 });
+    const signedIn = await ingestResume({ bytes, as: "text", owner: { userId: user.id }, clientHash: `h-unnamed-${run}` }, { db: db!, client });
+    expect(signedIn).toMatchObject({ ok: false, status: 422, code: "name_needed" });
+
+    // Finishing sign-up again adds the name, then the resume joins.
+    const named = await createAccount(identity("unnamed"), { name: "Test User", sessionId: session }, db!);
+    expect(named).toMatchObject({ ok: true, account: { name: "Test User" }, refused: 0 });
+    expect(await getResumeForOwner(resumeId, { userId: user.id }, db!)).toMatchObject({ resumeId });
+  });
+
   it("records a visit at most once a day", async () => {
     const user = await signUp("seen");
     const old = new Date(Date.now() - 2 * 24 * 3600_000);

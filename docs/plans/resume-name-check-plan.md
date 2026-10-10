@@ -15,13 +15,19 @@ last name against the name on the account before the resume joins it.
 3. **When it doesn't match,** the resume is not moved. It stays anonymous and is deleted after its 24 hours, like any
    unclaimed upload. The person sees one line: "This resume shows a different name from your account, so we didn't
    add it. Upload your own resume, or fix the name on your account." Nothing is shown about whose name it was.
-4. **Signed-in uploads** get the same check. If the name doesn't match, the analysis still shows but isn't saved to
-   the account (the same line as above).
+4. **Signed-in uploads** get the same check. If the name doesn't match, the upload is refused with the same line as
+   above and nothing from it is kept (built stricter than first planned: no profile or text is stored).
+5. **A resume still being read** isn't moved at sign-in, since its name isn't known yet. It stays anonymous and moves
+   at the next sign-in on that browser, if its name matches.
 
 ## Defaults picked (say if you want otherwise)
 
 - **No name on the account** (the name is optional at sign-up): the name becomes required at sign-up, and
-  existing accounts without a name are asked for one before their next upload joins the account.
+  existing accounts without a name are asked for one before their next upload joins the account. As built: a name
+  needs at least one full word (not just "R." or "-"); an older account without one is sent to the finish step at
+  sign-in to add it, claims nothing until then, and a signed-in upload asks for the name first.
+- **One-word account names** ("Karthik"): match only a resume that shows one name word, so a surname alone ("Sharma")
+  doesn't match "Amit Sharma".
 - **No name found on the resume**: the resume joins the account. There is nothing to compare, and blocking would
   stop real users whose template hides the name in a header image.
 - **Initials** ("R. Sharma"): only full words count, so an initial alone doesn't match. The person can write their
@@ -33,4 +39,8 @@ last name against the name on the account before the resume joins it.
   treated as "no name found".
 - The name text never reaches logs, analytics, the profile or the database. The HMAC key is the existing server
   secret, so the hashes can't be reversed without it.
+- The check guards against accidents (a shared laptop, a friend's resume), not against someone who types another
+  person's printed name on purpose.
+- Rotating the server secret makes waiting anonymous resumes (at most 24 hours old) read as a different name, so they
+  aren't moved. Rotate it outside busy hours.
 - Prompt version is logged in `ai_calls` as usual; the parse eval checks the name is read for the synthetic resumes.

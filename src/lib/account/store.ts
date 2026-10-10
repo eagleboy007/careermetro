@@ -3,7 +3,7 @@ import { and, eq, gt, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { consents, resumes, users } from "@/db/schema";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/owner";
-import { checkName } from "@/lib/resume/name-match";
+import { checkName, hasUsableName } from "@/lib/resume/name-match";
 import { WEEKLY_HOURS } from "@/lib/schemas";
 
 type Db = ReturnType<typeof getDb>;
@@ -39,7 +39,9 @@ export type ClaimResult = { claimed: number; refused: number };
  * resume, and the upload consent is linked to the user too. Only unclaimed resumes within their 24 hours move, and
  * only when the name on the resume matches the account's (src/lib/resume/name-match.ts): one that shows a different
  * name stays anonymous and is deleted after its 24 hours. Once claimed, the session no longer reaches them (see
- * `ownsResume`); the session id stays only so the session's daily limits still count them.
+ * `ownsResume`); the session id stays only so the session's daily limits still count them. A resume still being read
+ * isn't claimed, since its name isn't known yet; it stays anonymous for the next sign-in. An account with no name
+ * claims nothing.
  */
 export async function claimAnonymousResumes(userId: string, sessionId: string, db: Db | Tx = getDb()): Promise<ClaimResult> {
   const waiting = await db
@@ -49,11 +51,13 @@ export async function claimAnonymousResumes(userId: string, sessionId: string, d
       and(
         eq(resumes.anonymousSessionId, sessionId),
         isNull(resumes.userId),
+        inArray(resumes.status, ["parsed", "partial"]),
         gt(resumes.createdAt, new Date(Date.now() - ANONYMOUS_TTL_HOURS * 3600_000)),
       ),
     );
   if (!waiting.length) return { claimed: 0, refused: 0 };
   const [account] = await db.select({ name: users.name }).from(users).where(eq(users.id, userId));
+  if (!hasUsableName(account?.name)) return { claimed: 0, refused: 0 };
   const ids = waiting.filter((r) => checkName(account?.name, r.nameHashes) !== "mismatch").map((r) => r.id);
   const refused = waiting.length - ids.length;
   if (!ids.length) return { claimed: 0, refused };
@@ -85,8 +89,13 @@ export async function createAccount(
     // One sign-up per sign-in and per email at a time, so two tabs can't both insert. Always subject, then email.
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-account-sub:${identity.subject}`}))`);
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-account:${email}`}))`);
-    const existing = await findAccount(identity.subject, tx);
+    let existing = await findAccount(identity.subject, tx);
     if (existing) {
+      // An account made before names were asked for gets its name here, before anything is claimed.
+      if (!hasUsableName(existing.name) && hasUsableName(input.name)) {
+        await tx.update(users).set({ name: input.name }).where(eq(users.id, existing.id));
+        existing = { ...existing, name: input.name };
+      }
       const claim = input.sessionId ? await claimAnonymousResumes(existing.id, input.sessionId, tx) : null;
       return { ok: true, account: existing, refused: claim?.refused ?? 0 } as const;
     }

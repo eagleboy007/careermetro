@@ -26,11 +26,15 @@ describe("checkName", () => {
     expect(checkName("Riya Sharma", nameHashes("R. Sharma", env), env)).toBe("mismatch");
     // A one-word account name ("Karthik") needs only that word.
     expect(checkName("Karthik", nameHashes("Karthik R", env), env)).toBe("match");
+    // ...but not a resume with a fuller name, so a surname alone doesn't match someone else.
+    expect(checkName("Sharma", nameHashes("Amit Sharma", env), env)).toBe("mismatch");
+    expect(checkName("R. Sharma", nameHashes("Amit Sharma", env), env)).toBe("mismatch");
   });
 
-  it("is unknown when either side has no name", () => {
+  it("is unknown when the resume shows no name, unnamed when the account has none", () => {
     expect(checkName("Riya Sharma", null, env)).toBe("unknown");
-    expect(checkName(null, resume, env)).toBe("unknown");
+    expect(checkName(null, resume, env)).toBe("unnamed");
+    expect(checkName("R.", resume, env)).toBe("unnamed");
     expect(checkName("Riya Sharma", nameHashes("", env), env)).toBe("unknown");
   });
 

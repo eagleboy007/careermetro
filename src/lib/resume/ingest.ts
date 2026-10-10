@@ -8,7 +8,7 @@ import { ANONYMOUS_TTL_HOURS, uploadedBy, type Owner } from "@/lib/owner";
 import { windowLimiter } from "@/lib/rate-limit";
 import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
-import { checkName, NAME_MISMATCH_MESSAGE, nameHashes } from "./name-match";
+import { checkName, NAME_MISMATCH_MESSAGE, NAME_NEEDED_MESSAGE, nameHashes } from "./name-match";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
 
 export const RESUME_POLICY_VERSION = "2026-10-draft";
@@ -180,9 +180,12 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
     if (input.owner.userId !== undefined) {
       // A signed-in person's upload joins their account at once, so it is checked now (dev/resume-name-check-plan.md).
       const [account] = await db.select({ name: users.name }).from(users).where(eq(users.id, input.owner.userId));
-      if (checkName(account?.name, hashes) === "mismatch") {
+      const check = checkName(account?.name, hashes);
+      if (check === "mismatch" || check === "unnamed") {
         await db.update(resumes).set({ status: "failed" }).where(eq(resumes.id, resumeId));
-        return { ok: false, status: 422, code: "name_mismatch", message: NAME_MISMATCH_MESSAGE };
+        return check === "mismatch"
+          ? { ok: false, status: 422, code: "name_mismatch", message: NAME_MISMATCH_MESSAGE }
+          : { ok: false, status: 422, code: "name_needed", message: NAME_NEEDED_MESSAGE };
       }
     }
     await db.transaction(async (tx) => {

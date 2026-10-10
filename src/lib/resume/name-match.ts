@@ -22,15 +22,25 @@ export function nameHashes(name: string | null | undefined, env: Record<string, 
   return words.length ? words.map((w) => hash(w, env)) : null;
 }
 
-export type NameCheck = "match" | "mismatch" | "unknown";
+/**
+ * "unnamed": the account has no name to compare (an older account, or one like "R."), so nothing may join it until
+ * the person adds one.
+ */
+export type NameCheck = "match" | "mismatch" | "unknown" | "unnamed";
+
+/** Whether a name has a word the check can use. Sign-up asks for one before the account exists. */
+export const hasUsableName = (name: string | null | undefined) => nameWords(name).length > 0;
 
 /**
  * Whether an account's name matches a resume's name hashes: its first and last word must both be there, in any order,
- * with any middle names. "unknown" when the resume showed no name, or the account has none to compare.
+ * with any middle names. A one-word account name matches only a resume that shows one name word, so "Sharma" doesn't
+ * match "Amit Sharma". "unknown" when the resume showed no name; "unnamed" when the account has none to compare.
  */
 export function checkName(accountName: string | null | undefined, hashes: string[] | null | undefined, env: Record<string, string | undefined> = process.env): NameCheck {
   const words = nameWords(accountName);
-  if (!hashes?.length || !words.length) return "unknown";
+  if (!words.length) return "unnamed";
+  if (!hashes?.length) return "unknown";
+  if (words.length === 1 && hashes.length > 1) return "mismatch";
   const have = new Set(hashes);
   return [words[0], words[words.length - 1]].every((w) => have.has(hash(w, env))) ? "match" : "mismatch";
 }
@@ -38,3 +48,6 @@ export function checkName(accountName: string | null | undefined, hashes: string
 /** What the person reads when a resume isn't added to their account. Never says whose name the resume shows. */
 export const NAME_MISMATCH_MESSAGE =
   "This resume shows a different name from your account, so we didn't add it. Upload your own resume, or fix the name on your account.";
+
+/** What a signed-in person reads when their account has no name yet, so an upload can't be checked. */
+export const NAME_NEEDED_MESSAGE = "Please add your name to your account first: sign out, sign in again and enter it, then upload your resume.";

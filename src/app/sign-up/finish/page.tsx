@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { SiteHeader } from "@/components/site/site-header";
 import { findAccount } from "@/lib/account/store";
+import { hasUsableName } from "@/lib/resume/name-match";
 import { safeNext } from "@/lib/auth/config";
 import { currentIdentity } from "@/lib/auth/server";
 import { FinishForm } from "./finish-form";
@@ -16,13 +17,15 @@ async function Finish({ searchParams }: PageProps<"/sign-up/finish">) {
   const next = safeNext(Array.isArray(raw) ? raw[0] : raw);
   const identity = await currentIdentity();
   if (!identity) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
-  if (await findAccount(identity.subject)) redirect(next);
+  // An account made before names were asked for comes back here once to add one (dev/resume-name-check-plan.md).
+  const account = await findAccount(identity.subject);
+  if (account && hasUsableName(account.name)) redirect(next);
   return (
     <>
       <p className="text-muted">
         Signed in as <strong className="font-medium text-ink">{identity.email}</strong>. One last step.
       </p>
-      <FinishForm next={next} name={identity.name} />
+      <FinishForm next={next} name={account?.name || identity.name} />
     </>
   );
 }
