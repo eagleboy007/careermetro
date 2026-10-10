@@ -1,0 +1,81 @@
+{
+  "slug": "cross-platform-mobile-developer",
+  "title": "Mobile Developer (Flutter / React Native)",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "flutter",
+      "importance": "required",
+      "expectation": "Build a production app in a cross-platform framework",
+      "postingShare": null,
+      "oneOf": "framework"
+    },
+    {
+      "skillId": "react-native",
+      "importance": "required",
+      "expectation": "Build a production app in a cross-platform framework",
+      "postingShare": null,
+      "oneOf": "framework"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate APIs and handle offline states",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-architecture",
+      "importance": "required",
+      "expectation": "Use Riverpod, Bloc, Provider or Redux with a clear app architecture",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-release",
+      "importance": "required",
+      "expectation": "Release to both Play Store and App Store",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write widget or component tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "android",
+      "importance": "nice_to_have",
+      "expectation": "Fix native Android build issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "swift-ios",
+      "importance": "nice_to_have",
+      "expectation": "Fix native iOS build issues",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "framework",
+      "label": "A cross-platform framework (Flutter or React Native)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

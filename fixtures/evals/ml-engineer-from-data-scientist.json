@@ -1,0 +1,63 @@
+{
+  "id": "ml-engineer-from-data-scientist",
+  "roleSlug": "ml-engineer",
+  "persona": "Data scientist who trains models but has not deployed them",
+  "resumeText": "Siddharth Bose | Kolkata | siddharth.bose@example.com\n\nEXPERIENCE\nData Scientist, Hooghly Insurance Analytics, Kolkata (2022 - present)\n- Built churn and claim-fraud models in Python with scikit-learn and XGBoost.\n- Tuned models with cross-validation and chose metrics such as precision at top 5%.\n- Trained a CNN in PyTorch to read scanned claim forms.\n- Pull training data from Postgres with SQL.\n- Packaged one model in a Docker container for the IT team.\n\nEDUCATION\nMSc Statistics, University of Calcutta, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Built churn and claim-fraud models in Python"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Built churn and claim-fraud models"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "chose metrics such as precision at top 5%"
+      },
+      {
+        "skillId": "pytorch",
+        "quote": "Trained a CNN in PyTorch"
+      },
+      {
+        "skillId": "deep-learning",
+        "quote": "Trained a CNN"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Pull training data from Postgres with SQL"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Packaged one model in a Docker container"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "docker",
+        "status": "weak"
+      },
+      {
+        "skillId": "model-serving",
+        "status": "missing"
+      },
+      {
+        "skillId": "mlops",
+        "status": "missing"
+      },
+      {
+        "skillId": "aws",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "model-serving",
+      "mlops",
+      "llm-apps"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,116 @@
+{
+  "slug": "cloud-security-engineer",
+  "title": "Cloud Security Engineer",
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "cloud-security",
+      "importance": "required",
+      "expectation": "Secure accounts, networks and workloads on AWS, Azure or GCP",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Design least-privilege IAM and review access",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security-posture",
+      "importance": "required",
+      "expectation": "Use a CSPM tool to find and fix misconfigurations",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Review and write infrastructure as code with security guardrails",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Secure clusters and workloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "required",
+      "expectation": "Design VPCs, security groups and private endpoints",
+      "postingShare": null
+    },
+    {
+      "skillId": "devsecops",
+      "importance": "nice_to_have",
+      "expectation": "Scan IaC and images in pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "nice_to_have",
+      "expectation": "Investigate cloud incidents",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate checks with scripts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-security-specialty",
+      "importance": "recommended",
+      "why": "AWS security depth"
+    },
+    {
+      "certId": "ccsp",
+      "importance": "optional",
+      "why": "Vendor-neutral cloud security, 5 years' experience"
+    },
+    {
+      "certId": "cks",
+      "importance": "optional",
+      "why": "Kubernetes security"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-10"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "cloud-engineer-sysadmin",
+  "roleSlug": "cloud-engineer",
+  "persona": "Linux system administrator moving to cloud engineering",
+  "resumeText": "Gurpreet Singh | Chandigarh | gurpreet.singh@example.com\n\nEXPERIENCE\nSystem Administrator, Shivalik Hospitals, Chandigarh (2019 - present)\n- Administer 120 RHEL and Ubuntu servers, patching and hardening them every month.\n- Wrote Bash scripts for backups and log rotation.\n- Set up Zabbix monitoring and alerts for servers and network links.\n- Manage Active Directory accounts and access requests.\n- Migrated the patient portal to Azure virtual machines with a VNet and load balancer.\n\nEDUCATION\nBCA, Panjab University, 2018\n\nCERTIFICATIONS\nRHCSA (2021), Microsoft Certified: Azure Fundamentals (2024)\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "linux",
+        "quote": "Administer 120 RHEL and Ubuntu servers"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote Bash scripts for backups and log rotation"
+      },
+      {
+        "skillId": "monitoring",
+        "quote": "Set up Zabbix monitoring and alerts"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Manage Active Directory accounts and access requests"
+      },
+      {
+        "skillId": "azure",
+        "quote": "Migrated the patient portal to Azure virtual machines"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "with a VNet and load balancer"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cloud-networking",
+        "status": "weak"
+      },
+      {
+        "skillId": "terraform",
+        "status": "missing"
+      },
+      {
+        "skillId": "docker",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "terraform",
+      "docker",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}
