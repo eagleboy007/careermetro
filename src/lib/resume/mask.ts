@@ -13,7 +13,7 @@ const PAN = /\b[A-Z]{5}\d{4}[A-Z]\b/g;
 const SEP = "[\\s().\\u2013\\u2014-]";
 /**
  * Indian mobiles in any common grouping ("+91 98765 43210", "987-654-3210", "+91 (987) 654-3210", "98765 - 43210",
- * "0091 98765 43210"), landlines with an STD code in brackets, and international numbers starting with +. A mobile is
+ * "98765 / 43210", "0091 98765 43210", "919876543210"), landlines with an STD code in brackets, and international numbers starting with +. A mobile is
  * exactly 10 digits starting with 6-9, so years, amounts and percentages don't match.
  */
 const PHONE = new RegExp(
@@ -23,6 +23,10 @@ const PHONE = new RegExp(
     `(?<=\\b(?:ph|phone|mob|mobile|tel|contact|whatsapp|cell)\\b[^\\d\\n]{0,12})[6-9]\\d{4}\\s?[-\\u2013\\u2014]\\s?\\d{5}(?!\\d)`,
     // Not after a money word, so "Salary range 70000–90000" stays.
     `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?:(?:\\+\\s?|00)91${SEP}{0,2}|91${SEP}{1,2}|0)?\\(?[6-9](?:${SEP}{0,2}\\d){9}(?!\\d)`,
+    // A bare "98765 - 43210" or "98765 / 43210": a salary range ("70000 - 90000") is two round numbers, so it stays.
+    `(?<![\\d+])(?<!\\b(?:salary|range|ctc|budget|stipend|rs\\.?|inr|usd|\\u20b9|\\$)\\s?[:\\-]?\\s?)(?![6-9]\\d{2}00\\s?[-\\u2013\\u2014/]\\s?\\d{3}00(?!\\d))[6-9]\\d{4}\\s?[-\\u2013\\u2014/]\\s?\\d{5}(?!\\d)`,
+    // "919876543210": the country code run straight into the mobile.
+    `(?<![\\d+])91[6-9]\\d{9}(?!\\d)`,
     `\\(0\\d{2,4}\\)\\s?\\d{3,4}[\\s-]?\\d{4}\\b`,
     `\\+(?!\\s?91)\\d{1,3}[\\s-]?\\d{2,4}[\\s-]?\\d{3,4}[\\s-]?\\d{3,4}\\b`,
   ].join("|"),
