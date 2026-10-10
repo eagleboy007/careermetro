@@ -72,6 +72,23 @@ describe("matchProfile", () => {
     expect(inflections("a/b testing")).toEqual(["a/b testing", "a/b test", "a/b tests"]);
     expect(inflections("excel")).toEqual(["excel"]);
     expect(inflections("data engineering")).toEqual(["data engineering"]);
+    expect(inflections("load testing")).toEqual(["load testing"]);
+    expect(inflections("containerization")).toEqual(["containerization", "containerisation"]);
+    expect(inflections("data quality")).toEqual(["data quality", "data qualities"]);
+  });
+
+  it("never reads everyday tests or -ised words from other trades as skills", () => {
+    const job = (line: string) => profile({ roles: [{ title: "Engineer", employer: "Example Infra", start: "2024-01", end: null, highlights: [line] }] });
+    for (const [line, slug, skill] of [
+      ["Conducted pile load tests for the metro viaduct foundations", "qa-automation-engineer", "performance-testing"],
+      ["Performed quality control tests on incoming raw materials as per IP", "information-security-analyst", "security-audits"],
+      ["Witnessed factory acceptance tests for HT switchgear panels", "business-analyst", "uat"],
+      ["Handled containerised cargo movement at JNPT", "devops-engineer", "docker"],
+      ["Normalised monthly sales figures across 12 regions in Excel", "database-architect", "orm-databases"],
+      ["Prioritised customer tickets in the support queue", "product-manager", "roadmapping"],
+    ] as const) {
+      expect(statusOf(matchProfile(job(line), role(slug), now), skill), line).not.toBe("met");
+    }
   });
 
   it("calls a skill that is only listed weak evidence", () => {

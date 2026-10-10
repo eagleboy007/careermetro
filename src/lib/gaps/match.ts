@@ -49,24 +49,29 @@ const skillById = new Map(taxonomy.map((s) => [s.id, s]));
 /** Long enough to trust in a sentence: three letters, or a symbol or digit as in "C++", ".NET" or "S3". */
 const distinctive = (t: string) => t.replace(/[^\p{L}\p{N}]/gu, "").length >= 3 || /[+#.\d]/.test(t);
 
+/** "testing" reads "test" only after these: "an A/B test", "unit tests". Not "load tests" (a pile) or "acceptance tests" (switchgear). */
+const TEST_KINDS = new Set(["a/b", "ab", "split", "unit", "api", "penetration", "pen", "usability", "hypothesis", "regression"]);
+
 /**
- * The everyday forms of a normalised term, itself first: British and American spellings ("prioritisation",
- * "prioritized"), and for a term of two or more words the plural of its last word ("product roadmaps"), or the test
- * itself for testing ("a/b test"). Single words keep their form, so "excel" never reads "excels at".
+ * The everyday forms of a normalised term, itself first:
+ * - "-isation" and "-ization" respell either way ("normalisation"), and as the last of two or more words also take
+ *   their verb forms ("data visualised"). A single word keeps its noun, so "containerised cargo" never reads Docker.
+ * - The last of two or more words takes its plural ("product roadmaps", "data qualities").
+ * - "testing" after a kind of test also reads "test" and "tests" ("an A/B test").
+ * Single words otherwise keep their form, so "excel" never reads "excels at".
  */
 export function inflections(term: string): string[] {
   const words = term.split(" ");
   const options = words.map((word, i) => {
     const forms = new Set([word]);
-    const ize = /^(\p{L}{3,})i[sz](ation|e|ed|es|ing)$/u.exec(word);
-    if (ize) {
-      // The last word also takes its other forms: "prioritization" reads "prioritized"; earlier words only respell.
-      const ends = i === words.length - 1 ? ["ation", "e", "ed", "es", "ing"] : [ize[2]];
-      for (const z of ["s", "z"]) for (const end of ends) forms.add(`${ize[1]}i${z}${end}`);
-    } else if (i === words.length - 1 && words.length > 1) {
-      // Only "testing": "data engineering" must not read "data engineers", a job title.
-      if (word === "testing") forms.add("test").add("tests");
-      else if (/\p{L}{3,}$/u.test(word) && !/(?:s|ing)$/.test(word)) forms.add(/(?:x|ch|sh)$/.test(word) ? `${word}es` : `${word}s`);
+    const last = i === words.length - 1 && words.length > 1;
+    const ization = /^(\p{L}{3,})i[sz]ation$/u.exec(word);
+    if (ization) {
+      for (const z of ["s", "z"]) for (const end of last ? ["ation", "e", "ed", "es", "ing"] : ["ation"]) forms.add(`${ization[1]}i${z}${end}`);
+    } else if (last && word === "testing") {
+      if (TEST_KINDS.has(words[i - 1])) forms.add("test").add("tests");
+    } else if (last && /\p{L}{3,}$/u.test(word) && !/(?:s|ing)$/.test(word)) {
+      forms.add(/[^aeiou]y$/.test(word) ? `${word.slice(0, -1)}ies` : /(?:x|ch|sh)$/.test(word) ? `${word}es` : `${word}s`);
     }
     return [...forms];
   });
@@ -78,14 +83,19 @@ export function inflections(term: string): string[] {
  * ambiguous because they are also ordinary words ("react", "containers"), are only trusted when the parser
  * listed the skill, because in a sentence they match far too much.
  */
+const scanCache = new Map<string, string[]>();
 function scanTerms(skillId: string): string[] {
+  const cached = scanCache.get(skillId);
+  if (cached) return cached;
   const s = skillById.get(skillId);
   if (!s) return [];
   const ambiguous = new Set(s.ambiguous.map(normalizeForMatch));
-  return [s.name, ...s.aliases]
+  const terms = [s.name, ...s.aliases]
     .map(normalizeForMatch)
     .filter((t) => !ambiguous.has(t) && distinctive(t))
     .flatMap(inflections);
+  scanCache.set(skillId, terms);
+  return terms;
 }
 
 /** "2022" or "2022-03" as months since year 0. A bare year counts as its December, the generous reading. */
