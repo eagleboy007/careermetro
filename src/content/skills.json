@@ -813,6 +813,7 @@
   },
   {
     "id": "stakeholder-management",
+    "scoring": "context",
     "name": "Stakeholder management",
     "category": "workplace",
     "aliases": [
@@ -982,6 +983,7 @@
   },
   {
     "id": "communication",
+    "scoring": "context",
     "name": "Written and verbal communication",
     "category": "workplace",
     "aliases": [
@@ -994,6 +996,7 @@
   },
   {
     "id": "problem-solving",
+    "scoring": "context",
     "name": "Structured problem solving",
     "category": "workplace",
     "aliases": [

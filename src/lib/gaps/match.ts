@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-export const MATCHER_VERSION = "matcher/v3";
+export const MATCHER_VERSION = "matcher/v4";
 
 /** Evidence older than this, by the end of the job or the skill's last use, makes a skill outdated. */
 export const OUTDATED_AFTER_YEARS = 4;
@@ -399,7 +399,10 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   const byImportance = (a: MatchedSkill, b: MatchedSkill) =>
     (b.postingShare ?? -1) - (a.postingShare ?? -1) || statusRank[a.status] - statusRank[b.status];
 
-  const required = rows.filter((r) => r.importance === "required").map((r) => r.row);
+  // A context skill (communication, problem solving) counts when the resume shows it and is never a gap: keywords
+  // can't judge it, so Practice checks it instead.
+  const scored = (r: MatchedSkill) => r.status === "met" || skillById.get(r.skillId)?.scoring !== "context";
+  const required = rows.filter((r) => r.importance === "required" && scored(r.row)).map((r) => r.row);
   const gaps = required.filter((r) => r.status !== "met").sort(byImportance);
   const met = required.filter((r) => r.status === "met");
   return {
@@ -407,7 +410,7 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
     roleSlug: role.slug,
     gaps,
     met,
-    niceToHave: rows.filter((r) => r.importance === "nice_to_have").map((r) => r.row).sort(byImportance),
+    niceToHave: rows.filter((r) => r.importance === "nice_to_have" && scored(r.row)).map((r) => r.row).sort(byImportance),
     readiness: {
       requiredTotal: required.length,
       requiredMet: met.length,

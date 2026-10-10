@@ -29,5 +29,10 @@ export const skill = z.object({
   ambiguous: z.array(z.string().min(1)).default([]),
   /** Broader skills that evidence of this one also shows: pivot tables show Excel, pandas shows Python. */
   implies: z.array(z.string()).default([]),
+  /**
+   * "context": a skill keywords can't judge (communication, problem solving). It counts when the resume shows it and
+   * is never a gap; Practice checks it instead. "gap": scored like any other skill.
+   */
+  scoring: z.enum(["gap", "context"]).default("gap"),
 });
 export type Skill = z.infer<typeof skill>;

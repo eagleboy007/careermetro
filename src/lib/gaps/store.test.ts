@@ -15,7 +15,7 @@ const url = process.env.TEST_DATABASE_URL;
 const sqlClient = url ? postgres(url, { max: 2, onnotice: () => {} }) : null;
 const db = sqlClient ? drizzle(sqlClient, { schema }) : null;
 
-const role = roleProfiles.find((r) => r.slug === "data-analyst")!;
+const role = roleProfiles.find((r) => r.slug === "data-scientist")!;
 const profile: Profile = {
   headline: "MIS Executive",
   totalYearsExperience: 2,

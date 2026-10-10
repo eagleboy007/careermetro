@@ -7,6 +7,8 @@ export type RoleSkillView = {
   expectation: string;
   /** Share of analysed postings that mention the skill, or null when not measured. */
   postingShare: number | null;
+  /** A skill keywords can't judge (communication): never a gap, so counts and "top skills" leave it out. */
+  context: boolean;
 };
 
 export type RoleCertificationView = Pick<Certification, "id" | "name" | "issuer" | "level" | "cost"> & {
@@ -29,6 +31,10 @@ export type RoleView = {
 };
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
+const contextSkills = new Set(skills.filter((s) => s.scoring === "context").map((s) => s.id));
+
+/** The required skills the Gaps page scores, most asked first: what "core skills" counts and "top skills" shows. */
+export const scoredSkills = (role: Pick<RoleView, "required">) => role.required.filter((s) => !s.context);
 const certsById = new Map(certifications.map((c) => [c.id, c]));
 
 export function formatExperience({ minYears, maxYears }: RoleProfile["experienceBand"]): string {
@@ -58,6 +64,7 @@ export function toRoleView(role: RoleProfile): RoleView {
         name: skillNames.get(s.skillId) ?? s.skillId,
         expectation: s.expectation,
         postingShare: s.postingShare,
+        context: contextSkills.has(s.skillId),
       }))
       .sort(byShare);
 

@@ -69,7 +69,7 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
     tally: { skillsFound: result.metSkillIds.length, gaps, goals: gaps, boardable: gaps === 0 ? 1 : 0 },
     lineHours: Math.max(1, result.readiness.estimatedHours),
     // No goals at all: the resume already shows every required skill.
-    firstTasks: today?.ride.tasks ?? [boardTask("Your resume shows every skill this role requires")],
+    firstTasks: today?.ride.tasks ?? [boardTask("Your resume shows every core skill this role requires")],
     goals: today?.goals ?? null,
   };
 }
