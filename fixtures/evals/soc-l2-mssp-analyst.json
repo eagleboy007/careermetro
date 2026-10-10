@@ -39,10 +39,6 @@
       {
         "skillId": "threat-intelligence",
         "status": "weak"
-      },
-      {
-        "skillId": "endpoint-security",
-        "status": "weak"
       }
     ],
     "mustNotClaim": [
