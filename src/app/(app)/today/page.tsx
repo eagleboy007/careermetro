@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { UploadForm } from "@/components/resume/upload-form";
 import { TodayView, type TodayData } from "@/components/today/today-preview";
+import { firstName } from "@/lib/account/name";
 import { currentAccount } from "@/lib/auth/server";
 import { USER_STATES, type UserState } from "@/lib/schemas";
 import { greetingAt } from "@/lib/today/board";
@@ -63,7 +64,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
   }
   // Signed in: the server picks the state from the person's own resume and gaps.
   const found = await todayStateFor(account.id, new Date());
-  const name = account.name?.split(/\s+/)[0] ?? data.name;
+  const name = firstName(account.name);
   const own: TodayData =
     found.state === "first"
       ? {

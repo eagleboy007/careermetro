@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_GAPS } from "./gap";
 
 /**
  * The Map (post-login handoff, section 7): the person's line from Resume through one goal per gap to Match.
@@ -29,7 +30,7 @@ export const mapLine = z.object({
   /** Links back to the resume, gaps and path. Null in example data. */
   resumeId: z.string().min(1).nullable(),
   skillsFound: z.number().int().min(0),
-  goals: z.array(mapGoal).max(12),
+  goals: z.array(mapGoal).max(MAX_GAPS),
   /** Other role lines that cross this one at a shared skill. At most two, so their labels never collide. */
   otherLines: z.array(z.object({ slug: z.string().min(1), title: z.string().min(1), skillId: z.string().min(1) })).max(2),
   /** The person has opened a path, so the courses are picked. */

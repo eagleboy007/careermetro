@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { resumes, users } from "@/db/schema";
 import { skills } from "@/content";
+import { displayName } from "@/lib/account/name";
 import { mapLineFor } from "@/lib/map/store";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
@@ -17,7 +18,7 @@ const skillNames = new Map(skills.map((s) => [s.id, s.name]));
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
   const [[user], analysis] = await Promise.all([
-    db.select({ name: users.name, email: users.email, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
+    db.select({ name: users.name, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
   ]);
   if (!user) return null;
@@ -33,7 +34,8 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
       ])
     : [null, [], null];
   return meFromProfile({
-    name: user.name?.trim() || user.email.split("@")[0] || "You",
+    // The email is never shown, not even its first part (T6).
+    name: displayName(user.name),
     profile: resume?.profile ?? null,
     analysis: resume ? analysis!.result : null,
     line: resume ? line : null,
