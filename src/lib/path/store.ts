@@ -115,13 +115,19 @@ export async function getPathForOwner(
           ? await writePath(plan, role.title, titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
           : { path: plan, calls: [] };
         const callIds = await recordAiCalls(worded.calls, tx);
-        // Steps already done at another hours setting stay done here (FR-18).
+        // Steps already done stay done here (FR-18): at another hours setting, and on the person's earlier paths, so a
+        // new upload or a corrected profile doesn't lose progress (T21). The earliest date is kept.
         const doneRows = await tx
           .select({ skillId: pathSteps.skillId, doneAt: pathSteps.doneAt })
           .from(pathSteps)
           .innerJoin(paths, eq(paths.id, pathSteps.pathId))
-          .where(and(eq(paths.gapAnalysisId, gaps.analysisId), isNotNull(pathSteps.doneAt)));
-        const doneBySkill = new Map(doneRows.map((r) => [r.skillId, r.doneAt]));
+          .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
+          .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+          .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+          .where(and(ownsResume(owner), isNotNull(pathSteps.doneAt), eq(pathSteps.kind, "learn")))
+          .orderBy(asc(pathSteps.doneAt));
+        const doneBySkill = new Map<string, Date | null>();
+        for (const r of doneRows) if (!doneBySkill.has(r.skillId)) doneBySkill.set(r.skillId, r.doneAt);
         const [row] = await tx
           .insert(paths)
           .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds[0] ?? null })
@@ -202,7 +208,7 @@ async function readPath(
 export async function markStepDone(stepId: string, owner: Owner, done: boolean, db: Db = getDb()): Promise<boolean> {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(stepId)) return false;
   const [step] = await db
-    .select({ skillId: pathSteps.skillId, gapAnalysisId: paths.gapAnalysisId })
+    .select({ skillId: pathSteps.skillId })
     .from(pathSteps)
     .innerJoin(paths, eq(paths.id, pathSteps.pathId))
     .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
@@ -210,10 +216,18 @@ export async function markStepDone(stepId: string, owner: Owner, done: boolean, 
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
     .where(and(eq(pathSteps.id, stepId), ownsResume(owner)));
   if (!step) return false;
-  const sameAnalysis = db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, step.gapAnalysisId));
+  // The same skill on every one of the person's paths (other hours, earlier uploads) moves together, so a path built
+  // later starts from the same progress and an undo doesn't come back. Marking again keeps the first date.
+  const ownPaths = db
+    .select({ id: paths.id })
+    .from(paths)
+    .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
+    .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+    .where(ownsResume(owner));
   await db
     .update(pathSteps)
-    .set({ doneAt: done ? new Date() : null })
-    .where(and(eq(pathSteps.skillId, step.skillId), inArray(pathSteps.pathId, sameAnalysis)));
+    .set({ doneAt: done ? sql`coalesce(${pathSteps.doneAt}, now())` : null })
+    .where(and(eq(pathSteps.skillId, step.skillId), eq(pathSteps.kind, "learn"), inArray(pathSteps.pathId, ownPaths)));
   return true;
 }

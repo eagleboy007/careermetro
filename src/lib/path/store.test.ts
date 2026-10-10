@@ -139,6 +139,55 @@ describe.skipIf(!db)("paths (database)", () => {
     expect(undone.ok && undone.path.doneCount).toBe(0);
   });
 
+  it("keeps progress after a corrected profile, and an undo there undoes it everywhere (T21)", async () => {
+    const { session, resumeId } = await seed();
+    const before = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
+    if (!before.ok) throw new Error(before.reason);
+    const first = before.path.steps[0];
+    expect(await markStepDone(first.id, { sessionId: session }, true, db!)).toBe(true);
+
+    // A corrected profile is a new version: new gaps, a new path, the same progress.
+    await db!.insert(schema.profiles).values({ resumeId, version: 2, data: { ...profile, headline: "MIS Lead" }, confirmedByUser: true });
+    const after = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
+    if (!after.ok) throw new Error(after.reason);
+    const again = after.path.steps.find((s) => s.skillId === first.skillId)!;
+    expect(again.id).not.toBe(first.id);
+    expect(again.doneAt).not.toBeNull();
+
+    expect(await markStepDone(again.id, { sessionId: session }, false, db!)).toBe(true);
+    const ten = await getPathForOwner(resumeId, { sessionId: session }, role, 10, { db: db! });
+    expect(ten.ok && ten.path.steps.find((s) => s.skillId === first.skillId)?.doneAt).toBeNull();
+  });
+
+  it("carries progress to a new upload, keeps the first date, and never touches another session (T21)", async () => {
+    const a = await seed();
+    const b = await seed();
+    const pathA = await getPathForOwner(a.resumeId, { sessionId: a.session }, role, 5, { db: db! });
+    const pathB = await getPathForOwner(b.resumeId, { sessionId: b.session }, role, 5, { db: db! });
+    if (!pathA.ok || !pathB.ok) throw new Error("no path");
+    const step = pathA.path.steps[0];
+    expect(await markStepDone(step.id, { sessionId: a.session }, true, db!)).toBe(true);
+    const [{ doneAt: first }] = await db!.select({ doneAt: schema.pathSteps.doneAt }).from(schema.pathSteps).where(eq(schema.pathSteps.id, step.id));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(await markStepDone(step.id, { sessionId: a.session }, true, db!)).toBe(true);
+    const [{ doneAt: second }] = await db!.select({ doneAt: schema.pathSteps.doneAt }).from(schema.pathSteps).where(eq(schema.pathSteps.id, step.id));
+    expect(second?.getTime()).toBe(first?.getTime());
+
+    // Another session's step for the same skill stays as it was, and its later paths don't pick the mark up.
+    const otherB = pathB.path.steps.find((s) => s.skillId === step.skillId)!;
+    const [{ doneAt: bDone }] = await db!.select({ doneAt: schema.pathSteps.doneAt }).from(schema.pathSteps).where(eq(schema.pathSteps.id, otherB.id));
+    expect(bDone).toBeNull();
+    const pathB10 = await getPathForOwner(b.resumeId, { sessionId: b.session }, role, 10, { db: db! });
+    expect(pathB10.ok && pathB10.path.steps.find((s) => s.skillId === step.skillId)?.doneAt).toBeNull();
+
+    // A new upload in the same session starts from the same progress.
+    const [upload] = await db!.insert(schema.resumes).values({ anonymousSessionId: a.session, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+    created.push(upload.id);
+    await db!.insert(schema.profiles).values({ resumeId: upload.id, version: 1, data: profile, confirmedByUser: true });
+    const fresh = await getPathForOwner(upload.id, { sessionId: a.session }, role, 5, { db: db! });
+    expect(fresh.ok && fresh.path.steps.find((s) => s.skillId === step.skillId)?.doneAt).toBe(first?.toISOString());
+  });
+
   it("keeps progress when the weekly hours change", async () => {
     const { session, resumeId } = await seed();
     const five = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db! });
