@@ -318,6 +318,23 @@ export const gapProofs = pgTable(
   (t) => [index("gap_proofs_user_skill").on(t.userId, t.skillId), check("gap_proofs_evidence_type", sql`${t.evidence}->>'type' = ${t.type}::text`)],
 );
 
+/**
+ * One row per person per India date with the ride tasks ticked that day (handoff section 5). The streak and the week
+ * are counted from the rows, never stored as a counter. A row whose ticks were all taken back is not a ride.
+ */
+export const rideDays = pgTable(
+  "ride_days",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    day: date("day").notNull(),
+    taskIds: text("task_ids").array().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.day] })],
+);
+
 /* Audit ------------------------------------------------------------------- */
 
 /** Any admin access to user data (SEC-8). */

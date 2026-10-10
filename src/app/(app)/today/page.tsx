@@ -7,6 +7,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { USER_STATES, type UserState } from "@/lib/schemas";
 import { greetingAt } from "@/lib/today/board";
 import { todayStateFor } from "@/lib/today/state";
+import { tickRideTask } from "./actions";
 import {
   exampleDepartures,
   exampleEvents,
@@ -60,20 +61,24 @@ async function Today({ searchParams }: PageProps<"/today">) {
     );
   }
   // Signed in: the server picks the state from the person's own resume and gaps.
-  const found = await todayStateFor(account.id);
+  const found = await todayStateFor(account.id, new Date());
   const name = account.name?.split(/\s+/)[0] ?? data.name;
   const own: TodayData =
     found.state === "first"
       ? { ...data, name, greeting, role: found.role.title, tally: found.tally, lineHours: found.lineHours, firstTasks: found.firstTasks }
-      : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
+      : found.state === "returning"
+        ? { ...data, name, greeting, role: found.role.title, ride: found.ride, week: found.week }
+        : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
   return (
     <div className="flex flex-col gap-4">
       <Banner>
         {found.state === "first"
           ? "Your welcome card comes from your resume. The rest is example data until we build it."
-          : "Add your resume to start. The cards below are example data until we build them."}
+          : found.state === "returning"
+            ? "Your ride, week and streak are your own. The other cards are example data until we build them."
+            : "Add your resume to start. The cards below are example data until we build them."}
       </Banner>
-      <TodayView state={found.state} data={own} upload={<UploadForm />} departuresHref="/departures" />
+      <TodayView state={found.state} data={own} upload={<UploadForm />} departuresHref="/departures" onToggleTask={tickRideTask} />
     </div>
   );
 }

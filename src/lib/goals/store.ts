@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals } from "@/db/schema";
 import { skills } from "@/content";
 import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/today/state";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { planGoalSync } from "./sync";
 
 type Db = ReturnType<typeof getDb>;
@@ -100,6 +100,20 @@ export async function syncGoals(userId: string, analysis: { id: string; result: 
     const provedSet = new Set(proved);
     return rows.map((r) => userGoal.parse({ ...r, proved: provedSet.has(r.skillId) }));
   });
+}
+
+/** The person's goals in order, read only: for checks that must not write, such as a tick. */
+export async function goalsOf(userId: string, db: Db = getDb()): Promise<UserGoal[]> {
+  const [rows, proved] = await Promise.all([
+    db
+      .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position })
+      .from(userGoals)
+      .where(eq(userGoals.userId, userId))
+      .orderBy(asc(userGoals.position), asc(userGoals.createdAt)),
+    provedSkills(userId, db),
+  ]);
+  const provedSet = new Set(proved);
+  return rows.map((r) => userGoal.parse({ ...r, proved: provedSet.has(r.skillId) }));
 }
 
 /**

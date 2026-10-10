@@ -19,6 +19,7 @@ export function WelcomeHero({
   lineHours,
   onHours,
   onFindable,
+  onToggle,
 }: {
   name: string;
   role: string;
@@ -28,6 +29,8 @@ export function WelcomeHero({
   lineHours: number;
   onHours?: (hours: number) => void;
   onFindable?: (on: boolean) => void;
+  /** Saves a tick. Without it the card only keeps local state (design page). */
+  onToggle?: (taskId: string, done: boolean) => void;
 }) {
   const [done, setDone] = useState(() => new Set(firstTasks.filter((t) => t.done).map((t) => t.id)));
   const [hours, setHours] = useState<number>(DEFAULT_WEEKLY_HOURS);
@@ -36,13 +39,18 @@ export function WelcomeHero({
 
   function toggle(id: string) {
     const next = new Set(done);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
+    const on = !next.has(id);
+    if (on) next.add(id);
+    else next.delete(id);
     setDone(next);
+    onToggle?.(id, on);
   }
 
   return (
-    <section aria-label="Welcome" className="grid gap-7 overflow-hidden rounded-[24px] border border-line bg-surface px-4 py-5 md:grid-cols-[minmax(0,1fr)_300px] md:px-7 md:py-6">
+    <section
+      aria-label="Welcome"
+      className="grid gap-7 overflow-hidden rounded-[24px] border border-line bg-surface px-4 py-5 md:grid-cols-[minmax(0,1fr)_300px] md:px-7 md:py-6"
+    >
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[0.8rem] font-semibold">
@@ -63,9 +71,7 @@ export function WelcomeHero({
           <Tally value={tally.goals} label="goals on your line" dot="bg-accent" />
           <Tally value={tally.boardable} label={tally.boardable === 1 ? "role you could board today" : "roles you could board today"} dot="bg-line" />
         </dl>
-        <h3 className="text-base font-semibold">
-          Your first ride · Pitstop 1, about {firstTasks.reduce((n, t) => n + t.minutes, 0)} min
-        </h3>
+        <h3 className="text-base font-semibold">Your first ride · Pitstop 1, about {firstTasks.reduce((n, t) => n + t.minutes, 0)} min</h3>
         <TaskList tasks={firstTasks} done={done} onToggle={toggle} />
       </div>
 
