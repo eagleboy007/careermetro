@@ -3,8 +3,8 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { MetroMap } from "@/components/map/metro-map";
 import { currentAccount } from "@/lib/auth/server";
-import { exampleMapLine } from "@/lib/map/fixtures";
-import { mapLineFor } from "@/lib/map/store";
+import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
+import { lifeLineFor, mapLineFor } from "@/lib/map/store";
 
 export const metadata: Metadata = { title: "Map · CareerMetro", robots: { index: false } };
 
@@ -17,16 +17,16 @@ async function MapScreen({ searchParams }: PageProps<"/map">) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Your own line appears here once you add your resume.</Banner>
-        <MetroMap line={state === "no_resume" ? null : exampleMapLine} />
+        {state === "no_resume" ? <MetroMap line={null} /> : <MetroMap line={exampleMapLine} life={exampleLifeLine} />}
       </div>
     );
   }
   // Signed in: the line comes from the person's own gaps and path. Proof comes in a later step, so no goal is met yet.
-  const line = await mapLineFor(account.id);
+  const [line, life] = await Promise.all([mapLineFor(account.id), lifeLineFor(account.id, new Date())]);
   return (
     <div className="flex flex-col gap-4">
-      {line && <Banner>Your line comes from your gaps and your path. Other people on it appear once profiles can be found.</Banner>}
-      <MetroMap line={line} />
+      {line && <Banner>Your line comes from your gaps and your path, and your Life line from your resume. Other people on it appear once profiles can be found.</Banner>}
+      <MetroMap line={line} life={life} />
     </div>
   );
 }

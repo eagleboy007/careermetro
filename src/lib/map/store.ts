@@ -1,10 +1,12 @@
 import "server-only";
 import { asc, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
-import { paths, pathSteps, resources } from "@/db/schema";
+import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
-import type { MapGoal, MapLine } from "@/lib/schemas";
+import { getResumeForOwner } from "@/lib/resume/store";
+import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
+import { lifeFromProfile } from "./life";
 
 const MAX_OTHER_LINES = 2;
 
@@ -102,3 +104,19 @@ export function otherLines(roleSlug: string, goals: MapGoal[]): MapLine["otherLi
   return out;
 }
 
+
+/**
+ * The signed-in person's Life line, from the latest saved profile of the resume behind their current gaps and the day
+ * they joined. Null before there is a current analysis, like the role line.
+ */
+export async function lifeLineFor(userId: string, now: Date, db: Db = getDb()): Promise<LifeLine | null> {
+  const analysis = await currentAnalysis(userId, db);
+  if (!analysis) return null;
+  const [resume, [user]] = await Promise.all([
+    getResumeForOwner(analysis.resumeId, { userId }, db),
+    db.select({ createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
+  ]);
+  if (!resume || !user) return null;
+  const role = roleProfiles.find((r) => r.slug === analysis.result.roleSlug);
+  return lifeFromProfile(resume.profile, { joinedAt: user.createdAt, now, destination: role?.title ?? analysis.result.roleSlug });
+}
