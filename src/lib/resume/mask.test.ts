@@ -65,4 +65,37 @@ describe("maskPii", () => {
     const body = ["Priya", "Data Analyst", "", "EXPERIENCE", "- Opened 3 stores on MG Road in Bengaluru"].join("\n");
     expect(maskPii(body).text).toContain("MG Road");
   });
+
+  // Testing's run 1 (T4): Indian address lines the earlier rules let through.
+  it.each([
+    "B-204, Green Park, Andheri (E), Mumbai - 400 069",
+    "C/o Ramesh Rao, Kothrud, Pune 411038",
+    "Village Rampur, Post Office Rampur, Dist. Sitapur, UP 261001",
+    "Address: 22 Ganesh Peth, Nagpur",
+    "Permanent address - 14 Station Road, Kota",
+    "S/o Suresh Kumar, Ward 7, Hisar",
+  ])("masks the address line %s anywhere in the resume", (line) => {
+    const text = ["Asha Rao", "Data Analyst", "", "EXPERIENCE", "Analyst, Example Ltd", "2022", "Notes", "More", "x", line].join("\n");
+    expect(maskPii(text).text.split("\n").at(-1)).toBe("[ADDRESS]");
+  });
+
+  // T5: landlines and other mobile spellings.
+  it.each(["+91 22 2345 6789", "022-23456789", "011-2345-6789", "(022) 2345 6789", "98765 - 43210", "0091 98765 43210", "+91-80-4123-4567"])(
+    "masks the phone number %s",
+    (phone) => {
+      expect(maskPii(`Phone: ${phone} | Pune`).text).toBe("Phone: [PHONE] | Pune");
+    },
+  );
+
+  it("still leaves ranges, amounts and sentences with numbers alone", () => {
+    for (const line of [
+      "- Grew revenue 2019-2023 by 35% to Rs 12,00,000",
+      "- Cut month-end close from 10 to 6 days across 2021-2022",
+      "- Handled 400 000 tickets a year, 98% within SLA",
+      "B.Com, Savitribai Phule Pune University, 2021",
+    ]) {
+      expect(maskPii(line).text).toBe(line);
+    }
+  });
 });
+
