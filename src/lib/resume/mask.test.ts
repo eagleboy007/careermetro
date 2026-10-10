@@ -294,4 +294,15 @@ describe("maskPii", () => {
   ])("keeps %s", (line) => {
     expect(lastLine(late(line))).toBe(line);
   });
+
+  it.each([
+    "Address: B-204 Green Park Andheri East Mumbai",
+    "Add: 14 Gandhi Chowk Hisar",
+    "Addr: Sai Krupa, Kothrud, Pune",
+    "Address: Sai Krupa Kothrud Pune Maharashtra",
+    "Address: Gandhi Chowk Hisar Haryana",
+  ])("masks %s with no comma or address word", (line) => {
+    expect(maskPii(`Asha Rao\nData Analyst\n${line}`).text.split("\n")[2]).toBe("[ADDRESS]");
+    expect(lastLine(late(line))).toBe("[ADDRESS]");
+  });
 });
