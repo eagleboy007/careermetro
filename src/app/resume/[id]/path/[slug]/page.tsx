@@ -9,6 +9,7 @@ import { PathSteps } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
 import { roleProfiles } from "@/content";
+import { currentAccount } from "@/lib/auth/server";
 import { getPathForOwner } from "@/lib/path/store";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
@@ -18,9 +19,11 @@ export const metadata: Metadata = { title: "Your path · CareerMetro", robots: {
 const STATUS_LABEL = { missing: "Missing gap", weak: "Weak evidence", outdated: "Outdated" } as const;
 const dayMonth = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 
-function readHours(value: string | string[] | undefined): number {
+/** The hours in the link, else the signed-in person's saved hours a week, else the default. */
+function readHours(value: string | string[] | undefined, saved: number | undefined): number {
   const n = Number(Array.isArray(value) ? value[0] : value);
-  return (WEEKLY_HOURS as readonly number[]).includes(n) ? n : DEFAULT_WEEKLY_HOURS;
+  if ((WEEKLY_HOURS as readonly number[]).includes(n)) return n;
+  return saved !== undefined && (WEEKLY_HOURS as readonly number[]).includes(saved) ? saved : DEFAULT_WEEKLY_HOURS;
 }
 
 async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug]">) {
@@ -29,8 +32,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   const { id, slug } = await params;
   const role = roleProfiles.find((r) => r.slug === slug);
   if (!role) notFound();
-  const hours = readHours((await searchParams).hours);
   const owner = await readOwner();
+  const hours = readHours((await searchParams).hours, owner && "userId" in owner ? (await currentAccount())?.weeklyHours : undefined);
   let result: Awaited<ReturnType<typeof getPathForOwner>>;
   try {
     result = owner ? await getPathForOwner(id, owner, role, hours) : { ok: false, reason: "not_found" };

@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { StatusChip } from "@/components/ui/status-chip";
 import { AppShell } from "@/components/app/app-shell";
+import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { MetroMap } from "@/components/map/metro-map";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -254,6 +255,12 @@ export default function DesignPage() {
         <div className="h-96 rounded-lg border border-line">
           <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false }}>
             <p className="text-sm text-muted">Page content goes here.</p>
+          </AppShell>
+        </div>
+        <p className="text-sm text-muted">While a screen loads: the frame with an empty avatar and quiet blocks, never a blank page.</p>
+        <div className="h-96 overflow-hidden rounded-lg border border-line">
+          <AppShell embedded user={null}>
+            <PageLoading />
           </AppShell>
         </div>
       </section>

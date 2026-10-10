@@ -11,6 +11,7 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
+import { goalsOf } from "@/lib/goals/store";
 import { tickTask } from "@/lib/ride/store";
 import { clip, todayStateFor } from "./state";
 
@@ -106,7 +107,10 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     if (before.state !== "first") throw new Error("not first");
     expect(before.firstTasks).toHaveLength(1);
     expect(before.firstTasks[0].id).toMatch(/:open-path$/);
-    expect(before.firstTasks[0].title).toMatch(/^Open your path for /);
+    expect(before.firstTasks[0]).toMatchObject({ title: "Build your path", locked: true, href: `/resume/${r.resumeId}/path/${role.slug}` });
+    expect(before.goals?.goals.length).toBeGreaterThan(0);
+    // Building the path is done on the Path page; it can't be ticked for a ride day.
+    expect(await tickTask(userId, before.firstTasks[0].id, true, now, db!)).toBe(false);
 
     const path = await getPathForOwner(r.resumeId, owner, role, 5, { db: db! });
     if (!path.ok) throw new Error(path.reason);
@@ -140,8 +144,11 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     expect(await tickTask(userId, practice.id, false, tomorrow, db!)).toBe(false);
     expect(await db!.select().from(schema.rideDays).where(eq(schema.rideDays.userId, userId))).toHaveLength(1);
 
-    // Only tasks on the person's own line count.
+    // Only tasks on today's ride count: not a made-up one, nor a later goal's.
     expect(await tickTask(userId, "made-up:task", true, now, db!)).toBe(false);
+    const later = (await goalsOf(userId, db!)).at(-1)!;
+    expect(later.id).not.toBe(practice.id.split(":")[0]);
+    expect(await tickTask(userId, `${later.id}:practice`, true, now, db!)).toBe(false);
     const other = await user("ride-other");
     expect(await tickTask(other, practice.id, true, now, db!)).toBe(false);
     expect(await db!.select().from(schema.rideDays).where(eq(schema.rideDays.userId, other))).toEqual([]);
@@ -189,7 +196,7 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
     const state = await todayStateFor(userId, now, db!);
     if (state.state !== "first") throw new Error("not first");
     // Goals the path covered are done; the ride waits on them, or moves to a goal the path left for later.
-    expect(state.firstTasks.every((t) => t.done || t.id.endsWith(":open-path"))).toBe(true);
+    expect(state.firstTasks.every((t) => t.done || t.id.endsWith(":self-study"))).toBe(true);
   });
 
   it("never reads another person's resume", async () => {

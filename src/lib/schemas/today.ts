@@ -17,8 +17,17 @@ export const rideTask = z.object({
   detail: z.string().max(120),
   minutes: z.number().int().min(1).max(240),
   done: z.boolean(),
-  /** Ticked by the app, not by hand: the signal check task is done when the question is answered. */
+  /** Can't be ticked by hand: the signal check task, a task that links to where it is done, or one done on an earlier day. */
   locked: z.boolean().default(false),
+  /** The signal check task: locked, and done when the question is answered. */
+  signal: z.boolean().default(false),
+  /** A page in the app where the task is done, for a task that can't be ticked by hand. */
+  href: z
+    .string()
+    .max(200)
+    .regex(/^\/(?![\/\\])/, "a path inside the app")
+    .nullable()
+    .default(null),
 });
 
 /** The prove pitstop after this week's learn pitstop: any one option fills the gap. Only proof moves the train. */
@@ -70,8 +79,8 @@ export const ride = z
     message: "more tasks done than planned",
     path: ["weekTasksDone"],
   })
-  .refine((r) => r.tasks.every((t, i) => !t.locked || i === r.tasks.length - 1), {
-    message: "only the last task can be locked",
+  .refine((r) => r.tasks.every((t, i) => (!t.signal || (t.locked && i === r.tasks.length - 1))), {
+    message: "the signal check task is locked and comes last",
     path: ["tasks"],
   });
 

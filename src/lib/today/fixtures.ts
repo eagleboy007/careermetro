@@ -32,9 +32,9 @@ export const exampleRide: Ride = {
     ],
   },
   tasks: [
-    { id: "t1", title: "Do the Advanced SQL lesson on analytic functions", detail: "Kaggle Learn · course", minutes: 25, done: false, locked: false },
-    { id: "t2", title: "Rank the top 5 products per month in the sample sales table", detail: "Practice, part 1 of 3 · paste the query when done", minutes: 20, done: false, locked: false },
-    { id: "t3", title: "Answer today's signal check", detail: "One question, just below", minutes: 2, done: false, locked: true },
+    { id: "t1", title: "Do the Advanced SQL lesson on analytic functions", detail: "Kaggle Learn · course", minutes: 25, done: false, locked: false, signal: false, href: null },
+    { id: "t2", title: "Rank the top 5 products per month in the sample sales table", detail: "Practice, part 1 of 3 · paste the query when done", minutes: 20, done: false, locked: false, signal: false, href: null },
+    { id: "t3", title: "Answer today's signal check", detail: "One question, just below", minutes: 2, done: false, locked: true, signal: true, href: null },
   ],
   weekTasksDone: 2,
   weekTasksTotal: 5,
@@ -160,8 +160,8 @@ export const USER_STATE_LABELS: Record<UserState, string> = {
 };
 
 export const exampleFirstTasks: RideTask[] = [
-  { id: "f1", title: "Read what window functions do, in plain words", detail: "PostgreSQL docs · article", minutes: 15, done: false, locked: false },
-  { id: "f2", title: "List 3 reports at work that rank or compare rows", detail: "Proof task, part 1 · two lines each", minutes: 15, done: false, locked: false },
+  { id: "f1", title: "Read what window functions do, in plain words", detail: "PostgreSQL docs · article", minutes: 15, done: false, locked: false, signal: false, href: null },
+  { id: "f2", title: "List 3 reports at work that rank or compare rows", detail: "Proof task, part 1 · two lines each", minutes: 15, done: false, locked: false, signal: false, href: null },
 ];
 
 export const exampleSignalCheck: SignalCheck = {

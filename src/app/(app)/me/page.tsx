@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { MeView } from "@/components/me/me-view";
 import { currentAccount } from "@/lib/auth/server";
 import { exampleMe } from "@/lib/me/fixtures";
@@ -26,7 +27,7 @@ async function MeScreen() {
 
 export default function MePage() {
   return (
-    <Suspense>
+    <Suspense fallback={<PageLoading />}>
       <MeScreen />
     </Suspense>
   );

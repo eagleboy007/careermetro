@@ -133,20 +133,21 @@ describe("signal check schema", () => {
   });
 });
 
-describe("ride locked task", () => {
-  it("allows only the last task to be locked", () => {
-    const tasks = exampleRide.tasks.map((t) => ({ ...t, locked: false }));
+describe("ride signal task", () => {
+  it("allows the signal check task only last, and locked", () => {
+    const tasks = exampleRide.tasks.map((t) => ({ ...t, locked: false, signal: false }));
     const last = tasks.length - 1;
     expect(
       ride.safeParse({
         ...exampleRide,
-        tasks: tasks.map((t, i) => ({ ...t, locked: i === last })),
+        tasks: tasks.map((t, i) => ({ ...t, locked: i === last, signal: i === last })),
       }).success,
     ).toBe(true);
+    expect(ride.safeParse({ ...exampleRide, tasks: tasks.map((t, i) => ({ ...t, signal: i === last })) }).success).toBe(false);
     expect(
       ride.safeParse({
         ...exampleRide,
-        tasks: tasks.map((t, i) => ({ ...t, locked: i === 0 })),
+        tasks: tasks.map((t, i) => ({ ...t, locked: i === 0, signal: i === 0 })),
       }).success,
     ).toBe(false);
   });

@@ -26,12 +26,12 @@ export function RideCard({
   greeting?: string;
   ride: Ride;
   week: RideWeek;
-  onToggle?: (taskId: string, done: boolean) => void;
+  onToggle?: (taskId: string, done: boolean) => void | Promise<boolean>;
   /** The signal check was answered today: that ticks the ride's locked task. */
   signalAnswered?: boolean;
 }) {
   const [ticked, setTicked] = useState(() => new Set(ride.tasks.filter((t) => t.done && !t.locked).map((t) => t.id)));
-  const done = new Set([...ticked, ...ride.tasks.filter((t) => t.locked && (t.done || signalAnswered)).map((t) => t.id)]);
+  const done = new Set([...ticked, ...ride.tasks.filter((t) => t.locked && (t.done || (t.signal && signalAnswered))).map((t) => t.id)]);
   const added = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
   const removed = ride.tasks.filter((t) => !done.has(t.id) && t.done).length;
   const weekDone = Math.max(0, Math.min(ride.weekTasksTotal, ride.weekTasksDone + added - removed));
@@ -41,13 +41,27 @@ export function RideCard({
   const today = DAYS[todayIndex] ?? null;
   const lead = ride.title.slice(0, ride.title.length - ride.titleEmphasis.length);
 
+  const clicks = useRef(new Map<string, number>());
+
   function toggle(id: string) {
     const next = new Set(ticked);
     const on = !next.has(id);
     if (on) next.add(id);
     else next.delete(id);
     setTicked(next);
-    onToggle?.(id, on);
+    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept. Only the latest
+    // click on a box can undo it: an older answer arriving late must not untick what a newer click saved.
+    const seq = (clicks.current.get(id) ?? 0) + 1;
+    clicks.current.set(id, seq);
+    const undo = () =>
+      clicks.current.get(id) === seq &&
+      setTicked((now) => {
+        const back = new Set(now);
+        if (on) back.delete(id);
+        else back.add(id);
+        return back;
+      });
+    Promise.resolve(onToggle?.(id, on)).then((saved) => saved === false && undo(), undo);
   }
 
   return (

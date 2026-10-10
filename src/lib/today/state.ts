@@ -6,7 +6,7 @@ import { roleProfiles } from "@/content";
 import { currentAnalysis, type Db } from "@/lib/gaps/current";
 import { todayRideFor } from "@/lib/ride/store";
 import { clip } from "@/lib/text";
-import type { FirstTally, Ride, RideTask, RideWeek, Streak } from "@/lib/schemas";
+import type { FirstTally, GoalsSummary, Ride, RideTask, RideWeek, Streak } from "@/lib/schemas";
 
 export type { Db, FirstTally };
 export { clip, currentAnalysis };
@@ -21,8 +21,18 @@ export type TodayState =
       tally: FirstTally;
       lineHours: number;
       firstTasks: RideTask[];
+      /** Null once every goal is proved. */
+      goals: GoalsSummary | null;
     }
-  | { state: "returning"; resumeId: string; role: { slug: string; title: string }; ride: Ride; week: RideWeek; streak: Streak };
+  | {
+      state: "returning";
+      resumeId: string;
+      role: { slug: string; title: string };
+      ride: Ride;
+      goals: GoalsSummary;
+      week: RideWeek;
+      streak: Streak;
+    };
 
 /**
  * First sign-up: the person has a gap analysis that is still current, made by today's matcher from the latest saved
@@ -46,9 +56,9 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
 
   const result = analysis.result;
   const role = { slug: result.roleSlug, title: roleProfiles.find((r) => r.slug === result.roleSlug)?.title ?? result.roleSlug };
-  const today = await todayRideFor(userId, now, db);
+  const today = await todayRideFor(userId, now, db, role.title);
   if (today && today.streak.days > 0) {
-    return { state: "returning", resumeId: analysis.resumeId, role, ride: today.ride, week: today.week, streak: today.streak };
+    return { state: "returning", resumeId: analysis.resumeId, role, ride: today.ride, goals: today.goals, week: today.week, streak: today.streak };
   }
   const gaps = result.gaps.length;
   return {
@@ -58,6 +68,7 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
     tally: { skillsFound: result.metSkillIds.length, gaps, goals: gaps, boardable: gaps === 0 ? 1 : 0 },
     lineHours: Math.max(1, result.readiness.estimatedHours),
     firstTasks: today?.ride.tasks ?? [ALL_PROVED],
+    goals: today?.goals ?? null,
   };
 }
 
@@ -67,5 +78,7 @@ const ALL_PROVED: RideTask = {
   detail: "See the roles you can board now",
   minutes: 5,
   done: false,
-  locked: false,
+  locked: true,
+  signal: false,
+  href: "/departures",
 };
