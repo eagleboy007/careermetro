@@ -25,7 +25,7 @@ export const rideTask = z.object({
   href: z
     .string()
     .max(200)
-    .regex(/^\/(?!\/)/, "a path inside the app")
+    .regex(/^\/(?![\/\\])/, "a path inside the app")
     .nullable()
     .default(null),
 });

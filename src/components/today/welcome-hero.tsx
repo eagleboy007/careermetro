@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Route } from "lucide-react";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type FirstTally, type RideTask } from "@/lib/schemas";
 import { TaskList } from "./task-list";
 
@@ -41,14 +41,30 @@ export function WelcomeHero({
   const [findable, setFindable] = useState(false);
   const weeks = Math.max(1, Math.ceil(lineHours / hours));
 
+  const clicks = useRef(new Map<string, number>());
+  const hourPicks = useRef(0);
+
+  /** Saves the hours a week; a refused or failed save goes back to the last saved choice. */
+  function pickHours(h: number) {
+    const before = hours;
+    const seq = ++hourPicks.current;
+    setHours(h);
+    const undo = () => hourPicks.current === seq && setHours(before);
+    Promise.resolve(onHours?.(h)).then((saved) => saved === false && undo(), undo);
+  }
+
   function toggle(id: string) {
     const next = new Set(done);
     const on = !next.has(id);
     if (on) next.add(id);
     else next.delete(id);
     setDone(next);
-    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept.
+    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept. Only the latest
+    // click on a box can undo it: an older answer arriving late must not untick what a newer click saved.
+    const seq = (clicks.current.get(id) ?? 0) + 1;
+    clicks.current.set(id, seq);
     const undo = () =>
+      clicks.current.get(id) === seq &&
       setDone((now) => {
         const back = new Set(now);
         if (on) back.delete(id);
@@ -102,10 +118,7 @@ export function WelcomeHero({
                   key={h}
                   type="button"
                   aria-pressed={h === hours}
-                  onClick={() => {
-                    setHours(h);
-                    onHours?.(h);
-                  }}
+                  onClick={() => pickHours(h)}
                   className="rounded-full border border-line px-3 py-1 text-[0.78rem] font-medium text-muted aria-pressed:border-transparent aria-pressed:bg-surface-2 aria-pressed:text-ink"
                 >
                   {h} h

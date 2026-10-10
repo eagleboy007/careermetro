@@ -56,6 +56,7 @@ export async function rideGoalsFor(
     return [
       {
         goalId: g.id,
+        skillId: g.skillId,
         name: gap.skillName,
         status: gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak",
         proved: g.proved,

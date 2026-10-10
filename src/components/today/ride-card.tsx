@@ -41,14 +41,20 @@ export function RideCard({
   const today = DAYS[todayIndex] ?? null;
   const lead = ride.title.slice(0, ride.title.length - ride.titleEmphasis.length);
 
+  const clicks = useRef(new Map<string, number>());
+
   function toggle(id: string) {
     const next = new Set(ticked);
     const on = !next.has(id);
     if (on) next.add(id);
     else next.delete(id);
     setTicked(next);
-    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept.
+    // A refused or failed save puts the box back, so the card never shows a tick that wasn't kept. Only the latest
+    // click on a box can undo it: an older answer arriving late must not untick what a newer click saved.
+    const seq = (clicks.current.get(id) ?? 0) + 1;
+    clicks.current.set(id, seq);
     const undo = () =>
+      clicks.current.get(id) === seq &&
       setTicked((now) => {
         const back = new Set(now);
         if (on) back.delete(id);

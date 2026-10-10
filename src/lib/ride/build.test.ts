@@ -4,6 +4,7 @@ import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./bu
 
 const res = (id: string, minutes = 30) => ({ id, title: `Course ${id}`, provider: "Kaggle Learn", kind: "course", minutes });
 const goal = (p: Partial<RideGoal> & { goalId: string }): RideGoal => ({
+  skillId: p.goalId,
   name: p.goalId.toUpperCase(),
   status: "missing",
   proved: false,

@@ -4,6 +4,7 @@ import { clip } from "@/lib/text";
 /** One goal on the person's line, in order, with what its learn pitstop is made of. */
 export type RideGoal = {
   goalId: string;
+  skillId: string;
   name: string;
   status: "missing" | "weak" | "outdated";
   proved: boolean;
@@ -76,12 +77,6 @@ function tasksOf(g: RideGoal, path: RidePath): Omit<RideTask, "done">[] {
   ];
 }
 
-/**
- * Today's ride (handoff section 5): the first goal not proved with tasks left, or, when every task is done, the first
- * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks
- * stay so they can be taken back. Each goal is two pitstops, learn then prove; the train has passed the pitstops of
- * proved goals. Ticking tasks never proves a goal. Null once every goal is proved.
- */
 export type RideInput = {
   goals: RideGoal[];
   path: RidePath;
@@ -104,6 +99,13 @@ function position(input: RideInput) {
   return { current: unfinished ?? open[0], unfinished, tasksFor, left };
 }
 
+/**
+ * Today's ride (handoff section 5): the first goal not proved with tasks left, or, when every task is done, the first
+ * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks
+ * stay so they can be taken back until the day ends. A goal waiting for proof shows its tasks done and locked. Each
+ * goal is two pitstops, learn then prove; the train has passed the pitstops of proved goals. Ticking tasks never
+ * proves a goal. Null once every goal is proved.
+ */
 export function buildRide(input: RideInput): Ride | null {
   const at = position(input);
   if (!at) return null;
@@ -164,13 +166,13 @@ const SHOWN_GOALS = 3;
  */
 export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[] }): GoalsSummary {
   const at = position(input);
-  const gapBySkill = new Map(input.gaps.map((g) => [g.skillName, g]));
+  const gapBySkill = new Map(input.gaps.map((g) => [g.skillId, g]));
   const open = input.goals.filter((g) => !g.proved);
   const shown = open.slice(0, SHOWN_GOALS);
   const more = open.slice(SHOWN_GOALS);
   const goals = shown.map((g): Goal => {
     const n = input.goals.indexOf(g) * 2 + 1;
-    const gap = gapBySkill.get(g.name);
+    const gap = gapBySkill.get(g.skillId);
     const tasks = at?.tasksFor(g) ?? [];
     const left = at?.left(g) ?? [];
     const leftIds = new Set(left.map((t) => t.id));
