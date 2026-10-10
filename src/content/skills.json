@@ -108,8 +108,6 @@
     "category": "cloud-devops",
     "aliases": [
       "unix",
-      "bash",
-      "shell scripting",
       "shell",
       "linux"
     ],
@@ -422,7 +420,6 @@
     "aliases": [
       "elt",
       "data pipelines",
-      "airflow",
       "data integration"
     ]
   },
@@ -466,7 +463,6 @@
     "aliases": [
       "neural networks",
       "dl",
-      "pytorch",
       "tensorflow",
       "keras"
     ],
@@ -495,17 +491,13 @@
       "generative ai",
       "genai",
       "prompt engineering",
-      "rag",
-      "retrieval augmented generation",
       "llms",
       "llm",
       "large language models",
       "chatgpt",
       "openai api"
     ],
-    "ambiguous": [
-      "rag"
-    ]
+    "ambiguous": []
   },
   {
     "id": "feature-engineering",
@@ -540,7 +532,6 @@
     "name": "MLOps",
     "category": "ml",
     "aliases": [
-      "model deployment",
       "mlflow",
       "model monitoring"
     ],
@@ -642,10 +633,8 @@
     "name": "Monitoring and observability",
     "category": "cloud-devops",
     "aliases": [
-      "observability",
       "prometheus",
       "grafana",
-      "opentelemetry",
       "datadog"
     ]
   },
@@ -656,8 +645,7 @@
     "aliases": [
       "tcp/ip",
       "dns",
-      "load balancing",
-      "vpc"
+      "load balancing"
     ]
   },
   {
@@ -666,7 +654,6 @@
     "category": "cloud-devops",
     "aliases": [
       "security groups",
-      "devsecops",
       "cloud security"
     ]
   },
@@ -832,8 +819,7 @@
     "category": "design",
     "aliases": [
       "wireframes",
-      "mockups",
-      "prototyping"
+      "mockups"
     ]
   },
   {
@@ -849,7 +835,6 @@
     "name": "UX research",
     "category": "design",
     "aliases": [
-      "usability testing",
       "user research"
     ]
   },
@@ -1116,7 +1101,7 @@
       "slos",
       "slis",
       "error budgets",
-      "on-call"
+      "error budget"
     ]
   },
   {
@@ -1180,8 +1165,6 @@
     "aliases": [
       "incident response",
       "incident handling",
-      "dfir",
-      "digital forensics",
       "forensics"
     ]
   },
@@ -1218,12 +1201,7 @@
     "aliases": [
       "appsec",
       "owasp",
-      "owasp top 10",
-      "sast",
-      "dast",
-      "secure code review",
-      "threat modeling",
-      "threat modelling"
+      "owasp top 10"
     ]
   },
   {
@@ -1232,7 +1210,6 @@
     "category": "security",
     "aliases": [
       "threat hunting",
-      "threat intelligence",
       "mitre att&ck",
       "mitre attack",
       "detection engineering",
@@ -1277,8 +1254,6 @@
       "risk assessment",
       "risk management",
       "third-party risk",
-      "vendor risk",
-      "tprm",
       "risk register"
     ],
     "ambiguous": [
@@ -1299,7 +1274,6 @@
       "nist csf",
       "nist 800-53",
       "hipaa",
-      "gdpr",
       "dpdp",
       "rbi cyber security framework"
     ]
@@ -1454,5 +1428,539 @@
       "data masking",
       "auditing database access"
     ]
+  },
+  {
+    "id": "threat-intelligence",
+    "name": "Threat intelligence",
+    "category": "security",
+    "aliases": [
+      "cti",
+      "cyber threat intelligence",
+      "ioc enrichment"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "threat-detection"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "digital-forensics",
+    "name": "Digital forensics",
+    "category": "security",
+    "aliases": [
+      "dfir",
+      "forensic analysis",
+      "disk forensics",
+      "memory forensics"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "security-incident-response"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "malware-analysis",
+    "name": "Malware analysis",
+    "category": "security",
+    "aliases": [
+      "reverse engineering malware",
+      "sandbox analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "soar",
+    "name": "Security automation (SOAR)",
+    "category": "security",
+    "aliases": [
+      "soar",
+      "security orchestration",
+      "playbook automation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "threat-modeling",
+    "name": "Threat modelling",
+    "category": "security",
+    "aliases": [
+      "threat modeling",
+      "stride",
+      "attack trees"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "application-security"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "secure-code-review",
+    "name": "Secure code review",
+    "category": "security",
+    "aliases": [
+      "sast",
+      "dast",
+      "static analysis security",
+      "code security review"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "application-security"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "devsecops",
+    "name": "DevSecOps",
+    "category": "security",
+    "aliases": [
+      "shift left security",
+      "security in ci/cd",
+      "pipeline security"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-privacy",
+    "name": "Data privacy and protection law",
+    "category": "security",
+    "aliases": [
+      "dpdp act",
+      "dpdpa",
+      "gdpr",
+      "privacy compliance",
+      "data protection"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "compliance-frameworks"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "privacy-program-management",
+    "name": "Privacy programme management",
+    "category": "security",
+    "aliases": [
+      "dpia",
+      "privacy impact assessment",
+      "ropa",
+      "records of processing",
+      "consent management"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "data-privacy"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "third-party-risk",
+    "name": "Third-party (vendor) risk",
+    "category": "security",
+    "aliases": [
+      "tprm",
+      "vendor risk",
+      "vendor risk assessment",
+      "supplier risk"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "risk-assessment"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "business-continuity",
+    "name": "Business continuity and disaster recovery",
+    "category": "security",
+    "aliases": [
+      "bcp",
+      "bcp/dr",
+      "iso 22301",
+      "bcms"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-security-posture",
+    "name": "Cloud security posture management",
+    "category": "security",
+    "aliases": [
+      "cspm",
+      "cnapp",
+      "cloud posture",
+      "wiz",
+      "prisma cloud"
+    ],
+    "ambiguous": [
+      "wiz"
+    ],
+    "implies": [
+      "cloud-security"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "security-architecture",
+    "name": "Security architecture",
+    "category": "security",
+    "aliases": [
+      "zero trust",
+      "security design review",
+      "enterprise security architecture"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "android",
+    "name": "Android development",
+    "category": "web",
+    "aliases": [
+      "android sdk",
+      "android studio",
+      "jetpack compose"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "kotlin"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "swift-ios",
+    "name": "iOS development (Swift)",
+    "category": "web",
+    "aliases": [
+      "swift",
+      "swiftui",
+      "uikit",
+      "ios development",
+      "xcode"
+    ],
+    "ambiguous": [
+      "swift"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "flutter",
+    "name": "Flutter",
+    "category": "web",
+    "aliases": [
+      "flutter",
+      "dart"
+    ],
+    "ambiguous": [
+      "dart"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "react-native",
+    "name": "React Native",
+    "category": "web",
+    "aliases": [
+      "react native",
+      "expo"
+    ],
+    "ambiguous": [
+      "expo"
+    ],
+    "implies": [
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "mobile-release",
+    "name": "Mobile app release and store publishing",
+    "category": "web",
+    "aliases": [
+      "play store release",
+      "app store connect",
+      "play console",
+      "testflight"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-orchestration",
+    "name": "Data pipeline orchestration",
+    "category": "data",
+    "aliases": [
+      "airflow",
+      "apache airflow",
+      "dagster",
+      "prefect"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "etl"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "streaming-data",
+    "name": "Streaming data",
+    "category": "data",
+    "aliases": [
+      "kafka streams",
+      "spark streaming",
+      "flink",
+      "kinesis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "model-serving",
+    "name": "Model deployment and serving",
+    "category": "ml",
+    "aliases": [
+      "model serving",
+      "model deployment",
+      "fastapi model",
+      "torchserve",
+      "bentoml"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "mlops"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "ml-system-design",
+    "name": "ML system design",
+    "category": "ml",
+    "aliases": [
+      "ml system design",
+      "recommendation system design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pytorch",
+    "name": "PyTorch",
+    "category": "ml",
+    "aliases": [
+      "pytorch",
+      "torch"
+    ],
+    "ambiguous": [
+      "torch"
+    ],
+    "implies": [
+      "deep-learning",
+      "python"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "vector-search",
+    "name": "Vector search and RAG",
+    "category": "ml",
+    "aliases": [
+      "vector database",
+      "pgvector",
+      "embeddings search",
+      "rag",
+      "retrieval augmented generation"
+    ],
+    "ambiguous": [
+      "rag"
+    ],
+    "implies": [
+      "llm-apps"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "incident-management",
+    "name": "Incident management and on-call",
+    "category": "cloud-devops",
+    "aliases": [
+      "on-call",
+      "on call",
+      "postmortem",
+      "incident commander",
+      "pagerduty"
+    ],
+    "ambiguous": [
+      "on call",
+      "on-call"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "observability",
+    "name": "Observability (logs, metrics, traces)",
+    "category": "cloud-devops",
+    "aliases": [
+      "opentelemetry",
+      "distributed tracing",
+      "slo",
+      "sli",
+      "observability"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "monitoring"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-cost",
+    "name": "Cloud cost management (FinOps)",
+    "category": "cloud-devops",
+    "aliases": [
+      "finops",
+      "cloud cost optimisation",
+      "cost optimization"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-networking",
+    "name": "Cloud networking",
+    "category": "cloud-devops",
+    "aliases": [
+      "vpc",
+      "subnets",
+      "load balancer",
+      "transit gateway",
+      "vnet"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "networking-basics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "scripting-bash",
+    "name": "Shell scripting",
+    "category": "cloud-devops",
+    "aliases": [
+      "bash",
+      "shell scripting",
+      "bash scripting"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "linux"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "interaction-design",
+    "name": "Interaction and visual design",
+    "category": "design",
+    "aliases": [
+      "ui design",
+      "visual design",
+      "interaction design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "design-systems",
+    "name": "Design systems",
+    "category": "design",
+    "aliases": [
+      "design system",
+      "component library",
+      "design tokens"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "prototyping",
+    "name": "Prototyping",
+    "category": "design",
+    "aliases": [
+      "clickable prototype",
+      "figma prototype",
+      "protopie"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "usability-testing",
+    "name": "Usability testing",
+    "category": "design",
+    "aliases": [
+      "usability test",
+      "user testing",
+      "maze"
+    ],
+    "ambiguous": [
+      "maze"
+    ],
+    "implies": [
+      "ux-research"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "people-management",
+    "name": "People management",
+    "category": "workplace",
+    "aliases": [
+      "managed a team",
+      "team lead",
+      "line manager",
+      "reporting manager",
+      "people manager"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "stakeholder-management"
+    ],
+    "scoring": "context"
+  },
+  {
+    "id": "technical-leadership",
+    "name": "Technical leadership",
+    "category": "workplace",
+    "aliases": [
+      "tech lead",
+      "technical lead",
+      "architecture decisions",
+      "mentoring engineers"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "context"
   }
 ]

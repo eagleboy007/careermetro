@@ -419,7 +419,8 @@
     "provider": "MeitY, Government of India",
     "kind": "docs",
     "skillIds": [
-      "data-governance"
+      "data-governance",
+      "data-privacy"
     ],
     "minutes": 90,
     "free": true
@@ -564,7 +565,8 @@
     "provider": "PyTorch",
     "kind": "docs",
     "skillIds": [
-      "deep-learning"
+      "deep-learning",
+      "pytorch"
     ],
     "minutes": 180,
     "free": true
@@ -1132,7 +1134,8 @@
     "provider": "Apache Kafka",
     "kind": "docs",
     "skillIds": [
-      "messaging-queues"
+      "messaging-queues",
+      "streaming-data"
     ],
     "minutes": 60,
     "free": true
@@ -1143,7 +1146,8 @@
     "provider": "Confluent",
     "kind": "course",
     "skillIds": [
-      "messaging-queues"
+      "messaging-queues",
+      "streaming-data"
     ],
     "minutes": 600,
     "free": true
@@ -1176,7 +1180,8 @@
     "provider": "Made With ML",
     "kind": "course",
     "skillIds": [
-      "mlops"
+      "mlops",
+      "model-serving"
     ],
     "minutes": 1800,
     "free": true
@@ -2094,7 +2099,9 @@
     "provider": "Google",
     "kind": "docs",
     "skillIds": [
-      "sre-practices"
+      "sre-practices",
+      "incident-management",
+      "observability"
     ],
     "minutes": 900,
     "free": true
@@ -2331,7 +2338,8 @@
     "provider": "Nielsen Norman Group",
     "kind": "docs",
     "skillIds": [
-      "ux-research"
+      "ux-research",
+      "usability-testing"
     ],
     "minutes": 20,
     "free": true
@@ -2422,6 +2430,678 @@
       "wireframing"
     ],
     "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Android Basics with Compose",
+    "url": "https://developer.android.com/courses/android-basics-compose/course",
+    "provider": "Android Developers",
+    "kind": "course",
+    "skillIds": [
+      "android"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Jetpack Compose documentation",
+    "url": "https://developer.android.com/develop/ui/compose/documentation",
+    "provider": "Android Developers",
+    "kind": "docs",
+    "skillIds": [
+      "android"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Kotlin: get started",
+    "url": "https://kotlinlang.org/docs/getting-started.html",
+    "provider": "JetBrains (Kotlin)",
+    "kind": "docs",
+    "skillIds": [
+      "kotlin"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Kotlin Koans",
+    "url": "https://play.kotlinlang.org/koans/overview",
+    "provider": "JetBrains (Kotlin)",
+    "kind": "practice",
+    "skillIds": [
+      "kotlin"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SwiftUI tutorials",
+    "url": "https://developer.apple.com/tutorials/swiftui",
+    "provider": "Apple Developer",
+    "kind": "course",
+    "skillIds": [
+      "swift-ios"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "The Swift Programming Language",
+    "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/",
+    "provider": "Swift.org",
+    "kind": "docs",
+    "skillIds": [
+      "swift-ios"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Flutter: write your first app",
+    "url": "https://docs.flutter.dev/get-started/codelab",
+    "provider": "Flutter",
+    "kind": "course",
+    "skillIds": [
+      "flutter"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Flutter documentation",
+    "url": "https://docs.flutter.dev/",
+    "provider": "Flutter",
+    "kind": "docs",
+    "skillIds": [
+      "flutter"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "React Native: get started",
+    "url": "https://reactnative.dev/docs/getting-started",
+    "provider": "React Native",
+    "kind": "docs",
+    "skillIds": [
+      "react-native"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Expo tutorial",
+    "url": "https://docs.expo.dev/tutorial/introduction/",
+    "provider": "Expo",
+    "kind": "course",
+    "skillIds": [
+      "react-native"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Publish your Android app",
+    "url": "https://developer.android.com/studio/publish",
+    "provider": "Android Developers",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-release"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "TestFlight overview",
+    "url": "https://developer.apple.com/testflight/",
+    "provider": "Apple Developer",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-release"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "C# documentation",
+    "url": "https://learn.microsoft.com/en-us/dotnet/csharp/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "csharp-dotnet"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Get started with C#, Part 1",
+    "url": "https://learn.microsoft.com/en-us/training/paths/get-started-c-sharp-part-1/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "csharp-dotnet"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "What is Amazon VPC?",
+    "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-networking"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Azure Virtual Network overview",
+    "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-networking"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Cloud security posture management in Defender for Cloud",
+    "url": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-security-posture"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is AWS Security Hub?",
+    "url": "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-security-posture"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Airflow fundamentals tutorial",
+    "url": "https://airflow.apache.org/docs/apache-airflow/stable/tutorial/fundamentals.html",
+    "provider": "Apache Airflow",
+    "kind": "docs",
+    "skillIds": [
+      "data-orchestration"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Data Engineering Zoomcamp (workflow orchestration module)",
+    "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/02-workflow-orchestration",
+    "provider": "DataTalks.Club",
+    "kind": "course",
+    "skillIds": [
+      "data-orchestration"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "GDPR full text, organised",
+    "url": "https://gdpr-info.eu/",
+    "provider": "gdpr-info.eu",
+    "kind": "docs",
+    "skillIds": [
+      "data-privacy"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Data protection impact assessments (DPIAs)",
+    "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/data-protection-impact-assessments-dpias/",
+    "provider": "UK Information Commissioner's Office",
+    "kind": "docs",
+    "skillIds": [
+      "privacy-program-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "NIST Privacy Framework",
+    "url": "https://www.nist.gov/privacy-framework",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "privacy-program-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "OWASP DevSecOps Guideline",
+    "url": "https://owasp.org/www-project-devsecops-guideline/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "devsecops"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "About code scanning",
+    "url": "https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning",
+    "provider": "GitHub Docs",
+    "kind": "docs",
+    "skillIds": [
+      "devsecops"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "OWASP Code Review Guide",
+    "url": "https://owasp.org/www-project-code-review-guide/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "secure-code-review"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "OWASP Secure Coding Practices quick reference",
+    "url": "https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "secure-code-review"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Threat Modeling (OWASP community page)",
+    "url": "https://owasp.org/www-community/Threat_Modeling",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "threat-modeling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Threat Modeling Manifesto",
+    "url": "https://www.threatmodelingmanifesto.org/",
+    "provider": "Threat Modeling Manifesto",
+    "kind": "docs",
+    "skillIds": [
+      "threat-modeling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Microsoft Threat Modeling Tool",
+    "url": "https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "threat-modeling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ATT&CK for Cyber Threat Intelligence training",
+    "url": "https://attack.mitre.org/resources/learn-more-about-attack/training/cti/",
+    "provider": "MITRE ATT&CK",
+    "kind": "course",
+    "skillIds": [
+      "threat-intelligence"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-86: Integrating forensic techniques into incident response",
+    "url": "https://csrc.nist.gov/pubs/sp/800/86/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "digital-forensics"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Autopsy documentation",
+    "url": "https://www.autopsy.com/documentation/",
+    "provider": "Autopsy",
+    "kind": "docs",
+    "skillIds": [
+      "digital-forensics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "RE101: reverse engineering workshop",
+    "url": "https://malwareunicorn.org/workshops/re101.html",
+    "provider": "Malware Unicorn",
+    "kind": "course",
+    "skillIds": [
+      "malware-analysis"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Automate threat response with playbooks in Microsoft Sentinel",
+    "url": "https://learn.microsoft.com/en-us/azure/sentinel/automation/automate-responses-with-playbooks",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "soar"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-161r1: Cybersecurity supply chain risk management",
+    "url": "https://csrc.nist.gov/pubs/sp/800/161/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-risk"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-34: Contingency planning guide",
+    "url": "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "business-continuity"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Managing incidents (SRE book)",
+    "url": "https://sre.google/sre-book/managing-incidents/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "incident-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Postmortem culture (SRE book)",
+    "url": "https://sre.google/sre-book/postmortem-culture/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "incident-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "PagerDuty incident response guide",
+    "url": "https://response.pagerduty.com/",
+    "provider": "PagerDuty",
+    "kind": "docs",
+    "skillIds": [
+      "incident-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "What is OpenTelemetry?",
+    "url": "https://opentelemetry.io/docs/what-is-opentelemetry/",
+    "provider": "OpenTelemetry",
+    "kind": "docs",
+    "skillIds": [
+      "observability"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Service level objectives (SRE book)",
+    "url": "https://sre.google/sre-book/service-level-objectives/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "observability"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is FinOps?",
+    "url": "https://www.finops.org/introduction/what-is-finops/",
+    "provider": "FinOps Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-cost"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Cost Optimization Pillar (AWS Well-Architected)",
+    "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-cost"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The Linux Command Line (free book)",
+    "url": "https://linuxcommand.org/tlcl.php",
+    "provider": "LinuxCommand.org",
+    "kind": "docs",
+    "skillIds": [
+      "scripting-bash"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "GNU Bash manual",
+    "url": "https://www.gnu.org/software/bash/manual/bash.html",
+    "provider": "GNU",
+    "kind": "docs",
+    "skillIds": [
+      "scripting-bash"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "FastAPI tutorial",
+    "url": "https://fastapi.tiangolo.com/tutorial/",
+    "provider": "FastAPI",
+    "kind": "docs",
+    "skillIds": [
+      "model-serving"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Rules of Machine Learning",
+    "url": "https://developers.google.com/machine-learning/guides/rules-of-ml",
+    "provider": "Google for Developers",
+    "kind": "docs",
+    "skillIds": [
+      "ml-system-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "CS 329S: Machine Learning Systems Design",
+    "url": "https://stanford-cs329s.github.io/",
+    "provider": "Stanford University",
+    "kind": "course",
+    "skillIds": [
+      "ml-system-design"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "PyTorch tutorials",
+    "url": "https://pytorch.org/tutorials/",
+    "provider": "PyTorch",
+    "kind": "docs",
+    "skillIds": [
+      "pytorch"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "pgvector: vector similarity search for Postgres",
+    "url": "https://github.com/pgvector/pgvector",
+    "provider": "pgvector",
+    "kind": "docs",
+    "skillIds": [
+      "vector-search"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Faiss wiki",
+    "url": "https://github.com/facebookresearch/faiss/wiki",
+    "provider": "Meta AI (Faiss)",
+    "kind": "docs",
+    "skillIds": [
+      "vector-search"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Laws of UX",
+    "url": "https://lawsofux.com/",
+    "provider": "Laws of UX",
+    "kind": "docs",
+    "skillIds": [
+      "interaction-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Human Interface Guidelines",
+    "url": "https://developer.apple.com/design/human-interface-guidelines",
+    "provider": "Apple Developer",
+    "kind": "docs",
+    "skillIds": [
+      "interaction-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Material Design 3",
+    "url": "https://m3.material.io/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "interaction-design",
+      "design-systems"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "GOV.UK Design System",
+    "url": "https://design-system.service.gov.uk/",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "design-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Guide to prototyping in Figma",
+    "url": "https://help.figma.com/hc/en-us/articles/360040314193-Guide-to-prototyping-in-Figma",
+    "provider": "Figma",
+    "kind": "docs",
+    "skillIds": [
+      "prototyping"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Using moderated usability testing",
+    "url": "https://www.gov.uk/service-manual/user-research/using-moderated-usability-testing",
+    "provider": "GOV.UK Service Manual",
+    "kind": "docs",
+    "skillIds": [
+      "usability-testing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "GitLab handbook: leadership",
+    "url": "https://handbook.gitlab.com/handbook/leadership/",
+    "provider": "GitLab",
+    "kind": "docs",
+    "skillIds": [
+      "people-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "StaffEng guides",
+    "url": "https://staffeng.com/guides/",
+    "provider": "StaffEng",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Google engineering practices: code review",
+    "url": "https://google.github.io/eng-practices/review/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership"
+    ],
+    "minutes": 60,
     "free": true
   }
 ]
