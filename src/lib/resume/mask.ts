@@ -3,9 +3,20 @@
 export type MaskCounts = { email: number; phone: number; address: number; profileUrl: number; id: number; dateOfBirth: number };
 
 // Bounded runs keep a long string with no spaces from making this slow.
-// A break or a few spaces either side of "@" still make one address: table cells and PDF wrapping split
-// "name@\nexample.com" (T30).
-const EMAIL = /[A-Za-z0-9._%+-]{1,64}[ \t]{0,3}(?:\r?\n[ \t]{0,3})?@[ \t]{0,3}(?:\r?\n[ \t]{0,3})?[A-Za-z0-9.-]{1,253}\.[A-Za-z]{2,24}/g;
+const LOCAL = "[A-Za-z0-9._%+-]{1,64}";
+/** A line break, or a blank line between table-cell paragraphs (docx), with stray spaces around it. */
+const BREAK = "[ \\t]{0,3}\\r?\\n(?:[ \\t]{0,3}\\r?\\n)?[ \\t]{0,3}";
+/** A split address must end in a domain people use for email, so "Boot\n@Autowired.inject" stays text. */
+const MAIL_DOMAIN = "[A-Za-z0-9.-]{0,252}[A-Za-z0-9]\\.(?:com|in|org|net|edu|co|io|ai|gov|ac|me|dev|info|biz|us|uk|au|sg|ae|tech|app|xyz)(?![A-Za-z0-9-])";
+/**
+ * An address, also when table cells and PDF wrapping split it at the "@" (T30): "name@\nexample.com",
+ * "name\n\n@example.com", or "name@ example.com". Spaces on both sides of "@" on one line ("Engineer @ Flipkart.com")
+ * mean "at", not an address.
+ */
+const EMAIL = new RegExp(
+  `${LOCAL}@[A-Za-z0-9.-]{1,253}\\.[A-Za-z]{2,24}|${LOCAL}[ \\t]{0,3}@${BREAK}${MAIL_DOMAIN}|${LOCAL}${BREAK}@${MAIL_DOMAIN}|${LOCAL}@[ \\t]{1,3}${MAIL_DOMAIN}`,
+  "gi",
+);
 const PROFILE_URL = /\b(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/[^\s|,;)]+/gi;
 const DATE_OF_BIRTH = /\b(?:DOB|D\.O\.B\.?|Date of Birth)\b\s*[:\-–]?\s*[^\n|]{4,30}?(?=\s*(?:\||\n|$))/gi;
 const AADHAAR = /(?<![+\d])\b[2-9]\d{3}[ -]?\d{4}[ -]?\d{4}\b/g;
