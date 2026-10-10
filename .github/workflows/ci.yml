@@ -37,3 +37,51 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm audit --omit=dev --audit-level=high
+
+  # Walks the whole app in a real browser against a production build, signed-in screens included (e2e/README.md).
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: public.ecr.aws/docker/library/postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cm
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run build
+      - name: Install the browser
+        # Not a project dependency: only this job needs it.
+        run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+      - name: Walk the app
+        env:
+          VERCEL_ENV: preview
+          ANTHROPIC_API_KEY: sk-e2e
+          ANTHROPIC_BASE_URL: http://127.0.0.1:4011
+          BASE: http://localhost:3211
+        run: |
+          node e2e/mock-ai.mjs > e2e-mock-ai.log 2>&1 &
+          npx next start -p 3211 > e2e-server.log 2>&1 &
+          for i in $(seq 60); do curl -sf "$BASE/api/health" > /dev/null && break; sleep 1; done
+          node e2e/walk.mjs
+      - name: Keep screenshots and logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            e2e/results/
+            e2e-server.log
+          retention-days: 7

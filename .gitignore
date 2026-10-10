@@ -43,3 +43,6 @@ next-env.d.ts
 
 # eval output
 /eval-results
+
+# end-to-end walk screenshots
+/e2e/results
