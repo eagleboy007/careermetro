@@ -117,7 +117,7 @@ describe("planGoalSync", () => {
   });
 
   describe("one of these groups", () => {
-    const groups = [{ id: "cloud", skillIds: ["aws", "azure", "gcp"] }];
+    const members = new Map([["cloud", ["aws", "azure", "gcp"]]]);
     const groupGap = (skillId: string): Gap => ({
       ...gap(skillId),
       groupId: "cloud",
@@ -126,76 +126,69 @@ describe("planGoalSync", () => {
       skillId: string,
       status: ExistingGoal["status"] = "active",
     ): ExistingGoal => ({ ...goal(skillId, 1, status), groupId: "cloud" });
+    const plan = (
+      existing: ExistingGoal[],
+      gaps: Gap[],
+      met: string[] = [],
+      proved: string[] = [],
+    ) =>
+      planGoalSync({
+        existing,
+        gaps,
+        metSkillIds: met,
+        provedSkillIds: proved,
+        implies: noImplies,
+        members,
+      });
 
     it("makes one goal for a group gap and marks it with the group", () => {
-      const plan = planGoalSync({
-        existing: [],
-        gaps: [groupGap("aws")],
-        metSkillIds: [],
-        provedSkillIds: [],
-        implies: noImplies,
-        groups,
-      });
-      expect(plan.insert).toEqual([
+      expect(plan([], [groupGap("aws")]).insert).toEqual([
         { skillId: "aws", position: 1, status: "active", groupId: "cloud" },
       ]);
     });
 
     it("fills a group goal with proof of any skill in the group", () => {
-      const plan = planGoalSync({
-        existing: [],
-        gaps: [groupGap("aws")],
-        metSkillIds: [],
-        provedSkillIds: ["gcp"],
-        implies: noImplies,
-        groups,
-      });
-      expect(plan.insert[0].status).toBe("met");
-      const later = planGoalSync({
-        existing: [groupGoal("aws")],
-        gaps: [],
-        metSkillIds: [],
-        provedSkillIds: ["azure"],
-        implies: noImplies,
-        groups,
-      });
-      expect(later.update).toEqual([{ skillId: "aws", status: "met" }]);
+      expect(plan([], [groupGap("aws")], [], ["gcp"]).insert[0].status).toBe(
+        "met",
+      );
+      expect(plan([groupGoal("aws")], [], [], ["azure"]).update).toEqual([
+        { skillId: "aws", status: "met" },
+      ]);
     });
 
     it("meets a group goal when a newer resume shows another skill of the group", () => {
-      const plan = planGoalSync({
+      expect(plan([groupGoal("aws")], [], ["azure"]).update).toEqual([
+        { skillId: "aws", status: "met" },
+      ]);
+    });
+
+    it("moves the group's goal to the skill the gap now suggests, so the gap and its goal stay paired", () => {
+      const p = plan([groupGoal("aws", "met")], [groupGap("azure")]);
+      expect(p.insert).toEqual([]);
+      expect(p.update).toEqual([
+        { skillId: "aws", status: "active", moveTo: "azure" },
+      ]);
+    });
+
+    it("brings an existing goal for the suggested skill into the group, so proof of another skill fills it", () => {
+      const own = goal("aws", 1);
+      expect(plan([own], [groupGap("aws")]).update).toEqual([
+        { skillId: "aws", groupId: "cloud" },
+      ]);
+      expect(plan([own], [groupGap("aws")], [], ["gcp"]).update).toEqual([
+        { skillId: "aws", status: "met", groupId: "cloud" },
+      ]);
+    });
+
+    it("treats a group goal as its own skill when the group is unknown", () => {
+      const p = planGoalSync({
         existing: [groupGoal("aws")],
         gaps: [],
         metSkillIds: ["azure"],
         provedSkillIds: [],
         implies: noImplies,
-        groups,
       });
-      expect(plan.update).toEqual([{ skillId: "aws", status: "met" }]);
-    });
-
-    it("adds no second goal when the analysis now suggests another skill of the same group", () => {
-      const plan = planGoalSync({
-        existing: [groupGoal("aws", "met")],
-        gaps: [groupGap("azure")],
-        metSkillIds: [],
-        provedSkillIds: [],
-        implies: noImplies,
-        groups,
-      });
-      expect(plan.insert).toEqual([]);
-      expect(plan.update).toEqual([{ skillId: "aws", status: "active" }]);
-    });
-
-    it("treats a group goal as its own skill when the current role has no such group", () => {
-      const plan = planGoalSync({
-        existing: [groupGoal("aws")],
-        gaps: [],
-        metSkillIds: ["azure"],
-        provedSkillIds: [],
-        implies: noImplies,
-      });
-      expect(plan.update).toEqual([]);
+      expect(p.update).toEqual([]);
     });
   });
 });

@@ -1,6 +1,6 @@
 import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 import type { MatchedSkill, MatchResult } from "./match";
-import { OUTDATED_AFTER_YEARS } from "./match";
+import { metSkillIds, OUTDATED_AFTER_YEARS } from "./match";
 
 /** The Gaps page shows the top five gaps, and the model explains those five; the rest get template words. */
 export const SHOWN_GAPS = 5;
@@ -10,7 +10,9 @@ export type Explanations = { readiness: string; bySkill: Map<string, string> };
 /** A plain sentence for a gap, used when the model's explanation is not available. */
 export function templateExplanation(g: MatchedSkill): string {
   // Role expectations are written as instructions ("Write user stories..."), so they follow "expects you to".
-  const task = g.requirement.replace(/\.$/, "").replace(/^(\p{Lu})(?=\p{Ll})/u, (c) => c.toLowerCase());
+  const task = g.requirement
+    .replace(/\.$/, "")
+    .replace(/^(\p{Lu})(?=\p{Ll})/u, (c) => c.toLowerCase());
   const expects = `This role expects you to ${task}.`;
   switch (g.status) {
     case "weak":
@@ -41,7 +43,10 @@ export function templateReadiness(match: MatchResult): string {
  * The stored and displayed analysis: the matcher's decisions with the model's words, or template words. Every required
  * gap is stored, because each one becomes a goal (handoff 6.5); only the Gaps page stops at the top five.
  */
-export function buildGapAnalysis(match: MatchResult, explanations: Explanations | null): GapAnalysis {
+export function buildGapAnalysis(
+  match: MatchResult,
+  explanations: Explanations | null,
+): GapAnalysis {
   return gapAnalysis.parse({
     roleSlug: match.roleSlug,
     gaps: match.gaps.map((g) => ({
@@ -50,12 +55,16 @@ export function buildGapAnalysis(match: MatchResult, explanations: Explanations 
       status: g.status,
       resumeQuote: g.resumeQuote,
       requirement: g.requirement,
-      explanation: explanations?.bySkill.get(g.skillId) ?? templateExplanation(g),
+      explanation:
+        explanations?.bySkill.get(g.skillId) ?? templateExplanation(g),
       ...(g.group ? { groupId: g.group.id } : {}),
     })),
-    metSkillIds: match.met.map((m) => m.skillId),
-    niceToHave: match.niceToHave.map(({ skillId, skillName, status }) => ({ skillId, skillName, status })),
-    groups: match.groups,
+    metSkillIds: metSkillIds(match),
+    niceToHave: match.niceToHave.map(({ skillId, skillName, status }) => ({
+      skillId,
+      skillName,
+      status,
+    })),
     readiness: {
       headline: readinessHeadline(match),
       explanation: explanations?.readiness ?? templateReadiness(match),

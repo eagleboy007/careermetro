@@ -6,7 +6,7 @@ import * as schema from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis } from "@/lib/schemas";
-import { addProof, setProofStatus, syncGoals } from "./store";
+import { addProof, goalsOf, setProofStatus, syncGoals } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -33,7 +33,6 @@ const analysis = (gapIds: string[], met: string[] = []): GapAnalysis => ({
   })),
   metSkillIds: met,
   niceToHave: [],
-  groups: [],
   readiness: { headline: "h", explanation: "e", estimatedHours: 10 },
 });
 
@@ -110,19 +109,17 @@ describe.skipIf(!db)("goals (database)", () => {
         .insert(schema.paths)
         .values({ gapAnalysisId: ga.id, weeklyHours: 5 })
         .returning();
-      await db!
-        .insert(schema.pathSteps)
-        .values(
-          pathSkills.map((skillId, i) => ({
-            pathId: path.id,
-            position: i + 1,
-            skillId,
-            reason: "r",
-            hours: 2,
-            resourceIds: [],
-            proofTask: "t",
-          })),
-        );
+      await db!.insert(schema.pathSteps).values(
+        pathSkills.map((skillId, i) => ({
+          pathId: path.id,
+          position: i + 1,
+          skillId,
+          reason: "r",
+          hours: 2,
+          resourceIds: [],
+          proofTask: "t",
+        })),
+      );
     }
     return { id: ga.id, result };
   }
@@ -171,17 +168,23 @@ describe.skipIf(!db)("goals (database)", () => {
     ).toEqual(again);
   });
 
-  it("makes one goal for a 'one of these' group, saves its group, and meets it through another skill of the group", async () => {
+  it("makes one goal for a 'one of these' group, keeps it paired with the gap, and fills it with proof of any skill", async () => {
     const me = await user("group");
-    const groups = [{ id: "pair", skillIds: [a, b] }];
-    const first = await saved(me, {
-      ...analysis([a, c]),
-      gaps: analysis([a, c]).gaps.map((g) =>
-        g.skillId === a ? { ...g, groupId: "pair" } : g,
-      ),
-      groups,
-    });
-    await syncGoals(me, first, db!);
+    const members = new Map([["pair", [a, b]]]);
+    const grouped = (
+      gapIds: string[],
+      groupSkill: string,
+      met: string[] = [],
+    ) => {
+      const base = analysis(gapIds, met);
+      return {
+        ...base,
+        gaps: base.gaps.map((g) =>
+          g.skillId === groupSkill ? { ...g, groupId: "pair" } : g,
+        ),
+      };
+    };
+    await syncGoals(me, await saved(me, grouped([a, c], a)), db!, members);
     const [row] = await db!
       .select({ groupId: schema.userGoals.groupId })
       .from(schema.userGoals)
@@ -189,16 +192,32 @@ describe.skipIf(!db)("goals (database)", () => {
         and(eq(schema.userGoals.userId, me), eq(schema.userGoals.skillId, a)),
       );
     expect(row.groupId).toBe("pair");
-    // A newer resume shows B, the other skill of the group: the group's goal is met and no goal for B appears.
-    const again = await syncGoals(
+    // The group's gap now suggests B: the same goal moves to B, keeping its place.
+    const moved = await syncGoals(
       me,
-      await saved(me, { ...analysis([c], [b]), groups }),
+      await saved(me, grouped([b, c], b)),
       db!,
+      members,
     );
-    expect(again.map((g) => [g.skillId, g.status])).toEqual([
-      [a, "met"],
-      [c, "active"],
+    expect(moved.map((g) => [g.skillId, g.position, g.status])).toEqual([
+      [b, 1, "active"],
+      [c, 2, "active"],
     ]);
+    // Accepted proof of A, the group's other skill, proves and meets it at once.
+    const proofId = (await addProof(
+      me,
+      a,
+      { type: "skill_check", checkId: "c-group" },
+      db!,
+    ))!;
+    expect(
+      await setProofStatus(proofId, me, "accepted", "app", db!, members),
+    ).toBe(true);
+    const after = await goalsOf(me, db!, members);
+    expect(after.find((g) => g.skillId === b)).toMatchObject({
+      status: "met",
+      proved: true,
+    });
   });
 
   it("fills a gap only with accepted proof, and carries proof over to a new role", async () => {
