@@ -562,5 +562,13 @@
   {
     "skillId": "wireframing",
     "task": "Sketch low-fidelity wireframes for 4 screens of a job-search app (search, results, detail, apply) in Figma or on paper, and annotate the key interactions."
+  },
+  {
+    "skillId": "mobile-architecture",
+    "task": "Refactor a single-file synthetic mobile screen (given) into MVVM (or Bloc/Riverpod for Flutter): separate the view, view model and repository, add one unit test for the view model, and explain the data flow in five sentences."
+  },
+  {
+    "skillId": "data-breach-response",
+    "task": "For a synthetic incident where 40,000 customer phone numbers leaked from a misconfigured bucket, write the first 72 hours: who you notify (CERT-In within 6 hours, the Data Protection Board, affected users), what each notice says, and how you assess harm."
   }
 ]

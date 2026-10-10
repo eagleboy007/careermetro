@@ -43,10 +43,6 @@
       {
         "skillId": "endpoint-security",
         "status": "weak"
-      },
-      {
-        "skillId": "python",
-        "status": "missing"
       }
     ],
     "mustNotClaim": [
