@@ -1261,8 +1261,9 @@
       "risk management",
       "third-party risk",
       "risk register",
-      "risk reporting",
-      "cyber risk"
+      "cyber risk reporting",
+      "cyber risk dashboard",
+      "it risk reporting"
     ],
     "ambiguous": [
       "risk management"
@@ -1447,10 +1448,12 @@
       "cyber threat intelligence",
       "ioc enrichment",
       "iocs",
-      "threat feeds"
+      "threat feeds",
+      "indicators of compromise"
     ],
     "ambiguous": [
-      "cti"
+      "cti",
+      "iocs"
     ],
     "implies": [
       "threat-detection"

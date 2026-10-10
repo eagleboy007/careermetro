@@ -361,12 +361,15 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   const ends = roleMonths(profile.roles, nowMonths);
   profile.roles.forEach((r, i) => r.highlights.forEach((h) => dated.push({ text: normalizeForMatch(h), months: ends[i] })));
   const monthsCache = new Map<string, number | null>();
-  const lineMonths = (quote: string): number | null => {
+  /** The newest job a quote appears in, or with `oldest` the oldest one. Null when unknown. */
+  const lineMonths = (quote: string, oldest = false): number | null => {
     const q = normalizeForMatch(quote);
-    if (monthsCache.has(q)) return monthsCache.get(q)!;
+    const key = `${oldest ? "o" : "n"}|${q}`;
+    if (monthsCache.has(key)) return monthsCache.get(key)!;
     const hits = dated.filter((d) => d.text === q || containsPhrase(d.text, q)).map((d) => d.months);
-    const months = hits.length === 0 || hits.includes(null) ? null : Math.max(...(hits as number[]));
-    monthsCache.set(q, months);
+    const known = hits as number[];
+    const months = hits.length === 0 || hits.includes(null) ? null : oldest ? Math.min(...known) : Math.max(...known);
+    monthsCache.set(key, months);
     return months;
   };
 
@@ -390,8 +393,16 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
       if (used.length === 0) add(id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed });
       for (const q of used) {
         // The parser's lastUsed can be a current job's start year; the job the quote comes from wins when it is newer.
-        const line = lineMonths(q);
-        add(id, { quote: q, listedOnly: false, months: lastUsed === null ? line : line === null ? lastUsed : Math.max(lastUsed, line) });
+        // A quote that doesn't name the skill takes the oldest job it appears in, so a short fragment shared with a
+        // newer bullet can't borrow that bullet's date.
+        if (lastUsed === null) {
+          add(id, { quote: q, listedOnly: false, months: lineMonths(q) });
+          continue;
+        }
+        const own = terms.some((t) => containsPhrase(normalizeForMatch(q), t));
+        const line = lineMonths(q, !own);
+        const months = line === null ? lastUsed : Math.max(lastUsed, line);
+        add(id, { quote: q, listedOnly: false, months });
       }
     }
   }
