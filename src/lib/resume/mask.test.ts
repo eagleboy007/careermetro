@@ -371,7 +371,7 @@ describe("phones split or run together (T26)", () => {
 
 
 describe("emails split around the @ (T30)", () => {
-  it.each(["neha.sharma.dev@\nexample.com", "neha.sharma.dev@ example.com", "neha.sharma.dev\n@example.com", "neha.sharma.dev @\r\n example.com"])(
+  it.each(["neha.sharma.dev@\nexample.com", "neha.sharma.dev@ example.com", "neha.sharma.dev\n@example.com", "neha.sharma.dev@\r\n example.com"])(
     "masks %j",
     (email) => {
       const out = maskPii(`Neha Sharma\nEmail: ${email}\nJava Developer`).text;
@@ -380,7 +380,7 @@ describe("emails split around the @ (T30)", () => {
   );
 
   // What the docx and PDF readers actually hand over: table-cell paragraphs come out with a blank line between them.
-  it.each(["neha.test@\n\nexample.com", "neha.test\n\n@example.com", "neha.test @ \n \n example.co.in"])("masks %j after extraction", (email) => {
+  it.each(["neha.test@\n\nexample.com", "neha.test\n\n@example.com", "neha.test@ \n \n example.co.in"])("masks %j after extraction", (email) => {
     const out = maskPii(normalizeResumeText(`Neha Sharma\nEmail: ${email}\nJava Developer`)).text;
     expect(out).toBe("Neha Sharma\nEmail: [EMAIL]\nJava Developer");
   });
@@ -392,6 +392,8 @@ describe("emails split around the @ (T30)", () => {
   // "@" meaning "at", and code annotations on the next line, keep their words.
   it.each([
     "Senior Engineer @ Flipkart.com",
+    "Senior Engineer @\nFlipkart.com",
+    "SDE @\n\nAmazon.in",
     "Intern @ Razorpay.in, built APIs",
     "Mentor @ GeeksforGeeks.org (2 yrs)",
     "Spring Boot\n@Autowired.inject",

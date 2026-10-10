@@ -10,11 +10,11 @@ const BREAK = "[ \\t]{0,3}\\r?\\n(?:[ \\t]{0,3}\\r?\\n)?[ \\t]{0,3}";
 const MAIL_DOMAIN = "[A-Za-z0-9.-]{0,252}[A-Za-z0-9]\\.(?:com|in|org|net|edu|co|io|ai|gov|ac|me|dev|info|biz|us|uk|au|sg|ae|tech|app|xyz)(?![A-Za-z0-9-])";
 /**
  * An address, also when table cells and PDF wrapping split it at the "@" (T30): "name@\nexample.com",
- * "name\n\n@example.com", or "name@ example.com". Spaces on both sides of "@" on one line ("Engineer @ Flipkart.com")
- * mean "at", not an address.
+ * "name\n\n@example.com", or "name@ example.com". A space before "@" ("Engineer @ Flipkart.com", also when the
+ * line wraps after the "@") means "at", not an address.
  */
 const EMAIL = new RegExp(
-  `${LOCAL}@[A-Za-z0-9.-]{1,253}\\.[A-Za-z]{2,24}|${LOCAL}[ \\t]{0,3}@${BREAK}${MAIL_DOMAIN}|${LOCAL}${BREAK}@${MAIL_DOMAIN}|${LOCAL}@[ \\t]{1,3}${MAIL_DOMAIN}`,
+  `${LOCAL}@[A-Za-z0-9.-]{1,253}\\.[A-Za-z]{2,24}|${LOCAL}@${BREAK}${MAIL_DOMAIN}|${LOCAL}${BREAK}@${MAIL_DOMAIN}|${LOCAL}@[ \\t]{1,3}${MAIL_DOMAIN}`,
   "gi",
 );
 const PROFILE_URL = /\b(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/[^\s|,;)]+/gi;
