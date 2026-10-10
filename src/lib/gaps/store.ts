@@ -6,9 +6,9 @@ import { recordAiCalls } from "@/lib/ai/log";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { gapAnalysis, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
-import { buildGapAnalysis } from "./analysis";
+import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { explainGaps, type ExplainClient } from "./explain";
-import { MATCHER_VERSION, matchProfile } from "./match";
+import { MATCHER_VERSION, matchProfile, type MatchResult } from "./match";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -87,9 +87,14 @@ export async function getGapsForOwner(
         .orderBy(desc(gapAnalyses.createdAt))
         .limit(1);
       const storedResult = stored ? gapAnalysis.safeParse(stored.result) : null;
-      if (stored && storedResult?.success) return { ok: true, analysisId: stored.id, analysis: storedResult.data, rating: stored.rating } as const;
-
       const match = matchProfile(resume.profile, role, deps.now);
+      if (stored && storedResult?.success) {
+        const analysis = withEveryGap(storedResult.data, match);
+        // Kept under the same id, so the rating and the goals made from it carry over.
+        if (analysis !== storedResult.data) await tx.update(gapAnalyses).set({ result: analysis }).where(eq(gapAnalyses.id, stored.id));
+        return { ok: true, analysisId: stored.id, analysis, rating: stored.rating } as const;
+      }
+
       const explained = (await mayExplain(tx, owner))
         ? await explainGaps(match, role.title, { profileId: resume.profileId, roleSlug: role.slug }, deps.client)
         : { analysis: buildGapAnalysis(match, null), calls: [] };
@@ -115,16 +120,28 @@ export async function getGapsForOwner(
 }
 
 /**
+ * Analyses stored before every gap was kept hold only the top five. When the matcher now finds more and agrees on those
+ * five, the rest are added with template words and the stored wording stays; no model call. Otherwise unchanged.
+ */
+export function withEveryGap(stored: GapAnalysis, match: MatchResult): GapAnalysis {
+  // Only an exact old cut: five gaps, the same five in the same state, the same met skills. A match the date has moved
+  // since (a skill now outdated) keeps the stored analysis as it was rather than mixing old words with new numbers.
+  if (stored.gaps.length !== SHOWN_GAPS || match.gaps.length <= SHOWN_GAPS) return stored;
+  if (stored.gaps.some((g, i) => g.skillId !== match.gaps[i].skillId || g.status !== match.gaps[i].status)) return stored;
+  const met = new Set(match.met.map((m) => m.skillId));
+  if (stored.metSkillIds.length !== met.size || stored.metSkillIds.some((id) => !met.has(id))) return stored;
+  const bySkill = new Map(stored.gaps.map((g) => [g.skillId, g.explanation]));
+  return buildGapAnalysis(match, { readiness: stored.readiness.explanation, bySkill });
+}
+
+/**
  * Saves the user's 1 to 5 answer to "Are these gaps right?", the beta's accuracy measure. Only for the owner's own
  * analyses (an anonymous one only while its resume is within its 24 hours).
  */
 export async function rateAnalysis(analysisId: string, owner: Owner, rating: number, db: Db = getDb()): Promise<boolean> {
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(analysisId) || !Number.isInteger(rating) || rating < 1 || rating > 5) return false;
-  const own = db
-    .select({ id: profiles.id })
-    .from(profiles)
-    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(ownsResume(owner));
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(analysisId) || !Number.isInteger(rating) || rating < 1 || rating > 5)
+    return false;
+  const own = db.select({ id: profiles.id }).from(profiles).innerJoin(resumes, eq(resumes.id, profiles.resumeId)).where(ownsResume(owner));
   const updated = await db
     .update(gapAnalyses)
     .set({ userRating: rating })

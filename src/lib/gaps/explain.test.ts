@@ -34,8 +34,11 @@ describe("explainGaps", () => {
     const { client, create } = fakeClient({ text: answer() });
     const r = await explainGaps(match, role.title, { profileId: "p1" }, client);
     expect(r.source).toBe("model");
-    expect(r.analysis.gaps.map((g) => g.skillId)).toEqual(shown.map((g) => g.skillId));
+    expect(r.analysis.gaps.map((g) => g.skillId)).toEqual(match.gaps.map((g) => g.skillId));
     expect(r.analysis.gaps[0].explanation).toBe(`About ${shown[0].skillName}.`);
+    // The model explains the five shown gaps; the stored rest get template words.
+    expect(match.gaps.length).toBeGreaterThan(SHOWN_GAPS);
+    for (const g of r.analysis.gaps.slice(SHOWN_GAPS)) expect(g.explanation).toMatch(/^(This role expects|Your resume|The latest use)/);
     expect(r.analysis.readiness.explanation).toBe("You are part of the way there.");
     expect(r.calls).toEqual([expect.objectContaining({ purpose: "explain-gaps", promptVersion: "explain-gaps/v1", ok: true, inputRefs: { profileId: "p1" } })]);
     expect(create.mock.calls[0][0].model).toBe("claude-opus-5-5");
@@ -69,7 +72,7 @@ describe("explainGaps", () => {
       const r = await explainGaps(match, role.title, {}, client);
       expect(r.source).toBe("template");
       expect(r.calls).toEqual([expect.objectContaining({ ok: false, model: "claude-opus-5-5", promptVersion: "explain-gaps/v1" })]);
-      expect(r.analysis.gaps).toHaveLength(shown.length);
+      expect(r.analysis.gaps).toHaveLength(match.gaps.length);
     }
   });
 
@@ -108,10 +111,11 @@ describe("wrapAnalysis", () => {
 });
 
 describe("buildGapAnalysis", () => {
-  it("shows at most five gaps, each with a quote or none, and a readiness line", () => {
+  it("stores every required gap, each with a quote or none, and a readiness line", () => {
     const empty = matchProfile({ ...profile, roles: [], skills: [] }, role, new Date("2026-10-07T00:00:00Z"));
     const a = buildGapAnalysis(empty, null);
-    expect(a.gaps).toHaveLength(SHOWN_GAPS);
+    expect(empty.gaps.length).toBeGreaterThan(SHOWN_GAPS);
+    expect(a.gaps.map((g) => g.skillId)).toEqual(empty.gaps.map((g) => g.skillId));
     expect(a.gaps.every((g) => g.resumeQuote === null && g.explanation.startsWith("This role expects you to"))).toBe(true);
     expect(a.readiness.explanation).toContain("rough estimate");
   });

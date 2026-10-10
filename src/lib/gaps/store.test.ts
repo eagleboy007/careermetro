@@ -59,7 +59,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const { client, create } = explainClient();
     const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     if (!first.ok) throw new Error(first.reason);
-    expect(first.analysis.gaps).toHaveLength(SHOWN_GAPS);
+    expect(first.analysis.gaps.length).toBeGreaterThan(SHOWN_GAPS);
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
 
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
@@ -71,6 +71,35 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(again).toMatchObject({ ok: true, analysisId: first.analysisId });
     expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("extends an analysis stored with only five gaps, keeping its id, rating and words, without the model", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS) };
+    await db!.update(schema.gapAnalyses).set({ result: five, userRating: 4 }).where(eq(schema.gapAnalyses.id, first.analysisId));
+
+    const { client, create } = explainClient();
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    if (!again.ok) throw new Error(again.reason);
+    expect(create).not.toHaveBeenCalled();
+    expect(again).toMatchObject({ analysisId: first.analysisId, rating: 4 });
+    expect(again.analysis.gaps.map((g) => g.explanation)).toEqual(first.analysis.gaps.map((g, i) => (i < SHOWN_GAPS ? g.explanation : expect.any(String))));
+    expect(again.analysis.gaps.length).toBe(first.analysis.gaps.length);
+    const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
+    expect((row.result as { gaps: unknown[] }).gaps).toHaveLength(first.analysis.gaps.length);
+  });
+
+  it("leaves a stored analysis alone when the date has changed the match since", async () => {
+    const { session, resumeId } = await seed();
+    const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    if (!first.ok) throw new Error(first.reason);
+    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS) };
+    const moved = { ...five, gaps: five.gaps.map((g, i) => (i === 0 ? { ...g, status: g.status === "weak" ? ("outdated" as const) : ("weak" as const) } : g)) };
+    await db!.update(schema.gapAnalyses).set({ result: moved }).where(eq(schema.gapAnalyses.id, first.analysisId));
+    const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
+    expect(again.ok && again.analysis.gaps).toHaveLength(SHOWN_GAPS);
   });
 
   it("hides other sessions' resumes and waits for a confirmed profile", async () => {
