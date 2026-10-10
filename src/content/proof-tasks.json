@@ -12,6 +12,10 @@
     "task": "Set up a free Jira or Trello board for a small app, write a backlog of 12 stories with estimates, plan a two-week sprint and share a screenshot with a one-paragraph sprint goal."
   },
   {
+    "skillId": "android",
+    "task": "Build a two-screen Android app in Jetpack Compose that loads a list from a public API, shows loading and error states, and survives screen rotation. Share the repo and a short screen recording."
+  },
+  {
     "skillId": "api-testing",
     "task": "Create a Postman collection for a public test API with 10 requests, tests on status and body, environment variables, and run it with Newman. Share the export."
   },
@@ -48,8 +52,16 @@
     "task": "Launch a free-tier managed database (RDS, Azure SQL or Cloud SQL), configure automated backups and private access, and write a one-page comparison of the three options."
   },
   {
+    "skillId": "cloud-networking",
+    "task": "Draw and explain a VPC for a three-tier web app: public and private subnets across two zones, load balancer, NAT, security group rules and a private database endpoint."
+  },
+  {
     "skillId": "cloud-security",
     "task": "Review a sample AWS or Azure setup against 10 CIS benchmark checks (IAM, logging, storage, network), list findings with severity, and write the least-privilege fix for each."
+  },
+  {
+    "skillId": "cloud-security-posture",
+    "task": "Given a list of 10 synthetic cloud misconfigurations (open storage bucket, wildcard IAM policy, unencrypted disk, etc.), rank them by risk and write the fix for each."
   },
   {
     "skillId": "communication",
@@ -72,6 +84,10 @@
     "task": "Create your own CA with OpenSSL, issue a certificate for a local web server, inspect the TLS handshake, and write a one-page explanation of symmetric vs asymmetric keys and hashing."
   },
   {
+    "skillId": "csharp-dotnet",
+    "task": "Build a small ASP.NET Core Web API with two endpoints, input validation and one unit test project. Share the repo."
+  },
+  {
     "skillId": "data-cleaning",
     "task": "Take a messy public dataset, fix duplicates, missing values, inconsistent dates and categories in Python or Excel, and publish a before-and-after cleaning log."
   },
@@ -82,6 +98,14 @@
   {
     "skillId": "data-modeling",
     "task": "Design a star schema for a fictional food delivery business (facts and dimensions with grain stated) and share the ER diagram with a short rationale."
+  },
+  {
+    "skillId": "data-orchestration",
+    "task": "Write an Airflow (or Dagster/Prefect) pipeline that loads a public CSV daily, validates row counts, and retries on failure. Share the DAG code and a screenshot of a successful run."
+  },
+  {
+    "skillId": "data-privacy",
+    "task": "For a synthetic food-delivery app, list the personal data it collects, the lawful ground under India's DPDP Act for each, the notice the user must see and how consent is withdrawn."
   },
   {
     "skillId": "data-structures-algorithms",
@@ -102,6 +126,10 @@
   {
     "skillId": "deep-learning",
     "task": "Train a small image or text classifier in PyTorch or TensorFlow on a public dataset, plot training curves, and note what you changed to reduce overfitting."
+  },
+  {
+    "skillId": "devsecops",
+    "task": "Add a SAST scan, a dependency scan and a secret scan to a sample repo's CI pipeline, then explain which findings should block a merge and why."
   },
   {
     "skillId": "docker",
@@ -140,6 +168,10 @@
     "task": "Recreate one screen of a popular app in Figma using auto layout, components and variants, and share the view-only link."
   },
   {
+    "skillId": "flutter",
+    "task": "Build a Flutter app with two screens, state managed with Provider or Riverpod, and data from a public API with loading and error states. Share the repo."
+  },
+  {
     "skillId": "gcp",
     "task": "On a Google Cloud free trial, deploy a container to Cloud Run with a Cloud Storage bucket, set a budget alert and share a diagram and screenshots."
   },
@@ -172,12 +204,24 @@
     "task": "Design an access model for a fictional 50-person company: roles, groups, joiner-mover-leaver steps, MFA policy and a quarterly access review checklist. Share as a 2-page doc."
   },
   {
+    "skillId": "incident-management",
+    "task": "Write a blameless postmortem for a synthetic 40-minute outage (timeline given): impact, root cause, what went well, and five action items with owners."
+  },
+  {
+    "skillId": "interaction-design",
+    "task": "Redesign one cluttered screen from a public Indian app: show before and after, and explain the hierarchy, spacing and state changes you made."
+  },
+  {
     "skillId": "java",
     "task": "Write a Java 17 program that processes a CSV of synthetic transactions with streams and collections, handles bad rows with exceptions, and includes JUnit tests."
   },
   {
     "skillId": "javascript",
     "task": "Build a small vanilla JavaScript app that fetches public API data with async/await and handles loading, error and empty states. Deploy it and share the repo."
+  },
+  {
+    "skillId": "kotlin",
+    "task": "Solve five Kotlin Koans exercises on collections and null safety, then rewrite a 50-line Java class in idiomatic Kotlin and explain three changes you made."
   },
   {
     "skillId": "kubernetes",
@@ -216,8 +260,16 @@
     "task": "Serve a trained model with FastAPI in Docker, log runs with MLflow, and add a simple input-drift check. Share the repo with a README."
   },
   {
+    "skillId": "mobile-release",
+    "task": "Write a release checklist for a mobile app update: versioning, signing, staged rollout percentage, crash monitoring and rollback. Apply it to an internal test track or TestFlight build."
+  },
+  {
     "skillId": "model-evaluation",
     "task": "For an imbalanced public dataset, compare accuracy, precision, recall, F1 and ROC-AUC with stratified cross-validation, and justify which metric fits the business problem."
+  },
+  {
+    "skillId": "model-serving",
+    "task": "Serve a trained scikit-learn or PyTorch model behind a FastAPI endpoint in a Docker container with input validation, a health check and request logging. Share the repo."
   },
   {
     "skillId": "monitoring",
@@ -244,6 +296,10 @@
     "task": "Model a product catalogue with reviews in MongoDB, write 5 queries and one aggregation, and explain in a short note when you would choose a relational design instead."
   },
   {
+    "skillId": "observability",
+    "task": "Define SLIs and SLOs for a synthetic checkout API, set an error budget, and write two alert rules that page only when the budget is burning fast."
+  },
+  {
     "skillId": "oop",
     "task": "Design a parking lot or library system in Java with classes, interfaces and 2 design patterns, and include a UML class diagram and a short rationale."
   },
@@ -262,6 +318,10 @@
   {
     "skillId": "penetration-testing",
     "task": "Complete 5 PortSwigger Web Security Academy labs (e.g. SQL injection, XSS, access control) and write a mini pentest report with findings, evidence and fixes."
+  },
+  {
+    "skillId": "people-management",
+    "task": "Write how you would handle a synthetic case: a strong engineer missing deadlines for a month. Cover the one-to-one, the plan, and how you would measure progress."
   },
   {
     "skillId": "performance-marketing",
@@ -284,6 +344,10 @@
     "task": "Write a one-page PRD for a 'save job for later' feature with a problem statement, success metric and five user stories, each with Given/When/Then acceptance criteria."
   },
   {
+    "skillId": "privacy-program-management",
+    "task": "Fill a data protection impact assessment for a synthetic feature that tracks delivery riders' locations: purpose, data, risks, mitigations and a go or no-go recommendation."
+  },
+  {
     "skillId": "problem-solving",
     "task": "Solve one public case-interview prompt (e.g. falling sales at a chain of Indian cafes) with an issue tree, hypotheses and a recommendation, written up in 1 to 2 pages."
   },
@@ -300,8 +364,16 @@
     "task": "For a fictional app, define a north-star metric and 4 input metrics, then build a funnel and monthly retention cohort table from synthetic data with a short read-out."
   },
   {
+    "skillId": "prototyping",
+    "task": "Build a clickable Figma prototype of a three-step sign-up flow with an error state, and record a one-minute walkthrough."
+  },
+  {
     "skillId": "python",
     "task": "Write a Python script that reads a sample log or CSV file, counts events by type and hour, and writes a summary CSV. Include a README and one test."
+  },
+  {
+    "skillId": "pytorch",
+    "task": "Train a small image classifier in PyTorch on a public dataset, plot training and validation loss, and explain one change that reduced overfitting."
   },
   {
     "skillId": "query-optimization",
@@ -310,6 +382,10 @@
   {
     "skillId": "react",
     "task": "Build a React app with 3 routes, a controlled form with validation and a custom hook that fetches data, and deploy it with a public link."
+  },
+  {
+    "skillId": "react-native",
+    "task": "Build an Expo app with two screens and navigation that caches API data for offline use. Share the repo and a screen recording."
   },
   {
     "skillId": "requirements-gathering",
@@ -330,6 +406,14 @@
   {
     "skillId": "scikit-learn",
     "task": "Build a scikit-learn Pipeline with ColumnTransformer, preprocessing and a model, tune it with GridSearchCV, and save the notebook to GitHub."
+  },
+  {
+    "skillId": "scripting-bash",
+    "task": "Write a Bash script that scans a log folder, counts errors per hour, and emails or prints a summary, with argument checks and a usage message."
+  },
+  {
+    "skillId": "secure-code-review",
+    "task": "Review a synthetic 150-line login and file-upload handler, list every security flaw with its OWASP category and severity, and write the corrected code."
   },
   {
     "skillId": "security-audits",
@@ -400,12 +484,20 @@
     "task": "Using a public data.gov.in dataset, compute summary statistics, plot a distribution and run one hypothesis test, then explain the result in 150 plain-English words for a manager."
   },
   {
+    "skillId": "swift-ios",
+    "task": "Build a SwiftUI app with a list and a detail view backed by a public API using async/await, with an error state. Share the repo and a screen recording."
+  },
+  {
     "skillId": "system-design",
     "task": "Write a 2-page design for a URL shortener or job-alert service: requirements, API, data model, scaling plan and the trade-offs you made, with a diagram."
   },
   {
     "skillId": "tableau",
     "task": "Build and publish a Tableau Public dashboard on a public Indian dataset with at least one filter, one calculated field and a clear title that states the takeaway."
+  },
+  {
+    "skillId": "technical-leadership",
+    "task": "Write a one-page design decision record for a synthetic choice (for example queue vs direct API call): options, trade-offs, decision and how you would revisit it."
   },
   {
     "skillId": "terraform",
@@ -416,8 +508,20 @@
     "task": "Write a test plan for a fictional mobile banking release: scope, approach, environments, entry and exit criteria, risks and schedule. Share as a 2-page doc."
   },
   {
+    "skillId": "third-party-risk",
+    "task": "Review a synthetic vendor's security questionnaire answers, rate the vendor's risk, and list the contract clauses and evidence you would require."
+  },
+  {
     "skillId": "threat-detection",
     "task": "Pick 5 MITRE ATT&CK techniques, write a detection idea for each (data source plus logic, or a Sigma rule), and share the result as a table in a short write-up."
+  },
+  {
+    "skillId": "threat-intelligence",
+    "task": "Take a public threat report, extract the IOCs and map the attacker's behaviour to MITRE ATT&CK techniques, then write three detection ideas."
+  },
+  {
+    "skillId": "threat-modeling",
+    "task": "Threat-model a synthetic UPI-style payment feature with STRIDE: draw the data flow, list the threats per element and pick the top three mitigations."
   },
   {
     "skillId": "typescript",
@@ -430,6 +534,10 @@
   {
     "skillId": "unit-testing",
     "task": "Write 10 unit tests for a small module or React component with Jest or Vitest plus Testing Library, and show a coverage report in the README."
+  },
+  {
+    "skillId": "usability-testing",
+    "task": "Run a five-person usability test of a public website task, write the script, log the issues by severity and recommend three fixes."
   },
   {
     "skillId": "ux-research",
