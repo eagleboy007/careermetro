@@ -4,7 +4,7 @@ This runs the whole app at http://localhost:3000 with a local database, the "Con
 
 ## Once
 
-1. Install Node 22 or newer and Postgres 16: `brew install node postgresql@16`, then `brew services start postgresql@16`.
+1. Install Node 22 or newer and Postgres 16: `brew install node postgresql@16`, then `brew services start postgresql@16`. If `brew services` fails (a known Homebrew bug on some Macs), start Postgres directly: `pg_ctl -D "$(brew --prefix)/var/postgresql@16" -l /tmp/postgres.log start` (add `$(brew --prefix postgresql@16)/bin` to your PATH first).
 2. Get the code: `git clone https://github.com/eagleboy007/careermetro.git && cd careermetro`, then `npm install`.
 3. Make a database: `createdb careermetro`.
 4. Copy `.env.example` to `.env.local` and set only these lines (leave the Supabase lines empty, which turns on the test sign-in):

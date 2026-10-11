@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { InboxView } from "@/components/inbox/inbox-view";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
@@ -17,7 +19,7 @@ const linkClass = "text-ink underline underline-offset-2";
  * The Inbox (dev/inbox-plan.md part 1). A signed-in person sees their own chats; `?example=1` shows the example Inbox,
  * where nothing typed is sent or saved. Without accounts (the example preview) everyone sees the example.
  */
-export default async function InboxPage({ searchParams }: PageProps<"/inbox">) {
+async function Inbox({ searchParams }: PageProps<"/inbox">) {
   const wantsExample = (await searchParams).example === "1";
   const accounts = !!authConfig() || testSignInEnabled();
   const account = accounts ? await currentAccount() : null;
@@ -59,5 +61,13 @@ export default async function InboxPage({ searchParams }: PageProps<"/inbox">) {
         ) : undefined
       }
     />
+  );
+}
+
+export default function InboxPage(props: PageProps<"/inbox">) {
+  return (
+    <Suspense fallback={<PageLoading />}>
+      <Inbox {...props} />
+    </Suspense>
   );
 }
