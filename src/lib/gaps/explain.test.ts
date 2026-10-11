@@ -109,7 +109,7 @@ describe("call records", () => {
 describe("templateExplanation", () => {
   it("turns the role's instruction into a sentence about the role", () => {
     const g = { ...shown[0], status: "weak" as const, skillName: "Agile", requirement: "Write user stories with acceptance criteria." };
-    expect(templateExplanation(g)).toBe("Your resume names Agile but shows no example of using it. This role expects you to write user stories with acceptance criteria.");
+    expect(templateExplanation(g)).toBe("This role expects you to write user stories with acceptance criteria.");
     expect(templateExplanation({ ...g, status: "outdated" })).toContain("more than four years old");
   });
 });

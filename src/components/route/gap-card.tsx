@@ -19,6 +19,8 @@ export function GapCard({ gap }: { gap: Gap }) {
         ) : (
           <span>Nothing in your resume shows this.</span>
         )}
+        {/* Only proof fills a gap: a skill named without a job or project behind it stays a goal (Milin, 2026-10-11). */}
+        {gap.status === "weak" && <span className="text-ink">Listed on your resume, but no job or project shows it.</span>}
         <span>{gap.explanation}</span>
       </div>
     </article>
