@@ -23,7 +23,11 @@ function isPlain(value: object): boolean {
   return proto === Object.prototype || proto === null;
 }
 
-function scrubDbError(value: Error, seen: WeakSet<object>, depth: number): Error {
+type Memo = Map<object, unknown>;
+const PENDING = Symbol("pending");
+export const CIRCULAR = "[circular]";
+
+function scrubDbError(value: Error, memo: Memo, depth: number): Error {
   const name = text(value.name) || "Error";
   const message = text(value.message);
   const fields = value as unknown as Record<string, unknown>;
@@ -31,7 +35,7 @@ function scrubDbError(value: Error, seen: WeakSet<object>, depth: number): Error
   const safeMessage = message.startsWith("Failed query:")
     ? message.replace(PARAMS_IN_TEXT, "\nparams: [hidden]")
     : `${name} ${text(fields.code)}`.trim();
-  const cause = value.cause === undefined ? undefined : scrub(value.cause, seen, depth + 1);
+  const cause = value.cause === undefined ? undefined : scrub(value.cause, memo, depth + 1);
   const safe = new Error(safeMessage, cause === undefined ? undefined : { cause });
   safe.name = name;
   const frames = text(value.stack).split("\n").filter((line) => /^\s+at /.test(line));
@@ -43,44 +47,65 @@ function scrubDbError(value: Error, seen: WeakSet<object>, depth: number): Error
   return safe;
 }
 
-function scrubError(value: Error, seen: WeakSet<object>, depth: number): Error {
+/** Any other error: its cause, AggregateError.errors and own enumerable properties are scrubbed; copied if any changed. */
+function scrubError(value: Error, memo: Memo, depth: number): Error {
   if (text(value.message).startsWith("Failed query:") || SECRET_PROPS.some((p) => own(value, p))) {
-    return scrubDbError(value, seen, depth);
+    return scrubDbError(value, memo, depth);
   }
-  const cause = value.cause === undefined ? undefined : scrub(value.cause, seen, depth + 1);
-  const errors = own(value, "errors") && Array.isArray((value as AggregateError).errors) ? (value as AggregateError).errors : undefined;
-  const scrubbedErrors = errors && (scrub(errors, seen, depth + 1) as unknown[]);
-  if (cause === value.cause && scrubbedErrors === errors) return value;
+  const keys = new Set([...Object.keys(value), ...(own(value, "cause") ? ["cause"] : []), ...(own(value, "errors") ? ["errors"] : [])]);
+  keys.delete("message");
+  keys.delete("stack");
+  const changed: [string, unknown][] = [];
+  for (const key of keys) {
+    const before = (value as unknown as Record<string, unknown>)[key];
+    const after = scrub(before, memo, depth + 1);
+    if (after !== before) changed.push([key, after]);
+  }
+  if (!changed.length) return value;
   const copy = Object.create(Object.getPrototypeOf(value)) as Error;
   Object.defineProperties(copy, Object.getOwnPropertyDescriptors(value));
-  if (cause !== value.cause) Object.defineProperty(copy, "cause", { value: cause, configurable: true, writable: true });
-  if (scrubbedErrors !== errors) Object.defineProperty(copy, "errors", { value: scrubbedErrors, configurable: true, writable: true });
+  for (const [key, after] of changed) Object.defineProperty(copy, key, { value: after, configurable: true, writable: true, enumerable: true });
   return copy;
 }
 
-function scrub(value: unknown, seen: WeakSet<object>, depth: number): unknown {
-  if (typeof value === "string") return value.replace(PARAMS_IN_TEXT, "\nparams: [hidden]");
-  if (value === null || typeof value !== "object" || depth > MAX_DEPTH || seen.has(value)) return value;
-  seen.add(value);
-  if (value instanceof Error) return scrubError(value, seen, depth);
+function scrubInner(value: object, memo: Memo, depth: number): unknown {
+  if (value instanceof Error) return scrubError(value, memo, depth);
   if (!isPlain(value)) return value;
   if (Array.isArray(value)) {
-    const out = value.map((v) => scrub(v, seen, depth + 1));
+    const out = value.map((v) => scrub(v, memo, depth + 1));
     return out.some((v, i) => v !== value[i]) ? out : value;
   }
   let changed = false;
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(value)) {
-    out[k] = scrub(v, seen, depth + 1);
+    out[k] = scrub(v, memo, depth + 1);
     if (out[k] !== v) changed = true;
   }
   return changed ? out : value;
 }
 
+/**
+ * Every object is scrubbed once per logged value and the result reused, so a value that appears twice (an error next
+ * to its own cause, the same error twice in a list) is clean both times. A cycle back to a value still being scrubbed
+ * becomes CIRCULAR, never the original.
+ */
+function scrub(value: unknown, memo: Memo, depth: number): unknown {
+  if (typeof value === "string") return value.replace(PARAMS_IN_TEXT, "\nparams: [hidden]");
+  if (value === null || typeof value !== "object" || depth > MAX_DEPTH) return value;
+  if (memo.has(value)) {
+    const done = memo.get(value);
+    return done === PENDING ? CIRCULAR : done;
+  }
+  memo.set(value, PENDING);
+  const out = scrubInner(value, memo, depth);
+  memo.set(value, out);
+  return out;
+}
+
 /** The value with database details removed, or UNLOGGABLE when it can't be read safely. Never throws. */
 export function scrubValue(value: unknown): unknown {
   try {
-    return scrub(value, new WeakSet(), 0);
+    return scrub(value, new Map(), 0);
   } catch {
     return UNLOGGABLE;
   }

@@ -1,7 +1,7 @@
 import { inspect } from "node:util";
 import { DrizzleQueryError } from "drizzle-orm";
 import { describe, expect, it, vi } from "vitest";
-import { installConsoleScrub, scrubValue as scrubError, UNLOGGABLE } from "./log-scrub";
+import { CIRCULAR, installConsoleScrub, scrubValue as scrubError, UNLOGGABLE } from "./log-scrub";
 
 const SESSION = "1zNeICW0kj_6j6BRXxhiTqt92ua9KiOrU151lAIGpG8";
 const pgError = () =>
@@ -48,13 +48,26 @@ describe("scrubError", () => {
     expect(inspect(scrubError([1, { nested: [pgError()] }]), { depth: 6 })).not.toContain("priya@example.com");
   });
 
-  it("handles circular objects and causes", () => {
+  it("turns a cycle into a placeholder instead of looping", () => {
     const a: Record<string, unknown> = { x: 1 };
     a.self = a;
-    expect(scrubError(a)).toBe(a);
+    expect(scrubError(a)).toEqual({ x: 1, self: CIRCULAR });
     const e = new Error("loop");
     (e as { cause?: unknown }).cause = e;
-    expect(scrubError(e)).toBe(e);
+    expect((scrubError(e) as Error).cause).toBe(CIRCULAR);
+  });
+
+  it("scrubs a database error every time it appears in one value", () => {
+    const db = () => new DrizzleQueryError("select $1", ["priya@example.com"], pgError());
+    const e = db();
+    expect(inspect(scrubError([e, e]), { depth: 6 })).not.toContain("priya@example.com");
+    const outer = new Error("render failed", { cause: db() });
+    expect(inspect(scrubError({ err: outer, cause: outer.cause }), { depth: 6 })).not.toContain("priya@example.com");
+  });
+
+  it("scrubs a database error kept in an error's own property", () => {
+    const outer = Object.assign(new Error("wrapped"), { inner: pgError() });
+    expect(inspect(scrubError(outer), { depth: 6 })).not.toContain("priya@example.com");
   });
 
   it.each([
