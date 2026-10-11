@@ -1,17 +1,19 @@
 import "server-only";
-import { and, count, desc, eq, gte, inArray, isNotNull, sql, sum } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { aiCalls, gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
-import { recordAiCalls } from "@/lib/ai/log";
+import { withKeyLock, type Tx } from "@/db/lock";
+import { gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
+import { loadPrompt } from "@/lib/ai/prompts";
+import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
+import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
-import { explainGaps, type ExplainClient } from "./explain";
+import { EXPLAIN_MODEL, explainGaps, type ExplainClient } from "./explain";
 import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
 
 type Db = ReturnType<typeof getDb>;
-type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 export const GAP_LIMITS = {
   /** Model-written explanations per user or anonymous session per day; after that the page uses template sentences. */
@@ -26,30 +28,73 @@ export type GapsForOwner =
   | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null }
   | { ok: false; reason: "not_found" | "not_confirmed" | "busy" };
 
-const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
+/** What an explanation still running is assumed to cost when checking the budget. A typical one costs 2 to 4 cents. */
+const IN_FLIGHT_EXPLAIN_USD = 0.1;
 
-/** True when this owner may spend on another explanation: under its daily count and under the explanation budget. */
-async function mayExplain(tx: Tx, owner: Owner): Promise<boolean> {
-  const [[mine], [spent]] = await Promise.all([
-    tx
-      .select({ n: count() })
-      .from(gapAnalyses)
-      .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
-      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(uploadedBy(owner), isNotNull(gapAnalyses.aiCallId), gte(gapAnalyses.createdAt, startOfUtcDay()))),
-    tx
-      .select({ usd: sum(aiCalls.costUsd) })
-      .from(aiCalls)
-      .where(and(eq(aiCalls.purpose, "explain-gaps"), gte(aiCalls.createdAt, startOfUtcDay()))),
-  ]);
-  return mine.n < GAP_LIMITS.explainedPerOwnerPerDay && Number(spent.usd ?? 0) < GAP_LIMITS.dailyBudgetUsd();
+/**
+ * Reserves an explanation when this owner is under its daily count and the explanation budget has room, and returns
+ * the reserved call's id; null means template sentences. Runs under a lock for the purpose, held for a few
+ * milliseconds, so parallel requests (any owner, any server) see each other's reservations before the model is called.
+ */
+async function reserveExplanation(tx: Tx, owner: Owner, profileId: string, roleSlug: string): Promise<string | null> {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext('cm-ai:explain-gaps'))`);
+  const ownProfiles = tx
+    .select({ id: sql<string>`${profiles.id}::text` })
+    .from(profiles)
+    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+    .where(uploadedBy(owner));
+  const used = await usedToday(tx, "explain-gaps", IN_FLIGHT_EXPLAIN_USD, refIn("profileId", ownProfiles));
+  if (used.mine >= GAP_LIMITS.explainedPerOwnerPerDay || used.usd >= GAP_LIMITS.dailyBudgetUsd()) return null;
+  return reserveCall(tx, {
+    purpose: "explain-gaps",
+    model: EXPLAIN_MODEL,
+    promptVersion: loadPrompt("explain-gaps").id,
+    inputRefs: { profileId, roleSlug },
+  });
+}
+
+/**
+ * The stored analysis for this profile and role, if one still says what today's matcher says. Prefers today's
+ * matcher, else the newest older one, which carries over (with its words, rating and goals) when the rules agree.
+ */
+async function storedAnalysis(
+  tx: Tx,
+  profileId: string,
+  roleRowId: string | null,
+  role: RoleProfile,
+  match: MatchResult,
+): Promise<Extract<GapsForOwner, { ok: true }> | null> {
+  const [stored] = await tx
+    .select({ id: gapAnalyses.id, result: gapAnalyses.result, rating: gapAnalyses.userRating, matcherVersion: gapAnalyses.matcherVersion })
+    .from(gapAnalyses)
+    .where(
+      and(
+        eq(gapAnalyses.profileId, profileId),
+        roleRowId ? eq(gapAnalyses.roleProfileId, roleRowId) : sql`${gapAnalyses.result}->>'roleSlug' = ${role.slug}`,
+      ),
+    )
+    .orderBy(sql`${gapAnalyses.matcherVersion} = ${MATCHER_VERSION} desc`, desc(gapAnalyses.createdAt))
+    .limit(1);
+  const storedResult = stored ? gapAnalysis.safeParse(stored.result) : null;
+  const current = stored?.matcherVersion === MATCHER_VERSION;
+  if (!stored || !storedResult?.success || !(current || sameReading(storedResult.data, match))) return null;
+  const analysis = withEveryGap(storedResult.data, match);
+  // Kept under the same id, so the rating and the goals made from it carry over.
+  if (analysis !== storedResult.data || !current) {
+    await tx.update(gapAnalyses).set({ result: analysis, matcherVersion: MATCHER_VERSION }).where(eq(gapAnalyses.id, stored.id));
+  }
+  return { ok: true, analysisId: stored.id, analysis, rating: stored.rating };
 }
 
 /**
  * FR-11 to FR-13: the gap analysis of this owner's resume against a role. Reuses the stored analysis of the
  * latest confirmed profile for the same role version and matcher rules; otherwise matches, asks for explanations
- * (or uses templates past the limits), and stores the result. One owner's analyses run one at a time under a
- * lock, so parallel loads can't each call the model or slip past the daily count. Anyone else's resume reads as not found.
+ * (or uses templates past the limits), and stores the result. Anyone else's resume reads as not found.
+ *
+ * The model call runs between two short locked transactions, never inside one, so a slow answer holds no database
+ * connection: the first reads and checks the limits, the second stores the result unless another load stored one
+ * meanwhile. Concurrent loads of the same page on one server share one run; across servers a rare duplicate call is
+ * logged and its result dropped.
  */
 export async function getGapsForOwner(
   resumeId: string,
@@ -57,69 +102,60 @@ export async function getGapsForOwner(
   role: RoleProfile,
   deps: { db?: Db; client?: ExplainClient; now?: Date } = {},
 ): Promise<GapsForOwner> {
+  return singleFlight(`cm-gaps:${ownerKey(owner)}:${resumeId}:${role.slug}`, () => analyse(resumeId, owner, role, deps));
+}
+
+async function analyse(
+  resumeId: string,
+  owner: Owner,
+  role: RoleProfile,
+  deps: { db?: Db; client?: ExplainClient; now?: Date },
+): Promise<GapsForOwner> {
   const db = deps.db ?? getDb();
-  try {
-    return await db.transaction(async (tx) => {
-      await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(GAP_LIMITS.lockTimeoutMs)}`));
-      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-gaps:${ownerKey(owner)}`}))`);
+  const lockKey = `cm-gaps:${ownerKey(owner)}`;
 
-      const resume = await getResumeForOwner(resumeId, owner, tx);
-      if (!resume) return { ok: false, reason: "not_found" } as const;
-      if (!resume.confirmed) return { ok: false, reason: "not_confirmed" } as const;
+  type Next = { done: GapsForOwner } | { profileId: string; roleRowId: string | null; match: MatchResult; reservedId: string | null };
+  const first = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx): Promise<Next> => {
+    const resume = await getResumeForOwner(resumeId, owner, tx);
+    if (!resume) return { done: { ok: false, reason: "not_found" } };
+    if (!resume.confirmed) return { done: { ok: false, reason: "not_confirmed" } };
+    // The stored role row pins the role's version, so an edited role profile gets a fresh analysis.
+    const [roleRow] = await tx
+      .select({ id: roleProfiles.id })
+      .from(roleProfiles)
+      .where(eq(roleProfiles.slug, role.slug))
+      .orderBy(desc(roleProfiles.version))
+      .limit(1);
+    const match = matchProfile(resume.profile, role, deps.now);
+    const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
+    if (stored) return { done: stored };
+    // A role the person fully meets needs no words from the model, so it uses none of their explanations.
+    const reservedId = match.gaps.length > 0 ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
+    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId };
+  });
+  if (first === "busy") return { ok: false, reason: "busy" };
+  if ("done" in first) return first.done;
+  const { profileId, roleRowId, match } = first;
 
-      // The stored role row pins the role's version, so an edited role profile gets a fresh analysis.
-      const [roleRow] = await tx
-        .select({ id: roleProfiles.id })
-        .from(roleProfiles)
-        .where(eq(roleProfiles.slug, role.slug))
-        .orderBy(desc(roleProfiles.version))
-        .limit(1);
-      // Today's matcher first; else the newest older one, which carries over when today's rules agree with it.
-      const [stored] = await tx
-        .select({ id: gapAnalyses.id, result: gapAnalyses.result, rating: gapAnalyses.userRating, matcherVersion: gapAnalyses.matcherVersion })
-        .from(gapAnalyses)
-        .where(
-          and(
-            eq(gapAnalyses.profileId, resume.profileId),
-            roleRow ? eq(gapAnalyses.roleProfileId, roleRow.id) : sql`${gapAnalyses.result}->>'roleSlug' = ${role.slug}`,
-          ),
-        )
-        .orderBy(sql`${gapAnalyses.matcherVersion} = ${MATCHER_VERSION} desc`, desc(gapAnalyses.createdAt))
-        .limit(1);
-      const storedResult = stored ? gapAnalysis.safeParse(stored.result) : null;
-      const match = matchProfile(resume.profile, role, deps.now);
-      const current = stored?.matcherVersion === MATCHER_VERSION;
-      if (stored && storedResult?.success && (current || sameReading(storedResult.data, match))) {
-        const analysis = withEveryGap(storedResult.data, match);
-        // Kept under the same id, so the rating and the goals made from it carry over.
-        if (analysis !== storedResult.data || !current) {
-          await tx.update(gapAnalyses).set({ result: analysis, matcherVersion: MATCHER_VERSION }).where(eq(gapAnalyses.id, stored.id));
-        }
-        return { ok: true, analysisId: stored.id, analysis, rating: stored.rating } as const;
-      }
+  // Settled at once, outside any lock, so the cost counts even if storing fails below.
+  const explained = first.reservedId
+    ? await runReserved(db, first.reservedId, () =>
+        explainGaps(match, role.title, { profileId, roleSlug: role.slug }, deps.client),
+      )
+    : { analysis: buildGapAnalysis(match, null), calls: [], callId: null };
+  const callId = explained.callId;
 
-      const explained = (await mayExplain(tx, owner))
-        ? await explainGaps(match, role.title, { profileId: resume.profileId, roleSlug: role.slug }, deps.client)
-        : { analysis: buildGapAnalysis(match, null), calls: [] };
-      // Inside the transaction: a second connection here could wait forever on a pool the lock holders have filled.
-      const callIds = await recordAiCalls(explained.calls, tx);
-      const [row] = await tx
-        .insert(gapAnalyses)
-        .values({
-          profileId: resume.profileId,
-          roleProfileId: roleRow?.id ?? null,
-          result: explained.analysis,
-          matcherVersion: MATCHER_VERSION,
-          aiCallId: callIds.at(-1) ?? null,
-        })
-        .returning({ id: gapAnalyses.id });
-      return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null } as const;
-    });
-  } catch (error) {
-    // 55P03: another load of this owner's Gaps page held the lock for too long.
-    if ((error as { cause?: { code?: string } })?.cause?.code === "55P03") return { ok: false, reason: "busy" };
-    throw error;
-  }
+  const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {
+    // Another request may have stored one meanwhile; then this call stays logged and its words are dropped.
+    const stored = await storedAnalysis(tx, profileId, roleRowId, role, match);
+    if (stored) return stored;
+    const [row] = await tx
+      .insert(gapAnalyses)
+      .values({ profileId, roleProfileId: roleRowId, result: explained.analysis, matcherVersion: MATCHER_VERSION, aiCallId: callId })
+      .returning({ id: gapAnalyses.id });
+    return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null } as const;
+  });
+  return second === "busy" ? { ok: false, reason: "busy" } : second;
 }
 
 /**
