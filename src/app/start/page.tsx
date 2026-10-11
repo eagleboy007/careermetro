@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProgressRoute } from "@/components/route/progress-route";
+import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
 import { SiteHeader } from "@/components/site/site-header";
 
@@ -17,6 +18,7 @@ export default function StartPage() {
           We read your experience and skills, then you check what we found. Nothing is analysed until you confirm it.
         </p>
       </section>
+      <LocalTestNotice />
       <UploadForm />
     </main>
   );

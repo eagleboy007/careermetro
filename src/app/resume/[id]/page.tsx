@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { ProfileEditor } from "@/components/resume/profile-editor";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
@@ -44,6 +45,7 @@ export default function ResumePage({ params }: PageProps<"/resume/[id]">) {
         <h1 className="text-4xl font-semibold leading-[1.05]">Check what we found</h1>
         <p className="text-muted">Fix anything we got wrong and remove anything that isn&apos;t yours. Then confirm.</p>
       </section>
+      <LocalTestNotice />
       <Suspense fallback={<p className="text-sm text-muted">Loading your profile…</p>}>
         <Review params={params} />
       </Suspense>
