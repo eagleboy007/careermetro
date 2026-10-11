@@ -394,6 +394,18 @@ describe("matchProfile", () => {
     expect(statusOf(r, "power-bi")).toBe("weak");
   });
 
+  it("counts React work as HTML and CSS too (T35)", () => {
+    const r = matchProfile(
+      profile({
+        roles: [{ title: "Developer", employer: "Example", start: "2024-01", end: null, highlights: ["Built React and TypeScript screens for the checkout"] }],
+        skills: [{ name: "React", lastUsed: null, evidence: ["Built React and TypeScript screens for the checkout"] }],
+      }),
+      role("full-stack-developer"),
+      now,
+    );
+    expect(statusOf(r, "html-css")).toBe("met");
+  });
+
   it("meets query optimization from how people describe tuning queries", () => {
     const backend = role("senior-backend-engineer");
     for (const line of ["Tuned slow Postgres queries with EXPLAIN plans and new indexes, cutting p95 latency by 60%", "Improved query performance on MySQL"]) {

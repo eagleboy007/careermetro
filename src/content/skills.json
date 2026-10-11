@@ -142,7 +142,8 @@
       "react"
     ],
     "implies": [
-      "javascript"
+      "javascript",
+      "html-css"
     ]
   },
   {
