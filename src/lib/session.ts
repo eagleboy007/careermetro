@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { currentAccount } from "@/lib/auth/server";
+import { ipHashKey } from "@/lib/hash-keys";
 import { ANONYMOUS_TTL_HOURS, type Owner } from "@/lib/owner";
 
 /** Cookie for the anonymous first analysis (FR-2). It lives as long as the data it points to. */
@@ -49,11 +50,11 @@ export async function ensureOwner(): Promise<Owner> {
 
 /**
  * A keyed hash of the client IP and the UTC day, used only to count uploads per day (SEC-7).
- * The key is CRON_SECRET, so the hash can't be reversed without it, and the day makes hashes unlinkable across days.
+ * The key (IP_HASH_KEY, else CRON_SECRET) means the hash can't be reversed without it, and the day makes hashes
+ * unlinkable across days.
  */
 export function clientHash(ip: string, now = new Date()): string {
-  const key = process.env.CRON_SECRET || "local-development-only";
-  return createHmac("sha256", key).update(`${ip}|${now.toISOString().slice(0, 10)}`).digest("base64url");
+  return createHmac("sha256", ipHashKey()).update(`${ip}|${now.toISOString().slice(0, 10)}`).digest("base64url");
 }
 
 /** The caller's IP as Vercel reports it. Falls back to a fixed value locally. */
