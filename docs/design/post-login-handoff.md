@@ -50,7 +50,7 @@ Existing tokens are in `src/app/globals.css` and exposed to Tailwind as classes:
 | `accent` | `#2448f5` | `#7e94ff` | **Progress only**: train, done stops, ring, primary button |
 | `accent-soft` | `#e6ebff` | `#1d2452` | Progress backgrounds |
 | `on-accent` | `#ffffff` | `#0c0e13` | Text on accent |
-| `good` / `good-soft` | `#11805b` / `#e2f4ec` | `#4cc79a` / `#11302a` | Gap met, "Boarding now" |
+| `good` / `good-soft` | `#0f7a56` / `#e2f4ec` (was `#11805b`; darkened 2026-10-11 for WCAG AA, 4.67:1 on good-soft) | `#4cc79a` / `#11302a` | Gap met, "Boarding now" |
 | `warn` / `warn-soft` | `#9a5800` / `#fff0d8` | `#f0b45a` / `#382a12` | Gap weak |
 | `bad` / `bad-soft` | `#c0342a` / `#fde7e5` | `#ff7e71` / `#3a1a18` | Gap missing |
 

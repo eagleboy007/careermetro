@@ -64,7 +64,8 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
 function TopLink({ item, active }: { item: NavItem; active: boolean }) {
   if (!item.built) {
     return (
-      <span className="cursor-default rounded-full px-3 py-1.5 text-muted/70">
+      // A link that isn't built yet: disabled controls are exempt from the contrast minimum, and screen readers say so.
+      <span role="link" aria-disabled="true" className="cursor-default rounded-full px-3 py-1.5 text-muted/70">
         {item.label}
         <span className="sr-only">, coming soon</span>
       </span>
@@ -91,7 +92,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
   const base = "flex flex-col items-center gap-0.5 py-2 text-[0.68rem] font-medium";
   if (!item.built) {
     return (
-      <span className={`${base} text-muted/60`}>
+      <span role="link" aria-disabled="true" className={`${base} text-muted/60`}>
         {body}
         <span className="sr-only">, coming soon</span>
       </span>
@@ -141,7 +142,8 @@ function AvatarMenu({ user }: { user: ShellUser }) {
         type="button"
         aria-expanded={open}
         aria-controls={menuId}
-        aria-label={`${user.name}, open menu`}
+        // Starts with the initials it shows (WCAG 2.5.3, label in name).
+        aria-label={`${user.initials}: ${user.name}, open menu`}
         onClick={() => setOpen((o) => !o)}
         className="grid size-9 place-items-center rounded-full bg-ink font-mono text-[0.72rem] font-medium text-bg"
       >
