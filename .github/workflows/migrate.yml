@@ -8,6 +8,9 @@ on:
     paths: ["drizzle/**", "src/content/**", "scripts/seed-content.mjs"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: migrate
   cancel-in-progress: false
@@ -21,9 +24,9 @@ jobs:
       - name: Skip when the database secret is not set yet
         if: env.DATABASE_URL == ''
         run: echo "::warning::DATABASE_MIGRATION_URL is not set; skipping migrations."
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         if: env.DATABASE_URL != ''
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         if: env.DATABASE_URL != ''
         with:
           node-version: 22

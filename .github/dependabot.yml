@@ -1,0 +1,29 @@
+# Weekly dependency updates, grouped so they arrive as two PRs a week rather than one per package. Each PR runs the
+# full CI (lint, typecheck, tests, build, e2e) before it can merge.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    # Major versions change APIs (Next, React, Zod, Drizzle); they are planned upgrades, not weekly bumps.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Asia/Kolkata
+    groups:
+      actions:
+        patterns: ["*"]
