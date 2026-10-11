@@ -14,6 +14,7 @@ const m = vi.hoisted(() => ({
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
   afterSignIn: vi.fn(),
+  parseResume: vi.fn(),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -30,10 +31,13 @@ vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
+vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
+vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
 
 import { GET as authCallback } from "@/app/auth/callback/route";
 import { POST as signOutRoute } from "@/app/auth/sign-out/route";
 import { GET as cleanup } from "@/app/api/cron/cleanup/route";
+import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
@@ -81,6 +85,9 @@ describe.each([
     const bad = [
       put(path, good, SITE, { "content-length": "100000" }),
       put(path, " ".repeat(5000)),
+      put(path, JSON.stringify({ ...good, pad: "x".repeat(5000) })),
+      put(path, { rating: 0, done: null }),
+      put(path, { rating: -1, done: "true" }),
       put(path, "not json"),
       put(path, {}),
       put(path, { rating: 6, done: "yes" }),
@@ -128,6 +135,12 @@ describe("profile save", () => {
     expect((await call(put(path, "x".repeat(65 * 1024)))).status).toBe(413);
     expect((await json(await call(put(path, { ...PROFILE, skills: [{ name: "SQL", lastUsed: "June 2022", evidence: [] }] })))).body.error).toMatch(/dates/);
     expect((await call(put(path, { ...PROFILE, roles: [{ title: "", employer: "X", start: null, end: null, highlights: [] }] }))).status).toBe(400);
+    expect(m.confirmProfile).not.toHaveBeenCalled();
+  });
+
+  it("answers 404 without a session and saves nothing", async () => {
+    m.jar!.clear();
+    expect((await call(put(path, PROFILE))).status).toBe(404);
     expect(m.confirmProfile).not.toHaveBeenCalled();
   });
 
@@ -200,13 +213,27 @@ describe("daily cleanup", () => {
   const get = (auth?: string) => new Request(SITE + "/api/cron/cleanup", { headers: auth ? { authorization: auth } : {} });
 
   it("runs only with the cron secret, and never when no secret is set", async () => {
+    // Unset: "Bearer undefined" must not get in. Empty: "Bearer" (Headers trims the trailing space) must not either.
+    vi.stubEnv("CRON_SECRET", undefined);
+    expect((await cleanup(get("Bearer undefined"))).status).toBe(401);
     vi.stubEnv("CRON_SECRET", "");
-    expect((await cleanup(get("Bearer "))).status).toBe(401);
+    expect((await cleanup(get("Bearer"))).status).toBe(401);
     vi.stubEnv("CRON_SECRET", "s3cret-value");
     for (const auth of [undefined, "Bearer wrong", "s3cret-value", "bearer s3cret-value", "Bearer s3cret-valu"]) expect((await cleanup(get(auth))).status).toBe(401);
     expect(m.deleteExpired).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2 } });
+  });
+});
+
+describe("health parse check", () => {
+  it("costs money, so it needs the cron secret, and never runs without one", async () => {
+    const get = (auth?: string) => new Request(SITE + "/api/health?check=parse", { headers: auth ? { authorization: auth } : {} });
+    vi.stubEnv("CRON_SECRET", undefined);
+    expect((await health(get("Bearer undefined"))).status).toBe(401);
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    for (const auth of [undefined, "Bearer wrong", "s3cret-value"]) expect((await health(get(auth))).status).toBe(401);
+    expect(m.parseResume).not.toHaveBeenCalled();
   });
 });
 
@@ -245,12 +272,14 @@ describe("Google return", () => {
     const failed = new URL(res.headers.get("location")!);
     expect(failed.origin).toBe(SITE);
     expect(failed.pathname).toBe("/sign-in");
+    expect(failed.searchParams.get("next")).toBe("/today");
     expect(m.afterSignIn).not.toHaveBeenCalled();
 
-    for (const next of ["https://evil.example/x", "//evil.example", "/\\evil.example", "javascript:alert(1)"]) {
+    for (const next of ["https://evil.example/x", "//evil.example", "/\\evil.example", "javascript:alert(1)", "/\n/evil.example", "/\t/evil.example"]) {
       m.completeGoogleRedirect.mockResolvedValueOnce({ ok: true });
       m.afterSignIn.mockImplementationOnce(async (n: string) => n);
       res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=${encodeURIComponent(next)}`));
+      expect(m.afterSignIn).toHaveBeenLastCalledWith("/today");
       expect(new URL(res.headers.get("location")!).origin).toBe(SITE);
     }
   });
