@@ -93,6 +93,9 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 - FR-27: Each SEO page ends with a "check your own gap" call to action into the route.
 - FR-28: Waitlist capture with double opt-in; a public changelog page.
 
+### 5.8b Inbox
+- FR-35: Inbox (handoff 12b; dev/inbox-plan.md, approved by Milin 2026-10-11). Direct chats and, with the employer side, one chat per application. Someone who isn't a connection sends one message as a request; nothing more until it is accepted, and "Delete" is never shown to the sender. Report (reason, optional note) and silent Block on every chat; reports carry the IT Rules 2021 deadlines (acknowledge in 24 hours; sexual content or impersonation in 24 hours; removal in 72 hours; other complaints in 15 days) and go to the grievance officer. Phone and email are never shown. New requests are capped at 20 a day per person. Message text never goes into logs or analytics. "Download your data" includes the person's own messages, blocks and reports; deleting an account for good removes its messages and the other side sees "This person has left CareerMetro". Part 2 (with the employer side): "Ask for times" with a slot picker and calendar free/busy.
+
 ### 5.9 Phase 3 — B2B team shuttle
 - FR-29: Organizations, seats, and admin role.
 - FR-30: Aggregate skill-gap dashboard per team (no individual resume visible to admins without that employee's explicit consent).
@@ -102,7 +105,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 
 ## 6. Data model (high level)
 
-`User`, `Organization` (nullable in MVP, present from day one), `Resume` (file ref, parse status), `Profile` (structured JSON, versioned), `RoleProfile` (skills, tools, freshness date, source), `GapAnalysis` (profile version, role profile version, gaps JSON, model + prompt version), `Path`, `PathStep`, `Resource` (catalog, link-health status), `InterviewSession`, `InterviewAnswer`, `ContentPage` (SEO), `WaitlistEntry`, `AuditLog`.
+`User`, `Organization` (nullable in MVP, present from day one), `Resume` (file ref, parse status), `Profile` (structured JSON, versioned), `RoleProfile` (skills, tools, freshness date, source), `GapAnalysis` (profile version, role profile version, gaps JSON, model + prompt version), `Path`, `PathStep`, `Resource` (catalog, link-health status), `InterviewSession`, `InterviewAnswer`, `ContentPage` (SEO), `WaitlistEntry`, `AuditLog`, `Conversation`, `ConversationMember`, `Message`, `Block`, `Report`.
 
 Rule: every AI output record stores the model, prompt version, and inputs' versions so results are reproducible and debuggable.
 

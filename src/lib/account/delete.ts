@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, gte, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { auditLogs, consents, users, waitlistEntries } from "@/db/schema";
+import { removeEmptyChats } from "@/lib/inbox/store";
 import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
@@ -46,7 +47,8 @@ export const restoreUntil = (deletionRequestedAt: Date | null): Date | null =>
 
 /**
  * The daily job: removes accounts deleted more than DELETE_GRACE_DAYS ago, for good. Deleting the user row removes
- * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents); a waitlist
+ * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents, their messages,
+ * chat memberships and blocks; chats nobody is left in go too, and reports they filed stay without their name); a waitlist
  * sign-up with the same email goes too. The sign-in identity goes when the database has Supabase's auth schema; if
  * that step fails, our data is still removed and the failure is logged. One audit line per account, with no personal
  * data.
@@ -68,6 +70,7 @@ export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): 
           .returning({ id: users.id });
         // Restored in the meantime.
         if (!gone.length) return;
+        await removeEmptyChats(tx);
         const email = user.email.toLowerCase();
         await tx.delete(waitlistEntries).where(sql`lower(${waitlistEntries.email}) = ${email}`);
         await tx.delete(consents).where(and(isNull(consents.userId), sql`lower(${consents.email}) = ${email}`));

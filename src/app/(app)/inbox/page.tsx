@@ -1,19 +1,62 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { InboxView } from "@/components/inbox/inbox-view";
+import { authConfig } from "@/lib/auth/config";
+import { currentAccount } from "@/lib/auth/server";
+import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
+import { listThreads } from "@/lib/inbox/store";
+import { acceptInboxRequest, deleteInboxRequest, readInboxChat, reportInInbox, sendInboxMessage } from "./actions";
 
 export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { index: false } };
 
-// Real chats need the message tables (dev/inbox-plan.md) and someone to talk to: the employer side for applications and
-// Network for people. Until then everyone sees the example, and nothing typed here is sent or saved.
-export default function InboxPage() {
+const noteClass = "rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted";
+const linkClass = "text-ink underline underline-offset-2";
+
+/**
+ * The Inbox (dev/inbox-plan.md part 1). A signed-in person sees their own chats; `?example=1` shows the example Inbox,
+ * where nothing typed is sent or saved. Without accounts (the example preview) everyone sees the example.
+ */
+export default async function InboxPage({ searchParams }: PageProps<"/inbox">) {
+  const wantsExample = (await searchParams).example === "1";
+  const accounts = !!authConfig() || testSignInEnabled();
+  const account = accounts ? await currentAccount() : null;
+
+  if (!account || wantsExample) {
+    return (
+      <InboxView
+        threads={exampleThreads}
+        note={
+          <p className={noteClass}>
+            Example messages. Nothing you type here is sent or saved.
+            {account && (
+              <>
+                {" "}
+                <Link href="/inbox" className={linkClass}>
+                  Back to your Inbox
+                </Link>
+              </>
+            )}
+          </p>
+        }
+      />
+    );
+  }
+
+  const threads = await listThreads(account.id);
   return (
     <InboxView
-      threads={exampleThreads}
+      threads={threads}
+      actions={{ send: sendInboxMessage, accept: acceptInboxRequest, remove: deleteInboxRequest, report: reportInInbox, read: readInboxChat }}
       note={
-        <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
-          Example messages for now. Nothing you type here is sent or saved. Chats with companies you apply to and people on your line come later.
-        </p>
+        threads.length === 0 ? (
+          <p className={noteClass}>
+            No messages yet. Chats with companies you apply to and people on your line show up here.{" "}
+            <Link href="/inbox?example=1" className={linkClass}>
+              See an example Inbox
+            </Link>
+          </p>
+        ) : undefined
       }
     />
   );

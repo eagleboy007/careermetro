@@ -276,6 +276,10 @@ await step("inbox: offer times, accept a request", async () => {
   await p.getByRole("link", { name: /^Inbox/ }).first().click();
   await p.waitForURL(/\/inbox/);
   await settled();
+  // A new account has no chats yet; the empty Inbox links to the example.
+  await p.getByText("No messages yet.").waitFor();
+  await p.getByRole("link", { name: "See an example Inbox" }).click();
+  await p.waitForURL(/example=1/);
   await p.getByRole("button", { name: "Offer times" }).click();
   await p.locator('[aria-label="Pick times"] button:not([disabled])').first().click();
   await p.getByRole("button", { name: "Send 1 time" }).click();
@@ -286,9 +290,47 @@ await step("inbox: offer times, accept a request", async () => {
   await p.getByText("You accepted. You can now message each other.").waitFor();
   await a11y("inbox-after");
 });
+// Real chats: someone sends the walk's account a message request straight into the database (nobody can start one
+// from the app until Network exists), then the account accepts, replies and reports it.
+if (process.env.DATABASE_URL) {
+  await step("inbox: real request, accept, reply, report", async () => {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+    try {
+      const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+      if (!me) throw new Error("walk account not found");
+      const [them] = await sql`insert into users (email, name) values (${"sender-" + testEmail}, 'Vikram Singh') returning id`;
+      const [chat] = await sql`insert into conversations (kind, status, started_by) values ('direct', 'request', ${them.id}) returning id`;
+      await sql`insert into conversation_members (conversation_id, user_id) values (${chat.id}, ${them.id}), (${chat.id}, ${me.id})`;
+      await sql`insert into messages (conversation_id, sender_id, body) values (${chat.id}, ${them.id}, 'Hi Priya, could I ask about your SIEM switch?')`;
+      await p.goto(BASE + "/inbox");
+      await settled();
+      await p.getByRole("link", { name: /Inbox, 1 unread/ }).first().waitFor();
+      await p.getByRole("button", { name: /Vikram Singh/ }).click();
+      await p.getByRole("button", { name: "Accept" }).click();
+      await p.getByText("Request accepted. You can now message each other.").waitFor({ timeout: 10000 });
+      await p.getByRole("textbox", { name: "Message", exact: true }).fill("Happy to help. Ask away.");
+      await p.getByRole("button", { name: "Send" }).click();
+      await p.locator('ol[aria-label="Messages"]').getByText("Happy to help. Ask away.").waitFor({ timeout: 10000 });
+      await p.waitForFunction(() => document.querySelector("[data-draft]")?.value === "", null, { timeout: 5000 });
+      await p.getByRole("button", { name: "Block or report" }).click();
+      await p.getByLabel("Fake job, scam or spam").check();
+      await a11y("inbox-report");
+      await p.getByRole("button", { name: "Report", exact: true }).click();
+      await p.getByRole("status").getByText("Reported. We confirm within 24 hours.").waitFor({ timeout: 10000 });
+      const [filed] = await sql`select target, reason from reports where reporter_id = ${me.id}`;
+      if (filed?.target !== "person" || filed?.reason !== "fake_or_spam") throw new Error("report not saved");
+      const [sent] = await sql`select count(*)::int as n from messages where conversation_id = ${chat.id} and sender_id = ${me.id}`;
+      if (sent.n !== 1) throw new Error("reply not saved");
+      await shot("inbox-real");
+    } finally {
+      await sql.end();
+    }
+  });
+}
 await step("phone inbox: list first, chat full screen", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
-  await p.goto(BASE + "/inbox");
+  await p.goto(BASE + "/inbox?example=1");
   await settled();
   if (await p.getByRole("button", { name: "Back to all messages" }).isVisible()) throw new Error("chat shown before a tap");
   await p.getByRole("button", { name: /Arjun Mehta/ }).click();
