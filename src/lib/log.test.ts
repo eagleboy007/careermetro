@@ -38,6 +38,13 @@ describe("logLine", () => {
     }
   });
 
+  it.each(["sessionId", "cookie", "accessToken", "secret", "password", "email", "workEmail", "phone", "name", "fullName"])(
+    "always redacts the %s field",
+    (key) => {
+      expect(parse(logLine("info", "e", { [key]: "Priya" }, at))[key]).toBe(REDACTED);
+    },
+  );
+
   it("drops unsafe keys and keys that would overwrite level, event or time", () => {
     const out = parse(logLine("info", "e", { "Priya Sharma": "x", level: "info2", event: "x", at: "x", "bad-key": 1, good: 1 }, at));
     expect(out).toEqual({ level: "info", event: "e", at: "2026-10-11T10:00:00.000Z", good: 1 });

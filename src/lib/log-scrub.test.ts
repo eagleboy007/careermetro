@@ -1,7 +1,7 @@
 import { inspect } from "node:util";
 import { DrizzleQueryError } from "drizzle-orm";
 import { describe, expect, it, vi } from "vitest";
-import { installConsoleScrub, scrubError } from "./log-scrub";
+import { installConsoleScrub, scrubValue as scrubError, UNLOGGABLE } from "./log-scrub";
 
 const SESSION = "1zNeICW0kj_6j6BRXxhiTqt92ua9KiOrU151lAIGpG8";
 const pgError = () =>
@@ -27,10 +27,56 @@ describe("scrubError", () => {
     expect(safe.stack).toContain("    at ");
   });
 
-  it("scrubs a Postgres error that comes on its own", () => {
-    const printed = inspect(scrubError(pgError()));
+  it("scrubs a Postgres error that comes on its own, keeping the code and constraint", () => {
+    const printed = inspect(scrubError(Object.assign(pgError(), { constraint_name: "users_email_key" })));
     expect(printed).toContain("23505");
+    expect(printed).toContain("users_email_key");
     expect(printed).not.toContain("priya@example.com");
+  });
+
+  it("drops a Postgres message that quotes the bad value", () => {
+    const cast = Object.assign(new Error('invalid input syntax for type uuid: "Priya Sharma"'), { name: "PostgresError", code: "22P02", severity: "ERROR", where: "unnamed portal parameter $1" });
+    const safe = scrubError(cast) as Error;
+    expect(safe.message).toBe("PostgresError 22P02");
+    expect(inspect(safe)).not.toContain("Priya");
+  });
+
+  it("scrubs errors inside AggregateError, plain objects and arrays", () => {
+    const aggregate = new AggregateError([pgError()], "several failed");
+    expect(inspect(scrubError(aggregate), { depth: 6 })).not.toContain("priya@example.com");
+    expect(inspect(scrubError({ err: pgError() }), { depth: 6 })).not.toContain("priya@example.com");
+    expect(inspect(scrubError([1, { nested: [pgError()] }]), { depth: 6 })).not.toContain("priya@example.com");
+  });
+
+  it("handles circular objects and causes", () => {
+    const a: Record<string, unknown> = { x: 1 };
+    a.self = a;
+    expect(scrubError(a)).toBe(a);
+    const e = new Error("loop");
+    (e as { cause?: unknown }).cause = e;
+    expect(scrubError(e)).toBe(e);
+  });
+
+  it.each([
+    ["a message that isn't a string", () => Object.assign(new Error("x"), { message: 42, detail: "Priya" })],
+    ["a cause getter that throws", () => Object.defineProperty(new Error("x"), "cause", { get: () => { throw new Error("boom"); } })],
+    [
+      "a message getter that throws on a database error",
+      () => Object.defineProperty(Object.assign(new Error("x"), { detail: "Priya" }), "message", { get: () => { throw new Error("boom"); } }),
+    ],
+    [
+      "a revoked proxy",
+      () => {
+        const { proxy, revoke } = Proxy.revocable(new Error("Priya"), {});
+        revoke();
+        return proxy;
+      },
+    ],
+  ])("never throws, and never passes through, %s", (_, make) => {
+    const value = make();
+    let out: unknown;
+    expect(() => (out = scrubError(value))).not.toThrow();
+    expect(inspect(out, { depth: 4 })).not.toContain("Priya");
   });
 
   it("scrubs a database error nested as the cause of another error", () => {
@@ -62,5 +108,14 @@ describe("installConsoleScrub", () => {
     const printed = error.mock.calls[0].map((a) => inspect(a)).join(" ");
     expect(printed).not.toContain(SESSION);
     expect(error.mock.calls[0][0]).toBe("⨯");
+  });
+
+  it("keeps logging when an argument can't be read", () => {
+    const error = vi.fn();
+    const target = { error, warn: vi.fn(), log: vi.fn() };
+    installConsoleScrub(target);
+    const bad = Object.defineProperty(new Error("x"), "cause", { get: () => { throw new Error("boom"); } });
+    expect(() => target.error("failed", bad)).not.toThrow();
+    expect(error).toHaveBeenCalledWith("failed", UNLOGGABLE);
   });
 });

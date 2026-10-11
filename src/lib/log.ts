@@ -4,7 +4,10 @@ import { APIConnectionError, APIConnectionTimeoutError, APIError, APIUserAbortEr
  * Structured server logs: one JSON line per event, which Vercel keeps and can search by field. Personal data can't
  * get in by accident: keys must be plain identifiers and a string value must look like an id, code or route
  * (letters, digits and `_ . : / [ ] ( ) = + -`, at most 120 characters). Anything else, such as a name, an email or
- * a sentence quoted from a resume, is written as "[redacted]". Error messages are never logged; use errorFields.
+ * a sentence quoted from a resume, is written as "[redacted]". The charset is a backstop, not a guarantee: a one-word
+ * name or a token passes it, so fields whose names say they hold a person's details or a secret (session, cookie,
+ * token, secret, password, email, phone, name) are always redacted, and ids that are logged must never be secrets.
+ * Error messages are never logged; use errorFields.
  */
 export type LogValue = string | number | boolean | null | undefined;
 export type LogFields = Record<string, LogValue>;
@@ -13,6 +16,7 @@ type Level = "info" | "warn" | "error";
 const SAFE_STRING = /^[A-Za-z0-9_.:/[\]()=+-]{0,120}$/;
 const SAFE_KEY = /^[a-z][A-Za-z0-9_]{0,39}$/;
 const RESERVED = new Set(["level", "event", "at"]);
+const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$/i;
 export const REDACTED = "[redacted]";
 
 function clean(value: LogValue): LogValue {
@@ -27,7 +31,7 @@ export function logLine(level: Level, event: string, fields: LogFields = {}, at 
   const out: Record<string, LogValue> = { level, event: clean(event), at: at.toISOString() };
   for (const [key, value] of Object.entries(fields)) {
     if (!SAFE_KEY.test(key) || RESERVED.has(key) || value === undefined) continue;
-    out[key] = clean(value);
+    out[key] = PERSONAL_KEY.test(key) ? REDACTED : clean(value);
   }
   return JSON.stringify(out);
 }
