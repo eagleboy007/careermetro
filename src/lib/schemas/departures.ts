@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { gapStatus } from "./gap";
+import { WORK_TYPES } from "./constants";
+export { WORK_TYPES, APPLY_STAGES } from "./constants";
 
 /**
  * Departures (post-login handoff, section 8): roles from public company job boards and posts the person pastes, each
  * with readiness in words and the gaps between the person and the role. Until the job-post tables are approved
  * (dev/departures-plan.md) the page runs on a synthetic example.
  */
-export const WORK_TYPES = ["Full time", "Part time", "Freelance"] as const;
 export const workType = z.enum(WORK_TYPES);
 
 export const jobPost = z.object({
@@ -36,7 +37,6 @@ export const jobPost = z.object({
   express: z.boolean().default(false),
 });
 
-export const APPLY_STAGES = ["Applied", "Heard back", "Interview", "Offer"] as const;
 
 export type WorkType = z.infer<typeof workType>;
 export type JobPost = z.infer<typeof jobPost>;

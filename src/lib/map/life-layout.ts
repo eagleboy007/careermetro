@@ -1,4 +1,5 @@
-import { LIFE_ROWS, type LifeLine, type LifeMoment, type LifeRow } from "@/lib/schemas";
+import type { LifeLine, LifeMoment, LifeRow } from "@/lib/schemas";
+import { LIFE_ROWS } from "@/lib/schemas/constants";
 
 /*
  * Lays out the Life line (handoff section 7) in plain code, in the SVG's own units. Years run left to right with Now
