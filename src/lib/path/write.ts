@@ -3,10 +3,11 @@ import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { costUsd } from "@/lib/ai/cost";
-import { describeAiError, withOneRetry } from "@/lib/ai/errors";
+import { withOneRetry } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { plannedPath, type PlannedPath } from "@/lib/schemas";
+import { errorFields, logEvent } from "@/lib/log";
 
 export const WRITE_PATH_MODEL = "claude-opus-5-5";
 /** The Path page waits on this call: one retry inside this budget for an outage, else the template. */
@@ -136,7 +137,7 @@ export async function writePath(
         budgetMs: TIMEOUT_MS,
         minRetryMs: MIN_RETRY_MS,
         onError: (error, latencyMs) => {
-          console.error("write-path call failed:", describeAiError(error));
+          logEvent("error", "ai_call_failed", { purpose: "write-path", ms: latencyMs, ...errorFields(error) });
           failed.push({ ...record(WRITE_PATH_MODEL, null, false)[0], latencyMs });
         },
       },
