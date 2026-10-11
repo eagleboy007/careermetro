@@ -2,9 +2,10 @@
 // brand/favicon.svg, brand/app-icon.svg and brand/social-card.svg (and the mark in src/components/ui/logo.tsx), then
 // run: npm run brand. Needs Playwright's Chromium (npm install --no-save playwright; CHROMIUM_PATH if preinstalled).
 import { copyFileSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
-const root = new URL("../", import.meta.url).pathname;
+const root = fileURLToPath(new URL("../", import.meta.url));
 const svg = (name) => readFileSync(`${root}brand/${name}`, "utf8");
 
 // The favicon stays a vector: browsers scale it, and it is the smallest file.
