@@ -7,12 +7,15 @@ export type PathNext = { kind: "today" } | { kind: "sign-in"; href: string } | {
 const NEXT: Record<PathNext["kind"], { text: string; label: string }> = {
   today: { text: "Your goals on Today carry on from here, one proof at a time.", label: "Go to Today" },
   "sign-in": { text: "Sign in to keep your path and prove your goals one at a time.", label: "Sign in to keep your path" },
-  waitlist: { text: "Join the waitlist to hear when you can prove your skills and see matching roles.", label: "Join the waitlist" },
+  waitlist: {
+    text: "Results here are deleted after 24 hours. Join the waitlist to hear when you can keep your path, prove your skills and see matching roles.",
+    label: "Join the waitlist",
+  },
 };
 
 /**
  * The end of a path, once every step is done. Learning works toward a gap but never fills it: only proof (an exam, a
- * certification or work experience) does, so this says the gaps are still open and what comes next.
+ * certification, confirmed work or a project) does, so this says the gaps are still open and what comes next.
  */
 export function PathEnd({ next }: { next: PathNext }) {
   const { text, label } = NEXT[next.kind];
@@ -24,7 +27,7 @@ export function PathEnd({ next }: { next: PathNext }) {
         Every step done
       </h2>
       <p className="text-sm">
-        Your gaps aren&apos;t filled yet. Each one fills when you prove it with an exam, a certification or work experience.
+        Your gaps aren&apos;t filled yet. Each one fills when you prove it: a skill check, a certification, work your manager confirms, or a project you built.
       </p>
       <p className="text-sm text-muted">
         Practice and Match are coming next: interview practice for this role, then roles that fit what you&apos;ve proved. {text}

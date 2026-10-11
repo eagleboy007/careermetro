@@ -16,13 +16,16 @@ const expected404 = "/no-such-page";
 const testEmail = `e2e-${Date.now()}@example.com`;
 // True only while a step makes a request fail on purpose.
 let failingOnPurpose = false;
+// The browser's "Failed to load resource" message doesn't name the resource, so keep the last 404s to name it.
+const recent404 = [];
+p.on("response", (r) => r.status() === 404 && recent404.push(`${r.request().method()} ${new URL(r.url()).pathname}`) && recent404.splice(0, recent404.length - 3));
 p.on(
   "console",
   (m) =>
     m.type() === "error" &&
     !failingOnPurpose &&
     !(new URL(p.url()).pathname === expected404 && m.text().includes("404")) &&
-    problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}`),
+    problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}${m.text().includes("404") ? ` (recent 404s: ${recent404.join(", ")})` : ""}`),
 );
 p.on("pageerror", (e) => problems.push(`pageerror@${p.url()}: ${e.message.slice(0, 200)}`));
 p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));

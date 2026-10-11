@@ -1,5 +1,7 @@
 export const ROUTE_STEPS = ["Resume", "Gaps", "Path", "Practice", "Match"] as const;
 export type RouteStep = (typeof ROUTE_STEPS)[number];
+/** Steps not built yet: shown as coming soon, never as the next thing to do. */
+const COMING_SOON: readonly RouteStep[] = ["Practice", "Match"];
 
 /**
  * The progress line shown at the top of every signed-in screen (DES-2).
@@ -20,6 +22,7 @@ export function ProgressRoute({ current }: { current: RouteStep }) {
         />
         {ROUTE_STEPS.map((step, i) => {
           const state = i < currentIndex ? "done" : i === currentIndex ? "now" : "next";
+          const soon = state === "next" && COMING_SOON.includes(step);
           return (
             <li
               key={step}
@@ -34,10 +37,13 @@ export function ProgressRoute({ current }: { current: RouteStep }) {
                     ? "border-accent bg-accent"
                     : state === "now"
                       ? "border-accent bg-surface ring-4 ring-accent-soft"
-                      : "border-line bg-surface"
+                      : soon
+                        ? "border-line bg-surface-2"
+                        : "border-line bg-surface"
                 }`}
               />
               {step}
+              {soon && <span className="-mt-1 font-mono text-[10px] uppercase tracking-wider text-muted">Soon</span>}
             </li>
           );
         })}
