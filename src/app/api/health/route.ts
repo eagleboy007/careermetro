@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { getDb } from "@/db";
+import journal from "../../../../drizzle/meta/_journal.json";
 import { recordAiCalls } from "@/lib/ai/log";
 import { checkHealth, checkParse, HEALTH_MODEL, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
 import { parseResume } from "@/lib/resume/parse";
@@ -47,6 +48,10 @@ function runCheck(): Promise<Health> {
     hasKey: Boolean(process.env.ANTHROPIC_API_KEY),
     pingDb: async () => {
       await getDb().execute(sql`select 1`);
+    },
+    countMigrations: async () => {
+      const [row] = await getDb().execute<{ applied: number }>(sql`select count(*)::int as applied from drizzle.__drizzle_migrations`);
+      return { applied: row?.applied ?? 0, expected: journal.entries.length };
     },
     pingClaude: async () => {
       const client = new Anthropic({ timeout: 15_000, maxRetries: 0 });

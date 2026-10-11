@@ -335,6 +335,33 @@ if (process.env.DATABASE_URL) {
     }
   });
 }
+// Someone who signs in before uploading anything: every signed-in screen must load (Milin hit an error page here).
+await step("fresh test user, no resume: every signed-in screen loads", async () => {
+  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  const q = await fresh.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Fresh Rider");
+    await q.locator('input[name="email"]').fill(`fresh-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+    await q.locator('input[name="age"]').check();
+    await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+    await q.waitForURL(/\/today/, { timeout: 15000 });
+    for (const path of ["/today", "/map", "/departures", "/inbox", "/me", "/settings"]) {
+      await q.goto(BASE + path);
+      await q.locator("header").first().waitFor();
+      await q.locator("main").first().waitFor();
+      await q.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      if (await q.getByText("Something went wrong").count()) throw new Error("error page on " + path);
+    }
+  } finally {
+    await fresh.close();
+  }
+});
 await step("phone inbox: list first, chat full screen", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
   await p.goto(BASE + "/inbox?example=1");
