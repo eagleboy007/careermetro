@@ -35,7 +35,10 @@ export const users = pgTable(
   {
     id: id(),
     email: text("email").notNull().unique(),
+    /** The full name, made from first and last name. Shown on the profile and used for the resume name check. */
     name: text("name"),
+    firstName: text("first_name"),
+    lastName: text("last_name"),
     /** The sign-in provider's id for this user. No foreign key to the provider's tables, so it can be swapped. */
     authSubject: text("auth_subject").unique(),
     /** When the user ticked "I am 18 or older" at sign-up. */

@@ -1,8 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createAccount } from "@/lib/account/store";
-import { withNameNotice } from "@/lib/auth/after-sign-in";
+import { fullName } from "@/lib/account/name";
+import { createAccount, findAccount, NAME_PART_MAX } from "@/lib/account/store";
+import { RESTORE_PATH, withNameNotice } from "@/lib/auth/after-sign-in";
 import { safeNext } from "@/lib/auth/config";
 import { syncCurrentGoals } from "@/lib/goals/store";
 import { hasUsableName } from "@/lib/resume/name-match";
@@ -16,11 +17,14 @@ export async function finishSignUp(_: FinishState, formData: FormData): Promise<
   const next = safeNext(String(formData.get("next") ?? ""));
   const identity = await currentIdentity();
   if (!identity) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
+  if ((await findAccount(identity.subject))?.deletionRequestedAt) redirect(RESTORE_PATH);
   if (formData.get("age") !== "yes") return { error: "Please confirm you are 18 or older to create an account." };
-  const name = String(formData.get("name") ?? "").trim().slice(0, 80);
+  const firstName = fullName(String(formData.get("firstName") ?? ""), null).slice(0, NAME_PART_MAX);
+  const lastName = fullName(String(formData.get("lastName") ?? ""), null).slice(0, NAME_PART_MAX);
+  const name = fullName(firstName, lastName);
   // The name is how we check a resume is the person's own before it joins the account.
-  if (!hasUsableName(name)) return { error: "Please add your name as it appears on your resume." };
-  const result = await createAccount(identity, { name, sessionId: await readSessionId() });
+  if (!hasUsableName(firstName)) return { error: "Please add your name as it appears on your resume." };
+  const result = await createAccount(identity, { name, firstName, lastName: lastName || null, sessionId: await readSessionId() });
   if (!result.ok) {
     return {
       error:

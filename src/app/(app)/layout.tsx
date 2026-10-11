@@ -7,7 +7,8 @@ import { displayName } from "@/lib/account/name";
 import { touchLastSeen } from "@/lib/account/store";
 import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
-import { currentAccount, currentIdentity } from "@/lib/auth/server";
+import { RESTORE_PATH } from "@/lib/auth/after-sign-in";
+import { currentIdentity, signedInAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -30,7 +31,8 @@ async function Shell({ children }: { children: React.ReactNode }) {
   if (!signedInPreviewEnabled()) notFound();
   let user: ShellUser;
   if (authConfig() || testSignInEnabled()) {
-    const account = await currentAccount();
+    const account = await signedInAccount();
+    if (account?.deletionRequestedAt) redirect(RESTORE_PATH);
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     const [, { streak }] = await Promise.all([touchLastSeen(account.id), rideStatsFor(account.id, new Date())]);
     const name = displayName(account.name);

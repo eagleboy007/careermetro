@@ -15,7 +15,7 @@ describe("test sign-in", () => {
 
   it("reads back a signed cookie as an unproven test identity", () => {
     const value = testUserCookie({ email: " Asha@Example.com ", name: "Asha" }, preview);
-    expect(testUserIdentity(value, preview)).toEqual({ subject: "test:asha@example.com.test", email: "asha@example.com.test", emailVerified: false, name: "Asha" });
+    expect(testUserIdentity(value, preview)).toEqual({ subject: "test:asha@example.com.test", email: "asha@example.com.test", emailVerified: false, name: "Asha", method: "test" });
   });
 
   it("refuses an edited, foreign, expired or switched-off cookie", () => {

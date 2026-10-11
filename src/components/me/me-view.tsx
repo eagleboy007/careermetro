@@ -69,7 +69,11 @@ export function MeView({ me }: { me: MeProfile }) {
               </button>
             )}
             {own && <span className={quiet}>Change status · soon</span>}
-            {own && <span className={quiet}>Account settings · soon</span>}
+            {own && (
+              <Link href="/settings" className={quiet}>
+                Account settings
+              </Link>
+            )}
           </div>
         </div>
 

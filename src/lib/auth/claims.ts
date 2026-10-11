@@ -19,5 +19,6 @@ export function identityFromClaims(claims: Claims | null | undefined): Identity 
     email: claims.email,
     emailVerified: methods.some((m) => typeof m === "string" && PROVING_METHODS.has(m)),
     name: raw ? raw.trim().slice(0, 80) : null,
+    method: methods.includes("oauth") ? "google" : methods.includes("otp") ? "email_code" : undefined,
   };
 }

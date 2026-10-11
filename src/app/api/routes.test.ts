@@ -11,6 +11,8 @@ const m = vi.hoisted(() => ({
   confirmProfile: vi.fn(),
   ingestResume: vi.fn(),
   deleteExpired: vi.fn(),
+  purgeDeleted: vi.fn(),
+  exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
   afterSignIn: vi.fn(),
@@ -30,6 +32,8 @@ vi.mock("@/lib/gaps/store", () => ({ rateAnalysis: m.rateAnalysis }));
 vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
+vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
+vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
 vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
 vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
@@ -37,6 +41,7 @@ vi.mock("next/server", async (original) => ({ ...(await original<typeof import("
 import { GET as authCallback } from "@/app/auth/callback/route";
 import { POST as signOutRoute } from "@/app/auth/sign-out/route";
 import { GET as cleanup } from "@/app/api/cron/cleanup/route";
+import { GET as exportData } from "@/app/api/account/export/route";
 import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
@@ -221,8 +226,30 @@ describe("daily cleanup", () => {
     vi.stubEnv("CRON_SECRET", "s3cret-value");
     for (const auth of [undefined, "Bearer wrong", "s3cret-value", "bearer s3cret-value", "Bearer s3cret-valu"]) expect((await cleanup(get(auth))).status).toBe(401);
     expect(m.deleteExpired).not.toHaveBeenCalled();
+    expect(m.purgeDeleted).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
-    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2 } });
+    m.purgeDeleted.mockResolvedValueOnce(1);
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1 } });
+    // One step failing doesn't stop the other, and the job reports the failure.
+    m.deleteExpired.mockRejectedValueOnce(new Error("down"));
+    m.purgeDeleted.mockResolvedValueOnce(3);
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: null, accountsDeleted: 3 } });
+  });
+});
+
+describe("download your data", () => {
+  it("needs a signed-in account and sends a private, uncached attachment", async () => {
+    m.account = null;
+    expect((await exportData()).status).toBe(401);
+    expect(m.exportData).not.toHaveBeenCalled();
+    m.account = { id: ID };
+    m.exportData.mockResolvedValueOnce({ exportVersion: 1, account: { email: "a@b.in" } });
+    const res = await exportData();
+    expect(res.status).toBe(200);
+    expect(m.exportData).toHaveBeenCalledWith(ID);
+    expect(res.headers.get("cache-control")).toBe("no-store, private");
+    expect(res.headers.get("content-disposition")).toMatch(/^attachment; filename="careermetro-data-\d{4}-\d{2}-\d{2}\.json"$/);
+    expect(await res.json()).toEqual({ exportVersion: 1, account: { email: "a@b.in" } });
   });
 });
 
