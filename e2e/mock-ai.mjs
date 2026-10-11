@@ -1,6 +1,32 @@
-// A stand-in for the Claude API in end-to-end runs: the parse call gets a fixed profile of the synthetic fixture
-// resume, and every other call gets text that fails its schema, so the app's plain-code fallbacks are used.
+// A stand-in for the Claude API in end-to-end runs and local copies (docs/local-setup.md). The parse call gets a
+// profile: for a synthetic resume from fixtures/evals (matched by its first line, "Name | City"), one built from that
+// resume's reviewed skills and quotes; for anything else, the fixed profile of fixtures/resumes/priya-sharma. Every
+// other call gets text that fails its schema, so the app's plain-code fallbacks are used.
+import { readdirSync, readFileSync } from "node:fs";
 import http from "node:http";
+
+const root = new URL("..", import.meta.url);
+const skillNames = new Map(JSON.parse(readFileSync(new URL("src/content/skills.json", root), "utf8")).map((s) => [s.id, s.name]));
+const evalsDir = new URL("fixtures/evals/", root);
+const personas = readdirSync(evalsDir)
+  .filter((f) => f.endsWith(".json"))
+  .map((f) => JSON.parse(readFileSync(new URL(f, evalsDir), "utf8")))
+  .map((e) => {
+    const firstLine = e.resumeText.split("\n")[0];
+    const [name, city] = firstLine.split("|").map((p) => p.trim());
+    return {
+      key: `${name} | ${city}`,
+      profile: {
+        headline: e.persona,
+        totalYearsExperience: e.expected.totalYearsExperience ?? null,
+        roles: [],
+        skills: e.expected.skills.map((s) => ({ name: skillNames.get(s.skillId) ?? s.skillId, lastUsed: null, evidence: [s.quote] })),
+        education: [],
+        certifications: [],
+        personName: name,
+      },
+    };
+  });
 const profile = {
   headline: "Data Analyst",
   totalYearsExperience: 3,
@@ -40,7 +66,9 @@ http
       const j = JSON.parse(body || "{}");
       const sys = typeof j.system === "string" ? j.system : JSON.stringify(j.system ?? "");
       const isParse = /resume/i.test(sys) && /<resume|resume_text|wrap/i.test(JSON.stringify(j.messages));
-      const text = isParse ? JSON.stringify(profile) : "not json";
+      const sent = JSON.stringify(j.messages ?? "");
+      const persona = isParse ? personas.find((p) => sent.includes(p.key)) : undefined;
+      const text = isParse ? JSON.stringify(persona?.profile ?? profile) : "not json";
       console.log(n, req.url, isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
       res.writeHead(200, { "content-type": "application/json" });
       res.end(

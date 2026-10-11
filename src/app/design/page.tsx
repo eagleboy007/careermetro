@@ -9,6 +9,7 @@ import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
 import { SkillCoverageBar } from "@/components/route/skill-coverage-bar";
 import { ProfileEditor } from "@/components/resume/profile-editor";
+import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
 import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
@@ -371,6 +372,8 @@ export default function DesignPage() {
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume upload</h2>
+          <p className="text-sm text-muted">Local test notice: shown only while the stand-in Claude API is in use, never on production.</p>
+          <LocalTestNotice demo />
           <UploadForm demo />
         </div>
         <div className="flex flex-col gap-4">

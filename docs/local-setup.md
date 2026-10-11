@@ -33,6 +33,15 @@ Open two terminal windows in the `careermetro` folder.
 
 Sign in at http://localhost:3000/sign-in with "Continue as test user" (any name, any email; it gets a `.test` ending). Finish sign-up with a first name and the 18+ tick, then use Today, Map, Departures, the Inbox icon, and Profile and Settings from the avatar menu. Upload a resume from `fixtures/resumes/` to see Gaps and Path.
 
+## Test people
+
+The stand-in Claude API doesn't really read resumes. It knows the 31 synthetic resumes in `fixtures/evals/` (one per role, for example Arjun Verma for full stack developer, Aisha Khan for senior backend engineer, Gurpreet Singh for cloud engineer, Sneha Iyer for SOC analyst L2). Paste one of them and it comes back as that person's reviewed profile. Any other resume comes back as the sample profile Priya Sharma, a data analyst.
+
+To try one:
+1. Sign in at /sign-in with "Continue as test user", using the person's name exactly as it appears on the first line of their resume (the name check compares them) and any email.
+2. On Today or /start, choose "Paste text" and paste the `resumeText` from their file in `fixtures/evals/` (the text between the quotes, with each `\n` as a new line). Or print it with `node -e "console.log(require('./fixtures/evals/full-stack-mern-bootcamp.json').resumeText)"`.
+3. Confirm what was found, then pick the role named in the file's `roleSlug`.
+
 ## Getting the newest code
 
 `git pull && npm install && npm run db:migrate && npm run db:seed`, then start the two windows again. If a page shows "Something went wrong" after a pull, the database is usually missing a migration: run `npm run db:migrate`.
