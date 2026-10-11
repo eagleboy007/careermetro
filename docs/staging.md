@@ -20,6 +20,6 @@ Previews are covered by Vercel Authentication. Either:
 - use a bypass link that works without a Vercel login:
   1. Go to **Settings** → **Deployment Protection** → **Protection Bypass for Automation** and press **Add Secret**. Copy the value.
   2. Bookmark `https://careermetro-git-staging-career-metro.vercel.app/sign-in?x-vercel-protection-bypass=SECRET&x-vercel-set-bypass-cookie=true`, with SECRET replaced by the value you copied.
-  3. Keep that link private, like a password. Never paste it in chat.
+  3. Keep that link private, like a password. Never paste it in chat. It opens every preview, not only staging; if it may have leaked, delete it in Deployment Protection and add a new one.
 
 The same secret lets automated checks open previews. Save it in GitHub as the `VERCEL_AUTOMATION_BYPASS_SECRET` repository secret, under Settings → Secrets and variables → Actions.

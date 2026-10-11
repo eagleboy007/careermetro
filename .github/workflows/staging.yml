@@ -20,8 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # The push below uses the token the checkout saves.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          ref: main
+          persist-credentials: true
+      # Always main, even when run by hand from another branch.
       - name: Move staging to main
         run: git push --force origin HEAD:refs/heads/staging
