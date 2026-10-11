@@ -2,7 +2,8 @@
 
 import { Check, Route } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS, type FirstTally, type RideTask } from "@/lib/schemas";
+import type { FirstTally, RideTask } from "@/lib/schemas";
+import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas/constants";
 import { TaskList } from "./task-list";
 
 export type { FirstTally };

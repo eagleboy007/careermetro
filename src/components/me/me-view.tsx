@@ -6,7 +6,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { initials } from "@/lib/departures/filter";
-import { SMART, STORY_BOXES, type JourneyStop, type MeProfile, type Story } from "@/lib/schemas";
+import type { JourneyStop, MeProfile, Story } from "@/lib/schemas";
+import { SMART, STORY_BOXES } from "@/lib/schemas/constants";
 
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-[550]";
 const ghost = `${btn} border border-line bg-surface px-[15px] py-[9px] text-[0.86rem] text-ink hover:bg-surface-2`;

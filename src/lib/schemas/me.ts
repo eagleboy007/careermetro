@@ -1,13 +1,13 @@
 import { z } from "zod";
+import { STORY_BOXES, SMART } from "./constants";
+export { STORY_BOXES, SMART } from "./constants";
 
 /**
  * Your profile (post-login handoff, section 11). The server fills it from the person's confirmed profile and current
  * gaps; stories, interests, status and the visibility switches wait on their tables (dev/profile-plan.md), so the
  * design page and the preview use a synthetic example.
  */
-export const STORY_BOXES = ["Ownership", "Problem solving", "Delivering results", "Learning", "Working with others", "Speaking up"] as const;
 export const storyBox = z.enum(STORY_BOXES);
-export const SMART = ["S", "M", "A", "R", "T"] as const;
 
 export const story = z.object({
   id: z.string().min(1).max(60),

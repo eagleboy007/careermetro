@@ -2,7 +2,8 @@
 
 import { BadgeCheck, CalendarClock, Route } from "lucide-react";
 import { LIFE_HEIGHT, LIFE_WIDTH, ROW_NAME, ROW_Y, X0, type LifeLayout, type LifeStation } from "@/lib/map/life-layout";
-import { LIFE_ROWS, type LifeLine } from "@/lib/schemas";
+import type { LifeLine } from "@/lib/schemas";
+import { LIFE_ROWS } from "@/lib/schemas/constants";
 import { Key, Label, List, Panel, Soon } from "./map-parts";
 
 /** The Life line SVG (handoff section 7): five rows by year, big moments only. */
