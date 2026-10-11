@@ -186,6 +186,13 @@ await step("tick a ride task -> returning + streak", async () => {
   await shot("today-returning");
   await a11y("today-returning");
 });
+await step("static pages still load after a tick", async () => {
+  // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
+  for (const path of ["/roles/data-analyst", "/roles", "/"]) {
+    const r = await p.request.get(BASE + path);
+    if (r.status() !== 200) throw new Error(`${path} status ${r.status()}`);
+  }
+});
 await step("untick -> back to first, no streak", async () => {
   await p.locator('section[aria-label="Today\'s ride"] li label').first().click();
   await p.locator('section[aria-label="Welcome"]').waitFor({ timeout: 10000 });
