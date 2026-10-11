@@ -6,6 +6,9 @@ import { clientIp, isSameOrigin } from "@/lib/session";
 import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
 
 const POLICY_VERSION = "2026-10-draft";
+// The public site shows its own consent wording, so its consents record which one people agreed to. site-2026-10 is:
+// "I agree that CareerMetro can email me about early access. I can unsubscribe any time."
+const SITE_POLICY_VERSION = "site-2026-10";
 
 // The public site at careermetro.com is hosted apart from the app, and its early-access form posts here so every
 // sign-up lands in the one waitlist. No other site may (T20).
@@ -68,7 +71,7 @@ async function signUp(request: Request, fromSite: boolean): Promise<Response> {
     .returning({ id: waitlistEntries.id });
 
   if (inserted.length > 0) {
-    await db.insert(consents).values({ email, purpose: "waitlist_email", policyVersion: POLICY_VERSION });
+    await db.insert(consents).values({ email, purpose: "waitlist_email", policyVersion: fromSite ? SITE_POLICY_VERSION : POLICY_VERSION });
     // Next step: send the double opt-in email with the confirm token (FR-28).
   }
 
