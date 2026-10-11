@@ -40,10 +40,21 @@ export default function GrievancesPage() {
             What happens to a complaint
           </h2>
           <ul className="flex list-disc flex-col gap-2 pl-5 text-muted">
-            <li>We confirm we have it within 24 hours.</li>
-            <li>We decide on it and tell you what we did within 15 days.</li>
-            <li>Content that shows someone in a private or intimate way without consent, or pretends to be someone, comes down within 24 hours of a report.</li>
+            <li>We confirm we have your complaint within 24 hours.</li>
+            <li>If you ask us to remove something that breaks our rules or the law, we act on it within 72 hours.</li>
+            <li>
+              If you, or someone acting for you, report content that shows you nude, partly nude or in a sexual act, or that impersonates you (including edited
+              or morphed images), we remove or disable it within 24 hours.
+            </li>
+            <li>Any other complaint gets a decision within 15 days, and we tell you what we did.</li>
             <li>The person you report is not told who reported them.</li>
+            <li>
+              If you disagree with the decision, you can appeal to the Government&apos;s Grievance Appellate Committee within 30 days, at{" "}
+              <a href="https://gac.gov.in" className="underline underline-offset-2" rel="noopener noreferrer">
+                gac.gov.in
+              </a>
+              .
+            </li>
           </ul>
         </section>
       </div>

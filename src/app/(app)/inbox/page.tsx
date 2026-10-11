@@ -8,11 +8,13 @@ export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { ind
 // Network for people. Until then everyone sees the example, and nothing typed here is sent or saved.
 export default function InboxPage() {
   return (
-    <div className="flex flex-col gap-4">
-      <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
-        Example messages for now. Nothing you type here is sent or saved. Chats with companies you apply to and people on your line come later.
-      </p>
-      <InboxView threads={exampleThreads} />
-    </div>
+    <InboxView
+      threads={exampleThreads}
+      note={
+        <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
+          Example messages for now. Nothing you type here is sent or saved. Chats with companies you apply to and people on your line come later.
+        </p>
+      }
+    />
   );
 }

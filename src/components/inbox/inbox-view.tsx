@@ -2,7 +2,7 @@
 
 import { ArrowLeft, CalendarDays, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import { filterThreads, INBOX_FILTERS, initialsOf, lastMessage, type InboxFilter, type InboxMessage, type InboxThread } from "@/lib/inbox/types";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
@@ -28,9 +28,8 @@ type Thread = InboxThread & { offered?: string[] };
  * nothing else, until the message tables exist (dev/inbox-plan.md). On a phone the list shows first and a chat opens full
  * screen with a back arrow.
  */
-export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
-  // The first chat opens with the page (on a phone, once tapped), so an unread application there counts as read.
-  const [threads, setThreads] = useState<Thread[]>(() => initial.map((t, i) => (i === 0 && t.kind === "application" ? { ...t, unread: false } : t)));
+export function InboxView({ threads: initial, note }: { threads: InboxThread[]; note?: ReactNode }) {
+  const [threads, setThreads] = useState<Thread[]>(initial);
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [currentId, setCurrentId] = useState(initial[0]?.id ?? null);
   const [open, setOpen] = useState(false);
@@ -41,10 +40,18 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const draftRef = useRef<HTMLTextAreaElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // When the control in focus goes away (a chat opens on a phone, the slot grid opens or closes), focus moves to the
+  // control that takes its place instead of falling back to the page.
+  const focusNext = (selector: string) =>
+    requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(selector)?.focus());
+  const phone = () => window.matchMedia("(max-width: 759px)").matches;
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
   const say = (text: string) => {
-    setToast(text);
+    // Cleared first, so the same message twice is read out twice.
+    setToast(null);
+    requestAnimationFrame(() => setToast(text));
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 2600);
   };
@@ -59,6 +66,12 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
     setOpen(true);
     // Opening an application chat reads it; a request stays unread until it is accepted or deleted.
     update(id, (t) => (t.kind === "application" ? { ...t, unread: false } : t));
+    if (phone()) focusNext("[data-back]");
+  };
+
+  const back = () => {
+    setOpen(false);
+    focusNext(`[data-thread="${currentId}"]`);
   };
 
   const send = () => {
@@ -82,11 +95,14 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
     }));
     setPicking(false);
     say(`Sent. ${current.name} sees only the times you picked.`);
+    focusNext("[data-draft]");
   };
 
-  const accept = () =>
-    current &&
+  const accept = () => {
+    if (!current) return;
     update(current.id, (t) => ({ ...t, kind: "person", unread: false, messages: [...t.messages, { by: "system", text: "You accepted. You can now message each other." }] }));
+    focusNext("[data-draft]");
+  };
 
   const remove = () => {
     if (!current) return;
@@ -95,10 +111,11 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
     setCurrentId(rest[0]?.id ?? null);
     setOpen(false);
     say(`Deleted. ${current.name.split(" ")[0]} is not told.`);
+    focusNext("[data-thread]");
   };
 
   return (
-    <div className="flex min-w-0 flex-col gap-4">
+    <div ref={rootRef} className="flex min-w-0 flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[1.5rem] font-semibold leading-[1.1] min-[760px]:text-[2rem]">Inbox</h1>
@@ -107,6 +124,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
           </p>
         </div>
       </div>
+      {note}
 
       <div className="grid items-start gap-3.5 min-[760px]:grid-cols-[260px_minmax(0,1fr)] min-[1100px]:grid-cols-[290px_minmax(0,1fr)_270px]">
         <section aria-label="Conversations" className={`min-w-0 rounded-[20px] border border-line bg-surface ${open ? "max-[759px]:hidden" : ""}`}>
@@ -132,6 +150,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
                 <li key={t.id}>
                   <button
                     type="button"
+                    data-thread={t.id}
                     onClick={() => openThread(t.id)}
                     aria-current={t.id === currentId ? "true" : undefined}
                     className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2.5 rounded-[12px] p-2.5 text-left hover:bg-surface-2 aria-[current=true]:bg-surface-2"
@@ -166,7 +185,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
             className={`flex min-w-0 flex-col overflow-hidden rounded-[20px] border border-line bg-surface min-[760px]:min-h-[520px] ${open ? "" : "max-[759px]:hidden"}`}
           >
             <div className="flex items-center gap-2.5 border-b border-line px-3 py-2.5 min-[760px]:flex-wrap min-[760px]:px-4 min-[760px]:py-3.5">
-              <button type="button" onClick={() => setOpen(false)} aria-label="Back to all messages" className={`${quiet} px-1.5 min-[760px]:hidden`}>
+              <button type="button" data-back onClick={back} aria-label="Back to all messages" className={`${quiet} px-1.5 min-[760px]:hidden`}>
                 <ArrowLeft size={20} strokeWidth={1.75} aria-hidden="true" />
               </button>
               <Avatar thread={current} />
@@ -179,7 +198,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
                 // Arrivals isn't built yet, so this is not a link.
                 <span className={`${ghost} hidden cursor-default text-muted hover:bg-surface min-[760px]:inline-flex`}>See on Arrivals · soon</span>
               )}
-              <button type="button" onClick={() => say("Reported. Our team reviews it within 24 hours.")} className={quiet}>
+              <button type="button" onClick={() => say("Reported. We confirm within 24 hours.")} className={quiet}>
                 {current.kind === "application" ? "Report" : "Block or report"}
               </button>
             </div>
@@ -203,10 +222,14 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
                   onPick={() => {
                     setPicks([]);
                     setPicking(true);
+                    focusNext('[aria-label="Pick times"] button:not([disabled])');
                   }}
                   onToggle={(k) => setPicks((p) => (p.includes(k) ? p.filter((x) => x !== k) : [...p, k]))}
                   onSendPicks={sendPicks}
-                  onCancel={() => setPicking(false)}
+                  onCancel={() => {
+                    setPicking(false);
+                    focusNext("[data-offer]");
+                  }}
                 />
               ))}
             </ol>
@@ -224,7 +247,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
                     <button type="button" className={ghost} onClick={remove}>
                       Delete
                     </button>
-                    <button type="button" className={quiet} onClick={() => say("Reported. Our team reviews it within 24 hours.")}>
+                    <button type="button" className={quiet} onClick={() => say("Reported. We confirm within 24 hours.")}>
                       Block and report
                     </button>
                   </div>
@@ -233,6 +256,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
                 <div className="flex items-end gap-2">
                   <textarea
                     ref={draftRef}
+                    data-draft
                     rows={1}
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
@@ -291,7 +315,7 @@ export function InboxView({ threads: initial }: { threads: InboxThread[] }) {
 
       <p
         role="status"
-        className={`pointer-events-none fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full bg-ink px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
+        className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink min-[700px]:rounded-full px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
       >
         {toast}
       </p>
@@ -359,7 +383,7 @@ function Message({
           </small>
         ) : !picking ? (
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" className={primary} onClick={onPick}>
+            <button type="button" data-offer className={primary} onClick={onPick}>
               Offer times
             </button>
             <small className="text-[0.78rem] text-muted">You choose what to share. Your calendar stays private.</small>

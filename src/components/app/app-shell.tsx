@@ -71,7 +71,7 @@ function InboxLink({ unread, active }: { unread: number; active: boolean }) {
       href="/inbox"
       aria-current={active ? "page" : undefined}
       aria-label={unread ? `Inbox, ${unread} unread` : "Inbox"}
-      className="relative grid size-9 place-items-center rounded-full border border-line bg-surface text-ink aria-[current=page]:outline-2 aria-[current=page]:outline-offset-2 aria-[current=page]:outline-accent"
+      className="relative grid size-9 place-items-center rounded-full border border-line bg-surface text-ink hover:bg-surface-2 aria-[current=page]:bg-surface-2"
     >
       <MessageSquare size={20} strokeWidth={1.75} aria-hidden="true" />
       {unread > 0 && (
@@ -131,6 +131,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
 }
 
 function AvatarMenu({ user }: { user: ShellUser }) {
+  const path = usePathname();
   const [open, setOpen] = useState(false);
   const menuId = useId();
   const wrap = useRef<HTMLDivElement>(null);
@@ -196,7 +197,7 @@ function AvatarMenu({ user }: { user: ShellUser }) {
           {MENU_NAV.map((item) =>
             item.built ? (
               <li key={item.key}>
-                <Link href={item.href} onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
+                <Link href={item.href} onClick={() => setOpen(false)} aria-current={path === item.href ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
                   <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
                   {item.label}
                 </Link>
