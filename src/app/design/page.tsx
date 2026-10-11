@@ -16,8 +16,9 @@ import { PostingShareBar } from "@/components/roles/posting-share-bar";
 import { RoleCard } from "@/components/roles/role-card";
 import { RoleSkillList } from "@/components/roles/role-skill-list";
 import { SiteHeader } from "@/components/site/site-header";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
+import { PageNotice } from "@/components/ui/page-notice";
 import { StatusChip } from "@/components/ui/status-chip";
 import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
@@ -189,6 +190,16 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Site header</h2>
         <SiteHeader />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Page notice</h2>
+        <p className="text-sm text-muted">Error and not-found pages. Says what happened and gives a way forward.</p>
+        <div className="rounded-lg border border-line bg-surface">
+          <PageNotice title="We can't find that page" text="The link may be old, or the page may belong to someone else.">
+            <ButtonLink href="/">Go to the home page</ButtonLink>
+          </PageNotice>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

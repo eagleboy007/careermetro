@@ -161,6 +161,12 @@ for (const path of ["/map", "/me", "/departures"]) {
     await shot(path.slice(1));
   });
 }
+await step("unknown address shows the not-found page", async () => {
+  const r = await p.goto(BASE + "/no-such-page");
+  if (r.status() !== 404) throw new Error("status " + r.status());
+  await p.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 5000 });
+  await p.getByRole("link", { name: "Go to the home page" }).waitFor({ timeout: 5000 });
+});
 await step("phone + dark today", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
   await p.emulateMedia({ colorScheme: "dark" });
