@@ -43,7 +43,14 @@ export function ProgressRoute({ current }: { current: RouteStep }) {
                 }`}
               />
               {step}
-              {soon && <span className="-mt-1 font-mono text-[10px] uppercase tracking-wider text-muted">Soon</span>}
+              {soon && (
+                <>
+                  <span className="sr-only">, coming soon</span>
+                  <span aria-hidden="true" className="-mt-1 font-mono text-[10px] uppercase tracking-wider text-muted">
+                    Soon
+                  </span>
+                </>
+              )}
             </li>
           );
         })}

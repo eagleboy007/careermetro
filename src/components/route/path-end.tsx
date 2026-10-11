@@ -8,7 +8,7 @@ const NEXT: Record<PathNext["kind"], { text: string; label: string }> = {
   today: { text: "Your goals on Today carry on from here, one proof at a time.", label: "Go to Today" },
   "sign-in": { text: "Sign in to keep your path and prove your goals one at a time.", label: "Sign in to keep your path" },
   waitlist: {
-    text: "Results here are deleted after 24 hours. Join the waitlist to hear when you can keep your path, prove your skills and see matching roles.",
+    text: "You can open these results for 24 hours; then they're deleted. Join the waitlist to hear when you can keep your path, prove your skills and see matching roles.",
     label: "Join the waitlist",
   },
 };
