@@ -1,0 +1,30 @@
+name: Update staging
+
+# Keeps the `staging` branch equal to main, so the fixed staging address (Vercel's alias for the `staging` branch,
+# see docs/staging.md) always shows the newest build as a preview: signed-in screens and "Continue as test
+# user" included. Vercel's ignoreCommand still skips the build when only docs changed.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: staging
+  cancel-in-progress: true
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The push below uses the token the checkout saves.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true
+      # Always main, even when run by hand from another branch.
+      - name: Move staging to main
+        run: git push --force origin HEAD:refs/heads/staging

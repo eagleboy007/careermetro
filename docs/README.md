@@ -8,6 +8,7 @@ Every confirmed design, plan and decision is kept here as a file, so nothing has
 |---|---|
 | `../CLAUDE.md` | Decisions already made, design rules, working agreements |
 | `REQUIREMENTS.md` | Product requirements, the contract for all work |
+| `staging.md` | Where to see the newest build (staging address, test sign-in, Vercel login) |
 
 ## Design
 
