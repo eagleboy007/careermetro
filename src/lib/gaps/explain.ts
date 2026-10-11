@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { costUsd } from "@/lib/ai/cost";
-import { describeAiError } from "@/lib/ai/errors";
+import { describeAiError, withOneRetry } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import type { GapAnalysis } from "@/lib/schemas";
@@ -11,7 +11,9 @@ import { buildGapAnalysis, SHOWN_GAPS, type Explanations } from "./analysis";
 import type { MatchResult } from "./match";
 
 export const EXPLAIN_MODEL = "claude-opus-5-5";
-/** The Gaps page waits on this call, so it gets one short attempt and the template covers any failure. */
+/** The Gaps page waits on this call: one retry inside this budget for an outage, else the template. */
+/** A retry starts only with at least this much of the budget left. */
+const MIN_RETRY_MS = 5_000;
 const TIMEOUT_MS = 15_000;
 
 export type ExplainClient = Pick<Anthropic, "beta">;
@@ -82,7 +84,8 @@ export async function explainGaps(
   if (match.gaps.length === 0) return template([]);
 
   const prompt = loadPrompt("explain-gaps");
-  const started = Date.now();
+  // Reset at each attempt, so a logged latency is that attempt's own.
+  let started = Date.now();
   const record = (model: string, usage: Parameters<typeof costUsd>[1] | null, ok: boolean): AiCallRecord[] => [
     {
       purpose: "explain-gaps",
@@ -97,27 +100,41 @@ export async function explainGaps(
     },
   ];
 
+  // One retry for a brief outage (rate limit, overload, dropped connection), within the same time budget.
+  const failed: AiCallRecord[] = [];
   let response;
   try {
-    response = await client.beta.messages.create(
-      {
-        model: EXPLAIN_MODEL,
-        max_tokens: 2_000,
-        system: prompt.text,
-        messages: [{ role: "user", content: wrapAnalysis(match, roleTitle) }],
-        output_config: { effort: "low", format: betaZodOutputFormat(explainOutput) },
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
+    response = await withOneRetry(
+      (timeout) => {
+        started = Date.now();
+        return client.beta.messages.create(
+          {
+            model: EXPLAIN_MODEL,
+            max_tokens: 2_000,
+            system: prompt.text,
+            messages: [{ role: "user", content: wrapAnalysis(match, roleTitle) }],
+            output_config: { effort: "low", format: betaZodOutputFormat(explainOutput) },
+            betas: ["server-side-fallback-2026-07-01"],
+            fallbacks: "default",
+          },
+          { timeout },
+        );
       },
-      { timeout: TIMEOUT_MS },
+      {
+        budgetMs: TIMEOUT_MS,
+        minRetryMs: MIN_RETRY_MS,
+        onError: (error, latencyMs) => {
+          console.error("explain-gaps call failed:", describeAiError(error));
+          failed.push({ ...record(EXPLAIN_MODEL, null, false)[0], latencyMs });
+        },
+      },
     );
-  } catch (error) {
-    console.error("explain-gaps call failed:", describeAiError(error));
-    return template(record(EXPLAIN_MODEL, null, false));
+  } catch {
+    return template(failed);
   }
 
   const explanations = response.stop_reason === "end_turn" ? readExplanations(response.content, match) : null;
-  const calls = record(response.model, response.usage, explanations !== null);
+  const calls = [...failed, ...record(response.model, response.usage, explanations !== null)];
   if (!explanations) return template(calls);
   return { analysis: buildGapAnalysis(match, explanations), source: "model", calls };
 }

@@ -130,7 +130,7 @@ export async function getPathForOwner(
         for (const r of doneRows) if (!doneBySkill.has(r.skillId)) doneBySkill.set(r.skillId, r.doneAt);
         const [row] = await tx
           .insert(paths)
-          .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds[0] ?? null })
+          .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds.at(-1) ?? null })
           .returning({ id: paths.id });
         await tx.insert(pathSteps).values(
           worded.path.steps.map((s) => ({

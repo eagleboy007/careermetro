@@ -1,4 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
 import { roleProfiles } from "@/content";
 import type { Profile } from "@/lib/schemas";
@@ -74,6 +75,18 @@ describe("explainGaps", () => {
       expect(r.calls).toEqual([expect.objectContaining({ ok: false, model: "claude-opus-5-5", promptVersion: "explain-gaps/v1" })]);
       expect(r.analysis.gaps).toHaveLength(match.gaps.length);
     }
+  });
+
+  it("tries once more after a brief outage and logs both attempts", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { client, create } = fakeClient({ text: answer() });
+    const overloaded = APIError.generate(529, { type: "error", error: { type: "overloaded_error", message: "m" } }, "m", new Headers());
+    create.mockReset().mockRejectedValueOnce(overloaded);
+    create.mockResolvedValueOnce({ model: "claude-opus-5-5", stop_reason: "end_turn", usage, content: [{ type: "text", text: answer() }] });
+    const r = await explainGaps(match, role.title, {}, client);
+    expect(r.source).toBe("model");
+    expect(r.calls.map((c) => c.ok)).toEqual([false, true]);
+    expect(create).toHaveBeenCalledTimes(2);
   });
 
   it("skips the model when there are no gaps", async () => {

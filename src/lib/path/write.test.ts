@@ -1,4 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { APIConnectionError, APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
 import type { Gap } from "@/lib/schemas";
 import { buildPath } from "./build";
@@ -81,6 +82,21 @@ describe("writePath", () => {
     const { client } = fakeClient({ text: answer() });
     const r = await writePath(quoted, "Data Analyst", titles, { pathPlan: "p1" }, client);
     expect(JSON.stringify(r.calls)).not.toContain("branch reports");
+  });
+
+  it("tries once more after a dropped connection, but not after a request error", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { client, create } = fakeClient({ text: answer() });
+    create.mockReset().mockRejectedValueOnce(new APIConnectionError({ message: "reset" }));
+    create.mockResolvedValueOnce({ model: "claude-opus-5-5", stop_reason: "end_turn", usage, content: [{ type: "text", text: answer() }] });
+    const r = await writePath(plan, "Data Analyst", titles, {}, client);
+    expect(r.source).toBe("model");
+    expect(r.calls.map((c) => c.ok)).toEqual([false, true]);
+
+    const bad = fakeClient(APIError.generate(400, { type: "error", error: { type: "invalid_request_error", message: "m" } }, "m", new Headers()));
+    const r2 = await writePath(plan, "Data Analyst", titles, {}, bad.client);
+    expect(r2.source).toBe("template");
+    expect(bad.create).toHaveBeenCalledTimes(1);
   });
 
   it("keeps the template wording on an error, a refusal, a cut-off answer or bad JSON, and still logs the call", async () => {

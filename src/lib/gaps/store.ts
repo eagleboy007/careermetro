@@ -110,7 +110,7 @@ export async function getGapsForOwner(
           roleProfileId: roleRow?.id ?? null,
           result: explained.analysis,
           matcherVersion: MATCHER_VERSION,
-          aiCallId: callIds[0] ?? null,
+          aiCallId: callIds.at(-1) ?? null,
         })
         .returning({ id: gapAnalyses.id });
       return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null } as const;
