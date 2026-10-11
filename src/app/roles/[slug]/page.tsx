@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
 import { RoleSkillList } from "@/components/roles/role-skill-list";
@@ -15,7 +16,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/roles/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const role = getRoleView(slug);
-  if (!role) return {};
+  // The not-found page streams inside Suspense, after its own metadata could apply, so the title is set here.
+  if (!role) return { title: "Page not found · CareerMetro", robots: { index: false } };
   return {
     title: `${role.title} · CareerMetro`,
     description: `Skills and certifications employers ask for in ${role.title} roles.`,
@@ -23,14 +25,26 @@ export async function generateMetadata({ params }: PageProps<"/roles/[slug]">): 
   };
 }
 
-export default async function RolePage({ params }: PageProps<"/roles/[slug]">) {
+// params are read inside Suspense. With cacheComponents, reading them outside it works at build time but fails
+// when the page is regenerated at runtime (a revalidatePath on "/roles/[slug]" or "/" layout), which showed as a 500.
+export default function RolePage({ params }: PageProps<"/roles/[slug]">) {
+  return (
+    <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
+      <SiteHeader />
+      <Suspense fallback={<p role="status" className="text-sm text-muted">Loading role…</p>}>
+        <Role params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function Role({ params }: { params: PageProps<"/roles/[slug]">["params"] }) {
   const { slug } = await params;
   const role = getRoleView(slug);
   if (!role) notFound();
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
-      <SiteHeader />
+    <>
       <section className="flex max-w-2xl flex-col gap-4">
         <Link href="/roles" className="inline-flex w-fit items-center gap-1.5 text-sm text-muted hover:text-ink">
           <ArrowLeft size={16} strokeWidth={1.75} aria-hidden="true" />
@@ -88,6 +102,6 @@ export default async function RolePage({ params }: PageProps<"/roles/[slug]">) {
           ))}
         </ul>
       </section>
-    </main>
+    </>
   );
 }
