@@ -354,6 +354,8 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     for (const path of ["/today", "/map", "/departures", "/inbox", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
+      await q.locator("main").first().waitFor();
+      await q.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
       if (await q.getByText("Something went wrong").count()) throw new Error("error page on " + path);
     }
   } finally {

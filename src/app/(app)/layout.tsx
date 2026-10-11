@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { AppShell, type ShellUser } from "@/components/app/app-shell";
@@ -33,6 +33,7 @@ async function extra<T>(name: string, read: Promise<T>, fallback: T): Promise<T>
   try {
     return await read;
   } catch (error) {
+    unstable_rethrow(error);
     logEvent("error", "shell_extra_failed", { part: name, ...errorFields(error) });
     return fallback;
   }

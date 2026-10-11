@@ -28,7 +28,11 @@ describe("checkHealth", () => {
   it("says when the database is missing migrations this build needs", async () => {
     expect(await checkHealth(deps({ countMigrations: async () => ({ applied: 13, expected: 13 }) }))).toEqual({ ok: true, database: "ok", schema: "ok", claude: "ok" });
     expect(await checkHealth(deps({ countMigrations: async () => ({ applied: 12, expected: 13 }) }))).toMatchObject({ ok: false, schema: "behind" });
-    expect(await checkHealth(deps({ countMigrations: async () => Promise.reject(new Error("relation does not exist")) }))).toMatchObject({ ok: false, schema: "behind" });
+    const missing = Object.assign(new Error('relation "drizzle.__drizzle_migrations" does not exist'), { code: "42P01" });
+    expect(await checkHealth(deps({ countMigrations: async () => Promise.reject(missing) }))).toMatchObject({ ok: false, schema: "behind" });
+    // Any other failure to read the count gives no verdict and doesn't fail the check.
+    const timeout = await checkHealth(deps({ countMigrations: async () => Promise.reject(new Error("statement timeout")) }));
+    expect(timeout).toEqual({ ok: true, database: "ok", claude: "ok" });
     // A database that is down is reported as down, without a schema verdict.
     const down = await checkHealth(deps({ pingDb: async () => Promise.reject(new Error("down")), countMigrations: async () => ({ applied: 0, expected: 13 }) }));
     expect(down).not.toHaveProperty("schema");

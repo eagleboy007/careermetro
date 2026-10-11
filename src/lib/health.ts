@@ -44,10 +44,19 @@ async function checkSchema(deps: HealthDeps): Promise<Health["schema"]> {
     if (applied < expected) logEvent("error", "health_schema_behind", { applied, expected });
     return applied < expected ? "behind" : "ok";
   } catch (error) {
-    // No migrations table at all: nothing has been applied.
     logEvent("error", "health_schema_failed", errorFields(error));
-    return "behind";
+    // No migrations table (or schema) at all means nothing has been applied; any other failure gives no verdict.
+    return MISSING_CODES.has(pgCode(error)) ? "behind" : undefined;
   }
+}
+
+/** Postgres codes for an undefined table (42P01) and an undefined schema (3F000). */
+const MISSING_CODES = new Set<string | undefined>(["42P01", "3F000"]);
+
+function pgCode(error: unknown): string | undefined {
+  const e = error as { code?: unknown; cause?: { code?: unknown } } | null;
+  const code = e?.code ?? e?.cause?.code;
+  return typeof code === "string" ? code : undefined;
 }
 
 async function checkDb(deps: HealthDeps): Promise<Health["database"]> {
