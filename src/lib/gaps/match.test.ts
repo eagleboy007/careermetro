@@ -393,6 +393,14 @@ describe("matchProfile", () => {
     expect(statusOf(r, "python")).toBe("met");
     expect(statusOf(r, "power-bi")).toBe("weak");
   });
+
+  it("meets query optimization from how people describe tuning queries", () => {
+    const backend = role("senior-backend-engineer");
+    for (const line of ["Tuned slow Postgres queries with EXPLAIN plans and new indexes, cutting p95 latency by 60%", "Improved query performance on MySQL"]) {
+      const r = matchProfile(profile({ roles: [{ title: "Engineer", employer: "Example", start: "2021-01", end: null, highlights: [line] }] }), backend, now);
+      expect(statusOf(r, "query-optimization")).toBe("met");
+    }
+  });
 });
 
 describe("certifications on the resume", () => {

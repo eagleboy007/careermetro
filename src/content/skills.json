@@ -1362,7 +1362,18 @@
       "performance tuning",
       "execution plans",
       "indexing strategy",
-      "database performance"
+      "database performance",
+      "query optimisation",
+      "query performance",
+      "query plans",
+      "explain plans",
+      "explain analyze",
+      "slow queries",
+      "sql tuning",
+      "sql optimization",
+      "sql optimisation",
+      "database indexing",
+      "index tuning"
     ],
     "implies": [
       "sql"
