@@ -6,12 +6,14 @@ import { inflateRawSync } from "node:zlib";
 /** FR-4: uploads above this size are refused before any parsing. 4 MB, because Vercel functions accept request bodies up to 4.5 MB. */
 export const MAX_RESUME_BYTES = 4 * 1024 * 1024;
 const MAX_PDF_PAGES = 10;
+/** A PDF that takes longer than this to read is refused, so one crafted file can't hold a function for its whole run. */
+export const PDF_TIME_LIMIT_MS = 15_000;
 const MIN_TEXT_CHARS = 200;
 const MAX_TEXT_CHARS = 40_000;
 
 export type ResumeType = "pdf" | "docx" | "text";
 
-export type ResumeErrorCode = "too_large" | "unsupported_type" | "too_many_pages" | "too_little_text" | "too_much_text" | "unreadable";
+export type ResumeErrorCode = "too_large" | "unsupported_type" | "too_many_pages" | "too_little_text" | "too_much_text" | "too_slow" | "unreadable";
 
 /** A problem the user can fix, such as a scanned PDF. The message is safe to show and never contains resume text. */
 export class ResumeError extends Error {
@@ -50,13 +52,37 @@ export function normalizeResumeText(raw: string): string {
     .trim();
 }
 
-async function pdfText(bytes: Uint8Array): Promise<string> {
-  const pdf = await getDocumentProxy(bytes);
-  if (pdf.numPages > MAX_PDF_PAGES) {
-    throw new ResumeError("too_many_pages", `Resumes can be up to ${MAX_PDF_PAGES} pages. Please upload a shorter file.`);
+/**
+ * Reads a PDF's text, giving up after `limitMs`. pdf.js works in small async steps, so the timer gets its turn; on
+ * timeout the document is destroyed, which stops the remaining work, and the upload gets a message it can act on.
+ */
+export async function pdfText(bytes: Uint8Array, limitMs = PDF_TIME_LIMIT_MS): Promise<string> {
+  let pdf: Awaited<ReturnType<typeof getDocumentProxy>> | undefined;
+  let timedOut = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const work = (async () => {
+    pdf = await getDocumentProxy(bytes);
+    if (timedOut) throw unreadable();
+    if (pdf.numPages > MAX_PDF_PAGES) {
+      throw new ResumeError("too_many_pages", `Resumes can be up to ${MAX_PDF_PAGES} pages. Please upload a shorter file.`);
+    }
+    const { text } = await extractText(pdf, { mergePages: false });
+    return text.join("\n\n");
+  })();
+  const limit = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      timedOut = true;
+      reject(new ResumeError("too_slow", "This PDF took too long to read. Try saving it again as PDF, or paste the text instead."));
+    }, limitMs);
+  });
+  try {
+    return await Promise.race([work, limit]);
+  } finally {
+    clearTimeout(timer);
+    // Free the document now. One that finishes loading after a timeout stops at the timedOut check and is freed then.
+    void pdf?.loadingTask.destroy();
+    void work.catch(() => {}).finally(() => (timedOut ? pdf?.loadingTask.destroy() : undefined));
   }
-  const { text } = await extractText(pdf, { mergePages: false });
-  return text.join("\n\n");
 }
 
 /** Zip-bomb limits for DOCX files. Real resumes unpack to well under 1 MB of XML. */
