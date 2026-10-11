@@ -12,7 +12,8 @@
     "eval:parse": "vitest run --config vitest.eval.config.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "node scripts/seed-content.mjs"
+    "db:seed": "node scripts/seed-content.mjs",
+    "brand": "node scripts/brand-assets.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.132.1",
