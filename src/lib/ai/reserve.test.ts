@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
-import { reserveCall, settleCall, usedToday } from "./reserve";
+import { reserveCall, runReserved, settleCall, usedToday } from "./reserve";
 
 // Runs against a real Postgres with migrations applied. Each test uses its own purpose, so other tests' calls today
 // don't change the numbers.
@@ -65,5 +65,15 @@ describe.skipIf(!db)("AI call reservations (database)", () => {
     const [row] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, id));
     expect(row).toMatchObject({ status: "done", ok: false });
     expect(await settleCall(db!, "not-a-uuid", [record(p, true, 0.01)])).toBe("not-a-uuid");
+  });
+
+  it("settles the reservation when the call throws, then passes the error on", async () => {
+    const p = purpose();
+    const id = await db!.transaction((tx) => reserveCall(tx, { purpose: p, model: "m", promptVersion: "v", inputRefs: {} }));
+    await expect(runReserved(db!, id, async () => Promise.reject(new Error("boom")))).rejects.toThrow("boom");
+    const [row] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, id));
+    expect(row.status).toBe("done");
+    const ok = await db!.transaction((tx) => reserveCall(tx, { purpose: p, model: "m", promptVersion: "v", inputRefs: {} }));
+    expect(await runReserved(db!, ok, async () => ({ value: 1, calls: [record(p, true, 0.02)] }))).toMatchObject({ value: 1, callId: ok });
   });
 });

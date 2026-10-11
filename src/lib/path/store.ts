@@ -5,7 +5,7 @@ import { withKeyLock, type Tx } from "@/db/lock";
 import { gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
 import { skills } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
-import { refIn, reserveCall, settleCall, usedToday } from "@/lib/ai/reserve";
+import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { singleFlight } from "@/lib/single-flight";
@@ -139,11 +139,14 @@ async function buildForOwner(
   if (first === "busy") return { ok: false, reason: "busy" };
   if ("done" in first) return first.done;
 
-  const worded = first.reservedId
-    ? await writePath(first.plan, role.title, first.titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
-    : { path: first.plan, calls: [] };
   // Settled at once, outside any lock, so the cost counts even if storing fails below.
-  const callId = first.reservedId ? await settleCall(db, first.reservedId, worded.calls) : null;
+  const { plan, titles } = first;
+  const worded = first.reservedId
+    ? await runReserved(db, first.reservedId, () =>
+        writePath(plan, role.title, titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client),
+      )
+    : { path: plan, calls: [], callId: null };
+  const callId = worded.callId;
 
   const second = await withKeyLock(db, lockKey, PATH_LIMITS.lockTimeoutMs, async (tx): Promise<PathForOwner> => {
     // Another request may have stored one meanwhile; then this call stays logged and its wording is dropped.

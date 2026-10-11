@@ -181,6 +181,22 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     }
   });
 
+  it("uses none of the daily count on a role the person fully meets", async () => {
+    const { session, resumeId } = await seed();
+    const original = GAP_LIMITS.explainedPerOwnerPerDay;
+    GAP_LIMITS.explainedPerOwnerPerDay = 1;
+    try {
+      const { client, create } = explainClient();
+      const met = { ...role, skills: role.skills.map((s) => ({ ...s, importance: "nice_to_have" as const, oneOf: undefined })), groups: [] };
+      const r = await getGapsForOwner(resumeId, { sessionId: session }, met, { db: db!, client });
+      expect(r.ok && r.analysis.gaps).toEqual([]);
+      await getGapsForOwner(resumeId, { sessionId: session }, roleProfiles.find((x) => x.slug === "business-analyst")!, { db: db!, client });
+      expect(create).toHaveBeenCalledTimes(1);
+    } finally {
+      GAP_LIMITS.explainedPerOwnerPerDay = original;
+    }
+  });
+
   it("saves a rating only for the session's own analysis and only from 1 to 5", async () => {
     const { session, resumeId } = await seed();
     const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });

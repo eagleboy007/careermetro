@@ -4,7 +4,7 @@ import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
 import { gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
 import { loadPrompt } from "@/lib/ai/prompts";
-import { refIn, reserveCall, settleCall, usedToday } from "@/lib/ai/reserve";
+import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { singleFlight } from "@/lib/single-flight";
@@ -129,17 +129,21 @@ async function analyse(
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
     if (stored) return { done: stored };
-    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId: await reserveExplanation(tx, owner, resume.profileId, role.slug) };
+    // A role the person fully meets needs no words from the model, so it uses none of their explanations.
+    const reservedId = match.gaps.length > 0 ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
+    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId };
   });
   if (first === "busy") return { ok: false, reason: "busy" };
   if ("done" in first) return first.done;
   const { profileId, roleRowId, match } = first;
 
-  const explained = first.reservedId
-    ? await explainGaps(match, role.title, { profileId, roleSlug: role.slug }, deps.client)
-    : { analysis: buildGapAnalysis(match, null), calls: [] };
   // Settled at once, outside any lock, so the cost counts even if storing fails below.
-  const callId = first.reservedId ? await settleCall(db, first.reservedId, explained.calls) : null;
+  const explained = first.reservedId
+    ? await runReserved(db, first.reservedId, () =>
+        explainGaps(match, role.title, { profileId, roleSlug: role.slug }, deps.client),
+      )
+    : { analysis: buildGapAnalysis(match, null), calls: [], callId: null };
+  const callId = explained.callId;
 
   const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {
     // Another request may have stored one meanwhile; then this call stays logged and its words are dropped.

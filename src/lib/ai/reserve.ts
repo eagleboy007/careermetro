@@ -75,3 +75,22 @@ export async function settleCall(db: Db | Tx, reservedId: string, calls: AiCallR
   }
   return last ? reservedId : null;
 }
+
+/**
+ * Runs the call a reservation was taken for and settles it: with the attempts made, or as done with none if `call`
+ * throws, so the reservation never sits "reserved" after the request has ended. Returns the answer and the id to link.
+ */
+export async function runReserved<T extends { calls: AiCallRecord[] }>(
+  db: Db | Tx,
+  reservedId: string,
+  call: () => Promise<T>,
+): Promise<T & { callId: string | null }> {
+  let result: T;
+  try {
+    result = await call();
+  } catch (error) {
+    await settleCall(db, reservedId, []);
+    throw error;
+  }
+  return { ...result, callId: await settleCall(db, reservedId, result.calls) };
+}
