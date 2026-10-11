@@ -4,6 +4,7 @@ import { GapRating } from "@/components/gaps/gap-rating";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
 import { GapCard } from "@/components/route/gap-card";
 import { MarkDone } from "@/components/route/mark-done";
+import { PathEnd } from "@/components/route/path-end";
 import { PathSteps, type PathStepView } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
@@ -94,7 +95,7 @@ const exampleSteps: PathStepView[] = [
     title: "SQL window functions",
     hours: 6,
     week: 1,
-    closes: "Missing skill",
+    closes: "SQL window functions (not on your resume yet)",
     reason: "Analyst roles here rank and compare rows every week, and your resume shows joins but no window functions yet.",
     resources: [
       { title: "Window functions playlist", provider: "YouTube", kind: "video", url: "https://www.youtube.com/" },
@@ -103,7 +104,7 @@ const exampleSteps: PathStepView[] = [
     proofTask: "rank the top 5 products per month from a sample sales table.",
     action: <MarkDone stepId="demo-2" title="SQL window functions" done={false} demo />,
   },
-  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Skill with weak evidence", action: <MarkDone stepId="demo-3" title="Power BI project" done={false} demo /> },
+  { key: "powerbi", title: "One Power BI project", hours: 6, week: 3, closes: "Power BI (weak on your resume)", action: <MarkDone stepId="demo-3" title="Power BI project" done={false} demo /> },
 ];
 
 const exampleProfile: Profile = {
@@ -324,6 +325,7 @@ export default function DesignPage() {
           <h2 className="text-xl font-semibold">Your path</h2>
           <ProgressRoute current="Path" />
           <PathSteps steps={exampleSteps} />
+          <PathEnd next={{ kind: "waitlist" }} />
         </div>
       </section>
 
