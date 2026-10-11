@@ -19,6 +19,22 @@ async function Restore() {
   if (!account) redirect("/sign-in?next=/account/restore");
   if (!account.deletionRequestedAt) redirect("/today");
   const until = restoreUntil(account.deletionRequestedAt)!;
+  // Past its 30 days but not yet removed by the daily job: it can't come back.
+  if (until <= new Date()) {
+    return (
+      <>
+        <p className="text-muted">
+          You deleted your account on {longDate(account.deletionRequestedAt)}. Its 30 days ended on {longDate(until)}, so it can no longer be
+          restored and is being removed for good.
+        </p>
+        <form action={keepDeleted}>
+          <Button type="submit" variant="ghost">
+            Sign out
+          </Button>
+        </form>
+      </>
+    );
+  }
   return (
     <>
       <p className="text-muted">

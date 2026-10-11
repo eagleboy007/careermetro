@@ -131,11 +131,12 @@ export async function createAccount(
     }
 
     const [byEmail] = await tx
-      .select({ id: users.id, authSubject: users.authSubject })
+      .select({ id: users.id, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt })
       .from(users)
       .where(sql`lower(${users.email}) = ${email}`)
       .limit(1);
-    if (byEmail?.authSubject) return { ok: false, reason: "email_taken" } as const;
+    // A deleted account is restored by signing in the way it was made, never taken over by linking.
+    if (byEmail?.authSubject || byEmail?.deletionRequestedAt) return { ok: false, reason: "email_taken" } as const;
     // Linking hands over an existing user's data, so only a proven email may do it.
     if (byEmail && !identity.emailVerified) return { ok: false, reason: "email_unverified" } as const;
 

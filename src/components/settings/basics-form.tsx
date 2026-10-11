@@ -30,18 +30,18 @@ export function BasicsForm({ firstName, lastName, editable }: { firstName: strin
       <div className="grid gap-x-4 gap-y-3.5 min-[760px]:grid-cols-2">
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className="text-[0.82rem] font-semibold">First name</span>
-          <input name="firstName" value={first} onChange={(e) => setFirst(e.target.value)} autoComplete="given-name" required maxLength={40} disabled={!editable} className={input} />
+          <input name="firstName" aria-invalid={state.error ? true : undefined} aria-describedby={state.error ? "basics-error" : undefined} value={first} onChange={(e) => setFirst(e.target.value)} autoComplete="given-name" required maxLength={40} disabled={!editable} className={input} />
         </label>
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className="text-[0.82rem] font-semibold">Last name</span>
-          <input name="lastName" value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" maxLength={40} disabled={!editable} className={input} />
+          <input name="lastName" aria-invalid={state.error ? true : undefined} aria-describedby={state.error ? "basics-error" : undefined} value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" maxLength={40} disabled={!editable} className={input} />
         </label>
         <small className="text-[0.78rem] text-muted min-[760px]:col-span-2">
           As it appears on your resume. We check a new resume shows this name before it joins your account.
         </small>
       </div>
       {state.error && (
-        <p role="alert" className="text-sm text-bad">
+        <p id="basics-error" role="alert" className="text-sm text-bad">
           {state.error}
         </p>
       )}

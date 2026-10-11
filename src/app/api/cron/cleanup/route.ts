@@ -1,5 +1,6 @@
 import { purgeDeletedAccounts } from "@/lib/account/delete";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
+import { errorFields, logEvent } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
 
 /**
@@ -11,7 +12,17 @@ export async function GET(request: Request) {
   if (!hasBearer(request, process.env.CRON_SECRET)) {
     return Response.json({ ok: false }, { status: 401 });
   }
-  const deleted = await deleteExpiredAnonymousResumes();
-  const accountsDeleted = await purgeDeletedAccounts();
-  return Response.json({ ok: true, deleted, accountsDeleted });
+  // Each runs whatever happens to the other, so one failing never holds up the other's deletions.
+  const [deleted, accountsDeleted] = await Promise.allSettled([deleteExpiredAnonymousResumes(), purgeDeletedAccounts()]);
+  if (deleted.status === "rejected") logEvent("error", "cleanup_anonymous_failed", errorFields(deleted.reason));
+  if (accountsDeleted.status === "rejected") logEvent("error", "cleanup_accounts_failed", errorFields(accountsDeleted.reason));
+  const ok = deleted.status === "fulfilled" && accountsDeleted.status === "fulfilled";
+  return Response.json(
+    {
+      ok,
+      deleted: deleted.status === "fulfilled" ? deleted.value : null,
+      accountsDeleted: accountsDeleted.status === "fulfilled" ? accountsDeleted.value : null,
+    },
+    { status: ok ? 200 : 500 },
+  );
 }

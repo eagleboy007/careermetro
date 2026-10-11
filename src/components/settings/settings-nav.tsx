@@ -32,7 +32,7 @@ export function SettingsNav({ sections }: { sections: readonly { id: string; lab
         <a
           key={s.id}
           href={`#${s.id}`}
-          aria-current={current === s.id ? "true" : undefined}
+          aria-current={current === s.id ? "location" : undefined}
           onClick={() => setCurrent(s.id)}
           className={`whitespace-nowrap rounded-[10px] px-2.5 py-1.5 text-[0.8rem] font-[550] no-underline min-[760px]:px-3 min-[760px]:py-2 min-[760px]:text-[0.86rem] ${
             current === s.id ? "bg-surface-2 text-ink" : "text-muted hover:bg-surface-2 hover:text-ink"

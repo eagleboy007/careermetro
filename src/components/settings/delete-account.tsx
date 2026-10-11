@@ -11,6 +11,7 @@ export function DeleteAccount({ editable, icon }: { editable: boolean; icon: Rea
   const [state, action, pending] = useActionState<DeleteState, FormData>(deleteAccount, { error: null });
   const panelId = useId();
   const opener = useRef<HTMLButtonElement>(null);
+  const confirm = useRef<HTMLInputElement>(null);
 
   return (
     <li className="flex flex-col">
@@ -29,7 +30,11 @@ export function DeleteAccount({ editable, icon }: { editable: boolean; icon: Rea
             disabled={!editable}
             aria-expanded={open}
             aria-controls={panelId}
-            onClick={() => setOpen((o) => !o)}
+            onClick={() => {
+              setOpen((o) => !o);
+              // Into the confirm step, once it shows.
+              if (!open) requestAnimationFrame(() => confirm.current?.focus());
+            }}
             className={`${ghostSm} disabled:opacity-60`}
           >
             Delete
@@ -44,6 +49,7 @@ export function DeleteAccount({ editable, icon }: { editable: boolean; icon: Rea
         <label className="flex flex-col gap-1.5">
           <span className="text-[0.82rem] font-semibold">Type DELETE to confirm</span>
           <input
+            ref={confirm}
             name="confirm"
             autoComplete="off"
             autoCapitalize="characters"

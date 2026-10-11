@@ -230,6 +230,10 @@ describe("daily cleanup", () => {
     m.deleteExpired.mockResolvedValueOnce(2);
     m.purgeDeleted.mockResolvedValueOnce(1);
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1 } });
+    // One step failing doesn't stop the other, and the job reports the failure.
+    m.deleteExpired.mockRejectedValueOnce(new Error("down"));
+    m.purgeDeleted.mockResolvedValueOnce(3);
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: null, accountsDeleted: 3 } });
   });
 });
 

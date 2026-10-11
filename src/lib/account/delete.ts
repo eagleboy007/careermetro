@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gte, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { auditLogs, users } from "@/db/schema";
+import { auditLogs, consents, users, waitlistEntries } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
@@ -46,25 +46,42 @@ export const restoreUntil = (deletionRequestedAt: Date | null): Date | null =>
 
 /**
  * The daily job: removes accounts deleted more than DELETE_GRACE_DAYS ago, for good. Deleting the user row removes
- * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents). The sign-in
- * identity goes too when the database has Supabase's auth schema. One audit line per account, with no personal data.
+ * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents); a waitlist
+ * sign-up with the same email goes too. The sign-in identity goes when the database has Supabase's auth schema; if
+ * that step fails, our data is still removed and the failure is logged. One audit line per account, with no personal
+ * data.
  */
 export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): Promise<number> {
   const due = await db
-    .select({ id: users.id, authSubject: users.authSubject })
+    .select({ id: users.id, email: users.email, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt })
     .from(users)
     .where(lt(users.deletionRequestedAt, graceEnds(now)));
   let purged = 0;
   for (const user of due) {
+    // Days past its 30, so a failure that repeats can be told apart from a new one without naming anyone.
+    const overdueDays = Math.floor((graceEnds(now).getTime() - user.deletionRequestedAt!.getTime()) / 86_400_000);
     try {
       await db.transaction(async (tx) => {
-        await tx.delete(users).where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))));
-        await deleteSignInIdentity(tx, user.authSubject);
+        const gone = await tx
+          .delete(users)
+          .where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))))
+          .returning({ id: users.id });
+        // Restored in the meantime.
+        if (!gone.length) return;
+        const email = user.email.toLowerCase();
+        await tx.delete(waitlistEntries).where(sql`lower(${waitlistEntries.email}) = ${email}`);
+        await tx.delete(consents).where(and(isNull(consents.userId), sql`lower(${consents.email}) = ${email}`));
+        try {
+          // A savepoint: if the sign-in can't be removed, our own data still goes.
+          await tx.transaction((sp) => deleteSignInIdentity(sp, user.authSubject));
+        } catch (error) {
+          logEvent("error", "account_purge_sign_in_failed", { overdueDays, ...errorFields(error) });
+        }
         await tx.insert(auditLogs).values({ actor: "system", action: "account_deleted", target: "account" });
+        purged++;
       });
-      purged++;
     } catch (error) {
-      logEvent("error", "account_purge_failed", errorFields(error));
+      logEvent("error", "account_purge_failed", { overdueDays, ...errorFields(error) });
     }
   }
   return purged;

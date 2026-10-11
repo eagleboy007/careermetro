@@ -7,7 +7,8 @@ import { DELETE_GRACE_DAYS, purgeDeletedAccounts, requestDeletion, restoreAccoun
 import { exportAccountData } from "./export";
 import { findAccount, saveNames } from "./store";
 
-// Runs against a real Postgres with migrations applied.
+// Runs against a real Postgres with migrations applied: a throwaway test database, since purgeDeletedAccounts
+// removes every account in it whose 30 days are up.
 const url = process.env.TEST_DATABASE_URL;
 const sqlClient = url ? postgres(url, { max: 2, onnotice: () => {} }) : null;
 const db = sqlClient ? drizzle(sqlClient, { schema }) : null;
@@ -23,7 +24,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     const [user] = await db!
       .insert(schema.users)
       .values({ email: `${run}-${n}@example.com`, authSubject: `${run}-${n++}`, name: "Asha Rao" })
-      .returning({ id: schema.users.id, authSubject: schema.users.authSubject });
+      .returning({ id: schema.users.id, email: schema.users.email, authSubject: schema.users.authSubject });
     userIds.push(user.id);
     const [consent] = await db!.insert(schema.consents).values({ userId: user.id, purpose: "upload", policyVersion: "v" }).returning();
     const [resume] = await db!
@@ -83,6 +84,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     const now = new Date();
     await requestDeletion(kept.id, db!, new Date(now.getTime() - 29 * DAY));
     await requestDeletion(gone.id, db!, new Date(now.getTime() - 31 * DAY));
+    await db!.insert(schema.waitlistEntries).values({ email: gone.email.toUpperCase(), confirmToken: `${run}-tok` });
     expect(await restoreAccount(gone.id, db!, now)).toBe(false);
 
     const before = await db!.select({ n: sql<number>`count(*)::int` }).from(schema.auditLogs).where(eq(schema.auditLogs.action, "account_deleted"));
@@ -91,6 +93,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     expect(await db!.select().from(schema.resumes).where(eq(schema.resumes.id, gone.resumeId))).toEqual([]);
     expect(await db!.select().from(schema.rideDays).where(eq(schema.rideDays.userId, gone.id))).toEqual([]);
     expect(await db!.select().from(schema.consents).where(eq(schema.consents.userId, gone.id))).toEqual([]);
+    expect(await db!.select().from(schema.waitlistEntries).where(eq(schema.waitlistEntries.email, gone.email.toUpperCase()))).toEqual([]);
     const after = await db!.select({ n: sql<number>`count(*)::int` }).from(schema.auditLogs).where(eq(schema.auditLogs.action, "account_deleted"));
     expect(after[0].n).toBeGreaterThan(before[0].n);
 
@@ -100,9 +103,12 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
   });
 
   it("removes the Supabase sign-in too, when the database has one", async () => {
-    // A stand-in for Supabase's auth.users, dropped again below.
-    await db!.execute(sql`create schema if not exists auth`);
-    await db!.execute(sql`create table if not exists auth.users (id uuid primary key)`);
+    // A stand-in for Supabase's auth.users, made only on a test database without one and dropped again below. A
+    // database that already has the real schema (a local Supabase) is left alone and this test is skipped.
+    const [{ present }] = await db!.execute<{ present: boolean }>(sql`select to_regnamespace('auth') is not null as present`);
+    if (present) return;
+    await db!.execute(sql`create schema auth`);
+    await db!.execute(sql`create table auth.users (id uuid primary key)`);
     try {
       const subject = crypto.randomUUID();
       const [user] = await db!.insert(schema.users).values({ email: `${run}-auth@example.com`, authSubject: subject }).returning({ id: schema.users.id });

@@ -81,9 +81,9 @@ export function SettingsView({ data }: { data: SettingsData }) {
                     Download
                   </a>
                 ) : (
-                  <span className={`${ghostSm} opacity-60`} aria-disabled="true">
+                  <button type="button" disabled className={`${ghostSm} disabled:opacity-60`}>
                     Download
-                  </span>
+                  </button>
                 )
               }
             />
