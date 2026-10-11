@@ -60,7 +60,9 @@ export const consents = pgTable("consents", {
   policyVersion: text("policy_version").notNull(),
   givenAt: timestamp("given_at", { withTimezone: true }).notNull().defaultNow(),
   withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
-});
+},
+  (t) => [index("consents_user").on(t.userId)],
+);
 
 export const waitlistEntries = pgTable("waitlist_entries", {
   id: id(),
@@ -165,7 +167,9 @@ export const jobDescriptions = pgTable("job_descriptions", {
   rawText: text("raw_text").notNull(),
   parsed: jsonb("parsed").$type<RoleProfile>(),
   createdAt: createdAt(),
-});
+},
+  (t) => [index("job_descriptions_user").on(t.userId)],
+);
 
 /* AI calls and analyses --------------------------------------------------- */
 
@@ -200,7 +204,9 @@ export const gapAnalyses = pgTable("gap_analyses", {
   aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
   userRating: integer("user_rating"),
   createdAt: createdAt(),
-});
+},
+  (t) => [index("gap_analyses_profile").on(t.profileId, t.createdAt), index("gap_analyses_job_description").on(t.jobDescriptionId)],
+);
 
 /* Paths and resources ----------------------------------------------------- */
 
@@ -226,7 +232,9 @@ export const resourceChecks = pgTable("resource_checks", {
   ok: boolean("ok").notNull(),
   detail: text("detail"),
   checkedAt: timestamp("checked_at", { withTimezone: true }).notNull().defaultNow(),
-});
+},
+  (t) => [index("resource_checks_resource").on(t.resourceId, t.checkedAt)],
+);
 
 export const goalStatus = pgEnum("goal_status", GOAL_STATUSES);
 export const stepKind = pgEnum("step_kind", STEP_KINDS);
@@ -244,7 +252,9 @@ export const paths = pgTable("paths", {
   weeklyHours: integer("weekly_hours").notNull(),
   aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
   createdAt: createdAt(),
-});
+},
+  (t) => [index("paths_gap_analysis").on(t.gapAnalysisId, t.createdAt)],
+);
 
 export const pathSteps = pgTable(
   "path_steps",
@@ -298,7 +308,7 @@ export const userGoals = pgTable(
     metAt: timestamp("met_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("user_goals_skill").on(t.userId, t.skillId)],
+  (t) => [uniqueIndex("user_goals_skill").on(t.userId, t.skillId), index("user_goals_gap_analysis").on(t.gapAnalysisId)],
 );
 
 /**

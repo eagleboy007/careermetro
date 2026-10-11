@@ -57,6 +57,13 @@
       "when": 1791670646870,
       "tag": "0007_goal_groups",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791711723220,
+      "tag": "0008_fk_indexes",
+      "breakpoints": true
     }
   ]
 }
