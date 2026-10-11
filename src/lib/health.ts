@@ -12,7 +12,17 @@ export const HEALTH_PURPOSE = "health-check";
 export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model_access" | "down";
 /** claudeError names a failed ping (status, type and, for a rejected request, the API's reason). The ping's input is fixed text, so the reason can't hold user data. */
 /** `schema` is "behind" when the database is missing migrations this build expects (pages that use the new tables fail). */
-export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string };
+/** `missingSecrets` names (never shows) production secrets that aren't set; without them the cleanup job can't run. */
+export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string; missingSecrets?: string[] };
+
+/** Secrets production needs: the cleanup job's key (FR-2's 24-hour delete) and the two hashing keys. */
+const PRODUCTION_SECRETS = ["CRON_SECRET", "NAME_HASH_KEY", "IP_HASH_KEY"] as const;
+
+/** The production secrets that aren't set. Previews and local development fall back on purpose, so they need none. */
+export function missingSecrets(env: Record<string, string | undefined> = process.env): string[] {
+  if (env.VERCEL_ENV !== "production") return [];
+  return PRODUCTION_SECRETS.filter((name) => !env[name]);
+}
 
 export type HealthDeps = {
   hasKey: boolean;
@@ -22,18 +32,23 @@ export type HealthDeps = {
   record: (call: AiCallRecord) => Promise<void>;
   /** How many migrations the database has applied, and how many this build's journal lists. */
   countMigrations?: () => Promise<{ applied: number; expected: number }>;
+  /** From missingSecrets(). */
+  missingSecrets?: string[];
 };
 
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
   const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
   const schema = database === "ok" ? await checkSchema(deps) : undefined;
+  const missing = deps.missingSecrets?.length ? deps.missingSecrets : undefined;
+  if (missing) logEvent("error", "health_secrets_missing", { missing: missing.join(",") });
   return {
-    ok: database === "ok" && schema !== "behind" && claude === "ok",
+    ok: database === "ok" && schema !== "behind" && claude === "ok" && !missing,
     database,
     ...(schema ? { schema } : {}),
     claude,
     ...(error ? { claudeError: error } : {}),
+    ...(missing ? { missingSecrets: missing } : {}),
   };
 }
 

@@ -1,6 +1,6 @@
 import { APIConnectionError, APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import { checkHealth, checkParse, type HealthDeps } from "./health";
+import { checkHealth, checkParse, missingSecrets, type HealthDeps } from "./health";
 
 const usage = { input_tokens: 8, output_tokens: 1 };
 
@@ -90,5 +90,23 @@ describe("checkParse", () => {
 
   it("names a malformed result", async () => {
     expect(await checkParse(async () => ({ ok: false, reason: "malformed", calls: [] }))).toEqual({ ok: false, parse: "malformed" });
+  });
+});
+
+describe("missingSecrets", () => {
+  const all = { CRON_SECRET: "a", NAME_HASH_KEY: "b", IP_HASH_KEY: "c" };
+  it("names the production secrets that aren't set, so a missing cron key can't go unnoticed", () => {
+    expect(missingSecrets({ VERCEL_ENV: "production" })).toEqual(["CRON_SECRET", "NAME_HASH_KEY", "IP_HASH_KEY"]);
+    expect(missingSecrets({ VERCEL_ENV: "production", ...all, IP_HASH_KEY: "" })).toEqual(["IP_HASH_KEY"]);
+    expect(missingSecrets({ VERCEL_ENV: "production", ...all })).toEqual([]);
+  });
+  it("asks nothing of previews and local development", () => {
+    expect(missingSecrets({ VERCEL_ENV: "preview" })).toEqual([]);
+    expect(missingSecrets({})).toEqual([]);
+  });
+  it("turns health red and lists the names, never the values", async () => {
+    const d = deps({ missingSecrets: ["CRON_SECRET"] });
+    expect(await checkHealth(d)).toEqual({ ok: false, database: "ok", claude: "ok", missingSecrets: ["CRON_SECRET"] });
+    expect(await checkHealth(deps({ missingSecrets: [] }))).toEqual({ ok: true, database: "ok", claude: "ok" });
   });
 });
