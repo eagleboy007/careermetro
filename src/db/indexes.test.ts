@@ -6,8 +6,9 @@ const url = process.env.TEST_DATABASE_URL;
 const sql = url ? postgres(url, { max: 1, onnotice: () => {} }) : null;
 
 /**
- * Foreign keys that may go without an index: the rows they point at are small lookup tables that are never deleted
- * (skills, role profiles, organizations) or ai_calls, which are only read by id.
+ * Foreign keys that may go without an index. Skills, role profiles and organizations are small tables that are never
+ * deleted (skill_aliases is only rewritten by the content seed, a few hundred rows). ai_calls rows are never deleted
+ * today; a retention job would need these indexed first.
  */
 const unindexedOk = new Set([
   "gap_analyses.ai_call_id",
@@ -16,8 +17,7 @@ const unindexedOk = new Set([
   "path_steps.skill_id",
   "paths.ai_call_id",
   "profiles.ai_call_id",
-  "resumes.consent_id",
-  "skill_aliases.skill_id",
+    "skill_aliases.skill_id",
   "user_goals.skill_id",
   "user_goals.swapped_to",
   "users.organization_id",
@@ -36,6 +36,9 @@ describe.skipIf(!sql)("database indexes", () => {
       join pg_attribute a on a.attrelid = c.conrelid and a.attnum = c.conkey[1]
       where c.contype = 'f'
         and not exists (select 1 from pg_index i where i.indrelid = c.conrelid and i.indkey[0] = c.conkey[1])`;
-    expect(rows.map((r) => r.fk).filter((fk) => !unindexedOk.has(fk)).sort()).toEqual([]);
+    const unindexed = rows.map((r) => r.fk);
+    expect(unindexed.filter((fk) => !unindexedOk.has(fk)).sort()).toEqual([]);
+    // An entry that has since got an index comes off the list, so the list stays true.
+    expect([...unindexedOk].filter((fk) => !unindexed.includes(fk))).toEqual([]);
   });
 });

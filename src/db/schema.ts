@@ -105,6 +105,7 @@ export const resumes = pgTable(
     index("resumes_anonymous_session").on(t.anonymousSessionId),
     index("resumes_client_hash").on(t.clientHash, t.createdAt),
     index("resumes_user").on(t.userId),
+    index("resumes_consent").on(t.consentId),
   ],
 );
 
