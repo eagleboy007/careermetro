@@ -53,8 +53,11 @@ export function normalizeResumeText(raw: string): string {
 }
 
 /**
- * Reads a PDF's text, giving up after `limitMs`. pdf.js works in small async steps, so the timer gets its turn; on
- * timeout the document is destroyed, which stops the remaining work, and the upload gets a message it can act on.
+ * Reads a PDF's text, giving up after `limitMs`, and the upload gets a message it can act on. The limit is best
+ * effort: pdf.js works in small async steps, so the timer gets its turn, but one long synchronous step can delay it.
+ * On timeout the document is destroyed, which stops page-by-page text extraction. A document still loading carries
+ * on until it has loaded and is destroyed then; unpdf hides the loading task until that point, and calling pdf.js
+ * directly would mean copying unpdf's Node font and cmap settings.
  */
 export async function pdfText(bytes: Uint8Array, limitMs = PDF_TIME_LIMIT_MS): Promise<string> {
   let pdf: Awaited<ReturnType<typeof getDocumentProxy>> | undefined;
