@@ -7,7 +7,7 @@ Staging always runs the newest code on main as a *preview*. That means the signe
 ## How it works
 - `.github/workflows/staging.yml` moves the `staging` branch to main after every merge.
 - Vercel builds the `staging` branch as a preview, and the staging domain is assigned to that branch.
-- Changes that touch only docs don't build, because of the `ignoreCommand` in `vercel.json`.
+- Changes that touch only docs don't build (`scripts/vercel-ignore.sh`, run by `ignoreCommand` in `vercel.json`). The staging branch always builds the first time, since there is nothing to compare with.
 
 ## Optional: a shorter address (owner only, in Vercel)
 1. vercel.com → the **careermetro** project → **Settings** → **Domains** → **Add Domain**.
