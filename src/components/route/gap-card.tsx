@@ -20,7 +20,7 @@ export function GapCard({ gap }: { gap: Gap }) {
           <span>Nothing in your resume shows this.</span>
         )}
         {/* Only proof fills a gap: a skill only listed, being learned or backed by a partial, undated or expired certificate stays a goal (Milin, 2026-10-11). */}
-        {gap.status === "weak" && <span className="text-ink">Your resume doesn't show you using it in a job or project yet.</span>}
+        {gap.status === "weak" && <span className="text-ink">Your resume doesn&apos;t show you using it in a job or project yet.</span>}
         <span>{gap.explanation}</span>
       </div>
     </article>
