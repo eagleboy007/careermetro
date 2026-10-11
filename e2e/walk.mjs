@@ -124,10 +124,13 @@ await step("a failed rating goes back to the saved one", async () => {
     failingOnPurpose = false;
   }
 });
+let pathUrl = "";
 await step("path", async () => {
   await p.getByRole("link", { name: /build my path/i }).click();
   await p.waitForURL(/\/path\//, { timeout: 30000 });
   await settled();
+  pathUrl = p.url().split("?")[0];
+  if (await p.getByText(/Works toward: (Missing skill|Skill with weak evidence|Outdated skill)$/).count()) throw new Error("jargon status on a step");
   await shot("path");
   await a11y("path");
 });
@@ -391,6 +394,33 @@ await step("phone + dark today", async () => {
   await a11y("today-phone-dark");
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error("horizontal overflow " + overflow + "px");
+});
+// Last, so ticking every learning step can't change the ride the earlier steps check.
+await step("path finished: says what's next, and the gaps stay open", async () => {
+  const gapsUrl = pathUrl.replace("/path/", "/gaps/");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  await p.emulateMedia({ colorScheme: "light" });
+  await p.goto(gapsUrl);
+  await settled();
+  const before = await p.locator("article").allInnerTexts();
+  await p.goto(pathUrl);
+  await settled();
+  for (let left = await p.getByRole("button", { name: /^Mark done: / }).count(); left > 0; left--) {
+    await Promise.all([
+      p.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes("/api/path-steps/")),
+      p.getByRole("button", { name: /^Mark done: / }).first().click(),
+    ]);
+  }
+  await p.reload();
+  await settled();
+  await p.getByRole("heading", { name: "Every step done" }).waitFor({ timeout: 10000 });
+  await p.getByRole("link", { name: "Go to Today" }).waitFor();
+  await shot("path-finished");
+  await a11y("path-finished");
+  await p.goto(gapsUrl);
+  await settled();
+  const after = await p.locator("article").allInnerTexts();
+  if (JSON.stringify(after) !== JSON.stringify(before)) throw new Error("finishing the path changed the gaps");
 });
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));

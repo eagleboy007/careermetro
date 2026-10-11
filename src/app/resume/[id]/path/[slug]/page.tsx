@@ -5,11 +5,14 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { MarkDone } from "@/components/route/mark-done";
+import { PathEnd, type PathNext } from "@/components/route/path-end";
 import { PathSteps } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
 import { roleProfiles } from "@/content";
+import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
+import { testSignInEnabled } from "@/lib/auth/test-user";
 import { getPathForOwner } from "@/lib/path/store";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
@@ -17,8 +20,8 @@ import { errorFields, logEvent } from "@/lib/log";
 
 export const metadata: Metadata = { title: "Your path · CareerMetro", robots: { index: false } };
 
-// Learning works toward a gap; only proof fills it, so the step never says it closes one.
-const STATUS_LABEL = { missing: "Missing skill", weak: "Skill with weak evidence", outdated: "Outdated skill" } as const;
+// Learning works toward a gap; only proof fills it, so the step never says it closes one. Same words as the Gaps page.
+const STATUS_WORDS = { missing: "not on your resume yet", weak: "weak on your resume", outdated: "out of date on your resume" } as const;
 const dayMonth = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 
 /** The hours in the link, else the signed-in person's saved hours a week, else the default. */
@@ -35,7 +38,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   const role = roleProfiles.find((r) => r.slug === slug);
   if (!role) notFound();
   const owner = await readOwner();
-  const hours = readHours((await searchParams).hours, owner && "userId" in owner ? (await currentAccount())?.weeklyHours : undefined);
+  const account = owner && "userId" in owner ? await currentAccount() : null;
+  const hours = readHours((await searchParams).hours, account?.weeklyHours);
   let result: Awaited<ReturnType<typeof getPathForOwner>>;
   try {
     result = owner ? await getPathForOwner(id, owner, role, hours) : { ok: false, reason: "not_found" };
@@ -110,13 +114,14 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
           hours: s.hours,
           week: s.week,
           reason: s.reason,
-          closes: STATUS_LABEL[s.status],
+          closes: `${s.skillName} (${STATUS_WORDS[s.status]})`,
           doneOn: s.doneAt ? dayMonth.format(new Date(s.doneAt)) : undefined,
           resources: s.resources,
           proofTask: s.proofTask,
           action: <MarkDone stepId={s.id} title={s.skillName} done={Boolean(s.doneAt)} />,
         }))}
       />
+      {path.steps.length > 0 && path.doneCount === path.steps.length && <PathEnd next={pathNext(!!account, `/resume/${id}/path/${slug}`)} />}
       {path.deferredCount > 0 && (
         <p className="text-sm text-muted">
           {path.deferredCount === 1 ? "One more gap waits" : `${path.deferredCount} more gaps wait`} for after this path, to keep it
@@ -131,6 +136,13 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
       </p>
     </div>
   );
+}
+
+/** After the last step: Today for a signed-in person, else sign in where accounts are on, else the waitlist. */
+function pathNext(signedIn: boolean, here: string): PathNext {
+  if (signedIn) return { kind: "today" };
+  if (authConfig() || testSignInEnabled()) return { kind: "sign-in", href: `/sign-in?next=${encodeURIComponent(here)}` };
+  return { kind: "waitlist" };
 }
 
 function TryAgain() {
