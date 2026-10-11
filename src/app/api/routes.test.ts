@@ -1,0 +1,257 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { cookieJar } from "@/test/cookie-jar";
+
+// The security checks every route handler makes before it touches data: same origin, body size and shape, an
+// owner, and ownership itself (the store answers false for someone else's id, which must become a 404).
+const m = vi.hoisted(() => ({
+  jar: null as ReturnType<typeof cookieJar> | null,
+  account: null as { id: string } | null,
+  rateAnalysis: vi.fn(),
+  markStepDone: vi.fn(),
+  confirmProfile: vi.fn(),
+  ingestResume: vi.fn(),
+  deleteExpired: vi.fn(),
+  signOut: vi.fn(),
+  completeGoogleRedirect: vi.fn(),
+  afterSignIn: vi.fn(),
+  getDb: vi.fn(() => {
+    throw new Error("database must not be touched");
+  }),
+}));
+vi.mock("next/headers", () => ({ cookies: async () => m.jar, headers: async () => new Headers() }));
+vi.mock("@/lib/auth/server", () => ({
+  currentAccount: async () => m.account,
+  signOut: m.signOut,
+  completeGoogleRedirect: m.completeGoogleRedirect,
+}));
+vi.mock("@/lib/auth/after-sign-in", () => ({ afterSignIn: m.afterSignIn }));
+vi.mock("@/lib/gaps/store", () => ({ rateAnalysis: m.rateAnalysis }));
+vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
+vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile }));
+vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
+vi.mock("@/db", () => ({ getDb: m.getDb }));
+
+import { GET as authCallback } from "@/app/auth/callback/route";
+import { POST as signOutRoute } from "@/app/auth/sign-out/route";
+import { GET as cleanup } from "@/app/api/cron/cleanup/route";
+import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
+import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
+import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
+import { POST as upload } from "@/app/api/resume/route";
+import { POST as waitlist } from "@/app/api/waitlist/route";
+import { SESSION_COOKIE } from "@/lib/session";
+
+const SITE = "https://careermetro.test";
+const SESSION = "S".repeat(43);
+const ID = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
+const ctx = { params: Promise.resolve({ id: ID }) };
+
+const put = (path: string, body: unknown, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+  new Request(SITE + path, {
+    method: "PUT",
+    headers: { ...(origin ? { origin } : {}), "content-type": "application/json", ...headers },
+    body: typeof body === "string" ? body : JSON.stringify(body),
+  });
+const json = async (r: Response) => ({ status: r.status, body: await r.json() });
+
+const PROFILE = { headline: null, totalYearsExperience: 2, roles: [], skills: [], education: [], certifications: [] };
+
+beforeEach(() => {
+  m.jar = cookieJar();
+  m.jar.set(SESSION_COOKIE, SESSION);
+  m.account = null;
+});
+afterEach(() => {
+  vi.clearAllMocks();
+  vi.unstubAllEnvs();
+});
+
+describe.each([
+  { name: "gap rating", call: (r: Request) => rate(r, ctx as never), path: `/api/gaps/${ID}/rating`, good: { rating: 4 }, store: () => m.rateAnalysis },
+  { name: "path step", call: (r: Request) => stepDone(r, ctx as never), path: `/api/path-steps/${ID}`, good: { done: true }, store: () => m.markStepDone },
+])("$name", ({ call, path, good, store }) => {
+  it("refuses another site, a missing Origin, and a forged one", async () => {
+    for (const origin of [null, "https://evil.example", "https://careermetro.test.evil.example"]) {
+      expect((await call(put(path, good, origin))).status).toBe(403);
+    }
+    expect(store()).not.toHaveBeenCalled();
+  });
+
+  it("refuses bodies that are too large or the wrong shape before looking anything up", async () => {
+    const bad = [
+      put(path, good, SITE, { "content-length": "100000" }),
+      put(path, " ".repeat(5000)),
+      put(path, "not json"),
+      put(path, {}),
+      put(path, { rating: 6, done: "yes" }),
+      put(path, { rating: 2.5, done: 1 }),
+    ];
+    for (const r of bad) expect((await call(r)).status).toBe(400);
+    expect(store()).not.toHaveBeenCalled();
+  });
+
+  it("answers 404 without a session, and 404 when the store says it isn't this owner's", async () => {
+    m.jar!.clear();
+    expect((await call(put(path, good))).status).toBe(404);
+    expect(store()).not.toHaveBeenCalled();
+
+    m.jar!.set(SESSION_COOKIE, SESSION);
+    store().mockResolvedValueOnce(false);
+    expect((await call(put(path, good))).status).toBe(404);
+    expect(store()).toHaveBeenCalledWith(ID, { sessionId: SESSION }, Object.values(good)[0]);
+  });
+
+  it("acts for the signed-in account, never the anonymous cookie beside it", async () => {
+    m.account = { id: "user-1" };
+    store().mockResolvedValueOnce(true);
+    expect(await json(await call(put(path, good)))).toEqual({ status: 200, body: { ok: true } });
+    expect(store()).toHaveBeenCalledWith(ID, { userId: "user-1" }, Object.values(good)[0]);
+  });
+
+  it("hides database errors behind a plain message", async () => {
+    store().mockRejectedValueOnce(Object.assign(new Error("Failed query: select … params: secret"), { code: "57014" }));
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await json(await call(put(path, good)));
+    expect(res.status).toBe(500);
+    expect(JSON.stringify(res.body)).not.toContain("secret");
+    errors.mockRestore();
+  });
+});
+
+describe("profile save", () => {
+  const call = (r: Request) => saveProfile(r, ctx as never);
+  const path = `/api/resume/${ID}/profile`;
+
+  it("refuses another site, oversize bodies and invalid profiles before saving", async () => {
+    expect((await call(put(path, PROFILE, "https://evil.example"))).status).toBe(403);
+    expect((await call(put(path, PROFILE, SITE, { "content-length": String(65 * 1024) }))).status).toBe(413);
+    expect((await call(put(path, "x".repeat(65 * 1024)))).status).toBe(413);
+    expect((await json(await call(put(path, { ...PROFILE, skills: [{ name: "SQL", lastUsed: "June 2022", evidence: [] }] })))).body.error).toMatch(/dates/);
+    expect((await call(put(path, { ...PROFILE, roles: [{ title: "", employer: "X", start: null, end: null, highlights: [] }] }))).status).toBe(400);
+    expect(m.confirmProfile).not.toHaveBeenCalled();
+  });
+
+  it("maps every store answer to its status", async () => {
+    const cases = [
+      [{ ok: true, version: 3 }, 200],
+      [{ ok: false, reason: "conflict" }, 409],
+      [{ ok: false, reason: "too_many" }, 429],
+      [{ ok: false, reason: "not_found" }, 404],
+    ] as const;
+    for (const [answer, status] of cases) {
+      m.confirmProfile.mockResolvedValueOnce(answer);
+      expect((await call(put(path, PROFILE))).status).toBe(status);
+    }
+    expect(m.confirmProfile).toHaveBeenLastCalledWith(ID, { sessionId: SESSION }, PROFILE);
+  });
+});
+
+describe("resume upload", () => {
+  const post = (form: FormData, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    new Request(SITE + "/api/resume", { method: "POST", headers: { ...(origin ? { origin } : {}), ...headers }, body: form });
+  const form = (fields: Record<string, string | Blob>) => {
+    const f = new FormData();
+    for (const [k, v] of Object.entries(fields)) f.append(k, v);
+    return f;
+  };
+
+  it("needs our own site, consent, and a file or text, and never reads anything without them", async () => {
+    expect((await upload(post(form({ consent: "yes", text: "resume" }), "https://evil.example"))).status).toBe(403);
+    expect((await upload(post(form({ text: "resume" })))).status).toBe(400);
+    expect((await upload(post(form({ consent: "yes" })))).status).toBe(400);
+    expect((await upload(post(form({ consent: "yes", text: "   " })))).status).toBe(400);
+    expect((await upload(post(form({ consent: "yes", text: "x" }), SITE, { "content-length": String(6 * 1024 * 1024) }))).status).toBe(413);
+    expect(m.ingestResume).not.toHaveBeenCalled();
+  });
+
+  it("refuses a file over 4 MB without reading it", async () => {
+    const big = new File([new Uint8Array(4 * 1024 * 1024 + 1)], "cv.pdf");
+    expect((await upload(post(form({ consent: "yes", file: big })))).status).toBe(413);
+    expect(m.ingestResume).not.toHaveBeenCalled();
+  });
+
+  it("passes pasted text through as text with a hashed client, and hides failures", async () => {
+    m.ingestResume.mockResolvedValueOnce({ ok: true, resumeId: ID });
+    const res = await json(await upload(post(form({ consent: "yes", text: "My resume" }), SITE, { "x-forwarded-for": "203.0.113.7" })));
+    expect(res).toEqual({ status: 200, body: { ok: true, resumeId: ID } });
+    const input = m.ingestResume.mock.calls[0][0];
+    expect(input.as).toBe("text");
+    expect(new TextDecoder().decode(input.bytes)).toBe("My resume");
+    expect(input.owner).toEqual({ sessionId: SESSION });
+    expect(input.clientHash).not.toContain("203.0.113.7");
+
+    m.ingestResume.mockRejectedValueOnce(new Error("Failed query … My resume"));
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    const failed = await json(await upload(post(form({ consent: "yes", text: "My resume" }))));
+    expect(failed.status).toBe(500);
+    expect(JSON.stringify(failed.body)).not.toContain("My resume");
+    errors.mockRestore();
+  });
+
+  it("gives a visitor without a session a new one rather than failing", async () => {
+    m.jar!.clear();
+    m.ingestResume.mockResolvedValueOnce({ ok: true, resumeId: ID });
+    await upload(post(form({ consent: "yes", text: "My resume" })));
+    expect(m.ingestResume.mock.calls[0][0].owner.sessionId).toBe(m.jar!.values.get(SESSION_COOKIE));
+  });
+});
+
+describe("daily cleanup", () => {
+  const get = (auth?: string) => new Request(SITE + "/api/cron/cleanup", { headers: auth ? { authorization: auth } : {} });
+
+  it("runs only with the cron secret, and never when no secret is set", async () => {
+    vi.stubEnv("CRON_SECRET", "");
+    expect((await cleanup(get("Bearer "))).status).toBe(401);
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    for (const auth of [undefined, "Bearer wrong", "s3cret-value", "bearer s3cret-value", "Bearer s3cret-valu"]) expect((await cleanup(get(auth))).status).toBe(401);
+    expect(m.deleteExpired).not.toHaveBeenCalled();
+    m.deleteExpired.mockResolvedValueOnce(2);
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2 } });
+  });
+});
+
+describe("waitlist", () => {
+  const post = (body: unknown, origin: string | null = SITE) =>
+    new Request(SITE + "/api/waitlist", { method: "POST", headers: origin ? { origin, "x-forwarded-for": "198.51.100.4" } : {}, body: JSON.stringify(body) });
+
+  it("refuses another site, catches bots quietly, and checks the form before the database", async () => {
+    expect((await waitlist(post({ email: "a@example.com" }, "https://evil.example"))).status).toBe(403);
+    expect(await json(await waitlist(post({ email: "a@example.com", website: "spam" })))).toEqual({ status: 200, body: { ok: true } });
+    expect((await waitlist(post({ email: "not an email" }))).status).toBe(400);
+    expect(m.getDb).not.toHaveBeenCalled();
+  });
+});
+
+describe("sign-out", () => {
+  it("only from our own pages, and clears the anonymous cookie too", async () => {
+    const req = (origin?: string) => new Request(SITE + "/auth/sign-out", { method: "POST", headers: origin ? { origin } : {} });
+    expect((await signOutRoute(req("https://evil.example"))).status).toBe(403);
+    expect((await signOutRoute(req())).status).toBe(403);
+    expect(m.signOut).not.toHaveBeenCalled();
+    expect(m.jar!.values.has(SESSION_COOKIE)).toBe(true);
+
+    const res = await signOutRoute(req(SITE));
+    expect(res.status).toBe(303);
+    expect(res.headers.get("location")).toBe(SITE + "/");
+    expect(m.signOut).toHaveBeenCalledOnce();
+    expect(m.jar!.values.has(SESSION_COOKIE)).toBe(false);
+  });
+});
+
+describe("Google return", () => {
+  it("never sends people to another site, and goes back to sign-in on a bad code", async () => {
+    m.completeGoogleRedirect.mockResolvedValueOnce({ ok: false, reason: "rejected" });
+    let res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=https://evil.example`));
+    const failed = new URL(res.headers.get("location")!);
+    expect(failed.origin).toBe(SITE);
+    expect(failed.pathname).toBe("/sign-in");
+    expect(m.afterSignIn).not.toHaveBeenCalled();
+
+    for (const next of ["https://evil.example/x", "//evil.example", "/\\evil.example", "javascript:alert(1)"]) {
+      m.completeGoogleRedirect.mockResolvedValueOnce({ ok: true });
+      m.afterSignIn.mockImplementationOnce(async (n: string) => n);
+      res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=${encodeURIComponent(next)}`));
+      expect(new URL(res.headers.get("location")!).origin).toBe(SITE);
+    }
+  });
+});
