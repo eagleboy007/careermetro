@@ -28,6 +28,8 @@ import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
+import { exampleSettings } from "@/components/settings/fixtures";
+import { SettingsView } from "@/components/settings/settings-view";
 import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
@@ -262,6 +264,17 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
         <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
         <MeView me={exampleMe} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
+        <p className="text-sm text-muted">
+          Section list, name with the unsaved-changes bar, the locked email, how the person signs in, download and delete with its DELETE check.
+          Example data, so nothing saves.
+        </p>
+        <div className="rounded-lg border border-line px-4 pt-6">
+          <SettingsView data={exampleSettings} />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

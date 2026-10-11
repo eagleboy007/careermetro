@@ -5,6 +5,7 @@ import { consents, resumes, users } from "@/db/schema";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/owner";
 import { checkName, hasUsableName } from "@/lib/resume/name-match";
 import { WEEKLY_HOURS } from "@/lib/schemas";
+import { fullName } from "./name";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -15,16 +16,44 @@ export const ACCOUNT_POLICY_VERSION = "2026-10-draft";
  * What the sign-in provider tells us about a signed-in person. Nothing else from the provider is stored.
  * `emailVerified` is true when the provider proved the person controls the email (Google, or an emailed code).
  */
-export type Identity = { subject: string; email: string; emailVerified: boolean; name: string | null };
+export type Identity = {
+  subject: string;
+  email: string;
+  emailVerified: boolean;
+  name: string | null;
+  /** How they signed in, for Account settings. Absent when the provider didn't say. */
+  method?: SignInMethod;
+};
 
-export type Account = { id: string; email: string; name: string | null; weeklyHours: number };
+export type SignInMethod = "google" | "email_code" | "test";
+
+export type Account = {
+  id: string;
+  email: string;
+  name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  weeklyHours: number;
+  /** Set while a deleted account waits out its grace period (src/lib/account/delete.ts); it then counts as signed out. */
+  deletionRequestedAt: Date | null;
+};
+
+const accountColumns = {
+  id: users.id,
+  email: users.email,
+  name: users.name,
+  firstName: users.firstName,
+  lastName: users.lastName,
+  weeklyHours: users.weeklyHours,
+  deletionRequestedAt: users.deletionRequestedAt,
+};
 
 const normalEmail = (email: string) => email.trim().toLowerCase();
 
-/** Our user for this sign-in, or null before they finish sign-up. */
+/** Our user for this sign-in, or null before they finish sign-up. Includes an account waiting to be deleted. */
 export async function findAccount(subject: string, db: Pick<Db, "select"> = getDb()): Promise<Account | null> {
   const [row] = await db
-    .select({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours })
+    .select(accountColumns)
     .from(users)
     .where(eq(users.authSubject, subject))
     .limit(1);
@@ -81,7 +110,7 @@ export type CreateAccountResult = { ok: true; account: Account; refused: number 
  */
 export async function createAccount(
   identity: Identity,
-  input: { name: string | null; sessionId: string | null },
+  input: { name: string | null; firstName?: string | null; lastName?: string | null; sessionId: string | null },
   db: Db = getDb(),
 ): Promise<CreateAccountResult> {
   const email = normalEmail(identity.email);
@@ -93,8 +122,9 @@ export async function createAccount(
     if (existing) {
       // An account made before names were asked for gets its name here, before anything is claimed.
       if (!hasUsableName(existing.name) && hasUsableName(input.name)) {
-        await tx.update(users).set({ name: input.name }).where(eq(users.id, existing.id));
-        existing = { ...existing, name: input.name };
+        const names = { name: input.name, firstName: input.firstName ?? null, lastName: input.lastName ?? null };
+        await tx.update(users).set(names).where(eq(users.id, existing.id));
+        existing = { ...existing, ...names };
       }
       const claim = input.sessionId ? await claimAnonymousResumes(existing.id, input.sessionId, tx) : null;
       return { ok: true, account: existing, refused: claim?.refused ?? 0 } as const;
@@ -110,10 +140,17 @@ export async function createAccount(
     if (byEmail && !identity.emailVerified) return { ok: false, reason: "email_unverified" } as const;
 
     const now = new Date();
-    const values = { authSubject: identity.subject, name: input.name, ageConfirmedAt: now, lastSeenAt: now };
+    const values = {
+      authSubject: identity.subject,
+      name: input.name,
+      firstName: input.firstName ?? null,
+      lastName: input.lastName ?? null,
+      ageConfirmedAt: now,
+      lastSeenAt: now,
+    };
     const [row] = byEmail
-      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours })
-      : await tx.insert(users).values({ email, ...values }).returning({ id: users.id, email: users.email, name: users.name, weeklyHours: users.weeklyHours });
+      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning(accountColumns)
+      : await tx.insert(users).values({ email, ...values }).returning(accountColumns);
     await tx.insert(consents).values({ userId: row.id, email, purpose: "account", policyVersion: ACCOUNT_POLICY_VERSION });
     const claim = input.sessionId ? await claimAnonymousResumes(row.id, input.sessionId, tx) : null;
     return { ok: true, account: row, refused: claim?.refused ?? 0 } as const;
@@ -133,5 +170,24 @@ export async function touchLastSeen(userId: string, db: Db = getDb()): Promise<v
 export async function setWeeklyHours(userId: string, hours: number, db: Pick<Db, "update"> = getDb()): Promise<boolean> {
   if (!(WEEKLY_HOURS as readonly number[]).includes(hours)) return false;
   const rows = await db.update(users).set({ weeklyHours: hours }).where(eq(users.id, userId)).returning({ id: users.id });
+  return rows.length > 0;
+}
+
+/** The longest first or last name kept. */
+export const NAME_PART_MAX = 40;
+
+/**
+ * Saves first and last name and the full name made from them. The full name is what later resumes are checked
+ * against, so a change applies to resumes added after it; ones already on the account stay.
+ */
+export async function saveNames(userId: string, first: string, last: string, db: Pick<Db, "update"> = getDb()): Promise<boolean> {
+  const firstName = fullName(first, null).slice(0, NAME_PART_MAX);
+  const lastName = fullName(last, null).slice(0, NAME_PART_MAX);
+  if (!firstName) return false;
+  const rows = await db
+    .update(users)
+    .set({ firstName, lastName: lastName || null, name: fullName(firstName, lastName) })
+    .where(eq(users.id, userId))
+    .returning({ id: users.id });
   return rows.length > 0;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, User } from "lucide-react";
+import { Lock, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
@@ -160,6 +160,12 @@ function AvatarMenu({ user }: { user: ShellUser }) {
             <Link href="/me" onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
               <User size={16} strokeWidth={1.75} aria-hidden="true" />
               Your profile
+            </Link>
+          </li>
+          <li>
+            <Link href="/settings" onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
+              <Lock size={16} strokeWidth={1.75} aria-hidden="true" />
+              Account settings
             </Link>
           </li>
           {MENU_NAV.map((item) => (

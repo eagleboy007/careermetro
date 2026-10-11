@@ -5,6 +5,9 @@ import { hasUsableName } from "@/lib/resume/name-match";
 import { readSessionId } from "@/lib/session";
 import { currentIdentity } from "./server";
 
+/** Where a person whose account is waiting to be deleted goes after signing in. */
+export const RESTORE_PATH = "/account/restore";
+
 /** The query flag that makes Today say a resume was left out of the account because it shows another name. */
 export const NAME_NOTICE = "resume-name";
 
@@ -21,6 +24,8 @@ export async function afterSignIn(next: string): Promise<string> {
   const identity = await currentIdentity();
   if (!identity) return `/sign-in?next=${encodeURIComponent(next)}`;
   const account = await findAccount(identity.subject);
+  // A deleted account claims nothing; the person chooses to restore it or keep it deleted.
+  if (account?.deletionRequestedAt) return RESTORE_PATH;
   // No account yet, or one without a name to check resumes against: the finish step asks for it first.
   if (!account || !hasUsableName(account.name)) return `/sign-up/finish?next=${encodeURIComponent(next)}`;
   const sessionId = await readSessionId();

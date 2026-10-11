@@ -48,10 +48,19 @@ export const currentIdentity = cache(async (): Promise<Identity | null> => {
   return identityFromClaims(data?.claims);
 });
 
-/** Our user for the signed-in person, or null when signed out or before they finish sign-up. */
-export const currentAccount = cache(async (): Promise<Account | null> => {
+/** The signed-in person's user, deleted or not. Most code wants `currentAccount`. Once per request. */
+export const signedInAccount = cache(async (): Promise<Account | null> => {
   const identity = await currentIdentity();
   return identity ? findAccount(identity.subject) : null;
+});
+
+/**
+ * Our user for the signed-in person, or null when signed out, before they finish sign-up, or while their account is
+ * deleted: a deleted account counts as signed out everywhere until it is restored.
+ */
+export const currentAccount = cache(async (): Promise<Account | null> => {
+  const account = await signedInAccount();
+  return account && !account.deletionRequestedAt ? account : null;
 });
 
 export type AuthStep = { ok: true } | { ok: false; reason: "not_configured" | "rejected" };
