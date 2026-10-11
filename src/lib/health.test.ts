@@ -25,6 +25,15 @@ describe("checkHealth", () => {
     expect(d.record).toHaveBeenCalledWith(expect.objectContaining({ purpose: "health-check", ok: true, inputTokens: 8 }));
   });
 
+  it("says when the database is missing migrations this build needs", async () => {
+    expect(await checkHealth(deps({ countMigrations: async () => ({ applied: 13, expected: 13 }) }))).toEqual({ ok: true, database: "ok", schema: "ok", claude: "ok" });
+    expect(await checkHealth(deps({ countMigrations: async () => ({ applied: 12, expected: 13 }) }))).toMatchObject({ ok: false, schema: "behind" });
+    expect(await checkHealth(deps({ countMigrations: async () => Promise.reject(new Error("relation does not exist")) }))).toMatchObject({ ok: false, schema: "behind" });
+    // A database that is down is reported as down, without a schema verdict.
+    const down = await checkHealth(deps({ pingDb: async () => Promise.reject(new Error("down")), countMigrations: async () => ({ applied: 0, expected: 13 }) }));
+    expect(down).not.toHaveProperty("schema");
+  });
+
   it("names a missing key without calling Claude", async () => {
     const d = deps({ hasKey: false });
     expect(await checkHealth(d)).toEqual({ ok: false, database: "ok", claude: "no_key" });

@@ -15,6 +15,7 @@ import { unreadChats } from "@/lib/inbox/store";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
+import { errorFields, logEvent } from "@/lib/log";
 
 const initials = (name: string) =>
   name
@@ -23,6 +24,19 @@ const initials = (name: string) =>
     .slice(0, 2)
     .map((w) => w[0]!.toUpperCase())
     .join("") || "?";
+
+/**
+ * The streak and the unread count are extras on the top bar: if one can't be read, the bar shows without it and the
+ * page still loads, instead of every signed-in screen failing.
+ */
+async function extra<T>(name: string, read: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await read;
+  } catch (error) {
+    logEvent("error", "shell_extra_failed", { part: name, ...errorFields(error) });
+    return fallback;
+  }
+}
 
 /**
  * Signed-in screens, behind the preview flag until Today runs on real data. With sign-in set up, or the test sign-in on
@@ -37,7 +51,11 @@ async function Shell({ children }: { children: React.ReactNode }) {
     const account = await signedInAccount();
     if (account?.deletionRequestedAt) redirect(RESTORE_PATH);
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
-    const [, { streak }, inboxUnread] = await Promise.all([touchLastSeen(account.id), rideStatsFor(account.id, new Date()), unreadChats(account.id)]);
+    const [, streak, inboxUnread] = await Promise.all([
+      extra("last_seen", touchLastSeen(account.id), undefined),
+      extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
+      extra("inbox_unread", unreadChats(account.id), 0),
+    ]);
     const name = displayName(account.name);
     // The streak shows once the person has ridden a day.
     user = {

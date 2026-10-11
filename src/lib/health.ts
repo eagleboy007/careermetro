@@ -11,7 +11,8 @@ export const HEALTH_PURPOSE = "health-check";
 
 export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model_access" | "down";
 /** claudeError names a failed ping (status, type and, for a rejected request, the API's reason). The ping's input is fixed text, so the reason can't hold user data. */
-export type Health = { ok: boolean; database: "ok" | "down"; claude: ClaudeStatus; claudeError?: string };
+/** `schema` is "behind" when the database is missing migrations this build expects (pages that use the new tables fail). */
+export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string };
 
 export type HealthDeps = {
   hasKey: boolean;
@@ -19,12 +20,34 @@ export type HealthDeps = {
   /** The smallest real call to the model the app uses, so it proves the key, the credit and access to that model. */
   pingClaude: () => Promise<{ model: string; usage: Usage }>;
   record: (call: AiCallRecord) => Promise<void>;
+  /** How many migrations the database has applied, and how many this build's journal lists. */
+  countMigrations?: () => Promise<{ applied: number; expected: number }>;
 };
 
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
   const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
-  return { ok: database === "ok" && claude === "ok", database, claude, ...(error ? { claudeError: error } : {}) };
+  const schema = database === "ok" ? await checkSchema(deps) : undefined;
+  return {
+    ok: database === "ok" && schema !== "behind" && claude === "ok",
+    database,
+    ...(schema ? { schema } : {}),
+    claude,
+    ...(error ? { claudeError: error } : {}),
+  };
+}
+
+async function checkSchema(deps: HealthDeps): Promise<Health["schema"]> {
+  if (!deps.countMigrations) return undefined;
+  try {
+    const { applied, expected } = await deps.countMigrations();
+    if (applied < expected) logEvent("error", "health_schema_behind", { applied, expected });
+    return applied < expected ? "behind" : "ok";
+  } catch (error) {
+    // No migrations table at all: nothing has been applied.
+    logEvent("error", "health_schema_failed", errorFields(error));
+    return "behind";
+  }
 }
 
 async function checkDb(deps: HealthDeps): Promise<Health["database"]> {
