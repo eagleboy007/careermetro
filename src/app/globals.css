@@ -15,7 +15,7 @@
   --accent: #2448f5;
   --accent-soft: #e6ebff;
   --on-accent: #ffffff;
-  --good: #11805b;
+  --good: #0f7a56; /* 4.67:1 on good-soft, WCAG AA for small text */
   --good-soft: #e2f4ec;
   --warn: #9a5800;
   --warn-soft: #fff0d8;

@@ -14,6 +14,8 @@ export function GapRating({ analysisId, initial, demo = false }: { analysisId: s
   });
 
   async function rate(value: number) {
+    // Shown at once; put back to the last saved answer if saving fails, so the page never shows an answer we don't have.
+    const saved = rating;
     setRating(value);
     setState({ kind: "saving" });
     if (demo) return setState({ kind: "saved" });
@@ -24,8 +26,11 @@ export function GapRating({ analysisId, initial, demo = false }: { analysisId: s
         body: JSON.stringify({ rating: value }),
       });
       const reply = await readApiReply(res);
-      setState(reply.ok ? { kind: "saved" } : { kind: "error", message: reply.error ?? "Something went wrong. Please try again." });
+      if (reply.ok) return setState({ kind: "saved" });
+      setRating(saved);
+      setState({ kind: "error", message: reply.error ?? "Something went wrong. Please try again." });
     } catch {
+      setRating(saved);
       setState({ kind: "error", message: "We couldn't reach CareerMetro. Check your connection and try again." });
     }
   }
