@@ -2,7 +2,7 @@ import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { costUsd } from "@/lib/ai/cost";
-import { describeAiError } from "@/lib/ai/errors";
+import { describeAiError, isTransient, retryPause } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { z } from "zod";
@@ -16,6 +16,7 @@ export const PARSE_DEADLINE_MS = 100_000;
 const ATTEMPT_TIMEOUT_MS = 50_000;
 /** A retry is only worth starting with at least this much of the deadline left. */
 const MIN_ATTEMPT_MS = 30_000;
+const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export type ParseClient = Pick<Anthropic, "beta">;
 
@@ -58,7 +59,8 @@ function getClient(): Anthropic {
 }
 
 /**
- * FR-5: turns masked resume text into a profile with one model call, retried once if the output is malformed (FR-14).
+ * FR-5: turns masked resume text into a profile with one model call, retried once if the output is malformed (FR-14)
+ * or the call hit a brief outage. The two share one retry, so a resume costs at most two calls.
  * The text must already be masked with maskPii. The result is verified against that same text (AI-5).
  * inputRefs identifies the resume for the ai_calls log and must hold ids only.
  * Never throws for a failed call: every attempt, including one that errors, is returned in `calls` for logging.
@@ -110,6 +112,12 @@ export async function parseResume(
       record(PARSE_MODEL, null, false);
       // Never the message: it could echo the request, which holds resume text.
       console.error("parse-resume call failed:", describeAiError(error));
+      // A brief outage (rate limit, overload, dropped connection) gets the second attempt, if there is time for it.
+      const wait = retryPause();
+      if (attempt < MAX_ATTEMPTS && isTransient(error) && deadline - Date.now() - wait >= MIN_ATTEMPT_MS) {
+        await pause(wait);
+        continue;
+      }
       return { ok: false, reason: "unavailable", error, calls };
     }
 

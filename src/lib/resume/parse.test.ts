@@ -1,4 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
+import { APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
 import type { Profile } from "@/lib/schemas";
 import { parseResume, readProfile, wrapResume, type ParseClient } from "./parse";
@@ -96,6 +97,23 @@ describe("parseResume", () => {
     const result = await parseResume(resume, {}, client);
     expect(result).toMatchObject({ ok: false, reason: "unavailable" });
     expect(result.calls).toEqual([expect.objectContaining({ ok: false, inputTokens: 0 })]);
+  });
+
+  it("tries once more after a brief outage, but not after a request error or with too little time left", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const overloaded = () => APIError.generate(529, { type: "error", error: { type: "overloaded_error", message: "m" } }, "m", new Headers());
+    const recovered = fakeClient(overloaded(), { text: JSON.stringify(good) });
+    const ok = await parseResume(resume, {}, recovered.client);
+    expect(ok.ok).toBe(true);
+    expect(ok.calls.map((c) => c.ok)).toEqual([false, true]);
+
+    const bad = fakeClient(APIError.generate(400, { type: "error", error: { type: "invalid_request_error", message: "m" } }, "m", new Headers()));
+    expect(await parseResume(resume, {}, bad.client)).toMatchObject({ ok: false, reason: "unavailable" });
+    expect(bad.create).toHaveBeenCalledTimes(1);
+
+    const late = fakeClient(overloaded(), { text: JSON.stringify(good) });
+    expect(await parseResume(resume, {}, late.client, 20_000)).toMatchObject({ ok: false, reason: "unavailable" });
+    expect(late.create).toHaveBeenCalledTimes(1);
   });
 
   it("reports a refusal without retrying", async () => {

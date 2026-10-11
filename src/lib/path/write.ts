@@ -3,13 +3,15 @@ import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import { costUsd } from "@/lib/ai/cost";
-import { describeAiError } from "@/lib/ai/errors";
+import { describeAiError, withOneRetry } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { plannedPath, type PlannedPath } from "@/lib/schemas";
 
 export const WRITE_PATH_MODEL = "claude-opus-5-5";
 /** The Path page waits on this call, so it gets one short attempt and the template covers any failure. */
+/** A retry starts only with at least this much of the budget left. */
+const MIN_RETRY_MS = 5_000;
 const TIMEOUT_MS = 20_000;
 
 export type WriteClient = Pick<Anthropic, "beta">;
@@ -109,26 +111,38 @@ export async function writePath(
     },
   ];
 
+  // One retry for a brief outage (rate limit, overload, dropped connection), within the same time budget.
+  const failed: AiCallRecord[] = [];
   let response;
   try {
-    response = await client.beta.messages.create(
+    response = await withOneRetry(
+      (timeout) =>
+        client.beta.messages.create(
+          {
+            model: WRITE_PATH_MODEL,
+            max_tokens: 3_000,
+            system: prompt.text,
+            messages: [{ role: "user", content: wrapPath(plan, roleTitle, titles) }],
+            output_config: { effort: "low", format: betaZodOutputFormat(writePathOutput) },
+            betas: ["server-side-fallback-2026-07-01"],
+            fallbacks: "default",
+          },
+          { timeout },
+        ),
       {
-        model: WRITE_PATH_MODEL,
-        max_tokens: 3_000,
-        system: prompt.text,
-        messages: [{ role: "user", content: wrapPath(plan, roleTitle, titles) }],
-        output_config: { effort: "low", format: betaZodOutputFormat(writePathOutput) },
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
+        budgetMs: TIMEOUT_MS,
+        minRetryMs: MIN_RETRY_MS,
+        onError: (error, latencyMs) => {
+          console.error("write-path call failed:", describeAiError(error));
+          failed.push({ ...record(WRITE_PATH_MODEL, null, false)[0], latencyMs });
+        },
       },
-      { timeout: TIMEOUT_MS },
     );
-  } catch (error) {
-    console.error("write-path call failed:", describeAiError(error));
-    return { path: plan, source: "template", calls: record(WRITE_PATH_MODEL, null, false) };
+  } catch {
+    return { path: plan, source: "template", calls: failed };
   }
 
   const worded = response.stop_reason === "end_turn" ? readWording(response.content, plan) : null;
-  const calls = record(response.model, response.usage, worded !== null);
+  const calls = [...failed, ...record(response.model, response.usage, worded !== null)];
   return worded ? { path: worded, source: "model", calls } : { path: plan, source: "template", calls };
 }
