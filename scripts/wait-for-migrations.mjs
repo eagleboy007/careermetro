@@ -15,14 +15,19 @@ export function latestMigration(journal) {
   return entries.reduce((max, e) => Math.max(max, Number(e.when) || 0), 0);
 }
 
-/** True when the database has applied the newest migration (or the journal has none). */
-export const isCurrent = (latest, applied) => latest === 0 || (applied !== null && applied >= latest);
+/**
+ * True when the database has the build's migrations: the newest one applied, and at least as many applied as the
+ * journal lists. Drizzle skips a migration older than the newest applied one without an error, so the count catches a
+ * migration that merged out of order (the journal test also keeps `when` increasing).
+ */
+export const isCurrent = (latest, applied, expectedCount = 0) =>
+  latest === 0 || (applied !== null && applied.max >= latest && applied.count >= expectedCount);
 
 /**
  * Asks until the database is current or time runs out. Returns "current", "behind" (it read an older migration), or
  * "error" (it never read the table: three non-missing-table errors, or the table still missing at the deadline).
  */
-export async function waitForMigrations({ latest, readApplied, timeoutMs, intervalMs, sleep, now = Date.now, log = console.log }) {
+export async function waitForMigrations({ latest, expectedCount = 0, readApplied, timeoutMs, intervalMs, sleep, now = Date.now, log = console.log }) {
   const deadline = now() + timeoutMs;
   let errors = 0;
   let missing = false;
@@ -38,7 +43,7 @@ export async function waitForMigrations({ latest, readApplied, timeoutMs, interv
       missing = error?.code === "42P01";
       applied = null;
     }
-    if (isCurrent(latest, applied)) return "current";
+    if (isCurrent(latest, applied, expectedCount)) return "current";
     if (now() >= deadline) return missing ? "error" : "behind";
     log("wait-for-migrations: the database is behind this build's migrations; waiting for the Migrate database workflow");
     await sleep(intervalMs);
@@ -46,20 +51,31 @@ export async function waitForMigrations({ latest, readApplied, timeoutMs, interv
 }
 
 async function main() {
+  if (process.env.VERCEL === "1" && !process.env.VERCEL_ENV) {
+    console.warn("wait-for-migrations: VERCEL_ENV is missing; turn on system environment variables so production builds are checked");
+  }
   if (process.env.VERCEL_ENV !== "production") return;
   const url = process.env.DATABASE_URL;
   if (!url) {
     console.error("wait-for-migrations: DATABASE_URL is not set for this production build");
     process.exit(1);
   }
-  const latest = latestMigration(JSON.parse(readFileSync(new URL("../drizzle/meta/_journal.json", import.meta.url), "utf8")));
-  const sql = postgres(url, { max: 1, prepare: false, connect_timeout: 10, onnotice: () => {} });
+  const journal = JSON.parse(readFileSync(new URL("../drizzle/meta/_journal.json", import.meta.url), "utf8"));
+  let sql;
+  try {
+    sql = postgres(url, { max: 1, prepare: false, connect_timeout: 10, onnotice: () => {} });
+  } catch (error) {
+    // Never print the error: for a malformed link its message repeats the whole link, password included.
+    console.warn(`wait-for-migrations: DATABASE_URL could not be read (${error?.code ?? error?.name ?? "error"}); deploying without the check`);
+    return;
+  }
   try {
     const result = await waitForMigrations({
-      latest,
+      latest: latestMigration(journal),
+      expectedCount: journal.entries?.length ?? 0,
       readApplied: async () => {
-        const [row] = await sql`select max(created_at)::bigint as applied from drizzle.__drizzle_migrations`;
-        return row?.applied == null ? null : Number(row.applied);
+        const [row] = await sql`select max(created_at)::bigint as max, count(*)::int as count from drizzle.__drizzle_migrations`;
+        return row?.max == null ? null : { max: Number(row.max), count: Number(row.count) };
       },
       timeoutMs: Number(process.env.MIGRATION_WAIT_MS ?? 10 * 60_000),
       intervalMs: 10_000,
@@ -78,8 +94,12 @@ async function main() {
     );
     process.exitCode = 1;
   } finally {
-    await sql.end({ timeout: 5 });
+    await sql.end({ timeout: 5 }).catch(() => {});
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main().catch((error) => {
+    console.warn(`wait-for-migrations: unexpected ${error?.code ?? error?.name ?? "error"}; deploying without the check`);
+  });
+}
