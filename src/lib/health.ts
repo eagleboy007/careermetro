@@ -3,6 +3,7 @@ import { costUsd, type Usage } from "@/lib/ai/cost";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { describeAiError } from "@/lib/ai/errors";
 import { PARSE_MODEL, type ParseResult } from "@/lib/resume/parse";
+import { errorFields, logEvent } from "@/lib/log";
 
 /** The ping uses the parse model, so it proves access to the model uploads need. */
 export const HEALTH_MODEL = PARSE_MODEL;
@@ -31,7 +32,7 @@ async function checkDb(deps: HealthDeps): Promise<Health["database"]> {
     await deps.pingDb();
     return "ok";
   } catch (error) {
-    console.error("health: database check failed:", error instanceof Error ? error.name : typeof error);
+    logEvent("error", "health_db_failed", errorFields(error));
     return "down";
   }
 }
@@ -49,12 +50,12 @@ async function checkClaude(deps: HealthDeps): Promise<{ status: ClaudeStatus; er
   } catch (error) {
     status = classify(error);
     failure = describeFailure(error);
-    console.error("health: claude check failed:", failure);
+    logEvent("error", "health_claude_failed", { status, ...errorFields(error) });
     call = { model: HEALTH_MODEL, inputTokens: 0, outputTokens: 0, costUsd: 0 };
   }
   await deps
     .record({ purpose: HEALTH_PURPOSE, promptVersion: "health-check/none", inputRefs: {}, latencyMs: Date.now() - started, ok: status === "ok", ...call })
-    .catch((error) => console.error("health: logging the call failed:", error instanceof Error ? error.name : typeof error));
+    .catch((error) => logEvent("error", "health_record_failed", errorFields(error)));
   return { status, error: failure };
 }
 

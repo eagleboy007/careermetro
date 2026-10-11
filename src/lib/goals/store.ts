@@ -6,6 +6,7 @@ import { skillGroupMembers, skills } from "@/content";
 import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { fillingSkills, planGoalSync } from "./sync";
+import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
@@ -157,7 +158,7 @@ export async function syncCurrentGoals(userId: string, db: Db = getDb()): Promis
     const analysis = await currentAnalysis(userId, db);
     if (analysis) await syncGoals(userId, analysis, db);
   } catch (err) {
-    console.error("syncCurrentGoals failed", err instanceof Error ? err.name : "unknown");
+    logEvent("error", "goals_sync_failed", errorFields(err));
   }
 }
 

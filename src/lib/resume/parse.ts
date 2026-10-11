@@ -2,12 +2,13 @@ import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { costUsd } from "@/lib/ai/cost";
-import { describeAiError, isTransient, retryPause } from "@/lib/ai/errors";
+import { isTransient, retryPause } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { z } from "zod";
 import { profile as profileSchema, type Profile } from "@/lib/schemas";
 import { containsPhrase, normalizeForMatch, verifyProfile, type VerifyReport } from "./verify";
+import { errorFields, logEvent } from "@/lib/log";
 
 export const PARSE_MODEL = "claude-opus-5-5";
 const MAX_ATTEMPTS = 2;
@@ -111,7 +112,7 @@ export async function parseResume(
     } catch (error) {
       record(PARSE_MODEL, null, false);
       // Never the message: it could echo the request, which holds resume text.
-      console.error("parse-resume call failed:", describeAiError(error));
+      logEvent("error", "ai_call_failed", { purpose: "parse-resume", attempt, ...errorFields(error) });
       // A brief outage (rate limit, overload, dropped connection) gets the second attempt, if there is time for it.
       const wait = retryPause();
       if (attempt < MAX_ATTEMPTS && isTransient(error) && deadline - Date.now() - wait >= MIN_ATTEMPT_MS) {

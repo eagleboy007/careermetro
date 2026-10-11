@@ -1,5 +1,6 @@
 import { rateAnalysis } from "@/lib/gaps/store";
 import { isSameOrigin, readOwner } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 
@@ -21,7 +22,7 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/gaps/
   try {
     if (await rateAnalysis(id, owner, rating)) return Response.json({ ok: true });
   } catch (error) {
-    console.error("gap rating failed:", error instanceof Error ? error.name : typeof error);
+    logEvent("error", "gap_rating_failed", { route: "/api/gaps/[id]/rating", ...errorFields(error) });
     return fail(500, "Something went wrong saving your answer. Please try again.");
   }
   return fail(404, "We couldn't find these gaps. They may have expired.");
