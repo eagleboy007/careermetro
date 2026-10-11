@@ -1,0 +1,594 @@
+<style>
+/* Layout: one vertical metro line down the left; each section is a station the cobalt line reaches as you scroll. */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceff4; --ink:#12151c; --muted:#586072; --line:#dce0e8;
+  --accent:#2448f5; --accent-soft:#e6ebff; --on-accent:#ffffff;
+  --board:#12151c; --board-ink:#f4f5f8; --board-dim:#8b93a6; --board-line:#262b36; --shadow:rgba(18,21,28,.35);
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --text:"Geist", "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --rail:28px; --gut:16px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --board:#07080b; --board-ink:#eceef3; --board-dim:#8b93a6; --board-line:#1f2430; --shadow:rgba(0,0,0,.6); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0c0e13; --surface:#14171f; --surface-2:#1b1f29; --ink:#eceef3; --muted:#9aa2b3; --line:#2a2f3b;
+  --accent:#7e94ff; --accent-soft:#1d2452; --on-accent:#0c0e13;
+  --board:#07080b; --board-ink:#eceef3; --board-dim:#8b93a6; --board-line:#1f2430; --shadow:rgba(0,0,0,.6); color-scheme:dark; }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{background:var(--bg); color:var(--ink); font-family:var(--text); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:var(--display); line-height:1.05; letter-spacing:-0.03em; margin:0; text-wrap:balance; font-weight:700;}
+p{margin:0}
+a{color:inherit}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:6px}
+.label{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:var(--gut)}
+
+/* header */
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid transparent; transition:border-color .2s}
+.top.scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex; align-items:center; gap:12px; padding-block:12px}
+.brand{display:flex; align-items:center; gap:8px; text-decoration:none; font-family:var(--display); font-weight:700; font-size:1.3rem; letter-spacing:-0.03em}
+.brand svg{width:32px; height:32px}
+.top .sp{flex:1}
+.btn{display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:10px 18px; font-weight:600; font-size:.95rem; text-decoration:none; border:1px solid var(--line); background:var(--surface); cursor:pointer; transition:transform .15s ease-out, background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.btn-ghost{background:transparent}
+.iconbtn{width:40px; height:40px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--line); background:var(--surface); cursor:pointer}
+.iconbtn svg{width:18px; height:18px}
+.sun{display:none} :root[data-theme="dark"] .sun{display:block} :root[data-theme="dark"] .moon{display:none}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .sun{display:block} :root:not([data-theme="light"]) .moon{display:none} }
+.hide-sm{display:inline-flex}
+@media (max-width:560px){ .hide-sm{display:none} }
+
+/* journey + rail */
+.journey{position:relative; padding-left:calc(var(--rail) + 30px)}
+.rail{position:absolute; left:var(--rail); top:58px; bottom:120px; width:3px; margin-left:-1.5px; background:var(--line); border-radius:3px}
+.rail-fill{position:absolute; left:0; top:0; width:100%; height:0; background:var(--accent); border-radius:3px}
+.train{position:absolute; left:50%; width:14px; height:22px; margin-left:-7px; border-radius:7px; background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); top:0; transform:translateY(-11px)}
+.stn{position:relative; padding-block:56px}
+.marker{position:absolute; left:calc(-1 * (30px)); top:64px; width:22px; height:22px; margin-left:-11px; border-radius:50%; background:var(--bg); border:3.5px solid var(--line); transition:background .3s, border-color .3s, transform .3s}
+.stn.on .marker{border-color:var(--accent); background:var(--accent); transform:scale(1.05)}
+.stn.start .marker{background:var(--bg)!important; border-color:var(--ink)}
+.stn-head{display:flex; flex-direction:column; gap:10px; max-width:640px}
+.stn-head .label{display:flex; gap:10px; align-items:center}
+.stn-head .label b{font-weight:500; color:var(--ink)}
+h2{font-size:clamp(1.9rem, 4.2vw, 3rem)}
+.lede{color:var(--muted); font-size:1.08rem; max-width:58ch}
+.grid2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:32px; align-items:start; margin-top:28px}
+@media (max-width:860px){ .grid2{grid-template-columns:minmax(0,1fr)} }
+.card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:20px; min-width:0}
+.note{font-size:.82rem; color:var(--muted)}
+
+/* hero */
+.hero{padding-block:48px 40px}
+.hero h1{font-size:clamp(2.6rem, 7.4vw, 5.6rem); font-weight:800; max-width:14ch}
+.hero h1 em{font-style:normal; color:var(--accent)}
+.hero .lede{margin-top:20px; font-size:1.2rem}
+.hero .ctas{display:flex; gap:10px; flex-wrap:wrap; margin-top:28px}
+.steps{display:flex; flex-wrap:wrap; gap:8px; margin-top:36px}
+.steps a{font-family:var(--mono); font-size:.78rem; text-decoration:none; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface)}
+.steps a:hover{border-color:var(--ink)}
+
+/* resume */
+.resume{font-size:.9rem; display:flex; flex-direction:column; gap:10px}
+.resume .who b{font-family:var(--display); font-size:1.25rem; letter-spacing:-0.02em}
+.resume .ln{padding:4px 8px; margin:0 -8px; border-radius:8px; transition:background .3s}
+.resume .ln.hit{background:var(--accent-soft)}
+.resume .sec{font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:4px}
+.drop{border:1.5px dashed var(--line); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:10px; align-items:flex-start; background:var(--surface-2)}
+.drop.over{border-color:var(--accent); background:var(--accent-soft)}
+.drop .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{font-size:.85rem; padding:6px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--line); transition:opacity .3s, transform .3s}
+.chip.pop{opacity:0; transform:translateY(6px)}
+.found{display:flex; flex-direction:column; gap:12px; margin-top:16px}
+
+.board-pill{display:inline-flex; align-items:center; flex-wrap:wrap; gap:6px 10px; padding:10px 16px; border-radius:14px; background:var(--board); color:var(--board-ink); text-decoration:none; font-size:.95rem; box-shadow:0 16px 40px -28px var(--shadow)}
+.board-pill b{font-family:var(--display); font-weight:600; letter-spacing:-0.01em}
+.board-pill .dot{width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent)}
+.airesume h3{font-size:1.5rem; margin-top:6px}
+.ai-head{display:flex; gap:20px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap}
+.ai-score{display:flex; flex-direction:column; gap:2px; padding:12px 16px; border-radius:14px; background:var(--surface-2)}
+.ai-score b{font-family:var(--display); font-size:1.8rem; letter-spacing:-0.02em; font-variant-numeric:tabular-nums}
+.ai-cols{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:24px; margin-top:20px; padding-top:18px; border-top:1px solid var(--line)}
+@media (max-width:760px){ .ai-cols{grid-template-columns:minmax(0,1fr)} }
+.chip.miss{border-style:dashed; color:var(--muted); background:transparent}
+.ai-checks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:.92rem}
+.ai-checks li{display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; align-items:start}
+.ai-checks svg{width:18px; height:18px; margin-top:2px}
+
+/* gaps */
+.seg{display:flex; flex-wrap:wrap; gap:6px}
+.seg button{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:8px 14px; cursor:pointer; font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.gaps{display:flex; flex-direction:column; margin-top:16px}
+.gap{display:grid; grid-template-columns:24px minmax(0,1fr) auto; gap:4px 12px; align-items:start; padding:14px 0; border-top:1px solid var(--line)}
+.gap:first-child{border-top:0}
+.gap svg{width:20px; height:20px; margin-top:2px}
+.gap b{font-weight:600}
+.gap small{grid-column:2/4; color:var(--muted); font-size:.85rem}
+.gap .st{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); white-space:nowrap}
+.legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:.8rem; color:var(--muted)}
+.legend span{display:inline-flex; gap:6px; align-items:center}
+.legend svg{width:14px; height:14px}
+
+/* path */
+.pmap{position:relative; margin-top:28px; padding:8px 0 4px; overflow-x:auto}
+.pline{display:flex; align-items:flex-start; min-width:560px; position:relative}
+.pline::before{content:""; position:absolute; left:20px; right:20px; top:19px; height:3px; background:var(--line); border-radius:3px}
+.pstop{flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; background:none; border:0; cursor:pointer; padding:0 4px; text-align:center}
+.pstop .d{width:40px; height:40px; border-radius:50%; background:var(--surface); border:3px solid var(--line); display:grid; place-items:center; font-family:var(--mono); font-size:.7rem; color:var(--muted); transition:all .2s}
+.pstop.prove .d{border-radius:10px; transform:rotate(45deg)}
+.pstop.prove .d span{transform:rotate(-45deg)}
+.pstop[aria-pressed="true"] .d{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.pstop b{font-size:.9rem; font-weight:600; line-height:1.25}
+.pstop .label{font-size:.66rem}
+.pstop.dest .d{background:var(--accent); border-color:var(--accent)}
+.pcard{margin-top:20px; display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 16px; align-items:start}
+.pcard .k{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; padding:4px 10px; border-radius:999px; background:var(--surface-2)}
+.pcard h3{font-size:1.25rem}
+.pcard p{grid-column:2; color:var(--muted)}
+.rule{margin-top:22px; font-family:var(--display); font-size:clamp(1.3rem, 2.6vw, 1.8rem); letter-spacing:-0.02em; font-weight:600}
+.rule span{color:var(--muted)}
+
+/* practice */
+.q{font-family:var(--display); font-size:1.35rem; letter-spacing:-0.02em; font-weight:600; line-height:1.25}
+.ans{margin-top:14px; display:flex; flex-direction:column; gap:8px; padding-left:0; list-style:none; counter-reset:a}
+.ans li{counter-increment:a; display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; font-size:.95rem}
+.ans li::before{content:counter(a); font-family:var(--mono); font-size:.75rem; color:var(--muted); border:1px solid var(--line); border-radius:50%; width:24px; height:24px; display:grid; place-items:center}
+.star{display:flex; gap:6px; flex-wrap:wrap; margin-top:14px}
+.star span{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; padding:4px 9px; border-radius:6px; background:var(--surface-2); color:var(--muted)}
+
+/* board */
+.board{background:var(--board); color:var(--board-ink); border-radius:20px; padding:20px; box-shadow:0 24px 60px -30px var(--shadow); font-family:var(--mono); margin-top:28px; overflow-x:auto}
+.board-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap}
+.board-head b{font-family:var(--display); font-size:1.15rem; letter-spacing:-0.01em}
+.board-head span{color:var(--board-dim); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase}
+.btable{width:100%; border-collapse:collapse; min-width:560px; font-size:.86rem}
+.btable th{color:var(--board-dim); font-weight:400; text-align:left; font-size:.68rem; letter-spacing:.1em; padding:8px 10px}
+.btable td{padding:10px; border-top:1px solid var(--board-line); white-space:nowrap; font-variant-numeric:tabular-nums}
+.flap{display:inline-block; min-width:.62em; text-align:center; background:color-mix(in srgb, var(--board-ink) 7%, transparent); border-radius:2px; margin-right:1px}
+.btable td.status{color:var(--board-ink)}
+.btable td.dim{color:var(--board-dim)}
+
+/* destination */
+.dest-grid{display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:32px; align-items:center; margin-top:8px}
+@media (max-width:860px){ .dest-grid{grid-template-columns:minmax(0,1fr)} }
+.bigmark{width:100%; max-width:360px}
+form{display:flex; flex-direction:column; gap:14px}
+.field{display:flex; flex-direction:column; gap:6px}
+.field label{font-size:.88rem; font-weight:500}
+.field label small{color:var(--muted); font-weight:400}
+input[type=text], input[type=email]{font:inherit; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--bg); color:var(--ink); width:100%}
+input:focus{outline:2px solid var(--accent); outline-offset:1px}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+@media (max-width:520px){ .two{grid-template-columns:1fr} }
+.consent{display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; font-size:.88rem; align-items:start}
+.consent input{width:18px; height:18px; margin-top:2px; accent-color:var(--accent)}
+.err{font-size:.85rem; color:var(--ink); background:var(--surface-2); border-radius:10px; padding:8px 12px}
+.ok{display:flex; flex-direction:column; gap:8px}
+.ok h3{font-size:1.6rem}
+.privacy{font-size:.85rem; color:var(--muted)}
+
+/* free sources strip */
+.free{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:20px; font-size:.9rem; color:var(--muted)}
+.free b{color:var(--ink); font-weight:500}
+
+footer{border-top:1px solid var(--line); margin-top:40px}
+footer .wrap{display:flex; flex-wrap:wrap; gap:16px 32px; align-items:center; justify-content:space-between; padding-block:28px; font-size:.9rem; color:var(--muted)}
+footer nav{display:flex; gap:18px; flex-wrap:wrap}
+footer a{text-decoration:none} footer a:hover{color:var(--ink)}
+
+@media (min-width:900px){ :root{--rail:40px; --gut:28px} .journey{padding-left:calc(var(--rail) + 48px)} .marker{left:-48px} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 48 48"><path d="M8 31H18L32 17H40" fill="none" stroke="var(--ink)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="31" r="4.8" fill="var(--bg)" stroke="var(--ink)" stroke-width="4.4"/><circle cx="40" cy="17" r="6.6" fill="var(--accent)"/></symbol>
+  <symbol id="i-have" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="var(--ink)"/><path d="M8 12.5l2.6 2.6L16 9.7" fill="none" stroke="var(--bg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-weak" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2" fill="none" stroke="var(--ink)" stroke-width="1.75"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="var(--ink)"/></symbol>
+  <symbol id="i-miss" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2" fill="none" stroke="var(--muted)" stroke-width="1.75" stroke-dasharray="3 3"/></symbol>
+</svg>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#start" aria-label="careermetro home"><svg aria-hidden="true"><use href="#mark"/></svg>careermetro</a>
+    <span class="sp"></span>
+    <a class="btn btn-ghost hide-sm" href="#resume">How it works</a>
+    <button class="iconbtn" id="theme" type="button" aria-label="Switch light or dark mode">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <a class="btn btn-primary" href="#join">Get early access</a>
+  </div>
+</header>
+
+<main class="wrap">
+ <div class="journey" id="journey">
+  <div class="rail" aria-hidden="true"><div class="rail-fill" id="fill"><span class="train" id="train"></span></div></div>
+
+  <section class="stn start hero" id="start">
+    <span class="marker" aria-hidden="true"></span>
+    <a class="board-pill" href="#join"><span class="dot" aria-hidden="true"></span><b>Get on the train with us.</b> We'll help you at every pitstop of your journey.</a>
+    <p class="label" style="margin-top:18px">Free during beta · Built for India</p>
+    <h1 style="margin-top:14px">Know exactly what stands between you and your <em>next role</em>.</h1>
+    <p class="lede">Upload your resume and pick a role. See your skill gaps with evidence from real job posts, then get a short, free path to close them.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#join">Get early access</a>
+      <a class="btn" href="#resume">See how it works</a>
+    </div>
+    <nav class="steps" aria-label="The five stops">
+      <a href="#resume">Resume</a><a href="#gaps">Gaps</a><a href="#path">Path</a><a href="#practice">Practice</a><a href="#match">Match</a>
+    </nav>
+  </section>
+
+  <section class="stn" id="resume">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="stn-head">
+      <p class="label"><b>Resume</b> Stop 1 of 5</p>
+      <h2>Start with what you already have.</h2>
+      <p class="lede">We read your resume and list the skills it shows. Then we make it AI-ready, so screening software reads it the way a recruiter would.</p>
+    </div>
+    <div class="grid2">
+      <div class="card resume" aria-label="Sample resume">
+        <span class="label">Sample resume</span>
+        <div class="who"><b>Ananya R.</b><br><span class="note">IT support engineer · Pune · 3 years</span></div>
+        <span class="sec">Experience</span>
+        <div class="ln" data-k="0">Resolved 40+ tickets a week on Windows and <u>Linux</u> desktops.</div>
+        <div class="ln" data-k="1">Wrote <u>Python</u> scripts to clean ticket exports.</div>
+        <div class="ln" data-k="2">Built weekly <u>Excel</u> reports for the IT manager.</div>
+        <div class="ln" data-k="3">Wrote <u>incident reports</u> for two phishing cases.</div>
+        <span class="sec">Skills</span>
+        <div class="ln" data-k="4"><u>SQL</u>, Active Directory, <u>Wireshark</u> basics</div>
+      </div>
+      <div style="min-width:0">
+        <div class="drop" id="drop">
+          <span class="label">Try it</span>
+          <p>Drop any resume here, or read the sample.</p>
+          <div class="row">
+            <button class="btn btn-primary" type="button" id="readBtn">Read the sample</button>
+            <label class="btn" for="file">Choose a file</label>
+            <input id="file" type="file" accept=".pdf,.doc,.docx,.txt" hidden>
+          </div>
+          <p class="note" id="dropNote">Demo only. Nothing leaves your device.</p>
+        </div>
+        <div class="found">
+          <span class="label">Skills found</span>
+          <div class="chips" id="chips"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card airesume" style="margin-top:24px">
+      <div class="ai-head">
+        <div style="min-width:0">
+          <span class="label">AI-ready resume</span>
+          <h3>Get past the screening software.</h3>
+          <p class="note" style="font-size:.95rem; margin-top:6px; max-width:52ch">Many companies screen resumes with software before a person reads them, and a good resume can be dropped for missing the words the role asks for. We check yours against your target role and show what to fix.</p>
+        </div>
+        <div class="ai-score"><span class="label">For SOC Analyst</span><b>6 of 9</b><span class="note">key terms found</span></div>
+      </div>
+      <div class="ai-cols">
+        <div style="min-width:0">
+          <span class="label">Words the role asks for</span>
+          <div class="chips" style="margin-top:10px">
+            <span class="chip kw">Linux</span><span class="chip kw">Incident response</span><span class="chip kw">Python</span><span class="chip kw">Networking</span><span class="chip kw">Wireshark</span><span class="chip kw">Phishing</span>
+            <span class="chip kw miss">SIEM</span><span class="chip kw miss">MITRE ATT&amp;CK</span><span class="chip kw miss">Alert triage</span>
+          </div>
+          <p class="note" style="margin-top:10px">Dashed terms are missing. Add them only where your experience backs them up. We never stuff keywords.</p>
+        </div>
+        <ul class="ai-checks">
+          <li><svg aria-hidden="true"><use href="#i-have"/></svg>Standard headings: Experience, Education, Skills</li>
+          <li><svg aria-hidden="true"><use href="#i-have"/></svg>Plain layout that software can read, with no tables or text in images</li>
+          <li><svg aria-hidden="true"><use href="#i-weak"/></svg>Job titles match the words used in job posts</li>
+          <li><svg aria-hidden="true"><use href="#i-miss"/></svg>A short summary aimed at the role you want</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="stn" id="gaps">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="stn-head">
+      <p class="label"><b>Gaps</b> Stop 2 of 5</p>
+      <h2>See the exact gaps, with evidence.</h2>
+      <p class="lede">Pick the role you want next. Each skill comes with a reason: how often it shows up in job posts for that role.</p>
+    </div>
+    <div class="grid2">
+      <div style="min-width:0">
+        <span class="label">Your next role</span>
+        <div class="seg" id="roles" role="group" aria-label="Pick a role" style="margin-top:10px"></div>
+        <div class="legend">
+          <span><svg><use href="#i-have"/></svg>You have it</span>
+          <span><svg><use href="#i-weak"/></svg>Needs work</span>
+          <span><svg><use href="#i-miss"/></svg>Missing</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="gaps" id="gapList" aria-live="polite"></div>
+        <p class="note" style="margin-top:8px">Example figures for this demo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stn" id="path">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="stn-head">
+      <p class="label"><b>Path</b> Stop 3 of 5</p>
+      <h2>A short path, one pitstop at a time.</h2>
+      <p class="lede">Each gap becomes a pitstop. Learn it with free courses and a few minutes a day, then prove it.</p>
+    </div>
+    <div class="pmap"><div class="pline" id="pline"></div></div>
+    <div class="card pcard" id="pcard" aria-live="polite"></div>
+    <p class="rule">Learning moves you forward. <span>Proof fills the gap.</span></p>
+    <div class="free"><span class="label" style="width:100%">Free sources only, no paid course links</span><b>YouTube</b><b>NPTEL</b><b>SWAYAM</b><b>freeCodeCamp</b><b>Kaggle Learn</b><b>Microsoft Learn</b><b>Official docs</b></div>
+  </section>
+
+  <section class="stn" id="practice">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="stn-head">
+      <p class="label"><b>Practice</b> Stop 4 of 5</p>
+      <h2>Practise the questions that role asks.</h2>
+      <p class="lede">Short sets aimed at your gaps, with an outline of a strong answer built from your own work.</p>
+    </div>
+    <div class="card" style="margin-top:28px; max-width:760px">
+      <span class="label" id="qRole"></span>
+      <p class="q" id="qText" style="margin-top:8px"></p>
+      <button class="btn" type="button" id="ansBtn" aria-expanded="false" aria-controls="ans" style="margin-top:16px">Show a strong answer outline</button>
+      <div id="ans" hidden>
+        <ol class="ans" id="ansList"></ol>
+        <div class="star"><span>SITUATION</span><span>TASK</span><span>ACTION</span><span>RESULT</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stn" id="match">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="stn-head">
+      <p class="label"><b>Match</b> Stop 5 of 5</p>
+      <h2>Your departures board.</h2>
+      <p class="lede">As gaps close, roles move from "a few pitstops away" to "boarding". Real openings, from job descriptions and public company job boards.</p>
+    </div>
+    <div class="board" id="board">
+      <div class="board-head"><b>Departures</b><span>Sample roles for illustration</span></div>
+      <table class="btable">
+        <thead><tr><th>TIME</th><th>ROLE</th><th>CITY</th><th>STATUS</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stn" id="join">
+    <span class="marker" aria-hidden="true"></span>
+    <div class="dest-grid">
+      <div>
+        <svg class="bigmark" viewBox="0 0 48 48" role="img" aria-label="The careermetro line: start, learn, climb on proof, arrive"><use href="#mark"/></svg>
+        <h2 style="margin-top:12px">Your next role, one pitstop at a time.</h2>
+        <p class="lede" style="margin-top:12px">We're opening seats in small groups during the beta. Leave your details and we'll write when yours is ready.</p>
+      </div>
+      <div class="card" style="padding:24px">
+        <form id="form" novalidate>
+          <div class="two">
+            <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" maxlength="254" required></div>
+            <div class="field"><label for="f-role">Role you want next</label><input id="f-role" type="text" placeholder="e.g. SOC Analyst" maxlength="120" required></div>
+          </div>
+          <label class="consent" for="f-ok"><input id="f-ok" type="checkbox" required><span>I agree that CareerMetro can email me about early access. I can unsubscribe any time.</span></label>
+          <p class="err" id="err" role="alert" hidden></p>
+          <input name="website" id="f-website" tabindex="-1" autocomplete="off" aria-hidden="true" hidden>
+          <button class="btn btn-primary" type="submit" style="align-self:flex-start">Get early access</button>
+          <p class="privacy">We never sell your data. Your resume is used only to find your gaps.</p>
+        </form>
+        <div class="ok" id="ok" hidden>
+          <span class="label">Seat requested</span>
+          <h3 id="ok-h" tabindex="-1">You're on the line.</h3>
+          <p class="lede">We'll write to <b id="okMail"></b> when your seat is ready.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#start" style="font-size:1.1rem"><svg aria-hidden="true" style="width:26px;height:26px"><use href="#mark"/></svg>careermetro</a>
+    <span>Your next role, one pitstop at a time. Made in India.</span>
+    <nav aria-label="Footer"><a href="#start">About</a></nav>
+    <span>© 2026 CareerMetro</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // The app's own waitlist (src/app/api/waitlist): same origin, JSON.
+  var FORM_ENDPOINT = '/api/waitlist';
+
+  var $ = function(id){ return document.getElementById(id); };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* theme */
+  try { var t = localStorage.getItem('cm-theme'); if (t) root.dataset.theme = t; } catch(e){}
+  $('theme').addEventListener('click', function(){
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('cm-theme', root.dataset.theme); } catch(e){}
+  });
+
+  /* rail */
+  var journey = $('journey'), fill = $('fill'), train = $('train'), rail = journey.querySelector('.rail');
+  var stns = [].slice.call(document.querySelectorAll('.stn'));
+  function onScroll(){
+    $('top').classList.toggle('scrolled', scrollY > 8);
+    var r = rail.getBoundingClientRect();
+    var target = innerHeight * 0.55 - r.top;
+    var h = Math.max(0, Math.min(r.height, target));
+    if (reduce) h = r.height;
+    fill.style.height = h + 'px';
+    train.style.top = h + 'px';
+    stns.forEach(function(s){
+      var m = s.querySelector('.marker').getBoundingClientRect();
+      s.classList.toggle('on', reduce || m.top + 11 <= r.top + h + 1);
+    });
+  }
+  var ticking = false;
+  addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(function(){ ticking = false; onScroll(); }); } }, {passive:true});
+  addEventListener('resize', onScroll);
+  onScroll();
+
+  /* resume */
+  var SKILLS = ['Linux','Python','Excel','Incident reports','SQL','Wireshark','Active Directory','Ticketing'];
+  function showChips(animate){
+    var c = $('chips'); c.innerHTML = '';
+    SKILLS.forEach(function(s, i){
+      var el = document.createElement('span'); el.className = 'chip' + (animate ? ' pop' : ''); el.textContent = s; c.appendChild(el);
+      if (animate) setTimeout(function(){ el.classList.remove('pop'); }, 700 + i * 120);
+    });
+  }
+  function readResume(name){
+    $('dropNote').textContent = name ? 'Read "' + name + '" as a demo. Nothing left your device; the skills below are from the sample.' : 'Demo only. Nothing leaves your device.';
+    if (reduce){ showChips(false); return; }
+    var lines = document.querySelectorAll('.resume .ln');
+    lines.forEach(function(l, i){ setTimeout(function(){ l.classList.add('hit'); setTimeout(function(){ l.classList.remove('hit'); }, 650); }, i * 140); });
+    showChips(true);
+  }
+  showChips(false);
+  $('readBtn').addEventListener('click', function(){ readResume(); });
+  $('file').addEventListener('change', function(e){ var f = e.target.files[0]; if (f) readResume(f.name); });
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function(e){ var f = e.dataTransfer && e.dataTransfer.files[0]; readResume(f ? f.name : null); });
+
+  /* roles */
+  var ROLES = {
+    soc:{n:'SOC Analyst', gaps:[
+      ['have','Linux and networking','Asked for in 41 of 50 job posts. Shown in your support work.'],
+      ['weak','Incident response','Asked for in 37 of 50. You have two phishing reports; a playbook-level case is expected.'],
+      ['miss','SIEM (Splunk or Sentinel)','Asked for in 44 of 50. Not on your resume.'],
+      ['weak','Packet analysis','Asked for in 22 of 50. Wireshark basics listed.'],
+      ['miss','Threat frameworks (MITRE ATT&CK)','Asked for in 29 of 50. Not on your resume.']],
+      path:[['learn','SIEM','Free Splunk and Microsoft Learn modules, 20 minutes a day.'],['prove','SIEM','Pass a skill check, or add a verified Splunk or Microsoft certificate.'],['learn','MITRE ATT&CK','Official ATT&CK training and a mapping exercise a day.'],['prove','Incident response','Write up a full case from a public lab; a reviewer confirms it.']],
+      q:'Walk us through how you would triage a suspicious login alert at 2 am.',
+      a:['Say what the alert was and why it mattered (Situation).','Name what you had to decide, and how fast (Task).','Steps: check the source IP and location, the user\'s recent activity, then contain if needed (Action).','Close with the outcome and what you changed afterwards (Result).']},
+    data:{n:'Data Analyst', gaps:[
+      ['have','Excel','Asked for in 46 of 50. Shown in your weekly reports.'],
+      ['weak','SQL','Asked for in 48 of 50. Listed, but no joins or window functions shown.'],
+      ['have','Python basics','Asked for in 31 of 50. Shown in your cleaning scripts.'],
+      ['miss','Power BI or Tableau','Asked for in 39 of 50. Not on your resume.'],
+      ['miss','Statistics','Asked for in 27 of 50. Not on your resume.']],
+      path:[['learn','SQL joins','Kaggle Learn SQL, one exercise a day.'],['prove','SQL','Pass a timed SQL skill check.'],['learn','Power BI','Microsoft Learn path, one module a day.'],['prove','Power BI','Publish a dashboard from a public dataset; a reviewer confirms it.']],
+      q:'Tell us about a report that changed a decision.',
+      a:['The report and who read it (Situation).','What they needed to decide (Task).','How you pulled, cleaned and showed the data (Action).','What changed, in numbers if you have them (Result).']},
+    pm:{n:'Product Manager', gaps:[
+      ['weak','Writing specs','Asked for in 35 of 50. Incident reports show clear writing.'],
+      ['miss','User research','Asked for in 33 of 50. Not on your resume.'],
+      ['weak','Working with data','Asked for in 38 of 50. Excel reports shown; no product metrics.'],
+      ['miss','Roadmapping','Asked for in 30 of 50. Not on your resume.'],
+      ['have','Working with engineers','Asked for in 42 of 50. Shown in your IT work.']],
+      path:[['learn','User research','Free courses and five short interviews with real users.'],['prove','User research','Share a research summary; a reviewer confirms it.'],['learn','Product metrics','Official analytics docs and a metric a day.'],['prove','Writing specs','Write a one-page spec for a real feature; a reviewer confirms it.']],
+      q:'Tell us about a time you said no to a request.',
+      a:['Who asked and what for (Situation).','What you had to weigh (Task).','How you decided and explained it (Action).','What happened next (Result).']},
+    cloud:{n:'Cloud Engineer', gaps:[
+      ['have','Linux','Asked for in 45 of 50. Shown in your support work.'],
+      ['miss','AWS or Azure','Asked for in 49 of 50. Not on your resume.'],
+      ['weak','Scripting','Asked for in 40 of 50. Python scripts shown.'],
+      ['miss','Infrastructure as code','Asked for in 34 of 50. Not on your resume.'],
+      ['miss','Containers','Asked for in 31 of 50. Not on your resume.']],
+      path:[['learn','Azure basics','Microsoft Learn AZ-900 path, 25 minutes a day.'],['prove','Azure','Add a verified AZ-900 certificate.'],['learn','Terraform','Official tutorials, one lab a day.'],['prove','Infrastructure as code','Deploy a small project from code; a reviewer confirms it.']],
+      q:'Describe something you automated and why.',
+      a:['The manual task and its cost (Situation).','What "done" looked like (Task).','What you built and the tools (Action).','Time or errors saved (Result).']}
+  };
+  var LABEL = {have:'You have it', weak:'Needs work', miss:'Missing'};
+  var ICON = {have:'#i-have', weak:'#i-weak', miss:'#i-miss'};
+  var roleBox = $('roles'), current = 'soc', pick = 0;
+  Object.keys(ROLES).forEach(function(k){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = ROLES[k].n; b.dataset.k = k;
+    b.setAttribute('aria-pressed', String(k === current)); roleBox.appendChild(b);
+  });
+  roleBox.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return; current = b.dataset.k; pick = 0;
+    roleBox.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    render();
+  });
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function render(){
+    var r = ROLES[current];
+    $('gapList').innerHTML = r.gaps.map(function(g){
+      return '<div class="gap"><svg aria-hidden="true"><use href="'+ICON[g[0]]+'"/></svg><b>'+esc(g[1])+'</b><span class="st">'+LABEL[g[0]]+'</span><small>'+esc(g[2])+'</small></div>';
+    }).join('');
+    var stops = r.path.map(function(p, i){
+      return '<button type="button" class="pstop '+p[0]+'" data-i="'+i+'" aria-pressed="'+(i===pick)+'"><span class="d"><span>'+(i+1)+'</span></span><span class="label">'+p[0].toUpperCase()+'</span><b>'+esc(p[1])+'</b></button>';
+    }).join('');
+    $('pline').innerHTML = stops + '<span class="pstop dest" aria-hidden="true"><span class="d"></span><span class="label">Destination</span><b>'+esc(r.n)+'</b></span>';
+    renderStop();
+    $('qRole').textContent = r.n + ' · sample question';
+    $('qText').textContent = r.q;
+    $('ansList').innerHTML = r.a.map(function(x){ return '<li><span>'+esc(x)+'</span></li>'; }).join('');
+  }
+  function renderStop(){
+    var p = ROLES[current].path[pick];
+    $('pcard').innerHTML = '<span class="k">'+p[0].toUpperCase()+'</span><h3>'+esc(p[1])+'</h3><p>'+esc(p[2])+'</p><p class="note">'+(p[0]==='learn' ? 'Moves you toward the pitstop. It does not fill the gap.' : 'This is what fills the gap.')+'</p>';
+  }
+  $('pline').addEventListener('click', function(e){
+    var b = e.target.closest('button.pstop'); if (!b) return; pick = +b.dataset.i;
+    $('pline').querySelectorAll('button.pstop').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    renderStop();
+  });
+  $('ansBtn').addEventListener('click', function(){
+    var open = $('ans').hidden; $('ans').hidden = !open;
+    this.setAttribute('aria-expanded', String(open));
+    this.textContent = open ? 'Hide the outline' : 'Show a strong answer outline';
+  });
+  render();
+
+  /* departures board */
+  var ROWS = [['09:40','SOC Analyst','Bengaluru','Boarding soon'],['10:15','Data Analyst','Pune','2 pitstops away'],['11:05','Cloud Engineer','Hyderabad','3 pitstops away'],['12:30','Security Analyst','Remote','1 pitstop away'],['14:00','Product Analyst','Mumbai','4 pitstops away']];
+  var CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  function cells(text){ return text.split('').map(function(ch){ return '<span class="flap">'+(ch === ' ' ? '&nbsp;' : esc(ch))+'</span>'; }).join(''); }
+  $('rows').innerHTML = ROWS.map(function(r){
+    return '<tr><td class="dim">'+cells(r[0])+'</td><td>'+cells(r[1])+'</td><td class="dim">'+cells(r[2])+'</td><td class="status">'+cells(r[3])+'</td></tr>';
+  }).join('');
+  function flip(){
+    if (reduce) return;
+    document.querySelectorAll('#rows .flap').forEach(function(f, i){
+      var final = f.textContent; if (final === ' ') return;
+      var n = 0, max = 4 + (i % 7);
+      var t = setInterval(function(){
+        n++; f.textContent = n >= max ? final : CH[Math.floor(Math.random() * CH.length)];
+        if (n >= max) clearInterval(t);
+      }, 55);
+    });
+  }
+  if ('IntersectionObserver' in window){
+    var seen = false;
+    new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting && !seen){ seen = true; flip(); } }); }, {threshold:.4}).observe($('board'));
+  }
+
+  /* sign-up */
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var mail = $('f-email').value.trim(), role = $('f-role').value.trim();
+    var msg = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail) ? 'Check your email address, it looks incomplete.' : !role ? 'Tell us the role you want next.' : !$('f-ok').checked ? 'Tick the box so we can email you about early access.' : '';
+    var err = $('err');
+    var bad = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail) ? $('f-email') : !role ? $('f-role') : !$('f-ok').checked ? $('f-ok') : null;
+    ['f-email','f-role','f-ok'].forEach(function(id){ var el = $(id); if (el === bad) { el.setAttribute('aria-invalid','true'); el.setAttribute('aria-describedby','err'); } else { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); } });
+    if (msg){ err.textContent = msg; err.hidden = false; bad.focus(); return; }
+    err.hidden = true;
+    var data = {email:mail, role:role, consent:true, website:$('f-website').value};
+    function done(){ $('okMail').textContent = mail; $('form').hidden = true; $('ok').hidden = false; $('ok-h').focus(); }
+    if (!FORM_ENDPOINT){ done(); return; }
+    fetch(FORM_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)})
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok) throw (j && j.error) || 0; done(); }); })
+      .catch(function(m){ err.textContent = typeof m === 'string' ? m : 'That didn\'t go through. Please try again in a moment.'; err.hidden = false; });
+  });
+})();
+</script>

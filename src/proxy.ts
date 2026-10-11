@@ -9,6 +9,9 @@ const SIGNED_IN_PREFIXES = ["/today", "/map", "/departures", "/inbox", "/grievan
 /** Screens that need someone signed in once sign-in is set up. */
 const NEEDS_SIGN_IN = ["/today", "/map", "/departures", "/inbox", "/me", "/settings", "/account/restore"];
 
+/** Hosts that show the holding page (src/app/early-access) at the home address. */
+const HOLDING_HOSTS = ["careermetro.com", "www.careermetro.com"];
+
 const under = (path: string, prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 
 /** A redirect that keeps any cookies the session refresh just wrote. */
@@ -32,6 +35,8 @@ function redirectKeeping(response: NextResponse, url: URL): NextResponse {
  */
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  // The public domain shows the holding page at / until the app opens; the vercel.app address keeps the app for testers.
+  if (path === "/" && HOLDING_HOSTS.includes(request.nextUrl.hostname)) return NextResponse.rewrite(new URL("/early-access", request.url));
   if (!signedInPreviewEnabled()) {
     return under(path, SIGNED_IN_PREFIXES) ? new NextResponse(null, { status: 404 }) : NextResponse.next();
   }
