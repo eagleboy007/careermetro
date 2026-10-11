@@ -17,7 +17,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Link previews need absolute image URLs: the production address on Vercel, else the local one.
+const site = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(site),
   title: "CareerMetro",
   description:
     "Upload your resume, pick a target role, and see the exact skills you are missing, with a short path to close them.",
