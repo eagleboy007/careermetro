@@ -30,6 +30,8 @@ import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
+import { InboxView } from "@/components/inbox/inbox-view";
+import { exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
@@ -278,10 +280,19 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Inbox (signed in)</h2>
+        <p className="text-sm text-muted">
+          Applications, people and message requests, the open chat with the interview-times picker, and the private availability panel. Example data, so
+          nothing sends.
+        </p>
+        <InboxView threads={exampleThreads} />
+      </section>
+
+      <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
         <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu. Sections not built yet show as Soon.</p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false }}>
+          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2 }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>
