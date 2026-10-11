@@ -29,7 +29,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     const [consent] = await db!.insert(schema.consents).values({ userId: user.id, purpose: "upload", policyVersion: "v" }).returning();
     const [resume] = await db!
       .insert(schema.resumes)
-      .values({ userId: user.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed", consentId: consent.id, nameHashes: ["h1"], clientHash: "c1" })
+      .values({ userId: user.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed", consentId: consent.id, nameHashes: ["name-hash-not-exported"], clientHash: "client-hash-not-exported" })
       .returning();
     const data = { headline: "Analyst", totalYearsExperience: 2, roles: [], skills: [], education: [], certifications: [] };
     await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data, confirmedByUser: true });
@@ -60,7 +60,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     expect(data?.rideDays).toEqual([{ day: "2026-10-01", tasks: ["t1"] }]);
     expect(data?.consents).toEqual([expect.objectContaining({ purpose: "upload" })]);
     const text = JSON.stringify(data);
-    for (const hidden of ["h1", "c1", "nameHashes", "clientHash", "authSubject"]) expect(text).not.toContain(hidden);
+    for (const hidden of ["name-hash-not-exported", "client-hash-not-exported", "nameHashes", "clientHash", "authSubject"]) expect(text).not.toContain(hidden);
     expect(await exportAccountData("00000000-0000-4000-8000-000000000000", db!)).toBeNull();
   });
 
