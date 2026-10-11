@@ -1,7 +1,11 @@
+import type { ReportReason } from "@/lib/schemas/inbox";
+
 export type InboxKind = "application" | "person" | "request";
 export type InboxFilter = "all" | InboxKind;
 
 export type InboxMessage = {
+  /** Real messages carry their id, so one can be reported. */
+  id?: string;
   by: "me" | "them" | "system";
   /** For a company's message, the person at the company who wrote it. */
   who?: string;
@@ -21,6 +25,11 @@ export type InboxThread = {
   status?: string;
   unread: boolean;
   messages: InboxMessage[];
+  /**
+   * `waiting`: my message request, not accepted yet, so I can't send more. `left`: the other person deleted their account
+   * (their messages went with it). `closed`: the chat was closed. Example threads have none.
+   */
+  state?: "waiting" | "left" | "closed";
 };
 
 export const INBOX_FILTERS: { key: InboxFilter; label: string }[] = [
@@ -46,3 +55,21 @@ export const initialsOf = (name: string) =>
     .slice(0, 2)
     .map((w) => w[0]!.toUpperCase())
     .join("");
+
+/** Report reasons as the Report panel lists them, in this order (keys: REPORT_REASONS in lib/schemas/inbox). */
+export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  money_or_otp: "Asked for money, an OTP or bank details",
+  fake_or_spam: "Fake job, scam or spam",
+  harassment: "Harassment or abuse",
+  intimate_or_impersonation: "Sexual content, or pretending to be someone",
+  other: "Something else",
+};
+
+/** What the Inbox screen can do on real chats. Each returns an error to show, or null when it worked. */
+export type InboxActions = {
+  send: (conversationId: string, body: string) => Promise<string | null>;
+  accept: (conversationId: string) => Promise<string | null>;
+  remove: (conversationId: string) => Promise<string | null>;
+  report: (input: { conversationId: string; target: "person" | "chat"; reason: ReportReason; note?: string; block: boolean }) => Promise<string | null>;
+  read: (conversationId: string) => Promise<void>;
+};

@@ -2,9 +2,21 @@
 
 import { ArrowLeft, CalendarDays, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
-import { filterThreads, INBOX_FILTERS, initialsOf, lastMessage, type InboxFilter, type InboxMessage, type InboxThread } from "@/lib/inbox/types";
+import {
+  filterThreads,
+  INBOX_FILTERS,
+  initialsOf,
+  lastMessage,
+  REPORT_REASON_LABELS,
+  type InboxActions,
+  type InboxFilter,
+  type InboxMessage,
+  type InboxThread,
+} from "@/lib/inbox/types";
+import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
 
 const ICON = { size: 14, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -22,14 +34,29 @@ const slotName = (key: string) => {
 
 type Thread = InboxThread & { offered?: string[] };
 
+const WIDE = "(min-width: 760px)";
+const isWide = () => window.matchMedia(WIDE).matches;
+const subscribeWide = (change: () => void) => {
+  const query = window.matchMedia(WIDE);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+
+/** How often an open Inbox checks for new messages (dev/inbox-plan.md: no live push in part 1). */
+const POLL_MS = 30_000;
+
 /**
  * Inbox (handoff 12b, prototype v2): applications, people and message requests in one list, the open chat, and the
- * private availability panel. Runs on example data only: replies, offered times, accept and delete change this page and
- * nothing else, until the message tables exist (dev/inbox-plan.md). On a phone the list shows first and a chat opens full
- * screen with a back arrow.
+ * private availability panel. With `actions` it works on the person's real chats: each change goes to the server and
+ * the page refreshes from it. Without, it is the example: replies, offered times, accept and delete change this page and
+ * nothing else. On a phone the list shows first and a chat opens full screen with a back arrow.
  */
-export function InboxView({ threads: initial, note }: { threads: InboxThread[]; note?: ReactNode }) {
+export function InboxView({ threads: initial, note, actions }: { threads: InboxThread[]; note?: ReactNode; actions?: InboxActions }) {
+  const router = useRouter();
   const [threads, setThreads] = useState<Thread[]>(initial);
+  const [pending, startTransition] = useTransition();
+  // Which button opened the Report panel, so Cancel can put focus back on it.
+  const [reporting, setReporting] = useState<{ block: boolean; from: "header" | "footer" } | null>(null);
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [currentId, setCurrentId] = useState(initial[0]?.id ?? null);
   const [open, setOpen] = useState(false);
@@ -38,16 +65,37 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
   const [calendarOn, setCalendarOn] = useState(true);
   const [draft, setDraft] = useState("");
   const [toast, setToast] = useState<string | null>(null);
+  // New data from the server (after an action, or the 30-second check) replaces the list.
+  const [shownFrom, setShownFrom] = useState(initial);
+  if (initial !== shownFrom) {
+    setShownFrom(initial);
+    setThreads(initial);
+    if (!initial.some((t) => t.id === currentId)) {
+      setCurrentId(initial[0]?.id ?? null);
+      setOpen(false);
+    }
+  }
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const draftRef = useRef<HTMLTextAreaElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   // When the control in focus goes away (a chat opens on a phone, the slot grid opens or closes), focus moves to the
   // control that takes its place instead of falling back to the page.
-  const focusNext = (selector: string) =>
-    requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(selector)?.focus());
+  const focusNext = (selector: string) => requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(selector)?.focus());
   const phone = () => window.matchMedia("(max-width: 759px)").matches;
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
+  useEffect(() => {
+    if (!actions) return;
+    const timer = setInterval(() => document.visibilityState === "visible" && router.refresh(), POLL_MS);
+    return () => clearInterval(timer);
+  }, [actions, router]);
+  // A message that arrives in the chat on screen is read: the server marks it, and its refresh clears the dot and badge.
+  const wide = useSyncExternalStore(subscribeWide, isWide, () => false);
+  const onScreen = threads.find((t) => t.id === currentId);
+  const readNow = !!actions && !!onScreen?.unread && onScreen.kind !== "request" && (open || wide);
+  useEffect(() => {
+    if (readNow && currentId && actions) void actions.read(currentId);
+  }, [readNow, currentId, actions]);
   const say = (text: string) => {
     // Cleared first, so the same message twice is read out twice.
     setToast(null);
@@ -60,12 +108,25 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
   const current = threads.find((t) => t.id === currentId) ?? null;
   const update = (id: string, change: (t: Thread) => Thread) => setThreads((all) => all.map((t) => (t.id === id ? change(t) : t)));
 
+  /** Runs a real action; shows its error, or `done` when it worked. */
+  const act = (run: () => Promise<string | null>, done?: () => void) =>
+    startTransition(async () => {
+      const error = await run();
+      if (error) say(error);
+      else done?.();
+    });
+
   const openThread = (id: string) => {
     setCurrentId(id);
     setPicking(false);
+    setReporting(null);
     setOpen(true);
-    // Opening an application chat reads it; a request stays unread until it is accepted or deleted.
-    update(id, (t) => (t.kind === "application" ? { ...t, unread: false } : t));
+    // Opening a chat reads it; a request stays unread until it is accepted or deleted.
+    const opened = threads.find((t) => t.id === id);
+    if (opened?.unread && opened.kind !== "request") {
+      update(id, (t) => ({ ...t, unread: false }));
+      if (actions) void actions.read(id);
+    }
     if (phone()) focusNext("[data-back]");
   };
 
@@ -81,7 +142,22 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
       draftRef.current?.focus();
       return;
     }
-    update(current.id, (t) => ({ ...t, messages: [...t.messages, { by: "me", text, at: "now" }] }));
+    if (actions) {
+      // Cleared at once and put back if the message doesn't go.
+      setDraft("");
+      startTransition(async () => {
+        const error = await actions.send(current.id, text);
+        if (error) {
+          setDraft((now) => now || text);
+          say(error);
+        }
+      });
+      return;
+    }
+    update(current.id, (t) => ({
+      ...t,
+      messages: [...t.messages, { by: "me", text, at: "now" }],
+    }));
     setDraft("");
   };
 
@@ -91,7 +167,14 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
     update(current.id, (t) => ({
       ...t,
       offered,
-      messages: [...t.messages, { by: "me", text: `I have offered ${offered.length} times. Any of them works for me.`, at: "now" }],
+      messages: [
+        ...t.messages,
+        {
+          by: "me",
+          text: `I have offered ${offered.length} times. Any of them works for me.`,
+          at: "now",
+        },
+      ],
     }));
     setPicking(false);
     say(`Sent. ${current.name} sees only the times you picked.`);
@@ -100,18 +183,75 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
 
   const accept = () => {
     if (!current) return;
-    update(current.id, (t) => ({ ...t, kind: "person", unread: false, messages: [...t.messages, { by: "system", text: "You accepted. You can now message each other." }] }));
+    if (actions) {
+      act(
+        () => actions.accept(current.id),
+        () => focusNext("[data-draft]"),
+      );
+      return;
+    }
+    update(current.id, (t) => ({
+      ...t,
+      kind: "person",
+      unread: false,
+      messages: [...t.messages, { by: "system", text: "You accepted. You can now message each other." }],
+    }));
     focusNext("[data-draft]");
+  };
+
+  /** Takes a chat off this page after Delete, or after a report that blocks, and says so. */
+  const drop = (id: string, message: string) => {
+    const rest = threads.filter((t) => t.id !== id);
+    setThreads(rest);
+    setCurrentId(rest[0]?.id ?? null);
+    setOpen(false);
+    setReporting(null);
+    say(message);
+    focusNext("[data-thread]");
   };
 
   const remove = () => {
     if (!current) return;
-    const rest = threads.filter((t) => t.id !== current.id);
-    setThreads(rest);
-    setCurrentId(rest[0]?.id ?? null);
-    setOpen(false);
-    say(`Deleted. ${current.name.split(" ")[0]} is not told.`);
-    focusNext("[data-thread]");
+    const message = `Deleted. ${current.name.split(" ")[0]} is not told.`;
+    if (actions)
+      act(
+        () => actions.remove(current.id),
+        () => drop(current.id, message),
+      );
+    else drop(current.id, message);
+  };
+
+  const sendReport = (reason: ReportReason, note: string, block: boolean) => {
+    if (!current) return;
+    const target = current.kind === "application" ? "chat" : "person";
+    const blocks = block && current.kind !== "application";
+    const finish = () => {
+      if (blocks) drop(current.id, `Reported and blocked. We confirm within 24 hours. ${current.name.split(" ")[0]} is not told.`);
+      else {
+        const from = reporting?.from;
+        setReporting(null);
+        say("Reported. We confirm within 24 hours.");
+        focusNext(from === "footer" ? "[data-report-footer]" : "[data-report]");
+      }
+    };
+    if (actions)
+      act(
+        () =>
+          actions.report({
+            conversationId: current.id,
+            target,
+            reason,
+            note: note.trim() || undefined,
+            block: blocks,
+          }),
+        finish,
+      );
+    else finish();
+  };
+
+  const startReport = (block: boolean, from: "header" | "footer") => {
+    setReporting({ block, from });
+    focusNext("[data-report-panel] input");
   };
 
   return (
@@ -191,17 +331,44 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
               <Avatar thread={current} />
               <div className="min-w-0 flex-1 min-[760px]:flex-none">
                 <b className="font-semibold">{current.name}</b>
-                <small className="block truncate text-[0.78rem] text-muted">{current.kind === "application" ? `${current.job} · your application` : current.status}</small>
+                <small className="block truncate text-[0.78rem] text-muted">
+                  {current.kind === "application" ? `${current.job} · your application` : current.status}
+                </small>
               </div>
               <span className="hidden flex-1 min-[760px]:block" />
               {current.kind === "application" && (
                 // Arrivals isn't built yet, so this is not a link.
                 <span className={`${ghost} hidden cursor-default text-muted hover:bg-surface min-[760px]:inline-flex`}>See on Arrivals · soon</span>
               )}
-              <button type="button" onClick={() => say("Reported. We confirm within 24 hours.")} className={quiet}>
-                {current.kind === "application" ? "Report" : "Block or report"}
-              </button>
+              {current.state !== "left" && (
+                <button
+                  type="button"
+                  data-report
+                  onClick={() => startReport(false, "header")}
+                  aria-expanded={!!reporting}
+                  aria-controls={reporting ? "report-panel" : undefined}
+                  className={quiet}
+                >
+                  {current.kind === "application" ? "Report" : "Block or report"}
+                </button>
+              )}
             </div>
+
+            {reporting && (
+              <ReportPanel
+                key={current.id}
+                name={current.name}
+                canBlock={current.kind !== "application"}
+                block={reporting.block}
+                pending={pending}
+                onSubmit={sendReport}
+                onCancel={() => {
+                  const from = reporting.from;
+                  setReporting(null);
+                  focusNext(from === "footer" ? "[data-report-footer]" : "[data-report]");
+                }}
+              />
+            )}
 
             {current.kind === "application" && (
               <p className="mx-4 mt-3 flex items-start gap-2 rounded-[12px] bg-surface-2 px-2.5 py-2 text-[0.78rem] text-muted">
@@ -213,7 +380,7 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
             <ol aria-label="Messages" className="flex max-h-[560px] flex-1 flex-col gap-2.5 overflow-y-auto p-4">
               {current.messages.map((m, i) => (
                 <Message
-                  key={i}
+                  key={m.id ?? i}
                   thread={current}
                   message={m}
                   picking={picking}
@@ -241,17 +408,25 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
                     {current.name} is not a connection. They can&apos;t send more until you accept, and they never see your contact details.
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
-                    <button type="button" className={primary} onClick={accept}>
+                    <button type="button" className={primary} onClick={accept} disabled={pending}>
                       Accept
                     </button>
-                    <button type="button" className={ghost} onClick={remove}>
+                    <button type="button" className={ghost} onClick={remove} disabled={pending}>
                       Delete
                     </button>
-                    <button type="button" className={quiet} onClick={() => say("Reported. We confirm within 24 hours.")}>
+                    <button type="button" data-report-footer className={quiet} onClick={() => startReport(true, "footer")}>
                       Block and report
                     </button>
                   </div>
                 </>
+              ) : current.state ? (
+                <p className="py-1.5 text-[0.82rem] text-muted">
+                  {current.state === "waiting"
+                    ? `Your message request is waiting for ${current.name.split(" ")[0]} to accept. You can send more once they do.`
+                    : current.state === "left"
+                      ? "This person has left CareerMetro, so you can't reply."
+                      : "This chat is closed."}
+                </p>
               ) : (
                 <div className="flex items-end gap-2">
                   <textarea
@@ -265,7 +440,7 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
                     aria-label="Message"
                     className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
                   />
-                  <button type="button" onClick={send} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
+                  <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
                     Send
                   </button>
                 </div>
@@ -280,24 +455,30 @@ export function InboxView({ threads: initial, note }: { threads: InboxThread[]; 
         >
           <h2 className="text-base font-semibold">Your availability</h2>
           <p className="text-[0.8rem] text-muted">Companies never see your calendar. They see only the times you offer when they ask.</p>
-          <dl className="flex flex-col">
-            <Row k="Usually free" v={exampleAvailability.usuallyFree} />
-            <Row k="Calendar" v={calendarOn ? exampleAvailability.calendar : "Not connected"} />
-          </dl>
-          <button
-            type="button"
-            className={`${ghost} self-start`}
-            onClick={() => {
-              setCalendarOn((on) => !on);
-              say(calendarOn ? "Calendar disconnected." : "Calendar connected. Only busy and free are read.");
-            }}
-          >
-            {calendarOn ? "Disconnect calendar" : "Connect Google or Outlook"}
-          </button>
-          <p className="text-[0.8rem] text-muted">
-            Connected, it greys out busy times when you pick slots. Event names, guests and other companies&apos; interviews are never read or shared. &quot;Usually
-            free&quot; only pre-fills your picks.
-          </p>
+          {actions ? (
+            <p className="text-[0.8rem] text-muted">Setting your usual free times and connecting a calendar come with job applications.</p>
+          ) : (
+            <>
+              <dl className="flex flex-col">
+                <Row k="Usually free" v={exampleAvailability.usuallyFree} />
+                <Row k="Calendar" v={calendarOn ? exampleAvailability.calendar : "Not connected"} />
+              </dl>
+              <button
+                type="button"
+                className={`${ghost} self-start`}
+                onClick={() => {
+                  setCalendarOn((on) => !on);
+                  say(calendarOn ? "Calendar disconnected." : "Calendar connected. Only busy and free are read.");
+                }}
+              >
+                {calendarOn ? "Disconnect calendar" : "Connect Google or Outlook"}
+              </button>
+              <p className="text-[0.8rem] text-muted">
+                Connected, it greys out busy times when you pick slots. Event names, guests and other companies&apos; interviews are never read or shared.
+                &quot;Usually free&quot; only pre-fills your picks.
+              </p>
+            </>
+          )}
           <h2 className="mt-1.5 text-base font-semibold">Who can message you</h2>
           <p className="text-[0.8rem] text-muted">
             Your connections, and companies you applied to, about that application. Anyone else sends one message request; you accept or delete it. Report and
@@ -390,7 +571,11 @@ function Message({
           </div>
         ) : (
           <>
-            <div role="group" aria-label="Pick times" className="grid grid-cols-[38px_repeat(5,minmax(0,1fr))] gap-1 text-[0.72rem] min-[760px]:grid-cols-[44px_repeat(5,minmax(40px,1fr))]">
+            <div
+              role="group"
+              aria-label="Pick times"
+              className="grid grid-cols-[38px_repeat(5,minmax(0,1fr))] gap-1 text-[0.72rem] min-[760px]:grid-cols-[44px_repeat(5,minmax(40px,1fr))]"
+            >
               <span />
               {exampleSlots.days.map(([day, date]) => (
                 <span key={day} className="p-0.5 text-center font-mono leading-[1.3] text-muted">
@@ -427,7 +612,9 @@ function Message({
   return (
     <li className={`flex max-w-[92%] flex-col gap-[3px] min-[760px]:max-w-[78%] ${mine ? "items-end self-end" : "items-start"}`}>
       {m.type === "question" && <span className={label}>Question</span>}
-      <div className={`rounded-[14px] border px-3 py-[9px] text-[0.88rem] ${mine ? "border-transparent bg-surface-2" : "border-line bg-surface"}`}>{m.text}</div>
+      <div className={`rounded-[14px] border px-3 py-[9px] text-[0.88rem] ${mine ? "border-transparent bg-surface-2" : "border-line bg-surface"}`}>
+        {m.text}
+      </div>
       {meta}
     </li>
   );
@@ -456,5 +643,93 @@ function Slots({ time, ti, busy, picks, onToggle }: { time: string; ti: number; 
         );
       })}
     </>
+  );
+}
+
+/** Report, with an optional block: a reason (it sets how fast the grievance team must act), a note, then send. */
+function ReportPanel({
+  name,
+  canBlock,
+  block: blockAtFirst,
+  pending,
+  onSubmit,
+  onCancel,
+}: {
+  name: string;
+  canBlock: boolean;
+  block: boolean;
+  pending: boolean;
+  onSubmit: (reason: ReportReason, note: string, block: boolean) => void;
+  onCancel: () => void;
+}) {
+  const [reason, setReason] = useState<ReportReason | null>(null);
+  const [note, setNote] = useState("");
+  const [block, setBlock] = useState(blockAtFirst);
+  const [missing, setMissing] = useState(false);
+  const firstReason = useRef<HTMLInputElement>(null);
+  const row = "flex min-h-11 items-center gap-2 py-2 text-[0.84rem]";
+  return (
+    <form
+      id="report-panel"
+      data-report-panel
+      aria-label={`Report ${name}`}
+      className="mx-4 mt-3 flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 p-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (reason) onSubmit(reason, note, block);
+        else {
+          setMissing(true);
+          firstReason.current?.focus();
+        }
+      }}
+    >
+      <fieldset className="flex flex-col" aria-describedby={missing ? "report-missing" : undefined}>
+        <legend className="mb-1 text-[0.86rem] font-semibold">What happened?</legend>
+        {(Object.keys(REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
+          <label key={key} className={row}>
+            <input
+              ref={i === 0 ? firstReason : undefined}
+              type="radio"
+              name="reason"
+              value={key}
+              checked={reason === key}
+              onChange={() => {
+                setReason(key);
+                setMissing(false);
+              }}
+              className="accent-ink"
+            />
+            {REPORT_REASON_LABELS[key]}
+          </label>
+        ))}
+      </fieldset>
+      <p id="report-missing" role="alert" className="text-[0.8rem] font-[550] text-ink empty:hidden">
+        {missing ? "Choose what happened." : ""}
+      </p>
+      <label className="flex flex-col gap-1 text-[0.8rem] text-muted">
+        Anything we should know (optional)
+        <textarea
+          rows={2}
+          maxLength={500}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="resize-none rounded-[10px] border border-line bg-bg px-2.5 py-2 text-[0.84rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+        />
+      </label>
+      {canBlock && (
+        <label className={row}>
+          <input type="checkbox" checked={block} onChange={(e) => setBlock(e.target.checked)} className="accent-ink" />
+          Also block {name.split(" ")[0]}. They are not told.
+        </label>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        <button type="submit" className={primary} disabled={pending}>
+          {block && canBlock ? "Report and block" : "Report"}
+        </button>
+        <button type="button" className={quiet} onClick={onCancel}>
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }

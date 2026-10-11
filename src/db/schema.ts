@@ -15,6 +15,15 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import {
+  CONVERSATION_KINDS,
+  CONVERSATION_STATUSES,
+  MEMBER_ROLES,
+  MESSAGE_KINDS,
+  REPORT_REASONS,
+  REPORT_STATUSES,
+  REPORT_TARGETS,
+} from "../lib/schemas/inbox";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
@@ -359,6 +368,110 @@ export const rideDays = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.day] })],
+);
+
+/* Inbox ------------------------------------------------------------------- */
+
+export const conversationKind = pgEnum("conversation_kind", CONVERSATION_KINDS);
+export const conversationStatus = pgEnum("conversation_status", CONVERSATION_STATUSES);
+export const memberRole = pgEnum("member_role", MEMBER_ROLES);
+export const messageKind = pgEnum("message_kind", MESSAGE_KINDS);
+export const reportTarget = pgEnum("report_target", REPORT_TARGETS);
+export const reportReason = pgEnum("report_reason", REPORT_REASONS);
+export const reportStatus = pgEnum("report_status", REPORT_STATUSES);
+
+/**
+ * One chat (dev/inbox-plan.md, approved 2026-10-11). A direct chat with someone who isn't a connection is a `request`
+ * until the other person accepts. `application_id` links an application chat once applications exist (employer side).
+ */
+export const conversations = pgTable(
+  "conversations",
+  {
+    id: id(),
+    kind: conversationKind("kind").notNull(),
+    status: conversationStatus("status").notNull(),
+    startedBy: uuid("started_by").references(() => users.id, { onDelete: "set null" }),
+    applicationId: uuid("application_id"),
+    createdAt: createdAt(),
+    lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("conversations_started_by").on(t.startedBy)],
+);
+
+/** Who is in a chat. `last_read_at` drives unread; `hidden_at` is "Delete" on a request, which the sender is never told. */
+export const conversationMembers = pgTable(
+  "conversation_members",
+  {
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: memberRole("role").notNull().default("member"),
+    lastReadAt: timestamp("last_read_at", { withTimezone: true }),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+  },
+  (t) => [primaryKey({ columns: [t.conversationId, t.userId] }), index("conversation_members_user").on(t.userId)],
+);
+
+/** The messages. A person's messages go when their account is deleted for good; the other side sees they left. */
+export const messages = pgTable(
+  "messages",
+  {
+    id: id(),
+    conversationId: uuid("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    senderId: uuid("sender_id").references(() => users.id, { onDelete: "cascade" }),
+    kind: messageKind("kind").notNull().default("text"),
+    body: text("body").notNull(),
+    /** The offered slots of an `ask_times` card (part 2). */
+    payload: jsonb("payload"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("messages_conversation_created").on(t.conversationId, t.createdAt),
+    index("messages_sender").on(t.senderId),
+    check("messages_body_length", sql`char_length(${t.body}) between 1 and 2000`),
+  ],
+);
+
+/** Block is silent: the blocked person is not told and simply can't reach the person who blocked them. */
+export const blocks = pgTable(
+  "blocks",
+  {
+    blockerId: uuid("blocker_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    blockedId: uuid("blocked_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] }), index("blocks_blocked").on(t.blockedId), check("blocks_not_self", sql`${t.blockerId} <> ${t.blockedId}`)],
+);
+
+/**
+ * Reports, and the grievance queue with its IT Rules 2021 deadlines (reportDeadlines in lib/schemas/inbox). A report
+ * outlives the reporter's account (reporter set to null) because the complaint record must be kept.
+ */
+export const reports = pgTable(
+  "reports",
+  {
+    id: id(),
+    reporterId: uuid("reporter_id").references(() => users.id, { onDelete: "set null" }),
+    target: reportTarget("target").notNull(),
+    /** The message, person or chat reported. No foreign key: the record stays when the target is removed. */
+    targetId: uuid("target_id").notNull(),
+    reason: reportReason("reason").notNull(),
+    note: text("note"),
+    status: reportStatus("status").notNull().default("open"),
+    createdAt: createdAt(),
+    acknowledgedAt: timestamp("acknowledged_at", { withTimezone: true }),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (t) => [index("reports_reporter").on(t.reporterId), index("reports_status_created").on(t.status, t.createdAt), check("reports_note_length", sql`char_length(${t.note}) <= 500`)],
 );
 
 /* Audit ------------------------------------------------------------------- */

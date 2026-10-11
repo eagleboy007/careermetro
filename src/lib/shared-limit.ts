@@ -21,6 +21,10 @@ export const LIMITS = {
   waitlistPerIp: { bucket: "waitlist", max: 10, windowMs: HOUR },
   /** Files that couldn't be read, per network address per day (T18). Generous: a college network shares one address. */
   failedReadsPerIp: { bucket: "failed-read", max: 30, windowMs: 24 * HOUR },
+  /** New message requests one person sends to people who aren't connections (dev/inbox-plan.md). */
+  inboxRequestsPerUser: { bucket: "inbox-request", max: 20, windowMs: 24 * HOUR },
+  /** Reports one person files: each starts IT Rules deadlines, so the grievance queue can't be flooded. */
+  inboxReportsPerUser: { bucket: "inbox-report", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

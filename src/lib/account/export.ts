@@ -1,12 +1,13 @@
 import "server-only";
 import { asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
+import { exportInbox } from "@/lib/inbox/store";
 import { consents, gapAnalyses, gapProofs, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
 
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 1;
+export const EXPORT_VERSION = 2;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -68,7 +69,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(pathSteps.pathId), asc(pathSteps.position))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({ skill: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position, metAt: userGoals.metAt, skippedAt: userGoals.skippedAt, createdAt: userGoals.createdAt })
@@ -82,6 +83,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
       .orderBy(asc(gapProofs.createdAt)),
     db.select({ day: rideDays.day, tasks: rideDays.taskIds }).from(rideDays).where(eq(rideDays.userId, userId)).orderBy(asc(rideDays.day)),
     db.select({ createdAt: jobDescriptions.createdAt, text: jobDescriptions.rawText }).from(jobDescriptions).where(eq(jobDescriptions.userId, userId)).orderBy(asc(jobDescriptions.createdAt)),
+    exportInbox(userId, db),
   ]);
 
   return {
@@ -109,5 +111,6 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     goals: goalRows,
     proofs: proofRows,
     rideDays: rideRows,
+    inbox,
   };
 }
