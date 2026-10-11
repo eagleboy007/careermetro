@@ -13,12 +13,10 @@ export function templateExplanation(g: MatchedSkill): string {
   const task = g.requirement.replace(/\.$/, "").replace(/^(\p{Lu})(?=\p{Ll})/u, (c) => c.toLowerCase());
   const expects = `This role expects you to ${task}.`;
   switch (g.status) {
-    case "weak":
-      return `Your resume names ${g.skillName} but shows no example of using it. ${expects}`;
     case "outdated":
       return `The latest use of ${g.skillName} on your resume is more than ${YEARS[OUTDATED_AFTER_YEARS] ?? OUTDATED_AFTER_YEARS} years old. ${expects}`;
     default:
-      // The Gaps card already says nothing in the resume shows it.
+      // The Gaps card already says why: nothing in the resume shows it, or it is only listed (weak).
       return expects;
   }
 }
