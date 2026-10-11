@@ -1,15 +1,16 @@
 import "server-only";
-import { and, count, desc, eq, gte, inArray, isNotNull, sql, sum } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
-import { aiCalls, gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
-import { recordAiCalls } from "@/lib/ai/log";
+import { gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
+import { loadPrompt } from "@/lib/ai/prompts";
+import { refIn, reserveCall, settleCall, usedToday } from "@/lib/ai/reserve";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
-import { explainGaps, type ExplainClient } from "./explain";
+import { EXPLAIN_MODEL, explainGaps, type ExplainClient } from "./explain";
 import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
 
 type Db = ReturnType<typeof getDb>;
@@ -27,23 +28,29 @@ export type GapsForOwner =
   | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null }
   | { ok: false; reason: "not_found" | "not_confirmed" | "busy" };
 
-const startOfUtcDay = () => new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
+/** What an explanation still running is assumed to cost when checking the budget. A typical one costs 2 to 4 cents. */
+const IN_FLIGHT_EXPLAIN_USD = 0.1;
 
-/** True when this owner may spend on another explanation: under its daily count and under the explanation budget. */
-async function mayExplain(tx: Tx, owner: Owner): Promise<boolean> {
-  const [[mine], [spent]] = await Promise.all([
-    tx
-      .select({ n: count() })
-      .from(gapAnalyses)
-      .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
-      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(uploadedBy(owner), isNotNull(gapAnalyses.aiCallId), gte(gapAnalyses.createdAt, startOfUtcDay()))),
-    tx
-      .select({ usd: sum(aiCalls.costUsd) })
-      .from(aiCalls)
-      .where(and(eq(aiCalls.purpose, "explain-gaps"), gte(aiCalls.createdAt, startOfUtcDay()))),
-  ]);
-  return mine.n < GAP_LIMITS.explainedPerOwnerPerDay && Number(spent.usd ?? 0) < GAP_LIMITS.dailyBudgetUsd();
+/**
+ * Reserves an explanation when this owner is under its daily count and the explanation budget has room, and returns
+ * the reserved call's id; null means template sentences. Runs under a lock for the purpose, held for a few
+ * milliseconds, so parallel requests (any owner, any server) see each other's reservations before the model is called.
+ */
+async function reserveExplanation(tx: Tx, owner: Owner, profileId: string, roleSlug: string): Promise<string | null> {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext('cm-ai:explain-gaps'))`);
+  const ownProfiles = tx
+    .select({ id: sql<string>`${profiles.id}::text` })
+    .from(profiles)
+    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+    .where(uploadedBy(owner));
+  const used = await usedToday(tx, "explain-gaps", IN_FLIGHT_EXPLAIN_USD, refIn("profileId", ownProfiles));
+  if (used.mine >= GAP_LIMITS.explainedPerOwnerPerDay || used.usd >= GAP_LIMITS.dailyBudgetUsd()) return null;
+  return reserveCall(tx, {
+    purpose: "explain-gaps",
+    model: EXPLAIN_MODEL,
+    promptVersion: loadPrompt("explain-gaps").id,
+    inputRefs: { profileId, roleSlug },
+  });
 }
 
 /**
@@ -107,7 +114,7 @@ async function analyse(
   const db = deps.db ?? getDb();
   const lockKey = `cm-gaps:${ownerKey(owner)}`;
 
-  type Next = { done: GapsForOwner } | { profileId: string; roleRowId: string | null; match: MatchResult; explain: boolean };
+  type Next = { done: GapsForOwner } | { profileId: string; roleRowId: string | null; match: MatchResult; reservedId: string | null };
   const first = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx): Promise<Next> => {
     const resume = await getResumeForOwner(resumeId, owner, tx);
     if (!resume) return { done: { ok: false, reason: "not_found" } };
@@ -122,24 +129,25 @@ async function analyse(
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
     if (stored) return { done: stored };
-    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, explain: await mayExplain(tx, owner) };
+    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId: await reserveExplanation(tx, owner, resume.profileId, role.slug) };
   });
   if (first === "busy") return { ok: false, reason: "busy" };
   if ("done" in first) return first.done;
   const { profileId, roleRowId, match } = first;
 
-  const explained = first.explain
+  const explained = first.reservedId
     ? await explainGaps(match, role.title, { profileId, roleSlug: role.slug }, deps.client)
     : { analysis: buildGapAnalysis(match, null), calls: [] };
+  // Settled at once, outside any lock, so the cost counts even if storing fails below.
+  const callId = first.reservedId ? await settleCall(db, first.reservedId, explained.calls) : null;
 
   const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {
-    const callIds = await recordAiCalls(explained.calls, tx);
-    // Another server may have stored one meanwhile; then this call is logged and its words dropped.
+    // Another request may have stored one meanwhile; then this call stays logged and its words are dropped.
     const stored = await storedAnalysis(tx, profileId, roleRowId, role, match);
     if (stored) return stored;
     const [row] = await tx
       .insert(gapAnalyses)
-      .values({ profileId, roleProfileId: roleRowId, result: explained.analysis, matcherVersion: MATCHER_VERSION, aiCallId: callIds.at(-1) ?? null })
+      .values({ profileId, roleProfileId: roleRowId, result: explained.analysis, matcherVersion: MATCHER_VERSION, aiCallId: callId })
       .returning({ id: gapAnalyses.id });
     return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null } as const;
   });

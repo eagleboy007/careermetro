@@ -1,4 +1,4 @@
-import { eq, inArray, like } from "drizzle-orm";
+import { eq, inArray, like, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -118,6 +118,40 @@ describe.skipIf(!db)("paths (database)", () => {
       PATH_LIMITS.wordedPerOwnerPerDay = original;
     }
     expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("reserves before calling, so parallel loads at different hours can't pass the daily count", async () => {
+    const { session, resumeId } = await seed();
+    const { client, create } = writeClient();
+    const original = PATH_LIMITS.wordedPerOwnerPerDay;
+    PATH_LIMITS.wordedPerOwnerPerDay = 1;
+    try {
+      const results = await Promise.all([3, 5, 8, 10].map((h) => getPathForOwner(resumeId, { sessionId: session }, role, h, { db: db!, client })));
+      expect(results.every((r) => r.ok)).toBe(true);
+    } finally {
+      PATH_LIMITS.wordedPerOwnerPerDay = original;
+    }
+    expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("holds no lock or connection while the model words the path", async () => {
+    const { session, resumeId } = await seed();
+    const { client, create } = writeClient();
+    const answer = create.getMockImplementation()!;
+    let lockFree: unknown = null;
+    create.mockImplementationOnce(async (body) => {
+      lockFree = await db!.transaction(async (tx) => {
+        const [r] = await tx.execute<{ ok: boolean }>(sql`select pg_try_advisory_xact_lock(hashtext(${`cm-path:s:${session}`})) as ok`);
+        return r.ok;
+      });
+      return answer(body);
+    });
+    const r = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
+    expect(r.ok).toBe(true);
+    expect(lockFree).toBe(true);
+    const [row] = await db!.select().from(schema.paths).where(eq(schema.paths.id, r.ok ? r.path.pathId : ""));
+    const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
+    expect(call).toMatchObject({ purpose: "write-path", status: "done", ok: true });
   });
 
   it("hides other sessions' paths and lets only the owner mark a step done", async () => {

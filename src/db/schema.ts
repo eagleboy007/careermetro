@@ -188,6 +188,11 @@ export const aiCalls = pgTable(
     costUsd: numeric("cost_usd", { precision: 10, scale: 6 }).notNull(),
     latencyMs: integer("latency_ms").notNull(),
     ok: boolean("ok").notNull(),
+    /**
+     * Set only on calls reserved before they run (Gaps and Path wording): "reserved" while the call runs, "done" once
+     * its numbers are written. Null on calls logged after the fact. Reservations count toward the daily limits at once.
+     */
+    status: text("status").$type<"reserved" | "done">(),
     createdAt: createdAt(),
   },
   (t) => [index("ai_calls_created_at").on(t.createdAt)],

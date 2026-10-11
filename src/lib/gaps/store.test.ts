@@ -85,7 +85,9 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(create).toHaveBeenCalledTimes(2);
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, r.analysisId));
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
-    expect(call).toMatchObject({ purpose: "explain-gaps", ok: true });
+    expect(call).toMatchObject({ purpose: "explain-gaps", ok: true, status: "done" });
+    const attempts = await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'profileId' = ${call.inputRefs.profileId}`);
+    expect(attempts.map((a) => [a.ok, a.status]).sort()).toEqual([[false, null], [true, "done"]]);
   });
 
   it("extends an analysis stored with only five gaps, keeping its id, rating and words, without the model", async () => {
@@ -215,6 +217,67 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(r.ok).toBe(true);
     expect(lockFree).toBe(true);
+  });
+
+  it("reserves before calling, so parallel loads of different roles can't pass the daily count", async () => {
+    const { session, resumeId } = await seed();
+    const original = GAP_LIMITS.explainedPerOwnerPerDay;
+    GAP_LIMITS.explainedPerOwnerPerDay = 1;
+    try {
+      const { client, create } = explainClient();
+      const slugs = ["data-scientist", "business-analyst", "data-analyst", "data-engineer"];
+      const results = await Promise.all(slugs.map((slug) => getGapsForOwner(resumeId, { sessionId: session }, roleProfiles.find((r) => r.slug === slug)!, { db: db!, client })));
+      expect(results.every((r) => r.ok)).toBe(true);
+      expect(create).toHaveBeenCalledTimes(1);
+    } finally {
+      GAP_LIMITS.explainedPerOwnerPerDay = original;
+    }
+  });
+
+  it("logs the call with its cost even when storing the analysis fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { session, resumeId } = await seed();
+    const [{ profileId }] = await db!.select({ profileId: schema.profiles.id }).from(schema.profiles).where(eq(schema.profiles.resumeId, resumeId));
+    const { client, create } = explainClient();
+    const answer = create.getMockImplementation()!;
+    create.mockImplementationOnce(async (body) => {
+      // The resume goes while the model answers, so storing the analysis fails on its foreign key.
+      await db!.delete(schema.resumes).where(eq(schema.resumes.id, resumeId));
+      return answer(body);
+    });
+    await expect(getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client })).rejects.toThrow();
+    const calls = await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'profileId' = ${profileId}`);
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toMatchObject({ purpose: "explain-gaps", status: "done", ok: true, inputTokens: 1000, outputTokens: 300 });
+    expect(Number(calls[0].costUsd)).toBeGreaterThan(0);
+  });
+
+  it("keeps an analysis another request stored meanwhile, and still logs its own call", async () => {
+    const a = await seed();
+    const stored = await getGapsForOwner(a.resumeId, { sessionId: a.session }, role, { db: db!, client: explainClient().client });
+    if (!stored.ok) throw new Error(stored.reason);
+    const [source] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, stored.analysisId));
+
+    const b = await seed();
+    const [{ profileId }] = await db!.select({ profileId: schema.profiles.id }).from(schema.profiles).where(eq(schema.profiles.resumeId, b.resumeId));
+    const { client, create } = explainClient();
+    const answer = create.getMockImplementation()!;
+    let otherId = "";
+    create.mockImplementationOnce(async (body) => {
+      // Another server finishes first.
+      const [row] = await db!
+        .insert(schema.gapAnalyses)
+        .values({ profileId, roleProfileId: source.roleProfileId, result: source.result, matcherVersion: MATCHER_VERSION })
+        .returning({ id: schema.gapAnalyses.id });
+      otherId = row.id;
+      return answer(body);
+    });
+    const r = await getGapsForOwner(b.resumeId, { sessionId: b.session }, role, { db: db!, client });
+    expect(r).toMatchObject({ ok: true, analysisId: otherId });
+    const rows = await db!.select({ id: schema.gapAnalyses.id }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.profileId, profileId));
+    expect(rows).toHaveLength(1);
+    const calls = await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'profileId' = ${profileId}`);
+    expect(calls).toMatchObject([{ status: "done", ok: true }]);
   });
 
   it("makes a fresh analysis after the user confirms a new profile version", async () => {
