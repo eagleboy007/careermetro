@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { SiteHeader } from "@/components/site/site-header";
 import { findAccount } from "@/lib/account/store";
 import { hasUsableName } from "@/lib/resume/name-match";
+import { RESTORE_PATH } from "@/lib/auth/after-sign-in";
 import { safeNext } from "@/lib/auth/config";
 import { currentIdentity } from "@/lib/auth/server";
 import { FinishForm } from "./finish-form";
@@ -19,6 +20,7 @@ async function Finish({ searchParams }: PageProps<"/sign-up/finish">) {
   if (!identity) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
   // An account made before names were asked for comes back here once to add one (dev/resume-name-check-plan.md).
   const account = await findAccount(identity.subject);
+  if (account?.deletionRequestedAt) redirect(RESTORE_PATH);
   if (account && hasUsableName(account.name)) redirect(next);
   return (
     <>

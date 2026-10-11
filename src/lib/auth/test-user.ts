@@ -47,7 +47,7 @@ export function testUserIdentity(value: string | undefined, env: Record<string, 
     const data = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as { e?: unknown; n?: unknown; x?: unknown };
     if (typeof data.e !== "string" || typeof data.x !== "number" || data.x < now) return null;
     const email = data.e.endsWith(".test") ? data.e : `${data.e}.test`;
-    return { subject: `test:${email}`, email, emailVerified: false, name: typeof data.n === "string" ? data.n : null };
+    return { subject: `test:${email}`, email, emailVerified: false, name: typeof data.n === "string" ? data.n : null, method: "test" };
   } catch {
     return null;
   }

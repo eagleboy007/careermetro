@@ -340,6 +340,7 @@ Examples:
   - Certifications (Credly)
   - Resume file
   - Who-sees-what switches
+- **Current job is verified with a work email code** (Milin's requirement, 2026-10-10, Testing thread): adding the current or latest job needs a one-time code sent to the user's official email at that company, the same check as the HR work-email step in the Corporate tab. Details in 12d.
 - "View as others" hides private sections and edit controls. It shows exactly what `/u/[handle]` shows a stranger.
 - Gaps show only to connections unless the user turns that on.
 - **Your stories**:
@@ -360,6 +361,55 @@ Examples:
 - When users can post, CareerMetro becomes an intermediary under India's IT Rules 2021. That needs a grievance officer, complaint handling within 24 to 72 hours, moderation, and Report on every post. Decide this before Junction ships.
 
 ---
+
+## 12a. Library (`/library`)
+
+Designed 2026-10-09 (prototype v2, Library tab; dev notes have the full list).
+
+- Tabs: For your goals (default), Your interests, Saved, Finished. Search, plus filters for type (course, video, docs, practice), length and language (Hindi).
+- For your goals: one card per open goal, in map order. Each card has a **Learn** part (free resources, with the one behind the current pitstop marked "On your ride") and a **Prove** part (skill check, issuer-verified certification, manager-confirmed work, or a script you wrote). The card says that learning moves the train and only proof fills the gap. A goal that starts at proof shows "Brush up" instead of Learn.
+- Details panel: what it covers, the pitstop it counts toward, cost, certificate (a free completion badge shows on the profile as learning, never as proof), how many people on your line finished it, Add to my rides (long courses split into daily tasks of about 25 min), Open on the source site, "I finished this", and Report a broken link.
+- We can't see progress on other sites, so Finished is the user's own tick. Finishing learn resources prompts the proof; it never fills the gap.
+- Your interests: picks for profile interests, labelled "Your choice". They never change goals or job match.
+- Rules: free to learn only; an exam fee is shown before the click; no ads or affiliate links; reviewers re-check broken or outdated links; "Suggest a free resource" goes to a review queue.
+- No resume: the goals tab asks for a resume; interests, saved and search still work.
+- Data proposal (needs approval): `resources`, `user_resources` (saved, on_ride, finished_at), `resource_reports`, `resource_suggestions`.
+
+## 12b. Inbox (`/inbox`)
+
+Added to prototype v2 on 2026-10-09, matching the Corporate mockup.
+
+- Message icon with unread count in the top bar on every screen. Filters: All, Applications, People, Requests. On phone the list shows first and a chat opens full screen.
+- Applications: one conversation per application, owned by the company and read by its job team; safety line about money, OTPs and bank details; link to Arrivals.
+- "Asking for interview times": the user picks slots; a connected calendar greys out busy times (busy or free only); the company sees only the picked times. The calendar is never on the profile; "Usually free" only pre-fills picks.
+- People: connections chat freely; anyone else sends one message request (Accept, Delete without telling the sender, Block and report). Report and Block on every chat. Phone and email never shown.
+- Data proposal (needs approval): conversations, conversation_members, messages, blocks, reports, availability_patterns, calendar_links.
+
+## 12c. Account settings (`/settings`)
+
+Added to prototype v2 on 2026-10-09 (Milin's comment). Library is parked as designed.
+
+- Reached from the new avatar menu (Your profile, Account settings, Inbox, Library, Network, Sign out) and from the profile page.
+- Profile basics: photo, first and last name, username (careermetro.com/u/handle, availability check, change once every 30 days, old link redirects 14 days), optional headline.
+- Email is locked: the sign-in identity can't be changed and is never shown to people or companies.
+- Sign-in: Google, password change (12+ characters, leaked-password check, other devices signed out), signed-in devices.
+- Two-step verification: authenticator app (TOTP) plus 10 backup codes; required for recruiter and HR access.
+- Pay (current and expected, lakh a year): optional, private, never on the profile or sent to companies; used only to mark roles below expected pay. City on profile; "Open to work in" filters Departures.
+- Privacy (profile visibility, people lists, company search, message requests), notifications, download data, delete account (30-day grace). Sticky save bar.
+- Your plan: Free during the beta; Elite card with prices Milin accepted for now (INR, 2026-10-09): monthly ₹299, yearly ₹2,499, Elite Pass ₹799 for 3 months paid once. UPI, card, net banking; GST invoices; cancel renewal; "Upgrade to Elite" in the avatar menu. No billing code during the beta.
+- Data proposal (needs approval): profile fields on `profiles`; pay in a separate owner-only table, never logged; email, password, MFA and sessions stay in Supabase Auth.
+
+## 12d. Verified current job (work email code)
+
+Milin's requirement (2026-10-10; rule in section 11): the current or latest job on Experience is verified with the user's official work email and a one-time code. Milin approved the points below on 2026-10-10. Development builds it with the profile tables after Inbox and Account settings. No prototype screen yet.
+
+- When: adding a job marked Current, or editing the company or start date of the current or latest job. Saving it as Current needs the code. Older jobs never ask.
+- How: "Verify with your work email" in the job form. The user types their email at that company, gets a 6-digit code (valid 10 minutes, 5 tries), types it in the same field. Same mechanism as the HR work-email check in the Corporate tab; one check covers both.
+- Domains: free mail (gmail, yahoo, outlook, hotmail, rediffmail, icloud, proton and similar) is refused with a plain line why. The domain must match the company; an unknown domain is accepted but queued for a quick review before the badge shows.
+- Badge: "Verified with work email · Oct 2026" on the job in /me and wherever companies see the profile. The email address is never shown to anyone; we keep only the domain and the date, and discard the address after the check.
+- No work email: Freelance and Self-employed jobs skip the check and show "Self-declared". "Looking for next role" has no current job, so nothing to verify. Someone at a company without work email can save the job as "Not verified"; it shows as such and they can ask a manager to confirm later (same route as PROVE by work experience).
+- Re-check: changing the company or start date clears the badge and asks again. Adding an end date keeps the badge ("Verified while there").
+- Limits: 3 code sends an hour and 10 a day per account, plus a per-domain limit, so the sender can't be used to spam a company. Ties to pending item 21 (code-send rate limit and proper email sender).
 
 ## 13. Data model proposals (need Milin's approval before any migration)
 
@@ -394,3 +444,15 @@ Rules for all of them:
 3. Names: Junction, Timetable and Arrivals are working titles.
 4. Grievance officer for user posts (pending item 15). Needed before Junction or member-suggested events.
 5. Change of destination role: the proposal is that gaps are recalculated, proof carries over, and the old line greys out while the new one branches off. Milin's answer is pending.
+
+## Changes since handoff v1
+
+Every change to prototype v2 after this handoff was first given to Development. Status is "proposed" until Milin approves it in the design thread, then "approved"; only approved entries are handed to Development. Section numbers above stay stable.
+
+| # | Date | Screen | What changed | Prototype | Section | Status |
+|---|---|---|---|---|---|---|
+| C1 | 2026-10-09 | Library (`/library`) | New screen: goal cards with Learn resources and Prove options, interests tab, saved, finished (user's own tick, prompts proof, never fills a gap), details panel, suggest a resource. Milin parked it as designed. | v29, v30 | 12a | proposed |
+| C2 | 2026-10-09 | Inbox (`/inbox`) | New screen: message icon with unread count in the top bar; applications, people and message requests; "Ask for times" slot picker with calendar busy greying; availability panel. Same rules as the Corporate mockup. | v31 | 12b | approved (Milin, 2026-10-10) |
+| C3 | 2026-10-09 | Account settings (`/settings`) and avatar menu | New screen: profile basics, locked email, username rules, password, two-step verification (required for recruiter and HR), private pay, city, privacy, notifications, download and delete. Avatar now opens a menu (profile, settings, inbox, library, network, sign out) instead of going straight to `/me`. | v32 | 12c | approved (Milin, 2026-10-10) |
+| C4 | 2026-10-09 | Account settings: Your plan | Elite upgrade section with suggested prices (monthly ₹299, yearly ₹2,499, Elite Pass ₹799 for 3 months), payment methods, invoices and cancel; "Upgrade to Elite" in the avatar menu. Prices accepted for now in INR (Milin, 2026-10-09). Design only: no billing code during the beta. | v33 | 12c | approved (design and prices; build waits for billing to be scheduled) |
+| C5 | 2026-10-10 | Experience: verified current job | Current or latest job needs a code sent to the user's work email at that company; free mail refused; badge shows, email never shown; freelance and self-employed are "Self-declared"; re-check when company or start date changes; send limits. From Milin's requirement R1 (Tester thread). Rule in section 11; details in 12d go to Milin with Development's plan. No prototype screen yet. | none yet | 11, 12d | approved (requirement and 12d details, Milin, 2026-10-10) |

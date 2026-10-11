@@ -10,13 +10,14 @@ describe("identityFromClaims", () => {
       email: "a@b.in",
       emailVerified: true,
       name: "Asha Rao",
+      method: "google",
     });
     expect(identityFromClaims({ ...base, user_metadata: { name: "Asha" } })).toMatchObject({ name: "Asha" });
     expect(identityFromClaims(base)).toMatchObject({ name: null });
   });
 
   it("trusts only the signed sign-in method for a verified email, never user_metadata", () => {
-    expect(identityFromClaims({ ...base, amr: [{ method: "otp", timestamp: 1 }] })).toMatchObject({ emailVerified: true });
+    expect(identityFromClaims({ ...base, amr: [{ method: "otp", timestamp: 1 }] })).toMatchObject({ emailVerified: true, method: "email_code" });
     expect(identityFromClaims({ ...base, amr: ["oauth"] })).toMatchObject({ emailVerified: true });
     expect(identityFromClaims({ ...base, amr: [{ method: "password", timestamp: 1 }], user_metadata: { email_verified: true } })).toMatchObject({
       emailVerified: false,

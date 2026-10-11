@@ -13,6 +13,7 @@ const p = await ctx.newPage();
 const problems = [];
 // The browser logs the 404 the not-found step asks for on purpose; any other console error is a problem.
 const expected404 = "/no-such-page";
+const testEmail = `e2e-${Date.now()}@example.com`;
 // True only while a step makes a request fail on purpose.
 let failingOnPurpose = false;
 p.on(
@@ -149,7 +150,7 @@ await step("mark path step done", async () => {
 await step("sign in as test user (claims the anonymous resume)", async () => {
   await p.goto(BASE + "/today");
   await p.locator('input[name="name"]').fill("Priya Sharma");
-  await p.locator('input[name="email"]').fill(`e2e-${Date.now()}@example.com`);
+  await p.locator('input[name="email"]').fill(testEmail);
   await p.locator('form button[type="submit"]').last().click();
   await p.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: 15000 });
   await p.locator('input[type="checkbox"]').first().check();
@@ -212,7 +213,7 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
-for (const path of ["/map", "/me", "/departures"]) {
+for (const path of ["/map", "/me", "/departures", "/settings"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -227,6 +228,47 @@ await step("unknown address shows the not-found page", async () => {
   await p.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 5000 });
   await p.getByRole("link", { name: "Go to the home page" }).waitFor({ timeout: 5000 });
   await a11y("not-found");
+});
+await step("account settings: rename and download", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByRole("button", { name: /open menu$/ }).click();
+  await p.getByRole("link", { name: "Account settings" }).click();
+  await p.waitForURL(/\/settings/);
+  await settled();
+  await shot("settings");
+  await a11y("settings");
+  await p.getByLabel("Last name").fill("Sharma Rao");
+  await p.getByText("You have unsaved changes.").waitFor();
+  await p.getByRole("button", { name: "Save changes" }).click();
+  await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 10000 });
+  await p.reload();
+  if ((await p.getByLabel("Last name").inputValue()) !== "Sharma Rao") throw new Error("last name not saved");
+  const res = await p.request.get(BASE + "/api/account/export");
+  if (!res.ok()) throw new Error("download status " + res.status());
+  const data = await res.json();
+  if (data.account?.lastName !== "Sharma Rao" || !data.resumes?.length) throw new Error("download is missing data");
+});
+await step("delete account, then restore it by signing in again", async () => {
+  await p.goto(BASE + "/settings");
+  await settled();
+  await p.getByRole("button", { name: "Delete", exact: true }).click();
+  await p.getByLabel("Type DELETE to confirm").fill("DELETE");
+  await p.getByRole("button", { name: "Delete my account" }).click();
+  await p.waitForURL(/\/account\/deleted/, { timeout: 15000 });
+  await a11y("account-deleted");
+  // Signed out: the signed-in screens send them to sign in.
+  await p.goto(BASE + "/today");
+  await p.waitForURL(/\/sign-in/);
+  await p.locator('input[name="name"]').fill("Priya Sharma");
+  await p.locator('input[name="email"]').fill(testEmail);
+  await p.locator('form button[type="submit"]').last().click();
+  await p.waitForURL(/\/account\/restore/, { timeout: 15000 });
+  await shot("account-restore");
+  await a11y("account-restore");
+  await p.getByRole("button", { name: "Restore my account" }).click();
+  await p.waitForURL(/\/today/, { timeout: 15000 });
+  await p.locator('section[aria-label="Your goals"]').waitFor();
 });
 await step("phone + dark today", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
