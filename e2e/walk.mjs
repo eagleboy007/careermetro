@@ -31,6 +31,12 @@ p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.re
 const AXE = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 const a11yNotes = [];
 const a11y = async (name) => {
+  // A server action's refresh() can still be landing when the check starts, and for that moment the head has no <title>
+  // (seen once in CI on inbox-report, never locally). Wait for it; a page that never gets a title still fails below.
+  if (!(await p.evaluate(() => document.title))) {
+    const back = await p.waitForFunction(() => document.title !== "", null, { timeout: 5000 }).then(() => true, () => false);
+    if (back) a11yNotes.push(`${name}: title was empty mid-refresh, then came back`);
+  }
   await p.addScriptTag({ content: AXE });
   const result = await p.evaluate(() =>
     axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
