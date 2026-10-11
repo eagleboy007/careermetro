@@ -1,6 +1,7 @@
 import { ingestResume } from "@/lib/resume/ingest";
 import { MAX_RESUME_BYTES } from "@/lib/resume/extract";
 import { clientHash, clientIp, ensureOwner, isSameOrigin } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 // Reading a resume takes one model call of roughly 10 to 40 seconds; parseResume gives up after 100 seconds.
 export const maxDuration = 120;
@@ -39,9 +40,8 @@ export async function POST(request: Request) {
     result = await ingestResume({ bytes, as, owner, clientHash: clientHash(clientIp(request)), startedAt });
   } catch (error) {
     // Database errors carry query parameters, which can hold profile text quoted from the resume.
-    // Log only the error's name and code, never its message.
-    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
-    console.error("resume upload failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    // errorFields keeps only the error's name and code, never its message.
+    logEvent("error", "resume_upload_failed", { route: "/api/resume", ms: Date.now() - startedAt, ...errorFields(error) });
     return fail(500, "Something went wrong reading your resume. Please try again.");
   }
   if (!result.ok) return fail(result.status, result.message);

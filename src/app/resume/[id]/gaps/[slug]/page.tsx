@@ -16,6 +16,7 @@ import { roleProfiles, skills } from "@/content";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import { readOwner } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 export const metadata: Metadata = { title: "Your gaps · CareerMetro", robots: { index: false } };
 
@@ -32,9 +33,8 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   try {
     result = owner ? await getGapsForOwner(id, owner, role) : { ok: false, reason: "not_found" };
   } catch (error) {
-    // Database errors carry query parameters, which can hold resume quotes. Log only the name and code.
-    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
-    console.error("gap analysis failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    // Database errors carry query parameters, which can hold resume quotes; errorFields keeps only the name and code.
+    logEvent("error", "gaps_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
     return <TryAgain />;
   }
   if (!result.ok && result.reason === "not_found") return <ResumeNotFound />;

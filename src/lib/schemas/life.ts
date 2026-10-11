@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { LIFE_ROWS } from "./constants";
+export { LIFE_ROWS } from "./constants";
 
 /**
  * The Life line on the Map (post-login handoff, section 7): big moments only, by year, on five rows. Never pitstops or
  * prep. The server fills it from the person's confirmed profile; the design page and the preview use an example.
  */
-export const LIFE_ROWS = ["journey", "education", "work", "certificates", "interests"] as const;
 export const lifeRow = z.enum(LIFE_ROWS);
 
 export const lifeMoment = z.object({

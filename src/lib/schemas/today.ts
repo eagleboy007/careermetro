@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { USER_STATES } from "./constants";
+export { USER_STATES } from "./constants";
 
 /**
  * What the signed-in Today screen shows (post-login handoff, sections 4 and 5). The server fills these; until then
  * the design page and the preview use synthetic fixtures. A goal's status is missing, weak or met: the three lamps.
  */
-export const USER_STATES = ["no_resume", "first", "returning"] as const;
 export const userState = z.enum(USER_STATES);
 
 export const goalStatus = z.enum(["missing", "weak", "met"]);

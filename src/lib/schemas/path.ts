@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { gapStatus } from "./gap";
+import { WEEKLY_HOURS } from "./constants";
+export { WEEKLY_HOURS, DEFAULT_WEEKLY_HOURS } from "./constants";
 
-/** FR-15: the weekly hours a user can pick, and the default. */
-export const WEEKLY_HOURS = [3, 5, 8, 10] as const;
-export const DEFAULT_WEEKLY_HOURS = 5;
 export const weeklyHours = z.literal(WEEKLY_HOURS);
 
 /**

@@ -13,6 +13,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { getPathForOwner } from "@/lib/path/store";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 export const metadata: Metadata = { title: "Your path · CareerMetro", robots: { index: false } };
 
@@ -39,9 +40,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   try {
     result = owner ? await getPathForOwner(id, owner, role, hours) : { ok: false, reason: "not_found" };
   } catch (error) {
-    // Database errors carry query parameters. Log only the name and code.
-    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
-    console.error("path failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    // Database errors carry query parameters; errorFields keeps only the name and code.
+    logEvent("error", "path_failed", { route: "/resume/[id]/path/[slug]", role: slug, hours, ...errorFields(error) });
     return <TryAgain />;
   }
   if (!result.ok && result.reason === "not_found") return <ResumeNotFound />;

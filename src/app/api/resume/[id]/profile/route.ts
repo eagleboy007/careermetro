@@ -1,6 +1,7 @@
 import { profile as profileSchema } from "@/lib/schemas";
 import { confirmProfile } from "@/lib/resume/store";
 import { isSameOrigin, readOwner } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 /** A corrected profile is a few KB; anything far larger is not one. */
 const MAX_BODY_BYTES = 64 * 1024;
@@ -33,9 +34,8 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/resum
   try {
     result = await confirmProfile(id, owner, parsed.data);
   } catch (error) {
-    // Database errors carry query parameters, which hold the profile. Log only the name and code.
-    const code = error instanceof Error ? (error.cause as { code?: string } | undefined)?.code : undefined;
-    console.error("profile save failed:", error instanceof Error ? error.name : typeof error, code ?? "");
+    // Database errors carry query parameters, which hold the profile; errorFields keeps only the name and code.
+    logEvent("error", "profile_save_failed", { route: "/api/resume/[id]/profile", ...errorFields(error) });
     return fail(500, "Something went wrong saving your profile. Please try again.");
   }
   if (result.ok) return Response.json({ ok: true, version: result.version });

@@ -1,5 +1,6 @@
 import { markStepDone } from "@/lib/path/store";
 import { isSameOrigin, readOwner } from "@/lib/session";
+import { errorFields, logEvent } from "@/lib/log";
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 const NOT_FOUND = "We couldn't find this step. Your path may have expired.";
@@ -22,7 +23,7 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/path-
   try {
     if (await markStepDone(id, owner, done)) return Response.json({ ok: true });
   } catch (error) {
-    console.error("mark step done failed:", error instanceof Error ? error.name : typeof error);
+    logEvent("error", "path_step_failed", { route: "/api/path-steps/[id]", ...errorFields(error) });
     return fail(500, "Something went wrong saving that. Please try again.");
   }
   return fail(404, NOT_FOUND);

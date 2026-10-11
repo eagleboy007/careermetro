@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import {
-  USER_STATES,
-  type Departure,
-  type EventTeaser,
-  type GoalsSummary,
-  type OnYourLine,
-  type Ride,
-  type RideTask,
-  type RideWeek,
-  type SignalCheck,
-  type UserState,
+import type {
+  Departure,
+  EventTeaser,
+  GoalsSummary,
+  OnYourLine,
+  Ride,
+  RideTask,
+  RideWeek,
+  SignalCheck,
+  UserState,
 } from "@/lib/schemas";
+import { USER_STATES } from "@/lib/schemas/constants";
 import { USER_STATE_LABELS } from "@/lib/today/fixtures";
 import { DeparturesBoard } from "./departures-board";
 import { GoalsCard } from "./goals-card";

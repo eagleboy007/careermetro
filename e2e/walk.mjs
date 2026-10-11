@@ -1,6 +1,7 @@
 // End-to-end walk of the main flow against a running build (see e2e/README.md). Exits non-zero on any failed step,
 // browser console error, page error or 5xx response. Screenshots go to e2e/results/.
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { chromium } from "playwright";
 const BASE = process.env.BASE ?? "http://localhost:3211";
 const OUT = new URL("./results/", import.meta.url).pathname;
@@ -12,15 +13,36 @@ const p = await ctx.newPage();
 const problems = [];
 // The browser logs the 404 the not-found step asks for on purpose; any other console error is a problem.
 const expected404 = "/no-such-page";
+// True only while a step makes a request fail on purpose.
+let failingOnPurpose = false;
 p.on(
   "console",
   (m) =>
     m.type() === "error" &&
+    !failingOnPurpose &&
     !(new URL(p.url()).pathname === expected404 && m.text().includes("404")) &&
     problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}`),
 );
 p.on("pageerror", (e) => problems.push(`pageerror@${p.url()}: ${e.message.slice(0, 200)}`));
 p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+// WCAG 2.1 AA check with axe on each main screen (engineering-standards.md, section 6). Serious and critical
+// violations fail the walk; moderate and minor ones are printed so they can be fixed without blocking.
+const AXE = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
+const a11yNotes = [];
+const a11y = async (name) => {
+  await p.addScriptTag({ content: AXE });
+  const result = await p.evaluate(() =>
+    axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
+  );
+  for (const v of result.violations) {
+    const line = `${name}: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes
+      .slice(0, 3)
+      .map((n) => n.target.join(" "))
+      .join(" | ")}${v.nodes[0]?.any?.[0]?.message ? ` — ${v.nodes[0].any[0].message.slice(0, 160)}` : ""}`;
+    if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
+    else a11yNotes.push(line);
+  }
+};
 let i = 0;
 const settled = () =>
   p
@@ -42,10 +64,12 @@ const step = async (name, fn) => {
 await step("home", async () => {
   await p.goto(BASE + "/");
   await shot("home");
+  await a11y("home");
 });
 await step("roles list", async () => {
   await p.goto(BASE + "/roles");
   await shot("roles");
+  await a11y("roles");
 });
 await step("upload", async () => {
   await p.goto(BASE + "/start");
@@ -56,6 +80,7 @@ await step("upload", async () => {
   await p.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 30000 });
   await p.waitForLoadState("networkidle");
   await shot("review");
+  await a11y("review");
 });
 await step("confirm profile", async () => {
   await p.getByRole("button", { name: "Looks right", exact: true }).click();
@@ -65,22 +90,39 @@ await step("confirm profile", async () => {
   await next.click();
   await p.waitForURL(/\/role/, { timeout: 15000 });
   await shot("role");
+  await a11y("role");
 });
 await step("pick role", async () => {
   await p.locator('a[href$="/gaps/data-analyst"]').first().click();
   await p.waitForURL(/\/gaps\//, { timeout: 60000 });
   await settled();
   await shot("gaps");
+  await a11y("gaps");
 });
 await step("rate gaps", async () => {
   await p.getByRole("button", { name: /^4:/ }).click();
   await p.getByText("Thanks, saved.").waitFor({ timeout: 10000 });
+});
+await step("a failed rating goes back to the saved one", async () => {
+  failingOnPurpose = true;
+  await p.route("**/api/gaps/*/rating", (route) => route.abort("failed"));
+  try {
+    await p.getByRole("button", { name: /^1:/ }).click();
+    await p.getByRole("alert").filter({ hasText: "try again" }).waitFor({ timeout: 10000 });
+    await p.getByRole("button", { name: /^4:/, pressed: true }).waitFor({ timeout: 5000 });
+    if (await p.getByRole("button", { name: /^1:/, pressed: true }).count()) throw new Error("unsaved rating still shown");
+  } finally {
+    // Even if this step fails, later steps must see real errors again.
+    await p.unroute("**/api/gaps/*/rating");
+    failingOnPurpose = false;
+  }
 });
 await step("path", async () => {
   await p.getByRole("link", { name: /build my path/i }).click();
   await p.waitForURL(/\/path\//, { timeout: 30000 });
   await settled();
   await shot("path");
+  await a11y("path");
 });
 await step("path hours", async () => {
   const h = p.locator('a[href*="hours="]');
@@ -95,7 +137,7 @@ await step("mark path step done", async () => {
   await Promise.all([
     p.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes("/api/path-steps/")),
     p
-      .getByRole("button", { name: /^Mark .+ done$/ })
+      .getByRole("button", { name: /^Mark done: / })
       .first()
       .click(),
   ]);
@@ -119,6 +161,7 @@ await step("sign in as test user (claims the anonymous resume)", async () => {
   await p.waitForURL(/\/today/, { timeout: 20000 });
   await settled();
   await shot("today-first");
+  await a11y("today-first");
 });
 await step("today shows the person's own goals", async () => {
   await p.locator('section[aria-label="Your goals"]').waitFor();
@@ -144,6 +187,14 @@ await step("tick a ride task -> returning + streak", async () => {
     .waitFor({ timeout: 10000 });
   await settled();
   await shot("today-returning");
+  await a11y("today-returning");
+});
+await step("static pages still load after a tick", async () => {
+  // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
+  for (const path of ["/roles/data-analyst", "/roles", "/"]) {
+    const r = await p.request.get(BASE + path);
+    if (r.status() !== 200) throw new Error(`${path} status ${r.status()}`);
+  }
 });
 await step("untick -> back to first, no streak", async () => {
   await p.locator('section[aria-label="Today\'s ride"] li label').first().click();
@@ -167,6 +218,7 @@ for (const path of ["/map", "/me", "/departures"]) {
     if (!r.ok()) throw new Error("status " + r.status());
     await settled();
     await shot(path.slice(1));
+    await a11y(path.slice(1));
   });
 }
 await step("unknown address shows the not-found page", async () => {
@@ -174,6 +226,7 @@ await step("unknown address shows the not-found page", async () => {
   if (r.status() !== 404) throw new Error("status " + r.status());
   await p.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 5000 });
   await p.getByRole("link", { name: "Go to the home page" }).waitFor({ timeout: 5000 });
+  await a11y("not-found");
 });
 await step("phone + dark today", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
@@ -181,9 +234,11 @@ await step("phone + dark today", async () => {
   await p.goto(BASE + "/today");
   await settled();
   await shot("today-phone-dark");
+  await a11y("today-phone-dark");
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 1) throw new Error("horizontal overflow " + overflow + "px");
 });
+if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
 await b.close();
 if (failed || problems.length) process.exit(1);

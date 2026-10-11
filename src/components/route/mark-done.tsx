@@ -50,7 +50,8 @@ export function MarkDone({ stepId, title, done, demo = false }: { stepId: string
         type="button"
         onClick={toggle}
         disabled={saving || pending}
-        aria-label={isDone ? `Mark ${title} not done yet` : `Mark ${title} done`}
+        // Starts with the visible text (WCAG 2.5.3, label in name), then says which step.
+        aria-label={`${label}: ${title}`}
         className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-60 ${
           isDone ? "border-line text-muted hover:text-ink" : "border-accent text-accent hover:bg-accent-soft"
         }`}

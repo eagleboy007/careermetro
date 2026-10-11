@@ -281,7 +281,7 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
     <g
       className="group cursor-pointer outline-none"
       pointerEvents="bounding-box"
-      aria-label={`${n ? `${n.replace("✓", "done")}, ` : ""}${s.name}${s.state === "now" ? ", you are here" : ""}`}
+      aria-label={stationLabel(n, name, s.name, s.state === "now")}
       {...props}
     >
       {cap ? (
@@ -314,7 +314,8 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
         <>
           {n && (
             <text x={s.x} y={s.y - 48} textAnchor="middle" className={nClass}>
-              {n}
+              {/* The trailing space isn't drawn; it keeps the number and the name apart for screen readers. */}
+              {`${n} `}
             </text>
           )}
           <text x={s.x} y={s.y - (cap ? 26 : 28)} textAnchor="middle" className={textClass}>
@@ -325,7 +326,8 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
         <>
           {n && (
             <text x={s.x} y={s.y + 36} textAnchor="middle" className={nClass}>
-              {n}
+              {/* The trailing space isn't drawn; it keeps the number and the name apart for screen readers. */}
+              {`${n} `}
             </text>
           )}
           <text x={s.x} y={s.y + (n ? 56 : 40)} textAnchor="middle" className={textClass}>
@@ -335,6 +337,18 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
       )}
     </g>
   );
+}
+
+/**
+ * The station's accessible name starts with exactly the text it shows (WCAG 2.5.3, label in name), so a voice user can
+ * say what they see; the full skill name, "done" and "you are here" follow it.
+ */
+export function stationLabel(n: string | null, shown: string, full: string, now: boolean): string {
+  const parts = [n ? `${n} ${shown}` : shown];
+  if (full !== shown) parts.push(full);
+  if (n?.includes("✓")) parts.push("done");
+  if (now) parts.push("you are here");
+  return parts.join(", ");
 }
 
 const dotClass = (state: Station["state"]) =>

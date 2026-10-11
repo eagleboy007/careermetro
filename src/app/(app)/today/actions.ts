@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import { setWeeklyHours } from "@/lib/account/store";
 import { currentAccount } from "@/lib/auth/server";
 import { tickTask } from "@/lib/ride/store";
@@ -11,8 +11,10 @@ export async function tickRideTask(taskId: string, on: boolean): Promise<boolean
   const account = await currentAccount();
   if (!account) return false;
   const saved = await tickTask(account.id, taskId, on, new Date());
-  // The header's streak chip reads ride days too.
-  if (saved) revalidatePath("/", "layout");
+  // The header's streak chip reads ride days too, so the page refreshes. refresh() re-renders only this person's view;
+  // revalidatePath("/", "layout") used to throw away every cached page on the site, and static pages such as
+  // /roles/[slug] then failed to rebuild on the next visit (500, NEXT_STATIC_GEN_BAILOUT).
+  if (saved) refresh();
   return saved;
 }
 

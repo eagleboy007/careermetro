@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { crc32, deflateRawSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { maskPii } from "./mask";
-import { checkDocxArchive, detectResumeType, extractResumeText, MAX_RESUME_BYTES, ResumeError } from "./extract";
+import { checkDocxArchive, detectResumeType, extractResumeText, MAX_RESUME_BYTES, pdfText, ResumeError } from "./extract";
 
 const file = (name: string) => new Uint8Array(readFileSync(`fixtures/resumes/${name}`));
 
@@ -68,6 +68,14 @@ describe("extractResumeText", () => {
     const { text } = maskPii((await extractResumeText(file(name))).text);
     for (const secret of ["98765", "@gmail.com", "411045", "Lotus Residency", "linkedin.com"]) expect(text).not.toContain(secret);
     expect(text).toContain("Priya Sharma");
+  });
+
+  it("gives up on a PDF that takes longer than the time limit, and the timer really gets its turn", async () => {
+    const started = Date.now();
+    await expect(pdfText(file("priya-sharma.pdf"), 1)).rejects.toMatchObject({ code: "too_slow" });
+    expect(Date.now() - started).toBeLessThan(1000);
+    // The same file reads normally within the default limit.
+    expect(await pdfText(file("priya-sharma.pdf"))).toContain("Google Data Analytics Professional Certificate");
   });
 
   it("rejects files over 4 MB", async () => {

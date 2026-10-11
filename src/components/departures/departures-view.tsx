@@ -6,7 +6,8 @@ import { useId, useMemo, useState, type ReactNode } from "react";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
-import { APPLY_STAGES, WORK_TYPES, type JobPost } from "@/lib/schemas";
+import type { JobPost } from "@/lib/schemas";
+import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
 const WHEN_TONE = { now: "bg-good-soft text-good", soon: "bg-warn-soft text-warn", later: "bg-surface-2 text-muted" } as const;
