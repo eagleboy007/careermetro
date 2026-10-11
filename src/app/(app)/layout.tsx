@@ -10,6 +10,8 @@ import { authConfig } from "@/lib/auth/config";
 import { RESTORE_PATH } from "@/lib/auth/after-sign-in";
 import { currentIdentity, signedInAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
+import { exampleThreads } from "@/lib/inbox/fixtures";
+import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
 
@@ -44,9 +46,11 @@ async function Shell({ children }: { children: React.ReactNode }) {
       todayCounted: streak.todayCounted,
       showStreak: streak.days > 0,
       canSignOut: true,
+      // No real chats until the message tables exist (dev/inbox-plan.md); the Inbox page shows the example.
+      inboxUnread: 0,
     };
   } else {
-    user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false };
+    user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: unreadCount(exampleThreads) };
   }
   return <AppShell user={user}>{children}</AppShell>;
 }

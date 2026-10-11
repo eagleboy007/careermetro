@@ -1,4 +1,4 @@
-import { BookOpen, CalendarDays, House, Inbox, Mail, Map as MapIcon, MessagesSquare, TrainFront, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessagesSquare, TrainFront, Users, type LucideIcon } from "lucide-react";
 
 export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox";
 export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIcon; built: boolean };
@@ -13,7 +13,7 @@ export const NAV = {
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },
   network: { key: "network", label: "Network", href: "/network", Icon: Users, built: false },
   library: { key: "library", label: "Library", href: "/library", Icon: BookOpen, built: false },
-  inbox: { key: "inbox", label: "Inbox", href: "/inbox", Icon: Mail, built: false },
+  inbox: { key: "inbox", label: "Inbox", href: "/inbox", Icon: MessageSquare, built: true },
 } satisfies Record<NavKey, NavItem>;
 
 /** Desktop top bar. */

@@ -213,7 +213,7 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
-for (const path of ["/map", "/me", "/departures", "/settings"]) {
+for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/grievances"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -269,6 +269,36 @@ await step("delete account, then restore it by signing in again", async () => {
   await p.getByRole("button", { name: "Restore my account" }).click();
   await p.waitForURL(/\/today/, { timeout: 15000 });
   await p.locator('section[aria-label="Your goals"]').waitFor();
+});
+await step("inbox: offer times, accept a request", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByRole("link", { name: /^Inbox/ }).first().click();
+  await p.waitForURL(/\/inbox/);
+  await settled();
+  await p.getByRole("button", { name: "Offer times" }).click();
+  await p.locator('[aria-label="Pick times"] button:not([disabled])').first().click();
+  await p.getByRole("button", { name: "Send 1 time" }).click();
+  await p.getByText(/You offered 1 times?:/).waitFor();
+  await p.getByRole("button", { name: "Requests" }).click();
+  await p.getByRole("button", { name: /Sameer Kulkarni/ }).click();
+  await p.getByRole("button", { name: "Accept" }).click();
+  await p.getByText("You accepted. You can now message each other.").waitFor();
+  await a11y("inbox-after");
+});
+await step("phone inbox: list first, chat full screen", async () => {
+  await p.setViewportSize({ width: 390, height: 844 });
+  await p.goto(BASE + "/inbox");
+  await settled();
+  if (await p.getByRole("button", { name: "Back to all messages" }).isVisible()) throw new Error("chat shown before a tap");
+  await p.getByRole("button", { name: /Arjun Mehta/ }).click();
+  await p.getByRole("button", { name: "Back to all messages" }).waitFor();
+  await shot("inbox-phone");
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  if (overflow > 1) throw new Error("horizontal overflow " + overflow + "px");
+  await p.getByRole("button", { name: "Back to all messages" }).click();
+  await p.getByRole("button", { name: /Arjun Mehta/ }).waitFor();
+  await p.setViewportSize({ width: 1280, height: 900 });
 });
 await step("phone + dark today", async () => {
   await p.setViewportSize({ width: 390, height: 844 });

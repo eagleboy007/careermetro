@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, LogOut, User } from "lucide-react";
+import { Lock, LogOut, MessageSquare, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
@@ -16,6 +16,8 @@ export type ShellUser = {
   showStreak: boolean;
   /** False on example data, where there is no session to end. */
   canSignOut: boolean;
+  /** Unread chats and message requests, for the badge on the Inbox icon. */
+  inboxUnread: number;
 };
 
 /**
@@ -40,6 +42,7 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
           </nav>
           <div className="ml-auto flex items-center gap-2.5">
             {user?.showStreak && <StreakChip days={user.streakDays} todayCounted={user.todayCounted} />}
+            <InboxLink unread={user?.inboxUnread ?? 0} active={path === "/inbox" || path.startsWith("/inbox/")} />
             {user ? <AvatarMenu user={user} /> : <span aria-hidden="true" className="size-9 rounded-full bg-surface-2" />}
           </div>
         </div>
@@ -58,6 +61,28 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
         </ul>
       </nav>
     </div>
+  );
+}
+
+/** The message icon on every screen (handoff 12b), with the unread count. */
+function InboxLink({ unread, active }: { unread: number; active: boolean }) {
+  return (
+    <Link
+      href="/inbox"
+      aria-current={active ? "page" : undefined}
+      aria-label={unread ? `Inbox, ${unread} unread` : "Inbox"}
+      className="relative grid size-9 place-items-center rounded-full border border-line bg-surface text-ink hover:bg-surface-2 aria-[current=page]:bg-surface-2"
+    >
+      <MessageSquare size={20} strokeWidth={1.75} aria-hidden="true" />
+      {unread > 0 && (
+        <span
+          aria-hidden="true"
+          className="absolute -right-[5px] -top-1 box-content grid h-[17px] min-w-[17px] place-items-center rounded-full border-2 border-surface bg-ink px-1 font-mono text-[0.62rem] text-surface"
+        >
+          {unread}
+        </span>
+      )}
+    </Link>
   );
 }
 
@@ -106,6 +131,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
 }
 
 function AvatarMenu({ user }: { user: ShellUser }) {
+  const path = usePathname();
   const [open, setOpen] = useState(false);
   const menuId = useId();
   const wrap = useRef<HTMLDivElement>(null);
@@ -168,12 +194,21 @@ function AvatarMenu({ user }: { user: ShellUser }) {
               Account settings
             </Link>
           </li>
-          {MENU_NAV.map((item) => (
-            <li key={item.key} className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
-              <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
-              {item.label} <Soon />
-            </li>
-          ))}
+          {MENU_NAV.map((item) =>
+            item.built ? (
+              <li key={item.key}>
+                <Link href={item.href} onClick={() => setOpen(false)} aria-current={path === item.href ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
+                  <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                  {item.label}
+                </Link>
+              </li>
+            ) : (
+              <li key={item.key} className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
+                <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                {item.label} <Soon />
+              </li>
+            ),
+          )}
           <li className="border-t border-line pt-0.5">
             {user.canSignOut ? (
               <form method="post" action="/auth/sign-out">
