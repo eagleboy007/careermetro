@@ -47,7 +47,7 @@ import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
 import { POST as upload } from "@/app/api/resume/route";
-import { POST as waitlist } from "@/app/api/waitlist/route";
+import { OPTIONS as waitlistPreflight, POST as waitlist } from "@/app/api/waitlist/route";
 import { SESSION_COOKIE } from "@/lib/session";
 
 const SITE = "https://careermetro.test";
@@ -272,6 +272,27 @@ describe("waitlist", () => {
     expect((await waitlist(post({ email: "a@example.com" }, "https://evil.example"))).status).toBe(403);
     expect(await json(await waitlist(post({ email: "a@example.com", website: "spam" })))).toEqual({ status: 200, body: { ok: true } });
     expect((await waitlist(post({ email: "not an email" }))).status).toBe(400);
+    expect(m.getDb).not.toHaveBeenCalled();
+  });
+
+  it("takes the public site's form at careermetro.com and www, and no other site", async () => {
+    for (const site of ["https://careermetro.com", "https://www.careermetro.com"]) {
+      const preflight = waitlistPreflight(new Request(SITE + "/api/waitlist", { method: "OPTIONS", headers: { origin: site } }));
+      expect(preflight.status).toBe(204);
+      expect(preflight.headers.get("access-control-allow-origin")).toBe(site);
+      const res = await waitlist(post({ email: "not an email", consent: true }, site));
+      expect(res.status).toBe(400);
+      expect(res.headers.get("access-control-allow-origin")).toBe(site);
+    }
+    for (const other of ["https://evil.example", "http://careermetro.com", "https://careermetro.com.evil.example"]) {
+      const preflight = waitlistPreflight(new Request(SITE + "/api/waitlist", { method: "OPTIONS", headers: { origin: other } }));
+      expect(preflight.status).toBe(403);
+      expect(preflight.headers.get("access-control-allow-origin")).toBeNull();
+      const res = await waitlist(post({ email: "a@example.com", consent: true }, other));
+      expect(res.status).toBe(403);
+      expect(res.headers.get("access-control-allow-origin")).toBeNull();
+    }
+    expect((await waitlist(post({ email: "a@example.com", consent: true, website: "spam" }, "https://careermetro.com"))).status).toBe(200);
     expect(m.getDb).not.toHaveBeenCalled();
   });
 });
