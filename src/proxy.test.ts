@@ -28,6 +28,17 @@ describe("proxy", () => {
     expect(refresh).not.toHaveBeenCalled();
   });
 
+  it("shows the holding page at / on the public domain only", async () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("TODAY_PREVIEW", "");
+    for (const host of ["https://careermetro.com", "https://www.careermetro.com"]) {
+      const res = await proxy(new NextRequest(new URL("/", host)));
+      expect(res.headers.get("x-middleware-rewrite")).toBe(`${host}/early-access`);
+    }
+    expect((await proxy(new NextRequest(new URL("/start", "https://careermetro.com")))).headers.get("x-middleware-rewrite")).toBeNull();
+    expect((await proxy(req("/"))).headers.get("x-middleware-rewrite")).toBeNull();
+  });
+
   it("uses the test user on previews while sign-in is not set up", async () => {
     vi.stubEnv("VERCEL_ENV", "preview");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");

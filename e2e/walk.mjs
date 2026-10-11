@@ -300,6 +300,16 @@ await step("phone inbox: list first, chat full screen", async () => {
   await p.getByRole("button", { name: /Arjun Mehta/ }).waitFor();
   await p.setViewportSize({ width: 1280, height: 900 });
 });
+await step("holding page: join early access", async () => {
+  const r = await p.goto(BASE + "/early-access");
+  if (!r.ok()) throw new Error("status " + r.status());
+  await p.locator("#f-email").fill("walk-holding@example.com");
+  await p.locator("#f-role").fill("SOC Analyst");
+  await p.locator("#f-ok").check();
+  await p.getByRole("button", { name: "Get early access" }).last().click();
+  await p.getByText("You're on the line.").waitFor({ timeout: 10000 });
+  await a11y("early-access");
+});
 await step("phone + dark today", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
   await p.emulateMedia({ colorScheme: "dark" });
