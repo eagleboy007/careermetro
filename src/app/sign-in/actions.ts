@@ -1,11 +1,13 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { afterSignIn } from "@/lib/auth/after-sign-in";
 import { safeNext } from "@/lib/auth/config";
 import { googleSignInUrl, requestOrigin, sendEmailCode, verifyEmailCode } from "@/lib/auth/server";
+import { clientIp } from "@/lib/session";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { TEST_USER_COOKIE, TEST_USER_MAX_AGE_SECONDS, testSignInEnabled, testUserCookie } from "@/lib/auth/test-user";
 
 export type EmailStep = { stage: "email" | "code"; email: string; error: string | null };
@@ -29,6 +31,9 @@ export async function emailStep(state: EmailStep, formData: FormData): Promise<E
   if (state.stage === "email" || formData.get("intent") === "resend") {
     const parsed = emailSchema.safeParse(String(formData.get("email") ?? state.email).trim().toLowerCase());
     if (!parsed.success) return { stage: "email", email: String(formData.get("email") ?? ""), error: "Please enter a valid email address." };
+    // Shared by every server, so nobody can make us email one address, or many, again and again (pending item 21).
+    const allowed = (await takeShared(LIMITS.signInCodePerIp, clientIp(await headers()))) && (await takeShared(LIMITS.signInCodePerEmail, parsed.data));
+    if (!allowed) return { stage: "email", email: parsed.data, error: "Too many tries. Please wait a few minutes and try again." };
     const sent = await sendEmailCode(parsed.data);
     if (!sent.ok) {
       return {

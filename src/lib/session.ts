@@ -57,8 +57,9 @@ export function clientHash(ip: string, now = new Date()): string {
 }
 
 /** The caller's IP as Vercel reports it. Falls back to a fixed value locally. */
-export function clientIp(request: Request): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "local";
+export function clientIp(request: Request | Headers): string {
+  const h = request instanceof Headers ? request : request.headers;
+  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "local";
 }
 
 /** CSRF protection for form posts (SEC-7): the request must come from a page on this site. */

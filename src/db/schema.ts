@@ -368,3 +368,18 @@ export const auditLogs = pgTable("audit_logs", {
   target: text("target").notNull(),
   createdAt: createdAt(),
 });
+
+/**
+ * Abuse limits shared by every server (H11): one row per limit, keyed hash and fixed window, counting hits. The key is
+ * an HMAC of the email or IP, never the value itself. Rows older than two days are deleted by the code that writes them.
+ */
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    bucket: text("bucket").notNull(),
+    keyHash: text("key_hash").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+    hits: integer("hits").notNull().default(1),
+  },
+  (t) => [primaryKey({ columns: [t.bucket, t.keyHash, t.windowStart] }), index("rate_limits_window_start").on(t.windowStart)],
+);
