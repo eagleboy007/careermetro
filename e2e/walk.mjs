@@ -32,7 +32,6 @@ const a11yNotes = [];
 const a11y = async (name) => {
   await p.addScriptTag({ content: AXE });
   const result = await p.evaluate(() =>
-    // eslint-disable-next-line no-undef
     axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
   );
   for (const v of result.violations) {
@@ -107,12 +106,16 @@ await step("rate gaps", async () => {
 await step("a failed rating goes back to the saved one", async () => {
   failingOnPurpose = true;
   await p.route("**/api/gaps/*/rating", (route) => route.abort("failed"));
-  await p.getByRole("button", { name: /^1:/ }).click();
-  await p.getByRole("alert").filter({ hasText: "try again" }).waitFor({ timeout: 10000 });
-  await p.getByRole("button", { name: /^4:/, pressed: true }).waitFor({ timeout: 5000 });
-  if (await p.getByRole("button", { name: /^1:/, pressed: true }).count()) throw new Error("unsaved rating still shown");
-  await p.unroute("**/api/gaps/*/rating");
-  failingOnPurpose = false;
+  try {
+    await p.getByRole("button", { name: /^1:/ }).click();
+    await p.getByRole("alert").filter({ hasText: "try again" }).waitFor({ timeout: 10000 });
+    await p.getByRole("button", { name: /^4:/, pressed: true }).waitFor({ timeout: 5000 });
+    if (await p.getByRole("button", { name: /^1:/, pressed: true }).count()) throw new Error("unsaved rating still shown");
+  } finally {
+    // Even if this step fails, later steps must see real errors again.
+    await p.unroute("**/api/gaps/*/rating");
+    failingOnPurpose = false;
+  }
 });
 await step("path", async () => {
   await p.getByRole("link", { name: /build my path/i }).click();
@@ -185,13 +188,6 @@ await step("tick a ride task -> returning + streak", async () => {
   await settled();
   await shot("today-returning");
   await a11y("today-returning");
-});
-await step("static pages still load after a tick", async () => {
-  // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
-  for (const path of ["/roles/data-analyst", "/roles", "/"]) {
-    const r = await p.request.get(BASE + path);
-    if (r.status() !== 200) throw new Error(`${path} status ${r.status()}`);
-  }
 });
 await step("static pages still load after a tick", async () => {
   // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
