@@ -1,17 +1,18 @@
 import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, sql, sum } from "drizzle-orm";
 import { getDb } from "@/db";
+import { withKeyLock, type Tx } from "@/db/lock";
 import { aiCalls, gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
 import { skills } from "@/content";
 import { recordAiCalls } from "@/lib/ai/log";
 import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
-import type { GapStatus, RoleProfile } from "@/lib/schemas";
+import { singleFlight } from "@/lib/single-flight";
+import type { GapStatus, PlannedPath, RoleProfile } from "@/lib/schemas";
 import { buildPath } from "./build";
-import { writePath, type WriteClient } from "./write";
+import { writePath, type ResourceTitles, type WriteClient } from "./write";
 
 type Db = ReturnType<typeof getDb>;
-type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 export const PATH_LIMITS = {
   /** Model-worded paths per user or anonymous session per day; after that the path keeps template wording. */
@@ -74,7 +75,8 @@ async function mayWrite(tx: Tx, owner: Owner): Promise<boolean> {
 /**
  * FR-15 to FR-18: this owner's learning path for a role at the chosen weekly hours. Reuses the stored path for
  * the same gap analysis and hours; otherwise builds it in code, asks the model to word it (or keeps template
- * wording past the limits) and stores it. Runs under a per-owner lock, like the Gaps page.
+ * wording past the limits) and stores it. Like the Gaps page, the model call runs between two short locked
+ * transactions, never inside one, and concurrent loads of the same path on one server share one run.
  */
 export async function getPathForOwner(
   resumeId: string,
@@ -83,77 +85,94 @@ export async function getPathForOwner(
   weeklyHours: number,
   deps: { db?: Db; client?: WriteClient; now?: Date } = {},
 ): Promise<PathForOwner> {
+  return singleFlight(`cm-path:${ownerKey(owner)}:${resumeId}:${role.slug}:${weeklyHours}`, () =>
+    buildForOwner(resumeId, owner, role, weeklyHours, deps),
+  );
+}
+
+async function buildForOwner(
+  resumeId: string,
+  owner: Owner,
+  role: RoleProfile,
+  weeklyHours: number,
+  deps: { db?: Db; client?: WriteClient; now?: Date },
+): Promise<PathForOwner> {
   const db = deps.db ?? getDb();
   const gaps = await getGapsForOwner(resumeId, owner, role, { db, now: deps.now });
   if (!gaps.ok) return gaps;
   if (gaps.analysis.gaps.length === 0) return { ok: false, reason: "no_gaps" };
   const statusBySkill = new Map(gaps.analysis.gaps.map((g) => [g.skillId, g.status]));
+  const lockKey = `cm-path:${ownerKey(owner)}`;
+  const storedPath = async (tx: Tx) => {
+    const [stored] = await tx
+      .select({ id: paths.id })
+      .from(paths)
+      .where(and(eq(paths.gapAnalysisId, gaps.analysisId), eq(paths.weeklyHours, weeklyHours)))
+      .orderBy(desc(paths.createdAt))
+      .limit(1);
+    return stored?.id;
+  };
+  const view = async (tx: Tx, pathId: string): Promise<PathForOwner> => ({
+    ok: true,
+    path: await readPath(tx, pathId, weeklyHours, statusBySkill, gaps.analysis.gaps.length),
+  });
 
-  try {
-    return await db.transaction(async (tx) => {
-      await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(PATH_LIMITS.lockTimeoutMs)}`));
-      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-path:${ownerKey(owner)}`}))`);
+  type Next = { done: PathForOwner } | { plan: PlannedPath; titles: ResourceTitles; write: boolean };
+  const first = await withKeyLock(db, lockKey, PATH_LIMITS.lockTimeoutMs, async (tx): Promise<Next> => {
+    const pathId = await storedPath(tx);
+    if (pathId) return { done: await view(tx, pathId) };
+    const catalog = await tx
+      .select({ id: resources.id, skillIds: resources.skillIds, minutes: resources.minutes, free: resources.free, healthy: resources.healthy, title: resources.title, provider: resources.provider })
+      .from(resources)
+      .where(eq(resources.healthy, true));
+    const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
+    const titles: ResourceTitles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
+    return { plan, titles, write: await mayWrite(tx, owner) };
+  });
+  if (first === "busy") return { ok: false, reason: "busy" };
+  if ("done" in first) return first.done;
 
-      const [stored] = await tx
-        .select({ id: paths.id })
-        .from(paths)
-        .where(and(eq(paths.gapAnalysisId, gaps.analysisId), eq(paths.weeklyHours, weeklyHours)))
-        .orderBy(desc(paths.createdAt))
-        .limit(1);
-      let pathId = stored?.id;
+  const worded = first.write
+    ? await writePath(first.plan, role.title, first.titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
+    : { path: first.plan, calls: [] };
 
-      if (!pathId) {
-        const catalog = await tx
-          .select({ id: resources.id, skillIds: resources.skillIds, minutes: resources.minutes, free: resources.free, healthy: resources.healthy, title: resources.title, provider: resources.provider })
-          .from(resources)
-          .where(eq(resources.healthy, true));
-        // The model call holds this transaction's connection for up to 20 s, as on the Gaps page. Fine for the beta;
-        // later, call the model outside the transaction and re-check for a stored path after taking the lock.
-        const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
-        const titles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
-        const worded = (await mayWrite(tx, owner))
-          ? await writePath(plan, role.title, titles, { gapAnalysisId: gaps.analysisId, weeklyHours: String(weeklyHours) }, deps.client)
-          : { path: plan, calls: [] };
-        const callIds = await recordAiCalls(worded.calls, tx);
-        // Steps already done stay done here (FR-18): at another hours setting, and on the person's earlier paths, so a
-        // new upload or a corrected profile doesn't lose progress (T21). The earliest date is kept.
-        const doneRows = await tx
-          .select({ skillId: pathSteps.skillId, doneAt: pathSteps.doneAt })
-          .from(pathSteps)
-          .innerJoin(paths, eq(paths.id, pathSteps.pathId))
-          .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
-          .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
-          .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-          .where(and(ownsResume(owner), isNotNull(pathSteps.doneAt), eq(pathSteps.kind, "learn")))
-          .orderBy(asc(pathSteps.doneAt));
-        const doneBySkill = new Map<string, Date | null>();
-        for (const r of doneRows) if (!doneBySkill.has(r.skillId)) doneBySkill.set(r.skillId, r.doneAt);
-        const [row] = await tx
-          .insert(paths)
-          .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds.at(-1) ?? null })
-          .returning({ id: paths.id });
-        await tx.insert(pathSteps).values(
-          worded.path.steps.map((s) => ({
-            pathId: row.id,
-            position: s.position,
-            skillId: s.skillId,
-            reason: s.reason,
-            hours: s.hours,
-            resourceIds: s.resourceIds,
-            proofTask: s.proofTask,
-            doneAt: doneBySkill.get(s.skillId) ?? null,
-          })),
-        );
-        pathId = row.id;
-      }
-
-      return { ok: true, path: await readPath(tx, pathId, weeklyHours, statusBySkill, gaps.analysis.gaps.length) } as const;
-    });
-  } catch (error) {
-    // 55P03: another load of this session's Path page held the lock for too long.
-    if ((error as { cause?: { code?: string } })?.cause?.code === "55P03") return { ok: false, reason: "busy" };
-    throw error;
-  }
+  const second = await withKeyLock(db, lockKey, PATH_LIMITS.lockTimeoutMs, async (tx): Promise<PathForOwner> => {
+    const callIds = await recordAiCalls(worded.calls, tx);
+    // Another server may have stored one meanwhile; then this call is logged and its wording dropped.
+    const storedId = await storedPath(tx);
+    if (storedId) return view(tx, storedId);
+    // Steps already done stay done here (FR-18): at another hours setting, and on the person's earlier paths, so a
+    // new upload or a corrected profile doesn't lose progress (T21). The earliest date is kept.
+    const doneRows = await tx
+      .select({ skillId: pathSteps.skillId, doneAt: pathSteps.doneAt })
+      .from(pathSteps)
+      .innerJoin(paths, eq(paths.id, pathSteps.pathId))
+      .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
+      .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+      .where(and(ownsResume(owner), isNotNull(pathSteps.doneAt), eq(pathSteps.kind, "learn")))
+      .orderBy(asc(pathSteps.doneAt));
+    const doneBySkill = new Map<string, Date | null>();
+    for (const r of doneRows) if (!doneBySkill.has(r.skillId)) doneBySkill.set(r.skillId, r.doneAt);
+    const [row] = await tx
+      .insert(paths)
+      .values({ gapAnalysisId: gaps.analysisId, weeklyHours, aiCallId: callIds.at(-1) ?? null })
+      .returning({ id: paths.id });
+    await tx.insert(pathSteps).values(
+      worded.path.steps.map((s) => ({
+        pathId: row.id,
+        position: s.position,
+        skillId: s.skillId,
+        reason: s.reason,
+        hours: s.hours,
+        resourceIds: s.resourceIds,
+        proofTask: s.proofTask,
+        doneAt: doneBySkill.get(s.skillId) ?? null,
+      })),
+    );
+    return view(tx, row.id);
+  });
+  return second === "busy" ? { ok: false, reason: "busy" } : second;
 }
 
 async function readPath(

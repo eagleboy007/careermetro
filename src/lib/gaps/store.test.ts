@@ -1,5 +1,5 @@
 import { APIError } from "@anthropic-ai/sdk";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -197,6 +197,24 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(create).toHaveBeenCalledTimes(1);
     const ids = new Set(results.map((r) => (r.ok ? r.analysisId : r.reason)));
     expect(ids.size).toBe(1);
+  });
+
+  it("holds no lock or connection while the model answers", async () => {
+    const { session, resumeId } = await seed();
+    const { client, create } = explainClient();
+    const answer = create.getMockImplementation()!;
+    let lockFree: unknown = null;
+    create.mockImplementationOnce(async (body) => {
+      // Another load could take this owner's lock now: the slow call doesn't block it.
+      lockFree = await db!.transaction(async (tx) => {
+        const [r] = await tx.execute<{ ok: boolean }>(sql`select pg_try_advisory_xact_lock(hashtext(${`cm-gaps:s:${session}`})) as ok`);
+        return r.ok;
+      });
+      return answer(body);
+    });
+    const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    expect(r.ok).toBe(true);
+    expect(lockFree).toBe(true);
   });
 
   it("makes a fresh analysis after the user confirms a new profile version", async () => {
