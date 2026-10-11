@@ -10,7 +10,15 @@ const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: pr
 const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
 const p = await ctx.newPage();
 const problems = [];
-p.on("console", (m) => m.type() === "error" && problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}`));
+// The browser logs the 404 the not-found step asks for on purpose; any other console error is a problem.
+const expected404 = "/no-such-page";
+p.on(
+  "console",
+  (m) =>
+    m.type() === "error" &&
+    !(new URL(p.url()).pathname === expected404 && m.text().includes("404")) &&
+    problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}`),
+);
 p.on("pageerror", (e) => problems.push(`pageerror@${p.url()}: ${e.message.slice(0, 200)}`));
 p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
 let i = 0;
@@ -162,7 +170,7 @@ for (const path of ["/map", "/me", "/departures"]) {
   });
 }
 await step("unknown address shows the not-found page", async () => {
-  const r = await p.goto(BASE + "/no-such-page");
+  const r = await p.goto(BASE + expected404);
   if (r.status() !== 404) throw new Error("status " + r.status());
   await p.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 5000 });
   await p.getByRole("link", { name: "Go to the home page" }).waitFor({ timeout: 5000 });
