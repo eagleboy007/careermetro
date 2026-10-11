@@ -129,6 +129,7 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
   if (early) return early;
 
   // Files that fail to read never become resume rows, so the limits above don't see them. A shared count caps them.
+  // A soft cap: the check and the count are separate, so files sent at the same moment can pass it slightly.
   if (!(await allowsShared(SHARED.failedReadsPerIp, input.clientHash, { db }))) {
     return { ok: false, status: 429, code: "rate_limited", message: "You've reached today's limit for resume uploads. Please try again tomorrow." };
   }

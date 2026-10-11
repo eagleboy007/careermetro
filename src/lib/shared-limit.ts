@@ -50,7 +50,11 @@ export async function takeShared(limit: SharedLimit, key: string, deps: { db?: D
         set: { hits: sql`${rateLimits.hits} + 1` },
       })
       .returning({ hits: rateLimits.hits });
-    if (Math.random() < 0.01) await db.delete(rateLimits).where(lt(rateLimits.windowStart, new Date(now - KEEP_MS)));
+    // Cleanup failing must not turn this answer into a yes, so it is neither awaited nor allowed to throw here.
+    if (Math.random() < 0.01)
+      db.delete(rateLimits)
+        .where(lt(rateLimits.windowStart, new Date(now - KEEP_MS)))
+        .catch((error: unknown) => logEvent("error", "rate_limit_cleanup_failed", errorFields(error)));
     return row.hits <= limit.max;
   } catch (error) {
     logEvent("error", "rate_limit_unavailable", { bucket: limit.bucket, ...errorFields(error) });
@@ -77,4 +81,17 @@ export async function allowsShared(limit: SharedLimit, key: string, deps: { db?:
     logEvent("error", "rate_limit_unavailable", { bucket: limit.bucket, ...errorFields(error) });
     return true;
   }
+}
+
+/**
+ * The key for a per-address limit. An IPv6 address counts by its /64, since one connection is usually given a whole
+ * /64 and could step through it to dodge the limit. IPv4 addresses count as they are.
+ */
+export function addressKey(ip: string): string {
+  if (!ip.includes(":")) return ip;
+  const [head, tail = ""] = ip.toLowerCase().split("::");
+  const front = head ? head.split(":") : [];
+  const back = tail ? tail.split(":") : [];
+  const groups = ip.includes("::") ? [...front, ...Array(Math.max(0, 8 - front.length - back.length)).fill("0"), ...back] : front;
+  return groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, "")).join(":") + "::/64";
 }

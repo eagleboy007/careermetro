@@ -57,6 +57,8 @@ export function clientHash(ip: string, now = new Date()): string {
 }
 
 /** The caller's IP as Vercel reports it. Falls back to a fixed value locally. */
+// Vercel sets x-forwarded-for itself. Behind another proxy that drops both headers, every client becomes "local" and
+// shares one count, so check this before moving hosts or adding a proxy in front.
 export function clientIp(request: Request | Headers): string {
   const h = request instanceof Headers ? request : request.headers;
   return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "local";

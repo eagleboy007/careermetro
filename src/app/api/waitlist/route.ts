@@ -3,7 +3,7 @@ import { getDb } from "@/db";
 import { consents, waitlistEntries } from "@/db/schema";
 import { waitlistSignup } from "@/lib/schemas";
 import { clientIp, isSameOrigin } from "@/lib/session";
-import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
 
 const POLICY_VERSION = "2026-10-draft";
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   // Counted after the form checks, so only real sign-ups use the allowance (and touch the database).
-  if (!(await takeShared(LIMITS.waitlistPerIp, clientIp(request)))) {
+  if (!(await takeShared(LIMITS.waitlistPerIp, addressKey(clientIp(request))))) {
     return Response.json({ ok: false, error: "Too many sign-ups from here. Please try again later." }, { status: 429 });
   }
 

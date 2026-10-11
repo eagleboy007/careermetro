@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
-import { allowsShared, takeShared, type SharedLimit } from "./shared-limit";
+import { addressKey, allowsShared, takeShared, type SharedLimit } from "./shared-limit";
 
 // Runs against a real Postgres with migrations applied. Each test uses its own bucket.
 const url = process.env.TEST_DATABASE_URL;
@@ -61,7 +61,32 @@ describe.skipIf(!db)("shared rate limits (database)", () => {
     random.mockReturnValue(0);
     await takeShared(l, "new", { db: db! });
     random.mockRestore();
-    const rows = await db!.select().from(schema.rateLimits).where(and(eq(schema.rateLimits.bucket, l.bucket)));
-    expect(rows).toHaveLength(1);
+    // The cleanup runs in the background; wait for it.
+    await vi.waitFor(async () => {
+      const rows = await db!.select().from(schema.rateLimits).where(and(eq(schema.rateLimits.bucket, l.bucket)));
+      expect(rows).toHaveLength(1);
+    });
+  });
+
+  it("still says no when the cleanup fails", async () => {
+    const l = limit(1, 60_000);
+    const failing = { ...db!, insert: db!.insert.bind(db!), delete: () => ({ where: () => Promise.reject(new Error("down")) }) } as unknown as typeof db;
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    try {
+      expect(await takeShared(l, "k", { db: failing! })).toBe(true);
+      expect(await takeShared(l, "k", { db: failing! })).toBe(false);
+    } finally {
+      random.mockRestore();
+    }
+  });
+});
+
+describe("addressKey", () => {
+  it("counts IPv6 by its /64 and IPv4 as it is", () => {
+    expect(addressKey("203.0.113.7")).toBe("203.0.113.7");
+    expect(addressKey("2001:db8:12:34:aaaa::1")).toBe("2001:db8:12:34::/64");
+    expect(addressKey("2001:0DB8:0012:0034:ffff:1:2:3")).toBe("2001:db8:12:34::/64");
+    expect(addressKey("2001:db8::5")).toBe("2001:db8:0:0::/64");
+    expect(addressKey("::1")).toBe("0:0:0:0::/64");
   });
 });
