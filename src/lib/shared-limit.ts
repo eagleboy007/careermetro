@@ -1,5 +1,6 @@
 import "server-only";
 import { createHmac } from "node:crypto";
+import { ipHashKey } from "@/lib/hash-keys";
 import { and, eq, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimits } from "@/db/schema";
@@ -30,9 +31,8 @@ export const LIMITS = {
 /** Rows this much older than their window are deleted by the writes below, now and then. */
 const KEEP_MS = 2 * 24 * HOUR;
 
-/** A keyed hash of the email or IP, so the table never holds either. The key is the same secret as the client hash. */
-const keyHash = (bucket: string, key: string) =>
-  createHmac("sha256", process.env.CRON_SECRET || "local-development-only").update(`${bucket}|${key}`).digest("base64url");
+/** A keyed hash of the email or IP, so the table never holds either. The key is the same one as the client hash. */
+const keyHash = (bucket: string, key: string) => createHmac("sha256", ipHashKey()).update(`${bucket}|${key}`).digest("base64url");
 
 const windowStart = (limit: SharedLimit, now: number) => new Date(Math.floor(now / limit.windowMs) * limit.windowMs);
 

@@ -42,4 +42,21 @@ describe("checkName", () => {
     expect(resume!.join(" ")).not.toMatch(/riya|sharma/i);
     expect(checkName("Riya Sharma", resume, { CRON_SECRET: "other" })).toBe("mismatch");
   });
+
+  it("uses its own key once NAME_HASH_KEY is set, and names saved before still match (H7)", () => {
+    const keyed = { ...env, NAME_HASH_KEY: "name-key" };
+    const fresh = nameHashes("Riya Sharma", keyed);
+    expect(fresh).not.toEqual(nameHashes("Riya Sharma", env));
+    expect(checkName("Riya Sharma", fresh, keyed)).toBe("match");
+    expect(checkName("Riya Sharma", resume, keyed)).toBe("match");
+    // Rotating CRON_SECRET no longer breaks names saved under the name key.
+    expect(checkName("Riya Sharma", fresh, { CRON_SECRET: "rotated", NAME_HASH_KEY: "name-key" })).toBe("match");
+    expect(checkName("Riya Sharma", fresh, env)).toBe("mismatch");
+  });
+
+  it("never mixes keys within one name", () => {
+    const keyed = { ...env, NAME_HASH_KEY: "name-key" };
+    const mixed = [nameHashes("Riya", env)![0], nameHashes("Sharma", keyed)![0]];
+    expect(checkName("Riya Sharma", mixed, keyed)).toBe("mismatch");
+  });
 });

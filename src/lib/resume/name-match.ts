@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import { nameHashKeys } from "@/lib/hash-keys";
 
 /**
  * The resume name check (dev/resume-name-check-plan.md): a resume joins an account only when the account's first and
@@ -13,13 +14,13 @@ export function nameWords(name: string | null | undefined): string[] {
   return [...new Set(plain.split(/[^\p{L}]+/u).filter((w) => [...w].length > 1))];
 }
 
-const key = (env: Record<string, string | undefined>) => `resume-name|${env.CRON_SECRET || "local-development-only"}`;
-const hash = (word: string, env: Record<string, string | undefined>) => createHmac("sha256", key(env)).update(word).digest("base64url");
+const hashWith = (key: string, word: string) => createHmac("sha256", key).update(word).digest("base64url");
 
 /** Hashes of the words of the name on a resume, for `resumes.name_hashes`. Null when the resume shows no name. */
 export function nameHashes(name: string | null | undefined, env: Record<string, string | undefined> = process.env): string[] | null {
   const words = nameWords(name);
-  return words.length ? words.map((w) => hash(w, env)) : null;
+  const [key] = nameHashKeys(env);
+  return words.length ? words.map((w) => hashWith(key, w)) : null;
 }
 
 /**
@@ -42,7 +43,9 @@ export function checkName(accountName: string | null | undefined, hashes: string
   if (!hashes?.length) return "unknown";
   if (words.length === 1 && hashes.length > 1) return "mismatch";
   const have = new Set(hashes);
-  return [words[0], words[words.length - 1]].every((w) => have.has(hash(w, env))) ? "match" : "mismatch";
+  // Hashes saved under an earlier key still match: each key is tried on its own, never mixed within one name.
+  const matches = (key: string) => [words[0], words[words.length - 1]].every((w) => have.has(hashWith(key, w)));
+  return nameHashKeys(env).some(matches) ? "match" : "mismatch";
 }
 
 /** What the person reads when a resume isn't added to their account. Never says whose name the resume shows. */
