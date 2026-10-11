@@ -26,7 +26,7 @@ export const INBOX_ERROR_TEXT: Record<InboxError, string> = {
   accept_first: "Accept the request to reply.",
   read_only: "You can read this chat but not send in it.",
   closed: "This chat is closed.",
-  limit: "You've sent a lot of new requests today. Try again tomorrow.",
+  limit: "You've reached today's limit for this. Try again tomorrow.",
   self: "You can't message yourself.",
   invalid: "Write a message of up to 2,000 characters.",
 };
@@ -88,9 +88,11 @@ export async function startDirect(fromId: string, toId: string, body: string, de
   if (!(await takeShared(LIMITS.inboxRequestsPerUser, fromId, { db, now: now.getTime() }))) return fail("limit");
   return db.transaction(async (tx) => {
     await pairLock(fromId, toId, tx);
-    // Two first messages at once: the second becomes a message in the first one's chat.
+    // Checked again under the lock: a block or a deleted account may have come in since the first look.
+    if (!(await reachable(toId, tx)) || (await blockedBetween(fromId, toId, tx))) return fail("unavailable");
+    // Two first messages at once: the second one is refused, and told to accept the other's request or wait for theirs.
     const raced = await directBetween(fromId, toId, tx);
-    if (raced) return { ok: false as const, error: raced.startedBy === fromId && raced.status === "request" ? ("waiting" as const) : ("not_found" as const) };
+    if (raced) return fail(raced.status !== "request" ? "not_found" : raced.startedBy === fromId ? "waiting" : "accept_first");
     const [conversation] = await tx.insert(conversations).values({ kind: "direct", status: "request", startedBy: fromId, createdAt: now, lastMessageAt: now }).returning({ id: conversations.id });
     await tx.insert(conversationMembers).values([
       { conversationId: conversation.id, userId: fromId, lastReadAt: now },
@@ -139,10 +141,12 @@ export async function sendMessage(userId: string, conversationId: string, body: 
     }
     const [message] = await tx.insert(messages).values({ conversationId, senderId: userId, body: text.data, createdAt: now }).returning({ id: messages.id });
     await tx.update(conversations).set({ lastMessageAt: now }).where(eq(conversations.id, conversationId));
-    // Writing in a chat reads it, and brings back one the person had deleted.
+    // Writing in a chat reads it. A new message brings the chat back for everyone who had hidden it (after an unblock,
+    // say); a deleted request never gets here, since requests take no second message.
+    await tx.update(conversationMembers).set({ hiddenAt: null }).where(eq(conversationMembers.conversationId, conversationId));
     await tx
       .update(conversationMembers)
-      .set({ lastReadAt: now, hiddenAt: null })
+      .set({ lastReadAt: now })
       .where(and(eq(conversationMembers.conversationId, conversationId), eq(conversationMembers.userId, userId)));
     return { ok: true as const, messageId: message.id };
   });
@@ -154,7 +158,10 @@ export async function acceptRequest(userId: string, conversationId: string, deps
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
     const me = await membership(userId, conversationId, tx);
-    if (!me || me.status !== "request" || me.startedBy === userId || me.hiddenAt) return fail("not_found");
+    if (!me || me.startedBy === userId || me.hiddenAt) return fail("not_found");
+    // Accepted already (another tab, a double tap): fine.
+    if (me.status === "open") return { ok: true as const };
+    if (me.status !== "request") return fail("not_found");
     await tx.update(conversations).set({ status: "open", lastMessageAt: now }).where(eq(conversations.id, conversationId));
     await tx.insert(messages).values({ conversationId, senderId: null, kind: "system", body: "accepted", createdAt: now });
     await tx
@@ -215,6 +222,8 @@ export async function report(userId: string, input: ReportInput, deps: { db?: Db
   const parsed = reportInput.safeParse(input);
   if (!parsed.success) return fail("not_found");
   const r = parsed.data;
+  // Each report starts legal deadlines, so one person can't flood the queue.
+  if (!(await takeShared(LIMITS.inboxReportsPerUser, userId, { db, now: now.getTime() }))) return fail("limit");
   const result = await db.transaction(async (tx) => {
     const me = await membership(userId, r.conversationId, tx);
     if (!me) return fail("not_found");
@@ -404,7 +413,11 @@ export async function exportInbox(userId: string, db: Db = getDb()) {
   };
 }
 
-/** Run inside the account purge, after the user row is gone: removes chats nobody is left in. */
+/**
+ * Run inside the account purge, after the user row is gone: removes chats nobody is left in, and message requests whose
+ * sender left (their one message went with them, so nothing is left to accept).
+ */
 export async function removeEmptyChats(tx: Tx | Db): Promise<void> {
   await tx.execute(sql`delete from ${conversations} c where not exists (select 1 from ${conversationMembers} m where m.conversation_id = c.id)`);
+  await tx.execute(sql`delete from ${conversations} c where c.kind = 'direct' and c.status = 'request' and c.started_by is null`);
 }

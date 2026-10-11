@@ -314,6 +314,8 @@ if (process.env.DATABASE_URL) {
       await p.locator('ol[aria-label="Messages"]').getByText("Happy to help. Ask away.").waitFor({ timeout: 10000 });
       await p.waitForFunction(() => document.querySelector("[data-draft]")?.value === "", null, { timeout: 5000 });
       await p.getByRole("button", { name: "Block or report" }).click();
+      await p.getByRole("button", { name: "Report", exact: true }).click();
+      await p.getByRole("alert").getByText("Choose what happened.").waitFor();
       await p.getByLabel("Fake job, scam or spam").check();
       await a11y("inbox-report");
       await p.getByRole("button", { name: "Report", exact: true }).click();
@@ -322,6 +324,11 @@ if (process.env.DATABASE_URL) {
       if (filed?.target !== "person" || filed?.reason !== "fake_or_spam") throw new Error("report not saved");
       const [sent] = await sql`select count(*)::int as n from messages where conversation_id = ${chat.id} and sender_id = ${me.id}`;
       if (sent.n !== 1) throw new Error("reply not saved");
+      // A new message in the chat on screen counts as read: the badge clears without opening another chat.
+      await sql`insert into messages (conversation_id, sender_id, body) values (${chat.id}, ${them.id}, 'Thanks! First question soon.')`;
+      await p.reload();
+      await p.locator('ol[aria-label="Messages"]').getByText("Thanks! First question soon.").waitFor();
+      await p.getByRole("link", { name: "Inbox", exact: true }).first().waitFor({ timeout: 10000 });
       await shot("inbox-real");
     } finally {
       await sql.end();

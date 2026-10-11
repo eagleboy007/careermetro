@@ -1,7 +1,7 @@
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { reportDeadlines } from "@/lib/schemas/inbox";
 import { LIMITS } from "@/lib/shared-limit";
@@ -100,6 +100,8 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect((await listThreads(b, deps()))[0]).toMatchObject({ id, kind: "person", state: undefined });
     await unblock(a, b, db!);
     expect((await sendMessage(b, id, "Hello again", deps())).ok).toBe(true);
+    // A new message after the unblock brings the chat back for the person who had blocked.
+    expect((await listThreads(a, deps()))[0]).toMatchObject({ id, unread: true });
   });
 
   it("deletes a request without telling the sender", async () => {
@@ -113,6 +115,24 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect(await unreadChats(b, db!)).toBe(0);
     expect((await listThreads(a, deps()))[0]).toMatchObject({ id, state: "waiting" });
     expect((await acceptRequest(b, id, deps())).ok).toBe(false);
+  });
+
+  it("accepts once, and a second accept is fine", async () => {
+    const { b, id } = await openChat();
+    expect(await acceptRequest(b, id, deps())).toEqual({ ok: true });
+    expect((await db!.select().from(schema.messages).where(eq(schema.messages.conversationId, id))).filter((m) => m.kind === "system")).toHaveLength(1);
+  });
+
+  it("drops a pending request when its sender's account is removed for good", async () => {
+    const a = await person();
+    const b = await person();
+    const started = await startDirect(a, b, "Hi", deps());
+    expect(await unreadChats(b, db!)).toBe(1);
+    await db!.update(schema.users).set({ deletionRequestedAt: new Date(Date.now() - 31 * 86_400_000) }).where(eq(schema.users.id, a));
+    await purgeDeletedAccounts(db!);
+    expect(await unreadChats(b, db!)).toBe(0);
+    expect(await listThreads(b, deps())).toEqual([]);
+    expect(await db!.select().from(schema.conversations).where(eq(schema.conversations.id, started.ok ? started.conversationId : ""))).toEqual([]);
   });
 
   it("counts unread chats and clears them on reading", async () => {
@@ -139,6 +159,7 @@ describe.skipIf(!db)("inbox store (database)", () => {
   });
 
   it("files reports by target, logs no text, and can block too", async () => {
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const { a, b, id } = await openChat();
     const sent = await sendMessage(b, id, "Send me your OTP", deps());
     const messageId = sent.ok ? sent.messageId : "";
@@ -153,6 +174,20 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect(await sendMessage(b, id, "Hello?", deps())).toEqual({ ok: false, error: "unavailable" });
     const person2 = await report(b, { conversationId: id, target: "person", reason: "harassment" }, deps());
     expect(person2.ok).toBe(true);
+    const lines = log.mock.calls.map((c) => String(c[0])).filter((l) => l.includes("inbox_report"));
+    expect(lines).toHaveLength(2);
+    for (const line of lines) {
+      expect(line).not.toMatch(/OTP|Asked for|Vikram|Asha/);
+      expect(Object.keys(JSON.parse(line)).sort()).toEqual(["at", "event", "level", "reason", "status", "target"].sort());
+    }
+    log.mockRestore();
+  });
+
+  it("limits reports per person per day", async () => {
+    const { a, id } = await openChat();
+    const now = new Date();
+    for (let i = 0; i < LIMITS.inboxReportsPerUser.max; i++) expect((await report(a, { conversationId: id, target: "chat", reason: "other" }, { db: db!, now })).ok).toBe(true);
+    expect(await report(a, { conversationId: id, target: "chat", reason: "other" }, { db: db!, now })).toEqual({ ok: false, error: "limit" });
   });
 
   it("downloads only the person's own messages, and purging removes theirs", async () => {

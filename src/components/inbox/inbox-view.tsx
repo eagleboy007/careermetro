@@ -3,7 +3,7 @@
 import { ArrowLeft, CalendarDays, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
   filterThreads,
@@ -34,6 +34,14 @@ const slotName = (key: string) => {
 
 type Thread = InboxThread & { offered?: string[] };
 
+const WIDE = "(min-width: 760px)";
+const isWide = () => window.matchMedia(WIDE).matches;
+const subscribeWide = (change: () => void) => {
+  const query = window.matchMedia(WIDE);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+
 /** How often an open Inbox checks for new messages (dev/inbox-plan.md: no live push in part 1). */
 const POLL_MS = 30_000;
 
@@ -47,7 +55,8 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   const router = useRouter();
   const [threads, setThreads] = useState<Thread[]>(initial);
   const [pending, startTransition] = useTransition();
-  const [reporting, setReporting] = useState<{ block: boolean } | null>(null);
+  // Which button opened the Report panel, so Cancel can put focus back on it.
+  const [reporting, setReporting] = useState<{ block: boolean; from: "header" | "footer" } | null>(null);
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [currentId, setCurrentId] = useState(initial[0]?.id ?? null);
   const [open, setOpen] = useState(false);
@@ -80,6 +89,13 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
     const timer = setInterval(() => document.visibilityState === "visible" && router.refresh(), POLL_MS);
     return () => clearInterval(timer);
   }, [actions, router]);
+  // A message that arrives in the chat on screen is read: the server marks it, and its refresh clears the dot and badge.
+  const wide = useSyncExternalStore(subscribeWide, isWide, () => false);
+  const onScreen = threads.find((t) => t.id === currentId);
+  const readNow = !!actions && !!onScreen?.unread && onScreen.kind !== "request" && (open || wide);
+  useEffect(() => {
+    if (readNow && currentId && actions) void actions.read(currentId);
+  }, [readNow, currentId, actions]);
   const say = (text: string) => {
     // Cleared first, so the same message twice is read out twice.
     setToast(null);
@@ -212,9 +228,10 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
     const finish = () => {
       if (blocks) drop(current.id, `Reported and blocked. We confirm within 24 hours. ${current.name.split(" ")[0]} is not told.`);
       else {
+        const from = reporting?.from;
         setReporting(null);
         say("Reported. We confirm within 24 hours.");
-        focusNext("[data-report]");
+        focusNext(from === "footer" ? "[data-report-footer]" : "[data-report]");
       }
     };
     if (actions)
@@ -232,8 +249,8 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
     else finish();
   };
 
-  const startReport = (block: boolean) => {
-    setReporting({ block });
+  const startReport = (block: boolean, from: "header" | "footer") => {
+    setReporting({ block, from });
     focusNext("[data-report-panel] input");
   };
 
@@ -324,7 +341,14 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                 <span className={`${ghost} hidden cursor-default text-muted hover:bg-surface min-[760px]:inline-flex`}>See on Arrivals · soon</span>
               )}
               {current.state !== "left" && (
-                <button type="button" data-report onClick={() => startReport(false)} aria-expanded={!!reporting} className={quiet}>
+                <button
+                  type="button"
+                  data-report
+                  onClick={() => startReport(false, "header")}
+                  aria-expanded={!!reporting}
+                  aria-controls={reporting ? "report-panel" : undefined}
+                  className={quiet}
+                >
                   {current.kind === "application" ? "Report" : "Block or report"}
                 </button>
               )}
@@ -339,8 +363,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                 pending={pending}
                 onSubmit={sendReport}
                 onCancel={() => {
+                  const from = reporting.from;
                   setReporting(null);
-                  focusNext("[data-report]");
+                  focusNext(from === "footer" ? "[data-report-footer]" : "[data-report]");
                 }}
               />
             )}
@@ -389,7 +414,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                     <button type="button" className={ghost} onClick={remove} disabled={pending}>
                       Delete
                     </button>
-                    <button type="button" className={quiet} onClick={() => startReport(true)}>
+                    <button type="button" data-report-footer className={quiet} onClick={() => startReport(true, "footer")}>
                       Block and report
                     </button>
                   </div>
@@ -640,25 +665,47 @@ function ReportPanel({
   const [reason, setReason] = useState<ReportReason | null>(null);
   const [note, setNote] = useState("");
   const [block, setBlock] = useState(blockAtFirst);
+  const [missing, setMissing] = useState(false);
+  const firstReason = useRef<HTMLInputElement>(null);
+  const row = "flex min-h-11 items-center gap-2 py-2 text-[0.84rem]";
   return (
     <form
+      id="report-panel"
       data-report-panel
       aria-label={`Report ${name}`}
       className="mx-4 mt-3 flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 p-3"
       onSubmit={(e) => {
         e.preventDefault();
         if (reason) onSubmit(reason, note, block);
+        else {
+          setMissing(true);
+          firstReason.current?.focus();
+        }
       }}
     >
-      <fieldset className="flex flex-col gap-1.5">
+      <fieldset className="flex flex-col" aria-describedby={missing ? "report-missing" : undefined}>
         <legend className="mb-1 text-[0.86rem] font-semibold">What happened?</legend>
-        {(Object.keys(REPORT_REASON_LABELS) as ReportReason[]).map((key) => (
-          <label key={key} className="flex items-center gap-2 text-[0.84rem]">
-            <input type="radio" name="reason" value={key} checked={reason === key} onChange={() => setReason(key)} className="accent-ink" />
+        {(Object.keys(REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
+          <label key={key} className={row}>
+            <input
+              ref={i === 0 ? firstReason : undefined}
+              type="radio"
+              name="reason"
+              value={key}
+              checked={reason === key}
+              onChange={() => {
+                setReason(key);
+                setMissing(false);
+              }}
+              className="accent-ink"
+            />
             {REPORT_REASON_LABELS[key]}
           </label>
         ))}
       </fieldset>
+      <p id="report-missing" role="alert" className="text-[0.8rem] font-[550] text-ink empty:hidden">
+        {missing ? "Choose what happened." : ""}
+      </p>
       <label className="flex flex-col gap-1 text-[0.8rem] text-muted">
         Anything we should know (optional)
         <textarea
@@ -670,13 +717,13 @@ function ReportPanel({
         />
       </label>
       {canBlock && (
-        <label className="flex items-center gap-2 text-[0.84rem]">
+        <label className={row}>
           <input type="checkbox" checked={block} onChange={(e) => setBlock(e.target.checked)} className="accent-ink" />
           Also block {name.split(" ")[0]}. They are not told.
         </label>
       )}
       <div className="flex flex-wrap items-center gap-2">
-        <button type="submit" className={primary} disabled={!reason || pending}>
+        <button type="submit" className={primary} disabled={pending}>
           {block && canBlock ? "Report and block" : "Report"}
         </button>
         <button type="button" className={quiet} onClick={onCancel}>
