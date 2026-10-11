@@ -61,7 +61,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Your own ride, goals and departures appear here as we build them.</Banner>
-        <TodayView state={requested} data={{ ...data, greeting }} upload={<UploadForm />} departuresHref="/departures" />
+        <TodayView state={requested} data={{ ...data, greeting }} upload={<UploadForm key="upload" />} departuresHref="/departures" />
       </div>
     );
   }
@@ -101,7 +101,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
       <TodayView
         state={found.state}
         data={own}
-        upload={<UploadForm />}
+        upload={<UploadForm key="upload" />}
         departuresHref="/departures"
         mapHref="/map"
         onToggleTask={tickRideTask}
