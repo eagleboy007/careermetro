@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { getDb } from "@/db";
 import journal from "../../../../drizzle/meta/_journal.json";
 import { recordAiCalls } from "@/lib/ai/log";
-import { checkHealth, checkParse, HEALTH_MODEL, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
+import { checkHealth, checkParse, HEALTH_MODEL, missingSecrets, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
 import { parseResume } from "@/lib/resume/parse";
 import { hasBearer } from "@/lib/secret";
 
@@ -46,6 +46,7 @@ export async function GET(request: Request) {
 function runCheck(): Promise<Health> {
   return checkHealth({
     hasKey: Boolean(process.env.ANTHROPIC_API_KEY),
+    missingSecrets: missingSecrets(),
     pingDb: async () => {
       await getDb().execute(sql`select 1`);
     },
