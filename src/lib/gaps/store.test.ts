@@ -1,3 +1,4 @@
+import { APIError } from "@anthropic-ai/sdk";
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -72,6 +73,19 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(again).toMatchObject({ ok: true, analysisId: first.analysisId });
     expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("links the analysis to the call that answered, after a retry", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { session, resumeId } = await seed();
+    const { client, create } = explainClient();
+    create.mockRejectedValueOnce(APIError.generate(529, { type: "error", error: { type: "overloaded_error", message: "m" } }, "m", new Headers()));
+    const r = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    if (!r.ok) throw new Error(r.reason);
+    expect(create).toHaveBeenCalledTimes(2);
+    const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, r.analysisId));
+    const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
+    expect(call).toMatchObject({ purpose: "explain-gaps", ok: true });
   });
 
   it("extends an analysis stored with only five gaps, keeping its id, rating and words, without the model", async () => {

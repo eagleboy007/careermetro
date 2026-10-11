@@ -11,7 +11,7 @@ import { buildGapAnalysis, SHOWN_GAPS, type Explanations } from "./analysis";
 import type { MatchResult } from "./match";
 
 export const EXPLAIN_MODEL = "claude-opus-5-5";
-/** The Gaps page waits on this call, so it gets one short attempt and the template covers any failure. */
+/** The Gaps page waits on this call: one retry inside this budget for an outage, else the template. */
 /** A retry starts only with at least this much of the budget left. */
 const MIN_RETRY_MS = 5_000;
 const TIMEOUT_MS = 15_000;
@@ -84,7 +84,8 @@ export async function explainGaps(
   if (match.gaps.length === 0) return template([]);
 
   const prompt = loadPrompt("explain-gaps");
-  const started = Date.now();
+  // Reset at each attempt, so a logged latency is that attempt's own.
+  let started = Date.now();
   const record = (model: string, usage: Parameters<typeof costUsd>[1] | null, ok: boolean): AiCallRecord[] => [
     {
       purpose: "explain-gaps",
@@ -104,8 +105,9 @@ export async function explainGaps(
   let response;
   try {
     response = await withOneRetry(
-      (timeout) =>
-        client.beta.messages.create(
+      (timeout) => {
+        started = Date.now();
+        return client.beta.messages.create(
           {
             model: EXPLAIN_MODEL,
             max_tokens: 2_000,
@@ -116,7 +118,8 @@ export async function explainGaps(
             fallbacks: "default",
           },
           { timeout },
-        ),
+        );
+      },
       {
         budgetMs: TIMEOUT_MS,
         minRetryMs: MIN_RETRY_MS,

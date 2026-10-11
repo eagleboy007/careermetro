@@ -9,7 +9,7 @@ import { loadPrompt } from "@/lib/ai/prompts";
 import { plannedPath, type PlannedPath } from "@/lib/schemas";
 
 export const WRITE_PATH_MODEL = "claude-opus-5-5";
-/** The Path page waits on this call, so it gets one short attempt and the template covers any failure. */
+/** The Path page waits on this call: one retry inside this budget for an outage, else the template. */
 /** A retry starts only with at least this much of the budget left. */
 const MIN_RETRY_MS = 5_000;
 const TIMEOUT_MS = 20_000;
@@ -96,7 +96,8 @@ export async function writePath(
   client: WriteClient = getClient(),
 ): Promise<WritePathResult> {
   const prompt = loadPrompt("write-path");
-  const started = Date.now();
+  // Reset at each attempt, so a logged latency is that attempt's own.
+  let started = Date.now();
   const record = (model: string, usage: Parameters<typeof costUsd>[1] | null, ok: boolean): AiCallRecord[] => [
     {
       purpose: "write-path",
@@ -116,8 +117,9 @@ export async function writePath(
   let response;
   try {
     response = await withOneRetry(
-      (timeout) =>
-        client.beta.messages.create(
+      (timeout) => {
+        started = Date.now();
+        return client.beta.messages.create(
           {
             model: WRITE_PATH_MODEL,
             max_tokens: 3_000,
@@ -128,7 +130,8 @@ export async function writePath(
             fallbacks: "default",
           },
           { timeout },
-        ),
+        );
+      },
       {
         budgetMs: TIMEOUT_MS,
         minRetryMs: MIN_RETRY_MS,
