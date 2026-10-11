@@ -1,21 +1,15 @@
 import { randomBytes } from "node:crypto";
 import { getDb } from "@/db";
 import { consents, waitlistEntries } from "@/db/schema";
-import { windowLimiter } from "@/lib/rate-limit";
 import { waitlistSignup } from "@/lib/schemas";
-import { clientHash, clientIp, isSameOrigin } from "@/lib/session";
+import { clientIp, isSameOrigin } from "@/lib/session";
+import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
 
 const POLICY_VERSION = "2026-10-draft";
-
-/** Sign-ups per client per hour on one server instance: enough for a family on one connection, not for a script. */
-const signups = windowLimiter(10, 60 * 60 * 1000);
 
 export async function POST(request: Request) {
   // Only our own form may record a consent: another site can't sign someone up (T20).
   if (!isSameOrigin(request)) return Response.json({ ok: false, error: "Please join from the CareerMetro website." }, { status: 403 });
-  if (!signups.take(clientHash(clientIp(request)))) {
-    return Response.json({ ok: false, error: "Too many sign-ups from here. Please try again later." }, { status: 429 });
-  }
   const body = await request.json().catch(() => null);
 
   // Honeypot: a hidden field people never fill in. Bots that do get the same reply as everyone else.
@@ -29,6 +23,11 @@ export async function POST(request: Request) {
       { ok: false, error: parsed.error.issues[0]?.message ?? "Check the form and try again" },
       { status: 400 },
     );
+  }
+
+  // Counted after the form checks, so only real sign-ups use the allowance (and touch the database).
+  if (!(await takeShared(LIMITS.waitlistPerIp, addressKey(clientIp(request))))) {
+    return Response.json({ ok: false, error: "Too many sign-ups from here. Please try again later." }, { status: 429 });
   }
 
   const { email, role } = parsed.data;

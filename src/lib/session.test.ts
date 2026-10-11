@@ -112,5 +112,6 @@ describe("client hash", () => {
     expect(clientIp(r({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }))).toBe("203.0.113.7");
     expect(clientIp(r({ "x-real-ip": "203.0.113.9" }))).toBe("203.0.113.9");
     expect(clientIp(r({}))).toBe("local");
+    expect(clientIp(new Headers({ "x-forwarded-for": "198.51.100.2" }))).toBe("198.51.100.2");
   });
 });
