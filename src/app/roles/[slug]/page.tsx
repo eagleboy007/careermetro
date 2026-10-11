@@ -16,7 +16,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/roles/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const role = getRoleView(slug);
-  if (!role) return {};
+  // The not-found page streams inside Suspense, after its own metadata could apply, so the title is set here.
+  if (!role) return { title: "Page not found · CareerMetro", robots: { index: false } };
   return {
     title: `${role.title} · CareerMetro`,
     description: `Skills and certifications employers ask for in ${role.title} roles.`,
@@ -30,7 +31,7 @@ export default function RolePage({ params }: PageProps<"/roles/[slug]">) {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-20">
       <SiteHeader />
-      <Suspense fallback={<p className="text-sm text-muted">Loading role…</p>}>
+      <Suspense fallback={<p role="status" className="text-sm text-muted">Loading role…</p>}>
         <Role params={params} />
       </Suspense>
     </main>
