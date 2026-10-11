@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { cacheLife } from "next/cache";
 
 const TITLE = "careermetro · Your next role, one pitstop at a time";
 const DESCRIPTION =
@@ -8,15 +9,18 @@ const DESCRIPTION =
 /**
  * The holding page for careermetro.com (design thread, 2026-10-11), served as one self-contained page. Its body lives
  * in src/site/holding.html, as the design thread wrote it; this adds the document wrapper, link preview and icons.
- * The proxy shows it at / on the public domain (see HOLDING_HOSTS in src/proxy.ts).
+ * The proxy shows it at / on the public domain (see HOLDING_HOSTS in src/proxy.ts). The page carries its own copy of the
+ * colour tokens and loads its fonts from Google, so a CSP with script-src, style-src or font-src would break it, and a
+ * token change in globals.css needs copying there.
  */
 export async function GET() {
   return new Response(await holdingPage(), { headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
-// Cached, so the page is built once and served as a static file.
+// Built once per deploy: the page only changes with a new deploy.
 async function holdingPage() {
   "use cache";
+  cacheLife("max");
   const body = await readFile(path.join(process.cwd(), "src/site/holding.html"), "utf8");
   // Built once, so the link-preview image uses the production address, as the app's own pages do (src/app/layout.tsx).
   const origin = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000";

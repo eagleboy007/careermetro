@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          // /early-access has inline script and style and Google Fonts: a script-src, style-src or font-src rule would break it.
           { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },

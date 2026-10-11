@@ -77,6 +77,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 ### 5.5b Resume builder
 - FR-19: Generate an improved resume draft from the parsed profile, rewriting bullets for the target role. Never fabricate experience or skills; anything the model adds as a suggestion is flagged for the user to confirm.
 - FR-20: ATS-friendly single-column templates (2-3). Export to PDF and DOCX.
+- FR-34: Screening-readiness check (Milin, 2026-10-11; the holding site promises "AI-ready" resumes). Against the target role or a pasted job description, show: required keywords the resume is missing, layout that screening software reads badly (tables, columns, images, text in headers or footers) and non-standard section names. Keyword matching is plain code over the skill taxonomy. A missing keyword becomes a gap or a "confirm you have this" prompt; the check never writes text the person did not confirm. The fix-ups export through FR-20.
 
 ### 5.6 Interview practice
 - FR-21: Generate role-specific questions weighted toward the user's gaps.

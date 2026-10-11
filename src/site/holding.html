@@ -92,6 +92,20 @@ h2{font-size:clamp(1.9rem, 4.2vw, 3rem)}
 .chip.pop{opacity:0; transform:translateY(6px)}
 .found{display:flex; flex-direction:column; gap:12px; margin-top:16px}
 
+.board-pill{display:inline-flex; align-items:center; flex-wrap:wrap; gap:6px 10px; padding:10px 16px; border-radius:14px; background:var(--board); color:var(--board-ink); text-decoration:none; font-size:.95rem; box-shadow:0 16px 40px -28px var(--shadow)}
+.board-pill b{font-family:var(--display); font-weight:600; letter-spacing:-0.01em}
+.board-pill .dot{width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent)}
+.airesume h3{font-size:1.5rem; margin-top:6px}
+.ai-head{display:flex; gap:20px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap}
+.ai-score{display:flex; flex-direction:column; gap:2px; padding:12px 16px; border-radius:14px; background:var(--surface-2)}
+.ai-score b{font-family:var(--display); font-size:1.8rem; letter-spacing:-0.02em; font-variant-numeric:tabular-nums}
+.ai-cols{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:24px; margin-top:20px; padding-top:18px; border-top:1px solid var(--line)}
+@media (max-width:760px){ .ai-cols{grid-template-columns:minmax(0,1fr)} }
+.chip.miss{border-style:dashed; color:var(--muted); background:transparent}
+.ai-checks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:.92rem}
+.ai-checks li{display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; align-items:start}
+.ai-checks svg{width:18px; height:18px; margin-top:2px}
+
 /* gaps */
 .seg{display:flex; flex-wrap:wrap; gap:6px}
 .seg button{border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:8px 14px; cursor:pointer; font-size:.9rem}
@@ -222,7 +236,7 @@ footer a{text-decoration:none} footer a:hover{color:var(--ink)}
     <div class="stn-head">
       <p class="label"><b>Resume</b> Stop 1 of 5</p>
       <h2>Start with what you already have.</h2>
-      <p class="lede">We read your resume and list the skills it shows. You check them, add what's missing, and move on.</p>
+      <p class="lede">We read your resume and list the skills it shows. Then we make it AI-ready, so screening software reads it the way a recruiter would.</p>
     </div>
     <div class="grid2">
       <div class="card resume" aria-label="Sample resume">
@@ -363,17 +377,18 @@ footer a{text-decoration:none} footer a:hover{color:var(--ink)}
       <div class="card" style="padding:24px">
         <form id="form" novalidate>
           <div class="two">
-            <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" required></div>
-            <div class="field"><label for="f-role">Role you want next</label><input id="f-role" type="text" placeholder="e.g. SOC Analyst" required></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" maxlength="254" required></div>
+            <div class="field"><label for="f-role">Role you want next</label><input id="f-role" type="text" placeholder="e.g. SOC Analyst" maxlength="120" required></div>
           </div>
           <label class="consent" for="f-ok"><input id="f-ok" type="checkbox" required><span>I agree that CareerMetro can email me about early access. I can unsubscribe any time.</span></label>
-          <p class="err" id="err" hidden></p>
+          <p class="err" id="err" role="alert" hidden></p>
+          <input name="website" id="f-website" tabindex="-1" autocomplete="off" aria-hidden="true" hidden>
           <button class="btn btn-primary" type="submit" style="align-self:flex-start">Get early access</button>
           <p class="privacy">We never sell your data. Your resume is used only to find your gaps.</p>
         </form>
         <div class="ok" id="ok" hidden>
           <span class="label">Seat requested</span>
-          <h3>You're on the line.</h3>
+          <h3 id="ok-h" tabindex="-1">You're on the line.</h3>
           <p class="lede">We'll write to <b id="okMail"></b> when your seat is ready.</p>
         </div>
       </div>
@@ -504,7 +519,7 @@ footer a{text-decoration:none} footer a:hover{color:var(--ink)}
     roleBox.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
     render();
   });
-  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function render(){
     var r = ROLES[current];
     $('gapList').innerHTML = r.gaps.map(function(g){
@@ -564,14 +579,16 @@ footer a{text-decoration:none} footer a:hover{color:var(--ink)}
     var mail = $('f-email').value.trim(), role = $('f-role').value.trim();
     var msg = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail) ? 'Check your email address, it looks incomplete.' : !role ? 'Tell us the role you want next.' : !$('f-ok').checked ? 'Tick the box so we can email you about early access.' : '';
     var err = $('err');
-    if (msg){ err.textContent = msg; err.hidden = false; return; }
+    var bad = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail) ? $('f-email') : !role ? $('f-role') : !$('f-ok').checked ? $('f-ok') : null;
+    ['f-email','f-role','f-ok'].forEach(function(id){ var el = $(id); if (el === bad) { el.setAttribute('aria-invalid','true'); el.setAttribute('aria-describedby','err'); } else { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); } });
+    if (msg){ err.textContent = msg; err.hidden = false; bad.focus(); return; }
     err.hidden = true;
-    var data = {email:mail, role:role, consent:true};
-    function done(){ $('okMail').textContent = mail; $('form').hidden = true; $('ok').hidden = false; }
+    var data = {email:mail, role:role, consent:true, website:$('f-website').value};
+    function done(){ $('okMail').textContent = mail; $('form').hidden = true; $('ok').hidden = false; $('ok-h').focus(); }
     if (!FORM_ENDPOINT){ done(); return; }
     fetch(FORM_ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)})
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok) throw (j && j.error) || 0; done(); }); })
-      .catch(function(m){ err.textContent = typeof m === 'string' ? m : 'That didn\'t go through. Check your connection and try again.'; err.hidden = false; });
+      .catch(function(m){ err.textContent = typeof m === 'string' ? m : 'That didn\'t go through. Please try again in a moment.'; err.hidden = false; });
   });
 })();
 </script>
