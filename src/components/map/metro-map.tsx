@@ -1,5 +1,7 @@
 "use client";
 
+import { CertificateForm } from "@/components/proof/certificate-form";
+import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -18,7 +20,16 @@ type Pitstop = Extract<Station, { kind: PitstopKind }>;
  * The Map (handoff section 7): the person's line as an SVG, with a side panel for the pitstop they tap. `line` is null
  * before there is a resume; the map then shows a locked card over an empty grid.
  */
-export function MetroMap({ line, life = null }: { line: MapLine | null; life?: LifeLine | null }) {
+export function MetroMap({
+  line,
+  life = null,
+  onAddCertificate,
+}: {
+  line: MapLine | null;
+  life?: LifeLine | null;
+  /** Saves a certificate for a prove pitstop; without it the form only says nothing is saved. */
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+}) {
   const layout = useMemo(() => (line ? layoutLine(line) : null), [line]);
   const [mode, setMode] = useState<"role" | "life">("role");
   const [zoom, setZoom] = useState<LifeZoom>(() => (life ? defaultZoom(life) : "all"));
@@ -131,7 +142,7 @@ export function MetroMap({ line, life = null }: { line: MapLine | null; life?: L
           {showLife ? (
             <LifeSheet key={`life-${lifeSelected ?? "none"}`} id={lifeSelected} line={life} layout={lifeLayout} onSelect={setLifeSelected} onZoom={() => setZoom("recent")} />
           ) : (
-            <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} />
+            <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} onAddCertificate={onAddCertificate} />
           )}
         </aside>
       )}
@@ -380,7 +391,56 @@ function LockedMap() {
 
 /* ---------- side panel ---------- */
 
-function Sheet({ id, layout, line }: { id: string | null; layout: Layout; line: MapLine }) {
+/** The prove pitstop's "Add a certificate": a button that opens the form in the panel. */
+function AddCertificate({ goal, onSave }: { goal: MapLine["goals"][number]; onSave?: (input: CertificateInput) => Promise<CertificateResult> }) {
+  const [open, setOpen] = useState(false);
+  const opener = useRef<HTMLButtonElement>(null);
+  const formBox = useRef<HTMLDivElement>(null);
+  // Opening moves focus to the first field; Cancel brings it back to the button.
+  useEffect(() => {
+    if (open) formBox.current?.querySelector<HTMLElement>("select, input")?.focus();
+  }, [open]);
+  return (
+    <>
+      <button
+        ref={opener}
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="min-h-11 self-start rounded-full border border-line bg-surface px-3.5 py-1.5 text-[0.84rem] font-semibold"
+      >
+        {goal.renew ? "Renew certificate" : "Add a certificate"}
+      </button>
+      {open && (
+        <div ref={formBox}>
+          <CertificateForm
+            goalId={goal.goalId ?? ""}
+            goalName={goal.name}
+            certificates={goal.certificates}
+            renew={goal.renew}
+            onSave={goal.goalId ? onSave : undefined}
+            onCancel={() => {
+              setOpen(false);
+              opener.current?.focus();
+            }}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+function Sheet({
+  id,
+  layout,
+  line,
+  onAddCertificate,
+}: {
+  id: string | null;
+  layout: Layout;
+  line: MapLine;
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+}) {
   const station = layout.stations.find((s) => s.id === id);
   const crossing = layout.crossings.find((c) => `x-${c.slug}` === id);
   const links = line.resumeId
@@ -482,18 +542,25 @@ function Sheet({ id, layout, line }: { id: string | null; layout: Layout; line: 
   return (
     <Panel kicker={kicker} title={`Pitstop ${pit.n}: prove ${goal.name}`}>
       <p>
-        {fresh
-          ? `The pitstop that fills the ${goal.name} gap. Pick any one way to prove it.`
-          : `${goal.name} is already on your resume, so the app suggests only a prove pitstop. Pick any one way to prove it.`}
+        {goal.renew
+          ? `Your ${goal.name} certificate has expired. Add the renewed one to fill the gap again.`
+          : fresh
+            ? `The pitstop that fills the ${goal.name} gap. Pick any one way to prove it.`
+            : `${goal.name} is already on your resume, so the app suggests only a prove pitstop. Pick any one way to prove it.`}
       </p>
       <Label>Ways to prove it</Label>
       <List
         items={[
           { Icon: CircleHelp, title: `${goal.name} skill check`, detail: "on camera · soon" },
-          { Icon: Award, title: "A certification the role accepts", detail: "verified with the issuer · soon" },
+          {
+            Icon: Award,
+            title: "A certification the role accepts",
+            detail: goal.certificates.length ? `${goal.certificates.length} on our list · add it below` : "none on our list for this skill yet",
+          },
           { Icon: BriefcaseBusiness, title: `${goal.name} work you did`, detail: "a manager or colleague confirms · soon" },
         ]}
       />
+      {!goal.proved && goal.certificates.length > 0 && <AddCertificate goal={goal} onSave={line.resumeId ? onAddCertificate : undefined} />}
       {!fresh && resources.length > 0 && (
         <>
           <Label>Brush up if you need to</Label>

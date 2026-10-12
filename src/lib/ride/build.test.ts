@@ -37,6 +37,24 @@ describe("buildRide", () => {
     expect(r.tasks.reduce((n, t) => n + t.minutes, 0)).toBeLessThanOrEqual(70);
   });
 
+  it("offers only certificates that fill the goal, through its one-of group too, and says when it needs renewing", () => {
+    const sql = ride([goal({ goalId: "g1", skillId: "sql", name: "SQL" })])!;
+    expect(sql.prove).toMatchObject({ goalId: "g1", renew: false });
+    expect(sql.prove!.certificates.map((c) => c.id)).toEqual(["oracle-sql-associate"]);
+
+    const cloud = ride([goal({ goalId: "g2", skillId: "aws", proofSkills: ["aws", "azure"], renew: true })])!;
+    const ids = cloud.prove!.certificates.map((c) => c.id);
+    expect(ids).toContain("aws-cloud-practitioner");
+    expect(ids).toContain("azure-fundamentals");
+    expect(cloud.prove!.renew).toBe(true);
+    expect(cloud.summary).toMatch(/has expired/);
+    expect(cloud.prove!.options.find((o) => o.kind === "cert")!.action).toBe("Renew");
+
+    const none = ride([goal({ goalId: "g3", skillId: "no-such-skill" })])!;
+    expect(none.prove!.certificates).toEqual([]);
+    expect(none.prove!.options.find((o) => o.kind === "cert")!.detail).toMatch(/No certificate on our list/);
+  });
+
   it("drops tasks done on an earlier day, keeps today's ticks so they can be taken back, and counts the week", () => {
     const r = ride([goal({ goalId: "sql" })], { before: ["sql:r:sql-1"], today: ["sql:r:sql-2"], week: ["sql:r:sql-1", "sql:r:sql-2"] })!;
     expect(r.tasks.map((t) => [t.id, t.done])).toEqual([

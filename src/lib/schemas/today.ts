@@ -34,6 +34,15 @@ export const rideTask = z.object({
 /** The prove pitstop after this week's learn pitstop: any one option fills the gap. Only proof moves the train. */
 export const provePitstop = z.object({
   pitstop: z.number().int().min(1),
+  /** The person's goal this pitstop proves. Null on example data, where nothing can be saved. */
+  goalId: z.string().min(1).max(60).nullable().default(null),
+  /** Certificates on our list that fill this goal (dev/proof-plan.md). Empty when none does. */
+  certificates: z
+    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
+    .max(40)
+    .default([]),
+  /** The goal's certificate expired, so it needs a current one to fill the gap again. */
+  renew: z.boolean().default(false),
   why: z.string().min(1).max(200),
   options: z
     .array(

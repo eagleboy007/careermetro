@@ -1,4 +1,5 @@
 import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type Ride, type RideTask } from "@/lib/schemas";
+import { certificatesFor } from "@/lib/proofs/eligible";
 import { clip } from "@/lib/text";
 
 /** One goal on the person's line, in order, with what its learn pitstop is made of. */
@@ -13,6 +14,10 @@ export type RideGoal = {
   practice: string | null;
   /** The step was marked done on the Path page, which counts as every task ticked. */
   learnDone: boolean;
+  /** Skills whose proof fills this goal: its own, or each of its "one of these" group. */
+  proofSkills?: string[];
+  /** Its certificate expired, so it waits for a current one. */
+  renew?: boolean;
 };
 
 /** The person's Path page for their current analysis, and whether a path has been built there yet. */
@@ -143,25 +148,33 @@ export function buildRide(input: RideInput): Ride | null {
   const weekDone = tasksFor(current).filter((t) => input.doneThisWeek.has(t.id)).length;
   const emphasis = `your ${name} goal.`;
   const ready = !unfinished && tasks.every((t) => t.done);
+  const certificates = certificatesFor(current.proofSkills ?? [current.skillId]);
   return rideSchema.parse({
     pitstop,
     pitstopCount: input.goals.length * 2,
     goalName: name,
     title: `This week is about ${emphasis}`,
     titleEmphasis: emphasis,
-    summary: ready
+    summary: current.renew
+      ? `Your certificate for ${name} has expired. Add a current one (Pitstop ${pitstop + 1}) to fill the gap again.`
+      : ready
       ? `Your tasks for ${name} are done. Prove it (Pitstop ${pitstop + 1}) to fill the gap and move the train.`
       : `Two pitstops: learn it with free courses and practice (Pitstop ${pitstop}, these tasks), then prove it (Pitstop ${pitstop + 1}) to fill the gap.`,
     prove: {
       pitstop: pitstop + 1,
+      goalId: current.goalId,
+      certificates,
+      renew: Boolean(current.renew),
       why: `Pitstop ${pitstop} gets you ready. Only this pitstop fills the gap. You can prove it any time.`,
       options: [
         { kind: "check", title: "Skill check", detail: "A short check on camera, free, from the same areas as your tasks.", action: "Take it" },
         {
           kind: "cert",
           title: "Certification",
-          detail: "Add the certificate link or ID from a known issuer; we check it with the issuer.",
-          action: "Add certificate",
+          detail: certificates.length
+            ? "Add the certificate's verify link from Credly or the issuer. It must be in your name."
+            : "No certificate on our list covers this skill yet. Use a skill check or work experience.",
+          action: current.renew ? "Renew" : "Add certificate",
         },
         {
           kind: "work",

@@ -7,6 +7,9 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
 import { syncGoals } from "@/lib/goals/store";
 import { goalName } from "@/lib/goals/name";
+import { fillingSkills } from "@/lib/goals/sync";
+import { certificatesFor } from "@/lib/proofs/eligible";
+import { skillGroupMembers } from "@/content";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { lifeFromProfile } from "./life";
 
@@ -54,11 +57,16 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   );
   const goals: MapGoal[] = ordered.map((g) => {
     const step = stepBySkill.get(g.skillId);
-    const proved = goalBySkill.get(g.skillId)?.proved ?? false;
+    const own = goalBySkill.get(g.skillId);
+    const proved = own?.proved ?? false;
     return {
+      goalId: own?.id ?? null,
+      certificates: certificatesFor(own ? fillingSkills(own, skillGroupMembers) : [g.skillId]),
+      renew: own?.status === "renew",
       skillId: g.skillId,
       name: clip(goalName(g, proved, result.roleSlug), 80),
-      status: g.status,
+      // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
+      status: own?.status === "renew" ? "weak" : g.status,
       learnDone: Boolean(step?.doneAt),
       proved,
       resources: (step?.resourceIds ?? [])
@@ -88,7 +96,7 @@ const hours = (minutes: number) => (minutes < 60 ? `${minutes} min` : `${Math.ro
  * Other role profiles that need one of this line's gap skills: the roles sharing the most gaps first. Each crosses at a
  * different goal. People counts come with opted-in profiles (build step 11).
  */
-export function otherLines(roleSlug: string, goals: MapGoal[]): MapLine["otherLines"] {
+export function otherLines(roleSlug: string, goals: Pick<MapGoal, "skillId">[]): MapLine["otherLines"] {
   const gapIds = goals.map((g) => g.skillId);
   const candidates = roleProfiles
     .filter((r) => r.slug !== roleSlug)

@@ -50,6 +50,8 @@ export const userGoal = z.object({
   source: z.enum(GOAL_SOURCES),
   status: goalState,
   position: z.number().int().min(1),
+  /** The "one of these" group the goal stands for, if any: proof of any skill in it fills the goal. */
+  groupId: z.string().nullable().default(null),
   /** A proof for this skill was accepted. A goal met because a newer resume shows the skill is not proved. */
   proved: z.boolean(),
 });

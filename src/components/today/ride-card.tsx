@@ -2,6 +2,8 @@
 
 import { Award, BriefcaseBusiness, Check, CircleHelp, Route, TrainFront, Video } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
+import { CertificateForm } from "@/components/proof/certificate-form";
+import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import type { ProvePitstop, Ride, RideWeek } from "@/lib/schemas";
 import { TaskList } from "./task-list";
 
@@ -19,6 +21,7 @@ export function RideCard({
   ride,
   week,
   onToggle,
+  onAddCertificate,
   signalAnswered = false,
 }: {
   name: string;
@@ -27,6 +30,8 @@ export function RideCard({
   ride: Ride;
   week: RideWeek;
   onToggle?: (taskId: string, done: boolean) => void | Promise<boolean>;
+  /** Saves a certificate for the prove pitstop; without it the form only says nothing is saved. */
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
   /** The signal check was answered today: that ticks the ride's locked task. */
   signalAnswered?: boolean;
 }) {
@@ -85,7 +90,7 @@ export function RideCard({
         <p className="max-w-[52ch] text-[0.95rem] text-muted">{ride.summary}</p>
         <MiniLine pitstop={ride.pitstop} count={ride.pitstopCount} share={share} />
         <TaskList tasks={ride.tasks} done={done} onToggle={toggle} />
-        {ride.prove && <ProveBox prove={ride.prove} goalName={ride.goalName} />}
+        {ride.prove && <ProveBox prove={ride.prove} goalName={ride.goalName} onAddCertificate={onAddCertificate} />}
       </div>
 
       <div className="flex min-w-0 flex-col gap-[18px] border-t border-line pt-4 md:border-l md:border-t-0 md:pl-7 md:pt-0">
@@ -274,8 +279,31 @@ function PitstopChip({ pitstop, count }: { pitstop: number; count: number }) {
 const PROVE_ICON = { check: Video, cert: Award, work: BriefcaseBusiness } as const;
 
 /** The prove pitstop that follows this week's learn pitstop. Any one option fills the gap. */
-function ProveBox({ prove, goalName }: { prove: ProvePitstop; goalName: string }) {
-  const [asked, setAsked] = useState(false);
+function ProveBox({
+  prove,
+  goalName,
+  onAddCertificate,
+}: {
+  prove: ProvePitstop;
+  goalName: string;
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+}) {
+  const [asked, setAsked] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const opener = useRef<HTMLButtonElement>(null);
+  const canAdd = prove.certificates.length > 0;
+  function choose(kind: "check" | "cert" | "work") {
+    if (kind === "cert" && canAdd) {
+      setAsked(null);
+      setAdding(true);
+      return;
+    }
+    setAsked(
+      kind === "cert"
+        ? "No certificate on our list covers this skill yet. A skill check or work experience will prove it once they open."
+        : "This way to prove opens in a later build. Your tasks above already count toward this goal.",
+    );
+  }
   return (
     <section
       className="mt-1 flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface px-4 py-3.5"
@@ -283,7 +311,7 @@ function ProveBox({ prove, goalName }: { prove: ProvePitstop; goalName: string }
     >
       <div className="flex flex-wrap items-center gap-2.5">
         <b className="font-display text-[1.02rem] font-semibold">
-          Pitstop {prove.pitstop} · Prove {goalName}
+          Pitstop {prove.pitstop} · {prove.renew ? "Renew" : "Prove"} {goalName}
         </b>
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">
           {prove.options.length === 1 ? "one way" : prove.options.length === 2 ? "any one of two" : "any one of three"}
@@ -294,25 +322,42 @@ function ProveBox({ prove, goalName }: { prove: ProvePitstop; goalName: string }
         {prove.options.map((o) => {
           const Icon = PROVE_ICON[o.kind];
           return (
-            <li key={o.kind} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] bg-surface-2 px-3 py-2.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
-              <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
-              <span className="flex flex-col gap-0.5 text-[0.9rem]">
-                <b className="font-semibold">{o.title}</b>
-                <small className="text-[0.8rem] leading-[1.4] text-muted">{o.detail}</small>
-              </span>
-              <button
-                type="button"
-                onClick={() => setAsked(true)}
-                className="col-start-2 justify-self-start whitespace-nowrap rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold sm:col-start-3"
-              >
-                {o.action}
-              </button>
+            <li key={o.kind} className="flex flex-col gap-2">
+              <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-[14px] bg-surface-2 px-3 py-2.5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
+                <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
+                <span className="flex flex-col gap-0.5 text-[0.9rem]">
+                  <b className="font-semibold">{o.title}</b>
+                  <small className="text-[0.8rem] leading-[1.4] text-muted">{o.detail}</small>
+                </span>
+                <button
+                  type="button"
+                  ref={o.kind === "cert" ? opener : undefined}
+                  onClick={() => choose(o.kind)}
+                  aria-expanded={o.kind === "cert" && canAdd ? adding : undefined}
+                  className="col-start-2 justify-self-start whitespace-nowrap rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold sm:col-start-3"
+                >
+                  {o.action}
+                </button>
+              </div>
+              {o.kind === "cert" && adding && (
+                <CertificateForm
+                  goalId={prove.goalId ?? ""}
+                  goalName={goalName}
+                  certificates={prove.certificates}
+                  renew={prove.renew}
+                  onSave={prove.goalId ? onAddCertificate : undefined}
+                  onCancel={() => {
+                    setAdding(false);
+                    opener.current?.focus();
+                  }}
+                />
+              )}
             </li>
           );
         })}
       </ul>
       <p role="status" className={`text-[0.8rem] text-muted ${asked ? "" : "sr-only"}`}>
-        {asked ? "Proof opens in a later build. Your tasks above already count toward this goal." : ""}
+        {asked ?? ""}
       </p>
     </section>
   );

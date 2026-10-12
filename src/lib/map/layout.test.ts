@@ -6,6 +6,9 @@ import { layoutLine, pitstopLabel, pitstopsFor } from "./layout";
 const goal = (skillId: string, status: MapGoal["status"], extra: Partial<MapGoal> = {}): MapGoal => ({
   skillId,
   name: skillId,
+  goalId: null,
+  certificates: [],
+  renew: false,
   status,
   learnDone: false,
   proved: false,

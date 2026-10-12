@@ -23,6 +23,15 @@ export const mapGoal = z.object({
   resources: z.array(mapItem).max(3),
   /** The path's practice task for this skill, if any. */
   practice: z.string().min(1).max(400).nullable(),
+  /** The person's goal, for adding proof. Null in example data, where nothing can be saved. */
+  goalId: z.string().min(1).max(60).nullable().default(null),
+  /** Certificates on our list that fill this goal (dev/proof-plan.md). */
+  certificates: z
+    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
+    .max(40)
+    .default([]),
+  /** Its certificate expired, so it waits for a current one. */
+  renew: z.boolean().default(false),
 });
 
 export const mapLine = z.object({

@@ -26,6 +26,7 @@ import { StatusChip } from "@/components/ui/status-chip";
 import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
+import { CertificateForm } from "@/components/proof/certificate-form";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -249,6 +250,10 @@ export default function DesignPage() {
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
+        <p className="text-sm text-muted">Add a certificate: opens from the prove pitstop. Only certificates that prove the goal are listed.</p>
+        <div className="max-w-xl">
+          <CertificateForm goalId="example" goalName="SQL window functions" certificates={exampleToday.ride.prove?.certificates ?? []} />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
