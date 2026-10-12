@@ -74,7 +74,7 @@ function withProved(rows: GoalRow[], proved: string[], members: ReadonlyMap<stri
   const provedSet = new Set(proved);
   return rows.map(({ groupId, ...r }) => {
     const proved = fillingSkills({ skillId: r.skillId, groupId }, members).some((id) => provedSet.has(id));
-    return userGoal.parse({ ...r, proved });
+    return userGoal.parse({ ...r, groupId, proved });
   });
 }
 

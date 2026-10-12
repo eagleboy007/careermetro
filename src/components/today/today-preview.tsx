@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import type {
   Departure,
   EventTeaser,
@@ -52,6 +53,7 @@ export function TodayView({
   data,
   upload,
   onToggleTask,
+  onAddCertificate,
   onHours,
   departuresHref,
   mapHref,
@@ -60,6 +62,8 @@ export function TodayView({
   data: TodayData;
   upload: ReactNode;
   onToggleTask?: (taskId: string, done: boolean) => void | Promise<boolean>;
+  /** Saves a certificate for the ride's prove pitstop. */
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
   /** Saves the hours a week picked on the welcome card. */
   onHours?: (hours: number) => void | Promise<boolean>;
   /** Where "All departures" goes; without it the link is marked "soon". */
@@ -105,6 +109,7 @@ export function TodayView({
             week={data.week}
             signalAnswered={answer.answered}
             onToggle={onToggleTask}
+            onAddCertificate={onAddCertificate}
           />
         )}
       </div>

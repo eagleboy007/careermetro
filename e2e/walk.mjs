@@ -243,6 +243,49 @@ await step("tick a ride task -> returning + streak", async () => {
   await shot("today-returning");
   await a11y("today-returning");
 });
+await step("add a certificate: the form opens, and a name that isn't yours is refused", async () => {
+  const prove = p.locator('section[aria-label^="Pitstop"]');
+  await prove.getByRole("button", { name: /^(Add certificate|Renew)$/ }).click();
+  const form = p.getByRole("form", { name: /^Add a certificate for / });
+  if (!(await form.count())) {
+    await prove.getByRole("status").getByText(/No certificate on our list/).waitFor({ timeout: 5000 });
+    console.log("     no certificate covers this goal; form not shown");
+    return;
+  }
+  await a11y("certificate-form");
+  await form.getByLabel("Certificate", { exact: true }).selectOption({ index: 1 });
+  await form.getByLabel("Credential ID").fill(`WALK-${Date.now()}`);
+  await form.getByLabel("Your name as printed").fill("Amit Verma");
+  await form.getByLabel("Date issued").fill("2025-03-01");
+  await form.getByLabel("It never expires").check();
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/walk-test");
+  await form.getByLabel(/This certificate is mine/).check();
+  await form.getByRole("button", { name: "Save certificate" }).click();
+  await form.getByText(/doesn't match your account/).waitFor({ timeout: 10000 });
+  await shot("certificate-refused");
+  await form.getByRole("button", { name: "Cancel" }).click();
+  if (await form.count()) throw new Error("form still open after Cancel");
+});
+await step("design page: the certificate form says example data is never saved", async () => {
+  await p.goto(BASE + "/design");
+  const form = p.getByRole("form", { name: "Add a certificate for SQL window functions" }).first();
+  await form.scrollIntoViewIfNeeded();
+  await form.getByLabel("Certificate", { exact: true }).selectOption({ index: 1 });
+  await form.getByLabel("Credential ID").fill("EXAMPLE-1");
+  await form.getByLabel("Your name as printed").fill("Priya Sharma");
+  await form.getByLabel("Date issued").fill("2025-03-01");
+  await form.getByLabel("Expiry date").fill("2028-03-01");
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/example");
+  await form.getByLabel(/This certificate is mine/).check();
+  await form.getByRole("button", { name: "Save certificate" }).click();
+  await form.getByText(/example data, so nothing is saved/).waitFor({ timeout: 5000 });
+  // A refused save keeps what the person typed.
+  if ((await form.getByLabel("Credential ID").inputValue()) !== "EXAMPLE-1") throw new Error("the form was emptied after a refused save");
+  await shot("certificate-form");
+  await a11y("design-certificate-form");
+  await p.goto(BASE + "/today");
+  await settled();
+});
 await step("static pages still load after a tick", async () => {
   // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
   for (const path of ["/roles/data-analyst", "/roles", "/"]) {

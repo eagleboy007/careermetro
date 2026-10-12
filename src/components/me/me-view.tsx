@@ -362,7 +362,8 @@ const Note = ({ children }: { children: ReactNode }) => (
 
 function Journey({ stops }: { stops: JourneyStop[] }) {
   return (
-    <ol className="grid auto-cols-[minmax(96px,1fr)] grid-flow-col overflow-x-auto pt-1">
+    // Scrolls sideways on a phone, so it takes keyboard focus to scroll with the arrow keys.
+    <ol tabIndex={0} aria-label="Journey" className="grid auto-cols-[minmax(96px,1fr)] grid-flow-col overflow-x-auto pt-1 focus-visible:outline-2 focus-visible:outline-accent">
       {stops.map((s, i) => (
         <li key={i} className="relative flex min-w-0 flex-col gap-[3px] pb-1 pr-2.5 pt-[26px] text-[0.8rem]">
           <i

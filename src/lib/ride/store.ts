@@ -4,6 +4,8 @@ import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays } from "@/db/schema";
 import { goalsOf, syncGoals } from "@/lib/goals/store";
 import { goalName } from "@/lib/goals/name";
+import { fillingSkills } from "@/lib/goals/sync";
+import { skillGroupMembers } from "@/content";
 import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
@@ -59,7 +61,8 @@ export async function rideGoalsFor(
         goalId: g.id,
         skillId: g.skillId,
         name: goalName(gap, g.proved, analysis.result.roleSlug),
-        status: gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak",
+        // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
+        status: g.status === "renew" ? "weak" : gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak",
         proved: g.proved,
         resources: (step?.resourceIds ?? []).flatMap((id) => {
           const r = byId.get(id);
@@ -67,6 +70,8 @@ export async function rideGoalsFor(
         }),
         practice: step?.proofTask ?? null,
         learnDone: Boolean(step?.doneAt),
+        proofSkills: fillingSkills(g, skillGroupMembers),
+        renew: g.status === "renew",
       },
     ];
   });

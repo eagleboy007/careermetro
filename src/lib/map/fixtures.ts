@@ -6,6 +6,9 @@ const goal = (g: Partial<MapGoal> & Pick<MapGoal, "skillId" | "name" | "status">
   learnDone: false,
   proved: false,
   resources: [],
+  goalId: null,
+  certificates: [],
+  renew: false,
   practice: null,
   ...g,
 });
@@ -28,6 +31,7 @@ export const exampleMapLine: MapLine = {
         { title: "Window functions", detail: "PostgreSQL docs · reading · 1 h" },
       ],
       practice: "Rank the top 5 products per month in the sample sales table, then explain each query.",
+      certificates: [{ id: "oracle-sql-associate", name: "Oracle Database SQL Certified Associate", issuer: "Oracle" }],
     }),
     goal({
       skillId: "power-bi",

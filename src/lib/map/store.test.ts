@@ -99,6 +99,9 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(after!.goals[0]).toMatchObject({ skillId: first.skillId, learnDone: true, proved: false });
     if (after!.goals.length > 1) expect(after!.goals[1].learnDone).toBe(false);
     expect(after!.goals.every((g) => !g.proved)).toBe(true);
+    // Each goal carries the person's goal id and the certificates that can fill it.
+    expect(after!.goals.every((g) => g.goalId && !g.renew)).toBe(true);
+    expect(after!.goals.every((g) => g.certificates.every((c) => c.id && c.issuer))).toBe(true);
     expect(mapLine.safeParse(after).success).toBe(true);
 
     const life = await lifeLineFor(userId, new Date(), db!);

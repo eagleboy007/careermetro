@@ -26,6 +26,8 @@ export const LIMITS = {
   inboxRequestsPerUser: { bucket: "inbox-request", max: 20, windowMs: 24 * HOUR },
   /** Reports one person files: each starts IT Rules deadlines, so the grievance queue can't be flooded. */
   inboxReportsPerUser: { bucket: "inbox-report", max: 20, windowMs: 24 * HOUR },
+  /** Tries at adding a certificate, whatever the outcome, so names and credential ids can't be guessed at by script. */
+  certificateTriesPerUser: { bucket: "certificate-try", max: 30, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

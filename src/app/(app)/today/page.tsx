@@ -12,7 +12,7 @@ import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { USER_STATES, type UserState } from "@/lib/schemas";
 import { greetingAt } from "@/lib/today/board";
 import { todayStateFor } from "@/lib/today/state";
-import { saveWeeklyHours, tickRideTask } from "./actions";
+import { addCertificate, saveWeeklyHours, tickRideTask } from "./actions";
 import {
   exampleDepartures,
   exampleEvents,
@@ -106,6 +106,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
         departuresHref="/departures"
         mapHref="/map"
         onToggleTask={tickRideTask}
+        onAddCertificate={addCertificate}
         onHours={saveWeeklyHours}
       />
     </div>
