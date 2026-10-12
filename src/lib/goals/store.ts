@@ -1,9 +1,22 @@
 import "server-only";
-import { and, asc, eq, inArray, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals } from "@/db/schema";
-import { skillGroupMembers, skills } from "@/content";
-import { userGoal, proofEvidence, type Gap, type GapAnalysis, type UserGoal, type ProofEvidence, type ProofStatus } from "@/lib/schemas";
+import { certificateCredentials, gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
+import { certifications, skillGroupMembers, skills } from "@/content";
+import {
+  userGoal,
+  proofEvidence,
+  type CertificateOutcome,
+  type CertificateSubmission,
+  type Gap,
+  type GapAnalysis,
+  type UserGoal,
+  type ProofEvidence,
+  type ProofStatus,
+} from "@/lib/schemas";
+import { resumeName } from "@/lib/account/name";
+import { credentialKey } from "@/lib/proofs/credential";
+import { checkCertificate } from "@/lib/proofs/rules";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { fillingSkills, planGoalSync } from "./sync";
 import { errorFields, logEvent } from "@/lib/log";
@@ -22,12 +35,27 @@ async function lockPerson(tx: Tx, userId: string): Promise<void> {
 const implies = new Map(skills.map((s) => [s.id, s.implies]));
 const knownSkill = new Set(skills.map((s) => s.id));
 
-/** The skills this person has accepted proof for. Proof is per skill, so it counts for every role. */
-async function provedSkills(userId: string, db: Db | Tx): Promise<string[]> {
+/** Today in India as YYYY-MM-DD: a certificate is current through its expiry date there. */
+export const indiaToday = (now = new Date()): string => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(now);
+
+/**
+ * The skills this person has current accepted proof for. Proof is per skill, so it counts for every role. A proof
+ * past its expiry date no longer counts (dev/proof-plan.md rule 4).
+ */
+async function provedSkills(userId: string, db: Db | Tx, today = indiaToday()): Promise<string[]> {
   const rows = await db
     .selectDistinct({ skillId: gapProofs.skillId })
     .from(gapProofs)
-    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.status, "accepted")));
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.status, "accepted"), or(isNull(gapProofs.expiresOn), gte(gapProofs.expiresOn, today))));
+  return rows.map((r) => r.skillId);
+}
+
+/** Skills whose accepted proof has expired. Their goals read "renew" unless a current proof also covers them. */
+async function expiredSkills(userId: string, db: Db | Tx, today = indiaToday()): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ skillId: gapProofs.skillId })
+    .from(gapProofs)
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.status, "accepted"), lt(gapProofs.expiresOn, today)));
   return rows.map((r) => r.skillId);
 }
 
@@ -71,15 +99,16 @@ export async function syncGoals(
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
       .where(and(eq(gapAnalyses.id, analysis.id), eq(resumes.userId, userId)));
     if (!own) return [];
-    const [existing, proved] = await Promise.all([
+    const [existing, proved, expired] = await Promise.all([
       tx
         .select(goalColumns)
         .from(userGoals)
         .where(eq(userGoals.userId, userId)),
       provedSkills(userId, tx),
+      expiredSkills(userId, tx),
     ]);
     const gaps: Gap[] = analysis.result.gaps.filter((g) => knownSkill.has(g.skillId));
-    const plan = planGoalSync({ existing, gaps, metSkillIds: analysis.result.metSkillIds, provedSkillIds: proved, implies, members });
+    const plan = planGoalSync({ existing, gaps, metSkillIds: analysis.result.metSkillIds, provedSkillIds: proved, expiredSkillIds: expired, implies, members });
 
     if (plan.insert.length) {
       const now = new Date();
@@ -182,6 +211,38 @@ export async function addProof(userId: string, skillId: string, evidence: ProofE
 }
 
 /**
+ * Brings the goals a skill's proof can fill in line with the person's proof: met while current accepted proof covers
+ * the goal, "renew" when only expired proof does, else open again. Skipped goals are left alone. The caller holds the
+ * person's lock.
+ */
+async function refreshGoals(tx: Tx, userId: string, skillId: string, members: ReadonlyMap<string, string[]>, today = indiaToday()): Promise<void> {
+  const [proved, expired] = await Promise.all([provedSkills(userId, tx, today).then((r) => new Set(r)), expiredSkills(userId, tx, today).then((r) => new Set(r))]);
+  // The goal for this skill, and any goal whose group has it.
+  const groups = [...members].filter(([, ids]) => ids.includes(skillId)).map(([id]) => id);
+  const goals = await tx
+    .select({ id: userGoals.id, skillId: userGoals.skillId, groupId: userGoals.groupId, status: userGoals.status })
+    .from(userGoals)
+    .where(and(eq(userGoals.userId, userId), groups.length ? or(eq(userGoals.skillId, skillId), inArray(userGoals.groupId, groups)) : eq(userGoals.skillId, skillId)));
+  // A goal the current resume meets stays met whatever its certificate does, so the renew job and the next sync
+  // don't flip it back and forth.
+  let resumeMet: Set<string> | null = null;
+  for (const g of goals) {
+    if (g.status === "skipped") continue;
+    const filling = fillingSkills(g, members);
+    let want: "met" | "renew" | "active" = filling.some((id) => proved.has(id)) ? "met" : filling.some((id) => expired.has(id)) ? "renew" : "active";
+    if (want !== "met" && g.status === "met") {
+      resumeMet ??= new Set((await currentAnalysis(userId, tx as unknown as Db))?.result.metSkillIds ?? []);
+      if (filling.some((id) => resumeMet!.has(id))) want = "met";
+    }
+    if (want === g.status) continue;
+    await tx
+      .update(userGoals)
+      .set({ status: want, metAt: want === "met" ? new Date() : null })
+      .where(eq(userGoals.id, g.id));
+  }
+}
+
+/**
  * Sets a proof's status after it is checked. Accepting it fills the gap: the person's goal for that skill is met.
  * Rejecting or reopening a proof that was accepted opens the goal again unless another accepted proof still covers
  * the skill; the next sync marks it met again if their resume shows the skill. Only the proof's owner is matched.
@@ -202,28 +263,138 @@ export async function setProofStatus(
       .where(and(eq(gapProofs.id, proofId), eq(gapProofs.userId, userId)))
       .returning({ skillId: gapProofs.skillId });
     if (!proof) return false;
-    // The goal for this skill, and any goal whose group has it. Each is met while accepted proof covers it.
-    const proved = new Set(await provedSkills(userId, tx));
-    const groups = [...members].filter(([, ids]) => ids.includes(proof.skillId)).map(([id]) => id);
-    const goals = await tx
-      .select({ id: userGoals.id, skillId: userGoals.skillId, groupId: userGoals.groupId, status: userGoals.status })
-      .from(userGoals)
-      .where(
-        and(
-          eq(userGoals.userId, userId),
-          groups.length
-            ? or(eq(userGoals.skillId, proof.skillId), inArray(userGoals.groupId, groups))
-            : eq(userGoals.skillId, proof.skillId),
-        ),
-      );
-    for (const g of goals) {
-      const covered = fillingSkills(g, members).some((id) => proved.has(id));
-      if (covered === (g.status === "met") || g.status === "skipped") continue;
-      await tx
-        .update(userGoals)
-        .set(covered ? { status: "met", metAt: new Date() } : { status: "active", metAt: null })
-        .where(eq(userGoals.id, g.id));
-    }
+    await refreshGoals(tx, userId, proof.skillId, members);
     return true;
   });
+}
+
+/** Certificates one person may add in a day (dev/proof-plan.md, limits). */
+export const DAILY_CERTIFICATES = 10;
+
+/**
+ * "Add a certificate" (dev/proof-plan.md). Runs the honesty rules, then:
+ * - a certificate in the person's name, current and covering the goal is accepted at once and fills the goal;
+ *   `verified` (the badge page confirmed it) labels it Verified, else Uploaded;
+ * - one another account already used (same certificate and credential id) is held for review and fills nothing;
+ * - anything else is refused with a reason and nothing is stored.
+ * The credential id and the name on the certificate are never stored; only a keyed hash of the id is.
+ */
+export async function submitCertificate(
+  userId: string,
+  submission: CertificateSubmission,
+  opts: { verified?: boolean; today?: string; env?: Record<string, string | undefined>; db?: Db; members?: ReadonlyMap<string, string[]> } = {},
+): Promise<CertificateOutcome> {
+  const db = opts.db ?? getDb();
+  const members = opts.members ?? skillGroupMembers;
+  const today = opts.today ?? indiaToday();
+  return db.transaction(async (tx) => {
+    await lockPerson(tx, userId);
+    const [goal] = await tx
+      .select({ skillId: userGoals.skillId, groupId: userGoals.groupId, status: userGoals.status })
+      .from(userGoals)
+      .where(and(eq(userGoals.id, submission.goalId), eq(userGoals.userId, userId)));
+    if (!goal || goal.status === "skipped") return { status: "refused", reason: "not_found" };
+
+    const [account] = await tx.select({ name: users.name, firstName: users.firstName, lastName: users.lastName }).from(users).where(eq(users.id, userId));
+    const cert = certifications.find((c) => c.id === submission.certId);
+    const check = checkCertificate({ submission, cert, fillingSkills: fillingSkills(goal, members), accountName: resumeName(account ?? null), today, env: opts.env });
+    if (!check.ok) return { status: "refused", reason: check.reason };
+
+    const since = new Date(Date.now() - 24 * 3600_000);
+    const [{ added }] = await tx
+      .select({ added: count() })
+      .from(gapProofs)
+      .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), gte(gapProofs.createdAt, since)));
+    if (added >= DAILY_CERTIFICATES) return { status: "refused", reason: "too_many" };
+
+    const key = credentialKey(cert!.id, submission.credentialId, opts.env);
+    const mine = and(eq(gapProofs.userId, userId), eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key), eq(gapProofs.skillId, check.skillId));
+    const [own] = await tx.select({ id: gapProofs.id, status: gapProofs.status, verifier: gapProofs.verifier }).from(gapProofs).where(mine);
+    // Sent again while held: still held, and no second row.
+    if (own?.status === "pending") return { status: "held", skillId: check.skillId };
+    if (own?.status === "accepted") {
+      // The same certificate again, such as a renewal that keeps its credential id: the new dates and link replace
+      // the old ones, so a goal waiting to be renewed is met again.
+      await tx
+        .update(gapProofs)
+        .set({ issuedOn: submission.issuedOn, expiresOn: submission.expiresOn, evidence: { type: "certification", certId: cert!.id, issuer: cert!.issuer, url: submission.url } })
+        .where(eq(gapProofs.id, own.id));
+      await refreshGoals(tx, userId, check.skillId, members, today);
+      return { status: "filled", label: own.verifier === "credly" ? "verified" : "uploaded", skillId: check.skillId };
+    }
+
+    const row = {
+      userId,
+      skillId: check.skillId,
+      type: "certification" as const,
+      evidence: { type: "certification" as const, certId: cert!.id, issuer: cert!.issuer, url: submission.url },
+      certId: cert!.id,
+      issuedOn: submission.issuedOn,
+      expiresOn: submission.expiresOn,
+      credentialKey: key,
+      nameMatched: true,
+    };
+    // Rule 3: the first account to use a credential owns it, for every skill its certificate proves. Another account
+    // sending it at the same moment waits on this row's key and then finds it taken.
+    await tx.insert(certificateCredentials).values({ certId: cert!.id, credentialKey: key, userId }).onConflictDoNothing();
+    const [owner] = await tx
+      .select({ userId: certificateCredentials.userId })
+      .from(certificateCredentials)
+      .where(and(eq(certificateCredentials.certId, cert!.id), eq(certificateCredentials.credentialKey, key)));
+    if (owner?.userId !== userId) {
+      await tx.insert(gapProofs).values({ ...row, status: "pending", heldReason: "credential_reused" });
+      logEvent("info", "certificate_held", { reason: "credential_reused" });
+      return { status: "held", skillId: check.skillId };
+    }
+
+    await tx.insert(gapProofs).values({ ...row, status: "accepted", verifier: opts.verified ? "credly" : null, verifiedAt: new Date() });
+    await refreshGoals(tx, userId, check.skillId, members, today);
+    return { status: "filled", label: opts.verified ? "verified" : "uploaded", skillId: check.skillId };
+  });
+}
+
+/** The person removes one of their proofs; the goals it filled open again unless other proof covers them. */
+export async function deleteProof(userId: string, proofId: string, db: Db = getDb(), members: ReadonlyMap<string, string[]> = skillGroupMembers): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    await lockPerson(tx, userId);
+    const [gone] = await tx
+      .delete(gapProofs)
+      .where(and(eq(gapProofs.id, proofId), eq(gapProofs.userId, userId)))
+      .returning({ skillId: gapProofs.skillId, certId: gapProofs.certId, credentialKey: gapProofs.credentialKey });
+    if (!gone) return false;
+    // The credential stays theirs while another of their proofs uses it; with none left it is free again.
+    if (gone.certId && gone.credentialKey) {
+      const sameCredential = and(eq(gapProofs.userId, userId), eq(gapProofs.certId, gone.certId), eq(gapProofs.credentialKey, gone.credentialKey));
+      const [still] = await tx.select({ id: gapProofs.id }).from(gapProofs).where(sameCredential).limit(1);
+      if (!still)
+        await tx
+          .delete(certificateCredentials)
+          .where(and(eq(certificateCredentials.userId, userId), eq(certificateCredentials.certId, gone.certId), eq(certificateCredentials.credentialKey, gone.credentialKey)));
+    }
+    await refreshGoals(tx, userId, gone.skillId, members);
+    return true;
+  });
+}
+
+/**
+ * Daily job (rule 4): goals filled by a certificate that expired in the last 30 days turn to "renew", unless another
+ * current proof covers them. The window catches up a missed day without rescanning every old proof. Returns how many
+ * people were updated.
+ */
+export async function renewExpiredGoals(today = indiaToday(), db: Db = getDb(), members: ReadonlyMap<string, string[]> = skillGroupMembers): Promise<number> {
+  const from = new Date(new Date(`${today}T00:00:00Z`).getTime() - 30 * 86_400_000).toISOString().slice(0, 10);
+  const expired = await db
+    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId })
+    .from(gapProofs)
+    .innerJoin(userGoals, and(eq(userGoals.userId, gapProofs.userId), eq(userGoals.status, "met")))
+    .where(and(eq(gapProofs.status, "accepted"), lt(gapProofs.expiresOn, today), gte(gapProofs.expiresOn, from)));
+  const people = new Set<string>();
+  for (const e of expired) {
+    await db.transaction(async (tx) => {
+      await lockPerson(tx, e.userId);
+      await refreshGoals(tx, e.userId, e.skillId, members, today);
+    });
+    people.add(e.userId);
+  }
+  return people.size;
 }

@@ -92,6 +92,13 @@
       "when": 1791732761826,
       "tag": "0012_inbox",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791842548778,
+      "tag": "0013_certificate_proofs",
+      "breakpoints": true
     }
   ]
 }

@@ -15,3 +15,4 @@ export * from "./me";
 export * from "./goals";
 export * from "./inbox";
 export * from "./resume-document";
+export * from "./proof";

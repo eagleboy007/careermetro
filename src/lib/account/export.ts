@@ -77,7 +77,17 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
       .where(eq(userGoals.userId, userId))
       .orderBy(asc(userGoals.position)),
     db
-      .select({ skill: gapProofs.skillId, type: gapProofs.type, status: gapProofs.status, evidence: gapProofs.evidence, verifiedAt: gapProofs.verifiedAt, createdAt: gapProofs.createdAt })
+      .select({
+        skill: gapProofs.skillId,
+        type: gapProofs.type,
+        status: gapProofs.status,
+        evidence: gapProofs.evidence,
+        certificate: gapProofs.certId,
+        issuedOn: gapProofs.issuedOn,
+        expiresOn: gapProofs.expiresOn,
+        verifiedAt: gapProofs.verifiedAt,
+        createdAt: gapProofs.createdAt,
+      })
       .from(gapProofs)
       .where(eq(gapProofs.userId, userId))
       .orderBy(asc(gapProofs.createdAt)),

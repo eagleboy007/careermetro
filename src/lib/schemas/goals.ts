@@ -4,7 +4,8 @@ import { z } from "zod";
  * Goals and proof (post-login handoff, section 6; dev/goals-proofs-plan.md). Each gap becomes one goal per person and
  * skill. Only accepted proof fills a gap: watching, reading or ticking tasks never does.
  */
-export const GOAL_STATUSES = ["active", "met", "skipped"] as const;
+/** `renew`: the only proof that filled it has expired, so the goal is open again until it is renewed (dev/proof-plan.md rule 4). */
+export const GOAL_STATUSES = ["active", "met", "skipped", "renew"] as const;
 /** `gap` goals come from the person's gap analysis. `user` goals are "Your choice" and never change a match. */
 export const GOAL_SOURCES = ["gap", "user"] as const;
 export const PROOF_TYPES = ["skill_check", "certification", "work"] as const;
@@ -26,8 +27,11 @@ export const proofEvidence = z.discriminatedUnion("type", [
   z.object({ type: z.literal("skill_check"), checkId: z.string().min(1).max(80) }),
   z.object({
     type: z.literal("certification"),
+    /** From our certificate list (src/content/certifications.json). Older proofs, before the list, have none. */
+    certId: z.string().min(1).max(80).optional(),
     issuer: z.string().trim().min(1).max(120),
-    credentialId: z.string().trim().min(1).max(120),
+    /** Only on proofs made before credential ids were kept as keyed hashes (gap_proofs.credential_key). */
+    credentialId: z.string().trim().min(1).max(120).optional(),
     url: z
       .url({ protocol: /^https$/ })
       .max(500)

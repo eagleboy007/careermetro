@@ -13,6 +13,7 @@ const m = vi.hoisted(() => ({
   ingestResume: vi.fn(),
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
+  renewExpired: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -34,6 +35,7 @@ vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
+vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
 vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
@@ -289,17 +291,24 @@ describe("daily cleanup", () => {
     for (const auth of [undefined, "Bearer wrong", "s3cret-value", "bearer s3cret-value", "Bearer s3cret-valu"]) expect((await cleanup(get(auth))).status).toBe(401);
     expect(m.deleteExpired).not.toHaveBeenCalled();
     expect(m.purgeDeleted).not.toHaveBeenCalled();
+    expect(m.renewExpired).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
     m.purgeDeleted.mockResolvedValueOnce(1);
+    m.renewExpired.mockResolvedValueOnce(4);
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1 } });
     // The counts reach the logs, so a run can be checked there.
-    expect(logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"))).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1/);
+    expect(logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"))).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4/);
     logs.mockRestore();
     // One step failing doesn't stop the other, and the job reports the failure.
     m.deleteExpired.mockRejectedValueOnce(new Error("down"));
     m.purgeDeleted.mockResolvedValueOnce(3);
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: null, accountsDeleted: 3 } });
+    // Renewing goals failing is reported too, without holding up the deletions.
+    m.deleteExpired.mockResolvedValueOnce(0);
+    m.purgeDeleted.mockResolvedValueOnce(0);
+    m.renewExpired.mockRejectedValueOnce(new Error("down"));
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0 } });
   });
 });
 
