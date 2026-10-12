@@ -8,7 +8,8 @@ const OUT = new URL("./results/", import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
 let failed = 0;
 const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
-const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
+// Reduced motion: axe reads colours mid fade-in otherwise and reports contrast the finished page doesn't have.
+const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
 const p = await ctx.newPage();
 const problems = [];
 // The browser logs the 404 the not-found step asks for on purpose; any other console error is a problem.
@@ -464,7 +465,7 @@ if (process.env.DATABASE_URL) {
 }
 // Someone who signs in before uploading anything: every signed-in screen must load (Milin hit an error page here).
 await step("fresh test user, no resume: every signed-in screen loads", async () => {
-  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   const q = await fresh.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
