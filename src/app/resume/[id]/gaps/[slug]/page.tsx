@@ -6,6 +6,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
+import { JobCheck } from "@/components/gaps/job-check";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { GapCard } from "@/components/route/gap-card";
 import { ProgressRoute } from "@/components/route/progress-route";
@@ -15,6 +16,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { getGapsForOwner } from "@/lib/gaps/store";
+import type { JobCheckView } from "@/lib/jobs/groups";
+import { jobChecksForPage } from "@/lib/jobs/store";
 import { readOwner } from "@/lib/session";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -51,6 +54,14 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   }
 
   const { analysis, analysisId, rating } = result;
+  // Saved job checks are read-only here; a failure to load them never hides the gaps.
+  let checks: JobCheckView[] | null;
+  try {
+    checks = owner ? await jobChecksForPage(id, owner, role.slug, analysis) : [];
+  } catch (error) {
+    logEvent("error", "job_checks_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
+    checks = null;
+  }
   // Five gaps up front (the handoff's Gaps screen); every other required gap is stored (each is a goal) and one tap away.
   const top = analysis.gaps.slice(0, SHOWN_GAPS);
   const rest = analysis.gaps.slice(SHOWN_GAPS);
@@ -92,13 +103,19 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         </section>
       ) : null}
       <CoveredSkills title="Skills your resume already shows" skills={met} />
-      <CoveredSkills title="Nice to have" skills={analysis.niceToHave} />
+      <CoveredSkills title="Good to have" skills={analysis.niceToHave} />
       {analysis.gaps.length > 0 && (
         <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
           <p className="font-semibold">Work on these gaps step by step</p>
           <p className="text-sm text-muted">A short plan with free resources and a small task to prove each skill, sized to your week.</p>
           <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
         </section>
+      )}
+      <JobCheck resumeId={id} roleSlug={role.slug} roleTitle={role.title} checks={checks ?? []} />
+      {checks === null && (
+        <p role="alert" className="rounded-lg border border-line bg-surface p-4 text-sm">
+          We couldn&apos;t load your saved job checks just now. Please reload the page in a minute.
+        </p>
       )}
       <GapRating analysisId={analysisId} initial={rating} />
       <p className="text-sm text-muted">

@@ -19,6 +19,7 @@ const m = vi.hoisted(() => ({
   completeGoogleRedirect: vi.fn(),
   afterSignIn: vi.fn(),
   parseResume: vi.fn(),
+  createJobCheck: vi.fn(),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -37,6 +38,7 @@ vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpi
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
+vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
 vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
 vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
@@ -47,6 +49,7 @@ import { GET as cleanup } from "@/app/api/cron/cleanup/route";
 import { GET as exportData } from "@/app/api/account/export/route";
 import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
+import { POST as checkJob } from "@/app/api/job-checks/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
@@ -405,5 +408,92 @@ describe("Google return", () => {
       expect(m.afterSignIn).toHaveBeenLastCalledWith("/today");
       expect(new URL(res.headers.get("location")!).origin).toBe(SITE);
     }
+  });
+});
+
+describe("job check", () => {
+  const posting = "Data Analyst at Example Analytics Pvt Ltd. Write SQL queries for weekly sales reports. ".repeat(4);
+  const good = { resumeId: ID, roleSlug: "data-analyst", company: "Example Analytics Pvt Ltd", title: "Data Analyst", text: posting };
+  const post = (body: unknown, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    new Request(SITE + "/api/job-checks", {
+      method: "POST",
+      headers: { ...(origin ? { origin } : {}), "content-type": "application/json", ...headers },
+      body: typeof body === "string" ? body : JSON.stringify(body),
+    });
+
+  it("refuses another site, a missing Origin and a forged one", async () => {
+    for (const origin of [null, "https://evil.example", "https://careermetro.test.evil.example"]) {
+      expect((await checkJob(post(good, origin))).status).toBe(403);
+    }
+    expect(m.createJobCheck).not.toHaveBeenCalled();
+  });
+
+  it("refuses bodies that are too large or the wrong shape before looking anything up", async () => {
+    expect((await checkJob(post(good, SITE, { "content-length": "100000" }))).status).toBe(413);
+    expect((await checkJob(post({ ...good, text: "x".repeat(60_000) }))).status).toBe(413);
+    const bad = [
+      "not json",
+      {},
+      { ...good, text: "Too short." },
+      { ...good, text: "x".repeat(12_001) },
+      { ...good, company: " " },
+      { ...good, title: undefined },
+      { ...good, resumeId: "../../etc" },
+      { ...good, roleSlug: "Data Analyst" },
+      { ...good, goals: ["sql"] },
+    ];
+    for (const body of bad) {
+      const res = await json(await checkJob(post(body)));
+      expect(res.status).toBe(400);
+      expect(JSON.stringify(res.body)).not.toContain("Example Analytics");
+    }
+    expect((await json(await checkJob(post({ ...good, text: "Too short." })))).body.error).toMatch(/at least 200 characters/);
+    expect((await checkJob(post({ ...good, roleSlug: "no-such-role" }))).status).toBe(404);
+    expect(m.createJobCheck).not.toHaveBeenCalled();
+  });
+
+  it("answers 404 without a session, and acts for the signed-in account", async () => {
+    m.jar!.clear();
+    expect((await checkJob(post(good))).status).toBe(404);
+    expect(m.createJobCheck).not.toHaveBeenCalled();
+
+    m.account = { id: "user-1" };
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-1", reused: false });
+    expect(await json(await checkJob(post(good)))).toEqual({ status: 200, body: { ok: true, id: "check-1", reused: false } });
+    expect(m.createJobCheck).toHaveBeenCalledWith({ ...good, text: posting.trim() }, { userId: "user-1" });
+  });
+
+  it("says plainly why nothing was saved", async () => {
+    const cases = [
+      ["not_found", 404, /couldn't find/],
+      ["not_confirmed", 409, /Looks right/],
+      ["limit", 429, /checked 5 jobs today.*Nothing was saved/],
+      ["budget", 503, /capacity.*Nothing was saved/],
+      ["unavailable", 503, /Nothing was saved/],
+      ["no_skills", 422, /any skills/],
+    ] as const;
+    for (const [reason, status, message] of cases) {
+      m.createJobCheck.mockResolvedValueOnce({ ok: false, reason });
+      const res = await json(await checkJob(post(good)));
+      expect(res.status).toBe(status);
+      expect(res.body.error).toMatch(message);
+    }
+  });
+
+  it("never logs or returns the posting text, even when the store fails with it in the error", async () => {
+    const lines: string[] = [];
+    const capture = (...args: unknown[]) => void lines.push(args.map(String).join(" "));
+    const spies = [vi.spyOn(console, "log").mockImplementation(capture), vi.spyOn(console, "warn").mockImplementation(capture), vi.spyOn(console, "error").mockImplementation(capture)];
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-1", reused: true });
+    m.createJobCheck.mockResolvedValueOnce({ ok: false, reason: "refused" });
+    m.createJobCheck.mockRejectedValueOnce(Object.assign(new Error(`Failed query: insert … params: ${posting}`), { code: "57014" }));
+    const bodies = [];
+    for (let i = 0; i < 3; i++) bodies.push(JSON.stringify((await json(await checkJob(post(good)))).body));
+    expect(lines.length).toBeGreaterThanOrEqual(3);
+    for (const text of [...lines, ...bodies]) {
+      expect(text).not.toContain("Write SQL queries");
+      expect(text).not.toContain("Example Analytics");
+    }
+    for (const s of spies) s.mockRestore();
   });
 });

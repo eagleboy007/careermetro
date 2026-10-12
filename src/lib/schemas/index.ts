@@ -16,3 +16,4 @@ export * from "./goals";
 export * from "./inbox";
 export * from "./resume-document";
 export * from "./proof";
+export * from "./job-check";

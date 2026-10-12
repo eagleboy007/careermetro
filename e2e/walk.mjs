@@ -158,6 +158,39 @@ await step("a failed rating goes back to the saved one", async () => {
     failingOnPurpose = false;
   }
 });
+await step("check against a job: the groups show, and the gaps stay as they were", async () => {
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
+  const gapsBefore = await p.locator("article").allInnerTexts();
+  const fill = async () => {
+    await p.getByLabel("Company", { exact: true }).fill(posting.company);
+    await p.getByLabel("Job title", { exact: true }).fill(posting.title);
+    await p.getByLabel("Job posting", { exact: true }).fill(posting.text);
+    await p.getByRole("button", { name: "Check this job" }).click();
+  };
+  await fill();
+  const result = p.getByRole("heading", { name: `${posting.title} at ${posting.company}` });
+  await result.waitFor({ timeout: 60000 });
+  // Focus moves to the new result once it shows.
+  await p.waitForFunction(() => document.activeElement?.id?.startsWith("job-check-"), null, { timeout: 10000 });
+  for (const group of ["Covered", "Your goals this job also asks for", "Only for this job", "Not asked for this job", "Good to have", "Not in our skill list yet"]) {
+    await p.getByRole("heading", { level: 4, name: new RegExp(`^${group} \\(\\d+\\)$`) }).waitFor({ timeout: 5000 });
+  }
+  const text = await p.locator(`[id^="job-check-"]`).first().locator("..").locator("..").innerText();
+  if (!text.includes("Alteryx")) throw new Error("unknown skill not listed");
+  if (/Kubernetes/.test(text)) throw new Error("a skill with an invented quote was kept");
+  // The same posting again reuses the saved check: no second result.
+  await fill();
+  await p.getByRole("status").filter({ hasText: "You checked this posting before" }).waitFor({ timeout: 30000 });
+  if ((await result.count()) !== 1) throw new Error(`expected one saved check, got ${await result.count()}`);
+  await p.reload();
+  await settled();
+  if (JSON.stringify(await p.locator("article").allInnerTexts()) !== JSON.stringify(gapsBefore)) throw new Error("a job check changed the gaps");
+  await shot("job-check");
+  await a11y("job-check");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await a11y("job-check-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+});
 let pathUrl = "";
 await step("path", async () => {
   await p.getByRole("link", { name: /build my path/i }).click();

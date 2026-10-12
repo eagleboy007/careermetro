@@ -1,0 +1,13 @@
+{
+  "id": "soc-analyst-sample-secure",
+  "company": "Sample Secure Pvt Ltd",
+  "title": "SOC Analyst L1",
+  "text": "SOC Analyst L1 - Sample Secure Pvt Ltd, Chennai (24x7 rotational shifts)\n\nWhat you will do\n- Monitor alerts in Splunk and triage them\n- Follow incident response playbooks and escalate to L2\n- Hunt for threats using MITRE ATT&CK\n- Check endpoint alerts in CrowdStrike\n- Write shift handover notes\n\nWhat we need\n- 0 to 2 years in a SOC or IT support role\n- SIEM basics (Splunk or QRadar)\n- Networking basics: TCP/IP, DNS, ports\n- Understanding of incident response\n\nGood to have\n- Vulnerability assessment with Nessus\n- Wireshark\n\nGraduates in CS or IT. Night shift allowance as per policy.",
+  "expected": {
+    "required": ["siem", "security-incident-response", "threat-detection", "endpoint-security", "networking-basics"],
+    "nice": ["vulnerability-management"],
+    "unknown": ["Wireshark"],
+    "mustNotClaim": ["react", "figma", "seo"]
+  },
+  "reviewedBy": null
+}

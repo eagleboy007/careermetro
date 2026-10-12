@@ -1,0 +1,13 @@
+{
+  "id": "business-analyst-example-insurance",
+  "company": "Example Insurance Pvt Ltd",
+  "title": "Business Analyst",
+  "text": "Business Analyst - Example Insurance Pvt Ltd, Mumbai\n2 to 5 years\n\nYou will\n- Gather business requirements and write BRDs and user stories\n- Map as-is and to-be processes in Visio\n- Write SQL to check data for change requests\n- Plan and run UAT with business users\n- Work in Agile sprints with developers and testers\n\nYou need\n- Requirements gathering\n- Process mapping\n- SQL and Excel\n- UAT\n- Agile\n\nGood to have\n- Power BI\n- Jira\n\nWork from office, Lower Parel.",
+  "expected": {
+    "required": ["requirements-gathering", "process-mapping", "sql", "excel", "uat", "agile-scrum"],
+    "nice": ["power-bi", "bug-tracking"],
+    "unknown": ["Visio"],
+    "mustNotClaim": ["kubernetes", "figma", "selenium"]
+  },
+  "reviewedBy": null
+}

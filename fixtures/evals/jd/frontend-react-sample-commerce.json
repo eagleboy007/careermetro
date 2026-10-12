@@ -1,0 +1,13 @@
+{
+  "id": "frontend-react-sample-commerce",
+  "company": "Sample Commerce Pvt Ltd",
+  "title": "Frontend Developer (React)",
+  "text": "Frontend Developer (React) - Sample Commerce Pvt Ltd, Hyderabad\nExperience: 1 to 4 years\n\nRole\n- Build pages for our shopping app in React with TypeScript\n- Turn designs into responsive HTML and CSS\n- Call REST APIs and manage state with Redux\n- Write tests with Jest\n\nSkills we need\n- JavaScript (ES6+) and TypeScript\n- React\n- HTML5, CSS3\n- Redux\n- Jest\n\nGood to have\n- Next.js\n- Accessibility (WCAG)\n- Storybook\n\nNotice period: up to 60 days. Work from office in Madhapur.",
+  "expected": {
+    "required": ["react", "typescript", "javascript", "html-css", "state-management", "unit-testing"],
+    "nice": ["nextjs", "accessibility"],
+    "unknown": ["Storybook"],
+    "mustNotClaim": ["java", "siem", "seo"]
+  },
+  "reviewedBy": null
+}

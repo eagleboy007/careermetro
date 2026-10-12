@@ -1,0 +1,13 @@
+{
+  "id": "qa-automation-sample-health",
+  "company": "Sample Health Tech Pvt Ltd",
+  "title": "QA Automation Engineer",
+  "text": "QA Automation Engineer - Sample Health Tech Pvt Ltd, Gurugram\n2 to 4 years\n\nResponsibilities\n- Automate web tests with Selenium WebDriver and Java\n- Test APIs with Postman and Rest Assured\n- Write and run manual test cases for new features\n- Log defects in Jira and track them to closure\n- Run regression suites in the Jenkins pipeline\n\nMust have\n- Selenium with Java\n- API testing (Postman)\n- Test case design\n- Jira\n\nNice to have\n- Cypress or Playwright\n- Load testing with JMeter\n- Experience with BrowserStack\n\nNotice: 30 days preferred.",
+  "expected": {
+    "required": ["selenium", "java", "api-testing", "manual-testing", "bug-tracking"],
+    "nice": ["playwright-cypress", "performance-testing"],
+    "unknown": ["BrowserStack"],
+    "mustNotClaim": ["figma", "seo", "tableau"]
+  },
+  "reviewedBy": null
+}

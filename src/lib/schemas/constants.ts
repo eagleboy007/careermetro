@@ -11,3 +11,8 @@ export const LIFE_ROWS = ["journey", "education", "work", "certificates", "inter
 export const WEEKLY_HOURS = [3, 5, 8, 10] as const;
 export const DEFAULT_WEEKLY_HOURS = 5;
 export const USER_STATES = ["no_resume", "first", "returning"] as const;
+/** "Check against a job" (role-suggest-plan.md part B): how long a pasted posting and its labels may be. */
+export const JOB_TEXT_MIN = 200;
+export const JOB_TEXT_MAX = 12_000;
+export const JOB_COMPANY_MAX = 100;
+export const JOB_TITLE_MAX = 120;

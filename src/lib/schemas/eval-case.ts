@@ -23,3 +23,26 @@ export const evalCase = z.object({
   reviewedBy: z.string().nullable(),
 });
 export type EvalCase = z.infer<typeof evalCase>;
+
+/**
+ * One labelled synthetic job posting for the parse-jd eval (fixtures/evals/jd). Labels say which of our skills a correct
+ * reading finds, required or good to have, after the plain-code quote check and mapping.
+ */
+export const jdEvalCase = z.object({
+  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
+  company: z.string().min(1),
+  title: z.string().min(1),
+  text: z.string().min(200).max(12_000),
+  expected: z.object({
+    /** Skill ids the posting asks for as requirements. */
+    required: z.array(z.string().min(1)).min(1),
+    /** Skill ids the posting calls good to have. */
+    nice: z.array(z.string().min(1)),
+    /** Names the posting asks for that our skill list doesn't have; a correct reading lists them as unknown. */
+    unknown: z.array(z.string().min(1)),
+    /** Skill ids the posting never names; finding them counts as a hallucination. */
+    mustNotClaim: z.array(z.string().min(1)).min(1),
+  }),
+  reviewedBy: z.string().nullable(),
+});
+export type JdEvalCase = z.infer<typeof jdEvalCase>;

@@ -1,0 +1,13 @@
+{
+  "id": "devops-example-cloud",
+  "company": "Example Cloud Services Pvt Ltd",
+  "title": "DevOps Engineer",
+  "text": "DevOps Engineer - Example Cloud Services Pvt Ltd, Noida\n2 to 5 years\n\nResponsibilities\n- Run our services on AWS with Docker and Kubernetes (EKS)\n- Write Terraform for every environment\n- Own CI/CD pipelines in Jenkins and GitHub Actions\n- Set up monitoring with Prometheus and Grafana\n- Automate routine work with Bash scripts on Linux\n\nMust have\n- AWS (EC2, S3, IAM, VPC)\n- Docker, Kubernetes\n- Terraform\n- Jenkins or GitHub Actions\n- Linux and shell scripting\n\nPreferred\n- Python\n- Experience with HashiCorp Vault\n\nShift: general. Notice period: 30 days.",
+  "expected": {
+    "required": ["aws", "docker", "kubernetes", "terraform", "ci-cd", "monitoring", "scripting-bash", "linux"],
+    "nice": ["python"],
+    "unknown": ["HashiCorp Vault"],
+    "mustNotClaim": ["figma", "seo", "tableau"]
+  },
+  "reviewedBy": null
+}

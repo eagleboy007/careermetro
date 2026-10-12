@@ -1,8 +1,17 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { evalCase, type EvalCase } from "@/lib/schemas";
+import { evalCase, jdEvalCase, type EvalCase, type JdEvalCase } from "@/lib/schemas";
 
 const casesDir = join(process.cwd(), "fixtures/evals");
+const jdCasesDir = join(process.cwd(), "fixtures/evals/jd");
+
+/** Loads and validates every job posting eval case in fixtures/evals/jd. */
+export function loadJdEvalCases(dir = jdCasesDir): JdEvalCase[] {
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .sort()
+    .map((f) => jdEvalCase.parse(JSON.parse(readFileSync(join(dir, f), "utf8"))));
+}
 
 /** Loads and validates every eval case in fixtures/evals. */
 export function loadEvalCases(dir = casesDir): EvalCase[] {

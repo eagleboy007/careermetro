@@ -58,7 +58,7 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 - FR-7: Handle Indian resume conventions (CTC mentions, notice period, multi-column templates, Hindi/English mixed text).
 
 ### 5.3 Target role and market data
-- FR-8: Target role is chosen from a curated **role profile library** (start with 30-50 high-demand India roles) or created by pasting a real job description.
+- FR-8: Target role is chosen from a curated **role profile library** (start with 30-50 high-demand India roles) or created by pasting a real job description. The library role is the ideal and its gaps stay the person's goals; a pasted posting is a per-job check on the Gaps page ("Check against a job") that shows what that one job asks for (covered, your goals it also asks for, only for this job, not asked, good to have) and never changes goals, the match, the analysis or the ride. The model only lists the skills the posting names with their exact words; plain code checks the words, maps them to the skill taxonomy and runs the matcher. The posting text is never stored or logged; 5 checks a day per person (2026-10-12, dev/role-suggest-plan.md part B).
 - FR-9: Each role profile holds: required skills, nice-to-have skills, tools, typical experience band, and a freshness date. A role can mark a set of required skills as "one of these" (for example AWS, Azure or GCP): the set counts as one required skill, is met by any one of them, and becomes one goal that proof of any of them fills (approved 2026-10-10, dev/role-one-of-plan.md).
 - FR-10: Role profiles are refreshed on a schedule from licensed or permitted sources only (see open question OQ-1). Every profile shows "updated on <date>".
 

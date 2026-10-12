@@ -33,3 +33,11 @@ export function ipHashKey(env: Env = process.env): string {
 export function credentialHashKey(env: Env = process.env): string {
   return `credential|${env.NAME_HASH_KEY || legacy(env)}`;
 }
+
+/**
+ * The key for hashes of pasted job postings (job_checks.text_hash), which only spot the same text sent twice for one
+ * resume. A new key at most means one more model call for a posting already checked, so it follows NAME_HASH_KEY.
+ */
+export function jobTextHashKey(env: Env = process.env): string {
+  return `jobText|${env.NAME_HASH_KEY || legacy(env)}`;
+}
