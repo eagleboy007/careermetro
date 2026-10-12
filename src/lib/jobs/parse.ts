@@ -5,6 +5,7 @@ import { costUsd } from "@/lib/ai/cost";
 import { isTransient, retryPause } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
+import { skills } from "@/content";
 import { taxonomyId } from "@/lib/gaps/match";
 import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { postingSkills, type PostingSkills } from "@/lib/schemas";
@@ -65,6 +66,14 @@ export function readPostingSkills(content: Anthropic.Beta.BetaContentBlock[]): P
  * else by its quote. A skill asked for both ways counts as required. A name we don't know is kept for display only,
  * and only when the posting itself prints it, so nothing shown is the model's own words.
  */
+const termsById = new Map(skills.map((s) => [s.id, [s.name, ...s.aliases]]));
+
+/** Whether the quote names the skill: its name or one of its aliases appears in it. */
+function quoteNames(quote: string, skillId: string): boolean {
+  const q = normalizeForMatch(quote);
+  return (termsById.get(skillId) ?? []).some((t) => containsPhrase(q, normalizeForMatch(t)));
+}
+
 export function mapPostingSkills(parsed: PostingSkills, postingText: string): MappedPosting {
   const haystack = normalizeForMatch(postingText);
   const inPosting = (s: string) => containsPhrase(haystack, normalizeForMatch(s));
@@ -79,7 +88,11 @@ export function mapPostingSkills(parsed: PostingSkills, postingText: string): Ma
       continue;
     }
     const name = skill.name.replace(/\s+/g, " ").trim();
-    const id = taxonomyId(name) ?? taxonomyId(quote);
+    // The quote must back the skill it is given for: the name's skill only counts when the posting's words name it
+    // too (the quote itself, or the name printed in the posting). Otherwise a real quote could carry any skill.
+    const byName = taxonomyId(name);
+    const byQuote = taxonomyId(quote);
+    const id = byName && (byName === byQuote || quoteNames(quote, byName) || inPosting(name)) ? byName : byQuote;
     if (id) {
       if (skill.level === "required" && !required.includes(id)) required.push(id);
       else if (skill.level === "nice" && !nice.includes(id)) nice.push(id);

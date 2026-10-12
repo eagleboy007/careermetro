@@ -20,7 +20,11 @@ export const JOB_CHECK_LIMITS = {
   /** New job checks per user or anonymous session per day. A posting checked before doesn't count again. */
   perOwnerPerDay: 5,
   /** Spend on reading postings per UTC day, across all users. It also counts toward the parsing budget (AI-6). */
-  dailyBudgetUsd: () => Number(process.env.JOB_CHECK_DAILY_BUDGET_USD ?? 2),
+  // A value that isn't a number falls back to the default, so a typo can never switch the budget off.
+  dailyBudgetUsd: () => {
+    const usd = Number(process.env.JOB_CHECK_DAILY_BUDGET_USD ?? 2);
+    return Number.isFinite(usd) && usd >= 0 ? usd : 2;
+  },
   /** How long a second check by the same owner waits for the first before answering "busy". */
   lockTimeoutMs: 30_000,
   /** Saved checks shown for one resume and role, newest first. */

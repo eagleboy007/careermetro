@@ -38,9 +38,21 @@ export function JobCheck({
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  /** The field a form error is about; null for errors from the server (limit, budget), which mark no field. */
+  const [errorField, setErrorField] = useState<"company" | "title" | "text" | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const fail = (message: string, field: "company" | "title" | "text" | null) => {
+    setError(message);
+    setErrorField(field);
+  };
   const focusId = useRef<string | null>(null);
   const [refreshing, startRefresh] = useTransition();
   const busy = sending || refreshing;
+  // After an error, focus the field it is about, or the posting box, so focus never drops to the page.
+  useEffect(() => {
+    if (!error || busy) return;
+    formRef.current?.querySelector<HTMLElement>(`[name="${errorField ?? "text"}"]`)?.focus();
+  }, [error, errorField, busy]);
 
   // Once the refreshed page shows the new check, move focus to its heading so a screen reader reads it next.
   useEffect(() => {
@@ -53,10 +65,11 @@ export function JobCheck({
     e.preventDefault();
     setStatus("");
     const length = text.trim().length;
-    if (!company.trim() || !title.trim()) return setError("Add the company and the job title.");
-    if (length < JOB_TEXT_MIN) return setError(`Paste the full job posting: at least ${JOB_TEXT_MIN} characters.`);
-    if (length > JOB_TEXT_MAX) return setError(`Paste up to ${count(JOB_TEXT_MAX)} characters of the posting.`);
-    setError("");
+    if (!company.trim()) return fail("Add the company and the job title.", "company");
+    if (!title.trim()) return fail("Add the company and the job title.", "title");
+    if (length < JOB_TEXT_MIN) return fail(`Paste the full job posting: at least ${JOB_TEXT_MIN} characters.`, "text");
+    if (length > JOB_TEXT_MAX) return fail(`Paste up to ${count(JOB_TEXT_MAX)} characters of the posting.`, "text");
+    fail("", null);
     if (demo) return setStatus("Checked. The result is below.");
     setSending(true);
     try {
@@ -67,7 +80,7 @@ export function JobCheck({
       });
       const reply = await readApiReply(res);
       if (!reply.ok || typeof reply.id !== "string") {
-        setError(reply.error ?? "Something went wrong. Please try again.");
+        fail(reply.error ?? "Something went wrong. Please try again.", null);
         return;
       }
       setStatus(reply.reused ? "You checked this posting before. Its result is below." : "Checked. The result is below.");
@@ -77,7 +90,7 @@ export function JobCheck({
       focusId.current = reply.id;
       startRefresh(() => router.refresh());
     } catch {
-      setError("We couldn't reach CareerMetro. Check your connection and try again.");
+      fail("We couldn't reach CareerMetro. Check your connection and try again.", null);
     } finally {
       setSending(false);
     }
@@ -85,7 +98,7 @@ export function JobCheck({
 
   const hint = `${ids}-hint`;
   const err = `${ids}-error`;
-  const invalid = error ? true : undefined;
+  const invalid = (field: "company" | "title" | "text") => (error && errorField === field ? true : undefined);
   return (
     <section className="flex flex-col gap-4" aria-labelledby={`${ids}-heading`}>
       <div className="flex flex-col gap-1">
@@ -97,7 +110,7 @@ export function JobCheck({
           lists, never the posting itself.
         </p>
       </div>
-      <form onSubmit={submit} noValidate className="flex flex-col gap-3.5 rounded-lg border border-line bg-surface p-4">
+      <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-3.5 rounded-lg border border-line bg-surface p-4">
         <div className="grid gap-x-4 gap-y-3.5 min-[760px]:grid-cols-2">
           <label className="flex min-w-0 flex-col gap-1.5">
             <span className="text-[0.82rem] font-semibold">Company</span>
@@ -109,7 +122,7 @@ export function JobCheck({
               autoComplete="organization"
               required
               disabled={busy}
-              aria-invalid={invalid}
+              aria-invalid={invalid("company")}
               aria-describedby={error ? err : undefined}
               className={input}
             />
@@ -124,7 +137,7 @@ export function JobCheck({
               autoComplete="off"
               required
               disabled={busy}
-              aria-invalid={invalid}
+              aria-invalid={invalid("title")}
               aria-describedby={error ? err : undefined}
               className={input}
             />
@@ -143,7 +156,7 @@ export function JobCheck({
             maxLength={JOB_TEXT_MAX}
             required
             disabled={busy}
-            aria-invalid={invalid}
+            aria-invalid={invalid("text")}
             aria-describedby={error ? `${hint} ${err}` : hint}
             className={`${input} resize-y`}
           />

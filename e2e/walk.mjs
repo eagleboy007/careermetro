@@ -189,6 +189,9 @@ await step("check against a job: the groups show, and the gaps stay as they were
   await shot("job-check");
   await a11y("job-check");
   await p.emulateMedia({ colorScheme: "dark" });
+  // Reload so every colour is drawn dark from the start, as a visitor in dark mode sees it.
+  await p.reload();
+  await settled();
   await a11y("job-check-dark");
   await p.emulateMedia({ colorScheme: "light" });
 });

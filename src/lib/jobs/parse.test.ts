@@ -31,6 +31,13 @@ function fakeClient(...replies: (Reply | Error)[]) {
 }
 
 describe("mapPostingSkills", () => {
+  it("drops a skill whose quote is real but doesn't name it", () => {
+    const text = "We need strong Excel skills for monthly reporting across our retail stores in Pune and Mumbai.";
+    const out = mapPostingSkills({ skills: [{ name: "Kubernetes", quote: "strong Excel skills", level: "required" }] }, text);
+    expect(out.requiredSkillIds).toEqual([]);
+    expect(out.unknownSkills).toEqual([]);
+  });
+
   it("maps the fixture posting to our skills, drops the invented quote and lists unknown names", () => {
     expect(mapPostingSkills({ skills: fixture.skills }, fixture.text)).toEqual({
       requiredSkillIds: ["sql", "excel", "python", "statistics", "power-bi", "data-orchestration"],
