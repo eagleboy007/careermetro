@@ -99,6 +99,12 @@ await step("confirm profile", async () => {
   await shot("confirmed");
   await next.click();
   await p.waitForURL(/\/role/, { timeout: 15000 });
+  // The roles the resume covers best come first, each saying why (role-suggest-plan.md part A).
+  await p.getByRole("heading", { name: "Closest to your resume" }).waitFor({ timeout: 5000 });
+  const suggested = p.locator('section[aria-labelledby="suggested-roles"] li');
+  const count = await suggested.count();
+  if (count < 1 || count > 3) throw new Error(`expected 1 to 3 suggested roles, got ${count}`);
+  if (!/Your resume shows \d+ of its \d+ key skills, like /.test(await suggested.first().innerText())) throw new Error("suggestion doesn't say why");
   await shot("role");
   await a11y("role");
 });

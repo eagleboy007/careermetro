@@ -3,6 +3,8 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { RolePicker } from "@/components/gaps/role-picker";
+import { roleProfiles } from "@/content";
+import { suggestRoles } from "@/lib/gaps/suggest";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
@@ -31,7 +33,7 @@ async function Picker({ params }: { params: Promise<{ id: string }> }) {
       </p>
     );
   }
-  return <RolePicker resumeId={id} roles={options} />;
+  return <RolePicker resumeId={id} roles={options} suggestions={suggestRoles(resume.profile, roleProfiles)} />;
 }
 
 export default function RolePage({ params }: PageProps<"/resume/[id]/role">) {
