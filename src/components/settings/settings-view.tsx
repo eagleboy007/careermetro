@@ -1,4 +1,4 @@
-import { Download, KeyRound, Lock, Mail, Trash2, User } from "lucide-react";
+import { Building2, Download, KeyRound, Lock, Mail, Trash2, User } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
@@ -23,6 +23,7 @@ const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
 export const SETTINGS_SECTIONS = [
   { id: "acc-basics", label: "Profile basics" },
   { id: "acc-signin", label: "Email and sign-in" },
+  { id: "acc-company", label: "Company" },
   { id: "acc-data", label: "Your data" },
 ] as const;
 
@@ -71,12 +72,37 @@ export function SettingsView({ data }: { data: SettingsData }) {
           </List>
         </Section>
 
+        <Section id="acc-company" title="Company" tag="for employers">
+          <List>
+            <Item
+              icon={<Building2 {...ICON} />}
+              title="Set up your company"
+              detail="Hire on CareerMetro with your work email. You become the company's first Recruiter admin; your own account stays private."
+              action={
+                <Link href="/corporate/new" className={ghostSm}>
+                  Set up
+                </Link>
+              }
+            />
+            <Item
+              icon={<KeyRound {...ICON} />}
+              title="Corporate"
+              detail="Your company role, or confirm one a Recruiter admin gave you."
+              action={
+                <Link href="/corporate" className={ghostSm}>
+                  Open
+                </Link>
+              }
+            />
+          </List>
+        </Section>
+
         <Section id="acc-data" title="Your data">
           <List>
             <Item
               icon={<Download {...ICON} />}
               title="Download your data"
-              detail="Your account, resume profiles, gap results, paths, goals, proofs and ride days in one file. Your original resume file is never kept, so it isn't included."
+              detail="Your account, resume profiles, gap results, paths, goals, proofs, ride days, messages and company roles in one file. Your original resume file is never kept, so it isn't included."
               action={
                 data.editable ? (
                   <a href="/api/account/export" download className={ghostSm}>

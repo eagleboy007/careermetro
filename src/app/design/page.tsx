@@ -37,6 +37,10 @@ import { MeView } from "@/components/me/me-view";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView } from "@/components/inbox/inbox-view";
+import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
+import { exampleCorporateHome, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { OrgSignupForm } from "@/components/corporate/org-signup-form";
+import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
@@ -319,6 +323,37 @@ export default function DesignPage() {
           nothing sends.
         </p>
         <InboxView threads={exampleThreads} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Corporate (signed in)</h2>
+        <p className="text-sm text-muted">
+          Company sign-up (handoff 12f): Company, Verify, Company page, Review. Status badges, the test-mode code box, the anti-scam line and the
+          second-admin banner. Example data, so nothing sends.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <OrgStatusBadge status="pending" />
+          <OrgStatusBadge status="verified" />
+          <OrgStatusBadge status="suspended" />
+        </div>
+        <TestCodeBox code="042917" />
+        <AntiScamLine />
+        <SecondAdminBanner daysLeft={12} />
+        <SecondAdminBanner daysLeft={0} />
+        <div className="rounded-lg border border-line p-4">
+          <OrgSignupForm />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <OrgSignupForm initial={exampleSignupDetails} startAt={1} />
+        </div>
+        <p className="text-sm text-muted">Corporate home for a Recruiter admin, with Team and access (people, access waiting for a code, a request).</p>
+        <div className="rounded-lg border border-line p-4">
+          <CorporateHome view={exampleCorporateHome} />
+        </div>
+        <p className="text-sm text-muted">Corporate for someone with no company role: set up a company, or confirm a role they were given.</p>
+        <div className="rounded-lg border border-line p-4">
+          <CorporateStart open />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

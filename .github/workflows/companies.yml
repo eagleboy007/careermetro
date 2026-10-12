@@ -1,0 +1,49 @@
+name: Companies
+
+# Milin's review of new companies during the beta (dev/corporate-plan.md, call B). Run it from the Actions tab:
+# `list` writes the companies waiting for review (and any left without a Recruiter admin) to the job summary;
+# `verify` or `suspend` with a company's email domain changes its badge and writes one audit line.
+# Uses the same database secret as the Migrate database workflow; no new keys.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do
+        type: choice
+        options: [list, verify, suspend]
+        default: list
+      domain:
+        description: The company's email domain (for verify and suspend), like example-labs.in
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: companies
+  cancel-in-progress: false
+
+jobs:
+  companies:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+      ACTION: ${{ inputs.action }}
+      DOMAIN: ${{ inputs.domain }}
+    steps:
+      - name: Stop when the database secret is not set
+        if: env.DATABASE_URL == ''
+        run: |
+          echo "::error::DATABASE_MIGRATION_URL is not set."
+          exit 1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check the database link
+        run: node scripts/check-database-url.mjs
+      - name: Run
+        run: node scripts/companies.mjs

@@ -498,6 +498,104 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// Corporate (dev/corporate-plan.md, build steps 1 and 2): a signed-in person sets up a company with a work email on
+// an example domain, types the test-mode code (no email sender yet), and lands on Corporate waiting for verification.
+await step("corporate: set up a company, confirm the code, wait for verification", async () => {
+  const corp = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  const q = await corp.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  const domain = `labs${Date.now()}.example-labs.test`;
+  try {
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Meera Iyer");
+    await q.locator('input[name="email"]').fill(`corp-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+    await q.locator('input[name="age"]').check();
+    await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+    await q.waitForURL(/\/today/, { timeout: 15000 });
+    // From the avatar menu's Corporate entry.
+    await q.getByRole("button", { name: /open menu$/ }).click();
+    await q.getByRole("link", { name: "Corporate", exact: true }).click();
+    await q.waitForURL(/\/corporate$/);
+    await q.getByRole("link", { name: "Set up your company" }).click();
+    await q.waitForURL(/\/corporate\/new/);
+    await q.getByRole("heading", { name: "Set up your company on CareerMetro" }).waitFor();
+    // Free mail is refused with a plain reason.
+    await q.getByLabel("Registered name").fill("Example Labs Private Limited");
+    await q.getByLabel("Name candidates see").fill("Example Labs");
+    await q.getByLabel("Website").fill(domain);
+    await q.getByLabel("Your work email").fill("meera.iyer@gmail.com");
+    await q.getByLabel("Company size").selectOption("51 to 200");
+    await q.getByLabel("Head office city").fill("Pune");
+    await q.getByRole("button", { name: "Continue" }).click();
+    await q.getByRole("alert").getByText(/Personal addresses like Gmail/).waitFor();
+    await q.getByLabel("Your work email").fill(`meera.iyer@${domain}`);
+    await q.getByRole("button", { name: "Continue" }).click();
+    const box = q.locator("[data-test-code]");
+    await box.waitFor({ timeout: 10000 });
+    await q.getByRole("status").filter({ hasText: "Test mode" }).waitFor();
+    const code = await box.getAttribute("data-test-code");
+    await q.getByLabel("Code", { exact: true }).fill(code);
+    await q.getByRole("button", { name: "Verify" }).click();
+    await q.getByLabel("About the company").waitFor({ timeout: 10000 });
+    await q.getByLabel("About the company").fill("Payments software for co-operative banks.");
+    await q.getByRole("button", { name: "Send for review" }).click();
+    await q.getByRole("heading", { name: /We check every new company by hand/ }).waitFor({ timeout: 10000 });
+    await q.getByRole("link", { name: "Open Corporate" }).click();
+    await q.waitForURL(/\/corporate$/);
+    await q.getByText("Waiting for verification").first().waitFor({ timeout: 10000 });
+    await q.getByText("Add a second admin").waitFor();
+    await q.getByRole("heading", { name: "Team and access" }).waitFor();
+    await q.getByText(/Verified on/).first().waitFor();
+    if ((await q.locator("body").innerText()).includes(`meera.iyer@${domain}`)) throw new Error("work email shown on Corporate");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate.png`, fullPage: true });
+    // The same axe check as the other screens, on this page.
+    await q.addScriptTag({ content: AXE });
+    const result = await q.evaluate(() =>
+      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
+    );
+    for (const v of result.violations) {
+      const line = `corporate: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
+      if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
+      else a11yNotes.push(line);
+    }
+    // Phone size in dark mode: no sideways scroll, and the same axe check.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByText("Waiting for verification").first().waitFor({ timeout: 10000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("corporate: horizontal overflow " + overflow + "px");
+    await q.addScriptTag({ content: AXE });
+    const dark = await q.evaluate(() =>
+      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
+    );
+    for (const v of dark.violations) {
+      const line = `corporate-phone-dark: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
+      if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
+      else a11yNotes.push(line);
+    }
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-phone-dark.png`, fullPage: true });
+    if (process.env.DATABASE_URL) {
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [org] = await sql`select review_status from organizations where email_domain = ${domain}`;
+        if (org?.review_status !== "pending") throw new Error("company not saved as pending");
+        const [left] = await sql`select count(*)::int as n from work_email_codes c join users u on u.id = c.user_id where u.email like ${`corp-${testEmail}%`} and c.email is not null`;
+        if (left.n !== 0) throw new Error("work email kept after the code was used");
+      } finally {
+        await sql.end();
+      }
+    }
+  } finally {
+    await corp.close();
+  }
+});
 await step("phone inbox: list first, chat full screen", async () => {
   await p.setViewportSize({ width: 390, height: 844 });
   await p.goto(BASE + "/inbox?example=1");

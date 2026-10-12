@@ -28,6 +28,13 @@ export const LIMITS = {
   inboxReportsPerUser: { bucket: "inbox-report", max: 20, windowMs: 24 * HOUR },
   /** Tries at adding a certificate, whatever the outcome, so names and credential ids can't be guessed at by script. */
   certificateTriesPerUser: { bucket: "certificate-try", max: 30, windowMs: 24 * HOUR },
+  /** Work-email codes one person asks for (handoff 12d): 3 an hour and 10 a day. */
+  workEmailCodePerUserHour: { bucket: "work-email-code-user-hour", max: 3, windowMs: HOUR },
+  workEmailCodePerUserDay: { bucket: "work-email-code-user-day", max: 10, windowMs: 24 * HOUR },
+  /** Work-email codes to one domain, from anyone, so the sender can't be used to flood a company's mail. */
+  workEmailCodePerDomainDay: { bucket: "work-email-code-domain", max: 20, windowMs: 24 * HOUR },
+  /** "Ask for access" requests one person sends to companies. */
+  corporateRequestsPerUser: { bucket: "corporate-request", max: 5, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */
