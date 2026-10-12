@@ -114,6 +114,13 @@ describe.skipIf(!db)("account store (database)", () => {
     expect(other).toEqual({ ok: false, reason: "email_taken" });
   });
 
+  it("keeps the name a linked user already has: names are locked once set", async () => {
+    const [old] = await db!.insert(schema.users).values({ email: `${run}-keep@example.test`, name: "Asha Rao", firstName: "Asha", lastName: "Rao" }).returning({ id: schema.users.id });
+    userIds.push(old.id);
+    const linked = await createAccount(identity("keep"), { name: "Priya Sharma", firstName: "Priya", lastName: "Sharma", sessionId: null }, db!);
+    expect(linked).toMatchObject({ ok: true, account: { id: old.id, name: "Asha Rao", firstName: "Asha", lastName: "Rao" } });
+  });
+
   it("moves this browser's anonymous resume, gaps and path to the new user, and the old cookie loses them", async () => {
     const session = `${run}-claim`;
     const resumeId = await upload(session);

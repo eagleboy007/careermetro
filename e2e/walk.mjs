@@ -258,7 +258,7 @@ await step("account settings: name is locked, download works", async () => {
   await a11y("settings");
   // Once the account has a name it can't be edited (Milin, 2026-10-12): corrections go through a request to us.
   if (!(await p.getByLabel("First name").isDisabled()) || !(await p.getByLabel("Last name").isDisabled())) throw new Error("name is still editable");
-  await p.getByText(/write to hello@careermetro\.com/).waitFor({ timeout: 5000 });
+  await p.getByRole("link", { name: "Grievances page" }).waitFor({ timeout: 5000 });
   const lastName = await p.getByLabel("Last name").inputValue();
   const res = await p.request.get(BASE + "/api/account/export");
   if (!res.ok()) throw new Error("download status " + res.status());

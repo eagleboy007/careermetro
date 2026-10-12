@@ -9,7 +9,7 @@ import { hasUsableName } from "@/lib/resume/name-match";
 import { currentAccount, signOut } from "@/lib/auth/server";
 import { SESSION_COOKIE } from "@/lib/session";
 
-const NAME_LOCKED_MESSAGE = "Your name can't be changed here. To correct it, write to hello@careermetro.com from your sign-in email.";
+const NAME_LOCKED_MESSAGE = "Your name can't be changed here. To correct it, ask us from the Grievances page.";
 
 export type BasicsState = { error: string | null; saved: boolean };
 
@@ -22,7 +22,8 @@ export async function saveBasics(_: BasicsState, formData: FormData): Promise<Ba
   const last = String(formData.get("lastName") ?? "");
   // The name checks a new resume is the person's own (dev/resume-name-check-plan.md), so a first name is required.
   if (!hasUsableName(first)) return { error: "Please add your first name as it appears on your resume.", saved: false };
-  if (!(await saveNames(account.id, first, last))) return { error: "That didn't save. Please try again.", saved: false };
+  // No row changed means a name was set meanwhile (or one we read as unusable is there): it is locked either way.
+  if (!(await saveNames(account.id, first, last))) return { error: NAME_LOCKED_MESSAGE, saved: false };
   // The avatar menu shows the name too.
   refresh();
   return { error: null, saved: true };

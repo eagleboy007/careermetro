@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { saveBasics, type BasicsState } from "@/app/(app)/settings/actions";
 
@@ -37,9 +38,17 @@ export function BasicsForm({ firstName, lastName, editable, locked }: { firstNam
           <input name="lastName" aria-invalid={state.error ? true : undefined} aria-describedby={state.error ? "basics-error" : undefined} value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" maxLength={40} disabled={!editable} className={input} />
         </label>
         <small className="text-[0.78rem] text-muted min-[760px]:col-span-2">
-          {locked
-            ? "We check a new resume shows this name before it joins your account, so it can't be changed here. To correct it, write to hello@careermetro.com from your sign-in email."
-            : "As it appears on your resume. We check a new resume shows this name before it joins your account. Once saved, it can't be changed here."}
+          {locked ? (
+            <>
+              We check a new resume shows this name before it joins your account, so it can&apos;t be changed here. To correct it, ask us from the{" "}
+              <Link href="/grievances" className="text-ink underline underline-offset-2">
+                Grievances page
+              </Link>
+              .
+            </>
+          ) : (
+            "As it appears on your resume. We check a new resume shows this name before it joins your account. Once saved, it can't be changed here."
+          )}
         </small>
       </div>
       {state.error && (

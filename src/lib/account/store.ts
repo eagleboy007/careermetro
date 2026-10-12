@@ -131,7 +131,7 @@ export async function createAccount(
     }
 
     const [byEmail] = await tx
-      .select({ id: users.id, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt })
+      .select({ id: users.id, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt, firstName: users.firstName, name: users.name })
       .from(users)
       .where(sql`lower(${users.email}) = ${email}`)
       .limit(1);
@@ -149,8 +149,11 @@ export async function createAccount(
       ageConfirmedAt: now,
       lastSeenAt: now,
     };
+    // A name the linked row already has stays: names are locked once set.
+    const keepName = byEmail && nameLocked(byEmail);
+    const update = keepName ? { email, authSubject: values.authSubject, ageConfirmedAt: now, lastSeenAt: now } : { email, ...values };
     const [row] = byEmail
-      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning(accountColumns)
+      ? await tx.update(users).set(update).where(eq(users.id, byEmail.id)).returning(accountColumns)
       : await tx.insert(users).values({ email, ...values }).returning(accountColumns);
     await tx.insert(consents).values({ userId: row.id, email, purpose: "account", policyVersion: ACCOUNT_POLICY_VERSION });
     const claim = input.sessionId ? await claimAnonymousResumes(row.id, input.sessionId, tx) : null;
