@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { reserveCall, runReserved, settleCall, usedToday } from "./reserve";
 
@@ -38,13 +38,23 @@ describe.skipIf(!db)("AI call reservations (database)", () => {
   it("counts a running reservation at its estimate, stops after 10 minutes, and keeps counting it per owner", async () => {
     const p = purpose();
     const mine = sql`${schema.aiCalls.inputRefs}->>'profileId' = 'mine'`;
-    await db!.transaction(async (tx) => {
-      await reserveCall(tx, { purpose: p, model: "m", promptVersion: "v", inputRefs: { profileId: "mine" } });
-      const [old] = await tx.insert(schema.aiCalls).values({ purpose: p, model: "m", promptVersion: "v", inputRefs: { profileId: "mine" }, inputTokens: 0, outputTokens: 0, costUsd: "0", latencyMs: 0, ok: false, status: "reserved" }).returning();
-      await tx.update(schema.aiCalls).set({ createdAt: new Date(Date.now() - 11 * 60_000) }).where(eq(schema.aiCalls.id, old.id));
-      await tx.insert(schema.aiCalls).values({ ...record(p, true, 0.25), costUsd: "0.25" });
-      expect(await usedToday(tx, p, 0.1, mine)).toEqual({ usd: 0.35, mine: 2 });
-    });
+    // Noon UTC, so "11 minutes ago" is still today whatever time the suite runs (it failed in the first minutes of a day).
+    const noon = new Date();
+    noon.setUTCHours(12, 0, 0, 0);
+    vi.useFakeTimers({ toFake: ["Date"], now: noon });
+    try {
+      await db!.transaction(async (tx) => {
+        await reserveCall(tx, { purpose: p, model: "m", promptVersion: "v", inputRefs: { profileId: "mine" } });
+        const [old] = await tx.insert(schema.aiCalls).values({ purpose: p, model: "m", promptVersion: "v", inputRefs: { profileId: "mine" }, inputTokens: 0, outputTokens: 0, costUsd: "0", latencyMs: 0, ok: false, status: "reserved" }).returning();
+        await tx.insert(schema.aiCalls).values({ ...record(p, true, 0.25), costUsd: "0.25" });
+        // The database stamps rows with its own clock, so put them on the test's clock.
+        await tx.update(schema.aiCalls).set({ createdAt: noon }).where(eq(schema.aiCalls.purpose, p));
+        await tx.update(schema.aiCalls).set({ createdAt: new Date(noon.getTime() - 11 * 60_000) }).where(eq(schema.aiCalls.id, old.id));
+        expect(await usedToday(tx, p, 0.1, mine)).toEqual({ usd: 0.35, mine: 2 });
+      });
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("settles the answering attempt into the reservation and logs earlier attempts as their own rows", async () => {
