@@ -17,6 +17,11 @@ export async function GET(request: Request) {
   if (deleted.status === "rejected") logEvent("error", "cleanup_anonymous_failed", errorFields(deleted.reason));
   if (accountsDeleted.status === "rejected") logEvent("error", "cleanup_accounts_failed", errorFields(accountsDeleted.reason));
   const ok = deleted.status === "fulfilled" && accountsDeleted.status === "fulfilled";
+  // Counts only, so each run can be checked from the logs.
+  logEvent("info", "cleanup_done", {
+    anonymousResumesDeleted: deleted.status === "fulfilled" ? deleted.value : null,
+    accountsDeleted: accountsDeleted.status === "fulfilled" ? accountsDeleted.value : null,
+  });
   return Response.json(
     {
       ok,

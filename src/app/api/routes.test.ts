@@ -229,7 +229,11 @@ describe("daily cleanup", () => {
     expect(m.purgeDeleted).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
     m.purgeDeleted.mockResolvedValueOnce(1);
+    const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1 } });
+    // The counts reach the logs, so a run can be checked there.
+    expect(logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"))).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1/);
+    logs.mockRestore();
     // One step failing doesn't stop the other, and the job reports the failure.
     m.deleteExpired.mockRejectedValueOnce(new Error("down"));
     m.purgeDeleted.mockResolvedValueOnce(3);
