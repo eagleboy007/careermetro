@@ -3,8 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
-  // Prompts are read from disk at runtime (src/lib/ai/prompts.ts), so ship them with every server function.
-  outputFileTracingIncludes: { "/**": ["./prompts/**/*.md"] },
+  // Prompts are read from disk at runtime (src/lib/ai/prompts.ts), so ship them with every server function. The resume
+  // download embeds the Geist fonts (src/lib/resume/export/pdf.ts).
+  outputFileTracingIncludes: { "/**": ["./prompts/**/*.md"], "/api/resume/[id]/export": ["./assets/fonts/*.ttf"] },
   partialPrefetching: true,
   // Hardening for every page and API route (T25). No other site may frame CareerMetro. Camera and microphone are
   // off until the on-camera skill check is built, which will allow them for its own page. No form-action rule: the

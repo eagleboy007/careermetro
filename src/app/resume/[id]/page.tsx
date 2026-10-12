@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { ProfileEditor } from "@/components/resume/profile-editor";
+import { ResumeDownload } from "@/components/resume/resume-download";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
@@ -31,6 +32,7 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
           or change anything below and confirm again.
         </p>
       )}
+      {resume.confirmed && <ResumeDownload resumeId={resume.resumeId} signedIn={owner?.userId !== undefined} />}
       <ProfileEditor resumeId={resume.resumeId} initial={resume.profile} />
     </div>
   );

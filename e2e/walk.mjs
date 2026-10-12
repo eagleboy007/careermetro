@@ -119,6 +119,20 @@ await step("confirm profile", async () => {
   await shot("role");
   await a11y("role");
 });
+await step("download the confirmed resume as PDF and Word", async () => {
+  const rolePage = p.url();
+  await p.goto(rolePage.replace(/\/role$/, ""));
+  await p.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 10000 });
+  await a11y("resume-download");
+  for (const [label, type, magic] of [["PDF", "application/pdf", "%PDF-"], ["Word", "wordprocessingml", "PK"]]) {
+    const href = await p.getByRole("link", { name: label, exact: true }).getAttribute("href");
+    const res = await p.request.get(BASE + href);
+    if (res.status() !== 200 || !res.headers()["content-type"].includes(type)) throw new Error(`${label}: ${res.status()} ${res.headers()["content-type"]}`);
+    const body = await res.body();
+    if (!body.subarray(0, magic.length).toString("latin1").startsWith(magic)) throw new Error(`${label} isn't a ${label} file`);
+  }
+  await p.goto(rolePage);
+});
 await step("pick role", async () => {
   await p.locator('a[href$="/gaps/data-analyst"]').first().click();
   await p.waitForURL(/\/gaps\//, { timeout: 60000 });
