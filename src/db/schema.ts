@@ -390,9 +390,18 @@ export const userGoals = pgTable(
     groupId: text("group_id"),
     skippedAt: timestamp("skipped_at", { withTimezone: true }),
     metAt: timestamp("met_at", { withTimezone: true }),
+    /**
+     * A "Your choice" goal added from a job check's "Only for this job" group (role-suggest-plan.md part B). Deleting
+     * the check keeps the goal and drops the tag.
+     */
+    jobCheckId: uuid("job_check_id").references(() => jobChecks.id, { onDelete: "set null" }),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex("user_goals_skill").on(t.userId, t.skillId), index("user_goals_gap_analysis").on(t.gapAnalysisId)],
+  (t) => [
+    uniqueIndex("user_goals_skill").on(t.userId, t.skillId),
+    index("user_goals_gap_analysis").on(t.gapAnalysisId),
+    index("user_goals_job_check").on(t.jobCheckId),
+  ],
 );
 
 /**

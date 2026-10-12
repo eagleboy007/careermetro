@@ -191,6 +191,9 @@ await step("check against a job: the groups show, and the gaps stay as they were
   await p.reload();
   await settled();
   if (JSON.stringify(await p.locator("article").allInnerTexts()) !== JSON.stringify(gapsBefore)) throw new Error("a job check changed the gaps");
+  // Not signed in: goals are kept for an account, so "Only for this job" asks to sign in instead of adding.
+  if (!(await p.getByRole("link", { name: "Sign in to keep goals" }).count())) throw new Error("no sign-in link on Only for this job");
+  if (await p.getByRole("button", { name: /^Add as my goal/ }).count()) throw new Error("Add as my goal shown while signed out");
   await shot("job-check");
   await a11y("job-check");
   await p.emulateMedia({ colorScheme: "dark" });
@@ -345,6 +348,62 @@ await step("untick -> back to first, no streak", async () => {
       .count()
   )
     throw new Error("streak still shown");
+});
+// Signed in now, with the job check made before signing in (it came with the resume).
+await step("job check: add as my goal, see it as Your choice on the map, plan for this job, remove the check", async () => {
+  const gapsUrl = pathUrl.replace("/path/", "/gaps/");
+  const before = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  await p.goto(gapsUrl);
+  await settled();
+  const add = p.getByRole("button", { name: /^Add as my goal: / }).first();
+  await add.waitFor({ timeout: 10000 });
+  const skill = (await add.getAttribute("aria-label")).replace(/^Add as my goal: /, "");
+  await Promise.all([p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/goals")), add.click()]);
+  await p.getByRole("status").filter({ hasText: "On your goals" }).first().waitFor({ timeout: 10000 });
+  // The gaps and the match don't move.
+  const after = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const analyses = (d) => JSON.stringify(d.resumes.flatMap((r) => r.profiles.flatMap((x) => x.gapAnalyses.map((a) => a.result))));
+  if (analyses(after) !== analyses(before)) throw new Error("adding a goal changed the gap analysis");
+  const goal = after.goals.find((g) => g.source === "user");
+  if (!goal?.jobCheckId || goal.jobCompany !== "Example Analytics Pvt Ltd") throw new Error("the download lacks the goal's job check");
+
+  await p.goto(BASE + "/map");
+  await settled();
+  await p.locator(`g[role="button"][aria-label*="${skill}"]`).first().click();
+  await p.locator("aside").getByText("Your choice · for Example Analytics Pvt Ltd").waitFor({ timeout: 10000 });
+  await shot("map-your-choice");
+  await a11y("map-your-choice");
+
+  await p.goto(gapsUrl);
+  await settled();
+  await p.getByRole("link", { name: "Plan for this job" }).first().click();
+  await p.waitForURL(/\/path\/.*[?&]job=/, { timeout: 30000 });
+  await settled();
+  await p.getByRole("heading", { name: "To apply here, close these first" }).waitFor({ timeout: 10000 });
+  await p.getByRole("status").filter({ hasText: "On your goals" }).first().waitFor({ timeout: 5000 });
+  await shot("plan-for-job");
+  await a11y("plan-for-job");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("plan-for-job-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+  // Someone else's id, or a made-up one, shows the normal path.
+  await p.goto(pathUrl + "?job=00000000-0000-4000-8000-000000000000");
+  await settled();
+  if (await p.getByRole("heading", { name: "To apply here, close these first" }).count()) throw new Error("a made-up job id showed a plan");
+
+  await p.goto(gapsUrl);
+  await settled();
+  const heading = p.getByRole("heading", { name: "Data Analyst at Example Analytics Pvt Ltd" });
+  await p.getByRole("button", { name: /^Remove this check: / }).first().click();
+  await p.getByRole("button", { name: "Yes, remove it" }).click();
+  await heading.waitFor({ state: "detached", timeout: 10000 });
+  // The goal stays; it only loses the job's tag.
+  await p.goto(BASE + "/map");
+  await settled();
+  await p.locator(`g[role="button"][aria-label*="${skill}"]`).first().click();
+  await p.locator("aside").getByText("Your choice", { exact: true }).waitFor({ timeout: 10000 });
 });
 await step("loading frame shows the header at once", async () => {
   await p.goto(BASE + "/map", { waitUntil: "commit" });

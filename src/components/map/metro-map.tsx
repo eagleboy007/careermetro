@@ -1,6 +1,7 @@
 "use client";
 
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { ChoiceTag } from "@/components/ui/choice-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import Link from "next/link";
@@ -472,11 +473,15 @@ function Sheet({
     );
   }
   if (station.id === "gaps") {
-    const goals = line.goals.slice(0, 4);
+    // "Your choice" goals are on the line but are never gaps of the role.
+    const gaps = line.goals.filter((g) => !g.choice);
+    const chosen = line.goals.length - gaps.length;
+    const goals = gaps.slice(0, 4);
     return (
       <Panel kicker="Done" title="Gaps">
         <p>
-          {plural(line.goals.length, "skill")} to work on for {line.role.title}. Each gap quotes the line from your resume it is based on.
+          {plural(gaps.length, "skill")} to work on for {line.role.title}. Each gap quotes the line from your resume it is based on.
+          {chosen > 0 && ` Your line also has ${plural(chosen, "goal")} you chose yourself, after these.`}
         </p>
         {goals.length > 0 && (
           <List
@@ -522,8 +527,9 @@ function Sheet({
     const items: Item[] = [...resources, ...(goal.practice ? [{ Icon: Pencil, title: goal.practice, detail: `practice for Pitstop ${pit.n + 1}` }] : [])];
     return (
       <Panel kicker={kicker} title={`Pitstop ${pit.n}: learn ${goal.name}`}>
+        {goal.choice && <ChoiceLine company={goal.choice.company} />}
         <p>
-          Free courses plus daily tasks. This pitstop gets you ready. It does not fill the gap; Pitstop {pit.n + 1} does.
+          Free courses plus daily tasks. This pitstop gets you ready. It does not {goal.choice ? "meet the goal" : "fill the gap"}; Pitstop {pit.n + 1} does.
         </p>
         {items.length > 0 ? (
           <>
@@ -541,10 +547,13 @@ function Sheet({
   const fresh = goal.status === "missing";
   return (
     <Panel kicker={kicker} title={`Pitstop ${pit.n}: prove ${goal.name}`}>
+      {goal.choice && <ChoiceLine company={goal.choice.company} />}
       <p>
         {goal.renew
           ? `Your ${goal.name} certificate has expired. Add the renewed one to fill the gap again.`
-          : fresh
+          : goal.choice
+            ? `The pitstop that meets your ${goal.name} goal. Pick any one way to prove it.`
+            : fresh
             ? `The pitstop that fills the ${goal.name} gap. Pick any one way to prove it.`
             : `${goal.name} is already on your resume, so the app suggests only a prove pitstop. Pick any one way to prove it.`}
       </p>
@@ -568,5 +577,15 @@ function Sheet({
         </>
       )}
     </Panel>
+  );
+}
+
+/** A "Your choice" goal's tag in the pitstop panel, and why it isn't a gap. */
+function ChoiceLine({ company }: { company: string | null }) {
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      <ChoiceTag company={company} />
+      <span className="text-[0.82rem] text-muted">You added this goal. It doesn&apos;t change your match or your gaps.</span>
+    </div>
   );
 }

@@ -1,16 +1,19 @@
 import "server-only";
 import { createHmac } from "node:crypto";
-import { and, desc, eq, gte, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
-import { gapProofs, jobChecks, resumes } from "@/db/schema";
+import { gapProofs, jobChecks, resumes, userGoals } from "@/db/schema";
+import { roleProfiles } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
-import { indiaToday } from "@/lib/goals/store";
+import { buildGapAnalysis } from "@/lib/gaps/analysis";
+import { matchProfile } from "@/lib/gaps/match";
+import { indiaToday, lockPerson } from "@/lib/goals/store";
 import { jobTextHashKey } from "@/lib/hash-keys";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
-import type { GapAnalysis, JobCheckRequest } from "@/lib/schemas";
+import { MAX_CHOICE_GOALS, MAX_GAPS, type GapAnalysis, type JobCheckRequest } from "@/lib/schemas";
 import { jobCheckView, type JobCheckView, type StoredJobCheck } from "./groups";
 import { PARSE_JD_MODEL, parseJobPosting, type ParseJdClient } from "./parse";
 
@@ -175,4 +178,105 @@ export async function jobChecksForPage(
   if (!resume?.confirmed) return [];
   const [checks, proved] = await Promise.all([listJobChecks(resumeId, owner, roleSlug, db), provedSkills(owner, db)]);
   return checks.map((c) => jobCheckView(c, resume.profile, target, proved, { now }));
+}
+
+/* "Add as my goal", "Plan for this job" and "Remove this check" (role-suggest-plan.md part B, part 2) ------------- */
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** One saved check with the resume and role it was made for, sorted into its groups. */
+export type OwnJobCheck = { resumeId: string; roleSlug: string; view: JobCheckView };
+
+/**
+ * One of this owner's saved checks, sorted into its groups by the same code as the Gaps page. The target role's gaps
+ * come from the deterministic matcher over the resume's confirmed profile, which is what the page's stored analysis
+ * says. Null for anyone else's check, an unknown id, a role no longer in the library or an unconfirmed resume.
+ * Read-only.
+ */
+export async function ownJobCheck(checkId: string, owner: Owner, { db = getDb(), now = new Date() }: { db?: Db; now?: Date } = {}): Promise<OwnJobCheck | null> {
+  if (!UUID.test(checkId)) return null;
+  const [row] = await db
+    .select({
+      id: jobChecks.id,
+      resumeId: jobChecks.resumeId,
+      roleSlug: jobChecks.roleSlug,
+      company: jobChecks.company,
+      title: jobChecks.title,
+      requiredSkillIds: jobChecks.requiredSkillIds,
+      niceSkillIds: jobChecks.niceSkillIds,
+      unknownSkills: jobChecks.unknownSkills,
+      createdAt: jobChecks.createdAt,
+    })
+    .from(jobChecks)
+    .innerJoin(resumes, eq(resumes.id, jobChecks.resumeId))
+    .where(and(eq(jobChecks.id, checkId), ownsResume(owner)))
+    .limit(1);
+  const role = row ? roleProfiles.find((r) => r.slug === row.roleSlug) : undefined;
+  if (!row || !role) return null;
+  const resume = await getResumeForOwner(row.resumeId, owner, db);
+  if (!resume?.confirmed) return null;
+  const match = matchProfile(resume.profile, role, now);
+  const target = buildGapAnalysis({ ...match, gaps: match.gaps.slice(0, MAX_GAPS) }, null);
+  const proved = await provedSkills(owner, db);
+  const { resumeId, roleSlug, ...check } = row;
+  return { resumeId, roleSlug, view: jobCheckView(check, resume.profile, target, proved, { now }) };
+}
+
+export type AddJobCheckGoalResult = { ok: true; goalId: string } | { ok: false; reason: "not_found" | "not_this_job" | "already" | "limit" };
+
+/**
+ * "Add as my goal": makes one skill of a saved check's "Only for this job" group a "Your choice" goal of the account,
+ * tagged with the check, after the person's last goal. The group is worked out again here, so only a skill that
+ * really is "Only for this job" can be added. A "Your choice" goal never changes the match, readiness, gaps or the
+ * analysis, and goal syncing leaves it alone (src/lib/goals/sync.ts).
+ */
+export async function addJobCheckGoal(
+  checkId: string,
+  skillId: string,
+  userId: string,
+  { db = getDb(), now = new Date() }: { db?: Db; now?: Date } = {},
+): Promise<AddJobCheckGoalResult> {
+  const own = await ownJobCheck(checkId, { userId }, { db, now });
+  if (!own) return { ok: false, reason: "not_found" };
+  if (!own.view.onlyThisJob.some((s) => s.skillId === skillId)) return { ok: false, reason: "not_this_job" };
+  return db.transaction(async (tx): Promise<AddJobCheckGoalResult> => {
+    await lockPerson(tx, userId);
+    const [already] = await tx
+      .select({ id: userGoals.id })
+      .from(userGoals)
+      .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, skillId)))
+      .limit(1);
+    if (already) return { ok: false, reason: "already" };
+    const [{ chosen, last }] = await tx
+      .select({ chosen: sql<number>`count(*) filter (where ${userGoals.source} = 'user')::int`, last: sql<number>`coalesce(max(${userGoals.position}), 0)::int` })
+      .from(userGoals)
+      .where(eq(userGoals.userId, userId));
+    if (chosen >= MAX_CHOICE_GOALS) return { ok: false, reason: "limit" };
+    const [row] = await tx
+      .insert(userGoals)
+      .values({ userId, skillId, source: "user", status: "active", position: last + 1, jobCheckId: checkId })
+      .onConflictDoNothing()
+      .returning({ id: userGoals.id });
+    return row ? { ok: true, goalId: row.id } : { ok: false, reason: "already" };
+  });
+}
+
+/** The skills on the account's goals, whatever their state, for "On your goals". */
+export async function goalSkillsOf(userId: string, db: Pick<Db, "select"> = getDb()): Promise<Set<string>> {
+  const rows = await db.select({ skillId: userGoals.skillId }).from(userGoals).where(eq(userGoals.userId, userId));
+  return new Set(rows.map((r) => r.skillId));
+}
+
+/**
+ * "Remove this check": deletes one of this owner's saved checks. Goals added from it stay; they only lose the tag
+ * (the foreign key sets their job_check_id to null). False for anyone else's check or an unknown id.
+ */
+export async function deleteJobCheck(checkId: string, owner: Owner, db: Db = getDb()): Promise<boolean> {
+  if (!UUID.test(checkId)) return false;
+  const own = db.select({ id: resumes.id }).from(resumes).where(ownsResume(owner));
+  const gone = await db
+    .delete(jobChecks)
+    .where(and(eq(jobChecks.id, checkId), inArray(jobChecks.resumeId, own)))
+    .returning({ id: jobChecks.id });
+  return gone.length > 0;
 }

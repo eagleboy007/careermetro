@@ -5,13 +5,30 @@ import { paths, pathSteps, resources, rideDays } from "@/db/schema";
 import { goalsOf, syncGoals } from "@/lib/goals/store";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
-import { skillGroupMembers } from "@/content";
+import { skillGroupMembers, skills } from "@/content";
 import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
+
+const skillNames = new Map(skills.map((s) => [s.id, s.name]));
+
+/**
+ * The goals a line shows, in order: the person's goals for the current analysis's gaps first, in goal order, then
+ * their "Your choice" goals that aren't gaps of it, in goal order. Skipped "Your choice" goals stay off the line.
+ * A "Your choice" goal never changes the match, readiness or gaps; it only adds its own pitstops.
+ */
+export function lineGoals<G extends { skillId: string; source: "gap" | "user"; status: string }>(goals: G[], gapSkillIds: ReadonlySet<string>): { gaps: G[]; chosen: G[] } {
+  return {
+    gaps: goals.filter((g) => gapSkillIds.has(g.skillId)),
+    chosen: goals.filter((g) => g.source === "user" && g.status !== "skipped" && !gapSkillIds.has(g.skillId)),
+  };
+}
+
+/** A "Your choice" goal's name: the skill's own name. */
+export const choiceName = (skillId: string) => skillNames.get(skillId) ?? skillId;
 
 /**
  * The person's line as ride goals: their goals for the current analysis's gaps, in goal order, each with the courses
@@ -52,29 +69,37 @@ export async function rideGoalsFor(
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
   const gapBySkill = new Map(analysis.result.gaps.map((g) => [g.skillId, g]));
 
-  const goals = userGoals.flatMap((g): RideGoal[] => {
-    const gap = gapBySkill.get(g.skillId);
-    if (!gap) return [];
+  const line = lineGoals(userGoals, new Set(gapBySkill.keys()));
+  // Learn tasks come from the path's step for the skill; a "Your choice" goal the path has no step for gets the
+  // fallback tasks (build the path, or study on your own), like any goal the path left out.
+  const rideGoal = (g: (typeof userGoals)[number], name: string, status: RideGoal["status"], choice: RideGoal["choice"]): RideGoal => {
     const step = stepBySkill.get(g.skillId);
-    return [
-      {
-        goalId: g.id,
-        skillId: g.skillId,
-        name: goalName(gap, g.proved, analysis.result.roleSlug),
-        // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
-        status: g.status === "renew" ? "weak" : gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak",
-        proved: g.proved,
-        resources: (step?.resourceIds ?? []).flatMap((id) => {
-          const r = byId.get(id);
-          return r ? [r] : [];
-        }),
-        practice: step?.proofTask ?? null,
-        learnDone: Boolean(step?.doneAt),
-        proofSkills: fillingSkills(g, skillGroupMembers),
-        renew: g.status === "renew",
-      },
-    ];
-  });
+    return {
+      goalId: g.id,
+      skillId: g.skillId,
+      name,
+      // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
+      status: g.status === "renew" ? "weak" : status,
+      proved: g.proved,
+      resources: (step?.resourceIds ?? []).flatMap((id) => {
+        const r = byId.get(id);
+        return r ? [r] : [];
+      }),
+      practice: step?.proofTask ?? null,
+      learnDone: Boolean(step?.doneAt),
+      proofSkills: fillingSkills(g, skillGroupMembers),
+      renew: g.status === "renew",
+      choice,
+    };
+  };
+  const goals = [
+    ...line.gaps.map((g) => {
+      const gap = gapBySkill.get(g.skillId)!;
+      const status = gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak";
+      return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
+    }),
+    ...line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null })),
+  ];
   return { result: analysis.result, goals, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
 }
 

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
+import { ApplyHere } from "@/components/route/apply-here";
 import { MarkDone } from "@/components/route/mark-done";
 import { PathEnd, type PathNext } from "@/components/route/path-end";
 import { PathSteps } from "@/components/route/path-steps";
@@ -13,6 +14,9 @@ import { roleProfiles } from "@/content";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
+import { inPathOrder } from "@/lib/jobs/groups";
+import { goalSkillsOf, ownJobCheck, type OwnJobCheck } from "@/lib/jobs/store";
+import type { Owner } from "@/lib/owner";
 import { getPathForOwner } from "@/lib/path/store";
 import { DEFAULT_WEEKLY_HOURS, WEEKLY_HOURS } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
@@ -31,6 +35,23 @@ function readHours(value: string | string[] | undefined, saved: number | undefin
   return saved !== undefined && (WEEKLY_HOURS as readonly number[]).includes(saved) ? saved : DEFAULT_WEEKLY_HOURS;
 }
 
+/**
+ * "Plan for this job" (`?job=<check id>`): the saved check and the visitor's goal skills, only when the check is the
+ * owner's own and was made for this resume and role. Anything else, or a failure, is ignored and the normal path shows.
+ */
+async function jobPlan(value: string | string[] | undefined, owner: Owner, resumeId: string, roleSlug: string) {
+  const checkId = Array.isArray(value) ? value[0] : value;
+  if (!checkId) return null;
+  try {
+    const [own, skills] = await Promise.all([ownJobCheck(checkId, owner), owner.userId !== undefined ? goalSkillsOf(owner.userId) : null]);
+    if (!own || own.resumeId !== resumeId || own.roleSlug !== roleSlug) return null;
+    return { own, skills: skills ? [...skills] : null };
+  } catch (error) {
+    logEvent("error", "job_plan_failed", { route: "/resume/[id]/path/[slug]", role: roleSlug, ...errorFields(error) });
+    return null;
+  }
+}
+
 async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug]">) {
   // Per-request data: the lookup reads the clock and the session cookie.
   await connection();
@@ -39,7 +60,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   if (!role) notFound();
   const owner = await readOwner();
   const account = owner && "userId" in owner ? await currentAccount() : null;
-  const hours = readHours((await searchParams).hours, account?.weeklyHours);
+  const query = await searchParams;
+  const hours = readHours(query.hours, account?.weeklyHours);
   let result: Awaited<ReturnType<typeof getPathForOwner>>;
   try {
     result = owner ? await getPathForOwner(id, owner, role, hours) : { ok: false, reason: "not_found" };
@@ -70,6 +92,8 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
 
   const { path } = result;
   const share = path.steps.length ? path.doneCount / path.steps.length : 0;
+  const plan: { own: OwnJobCheck; skills: string[] | null } | null = owner ? await jobPlan(query.job, owner, id, slug) : null;
+  const jobQuery = plan ? `&job=${plan.own.view.id}` : "";
   return (
     <div className="flex flex-col gap-6">
       <section className="flex flex-col gap-3">
@@ -81,12 +105,26 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
         </p>
       </section>
 
+      {plan && (
+        <ApplyHere
+          checkId={plan.own.view.id}
+          company={plan.own.view.company}
+          title={plan.own.view.title}
+          alsoGoals={inPathOrder(
+            plan.own.view.alsoGoals,
+            path.steps.map((s) => s.skillId),
+          )}
+          onlyThisJob={plan.own.view.onlyThisJob}
+          goals={{ skills: plan.skills, here: `/resume/${id}/path/${slug}?job=${plan.own.view.id}` }}
+        />
+      )}
+
       <nav aria-label="Hours a week" className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-muted">Hours a week:</span>
         {WEEKLY_HOURS.map((h) => (
           <Link
             key={h}
-            href={`/resume/${id}/path/${slug}?hours=${h}`}
+            href={`/resume/${id}/path/${slug}?hours=${h}${jobQuery}`}
             aria-current={h === path.weeklyHours ? "page" : undefined}
             aria-label={`${h} hours a week`}
             className={`rounded-full border px-3 py-1 font-mono text-xs ${

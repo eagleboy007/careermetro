@@ -1,11 +1,26 @@
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JobCheckView } from "@/lib/jobs/groups";
+import { AddGoal, RemoveCheck, type GoalState } from "./job-check-actions";
 
 const checkedOn = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 
 /** The heading id of a saved check, so the form can move focus to a new result. */
 export const jobCheckHeadingId = (id: string) => `job-check-${id}`;
+
+/**
+ * What a visitor can do with a check's "Only for this job" skills: for an account, the skills already on its goals;
+ * null for an anonymous visitor, who is asked to sign in. `here` is the page to come back to after signing in.
+ */
+export type GoalsContext = { skills: readonly string[] | null; here: string };
+
+/** Where one skill stands for this visitor. */
+export const goalState = (goals: GoalsContext, skillId: string): GoalState =>
+  goals.skills === null ? "sign-in" : goals.skills.includes(skillId) ? "on" : "add";
+
+export const signInHref = (here: string) => `/sign-in?next=${encodeURIComponent(here)}`;
 
 function Group({ title, note, count, children }: { title: string; note?: string; count: number; children: ReactNode }) {
   if (count === 0) return null;
@@ -20,11 +35,11 @@ function Group({ title, note, count, children }: { title: string; note?: string;
   );
 }
 
-function Row({ name, children }: { name: string; children?: ReactNode }) {
+export function Row({ name, children }: { name: string; children?: ReactNode }) {
   return (
-    <li className="flex items-center justify-between gap-3 text-sm">
+    <li className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 text-sm">
       <span className="min-w-0 break-words">{name}</span>
-      {children}
+      {children && <span className="flex flex-wrap items-center justify-end gap-2">{children}</span>}
     </li>
   );
 }
@@ -33,7 +48,20 @@ function Row({ name, children }: { name: string; children?: ReactNode }) {
  * One saved "Check against a job": what the posting asks for, sorted against the resume and the target role. Only the
  * matcher's statuses carry colour; the job itself never changes goals or the match, and the words say so.
  */
-export function JobCheckResult({ check, roleTitle }: { check: JobCheckView; roleTitle: string }) {
+export function JobCheckResult({
+  check,
+  roleTitle,
+  planHref,
+  goals,
+  demo = false,
+}: {
+  check: JobCheckView;
+  roleTitle: string;
+  /** The Path page for this job: "Plan for this job". */
+  planHref: string;
+  goals: GoalsContext;
+  demo?: boolean;
+}) {
   const asked = check.covered.length + check.alsoGoals.length + check.onlyThisJob.length;
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
@@ -62,10 +90,15 @@ export function JobCheckResult({ check, roleTitle }: { check: JobCheckView; role
           </Row>
         ))}
       </Group>
-      <Group title="Only for this job" note="These don't change your goals or your match." count={check.onlyThisJob.length}>
+      <Group
+        title="Only for this job"
+        note="These don't change your goals or your match. Add one as your own goal to work on it for this job."
+        count={check.onlyThisJob.length}
+      >
         {check.onlyThisJob.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
+            <AddGoal checkId={check.id} skillId={s.skillId} skillName={s.skillName} state={goalState(goals, s.skillId)} signInHref={signInHref(goals.here)} demo={demo} />
           </Row>
         ))}
       </Group>
@@ -86,6 +119,17 @@ export function JobCheckResult({ check, roleTitle }: { check: JobCheckView; role
           <Row key={name} name={name} />
         ))}
       </Group>
+      <div className="flex flex-wrap items-start justify-between gap-3 border-t border-line pt-3">
+        {check.alsoGoals.length + check.onlyThisJob.length > 0 ? (
+          <Link href={planHref} className="inline-flex min-h-9 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2">
+            Plan for this job
+            <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />
+          </Link>
+        ) : (
+          <span />
+        )}
+        <RemoveCheck checkId={check.id} label={`${check.title} at ${check.company}`} demo={demo} />
+      </div>
     </div>
   );
 }

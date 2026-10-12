@@ -36,3 +36,7 @@ export const postingSkills = z.object({
   skills: z.array(z.object({ name: z.string(), quote: z.string(), level: postingSkillLevel })),
 });
 export type PostingSkills = z.infer<typeof postingSkills>;
+
+/** "Add as my goal" on a saved job check: one skill from its "Only for this job" group. */
+export const jobCheckGoalRequest = z.object({ skillId: z.string().regex(/^[a-z0-9-]{1,80}$/) }).strict();
+export type JobCheckGoalRequest = z.infer<typeof jobCheckGoalRequest>;

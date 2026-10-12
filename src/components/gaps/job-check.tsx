@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState, useTransition, type FormEvent } fro
 import { readApiReply } from "@/lib/api-reply";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { JOB_COMPANY_MAX, JOB_TEXT_MAX, JOB_TEXT_MIN, JOB_TITLE_MAX } from "@/lib/schemas/constants";
-import { JobCheckResult, jobCheckHeadingId } from "./job-check-result";
+import { JobCheckResult, jobCheckHeadingId, type GoalsContext } from "./job-check-result";
 
 const input =
   "min-w-0 rounded-md border border-line bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
@@ -22,12 +22,15 @@ export function JobCheck({
   roleSlug,
   roleTitle,
   checks,
+  goals,
   demo = false,
 }: {
   resumeId: string;
   roleSlug: string;
   roleTitle: string;
   checks: JobCheckView[];
+  /** The visitor's goals, for "Add as my goal" on each check. */
+  goals: GoalsContext;
   demo?: boolean;
 }) {
   const router = useRouter();
@@ -184,7 +187,14 @@ export function JobCheck({
         <div className="flex flex-col gap-3">
           <p className="font-mono text-xs uppercase tracking-wider text-muted">Your job checks, newest first</p>
           {checks.map((c) => (
-            <JobCheckResult key={c.id} check={c} roleTitle={roleTitle} />
+            <JobCheckResult
+              key={c.id}
+              check={c}
+              roleTitle={roleTitle}
+              planHref={`/resume/${resumeId}/path/${roleSlug}?job=${c.id}`}
+              goals={goals}
+              demo={demo}
+            />
           ))}
         </div>
       )}

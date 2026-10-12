@@ -123,3 +123,12 @@ export function jobCheckView(
     .map((g) => ({ skillId: g.skillId, skillName: g.skillName }));
   return view;
 }
+
+/** A job's "also goals" in the order of the path's steps; goals the path left for later follow in the check's order. */
+export function inPathOrder<T extends { skillId: string }>(skills: T[], stepSkillIds: string[]): T[] {
+  const at = (id: string) => {
+    const i = stepSkillIds.indexOf(id);
+    return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+  };
+  return skills.map((s, i) => ({ s, i })).sort((a, b) => at(a.s.skillId) - at(b.s.skillId) || a.i - b.i).map(({ s }) => s);
+}

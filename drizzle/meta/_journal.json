@@ -120,6 +120,13 @@
       "when": 1791847908919,
       "tag": "0016_corporate_signup",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791848474348,
+      "tag": "0017_job_check_goals",
+      "breakpoints": true
     }
   ]
 }

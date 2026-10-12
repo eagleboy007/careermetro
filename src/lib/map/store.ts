@@ -9,6 +9,7 @@ import { syncGoals } from "@/lib/goals/store";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { certificatesFor } from "@/lib/proofs/eligible";
+import { choiceName, lineGoals } from "@/lib/ride/store";
 import { skillGroupMembers } from "@/content";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { lifeFromProfile } from "./life";
@@ -17,8 +18,9 @@ const MAX_OTHER_LINES = 2;
 
 /**
  * The signed-in person's line, from their current gap analysis, their goals and newest path. One goal per gap, in
- * the order of the person's goals, which stays put across new resumes. A goal is proved only by accepted proof.
- * Null before there is a current analysis (the No resume map).
+ * the order of the person's goals, which stays put across new resumes, then the person's "Your choice" goals, which
+ * are never gaps and never change the match. A goal is proved only by accepted proof. Null before there is a current
+ * analysis (the No resume map).
  */
 export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<MapLine | null> {
   const analysis = await currentAnalysis(userId, db);
@@ -55,8 +57,17 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   const ordered = [...result.gaps].sort(
     (x, y) => (goalBySkill.get(x.skillId)?.position ?? Number.MAX_SAFE_INTEGER) - (goalBySkill.get(y.skillId)?.position ?? Number.MAX_SAFE_INTEGER),
   );
-  const goals: MapGoal[] = ordered.map((g) => {
-    const step = stepBySkill.get(g.skillId);
+  const items = (step: (typeof steps)[number] | undefined) => ({
+    learnDone: Boolean(step?.doneAt),
+    resources: (step?.resourceIds ?? [])
+      .flatMap((id) => {
+        const r = byId.get(id);
+        return r ? [{ title: clip(r.title, 160), detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120) }] : [];
+      })
+      .slice(0, 3),
+    practice: step?.proofTask.trim() ? clip(step.proofTask, 400) : null,
+  });
+  const gapGoals: MapGoal[] = ordered.map((g) => {
     const own = goalBySkill.get(g.skillId);
     const proved = own?.proved ?? false;
     return {
@@ -67,17 +78,24 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
       name: clip(goalName(g, proved, result.roleSlug), 80),
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: own?.status === "renew" ? "weak" : g.status,
-      learnDone: Boolean(step?.doneAt),
       proved,
-      resources: (step?.resourceIds ?? [])
-        .flatMap((id) => {
-          const r = byId.get(id);
-          return r ? [{ title: clip(r.title, 160), detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120) }] : [];
-        })
-        .slice(0, 3),
-      practice: step?.proofTask.trim() ? clip(step.proofTask, 400) : null,
+      ...items(stepBySkill.get(g.skillId)),
+      choice: null,
     };
   });
+  // "Your choice" goals after the gap goals: named by the skill, missing until proved, tagged with their job.
+  const chosen: MapGoal[] = lineGoals(userGoals, new Set(result.gaps.map((g) => g.skillId))).chosen.map((own) => ({
+    goalId: own.id,
+    certificates: certificatesFor(fillingSkills(own, skillGroupMembers)),
+    renew: own.status === "renew",
+    skillId: own.skillId,
+    name: clip(choiceName(own.skillId), 80),
+    status: own.status === "renew" ? "weak" : "missing",
+    proved: own.proved,
+    ...items(stepBySkill.get(own.skillId)),
+    choice: own.choice ?? { company: null },
+  }));
+  const goals = [...gapGoals, ...chosen];
 
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
   return {
@@ -85,7 +103,8 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
     resumeId: analysis.resumeId,
     skillsFound: result.metSkillIds.length,
     goals,
-    otherLines: otherLines(result.roleSlug, goals),
+    // Other lines cross at the role's gaps only.
+    otherLines: otherLines(result.roleSlug, gapGoals),
     pathOpened: Boolean(path),
   };
 }

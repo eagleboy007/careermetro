@@ -18,6 +18,8 @@ export type RideGoal = {
   proofSkills?: string[];
   /** Its certificate expired, so it waits for a current one. */
   renew?: boolean;
+  /** A "Your choice" goal, after the gap goals, with the company of the job check it came from. */
+  choice?: { company: string | null } | null;
 };
 
 /** The person's Path page for their current analysis, and whether a path has been built there yet. */
@@ -147,6 +149,8 @@ export function buildRide(input: RideInput): Ride | null {
   // This week's share of the pitstop: tasks of this goal ticked this week, out of those plus the ones still open.
   const weekDone = tasksFor(current).filter((t) => input.doneThisWeek.has(t.id)).length;
   const emphasis = `your ${name} goal.`;
+  // A "Your choice" goal is not a gap of the role: proof meets the goal.
+  const fills = current.choice ? "meet the goal" : "fill the gap";
   const ready = !unfinished && tasks.every((t) => t.done);
   const certificates = certificatesFor(current.proofSkills ?? [current.skillId]);
   return rideSchema.parse({
@@ -156,10 +160,10 @@ export function buildRide(input: RideInput): Ride | null {
     title: `This week is about ${emphasis}`,
     titleEmphasis: emphasis,
     summary: current.renew
-      ? `Your certificate for ${name} has expired. Add a current one (Pitstop ${pitstop + 1}) to fill the gap again.`
+      ? `Your certificate for ${name} has expired. Add a current one (Pitstop ${pitstop + 1}) to ${fills} again.`
       : ready
-      ? `Your tasks for ${name} are done. Prove it (Pitstop ${pitstop + 1}) to fill the gap and move the train.`
-      : `Two pitstops: learn it with free courses and practice (Pitstop ${pitstop}, these tasks), then prove it (Pitstop ${pitstop + 1}) to fill the gap.`,
+      ? `Your tasks for ${name} are done. Prove it (Pitstop ${pitstop + 1}) to ${fills} and move the train.`
+      : `Two pitstops: learn it with free courses and practice (Pitstop ${pitstop}, these tasks), then prove it (Pitstop ${pitstop + 1}) to ${fills}.`,
     prove: {
       pitstop: pitstop + 1,
       goalId: current.goalId,
@@ -192,6 +196,10 @@ export function buildRide(input: RideInput): Ride | null {
 
 const SHOWN_GOALS = 3;
 
+/** Why a "Your choice" goal is on the line: the person added it. It is never a gap of the role. */
+export const choiceEvidence = (company: string | null) =>
+  `You added this goal${company ? ` for a job at ${company}` : ""}. It doesn't change your match or your gaps.`;
+
 /**
  * Your goals on Today, from the person's own line: the next goals not proved, each with its learn and prove pitstops
  * numbered as on the ride, the gap's explanation and the resume line it quotes. The goal the ride is on shows where
@@ -216,7 +224,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
       id: clip(g.goalId, 60),
       name: clip(g.name, 80),
       status: g.status === "missing" ? "missing" : "weak",
-      evidence: clip(gap?.explanation ?? "", 300),
+      evidence: clip(gap?.explanation ?? (g.choice ? choiceEvidence(g.choice.company) : ""), 300),
       quote: gap?.resumeQuote ? clip(gap.resumeQuote, 200) : null,
       pitstops: [
         {
@@ -237,6 +245,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
         },
       ],
       suggestion: null,
+      choice: g.choice ? { company: g.choice.company } : null,
     };
   });
   return goalsSummary.parse({

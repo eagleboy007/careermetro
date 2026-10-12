@@ -3,6 +3,7 @@
 import { ArrowRight, Check, ChevronRight, Lightbulb, Plus } from "lucide-react";
 import Link from "next/link";
 import { useId, useState } from "react";
+import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { Goal, GoalStatus, GoalsSummary } from "@/lib/schemas";
 
@@ -109,7 +110,10 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
             <i key={i} className={`size-1.5 rounded-full ${i === lamp.index ? `${lamp.className} ${lamp.glow}` : "bg-line"}`} />
           ))}
         </span>
-        <b className="min-w-0 truncate font-medium">{goal.name}</b>
+        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <b className="min-w-0 truncate font-medium">{goal.name}</b>
+          {goal.choice && <ChoiceTag company={goal.choice.company} />}
+        </span>
         <span className="whitespace-nowrap font-mono text-[0.68rem] uppercase tracking-[0.05em] text-muted">
           {lamp.word}
           {count > 0 && ` · ${count} ${count === 1 ? "pitstop" : "pitstops"}`}

@@ -8,7 +8,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 4;
+export const EXPORT_VERSION = 5;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -74,6 +74,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
   const jobCheckRows = resumeIds.length
     ? await db
         .select({
+          id: jobChecks.id,
           resumeId: jobChecks.resumeId,
           role: jobChecks.roleSlug,
           company: jobChecks.company,
@@ -91,8 +92,20 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
   const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
-      .select({ skill: userGoals.skillId, source: userGoals.source, status: userGoals.status, position: userGoals.position, metAt: userGoals.metAt, skippedAt: userGoals.skippedAt, createdAt: userGoals.createdAt })
+      .select({
+        skill: userGoals.skillId,
+        source: userGoals.source,
+        status: userGoals.status,
+        position: userGoals.position,
+        // A "Your choice" goal added from a job check names that check and its company.
+        jobCheckId: userGoals.jobCheckId,
+        jobCompany: jobChecks.company,
+        metAt: userGoals.metAt,
+        skippedAt: userGoals.skippedAt,
+        createdAt: userGoals.createdAt,
+      })
       .from(userGoals)
+      .leftJoin(jobChecks, eq(jobChecks.id, userGoals.jobCheckId))
       .where(eq(userGoals.userId, userId))
       .orderBy(asc(userGoals.position)),
     db

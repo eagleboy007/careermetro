@@ -164,4 +164,22 @@ describe("buildGoalsSummary", () => {
     expect(summary(goals, { before: all }).goals[0].pitstops.map((p) => p.state)).toEqual(["done", "now"]);
     expect(s).toMatchObject({ moreCount: 1, moreNames: ["E"], metThisMonth: [] });
   });
+
+  it("tags a Your choice goal with its job and says it doesn't change the match", () => {
+    const chosen = goal({ goalId: "airflow", name: "Data pipeline orchestration", resources: [], practice: null, choice: { company: "Example Analytics Pvt Ltd" } });
+    const s = summary([goal({ goalId: "sql" }), chosen, goal({ goalId: "dbt", resources: [], practice: null, choice: { company: null } })]);
+    expect(s.goals.map((g) => g.choice ?? null)).toEqual([null, { company: "Example Analytics Pvt Ltd" }, { company: null }]);
+    expect(s.goals[1].evidence).toBe("You added this goal for a job at Example Analytics Pvt Ltd. It doesn't change your match or your gaps.");
+    expect(s.goals[2].evidence).toBe("You added this goal. It doesn't change your match or your gaps.");
+    // Learn then prove, like any goal, after the gap goal's two pitstops; with no path step it studies on its own.
+    expect(s.goals[1].pitstops.map((p) => [p.number, p.kind])).toEqual([
+      [3, "learn"],
+      [4, "prove"],
+    ]);
+    const r = ride([{ ...goal({ goalId: "sql" }), proved: true }, chosen])!;
+    expect(r.tasks.map((t) => t.id)).toEqual(["airflow:self-study"]);
+    // It isn't a gap of the role, so proof meets the goal rather than filling a gap.
+    expect(r.summary).toMatch(/then prove it \(Pitstop 4\) to meet the goal\.$/);
+    expect(ride([chosen], { path: { href: "/p", built: false } })!.tasks.map((t) => t.id)).toEqual(["airflow:open-path"]);
+  });
 });

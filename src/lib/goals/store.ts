@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, count, eq, gte, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { certificateCredentials, gapAnalyses, gapProofs, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
+import { certificateCredentials, gapAnalyses, gapProofs, jobChecks, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
 import { certifications, skillGroupMembers, skills } from "@/content";
 import {
   userGoal,
@@ -28,7 +28,7 @@ type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
  * Goal changes for one person run one at a time: syncing and checking proof both read proof, then change goals, so
  * without this a proof rejected mid-sync could leave a goal met with no proof.
  */
-async function lockPerson(tx: Tx, userId: string): Promise<void> {
+export async function lockPerson(tx: Tx, userId: string): Promise<void> {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-goals:${userId}`}))`);
 }
 
@@ -67,14 +67,36 @@ const goalColumns = {
   position: userGoals.position,
   groupId: userGoals.groupId,
 };
-type GoalRow = { id: string; skillId: string; source: "gap" | "user"; status: string; position: number; groupId: string | null };
+type GoalRow = {
+  id: string;
+  skillId: string;
+  source: "gap" | "user";
+  status: string;
+  position: number;
+  groupId: string | null;
+  jobCheckId: string | null;
+  company: string | null;
+};
 
-/** Goals as the app reads them: a goal is proved when accepted proof covers its skill, or any skill of its group. */
+/** Every goal of the person in order, with the company of the job check a "Your choice" goal came from. */
+function readGoals(db: Db | Tx, userId: string): Promise<GoalRow[]> {
+  return db
+    .select({ ...goalColumns, jobCheckId: userGoals.jobCheckId, company: jobChecks.company })
+    .from(userGoals)
+    .leftJoin(jobChecks, eq(jobChecks.id, userGoals.jobCheckId))
+    .where(eq(userGoals.userId, userId))
+    .orderBy(asc(userGoals.position), asc(userGoals.createdAt));
+}
+
+/**
+ * Goals as the app reads them: a goal is proved when accepted proof covers its skill, or any skill of its group. A
+ * "Your choice" goal (source "user") carries its job check's company while that check exists.
+ */
 function withProved(rows: GoalRow[], proved: string[], members: ReadonlyMap<string, string[]>): UserGoal[] {
   const provedSet = new Set(proved);
-  return rows.map(({ groupId, ...r }) => {
+  return rows.map(({ groupId, company, ...r }) => {
     const proved = fillingSkills({ skillId: r.skillId, groupId }, members).some((id) => provedSet.has(id));
-    return userGoal.parse({ ...r, groupId, proved });
+    return userGoal.parse({ ...r, groupId, proved, choice: r.source === "user" ? { company: company ?? null } : null });
   });
 }
 
@@ -138,11 +160,7 @@ export async function syncGoals(
         .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, u.skillId)));
     }
 
-    const rows = await tx
-      .select(goalColumns)
-      .from(userGoals)
-      .where(eq(userGoals.userId, userId))
-      .orderBy(asc(userGoals.position), asc(userGoals.createdAt));
+    const rows = await readGoals(tx, userId);
 
     // Path steps for this analysis that don't point at a goal yet get the goal for their skill.
     const unlinked = await tx
@@ -166,14 +184,7 @@ export async function goalsOf(
   db: Db = getDb(),
   members: ReadonlyMap<string, string[]> = skillGroupMembers,
 ): Promise<UserGoal[]> {
-  const [rows, proved] = await Promise.all([
-    db
-      .select(goalColumns)
-      .from(userGoals)
-      .where(eq(userGoals.userId, userId))
-      .orderBy(asc(userGoals.position), asc(userGoals.createdAt)),
-    provedSkills(userId, db),
-  ]);
+  const [rows, proved] = await Promise.all([readGoals(db, userId), provedSkills(userId, db)]);
   return withProved(rows, proved, members);
 }
 

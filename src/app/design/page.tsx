@@ -4,6 +4,7 @@ import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
 import { JobCheckResult } from "@/components/gaps/job-check-result";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
+import { ApplyHere } from "@/components/route/apply-here";
 import { GapCard } from "@/components/route/gap-card";
 import { MarkDone } from "@/components/route/mark-done";
 import { PathEnd } from "@/components/route/path-end";
@@ -24,7 +25,9 @@ import { SiteHeader } from "@/components/site/site-header";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { PageNotice } from "@/components/ui/page-notice";
+import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
+import { GoalsCard } from "@/components/today/goals-card";
 import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
@@ -91,6 +94,45 @@ const exampleJobCheck: JobCheckView = {
     { skillId: "version-control", skillName: "Version control", status: "met" },
   ],
   unknown: ["Alteryx", "SAS"],
+};
+// A "Your choice" goal added from the example check: after the gap goals, tagged with its job.
+const exampleChoice = { company: exampleJobCheck.company };
+const exampleChoiceMapLine = {
+  ...exampleMapLine,
+  goals: [
+    ...exampleMapLine.goals,
+    {
+      ...exampleMapLine.goals[exampleMapLine.goals.length - 1],
+      skillId: "data-orchestration",
+      name: "Data pipeline orchestration",
+      status: "missing" as const,
+      learnDone: false,
+      proved: false,
+      resources: [],
+      practice: null,
+      certificates: [],
+      choice: exampleChoice,
+    },
+  ],
+};
+const exampleChoiceGoals = {
+  ...exampleGoals,
+  goals: [
+    ...exampleGoals.goals.slice(0, 2),
+    {
+      ...exampleGoals.goals[exampleGoals.goals.length - 1],
+      id: "example-choice",
+      name: "Data pipeline orchestration",
+      status: "missing" as const,
+      evidence: `You added this goal for a job at ${exampleJobCheck.company}. It doesn't change your match or your gaps.`,
+      quote: null,
+      suggestion: null,
+      choice: exampleChoice,
+    },
+  ],
+  moreCount: 0,
+  moreNames: [],
+  suggestedGoal: null,
 };
 const exampleGaps: Gap[] = [
   {
@@ -263,6 +305,10 @@ export default function DesignPage() {
           <StatusChip status="outdated" />
           <StatusChip status="met" />
         </div>
+        <div className="flex flex-wrap gap-2">
+          <ChoiceTag company={null} />
+          <ChoiceTag company="Example Analytics Pvt Ltd" />
+        </div>
         <div className="max-w-md">
           <ProgressRoute current="Path" />
         </div>
@@ -279,6 +325,10 @@ export default function DesignPage() {
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
+        <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check, after the gap goals.</p>
+        <div className="max-w-xl">
+          <GoalsCard summary={exampleChoiceGoals} mapHref="/map" />
+        </div>
         <p className="text-sm text-muted">Add a certificate: opens from the prove pitstop. Only certificates that prove the goal are listed.</p>
         <div className="max-w-xl">
           <CertificateForm goalId="example" goalName="SQL window functions" certificates={exampleToday.ride.prove?.certificates ?? []} />
@@ -290,6 +340,8 @@ export default function DesignPage() {
         <p className="text-sm text-muted">The line drawn from the gaps and the path, and the Life line. Tap a pitstop or moment for its panel. Below it, the map before a resume.</p>
         <MetroMap line={exampleMapLine} life={exampleLifeLine} />
         <MetroMap line={null} />
+        <p className="text-sm text-muted">With a &quot;Your choice&quot; goal after the gap goals. Tap its pitstops for the tag.</p>
+        <MetroMap line={exampleChoiceMapLine} />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -448,14 +500,37 @@ export default function DesignPage() {
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check form</h2>
-          <JobCheck resumeId="example" roleSlug="data-analyst" roleTitle="Data Analyst" checks={[]} demo />
+          <JobCheck resumeId="example" roleSlug="data-analyst" roleTitle="Data Analyst" checks={[]} goals={{ skills: [], here: "/design" }} demo />
+          <h2 className="text-2xl font-semibold">To apply here (Path page)</h2>
+          <p className="text-sm text-muted">&quot;Plan for this job&quot; opens the path with this section on top. The path below it stays as it is.</p>
+          <ApplyHere
+            checkId={exampleJobCheck.id}
+            company={exampleJobCheck.company}
+            title={exampleJobCheck.title}
+            alsoGoals={exampleJobCheck.alsoGoals}
+            onlyThisJob={exampleJobCheck.onlyThisJob}
+            goals={{ skills: ["power-bi"], here: "/design" }}
+            demo
+          />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check result</h2>
-          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" />
+          <p className="text-sm text-muted">Signed in: Power BI is on the goals already; the other skill can be added.</p>
+          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], here: "/design" }} demo />
+          <p className="text-sm text-muted">Not signed in: goals are kept for an account.</p>
+          <JobCheckResult
+            check={{ ...exampleJobCheck, id: "example-anonymous", alsoGoals: [], notAsked: [], covered: [], goodToHave: [], unknown: [] }}
+            roleTitle="Data Analyst"
+            planHref="/design"
+            goals={{ skills: null, here: "/design" }}
+            demo
+          />
           <JobCheckResult
             check={{ ...exampleJobCheck, id: "example-empty", company: "Sample Retail LLP", title: "MIS Executive", covered: [], alsoGoals: [], onlyThisJob: [], goodToHave: [], unknown: ["Tally"] }}
             roleTitle="Data Analyst"
+            planHref="/design"
+            goals={{ skills: [], here: "/design" }}
+            demo
           />
         </div>
       </section>
