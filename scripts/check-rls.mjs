@@ -30,6 +30,7 @@ async function exposure(sql, tables) {
 }
 
 async function main() {
+  const stage = process.env.CHECK_RLS_STAGE ? ` (${process.env.CHECK_RLS_STAGE.replace(/[^a-z ]/gi, "")})` : "";
   const url = process.env.DATABASE_URL;
   if (!url) {
     console.log("check-rls: DATABASE_URL is not set; skipping");
@@ -39,11 +40,11 @@ async function main() {
   try {
     const missing = await publicTablesWithoutRls(sql);
     if (missing.length === 0) {
-      console.log("check-rls: every public table has row level security on");
+      console.log(`check-rls${stage}: every public table has row level security on`);
       return;
     }
     const { roles, out } = await exposure(sql, missing);
-    console.error(`check-rls: ${missing.length} public table(s) without row level security (API roles present: ${roles.join(", ") || "none"})`);
+    console.error(`check-rls${stage}: ${missing.length} public table(s) without row level security (API roles present: ${roles.join(", ") || "none"})`);
     for (const t of out) console.error(`  ${t.table}: ${t.rows} rows; readable through the API by ${t.readers.join(", ") || "no API role"}`);
     process.exitCode = 1;
   } finally {

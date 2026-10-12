@@ -40,6 +40,8 @@ jobs:
       - name: Report tables without row level security (before)
         if: env.DATABASE_URL != ''
         continue-on-error: true
+        env:
+          CHECK_RLS_STAGE: before migrations
         run: node scripts/check-rls.mjs
       - run: npm run db:migrate
         if: env.DATABASE_URL != ''
@@ -47,4 +49,6 @@ jobs:
         if: env.DATABASE_URL != ''
       - name: Check every public table has row level security
         if: env.DATABASE_URL != ''
+        env:
+          CHECK_RLS_STAGE: after migrations
         run: node scripts/check-rls.mjs
