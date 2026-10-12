@@ -5,7 +5,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { DELETE_GRACE_DAYS, purgeDeletedAccounts, requestDeletion, restoreAccount, restoreUntil } from "./delete";
 import { exportAccountData } from "./export";
-import { findAccount, saveNames } from "./store";
+import { findAccount, nameLocked, saveNames } from "./store";
 
 // Runs against a real Postgres with migrations applied: a throwaway test database, since purgeDeletedAccounts
 // removes every account in it whose 30 days are up.
@@ -42,13 +42,25 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     await sqlClient!.end();
   });
 
-  it("saves first and last name and the full name made from them", async () => {
+  it("saves first and last name once, for an account with no name yet, then locks them", async () => {
     const { id, authSubject } = await seedUser();
-    expect(await saveNames(id, "  Asha ", " Rao  Kumar ", db!)).toBe(true);
-    expect(await findAccount(authSubject!, db!)).toMatchObject({ firstName: "Asha", lastName: "Rao Kumar", name: "Asha Rao Kumar" });
+    await db!.update(schema.users).set({ name: null, firstName: null, lastName: null }).where(eq(schema.users.id, id));
+    expect(nameLocked(await findAccount(authSubject!, db!))).toBe(false);
     expect(await saveNames(id, "   ", "Rao", db!)).toBe(false);
-    expect(await saveNames(id, "Asha", "", db!)).toBe(true);
-    expect(await findAccount(authSubject!, db!)).toMatchObject({ firstName: "Asha", lastName: null, name: "Asha" });
+    expect(await saveNames(id, "  Asha ", " Rao  Kumar ", db!)).toBe(true);
+    const saved = await findAccount(authSubject!, db!);
+    expect(saved).toMatchObject({ firstName: "Asha", lastName: "Rao Kumar", name: "Asha Rao Kumar" });
+    expect(nameLocked(saved)).toBe(true);
+    // Locked: a second save changes nothing, so the name can't be edited to match someone else's resume.
+    expect(await saveNames(id, "Priya", "Sharma", db!)).toBe(false);
+    expect(await findAccount(authSubject!, db!)).toMatchObject({ firstName: "Asha", lastName: "Rao Kumar", name: "Asha Rao Kumar" });
+  });
+
+  it("treats an older account with only a full name as locked", async () => {
+    const { id, authSubject } = await seedUser();
+    expect(nameLocked(await findAccount(authSubject!, db!))).toBe(true);
+    expect(await saveNames(id, "Priya", "", db!)).toBe(false);
+    expect(await findAccount(authSubject!, db!)).toMatchObject({ name: "Asha Rao" });
   });
 
   it("downloads the account's own data, with no keyed hashes", async () => {

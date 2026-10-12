@@ -4,17 +4,20 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { requestDeletion } from "@/lib/account/delete";
-import { saveNames } from "@/lib/account/store";
+import { nameLocked, saveNames } from "@/lib/account/store";
 import { hasUsableName } from "@/lib/resume/name-match";
 import { currentAccount, signOut } from "@/lib/auth/server";
 import { SESSION_COOKIE } from "@/lib/session";
 
+const NAME_LOCKED_MESSAGE = "Your name can't be changed here. To correct it, write to hello@careermetro.com from your sign-in email.";
+
 export type BasicsState = { error: string | null; saved: boolean };
 
-/** Saves first and last name from Account settings. */
+/** Saves first and last name from Account settings, only for an account that has no name yet. */
 export async function saveBasics(_: BasicsState, formData: FormData): Promise<BasicsState> {
   const account = await currentAccount();
   if (!account) return { error: "Please sign in again to save changes.", saved: false };
+  if (nameLocked(account)) return { error: NAME_LOCKED_MESSAGE, saved: false };
   const first = String(formData.get("firstName") ?? "");
   const last = String(formData.get("lastName") ?? "");
   // The name checks a new resume is the person's own (dev/resume-name-check-plan.md), so a first name is required.

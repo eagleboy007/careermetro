@@ -9,7 +9,7 @@ const input =
 const initials = (first: string, last: string) => `${first.trim()[0] ?? ""}${last.trim()[0] ?? ""}`.toUpperCase() || "?";
 
 /** First and last name, with the sticky "unsaved changes" bar from the prototype while they differ from what's saved. */
-export function BasicsForm({ firstName, lastName, editable }: { firstName: string; lastName: string; editable: boolean }) {
+export function BasicsForm({ firstName, lastName, editable, locked }: { firstName: string; lastName: string; editable: boolean; locked: boolean }) {
   const [state, action, pending] = useActionState<BasicsState, FormData>(saveBasics, { error: null, saved: false });
   const [first, setFirst] = useState(firstName);
   const [last, setLast] = useState(lastName);
@@ -37,7 +37,9 @@ export function BasicsForm({ firstName, lastName, editable }: { firstName: strin
           <input name="lastName" aria-invalid={state.error ? true : undefined} aria-describedby={state.error ? "basics-error" : undefined} value={last} onChange={(e) => setLast(e.target.value)} autoComplete="family-name" maxLength={40} disabled={!editable} className={input} />
         </label>
         <small className="text-[0.78rem] text-muted min-[760px]:col-span-2">
-          As it appears on your resume. We check a new resume shows this name before it joins your account.
+          {locked
+            ? "We check a new resume shows this name before it joins your account, so it can't be changed here. To correct it, write to hello@careermetro.com from your sign-in email."
+            : "As it appears on your resume. We check a new resume shows this name before it joins your account. Once saved, it can't be changed here."}
         </small>
       </div>
       {state.error && (

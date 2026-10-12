@@ -50,7 +50,7 @@ export function checkName(accountName: string | null | undefined, hashes: string
 
 /** What the person reads when a resume isn't added to their account. Never says whose name the resume shows. */
 export const NAME_MISMATCH_MESSAGE =
-  "This resume shows a different name from your account, so we didn't add it. Upload your own resume, or fix the name on your account.";
+  "This resume shows a different name from your account, so we didn't add it. Upload your own resume. If the name on your account is wrong, write to hello@careermetro.com from your sign-in email.";
 
 /** What a signed-in person reads when their account has no name yet, so an upload can't be checked. */
 export const NAME_NEEDED_MESSAGE = "Please add your name to your account first: sign out, sign in again and enter it, then upload your resume.";

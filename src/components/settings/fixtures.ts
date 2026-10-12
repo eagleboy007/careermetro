@@ -8,4 +8,5 @@ export const exampleSettings: SettingsData = {
   emailVerified: true,
   method: "google",
   editable: false,
+  nameLocked: true,
 };
