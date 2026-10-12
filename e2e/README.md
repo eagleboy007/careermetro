@@ -7,8 +7,9 @@ frame, Map, Me, Departures, then phone size in dark mode with a horizontal-overf
 step, browser console error, page error or 5xx response, and saves screenshots to `e2e/results/`.
 
 `mock-ai.mjs` stands in for the Claude API, so the walk costs nothing and needs no key: the parse call gets a fixed
-profile of `fixtures/resumes/priya-sharma.pdf`, and other calls get text that fails their schema, so the app's
-plain-code fallbacks run.
+profile of `fixtures/resumes/priya-sharma.pdf`, the job-posting call ("Check against a job") gets the skills listed in
+`fixtures/job-postings/`, and other calls get text that fails their schema, so the app's plain-code fallbacks run.
+`MOCK_AI_PORT` moves it off port 4011.
 
 CI runs it in the `e2e` job (`.github/workflows/ci.yml`). Locally, with Postgres migrated and seeded:
 

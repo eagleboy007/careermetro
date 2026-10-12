@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
+import { JobCheck } from "@/components/gaps/job-check";
+import { JobCheckResult } from "@/components/gaps/job-check-result";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
 import { GapCard } from "@/components/route/gap-card";
 import { MarkDone } from "@/components/route/mark-done";
@@ -40,6 +42,7 @@ import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
+import type { JobCheckView } from "@/lib/jobs/groups";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, Profile } from "@/lib/schemas";
 import {
@@ -63,6 +66,28 @@ const exampleRoleOptions: RoleOption[] = [
   { slug: "data-analyst", title: "Data Analyst", experience: "Up to 3 years", topSkills: ["SQL", "Excel", "Power BI"] },
   { slug: "business-analyst", title: "Business Analyst", experience: "1 to 5 years", topSkills: ["Requirements gathering", "SQL", "Agile and Scrum"] },
 ];
+const exampleJobCheck: JobCheckView = {
+  id: "example-check",
+  company: "Example Analytics Pvt Ltd",
+  title: "Data Analyst",
+  createdAt: "2026-10-12T09:30:00.000Z",
+  covered: [
+    { skillId: "sql", skillName: "SQL", by: "resume" },
+    { skillId: "excel", skillName: "Excel", by: "resume" },
+    { skillId: "python", skillName: "Python", by: "proof" },
+  ],
+  alsoGoals: [{ skillId: "statistics", skillName: "Statistics", status: "missing" }],
+  onlyThisJob: [
+    { skillId: "power-bi", skillName: "Power BI", status: "weak" },
+    { skillId: "data-orchestration", skillName: "Data pipeline orchestration", status: "missing" },
+  ],
+  notAsked: [{ skillId: "data-cleaning", skillName: "Data cleaning" }],
+  goodToHave: [
+    { skillId: "tableau", skillName: "Tableau", status: "missing" },
+    { skillId: "version-control", skillName: "Version control", status: "met" },
+  ],
+  unknown: ["Alteryx", "SAS"],
+};
 const exampleGaps: Gap[] = [
   {
     skillId: "sql-window-functions",
@@ -381,8 +406,22 @@ export default function DesignPage() {
               { skillId: "excel", skillName: "Excel", status: "met" },
             ]}
           />
-          <CoveredSkills title="Nice to have" skills={[{ skillId: "python", skillName: "Python", status: "missing" }]} />
+          <CoveredSkills title="Good to have" skills={[{ skillId: "python", skillName: "Python", status: "missing" }]} />
           <GapRating analysisId="example" initial={null} demo />
+        </div>
+      </section>
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Job check form</h2>
+          <JobCheck resumeId="example" roleSlug="data-analyst" roleTitle="Data Analyst" checks={[]} demo />
+        </div>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Job check result</h2>
+          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" />
+          <JobCheckResult
+            check={{ ...exampleJobCheck, id: "example-empty", company: "Sample Retail LLP", title: "MIS Executive", covered: [], alsoGoals: [], onlyThisJob: [], goodToHave: [], unknown: ["Tally"] }}
+            roleTitle="Data Analyst"
+          />
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">

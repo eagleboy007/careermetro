@@ -8,7 +8,8 @@ const OUT = new URL("./results/", import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
 let failed = 0;
 const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
-const ctx = await b.newContext({ viewport: { width: 1280, height: 900 } });
+// Reduced motion: axe reads colours mid fade-in otherwise and reports contrast the finished page doesn't have.
+const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
 const p = await ctx.newPage();
 const problems = [];
 // The browser logs the 404 the not-found step asks for on purpose; any other console error is a problem.
@@ -157,6 +158,42 @@ await step("a failed rating goes back to the saved one", async () => {
     await p.unroute("**/api/gaps/*/rating");
     failingOnPurpose = false;
   }
+});
+await step("check against a job: the groups show, and the gaps stay as they were", async () => {
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
+  const gapsBefore = await p.locator("article").allInnerTexts();
+  const fill = async () => {
+    await p.getByLabel("Company", { exact: true }).fill(posting.company);
+    await p.getByLabel("Job title", { exact: true }).fill(posting.title);
+    await p.getByLabel("Job posting", { exact: true }).fill(posting.text);
+    await p.getByRole("button", { name: "Check this job" }).click();
+  };
+  await fill();
+  const result = p.getByRole("heading", { name: `${posting.title} at ${posting.company}` });
+  await result.waitFor({ timeout: 60000 });
+  // Focus moves to the new result once it shows.
+  await p.waitForFunction(() => document.activeElement?.id?.startsWith("job-check-"), null, { timeout: 10000 });
+  for (const group of ["Covered", "Your goals this job also asks for", "Only for this job", "Not asked for this job", "Good to have", "Not in our skill list yet"]) {
+    await p.getByRole("heading", { level: 4, name: new RegExp(`^${group} \\(\\d+\\)$`) }).waitFor({ timeout: 5000 });
+  }
+  const text = await p.locator(`[id^="job-check-"]`).first().locator("..").locator("..").innerText();
+  if (!text.includes("Alteryx")) throw new Error("unknown skill not listed");
+  if (/Kubernetes/.test(text)) throw new Error("a skill with an invented quote was kept");
+  // The same posting again reuses the saved check: no second result.
+  await fill();
+  await p.getByRole("status").filter({ hasText: "You checked this posting before" }).waitFor({ timeout: 30000 });
+  if ((await result.count()) !== 1) throw new Error(`expected one saved check, got ${await result.count()}`);
+  await p.reload();
+  await settled();
+  if (JSON.stringify(await p.locator("article").allInnerTexts()) !== JSON.stringify(gapsBefore)) throw new Error("a job check changed the gaps");
+  await shot("job-check");
+  await a11y("job-check");
+  await p.emulateMedia({ colorScheme: "dark" });
+  // Reload so every colour is drawn dark from the start, as a visitor in dark mode sees it.
+  await p.reload();
+  await settled();
+  await a11y("job-check-dark");
+  await p.emulateMedia({ colorScheme: "light" });
 });
 let pathUrl = "";
 await step("path", async () => {
@@ -431,7 +468,7 @@ if (process.env.DATABASE_URL) {
 }
 // Someone who signs in before uploading anything: every signed-in screen must load (Milin hit an error page here).
 await step("fresh test user, no resume: every signed-in screen loads", async () => {
-  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   const q = await fresh.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));

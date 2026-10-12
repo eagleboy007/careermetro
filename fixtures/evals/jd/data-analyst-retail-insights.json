@@ -1,0 +1,13 @@
+{
+  "id": "data-analyst-retail-insights",
+  "company": "Sample Retail Insights Pvt Ltd",
+  "title": "Data Analyst",
+  "text": "Data Analyst (1-3 years) - Sample Retail Insights Pvt Ltd, Bengaluru\n\nAbout us\nSample Retail Insights Pvt Ltd builds reporting for supermarket chains across South India.\n\nResponsibilities\n- Write SQL to answer questions from the category team\n- Maintain Excel trackers and pivot reports for weekly reviews\n- Do data cleaning on raw sales files before analysis\n- Build dashboards in Tableau for store managers\n- Present findings to business teams\n\nRequirements\n- Graduate in any discipline with 1 to 3 years in an analyst role\n- Good SQL and Excel\n- Comfortable with Tableau\n- Basic statistics: averages, variance, correlation\n\nGood to have\n- Python for automation\n- Experience with Looker Studio\n- Knowledge of Tally\n\nLocation: Bengaluru, work from office. Notice period: immediate to 30 days.",
+  "expected": {
+    "required": ["sql", "excel", "data-cleaning", "tableau", "statistics"],
+    "nice": ["python", "looker"],
+    "unknown": ["Tally"],
+    "mustNotClaim": ["kubernetes", "java", "figma"]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,13 @@
+{
+  "id": "ml-engineer-sample-vision",
+  "company": "Sample Vision Labs Pvt Ltd",
+  "title": "Machine Learning Engineer",
+  "text": "Machine Learning Engineer - Sample Vision Labs Pvt Ltd, Bengaluru\n2 to 5 years\n\nResponsibilities\n- Train and evaluate models with PyTorch and scikit-learn\n- Serve models behind APIs in Docker containers\n- Track experiments and models with MLflow\n- Build features from raw event data with pandas\n\nRequirements\n- Strong Python\n- Machine learning fundamentals\n- PyTorch\n- scikit-learn\n- Docker\n\nGood to have\n- Experience building LLM apps\n- Kubernetes\n- Weights & Biases\n\nHybrid, Koramangala.",
+  "expected": {
+    "required": ["python", "machine-learning", "pytorch", "scikit-learn", "docker", "mlops", "pandas"],
+    "nice": ["llm-apps", "kubernetes"],
+    "unknown": ["Weights & Biases"],
+    "mustNotClaim": ["seo", "figma", "selenium"]
+  },
+  "reviewedBy": null
+}

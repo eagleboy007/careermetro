@@ -2,12 +2,12 @@ import "server-only";
 import { asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { exportInbox } from "@/lib/inbox/store";
-import { consents, gapAnalyses, gapProofs, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
+import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
 
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 2;
+export const EXPORT_VERSION = 3;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -69,6 +69,24 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(pathSteps.pathId), asc(pathSteps.position))
     : [];
 
+  // Job checks keep only the skills a posting asked for; the posting text is never stored, so it can't be here.
+  const jobCheckRows = resumeIds.length
+    ? await db
+        .select({
+          resumeId: jobChecks.resumeId,
+          role: jobChecks.roleSlug,
+          company: jobChecks.company,
+          title: jobChecks.title,
+          requiredSkills: jobChecks.requiredSkillIds,
+          niceToHaveSkills: jobChecks.niceSkillIds,
+          unknownSkills: jobChecks.unknownSkills,
+          createdAt: jobChecks.createdAt,
+        })
+        .from(jobChecks)
+        .where(inArray(jobChecks.resumeId, resumeIds))
+        .orderBy(asc(jobChecks.createdAt))
+    : [];
+
   const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
@@ -118,6 +136,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         })),
     })),
     jobDescriptions: jdRows,
+    jobChecks: jobCheckRows,
     goals: goalRows,
     proofs: proofRows,
     rideDays: rideRows,

@@ -31,7 +31,7 @@ Open two terminal windows in the `careermetro` folder.
 1. Stand-in Claude API: `node e2e/mock-ai.mjs` (it answers every resume with the same synthetic Data Analyst profile).
 2. The app: `npm run dev`, then open http://localhost:3000.
 
-Sign in at http://localhost:3000/sign-in with "Continue as test user" (any name, any email; it gets a `.test` ending). Finish sign-up with a first name and the 18+ tick, then use Today, Map, Departures, the Inbox icon, and Profile and Settings from the avatar menu. Upload a resume from `fixtures/resumes/` to see Gaps and Path.
+Sign in at http://localhost:3000/sign-in with "Continue as test user" (any name, any email; it gets a `.test` ending). Finish sign-up with a first name and the 18+ tick, then use Today, Map, Departures, the Inbox icon, and Profile and Settings from the avatar menu. Upload a resume from `fixtures/resumes/` to see Gaps and Path. To try "Check against a job" on the Gaps page, paste the posting text from `fixtures/job-postings/example-analytics-data-analyst.json`; the stand-in answers with that posting's skills.
 
 ## Test people
 

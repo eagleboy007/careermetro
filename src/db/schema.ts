@@ -184,6 +184,33 @@ export const jobDescriptions = pgTable("job_descriptions", {
   (t) => [index("job_descriptions_user").on(t.userId)],
 );
 
+/**
+ * "Check against a job" (role-suggest-plan.md part B): the skills one pasted posting asks for, checked against a resume
+ * and its target role. The posting text itself is never stored, only a keyed hash of it so the same text isn't read
+ * twice. Goes with its resume: an anonymous one with the 24-hour cleanup, an account's with account deletion.
+ */
+export const jobChecks = pgTable(
+  "job_checks",
+  {
+    id: id(),
+    resumeId: uuid("resume_id")
+      .notNull()
+      .references(() => resumes.id, { onDelete: "cascade" }),
+    roleSlug: text("role_slug").notNull(),
+    company: text("company").notNull(),
+    title: text("title").notNull(),
+    requiredSkillIds: text("required_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    niceSkillIds: text("nice_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    /** Names the posting asks for that aren't in our skill list yet. Shown, never scored. */
+    unknownSkills: text("unknown_skills").array().notNull().default(sql`'{}'::text[]`),
+    /** HMAC of the posting text (src/lib/jobs/store.ts); the text itself is never kept. */
+    textHash: text("text_hash").notNull(),
+    aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
+    createdAt: createdAt(),
+  },
+  (t) => [index("job_checks_resume").on(t.resumeId, t.createdAt)],
+);
+
 /* AI calls and analyses --------------------------------------------------- */
 
 /** Every model call: what ran, on which inputs, and what it cost (AI-3, AI-6). Never stores resume text. */

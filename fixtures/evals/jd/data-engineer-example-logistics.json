@@ -1,0 +1,13 @@
+{
+  "id": "data-engineer-example-logistics",
+  "company": "Example Logistics Pvt Ltd",
+  "title": "Data Engineer",
+  "text": "Data Engineer - Example Logistics Pvt Ltd, Bengaluru\n3 to 6 years\n\nWhat you will do\n- Build batch data pipelines in Python and SQL\n- Process large files with PySpark on Databricks\n- Schedule jobs with Apache Airflow\n- Model tables in Snowflake for the analytics team\n- Move data from our apps with Azure Data Factory\n\nMust have\n- Python, SQL\n- Spark (PySpark)\n- Airflow\n- ETL design\n- Snowflake or BigQuery\n\nGood to have\n- dbt\n- Kafka\n- AWS\n\nHybrid. Notice period up to 45 days.",
+  "expected": {
+    "required": ["python", "sql", "spark", "data-orchestration", "etl", "cloud-data-warehouse"],
+    "nice": ["dbt", "messaging-queues", "aws"],
+    "unknown": ["Azure Data Factory"],
+    "mustNotClaim": ["figma", "seo", "selenium"]
+  },
+  "reviewedBy": null
+}

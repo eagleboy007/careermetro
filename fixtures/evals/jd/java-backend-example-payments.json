@@ -1,0 +1,13 @@
+{
+  "id": "java-backend-example-payments",
+  "company": "Example Payments Pvt Ltd",
+  "title": "Software Engineer - Java Backend",
+  "text": "Software Engineer - Java Backend\nExample Payments Pvt Ltd, Pune | 2-5 years\n\nWhat you will do\n- Build and maintain microservices in Java 17 with Spring Boot\n- Design REST APIs used by our mobile apps\n- Write SQL queries and tune them on PostgreSQL\n- Publish and consume events with Kafka\n- Write unit tests with JUnit\n- Review code and work in Agile sprints\n\nMust have\n- Strong Core Java and Spring Boot\n- REST API design\n- SQL (PostgreSQL or MySQL)\n- Unit testing with JUnit\n- Git\n\nNice to have\n- Docker and Kubernetes\n- AWS\n- Exposure to Camunda\n\nCTC: as per experience. Hybrid, 3 days in office.",
+  "expected": {
+    "required": ["java", "spring-boot", "microservices", "rest-apis", "sql", "messaging-queues", "unit-testing", "git", "agile-scrum"],
+    "nice": ["docker", "kubernetes", "aws"],
+    "unknown": ["Camunda"],
+    "mustNotClaim": ["figma", "seo", "tableau"]
+  },
+  "reviewedBy": null
+}
