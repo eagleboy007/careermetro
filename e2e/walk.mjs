@@ -81,6 +81,17 @@ await step("roles list", async () => {
   await shot("roles");
   await a11y("roles");
 });
+await step("signed out: the header offers Sign in, and it fits a phone", async () => {
+  await p.goto(BASE + "/");
+  await p.getByRole("link", { name: "Sign in", exact: true }).click();
+  await p.waitForURL(/\/sign-in/);
+  await p.goto(BASE + "/");
+  await p.setViewportSize({ width: 360, height: 780 });
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  await shot("home-phone");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  if (overflow) throw new Error("home page scrolls sideways at 360px");
+});
 await step("upload", async () => {
   await p.goto(BASE + "/start");
   await p.locator('input[type="file"]').setInputFiles(new URL("../fixtures/resumes/priya-sharma.pdf", import.meta.url).pathname);
