@@ -1,6 +1,6 @@
-import { BookOpen, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessagesSquare, TrainFront, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Building2, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessagesSquare, TrainFront, Users, type LucideIcon } from "lucide-react";
 
-export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox";
+export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox" | "corporate";
 export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIcon; built: boolean };
 
 /** Signed-in sections (handoff section 3). `built` is false until the screen exists; those show as "Soon". */
@@ -14,10 +14,12 @@ export const NAV = {
   network: { key: "network", label: "Network", href: "/network", Icon: Users, built: false },
   library: { key: "library", label: "Library", href: "/library", Icon: BookOpen, built: false },
   inbox: { key: "inbox", label: "Inbox", href: "/inbox", Icon: MessageSquare, built: true },
+  /** The employer side (dev/corporate-plan.md): set up a company, or work in one a Recruiter admin added you to. */
+  corporate: { key: "corporate", label: "Corporate", href: "/corporate", Icon: Building2, built: true },
 } satisfies Record<NavKey, NavItem>;
 
 /** Desktop top bar. */
 export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", "junction"] as const).map((k) => NAV[k]);
 /** Phone tab bar; Network, Library and Timetable move to the avatar menu. */
 export const TAB_NAV = (["today", "map", "departures", "arrivals", "junction"] as const).map((k) => NAV[k]);
-export const MENU_NAV = (["inbox", "library", "network", "timetable"] as const).map((k) => NAV[k]);
+export const MENU_NAV = (["inbox", "corporate", "library", "network", "timetable"] as const).map((k) => NAV[k]);

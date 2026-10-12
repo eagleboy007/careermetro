@@ -10,7 +10,7 @@ For the signed-in app (sign-up, Today, goals, map, jobs, profile), build from `d
 
 ## Decisions already made (2026-10-06)
 
-- B2C first. `organizations` exists in the schema only; team features are Phase 3.
+- B2C first. The employer side for CareerMetro job postings is next (dev/corporate-plan.md, Milin 2026-10-12); team skill-gap features are Phase 3.
 - Free during the beta. No billing code.
 - Job data: pasted job descriptions, hand-written role profiles, and public ATS job-board feeds. Never scrape LinkedIn, Naukri or other sites whose terms forbid it.
 - Resources: curated free sources (YouTube, NPTEL, SWAYAM, freeCodeCamp, Kaggle Learn, Microsoft Learn, official docs). No affiliate links.

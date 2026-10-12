@@ -50,7 +50,7 @@ Existing tokens are in `src/app/globals.css` and exposed to Tailwind as classes:
 | `accent` | `#2448f5` | `#7e94ff` | **Progress only**: train, done stops, ring, primary button |
 | `accent-soft` | `#e6ebff` | `#1d2452` | Progress backgrounds |
 | `on-accent` | `#ffffff` | `#0c0e13` | Text on accent |
-| `good` / `good-soft` | `#0f7a56` / `#e2f4ec` (was `#11805b`; darkened 2026-10-11 for WCAG AA, 4.67:1 on good-soft) | `#4cc79a` / `#11302a` | Gap met, "Boarding now" |
+| `good` / `good-soft` | `#0f7a56` / `#e2f4ec` | `#4cc79a` / `#11302a` | Gap met, "Boarding now" |
 | `warn` / `warn-soft` | `#9a5800` / `#fff0d8` | `#f0b45a` / `#382a12` | Gap weak |
 | `bad` / `bad-soft` | `#c0342a` / `#fde7e5` | `#ff7e71` / `#3a1a18` | Gap missing |
 
@@ -411,6 +411,40 @@ Milin's requirement (2026-10-10; rule in section 11): the current or latest job 
 - Re-check: changing the company or start date clears the badge and asks again. Adding an end date keeps the badge ("Verified while there").
 - Limits: 3 code sends an hour and 10 a day per account, plus a per-domain limit, so the sender can't be used to spam a company. Ties to pending item 21 (code-send rate limit and proper email sender).
 
+## 12e. Corporate workspace (employer side, mockup v1)
+
+Approved by Milin on 2026-10-12 (C7). Mockup: https://claude.ai/artifact/X7dXtu2tpBaFD4KXm91PUk, source `corporate-mockup/source/v2/build-v2.py`. Its "Logic and dev notes" tab has every rule and table.
+
+- One login only: the personal account. A Recruiter admin gives a person a role (Recruiter admin, at least 2 per company; Hiring HR; Interviewer). They then see a Corporate tab and confirm a work email on the company's verified domain with a 6-digit code, once. Removing the role ends access; the personal profile stays.
+- Screens: Overview; Jobs (a six-lane board per job: Applied, Shortlisted, L1 AI, L2 team, Offer, Not this time, the same stages candidates see on Arrivals); candidate drawer (Profile, Match to this job, Stories, Resume, Activity); Interviews (the candidate's offered slots plus interviewers' busy times); Team and access; Messages.
+- Recruiters see "Match to this job" only: the job's skills against the candidate's public skills and proofs, in words. Goals, path, streak, notice period (only "Can join"), salary, other companies' interviews and phone (until an interview is accepted, unless Express apply shared it) are never shown. An employee's own job search is hidden from their employer.
+- Only applications made through CareerMetro appear; companies can't browse people.
+- Application messages: one conversation per application, owned by the company (job team can write, assigned interviewers read only), with "Ask for times" and "Ask a question". Verified badge, anti-scam reminder, Report and Block.
+- Tables (proposed): org_members, email_otps, application_events, interviews, interview_feedback, candidate_slots, conversations, conversation_members, messages, blocks, reports.
+
+## 12f. Organization sign-up (`/corporate/new`)
+
+Approved by Milin on 2026-10-12 (C8, pending item 17). In the Corporate mockup as the "New company" role.
+
+- Four steps: Company, Verify, Company page, Review. Free during beta.
+- Company: type (Company, College, Training partner), registered name, name candidates see, website, the person's work email, size, head office city. Free mail domains are refused; a domain already claimed shows "Ask for access" to that company's admins instead of a second company; a website and email domain that don't match are flagged for review.
+- Verify: 6-digit code to the work email (10 minutes), or a DNS TXT record the IT team adds (checked for 7 days). After this, anyone added later confirms with a code on the same domain.
+- Company page: logo, about (400 characters), industry, offices, optional GSTIN or CIN (private, never shown), invite a second Recruiter admin within 14 days.
+- Review: CareerMetro checks every new company by hand before its jobs go live. The person can set up the team and draft jobs while waiting.
+- The person signing up becomes the first Recruiter admin; their personal account and job search stay hidden from the company.
+- Tables (proposed): organizations adds type, legal_name, display_name, website, email_domain, size, city, about, logo_url, gstin_or_cin (private), domain_verified_at, review_status, reviewed_by, reviewed_at; new org_domain_checks.
+
+## 12g. Post a job (`/corporate/jobs/new`)
+
+Approved by Milin on 2026-10-12 (C9, pending item 18). Opened from "Post a job" on Overview and Jobs.
+
+- Starts from a role profile, which fills the track and skills. Title as posted, experience range, openings.
+- Skills in three groups, same as role profiles: Required (at most 8), One of these, Nice to have (never blocks). Candidates see how they match these in words; Required skills decide Express apply.
+- Work type (Full time, Part time, Freelance), workplace (On-site, Hybrid, Remote), city, optional pay range in ₹ lakh a year (blank shows "Pay not listed"), plain description.
+- Applying: Express apply toggle for people who proved every required skill; stage list with the L1 AI interview on or off; Hiring HR and interviewers.
+- Before sending, three required ticks: the job is real and open; no fee, deposit or paid training; no screening by gender, religion, caste, age, disability or marital status. Every new job is checked before it goes live; anyone can report a job and reports are looked at within 24 hours. Live preview shows the Departures card.
+- Tables (proposed): jobs (org_id, role_profile_id, title, min_years, max_years, openings, work_type, workplace, city, pay_min, pay_max, description, express_apply, ai_round, owner_id, status draft/in_review/live/paused/closed, reviewed_by, reviewed_at), job_skills, job_interviewers, job_reports.
+
 ## 13. Data model proposals (need Milin's approval before any migration)
 
 Current tables: organizations, users, consents, waitlist_entries, resumes, profiles, skills, skill_aliases, role_profiles, job_descriptions, ai_calls, gap_analyses, resources, resource_checks, paths, path_steps, audit_logs.
@@ -456,3 +490,7 @@ Every change to prototype v2 after this handoff was first given to Development. 
 | C3 | 2026-10-09 | Account settings (`/settings`) and avatar menu | New screen: profile basics, locked email, username rules, password, two-step verification (required for recruiter and HR), private pay, city, privacy, notifications, download and delete. Avatar now opens a menu (profile, settings, inbox, library, network, sign out) instead of going straight to `/me`. | v32 | 12c | approved (Milin, 2026-10-10) |
 | C4 | 2026-10-09 | Account settings: Your plan | Elite upgrade section with suggested prices (monthly ₹299, yearly ₹2,499, Elite Pass ₹799 for 3 months), payment methods, invoices and cancel; "Upgrade to Elite" in the avatar menu. Prices accepted for now in INR (Milin, 2026-10-09). Design only: no billing code during the beta. | v33 | 12c | approved (design and prices; build waits for billing to be scheduled) |
 | C5 | 2026-10-10 | Experience: verified current job | Current or latest job needs a code sent to the user's work email at that company; free mail refused; badge shows, email never shown; freelance and self-employed are "Self-declared"; re-check when company or start date changes; send limits. From Milin's requirement R1 (Tester thread). Rule in section 11; details in 12d go to Milin with Development's plan. No prototype screen yet. | none yet | 11, 12d | approved (requirement and 12d details, Milin, 2026-10-10) |
+| C6 | 2026-10-12 | Market (`/market`), top nav and avatar menu | New screen asked for by Milin: search by role, state or city; tile map of India (one square per state) coloured by openings or median pay, tap a state for its top roles, top cities and pay; role trend (Growing, Steady or Shrinking over 12 months); pay bands by experience (middle half and median); top cities; Nearby lines (related roles, shared skills and required skills to add, real from role profiles); compare the same role in two places. Fewer than 15 openings a month shows "Not enough data". Every card names its source and month; all market figures are example data until Data research's tables land, in the same row shape (role × state [× city] × experience band, openings, pay p25, median, p75, source, month). Heat map in five plum steps (v36, after Milin asked for colour), kept apart from cobalt and the gap-status colours; cobalt only on the shared-skills progress bar. | v35, v36 | new | proposed |
+| C7 | 2026-10-12 | Corporate workspace (employer side) | Corporate mockup v1 brought into the handoff: Corporate tab and roles, work-email code, Jobs board lanes, candidate drawer with "Match to this job" only, Interviews, Team and access, company-owned application messages. Milin set Corporate before Market and Nearby lines (2026-10-12). | corporate v1 | 12e | approved (Milin, 2026-10-12) |
+| C8 | 2026-10-12 | Organization sign-up | New flow: company details, domain check (free mail refused, claimed domain asks for access), code or DNS verify, company page, second admin within 14 days, manual review before jobs go live. First Recruiter admin. Pending item 17. | corporate v2 | 12f | approved (Milin, 2026-10-12) |
+| C9 | 2026-10-12 | Post a job | New form: from a role profile, required / one-of / nice-to-have skills, work type, workplace, city, optional pay, Express apply, stages with L1 AI toggle, three required honesty ticks, review before live, live Departures preview. Pending item 18. | corporate v2 | 12g | approved (Milin, 2026-10-12) |

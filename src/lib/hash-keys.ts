@@ -41,3 +41,12 @@ export function credentialHashKey(env: Env = process.env): string {
 export function jobTextHashKey(env: Env = process.env): string {
   return `jobText|${env.NAME_HASH_KEY || legacy(env)}`;
 }
+
+/**
+ * The key for work-email hashes (dev/corporate-plan.md): the 6-digit codes and the invited work emails. An invite is
+ * found again by the hash of the email the colleague types, days later, so the key must stay fixed: it follows
+ * NAME_HASH_KEY, which is never rotated. Codes live 10 minutes, so they could take any key; one key keeps it simple.
+ */
+export function workEmailHashKey(env: Env = process.env): string {
+  return `work-email|${env.NAME_HASH_KEY || legacy(env)}`;
+}

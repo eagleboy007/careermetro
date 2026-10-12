@@ -23,7 +23,7 @@ CareerMetro reads a person's actual resume and a named target role in the Indian
 - Hosting our own course content. We curate and link; we do not build a content library.
 - A full job board. Job matching in MVP is role-profile matching, not listing aggregation.
 - Native mobile apps. Responsive web only.
-- Employer-side hiring tools.
+- Employer tools beyond posting jobs and handling applications made on CareerMetro (no candidate search, no ATS replacement).
 
 ## 3. Users
 
@@ -32,7 +32,7 @@ CareerMetro reads a person's actual resume and a named target role in the Indian
 | **Job seeker (B2C)**, India, 1-10 yrs experience, switching or upgrading roles | "What exactly am I missing for this job?" | Google search on "how to get X job" |
 | **L&D / HR lead (B2B)** at a mid-size company | See skill gaps across a team and assign short paths | Direct sales, consulting relationships |
 
-MVP builds for the job seeker. B2B is Phase 3 but the data model must not block it (see section 6).
+MVP builds for the job seeker. The employer side for jobs posted on CareerMetro comes next (section 5.10, Milin 2026-10-12). Team skill-gap features stay Phase 3.
 
 ## 4. Core user journey (the "route")
 
@@ -103,9 +103,15 @@ MVP builds for the job seeker. B2B is Phase 3 but the data model must not block 
 - FR-32 (later, added 2026-10-08): Document verification for background checks. A candidate connects DigiLocker and consents per document; we check name, date of birth and photo against issued documents (Aadhaar via e-Aadhaar, PAN, marksheets and certificates). Needs DigiLocker requester onboarding (directly through API Setu or via a licensed provider), which has its own audit duties. Store only what the check needs: never the full Aadhaar number (last 4 digits at most), no copies of documents beyond the employer's retention rule, and a consent record per document. Address may not be returned by DigiLocker's user profile, so confirm the source before promising address checks.
 - FR-33 (later, added 2026-10-08): AI first-round interviewer for employers. A lifelike video agent runs a structured level-1 interview, records it with the candidate's consent, and gives the employer a transcript, a scored summary against the role profile and the recording to review. Candidates are told up front that the interviewer is an AI, and a human makes the hiring decision. Candidate vendor: Tavus (its Conversational Video Interface today; its new Griffin model, a research preview announced 2026-10-01, when it opens up). Evaluate cost, India data residency, bias testing and recording consent before building.
 
+### 5.10 Employer side
+- FR-37: Companies sign up with a verified work-email domain; the first person becomes Recruiter admin. Roles (Recruiter admin, Hiring HR, Interviewer) sit on the person's single personal account, are given by a Recruiter admin, and switch on after a 6-digit code to a work email on the company's domain. Removing the role ends access; the personal profile stays. At least two admins per company. Only verified companies post jobs or message.
+- FR-38: Jobs, applications and a six-lane board (Applied, Shortlisted, L1 AI, L2 team, Offer, Not this time). Every move shows on the candidate's Arrivals; Not this time carries a note. Interviews, interviewer feedback and Ask for times: the candidate offers free slots and only those reach the company; the calendar is never on a profile.
+- FR-39: One company-owned conversation per application in the Inbox tables (FR-35); the job team writes, assigned interviewers read only, writing ends 30 days after closing.
+- FR-40: Companies see Match to this job only (job requirements against public skills and accepted proofs, in words) and only applications made on CareerMetro. Never shown: email; phone until the candidate shares it at an accepted interview; pay; notice period (only Can join); goals, path, streak; other applications or interviews; an employee's own job search. Company access to an application ends 180 days after it closes; each view is audited.
+
 ## 6. Data model (high level)
 
-`User`, `Organization` (nullable in MVP, present from day one), `Resume` (file ref, parse status), `Profile` (structured JSON, versioned), `RoleProfile` (skills, tools, freshness date, source), `GapAnalysis` (profile version, role profile version, gaps JSON, model + prompt version), `Path`, `PathStep`, `Resource` (catalog, link-health status), `InterviewSession`, `InterviewAnswer`, `ContentPage` (SEO), `WaitlistEntry`, `AuditLog`, `Conversation`, `ConversationMember`, `Message`, `Block`, `Report`.
+`User`, `Organization` (nullable in MVP, present from day one), `Resume` (file ref, parse status), `Profile` (structured JSON, versioned), `RoleProfile` (skills, tools, freshness date, source), `GapAnalysis` (profile version, role profile version, gaps JSON, model + prompt version), `Path`, `PathStep`, `Resource` (catalog, link-health status), `InterviewSession`, `InterviewAnswer`, `ContentPage` (SEO), `WaitlistEntry`, `AuditLog`, `Conversation`, `ConversationMember`, `Message`, `Block`, `Report`, `OrgMember`, `WorkEmailCode`, `Job`, `JobTeam`, `Application`, `ApplicationEvent`, `Interview`, `InterviewFeedback`, `CandidateSlot`.
 
 Rule: every AI output record stores the model, prompt version, and inputs' versions so results are reproducible and debuggable.
 
@@ -168,7 +174,7 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 1. **Phase 0 (week 0-2):** repo setup, design tokens and component library from the landing page, role-profile schema, 10 hand-built role profiles, eval set started. Waitlist live.
 2. **Phase 1 (week 3-8):** resume ingest -> gap analysis -> upskilling path. Private beta with 50 users. Evals gate every release.
 3. **Phase 2 (week 9-14):** resume builder, interview practice, readiness dashboard, 30+ role profiles, first 50 SEO pages.
-4. **Phase 3 (week 15+):** B2B team shuttle, listing feed integration, voice interview practice.
+4. **Phase 3 (week 15+):** B2B team shuttle (team skill gaps), listing feed integration, voice interview practice.
 5. **Later (not scheduled, added 2026-10-08):**
    - **Gaps per job description:** compare a resume with the job a user actually applies for, not only our role profiles, since requirements differ by company (for example, not every Cyber Security Analyst L1 job needs Python).
    - **More learning materials:** keep growing the resource catalog beyond the first set of free links.

@@ -14,6 +14,7 @@ const m = vi.hoisted(() => ({
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
   renewExpired: vi.fn(async () => 0),
+  clearCodes: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -37,6 +38,7 @@ vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResu
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired }));
+vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
@@ -312,6 +314,12 @@ describe("daily cleanup", () => {
     m.purgeDeleted.mockResolvedValueOnce(0);
     m.renewExpired.mockRejectedValueOnce(new Error("down"));
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0 } });
+    // So is forgetting the addresses on expired work-email codes.
+    m.deleteExpired.mockResolvedValueOnce(0);
+    m.purgeDeleted.mockResolvedValueOnce(0);
+    m.clearCodes.mockRejectedValueOnce(new Error("down"));
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0 } });
+    expect(m.clearCodes).toHaveBeenCalled();
   });
 });
 

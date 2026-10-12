@@ -24,6 +24,7 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
+import { ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
@@ -32,12 +33,50 @@ const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull(
 
 /* Accounts ---------------------------------------------------------------- */
 
-/** Present from day one so B2B (Phase 3) needs no migration of user data. */
-export const organizations = pgTable("organizations", {
-  id: id(),
-  name: text("name").notNull(),
-  createdAt: createdAt(),
-});
+export const orgType = pgEnum("org_type", ORG_TYPES);
+export const orgReviewStatus = pgEnum("org_review_status", ORG_REVIEW_STATUSES);
+export const orgRole = pgEnum("org_role", ORG_ROLES);
+export const workEmailPurpose = pgEnum("work_email_purpose", WORK_EMAIL_PURPOSES);
+export const orgInviteKind = pgEnum("org_invite_kind", ORG_INVITE_KINDS);
+
+/**
+ * A company on the employer side (dev/corporate-plan.md, handoff 12f). It owns one email domain, proved by a code to
+ * its first Recruiter admin's work email, and is checked by hand (`review_status`) before its jobs can go live. Access
+ * comes only from `org_members`; `users.organization_id` stays unused (it was for the Phase 3 team shuttle).
+ */
+export const organizations = pgTable(
+  "organizations",
+  {
+    id: id(),
+    /** The name candidates see. */
+    name: text("name").notNull(),
+    type: orgType("type").notNull().default("company"),
+    /** As on the incorporation or GST papers. */
+    legalName: text("legal_name"),
+    website: text("website"),
+    /** Lowercase. Work emails on it or its subdomains confirm members. One company per domain. */
+    emailDomain: text("email_domain"),
+    size: text("size"),
+    city: text("city"),
+    about: text("about"),
+    industry: text("industry"),
+    offices: text("offices"),
+    /** Optional GSTIN or CIN, only for the hand check. Never shown to anyone. */
+    gstinOrCin: text("gstin_or_cin"),
+    /** When the first admin's work-email code proved the domain. */
+    domainVerifiedAt: timestamp("domain_verified_at", { withTimezone: true }),
+    reviewStatus: orgReviewStatus("review_status").notNull().default("pending"),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    /** Who checked it, e.g. "milin-github" for the Companies workflow. Not a user id. */
+    reviewedBy: text("reviewed_by"),
+    /** The admin rule (Milin, 2026-10-12): a second Recruiter admin by this date, or no new jobs open. */
+    secondAdminDueAt: timestamp("second_admin_due_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  // The domain is stored lowercase by the code that writes it (src/lib/corporate/domains.ts). No CHECK constraints
+  // here: adding one to an existing table is a contract step (src/db/migrations.test.ts), and Zod checks lengths.
+  (t) => [uniqueIndex("organizations_email_domain").on(t.emailDomain)],
+);
 
 export const users = pgTable(
   "users",
@@ -535,6 +574,103 @@ export const reports = pgTable(
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),
   },
   (t) => [index("reports_reporter").on(t.reporterId), index("reports_status_created").on(t.status, t.createdAt), check("reports_note_length", sql`char_length(${t.note}) <= 500`)],
+);
+
+/* Corporate (employer side) -------------------------------------------------- */
+
+/**
+ * A person's company role (dev/corporate-plan.md). One active row (removed_at null) per person; removing the role ends
+ * Corporate access on the next request, since access is read from these rows every time. Only the work email's domain
+ * and the date it was confirmed are kept, never the address.
+ */
+export const orgMembers = pgTable(
+  "org_members",
+  {
+    id: id(),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: orgRole("role").notNull(),
+    workEmailDomain: text("work_email_domain").notNull(),
+    workEmailVerifiedAt: timestamp("work_email_verified_at", { withTimezone: true }).notNull(),
+    /** Every 180 days the person types the work email again. */
+    recheckDueAt: timestamp("recheck_due_at", { withTimezone: true }).notNull(),
+    /** The admin who gave the role; null for the company's first admin. No foreign key: the row outlives that admin. */
+    grantedBy: uuid("granted_by"),
+    createdAt: createdAt(),
+    removedAt: timestamp("removed_at", { withTimezone: true }),
+    /** The admin who removed it, or the person themselves. No foreign key, as for granted_by. */
+    removedBy: uuid("removed_by"),
+  },
+  (t) => [
+    uniqueIndex("org_members_one_active_role").on(t.userId).where(sql`${t.removedAt} is null`),
+    index("org_members_org").on(t.orgId, t.removedAt),
+    index("org_members_user").on(t.userId),
+  ],
+);
+
+/**
+ * A role waiting for its work-email code (plan call A). `invite`: an admin typed a colleague's work email; only its
+ * keyed hash and domain are kept. `request`: a signed-in person asked a company for access ("Ask for access", handoff
+ * 12f); an admin answers it by giving a role. Either becomes an `org_members` row when the right person confirms a
+ * work email on the company's domain with a code.
+ */
+export const orgInvites = pgTable(
+  "org_invites",
+  {
+    id: id(),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    kind: orgInviteKind("kind").notNull(),
+    /** Null on a request until an admin gives a role. */
+    role: orgRole("role"),
+    /** HMAC of the invited work email (src/lib/corporate/codes.ts). Null on a request. */
+    emailHash: text("email_hash"),
+    emailDomain: text("email_domain").notNull(),
+    /** The person who asked, on a request. */
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    /** The admin who invited or approved. No foreign key: the row outlives that admin. */
+    invitedBy: uuid("invited_by"),
+    createdAt: createdAt(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("org_invites_org").on(t.orgId, t.createdAt),
+    index("org_invites_email_hash").on(t.emailHash),
+    index("org_invites_user").on(t.userId),
+    check("org_invites_shape", sql`(${t.kind} = 'invite') = (${t.emailHash} is not null) and (${t.kind} = 'request') = (${t.userId} is not null)`),
+  ],
+);
+
+/**
+ * One 6-digit code to a work email (handoff 12d and 12f): 10 minutes, 5 wrong tries, then 15 minutes' wait. The code is
+ * kept only as a keyed hash. The address is held only until the code is used or expires, then set to null.
+ */
+export const workEmailCodes = pgTable(
+  "work_email_codes",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    purpose: workEmailPurpose("purpose").notNull(),
+    /** The company being joined; null when the code sets up a new company. No foreign key: the row is short-lived. */
+    orgId: uuid("org_id"),
+    email: text("email"),
+    codeHash: text("code_hash"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    attempts: integer("attempts").notNull().default(0),
+    lockedUntil: timestamp("locked_until", { withTimezone: true }),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("work_email_codes_user").on(t.userId, t.createdAt), index("work_email_codes_expires").on(t.expiresAt).where(sql`${t.email} is not null`)],
 );
 
 /* Audit ------------------------------------------------------------------- */
