@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { Logo } from "@/components/ui/logo";
 import { authConfig } from "@/lib/auth/config";
+import { currentIdentity } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 
 /** Top bar shared by public pages. "Sign in" shows only where sign-in is on (Supabase keys, or test sign-in on previews). */
@@ -29,13 +30,17 @@ export function SiteHeader() {
   );
 }
 
-/** Rendered per request: the static shell is built before the deployment's keys are known. */
+/** Rendered per request: the static shell is built before the deployment's keys are known. Signed in, it leads to Today. */
 async function SignInLink() {
   await connection();
   if (!authConfig() && !testSignInEnabled()) return null;
+  const signedIn = Boolean(await currentIdentity());
   return (
-    <Link href="/sign-in?next=%2Ftoday" className="whitespace-nowrap text-ink hover:underline hover:underline-offset-2">
-      Sign in
+    <Link
+      href={signedIn ? "/today" : "/sign-in?next=%2Ftoday"}
+      className="whitespace-nowrap text-ink hover:underline hover:underline-offset-2"
+    >
+      {signedIn ? "Today" : "Sign in"}
     </Link>
   );
 }

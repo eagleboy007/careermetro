@@ -193,6 +193,16 @@ await step("sign in as test user (claims the anonymous resume)", async () => {
   await shot("today-first");
   await a11y("today-first");
 });
+await step("signed in: the public top bar leads to Today, not Sign in", async () => {
+  const r = await p.context().newPage();
+  try {
+    await r.goto(BASE + "/roles");
+    await r.getByRole("link", { name: "Today", exact: true }).waitFor({ timeout: 10000 });
+    if (await r.getByRole("link", { name: "Sign in", exact: true }).count()) throw new Error("Sign in shown while signed in");
+  } finally {
+    await r.close();
+  }
+});
 await step("today shows the person's own goals", async () => {
   await p.locator('section[aria-label="Your goals"]').waitFor();
   const names = await p.locator('section[aria-label="Your goals"] li b').allTextContents();
