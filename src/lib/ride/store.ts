@@ -16,9 +16,10 @@ type Db = ReturnType<typeof getDb>;
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 
 /**
- * The goals a line shows, in order: the person's goals for the current analysis's gaps first, in goal order, then
- * their "Your choice" goals that aren't gaps of it, in goal order. Skipped "Your choice" goals stay off the line.
- * A "Your choice" goal never changes the match, readiness or gaps; it only adds its own pitstops.
+ * The person's goals split for a line: `gaps`, their goals for the current analysis's gaps in goal order, which make
+ * the line, carry the train and decide arrival; and `chosen`, their "Your choice" goals that aren't gaps of it, in goal
+ * order, which sit on their own spur (handoff section 7) and never move the train, the match or readiness. Skipped
+ * "Your choice" goals (removed by the person) are left out.
  */
 export function lineGoals<G extends { skillId: string; source: "gap" | "user"; status: string }>(goals: G[], gapSkillIds: ReadonlySet<string>): { gaps: G[]; chosen: G[] } {
   return {
@@ -32,14 +33,15 @@ export const choiceName = (skillId: string) => skillNames.get(skillId) ?? skillI
 
 /**
  * The person's line as ride goals: their goals for the current analysis's gaps, in goal order, each with the courses
- * and practice task of the newest path's step for that skill. Null before there is a current analysis. `sync: false`
- * only reads the goals, for a tick, which must not write them.
+ * and practice task of the newest path's step for that skill. `chosen` holds their "Your choice" goals the same way;
+ * they are kept apart because they never move the train, the ride or arrival. Null before there is a current
+ * analysis. `sync: false` only reads the goals, for a tick, which must not write them.
  */
 export async function rideGoalsFor(
   userId: string,
   db: Db = getDb(),
   { sync = true }: { sync?: boolean } = {},
-): Promise<{ result: GapAnalysis; goals: RideGoal[]; path: RidePath } | null> {
+): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath } | null> {
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return null;
   const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
@@ -92,15 +94,13 @@ export async function rideGoalsFor(
       choice,
     };
   };
-  const goals = [
-    ...line.gaps.map((g) => {
-      const gap = gapBySkill.get(g.skillId)!;
-      const status = gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak";
-      return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
-    }),
-    ...line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null })),
-  ];
-  return { result: analysis.result, goals, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
+  const goals = line.gaps.map((g) => {
+    const gap = gapBySkill.get(g.skillId)!;
+    const status = gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak";
+    return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
+  });
+  const chosen = line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null }));
+  return { result: analysis.result, goals, chosen, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
 }
 
 const rode = sql`cardinality(${rideDays.taskIds}) > 0`;
@@ -152,7 +152,7 @@ export async function todayRideFor(
   };
   const ride = buildRide(input);
   if (!ride) return null;
-  const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps });
+  const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps, chosen: line.chosen });
   return { ride, goals, week: stats.week, streak: stats.streak, roleSlug: line.result.roleSlug };
 }
 

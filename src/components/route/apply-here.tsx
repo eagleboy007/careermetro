@@ -62,7 +62,15 @@ export function ApplyHere({
             {onlyThisJob.map((s) => (
               <Row key={s.skillId} name={s.skillName}>
                 <StatusChip status={s.status} />
-                <AddGoal checkId={checkId} skillId={s.skillId} skillName={s.skillName} state={goalState(goals, s.skillId)} signInHref={signInHref(goals.here)} demo={demo} />
+                <AddGoal
+                  checkId={checkId}
+                  skillId={s.skillId}
+                  skillName={s.skillName}
+                  state={goalState(goals, s.skillId)}
+                  goalId={goals.chosen?.[s.skillId] ?? null}
+                  signInHref={signInHref(goals.here)}
+                  demo={demo}
+                />
               </Row>
             ))}
           </ul>

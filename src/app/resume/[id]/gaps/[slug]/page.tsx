@@ -57,11 +57,11 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   // Saved job checks are read-only here; a failure to load them never hides the gaps.
   let checks: JobCheckView[] | null;
   // The account's goal skills, for "Add as my goal"; null for an anonymous visitor, who is asked to sign in.
-  let goalSkills: string[] | null = null;
+  let goalSkills: Awaited<ReturnType<typeof goalSkillsOf>> | null = null;
   try {
     [checks, goalSkills] = await Promise.all([
       owner ? jobChecksForPage(id, owner, role.slug, analysis) : [],
-      owner?.userId !== undefined ? goalSkillsOf(owner.userId).then((s) => [...s]) : null,
+      owner?.userId !== undefined ? goalSkillsOf(owner.userId) : null,
     ]);
   } catch (error) {
     logEvent("error", "job_checks_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
@@ -121,7 +121,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         roleSlug={role.slug}
         roleTitle={role.title}
         checks={checks ?? []}
-        goals={{ skills: goalSkills, here: `/resume/${id}/gaps/${role.slug}` }}
+        goals={{ skills: goalSkills?.skills ?? null, chosen: goalSkills?.chosen, here: `/resume/${id}/gaps/${role.slug}` }}
       />
       {checks === null && (
         <p role="alert" className="rounded-lg border border-line bg-surface p-4 text-sm">

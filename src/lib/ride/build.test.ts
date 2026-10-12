@@ -165,21 +165,37 @@ describe("buildGoalsSummary", () => {
     expect(s).toMatchObject({ moreCount: 1, moreNames: ["E"], metThisMonth: [] });
   });
 
-  it("tags a Your choice goal with its job and says it doesn't change the match", () => {
+  it("lists Your choice goals apart, on their own spur, tagged with their job, and never moves the train or arrival", () => {
     const chosen = goal({ goalId: "airflow", name: "Data pipeline orchestration", resources: [], practice: null, choice: { company: "Example Analytics Pvt Ltd" } });
-    const s = summary([goal({ goalId: "sql" }), chosen, goal({ goalId: "dbt", resources: [], practice: null, choice: { company: null } })]);
-    expect(s.goals.map((g) => g.choice ?? null)).toEqual([null, { company: "Example Analytics Pvt Ltd" }, { company: null }]);
-    expect(s.goals[1].evidence).toBe("You added this goal for a job at Example Analytics Pvt Ltd. It doesn't change your match or your gaps.");
-    expect(s.goals[2].evidence).toBe("You added this goal. It doesn't change your match or your gaps.");
-    // Learn then prove, like any goal, after the gap goal's two pitstops; with no path step it studies on its own.
-    expect(s.goals[1].pitstops.map((p) => [p.number, p.kind])).toEqual([
-      [3, "learn"],
-      [4, "prove"],
+    const dbt = goal({ goalId: "dbt", choice: { company: null } });
+    const input = (goals: RideGoal[], before: string[] = []) => ({
+      goals,
+      path: BUILT,
+      doneBefore: new Set(before),
+      doneToday: new Set<string>(),
+      doneThisWeek: new Set<string>(),
+      role: "Data Analyst",
+      gaps,
+      chosen: [chosen, dbt],
+    });
+    const s = buildGoalsSummary(input([goal({ goalId: "sql" })], ["dbt:r:dbt-1", "dbt:r:dbt-2", "dbt:practice"]));
+    expect(s.goals.map((g) => g.name)).toEqual(["SQL"]);
+    expect(s.choiceGoals!.map((g) => [g.name, g.choice])).toEqual([
+      ["Data pipeline orchestration", { company: "Example Analytics Pvt Ltd" }],
+      ["DBT", { company: null }],
     ]);
-    const r = ride([{ ...goal({ goalId: "sql" }), proved: true }, chosen])!;
-    expect(r.tasks.map((t) => t.id)).toEqual(["airflow:self-study"]);
-    // It isn't a gap of the role, so proof meets the goal rather than filling a gap.
-    expect(r.summary).toMatch(/then prove it \(Pitstop 4\) to meet the goal\.$/);
-    expect(ride([chosen], { path: { href: "/p", built: false } })!.tasks.map((t) => t.id)).toEqual(["airflow:open-path"]);
+    expect(s.choiceGoals![0].evidence).toBe("You added this goal for a job at Example Analytics Pvt Ltd. It doesn't change your match or your gaps.");
+    expect(s.choiceGoals![1].evidence).toBe("You added this goal. It doesn't change your match or your gaps.");
+    // Its own learn and prove pitstops, numbered on its spur; with no path step it studies on its own.
+    expect(s.choiceGoals![0].pitstops.map((p) => [p.number, p.kind, p.state, p.title])).toEqual([
+      [1, "learn", "ahead", "Study Data pipeline orchestration on your own"],
+      [2, "prove", "ahead", "Prove: skill check, certificate or work"],
+    ]);
+    expect(s.choiceGoals![1].pitstops.map((p) => p.state)).toEqual(["done", "ahead"]);
+    // Proved: met.
+    const proved = buildGoalsSummary({ ...input([goal({ goalId: "sql" })]), chosen: [{ ...chosen, proved: true }] });
+    expect(proved.choiceGoals![0]).toMatchObject({ status: "met", pitstops: [{ state: "done" }, { state: "done" }] });
+    // Every gap goal proved: arrived, whatever Your choice goals are open (they aren't on the ride at all).
+    expect(ride([{ ...goal({ goalId: "sql" }), proved: true }])).toMatchObject({ pitstop: 3, pitstopCount: 2, goalName: "Practice" });
   });
 });

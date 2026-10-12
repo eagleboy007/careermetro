@@ -11,10 +11,11 @@ const checkedOn = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "sho
 export const jobCheckHeadingId = (id: string) => `job-check-${id}`;
 
 /**
- * What a visitor can do with a check's "Only for this job" skills: for an account, the skills already on its goals;
- * null for an anonymous visitor, who is asked to sign in. `here` is the page to come back to after signing in.
+ * What a visitor can do with a check's "Only for this job" skills: for an account, the skills already on its goals
+ * and its own "Your choice" goals by skill (which it can remove); null skills for an anonymous visitor, who is asked
+ * to sign in. `here` is the page to come back to after signing in.
  */
-export type GoalsContext = { skills: readonly string[] | null; here: string };
+export type GoalsContext = { skills: readonly string[] | null; chosen?: Readonly<Record<string, string>>; here: string };
 
 /** Where one skill stands for this visitor. */
 export const goalState = (goals: GoalsContext, skillId: string): GoalState =>
@@ -53,6 +54,7 @@ export function JobCheckResult({
   roleTitle,
   planHref,
   goals,
+  onRemoved,
   demo = false,
 }: {
   check: JobCheckView;
@@ -60,6 +62,8 @@ export function JobCheckResult({
   /** The Path page for this job: "Plan for this job". */
   planHref: string;
   goals: GoalsContext;
+  /** After "Remove this check": the list refreshes and moves focus. */
+  onRemoved?: () => void;
   demo?: boolean;
 }) {
   const asked = check.covered.length + check.alsoGoals.length + check.onlyThisJob.length;
@@ -98,7 +102,15 @@ export function JobCheckResult({
         {check.onlyThisJob.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
-            <AddGoal checkId={check.id} skillId={s.skillId} skillName={s.skillName} state={goalState(goals, s.skillId)} signInHref={signInHref(goals.here)} demo={demo} />
+            <AddGoal
+              checkId={check.id}
+              skillId={s.skillId}
+              skillName={s.skillName}
+              state={goalState(goals, s.skillId)}
+              goalId={goals.chosen?.[s.skillId] ?? null}
+              signInHref={signInHref(goals.here)}
+              demo={demo}
+            />
           </Row>
         ))}
       </Group>
@@ -121,14 +133,14 @@ export function JobCheckResult({
       </Group>
       <div className="flex flex-wrap items-start justify-between gap-3 border-t border-line pt-3">
         {check.alsoGoals.length + check.onlyThisJob.length > 0 ? (
-          <Link href={planHref} className="inline-flex min-h-9 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2">
+          <Link href={planHref} className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2">
             Plan for this job
             <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />
           </Link>
         ) : (
           <span />
         )}
-        <RemoveCheck checkId={check.id} label={`${check.title} at ${check.company}`} demo={demo} />
+        <RemoveCheck checkId={check.id} label={`${check.title} at ${check.company}`} onRemoved={onRemoved} demo={demo} />
       </div>
     </div>
   );

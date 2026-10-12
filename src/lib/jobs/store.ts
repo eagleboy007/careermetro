@@ -241,17 +241,31 @@ export async function addJobCheckGoal(
   if (!own.view.onlyThisJob.some((s) => s.skillId === skillId)) return { ok: false, reason: "not_this_job" };
   return db.transaction(async (tx): Promise<AddJobCheckGoalResult> => {
     await lockPerson(tx, userId);
+    // The check may have been removed since it was read; locking its row keeps it until this goal points at it.
+    const [check] = await tx.select({ id: jobChecks.id }).from(jobChecks).where(eq(jobChecks.id, checkId)).for("share");
+    if (!check) return { ok: false, reason: "not_found" };
     const [already] = await tx
-      .select({ id: userGoals.id })
+      .select({ id: userGoals.id, source: userGoals.source, status: userGoals.status })
       .from(userGoals)
       .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, skillId)))
       .limit(1);
-    if (already) return { ok: false, reason: "already" };
+    // A "Your choice" goal the person removed (skipped) can be added again; any other goal for the skill stands.
+    if (already && !(already.source === "user" && already.status === "skipped")) return { ok: false, reason: "already" };
     const [{ chosen, last }] = await tx
-      .select({ chosen: sql<number>`count(*) filter (where ${userGoals.source} = 'user')::int`, last: sql<number>`coalesce(max(${userGoals.position}), 0)::int` })
+      .select({
+        chosen: sql<number>`count(*) filter (where ${userGoals.source} = 'user' and ${userGoals.status} <> 'skipped')::int`,
+        last: sql<number>`coalesce(max(${userGoals.position}), 0)::int`,
+      })
       .from(userGoals)
       .where(eq(userGoals.userId, userId));
     if (chosen >= MAX_CHOICE_GOALS) return { ok: false, reason: "limit" };
+    if (already) {
+      await tx
+        .update(userGoals)
+        .set({ status: "active", skippedAt: null, metAt: null, position: last + 1, jobCheckId: checkId })
+        .where(eq(userGoals.id, already.id));
+      return { ok: true, goalId: already.id };
+    }
     const [row] = await tx
       .insert(userGoals)
       .values({ userId, skillId, source: "user", status: "active", position: last + 1, jobCheckId: checkId })
@@ -261,10 +275,21 @@ export async function addJobCheckGoal(
   });
 }
 
-/** The skills on the account's goals, whatever their state, for "On your goals". */
-export async function goalSkillsOf(userId: string, db: Pick<Db, "select"> = getDb()): Promise<Set<string>> {
-  const rows = await db.select({ skillId: userGoals.skillId }).from(userGoals).where(eq(userGoals.userId, userId));
-  return new Set(rows.map((r) => r.skillId));
+/**
+ * The account's goals as a job check shows them: `skills` on its goals ("On your goals"), and `chosen`, its "Your
+ * choice" goals by skill, which can be removed from there. A removed (skipped) "Your choice" goal is in neither.
+ * Plain data, so a client component can take it.
+ */
+export async function goalSkillsOf(userId: string, db: Pick<Db, "select"> = getDb()): Promise<{ skills: string[]; chosen: Record<string, string> }> {
+  const rows = await db
+    .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status })
+    .from(userGoals)
+    .where(eq(userGoals.userId, userId));
+  const open = rows.filter((r) => !(r.source === "user" && r.status === "skipped"));
+  return {
+    skills: open.map((r) => r.skillId),
+    chosen: Object.fromEntries(open.filter((r) => r.source === "user").map((r) => [r.skillId, r.id])),
+  };
 }
 
 /**

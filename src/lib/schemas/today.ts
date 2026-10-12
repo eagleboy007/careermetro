@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { USER_STATES } from "./constants";
+import { MAX_CHOICE_GOALS, USER_STATES } from "./constants";
 import { goalChoice } from "./goals";
 export { USER_STATES } from "./constants";
 
@@ -192,6 +192,15 @@ export const goalsSummary = z
   .object({
     track: z.string().min(1).max(60),
     goals: z.array(goal).max(20),
+    /**
+     * "Your choice" goals, shown apart from the line's goals: they have their own learn and prove pitstops (numbered
+     * on their own spur) and never move the train, the ride or arrival.
+     */
+    choiceGoals: z
+      .array(goal)
+      .max(MAX_CHOICE_GOALS)
+      .refine((goals) => goals.every((g) => g.choice && g.pitstops.every((p) => p.state !== "now")), { message: "Your choice goals are tagged and never where the train is" })
+      .optional(),
     moreCount: z.number().int().min(0),
     /** Names of the goals after these, when there are only a few. */
     moreNames: z.array(z.string().max(80)).max(5).default([]),

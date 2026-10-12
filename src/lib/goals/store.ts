@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, eq, gte, inArray, isNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { certificateCredentials, gapAnalyses, gapProofs, jobChecks, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
 import { certifications, skillGroupMembers, skills } from "@/content";
@@ -408,4 +408,23 @@ export async function renewExpiredGoals(today = indiaToday(), db: Db = getDb(), 
     people.add(e.userId);
   }
   return people.size;
+}
+
+/**
+ * "Remove from my goals": the person drops one of their own "Your choice" goals. It is skipped, not deleted, like any
+ * goal the person sets aside, so it leaves the line and no longer counts toward their limit; adding the skill again
+ * brings it back. Goals from gaps are never touched here. False for anyone else's goal, a gap goal or one already
+ * removed.
+ */
+export async function removeChoiceGoal(userId: string, goalId: string, db: Db = getDb()): Promise<boolean> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(goalId)) return false;
+  return db.transaction(async (tx) => {
+    await lockPerson(tx, userId);
+    const gone = await tx
+      .update(userGoals)
+      .set({ status: "skipped", skippedAt: new Date() })
+      .where(and(eq(userGoals.id, goalId), eq(userGoals.userId, userId), eq(userGoals.source, "user"), ne(userGoals.status, "skipped")))
+      .returning({ id: userGoals.id });
+    return gone.length > 0;
+  });
 }

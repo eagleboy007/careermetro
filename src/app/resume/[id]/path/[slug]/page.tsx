@@ -45,7 +45,7 @@ async function jobPlan(value: string | string[] | undefined, owner: Owner, resum
   try {
     const [own, skills] = await Promise.all([ownJobCheck(checkId, owner), owner.userId !== undefined ? goalSkillsOf(owner.userId) : null]);
     if (!own || own.resumeId !== resumeId || own.roleSlug !== roleSlug) return null;
-    return { own, skills: skills ? [...skills] : null };
+    return { own, skills: skills?.skills ?? null, chosen: skills?.chosen };
   } catch (error) {
     logEvent("error", "job_plan_failed", { route: "/resume/[id]/path/[slug]", role: roleSlug, ...errorFields(error) });
     return null;
@@ -92,7 +92,7 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
 
   const { path } = result;
   const share = path.steps.length ? path.doneCount / path.steps.length : 0;
-  const plan: { own: OwnJobCheck; skills: string[] | null } | null = owner ? await jobPlan(query.job, owner, id, slug) : null;
+  const plan: { own: OwnJobCheck; skills: string[] | null; chosen?: Record<string, string> } | null = owner ? await jobPlan(query.job, owner, id, slug) : null;
   const jobQuery = plan ? `&job=${plan.own.view.id}` : "";
   return (
     <div className="flex flex-col gap-6">
@@ -115,7 +115,7 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
             path.steps.map((s) => s.skillId),
           )}
           onlyThisJob={plan.own.view.onlyThisJob}
-          goals={{ skills: plan.skills, here: `/resume/${id}/path/${slug}?job=${plan.own.view.id}` }}
+          goals={{ skills: plan.skills, chosen: plan.chosen, here: `/resume/${id}/path/${slug}?job=${plan.own.view.id}` }}
         />
       )}
 

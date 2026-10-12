@@ -13,7 +13,7 @@ const FAILURES: Record<Exclude<AddJobCheckGoalResult, { ok: true }>["reason"], [
   not_found: [404, NOT_FOUND],
   not_this_job: [409, "Only skills this job adds can be added from here."],
   already: [409, "Already on your goals"],
-  limit: [409, `You have ${MAX_CHOICE_GOALS} goals of your own, the most we keep. Finish or skip one first.`],
+  limit: [409, `You have ${MAX_CHOICE_GOALS} goals of your own. Remove one first.`],
 };
 
 /**
@@ -32,10 +32,9 @@ export async function POST(request: Request, { params }: RouteContext<"/api/job-
   const parsed = jobCheckGoalRequest.safeParse(json);
   if (!parsed.success) return fail(400, "Send one skill.");
 
+  // Goals belong to an account; an anonymous visitor, with a session or without one, signs in first.
   const owner = await readOwner();
-  if (!owner) return fail(404, NOT_FOUND);
-  // Goals belong to an account; an anonymous visitor signs in first.
-  if (owner.userId === undefined) return fail(401, "Sign in to keep goals.");
+  if (owner?.userId === undefined) return fail(401, "Sign in to keep goals.");
   const { id } = await params;
   try {
     const result = await addJobCheckGoal(id, parsed.data.skillId, owner.userId);

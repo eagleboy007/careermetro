@@ -14,6 +14,7 @@ const m = vi.hoisted(() => ({
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
   renewExpired: vi.fn(async () => 0),
+  removeChoiceGoal: vi.fn(),
   clearCodes: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -39,7 +40,7 @@ vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
-vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired }));
+vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeChoiceGoal: m.removeChoiceGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
@@ -55,6 +56,7 @@ import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { POST as checkJob } from "@/app/api/job-checks/route";
 import { DELETE as removeCheck } from "@/app/api/job-checks/[id]/route";
+import { DELETE as removeGoalRoute } from "@/app/api/goals/[id]/route";
 import { POST as addCheckGoal } from "@/app/api/job-checks/[id]/goals/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
@@ -533,7 +535,7 @@ describe("job check: add as my goal", () => {
   it("asks an anonymous visitor to sign in, and acts for the signed-in account only", async () => {
     expect(await json(await add(send({ skillId: "power-bi" })))).toEqual({ status: 401, body: { ok: false, error: "Sign in to keep goals." } });
     m.jar!.clear();
-    expect((await add(send({ skillId: "power-bi" }))).status).toBe(404);
+    expect(await json(await add(send({ skillId: "power-bi" })))).toEqual({ status: 401, body: { ok: false, error: "Sign in to keep goals." } });
     expect(m.addJobCheckGoal).not.toHaveBeenCalled();
 
     m.account = { id: "user-1" };
@@ -548,7 +550,7 @@ describe("job check: add as my goal", () => {
       ["not_found", 404, /couldn't find this job check/],
       ["not_this_job", 409, /Only skills this job adds/],
       ["already", 409, /^Already on your goals$/],
-      ["limit", 409, /20 goals of your own/],
+      ["limit", 409, /^You have 20 goals of your own. Remove one first.$/],
     ] as const;
     for (const [reason, status, message] of cases) {
       m.addJobCheckGoal.mockResolvedValueOnce({ ok: false, reason });
@@ -579,5 +581,35 @@ describe("job check: remove", () => {
     expect(await json(await del())).toEqual({ status: 200, body: { ok: true } });
     expect(m.deleteJobCheck).toHaveBeenCalledWith(ID, { userId: "user-1" });
     expect((await del()).status).toBe(404);
+  });
+});
+
+describe("remove from my goals", () => {
+  const del = (id = ID, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    removeGoalRoute(new Request(`${SITE}/api/goals/${id}`, { method: "DELETE", headers: { ...(origin ? { origin } : {}), ...headers } }), {
+      params: Promise.resolve({ id }),
+    } as never);
+
+  it("refuses another site, a body, a bad id and anyone not signed in, before looking anything up", async () => {
+    m.account = { id: "user-1" };
+    expect((await del(ID, null)).status).toBe(403);
+    expect((await del(ID, "https://evil.example")).status).toBe(403);
+    expect((await del(ID, SITE, { "content-length": "5000" })).status).toBe(413);
+    expect((await del("../../etc")).status).toBe(404);
+    m.account = null;
+    expect((await del()).status).toBe(401);
+    m.jar!.clear();
+    expect((await del()).status).toBe(401);
+    expect(m.removeChoiceGoal).not.toHaveBeenCalled();
+  });
+
+  it("removes the account's own Your choice goal; any other goal reads as not found", async () => {
+    m.account = { id: "user-1" };
+    m.removeChoiceGoal.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    expect(await json(await del())).toEqual({ status: 200, body: { ok: true } });
+    expect(m.removeChoiceGoal).toHaveBeenCalledWith("user-1", ID);
+    expect((await del()).status).toBe(404);
+    m.removeChoiceGoal.mockRejectedValueOnce(new Error("Failed query"));
+    expect((await del()).status).toBe(500);
   });
 });

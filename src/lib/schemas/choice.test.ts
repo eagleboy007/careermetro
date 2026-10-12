@@ -27,30 +27,35 @@ describe("userGoal", () => {
 
 describe("mapLine with Your choice goals", () => {
   const choice = { ...exampleMapLine.goals[0], skillId: "data-orchestration", name: "Data pipeline orchestration", status: "missing" as const, proved: false, choice: { company: "Example Analytics Pvt Ltd" } };
-  it("takes them after the gap goals", () => {
-    expect(mapLine.safeParse({ ...exampleMapLine, goals: [...exampleMapLine.goals, choice] }).success).toBe(true);
+  it("keeps them off the main line, in their own list", () => {
+    expect(mapLine.safeParse({ ...exampleMapLine, choiceGoals: [choice] }).success).toBe(true);
     // Example data without the field still reads.
     expect(mapLine.safeParse(exampleMapLine).success).toBe(true);
+    expect(mapLine.safeParse({ ...exampleMapLine, goals: [...exampleMapLine.goals, choice] }).success).toBe(false);
+    expect(mapLine.safeParse({ ...exampleMapLine, choiceGoals: [{ ...choice, choice: null }] }).success).toBe(false);
   });
-  it("refuses a Your choice goal before a gap goal", () => {
-    expect(mapLine.safeParse({ ...exampleMapLine, goals: [choice, ...exampleMapLine.goals] }).success).toBe(false);
-  });
-  it(`fits every gap and ${MAX_CHOICE_GOALS} choice goals, and no more`, () => {
-    const gap = { ...exampleMapLine.goals[0], choice: null };
-    const goals = [...Array(MAX_GAPS).fill(gap), ...Array(MAX_CHOICE_GOALS).fill(choice)];
-    expect(mapLine.safeParse({ ...exampleMapLine, goals }).success).toBe(true);
-    expect(mapLine.safeParse({ ...exampleMapLine, goals: [...goals, choice] }).success).toBe(false);
+  it(`fits ${MAX_CHOICE_GOALS} choice goals beside every gap, and no more`, () => {
+    const goals = Array(MAX_GAPS).fill({ ...exampleMapLine.goals[0], choice: null });
+    const choiceGoals = Array(MAX_CHOICE_GOALS).fill(choice);
+    expect(mapLine.safeParse({ ...exampleMapLine, goals, choiceGoals }).success).toBe(true);
+    expect(mapLine.safeParse({ ...exampleMapLine, goals, choiceGoals: [...choiceGoals, choice] }).success).toBe(false);
   });
 });
 
 describe("goalsSummary with a Your choice goal", () => {
-  it("keeps the tag on the goal", () => {
-    const goals = [...exampleGoals.goals, { ...exampleGoals.goals[0], id: "choice-1", choice: { company: null } }];
-    const parsed = goalsSummary.parse({ ...exampleGoals, goals });
-    expect(parsed.goals.at(-1)?.choice).toEqual({ company: null });
-    expect(parsed.goals[0].choice ?? null).toBeNull();
+  const chosen = { ...exampleGoals.goals[0], id: "choice-1", choice: { company: null }, pitstops: exampleGoals.goals[0].pitstops.map((p) => ({ ...p, state: "ahead" as const })) };
+  it("lists them apart from the line's goals, tagged", () => {
+    const parsed = goalsSummary.parse({ ...exampleGoals, choiceGoals: [chosen] });
+    expect(parsed.choiceGoals?.[0].choice).toEqual({ company: null });
+    expect(parsed.goals.every((g) => (g.choice ?? null) === null)).toBe(true);
+  });
+  it("never puts the train on a Your choice goal, and refuses an untagged one", () => {
+    const now = { ...chosen, pitstops: [{ ...chosen.pitstops[0], state: "now" as const }] };
+    expect(goalsSummary.safeParse({ ...exampleGoals, choiceGoals: [now] }).success).toBe(false);
+    expect(goalsSummary.safeParse({ ...exampleGoals, choiceGoals: [{ ...chosen, choice: null }] }).success).toBe(false);
   });
 });
+
 
 describe("jobCheckGoalRequest", () => {
   it("takes one skill id and nothing else", () => {

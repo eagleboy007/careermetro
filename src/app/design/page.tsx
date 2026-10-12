@@ -95,14 +95,14 @@ const exampleJobCheck: JobCheckView = {
   ],
   unknown: ["Alteryx", "SAS"],
 };
-// A "Your choice" goal added from the example check: after the gap goals, tagged with its job.
+// "Your choice" goals added from the example check: apart from the line, tagged with their job.
 const exampleChoice = { company: exampleJobCheck.company };
 const exampleChoiceMapLine = {
   ...exampleMapLine,
-  goals: [
-    ...exampleMapLine.goals,
+  choiceGoals: [
     {
       ...exampleMapLine.goals[exampleMapLine.goals.length - 1],
+      goalId: null,
       skillId: "data-orchestration",
       name: "Data pipeline orchestration",
       status: "missing" as const,
@@ -113,26 +113,34 @@ const exampleChoiceMapLine = {
       certificates: [],
       choice: exampleChoice,
     },
+    {
+      ...exampleMapLine.goals[0],
+      goalId: null,
+      skillId: "tableau",
+      name: "Tableau",
+      status: "missing" as const,
+      proved: true,
+      choice: { company: null },
+    },
   ],
 };
 const exampleChoiceGoals = {
   ...exampleGoals,
-  goals: [
-    ...exampleGoals.goals.slice(0, 2),
+  choiceGoals: [
     {
-      ...exampleGoals.goals[exampleGoals.goals.length - 1],
       id: "example-choice",
       name: "Data pipeline orchestration",
       status: "missing" as const,
       evidence: `You added this goal for a job at ${exampleJobCheck.company}. It doesn't change your match or your gaps.`,
       quote: null,
+      pitstops: [
+        { number: 1, kind: "learn" as const, title: "Study Data pipeline orchestration on your own", note: "1 task", state: "ahead" as const },
+        { number: 2, kind: "prove" as const, title: "Prove: skill check, certificate or work", note: "meets this goal", state: "ahead" as const },
+      ],
       suggestion: null,
       choice: exampleChoice,
     },
   ],
-  moreCount: 0,
-  moreNames: [],
-  suggestedGoal: null,
 };
 const exampleGaps: Gap[] = [
   {
@@ -325,9 +333,9 @@ export default function DesignPage() {
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
-        <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check, after the gap goals.</p>
+        <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>
         <div className="max-w-xl">
-          <GoalsCard summary={exampleChoiceGoals} mapHref="/map" />
+          <GoalsCard summary={exampleChoiceGoals} mapHref="/map" demo />
         </div>
         <p className="text-sm text-muted">Add a certificate: opens from the prove pitstop. Only certificates that prove the goal are listed.</p>
         <div className="max-w-xl">
@@ -340,7 +348,7 @@ export default function DesignPage() {
         <p className="text-sm text-muted">The line drawn from the gaps and the path, and the Life line. Tap a pitstop or moment for its panel. Below it, the map before a resume.</p>
         <MetroMap line={exampleMapLine} life={exampleLifeLine} />
         <MetroMap line={null} />
-        <p className="text-sm text-muted">With a &quot;Your choice&quot; goal after the gap goals. Tap its pitstops for the tag.</p>
+        <p className="text-sm text-muted">With &quot;Your choice&quot; goals: off the line, listed under the key, each with its tag and Remove from my goals.</p>
         <MetroMap line={exampleChoiceMapLine} />
       </section>
 
@@ -515,8 +523,8 @@ export default function DesignPage() {
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check result</h2>
-          <p className="text-sm text-muted">Signed in: Power BI is on the goals already; the other skill can be added.</p>
-          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], here: "/design" }} demo />
+          <p className="text-sm text-muted">Signed in: Power BI is a Your choice goal already, so it can be removed; the other skill can be added.</p>
+          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], chosen: { "power-bi": "example-goal" }, here: "/design" }} demo />
           <p className="text-sm text-muted">Not signed in: goals are kept for an account.</p>
           <JobCheckResult
             check={{ ...exampleJobCheck, id: "example-anonymous", alsoGoals: [], notAsked: [], covered: [], goodToHave: [], unknown: [] }}

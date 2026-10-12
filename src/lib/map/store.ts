@@ -18,9 +18,9 @@ const MAX_OTHER_LINES = 2;
 
 /**
  * The signed-in person's line, from their current gap analysis, their goals and newest path. One goal per gap, in
- * the order of the person's goals, which stays put across new resumes, then the person's "Your choice" goals, which
- * are never gaps and never change the match. A goal is proved only by accepted proof. Null before there is a current
- * analysis (the No resume map).
+ * the order of the person's goals, which stays put across new resumes. The person's "Your choice" goals come apart in
+ * `choiceGoals`: never gaps, never on the line, never moving the train. A goal is proved only by accepted proof. Null
+ * before there is a current analysis (the No resume map).
  */
 export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<MapLine | null> {
   const analysis = await currentAnalysis(userId, db);
@@ -80,11 +80,11 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
       status: own?.status === "renew" ? "weak" : g.status,
       proved,
       ...items(stepBySkill.get(g.skillId)),
-      choice: null,
     };
   });
-  // "Your choice" goals after the gap goals: named by the skill, missing until proved, tagged with their job.
-  const chosen: MapGoal[] = lineGoals(userGoals, new Set(result.gaps.map((g) => g.skillId))).chosen.map((own) => ({
+  // "Your choice" goals, off the line: named by the skill, missing until proved, tagged with their job. They never
+  // carry the train or count toward Match.
+  const choiceGoals: MapGoal[] = lineGoals(userGoals, new Set(result.gaps.map((g) => g.skillId))).chosen.map((own) => ({
     goalId: own.id,
     certificates: certificatesFor(fillingSkills(own, skillGroupMembers)),
     renew: own.status === "renew",
@@ -95,15 +95,15 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
     ...items(stepBySkill.get(own.skillId)),
     choice: own.choice ?? { company: null },
   }));
-  const goals = [...gapGoals, ...chosen];
 
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
     resumeId: analysis.resumeId,
     skillsFound: result.metSkillIds.length,
-    goals,
-    // Other lines cross at the role's gaps only.
+    goals: gapGoals,
+    choiceGoals,
+    // Other lines cross at the line's gaps.
     otherLines: otherLines(result.roleSlug, gapGoals),
     pathOpened: Boolean(path),
   };
