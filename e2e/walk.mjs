@@ -61,7 +61,8 @@ const settled = () =>
     .first()
     .waitFor({ state: "detached", timeout: 60000 })
     .catch(() => {});
-const shot = async (name) => p.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-${name}.png`, fullPage: true });
+// File names without characters the CI artifact upload refuses (: " < > | * ? and line breaks).
+const shot = async (name) => p.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-${name.replace(/[:"<>|*?\r\n\\/]/g, "-")}.png`, fullPage: true });
 const step = async (name, fn) => {
   try {
     await fn();
@@ -84,8 +85,12 @@ await step("roles list", async () => {
 });
 await step("signed out: the header offers Sign in, and it fits a phone", async () => {
   await p.goto(BASE + "/");
-  await p.getByRole("link", { name: "Sign in", exact: true }).click();
-  await p.waitForURL(/\/sign-in/);
+  // The header's Sign in link streams in after the page shell (#107); wait for it and for hydration before clicking.
+  await p.waitForLoadState("networkidle");
+  const signIn = p.getByRole("link", { name: "Sign in", exact: true });
+  await signIn.waitFor({ timeout: 15000 });
+  await signIn.click();
+  await p.waitForURL(/\/sign-in/, { timeout: 15000 });
   await p.goto(BASE + "/");
   await p.setViewportSize({ width: 360, height: 780 });
   const overflow = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
