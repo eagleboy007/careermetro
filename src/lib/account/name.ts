@@ -19,3 +19,9 @@ export function splitName(name: string | null | undefined): { first: string; las
   const words = name?.trim().split(/\s+/).filter(Boolean) ?? [];
   return { first: words[0] ?? "", last: words.slice(1).join(" ") };
 }
+
+/** The name to print on the person's resume download: first and last name, else the older single name, else none. */
+export function resumeName(account: { name: string | null; firstName: string | null; lastName: string | null } | null): string | null {
+  if (!account) return null;
+  return fullName(account.firstName, account.lastName) || account.name?.trim() || null;
+}

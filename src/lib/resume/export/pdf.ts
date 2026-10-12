@@ -16,7 +16,11 @@ const MUTED = rgb(0.35, 0.36, 0.4);
 let fonts: Promise<[Uint8Array, Uint8Array]> | null = null;
 function fontBytes() {
   const dir = path.join(process.cwd(), "assets", "fonts");
-  fonts ??= Promise.all([readFile(path.join(dir, "Geist-Regular.ttf")), readFile(path.join(dir, "Geist-SemiBold.ttf"))]);
+  // A failed read isn't kept, so the next download tries again rather than failing until a cold start.
+  fonts ??= Promise.all([readFile(path.join(dir, "Geist-Regular.ttf")), readFile(path.join(dir, "Geist-SemiBold.ttf"))]).catch((err) => {
+    fonts = null;
+    throw err;
+  });
   return fonts;
 }
 
@@ -43,13 +47,35 @@ export function wrap(text: string, font: PDFFont, size: number, width: number): 
   return lines;
 }
 
-/** FR-20: the resume as a PDF. */
+/**
+ * Thrown when the resume has letters the embedded font can't draw, such as Hindi or Tamil script: pdf-lib would print
+ * them as blanks without a word. The Word file has no such limit, so the person is pointed there.
+ */
+export class UnprintableTextError extends Error {
+  constructor() {
+    super("unprintable_text");
+    this.name = "UnprintableTextError";
+  }
+}
+
+const allText = (doc: ResumeDocument): string[] => [
+  doc.name ?? "",
+  doc.headline ?? "",
+  ...doc.sections.flatMap((s) =>
+    s.kind === "list" ? [s.heading, ...s.items] : [s.heading, ...s.entries.flatMap((e) => [e.title, e.subtitle, e.dates, ...e.bullets])],
+  ),
+];
+
+/** FR-20: the resume as a PDF. Throws UnprintableTextError rather than print blanks. */
 export async function renderResumePdf(doc: ResumeDocument): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   pdf.registerFontkit(fontkit);
   const [regularBytes, boldBytes] = await fontBytes();
   const regular = await pdf.embedFont(regularBytes, { subset: true });
   const bold = await pdf.embedFont(boldBytes, { subset: true });
+  const printable = new Set(regular.getCharacterSet());
+  const missing = allText(doc).some((line) => [...line].some((ch) => !/\s/.test(ch) && !printable.has(ch.codePointAt(0)!)));
+  if (missing) throw new UnprintableTextError();
   pdf.setTitle(doc.name ? `${doc.name} – Resume` : "Resume");
   pdf.setProducer("CareerMetro");
   pdf.setCreator("CareerMetro");

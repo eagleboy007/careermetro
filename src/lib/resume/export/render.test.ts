@@ -3,7 +3,7 @@ import type { Profile } from "@/lib/schemas";
 import { extractResumeText } from "@/lib/resume/extract";
 import { buildResumeDocument } from "./document";
 import { renderResumeDocx } from "./docx";
-import { renderResumePdf } from "./pdf";
+import { renderResumePdf, UnprintableTextError } from "./pdf";
 
 const NOW = new Date("2026-10-12T12:00:00Z");
 const profile: Profile = {
@@ -67,6 +67,15 @@ describe("resume PDF", () => {
   it("asks for a name when the person isn't signed in", async () => {
     const { text } = await extractResumeText(await renderResumePdf({ ...doc, name: null }));
     expect(text).toContain("Your name");
+  });
+});
+
+describe("letters the PDF font can't draw", () => {
+  it("refuses rather than print blanks, and the Word file still has them", async () => {
+    const hindi = { ...doc, name: "प्रिया शर्मा" };
+    await expect(renderResumePdf(hindi)).rejects.toBeInstanceOf(UnprintableTextError);
+    const { text } = await extractResumeText(await renderResumeDocx(hindi));
+    expect(text).toContain("प्रिया शर्मा");
   });
 });
 

@@ -67,6 +67,16 @@ describe("buildResumeDocument", () => {
     expect(empty).toEqual({ name: null, headline: null, sections: [] });
   });
 
+  it("uses the employer as the title when the title is only spaces, and drops empty entries", () => {
+    const doc2 = buildResumeDocument(
+      { ...profile, roles: [{ title: "  ", employer: "Example Retail", start: "2023", end: null, highlights: [] }], education: [], certifications: [{ name: " ", earned: null, expires: null }] },
+      null,
+      NOW,
+    );
+    expect(doc2.sections.map((s) => s.heading)).toEqual(["Experience", "Skills"]);
+    expect(doc2.sections[0]).toEqual({ kind: "entries", heading: "Experience", entries: [{ title: "Example Retail", subtitle: "", dates: "2023 – Present", bullets: [] }] });
+  });
+
   it("says until when a certification that hasn't expired is valid", () => {
     const doc2 = buildResumeDocument({ ...profile, certifications: [{ name: "Cloud", earned: null, expires: "2027-03" }] }, null, NOW);
     expect(doc2.sections.at(-1)).toEqual({ kind: "list", heading: "Certifications", items: ["Cloud (valid until Mar 2027)"] });

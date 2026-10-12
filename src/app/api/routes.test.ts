@@ -208,6 +208,14 @@ describe("resume download", () => {
     expect(m.getResumeForOwner).toHaveBeenCalledWith(ID, { userId: "user-1" });
   });
 
+  it("points to the Word file when the PDF can't print the letters, in plain words", async () => {
+    m.getResumeForOwner.mockResolvedValueOnce({ ...resume(true), profile: { ...PROFILE, headline: "डेटा विश्लेषक" } });
+    const res = await get("pdf");
+    expect(res.status).toBe(422);
+    expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+    expect(await res.text()).toContain("Word file");
+  });
+
   it("logs only the format, never the resume", async () => {
     const lines: string[] = [];
     const out = vi.spyOn(console, "log").mockImplementation((line) => void lines.push(String(line)));

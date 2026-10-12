@@ -391,7 +391,7 @@ export default function DesignPage() {
           <h2 className="text-2xl font-semibold">Resume check</h2>
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
           <p className="text-sm text-muted">Shown above the check once the resume is confirmed.</p>
-          <ResumeDownload resumeId="example" signedIn={false} demo />
+          <ResumeDownload resumeId="example" named={false} demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>

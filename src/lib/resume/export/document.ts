@@ -39,12 +39,13 @@ const clean = (text: string | null | undefined): string => text?.trim().replace(
 export function buildResumeDocument(profile: Profile, name: string | null, now = new Date()): ResumeDocument {
   const sections: ResumeSection[] = [];
 
-  const experience = profile.roles.map((role) => ({
-    title: clean(role.title),
-    subtitle: clean(role.employer),
-    dates: formatRange(role.start, role.end),
-    bullets: role.highlights.map(clean).filter(Boolean),
-  }));
+  // An entry needs a title; when only spaces were given, the employer or institution stands in, else it's left out.
+  const titled = <T extends { title: string; subtitle: string }>(e: T): T => (e.title ? e : { ...e, title: e.subtitle, subtitle: "" });
+  const experience = profile.roles
+    .map((role) =>
+      titled({ title: clean(role.title), subtitle: clean(role.employer), dates: formatRange(role.start, role.end), bullets: role.highlights.map(clean).filter(Boolean) }),
+    )
+    .filter((e) => e.title);
   if (experience.length) sections.push({ kind: "entries", heading: "Experience", entries: experience });
 
   const seen = new Set<string>();
@@ -56,15 +57,12 @@ export function buildResumeDocument(profile: Profile, name: string | null, now =
   });
   if (skills.length) sections.push({ kind: "list", heading: "Skills", items: skills });
 
-  const education = profile.education.map((item) => ({
-    title: clean(item.qualification),
-    subtitle: clean(item.institution),
-    dates: clean(item.year),
-    bullets: [],
-  }));
+  const education = profile.education
+    .map((item) => titled({ title: clean(item.qualification), subtitle: clean(item.institution), dates: clean(item.year), bullets: [] as string[] }))
+    .filter((e) => e.title);
   if (education.length) sections.push({ kind: "entries", heading: "Education", entries: education });
 
-  const certifications = profile.certifications.map((cert) => certificationLine(cert, now));
+  const certifications = profile.certifications.filter((cert) => clean(cert.name)).map((cert) => certificationLine(cert, now));
   if (certifications.length) sections.push({ kind: "list", heading: "Certifications", items: certifications });
 
   return { name: clean(name) || null, headline: clean(profile.headline) || null, sections };
