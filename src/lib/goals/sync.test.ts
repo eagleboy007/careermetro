@@ -13,6 +13,15 @@ const goal = (skillId: string, position: number, status: ExistingGoal["status"] 
 const noImplies = new Map<string, string[]>();
 
 describe("planGoalSync", () => {
+  it("turns a goal whose only proof expired to renew, and back to met when a current proof comes", () => {
+    const expired = planGoalSync({ existing: [goal("aws", 1, "met")], gaps: [gap("aws")], metSkillIds: [], provedSkillIds: [], expiredSkillIds: ["aws"], implies: noImplies });
+    expect(expired.update).toEqual([{ skillId: "aws", status: "renew" }]);
+    const renewed = planGoalSync({ existing: [goal("aws", 1, "renew")], gaps: [gap("aws")], metSkillIds: [], provedSkillIds: ["aws"], expiredSkillIds: ["aws"], implies: noImplies });
+    expect(renewed.update).toEqual([{ skillId: "aws", status: "met" }]);
+    const fresh = planGoalSync({ existing: [], gaps: [gap("aws")], metSkillIds: [], provedSkillIds: [], expiredSkillIds: ["aws"], implies: noImplies });
+    expect(fresh.insert).toEqual([{ skillId: "aws", position: 1, status: "renew", groupId: null }]);
+  });
+
   it("makes one goal per gap, in path order (a skill's prerequisite first)", () => {
     const plan = planGoalSync({
       existing: [],

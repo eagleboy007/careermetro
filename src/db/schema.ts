@@ -330,6 +330,24 @@ export const userGoals = pgTable(
 );
 
 /**
+ * Which account a certificate's credential belongs to (dev/proof-plan.md rule 3): the first account to use it. One
+ * row per certificate and credential, whatever skills the certificate proves, so the database itself keeps a
+ * credential to one account. Another account using it is held for review. The id is only ever a keyed hash.
+ */
+export const certificateCredentials = pgTable(
+  "certificate_credentials",
+  {
+    certId: text("cert_id").notNull(),
+    credentialKey: text("credential_key").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.certId, t.credentialKey] }), index("certificate_credentials_user").on(t.userId)],
+);
+
+/**
  * Proof that fills a gap. Only an accepted proof does; pending and rejected ones never change a goal. Proof is per
  * skill, so it counts for every role that needs the skill. Evidence is structured and never holds resume text.
  */
@@ -348,9 +366,27 @@ export const gapProofs = pgTable(
     evidence: jsonb("evidence").$type<ProofEvidence>().notNull(),
     verifier: proofVerifier("verifier"),
     verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    /** Certificates (dev/proof-plan.md): which one from our list, its dates, and a keyed hash of its credential id. */
+    certId: text("cert_id"),
+    issuedOn: date("issued_on"),
+    /** Null when it never expires. After this date the proof no longer fills its goal, which turns to "renew". */
+    expiresOn: date("expires_on"),
+    /** HMAC of the credential id (src/lib/proofs/credential.ts); the id itself is never stored. */
+    credentialKey: text("credential_key"),
+    /** Private storage path of the uploaded certificate file, when there is one. */
+    filePath: text("file_path"),
+    /** Whether the name on the certificate matched the account name. Proofs are only kept when it did. */
+    nameMatched: boolean("name_matched"),
+    /** Why a proof waits for review instead of filling the goal, e.g. a credential another account already used. */
+    heldReason: text("held_reason"),
     createdAt: createdAt(),
   },
-  (t) => [index("gap_proofs_user_skill").on(t.userId, t.skillId), check("gap_proofs_evidence_type", sql`${t.evidence}->>'type' = ${t.type}::text`)],
+  (t) => [
+    index("gap_proofs_user_skill").on(t.userId, t.skillId),
+    check("gap_proofs_evidence_type", sql`${t.evidence}->>'type' = ${t.type}::text`),
+    index("gap_proofs_credential").on(t.certId, t.credentialKey),
+    index("gap_proofs_expires").on(t.expiresOn).where(sql`${t.status} = 'accepted' and ${t.expiresOn} is not null`),
+  ],
 );
 
 /**

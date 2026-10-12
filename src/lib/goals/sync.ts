@@ -19,7 +19,8 @@ export function fillingSkills(goal: { skillId: string; groupId: string | null },
  * - Goals belong to the person, not to one resume: existing goals keep their place, and new gaps go at the end in
  *   path order (a skill's prerequisite first).
  * - A goal whose skill a newer resume shows is met. A goal for another role's skill stays as it is.
- * - Proof carries over: a gap whose skill already has accepted proof is met from the start, and stays met.
+ * - Proof carries over: a gap whose skill already has accepted proof is met from the start, and stays met while the
+ *   proof is current. A goal whose only proof has expired is "renew" until a current one is added.
  * - A goal met only by an earlier resume opens again if the skill is a gap again. Skipped goals and the person's own
  *   goals are never changed here.
  * - A "one of these" group is one goal, under the skill its gap suggests, so pages that pair goals with gaps by skill
@@ -32,11 +33,14 @@ export function planGoalSync(input: {
   gaps: Gap[];
   metSkillIds: string[];
   provedSkillIds: string[];
+  /** Skills whose only accepted proof has expired: their goals are open again as "renew" (dev/proof-plan.md rule 4). */
+  expiredSkillIds?: string[];
   implies: ReadonlyMap<string, string[]>;
   members?: ReadonlyMap<string, string[]>;
 }): GoalSyncPlan {
   const members = input.members ?? new Map<string, string[]>();
   const proved = new Set(input.provedSkillIds);
+  const expired = new Set(input.expiredSkillIds ?? []);
   const met = new Set(input.metSkillIds);
   const gapIds = new Set(input.gaps.map((g) => g.skillId));
 
@@ -64,8 +68,9 @@ export function planGoalSync(input: {
   for (const g of goals) {
     if (g.source !== "gap" || g.status === "skipped") continue;
     const before = input.existing.find((e) => e.skillId === g.at)!;
-    const filled = fillingSkills(g, members).some((id) => proved.has(id) || met.has(id));
-    const want: GoalState = filled ? "met" : gapIds.has(g.skillId) ? "active" : g.status;
+    const filling = fillingSkills(g, members);
+    const filled = filling.some((id) => proved.has(id) || met.has(id));
+    const want: GoalState = filled ? "met" : filling.some((id) => expired.has(id)) ? "renew" : gapIds.has(g.skillId) ? "active" : g.status;
     const change: GoalSyncPlan["update"][number] = { skillId: g.at };
     if (want !== g.status) change.status = want;
     if (g.groupId !== before.groupId) change.groupId = g.groupId;
@@ -78,7 +83,8 @@ export function planGoalSync(input: {
     .filter((g) => !bySkill.has(g.skillId))
     .map((g) => {
       const groupId = g.groupId ?? null;
-      const status: GoalState = fillingSkills({ skillId: g.skillId, groupId }, members).some((id) => proved.has(id)) ? "met" : "active";
+      const filling = fillingSkills({ skillId: g.skillId, groupId }, members);
+      const status: GoalState = filling.some((id) => proved.has(id)) ? "met" : filling.some((id) => expired.has(id)) ? "renew" : "active";
       return { skillId: g.skillId, position: ++position, status, groupId };
     });
   return { insert, update };

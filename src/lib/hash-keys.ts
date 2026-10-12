@@ -24,3 +24,12 @@ export function nameHashKeys(env: Env = process.env): string[] {
 export function ipHashKey(env: Env = process.env): string {
   return env.IP_HASH_KEY || legacy(env);
 }
+
+/**
+ * The key for certificate credential-id hashes (gap_proofs.credential_key, dev/proof-plan.md rule 3). It must stay
+ * fixed: the one-account-per-certificate check compares new hashes with stored ones, so it follows NAME_HASH_KEY,
+ * which is never rotated either.
+ */
+export function credentialHashKey(env: Env = process.env): string {
+  return `credential|${env.NAME_HASH_KEY || legacy(env)}`;
+}
