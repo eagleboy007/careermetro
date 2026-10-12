@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
-import { Suspense } from "react";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
@@ -20,16 +18,9 @@ export default function StartPage() {
           We read your experience and skills, then you check what we found. Nothing is analysed until you confirm it.
         </p>
       </section>
-      <Suspense fallback={null}>
-        <RuntimeTestNotice />
-      </Suspense>
+      <LocalTestNotice />
       <UploadForm />
     </main>
   );
 }
 
-/** The notice depends on this server's AI settings, which the prerendered shell can't know: it was built elsewhere. */
-async function RuntimeTestNotice() {
-  await connection();
-  return <LocalTestNotice />;
-}

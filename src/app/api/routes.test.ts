@@ -5,10 +5,11 @@ import { cookieJar } from "@/test/cookie-jar";
 // owner, and ownership itself (the store answers false for someone else's id, which must become a 404).
 const m = vi.hoisted(() => ({
   jar: null as ReturnType<typeof cookieJar> | null,
-  account: null as { id: string } | null,
+  account: null as { id: string; name?: string | null; firstName?: string | null; lastName?: string | null } | null,
   rateAnalysis: vi.fn(),
   markStepDone: vi.fn(),
   confirmProfile: vi.fn(),
+  getResumeForOwner: vi.fn(),
   ingestResume: vi.fn(),
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
@@ -30,7 +31,7 @@ vi.mock("@/lib/auth/server", () => ({
 vi.mock("@/lib/auth/after-sign-in", () => ({ afterSignIn: m.afterSignIn }));
 vi.mock("@/lib/gaps/store", () => ({ rateAnalysis: m.rateAnalysis }));
 vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
-vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile }));
+vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
@@ -45,6 +46,7 @@ import { GET as exportData } from "@/app/api/account/export/route";
 import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
+import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
 import { POST as upload } from "@/app/api/resume/route";
 import { OPTIONS as waitlistPreflight, POST as waitlist } from "@/app/api/waitlist/route";
@@ -161,6 +163,66 @@ describe("profile save", () => {
       expect((await call(put(path, PROFILE))).status).toBe(status);
     }
     expect(m.confirmProfile).toHaveBeenLastCalledWith(ID, { sessionId: SESSION }, PROFILE);
+  });
+});
+
+describe("resume download", () => {
+  const get = (format?: string) => exportResume(new Request(`${SITE}/api/resume/${ID}/export${format ? `?format=${format}` : ""}`), ctx as never);
+  const resume = (confirmed: boolean) => ({ resumeId: ID, profileId: "p", version: 1, confirmed, profile: { ...PROFILE, headline: "Data analyst" } });
+
+  it("refuses an unknown format before looking anything up", async () => {
+    expect((await get("exe")).status).toBe(400);
+    expect(m.getResumeForOwner).not.toHaveBeenCalled();
+  });
+
+  it("answers 404 without a session or for someone else's resume", async () => {
+    m.jar!.clear();
+    expect((await get("pdf")).status).toBe(404);
+    m.jar!.set(SESSION_COOKIE, SESSION);
+    m.getResumeForOwner.mockResolvedValueOnce(null);
+    expect((await get("pdf")).status).toBe(404);
+    expect(m.getResumeForOwner).toHaveBeenCalledWith(ID, { sessionId: SESSION });
+  });
+
+  it("waits until the profile is confirmed", async () => {
+    m.getResumeForOwner.mockResolvedValueOnce(resume(false));
+    expect((await get("pdf")).status).toBe(409);
+  });
+
+  it("sends a PDF by default, never cached, with a plain file name for someone not signed in", async () => {
+    m.getResumeForOwner.mockResolvedValueOnce(resume(true));
+    const res = await get();
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toBe("application/pdf");
+    expect(res.headers.get("cache-control")).toBe("no-store, private");
+    expect(res.headers.get("content-disposition")).toBe('attachment; filename="resume.pdf"');
+    expect(new TextDecoder().decode((await res.arrayBuffer()).slice(0, 5))).toBe("%PDF-");
+  });
+
+  it("puts the signed-in account's name on a Word file", async () => {
+    m.account = { id: "user-1", name: "Old Name", firstName: "Priya", lastName: "Sharma" };
+    m.getResumeForOwner.mockResolvedValueOnce(resume(true));
+    const res = await get("docx");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-disposition")).toBe('attachment; filename="priya-sharma-resume.docx"');
+    expect(m.getResumeForOwner).toHaveBeenCalledWith(ID, { userId: "user-1" });
+  });
+
+  it("points to the Word file when the PDF can't print the letters, in plain words", async () => {
+    m.getResumeForOwner.mockResolvedValueOnce({ ...resume(true), profile: { ...PROFILE, headline: "डेटा विश्लेषक" } });
+    const res = await get("pdf");
+    expect(res.status).toBe(422);
+    expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+    expect(await res.text()).toContain("Word file");
+  });
+
+  it("logs only the format, never the resume", async () => {
+    const lines: string[] = [];
+    const out = vi.spyOn(console, "log").mockImplementation((line) => void lines.push(String(line)));
+    m.getResumeForOwner.mockResolvedValueOnce(resume(true));
+    await get("pdf");
+    out.mockRestore();
+    expect(lines.join("\n")).not.toContain("Data analyst");
   });
 });
 

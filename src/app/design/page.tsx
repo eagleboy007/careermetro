@@ -11,6 +11,7 @@ import { ReadinessCard } from "@/components/route/readiness-card";
 import { SkillCoverageBar } from "@/components/route/skill-coverage-bar";
 import { ProfileEditor } from "@/components/resume/profile-editor";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
+import { ResumeDownload } from "@/components/resume/resume-download";
 import { UploadForm } from "@/components/resume/upload-form";
 import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
@@ -389,6 +390,8 @@ export default function DesignPage() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
+          <p className="text-sm text-muted">Shown above the check once the resume is confirmed.</p>
+          <ResumeDownload resumeId="example" named={false} demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>
