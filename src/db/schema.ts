@@ -67,7 +67,7 @@ export const organizations = pgTable(
     domainVerifiedAt: timestamp("domain_verified_at", { withTimezone: true }),
     reviewStatus: orgReviewStatus("review_status").notNull().default("pending"),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
-    /** Who checked it, e.g. "milin-github" for the Companies workflow. Not a user id. */
+    /** Who checked it, e.g. "github:<login>" for the Companies workflow. Not a user id. */
     reviewedBy: text("reviewed_by"),
     /** The admin rule (Milin, 2026-10-12): a second Recruiter admin by this date, or no new jobs open. */
     secondAdminDueAt: timestamp("second_admin_due_at", { withTimezone: true }),

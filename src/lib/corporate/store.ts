@@ -139,7 +139,8 @@ const domainsLock = (tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hash
  */
 async function issueCode(
   userId: string,
-  target: { email: string; domain: string; orgId: string | null },
+  /** limitDomain: the company's own domain when joining one, so its subdomains share one daily count. */
+  target: { email: string; domain: string; orgId: string | null; limitDomain?: string },
   deps: CorporateDeps,
 ): Promise<Result<{ testCode?: string }>> {
   const db = deps.db ?? getDb();
@@ -157,7 +158,7 @@ async function issueCode(
   const allowed = await Promise.all([
     takeShared(LIMITS.workEmailCodePerUserHour, userId, at),
     takeShared(LIMITS.workEmailCodePerUserDay, userId, at),
-    takeShared(LIMITS.workEmailCodePerDomainDay, target.domain, at),
+    takeShared(LIMITS.workEmailCodePerDomainDay, target.limitDomain ?? target.domain, at),
   ]);
   if (allowed.includes(false)) {
     logEvent("warn", "work_email_code_limited", { purpose: "org_member" });
@@ -506,7 +507,7 @@ export async function startJoin(userId: string, raw: unknown, deps: CorporateDep
   if (await activeMembership(userId, db)) return fail("has_role");
   const waiting = await waitingRole(userId, parsed.data.workEmail, check.domain, db, now, deps.env);
   if (!waiting) return fail("no_invite");
-  return issueCode(userId, { email: parsed.data.workEmail, domain: check.domain, orgId: waiting.orgId }, deps);
+  return issueCode(userId, { email: parsed.data.workEmail, domain: check.domain, orgId: waiting.orgId, limitDomain: waiting.orgDomain ?? undefined }, deps);
 }
 
 /** The right code switches the role on. One active role per person, so a second company is refused. */
@@ -525,6 +526,13 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
     if (!waiting) return fail("no_invite");
     const refused = await useCode(userId, { email: workEmail, orgId: waiting.orgId }, code, tx, deps);
     if (refused) return fail(refused);
+    // Claim the invite first: two accounts holding codes for the same invited mailbox can't both accept it.
+    const claimed = await tx
+      .update(orgInvites)
+      .set({ acceptedAt: now })
+      .where(and(eq(orgInvites.id, waiting.id), isNull(orgInvites.acceptedAt), isNull(orgInvites.cancelledAt)))
+      .returning({ id: orgInvites.id });
+    if (claimed.length === 0) return fail("no_invite");
     await tx.insert(orgMembers).values({
       orgId: waiting.orgId,
       userId,
@@ -535,7 +543,6 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
       grantedBy: waiting.invitedBy,
       createdAt: now,
     });
-    await tx.update(orgInvites).set({ acceptedAt: now }).where(eq(orgInvites.id, waiting.id));
     return { ok: true as const, orgId: waiting.orgId };
   });
 }

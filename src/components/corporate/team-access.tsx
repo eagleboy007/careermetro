@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Clock, UserMinus, UserPlus, X } from "lucide-react";
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { formatDay } from "@/lib/corporate/format";
 import type { AccessRequestView, InviteView, OrgRole, TeamActions, TeamMemberView } from "@/lib/corporate/types";
 import { ORG_ROLE_LABELS, ORG_ROLES } from "@/lib/schemas/constants";
@@ -32,6 +32,21 @@ export function TeamAccess({
   const [confirming, setConfirming] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const errorId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  /** Where focus goes once the confirm buttons close: back to that person's Remove button after Keep. */
+  const returnTo = useRef<string | null>(null);
+  const messageRef = useRef<HTMLParagraphElement>(null);
+
+  // The buttons that had focus unmount (Keep, a removed row), so move focus on: to the result, or back to Remove.
+  useEffect(() => {
+    if (confirming !== null) return;
+    const id = returnTo.current;
+    returnTo.current = null;
+    if (id) rootRef.current?.querySelector<HTMLElement>(`[data-remove="${CSS.escape(id)}"]`)?.focus();
+  }, [confirming]);
+  useEffect(() => {
+    if (notice || error) messageRef.current?.focus();
+  }, [notice, error]);
 
   const act = (fn: () => Promise<string | null>, success: string) =>
     start(async () => {
@@ -44,7 +59,7 @@ export function TeamAccess({
     });
 
   return (
-    <div className="flex flex-col gap-5">
+    <div ref={rootRef} className="flex flex-col gap-5">
       <form
         className="flex flex-col gap-2"
         noValidate
@@ -85,12 +100,12 @@ export function TeamAccess({
       </form>
 
       {error && (
-        <p id={errorId} role="alert" className="text-sm text-bad">
+        <p ref={messageRef} tabIndex={-1} id={errorId} role="alert" className="text-sm text-bad">
           {error}
         </p>
       )}
       {notice && (
-        <p role="status" className="text-sm text-muted">
+        <p ref={messageRef} tabIndex={-1} role="status" className="text-sm text-muted">
           {notice}
         </p>
       )}
@@ -111,6 +126,7 @@ export function TeamAccess({
               <span className="flex flex-wrap justify-end gap-1.5">
                 <button
                   type="button"
+                  autoFocus
                   disabled={pending}
                   onClick={() => actions && act(() => actions.remove(m.id), `${m.name} no longer has access. Their own CareerMetro account stays as it is.`)}
                   className={ghostSm}
@@ -118,12 +134,20 @@ export function TeamAccess({
                   <Check {...ICON} />
                   Remove access
                 </button>
-                <button type="button" disabled={pending} onClick={() => setConfirming(null)} className={ghostSm}>
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => {
+                    returnTo.current = m.id;
+                    setConfirming(null);
+                  }}
+                  className={ghostSm}
+                >
                   Keep
                 </button>
               </span>
             ) : (
-              <button type="button" disabled={pending || !actions} onClick={() => setConfirming(m.id)} aria-label={`Remove access for ${m.name}`} className={ghostSm}>
+              <button type="button" data-remove={m.id} disabled={pending || !actions} onClick={() => setConfirming(m.id)} aria-label={`Remove access for ${m.name}`} className={ghostSm}>
                 <UserMinus {...ICON} />
                 Remove
               </button>

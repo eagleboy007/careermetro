@@ -2,7 +2,7 @@
 
 import { Building2, Check, Mail, PenLine, Send } from "lucide-react";
 import Link from "next/link";
-import { useId, useState, useTransition, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import type { CompanyPageDetails, CorporateActions, OrgType, SignupDetails } from "@/lib/corporate/types";
 import { DOMAIN_TAKEN_TEXT, ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_SIZES, ORG_TYPE_LABELS, ORG_TYPES } from "@/lib/schemas/constants";
@@ -19,6 +19,20 @@ const EMPTY_PAGE: CompanyPageDetails = { about: "", industry: "", offices: "", g
  */
 export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0 }: { actions?: CorporateActions; firstName?: string; initial?: SignupDetails; startAt?: number }) {
   const [step, setStep] = useState(startAt);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const shownStep = useRef(startAt);
+  // A new step replaces the form that had focus: move focus to the new step's heading, or the step itself. The code
+  // step focuses its own field.
+  useEffect(() => {
+    if (step === shownStep.current) return;
+    shownStep.current = step;
+    if (step === 1) return;
+    const card = rootRef.current?.querySelector<HTMLElement>("[data-step]");
+    const target = card?.querySelector<HTMLElement>("h2, h3") ?? card;
+    if (!target) return;
+    if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+    target.focus();
+  }, [step]);
   const [details, setDetails] = useState<SignupDetails>(initial);
   const [page, setPage] = useState<CompanyPageDetails>(EMPTY_PAGE);
   const [testCode, setTestCode] = useState<string | null>(null);
@@ -98,7 +112,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
   const described = error ? errorId : undefined;
 
   return (
-    <div className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
+    <div ref={rootRef} className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
       <div>
         <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">For employers · free during the beta</span>
         <h1 className="mt-1.5 text-[clamp(1.6rem,3.5vw,2.2rem)] font-semibold leading-[1.1]">Set up your company on CareerMetro</h1>
@@ -355,7 +369,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
 
 function Card({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 min-[760px]:p-6">
+    <section data-step aria-label={label} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-4 focus:outline-none min-[760px]:p-6">
       <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{label}</span>
       {children}
     </section>

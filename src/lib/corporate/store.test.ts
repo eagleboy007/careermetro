@@ -223,6 +223,24 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect(JSON.stringify(home)).not.toContain("@");
   });
 
+  it("lets only one account use an invite, even when two hold codes for the same mailbox", async () => {
+    const admin = await person("dup-admin");
+    const { domain: d } = await company(admin);
+    await inviteMember(admin, { workEmail: `shared@${d}`, role: "hiring" }, deps());
+    const tag = `dup${Math.random().toString(36).slice(2, 8)}`;
+    const [a, b] = [await person(`${tag}-a`), await person(`${tag}-b`)];
+    const codeA = (await startJoin(a, { workEmail: `shared@${d}` }, deps())) as { testCode: string };
+    const codeB = (await startJoin(b, { workEmail: `shared@${d}` }, deps())) as { testCode: string };
+    const results = await Promise.all([
+      finishJoin(a, { workEmail: `shared@${d}`, code: codeA.testCode }, deps()),
+      finishJoin(b, { workEmail: `shared@${d}`, code: codeB.testCode }, deps()),
+    ]);
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    expect(results.filter((r) => !r.ok)).toEqual([{ ok: false, error: "no_invite" }]);
+    const members = await db!.select().from(schema.orgMembers).where(inArray(schema.orgMembers.userId, [a, b]));
+    expect(members).toHaveLength(1);
+  });
+
   it("can cancel an invite before it is used", async () => {
     const admin = await person("cancel");
     const { domain: d } = await company(admin);

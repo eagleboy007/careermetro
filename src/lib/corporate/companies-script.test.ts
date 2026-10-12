@@ -4,10 +4,18 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { parseInputs, reviewTable, websiteMatches } from "../../../scripts/companies.mjs";
+import { parseInputs, reviewerOf, reviewTable, websiteMatches } from "../../../scripts/companies.mjs";
 
 // The Companies workflow's script (scripts/companies.mjs): Milin's review list and verify / suspend by domain.
 const script = resolve(__dirname, "../../../scripts/companies.mjs");
+
+describe("reviewerOf", () => {
+  it("names the GitHub login that ran the workflow, and refuses anything that isn't a login", () => {
+    expect(reviewerOf({ GITHUB_ACTOR: "eagleboy007" })).toBe("github:eagleboy007");
+    expect(reviewerOf({ GITHUB_ACTOR: "a b'; drop" })).toBe("github");
+    expect(reviewerOf({})).toBe("github");
+  });
+});
 
 describe("companies script", () => {
   it("takes only list, verify or suspend, and a plain domain for a change", () => {
@@ -42,7 +50,7 @@ describe.skipIf(!sql)("companies script (database)", () => {
   const lonely = `${run}-lonely.example-labs.test`;
   afterAll(async () => {
     await sql!`delete from organizations where email_domain in (${domain}, ${lonely})`;
-    await sql!`delete from audit_logs where actor = 'milin-github' and target like 'organization:%' and created_at > now() - interval '1 hour'`;
+    await sql!`delete from audit_logs where actor = 'github:cm-reviewer' and target like 'organization:%' and created_at > now() - interval '1 hour'`;
     await sql!`delete from users where email like ${`${run}%`}`;
     await sql!.end();
   });
@@ -74,15 +82,15 @@ describe.skipIf(!sql)("companies script (database)", () => {
     expect(listed.summary).not.toContain(`${run}@example.test`);
     expect(listed.stdout).not.toContain("postgres://");
 
-    expect(exec({ ACTION: "verify", DOMAIN: domain }).status).toBe(0);
+    expect(exec({ ACTION: "verify", DOMAIN: domain, GITHUB_ACTOR: "cm-reviewer" }).status).toBe(0);
     const [verified] = await sql!`select review_status, reviewed_by, reviewed_at from organizations where id = ${org.id}`;
-    expect(verified).toMatchObject({ review_status: "verified", reviewed_by: "milin-github" });
+    expect(verified).toMatchObject({ review_status: "verified", reviewed_by: "github:cm-reviewer" });
     expect(verified.reviewed_at).not.toBeNull();
     const audit = await sql!`select action from audit_logs where target = ${`organization:${org.id}`}`;
     expect(audit.map((a) => a.action)).toEqual(["company_verified"]);
     expect(exec({ ACTION: "list" }).summary).not.toContain(`| ${domain} |`);
 
-    expect(exec({ ACTION: "suspend", DOMAIN: domain }).status).toBe(0);
+    expect(exec({ ACTION: "suspend", DOMAIN: domain, GITHUB_ACTOR: "cm-reviewer" }).status).toBe(0);
     expect((await sql!`select review_status from organizations where id = ${org.id}`)[0].review_status).toBe("suspended");
     expect(exec({ ACTION: "verify", DOMAIN: `nobody-${domain}` }).status).toBe(1);
   });

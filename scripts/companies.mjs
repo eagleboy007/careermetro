@@ -8,7 +8,11 @@ import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 
 export const ACTIONS = ["list", "verify", "suspend"];
-export const REVIEWER = "milin-github";
+/** Who ran the workflow, as "github:<login>" (GITHUB_ACTOR); "github" when run outside Actions. */
+export const reviewerOf = (env) => {
+  const actor = (env.GITHUB_ACTOR ?? "").trim();
+  return /^[A-Za-z0-9-]{1,39}(\[bot\])?$/.test(actor) ? `github:${actor}` : "github";
+};
 
 const DOMAIN = /^(?=.{3,253}$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,63}$/;
 
@@ -68,14 +72,14 @@ async function list(sql) {
     order by o.created_at`;
 }
 
-async function setStatus(sql, action, domain) {
+async function setStatus(sql, action, domain, reviewer) {
   const status = action === "verify" ? "verified" : "suspended";
   return sql.begin(async (tx) => {
     const [org] = await tx`
-      update organizations set review_status = ${status}, reviewed_at = now(), reviewed_by = ${REVIEWER}
+      update organizations set review_status = ${status}, reviewed_at = now(), reviewed_by = ${reviewer}
       where email_domain = ${domain} returning id, name`;
     if (!org) return null;
-    await tx`insert into audit_logs (actor, action, target) values (${REVIEWER}, ${`company_${status}`}, ${`organization:${org.id}`})`;
+    await tx`insert into audit_logs (actor, action, target) values (${reviewer}, ${`company_${status}`}, ${`organization:${org.id}`})`;
     return org;
   });
 }
@@ -99,7 +103,7 @@ async function main() {
       console.log(`companies: ${rows.length} listed`);
       return;
     }
-    const org = await setStatus(sql, input.action, input.domain);
+    const org = await setStatus(sql, input.action, input.domain, reviewerOf(process.env));
     if (!org) {
       console.error("companies: no company has that domain");
       process.exitCode = 1;
