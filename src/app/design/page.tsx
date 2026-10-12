@@ -355,7 +355,15 @@ export default function DesignPage() {
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Role picker</h2>
-          <RolePicker resumeId="example" roles={exampleRoleOptions} demo />
+          <RolePicker
+            resumeId="example"
+            roles={exampleRoleOptions}
+            suggestions={[
+              { slug: "full-stack-developer", title: "Full Stack Developer (MERN)", experience: "1 to 5 years", met: 5, total: 10, shown: ["JavaScript", "Node.js", "SQL"], fits: true },
+              { slug: "senior-backend-engineer", title: "Senior Backend Engineer", experience: "5 to 10 years", met: 4, total: 9, shown: ["Node.js", "SQL"], fits: false },
+            ]}
+            demo
+          />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Covered skills and rating</h2>

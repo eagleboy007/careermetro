@@ -14,6 +14,8 @@ export type SettingsData = {
   method: SignInMethod | null;
   /** False on example data: nothing can be saved, downloaded or deleted. */
   editable: boolean;
+  /** True once the account has a name: it is shown, never edited here (Milin, 2026-10-12). */
+  nameLocked: boolean;
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -51,7 +53,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
         )}
 
         <Section id="acc-basics" title="Profile basics" tag="shown on your profile">
-          <BasicsForm firstName={data.firstName} lastName={data.lastName} editable={data.editable} />
+          <BasicsForm firstName={data.firstName} lastName={data.lastName} editable={data.editable && !data.nameLocked} locked={data.nameLocked} />
         </Section>
 
         <Section id="acc-signin" title="Email and sign-in" tag="private">

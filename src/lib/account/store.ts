@@ -131,7 +131,7 @@ export async function createAccount(
     }
 
     const [byEmail] = await tx
-      .select({ id: users.id, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt })
+      .select({ id: users.id, authSubject: users.authSubject, deletionRequestedAt: users.deletionRequestedAt, firstName: users.firstName, name: users.name })
       .from(users)
       .where(sql`lower(${users.email}) = ${email}`)
       .limit(1);
@@ -149,8 +149,11 @@ export async function createAccount(
       ageConfirmedAt: now,
       lastSeenAt: now,
     };
+    // A name the linked row already has stays: names are locked once set.
+    const keepName = byEmail && nameLocked(byEmail);
+    const update = keepName ? { email, authSubject: values.authSubject, ageConfirmedAt: now, lastSeenAt: now } : { email, ...values };
     const [row] = byEmail
-      ? await tx.update(users).set({ email, ...values }).where(eq(users.id, byEmail.id)).returning(accountColumns)
+      ? await tx.update(users).set(update).where(eq(users.id, byEmail.id)).returning(accountColumns)
       : await tx.insert(users).values({ email, ...values }).returning(accountColumns);
     await tx.insert(consents).values({ userId: row.id, email, purpose: "account", policyVersion: ACCOUNT_POLICY_VERSION });
     const claim = input.sessionId ? await claimAnonymousResumes(row.id, input.sessionId, tx) : null;
@@ -188,7 +191,14 @@ export async function saveNames(userId: string, first: string, last: string, db:
   const rows = await db
     .update(users)
     .set({ firstName, lastName: lastName || null, name: fullName(firstName, lastName) })
-    .where(eq(users.id, userId))
+    // Only while the account has no name yet (Milin, 2026-10-12): once set it is locked, so it can't be changed to
+    // match someone else's resume. Corrections go through a request to us.
+    .where(and(eq(users.id, userId), isNull(users.firstName), or(isNull(users.name), sql`btrim(${users.name}) = ''`)))
     .returning({ id: users.id });
   return rows.length > 0;
+}
+
+/** True once the account has a name: from then on only we can correct it (saveNames refuses). */
+export function nameLocked(account: { firstName: string | null; name: string | null } | null | undefined): boolean {
+  return hasUsableName(account?.firstName) || hasUsableName(account?.name);
 }

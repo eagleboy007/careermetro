@@ -99,6 +99,12 @@ await step("confirm profile", async () => {
   await shot("confirmed");
   await next.click();
   await p.waitForURL(/\/role/, { timeout: 15000 });
+  // The roles the resume covers best come first, each saying why (role-suggest-plan.md part A).
+  await p.getByRole("heading", { name: "Closest to your resume" }).waitFor({ timeout: 5000 });
+  const suggested = p.locator('section[aria-labelledby="suggested-roles"] li');
+  const count = await suggested.count();
+  if (count < 1 || count > 3) throw new Error(`expected 1 to 3 suggested roles, got ${count}`);
+  if (!/Your resume shows \d+ of its \d+ key skills, like /.test(await suggested.first().innerText())) throw new Error("suggestion doesn't say why");
   await shot("role");
   await a11y("role");
 });
@@ -241,7 +247,7 @@ await step("unknown address shows the not-found page", async () => {
   await p.getByRole("link", { name: "Go to the home page" }).waitFor({ timeout: 5000 });
   await a11y("not-found");
 });
-await step("account settings: rename and download", async () => {
+await step("account settings: name is locked, download works", async () => {
   await p.goto(BASE + "/today");
   await settled();
   await p.getByRole("button", { name: /open menu$/ }).click();
@@ -250,16 +256,14 @@ await step("account settings: rename and download", async () => {
   await settled();
   await shot("settings");
   await a11y("settings");
-  await p.getByLabel("Last name").fill("Sharma Rao");
-  await p.getByText("You have unsaved changes.").waitFor();
-  await p.getByRole("button", { name: "Save changes" }).click();
-  await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 10000 });
-  await p.reload();
-  if ((await p.getByLabel("Last name").inputValue()) !== "Sharma Rao") throw new Error("last name not saved");
+  // Once the account has a name it can't be edited (Milin, 2026-10-12): corrections go through a request to us.
+  if (!(await p.getByLabel("First name").isDisabled()) || !(await p.getByLabel("Last name").isDisabled())) throw new Error("name is still editable");
+  await p.getByRole("link", { name: "Grievances page" }).waitFor({ timeout: 5000 });
+  const lastName = await p.getByLabel("Last name").inputValue();
   const res = await p.request.get(BASE + "/api/account/export");
   if (!res.ok()) throw new Error("download status " + res.status());
   const data = await res.json();
-  if (data.account?.lastName !== "Sharma Rao" || !data.resumes?.length) throw new Error("download is missing data");
+  if ((data.account?.lastName ?? "") !== lastName || !data.resumes?.length) throw new Error("download is missing data");
 });
 await step("delete account, then restore it by signing in again", async () => {
   await p.goto(BASE + "/settings");
