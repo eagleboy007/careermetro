@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, CirclePause, Pencil, Play, Plus } from "lucide-react";
+import { Archive, CirclePause, Columns3, Pencil, Play, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { formatDay } from "@/lib/corporate/format";
@@ -24,8 +24,8 @@ const DONE: Record<Move, string> = {
 
 /**
  * Corporate's Jobs section (C7): the company's jobs with counts per status, Post a job, and Pause, Open again and Close.
- * A draft opens from its form, after the three checks. Applications and each job's board come in build step 4, so
- * there are no lanes yet. Without `actions` (the /design page) the controls are off.
+ * A draft opens from its form, after the three checks. Each job that has been open links to its board of applications.
+ * Without `actions` (the /design page) the controls are off.
  */
 export function JobsPanel({ jobs, actions }: { jobs: JobsView; actions?: JobListActions }) {
   const [pending, start] = useTransition();
@@ -115,9 +115,23 @@ export function JobsPanel({ jobs, actions }: { jobs: JobsView; actions?: JobList
                   <p className={`mt-1 ${monoLabel}`}>{j.live ? "Live on Departures" : "Not live: candidates can't see it"}</p>
                 )}
               </div>
-              {j.canEdit && (
+              {(j.canEdit || j.status !== "draft") && (
                 <div className="flex flex-wrap items-center gap-2">
-                  {confirming === j.id ? (
+                  {j.status !== "draft" && confirming !== j.id && (
+                    <Link href={`/corporate/jobs/board?id=${j.id}`} className={actionBtn}>
+                      <Columns3 {...ICON} />
+                      {/* The name reads "Board for <job>, 2 open applications"; the eye sees "Board 2". */}
+                      Board<span className="sr-only"> for {j.title}{j.applications !== null && ","}</span>
+                      {j.applications !== null && (
+                        <>
+                          {" "}
+                          <span className="font-mono text-[0.76rem] text-muted">{j.applications}</span>
+                          <span className="sr-only"> open {j.applications === 1 ? "application" : "applications"}</span>
+                        </>
+                      )}
+                    </Link>
+                  )}
+                  {!j.canEdit ? null : confirming === j.id ? (
                     <>
                       <span className="text-[0.84rem]">Close this job? It can&apos;t open again.</span>
                       <button type="button" className={actionBtn} disabled={pending} onClick={() => move(j, "closed")}>
@@ -174,7 +188,7 @@ export function JobsPanel({ jobs, actions }: { jobs: JobsView; actions?: JobList
           ))}
         </ul>
       )}
-      <p className="text-[0.8rem] text-muted">Applications come next. Once they open, each job gets its own board with the same stages candidates see on Arrivals.</p>
+      <p className="text-[0.8rem] text-muted">Each job&apos;s board has the same stages candidates see on Arrivals. Only people who applied here appear on it.</p>
     </div>
   );
 }

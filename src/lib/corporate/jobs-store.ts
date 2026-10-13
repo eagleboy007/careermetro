@@ -1,14 +1,14 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { auditLogs, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
+import { applications, auditLogs, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { logEvent } from "@/lib/log";
 import { jobInput, jobReportInput, jobStatusInput } from "@/lib/schemas/corporate";
 import { JOB_STATUSES, JOB_WORK_TYPE_LABELS, JOBS_BLOCKED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { requirementNames, roleBySlug, roleOptions, skillOptions, unknownSkills } from "./job-content";
-import { canEditJob, canPostJobs, isLive, jobsBlocked, openRefusal, statusMoveRefusal, type OrgForJobs } from "./rules";
+import { canEditJob, canMoveApplications, canPostJobs, isLive, jobsBlocked, openRefusal, statusMoveRefusal, type OrgForJobs } from "./rules";
 import { activeMembership, liveAdminCount } from "./store";
 import type { JobFormData, JobFormValues, JobsBlocked, JobStatus, JobsView, JobTeamRole, PostedJobView } from "./types";
 
@@ -288,6 +288,25 @@ export async function companyJobs(userId: string, me: Member, org: OrgForJobs & 
     .leftJoin(jobTeam, mine)
     .where(and(eq(jobs.orgId, org.orgId), me.role === "admin" ? undefined : sql`${jobTeam.userId} is not null`))
     .orderBy(desc(jobs.createdAt));
+  // Open applications per job, never counting the viewer's own (an employee applying to their own company's job).
+  const ids = rows.map((r) => r.id);
+  const open = ids.length
+    ? await db
+        .select({ jobId: applications.jobId, n: sql<number>`count(*)::int` })
+        .from(applications)
+        .innerJoin(users, eq(users.id, applications.userId))
+        .where(
+          and(
+            inArray(applications.jobId, ids),
+            isNull(applications.withdrawnAt),
+            isNull(users.deletionRequestedAt),
+            ne(applications.userId, userId),
+            ne(applications.stage, "not_this_time"),
+          ),
+        )
+        .groupBy(applications.jobId)
+    : [];
+  const openByJob = new Map(open.map((o) => [o.jobId, o.n]));
   const counts = Object.fromEntries(JOB_STATUSES.map((s) => [s, 0])) as Record<JobStatus, number>;
   for (const r of rows) counts[r.status]++;
   return {
@@ -308,6 +327,8 @@ export async function companyJobs(userId: string, me: Member, org: OrgForJobs & 
       myRole: r.myRole,
       canEdit: r.status !== "closed" && canEditJob(me.role, r.myRole),
       requiredCount: r.requirements.required.length,
+      // Interviewers see only candidates assigned to them, so no count of everyone's.
+      applications: canMoveApplications(me.role, r.myRole) ? (openByJob.get(r.id) ?? 0) : null,
     })),
   };
 }

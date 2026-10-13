@@ -5,6 +5,11 @@ const m = vi.hoisted(() => ({
   account: null as { id: string } | null,
   refresh: vi.fn(),
   store: { saveJob: vi.fn(), setJobStatus: vi.fn(), reportJob: vi.fn() },
+  apps: { openCandidate: vi.fn(), moveApplication: vi.fn() },
+}));
+vi.mock("@/lib/corporate/applications-store", () => ({
+  ...m.apps,
+  APPLICATION_ERROR_TEXT: { not_allowed: "Only Recruiter admins, and Hiring HR on this job, can move candidates.", ai_off: "The L1 AI interview is off for this job." },
 }));
 vi.mock("next/cache", () => ({ refresh: m.refresh }));
 vi.mock("@/lib/auth/server", () => ({ currentAccount: async () => m.account }));
@@ -13,7 +18,7 @@ vi.mock("@/lib/corporate/jobs-store", async () => {
   return { ...m.store, JOB_ERROR_TEXT: { ...JOBS_BLOCKED_TEXT, not_allowed: "Only Recruiter admins, and Hiring HR on this job, can change it.", limit: "Too many." } };
 });
 
-import { reportJobAction, saveJobAction, setJobStatusAction } from "./actions";
+import { moveApplicationAction, openCandidateAction, reportJobAction, saveJobAction, setJobStatusAction } from "./actions";
 
 const ME = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
 const JOB = "1c9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a70";
@@ -79,5 +84,25 @@ describe("jobs actions", () => {
     expect(m.store.reportJob).toHaveBeenLastCalledWith(ME, { jobId: JOB, reason: "money_or_otp", note: "Asked for a deposit" });
     m.store.reportJob.mockResolvedValue({ ok: false, error: "limit" });
     expect(await reportJobAction(JOB, "other", "")).toBe("Too many.");
+  });
+
+  it("open a candidate and move them, with the note, refreshing the board only after a move", async () => {
+    m.account = null;
+    expect(await openCandidateAction("a")).toEqual({ ok: false, error: "Please sign in again." });
+    expect(await moveApplicationAction("a", "shortlisted", "")).toBe("Please sign in again.");
+    expect(m.apps.openCandidate).not.toHaveBeenCalled();
+    m.account = { id: ME };
+    m.apps.openCandidate.mockResolvedValue({ ok: true, candidate: { applicationId: "a" } });
+    expect(await openCandidateAction("a")).toEqual({ ok: true, candidate: { applicationId: "a" } });
+    expect(m.apps.openCandidate).toHaveBeenLastCalledWith(ME, { applicationId: "a" });
+    m.apps.moveApplication.mockResolvedValue({ ok: true });
+    expect(await moveApplicationAction("a", "not_this_time", "We need SIEM.")).toBeNull();
+    expect(m.apps.moveApplication).toHaveBeenLastCalledWith(ME, { applicationId: "a", to: "not_this_time", note: "We need SIEM." });
+    expect(m.refresh).toHaveBeenCalledTimes(1);
+    m.apps.moveApplication.mockResolvedValue({ ok: false, error: "ai_off" });
+    expect(await moveApplicationAction("a", "ai", "")).toMatch(/L1 AI interview is off/);
+    m.apps.openCandidate.mockResolvedValue({ ok: false, error: "not_allowed" });
+    expect(await openCandidateAction("a")).toEqual({ ok: false, error: expect.stringMatching(/Only Recruiter admins/) });
+    expect(m.refresh).toHaveBeenCalledTimes(1);
   });
 });

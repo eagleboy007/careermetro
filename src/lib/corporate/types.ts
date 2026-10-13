@@ -1,4 +1,4 @@
-import type { JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, JOBS_BLOCKED_TEXT, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, REVIEW_DECISIONS } from "@/lib/schemas/constants";
+import type { APPLICATION_EVENT_KINDS, APPLICATION_STAGES, CAN_JOIN, MATCH_WORDS, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, JOBS_BLOCKED_TEXT, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, REVIEW_DECISIONS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 
 /*
@@ -135,6 +135,8 @@ export type JobListItemView = {
   myRole: JobTeamRole | null;
   canEdit: boolean;
   requiredCount: number;
+  /** Open applications (not withdrawn, not Not this time). Null for someone who sees only assigned candidates. */
+  applications: number | null;
 };
 
 export type JobsView = {
@@ -204,3 +206,101 @@ export type JobListActions = {
 };
 
 export type JobReportAction = (jobId: string, reason: ReportReason, note: string) => Promise<string | null>;
+
+/* Applications and the board (build step 4) ------------------------------------------------------------------------ */
+
+export type ApplicationStage = (typeof APPLICATION_STAGES)[number];
+export type CanJoin = (typeof CAN_JOIN)[number];
+export type ApplicationEventKind = (typeof APPLICATION_EVENT_KINDS)[number];
+/** How one requirement reads for the company: "Proved", "On resume, not proved" or "Not on resume" (MATCH_WORDS). */
+export type MatchState = keyof typeof MATCH_WORDS;
+
+/** One line of Match to this job. A "one of these" group is one line naming its skills. Never a resume line. */
+export type MatchLineView = { label: string; state: MatchState; group: "required" | "one_of" | "nice" };
+
+/** Match to this job, in words. No score and no ranking (FR-13). */
+export type JobMatchView = {
+  lines: MatchLineView[];
+  /** Required lines (required skills and one-of groups) proved, on the resume, and how many there are. */
+  requiredProved: number;
+  requiredOnResume: number;
+  requiredTotal: number;
+};
+
+/**
+ * The candidate's public profile as a company sees it: what any visitor would. Job titles, employers and dates, never
+ * the lines under them; never email, phone, pay or notice period.
+ */
+export type CandidateProfileView = {
+  name: string;
+  /** "Working at Konkan Co-operative Bank", "Looking for a next role", or null with no resume. */
+  headline: string | null;
+  experience: { title: string; employer: string; dates: string }[];
+  education: { qualification: string; institution: string; year: string }[];
+  certifications: string[];
+};
+
+/** One card on the board. */
+export type BoardCardView = {
+  applicationId: string;
+  name: string;
+  headline: string | null;
+  stage: ApplicationStage;
+  canJoin: CanJoin;
+  appliedOn: string;
+  match: JobMatchView;
+};
+
+/** One line of an application's Activity, and of the candidate's Arrivals. Never names who moved it. */
+export type ApplicationEventView = { kind: ApplicationEventKind; stage: ApplicationStage; on: string; note: string | null };
+
+/** A job's board (C7): six lanes. Interviewers see only the candidates assigned to them. */
+export type JobBoardView = {
+  job: { id: string; title: string; city: string; workType: JobWorkType; status: JobStatus; aiRound: boolean; company: string };
+  /** Recruiter admins, and Hiring HR on this job. Interviewers never. */
+  canMove: boolean;
+  /** The person sees only candidates assigned to them (Interviewers). */
+  assignedOnly: boolean;
+  cards: BoardCardView[];
+  /** Applications the candidate withdrew; the company sees only how many. */
+  withdrawn: number;
+};
+
+/** The drawer: Profile, Match to this job, Activity. Opening it writes one audit line. */
+export type CandidateView = {
+  applicationId: string;
+  stage: ApplicationStage;
+  canJoin: CanJoin;
+  appliedOn: string;
+  profile: CandidateProfileView;
+  match: JobMatchView;
+  events: ApplicationEventView[];
+};
+
+export type BoardActions = {
+  open: (applicationId: string) => Promise<{ ok: true; candidate: CandidateView } | { ok: false; error: string }>;
+  move: (applicationId: string, to: ApplicationStage, note: string) => Promise<string | null>;
+};
+
+/** The person's own application, on Arrivals. */
+export type MyApplicationView = {
+  id: string;
+  title: string;
+  company: string;
+  city: string;
+  stage: ApplicationStage;
+  canJoin: CanJoin;
+  appliedOn: string;
+  withdrawn: boolean;
+  events: ApplicationEventView[];
+};
+
+/** Whether the person can apply to a posted job on Departures, or already has. */
+export type ApplyState =
+  | { kind: "signed_out" }
+  | { kind: "no_resume" }
+  | { kind: "can_apply" }
+  | { kind: "applied"; stage: ApplicationStage; withdrawn: boolean };
+
+export type ApplyAction = (jobId: string, canJoin: CanJoin, consent: boolean) => Promise<string | null>;
+export type WithdrawAction = (applicationId: string) => Promise<string | null>;

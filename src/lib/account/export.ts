@@ -1,6 +1,7 @@
 import "server-only";
 import { asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
+import { exportApplications } from "@/lib/corporate/applications-store";
 import { exportJobs } from "@/lib/corporate/jobs-store";
 import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
@@ -9,7 +10,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 6;
+export const EXPORT_VERSION = 7;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -90,7 +91,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -129,6 +130,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportInbox(userId, db),
     exportCorporate(userId, db),
     exportJobs(userId, db),
+    exportApplications(userId, db),
   ]);
 
   return {
@@ -162,5 +164,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     companyRoles,
     // Jobs this account posted for a company (it stays the company's when the account goes).
     jobsOwned,
+    // Jobs this account applied to on CareerMetro: which companies have the application, and every step it took.
+    applications: applicationRows,
   };
 }

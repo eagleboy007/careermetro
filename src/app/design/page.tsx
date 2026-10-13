@@ -43,7 +43,10 @@ import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView } from "@/components/inbox/inbox-view";
 import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
-import { exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { exampleApplications, exampleBoard, exampleCandidate, exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { ArrivalsView } from "@/components/arrivals/arrivals-view";
+import { JobBoard } from "@/components/corporate/job-board";
+import { MatchDots, MatchList } from "@/components/corporate/match-parts";
 import { JobForm } from "@/components/corporate/job-form";
 import { JobStatusBadge, PostedJobCard } from "@/components/corporate/job-parts";
 import { JobReport } from "@/components/corporate/job-report";
@@ -470,6 +473,51 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <PostedJobs jobs={[examplePostedJob, { ...examplePostedJob, id: "example-job-2", title: "Freelance QA tester", workType: "freelance", city: "Remote", oneOf: [], nice: [] }]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Applications and the board (signed in)</h2>
+        <p className="text-sm text-muted">
+          Build step 4: Apply on CareerMetro with its consent on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
+          words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals. Example data, so nothing saves or moves.
+        </p>
+        <div className="rounded-lg border border-line p-4">
+          <PostedJobs
+            jobs={[
+              examplePostedJob,
+              { ...examplePostedJob, id: "example-job-3", title: "Weekend SOC analyst L1", workType: "part_time" },
+              { ...examplePostedJob, id: "example-job-4", title: "Cloud security engineer", city: "Remote" },
+              { ...examplePostedJob, id: "example-job-5", title: "Security engineer", city: "Hyderabad" },
+            ]}
+            states={{
+              "example-job": { kind: "can_apply" },
+              "example-job-3": { kind: "applied", stage: "shortlisted", withdrawn: false },
+              "example-job-4": { kind: "no_resume" },
+              "example-job-5": { kind: "signed_out" },
+            }}
+          />
+        </div>
+        <div className="flex flex-wrap gap-6">
+          <div className="flex flex-col gap-2">
+            <MatchDots match={exampleBoard.cards[0].match} />
+            <MatchDots match={exampleBoard.cards[2].match} />
+          </div>
+          <div className="max-w-[520px] flex-1 rounded-lg border border-line p-4">
+            <MatchList match={exampleCandidate.match} />
+          </div>
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobBoard board={exampleBoard} example={exampleCandidate} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobBoard board={{ ...exampleBoard, canMove: false, assignedOnly: true, cards: [], withdrawn: 0 }} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <ArrivalsView applications={exampleApplications} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <ArrivalsView applications={[]} />
         </div>
       </section>
 

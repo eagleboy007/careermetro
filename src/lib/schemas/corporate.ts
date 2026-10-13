@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { checkWorkEmail, normalWebsite, workEmailProblemText } from "@/lib/corporate/domains";
 import {
+  APPLICATION_STAGES,
+  CAN_JOIN,
+  NOT_THIS_TIME_NOTE_MAX,
+  NOT_THIS_TIME_NOTE_MIN,
   JOB_CITY_MAX,
   JOB_NICE_MAX,
   JOB_ONE_OF_GROUPS_MAX,
@@ -27,7 +31,7 @@ import { REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
  * team and access. A work email is personal data: it is checked here, used once, and never logged.
  */
 
-export { JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES };
+export { APPLICATION_STAGES, CAN_JOIN, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES };
 
 const text = (min: number, max: number, what: string) =>
   z
@@ -170,6 +174,32 @@ export type JobInput = z.input<typeof jobInput>;
 
 /** Pause, close, or open again a job that was open before (a draft opens from the form, with the three ticks). */
 export const jobStatusInput = z.object({ jobId: z.uuid(), to: z.enum(["open", "paused", "closed"]) });
+
+/* Applications and the board (build step 4) ------------------------------------------------------------------------ */
+
+/**
+ * Applying to a job posted on CareerMetro: the consent tick naming the company, and when the person can join. Nothing
+ * else: never a notice period, pay or phone (unknown keys are dropped).
+ */
+export const applyInput = z.object({
+  jobId: z.uuid(),
+  canJoin: z.enum(CAN_JOIN, { error: "Pick when you can join." }),
+  consent: z.literal(true, { error: "Tick the box to share these with the company." }),
+});
+
+/** A move on the board. "Not this time" needs a note the candidate reads on Arrivals. */
+export const moveInput = z
+  .object({
+    applicationId: z.uuid(),
+    to: z.enum(APPLICATION_STAGES),
+    note: z.string().trim().max(NOT_THIS_TIME_NOTE_MAX, { error: `Keep the note under ${NOT_THIS_TIME_NOTE_MAX} characters.` }).default(""),
+  })
+  .refine((m) => m.to !== "not_this_time" || m.note.length >= NOT_THIS_TIME_NOTE_MIN, {
+    error: "Add a short note the candidate will see, with what would help next time.",
+    path: ["note"],
+  });
+
+export const applicationIdInput = z.object({ applicationId: z.uuid() });
 
 /** "Report this job" (plan, Abuse and compliance), into the same reports queue as the Inbox. */
 export const jobReportInput = z.object({

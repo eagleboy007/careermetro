@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
-import { exportAccountData } from "@/lib/account/export";
+import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { companyJobs, exportJobs, jobForm, liveJobs, reportJob, saveJob, setJobStatus } from "./jobs-store";
 import { activeMembership, corporateHome, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
@@ -335,7 +335,7 @@ describe.skipIf(!db)("corporate jobs store (database)", () => {
     const owned = await exportJobs(admin, db!);
     expect(owned).toEqual([expect.objectContaining({ company: "Example Labs", title: "SOC Analyst L1", role: SLUG, status: "open", workType: "Full time" })]);
     const data = await exportAccountData(admin, db!, clock);
-    expect(data!.exportVersion).toBe(6);
+    expect(data!.exportVersion).toBe(EXPORT_VERSION);
     expect(data!.jobsOwned).toHaveLength(1);
     await db!.delete(schema.users).where(eq(schema.users.id, admin));
     expect(await jobRow(saved.jobId)).toMatchObject({ ownerId: null });
