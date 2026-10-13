@@ -885,7 +885,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 13) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 14) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1438,6 +1438,7 @@ await step("company review: not found for others; the admin verifies the new com
 });
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
+let proofSkill = "";
 // Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
 // again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
 // with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
@@ -1467,6 +1468,30 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     const added = await nice.locator("option:checked").innerText();
     await nice.locator("xpath=following-sibling::button").click();
     await q.getByRole("button", { name: `Remove ${added} from Nice to have` }).waitFor();
+    // Express apply criteria (pending item 16): proof of one required skill, and a certificate from our list.
+    const proofOf = q.getByRole("group", { name: "Proof of required skills" }).getByRole("checkbox").first();
+    await proofOf.check();
+    proofSkill = (await proofOf.locator("xpath=..").innerText()).trim();
+    const cert = q.getByLabel("Add a certificate");
+    await cert.selectOption({ label: "CompTIA Security+" });
+    await cert.locator("xpath=following-sibling::button").click();
+    await q.getByRole("button", { name: "Remove CompTIA Security+ from Express apply criteria" }).waitFor();
+    // At the limit of 3 the picker stays focusable (aria-disabled), so focus never drops to the page: after adding the
+    // third, and after removing one of three.
+    const onPicker = () => cert.evaluate((el) => el === document.activeElement);
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await cert.selectOption({ label: extra });
+      await cert.locator("xpath=following-sibling::button").click();
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).waitFor();
+    }
+    if (!(await onPicker())) throw new Error("focus not on the certificate picker after adding the third");
+    if ((await cert.getAttribute("aria-disabled")) !== "true") throw new Error("the certificate picker isn't marked full at 3");
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).click();
+      if (!(await onPicker())) throw new Error("focus not on the certificate picker after removing one");
+    }
+    await q.getByRole("article").getByText("Express apply asks for").waitFor();
+    await q.getByRole("article").getByText(`Proof of ${proofSkill}`).waitFor();
     // Open job stays off until the three ticks.
     if (await q.getByRole("button", { name: "Open job" }).isEnabled()) throw new Error("Open job enabled before the three ticks");
     for (const name of ["This job is real and open now.", "We never ask candidates for a fee, deposit or paid training.", /don't screen people out/])
@@ -1525,8 +1550,9 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     await q.getByRole("heading", { name: "Departures" }).first().waitFor();
     if (await q.getByRole("heading", { name: title }).count()) throw new Error("paused job still on Departures");
 
-    const [job] = await sql`select id, status, ai_round from jobs where title = ${title}`;
+    const [job] = await sql`select id, status, ai_round, criteria from jobs where title = ${title}`;
     if (job?.status !== "paused" || job.ai_round) throw new Error("job not saved as paused with the AI round off");
+    if (job.criteria?.verifiedSkills?.length !== 1 || job.criteria?.certificates?.join() !== "comptia-security-plus") throw new Error("criteria not saved: " + JSON.stringify(job.criteria));
     const actions = (await sql`select action from audit_logs where target = ${`job:${job.id}`} order by created_at`).map((r) => r.action);
     if (actions.join() !== "job_opened,job_paused") throw new Error("audit lines: " + actions.join());
     const [reported] = await sql`select count(*)::int as n from reports where target = 'job' and target_id = ${job.id}`;
@@ -1549,6 +1575,7 @@ await step("corporate applications: apply with consent, the board, move a lane, 
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
   const title = postedTitle;
   const NOTE = "We need hands-on SIEM for this role. Apply again once SIEM is proved.";
+  const EXPRESS_NOTE = "I triage SIEM alerts every week and wrote two incident runbooks. Happy to walk you through one.";
   try {
     // The jobs step paused it; open it again.
     await q.setViewportSize({ width: 1280, height: 900 });
@@ -1557,23 +1584,81 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await q.getByRole("button", { name: `Open again ${title}` }).click();
     await q.getByRole("status").getByText(/Open again\./).waitFor({ timeout: 10000 });
 
-    // The candidate applies: nothing goes without the consent tick.
+    // The candidate applies with Express apply (pending item 16): a preview of exactly what the company receives, the
+    // criteria as met or not yet, a note, and nothing goes without the consent tick.
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
     await p.goto(BASE + "/departures");
     const card = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
     await card.waitFor({ timeout: 10000 });
-    await card.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
-    await card.getByRole("heading", { name: "Example Labs will see" }).waitFor();
-    if (!(await card.getByLabel("When can you join?").evaluate((el) => el === document.activeElement))) throw new Error("focus not on the first field of the consent");
-    await card.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
-    await card.getByRole("button", { name: "Send application" }).click();
-    await card.getByRole("alert").getByText(/Tick the box to share these with Example Labs/).waitFor();
-    await shot("departures-apply-consent");
-    await a11y("departures-apply-consent");
-    await card.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
-    await card.getByRole("button", { name: "Send application" }).click();
-    await card.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+    // The card shows the job's criteria for this person: the certificate isn't proved, so it reads Not yet.
+    await card.getByText(/Express apply criteria · /).waitFor();
+    await card.getByText("CompTIA Security+: Not yet").waitFor();
+    const express = card.getByRole("button", { name: `Express apply: ${title}` });
+    await express.click();
+    const preview = p.getByRole("dialog", { name: "What Example Labs receives" });
+    await preview.waitFor();
+    // Focus starts inside the dialog, on its heading, never on the page body.
+    if (!(await preview.getByRole("heading", { name: "What Example Labs receives" }).evaluate((el) => el === document.activeElement))) throw new Error("focus not on the preview's heading");
+    await preview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
+    await preview.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
+    // The criteria, met or not yet, and the warning that unmet ones don't block.
+    await preview.getByText("Express apply criteria", { exact: true }).waitFor();
+    await preview.getByText(`Proof of ${proofSkill}`).waitFor();
+    await preview.getByText("CompTIA Security+", { exact: true }).waitFor();
+    await preview.getByText("Not yet").first().waitFor();
+    await preview.getByText(/Not met yet doesn't stop you/).waitFor();
+    await preview.getByText(/Never sent: your gaps, path, goals, pay, phone, email, notice period, resume lines/).waitFor();
+    const previewText = await preview.innerText();
+    if (previewText.includes(testEmail)) throw new Error("email shown in the preview");
+    // Escape closes it and focus goes back to Express apply; opening again keeps what was written.
+    await preview.getByLabel(/A note to Example Labs/).fill("Call me on 98765 43210 any evening.");
+    await p.keyboard.press("Escape");
+    await preview.waitFor({ state: "hidden" });
+    if (!(await express.evaluate((el) => el === document.activeElement))) throw new Error("focus not back on Express apply after Escape");
+    await express.click();
+    await preview.waitFor();
+    if ((await preview.getByLabel(/A note to Example Labs/).inputValue()) !== "Call me on 98765 43210 any evening.") throw new Error("the note was lost on closing the preview");
+    // The preview is modal: Tab never leaves it.
+    for (let k = 0; k < 25; k++) {
+      await p.keyboard.press("Tab");
+      const where = await p.evaluate(() => (document.activeElement?.closest("dialog") ? "dialog" : document.activeElement === document.body ? "browser" : document.activeElement?.outerHTML.slice(0, 80)));
+      if (where !== "dialog" && where !== "browser") throw new Error("Tab left the preview for " + where);
+    }
+    await preview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    // A phone number in the note is refused, as the headline does.
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.getByRole("alert").getByText(/Leave out email addresses and phone numbers/).waitFor();
+    if (!(await preview.getByRole("alert").evaluate((el) => el === document.activeElement))) throw new Error("focus not on the preview's error");
+    await preview.getByLabel(/A note to Example Labs/).fill(EXPRESS_NOTE);
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.getByRole("alert").getByText(/Tick the box to send this to Example Labs/).waitFor();
+    await shot("departures-express-preview");
+    await a11y("departures-express-preview");
+    // Phone size in dark mode: the preview fits with no sideways scroll at 360px.
+    await p.setViewportSize({ width: 360, height: 740 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    const wide = await preview.evaluate((d) => d.scrollWidth - d.clientWidth);
+    const pageWide = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (wide > 1 || pageWide > 1) throw new Error(`preview at 360px: sideways scroll ${wide}px / page ${pageWide}px`);
+    await a11y("departures-express-preview-phone-dark");
+    await shot("departures-express-preview-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await preview.getByRole("checkbox", { name: /I agree to send this to Example Labs/ }).check();
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.waitFor({ state: "hidden", timeout: 15000 });
+    const done = card.getByRole("status").getByText("Applied · Applied");
+    await done.waitFor({ timeout: 15000 });
+    // Focus lands on the confirmation, never on the page body.
+    const focused = await p.evaluate(() => (document.activeElement === document.body ? "body" : (document.activeElement?.textContent ?? "")));
+    if (!focused.includes("Applied · Applied")) throw new Error("focus after sending: " + focused.slice(0, 80));
+    const [sent] = await sql`select a.note from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
+    if (sent?.note !== EXPRESS_NOTE) throw new Error("the note was not saved with the application");
+
+    // Every other job keeps the external link: the example roles show "Apply on company site", never Express apply.
+    await p.getByRole("button", { name: /^Apply on company site/ }).or(p.getByRole("link", { name: /^Apply on company site/ })).first().waitFor();
+    if (await p.getByText("Express apply · soon").count()) throw new Error("an external role still offers Express apply");
 
     // The job team's board.
     await q.goto(BASE + "/corporate");
@@ -1591,9 +1676,31 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await open.click();
     const drawer = q.getByRole("dialog", { name: "Priya Sharma" });
     await drawer.getByText("Never shown to companies", { exact: false }).waitFor({ timeout: 10000 });
+    // The company reads the note on the Profile tab, and the criteria on Match to this job.
+    await drawer.getByText("Their note").waitFor();
+    await drawer.getByText(EXPRESS_NOTE).waitFor();
+    const profileHtml = await drawer.innerHTML();
     await drawer.getByRole("tab", { name: "Match to this job" }).click();
     await drawer.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
+    await drawer.getByText("Express apply criteria", { exact: true }).waitFor();
+    await drawer.getByText(`Proof of ${proofSkill}`).waitFor();
     if ((await drawer.innerText()).includes(testEmail)) throw new Error("email shown in the candidate drawer");
+    // No gaps in the packet the company received: none of the person's gap explanations or readiness words, and no
+    // email, goals or path, in the drawer's HTML on either tab.
+    const drawerHtml = profileHtml + (await drawer.innerHTML());
+    const [cand] = await sql`select a.user_id as id from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
+    const analyses = await sql`select ga.result from gap_analyses ga join profiles pr on pr.id = ga.profile_id join resumes r on r.id = pr.resume_id where r.user_id = ${cand.id}`;
+    const gapTexts = analyses.flatMap(({ result }) => [
+      // The person's own gap words: why each skill is a gap, and how ready they are. (A requirement is the role's text, and a
+      // quote can be a certificate name the public profile lists, so neither is checked.)
+      ...(result.gaps ?? []).map((g) => g.explanation),
+      result.readiness?.headline,
+      result.readiness?.explanation,
+    ]).filter((t) => typeof t === "string" && t.length > 12);
+    if (!gapTexts.length) throw new Error("no gap texts to check the drawer against");
+    const leaked = gapTexts.filter((t) => drawerHtml.includes(t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")) || drawerHtml.includes(t));
+    if (leaked.length) throw new Error("gap text in the company's drawer: " + leaked[0].slice(0, 60));
+    if (drawerHtml.includes(testEmail) || /Your goals|Your path|Between you and this role/.test(drawerHtml)) throw new Error("gaps, goals, path or email in the company's drawer");
     await a11yOn(q, "corporate-candidate");
     // The drawer is modal: Tab never leaves it. Arrow keys move between its tabs. Escape closes it, focus back on the card.
     for (let k = 0; k < 15; k++) {
@@ -2240,10 +2347,13 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await fp.goto(BASE + "/departures");
     const fcard = fp.getByRole("article").filter({ has: fp.getByRole("heading", { name: title }) });
     await fcard.waitFor({ timeout: 10000 });
-    await fcard.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
-    await fcard.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
-    await fcard.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
-    await fcard.getByRole("button", { name: "Send application" }).click();
+    await fcard.getByRole("button", { name: `Express apply: ${title}` }).click();
+    const fpreview = fp.getByRole("dialog", { name: "What Example Labs receives" });
+    await fpreview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
+    await fpreview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await fpreview.getByRole("checkbox", { name: /I agree to send this to Example Labs/ }).check();
+    await fpreview.getByRole("button", { name: "Send application" }).click();
+    await fpreview.waitFor({ state: "hidden", timeout: 15000 });
     await fcard.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
     const [arjunApp] = await sql`select id from applications where user_id = ${user.id} and job_id = ${job.id}`;
     await fp.goto(BASE + "/settings");

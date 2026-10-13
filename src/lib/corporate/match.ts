@@ -1,6 +1,9 @@
 import { matchProfile } from "@/lib/gaps/match";
 import { meFromProfile } from "@/lib/me/build";
+import { publicCertifications } from "@/lib/me/public";
 import type { Profile, RoleProfile } from "@/lib/schemas";
+import { applicationPacket, type ApplicationPacket, type JobCriteria } from "@/lib/schemas/corporate";
+import { criteriaStatus } from "./criteria";
 import { skillName } from "./job-content";
 export { matchSummary } from "./match-words";
 import type { CandidateProfileView, JobMatchView, JobRequirementsView, MatchLineView, MatchState } from "./types";
@@ -65,7 +68,8 @@ export function jobMatch(r: JobRequirementsView, profile: Profile | null, proved
 
 /**
  * The public profile a company sees: name, and from the resume sent only job titles, employers, dates, education and
- * certification names. Never the lines under a job, the skills' evidence, or the person's gaps.
+ * certification names. Certifications are the public list (publicCertifications: current only, at most 5), never the
+ * owner's full list with expired ones. Never the lines under a job, the skills' evidence, or the person's gaps.
  */
 export function publicProfile(name: string, profile: Profile | null, now = new Date()): CandidateProfileView {
   if (!profile) return { name, headline: null, experience: [], education: [], certifications: [] };
@@ -76,6 +80,23 @@ export function publicProfile(name: string, profile: Profile | null, now = new D
     headline: current ? `Working at ${current.employer}` : "Looking for a next role",
     experience: me.experience.map(({ title, employer, dates }) => ({ title, employer, dates })),
     education: me.education,
-    certifications: me.certifications.map((c) => c.name),
+    certifications: publicCertifications(me.certifications).map((c) => c.name),
   };
+}
+
+/**
+ * The application packet (Express apply, dev/express-apply-plan.md): the public profile, Match to this job and the
+ * job's criteria against current accepted proofs. The candidate's preview and the company's drawer both come from here
+ * and pass the strict schema, so what the preview shows is what the company receives, and nothing more (no gaps, path,
+ * goals, pay, phone, email, notice period or resume lines).
+ */
+export function applicationPacketFor(
+  input: { name: string; profile: Profile | null; requirements: JobRequirementsView; criteria: JobCriteria; proved: ReadonlySet<string>; certificates: ReadonlySet<string> },
+  now = new Date(),
+): ApplicationPacket {
+  return applicationPacket.parse({
+    profile: publicProfile(input.name, input.profile, now),
+    match: jobMatch(input.requirements, input.profile, input.proved, now),
+    criteria: criteriaStatus(input.criteria, input.proved, input.certificates),
+  });
 }

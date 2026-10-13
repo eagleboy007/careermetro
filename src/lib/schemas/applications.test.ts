@@ -6,7 +6,7 @@ const APP = "2d9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a71";
 
 describe("application schemas (corporate build step 4)", () => {
   it("take an application only with the consent ticked and a Can join answer", () => {
-    expect(applyInput.parse({ jobId: JOB, canJoin: "30", consent: true })).toEqual({ jobId: JOB, canJoin: "30", consent: true });
+    expect(applyInput.parse({ jobId: JOB, canJoin: "30", consent: true })).toEqual({ jobId: JOB, canJoin: "30", consent: true, note: "" });
     expect(applyInput.safeParse({ jobId: JOB, canJoin: "30", consent: false }).error?.issues[0].message).toMatch(/Tick the box/);
     expect(applyInput.safeParse({ jobId: JOB, canJoin: "30" }).success).toBe(false);
     expect(applyInput.safeParse({ jobId: JOB, canJoin: "120", consent: true }).error?.issues[0].message).toMatch(/when you can join/);

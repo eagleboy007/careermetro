@@ -130,9 +130,24 @@ export const APPLY_SHARES = [
   "Your name, and your experience and education as job titles, employers and dates",
   "Certifications on your resume",
   "How your skills match this job, in words: Proved, On resume, or Not on resume",
-  "When you can join",
+  "Which of this job's Express apply criteria your accepted proof meets",
+  "When you can join, and your note if you write one",
 ] as const;
-export const APPLY_NEVER = "Never shared: your email, phone, pay, notice period, resume lines, goals, path, streak or other applications.";
+export const APPLY_NEVER = "Never sent: your gaps, path, goals, pay, phone, email, notice period, resume lines, streak or other applications.";
+
+/* Express apply (pending item 16; dev/express-apply-plan.md) --------------------------------------------------------- */
+
+/** The note sent with an application, after trimming. */
+export const APPLICATION_NOTE_MAX = 300;
+/** Why a note was refused: same rule as the headline, since a company reads it. */
+export const APPLICATION_NOTE_CONTACT_TEXT = "Leave out email addresses and phone numbers. The company writes to you in the application's chat.";
+export const APPLICATION_NOTE_LONG_TEXT = `Keep the note to ${APPLICATION_NOTE_MAX} characters.`;
+/** Certificates a job can ask for as Express apply criteria. Verified skills come from its Required skills (8 at most). */
+export const JOB_CRITERIA_CERTIFICATES_MAX = 3;
+/** How one Express apply criterion reads: met by current accepted proof, or not yet. Neutral words, never a gap colour. */
+export const CRITERIA_WORDS = { met: "Met", not_met: "Not yet" } as const;
+/** Unmet criteria warn and never block (dev/express-apply-plan.md). */
+export const CRITERIA_WARN_TEXT = "Not met yet doesn't stop you. You can still apply, and proof you add later shows to the company once it is accepted.";
 
 /* Interviews (dev/corporate-plan.md build step 6; handoff 12b, 12e and section 9) ---------------------------------- */
 

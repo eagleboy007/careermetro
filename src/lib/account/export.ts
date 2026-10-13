@@ -13,7 +13,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 13;
+export const EXPORT_VERSION = 14;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -177,9 +177,10 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     inbox,
     // Company roles held on this account: company, role, since, the work-email domain and date (never the address).
     companyRoles,
-    // Jobs this account posted for a company (it stays the company's when the account goes).
+    // Jobs this account posted for a company, with their Express apply criteria (it stays the company's when the account goes).
     jobsOwned,
-    // Jobs this account applied to on CareerMetro: which companies have the application, and every step it took.
+    // Jobs this account applied to on CareerMetro: which companies have the application, the note sent with it (Express
+    // apply), and every step it took.
     applications: applicationRows,
     // Interviews this account sat on for a company, and the feedback it wrote there (never the candidate's name).
     interviewer,

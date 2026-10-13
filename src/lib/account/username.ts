@@ -62,10 +62,13 @@ export const cleanHeadline = (raw: string): string => raw.replace(/\s+/g, " ").t
 
 const EMAIL = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 
+/** Whether text carries an email address or a phone number (the headline's rule, also used for an application's note). */
+export const hasContactDetails = (text: string): boolean => EMAIL.test(text) || PHONE.test(text);
+
 /** What is wrong with a cleaned headline, or null. Other people read it, so it must not carry contact details. */
 export function headlineProblem(text: string): HeadlineProblem | null {
   if (text.length > HEADLINE_MAX) return "long";
-  if (EMAIL.test(text) || PHONE.test(text)) return "contact";
+  if (hasContactDetails(text)) return "contact";
   return null;
 }
 

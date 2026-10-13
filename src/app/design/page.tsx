@@ -60,6 +60,7 @@ import { OverviewPanel } from "@/components/corporate/overview-panel";
 import { CorporateHome, CorporateStart, RecheckPanel } from "@/components/corporate/corporate-home";
 import {
   exampleApplications,
+  exampleApplyPacket,
   exampleBoard,
   exampleCandidate,
   exampleCompanyChat,
@@ -67,6 +68,7 @@ import {
   exampleCompanyMessages,
   exampleAudit,
   exampleCorporateHome,
+  exampleCriteria,
   exampleFindPeople,
   exampleFoundChat,
   exampleFoundPerson,
@@ -93,6 +95,9 @@ import { JobReport } from "@/components/corporate/job-report";
 import { JobsPanel } from "@/components/corporate/jobs-panel";
 import { PostedJobs } from "@/components/departures/posted-jobs";
 import { roleOptions, skillOptions } from "@/lib/corporate/job-content";
+import { certificateOptions } from "@/lib/corporate/criteria";
+import { CriteriaAsked, CriteriaList } from "@/components/corporate/criteria-parts";
+import { ApplyPanel } from "@/components/departures/apply-panel";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
@@ -564,7 +569,7 @@ export default function DesignPage() {
           <JobsPanel jobs={{ counts: { draft: 0, open: 0, paused: 0, closed: 0 }, items: [], canPost: true, blocked: null }} />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <JobForm data={{ ...exampleJobFormData, roles: roleOptions(), skills: skillOptions() }} initial={null} today="2026-10-13" />
+          <JobForm data={{ ...exampleJobFormData, roles: roleOptions(), skills: skillOptions(), certificates: certificateOptions() }} initial={null} today="2026-10-13" />
         </div>
         <div className="max-w-[560px]">
           <PostedJobCard job={examplePostedJob} report={<JobReport jobId={examplePostedJob.id} title={examplePostedJob.title} />} />
@@ -577,7 +582,7 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Applications and the board (signed in)</h2>
         <p className="text-sm text-muted">
-          Build step 4: Apply on CareerMetro with its consent on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
+          Build step 4: Express apply (its preview and consent) on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
           words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals. Example data, so nothing saves or moves.
         </p>
         <div className="rounded-lg border border-line p-4">
@@ -616,6 +621,34 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <ArrivalsView applications={[]} today="2026-10-12" />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Express apply (signed in)</h2>
+        <p className="text-sm text-muted">
+          Pending item 16: a posted job&apos;s Express apply criteria by name (signed out) and as met or not yet (signed in), neutral with icons since they
+          aren&apos;t gaps; Express apply opens the preview dialog with exactly what the company receives, the note (300 characters, no email or phone) and
+          the consent tick. Unmet criteria warn and never block. The company reads the note on the drawer&apos;s Profile tab and the criteria on Match to this
+          job (open a card above). Example data, so nothing is sent.
+        </p>
+        <div className="grid gap-4 min-[900px]:grid-cols-2">
+          <PostedJobCard
+            job={examplePostedJob}
+            criteria={exampleCriteria}
+            apply={<ApplyPanel jobId={examplePostedJob.id} company={examplePostedJob.company} title={examplePostedJob.title} state={{ kind: "can_apply" }} example={exampleApplyPacket} />}
+          />
+          <PostedJobCard job={{ ...examplePostedJob, id: "example-job-signed-out", title: "SOC Analyst L1 (signed out)" }} />
+        </div>
+        <div className="grid gap-4 min-[900px]:grid-cols-2">
+          <div className="rounded-lg border border-line p-4">
+            <CriteriaList criteria={exampleCriteria} warn />
+          </div>
+          <div className="flex flex-col gap-4 rounded-lg border border-line p-4">
+            <CriteriaList criteria={{ ...exampleCriteria, lines: exampleCriteria.lines.map((l) => ({ ...l, met: true })), met: 2 }} title="All met" />
+            <CriteriaList criteria={exampleCriteria} compact />
+            <CriteriaAsked names={examplePostedJob.criteria} />
+          </div>
         </div>
       </section>
 

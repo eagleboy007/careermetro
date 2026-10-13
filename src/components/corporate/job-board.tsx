@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Eye, Lock, MapPin, MessageSquare, X } from "luci
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { formatDay } from "@/lib/corporate/format";
+import { criteriaSummary } from "@/lib/corporate/match-words";
 import type { ApplicationEventView, ApplicationStage, BoardActions, BoardCardView, CandidateView, InterviewActions, JobBoardView } from "@/lib/corporate/types";
 import {
   APPLICATION_STAGE_HINTS,
@@ -16,6 +17,7 @@ import {
 import { InterviewsTab } from "./interview-parts";
 import { JobStatusBadge, monoLabel } from "./job-parts";
 import { actionBtn, inkBtn } from "./jobs-panel";
+import { CriteriaList } from "./criteria-parts";
 import { MatchDots, MatchList } from "./match-parts";
 import { AntiScamLine, ICON } from "./parts";
 
@@ -392,7 +394,10 @@ function CandidateDrawer({
           ) : tab === "profile" ? (
             <ProfileTab candidate={candidate} />
           ) : tab === "match" ? (
-            <MatchList match={candidate.match} />
+            <div className="flex flex-col gap-6">
+              <MatchList match={candidate.match} />
+              {candidate.criteria.total > 0 && <CriteriaList criteria={candidate.criteria} />}
+            </div>
           ) : tab === "interviews" ? (
             <div className="flex flex-col gap-3">
               {notice && (
@@ -500,11 +505,23 @@ function ProfileTab({ candidate }: { candidate: CandidateView }) {
   const { profile } = candidate;
   return (
     <div className="flex flex-col gap-4">
+      {candidate.note && (
+        <section className="flex flex-col gap-1.5">
+          <h3 className={monoLabel}>Their note</h3>
+          <p className="whitespace-pre-line rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.88rem] [overflow-wrap:anywhere]">{candidate.note}</p>
+        </section>
+      )}
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[0.86rem]">
         <dt className="text-muted">Applied</dt>
         <dd>{formatDay(candidate.appliedOn)}</dd>
         <dt className="text-muted">Can join</dt>
         <dd>{CAN_JOIN_LABELS[candidate.canJoin]}</dd>
+        {candidate.criteria.total > 0 && (
+          <>
+            <dt className="text-muted">Express apply criteria</dt>
+            <dd>{criteriaSummary(candidate.criteria)}</dd>
+          </>
+        )}
         <dt className="text-muted">Contact</dt>
         {candidate.interviews.phone ? (
           <dd>{candidate.interviews.phone} (shared for an accepted interview)</dd>
@@ -561,7 +578,7 @@ function ProfileTab({ candidate }: { candidate: CandidateView }) {
       <p className="flex items-start gap-2 rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.8rem] text-muted">
         <Lock {...ICON} className="mt-0.5 shrink-0" />
         <span>
-          Never shown to companies: email, phone number (unless they share one for an accepted interview, and then only to its team), pay, notice period (only Can join), resume lines, their goals and path, streak, other applications, and anything
+          Never shown to companies: email, phone number (unless they share one for an accepted interview, and then only to its team), pay, notice period (only Can join), resume lines, their gaps, goals and path, streak, other applications, and anything
           they keep private. Every time you open a candidate it is logged.
         </span>
       </p>

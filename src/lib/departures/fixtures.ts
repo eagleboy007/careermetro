@@ -33,7 +33,6 @@ export const exampleJobs: JobPost[] = [
     have: ["Excel pivot tables", "SQL joins", "Statistics basics"],
     goalsBefore: 2,
     why: "About 3 weeks at 5 hours a week. You can still apply now.",
-    express: true,
   }),
   job({
     id: "j3",
@@ -49,7 +48,6 @@ export const exampleJobs: JobPost[] = [
     have: ["Excel pivot tables", "Reporting", "SQL joins"],
     goalsBefore: 2,
     why: "Same two gaps as most junior analyst roles. Your ride this week works toward the first.",
-    express: true,
   }),
   job({
     id: "j4",
@@ -96,7 +94,6 @@ export const exampleJobs: JobPost[] = [
     have: ["Excel pivot tables", "SQL joins", "Communication"],
     goalsBefore: 0,
     why: "No required gaps. One nice-to-have (Power BI) is a goal on your line.",
-    express: true,
   }),
   job({
     id: "j7",

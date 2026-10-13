@@ -3,7 +3,7 @@ import type { FindPeopleView, FoundPersonView } from "@/lib/corporate/find-types
 import type { InboxMessage } from "@/lib/inbox/types";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
-import type { CandidateView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
+import type { ApplyPacketView, CandidateView, CriteriaView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
 
 /** Made-up company and people for /design and the example preview. No real company or person. */
 export const exampleCorporateHome: CorporateHomeView = {
@@ -34,7 +34,7 @@ export const exampleCorporateHome: CorporateHomeView = {
 };
 
 /** The Post a job form's company, colleagues and state, without the role and skill lists (the page adds those). */
-export const exampleJobFormData: Omit<JobFormData, "roles" | "skills"> = {
+export const exampleJobFormData: Omit<JobFormData, "roles" | "skills" | "certificates"> = {
   company: "Example Labs",
   companyVerified: false,
   blocked: "pending",
@@ -54,7 +54,18 @@ export const examplePostedJob: PostedJobView = {
   required: ["Networking basics", "Linux", "SIEM", "Threat detection", "Security incident response"],
   oneOf: [["Python", "Bash scripting"]],
   nice: ["Endpoint security", "Digital forensics"],
+  criteria: { verifiedSkills: ["SIEM"], certificates: ["CompTIA Security+"] },
   postedOn: "2026-10-13",
+};
+
+/** Express apply criteria for one person (pending item 16): one met, one not yet. Neutral, never a gap colour. */
+export const exampleCriteria: CriteriaView = {
+  lines: [
+    { kind: "skill", label: "SIEM and log analysis", met: true },
+    { kind: "certificate", label: "CompTIA Security+", met: false },
+  ],
+  met: 1,
+  total: 2,
 };
 
 export const exampleSignupDetails: SignupDetails = {
@@ -110,6 +121,8 @@ export const exampleCandidate: CandidateView = {
     certifications: ["Google Cybersecurity Certificate", "CompTIA Security+"],
   },
   match: exampleBoard.cards[0].match,
+  criteria: exampleCriteria,
+  note: "I triage about forty SIEM alerts a week at the bank and wrote its phishing runbook.\n\nHappy to walk you through one.",
   events: [
     { kind: "applied", stage: "applied", on: "2026-10-03", note: null },
     { kind: "moved", stage: "shortlisted", on: "2026-10-05", note: null },
@@ -152,6 +165,15 @@ export const exampleCandidate: CandidateView = {
     offeredTimes: 3,
     waitingForTimes: false,
   },
+};
+
+/** Express apply's preview (pending item 16): exactly what Example Labs would receive, the same parts as its drawer. */
+export const exampleApplyPacket: ApplyPacketView = {
+  company: "Example Labs",
+  jobTitle: "SOC Analyst L1",
+  profile: exampleCandidate.profile,
+  match: exampleCandidate.match,
+  criteria: exampleCriteria,
 };
 
 /** The drawer for an Interviewer on the candidate's interview: read only, with their own feedback form. */
