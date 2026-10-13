@@ -152,6 +152,8 @@ export function MetroMap({
             onShow={(slug) => {
               setSelected(`x-${slug}`);
               const g = scroller.current?.querySelector<SVGGElement>(`[data-crossing="${slug}"]`);
+              // Bring the interchange into the sideways-scrolling map first, then give it focus.
+              g?.scrollIntoView({ block: "nearest", inline: "center" });
               g?.focus();
             }}
           />

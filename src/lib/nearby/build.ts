@@ -1,4 +1,4 @@
-import { roleProfiles } from "@/content";
+import { roleProfiles, skills } from "@/content";
 import { matchProfile, type MatchedSkill } from "@/lib/gaps/match";
 import { formatExperience } from "@/lib/role-view";
 import {
@@ -25,6 +25,8 @@ export type NearbyInput = {
   now?: Date;
 };
 
+const skillNames = new Map(skills.map((s) => [s.id, s.name]));
+
 /** The skills a matcher row stands for: a "one of these" group's skills, or the one skill. */
 const unitSkills = (row: MatchedSkill) => row.group?.skillIds ?? [row.skillId];
 
@@ -44,7 +46,11 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
       const open = match.gaps.filter((g) => !byProof(g));
       const sharedSkills = [
         ...match.met.map((m) => ({ name: m.skillName, byProof: false })),
-        ...match.gaps.filter(byProof).map((g) => ({ name: g.skillName, byProof: true })),
+        // A "one of these" group filled by proof is named by the proved skill, not by the group's label.
+        ...match.gaps.filter(byProof).map((g) => {
+          const provedId = g.group?.skillIds.find((id) => proved.has(id));
+          return { name: provedId ? (skillNames.get(provedId) ?? g.skillName) : g.skillName, byProof: true };
+        }),
       ];
       const openIds = new Set(open.flatMap(unitSkills));
       const line: NearbyLine = {

@@ -140,6 +140,17 @@ describe("nearbyLinesFor", () => {
     expect(res.lines.map((l) => [l.shared, l.total])).toEqual([[2, 3]]);
   });
 
+  it("names a group shared through proof by its proved skill, not by the group's label", () => {
+    const cloud = role("cloud-role", ["sql", "aws", "azure", "linux"], {
+      groups: [{ id: "cloud", label: "A cloud platform (AWS or Azure)" }],
+    });
+    cloud.skills = cloud.skills.map((s) => (s.skillId === "aws" || s.skillId === "azure" ? { ...s, oneOf: "cloud" } : s));
+    const res = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, cloud], proved: new Set(["azure"]), now: NOW });
+    const azure = skills.find((s) => s.id === "azure")!.name;
+    expect(res.lines[0].sharedSkills).toContainEqual({ name: azure, byProof: true });
+    expect(res.lines[0].sharedSkills.map((s) => s.name)).not.toContain("A cloud platform (AWS or Azure)");
+  });
+
   it("says which role comes closest when none is near, and nothing when no role shares a skill", () => {
     const none = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, far], now: NOW });
     expect(none).toEqual({ lines: [], closest: { slug: "far-role", title: "Far Role", shared: 1, total: 5 } });

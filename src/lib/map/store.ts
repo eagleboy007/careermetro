@@ -7,6 +7,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
 import { provedSkills, syncGoals } from "@/lib/goals/store";
 import { nearbyLinesFor } from "@/lib/nearby/build";
+import { nearbyOrNothing } from "@/lib/nearby/safe";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { certificatesFor } from "@/lib/proofs/eligible";
@@ -101,8 +102,11 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
   // Nearby lines read the same confirmed profile and proof as the gaps; they only ever add crossings, never goals.
   const [resume, proved] = await Promise.all([getResumeForOwner(analysis.resumeId, { userId }, db), provedSkills(userId, db)]);
+  // If they can't be worked out, the Map and Me render without them (logged as nearby_failed, field paths only).
   const nearby = resume
-    ? nearbyLinesFor({ profile: resume.profile, targetSlug: result.roleSlug, proved: new Set(proved), lineSkillIds: gapGoals.map((g) => g.skillId), now })
+    ? nearbyOrNothing(() =>
+        nearbyLinesFor({ profile: resume.profile, targetSlug: result.roleSlug, proved: new Set(proved), lineSkillIds: gapGoals.map((g) => g.skillId), now }),
+      )
     : undefined;
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
