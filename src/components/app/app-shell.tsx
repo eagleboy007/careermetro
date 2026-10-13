@@ -104,7 +104,8 @@ function TopLink({ item, active }: { item: NavItem; active: boolean }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className={`rounded-full px-3 py-1.5 font-medium ${active ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"}`}
+      // Market is in the avatar menu too, so the top bar keeps it only where there is room for it.
+      className={`rounded-full px-3 py-1.5 font-medium ${active ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"} ${item.key === "market" ? "max-[999px]:hidden" : ""}`}
     >
       {item.label}
     </Link>

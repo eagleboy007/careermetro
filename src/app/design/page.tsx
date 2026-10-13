@@ -40,6 +40,7 @@ import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
+import { MarketView } from "@/components/market/market-view";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
@@ -304,7 +305,7 @@ const exampleToday: TodayData = {
   greeting: "Evening",
 };
 
-const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line"] as const;
+const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5"] as const;
 
 export default function DesignPage() {
   return (
@@ -423,6 +424,16 @@ export default function DesignPage() {
         <NearbyLinesList nearby={exampleNearby} changeRoleHref="/design" />
         <NearbyLinesList nearby={{ lines: [], closest: { slug: "data-scientist", title: "Data Scientist", shared: 2, total: 8 } }} />
         <NearbyLinesList nearby={{ lines: [], closest: null }} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Market (signed in)</h2>
+        <p className="text-sm text-muted">
+          Search, role and place pickers, the tile map in five plum steps with its key and list, the place panel, trend, pay bands, top cities, compare and
+          Nearby lines. Every figure is example data; picking something opens /market. Below it, Mizoram picked: a thin place shows &quot;Not enough data&quot;.
+        </p>
+        <MarketView ids="design-market" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
+        <MarketView ids="design-market-thin" params={{ place: "MZ", map: "pay", role: "soc-lead" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
       </section>
 
       <section className="flex flex-col gap-4">

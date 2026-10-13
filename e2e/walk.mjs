@@ -672,6 +672,67 @@ await step("nearby lines: a switcher sees them on Me and as an interchange on th
     await ctx2.close();
   }
 });
+// Market (handoff C6, dev/market-plan.md): from the top nav, every card labelled EXAMPLE DATA with its month; search a
+// city and a role (Enter takes the first match); open a state from the map; a thin state says "Not enough data"
+// instead of figures; Market is in the avatar menu; axe passes in light and dark, with no sideways scroll at 360px.
+await step("market: search, open a state, a thin one says Not enough data, every card says example data", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Market" }).click();
+  await p.waitForURL(/\/market/, { timeout: 15000 });
+  await settled();
+  await p.getByRole("heading", { name: "Market", level: 1 }).waitFor();
+  await p.getByText("Example data", { exact: true }).first().waitFor();
+  // Map, trend, pay, top cities and compare each say EXAMPLE DATA and the month.
+  const labels = await p.locator("main p").filter({ hasText: /^EXAMPLE DATA · .* · [A-Z][a-z]{2} \d{4}$/ }).count();
+  if (labels < 5) throw new Error(`only ${labels} cards say EXAMPLE DATA with a month`);
+  // The walk's target role is Data Analyst, so the Market opens on it.
+  await p.getByRole("heading", { name: "India · Data Analyst" }).waitFor();
+  const box = p.getByRole("combobox", { name: "Search a role, state or city" });
+  await box.fill("pune");
+  await p.getByRole("listbox", { name: "Matches" }).getByRole("option", { name: /^Pune/ }).click();
+  await p.waitForURL(/place=MH%3APune/, { timeout: 15000 });
+  await p.getByRole("heading", { name: "Pune · Data Analyst" }).waitFor();
+  await box.fill("machine learn");
+  await box.press("Enter");
+  await p.waitForURL(/role=ml-engineer/, { timeout: 15000 });
+  await p.getByRole("heading", { name: "Pune · Machine Learning Engineer" }).waitFor();
+  // A state from the map: its panel names top roles and cities.
+  await p.locator('main a[data-state="KA"]').click();
+  await p.waitForURL(/place=KA&/, { timeout: 15000 });
+  await p.getByRole("heading", { name: "Karnataka · Machine Learning Engineer" }).waitFor();
+  await p.getByRole("heading", { name: "Top roles in Karnataka" }).waitFor();
+  // A thin state: no figures, "Not enough data" on the tile, in the panel and on the cards.
+  const mz = p.locator('main a[data-state="MZ"]');
+  if (!(await mz.textContent()).includes("Mizoram: Not enough data")) throw new Error("the Mizoram tile should say Not enough data");
+  await mz.focus();
+  await p.keyboard.press("Enter");
+  await p.waitForURL(/place=MZ&/, { timeout: 15000 });
+  const panel = p.getByRole("heading", { name: "Mizoram · Machine Learning Engineer" });
+  await panel.waitFor();
+  await p.locator("main").getByText("Not enough data.").first().waitFor();
+  if (await p.locator("main").getByText("openings a month", { exact: true }).count()) throw new Error("a thin place shows a figure");
+  await shot("market");
+  await a11y("market");
+  // The avatar menu leads here too.
+  await p.locator("header button[aria-expanded]").last().click();
+  await p.locator("header ul").getByRole("link", { name: "Market" }).waitFor();
+  await p.keyboard.press("Escape");
+  // Phone width, light then dark: no sideways scroll, and axe passes.
+  await p.setViewportSize({ width: 360, height: 800 });
+  for (const scheme of ["light", "dark"]) {
+    await p.emulateMedia({ colorScheme: scheme });
+    await p.reload();
+    await settled();
+    await p.getByText("Example data", { exact: true }).first().waitFor();
+    const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error(`market scrolls sideways at 360px (${scheme}) by ${overflow}px`);
+    await shot(`market-phone-${scheme}`);
+    await a11y(`market-phone-${scheme}`);
+  }
+  await p.emulateMedia({ colorScheme: "light" });
+  await p.setViewportSize({ width: 1280, height: 900 });
+});
 await step("unknown address shows the not-found page", async () => {
   const r = await p.goto(BASE + expected404);
   if (r.status() !== 404) throw new Error("status " + r.status());
@@ -934,7 +995,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();
