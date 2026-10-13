@@ -152,3 +152,61 @@ export function companySendRefusal(x: { role: OrgRole; teamRole: JobTeamRole | n
   if (x.orgStatus !== "verified") return "suspended";
   return x.closed ? "closed" : null;
 }
+
+/* Interviews (build step 6) ----------------------------------------------------------------------------------------- */
+
+/** Asking for times, booking and cancelling interviews: the people who move the job's candidates. Interviewers never. */
+export const canScheduleInterviews = canEditJob;
+
+export type ScheduleRefusal = "read_only" | "not_allowed" | "suspended" | "closed";
+
+/**
+ * Why a company member can't ask for times or book an interview for an application now, or null. Interviewers never
+ * do; Hiring HR only on the job's team; a suspended or unverified company books nothing; and the application must be
+ * open: not withdrawn, not Not this time, its job not closed.
+ */
+export function scheduleRefusal(x: {
+  role: OrgRole;
+  teamRole: JobTeamRole | null;
+  orgStatus: OrgReviewStatus;
+  app: { stage: ApplicationStage; withdrawn: boolean; jobStatus: JobStatus };
+}): ScheduleRefusal | null {
+  if (x.role === "interviewer") return "read_only";
+  if (!canScheduleInterviews(x.role, x.teamRole)) return "not_allowed";
+  if (x.orgStatus !== "verified") return "suspended";
+  if (x.app.withdrawn || x.app.stage === "not_this_time" || x.app.jobStatus === "closed") return "closed";
+  return null;
+}
+
+export type InterviewStatus = "proposed" | "accepted" | "declined" | "done" | "cancelled";
+
+/** An interview as people see it: an accepted one whose time is over reads as done. */
+export function shownStatus(i: { status: InterviewStatus; startsAt: Date; minutes: number }, now: Date): InterviewStatus {
+  return i.status === "accepted" && i.startsAt.getTime() + i.minutes * 60_000 <= now.getTime() ? "done" : i.status;
+}
+
+/** Statuses that keep an interviewer assigned: they see the candidate (read only) while one of these stands. */
+export const LIVE_INTERVIEW: InterviewStatus[] = ["proposed", "accepted"];
+
+/** The candidate answers an interview only while it is proposed and hasn't started. */
+export const canRespond = (i: { status: InterviewStatus; startsAt: Date }, now: Date): boolean => i.status === "proposed" && i.startsAt > now;
+
+/** The job team cancels an interview that is proposed or accepted and hasn't happened yet. */
+export const canCancel = (i: { status: InterviewStatus; startsAt: Date }, now: Date): boolean => (i.status === "proposed" || i.status === "accepted") && i.startsAt > now;
+
+export type FeedbackRefusal = "not_assigned" | "not_accepted";
+
+/** Only an interviewer on the interview writes feedback, once the candidate has accepted it. */
+export function feedbackRefusal(x: { assigned: boolean; status: InterviewStatus }): FeedbackRefusal | null {
+  if (!x.assigned) return "not_assigned";
+  return x.status === "accepted" || x.status === "done" ? null : "not_accepted";
+}
+
+/**
+ * Whether a company member sees the phone the candidate shared: only while the application is open, and only the
+ * people who arrange interviews (`canMove`) or an interviewer on an accepted interview the phone was shared for.
+ */
+export function phoneVisible(x: { canMove: boolean; assignedToShared: boolean; anyShared: boolean; closed: boolean }): boolean {
+  if (x.closed || !x.anyShared) return false;
+  return x.canMove || x.assignedToShared;
+}

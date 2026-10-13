@@ -218,7 +218,8 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect((await corporateHome(colleague, { db: db!, now: clock }))!.team).toBeNull();
     // The admin's list shows the person with the date only, never an address.
     const home = await corporateHome(admin, { db: db!, now: clock });
-    expect(home!.team!.members.map((m) => m.name)).toEqual(["Meera Iyer", "Rahul Menon"]);
+    // Oldest first; two added in the same instant fall back to member id order, so only the set is fixed here.
+    expect(home!.team!.members.map((m) => m.name).sort()).toEqual(["Meera Iyer", "Rahul Menon"]);
     expect(home!.team!.invites).toEqual([]);
     expect(JSON.stringify(home)).not.toContain("@");
   });

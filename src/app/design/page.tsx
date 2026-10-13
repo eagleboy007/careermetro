@@ -44,7 +44,24 @@ import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
-import { exampleApplications, exampleBoard, exampleCandidate, exampleCompanyChat, exampleCompanyMessages, exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
+import {
+  exampleApplications,
+  exampleBoard,
+  exampleCandidate,
+  exampleCompanyChat,
+  exampleCompanyInterviews,
+  exampleCompanyMessages,
+  exampleCorporateHome,
+  exampleInboxAsk,
+  exampleInterviewerCandidate,
+  exampleJobFormData,
+  examplePostedJob,
+  exampleScheduler,
+  exampleSignupDetails,
+  exampleTimesChat,
+} from "@/components/corporate/fixtures";
+import { InterviewsTab } from "@/components/corporate/interview-parts";
+import { CompanyInterviews, Scheduler } from "@/components/corporate/interviews-screens";
 import { ArrivalsView } from "@/components/arrivals/arrivals-view";
 import { JobBoard } from "@/components/corporate/job-board";
 import { MatchDots, MatchList } from "@/components/corporate/match-parts";
@@ -515,10 +532,10 @@ export default function DesignPage() {
           <JobBoard board={{ ...exampleBoard, canMove: false, assignedOnly: true, cards: [], withdrawn: 0 }} />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <ArrivalsView applications={exampleApplications} />
+          <ArrivalsView applications={exampleApplications} today="2026-10-12" />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <ArrivalsView applications={[]} />
+          <ArrivalsView applications={[]} today="2026-10-12" />
         </div>
       </section>
 
@@ -544,6 +561,44 @@ export default function DesignPage() {
           <CompanyMessages view={{ ...exampleCompanyMessages, role: "interviewer", items: [] }} chat={null} />
         </div>
         <InboxView threads={exampleThreads.filter((t) => t.kind === "application")} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Interviews (signed in)</h2>
+        <p className="text-sm text-muted">
+          Build step 6: Ask for times in a chat and the times offered, the candidate&apos;s slot picker in the Inbox, the drawer&apos;s Interviews tab for the job team
+          and for an Interviewer (feedback form), Corporate Interviews, the scheduler (offered times, length, interviewers with busy times), and Arrivals with Next up,
+          the 10-day strip and Accept or Decline (see the Arrivals examples above). Example data, so nothing changes.
+        </p>
+        <div className="max-w-[720px]">
+          <CompanyChat chat={exampleTimesChat} company="Example Labs" />
+        </div>
+        <InboxView
+          threads={exampleThreads
+            .filter((t) => t.kind === "application")
+            .slice(0, 1)
+            .map((t) => ({ ...t, messages: [...t.messages.filter((m) => m.type !== "times"), exampleInboxAsk] }))}
+        />
+        <div className="grid gap-4 min-[900px]:grid-cols-2">
+          <div className="rounded-lg border border-line p-4">
+            <InterviewsTab applicationId="a1" data={exampleCandidate.interviews} />
+          </div>
+          <div className="rounded-lg border border-line p-4">
+            <InterviewsTab applicationId="a1" data={exampleInterviewerCandidate.interviews} />
+          </div>
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobBoard board={exampleBoard} example={exampleCandidate} startTab="interviews" />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyInterviews view={exampleCompanyInterviews} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <Scheduler view={exampleScheduler} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <Scheduler view={{ ...exampleScheduler, slots: [], days: [], interviews: [], teamWeek: [], waitingForTimes: true, refusal: "Your company can't arrange interviews until CareerMetro has verified it." }} />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

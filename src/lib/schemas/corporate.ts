@@ -1,8 +1,16 @@
 import { z } from "zod";
 import { checkWorkEmail, normalWebsite, workEmailProblemText } from "@/lib/corporate/domains";
+import { SLOT_KEY } from "@/lib/corporate/slots";
 import {
   APPLICATION_STAGES,
   CAN_JOIN,
+  FEEDBACK_MAX,
+  FEEDBACK_MIN,
+  INTERVIEW_MINUTES,
+  INTERVIEW_RECOMMENDATIONS,
+  INTERVIEW_ROUNDS,
+  INTERVIEWERS_MAX,
+  SLOTS_MAX,
   NOT_THIS_TIME_NOTE_MAX,
   NOT_THIS_TIME_NOTE_MIN,
   JOB_CITY_MAX,
@@ -220,3 +228,70 @@ export const companyMessageInput = z.object({
   question: z.boolean().default(false),
 });
 export type CompanyMessageInput = z.input<typeof companyMessageInput>;
+
+/* Interviews (build step 6) ---------------------------------------------------------------------------------------- */
+
+/** "Ask for times" in an application's chat. The store writes the question and the days; the caller names only the application. */
+export const askTimesInput = z.object({ applicationId: z.uuid() });
+
+/** A slot on the picker, "2026-10-14T11:00" (India date and start time). The store checks it is one the ask offered. */
+export const slotKey = z.string().regex(SLOT_KEY, { error: "Pick times from the grid." });
+
+/** The candidate's answer to "Ask for times": one or more slots, each once. Times only, never a calendar. */
+export const offerTimesInput = z.object({
+  messageId: z.uuid(),
+  slots: z
+    .array(slotKey)
+    .min(1, { error: "Pick at least one time." })
+    .max(SLOTS_MAX, { error: `Pick up to ${SLOTS_MAX} times.` })
+    .refine((s) => new Set(s).size === s.length, { error: "Pick each time once." }),
+});
+
+/** Booking one of the times the candidate offered, with the round, its length and who interviews (org_members ids). */
+export const scheduleInput = z.object({
+  applicationId: z.uuid(),
+  slotId: z.uuid({ error: "Pick one of the times the candidate offered." }),
+  round: z.enum(INTERVIEW_ROUNDS).default("team"),
+  minutes: z.literal(INTERVIEW_MINUTES, { error: "Pick how long it runs." }),
+  interviewers: z
+    .array(z.uuid())
+    .min(1, { error: "Pick at least one interviewer." })
+    .max(INTERVIEWERS_MAX, { error: `Pick up to ${INTERVIEWERS_MAX} interviewers.` })
+    .refine((s) => new Set(s).size === s.length, { error: "Pick each interviewer once." }),
+});
+export type ScheduleInput = z.input<typeof scheduleInput>;
+
+export const interviewIdInput = z.object({ interviewId: z.uuid() });
+
+/**
+ * An Indian mobile number, as people type it (spaces, dashes, +91 or a leading 0), kept as "+91 98765 43210". Only ever
+ * typed by the candidate when they choose to share it for an interview.
+ */
+export const indianMobile = z
+  .string()
+  .trim()
+  .max(20, { error: "Type a 10-digit Indian mobile number." })
+  .transform((v) => v.replace(/[\s().-]/g, ""))
+  .transform((v) => v.replace(/^(\+91|0091|91(?=\d{10}$)|0(?=\d{10}$))/, ""))
+  .pipe(z.string().regex(/^[6-9]\d{9}$/, { error: "Type a 10-digit Indian mobile number." }))
+  .transform((v) => `+91 ${v.slice(0, 5)} ${v.slice(5)}`);
+
+/** The candidate's answer to an interview: decline, or accept and choose whether to share a phone with its team. */
+export const respondInput = z.union([
+  z.object({ interviewId: z.uuid(), answer: z.literal("decline") }),
+  z.object({ interviewId: z.uuid(), answer: z.literal("accept"), sharePhone: z.literal(false) }),
+  z.object({ interviewId: z.uuid(), answer: z.literal("accept"), sharePhone: z.literal(true), phone: indianMobile }),
+]);
+export type RespondInput = z.input<typeof respondInput>;
+
+/** Feedback from an interviewer, in their own words. Never written by the model. */
+export const feedbackInput = z.object({
+  interviewId: z.uuid(),
+  recommendation: z.enum(INTERVIEW_RECOMMENDATIONS, { error: "Pick what you recommend." }),
+  text: z
+    .string()
+    .trim()
+    .min(FEEDBACK_MIN, { error: `Write at least ${FEEDBACK_MIN} characters about the interview.` })
+    .max(FEEDBACK_MAX, { error: `Keep feedback under ${FEEDBACK_MAX.toLocaleString("en-IN")} characters.` }),
+});
+export type FeedbackInput = z.input<typeof feedbackInput>;

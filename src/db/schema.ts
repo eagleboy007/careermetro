@@ -25,7 +25,14 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
-import { APPLICATION_EVENT_KINDS, APPLICATION_STAGES, CAN_JOIN, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+import {
+  APPLICATION_EVENT_KINDS,
+  APPLICATION_STAGES,
+  CAN_JOIN,
+  INTERVIEW_RECOMMENDATIONS,
+  INTERVIEW_ROUNDS,
+  INTERVIEW_STATUSES,
+  JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
@@ -772,7 +779,8 @@ export const applicationEventKind = pgEnum("application_event_kind", APPLICATION
  * One application to a job posted on CareerMetro (dev/corporate-plan.md build step 4). Made only with its own consent
  * row naming the company. The company sees the person's public profile and Match to this job, worked out from the
  * resume sent (`resume_id`) and accepted proofs; never resume lines, email, phone, pay or notice period (only Can
- * join). One application per person and job. `phone_shared` stays empty until interviews (step 6).
+ * join). One application per person and job. `phone_shared` holds a phone only once the person chooses to share it for an
+ * accepted interview (step 6).
  */
 export const applications = pgTable(
   "applications",
@@ -795,7 +803,7 @@ export const applications = pgTable(
     canJoin: canJoin("can_join").notNull(),
     /** The resume sent. Its profile is read when the company looks, so the person's own corrections show. */
     resumeId: uuid("resume_id").references(() => resumes.id, { onDelete: "set null" }),
-    /** Encrypted, empty until the person shares it at an accepted interview (step 6). */
+    /** Encrypted (src/lib/corporate/phone.ts); empty until the person chooses to share it when accepting an interview. */
     phoneShared: text("phone_shared"),
     withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
     /** Set by Not this time or withdrawing; cleared when the company opens it again. */
@@ -838,6 +846,109 @@ export const applicationEvents = pgTable(
     index("application_events_by_user").on(t.byUserId),
     check("application_events_note_length", sql`char_length(${t.note}) <= 500`),
     check("application_events_not_this_time_note", sql`${t.kind} <> 'moved' or ${t.stage} <> 'not_this_time' or coalesce(char_length(${t.note}), 0) >= 10`),
+  ],
+);
+
+/* Interviews (dev/corporate-plan.md build step 6) -------------------------------------------------------------------- */
+
+export const interviewRound = pgEnum("interview_round", INTERVIEW_ROUNDS);
+export const interviewStatus = pgEnum("interview_status", INTERVIEW_STATUSES);
+export const interviewRecommendation = pgEnum("interview_recommendation", INTERVIEW_RECOMMENDATIONS);
+
+/**
+ * "Ask for times": the times a candidate offered for one application, in answer to one `ask_times` message. Times
+ * only: never a calendar, busy times or anything about other companies. Only these reach the company.
+ */
+export const candidateSlots = pgTable(
+  "candidate_slots",
+  {
+    id: id(),
+    applicationId: uuid("application_id")
+      .notNull()
+      .references(() => applications.id, { onDelete: "cascade" }),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    minutes: integer("minutes").notNull().default(60),
+    /** The "Ask for times" message this answers. */
+    askMessageId: uuid("ask_message_id").references(() => messages.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("candidate_slots_application").on(t.applicationId, t.startsAt),
+    uniqueIndex("candidate_slots_ask_start").on(t.askMessageId, t.startsAt),
+    check("candidate_slots_minutes", sql`${t.minutes} between 15 and 240`),
+  ],
+);
+
+/**
+ * An interview the job team booked on one of the candidate's offered times. The candidate accepts or declines it on
+ * Arrivals; accepting, they may choose to share a phone with the interview's team (`phone_shared`; the number itself
+ * sits encrypted on the application). `done` is read from the clock.
+ */
+export const interviews = pgTable(
+  "interviews",
+  {
+    id: id(),
+    applicationId: uuid("application_id")
+      .notNull()
+      .references(() => applications.id, { onDelete: "cascade" }),
+    round: interviewRound("round").notNull().default("team"),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    minutes: integer("minutes").notNull(),
+    status: interviewStatus("status").notNull().default("proposed"),
+    /** The offered time it was booked on. */
+    slotId: uuid("slot_id").references(() => candidateSlots.id, { onDelete: "set null" }),
+    /** Who booked it. The interview is the company's, so it stays when that account goes. */
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    /** The candidate chose to share their phone with this interview's team when accepting. */
+    phoneShared: boolean("phone_shared").notNull().default(false),
+    respondedAt: timestamp("responded_at", { withTimezone: true }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("interviews_application").on(t.applicationId, t.startsAt),
+    index("interviews_starts").on(t.startsAt),
+    index("interviews_slot").on(t.slotId),
+    index("interviews_created_by").on(t.createdBy),
+    check("interviews_minutes", sql`${t.minutes} between 15 and 240`),
+  ],
+);
+
+/** Who interviews. Being on a live interview is what lets an Interviewer see that candidate, read only. */
+export const interviewInterviewers = pgTable(
+  "interview_interviewers",
+  {
+    interviewId: uuid("interview_id")
+      .notNull()
+      .references(() => interviews.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.interviewId, t.userId] }), index("interview_interviewers_user").on(t.userId)],
+);
+
+/**
+ * An interviewer's feedback, written by them (never by the model). Seen by the job team, never by the candidate. It is
+ * the company's record, so it stays when the interviewer's account goes (interviewer set to null).
+ */
+export const interviewFeedback = pgTable(
+  "interview_feedback",
+  {
+    id: id(),
+    interviewId: uuid("interview_id")
+      .notNull()
+      .references(() => interviews.id, { onDelete: "cascade" }),
+    interviewerId: uuid("interviewer_id").references(() => users.id, { onDelete: "set null" }),
+    text: text("text").notNull(),
+    recommendation: interviewRecommendation("recommendation").notNull(),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("interview_feedback_interviewer").on(t.interviewId, t.interviewerId),
+    index("interview_feedback_by").on(t.interviewerId),
+    check("interview_feedback_text_length", sql`char_length(${t.text}) between 1 and 2000`),
   ],
 );
 

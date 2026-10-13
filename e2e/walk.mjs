@@ -1069,7 +1069,7 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     }
     await drawer.getByRole("tab", { name: "Match to this job" }).focus();
     await q.keyboard.press("ArrowRight");
-    if ((await drawer.getByRole("tab", { name: "Activity" }).getAttribute("aria-selected")) !== "true") throw new Error("ArrowRight did not move to the next tab");
+    if ((await drawer.getByRole("tab", { name: "Interviews" }).getAttribute("aria-selected")) !== "true") throw new Error("ArrowRight did not move to the next tab");
     await q.keyboard.press("Escape");
     await drawer.waitFor({ state: "hidden" });
     await q.waitForFunction(() => document.activeElement?.textContent?.startsWith("PSPriya Sharma") || document.activeElement?.textContent?.startsWith("Priya Sharma"), null, { timeout: 5000 });
@@ -1226,7 +1226,7 @@ await step("company chats: the job team writes from the board, the candidate rep
     await q.setViewportSize({ width: 1280, height: 900 });
     await q.emulateMedia({ colorScheme: "light" });
 
-    // An Interviewer on the job: no chats to read yet (assignments come with interviews) and nowhere to write.
+    // An Interviewer on the job: no chats to read until they are on the candidate's interview, and nowhere to write.
     iv = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
     const ivp = await iv.newPage();
     ivp.on("pageerror", (e) => problems.push(`pageerror@${ivp.url()}: ${e.message.slice(0, 200)}`));
@@ -1240,7 +1240,7 @@ await step("company chats: the job team writes from the board, the candidate rep
       values (${org.id}, ${ivUser.id}, 'interviewer', ${org.email_domain}, now(), now() + interval '180 days')`;
     await sql`insert into job_team (job_id, user_id, role) values (${job.id}, ${ivUser.id}, 'interviewer')`;
     await ivp.goto(BASE + "/corporate/messages");
-    await ivp.getByText(/Interviewers read the chats of candidates assigned to them/).waitFor({ timeout: 10000 });
+    await ivp.getByText(/Interviewers read the chats of candidates whose interviews they are on/).waitFor({ timeout: 10000 });
     await ivp.goto(BASE + `/corporate/messages?application=${appId}`);
     await ivp.getByRole("alert").getByText("That chat isn't available.").waitFor({ timeout: 10000 });
     if (await ivp.getByRole("textbox", { name: /Message|Question/ }).count()) throw new Error("an Interviewer was offered a box to write in");
@@ -1258,6 +1258,187 @@ await step("company chats: the job team writes from the board, the candidate rep
   } finally {
     await iv?.close();
     await sql.end();
+    await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
+  }
+});
+// Interviews (dev/corporate-plan.md, build step 6): the admin opens Priya again and asks for times from the drawer; she
+// offers one in the Inbox; the admin books it with Sana (an Interviewer on the job); Priya accepts on Arrivals and
+// chooses to share a phone; it shows as Next up and on the 10-day strip. Sana now sees Priya read only (board, drawer
+// with the phone, chat with nowhere to write) and leaves feedback; the job team reads it. Then Not this time again,
+// which cancels the interview still ahead.
+await step("interviews: ask for times, the candidate offers one, book it, accept with a phone, the interviewer's feedback", async () => {
+  if (!q || !postedTitle) throw new Error("no application from the steps before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check the interview");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  const PHONE = "98765 43210";
+  const FEEDBACK = "Walked through a phishing alert end to end; clear on Splunk searches, thin on cloud logs.";
+  const NOTE = "We went with someone with more cloud log work. Apply again once that is proved.";
+  let iv = null;
+  try {
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("link", { name: "Interviews", exact: true }).waitFor({ timeout: 10000 });
+    await q.getByRole("link", { name: new RegExp(`^Board for ${title}`) }).click();
+    await q.waitForURL(/\/corporate\/jobs\/board\?id=/);
+    const boardUrl = q.url();
+    const lane = (name) => q.locator("section", { has: q.getByRole("heading", { name, exact: true, level: 2 }) });
+    await lane("Not this time").getByRole("button", { name: /^Priya Sharma/ }).click();
+    const drawer = q.getByRole("dialog", { name: "Priya Sharma" });
+    await drawer.getByLabel("Open again in").selectOption("shortlisted");
+    await drawer.getByRole("button", { name: "Move", exact: true }).click();
+    await q.getByRole("status").getByText(/Moved Priya Sharma to Shortlisted/).waitFor({ timeout: 10000 });
+
+    // Ask for times from the drawer's Interviews tab.
+    await lane("Shortlisted").getByRole("button", { name: /^Priya Sharma/ }).click();
+    await drawer.getByRole("tab", { name: "Interviews" }).click();
+    await drawer.getByRole("button", { name: "Ask for times" }).click();
+    await drawer.getByRole("status").getByText(/Asked for times in Messages/).waitFor({ timeout: 10000 });
+    await drawer.getByText(/Waiting for the candidate to pick some/).waitFor({ timeout: 10000 });
+    await a11yOn(q, "corporate-drawer-interviews");
+    await drawer.getByRole("button", { name: "Close" }).click();
+
+    // The candidate offers one time in the Inbox; only that time reaches the company.
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/inbox");
+    await p.getByRole("button", { name: /Example Labs/ }).first().click();
+    const thread = p.getByRole("region", { name: "Chat with Example Labs" });
+    await thread.getByText("Asking for interview times").waitFor({ timeout: 10000 });
+    await thread.getByRole("button", { name: "Offer times" }).click();
+    const firstSlot = thread.locator('[aria-label="Pick times"] button:not([disabled])').first();
+    const slotName = await firstSlot.getAttribute("aria-label");
+    await firstSlot.click();
+    await thread.getByRole("button", { name: "Send 1 time" }).click();
+    await thread.getByText(/You offered 1 time:/).waitFor({ timeout: 10000 });
+    await shot("inbox-offered-times");
+    await a11y("inbox-offered-times");
+
+    // The admin books it with Sana on the scheduler.
+    const [app] = await sql`select a.id from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
+    const ivEmail = `iv-${testEmail}`;
+    await q.goto(BASE + `/corporate/interviews?application=${app.id}`);
+    await q.getByRole("heading", { name: "Schedule Priya Sharma", level: 1 }).waitFor({ timeout: 10000 });
+    const offeredCell = q.getByRole("radio", { name: new RegExp(`^${slotName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`) });
+    await offeredCell.click();
+    await q.getByRole("radio", { name: "30 min" }).check();
+    await q.getByRole("checkbox", { name: /Sana Qureshi/ }).check();
+    await q.getByRole("button", { name: "Book interview" }).click();
+    await q.getByRole("status").getByText(/^Booked /).waitFor({ timeout: 10000 });
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-scheduler.png`, fullPage: true });
+    await a11yOn(q, "corporate-scheduler");
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Schedule Priya Sharma", level: 1 }).waitFor({ timeout: 10000 });
+    const sOverflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (sOverflow > 1) throw new Error("scheduler: horizontal overflow " + sOverflow + "px");
+    await a11yOn(q, "corporate-scheduler-phone-dark");
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+
+    // The candidate accepts on Arrivals and chooses to share a phone; Next up and the 10-day strip show it.
+    await p.goto(BASE + "/arrivals");
+    await p.getByText("Next up", { exact: true }).waitFor({ timeout: 10000 });
+    await p.getByRole("list", { name: "The next 10 days" }).getByRole("listitem", { name: /1 interview$/ }).waitFor();
+    const mine = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
+    await mine.getByRole("button", { name: /^Accept the interview on / }).click();
+    const share = mine.getByRole("checkbox", { name: /^Share my phone with Example Labs's Recruiter admins, Hiring HR on this job, and this interview's interviewers/ });
+    // Focus goes to the choice to share; Not now puts it back on Accept.
+    await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "checkbox", null, { timeout: 5000 });
+    await mine.getByRole("button", { name: "Not now" }).click();
+    await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label")?.startsWith("Accept the interview on"), null, { timeout: 5000 });
+    await mine.getByRole("button", { name: /^Accept the interview on / }).click();
+    await share.check();
+    await mine.getByLabel("Mobile number").fill(PHONE);
+    await mine.getByRole("button", { name: "Accept interview" }).click();
+    await p.getByRole("status").getByText(/^Accepted: /).waitFor({ timeout: 10000 });
+    await mine.getByText(/Your phone is shared with Example Labs's Recruiter admins, Hiring HR on this job/).waitFor({ timeout: 10000 });
+    await mine.getByRole("button", { name: "Stop sharing" }).waitFor();
+    await shot("arrivals-interview");
+    await a11y("arrivals-interview");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await p.getByText("Next up", { exact: true }).waitFor({ timeout: 10000 });
+    const aOverflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (aOverflow > 1) throw new Error("arrivals with interviews: horizontal overflow " + aOverflow + "px");
+    await a11y("arrivals-interview-phone-dark");
+    await shot("arrivals-interview-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+
+    // Sana, an Interviewer on it: Priya on the board, read only, with the phone; the chat to read; her own feedback.
+    iv = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const ivp = await iv.newPage();
+    ivp.on("pageerror", (e) => problems.push(`pageerror@${ivp.url()}: ${e.message.slice(0, 200)}`));
+    ivp.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    await signInAs(ivp, "Sana Qureshi", ivEmail);
+    await ivp.goto(boardUrl);
+    await ivp.getByText(/Interviewers see only the candidates assigned to them/).waitFor({ timeout: 10000 });
+    await ivp.getByRole("button", { name: /^Priya Sharma/ }).click();
+    const ivDrawer = ivp.getByRole("dialog", { name: "Priya Sharma" });
+    await ivDrawer.getByText("Interviewers can't change stages.").waitFor({ timeout: 10000 });
+    if (await ivDrawer.getByLabel(/Move to|Open again in/).count()) throw new Error("an Interviewer was offered a move");
+    await ivDrawer.getByText("+91 98765 43210 (shared for an accepted interview)").waitFor();
+    await ivDrawer.getByRole("tab", { name: "Interviews" }).click();
+    if (await ivDrawer.getByRole("button", { name: /Ask for times|Cancel interview/ }).count()) throw new Error("an Interviewer was offered Ask for times or Cancel");
+    await ivDrawer.getByRole("button", { name: "Write feedback" }).click();
+    await ivDrawer.getByRole("radio", { name: "Move forward", exact: true }).check();
+    await ivDrawer.getByLabel(/What you saw/).fill(FEEDBACK);
+    await ivDrawer.getByRole("button", { name: "Save feedback" }).click();
+    await ivDrawer.getByRole("status").getByText(/Feedback saved/).waitFor({ timeout: 10000 });
+    await ivDrawer.getByText(FEEDBACK).waitFor({ timeout: 10000 });
+    await a11yOn(ivp, "corporate-drawer-interviewer");
+    await ivDrawer.getByRole("link", { name: "Read the chat" }).click();
+    await ivp.waitForURL(/\/corporate\/messages\?application=/, { timeout: 15000 });
+    const ivChat = ivp.getByRole("region", { name: "Priya Sharma" });
+    await ivChat.getByText(/Interviewers can read this chat/).waitFor({ timeout: 10000 });
+    if (await ivp.getByRole("textbox", { name: /Message|Question/ }).count()) throw new Error("an Interviewer was offered a box to write in");
+    if (await ivp.getByRole("button", { name: "Ask for times" }).count()) throw new Error("an Interviewer was offered Ask for times");
+    await ivp.goto(BASE + "/corporate/interviews");
+    await ivp.getByText("You are interviewing", { exact: false }).waitFor({ timeout: 10000 });
+    await a11yOn(ivp, "corporate-interviews-interviewer");
+
+    // The job team reads Sana's feedback on Corporate Interviews.
+    await q.goto(BASE + "/corporate/interviews");
+    await q.getByRole("heading", { name: "Interviews", level: 1 }).waitFor({ timeout: 10000 });
+    await q.getByText(FEEDBACK).waitFor({ timeout: 10000 });
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-interviews.png`, fullPage: true });
+    await a11yOn(q, "corporate-interviews");
+    if ((await q.locator("body").innerText()).includes("@")) throw new Error("an email address is shown on Corporate Interviews");
+
+    const [row] = await sql`select i.status, i.phone_shared, a.phone_shared as sealed, (select count(*)::int from interview_feedback f where f.interview_id = i.id) as feedback,
+      (select count(*)::int from interview_interviewers x where x.interview_id = i.id) as interviewers
+      from interviews i join applications a on a.id = i.application_id where a.id = ${app.id}`;
+    if (row?.status !== "accepted" || !row.phone_shared || row.feedback !== 1 || row.interviewers !== 1) throw new Error("interview not saved: " + JSON.stringify({ ...row, sealed: undefined }));
+    if (!String(row.sealed).startsWith("v2:") || String(row.sealed).includes("98765")) throw new Error("the phone isn't stored sealed");
+    const [slots] = await sql`select count(*)::int as n from candidate_slots where application_id = ${app.id}`;
+    if (slots.n !== 1) throw new Error("offered slots: " + slots.n);
+    // No phone, feedback or name in an address the walk visited.
+    for (const u of [p.url(), q.url(), ivp.url()]) if (/98765|Priya|Sana|phishing/i.test(decodeURIComponent(u))) throw new Error("personal data in a URL: " + u);
+
+    // Not this time again: the interview still ahead is cancelled, and the phone is no longer shown.
+    await q.goto(boardUrl);
+    await lane("Shortlisted").getByRole("button", { name: /^Priya Sharma/ }).click();
+    await drawer.getByRole("button", { name: "Not this time" }).click();
+    await drawer.getByLabel(/Note for Priya/).fill(NOTE);
+    await drawer.getByRole("button", { name: "Send Not this time" }).click();
+    await q.getByRole("status").getByText(/Not this time, with your note/).waitFor({ timeout: 10000 });
+    const [after] = await sql`select status from interviews where application_id = ${app.id}`;
+    if (after?.status !== "cancelled") throw new Error("Not this time left the interview " + after?.status);
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-interviews.png`, fullPage: true }).catch(() => {});
+    await p.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-interviews-candidate.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await iv?.close();
+    await sql.end();
+    await q.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await q.emulateMedia({ colorScheme: "light" }).catch(() => {});
     await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
     await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
   }
@@ -1299,7 +1480,10 @@ await step("corporate applications: withdraw after Not this time; the company se
     if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");
     if (!app.withdrawn_at || !app.consent_withdrawn) throw new Error("withdrawal not saved on the application and its consent");
     const steps = (await sql`select kind, stage, note from application_events where application_id = ${app.id} order by created_at`).map((e) => `${e.kind}:${e.stage}${e.note ? ":note" : ""}`);
-    if (steps.join() !== "applied:applied,moved:shortlisted,moved:not_this_time:note,withdrawn:not_this_time") throw new Error("events: " + steps.join());
+    if (steps.join() !== "applied:applied,moved:shortlisted,moved:not_this_time:note,moved:shortlisted,moved:not_this_time:note,withdrawn:not_this_time") throw new Error("events: " + steps.join());
+    // Withdrawing erases a phone shared for an interview (build step 6).
+    const [sealed] = await sql`select phone_shared from applications where id = ${app.id}`;
+    if (sealed.phone_shared !== null) throw new Error("the shared phone outlived the withdrawal");
     const [viewed] = await sql`select count(*)::int as n from audit_logs where target = ${`application:${app.id}`} and action = 'candidate_viewed'`;
     if (viewed.n < 1) throw new Error("no audit line for opening the candidate");
   } catch (e) {

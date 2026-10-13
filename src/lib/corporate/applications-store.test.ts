@@ -189,7 +189,9 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     if (!opened.ok) return;
     expect(opened.candidate.profile.experience).toEqual([{ title: "IT support analyst", employer: "Konkan Co-operative Bank", dates: expect.any(String) }]);
     const text = JSON.stringify([b, opened]);
-    for (const hidden of [HIGHLIGHT, `${run}-board-cand`, "@example.test", "goal", "notice", "phone"]) expect(text).not.toContain(hidden);
+    for (const hidden of [HIGHLIGHT, `${run}-board-cand`, "@example.test", "goal", "notice"]) expect(text).not.toContain(hidden);
+    // No phone: only the empty field a phone shared for an accepted interview would fill (build step 6).
+    expect(text.replace(/"phone":null/g, "")).not.toContain("phone");
     // Each opening leaves one audit line: who and which application, nothing of the person.
     const audit = await db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.target, `application:${r.applicationId}`));
     expect(audit).toHaveLength(1);
@@ -369,8 +371,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     if (!r.ok) throw new Error(r.error);
     await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at(1));
     const data = await exportAccountData(me, db!, clock);
-    expect(EXPORT_VERSION).toBe(8);
-    expect(data!.exportVersion).toBe(8);
+    expect(EXPORT_VERSION).toBe(9);
+    expect(data!.exportVersion).toBe(9);
     expect(data!.applications).toHaveLength(1);
     expect(data!.applications[0]).toMatchObject({ company: "Example Labs", job: "SOC Analyst L1", stage: "not_this_time", canJoin: "Within 30 days" });
     expect(data!.applications[0].events.map((e) => [e.kind, e.stage, e.note])).toEqual([

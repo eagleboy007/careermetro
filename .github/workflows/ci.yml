@@ -75,6 +75,8 @@ jobs:
           VERCEL_ENV: preview
           ANTHROPIC_API_KEY: sk-e2e
           ANTHROPIC_BASE_URL: http://127.0.0.1:4011
+          # next start runs as production, where a shared phone needs its own key (corporate build step 6). Test-only value.
+          PHONE_KEY: e2e-only-phone-key
           BASE: http://localhost:3211
         run: |
           node e2e/mock-ai.mjs > e2e-mock-ai.log 2>&1 &

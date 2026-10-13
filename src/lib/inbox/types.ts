@@ -12,6 +12,24 @@ export type InboxMessage = {
   type?: "text" | "times" | "question";
   text: string;
   at?: string;
+  /** A real "Ask for times" card (corporate build step 6). The example Inbox has none and uses its own grid. */
+  ask?: InboxAsk;
+};
+
+/**
+ * "Ask for times" as the candidate sees it: the days asked, the picker's times, the times too soon to offer now, and
+ * what they offered once they have. Every label is worked out on the server, in India time.
+ */
+export type InboxAsk = {
+  messageId: string;
+  days: { day: string; label: [string, string] }[];
+  times: string[];
+  /** Slot keys ("2026-10-14T11:00") that can't be offered now: past, or less than two hours ahead. */
+  unavailable: string[];
+  /** The times offered in answer, as labels, or null while unanswered. */
+  offered: string[] | null;
+  /** The candidate can still answer. */
+  open: boolean;
 };
 
 export type InboxThread = {
@@ -76,4 +94,6 @@ export type InboxActions = {
   remove: (conversationId: string) => Promise<string | null>;
   report: (input: { conversationId: string; target: "person" | "chat"; reason: ReportReason; note?: string; block: boolean }) => Promise<string | null>;
   read: (conversationId: string) => Promise<void>;
+  /** Answers "Ask for times" with the picked slot keys (corporate build step 6). */
+  offerTimes?: (messageId: string, slots: string[]) => Promise<string | null>;
 };

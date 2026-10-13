@@ -129,3 +129,41 @@ export const APPLY_SHARES = [
   "When you can join",
 ] as const;
 export const APPLY_NEVER = "Never shared: your email, phone, pay, notice period, resume lines, goals, path, streak or other applications.";
+
+/* Interviews (dev/corporate-plan.md build step 6; handoff 12b, 12e and section 9) ---------------------------------- */
+
+/** The rounds a company books. Level 2 team for now; the L1 AI round waits for the AI interviewer (FR-33). */
+export const INTERVIEW_ROUNDS = ["team"] as const;
+export const INTERVIEW_ROUND_LABELS: Record<(typeof INTERVIEW_ROUNDS)[number], string> = { team: "Level 2 team" };
+/** An interview's state. `done` is read from the clock: an accepted interview whose time has passed. */
+export const INTERVIEW_STATUSES = ["proposed", "accepted", "declined", "done", "cancelled"] as const;
+export const INTERVIEW_STATUS_LABELS: Record<(typeof INTERVIEW_STATUSES)[number], string> = {
+  proposed: "Waiting for an answer",
+  accepted: "Accepted",
+  declined: "Declined",
+  done: "Done",
+  cancelled: "Cancelled",
+};
+/** What an interviewer recommends with their feedback. People write feedback; the model never does. */
+export const INTERVIEW_RECOMMENDATIONS = ["yes", "not_sure", "no"] as const;
+export const INTERVIEW_RECOMMENDATION_LABELS: Record<(typeof INTERVIEW_RECOMMENDATIONS)[number], string> = {
+  yes: "Move forward",
+  not_sure: "Not sure",
+  no: "Don't move forward",
+};
+/** How long a booked interview runs, in minutes. Each offered slot is an hour, so all of these fit in one. */
+export const INTERVIEW_MINUTES = [30, 45, 60] as const;
+/** The start times on the slot picker, India time. Each slot is an hour long. */
+export const SLOT_TIMES = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"] as const;
+export const SLOT_MINUTES = 60;
+/** "Ask for times" offers this many weekdays, starting the day after the ask. */
+export const SLOT_DAYS = 5;
+/** The most times a candidate offers in one answer. */
+export const SLOTS_MAX = 12;
+/** A slot can be offered or booked only this many hours ahead. */
+export const SLOT_LEAD_HOURS = 2;
+/** Interviewers on one interview. */
+export const INTERVIEWERS_MAX = 5;
+/** Feedback length. */
+export const FEEDBACK_MIN = 20;
+export const FEEDBACK_MAX = 2000;

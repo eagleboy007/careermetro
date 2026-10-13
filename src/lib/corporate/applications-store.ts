@@ -1,8 +1,10 @@
 import "server-only";
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull, ne, or, gte } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applicationEvents, applications, auditLogs, consents, gapProofs, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
+import { applicationEvents, applications, auditLogs, candidateSlots, consents, conversations, gapProofs, interviews, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
+import { assignedApplications, assignedSubquery, cancelUpcoming, companyInterviewsOf, myInterviewsOf, offeredState, phoneAudience } from "./interview-reads";
+import { decryptPhone } from "./phone";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
@@ -12,7 +14,7 @@ import { applicationIdInput, applyInput, moveInput } from "@/lib/schemas/corpora
 import { CAN_JOIN_LABELS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { jobMatch, publicProfile } from "./match";
-import { acceptsApplications, canMoveApplications, canSeeBoard, moveRefusal, type MoveRefusal } from "./rules";
+import { acceptsApplications, canMoveApplications, canSeeBoard, moveRefusal, phoneVisible, scheduleRefusal, type MoveRefusal } from "./rules";
 import { activeMembership } from "./store";
 import type {
   ApplicationEventKind,
@@ -37,7 +39,7 @@ import type {
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
-export type ApplicationDeps = { db?: Db; now?: Date };
+export type ApplicationDeps = { db?: Db; now?: Date; env?: Record<string, string | undefined> };
 
 const DAY = 86_400_000;
 /** A company's access to an application ends this long after it closes (plan, Privacy rules). */
@@ -198,7 +200,9 @@ export async function withdrawApplication(userId: string, raw: unknown, deps: Ap
       .for("update");
     if (!app) return fail("not_found");
     if (app.withdrawnAt) return { ok: true };
-    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now }).where(eq(applications.id, app.id));
+    // Withdrawing stops all sharing: interviews still ahead are cancelled and a phone shared for one is erased.
+    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now, phoneShared: null }).where(eq(applications.id, app.id));
+    await cancelUpcoming(tx, app.id, now);
     await tx.update(consents).set({ withdrawnAt: now }).where(and(eq(consents.id, app.consentId), isNull(consents.withdrawnAt)));
     await event(tx, app.id, "withdrawn", app.stage, userId, now);
     return { ok: true };
@@ -208,7 +212,7 @@ export async function withdrawApplication(userId: string, raw: unknown, deps: Ap
 }
 
 /** The person's own applications for Arrivals, newest first, each with every event. */
-export async function myApplications(userId: string, deps: { db?: Db } = {}): Promise<MyApplicationView[]> {
+export async function myApplications(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<MyApplicationView[]> {
   const db = deps.db ?? getDb();
   const rows = await db
     .select({
@@ -220,16 +224,15 @@ export async function myApplications(userId: string, deps: { db?: Db } = {}): Pr
       canJoin: applications.canJoin,
       createdAt: applications.createdAt,
       withdrawnAt: applications.withdrawnAt,
+      phoneShared: applications.phoneShared,
     })
     .from(applications)
     .innerJoin(jobs, eq(jobs.id, applications.jobId))
     .innerJoin(organizations, eq(organizations.id, applications.orgId))
     .where(eq(applications.userId, userId))
     .orderBy(desc(applications.createdAt));
-  const events = await eventsOf(
-    rows.map((r) => r.id),
-    db,
-  );
+  const ids = rows.map((r) => r.id);
+  const [events, booked] = await Promise.all([eventsOf(ids, db), myInterviewsOf(ids, db, deps.now ?? new Date())]);
   return rows.map((r) => ({
     id: r.id,
     title: r.title,
@@ -240,6 +243,8 @@ export async function myApplications(userId: string, deps: { db?: Db } = {}): Pr
     appliedOn: isoDay(r.createdAt),
     withdrawn: r.withdrawnAt !== null,
     events: events.get(r.id) ?? [],
+    interviews: booked.get(r.id) ?? [],
+    phoneShared: r.phoneShared !== null,
   }));
 }
 
@@ -282,8 +287,8 @@ async function jobAccess(userId: string, jobId: string, db: Db | Tx): Promise<Ap
 /**
  * A job's board: its open and closed applications in six lanes, each with the candidate's name, headline, Can join and
  * Match to this job. Never the person's own application, withdrawn ones (only their count), deleted accounts, or
- * applications closed more than 180 days ago. Interviewers see only candidates assigned to them; assignments come
- * with interviews (build step 6), so until then they see none.
+ * applications closed more than 180 days ago. Interviewers (and anyone else who doesn't move the job's candidates) see
+ * only the candidates whose proposed, accepted or done interviews they are on, read only.
  */
 export async function jobBoard(userId: string, jobId: string, deps: ApplicationDeps = {}): Promise<ApplicationResult<{ board: JobBoardView }>> {
   const db = deps.db ?? getDb();
@@ -299,9 +304,7 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
   const access = await jobAccess(userId, jobId, db);
   if (!access.ok) return access;
   const assignedOnly = !access.canMove;
-  const rows = assignedOnly
-    ? []
-    : await db
+  const rows = await db
         .select({
           id: applications.id,
           userId: applications.userId,
@@ -315,7 +318,16 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
         })
         .from(applications)
         .innerJoin(users, eq(users.id, applications.userId))
-        .where(and(eq(applications.jobId, jobId), ne(applications.userId, userId), isNull(applications.withdrawnAt), isNull(users.deletionRequestedAt)))
+        .where(
+          and(
+            eq(applications.jobId, jobId),
+            ne(applications.userId, userId),
+            isNull(applications.withdrawnAt),
+            isNull(users.deletionRequestedAt),
+            // Interviewers see only the candidates whose live interviews they are on (build step 6).
+            assignedOnly ? inArray(applications.id, assignedSubquery(userId, db, now)) : undefined,
+          ),
+        )
         .orderBy(asc(applications.createdAt));
   const seen = rows.filter((r) => companyMaySee(r, now));
   const [profileOf, proved, [withdrawn]] = await Promise.all([
@@ -382,6 +394,8 @@ export async function visibleApplication(userId: string, applicationId: string, 
       jobTitle: jobs.title,
       orgId: applications.orgId,
       orgStatus: organizations.reviewStatus,
+      // Sealed; opened only for the interview's team (openCandidate). Never sent to a page as it is.
+      phoneSealed: applications.phoneShared,
     })
     .from(applications)
     .innerJoin(jobs, eq(jobs.id, applications.jobId))
@@ -393,8 +407,8 @@ export async function visibleApplication(userId: string, applicationId: string, 
   if (!app || app.userId === userId || app.deleted || !companyMaySee(app, now)) return fail("not_found");
   const access = await jobAccess(userId, app.jobId, db);
   if (!access.ok) return fail(access.error);
-  // Interviewers see only candidates assigned to them; none are until interviews exist (build step 6).
-  if (!access.canMove) return fail("not_found");
+  // Interviewers see only candidates whose live interview they are on (build step 6), read live like the role.
+  if (!access.canMove && !(await assignedApplications(userId, [app.id], db, now)).has(app.id)) return fail("not_found");
   return { ok: true as const, app, access };
 }
 
@@ -412,12 +426,21 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   const { app, access } = found;
   // A withdrawn application gives nothing away: the company sees only a count of them.
   if (app.withdrawnAt) return fail("not_found");
-  const [profileOf, proved, events] = await Promise.all([
+  const viewer = { userId, canMove: access.canMove };
+  const [profileOf, proved, events, booked, audience, [chat]] = await Promise.all([
     latestProfiles(app.resumeId ? [app.resumeId] : [], db),
     provedByUser([app.userId], db, now),
     eventsOf([app.id], db),
+    companyInterviewsOf([app.id], viewer, db, now),
+    phoneAudience(app.id, viewer, db),
+    db.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.id)),
   ]);
+  const offered = await offeredState(app.id, chat?.id ?? null, db, now);
   const profile = app.resumeId ? (profileOf.get(app.resumeId) ?? null) : null;
+  // The phone the candidate chose to share at an accepted interview: for that interview's team, while the application is open.
+  const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt });
+  const canSchedule =
+    scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } }) === null;
   await db.insert(auditLogs).values({ actor: `member:${access.me.memberId}`, action: "candidate_viewed", target: `application:${app.id}`, createdAt: now });
   logEvent("info", "candidate_viewed");
   return {
@@ -430,6 +453,12 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
       profile: publicProfile(displayName(app.name), profile, now),
       match: jobMatch(app.requirements, profile, proved.get(app.userId) ?? new Set(), now),
       events: events.get(app.id) ?? [],
+      interviews: {
+        interviews: booked.get(app.id) ?? [],
+        phone: showPhone ? decryptPhone(app.phoneSealed, app.id, deps.env) : null,
+        canSchedule,
+        ...offered,
+      },
     },
   };
 }
@@ -456,9 +485,15 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
     const closing = to === "not_this_time";
     await tx
       .update(applications)
-      .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null })
+      // Not this time also erases a phone shared for an interview: the application is closed, so no one needs it.
+      .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null, ...(closing ? { phoneShared: null } : {}) })
       .where(eq(applications.id, app.id));
     await event(tx, app.id, "moved", to, userId, now, closing ? note : null);
+    // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.
+    if (closing) {
+      await cancelUpcoming(tx, app.id, now);
+      await tx.update(interviews).set({ phoneShared: false }).where(eq(interviews.applicationId, app.id));
+    }
     return { ok: true };
   });
   logEvent("info", result.ok ? "application_moved" : "application_move_refused", result.ok ? { to } : { to, reason: result.error });
@@ -466,7 +501,7 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
 }
 
 /** The person's applications and their events, for "Download your data": which companies have them, and every step. */
-export async function exportApplications(userId: string, db: Db = getDb()) {
+export async function exportApplications(userId: string, db: Db = getDb(), env: Record<string, string | undefined> = process.env) {
   const rows = await db
     .select({
       id: applications.id,
@@ -479,6 +514,7 @@ export async function exportApplications(userId: string, db: Db = getDb()) {
       closedAt: applications.closedAt,
       consentGivenAt: consents.givenAt,
       consentWithdrawnAt: consents.withdrawnAt,
+      phoneSealed: applications.phoneShared,
     })
     .from(applications)
     .innerJoin(jobs, eq(jobs.id, applications.jobId))
@@ -494,9 +530,39 @@ export async function exportApplications(userId: string, db: Db = getDb()) {
         .where(inArray(applicationEvents.applicationId, ids))
         .orderBy(asc(applicationEvents.createdAt))
     : [];
-  return rows.map(({ id, ...r }) => ({
+  // Interviews booked with you and the times you offered (build step 6). Interviewers' feedback is the company's
+  // assessment and never shown to the candidate, so it isn't here; who at the company booked them isn't either.
+  const [booked, offered] = ids.length
+    ? await Promise.all([
+        db
+          .select({
+            applicationId: interviews.applicationId,
+            round: interviews.round,
+            startsAt: interviews.startsAt,
+            minutes: interviews.minutes,
+            status: interviews.status,
+            phoneSharedWithTeam: interviews.phoneShared,
+            respondedAt: interviews.respondedAt,
+            cancelledAt: interviews.cancelledAt,
+            createdAt: interviews.createdAt,
+          })
+          .from(interviews)
+          .where(inArray(interviews.applicationId, ids))
+          .orderBy(asc(interviews.startsAt)),
+        db
+          .select({ applicationId: candidateSlots.applicationId, startsAt: candidateSlots.startsAt, minutes: candidateSlots.minutes, offeredAt: candidateSlots.createdAt })
+          .from(candidateSlots)
+          .where(inArray(candidateSlots.applicationId, ids))
+          .orderBy(asc(candidateSlots.startsAt)),
+      ])
+    : [[], []];
+  return rows.map(({ id, phoneSealed, ...r }) => ({
     ...r,
     canJoin: CAN_JOIN_LABELS[r.canJoin],
+    // The phone you chose to share with this company's interview team, while it is on file.
+    phoneSharedWithCompany: decryptPhone(phoneSealed, id, env),
     events: events.filter((e) => e.applicationId === id).map((e) => ({ kind: e.kind, stage: e.stage, note: e.note, createdAt: e.createdAt })),
+    interviews: booked.filter((x) => x.applicationId === id).map((x) => ({ round: x.round, startsAt: x.startsAt, minutes: x.minutes, status: x.status, phoneSharedWithTeam: x.phoneSharedWithTeam, respondedAt: x.respondedAt, cancelledAt: x.cancelledAt, createdAt: x.createdAt })),
+    timesOffered: offered.filter((x) => x.applicationId === id).map((x) => ({ startsAt: x.startsAt, minutes: x.minutes, offeredAt: x.offeredAt })),
   }));
 }

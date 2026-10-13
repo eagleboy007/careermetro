@@ -3,7 +3,7 @@
 import { ArrowLeft, CalendarDays, ShieldAlert, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
   filterThreads,
@@ -12,6 +12,7 @@ import {
   lastMessage,
   REPORT_REASON_LABELS,
   type InboxActions,
+  type InboxAsk,
   type InboxFilter,
   type InboxMessage,
   type InboxThread,
@@ -169,8 +170,20 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
     setHeard("Sent.");
   };
 
-  const sendPicks = () => {
+  const sendPicks = (ask?: InboxAsk) => {
     if (!current) return;
+    if (ask && actions?.offerTimes) {
+      // A real "Ask for times": only the picked slot keys go to the server; the page refreshes with the answer.
+      const offerTimes = actions.offerTimes;
+      startTransition(async () => {
+        const error = await offerTimes(ask.messageId, [...picks].sort());
+        if (error) return say(error);
+        setPicking(false);
+        say(`Sent. ${current.name} sees only the times you picked.`);
+        focusNext("[data-draft]");
+      });
+      return;
+    }
     const offered = [...picks].sort();
     update(current.id, (t) => ({
       ...t,
@@ -414,7 +427,8 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                     focusNext('[aria-label="Pick times"] button:not([disabled])');
                   }}
                   onToggle={(k) => setPicks((p) => (p.includes(k) ? p.filter((x) => x !== k) : [...p, k]))}
-                  onSendPicks={sendPicks}
+                  onSendPicks={() => sendPicks(m.ask)}
+                  sending={pending}
                   onCancel={() => {
                     setPicking(false);
                     focusNext("[data-offer]");
@@ -563,6 +577,7 @@ function Message({
   onToggle,
   onSendPicks,
   onCancel,
+  sending = false,
 }: {
   thread: Thread;
   message: InboxMessage;
@@ -573,10 +588,94 @@ function Message({
   onToggle: (key: string) => void;
   onSendPicks: () => void;
   onCancel: () => void;
+  sending?: boolean;
 }) {
   if (m.by === "system") return <li className="max-w-[90%] self-center text-center text-[0.76rem] text-muted">{m.text}</li>;
   const who = m.by === "me" ? "You" : m.who ? `${m.who} · ${thread.name}` : thread.name;
   const meta = <span className="font-mono text-[0.68rem] text-muted">{`${who} · ${m.at ?? "now"}`}</span>;
+
+  if (m.type === "times" && m.ask) {
+    // A real "Ask for times" (corporate build step 6): the days asked, the picker's times, the slots too soon to offer.
+    const ask = m.ask;
+    const name = (key: string) => {
+      const d = ask.days.find((x) => x.day === key.slice(0, 10));
+      return d ? `${d.label[0]} ${d.label[1]}, ${key.slice(11)}` : key;
+    };
+    const unavailable = new Set(ask.unavailable);
+    return (
+      <li className="flex max-w-[92%] flex-col gap-2 rounded-[14px] border border-line bg-surface p-3">
+        <span className={`${label} flex items-center gap-1.5`}>
+          <CalendarDays {...ICON} />
+          Asking for interview times
+        </span>
+        <p className="text-[0.88rem]">{m.text}</p>
+        {ask.offered ? (
+          <small className="text-[0.78rem] text-muted">
+            You offered {ask.offered.length} {ask.offered.length === 1 ? "time" : "times"}: {ask.offered.join(" · ")}
+          </small>
+        ) : !ask.open ? (
+          <small className="text-[0.78rem] text-muted">This can&apos;t be answered now.</small>
+        ) : !picking ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" data-offer className={primary} onClick={onPick}>
+              Offer times
+            </button>
+            <small className="text-[0.78rem] text-muted">You choose what to share. The company sees only the times you pick.</small>
+          </div>
+        ) : (
+          <>
+            <div
+              role="group"
+              aria-label="Pick times"
+              className="grid grid-cols-[38px_repeat(5,minmax(0,1fr))] gap-1 text-[0.72rem] min-[760px]:grid-cols-[44px_repeat(5,minmax(40px,1fr))]"
+            >
+              <span />
+              {ask.days.map(({ day, label: [wd, date] }) => (
+                <span key={day} className="p-0.5 text-center font-mono leading-[1.3] text-muted">
+                  {wd}
+                  <br />
+                  {date}
+                </span>
+              ))}
+              {ask.times.map((time) => (
+                <Fragment key={time}>
+                  <span className="flex min-h-11 items-center font-mono text-muted">{time}</span>
+                  {ask.days.map(({ day }) => {
+                    const key = `${day}T${time}`;
+                    const off = unavailable.has(key);
+                    const picked = picks.includes(key);
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        disabled={off}
+                        aria-pressed={picked}
+                        aria-label={off ? `${name(key)}, too soon to offer` : name(key)}
+                        onClick={() => onToggle(key)}
+                        className="min-h-11 rounded-[7px] border border-line bg-surface text-[0.72rem] text-muted aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-surface disabled:cursor-not-allowed disabled:bg-[repeating-linear-gradient(135deg,var(--surface-2)_0_5px,transparent_5px_10px)]"
+                      >
+                        {picked ? "✓" : ""}
+                      </button>
+                    );
+                  })}
+                </Fragment>
+              ))}
+            </div>
+            <small className="text-[0.76rem] text-muted">India time. Each slot is an hour. Striped times are too soon to offer.</small>
+            <div className="flex flex-wrap items-center gap-2">
+              <button type="button" className={primary} disabled={picks.length === 0 || sending} onClick={onSendPicks}>
+                Send {picks.length} time{picks.length === 1 ? "" : "s"}
+              </button>
+              <button type="button" className={quiet} onClick={onCancel}>
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+        {meta}
+      </li>
+    );
+  }
 
   if (m.type === "times") {
     const busy = new Set<string>(calendarOn ? exampleSlots.busy : []);
@@ -665,7 +764,7 @@ function Slots({ time, ti, busy, picks, onToggle }: { time: string; ti: number; 
             aria-pressed={picked}
             aria-label={isBusy ? `${slotName(key)}, busy in your calendar` : slotName(key)}
             onClick={() => onToggle(key)}
-            className="rounded-[7px] border border-line bg-surface py-[5px] text-[0.72rem] text-muted aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-surface disabled:cursor-not-allowed disabled:bg-[repeating-linear-gradient(135deg,var(--surface-2)_0_5px,transparent_5px_10px)]"
+            className="min-h-11 rounded-[7px] border border-line bg-surface text-[0.72rem] text-muted aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-surface disabled:cursor-not-allowed disabled:bg-[repeating-linear-gradient(135deg,var(--surface-2)_0_5px,transparent_5px_10px)]"
           >
             {isBusy ? "busy" : picked ? "✓" : ""}
           </button>

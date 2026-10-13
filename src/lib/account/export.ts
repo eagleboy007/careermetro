@@ -3,6 +3,7 @@ import { asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { exportApplications } from "@/lib/corporate/applications-store";
 import { exportJobs } from "@/lib/corporate/jobs-store";
+import { exportInterviewer } from "@/lib/corporate/interviews-store";
 import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -10,7 +11,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 8;
+export const EXPORT_VERSION = 9;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -91,7 +92,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -131,6 +132,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportCorporate(userId, db),
     exportJobs(userId, db),
     exportApplications(userId, db),
+    exportInterviewer(userId, db),
   ]);
 
   return {
@@ -166,5 +168,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     jobsOwned,
     // Jobs this account applied to on CareerMetro: which companies have the application, and every step it took.
     applications: applicationRows,
+    // Interviews this account sat on for a company, and the feedback it wrote there (never the candidate's name).
+    interviewer,
   };
 }

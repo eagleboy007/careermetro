@@ -1,4 +1,4 @@
-import type { APPLICATION_EVENT_KINDS, APPLICATION_STAGES, CAN_JOIN, MATCH_WORDS, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, JOBS_BLOCKED_TEXT, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, REVIEW_DECISIONS } from "@/lib/schemas/constants";
+import type { APPLICATION_EVENT_KINDS, APPLICATION_STAGES, CAN_JOIN, INTERVIEW_RECOMMENDATIONS, INTERVIEW_ROUNDS, INTERVIEW_STATUSES, MATCH_WORDS, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, JOBS_BLOCKED_TEXT, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, REVIEW_DECISIONS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 
 /*
@@ -275,6 +275,8 @@ export type CandidateView = {
   profile: CandidateProfileView;
   match: JobMatchView;
   events: ApplicationEventView[];
+  /** Interviews, the shared phone (for that interview's team only) and whether the person can book (build step 6). */
+  interviews: CandidateInterviewsView;
 };
 
 export type BoardActions = {
@@ -293,6 +295,10 @@ export type MyApplicationView = {
   appliedOn: string;
   withdrawn: boolean;
   events: ApplicationEventView[];
+  /** Interviews the company booked, for Next up, the 10-day strip and answering (build step 6). */
+  interviews: MyInterviewView[];
+  /** A phone the person shared for an interview is on file with the company. */
+  phoneShared: boolean;
 };
 
 /** Whether the person can apply to a posted job on Departures, or already has. */
@@ -329,6 +335,8 @@ export type CompanyChatMessage = {
   text: string;
   at?: string;
   question?: boolean;
+  /** An "Ask for times" card: the times the candidate offered in answer, or null while waiting. */
+  times?: { offered: string[] | null };
 };
 
 /**
@@ -347,6 +355,8 @@ export type CompanyChatView = {
   stage: ApplicationStage;
   messages: CompanyChatMessage[];
   state: CompanyChatState;
+  /** The person may "Ask for times" now (build step 6): the job team of a verified company, the application open. */
+  canAskTimes: boolean;
 };
 
 /** Corporate Messages: the company's application chats the person may read. */
@@ -361,4 +371,117 @@ export type CompanyMessagesView = {
 export type CompanyChatActions = {
   /** Sends a message, or a question with `question`. Returns the words to show on failure, or null. */
   send: (applicationId: string, body: string, question: boolean) => Promise<string | null>;
+  /** "Ask for times" (build step 6). */
+  askTimes?: (applicationId: string) => Promise<string | null>;
+};
+
+/* Interviews (build step 6) ----------------------------------------------------------------------------------------- */
+
+export type InterviewRound = (typeof INTERVIEW_ROUNDS)[number];
+export type InterviewStatusView = (typeof INTERVIEW_STATUSES)[number];
+export type InterviewRecommendation = (typeof INTERVIEW_RECOMMENDATIONS)[number];
+
+/** One interviewer's feedback, as the company reads it. Never shown to the candidate. Written by a person. */
+export type FeedbackView = { by: string; mine: boolean; recommendation: InterviewRecommendation; text: string; on: string };
+
+/** One interview in the candidate drawer and on Corporate Interviews. Times are India time, worked out on the server. */
+export type CompanyInterviewView = {
+  id: string;
+  round: InterviewRound;
+  /** "Wed 14 Oct, 11:00". */
+  when: string;
+  /** "11:00 to 11:45". */
+  range: string;
+  minutes: number;
+  status: InterviewStatusView;
+  interviewers: string[];
+  /** The candidate chose to share a phone with this interview's team. */
+  phoneShared: boolean;
+  /** The job team reads every interviewer's feedback; an interviewer reads only their own. */
+  feedback: FeedbackView[];
+  /** The person is on this interview and can write or change their feedback now. */
+  canGiveFeedback: boolean;
+  /** The person arranges interviews and this one can still be cancelled. */
+  canCancel: boolean;
+};
+
+/** What the drawer's Interviews tab needs besides the list. */
+export type CandidateInterviewsView = {
+  interviews: CompanyInterviewView[];
+  /** The phone the candidate shared, only for that interview's team while the application is open. */
+  phone: string | null;
+  /** The person may ask for times and book (job team of a verified company, application open). */
+  canSchedule: boolean;
+  /** Offered times still ahead and not booked. */
+  offeredTimes: number;
+  /** An "Ask for times" is waiting for the candidate. */
+  waitingForTimes: boolean;
+};
+
+/** One of the candidate's offered times on the scheduler. */
+export type OfferedSlotView = { id: string; key: string; day: string; time: string; label: string; taken: boolean };
+
+/** Someone who can interview: on the job's team, or a Recruiter admin. Their own interviews show as busy (no candidate). */
+export type InterviewerOptionView = { memberId: string; name: string; role: OrgRole; busyKeys: string[]; thisWeek: number };
+
+/** The scheduler: the candidate's offered times on a week grid, the round, the length and the interviewers. */
+export type SchedulerView = {
+  applicationId: string;
+  jobId: string;
+  job: string;
+  candidate: string;
+  company: string;
+  /** Why the person can't book now, in words; null when they can. */
+  refusal: string | null;
+  days: { day: string; label: [string, string] }[];
+  times: string[];
+  slots: OfferedSlotView[];
+  team: InterviewerOptionView[];
+  /** The team's interviews in the next 7 days: when and who, never the candidate. */
+  teamWeek: { when: string; who: string }[];
+  interviews: CompanyInterviewView[];
+  waitingForTimes: boolean;
+};
+
+export type ScheduleValues = { applicationId: string; slotId: string; minutes: number; interviewers: string[] };
+
+export type SchedulerActions = {
+  schedule: (values: ScheduleValues) => Promise<string | null>;
+  askTimes: (applicationId: string) => Promise<string | null>;
+  cancel: (interviewId: string) => Promise<string | null>;
+  feedback: InterviewActions["feedback"];
+};
+
+/** One line of Corporate Interviews. */
+export type InterviewListItem = CompanyInterviewView & { applicationId: string; jobId: string; candidate: string; job: string; day: string; assigned: boolean };
+
+export type CompanyInterviewsView = { company: string; role: OrgRole; items: InterviewListItem[] };
+
+/** Drawer actions for interviews (build step 6). */
+export type InterviewActions = {
+  askTimes: (applicationId: string) => Promise<string | null>;
+  cancel: (interviewId: string) => Promise<string | null>;
+  feedback: (interviewId: string, recommendation: InterviewRecommendation, text: string) => Promise<string | null>;
+};
+
+/** One interview on the candidate's Arrivals. Never names who at the company booked it. */
+export type MyInterviewView = {
+  id: string;
+  round: InterviewRound;
+  /** India date, for the 10-day strip and Next up. */
+  day: string;
+  when: string;
+  range: string;
+  minutes: number;
+  status: InterviewStatusView;
+  canRespond: boolean;
+  phoneShared: boolean;
+};
+
+export type RespondValues = { interviewId: string; answer: "accept" | "decline"; sharePhone: boolean; phone: string };
+
+export type ArrivalsActions = {
+  withdraw: WithdrawAction;
+  respond: (values: RespondValues) => Promise<string | null>;
+  stopSharing: (applicationId: string) => Promise<string | null>;
 };

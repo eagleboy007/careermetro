@@ -587,7 +587,7 @@ export async function corporateHome(userId: string, deps: { db?: Db; now?: Date 
         .from(orgMembers)
         .innerJoin(users, eq(users.id, orgMembers.userId))
         .where(and(eq(orgMembers.orgId, me.orgId), isNull(orgMembers.removedAt)))
-        .orderBy(asc(orgMembers.createdAt)),
+        .orderBy(asc(orgMembers.createdAt), asc(orgMembers.id)),
       db
         .select({ id: orgInvites.id, kind: orgInvites.kind, role: orgInvites.role, domain: orgInvites.emailDomain, name: users.name, createdAt: orgInvites.createdAt, expiresAt: orgInvites.expiresAt })
         .from(orgInvites)

@@ -1,9 +1,12 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, blocks, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
+import { applications, blocks, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
+import { askDaysOf } from "@/lib/corporate/interview-reads";
 import { chatClosed } from "@/lib/corporate/rules";
+import { dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
+import { SLOT_TIMES } from "@/lib/schemas/constants";
 import { logEvent } from "@/lib/log";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -419,6 +422,7 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
         senderDeleted: users.deletionRequestedAt,
         kind: messages.kind,
         body: messages.body,
+        payload: messages.payload,
         createdAt: messages.createdAt,
       })
       .from(messages)
@@ -449,6 +453,15 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
           .where(inArray(conversations.id, appIds))
       : Promise.resolve([]),
   ]);
+  // "Ask for times" cards (corporate build step 6): the times already offered in answer to each.
+  const askIds = rows.filter((m) => m.kind === "ask_times").map((m) => m.id);
+  const offered = askIds.length
+    ? await db
+        .select({ askMessageId: candidateSlots.askMessageId, startsAt: candidateSlots.startsAt })
+        .from(candidateSlots)
+        .where(inArray(candidateSlots.askMessageId, askIds))
+        .orderBy(asc(candidateSlots.startsAt))
+    : [];
 
   return chats.flatMap((c): InboxThread[] => {
     const mine = rows.filter((m) => m.conversationId === c.id);
@@ -458,11 +471,21 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
       const app = apps.find((a) => a.conversationId === c.id);
       if (!app) return [];
       const verified = app.orgStatus === "verified";
+      const closed = chatClosed(app, c.status, now);
       const list: InboxMessage[] = mine.map((m) => {
         if (m.kind === "system") return { id: m.id, by: "system", text: m.body === "applied" ? `You applied on CareerMetro. ${app.company} can message you here about this application.` : "" };
         if (m.senderId === userId) return { id: m.id, by: "me", text: m.body, at: formatAt(m.createdAt, now) };
         // A message stays the company's when its writer's account goes: it is then from the company team.
         const who = m.senderId && !m.senderDeleted ? displayName(m.senderName) : COMPANY_TEAM;
+        if (m.kind === "ask_times") {
+          const days = askDaysOf(m.payload);
+          const given = offered.filter((o) => o.askMessageId === m.id).map((o) => slotLabel(o.startsAt));
+          const keys = days.flatMap((d) => SLOT_TIMES.map((t) => `${d}T${t}`));
+          const unavailable = keys.filter((k) => !slotOpen(slotStart(k) ?? new Date(0), now));
+          const open = !given.length && !closed && verified && !app.closedAt && unavailable.length < keys.length;
+          const ask = { messageId: m.id, days: days.map((day) => ({ day, label: dayParts(day) })), times: [...SLOT_TIMES], unavailable, offered: given.length ? given : null, open };
+          return { id: m.id, by: "them", who, type: "times" as const, text: m.body, at: formatAt(m.createdAt, now), ask };
+        }
         return { id: m.id, by: "them", who, ...(m.kind === "ask_question" ? { type: "question" as const } : {}), text: m.body, at: formatAt(m.createdAt, now) };
       });
       return [
@@ -474,7 +497,7 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
           verified,
           unread,
           messages: list.filter((m) => m.text),
-          state: chatClosed(app, c.status, now) ? "closed" : verified ? undefined : "paused",
+          state: closed ? "closed" : verified ? undefined : "paused",
         },
       ];
     }
