@@ -4,7 +4,11 @@ import { z } from "zod";
  * Inbox, part 1 (handoff 12b; dev/inbox-plan.md, approved by Milin 2026-10-11). Chats between two people, or between a
  * person and a company about one application. Message text is personal data: it never goes into logs or analytics.
  */
-export const CONVERSATION_KINDS = ["application", "direct"] as const;
+/**
+ * `found`: a company's message request to someone who let companies find them (pending item 19), owned by the company
+ * like an application chat: a request until the person accepts it.
+ */
+export const CONVERSATION_KINDS = ["application", "direct", "found"] as const;
 /** A direct chat with someone who isn't a connection starts as a `request`: one message, then nothing until accepted. */
 export const CONVERSATION_STATUSES = ["request", "open", "closed"] as const;
 /** Company team members and interviewers come with the employer side; interviewers can read but never send. */

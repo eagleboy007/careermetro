@@ -22,10 +22,18 @@ export const exampleSettings: SettingsData = {
       showSkills: true,
       showGaps: false,
       showCertifications: true,
+      companiesCanFind: true,
       rideReminder: "19:30",
       emailCompanyMessages: true,
       emailWeeklySummary: false,
     },
   },
   usernameLockedUntil: null,
+  discovery: {
+    views: [
+      { orgId: "00000000-0000-4000-8000-0000000000a1", company: "Example Labs", times: 2, lastOn: "11 Oct", blocked: false },
+      { orgId: "00000000-0000-4000-8000-0000000000a2", company: "Sample Systems", times: 1, lastOn: "4 Oct", blocked: true },
+    ],
+    blocked: [{ orgId: "00000000-0000-4000-8000-0000000000a2", company: "Sample Systems", since: "5 Oct" }],
+  },
 };

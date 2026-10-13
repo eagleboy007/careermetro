@@ -175,6 +175,8 @@ export const userSettings = pgTable("user_settings", {
   showSkills: boolean("show_skills").notNull().default(true),
   showGaps: boolean("show_gaps").notNull().default(false),
   showCertifications: boolean("show_certifications").notNull().default(true),
+  /** "Let companies find me" (pending item 19): off until the person turns it on. Off takes them out of searches at once. */
+  companiesCanFind: boolean("companies_can_find").notNull().default(false),
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
@@ -604,8 +606,10 @@ export const conversations = pgTable(
     startedBy: uuid("started_by").references(() => users.id, { onDelete: "set null" }),
     /** The application an application chat is about. The chat goes with it. */
     applicationId: uuid("application_id").references((): AnyPgColumn => applications.id, { onDelete: "cascade" }),
-    /** The company that owns an application chat. Null for direct chats. */
+    /** The company that owns an application or found chat. Null for direct chats. */
     orgId: uuid("org_id").references((): AnyPgColumn => organizations.id, { onDelete: "cascade" }),
+    /** A found chat's job: the open job the company searched from (pending item 19). Kept null if the job goes. */
+    jobId: uuid("job_id").references((): AnyPgColumn => jobs.id, { onDelete: "set null" }),
     createdAt: createdAt(),
     lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -613,6 +617,7 @@ export const conversations = pgTable(
     index("conversations_started_by").on(t.startedBy),
     uniqueIndex("conversations_application").on(t.applicationId),
     index("conversations_org").on(t.orgId, t.lastMessageAt),
+    index("conversations_job").on(t.jobId),
   ],
 );
 
@@ -1027,6 +1032,52 @@ export const interviewFeedback = pgTable(
     index("interview_feedback_by").on(t.interviewerId),
     check("interview_feedback_text_length", sql`char_length(${t.text}) between 1 and 2000`),
   ],
+);
+
+/* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
+
+/**
+ * Each time someone at a company opened the profile of a person found in a search: the person sees which companies did
+ * in the last 30 days (never who at the company), and the daily clean-up deletes older rows. Goes with the person, the
+ * company, and (set to null) the job.
+ */
+export const companyProfileViews = pgTable(
+  "company_profile_views",
+  {
+    id: id(),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    jobId: uuid("job_id").references(() => jobs.id, { onDelete: "set null" }),
+    viewedAt: timestamp("viewed_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("company_profile_views_user").on(t.userId, t.viewedAt),
+    index("company_profile_views_org").on(t.orgId),
+    index("company_profile_views_job").on(t.jobId),
+    index("company_profile_views_viewed").on(t.viewedAt),
+  ],
+);
+
+/**
+ * A company the person blocked: it never finds them in a search, can't open their profile and can't write to them again
+ * in a found chat. Silent: the company is not told.
+ */
+export const companyBlocks = pgTable(
+  "company_blocks",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.orgId] }), index("company_blocks_org").on(t.orgId)],
 );
 
 /* Audit ------------------------------------------------------------------- */

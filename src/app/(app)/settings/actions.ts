@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { requestDeletion } from "@/lib/account/delete";
 import { checkUsername, saveAccountSettings, type UsernameCheck } from "@/lib/account/settings-store";
+import { blockCompany, unblockCompany } from "@/lib/corporate/find-store";
 import { nameLocked, saveNames } from "@/lib/account/store";
 import { settingsErrors, settingsInput, type SettingsField } from "@/lib/schemas";
 import { hasUsableName } from "@/lib/resume/name-match";
@@ -67,4 +68,24 @@ export async function checkUsernameAction(raw: unknown): Promise<UsernameCheck> 
   const account = await currentAccount();
   if (!account || typeof raw !== "string") return { state: "limited" };
   return checkUsername(account.id, raw, new Date());
+}
+
+const BLOCK_FAILED = "That didn't work. Please refresh the page and try again.";
+
+/** Blocks a company from Settings > Privacy (pending item 19). Silent: the company is not told. */
+export async function blockCompanyAction(orgId: string): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return "Please sign in again.";
+  if (!(await blockCompany(account.id, { orgId }))) return BLOCK_FAILED;
+  refresh();
+  return null;
+}
+
+/** Lifts a company block from Settings > Privacy. */
+export async function unblockCompanyAction(orgId: string): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return "Please sign in again.";
+  if (!(await unblockCompany(account.id, { orgId }))) return BLOCK_FAILED;
+  refresh();
+  return null;
 }

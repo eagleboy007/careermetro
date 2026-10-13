@@ -1,4 +1,4 @@
-import { Building2, CalendarClock, ExternalLink, KeyRound, MessageSquare, ScrollText } from "lucide-react";
+import { Building2, CalendarClock, ExternalLink, KeyRound, MessageSquare, ScrollText, UserSearch } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
@@ -62,6 +62,13 @@ export function CorporateHome({
           <CalendarClock {...ICON} />
           Interviews
         </Link>
+        {/* Pending item 19: Recruiter admins and Hiring HR of a verified company find people from open jobs. */}
+        {me.role !== "interviewer" && org.status === "verified" && (
+          <Link href="/corporate/people" className={`${ghostSm} min-h-11`}>
+            <UserSearch {...ICON} />
+            Find people
+          </Link>
+        )}
         {admin && (
           <Link href="/corporate/audit" className={`${ghostSm} min-h-11`}>
             <ScrollText {...ICON} />

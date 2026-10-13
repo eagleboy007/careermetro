@@ -1,0 +1,378 @@
+import { and, eq, inArray, like } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { skills } from "@/content";
+import * as schema from "@/db/schema";
+import { purgeDeletedAccounts, requestDeletion } from "@/lib/account/delete";
+import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
+import { saveAccountSettings } from "@/lib/account/settings-store";
+import { MATCHER_VERSION } from "@/lib/gaps/match";
+import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
+import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
+import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { applyToJob } from "./applications-store";
+import { companyMessages } from "./chats-store";
+import {
+  blockCompany,
+  clearOldProfileViews,
+  companyFoundChat,
+  discoveryFor,
+  findPeoplePage,
+  openFoundPerson,
+  searchPeople,
+  sendFoundMessage,
+  sendFoundRequest,
+  sentRequests,
+  unblockCompany,
+} from "./find-store";
+import { saveJob } from "./jobs-store";
+import { activeMembership, finishCompanySignup, finishJoin, inviteMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
+
+vi.mock("server-only", () => ({}));
+
+// Let companies find me (pending item 19) against a real Postgres with migrations applied. Every person, company and
+// message here is made up.
+const url = process.env.TEST_DATABASE_URL;
+const sqlClient = url ? postgres(url, { max: 4, onnotice: () => {} }) : null;
+const db = sqlClient ? drizzle(sqlClient, { schema }) : null;
+const env = { NAME_HASH_KEY: "test-key" };
+const DAY = 86_400_000;
+
+const RESUME_LINE = "Looked after the help desk for 30 branch offices.";
+const profileWith = (skillNames: string[], start = "2023-06"): Profile => ({
+  headline: null,
+  totalYearsExperience: 3,
+  roles: [{ title: "IT support analyst", employer: "Konkan Co-operative Bank", start, end: null, highlights: [RESUME_LINE] }],
+  skills: skillNames.map((name) => ({ name, lastUsed: "2025", evidence: [] })),
+  education: [{ qualification: "B.Sc. IT", institution: "Pune University", year: "2023" }],
+  certifications: [],
+});
+const analysis: GapAnalysis = {
+  roleSlug: "cyber-security-analyst",
+  gaps: [{ skillId: "aws", skillName: "AWS", status: "missing", resumeQuote: null, requirement: "r", explanation: "e" }],
+  metSkillIds: ["linux"],
+  niceToHave: [],
+  readiness: { headline: "h", explanation: "e", estimatedHours: 10 },
+};
+const HELLO = "Hello, your Linux work matches our SOC Analyst opening. Would you like to hear more?";
+const REPLY = "Yes, happy to talk on a weekday evening.";
+
+describe.skipIf(!db)("let companies find me (database)", () => {
+  const run = `find${Date.now()}`;
+  const userIds: string[] = [];
+  const clock = new Date("2026-10-13T10:00:00Z");
+  const deps = (over: Partial<CorporateDeps> = {}): CorporateDeps => ({ db: db!, env, now: clock, delivery: "test", ...over });
+  const fd = (days = 0) => ({ db: db!, env, now: new Date(clock.getTime() + days * DAY) });
+  const lines: string[] = [];
+  const req = { required: ["python", "linux"], oneOf: [], nice: ["sql"] };
+  const yes = { real: true, noFee: true, fair: true } as const;
+
+  beforeAll(async () => {
+    await db!
+      .insert(schema.skills)
+      .values(skills.map(({ id, name, category }) => ({ id, name, category })))
+      .onConflictDoNothing();
+  });
+  beforeEach(() => {
+    for (const level of ["log", "warn", "error"] as const) vi.spyOn(console, level).mockImplementation((line: unknown) => void lines.push(String(line)));
+  });
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    // Each test searches only its own people: everyone made so far is switched off again.
+    if (userIds.length) await db!.update(schema.userSettings).set({ companiesCanFind: false }).where(inArray(schema.userSettings.userId, userIds));
+  });
+  afterAll(async () => {
+    await db!.delete(schema.organizations).where(like(schema.organizations.emailDomain, `%${run}%`));
+    if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
+    await sqlClient!.end();
+    // Logs carry event names and reasons only: never a name, a ref, a band or a message.
+    const all = lines.join("\n");
+    for (const secret of ["Priya", "Arjun", "Meera", "Linux work", "weekday evening", "Konkan", run]) expect(all).not.toContain(secret);
+  });
+
+  async function person(n: string, name = "Meera Iyer") {
+    const [u] = await db!.insert(schema.users).values({ email: `${run}-${n}@example.test`, name }).returning({ id: schema.users.id });
+    userIds.push(u.id);
+    return u.id;
+  }
+  /** A person with a resume and a current analysis, and "Let companies find me" as given. */
+  async function seeker(n: string, opts: { name?: string; skills?: string[]; on?: boolean; showExperience?: boolean } = {}) {
+    const id = await person(n, opts.name ?? "Priya Nair");
+    const [resume] = await db!.insert(schema.resumes).values({ userId: id, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning();
+    const [p] = await db!
+      .insert(schema.profiles)
+      .values({ resumeId: resume.id, version: 1, data: profileWith(opts.skills ?? ["Python", "Linux"]), confirmedByUser: true })
+      .returning();
+    await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis, matcherVersion: MATCHER_VERSION });
+    await setFind(id, opts.on ?? true, opts.showExperience ?? true);
+    return id;
+  }
+  async function setFind(userId: string, on: boolean, showExperience = true) {
+    await db!
+      .insert(schema.userSettings)
+      .values({ userId, companiesCanFind: on, showExperience })
+      .onConflictDoUpdate({ target: schema.userSettings.userId, set: { companiesCanFind: on, showExperience } });
+  }
+  let n = 0;
+  const details = (d: string) => ({ type: "company", legalName: "Example Labs Private Limited", name: "Example Labs", website: `https://${d}`, workEmail: `meera.iyer@${d}`, size: "51 to 200", city: "Pune" });
+  async function join(adminId: string, userId: string, d: string, r: "admin" | "hiring" | "interviewer", local: string) {
+    expect(await inviteMember(adminId, { workEmail: `${local}@${d}`, role: r }, deps())).toEqual({ ok: true });
+    const started = await startJoin(userId, { workEmail: `${local}@${d}` }, deps());
+    if (!started.ok || !started.testCode) throw new Error("no join code");
+    expect(await finishJoin(userId, { workEmail: `${local}@${d}`, code: started.testCode }, deps())).toMatchObject({ ok: true });
+    return (await activeMembership(userId, db!))!.memberId;
+  }
+  /** A verified company with an admin, Hiring HR on the job, Hiring HR not on it, an Interviewer on it and an open job. */
+  async function setup(tag: string) {
+    const d = `${run}-${++n}.example-labs.test`;
+    const admin = await person(`${tag}-admin`);
+    const started = await startCompanySignup(admin, details(d), deps());
+    if (!started.ok || !started.testCode) throw new Error("no code");
+    const done = await finishCompanySignup(admin, { details: details(d), code: started.testCode }, deps());
+    if (!done.ok) throw new Error(done.error);
+    await db!.update(schema.organizations).set({ reviewStatus: "verified" }).where(eq(schema.organizations.id, done.orgId));
+    const hr = await person(`${tag}-hr`, "Rahul Menon");
+    const otherHr = await person(`${tag}-hr2`, "Farhan Shaikh");
+    const iv = await person(`${tag}-iv`, "Sana Qureshi");
+    const hrMember = await join(admin, hr, d, "hiring", "rahul");
+    await join(admin, otherHr, d, "hiring", "farhan");
+    const ivMember = await join(admin, iv, d, "interviewer", "sana");
+    const saved = await saveJob(
+      admin,
+      { roleSlug: "cyber-security-analyst", title: "SOC Analyst L1", workType: "full_time", city: "Pune", requirements: req, open: yes, hiring: [hrMember], interviewers: [ivMember] },
+      deps(),
+    );
+    if (!saved.ok) throw new Error(saved.error);
+    return { orgId: done.orgId, admin, hr, otherHr, iv, jobId: saved.jobId };
+  }
+  /** The ids behind a search's refs, read back through the database (refs never carry them in the clear). */
+  async function found(userId: string, jobId: string, extra: Record<string, unknown> = {}, days = 0) {
+    const r = await searchPeople(userId, { jobId, ...extra }, fd(days));
+    if (!r.ok) throw new Error(r.error);
+    return r.cards;
+  }
+  const names = (cards: { name: string }[]) => cards.map((c) => c.name).sort();
+  const auditOf = async (orgId: string) => db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.orgId, orgId));
+
+  it("finds only people who turned it on and match the job, at once off when they turn it off, with nothing private", async () => {
+    const s = await setup("search");
+    const on = await seeker("on", { name: "Priya Nair" });
+    await seeker("off", { name: "Arjun Mehta", on: false });
+    await seeker("nomatch", { name: "Kavya Reddy", skills: ["Excel"] });
+    const applied = await seeker("applied", { name: "Imran Qureshi" });
+    expect((await applyToJob(applied, { jobId: s.jobId, canJoin: "30", consent: true }, { db: db!, now: clock })).ok).toBe(true);
+    // A member of the company who turned it on stays hidden from their own company.
+    await setFind(s.otherHr, true);
+
+    const cards = await found(s.admin, s.jobId);
+    expect(names(cards)).toEqual(["Priya Nair"]);
+    const [card] = cards;
+    expect(card.ref).toMatch(/^[A-Za-z0-9_-]{59}$/);
+    expect(card.ref).not.toContain(on);
+    expect(card.match.requiredTotal).toBe(2);
+    expect(card.match.requiredOnResume).toBe(2);
+    expect(card.experience).toMatch(/year/);
+    expect(card.request).toEqual({ state: "none" });
+    const text = JSON.stringify(cards);
+    for (const secret of ["@example.test", RESUME_LINE, on, "Konkan"]) expect(text).not.toContain(secret);
+
+    // Turning it off with the settings form takes them out of the next search, and withdraws the consent it recorded.
+    const form = (companiesCanFind: boolean) =>
+      settingsInput.parse({ username: "", headline: "", currentPay: "", expectedPay: "", settings: { ...DEFAULT_SETTINGS, companiesCanFind } });
+    await setFind(on, false);
+    expect(await saveAccountSettings(on, form(true), clock, db!)).toEqual({ ok: true });
+    expect(await saveAccountSettings(on, form(false), clock, db!)).toEqual({ ok: true });
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    const consents = await db!.select().from(schema.consents).where(and(eq(schema.consents.userId, on), eq(schema.consents.purpose, FIND_CONSENT_PURPOSE)));
+    expect(consents).toHaveLength(1);
+    expect(consents[0].withdrawnAt).not.toBeNull();
+    expect(await saveAccountSettings(on, form(true), clock, db!)).toEqual({ ok: true });
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+
+    // An old ref opens nobody once they are off.
+    await setFind(on, false);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+
+    // The experience band filters only people who show their experience.
+    await setFind(on, true);
+    expect(names(await found(s.admin, s.jobId, { band: "2-5" }))).toEqual(["Priya Nair"]);
+    expect(await found(s.admin, s.jobId, { band: "10+" })).toEqual([]);
+    await setFind(on, true, false);
+    expect(await found(s.admin, s.jobId, { band: "2-5" })).toEqual([]);
+    const [hidden] = await found(s.admin, s.jobId);
+    expect(hidden.experience).toBeNull();
+  });
+
+  it("lets only Recruiter admins and Hiring HR on the job of a verified company search", async () => {
+    const s = await setup("roles");
+    await seeker("roles-p");
+    expect(await searchPeople(s.iv, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "interviewer" });
+    expect(await searchPeople(s.otherHr, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "not_on_job" });
+    expect((await searchPeople(s.hr, { jobId: s.jobId }, fd())).ok).toBe(true);
+    const outsider = await person("roles-out", "Arjun Mehta");
+    expect(await searchPeople(outsider, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "not_member" });
+    expect(await searchPeople(s.admin, { jobId: "not-a-uuid" }, fd())).toEqual({ ok: false, error: "invalid" });
+
+    const page = await findPeoplePage(s.iv, { jobId: s.jobId, band: null, page: 1 }, fd());
+    expect(page).toMatchObject({ refusal: "interviewer", jobs: [], results: null });
+    expect((await findPeoplePage(s.otherHr, { jobId: null, band: null, page: 1 }, fd()))!.jobs).toEqual([]);
+    expect((await findPeoplePage(s.hr, { jobId: null, band: null, page: 1 }, fd()))!.jobs.map((j) => j.id)).toEqual([s.jobId]);
+
+    await db!.update(schema.organizations).set({ reviewStatus: "suspended" }).where(eq(schema.organizations.id, s.orgId));
+    expect(await searchPeople(s.admin, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "not_verified" });
+    expect((await findPeoplePage(s.admin, { jobId: s.jobId, band: null, page: 1 }, fd()))!.refusal).toBe("not_verified");
+    await db!.update(schema.organizations).set({ reviewStatus: "verified" }).where(eq(schema.organizations.id, s.orgId));
+    await db!.update(schema.jobs).set({ status: "paused" }).where(eq(schema.jobs.id, s.jobId));
+    expect(await searchPeople(s.admin, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "job_not_open" });
+  });
+
+  it("hides people who blocked the company or the searcher, and blocks are silent", async () => {
+    const s = await setup("blocks");
+    const p = await seeker("blocks-p");
+    const q = await seeker("blocks-q", { name: "Arjun Mehta" });
+    await db!.insert(schema.blocks).values({ blockerId: q, blockedId: s.admin, createdAt: clock });
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+    expect(names(await found(s.hr, s.jobId))).toEqual(["Arjun Mehta", "Priya Nair"]);
+
+    const [card] = await found(s.admin, s.jobId);
+    expect(await blockCompany(p, { orgId: s.orgId }, fd())).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await discoveryFor(p, fd())).blocked.map((b) => b.orgId)).toEqual([s.orgId]);
+    expect(await unblockCompany(p, { orgId: s.orgId }, fd())).toBe(true);
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+  });
+
+  it("opens a profile with the public parts only, records the view, and sends one message request the person accepts", async () => {
+    const s = await setup("flow");
+    const p = await seeker("flow-p");
+    const [card] = await found(s.hr, s.jobId);
+    const opened = await openFoundPerson(s.hr, { jobId: s.jobId, ref: card.ref }, fd());
+    if (!opened.ok) throw new Error(opened.error);
+    const view = opened.person;
+    expect(view.profile.name).toBe("Priya Nair");
+    expect(view.profile.skills.weak).toEqual([]);
+    expect(view.profile.skills.missing).toEqual([]);
+    expect(view.profile.experience.every((x) => x.highlights.length === 0)).toBe(true);
+    const text = JSON.stringify(view);
+    for (const secret of ["@example.test", RESUME_LINE, "AWS", p]) expect(text).not.toContain(secret);
+    expect((await discoveryFor(p, fd())).views).toMatchObject([{ orgId: s.orgId, company: "Example Labs", times: 1, blocked: false }]);
+
+    // A request: one message, then nothing until they accept.
+    const sent = await sendFoundRequest(s.hr, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "waiting" });
+    expect(await sendFoundMessage(s.hr, { conversationId: sent.conversationId, body: "Any news?" }, fd())).toEqual({ ok: false, error: "waiting" });
+    expect((await found(s.admin, s.jobId))[0].request).toEqual({ state: "waiting", conversationId: sent.conversationId });
+    expect((await sentRequests(s.admin, { db: db! })).map((r) => r.state)).toEqual(["waiting"]);
+    // The Interviewer can't read found chats.
+    expect(await companyFoundChat(s.iv, sent.conversationId, fd())).toEqual({ ok: false, error: "interviewer" });
+
+    let [thread] = await listThreads(p, fd());
+    expect(thread).toMatchObject({ id: sent.conversationId, kind: "request", found: true, name: "Example Labs", job: "SOC Analyst L1", verified: true, unread: true });
+    expect(thread.messages.map((m) => m.text)).toEqual([HELLO]);
+    // The company can't write from the Inbox side.
+    expect(await sendMessage(s.hr, sent.conversationId, "From the Inbox", fd())).toEqual({ ok: false, error: "not_found" });
+
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    [thread] = await listThreads(p, fd());
+    expect(thread).toMatchObject({ kind: "application", found: true });
+    expect((await sendMessage(p, sent.conversationId, REPLY, fd())).ok).toBe(true);
+    expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Great, thanks." }, fd())).ok).toBe(true);
+    const chat = await companyFoundChat(s.hr, sent.conversationId, fd());
+    if (!chat.ok) throw new Error(chat.error);
+    expect(chat.chat).toMatchObject({ found: sent.conversationId, candidate: "Priya Nair", state: "open", stage: null });
+    const list = await companyMessages(s.admin, fd());
+    expect(list.ok && list.view.items.some((i) => i.found === sent.conversationId)).toBe(true);
+    expect(await sendFoundRequest(s.hr, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "accepted" });
+
+    // Every search, view and request wrote an audit line that names the job only.
+    const audit = await auditOf(s.orgId);
+    const mine = audit.filter((a) => ["people_searched", "found_profile_viewed", "found_request_sent"].includes(a.action));
+    expect(new Set(mine.map((a) => a.action))).toEqual(new Set(["people_searched", "found_profile_viewed", "found_request_sent"]));
+    for (const a of mine) {
+      expect(a.target).toContain(s.jobId);
+      expect(JSON.stringify(a)).not.toContain(p);
+      expect(JSON.stringify(a)).not.toContain("Priya");
+    }
+  });
+
+  it("closes the chat and blocks the company when the person blocks from the Inbox; deleting a request leaves it waiting", async () => {
+    const s = await setup("inbox");
+    const p = await seeker("inbox-p");
+    const q = await seeker("inbox-q", { name: "Arjun Mehta" });
+    const cards = await found(s.admin, s.jobId);
+    const refOf = (name: string) => cards.find((c) => c.name === name)!.ref;
+    const toP = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: refOf("Priya Nair"), body: HELLO }, fd());
+    const toQ = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: refOf("Arjun Mehta"), body: HELLO }, fd());
+    if (!toP.ok || !toQ.ok) throw new Error("not sent");
+
+    expect(await blockInChat(p, toP.conversationId, fd())).toEqual({ ok: true });
+    expect(await listThreads(p, fd())).toEqual([]);
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Arjun Mehta"]);
+    // Gone from the company's side altogether.
+    expect((await sentRequests(s.admin, { db: db! })).map((r) => r.name)).toEqual(["Arjun Mehta"]);
+    expect(await companyFoundChat(s.admin, toP.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
+
+    expect(await deleteRequest(q, toQ.conversationId, fd())).toEqual({ ok: true });
+    expect(await listThreads(q, fd())).toEqual([]);
+    expect((await found(s.admin, s.jobId))[0].request.state).toBe("waiting");
+  });
+
+  it("limits searches per person and per company", async () => {
+    const s = await setup("limit");
+    await seeker("limit-p");
+    for (let i = 0; i < LIMITS.findSearchesPerUserHour.max; i++) await takeShared(LIMITS.findSearchesPerUserHour, s.hr, { db: db!, now: clock.getTime() });
+    expect(await searchPeople(s.hr, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "limit" });
+    expect((await searchPeople(s.admin, { jobId: s.jobId }, fd())).ok).toBe(true);
+    for (let i = 0; i < LIMITS.findSearchesPerCompanyDay.max; i++) await takeShared(LIMITS.findSearchesPerCompanyDay, s.orgId, { db: db!, now: clock.getTime() });
+    expect(await searchPeople(s.admin, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "limit" });
+  });
+
+  it("exports the switch, views and blocks, clears views after 30 days, and deleting the account removes everything", async () => {
+    const s = await setup("delete");
+    const p = await seeker("delete-p");
+    const [card] = await found(s.admin, s.jobId);
+    expect((await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).ok).toBe(true);
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect((await sendMessage(p, sent.conversationId, REPLY, fd())).ok).toBe(true);
+    const other = await setup("delete-2");
+    expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
+
+    const data = await exportAccountData(p, db!, clock);
+    expect(EXPORT_VERSION).toBe(12);
+    expect(data!.exportVersion).toBe(12);
+    expect(data!.companyDiscovery.companiesCanFind).toBe(true);
+    expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
+    expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);
+    expect(data!.settings).toMatchObject({ companiesCanFind: true });
+    expect(data!.inbox.chats.find((c) => c.kind === "found")).toMatchObject({ side: "candidate", company: "Example Labs", job: "SOC Analyst L1" });
+
+    // Views older than 30 days go in the daily clean-up.
+    expect(await clearOldProfileViews(db!, new Date(clock.getTime() + 29 * DAY))).toBe(0);
+    expect((await discoveryFor(p, fd(29))).views).toHaveLength(1);
+
+    // Waiting out the deletion hides them at once; the purge removes views, blocks and found chats.
+    expect(await requestDeletion(p, db!, clock)).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    expect(await purgeDeletedAccounts(db!, new Date(clock.getTime() + 31 * DAY))).toBeGreaterThanOrEqual(1);
+    expect(await db!.select().from(schema.companyProfileViews).where(eq(schema.companyProfileViews.userId, p))).toEqual([]);
+    expect(await db!.select().from(schema.companyBlocks).where(eq(schema.companyBlocks.userId, p))).toEqual([]);
+    expect(await db!.select().from(schema.conversations).where(eq(schema.conversations.id, sent.conversationId))).toEqual([]);
+    expect(await db!.select().from(schema.messages).where(eq(schema.messages.conversationId, sent.conversationId))).toEqual([]);
+  });
+
+  it("clears views older than 30 days", async () => {
+    const s = await setup("old");
+    const p = await seeker("old-p");
+    const [card] = await found(s.admin, s.jobId);
+    expect((await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).ok).toBe(true);
+    expect(await clearOldProfileViews(db!, new Date(clock.getTime() + 31 * DAY))).toBeGreaterThanOrEqual(1);
+    expect((await discoveryFor(p, fd())).views).toEqual([]);
+  });
+});

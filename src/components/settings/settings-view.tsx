@@ -2,6 +2,8 @@ import { Building2, Download, KeyRound, Lock, Mail, ShieldCheck, Trash2, User } 
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
+import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
+import { CompanyDiscovery } from "./company-discovery";
 import { BasicsForm } from "./basics-form";
 import { DeleteAccount } from "./delete-account";
 import { PlanCard } from "./plan-card";
@@ -24,6 +26,8 @@ export type SettingsData = {
   draft: SettingsDraftValues;
   /** When the username can next change ("12 Nov 2026"), or null when it can change now. */
   usernameLockedUntil: string | null;
+  /** Companies that viewed the profile in the last 30 days, and companies blocked (pending item 19). */
+  discovery: DiscoveryView;
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -47,7 +51,7 @@ const ghostSm = "inline-flex items-center gap-1.5 rounded-full border border-lin
  * pay, privacy and stored-only notifications, saved together from one sticky bar. Photo, two-step verification and
  * signed-in devices wait on storage and the full sign-in.
  */
-export function SettingsView({ data }: { data: SettingsData }) {
+export function SettingsView({ data, discoveryActions }: { data: SettingsData; discoveryActions?: DiscoveryActions }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
       <SettingsNav sections={SETTINGS_SECTIONS} />
@@ -106,6 +110,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
 
         <Section id="acc-privacy" title="Privacy">
           <PrivacyFields />
+          <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>
 
         <Section id="acc-notif" title="Notifications" tag="stored only">

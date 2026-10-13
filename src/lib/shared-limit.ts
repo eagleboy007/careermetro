@@ -55,6 +55,14 @@ export const LIMITS = {
   usernameChecksPerUser: { bucket: "username-check", max: 60, windowMs: HOUR },
   /** Tries at saving a new username, whatever the outcome. The 30-day rule limits changes that succeed. */
   usernameSavesPerUser: { bucket: "username-save", max: 10, windowMs: 24 * HOUR },
+  /** Searches for people one company member runs (dev/companies-find-me-plan.md), so results can't be read out by script. */
+  findSearchesPerUserHour: { bucket: "find-search-user", max: 30, windowMs: HOUR },
+  /** Searches for people one company runs a day, all its people together. Keyed by the company's id. */
+  findSearchesPerCompanyDay: { bucket: "find-search-company", max: 200, windowMs: 24 * HOUR },
+  /** Profiles one company member opens from searches an hour. */
+  findOpensPerUserHour: { bucket: "find-open-user", max: 60, windowMs: HOUR },
+  /** Messages a company sends in one found chat a day, after the person accepted. Keyed by the chat's id. */
+  companyMessagesPerFoundChatDay: { bucket: "company-message-found", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

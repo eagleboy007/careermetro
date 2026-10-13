@@ -12,6 +12,7 @@ import { visibleApplicationsWhere } from "./scope";
 import { chatClosed, companySendRefusal, scheduleRefusal, type CompanySendRefusal } from "./rules";
 import { askDaysOf } from "./interview-reads";
 import { askAnswered, askEnded, slotLabel } from "./slots";
+import { foundChatItems } from "./find-store";
 import { activeMembership } from "./store";
 import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, CompanyChatView, CompanyMessagesView } from "./types";
 
@@ -71,6 +72,7 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
       name: users.name,
       job: jobs.title,
       stage: applications.stage,
+      lastMessageAt: conversations.lastMessageAt,
     })
     .from(conversations)
     .innerJoin(applications, eq(applications.id, conversations.applicationId))
@@ -87,7 +89,17 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
     )
     .orderBy(desc(conversations.lastMessageAt))
     .limit(200);
-  if (!rows.length) return { ok: true, view };
+  // Found chats (pending item 19): people the company found who were sent a message request, newest first with the rest.
+  const found = (await foundChatItems(userId, now, db)).filter((f) => f.preview !== null);
+  const merge = (apps: (CompanyChatListItem & { lastAt: Date })[]) =>
+    [...apps, ...found]
+      .sort((a, b) => b.lastAt.getTime() - a.lastAt.getTime())
+      .map((x) => {
+        const item: CompanyChatListItem & { lastAt?: Date } = { ...x };
+        delete item.lastAt;
+        return item;
+      });
+  if (!rows.length) return { ok: true, view: { ...view, items: merge([]) } };
 
   // The last message in each chat that anyone wrote, and whether someone other than the person wrote since they read it.
   const ids = rows.map((r) => r.conversationId);
@@ -102,18 +114,21 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
       select 1 from ${messages} x where x.conversation_id = c.id and x.kind <> 'system' and x.sender_id is distinct from ${userId}
         and x.created_at > coalesce((select m.last_read_at from ${conversationMembers} m where m.conversation_id = c.id and m.user_id = ${userId}), '-infinity'::timestamptz))`);
   const unreadIds = new Set([...unread].map((r) => r.id));
-  view.items = rows.map((r): CompanyChatListItem => {
-    const l = last.find((m) => m.conversationId === r.conversationId);
-    return {
-      applicationId: r.applicationId,
-      name: displayName(r.name),
-      job: r.job,
-      stage: r.stage,
-      preview: l?.body ?? null,
-      at: l ? formatAt(l.createdAt, now) : null,
-      unread: unreadIds.has(r.conversationId),
-    };
-  });
+  view.items = merge(
+    rows.map((r) => {
+      const l = last.find((m) => m.conversationId === r.conversationId);
+      return {
+        applicationId: r.applicationId,
+        name: displayName(r.name),
+        job: r.job,
+        stage: r.stage,
+        preview: l?.body ?? null,
+        at: l ? formatAt(l.createdAt, now) : null,
+        unread: unreadIds.has(r.conversationId),
+        lastAt: r.lastMessageAt,
+      };
+    }),
+  );
   return { ok: true, view };
 }
 

@@ -64,3 +64,16 @@ export function phoneKeySecret(env: Env = process.env): string | null {
   if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
   return `phone|${legacy(env)}`;
 }
+
+/**
+ * The secret that seals a person's id into the opaque, per-company ref a company sees in search results (pending item
+ * 19, dev/companies-find-me-plan.md). A guessable key would let a company read internal ids back, so in production there
+ * is no built-in fallback: FIND_REF_KEY, else NAME_HASH_KEY, else CRON_SECRET; with none, search is off. Elsewhere
+ * (local, tests, previews) it falls back as the other keys do. Rotating it only changes refs, which live one page.
+ */
+export function findRefSecret(env: Env = process.env): string | null {
+  const key = env.FIND_REF_KEY || env.NAME_HASH_KEY || env.CRON_SECRET;
+  if (key) return `find-ref|${key}`;
+  if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
+  return `find-ref|${legacy(env)}`;
+}

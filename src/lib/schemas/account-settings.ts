@@ -70,7 +70,13 @@ export const notificationPrefs = z.object({
   emailWeeklySummary: z.boolean(),
 });
 
-export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, ...notificationPrefs.shape });
+/**
+ * "Let companies find me" (pending item 19, dev/companies-find-me-plan.md): off until the person turns it on. While on,
+ * verified companies can find them from one of their open jobs and see the profile parts above (never gaps) and the match.
+ */
+export const companiesCanFind = z.boolean();
+
+export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, companiesCanFind, ...notificationPrefs.shape });
 
 /** No row in user_settings means these (decided 2026-10-13): hidden until the person chooses; target role and gaps off. */
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -81,6 +87,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   showSkills: true,
   showGaps: false,
   showCertifications: true,
+  companiesCanFind: false,
   rideReminder: "19:30",
   emailCompanyMessages: true,
   emailWeeklySummary: false,

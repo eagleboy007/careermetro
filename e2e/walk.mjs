@@ -871,7 +871,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 11) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 12) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1914,6 +1914,156 @@ await step("overview, audit and the daily clean-up", async () => {
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-overview.png`, fullPage: true }).catch(() => {});
     throw e;
   } finally {
+    await sql.end();
+    await q.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await q.emulateMedia({ colorScheme: "light" }).catch(() => {});
+  }
+});
+// Let companies find me (pending item 19): a person turns it on in Settings; the verified company's Recruiter admin
+// searches from the walk's open job, opens them and sends a message request, which reaches their Inbox; an Interviewer
+// can't search; turning it off takes the person out of the next search at once. The person's resume is added in the
+// database (the walk's upload is Priya's, and she applied to this job, so she never shows in its searches).
+await step("let companies find me: opt in, a recruiter finds and messages them, an Interviewer can't search, opting out removes them", async () => {
+  if (!q || !postedTitle || !corpDomain) throw new Error("no company or job from the steps before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to add the person's resume");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  const HELLO = "Hello Arjun, your security work matches our SOC Analyst opening in Pune. Would you like to hear more?";
+  const fmEmail = `fm-${testEmail}`;
+  let fm = null;
+  let iv = null;
+  try {
+    // The person: signed in, with a resume whose skills include the job's first required one.
+    fm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const fp = await fm.newPage();
+    fp.on("pageerror", (e) => problems.push(`pageerror@${fp.url()}: ${e.message.slice(0, 200)}`));
+    fp.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    await signInAs(fp, "Arjun Mehta", fmEmail);
+    const [user] = await sql`select id from users where email like ${fmEmail + "%"} order by created_at desc limit 1`;
+    const [org] = await sql`select id from organizations where email_domain = ${corpDomain}`;
+    const [job] = await sql`select id, status, requirements from jobs where org_id = ${org.id} and title = ${title}`;
+    if (job.status !== "open") await sql`update jobs set status = 'open' where id = ${job.id}`;
+    const [skill] = await sql`select name from skills where id = ${job.requirements.required[0] ?? job.requirements.oneOf[0][0]}`;
+    const [{ matcher_version: matcher }] = await sql`select matcher_version from gap_analyses order by created_at desc limit 1`;
+    const profile = {
+      headline: null,
+      totalYearsExperience: 3,
+      roles: [{ title: "Security operations analyst", employer: "Garuda Logistics", start: "2023-04", end: null, highlights: ["Triaged alerts for 40 branch offices."] }],
+      skills: [{ name: skill.name, lastUsed: "2025", evidence: [] }],
+      education: [{ qualification: "B.Tech", institution: "Pune University", year: "2022" }],
+      certifications: [],
+    };
+    const analysis = { roleSlug: "cyber-security-analyst", gaps: [], metSkillIds: [], niceToHave: [], readiness: { headline: "h", explanation: "e", estimatedHours: 10 } };
+    const [resume] = await sql`insert into resumes (user_id, mime_type, size_bytes, status) values (${user.id}, 'text/plain', 1, 'parsed') returning id`;
+    const [prof] = await sql`insert into profiles (resume_id, version, data, confirmed_by_user) values (${resume.id}, 1, ${sql.json(profile)}, true) returning id`;
+    await sql`insert into gap_analyses (profile_id, result, matcher_version) values (${prof.id}, ${sql.json(analysis)}, ${matcher})`;
+
+    // Off by default; turned on in Settings > Privacy, with the plain words about what companies see.
+    await fp.goto(BASE + "/settings");
+    const findMe = fp.getByRole("checkbox", { name: /Let companies find me/ });
+    await findMe.waitFor({ state: "attached", timeout: 10000 });
+    if (await findMe.isChecked()) throw new Error("Let companies find me starts on");
+    await fp.getByText(/Never your email, phone, pay, notice period or resume/).waitFor();
+    await findMe.check({ force: true });
+    await fp.getByRole("button", { name: "Save changes" }).click();
+    await fp.waitForFunction(() => document.activeElement?.textContent === "Settings saved.", null, { timeout: 15000 });
+
+    // The admin finds them from the job: the address holds the job and nothing else.
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("link", { name: "Find people" }).click();
+    await q.waitForURL(/\/corporate\/people$/);
+    await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    await q.getByLabel("Match to this job").selectOption(job.id);
+    await q.getByRole("button", { name: "Search", exact: true }).click();
+    await q.waitForURL(/\/corporate\/people\?job=/);
+    const address = new URL(q.url());
+    if ([...address.searchParams.keys()].some((k) => !["job", "band", "page"].includes(k)) || address.searchParams.get("job") !== job.id || address.searchParams.get("band")) throw new Error("the search address holds more than the job and band: " + address.search);
+    const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
+    await open.waitFor({ timeout: 10000 });
+    await open.click();
+    const drawer = q.getByRole("dialog", { name: "Arjun Mehta" });
+    await drawer.getByText(/Match to /).first().waitFor({ timeout: 10000 });
+    await drawer.getByText("Security operations analyst · Garuda Logistics").waitFor();
+    const seen = await drawer.innerText();
+    for (const secret of ["@", "Triaged alerts", fmEmail]) if (seen.includes(secret)) throw new Error("the company sees " + secret);
+    await a11yOn(q, "find-people-drawer");
+    await drawer.getByLabel("Message request to Arjun").fill(HELLO);
+    await drawer.getByRole("button", { name: "Send message request" }).click();
+    await q.getByRole("status").getByText(/^Message request sent to Arjun Mehta\./).waitFor({ timeout: 10000 });
+    // Focus goes to the line saying it went, never to the page.
+    if (await q.evaluate(() => document.activeElement === document.body)) throw new Error("focus dropped to the page after sending");
+    await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor();
+    await q.getByText("Request sent", { exact: true }).first().waitFor();
+    await q.getByRole("heading", { name: "Message requests you sent" }).waitFor();
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-find-people.png`, fullPage: true });
+    await a11yOn(q, "find-people");
+
+    // Phone width in dark mode: no sideways scroll.
+    await q.setViewportSize({ width: 360, height: 780 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflow > 1) throw new Error("find people on a phone: horizontal overflow " + overflow + "px");
+    await a11yOn(q, "find-people-phone-dark");
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+
+    // The request in the person's Inbox: from a verified company, with why they were found; accepted.
+    await fp.goto(BASE + "/inbox");
+    await fp.getByRole("button", { name: /Example Labs/ }).first().click();
+    const thread = fp.getByRole("region", { name: "Chat with Example Labs" });
+    await thread.getByText(HELLO).waitFor({ timeout: 10000 });
+    await thread.getByText(/found you in a search/).waitFor();
+    await thread.getByText(/found you because you let companies find you/).waitFor();
+    await thread.getByText("Verified company", { exact: true }).waitFor();
+    await a11yOn(fp, "inbox-found-request");
+    await fp.getByRole("button", { name: "Accept" }).click();
+    await thread.getByRole("textbox", { name: "Message" }).waitFor({ timeout: 10000 });
+    // The company's profile view shows in Settings.
+    await fp.goto(BASE + "/settings");
+    await fp.locator("[data-company-discovery]").getByText("Example Labs").first().waitFor({ timeout: 10000 });
+
+    // An Interviewer (Sana, added on the job in the company chats step) can't search.
+    iv = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const ivp = await iv.newPage();
+    ivp.on("pageerror", (e) => problems.push(`pageerror@${ivp.url()}: ${e.message.slice(0, 200)}`));
+    ivp.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    await signInAs(ivp, "Sana Qureshi", `iv-${testEmail}`);
+    await ivp.goto(BASE + `/corporate/people?job=${job.id}`);
+    await ivp.getByRole("heading", { name: "Interviewers can't search for people" }).waitFor({ timeout: 10000 });
+    if (await ivp.getByText("Arjun Mehta").count()) throw new Error("an Interviewer saw a person");
+    await a11yOn(ivp, "find-people-interviewer");
+
+    // Turning it off takes them out of the next search at once.
+    await fp.goto(BASE + "/settings");
+    const findMe2 = fp.getByRole("checkbox", { name: /Let companies find me/ });
+    await findMe2.waitFor({ state: "attached", timeout: 10000 });
+    await findMe2.uncheck({ force: true });
+    await fp.getByRole("button", { name: "Save changes" }).click();
+    await fp.waitForFunction(() => document.activeElement?.textContent === "Settings saved.", null, { timeout: 15000 });
+    await q.reload();
+    await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
+    if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opting out did not remove the person from results");
+
+    // In the database: the consent given and withdrawn, the view, and audit lines that name the job only.
+    const [consent] = await sql`select given_at, withdrawn_at from consents where user_id = ${user.id} and purpose = 'company_discovery'`;
+    if (!consent?.withdrawn_at) throw new Error("the consent was not recorded and withdrawn");
+    const [views] = await sql`select count(*)::int as n from company_profile_views where user_id = ${user.id} and org_id = ${org.id}`;
+    if (views.n < 1) throw new Error("no profile view recorded");
+    const audit = await sql`select action, target from audit_logs where org_id = ${org.id} and action in ('people_searched', 'found_profile_viewed', 'found_request_sent')`;
+    for (const action of ["people_searched", "found_profile_viewed", "found_request_sent"]) if (!audit.some((a) => a.action === action)) throw new Error("no audit line for " + action);
+    if (audit.some((a) => a.target !== `job:${job.id}`)) throw new Error("an audit line names more than the job: " + audit.map((a) => a.target).join());
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-find-people.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await fm?.close();
+    await iv?.close();
     await sql.end();
     await q.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
     await q.emulateMedia({ colorScheme: "light" }).catch(() => {});

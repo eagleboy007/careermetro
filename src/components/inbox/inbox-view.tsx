@@ -244,13 +244,16 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
 
   const sendReport = (reason: ReportReason, note: string, block: boolean) => {
     if (!current) return;
-    const target = current.kind === "application" ? "chat" : "person";
+    const company = isCompany(current);
+    const target = company ? "chat" : "person";
     const blocks = block;
     const finish = () => {
       if (blocks)
         drop(
           current.id,
-          current.kind === "application"
+          current.found
+            ? `Reported and blocked. We confirm within 24 hours. ${current.name} can't find or message you any more.`
+            : company
             ? `Reported and blocked. We confirm within 24 hours. ${current.name} can't message you in this chat any more.`
             : `Reported and blocked. We confirm within 24 hours. ${current.name.split(" ")[0]} is not told.`,
         );
@@ -312,7 +315,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
             {shown.length === 0 && <li className="p-3 text-[0.84rem] text-muted">Nothing here.</li>}
             {shown.map((t) => {
               const last = lastMessage(t);
-              const lead = t.kind === "request" ? "Message request · " : t.kind === "application" ? `${t.job} · ` : "";
+              const lead = t.found && t.kind === "request" ? `Company · ${t.job} · ` : t.kind === "request" ? "Message request · " : t.kind === "application" ? `${t.job} · ` : "";
               return (
                 <li key={t.id}>
                   <button
@@ -359,14 +362,14 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               <div className="min-w-0 flex-1 min-[760px]:flex-none">
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                   <b className="font-semibold">{current.name}</b>
-                  {current.kind === "application" && current.verified && <VerifiedBadge />}
+                  {isCompany(current) && current.verified && <VerifiedBadge />}
                 </span>
                 <small className="block truncate text-[0.78rem] text-muted">
-                  {current.kind === "application" ? `${current.job} · your application` : current.status}
+                  {current.found ? `${current.job} · found you in a search` : current.kind === "application" ? `${current.job} · your application` : current.status}
                 </small>
               </div>
               <span className="hidden flex-1 min-[760px]:block" />
-              {current.kind === "application" && (
+              {current.kind === "application" && !current.found && (
                 <Link href="/arrivals" className={`${ghost} hidden min-[760px]:inline-flex`}>
                   See on Arrivals
                 </Link>
@@ -389,7 +392,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               <ReportPanel
                 key={current.id}
                 name={current.name}
-                company={current.kind === "application"}
+                company={isCompany(current)}
                 canBlock
                 block={reporting.block}
                 pending={pending}
@@ -402,7 +405,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               />
             )}
 
-            {current.kind === "application" && (
+            {isCompany(current) && (
               <p className="mx-4 mt-3 flex items-start gap-2 rounded-[12px] bg-surface-2 px-2.5 py-2 text-[0.78rem] text-muted">
                 <ShieldAlert {...ICON} className="mt-0.5 shrink-0" />
                 <span>
@@ -441,7 +444,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               {current.kind === "request" ? (
                 <>
                   <p className="text-[0.82rem] text-muted">
-                    {current.name} is not a connection. They can&apos;t send more until you accept, and they never see your contact details.
+                    {current.found
+                      ? `${current.name} found you because you let companies find you. They can't send more until you accept, and they never see your email or phone.`
+                      : `${current.name} is not a connection. They can't send more until you accept, and they never see your contact details.`}
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <button type="button" className={primary} onClick={accept} disabled={pending}>
@@ -463,7 +468,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                       ? "This person has left CareerMetro, so you can't reply."
                       : current.state === "paused"
                         ? `${current.name}'s messages are paused while we review the company.`
-                        : current.kind === "application"
+                        : current.kind === "application" && !current.found
                           ? "This chat is closed. Application chats close 30 days after the application does."
                           : "This chat is closed."}
                 </p>
@@ -547,11 +552,14 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   );
 }
 
+/** A chat with a company: an application chat, or a company that found the person in a search (pending item 19). */
+const isCompany = (t: InboxThread) => t.kind === "application" || !!t.found;
+
 function Avatar({ thread }: { thread: InboxThread }) {
   return (
     <span
       aria-hidden="true"
-      className={`grid size-9 shrink-0 place-items-center rounded-full font-mono text-[0.74rem] font-medium ${thread.kind === "application" ? "bg-board text-board-ink" : "bg-surface-2 text-ink"}`}
+      className={`grid size-9 shrink-0 place-items-center rounded-full font-mono text-[0.74rem] font-medium ${isCompany(thread) ? "bg-board text-board-ink" : "bg-surface-2 text-ink"}`}
     >
       {initialsOf(thread.name)}
     </span>
