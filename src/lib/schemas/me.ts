@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { STORY_BOXES, SMART } from "./constants";
+import { nearbyLines } from "./nearby";
 export { STORY_BOXES, SMART } from "./constants";
 
 /**
@@ -69,6 +70,10 @@ export const meProfile = z.object({
   certifications: z.array(z.object({ name: z.string().max(160), verified: z.boolean() })).max(30),
   /** When the resume was read, or null with no resume. */
   resumeReadOn: z.string().max(40).nullable(),
+  /** Nearby lines from the target role (dev/nearby-lines-plan.md). Only the person sees them. Null before there are gaps. */
+  nearby: nearbyLines.nullable().default(null),
+  /** The existing role picker, for switching target role. Null without a resume. */
+  changeRoleHref: z.string().max(120).nullable().default(null),
 });
 
 export type StoryBox = z.infer<typeof storyBox>;

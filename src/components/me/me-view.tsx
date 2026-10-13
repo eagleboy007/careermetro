@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, Pe
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
+import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { StatusChip } from "@/components/ui/status-chip";
 import { initials } from "@/lib/departures/filter";
 import type { JourneyStop, MeProfile, Story } from "@/lib/schemas";
@@ -186,6 +187,13 @@ export function MeView({ me }: { me: MeProfile }) {
           )}
           {!own && <Note>Your gaps show only to connections unless you turn that on.</Note>}
         </Section>
+
+        {/* Nearby lines come from the target role and the gaps, so only the person sees them. */}
+        {own && me.nearby && (
+          <Section title="Nearby lines" note="roles that share your skills" action={<More href="/map">See on map</More>}>
+            <NearbyLinesList nearby={me.nearby} changeRoleHref={me.changeRoleHref} />
+          </Section>
+        )}
 
         <Section title="Interests" note="anything, not only work">
           <div className="flex flex-wrap gap-1.5">

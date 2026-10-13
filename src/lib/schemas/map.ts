@@ -2,6 +2,7 @@ import { z } from "zod";
 import { MAX_CHOICE_GOALS } from "./constants";
 import { MAX_GAPS } from "./gap";
 import { goalChoice } from "./goals";
+import { nearbyLines } from "./nearby";
 
 /**
  * The Map (post-login handoff, section 7): the person's line from Resume through one goal per gap to Match.
@@ -57,8 +58,15 @@ export const mapLine = z.object({
     .max(MAX_CHOICE_GOALS)
     .refine((goals) => goals.every((g) => g.choice), { message: "every Your choice goal is tagged" })
     .optional(),
-  /** Other role lines that cross this one at a shared skill. At most two, so their labels never collide. */
-  otherLines: z.array(z.object({ slug: z.string().min(1), title: z.string().min(1), skillId: z.string().min(1) })).max(2),
+  /**
+   * Other role lines that cross this one at a shared skill. At most two, so their labels never collide. `nearby` marks a
+   * Nearby line (dev/nearby-lines-plan.md), drawn as an interchange station; neither kind moves the train or counts.
+   */
+  otherLines: z
+    .array(z.object({ slug: z.string().min(1), title: z.string().min(1), skillId: z.string().min(1), nearby: z.boolean().optional() }))
+    .max(2),
+  /** Nearby lines: roles that share at least half their key skills with the person. Absent in older example data. */
+  nearby: nearbyLines.optional(),
   /** The person has opened a path, so the courses are picked. */
   pathOpened: z.boolean(),
 });

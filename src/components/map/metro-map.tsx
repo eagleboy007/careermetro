@@ -13,6 +13,7 @@ import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station }
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
 import type { LifeLine, MapLine } from "@/lib/schemas";
 import { LifeLegend, LifeSheet, LifeSvg } from "./life-line";
+import { emptySentence, sharesSentence, toAddText } from "@/components/nearby/nearby-lines";
 
 const NAME_MAX = 18;
 const short = (s: string) => (s.length > NAME_MAX ? `${s.slice(0, NAME_MAX - 1).trimEnd()}…` : s);
@@ -132,11 +133,30 @@ export function MetroMap({
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
             <Key swatch="bg-line">Still ahead</Key>
             <Key swatch="bg-muted opacity-30">Other people&apos;s lines</Key>
+            {layout?.crossings.some((c) => c.nearby) && (
+              <li className="inline-flex items-center gap-[7px]">
+                <i className="inline-block size-3.5 rounded-full border-[3px] border-ink bg-surface" />
+                Interchange with a nearby line
+              </li>
+            )}
             <li className="inline-flex items-center gap-[7px]">
               <i className="inline-block size-3 rounded-full border-2 border-ink" />
               Tap any pitstop
             </li>
           </ul>
+        )}
+        {!showLife && line && layout && line.nearby && (
+          <NearbyOnMap
+            nearby={line.nearby}
+            layout={layout}
+            onShow={(slug) => {
+              setSelected(`x-${slug}`);
+              const g = scroller.current?.querySelector<SVGGElement>(`[data-crossing="${slug}"]`);
+              // Bring the interchange into the sideways-scrolling map first, then give it focus.
+              g?.scrollIntoView({ block: "nearest", inline: "center" });
+              g?.focus();
+            }}
+          />
         )}
         {!showLife && line && (line.choiceGoals?.length ?? 0) > 0 && (
           <ChoiceGoals goals={line.choiceGoals!} pathHref={line.resumeId ? `/resume/${line.resumeId}/path/${line.role.slug}` : null} onAddCertificate={line.resumeId ? onAddCertificate : undefined} />
@@ -200,9 +220,11 @@ function MapSvg({
           key={c.slug}
           d={`M${c.station.x} 20 V540`}
           aria-hidden="true"
-          className={`fill-none stroke-muted ${selected === `x-${c.slug}` ? "opacity-50" : "opacity-[0.22]"}`}
+          // A Nearby line is drawn in ink, a plain other line in muted grey: neutral line colours, never cobalt.
+          className={`fill-none ${c.nearby ? "stroke-ink" : "stroke-muted"} ${selected === `x-${c.slug}` ? "opacity-50" : c.nearby ? "opacity-[0.28]" : "opacity-[0.22]"}`}
           strokeWidth={7}
           strokeLinecap="round"
+          strokeDasharray={c.nearby ? "18 8" : undefined}
         />
       ))}
 
@@ -228,9 +250,14 @@ function MapSvg({
         </text>
       </g>
 
-      {layout.crossings.map((c) => (
-        <circle key={c.slug} cx={c.station.x} cy={c.station.y} r={16} className="fill-none stroke-muted opacity-60" strokeWidth={2} strokeDasharray="3 4" />
-      ))}
+      {layout.crossings.map((c) =>
+        c.nearby ? (
+          // An interchange station: a solid ring round the pitstop, in ink. It is not a pitstop and never holds the train.
+          <circle key={c.slug} aria-hidden="true" cx={c.station.x} cy={c.station.y} r={17} className="fill-surface stroke-ink" strokeWidth={3} />
+        ) : (
+          <circle key={c.slug} aria-hidden="true" cx={c.station.x} cy={c.station.y} r={16} className="fill-none stroke-muted opacity-60" strokeWidth={2} strokeDasharray="3 4" />
+        ),
+      )}
 
       {layout.stations.map((s) => (
         <StationMark key={s.id} s={s} selected={selected === s.id} {...keyed(s.id)} />
@@ -239,8 +266,14 @@ function MapSvg({
       {layout.crossings.map((c) => {
         const labelX = c.station.x + (c.labelAtTop ? -14 : 14);
         const labelY = c.labelAtTop ? 40 : 534;
+        const near = line.nearby?.lines.find((n) => n.slug === c.slug);
+        const shown = c.nearby ? `${c.title} line · nearby` : `${c.title} line`;
+        // The name starts with the label on screen (WCAG 2.5.3); a Nearby line adds its share and where it crosses.
+        const name = near
+          ? `${shown}, interchange at Pitstop ${c.station.n}, ${c.station.name}. Shares ${near.shared} of its ${near.total} key skills with you`
+          : shown;
         return (
-          <g key={c.slug} className="group cursor-pointer outline-none" aria-label={`${c.title} line`} {...keyed(`x-${c.slug}`)}>
+          <g key={c.slug} data-crossing={c.slug} className="group cursor-pointer outline-none" aria-label={name} {...keyed(`x-${c.slug}`)}>
             {/* A wide, invisible strip along the line, so it is easy to tap. */}
             <rect x={c.station.x - 14} y={20} width={28} height={c.station.y - 40} className="fill-transparent" />
             <rect x={c.station.x - 14} y={c.station.y + 20} width={28} height={520 - c.station.y} className="fill-transparent" />
@@ -248,13 +281,13 @@ function MapSvg({
               x={labelX}
               y={labelY}
               textAnchor={c.labelAtTop ? "end" : "start"}
-              className={`font-mono text-[11px] uppercase tracking-[0.06em] group-focus-visible:fill-accent ${selected === `x-${c.slug}` ? "fill-ink" : "fill-muted"}`}
+              className={`font-mono text-[11px] uppercase tracking-[0.06em] ${c.nearby ? "group-focus-visible:fill-ink" : "group-focus-visible:fill-accent"} ${selected === `x-${c.slug}` || c.nearby ? "fill-ink" : "fill-muted"}`}
             >
-              {c.title} line
+              {shown}
             </text>
             <path
               d={`M${c.station.x} 20 V540`}
-              className="fill-none stroke-accent opacity-0 group-focus-visible:opacity-60"
+              className={`fill-none opacity-0 group-focus-visible:opacity-60 ${c.nearby ? "stroke-ink" : "stroke-accent"}`}
               strokeWidth={2}
               strokeDasharray="4 6"
             />
@@ -457,6 +490,34 @@ function Sheet({
       }
     : null;
 
+  const near = crossing ? line.nearby?.lines.find((n) => n.slug === crossing.slug) : undefined;
+  if (crossing && crossing.nearby && near) {
+    return (
+      <Panel kicker="Nearby line · interchange" title={`${crossing.title} line`}>
+        <p>
+          {sharesSentence(near)} It crosses your line at Pitstop {crossing.station.n} ({crossing.station.name}), a goal both roles ask for.
+        </p>
+        <Label>Shared</Label>
+        <p>{near.sharedSkills.length ? near.sharedSkills.map((s) => (s.byProof ? `${s.name} (proved)` : s.name)).join(", ") : "None yet"}</p>
+        {near.onResume.length > 0 && (
+          <>
+            <Label>On your resume, not yet shown in work</Label>
+            <p>{near.onResume.join(", ")}</p>
+          </>
+        )}
+        <p>{toAddText(near)}</p>
+        <p>Looking only: an interchange is not a pitstop. Your goals, your gaps and your train stay as they are.</p>
+        <Cta href={`/roles/${near.slug}`} ghost>
+          See the role
+        </Cta>
+        {line.resumeId && (
+          <Cta href={`/resume/${line.resumeId}/role`} ghost>
+            Change your target role
+          </Cta>
+        )}
+      </Panel>
+    );
+  }
   if (crossing) {
     return (
       <Panel kicker="Other line" title={`${crossing.title} line`}>
@@ -649,6 +710,50 @@ function ChoiceGoals({
       <p role="status" aria-live="polite" className="sr-only">
         {note}
       </p>
+    </section>
+  );
+}
+
+/**
+ * Nearby lines under the map, in words: the text alternative to the interchange stations, and the way to reach each
+ * by keyboard. A line that shares no goal with the person's line has no interchange and says so.
+ */
+function NearbyOnMap({ nearby, layout, onShow }: { nearby: NonNullable<MapLine["nearby"]>; layout: Layout; onShow: (slug: string) => void }) {
+  const headingId = useId();
+  return (
+    <section aria-labelledby={headingId} className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
+      <div className="flex flex-col gap-1">
+        <h3 id={headingId} className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">
+          Nearby lines
+        </h3>
+        <p className="text-[0.86rem] text-muted">Roles that share at least half their key skills with you. Where one crosses your line is an interchange; it never moves your train.</p>
+      </div>
+      {nearby.lines.length ? (
+        <ul className="flex flex-col gap-2.5">
+          {nearby.lines.map((n) => {
+            const at = layout.crossings.find((c) => c.slug === n.slug && c.nearby);
+            return (
+              <li key={n.slug} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[14px] border border-line px-3 py-2 text-[0.86rem]">
+                <span className="min-w-0 flex-1 basis-[220px]">
+                  <b className="font-semibold">{n.title}</b>
+                  <span className="block text-muted">
+                    Shares {n.shared} of its {n.total} key skills ·{" "}
+                    {at ? `interchange at Pitstop ${at.station.n}, ${at.station.name}` : "no interchange on your line"}
+                  </span>
+                </span>
+                {at && (
+                  <button type="button" onClick={() => onShow(n.slug)} className={`${ghost} min-h-11`}>
+                    Show on map
+                    <span className="sr-only">: {n.title} line</span>
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-[0.86rem] text-muted">{emptySentence(nearby.closest)}</p>
+      )}
     </section>
   );
 }

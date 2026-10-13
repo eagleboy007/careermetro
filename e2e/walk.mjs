@@ -7,6 +7,13 @@ const BASE = process.env.BASE ?? "http://localhost:3211";
 const OUT = new URL("./results/", import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
 let failed = 0;
+// Nearby lines the walk expects, worked out by src/lib/nearby/build.ts and pinned in its test (keep the two in step).
+const NEARBY_WALK_EMPTY =
+  "None of our other roles shares at least half its key skills with you yet. The closest, Senior Data Scientist, shares 2 of its 7.";
+const NEARBY_WALK_SWITCHER = [
+  ["Data Analyst", 4, 7],
+  ["Senior Data Scientist", 5, 7],
+];
 const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 // Reduced motion: axe reads colours mid fade-in otherwise and reports contrast the finished page doesn't have.
 const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
@@ -82,6 +89,8 @@ const step = async (name, fn) => {
   } catch (e) {
     failed++;
     console.log("FAIL", name, "@", p.url(), e.message.split("\n")[0]);
+    // Job logs aren't readable from every place we debug CI, but annotations are.
+    if (process.env.GITHUB_ACTIONS) console.log(`::error title=e2e step failed::${name}: ${e.message.split("\n")[0]}`);
     await shot("fail-" + name);
   }
 };
@@ -548,6 +557,121 @@ for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/griev
     await a11y(path.slice(1));
   });
 }
+// Nearby lines (dev/nearby-lines-plan.md). The walk's resume shares under half the key skills of every other role, so
+// Me shows the plain empty state with the closest role's real counts (pinned in src/lib/nearby/build.test.ts).
+await step("nearby lines: the walk's resume gets the plain empty state with the closest role's counts", async () => {
+  await p.goto(BASE + "/me");
+  await settled();
+  const section = p.getByRole("region", { name: "Nearby lines" });
+  await section.getByText(NEARBY_WALK_EMPTY, { exact: true }).waitFor({ timeout: 10000 });
+  if (await section.locator("li").count()) throw new Error("the walk's resume should have no Nearby line");
+  // Looking changes no goal: the Map still has the same goals.
+  await p.goto(BASE + "/map");
+  await settled();
+  await p.getByRole("region", { name: "Nearby lines" }).getByText(NEARBY_WALK_EMPTY, { exact: true }).waitFor({ timeout: 10000 });
+  if (await p.locator("g[data-crossing]").evaluateAll((gs) => gs.some((g) => g.getAttribute("aria-label").includes("nearby")))) throw new Error("an interchange without a Nearby line");
+});
+// A second person, switching from analytics to Data Scientist: a synthetic eval persona (the mock parse returns its
+// profile), uploaded as a Word file made here. Me lists the Nearby lines with the counts the unit test pins; the Map
+// draws the interchange, reachable by keyboard, with axe passing in light and dark at phone width.
+await step("nearby lines: a switcher sees them on Me and as an interchange on the Map", async () => {
+  const persona = JSON.parse(readFileSync(new URL("../fixtures/evals/data-scientist-analyst-upskilling.json", import.meta.url), "utf8"));
+  const { Document, Packer, Paragraph } = await import("docx");
+  const doc = new Document({ sections: [{ children: persona.resumeText.split("\n").map((t) => new Paragraph(t)) }] });
+  const dir = new URL("./results/", import.meta.url).pathname;
+  const file = `${dir}nearby-switcher.docx`;
+  const { writeFileSync } = await import("node:fs");
+  writeFileSync(file, await Packer.toBuffer(doc));
+  const ctx2 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctx2.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  const qSettled = () => q.getByText(/Comparing your resume|Building your path|Loading…/).first().waitFor({ state: "detached", timeout: 60000 }).catch(() => {});
+  try {
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill(persona.resumeText.split("|")[0].trim());
+    await q.locator('input[name="email"]').fill(`nearby-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+    await q.locator('input[name="age"]').check();
+    await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+    await q.waitForURL(/\/today/, { timeout: 15000 });
+    await q.goto(BASE + "/start");
+    await q.locator('input[type="file"]').setInputFiles(file);
+    for (const c of await q.locator('input[type="checkbox"]').all()) await c.check().catch(() => {});
+    await q.locator('button[type="submit"]').click();
+    await q.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 30000 });
+    await q.getByRole("button", { name: "Looks right", exact: true }).click();
+    const next = q.locator('main a[href$="/role"]').first();
+    await next.waitFor({ timeout: 15000 });
+    await next.click();
+    await q.waitForURL(/\/role/, { timeout: 15000 });
+    await q.locator('a[href$="/gaps/data-scientist"]').first().click();
+    await q.waitForURL(/\/gaps\//, { timeout: 60000 });
+    await qSettled();
+
+    // Me: the lines and their counts, in order.
+    await q.goto(BASE + "/me");
+    await qSettled();
+    const section = q.getByRole("region", { name: "Nearby lines" });
+    await section.locator("li").first().waitFor({ timeout: 10000 });
+    const shown = await section.locator("li").evaluateAll((lis) => lis.map((li) => li.querySelector("p")?.textContent ?? ""));
+    const want = NEARBY_WALK_SWITCHER.map(([title, shared, total]) => `${title} shares ${shared} of its ${total} key skills with you.`);
+    if (JSON.stringify(shown) !== JSON.stringify(want)) throw new Error(`Me shows ${JSON.stringify(shown)}, expected ${JSON.stringify(want)}`);
+    await section.getByText("On your resume, not yet shown in work: Data visualization").waitFor();
+    await section.getByRole("link", { name: "Change your target role" }).waitFor();
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-me-nearby.png`, fullPage: true });
+    await a11yOn(q, "me-nearby");
+
+    // Map: the interchange is reached with Tab alone and opens its panel with Enter; it never moves the train.
+    await q.goto(BASE + "/map");
+    await qSettled();
+    const trainBefore = await q.locator('g[aria-label="You are here"]').getAttribute("transform");
+    const crossing = q.locator('g[data-crossing="senior-data-scientist"]');
+    const label = await crossing.getAttribute("aria-label");
+    if (!label?.startsWith("Senior Data Scientist line · nearby, interchange at Pitstop") || !label.includes("Shares 5 of its 7 key skills")) throw new Error(`interchange label: ${label}`);
+    let reached = false;
+    for (let t = 0; t < 120 && !reached; t++) {
+      await q.keyboard.press("Tab");
+      reached = await q.evaluate(() => document.activeElement?.getAttribute("data-crossing") === "senior-data-scientist");
+    }
+    if (!reached) throw new Error("the interchange can't be reached with Tab");
+    await q.keyboard.press("Enter");
+    const panel = q.getByRole("complementary", { name: "Pitstop details" });
+    await panel.getByText("Nearby line · interchange").waitFor({ timeout: 5000 });
+    await panel.getByText("Senior Data Scientist shares 5 of its 7 key skills with you.", { exact: false }).waitFor();
+    if ((await q.locator('g[aria-label="You are here"]').getAttribute("transform")) !== trainBefore) throw new Error("the interchange moved the train");
+    // The text list under the map says the same, and its button takes keyboard focus to the interchange.
+    const list = q.getByRole("region", { name: "Nearby lines" });
+    await list.getByText(/Shares 4 of its 7 key skills · no interchange on your line/).waitFor();
+    await list.getByRole("button", { name: /^Show on map\s*:\s*Senior Data Scientist line$/ }).focus();
+    await q.keyboard.press("Enter");
+    await q.waitForFunction(() => document.activeElement?.getAttribute("data-crossing") === "senior-data-scientist", null, { timeout: 5000 });
+    await a11yOn(q, "map-nearby");
+    // Phone width, light then dark: no sideways page scroll and axe passes.
+    await q.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["light", "dark"]) {
+      await q.emulateMedia({ colorScheme: scheme });
+      await q.reload();
+      await qSettled();
+      await q.locator('g[data-crossing="senior-data-scientist"]').waitFor();
+      if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`map scrolls sideways at 390px (${scheme})`);
+      await a11yOn(q, `map-nearby-phone-${scheme}`);
+      await q.goto(BASE + "/me");
+      await qSettled();
+      if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`Me scrolls sideways at 390px (${scheme})`);
+      await a11yOn(q, `me-nearby-phone-${scheme}`);
+      await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-me-nearby-phone-${scheme}.png`, fullPage: true });
+      await q.goto(BASE + "/map");
+      await qSettled();
+      await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-map-nearby-phone-${scheme}.png`, fullPage: true });
+    }
+  } finally {
+    await ctx2.close();
+  }
+});
 await step("unknown address shows the not-found page", async () => {
   const r = await p.goto(BASE + expected404);
   if (r.status() !== 404) throw new Error("status " + r.status());
@@ -1678,5 +1802,6 @@ if (process.env.DATABASE_URL) {
 }
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
+if (process.env.GITHUB_ACTIONS) for (const pr of problems) console.log(`::error title=e2e problem::${pr.split("\n")[0]}`);
 await b.close();
 if (failed || problems.length) process.exit(1);

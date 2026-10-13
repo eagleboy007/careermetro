@@ -5,7 +5,9 @@ import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
-import { syncGoals } from "@/lib/goals/store";
+import { provedSkills, syncGoals } from "@/lib/goals/store";
+import { nearbyLinesFor } from "@/lib/nearby/build";
+import { nearbyOrNothing } from "@/lib/nearby/safe";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { certificatesFor } from "@/lib/proofs/eligible";
@@ -13,8 +15,9 @@ import { choiceName, lineGoals } from "@/lib/ride/store";
 import { skillGroupMembers } from "@/content";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { lifeFromProfile } from "./life";
+import { otherLines } from "./other-lines";
 
-const MAX_OTHER_LINES = 2;
+export { otherLines };
 
 /**
  * The signed-in person's line, from their current gap analysis, their goals and newest path. One goal per gap, in
@@ -22,7 +25,7 @@ const MAX_OTHER_LINES = 2;
  * `choiceGoals`: never gaps, never on the line, never moving the train. A goal is proved only by accepted proof. Null
  * before there is a current analysis (the No resume map).
  */
-export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<MapLine | null> {
+export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb(), now = new Date()): Promise<MapLine | null> {
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return null;
   const { result } = analysis;
@@ -97,46 +100,28 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   }));
 
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
+  // Nearby lines read the same confirmed profile and proof as the gaps; they only ever add crossings, never goals.
+  const [resume, proved] = await Promise.all([getResumeForOwner(analysis.resumeId, { userId }, db), provedSkills(userId, db)]);
+  // If they can't be worked out, the Map and Me render without them (logged as nearby_failed, field paths only).
+  const nearby = resume
+    ? nearbyOrNothing(() =>
+        nearbyLinesFor({ profile: resume.profile, targetSlug: result.roleSlug, proved: new Set(proved), lineSkillIds: gapGoals.map((g) => g.skillId), now }),
+      )
+    : undefined;
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
     resumeId: analysis.resumeId,
     skillsFound: result.metSkillIds.length,
     goals: gapGoals,
     choiceGoals,
-    // Other lines cross at the line's gaps.
-    otherLines: otherLines(result.roleSlug, gapGoals),
+    // Other lines cross at the line's gaps: Nearby lines first, as interchanges.
+    otherLines: otherLines(result.roleSlug, gapGoals, nearby),
+    nearby,
     pathOpened: Boolean(path),
   };
 }
 
 const hours = (minutes: number) => (minutes < 60 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`);
-
-/**
- * Other role profiles that need one of this line's gap skills: the roles sharing the most gaps first. Each crosses at a
- * different goal. People counts come with opted-in profiles (build step 11).
- */
-export function otherLines(roleSlug: string, goals: Pick<MapGoal, "skillId">[]): MapLine["otherLines"] {
-  const gapIds = goals.map((g) => g.skillId);
-  const candidates = roleProfiles
-    .filter((r) => r.slug !== roleSlug)
-    .map((r) => {
-      const required = new Set(r.skills.filter((s) => s.importance === "required").map((s) => s.skillId));
-      return { role: r, shared: gapIds.filter((id) => required.has(id)) };
-    })
-    .filter((c) => c.shared.length > 0)
-    .sort((a, b) => b.shared.length - a.shared.length || a.role.title.localeCompare(b.role.title));
-  const used = new Set<string>();
-  const out: MapLine["otherLines"] = [];
-  for (const c of candidates) {
-    // Cross late on the line, where fewer labels sit, at a goal no other line uses.
-    const at = [...c.shared].reverse().find((id) => !used.has(id));
-    if (!at) continue;
-    used.add(at);
-    out.push({ slug: c.role.slug, title: c.role.title, skillId: at });
-    if (out.length === MAX_OTHER_LINES) break;
-  }
-  return out;
-}
 
 /**
  * The signed-in person's Life line, from the latest saved profile of the resume behind their current gaps and the day

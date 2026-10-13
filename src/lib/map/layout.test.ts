@@ -109,10 +109,23 @@ describe("layoutLine", () => {
 
   it("crosses other role lines at the pitstop that fills the shared gap, and alternates their labels", () => {
     const l = layoutLine(exampleMapLine);
-    expect(l.crossings.map((c) => [c.slug, c.station.id, c.labelAtTop])).toEqual([
-      ["business-analyst", "power-bi-prove", false],
-      ["data-engineer", "python-prove", true],
+    expect(l.crossings.map((c) => [c.slug, c.station.id, c.labelAtTop, c.nearby])).toEqual([
+      ["data-scientist", "python-prove", false, true],
+      ["data-engineer", "sql-prove", true, false],
     ]);
+  });
+
+  it("marks a Nearby line's crossing as an interchange, and an interchange never moves the train or adds a pitstop", () => {
+    const base = { goals: [goal("a", "missing"), goal("b", "weak"), goal("c", "missing")], otherLines: [] };
+    const plain = layoutLine(base);
+    const withNearby = layoutLine({ ...base, otherLines: [{ slug: "x", title: "X", skillId: "b", nearby: true }, { slug: "y", title: "Y", skillId: "c" }] });
+    expect(withNearby.crossings.map((c) => [c.slug, c.nearby])).toEqual([
+      ["x", true],
+      ["y", false],
+    ]);
+    expect(withNearby.train).toEqual(plain.train);
+    expect(withNearby.stations).toEqual(plain.stations);
+    expect([withNearby.pitstopCount, withNearby.goalCount, withNearby.done]).toEqual([plain.pitstopCount, plain.goalCount, plain.done]);
   });
 
   it("drops an other line that shares no pitstop", () => {

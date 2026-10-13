@@ -24,7 +24,8 @@ export type Station =
       above: boolean;
     };
 
-export type Crossing = { slug: string; title: string; station: Extract<Station, { kind: PitstopKind }>; labelAtTop: boolean };
+/** Another role's line crossing at a pitstop. `nearby`: a Nearby line, drawn as an interchange station. */
+export type Crossing = { slug: string; title: string; station: Extract<Station, { kind: PitstopKind }>; labelAtTop: boolean; nearby: boolean };
 
 export type Layout = {
   width: number;
@@ -147,7 +148,7 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
     const at = pitstopStations.filter((s) => s.goal.skillId === other.skillId && !used.has(s.id)).at(-1);
     if (!at) continue;
     used.add(at.id);
-    crossings.push({ slug: other.slug, title: other.title, station: at, labelAtTop: crossings.length % 2 === 1 });
+    crossings.push({ slug: other.slug, title: other.title, station: at, labelAtTop: crossings.length % 2 === 1, nearby: other.nearby === true });
   }
 
   const gridXs: number[] = [];
