@@ -14,6 +14,7 @@ const m = vi.hoisted(() => ({
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
   renewExpired: vi.fn(async () => 0),
+  removeChoiceGoal: vi.fn(),
   clearCodes: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -21,6 +22,8 @@ const m = vi.hoisted(() => ({
   afterSignIn: vi.fn(),
   parseResume: vi.fn(),
   createJobCheck: vi.fn(),
+  addJobCheckGoal: vi.fn(),
+  deleteJobCheck: vi.fn(),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -37,10 +40,10 @@ vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
-vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired }));
+vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeChoiceGoal: m.removeChoiceGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
-vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
+vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
 vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
 vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
@@ -52,6 +55,9 @@ import { GET as exportData } from "@/app/api/account/export/route";
 import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { POST as checkJob } from "@/app/api/job-checks/route";
+import { DELETE as removeCheck } from "@/app/api/job-checks/[id]/route";
+import { DELETE as removeGoalRoute } from "@/app/api/goals/[id]/route";
+import { POST as addCheckGoal } from "@/app/api/job-checks/[id]/goals/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
@@ -503,5 +509,107 @@ describe("job check", () => {
       expect(text).not.toContain("Example Analytics");
     }
     for (const s of spies) s.mockRestore();
+  });
+});
+
+describe("job check: add as my goal", () => {
+  const send = (body: unknown, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    new Request(`${SITE}/api/job-checks/${ID}/goals`, {
+      method: "POST",
+      headers: { ...(origin ? { origin } : {}), "content-type": "application/json", ...headers },
+      body: typeof body === "string" ? body : JSON.stringify(body),
+    });
+  const add = (r: Request) => addCheckGoal(r, ctx as never);
+
+  it("refuses another site, oversized bodies and the wrong shape before looking anything up", async () => {
+    m.account = { id: "user-1" };
+    for (const origin of [null, "https://evil.example"]) expect((await add(send({ skillId: "power-bi" }, origin))).status).toBe(403);
+    expect((await add(send({ skillId: "power-bi" }, SITE, { "content-length": "5000" }))).status).toBe(413);
+    expect((await add(send({ skillId: "x".repeat(300) }))).status).toBe(413);
+    for (const bad of ["not json", {}, { skillId: "Power BI" }, { skillId: "power-bi", jobCheckId: ID }, { skillId: 3 }]) {
+      expect((await add(send(bad))).status).toBe(400);
+    }
+    expect(m.addJobCheckGoal).not.toHaveBeenCalled();
+  });
+
+  it("asks an anonymous visitor to sign in, and acts for the signed-in account only", async () => {
+    expect(await json(await add(send({ skillId: "power-bi" })))).toEqual({ status: 401, body: { ok: false, error: "Sign in to keep goals." } });
+    m.jar!.clear();
+    expect(await json(await add(send({ skillId: "power-bi" })))).toEqual({ status: 401, body: { ok: false, error: "Sign in to keep goals." } });
+    expect(m.addJobCheckGoal).not.toHaveBeenCalled();
+
+    m.account = { id: "user-1" };
+    m.addJobCheckGoal.mockResolvedValueOnce({ ok: true, goalId: "goal-1" });
+    expect(await json(await add(send({ skillId: "power-bi" })))).toEqual({ status: 200, body: { ok: true, goalId: "goal-1" } });
+    expect(m.addJobCheckGoal).toHaveBeenCalledWith(ID, "power-bi", "user-1");
+  });
+
+  it("says plainly why a goal wasn't added", async () => {
+    m.account = { id: "user-1" };
+    const cases = [
+      ["not_found", 404, /couldn't find this job check/],
+      ["not_this_job", 409, /Only skills this job adds/],
+      ["already", 409, /^Already on your goals$/],
+      ["limit", 409, /^You have 20 goals of your own. Remove one first.$/],
+    ] as const;
+    for (const [reason, status, message] of cases) {
+      m.addJobCheckGoal.mockResolvedValueOnce({ ok: false, reason });
+      const res = await json(await add(send({ skillId: "power-bi" })));
+      expect(res.status).toBe(status);
+      expect(res.body).toMatchObject({ ok: false, reason });
+      expect(res.body.error).toMatch(message);
+    }
+    m.addJobCheckGoal.mockRejectedValueOnce(Object.assign(new Error("Failed query: insert … params: power-bi"), { code: "57014" }));
+    expect((await add(send({ skillId: "power-bi" }))).status).toBe(500);
+  });
+});
+
+describe("job check: remove", () => {
+  const del = (origin: string | null = SITE) => removeCheck(new Request(`${SITE}/api/job-checks/${ID}`, { method: "DELETE", headers: origin ? { origin } : {} }), ctx as never);
+
+  it("refuses another site and anyone without a session", async () => {
+    expect((await del(null)).status).toBe(403);
+    expect((await del("https://evil.example")).status).toBe(403);
+    m.jar!.clear();
+    expect((await del()).status).toBe(404);
+    expect(m.deleteJobCheck).not.toHaveBeenCalled();
+  });
+
+  it("removes the owner's own check; anyone else's reads as not found", async () => {
+    m.account = { id: "user-1" };
+    m.deleteJobCheck.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    expect(await json(await del())).toEqual({ status: 200, body: { ok: true } });
+    expect(m.deleteJobCheck).toHaveBeenCalledWith(ID, { userId: "user-1" });
+    expect((await del()).status).toBe(404);
+  });
+});
+
+describe("remove from my goals", () => {
+  const del = (id = ID, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    removeGoalRoute(new Request(`${SITE}/api/goals/${id}`, { method: "DELETE", headers: { ...(origin ? { origin } : {}), ...headers } }), {
+      params: Promise.resolve({ id }),
+    } as never);
+
+  it("refuses another site, a body, a bad id and anyone not signed in, before looking anything up", async () => {
+    m.account = { id: "user-1" };
+    expect((await del(ID, null)).status).toBe(403);
+    expect((await del(ID, "https://evil.example")).status).toBe(403);
+    expect((await del(ID, SITE, { "content-length": "5000" })).status).toBe(413);
+    expect((await del("../../etc")).status).toBe(404);
+    m.account = null;
+    expect((await del()).status).toBe(401);
+    m.jar!.clear();
+    expect((await del()).status).toBe(401);
+    expect(m.removeChoiceGoal).not.toHaveBeenCalled();
+  });
+
+  it("removes the account's own Your choice goal; any other goal reads as not found", async () => {
+    m.account = { id: "user-1" };
+    m.removeChoiceGoal.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    expect(await json(await del())).toEqual({ status: 200, body: { ok: true } });
+    expect(m.removeChoiceGoal).toHaveBeenCalledWith("user-1", ID);
+    expect((await del()).status).toBe(404);
+    m.removeChoiceGoal.mockRejectedValueOnce(new Error("Failed query"));
+    expect((await del()).status).toBe(500);
   });
 });

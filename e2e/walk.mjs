@@ -191,6 +191,9 @@ await step("check against a job: the groups show, and the gaps stay as they were
   await p.reload();
   await settled();
   if (JSON.stringify(await p.locator("article").allInnerTexts()) !== JSON.stringify(gapsBefore)) throw new Error("a job check changed the gaps");
+  // Not signed in: goals are kept for an account, so "Only for this job" asks to sign in instead of adding.
+  if (!(await p.getByRole("link", { name: "Sign in to keep goals" }).count())) throw new Error("no sign-in link on Only for this job");
+  if (await p.getByRole("button", { name: /^Add as my goal/ }).count()) throw new Error("Add as my goal shown while signed out");
   await shot("job-check");
   await a11y("job-check");
   await p.emulateMedia({ colorScheme: "dark" });
@@ -345,6 +348,88 @@ await step("untick -> back to first, no streak", async () => {
       .count()
   )
     throw new Error("streak still shown");
+});
+// Signed in now, with the job check made before signing in (it came with the resume).
+let choiceSkill = "";
+await step("job check: add as my goal, remove it and add it again, see it as Your choice on Today and the map, plan for this job, remove the check", async () => {
+  const gapsUrl = pathUrl.replace("/path/", "/gaps/");
+  const before = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  await p.goto(gapsUrl);
+  await settled();
+  const add = p.getByRole("button", { name: /^Add as my goal: / }).first();
+  await add.waitFor({ timeout: 10000 });
+  const skill = (await add.getAttribute("aria-label")).replace(/^Add as my goal: /, "");
+  choiceSkill = skill;
+  const addIt = async () => {
+    const button = p.getByRole("button", { name: `Add as my goal: ${skill}` }).first();
+    await Promise.all([p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/goals")), button.click()]);
+    await p.getByRole("status").filter({ hasText: "On your goals" }).first().waitFor({ timeout: 10000 });
+  };
+  await addIt();
+  // Remove from my goals: the Add button comes back and takes focus; then add it again.
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/goals/")),
+    p.getByRole("button", { name: `Remove from my goals: ${skill}` }).first().click(),
+  ]);
+  await p.waitForFunction((name) => document.activeElement?.getAttribute("aria-label") === `Add as my goal: ${name}`, skill, { timeout: 10000 });
+  await addIt();
+  // The gaps and the match don't move.
+  const after = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const analyses = (d) => JSON.stringify(d.resumes.flatMap((r) => r.profiles.flatMap((x) => x.gapAnalyses.map((a) => a.result))));
+  if (analyses(after) !== analyses(before)) throw new Error("adding a goal changed the gap analysis");
+  const goal = after.goals.find((g) => g.source === "user");
+  if (!goal?.jobCheckId || goal.jobCompany !== "Example Analytics Pvt Ltd") throw new Error("the download lacks the goal's job check");
+
+  // Today: in its own Your choice list, not on the ride.
+  await p.goto(BASE + "/today");
+  await settled();
+  const choiceList = p.locator('section[aria-label="Your goals"]').getByRole("region", { name: "Your choice" });
+  await choiceList.getByText(skill, { exact: true }).waitFor({ timeout: 10000 });
+  await choiceList.getByText("Your choice · for Example Analytics Pvt Ltd").first().waitFor();
+  if ((await p.locator('section[aria-label="Today\'s ride"], section[aria-label="Welcome"]').first().innerText()).includes(skill)) throw new Error("a Your choice goal is on the ride");
+  await shot("today-your-choice");
+  await a11y("today-your-choice");
+  // The map: off the line, in its own list; no station for it.
+  await p.goto(BASE + "/map");
+  await settled();
+  const mapChoice = p.getByRole("region", { name: "Your choice" });
+  await mapChoice.getByText("Your choice · for Example Analytics Pvt Ltd").waitFor({ timeout: 10000 });
+  if (await p.locator(`g[role="button"][aria-label*="${skill}"]`).count()) throw new Error("a Your choice goal is a station on the line");
+  await shot("map-your-choice");
+  await a11y("map-your-choice");
+
+  await p.goto(gapsUrl);
+  await settled();
+  await p.getByRole("link", { name: "Plan for this job" }).first().click();
+  await p.waitForURL(/\/path\/.*[?&]job=/, { timeout: 30000 });
+  await settled();
+  await p.getByRole("heading", { name: "To apply here, close these first" }).waitFor({ timeout: 10000 });
+  await p.getByRole("status").filter({ hasText: "On your goals" }).first().waitFor({ timeout: 5000 });
+  await shot("plan-for-job");
+  await a11y("plan-for-job");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("plan-for-job-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+  // Someone else's id, or a made-up one, shows the normal path.
+  await p.goto(pathUrl + "?job=00000000-0000-4000-8000-000000000000");
+  await settled();
+  if (await p.getByRole("heading", { name: "To apply here, close these first" }).count()) throw new Error("a made-up job id showed a plan");
+
+  await p.goto(gapsUrl);
+  await settled();
+  const heading = p.getByRole("heading", { name: "Data Analyst at Example Analytics Pvt Ltd" });
+  await p.getByRole("button", { name: /^Remove this check: / }).first().click();
+  await p.getByRole("button", { name: "Yes, remove it" }).click();
+  await heading.waitFor({ state: "detached", timeout: 10000 });
+  // Focus goes to the section's heading (no check is left) and the removal is said.
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Check against a job", null, { timeout: 10000 });
+  await p.getByRole("status").filter({ hasText: "Check removed. Goals you added from it stay." }).waitFor({ timeout: 5000 });
+  // The goal stays; it only loses the job's tag.
+  await p.goto(BASE + "/map");
+  await settled();
+  await p.getByRole("region", { name: "Your choice" }).locator("li").getByText("Your choice", { exact: true }).waitFor({ timeout: 10000 });
 });
 await step("loading frame shows the header at once", async () => {
   await p.goto(BASE + "/map", { waitUntil: "commit" });
@@ -647,6 +732,32 @@ await step("path finished: says what's next, and the gaps stay open", async () =
   const after = await p.locator("article").allInnerTexts();
   if (JSON.stringify(after) !== JSON.stringify(before)) throw new Error("finishing the path changed the gaps");
 });
+// Last of all: every gap goal proved arrives, whatever Your choice goal is still open (it never holds back the train).
+if (process.env.DATABASE_URL) {
+  await step("every gap proved arrives, with a Your choice goal still open", async () => {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+    try {
+      const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+      if (!me) throw new Error("walk account not found");
+      const gaps = await sql`select skill_id from user_goals where user_id = ${me.id} and source = 'gap' and status <> 'skipped'`;
+      for (const g of gaps) {
+        await sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, verifier, verified_at)
+          values (${me.id}, ${g.skill_id}, 'skill_check', 'accepted', ${sql.json({ type: "skill_check", checkId: "walk" })}, 'app', now())`;
+      }
+      const [open] = await sql`select count(*)::int as n from user_goals where user_id = ${me.id} and source = 'user' and status = 'active'`;
+      if (open.n < 1) throw new Error("no open Your choice goal to check against");
+    } finally {
+      await sql.end();
+    }
+    await p.goto(BASE + "/today");
+    await settled();
+    await p.getByText("Every goal on your line is proved.").first().waitFor({ timeout: 10000 });
+    await p.locator('section[aria-label="Your goals"]').getByRole("region", { name: "Your choice" }).getByText(choiceSkill, { exact: true }).waitFor({ timeout: 5000 });
+    await shot("today-arrived-your-choice");
+    await a11y("today-arrived-your-choice");
+  });
+}
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
 await b.close();

@@ -1,5 +1,7 @@
 import { z } from "zod";
+import { MAX_CHOICE_GOALS } from "./constants";
 import { MAX_GAPS } from "./gap";
+import { goalChoice } from "./goals";
 
 /**
  * The Map (post-login handoff, section 7): the person's line from Resume through one goal per gap to Match.
@@ -32,6 +34,8 @@ export const mapGoal = z.object({
     .default([]),
   /** Its certificate expired, so it waits for a current one. */
   renew: z.boolean().default(false),
+  /** Set on a "Your choice" goal (in `choiceGoals`): not a gap of the role, so it never changes the match or the train. */
+  choice: goalChoice.nullable().optional(),
 });
 
 export const mapLine = z.object({
@@ -39,7 +43,20 @@ export const mapLine = z.object({
   /** Links back to the resume, gaps and path. Null in example data. */
   resumeId: z.string().min(1).nullable(),
   skillsFound: z.number().int().min(0),
-  goals: z.array(mapGoal).max(MAX_GAPS),
+  /** The line itself: one goal per gap. Only these carry the train and count toward Match. */
+  goals: z
+    .array(mapGoal)
+    .max(MAX_GAPS)
+    .refine((goals) => goals.every((g) => !g.choice), { message: "Your choice goals are never on the main line" }),
+  /**
+   * "Your choice" goals the person added (handoff section 7: spurs labelled "YOUR CHOICE"). Off the main line: they
+   * never move the train or count toward Match. Skipped ones are left out.
+   */
+  choiceGoals: z
+    .array(mapGoal)
+    .max(MAX_CHOICE_GOALS)
+    .refine((goals) => goals.every((g) => g.choice), { message: "every Your choice goal is tagged" })
+    .optional(),
   /** Other role lines that cross this one at a shared skill. At most two, so their labels never collide. */
   otherLines: z.array(z.object({ slug: z.string().min(1), title: z.string().min(1), skillId: z.string().min(1) })).max(2),
   /** The person has opened a path, so the courses are picked. */

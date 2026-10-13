@@ -18,6 +18,11 @@ export type RideGoal = {
   proofSkills?: string[];
   /** Its certificate expired, so it waits for a current one. */
   renew?: boolean;
+  /**
+   * Set on a "Your choice" goal, with the company of the job check it came from. Such goals are never on the ride:
+   * they sit on their own spur and never move the train or arrival.
+   */
+  choice?: { company: string | null } | null;
 };
 
 /** The person's Path page for their current analysis, and whether a path has been built there yet. */
@@ -192,12 +197,16 @@ export function buildRide(input: RideInput): Ride | null {
 
 const SHOWN_GOALS = 3;
 
+/** Why a "Your choice" goal is on the person's goals: they added it. It is never a gap of the role. */
+export const choiceEvidence = (company: string | null) =>
+  `You added this goal${company ? ` for a job at ${company}` : ""}. It doesn't change your match or your gaps.`;
+
 /**
  * Your goals on Today, from the person's own line: the next goals not proved, each with its learn and prove pitstops
  * numbered as on the ride, the gap's explanation and the resume line it quotes. The goal the ride is on shows where
  * the person is. Tracks and suggested goals come later, so the track is the role.
  */
-export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[] }): GoalsSummary {
+export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[] }): GoalsSummary {
   const at = position(input);
   const gapBySkill = new Map(input.gaps.map((g) => [g.skillId, g]));
   const open = input.goals.filter((g) => !g.proved);
@@ -242,9 +251,40 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
   return goalsSummary.parse({
     track: clip(input.role, 60),
     goals,
+    choiceGoals: (input.chosen ?? []).map((g) => choiceGoal(g, input)),
     moreCount: more.length,
     moreNames: more.length <= 5 ? more.map((g) => clip(g.name, 80)) : [],
     suggestedGoal: null,
     metThisMonth: [],
   });
+}
+
+/**
+ * A "Your choice" goal on Today, apart from the line: its own two pitstops, numbered on its spur (1 learn, 2 prove).
+ * The train is never on it, so no pitstop is "now". Learning is done when the path's step is marked done or every
+ * task was ticked on an earlier day; proof meets it.
+ */
+function choiceGoal(g: RideGoal, input: RideInput): Goal {
+  const tasks = tasksOf(g, input.path);
+  const learnDone = g.learnDone || g.proved || tasks.every((t) => input.doneBefore.has(t.id));
+  const firstCourse = g.resources[0]?.title;
+  return {
+    id: clip(g.goalId, 60),
+    name: clip(g.name, 80),
+    status: g.proved ? "met" : g.status === "missing" ? "missing" : "weak",
+    evidence: clip(choiceEvidence(g.choice?.company ?? null), 300),
+    quote: null,
+    pitstops: [
+      {
+        number: 1,
+        kind: "learn",
+        title: clip(firstCourse ? `Learn: ${firstCourse}` : tasks[0]?.title ?? `Learn: ${g.name}`, 120),
+        note: learnDone ? "done" : `${tasks.length} ${tasks.length === 1 ? "task" : "tasks"}`,
+        state: learnDone ? "done" : "ahead",
+      },
+      { number: 2, kind: "prove", title: "Prove: skill check, certificate or work", note: g.proved ? "done" : "meets this goal", state: g.proved ? "done" : "ahead" },
+    ],
+    suggestion: null,
+    choice: { company: g.choice?.company ?? null },
+  };
 }

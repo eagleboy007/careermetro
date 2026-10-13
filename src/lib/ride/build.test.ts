@@ -164,4 +164,38 @@ describe("buildGoalsSummary", () => {
     expect(summary(goals, { before: all }).goals[0].pitstops.map((p) => p.state)).toEqual(["done", "now"]);
     expect(s).toMatchObject({ moreCount: 1, moreNames: ["E"], metThisMonth: [] });
   });
+
+  it("lists Your choice goals apart, on their own spur, tagged with their job, and never moves the train or arrival", () => {
+    const chosen = goal({ goalId: "airflow", name: "Data pipeline orchestration", resources: [], practice: null, choice: { company: "Example Analytics Pvt Ltd" } });
+    const dbt = goal({ goalId: "dbt", choice: { company: null } });
+    const input = (goals: RideGoal[], before: string[] = []) => ({
+      goals,
+      path: BUILT,
+      doneBefore: new Set(before),
+      doneToday: new Set<string>(),
+      doneThisWeek: new Set<string>(),
+      role: "Data Analyst",
+      gaps,
+      chosen: [chosen, dbt],
+    });
+    const s = buildGoalsSummary(input([goal({ goalId: "sql" })], ["dbt:r:dbt-1", "dbt:r:dbt-2", "dbt:practice"]));
+    expect(s.goals.map((g) => g.name)).toEqual(["SQL"]);
+    expect(s.choiceGoals!.map((g) => [g.name, g.choice])).toEqual([
+      ["Data pipeline orchestration", { company: "Example Analytics Pvt Ltd" }],
+      ["DBT", { company: null }],
+    ]);
+    expect(s.choiceGoals![0].evidence).toBe("You added this goal for a job at Example Analytics Pvt Ltd. It doesn't change your match or your gaps.");
+    expect(s.choiceGoals![1].evidence).toBe("You added this goal. It doesn't change your match or your gaps.");
+    // Its own learn and prove pitstops, numbered on its spur; with no path step it studies on its own.
+    expect(s.choiceGoals![0].pitstops.map((p) => [p.number, p.kind, p.state, p.title])).toEqual([
+      [1, "learn", "ahead", "Study Data pipeline orchestration on your own"],
+      [2, "prove", "ahead", "Prove: skill check, certificate or work"],
+    ]);
+    expect(s.choiceGoals![1].pitstops.map((p) => p.state)).toEqual(["done", "ahead"]);
+    // Proved: met.
+    const proved = buildGoalsSummary({ ...input([goal({ goalId: "sql" })]), chosen: [{ ...chosen, proved: true }] });
+    expect(proved.choiceGoals![0]).toMatchObject({ status: "met", pitstops: [{ state: "done" }, { state: "done" }] });
+    // Every gap goal proved: arrived, whatever Your choice goals are open (they aren't on the ride at all).
+    expect(ride([{ ...goal({ goalId: "sql" }), proved: true }])).toMatchObject({ pitstop: 3, pitstopCount: 2, goalName: "Practice" });
+  });
 });

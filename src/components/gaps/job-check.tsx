@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState, useTransition, type FormEvent } fro
 import { readApiReply } from "@/lib/api-reply";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { JOB_COMPANY_MAX, JOB_TEXT_MAX, JOB_TEXT_MIN, JOB_TITLE_MAX } from "@/lib/schemas/constants";
-import { JobCheckResult, jobCheckHeadingId } from "./job-check-result";
+import { JobCheckResult, jobCheckHeadingId, type GoalsContext } from "./job-check-result";
 
 const input =
   "min-w-0 rounded-md border border-line bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
@@ -22,12 +22,15 @@ export function JobCheck({
   roleSlug,
   roleTitle,
   checks,
+  goals,
   demo = false,
 }: {
   resumeId: string;
   roleSlug: string;
   roleTitle: string;
   checks: JobCheckView[];
+  /** The visitor's goals, for "Add as my goal" on each check. */
+  goals: GoalsContext;
   demo?: boolean;
 }) {
   const router = useRouter();
@@ -54,16 +57,20 @@ export function JobCheck({
     formRef.current?.querySelector<HTMLElement>(`[name="${errorField ?? "text"}"]`)?.focus();
   }, [error, errorField, busy]);
 
-  // Once the refreshed page shows the new check, move focus to its heading so a screen reader reads it next.
+  /** Said once a check is removed, in this component's own polite live region. */
+  const [removedNote, setRemovedNote] = useState("");
+  // Once the refreshed page shows the new check, move focus to its heading so a screen reader reads it next. After a
+  // check is removed, focus goes to the next check's heading, or to this section's heading when none is left.
   useEffect(() => {
     if (refreshing || !focusId.current) return;
-    document.getElementById(jobCheckHeadingId(focusId.current))?.focus();
+    (document.getElementById(jobCheckHeadingId(focusId.current)) ?? document.getElementById(`${ids}-heading`))?.focus();
     focusId.current = null;
-  }, [refreshing]);
+  }, [refreshing, ids]);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("");
+    setRemovedNote("");
     const length = text.trim().length;
     if (!company.trim()) return fail("Add the company and the job title.", "company");
     if (!title.trim()) return fail("Add the company and the job title.", "title");
@@ -96,13 +103,22 @@ export function JobCheck({
     }
   }
 
+  /** After "Remove this check": refresh, then focus the next check (or the one before it, or the heading). */
+  function removed(id: string) {
+    const at = checks.findIndex((c) => c.id === id);
+    const next = checks[at + 1] ?? checks[at - 1];
+    focusId.current = next?.id ?? "none";
+    setRemovedNote("Check removed. Goals you added from it stay.");
+    startRefresh(() => router.refresh());
+  }
+
   const hint = `${ids}-hint`;
   const err = `${ids}-error`;
   const invalid = (field: "company" | "title" | "text") => (error && errorField === field ? true : undefined);
   return (
     <section className="flex flex-col gap-4" aria-labelledby={`${ids}-heading`}>
       <div className="flex flex-col gap-1">
-        <h2 id={`${ids}-heading`} className="font-sans text-lg font-semibold tracking-normal">
+        <h2 id={`${ids}-heading`} tabIndex={-1} className="font-sans text-lg font-semibold tracking-normal focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           Check against a job
         </h2>
         <p className="text-sm text-muted">
@@ -180,11 +196,22 @@ export function JobCheck({
           </p>
         </div>
       </form>
+      <p role="status" aria-live="polite" className="sr-only">
+        {removedNote}
+      </p>
       {checks.length > 0 && (
         <div className="flex flex-col gap-3">
           <p className="font-mono text-xs uppercase tracking-wider text-muted">Your job checks, newest first</p>
           {checks.map((c) => (
-            <JobCheckResult key={c.id} check={c} roleTitle={roleTitle} />
+            <JobCheckResult
+              key={c.id}
+              check={c}
+              roleTitle={roleTitle}
+              planHref={`/resume/${resumeId}/path/${roleSlug}?job=${c.id}`}
+              goals={goals}
+              onRemoved={() => removed(c.id)}
+              demo={demo}
+            />
           ))}
         </div>
       )}

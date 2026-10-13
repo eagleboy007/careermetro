@@ -3,7 +3,7 @@ import { roleProfiles } from "@/content";
 import { buildGapAnalysis } from "@/lib/gaps/analysis";
 import { matchProfile } from "@/lib/gaps/match";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
-import { jobCheckView, postingRole, type StoredJobCheck } from "./groups";
+import { inPathOrder, jobCheckView, postingRole, type StoredJobCheck } from "./groups";
 
 const NOW = new Date("2026-10-12T10:00:00Z");
 const dataAnalyst = roleProfiles.find((r) => r.slug === "data-analyst")!;
@@ -123,5 +123,13 @@ describe("jobCheckView", () => {
 
   it("gives the same groups for the same inputs", () => {
     expect(jobCheckView(check(), profile, target, new Set(), { now: NOW })).toEqual(jobCheckView(check(), profile, target, new Set(), { now: NOW }));
+  });
+});
+
+describe("inPathOrder", () => {
+  it("puts a job's goals in the path's order, and goals the path left for later after them in the check's order", () => {
+    const s = (skillId: string) => ({ skillId });
+    expect(inPathOrder([s("c"), s("x"), s("a"), s("y"), s("b")], ["a", "b", "c"]).map((g) => g.skillId)).toEqual(["a", "b", "c", "x", "y"]);
+    expect(inPathOrder([s("x"), s("y")], [])).toEqual([s("x"), s("y")]);
   });
 });

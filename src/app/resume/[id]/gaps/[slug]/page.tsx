@@ -17,7 +17,7 @@ import { roleProfiles, skills } from "@/content";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import type { JobCheckView } from "@/lib/jobs/groups";
-import { jobChecksForPage } from "@/lib/jobs/store";
+import { goalSkillsOf, jobChecksForPage } from "@/lib/jobs/store";
 import { readOwner } from "@/lib/session";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -56,8 +56,13 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   const { analysis, analysisId, rating } = result;
   // Saved job checks are read-only here; a failure to load them never hides the gaps.
   let checks: JobCheckView[] | null;
+  // The account's goal skills, for "Add as my goal"; null for an anonymous visitor, who is asked to sign in.
+  let goalSkills: Awaited<ReturnType<typeof goalSkillsOf>> | null = null;
   try {
-    checks = owner ? await jobChecksForPage(id, owner, role.slug, analysis) : [];
+    [checks, goalSkills] = await Promise.all([
+      owner ? jobChecksForPage(id, owner, role.slug, analysis) : [],
+      owner?.userId !== undefined ? goalSkillsOf(owner.userId) : null,
+    ]);
   } catch (error) {
     logEvent("error", "job_checks_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
     checks = null;
@@ -111,7 +116,13 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
           <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
         </section>
       )}
-      <JobCheck resumeId={id} roleSlug={role.slug} roleTitle={role.title} checks={checks ?? []} />
+      <JobCheck
+        resumeId={id}
+        roleSlug={role.slug}
+        roleTitle={role.title}
+        checks={checks ?? []}
+        goals={{ skills: goalSkills?.skills ?? null, chosen: goalSkills?.chosen, here: `/resume/${id}/gaps/${role.slug}` }}
+      />
       {checks === null && (
         <p role="alert" className="rounded-lg border border-line bg-surface p-4 text-sm">
           We couldn&apos;t load your saved job checks just now. Please reload the page in a minute.

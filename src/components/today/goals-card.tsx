@@ -2,7 +2,10 @@
 
 import { ArrowRight, Check, ChevronRight, Lightbulb, Plus } from "lucide-react";
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
+import { RemoveGoal } from "@/components/gaps/job-check-actions";
+import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { Goal, GoalStatus, GoalsSummary } from "@/lib/schemas";
 
@@ -16,7 +19,18 @@ const LAMP: Record<GoalStatus, { index: number; className: string; glow: string;
  * Your goals: one goal per gap, with red, amber or green lamps. Tapping a goal shows its evidence and its pitstops.
  * On the first day only the goals show, as in the prototype.
  */
-export function GoalsCard({ summary, mapHref, firstDay = false }: { summary: GoalsSummary; mapHref?: string; firstDay?: boolean }) {
+export function GoalsCard({
+  summary,
+  mapHref,
+  firstDay = false,
+  demo = false,
+}: {
+  summary: GoalsSummary;
+  mapHref?: string;
+  firstDay?: boolean;
+  /** Example data (for /design): removing a goal saves nothing. */
+  demo?: boolean;
+}) {
   const [open, setOpen] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const more = summary.moreCount === 1 ? "1 more goal" : `${summary.moreCount} more goals`;
@@ -75,6 +89,7 @@ export function GoalsCard({ summary, mapHref, firstDay = false }: { summary: Goa
           </button>
         </div>
       )}
+      {(summary.choiceGoals?.length ?? 0) > 0 && <ChoiceGoals goals={summary.choiceGoals!} demo={demo} />}
       {!firstDay && summary.metThisMonth.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-[0.8rem] text-muted">
           <span>Goals met with proof this month:</span>
@@ -91,7 +106,60 @@ function joinNames(names: string[]): string {
   return names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
-function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle: () => void }) {
+/**
+ * "Your choice": goals the person added, apart from the line. Each has its own spur of two pitstops; none moves the
+ * train or arrival (handoff sections 6 and 7). Open one to remove it from the goals.
+ */
+function ChoiceGoals({ goals, demo }: { goals: Goal[]; demo: boolean }) {
+  const ids = useId();
+  const router = useRouter();
+  const [open, setOpen] = useState<string | null>(null);
+  const [note, setNote] = useState("");
+  const [refreshing, startRefresh] = useTransition();
+  const heading = useRef<HTMLHeadingElement>(null);
+  const moveFocus = useRef(false);
+  // The removed goal's row goes once the page refreshes; focus moves to this list's heading, never to the page.
+  useEffect(() => {
+    if (refreshing || !moveFocus.current) return;
+    heading.current?.focus();
+    moveFocus.current = false;
+  }, [refreshing]);
+  return (
+    <section aria-labelledby={`${ids}-h`} className="flex flex-col gap-2 border-t border-line pt-3">
+      <h4 ref={heading} id={`${ids}-h`} tabIndex={-1} className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+        Your choice
+      </h4>
+      <p className="text-[0.8rem] text-muted">Goals you added. They have their own pitstops and never change your train, your match or your gaps.</p>
+      <ul className="flex flex-col gap-1.5">
+        {goals.map((g) => (
+          <GoalRow
+            key={g.id}
+            goal={g}
+            open={open === g.id}
+            onToggle={() => setOpen(open === g.id ? null : g.id)}
+            action={
+              <RemoveGoal
+                goalId={g.id}
+                name={g.name}
+                demo={demo}
+                onRemoved={() => {
+                  moveFocus.current = true;
+                  setNote(`${g.name} removed from your goals.`);
+                  startRefresh(() => router.refresh());
+                }}
+              />
+            }
+          />
+        ))}
+      </ul>
+      <p role="status" aria-live="polite" className="sr-only">
+        {note}
+      </p>
+    </section>
+  );
+}
+
+function GoalRow({ goal, open, onToggle, action }: { goal: Goal; open: boolean; onToggle: () => void; action?: ReactNode }) {
   const detailId = useId();
   const lamp = LAMP[goal.status];
   const count = goal.pitstops.length;
@@ -109,7 +177,10 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
             <i key={i} className={`size-1.5 rounded-full ${i === lamp.index ? `${lamp.className} ${lamp.glow}` : "bg-line"}`} />
           ))}
         </span>
-        <b className="min-w-0 truncate font-medium">{goal.name}</b>
+        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <b className="min-w-0 truncate font-medium">{goal.name}</b>
+          {goal.choice && <ChoiceTag company={goal.choice.company} />}
+        </span>
         <span className="whitespace-nowrap font-mono text-[0.68rem] uppercase tracking-[0.05em] text-muted">
           {lamp.word}
           {count > 0 && ` · ${count} ${count === 1 ? "pitstop" : "pitstops"}`}
@@ -156,6 +227,7 @@ function GoalRow({ goal, open, onToggle }: { goal: Goal; open: boolean; onToggle
               </span>
             </p>
           )}
+          {action && <div className="flex justify-end">{action}</div>}
         </div>
       )}
     </li>

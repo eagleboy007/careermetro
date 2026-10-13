@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { JOB_COMPANY_MAX } from "./constants";
+export { MAX_CHOICE_GOALS } from "./constants";
 
 /**
  * Goals and proof (post-login handoff, section 6; dev/goals-proofs-plan.md). Each gap becomes one goal per person and
@@ -44,6 +46,12 @@ export const proofEvidence = z.discriminatedUnion("type", [
   }),
 ]);
 
+/**
+ * A "Your choice" goal: one the person added themselves, not a gap of their target role. It never changes the match,
+ * readiness, gaps or analysis. `company` names the job check it came from, while that check exists.
+ */
+export const goalChoice = z.object({ company: z.string().min(1).max(JOB_COMPANY_MAX).nullable() });
+
 export const userGoal = z.object({
   id: z.string().min(1),
   skillId: z.string().min(1),
@@ -54,9 +62,14 @@ export const userGoal = z.object({
   groupId: z.string().nullable().default(null),
   /** A proof for this skill was accepted. A goal met because a newer resume shows the skill is not proved. */
   proved: z.boolean(),
+  /** The job check a "Your choice" goal was added from; null once that check is removed. */
+  jobCheckId: z.string().nullable().default(null),
+  /** Set on "Your choice" goals (source "user"); null on goals from gaps. */
+  choice: goalChoice.nullable().default(null),
 });
 
 export type GoalState = z.infer<typeof goalState>;
 export type ProofStatus = z.infer<typeof proofStatus>;
 export type ProofEvidence = z.infer<typeof proofEvidence>;
 export type UserGoal = z.infer<typeof userGoal>;
+export type GoalChoice = z.infer<typeof goalChoice>;

@@ -136,3 +136,34 @@ describe("planGoalSync", () => {
     });
   });
 });
+
+describe("planGoalSync and Your choice goals", () => {
+  const mine = (skillId: string, position: number, status: ExistingGoal["status"] = "active"): ExistingGoal => ({ ...goal(skillId, position, status), source: "user" });
+  const members = new Map([["cloud", ["aws", "azure"]]]);
+
+  it("never deletes, moves, reorders or converts a Your choice goal, whatever the gaps, resume or proof say", () => {
+    const existing = [goal("sql", 1), mine("data-orchestration", 2), mine("power-bi", 3, "met"), mine("azure", 4)];
+    const cases = [
+      // Not a gap: left alone.
+      { gaps: [gap("sql")], metSkillIds: [], provedSkillIds: [] },
+      // The resume now shows it, or proof covers it: sync still leaves it (proof fills it through refreshGoals).
+      { gaps: [gap("sql")], metSkillIds: ["data-orchestration"], provedSkillIds: ["data-orchestration"] },
+      // A met Your choice goal is not opened again when its skill becomes a gap.
+      { gaps: [gap("power-bi"), gap("sql")], metSkillIds: [], provedSkillIds: [] },
+      // A group gap never takes over a Your choice goal for one of its skills.
+      { gaps: [{ ...gap("aws"), groupId: "cloud" }], metSkillIds: [], provedSkillIds: [] },
+      // No gaps at all.
+      { gaps: [], metSkillIds: ["sql"], provedSkillIds: [] },
+    ];
+    for (const c of cases) {
+      const plan = planGoalSync({ existing, ...c, expiredSkillIds: ["data-orchestration"], implies: noImplies, members });
+      const touched = new Set([...plan.update.map((u) => u.skillId), ...plan.update.flatMap((u) => (u.moveTo ? [u.moveTo] : []))]);
+      for (const g of existing.filter((e) => e.source === "user")) expect(touched.has(g.skillId)).toBe(false);
+      // A gap for a skill that is already a Your choice goal makes no second goal.
+      expect(plan.insert.map((i) => i.skillId)).not.toContain("power-bi");
+      expect(plan.insert.map((i) => i.skillId)).not.toContain("azure");
+      // New gap goals go after every existing goal, Your choice ones included.
+      for (const i of plan.insert) expect(i.position).toBeGreaterThan(4);
+    }
+  });
+});

@@ -1,10 +1,13 @@
 "use client";
 
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { ChoiceTag } from "@/components/ui/choice-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
+import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
 import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
@@ -134,6 +137,9 @@ export function MetroMap({
               Tap any pitstop
             </li>
           </ul>
+        )}
+        {!showLife && line && (line.choiceGoals?.length ?? 0) > 0 && (
+          <ChoiceGoals goals={line.choiceGoals!} pathHref={line.resumeId ? `/resume/${line.resumeId}/path/${line.role.slug}` : null} onAddCertificate={line.resumeId ? onAddCertificate : undefined} />
         )}
       </div>
 
@@ -568,5 +574,81 @@ function Sheet({
         </>
       )}
     </Panel>
+  );
+}
+
+const CHOICE_STATUS = { missing: "Missing", weak: "Weak evidence", outdated: "Outdated" } as const;
+
+/**
+ * "Your choice": goals the person added, off the main line (handoff section 7 draws them as spurs labelled YOUR
+ * CHOICE). They never carry the train or count toward Match. Each shows how to learn and prove it, and can be removed.
+ */
+function ChoiceGoals({
+  goals,
+  pathHref,
+  onAddCertificate,
+}: {
+  goals: MapLine["goals"];
+  pathHref: string | null;
+  onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+}) {
+  const router = useRouter();
+  const [note, setNote] = useState("");
+  const [refreshing, startRefresh] = useTransition();
+  const heading = useRef<HTMLHeadingElement>(null);
+  const headingId = useId();
+  const moveFocus = useRef(false);
+  // A removed goal leaves the list once the page refreshes; focus moves to the list's heading, never to the page.
+  useEffect(() => {
+    if (refreshing || !moveFocus.current) return;
+    heading.current?.focus();
+    moveFocus.current = false;
+  }, [refreshing]);
+  return (
+    <section aria-labelledby={headingId} className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
+      <div className="flex flex-col gap-1">
+        <h3 ref={heading} id={headingId} tabIndex={-1} className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+          Your choice
+        </h3>
+        <p className="text-[0.86rem] text-muted">
+          Goals you added, off your line. Each has a learn and a prove pitstop of its own; none moves your train or changes your match.
+        </p>
+      </div>
+      <ul className="flex flex-col gap-2.5">
+        {goals.map((g) => (
+          <li key={g.skillId} className="flex flex-col gap-2 rounded-[14px] border border-line p-3 text-[0.86rem]">
+            <div className="flex flex-wrap items-center gap-2">
+              <b className="font-semibold">{g.name}</b>
+              <ChoiceTag company={g.choice?.company ?? null} />
+              <span className="ml-auto font-mono text-[0.68rem] uppercase tracking-[0.05em] text-muted">
+                {g.proved ? "Met" : g.renew ? "Renew" : CHOICE_STATUS[g.status]}
+              </span>
+            </div>
+            {!g.proved && (
+              <p className="text-muted">
+                Learn: {g.learnDone ? "done" : g.resources[0]?.title ?? (g.practice ? g.practice : pathHref ? "pick free courses on your path, or study it on your own" : "study it on your own")}
+                . Prove: a skill check, a certificate or work you did.
+              </p>
+            )}
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              {!g.proved && g.certificates.length > 0 ? <AddCertificate goal={g} onSave={g.goalId ? onAddCertificate : undefined} /> : <span />}
+              <RemoveGoal
+                goalId={g.goalId ?? "example"}
+                name={g.name}
+                demo={!g.goalId}
+                onRemoved={() => {
+                  moveFocus.current = true;
+                  setNote(`${g.name} removed from your goals.`);
+                  startRefresh(() => router.refresh());
+                }}
+              />
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p role="status" aria-live="polite" className="sr-only">
+        {note}
+      </p>
+    </section>
   );
 }
