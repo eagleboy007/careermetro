@@ -8,7 +8,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { listThreads } from "@/lib/inbox/store";
-import { acceptInboxRequest, deleteInboxRequest, readInboxChat, reportInInbox, sendInboxMessage } from "./actions";
+import { acceptInboxRequest, deleteInboxRequest, offerInboxTimes, readInboxChat, reportInInbox, sendInboxMessage } from "./actions";
 
 export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { index: false } };
 
@@ -49,7 +49,7 @@ async function Inbox({ searchParams }: PageProps<"/inbox">) {
   return (
     <InboxView
       threads={threads}
-      actions={{ send: sendInboxMessage, accept: acceptInboxRequest, remove: deleteInboxRequest, report: reportInInbox, read: readInboxChat }}
+      actions={{ send: sendInboxMessage, accept: acceptInboxRequest, remove: deleteInboxRequest, report: reportInInbox, read: readInboxChat, offerTimes: offerInboxTimes }}
       note={
         threads.length === 0 ? (
           <p className={noteClass}>

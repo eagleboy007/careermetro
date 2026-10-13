@@ -155,6 +155,13 @@
       "when": 1791854655648,
       "tag": "0021_company_chats",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791857766248,
+      "tag": "0022_interviews",
+      "breakpoints": true
     }
   ]
 }

@@ -50,3 +50,12 @@ export function jobTextHashKey(env: Env = process.env): string {
 export function workEmailHashKey(env: Env = process.env): string {
   return `work-email|${env.NAME_HASH_KEY || legacy(env)}`;
 }
+
+/**
+ * The secret a phone number shared for an interview is encrypted with (applications.phone_shared, corporate build
+ * step 6). Unlike the others it is not a hash: the interview's team must read the number back. It follows
+ * NAME_HASH_KEY, which is never rotated, so numbers saved earlier can still be read.
+ */
+export function phoneKeySecret(env: Env = process.env): string {
+  return `phone|${env.NAME_HASH_KEY || legacy(env)}`;
+}

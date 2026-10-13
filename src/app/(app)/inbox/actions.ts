@@ -5,6 +5,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { acceptRequest, deleteRequest, INBOX_ERROR_TEXT, markRead, report, sendMessage, type InboxResult } from "@/lib/inbox/store";
 import { conversationInput, reportInput, sendMessageInput } from "@/lib/schemas/inbox";
 import type { InboxActions } from "@/lib/inbox/types";
+import { INTERVIEW_ERROR_TEXT, offerTimes } from "@/lib/corporate/interviews-store";
 
 /*
  * The Inbox's server actions. Each checks who is signed in and validates its input; the store checks membership and the
@@ -59,4 +60,14 @@ export const readInboxChat: InboxActions["read"] = async (conversationId) => {
   if (!account || !input.success) return;
   await markRead(account.id, input.data.conversationId);
   refresh();
+};
+
+/** Answers "Ask for times" with the times picked (build step 6). Only those times reach the company. */
+export const offerInboxTimes: NonNullable<InboxActions["offerTimes"]> = async (messageId, slots) => {
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  const r = await offerTimes(account.id, { messageId, slots });
+  if (!r.ok) return r.message ?? INTERVIEW_ERROR_TEXT[r.error];
+  refresh();
+  return null;
 };

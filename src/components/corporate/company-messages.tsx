@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, HelpCircle, LayoutGrid, Send, Users } from "lucide-react";
+import { ArrowLeft, CalendarClock, CalendarPlus, HelpCircle, LayoutGrid, Send, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
@@ -14,8 +14,9 @@ import { AntiScamLine, ICON, OrgStatusBadge } from "./parts";
  * Corporate Messages (dev/corporate-plan.md build step 5; handoff 12e): the company's application chats. They belong to
  * the company, not to one recruiter: Recruiter admins and the job's Hiring HR read and write them; Interviewers read
  * only the candidates assigned to them and never write. The candidate sees each sender's name and the company. "Ask a
- * question" sends the next message under a Question label. Without `actions` (the /design page and the example
- * preview) nothing sends.
+ * question" sends the next message under a Question label; "Ask for times" (build step 6) sends a card the candidate
+ * answers with slots, and the card then lists the times they offered. Without `actions` (the /design page and the
+ * example preview) nothing sends.
  */
 
 /** How often an open chat checks for new messages, as the Inbox does (no live push yet). */
@@ -85,12 +86,12 @@ export function CompanyMessages({
 
       <div className="grid items-start gap-3.5 min-[760px]:grid-cols-[280px_minmax(0,1fr)]">
         <nav aria-label="Chats" className={`min-w-0 rounded-lg border border-line bg-surface ${showing ? "max-[759px]:hidden" : ""}`}>
-          {interviewer ? (
+          {view.items.length === 0 ? (
             <p className="p-4 text-[0.86rem] text-muted">
-              Interviewers read the chats of candidates assigned to them, once interviews are set up. Hiring HR and Recruiter admins send messages.
+              {interviewer
+                ? "Interviewers read the chats of candidates whose interviews they are on. Hiring HR and Recruiter admins send messages."
+                : "No chats yet. Open a candidate on a job's board and choose Message to write to them."}
             </p>
-          ) : view.items.length === 0 ? (
-            <p className="p-4 text-[0.86rem] text-muted">No chats yet. Open a candidate on a job&apos;s board and choose Message to write to them.</p>
           ) : (
             <ul className="flex flex-col gap-0.5 p-2">
               {view.items.map((item) => (
@@ -152,6 +153,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<CompanyChatMessage[]>([]);
   const [pending, start] = useTransition();
+  const [asking, startAsk] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
   const ids = useId();
@@ -199,6 +201,18 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
     });
   };
 
+  const askTimes = () =>
+    startAsk(async () => {
+      if (!actions?.askTimes) {
+        setError("Example chat. Nothing is sent here.");
+        return;
+      }
+      setError(null);
+      const problem = await actions.askTimes(chat.applicationId);
+      if (problem) setError(problem);
+      else setHeard("Asked for times.");
+    });
+
   return (
     <section aria-labelledby={`${ids}-name`} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-line bg-surface">
       <div className="flex flex-wrap items-center gap-2.5 border-b border-line px-3 py-2.5 min-[760px]:px-4">
@@ -244,7 +258,25 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
               <div
                 className={`whitespace-pre-wrap rounded-[14px] border px-3 py-[9px] text-[0.88rem] [overflow-wrap:anywhere] ${m.by === "candidate" ? "border-line bg-surface" : "border-transparent bg-surface-2"}`}
               >
+                {m.times && <span className={`${monoLabel} mb-1 flex items-center gap-1.5`}><CalendarClock {...ICON} size={14} />Asked for times</span>}
                 {m.text}
+                {m.times && (
+                  <span className="mt-2 block border-t border-line pt-2 text-[0.82rem]">
+                    {m.times.offered ? (
+                      <>
+                        {firstName(chat.candidate)} offered: {m.times.offered.join(" · ")}
+                        {chat.canAskTimes && (
+                          <Link href={`/corporate/interviews?application=${chat.applicationId}`} className={`${actionBtn} mt-2 flex w-fit`}>
+                            <CalendarPlus {...ICON} />
+                            Schedule
+                          </Link>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-muted">Waiting for {firstName(chat.candidate)} to pick times.</span>
+                    )}
+                  </span>
+                )}
               </div>
               <span className="font-mono text-[0.68rem] text-muted">
                 {m.who} · {m.at ?? "now"}
@@ -281,7 +313,15 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
                 <HelpCircle {...ICON} />
                 Ask a question
               </button>
-              <span className="text-[0.78rem] text-muted">{question ? "Your next message goes as a question. Keep it about the job." : "Interview times come with Interviews."}</span>
+              {chat.canAskTimes && (
+                <button type="button" onClick={askTimes} disabled={asking} className={actionBtn}>
+                  <CalendarClock {...ICON} />
+                  Ask for times
+                </button>
+              )}
+              <span className="text-[0.78rem] text-muted">
+                {question ? "Your next message goes as a question. Keep it about the job." : chat.canAskTimes ? "They pick slots; you see only the times they pick." : ""}
+              </span>
             </div>
             {error && (
               <p id={`${ids}-error`} role="alert" className="text-[0.84rem] font-medium">

@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Lock, MapPin, MessageSquare, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, Lock, MapPin, MessageSquare, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { formatDay } from "@/lib/corporate/format";
-import type { ApplicationEventView, ApplicationStage, BoardActions, BoardCardView, CandidateView, JobBoardView } from "@/lib/corporate/types";
+import type { ApplicationEventView, ApplicationStage, BoardActions, BoardCardView, CandidateView, InterviewActions, JobBoardView } from "@/lib/corporate/types";
 import {
   APPLICATION_STAGE_HINTS,
   APPLICATION_STAGE_LABELS,
@@ -13,6 +13,7 @@ import {
   JOB_WORK_TYPE_LABELS,
   NOT_THIS_TIME_NOTE_MAX,
 } from "@/lib/schemas/constants";
+import { InterviewsTab } from "./interview-parts";
 import { JobStatusBadge, monoLabel } from "./job-parts";
 import { actionBtn, inkBtn } from "./jobs-panel";
 import { MatchDots, MatchList } from "./match-parts";
@@ -22,14 +23,18 @@ import { AntiScamLine, ICON } from "./parts";
  * One job's board (dev/corporate-plan.md build step 4; C7): six lanes, the same stages candidates see on Arrivals.
  * Cards show the name, a headline, Match to this job in words and Can join; no ranking score (FR-13). Opening a card
  * shows the candidate: their public profile, Match to this job and Activity. Recruiter admins and Hiring HR on the job
- * move candidates; Not this time needs a note the candidate reads. Interviewers see only candidates assigned to them.
- * Without `actions` (the /design page) moves are off and `example` stands in for the opened candidate.
+ * move candidates; Not this time needs a note the candidate reads. Interviewers see only candidates assigned to them,
+ * read only: the drawer, the chat to read, and their own feedback (build step 6). The Interviews tab asks for times,
+ * links to the scheduler and cancels. Without `actions` (the /design page) nothing changes and `example` stands in for
+ * the opened candidate.
  */
 
-type Tab = "profile" | "match" | "activity";
+export type DrawerTab = "profile" | "match" | "interviews" | "activity";
+type Tab = DrawerTab;
 const TABS: { key: Tab; label: string }[] = [
   { key: "profile", label: "Profile" },
   { key: "match", label: "Match to this job" },
+  { key: "interviews", label: "Interviews" },
   { key: "activity", label: "Activity" },
 ];
 
@@ -43,7 +48,20 @@ export function eventText(e: ApplicationEventView): string {
   return `Moved to ${APPLICATION_STAGE_LABELS[e.stage]}`;
 }
 
-export function JobBoard({ board, actions, example }: { board: JobBoardView; actions?: BoardActions; example?: CandidateView }) {
+export function JobBoard({
+  board,
+  actions,
+  interviewActions,
+  example,
+  startTab,
+}: {
+  board: JobBoardView;
+  actions?: BoardActions;
+  interviewActions?: InterviewActions;
+  example?: CandidateView;
+  /** The /design page opens the drawer on a tab. */
+  startTab?: Tab;
+}) {
   const [onlyProved, setOnlyProved] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -182,7 +200,9 @@ export function JobBoard({ board, actions, example }: { board: JobBoardView; act
           aiRound={job.aiRound}
           canMove={board.canMove}
           actions={actions}
+          interviewActions={interviewActions}
           example={example}
+          startTab={startTab}
           onClose={close}
         />
       )}
@@ -196,7 +216,9 @@ function CandidateDrawer({
   aiRound,
   canMove,
   actions,
+  interviewActions,
   example,
+  startTab,
   onClose,
 }: {
   applicationId: string;
@@ -204,12 +226,15 @@ function CandidateDrawer({
   aiRound: boolean;
   canMove: boolean;
   actions?: BoardActions;
+  interviewActions?: InterviewActions;
   example?: CandidateView;
+  startTab?: Tab;
   onClose: (done?: string) => void;
 }) {
   const [candidate, setCandidate] = useState<CandidateView | null>(actions ? null : (example ? { ...example, applicationId, stage: card?.stage ?? example.stage } : null));
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>("profile");
+  const [tab, setTab] = useState<Tab>(startTab ?? "profile");
+  const [notice, setNotice] = useState<string | null>(null);
   const [closing, setClosing] = useState(false);
   const [note, setNote] = useState("");
   const [pending, start] = useTransition();
@@ -247,6 +272,13 @@ function CandidateDrawer({
   useEffect(() => {
     if (error && candidate) errorRef.current?.focus();
   }, [error, candidate]);
+
+  /** After an interview change: say what happened and read the candidate again, so the tab shows it. */
+  const changed = (text: string, failed: boolean) => {
+    setNotice(text);
+    if (failed || !actions) return;
+    actions.open(applicationId).then((r) => r.ok && setCandidate(r.candidate));
+  };
 
   /** Closes the dialog first, so focus can go back to the card or on to the message. */
   const close = (done?: string) => {
@@ -309,11 +341,17 @@ function CandidateDrawer({
               <span className="rounded-full bg-surface-2 px-2.5 py-0.5 font-medium">{APPLICATION_STAGE_LABELS[stage]}</span>
               {card && <span className="rounded-full border border-line px-2.5 py-0.5">Can join: {CAN_JOIN_LABELS[card.canJoin]}</span>}
             </p>
-            {canMove && (
-              // The application's chat in Corporate Messages (build step 5). Interviewers never write, so they get no link.
+            {canMove ? (
+              // The application's chat in Corporate Messages (build step 5).
               <Link href={`/corporate/messages?application=${applicationId}`} onClick={() => close()} className={`${actionBtn} mt-2.5`}>
                 <MessageSquare {...ICON} />
                 Message {firstName(name)}
+              </Link>
+            ) : (
+              // Interviewers on the candidate's interview read the chat but never write in it (build step 6).
+              <Link href={`/corporate/messages?application=${applicationId}`} onClick={() => close()} className={`${actionBtn} mt-2.5`}>
+                <Eye {...ICON} />
+                Read the chat
               </Link>
             )}
           </div>
@@ -355,6 +393,15 @@ function CandidateDrawer({
             <ProfileTab candidate={candidate} />
           ) : tab === "match" ? (
             <MatchList match={candidate.match} />
+          ) : tab === "interviews" ? (
+            <div className="flex flex-col gap-3">
+              {notice && (
+                <p role="status" className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem]">
+                  {notice}
+                </p>
+              )}
+              <InterviewsTab applicationId={applicationId} data={candidate.interviews} actions={interviewActions} onChanged={changed} />
+            </div>
           ) : (
             <ol className="flex flex-col gap-3">
               {candidate.events.map((e, i) => (
@@ -459,7 +506,11 @@ function ProfileTab({ candidate }: { candidate: CandidateView }) {
         <dt className="text-muted">Can join</dt>
         <dd>{CAN_JOIN_LABELS[candidate.canJoin]}</dd>
         <dt className="text-muted">Contact</dt>
-        <dd className="text-muted">Shared only if they choose to, after accepting an interview</dd>
+        {candidate.interviews.phone ? (
+          <dd>{candidate.interviews.phone} (shared for an accepted interview)</dd>
+        ) : (
+          <dd className="text-muted">Shared only if they choose to, after accepting an interview</dd>
+        )}
       </dl>
       <section className="flex flex-col gap-1.5">
         <h3 className={monoLabel}>Experience</h3>
@@ -510,7 +561,7 @@ function ProfileTab({ candidate }: { candidate: CandidateView }) {
       <p className="flex items-start gap-2 rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.8rem] text-muted">
         <Lock {...ICON} className="mt-0.5 shrink-0" />
         <span>
-          Never shown to companies: email, phone number, pay, notice period (only Can join), resume lines, their goals and path, streak, other applications, and anything
+          Never shown to companies: email, phone number (unless they share one for an accepted interview, and then only to its team), pay, notice period (only Can join), resume lines, their goals and path, streak, other applications, and anything
           they keep private. Every time you open a candidate it is logged.
         </span>
       </p>

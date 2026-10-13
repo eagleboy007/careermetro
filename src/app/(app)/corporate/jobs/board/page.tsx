@@ -10,6 +10,7 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { jobBoard } from "@/lib/corporate/applications-store";
+import { askTimesAction, cancelInterviewAction, feedbackAction } from "../../interviews/actions";
 import { moveApplicationAction, openCandidateAction } from "../actions";
 
 export const metadata: Metadata = { title: "Job board · CareerMetro", robots: { index: false } };
@@ -46,7 +47,13 @@ async function Board({ searchParams }: PageProps<"/corporate/jobs/board">) {
     if (r.error === "not_allowed") return <Refused title="You aren't on this job's team" text="Recruiter admins see every job's board; anyone else sees the boards of jobs they are on." />;
     notFound();
   }
-  return <JobBoard board={r.board} actions={{ open: openCandidateAction, move: moveApplicationAction }} />;
+  return (
+    <JobBoard
+      board={r.board}
+      actions={{ open: openCandidateAction, move: moveApplicationAction }}
+      interviewActions={{ askTimes: askTimesAction, cancel: cancelInterviewAction, feedback: feedbackAction }}
+    />
+  );
 }
 
 export default function BoardPage(props: PageProps<"/corporate/jobs/board">) {

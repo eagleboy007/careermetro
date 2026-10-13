@@ -7,19 +7,33 @@ import { actionBtn } from "@/components/corporate/jobs-panel";
 import { ICON } from "@/components/corporate/parts";
 import { formatDay } from "@/lib/corporate/format";
 import { canWithdraw, withdrawConfirmText } from "@/lib/corporate/rules";
-import type { MyApplicationView, WithdrawAction } from "@/lib/corporate/types";
+import type { ArrivalsActions, MyApplicationView, WithdrawAction } from "@/lib/corporate/types";
 import { APPLICATION_STAGE_LABELS, CAN_JOIN_LABELS } from "@/lib/schemas/constants";
+import { ApplicationInterviews, NextUp } from "./interviews";
 
 /*
  * Arrivals (handoff section 9; dev/corporate-plan.md build step 4): the person's applications on CareerMetro, each with
  * every step the company took. Moving forward is progress, so those stages wear cobalt. Not this time keeps the
- * company's note. Who at the company moved it is never shown. The 10-day strip and Next up wait for interviews (step 6).
- * Without `withdraw` (the /design page and the example) the Withdraw buttons are off.
+ * company's note. Who at the company moved it is never shown. Interviews (step 6) add Next up, the 10-day strip and
+ * Accept or Decline on each application; `today` is the India date from the server. Without `withdraw` and `actions`
+ * (the /design page and the example) nothing changes.
  */
 
 const MOVING = new Set(["shortlisted", "ai", "team", "offer"]);
 
-export function ArrivalsView({ applications, withdraw, note }: { applications: MyApplicationView[]; withdraw?: WithdrawAction; note?: React.ReactNode }) {
+export function ArrivalsView({
+  applications,
+  today,
+  withdraw,
+  actions,
+  note,
+}: {
+  applications: MyApplicationView[];
+  today: string;
+  withdraw?: WithdrawAction;
+  actions?: Omit<ArrivalsActions, "withdraw">;
+  note?: React.ReactNode;
+}) {
   const [message, setMessage] = useState<{ error: boolean; text: string } | null>(null);
   const messageRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
@@ -46,6 +60,7 @@ export function ArrivalsView({ applications, withdraw, note }: { applications: M
           {message.text}
         </p>
       )}
+      <NextUp applications={applications} today={today} />
       {applications.length === 0 ? (
         <div className="flex flex-col items-start gap-2 rounded-lg border border-dashed border-line p-5">
           <p className="text-[0.95rem]">No applications yet.</p>
@@ -66,7 +81,7 @@ export function ArrivalsView({ applications, withdraw, note }: { applications: M
             <ul className="flex flex-col gap-3">
               {g.items.map((a) => (
                 <li key={a.id}>
-                  <ApplicationCard app={a} withdraw={withdraw} onDone={setMessage} />
+                  <ApplicationCard app={a} withdraw={withdraw} actions={actions} onDone={setMessage} />
                 </li>
               ))}
             </ul>
@@ -77,7 +92,17 @@ export function ArrivalsView({ applications, withdraw, note }: { applications: M
   );
 }
 
-function ApplicationCard({ app, withdraw, onDone }: { app: MyApplicationView; withdraw?: WithdrawAction; onDone: (m: { error: boolean; text: string }) => void }) {
+function ApplicationCard({
+  app,
+  withdraw,
+  actions,
+  onDone,
+}: {
+  app: MyApplicationView;
+  withdraw?: WithdrawAction;
+  actions?: Omit<ArrivalsActions, "withdraw">;
+  onDone: (m: { error: boolean; text: string }) => void;
+}) {
   const [confirming, setConfirming] = useState(false);
   const [pending, start] = useTransition();
   const keepRef = useRef<HTMLButtonElement>(null);
@@ -119,6 +144,7 @@ function ApplicationCard({ app, withdraw, onDone }: { app: MyApplicationView; wi
           <p className="mt-1 [overflow-wrap:anywhere]">{closedNote}</p>
         </div>
       )}
+      <ApplicationInterviews app={app} actions={actions} onDone={onDone} />
       <ol aria-label="Steps" className="flex flex-col gap-1.5">
         {app.events.map((e, i) => (
           <li key={i} className="flex flex-wrap items-baseline gap-x-3 text-[0.84rem]">

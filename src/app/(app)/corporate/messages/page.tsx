@@ -9,6 +9,7 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { COMPANY_CHAT_ERROR_TEXT, companyChat, companyMessages } from "@/lib/corporate/chats-store";
+import { askTimesAction } from "../interviews/actions";
 import { sendCompanyMessageAction } from "./actions";
 
 export const metadata: Metadata = { title: "Messages · Corporate · CareerMetro", robots: { index: false } };
@@ -51,7 +52,7 @@ async function Messages({ searchParams }: PageProps<"/corporate/messages">) {
       view={list.view}
       chat={opened?.ok ? opened.chat : null}
       chatError={opened && !opened.ok ? COMPANY_CHAT_ERROR_TEXT[opened.error] : null}
-      actions={{ send: sendCompanyMessageAction }}
+      actions={{ send: sendCompanyMessageAction, askTimes: askTimesAction }}
     />
   );
 }

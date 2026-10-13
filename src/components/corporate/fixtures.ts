@@ -1,3 +1,5 @@
+import type { CompanyInterviewsView, SchedulerView } from "@/lib/corporate/types";
+import type { InboxMessage } from "@/lib/inbox/types";
 import type { CandidateView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
 
 /** Made-up company and people for /design and the example preview. No real company or person. */
@@ -110,6 +112,114 @@ export const exampleCandidate: CandidateView = {
     { kind: "moved", stage: "shortlisted", on: "2026-10-05", note: null },
     { kind: "moved", stage: "team", on: "2026-10-08", note: null },
   ],
+  interviews: {
+    interviews: [
+      {
+        id: "iv1",
+        round: "team",
+        when: "Wed 14 Oct, 11:00",
+        range: "11:00 to 11:45",
+        minutes: 45,
+        status: "accepted",
+        interviewers: ["Sana Qureshi"],
+        phoneShared: true,
+        feedback: [],
+        canGiveFeedback: false,
+        canCancel: true,
+      },
+      {
+        id: "iv0",
+        round: "team",
+        when: "Fri 9 Oct, 15:00",
+        range: "15:00 to 15:30",
+        minutes: 30,
+        status: "done",
+        interviewers: ["Rahul Menon", "Sana Qureshi"],
+        phoneShared: false,
+        feedback: [
+          { by: "Sana Qureshi", mine: false, recommendation: "yes", text: "Walked through two real phishing alerts end to end and wrote clear incident notes.", on: "2026-10-09" },
+          { by: "Rahul Menon", mine: false, recommendation: "not_sure", text: "Good on Linux, thin on cloud logs. A second look at SIEM queries would help.", on: "2026-10-09" },
+        ],
+        canGiveFeedback: false,
+        canCancel: false,
+      },
+    ],
+    phone: "+91 98765 43210",
+    canSchedule: true,
+    offeredTimes: 3,
+    waitingForTimes: false,
+  },
+};
+
+/** The drawer for an Interviewer on the candidate's interview: read only, with their own feedback form. */
+export const exampleInterviewerCandidate: CandidateView = {
+  ...exampleCandidate,
+  interviews: {
+    interviews: [{ ...exampleCandidate.interviews.interviews[0]!, canGiveFeedback: true, canCancel: false }],
+    phone: "+91 98765 43210",
+    canSchedule: false,
+    offeredTimes: 0,
+    waitingForTimes: false,
+  },
+};
+
+/** The scheduler (build step 6): Priya offered five times; Sana is busy at one of them. Made-up people. */
+export const exampleScheduler: SchedulerView = {
+  applicationId: "a1",
+  jobId: "j1",
+  job: "SOC Analyst L1",
+  candidate: "Priya Nair",
+  company: "Example Labs",
+  refusal: null,
+  days: [
+    { day: "2026-10-14", label: ["Wed", "14 Oct"] },
+    { day: "2026-10-15", label: ["Thu", "15 Oct"] },
+    { day: "2026-10-16", label: ["Fri", "16 Oct"] },
+  ],
+  times: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
+  slots: [
+    { id: "s1", key: "2026-10-14T11:00", day: "2026-10-14", time: "11:00", label: "Wed 14 Oct, 11:00", taken: true },
+    { id: "s2", key: "2026-10-14T17:00", day: "2026-10-14", time: "17:00", label: "Wed 14 Oct, 17:00", taken: false },
+    { id: "s3", key: "2026-10-15T10:00", day: "2026-10-15", time: "10:00", label: "Thu 15 Oct, 10:00", taken: false },
+    { id: "s4", key: "2026-10-15T18:00", day: "2026-10-15", time: "18:00", label: "Thu 15 Oct, 18:00", taken: false },
+    { id: "s5", key: "2026-10-16T15:00", day: "2026-10-16", time: "15:00", label: "Fri 16 Oct, 15:00", taken: false },
+  ],
+  team: [
+    { memberId: "m1", name: "Meera Iyer", role: "admin", busyKeys: [], thisWeek: 0 },
+    { memberId: "m2", name: "Rahul Menon", role: "hiring", busyKeys: [], thisWeek: 1 },
+    { memberId: "m3", name: "Sana Qureshi", role: "interviewer", busyKeys: ["2026-10-15T10:00"], thisWeek: 2 },
+  ],
+  teamWeek: [
+    { when: "Wed 14 Oct, 11:00", who: "Sana Qureshi" },
+    { when: "Thu 15 Oct, 10:00", who: "Sana Qureshi" },
+    { when: "Fri 16 Oct, 12:00", who: "Rahul Menon" },
+  ],
+  interviews: exampleCandidate.interviews.interviews.slice(0, 1),
+  waitingForTimes: false,
+};
+
+/** Corporate Interviews for a Recruiter admin. */
+export const exampleCompanyInterviews: CompanyInterviewsView = {
+  company: "Example Labs",
+  role: "admin",
+  items: [
+    { ...exampleCandidate.interviews.interviews[0]!, applicationId: "a1", jobId: "j1", candidate: "Priya Nair", job: "SOC Analyst L1", day: "2026-10-14", assigned: false },
+    {
+      ...exampleCandidate.interviews.interviews[0]!,
+      id: "iv2",
+      when: "Thu 15 Oct, 17:00",
+      range: "17:00 to 18:00",
+      minutes: 60,
+      status: "proposed",
+      phoneShared: false,
+      applicationId: "a4",
+      jobId: "j1",
+      candidate: "Ananya Ghosh",
+      job: "SOC Analyst L1",
+      day: "2026-10-15",
+      assigned: true,
+    },
+  ],
 };
 
 export const exampleApplications: MyApplicationView[] = [
@@ -123,6 +233,11 @@ export const exampleApplications: MyApplicationView[] = [
     appliedOn: "2026-10-03",
     withdrawn: false,
     events: exampleCandidate.events,
+    phoneShared: true,
+    interviews: [
+      { id: "iv0", round: "team", day: "2026-10-09", when: "Fri 9 Oct, 15:00", range: "15:00 to 15:30", minutes: 30, status: "done", canRespond: false, phoneShared: false },
+      { id: "iv1", round: "team", day: "2026-10-14", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:45", minutes: 45, status: "accepted", canRespond: false, phoneShared: true },
+    ],
   },
   {
     id: "a6",
@@ -134,6 +249,8 @@ export const exampleApplications: MyApplicationView[] = [
     appliedOn: "2026-10-10",
     withdrawn: false,
     events: [{ kind: "applied", stage: "applied", on: "2026-10-10", note: null }],
+    phoneShared: false,
+    interviews: [{ id: "iv3", round: "team", day: "2026-10-19", when: "Mon 19 Oct, 16:00", range: "16:00 to 16:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false }],
   },
   {
     id: "a5",
@@ -148,6 +265,8 @@ export const exampleApplications: MyApplicationView[] = [
       { kind: "applied", stage: "applied", on: "2026-09-29", note: null },
       { kind: "moved", stage: "not_this_time", on: "2026-10-02", note: "We need hands-on SIEM for this role. Your Linux depth is strong; apply again once SIEM is proved." },
     ],
+    phoneShared: false,
+    interviews: [],
   },
 ];
 
@@ -169,10 +288,51 @@ export const exampleCompanyChat: CompanyChatView = {
   candidate: "Priya Nair",
   stage: "team",
   state: "open",
+  canAskTimes: true,
   messages: [
     { by: "system", who: "", text: "Applied on CareerMetro." },
     { by: "team", who: "Rahul Menon", text: "Thanks for applying, Priya. Could you tell us about the Splunk dashboards on your resume?", at: "Mon 11:02" },
     { by: "me", who: "You", question: true, text: "Which SIEM tools have you used on shift work?", at: "Mon 11:05" },
     { by: "candidate", who: "Priya Nair", text: "Happy to. I built three dashboards for branch login alerts.", at: "Tue 10:12" },
   ],
+};
+
+/** A chat with an answered "Ask for times" card (build step 6). */
+export const exampleTimesChat: CompanyChatView = {
+  ...exampleCompanyChat,
+  messages: [
+    ...exampleCompanyChat.messages,
+    {
+      by: "me",
+      who: "You",
+      text: "Which times work for you between Wed 14 Oct and Tue 20 Oct? Pick the ones that suit you; we only see the times you pick.",
+      at: "Mon 12 Oct",
+      times: { offered: ["Wed 14 Oct, 11:00", "Thu 15 Oct, 10:00", "Fri 16 Oct, 15:00"] },
+    },
+    { by: "candidate", who: "Priya Nair", text: "I've offered 3 times: Wed 14 Oct, 11:00 · Thu 15 Oct, 10:00 · Fri 16 Oct, 15:00.", at: "Mon 12 Oct" },
+  ],
+};
+
+/** The candidate's side of a real "Ask for times" (build step 6): five weekdays, two slots too soon to offer. */
+export const exampleInboxAsk: InboxMessage = {
+  id: "ask1",
+  by: "them",
+  who: "Meera Iyer",
+  type: "times",
+  text: "Which times work for you between Wed 14 Oct and Tue 20 Oct? Pick the ones that suit you; we only see the times you pick.",
+  at: "Mon 12 Oct",
+  ask: {
+    messageId: "ask1",
+    days: [
+      { day: "2026-10-14", label: ["Wed", "14 Oct"] },
+      { day: "2026-10-15", label: ["Thu", "15 Oct"] },
+      { day: "2026-10-16", label: ["Fri", "16 Oct"] },
+      { day: "2026-10-19", label: ["Mon", "19 Oct"] },
+      { day: "2026-10-20", label: ["Tue", "20 Oct"] },
+    ],
+    times: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
+    unavailable: ["2026-10-14T10:00", "2026-10-14T11:00"],
+    offered: null,
+    open: true,
+  },
 };

@@ -1,14 +1,16 @@
 import "server-only";
 import { and, asc, desc, eq, gt, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, conversationMembers, conversations, jobs, jobTeam, messages, organizations, users } from "@/db/schema";
+import { applications, candidateSlots, conversationMembers, conversations, jobs, jobTeam, messages, organizations, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT, openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { companyMessageInput } from "@/lib/schemas/corporate";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { COMPANY_ACCESS_DAYS, visibleApplication } from "./applications-store";
-import { chatClosed, companySendRefusal, type CompanySendRefusal } from "./rules";
+import { assignedSubquery } from "./interview-reads";
+import { chatClosed, companySendRefusal, scheduleRefusal, type CompanySendRefusal } from "./rules";
+import { slotLabel } from "./slots";
 import { activeMembership } from "./store";
 import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, CompanyChatView, CompanyMessagesView } from "./types";
 
@@ -62,13 +64,15 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
   if (!me) return fail("not_member");
   const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
   const view: CompanyMessagesView = { company: me.orgName, status: org?.status ?? "pending", role: me.role, items: [] };
-  if (me.role === "interviewer") return { ok: true, view };
-
   const accessCutoff = new Date(now.getTime() - COMPANY_ACCESS_DAYS * DAY);
   const onTeam = db
     .select({ jobId: jobTeam.jobId })
     .from(jobTeam)
     .where(and(eq(jobTeam.userId, userId), inArray(jobTeam.role, ["owner", "hiring"])));
+  // Interviewers (and anyone on a job without moving its candidates) read the chats of candidates whose live interview
+  // they are on, while they are still on the job's team (build step 6).
+  const anyTeam = db.select({ jobId: jobTeam.jobId }).from(jobTeam).where(eq(jobTeam.userId, userId));
+  const assigned = and(inArray(applications.id, assignedSubquery(userId, db)), inArray(applications.jobId, anyTeam));
   const rows = await db
     .select({
       conversationId: conversations.id,
@@ -90,7 +94,7 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
         isNull(users.deletionRequestedAt),
         or(isNull(applications.closedAt), gt(applications.closedAt, accessCutoff)),
         or(isNull(applications.companyAccessEndsAt), gt(applications.companyAccessEndsAt, now)),
-        me.role === "admin" ? undefined : inArray(applications.jobId, onTeam),
+        me.role === "admin" ? undefined : me.role === "interviewer" ? assigned : or(inArray(applications.jobId, onTeam), assigned),
         sql`exists (select 1 from ${messages} x where x.conversation_id = ${conversations.id} and x.kind <> 'system')`,
       ),
     )
@@ -164,9 +168,22 @@ export async function companyChat(userId: string, applicationId: string, deps: C
         .orderBy(asc(messages.createdAt))
     : [];
   const candidate = displayName(app.name);
+  // "Ask for times" cards carry the times the candidate offered in answer (build step 6).
+  const asks = rows.filter((m) => m.kind === "ask_times").map((m) => m.id);
+  const offered = asks.length
+    ? await db
+        .select({ askMessageId: candidateSlots.askMessageId, startsAt: candidateSlots.startsAt })
+        .from(candidateSlots)
+        .where(inArray(candidateSlots.askMessageId, asks))
+        .orderBy(asc(candidateSlots.startsAt))
+    : [];
   const list = rows.map((m): CompanyChatMessage => {
     if (m.kind === "system") return { id: m.id, by: "system", who: "", text: m.body === "applied" ? "Applied on CareerMetro." : "" };
     const base = { id: m.id, text: m.body, at: formatAt(m.createdAt, now), ...(m.kind === "ask_question" ? { question: true } : {}) };
+    if (m.kind === "ask_times") {
+      const times = offered.filter((o) => o.askMessageId === m.id).map((o) => slotLabel(o.startsAt));
+      Object.assign(base, { times: { offered: times.length ? times : null } });
+    }
     if (m.senderId === userId) return { ...base, by: "me", who: "You" };
     if (m.senderId === app.userId) return { ...base, by: "candidate", who: candidate };
     return { ...base, by: "team", who: m.senderId && !m.deleted ? displayName(m.name) : COMPANY_TEAM };
@@ -183,6 +200,9 @@ export async function companyChat(userId: string, applicationId: string, deps: C
       stage: app.stage,
       messages: list.filter((m) => m.text),
       state: stateFor({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, closed }),
+      canAskTimes:
+        !closed &&
+        scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } }) === null,
     },
   };
 }
