@@ -55,38 +55,49 @@ describe("addCertificate", () => {
   });
 
   it("fills, holds or refuses, and never logs the credential id or the name", async () => {
-    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "verified" });
     expect(await addCertificate(good)).toEqual({ status: "filled", label: "verified" });
     expect(credly).toHaveBeenCalledWith("u1", "p1");
     expect(refresh).toHaveBeenCalledTimes(1);
-    submit.mockResolvedValueOnce({ status: "held", skillId: "aws" });
-    expect((await addCertificate(good)).status).toBe("held");
+    submit.mockResolvedValueOnce({ status: "held", skillId: "aws", reason: "credential" });
+    expect(await addCertificate(good)).toEqual({ status: "held", message: expect.stringMatching(/^This certificate is already on another account/) });
+    submit.mockResolvedValueOnce({ status: "held", skillId: "aws", reason: "badge" });
+    expect(await addCertificate(good)).toEqual({ status: "held", message: expect.stringMatching(/^This Credly badge is already on another account/) });
     submit.mockResolvedValueOnce({ status: "refused", reason: "name" });
     expect(await addCertificate(good)).toMatchObject({ status: "refused", message: expect.stringMatching(/doesn't match your account/) });
     expect(JSON.stringify(log.mock.calls)).not.toMatch(/SECRET-CRED-ID|Priya/);
   });
 
-  it("checks a Credly link after saving: a mismatch is Added by you with the reason, and the goal is still filled", async () => {
-    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
-    credly.mockResolvedValueOnce({ status: "added", note: "earner_name" });
-    expect(await addCertificate(good)).toEqual({ status: "filled", label: "added", note: "The name on the Credly badge doesn't match your account." });
-    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
+  it("checks a Credly link after saving; only Credly's match fills the goal (T48)", async () => {
+    // Another earner's name on Credly is refused like a typed name mismatch.
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
+    credly.mockResolvedValueOnce({ status: "rejected", reason: "name" });
+    expect(await addCertificate(good)).toEqual({ status: "refused", message: expect.stringMatching(/doesn't match your account/) });
+    // Over the check limit, or Credly not confirming it: saved, check pending, and the goal isn't proved.
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "refused", reason: "too_many" });
-    expect(await addCertificate(good)).toMatchObject({ status: "filled", label: "added", note: expect.stringMatching(/tomorrow/) });
-    // A badge already verified on another account is held for review, so the goal is no longer filled.
-    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
+    expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/check pending.*tomorrow/) });
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
+    credly.mockResolvedValueOnce({ status: "pending", note: "badge_name" });
+    expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/check pending.*different certificate/) });
+    // Expired on Credly: saved, and the goal moves to Renew.
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
+    credly.mockResolvedValueOnce({ status: "added", note: "expired" });
+    expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/Renew/) });
+    // A badge already on another account is held for review.
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "held" });
     expect(await addCertificate(good)).toEqual({ status: "held", message: expect.stringMatching(/review it/) });
   });
 
-  it("doesn't check other links, and a failed check never fails the save", async () => {
+  it("doesn't check other links, and a failed check leaves the badge pending", async () => {
     submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
     expect(await addCertificate({ ...good, url: "https://learn.microsoft.com/api/credentials/share/en-us/PriyaSharma/ABC" })).toEqual({ status: "filled", label: "added" });
     expect(credly).not.toHaveBeenCalled();
-    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockRejectedValueOnce(new Error("db down"));
-    expect(await addCertificate(good)).toMatchObject({ status: "filled", label: "added", note: expect.stringMatching(/Credly didn't answer/) });
+    expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/check pending.*Credly didn't answer/) });
     // A certificate already verified isn't checked again.
     submit.mockResolvedValueOnce({ status: "filled", label: "verified", skillId: "aws", proofId: "p1" });
     expect(await addCertificate(good)).toEqual({ status: "filled", label: "verified" });

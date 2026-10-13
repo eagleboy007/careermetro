@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, eq, gte, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNotNull, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { certificateCredentials, gapAnalyses, gapProofs, jobChecks, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
 import { certifications, skillGroupMembers, skills } from "@/content";
@@ -303,15 +303,68 @@ export async function holdProofs(
   return held.length;
 }
 
+/** Brings the goals of these skills in line with the person's proof. The caller holds the person's lock. */
+export async function refreshSkills(tx: Tx, userId: string, skillIds: Iterable<string>, members: ReadonlyMap<string, string[]> = skillGroupMembers, today = indiaToday()): Promise<void> {
+  for (const skillId of new Set(skillIds)) await refreshGoals(tx, userId, skillId, members, today);
+}
+
+/**
+ * Checks of one Credly badge run one at a time across accounts (a lock per badge, always taken after the person's), so
+ * two accounts can't both take the same badge at once.
+ */
+export async function lockBadge(tx: Tx, badgeId: string): Promise<void> {
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`credly-badge:${badgeId}`}))`);
+}
+
+/**
+ * One badge, one account (T48, T50): whether another live account already has this Credly badge accepted or verified.
+ * Accounts waiting out their deletion window don't count, and purged ones are gone with their proofs. Needs no network,
+ * so it runs even when Credly can't be checked. The caller holds the badge's lock.
+ */
+export async function badgeElsewhere(tx: Tx, userId: string, badgeId: string): Promise<boolean> {
+  const [other] = await tx
+    .select({ id: gapProofs.id })
+    .from(gapProofs)
+    .innerJoin(users, eq(users.id, gapProofs.userId))
+    .where(
+      and(
+        eq(gapProofs.badgeId, badgeId),
+        ne(gapProofs.userId, userId),
+        or(eq(gapProofs.status, "accepted"), eq(gapProofs.verifier, "credly")),
+        isNull(users.deletionRequestedAt),
+      ),
+    )
+    .limit(1);
+  return !!other;
+}
+
+/**
+ * The credential is free again once none of the person's proofs of it is left standing (deleted or refused), so the
+ * real owner can still use it.
+ */
+export async function releaseCredential(tx: Tx, userId: string, certId: string, key: string): Promise<void> {
+  const [still] = await tx
+    .select({ id: gapProofs.id })
+    .from(gapProofs)
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.certId, certId), eq(gapProofs.credentialKey, key), ne(gapProofs.status, "rejected")))
+    .limit(1);
+  if (!still)
+    await tx
+      .delete(certificateCredentials)
+      .where(and(eq(certificateCredentials.userId, userId), eq(certificateCredentials.certId, certId), eq(certificateCredentials.credentialKey, key)));
+}
+
 /** Certificates one person may add in a day (dev/proof-plan.md, limits). */
 export const DAILY_CERTIFICATES = 10;
 
 /**
  * "Add a certificate" (dev/proof-plan.md). Runs the honesty rules, then:
- * - a certificate in the person's name, current and covering the goal is accepted at once and fills the goal;
- *   it is labelled "added" (Added by you) until its Credly badge is checked after this transaction
- *   (src/lib/proofs/credly-store.ts); `verified` is for callers that already checked it;
- * - one another account already used (same certificate and credential id) is held for review and fills nothing;
+ * - a certificate in the person's name, current and covering the goal is accepted at once and fills the goal,
+ *   labelled "added" (Added by you), unless its link is a Credly badge: that one waits as "pending" (check pending)
+ *   and fills nothing until the Credly check after this transaction confirms it (src/lib/proofs/credly-store.ts);
+ *   `verified` is for callers that already checked it;
+ * - one another account already used (same certificate and credential id, or a Credly badge another live account
+ *   has) is held for review and fills nothing;
  * - anything else is refused with a reason and nothing is stored.
  * The credential id and the name on the certificate are never stored; only a keyed hash of the id is.
  */
@@ -336,6 +389,18 @@ export async function submitCertificate(
     const check = checkCertificate({ submission, cert, fillingSkills: fillingSkills(goal, members), accountName: resumeName(account ?? null), today, env: opts.env });
     if (!check.ok) return { status: "refused", reason: check.reason };
 
+    const key = credentialKey(cert!.id, submission.credentialId, opts.env);
+    const badgeId = credlyBadgeId(submission.url);
+    // Rejected after review (the held-proof review keeps the held reason on the rejected row): the same credential or
+    // badge from the same person is settled, so it isn't sent to review again; Grievances is the way to dispute it.
+    const sameClaim = badgeId ? or(and(eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key)), eq(gapProofs.badgeId, badgeId)) : and(eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key));
+    const [reviewed] = await tx
+      .select({ id: gapProofs.id })
+      .from(gapProofs)
+      .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "rejected"), isNotNull(gapProofs.heldReason), sameClaim))
+      .limit(1);
+    if (reviewed) return { status: "refused", reason: "reviewed" };
+
     const since = new Date(Date.now() - 24 * 3600_000);
     const [{ added }] = await tx
       .select({ added: count() })
@@ -343,25 +408,55 @@ export async function submitCertificate(
       .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), gte(gapProofs.createdAt, since)));
     if (added >= DAILY_CERTIFICATES) return { status: "refused", reason: "too_many" };
 
-    const key = credentialKey(cert!.id, submission.credentialId, opts.env);
-    const mine = and(eq(gapProofs.userId, userId), eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key), eq(gapProofs.skillId, check.skillId));
-    const [own] = await tx.select({ id: gapProofs.id, status: gapProofs.status, verifier: gapProofs.verifier, evidence: gapProofs.evidence }).from(gapProofs).where(mine);
-    // Sent again while held: still held, and no second row.
-    if (own?.status === "pending") return { status: "held", skillId: check.skillId };
-    if (own?.status === "accepted") {
+    // A Credly badge link fills nothing until a Credly check confirms it (decision of 2026-10-13): it waits as "check
+    // pending" and the caller checks it after this transaction. Other verify links are accepted as before.
+    const waitsForCredly = !!badgeId && !opts.verified;
+    // One badge, one account (rule 3, T48): a badge another live account already has is held for review before any
+    // Credly call, the same way a reused credential is.
+    if (badgeId) await lockBadge(tx, badgeId);
+    const reused = badgeId ? await badgeElsewhere(tx, userId, badgeId) : false;
+    const evidence = { type: "certification" as const, certId: cert!.id, issuer: cert!.issuer, url: submission.url };
+    const mine = and(
+      eq(gapProofs.userId, userId),
+      eq(gapProofs.certId, cert!.id),
+      eq(gapProofs.credentialKey, key),
+      eq(gapProofs.skillId, check.skillId),
+      ne(gapProofs.status, "rejected"),
+    );
+    const [own] = await tx
+      .select({ id: gapProofs.id, status: gapProofs.status, heldReason: gapProofs.heldReason, verifier: gapProofs.verifier, evidence: gapProofs.evidence })
+      .from(gapProofs)
+      .where(mine);
+    // Sent again while held for review: still held, and no second row.
+    if (own?.status === "pending" && own.heldReason !== "credly_check") return { status: "held", skillId: check.skillId, reason: own.heldReason === "badge_reused" ? "badge" : "credential" };
+    if (own) {
       // The same certificate again, such as a renewal that keeps its credential id: the new dates and link replace
       // the old ones, so a goal waiting to be renewed is met again. A new link clears the old Credly check, since it
-      // was about the old link; the caller checks the new one.
+      // was about the old link; a Credly link not yet confirmed waits for its check again.
       const sameLink = own.evidence.type === "certification" && own.evidence.url === submission.url;
       const verified = own.verifier === "credly" && sameLink;
+      const dates = { issuedOn: submission.issuedOn, expiresOn: submission.expiresOn, evidence };
+      const recheck = sameLink ? {} : { verifier: null, verifiedAt: null, badgeId, checkedAt: null, checkNote: null };
+      if (reused && !verified) {
+        await tx
+          .update(gapProofs)
+          .set({ ...dates, ...recheck, status: "pending", heldReason: "badge_reused", verifier: null, verifiedAt: null, checkNote: "used_elsewhere" })
+          .where(eq(gapProofs.id, own.id));
+        await refreshGoals(tx, userId, check.skillId, members, today);
+        logEvent("info", "certificate_held", { reason: "badge_reused" });
+        return { status: "held", skillId: check.skillId, reason: "badge" };
+      }
+      if (waitsForCredly && !verified) {
+        await tx
+          .update(gapProofs)
+          .set({ ...dates, ...recheck, status: "pending", heldReason: "credly_check", verifier: null, verifiedAt: null })
+          .where(eq(gapProofs.id, own.id));
+        await refreshGoals(tx, userId, check.skillId, members, today);
+        return { status: "pending", skillId: check.skillId, proofId: own.id };
+      }
       await tx
         .update(gapProofs)
-        .set({
-          issuedOn: submission.issuedOn,
-          expiresOn: submission.expiresOn,
-          evidence: { type: "certification", certId: cert!.id, issuer: cert!.issuer, url: submission.url },
-          ...(sameLink ? {} : { verifier: null, badgeId: credlyBadgeId(submission.url), checkedAt: null, checkNote: null }),
-        })
+        .set({ ...dates, ...recheck, status: "accepted", heldReason: null, ...(own.status === "accepted" ? {} : { verifiedAt: new Date() }) })
         .where(eq(gapProofs.id, own.id));
       await refreshGoals(tx, userId, check.skillId, members, today);
       return { status: "filled", label: verified ? "verified" : "added", skillId: check.skillId, proofId: own.id };
@@ -371,13 +466,13 @@ export async function submitCertificate(
       userId,
       skillId: check.skillId,
       type: "certification" as const,
-      evidence: { type: "certification" as const, certId: cert!.id, issuer: cert!.issuer, url: submission.url },
+      evidence,
       certId: cert!.id,
       issuedOn: submission.issuedOn,
       expiresOn: submission.expiresOn,
       credentialKey: key,
       nameMatched: true,
-      badgeId: credlyBadgeId(submission.url),
+      badgeId,
     };
     // Rule 3: the first account to use a credential owns it, for every skill its certificate proves. Another account
     // sending it at the same moment waits on this row's key and then finds it taken.
@@ -389,7 +484,16 @@ export async function submitCertificate(
     if (owner?.userId !== userId) {
       await tx.insert(gapProofs).values({ ...row, status: "pending", heldReason: "credential_reused" });
       logEvent("info", "certificate_held", { reason: "credential_reused" });
-      return { status: "held", skillId: check.skillId };
+      return { status: "held", skillId: check.skillId, reason: "credential" };
+    }
+    if (reused) {
+      await tx.insert(gapProofs).values({ ...row, status: "pending", heldReason: "badge_reused", checkNote: "used_elsewhere" });
+      logEvent("info", "certificate_held", { reason: "badge_reused" });
+      return { status: "held", skillId: check.skillId, reason: "badge" };
+    }
+    if (waitsForCredly) {
+      const [waiting] = await tx.insert(gapProofs).values({ ...row, status: "pending", heldReason: "credly_check" }).returning({ id: gapProofs.id });
+      return { status: "pending", skillId: check.skillId, proofId: waiting.id };
     }
 
     const [inserted] = await tx
@@ -411,14 +515,7 @@ export async function deleteProof(userId: string, proofId: string, db: Db = getD
       .returning({ skillId: gapProofs.skillId, certId: gapProofs.certId, credentialKey: gapProofs.credentialKey });
     if (!gone) return false;
     // The credential stays theirs while another of their proofs uses it; with none left it is free again.
-    if (gone.certId && gone.credentialKey) {
-      const sameCredential = and(eq(gapProofs.userId, userId), eq(gapProofs.certId, gone.certId), eq(gapProofs.credentialKey, gone.credentialKey));
-      const [still] = await tx.select({ id: gapProofs.id }).from(gapProofs).where(sameCredential).limit(1);
-      if (!still)
-        await tx
-          .delete(certificateCredentials)
-          .where(and(eq(certificateCredentials.userId, userId), eq(certificateCredentials.certId, gone.certId), eq(certificateCredentials.credentialKey, gone.credentialKey)));
-    }
+    if (gone.certId && gone.credentialKey) await releaseCredential(tx, userId, gone.certId, gone.credentialKey);
     await refreshGoals(tx, userId, gone.skillId, members);
     return true;
   });

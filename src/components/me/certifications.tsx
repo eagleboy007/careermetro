@@ -12,7 +12,8 @@ export type { CredlyCheckResult };
 
 /**
  * Certifications on a profile (pending item 13, dev/profile-certs-plan.md): name, issuer, date and status, "Verified
- * with Credly" in ink with its badge (never a gap colour) or "Added by you". On the owner's own profile an expired one
+ * with Credly" in ink with its badge (never a gap colour) or "Added by you" ("Added by you, check pending" for a Credly
+ * badge Credly hasn't confirmed yet, owner only). On the owner's own profile an expired one
  * is marked, the Credly reason shows, and a Credly badge can be checked again; `onCheck` is the server action, and
  * without it (design page, example data) nothing is checked. Others see what src/lib/me/public.ts left in.
  */
@@ -108,7 +109,9 @@ function CertificationRow({ cert: c, own, addedBy, onCheck }: { cert: MeCertific
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="font-semibold [overflow-wrap:anywhere]">{c.name}</span>
           {details && <small className="text-[0.74rem] text-muted [overflow-wrap:anywhere]">{details}</small>}
-          <span className={`text-[0.76rem] ${verified ? "font-medium text-ink" : "text-muted"}`}>{verified ? "Verified with Credly" : addedBy}</span>
+          <span className={`text-[0.76rem] ${verified ? "font-medium text-ink" : "text-muted"}`}>
+            {verified ? "Verified with Credly" : c.status === "pending" ? `${addedBy}, check pending · only you see it` : addedBy}
+          </span>
           {c.expired && (
             <span className="inline-flex items-center gap-1 text-[0.76rem] text-muted">
               <CalendarX size={13} {...ICON} />

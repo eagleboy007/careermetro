@@ -198,7 +198,6 @@ export function compareBadge(
 ): CredlyCheckNote | null {
   const d = badge.data;
   if (d.state !== "accepted" || d.public === false) return "not_public";
-  if (d.expires_at_date && d.expires_at_date.slice(0, 10) < input.today) return "expired";
   if (!badgeNameMatches(d.badge_template.name, input.cert)) return "badge_name";
   const issuers = [...(d.issuer?.entities ?? []), ...(d.badge_template.issuer?.entities ?? [])].map((e) => e.entity.name);
   if (!issuerMatches(issuers, input.cert.issuer)) return "issuer";
@@ -206,6 +205,8 @@ export function compareBadge(
   const name = checkName(input.accountName, nameHashes(earner, input.env), input.env);
   if (name === "unnamed") return "no_name";
   if (name !== "match") return "earner_name";
+  // Last, so "expired" means the badge is this person's certificate and only its date has passed: it leads to Renew.
+  if (d.expires_at_date && d.expires_at_date.slice(0, 10) < input.today) return "expired";
   return null;
 }
 

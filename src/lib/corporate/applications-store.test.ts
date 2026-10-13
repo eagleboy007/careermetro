@@ -168,6 +168,23 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     expect(await apply(me, jobId)).toMatchObject({ ok: false, error: "limit" });
   });
 
+  it("counts only real applications toward the daily limit: closed jobs, repeats and blocked companies don't use it up (T52)", async () => {
+    const me = await candidate("t52-cand");
+    const [first, closed, blocked, last, over] = [await openJob("t52-a"), await openJob("t52-b"), await openJob("t52-c"), await openJob("t52-d"), await openJob("t52-e")];
+    await db!.update(schema.jobs).set({ status: "paused" }).where(eq(schema.jobs.id, closed.jobId));
+    await db!.insert(schema.companyBlocks).values({ userId: me, orgId: blocked.orgId, createdAt: clock });
+    // Two applications left today.
+    for (let i = 0; i < LIMITS.applicationsPerUserDay.max - 2; i++) await takeShared(LIMITS.applicationsPerUserDay, me, { db: db!, now: clock.getTime() });
+    expect(await apply(me, first.jobId)).toMatchObject({ ok: true });
+    for (let i = 0; i < 3; i++) {
+      expect(await apply(me, first.jobId)).toMatchObject({ ok: false, error: "already" });
+      expect(await apply(me, closed.jobId)).toMatchObject({ ok: false, error: "not_open" });
+      expect(await apply(me, blocked.jobId)).toMatchObject({ ok: false, error: "blocked_company" });
+    }
+    expect(await apply(me, last.jobId)).toMatchObject({ ok: true });
+    expect(await apply(me, over.jobId)).toMatchObject({ ok: false, error: "limit" });
+  });
+
   it("shows the job team a board with the public profile and Match to this job, never email, phone, resume lines or goals", async () => {
     const { admin, jobId } = await openJob("board");
     const me = await candidate("board-cand");
