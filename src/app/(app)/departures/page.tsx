@@ -6,11 +6,13 @@ import { PageLoading } from "@/components/app/page-loading";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { PostedJobs } from "@/components/departures/posted-jobs";
 import { currentAccount } from "@/lib/auth/server";
+import { applyStates } from "@/lib/corporate/applications-store";
 import { liveJobs } from "@/lib/corporate/jobs-store";
-import type { PostedJobView } from "@/lib/corporate/types";
+import type { ApplyState, PostedJobView } from "@/lib/corporate/types";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { errorFields, logEvent } from "@/lib/log";
 import { currentAnalysis } from "@/lib/today/state";
+import { applyAction } from "../arrivals/actions";
 import { reportJobAction } from "../corporate/jobs/actions";
 
 export const metadata: Metadata = { title: "Departures · CareerMetro", robots: { index: false } };
@@ -27,6 +29,21 @@ async function postedJobs(): Promise<PostedJobView[]> {
   }
 }
 
+/** Where the person stands on each posted job. If it can't be read, the cards ask them to sign in rather than fail. */
+async function postedStates(userId: string | null, jobs: PostedJobView[]): Promise<Record<string, ApplyState>> {
+  if (!jobs.length) return {};
+  try {
+    return await applyStates(
+      userId,
+      jobs.map((j) => j.id),
+    );
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "departures_apply_states_failed", errorFields(error));
+    return {};
+  }
+}
+
 async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const state = (await searchParams).state;
   await connection();
@@ -36,9 +53,10 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const hasResume = account ? (await currentAnalysis(account.id)) !== null : state !== "no_resume";
   const noFit = account && hasResume ? "Your fit for each role shows here once real roles come from company job boards." : null;
   const posted = await postedJobs();
+  const states = await postedStates(account?.id ?? null, posted);
   return (
     <div className="flex flex-col gap-4">
-      <PostedJobs jobs={posted} report={account ? reportJobAction : undefined} />
+      <PostedJobs jobs={posted} report={account ? reportJobAction : undefined} apply={account ? applyAction : undefined} states={states} />
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         Example roles for now. Real roles from public company job boards, and your own saved and applied lists, come next.
       </p>

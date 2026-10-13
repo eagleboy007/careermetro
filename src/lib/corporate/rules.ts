@@ -1,4 +1,4 @@
-import type { JobsBlocked, JobStatus, JobTeamRole, OrgReviewStatus, OrgRole } from "@/lib/corporate/types";
+import type { ApplicationStage, JobsBlocked, JobStatus, JobTeamRole, OrgReviewStatus, OrgRole } from "@/lib/corporate/types";
 
 /*
  * Company rules (dev/corporate-plan.md; admin rule from Milin, 2026-10-12, replacing plan call D). Pure: the store
@@ -79,3 +79,28 @@ export function removalRefusal(role: OrgRole, adminCount: number): RemovalRefusa
 
 /** Only Recruiter admins manage the team. */
 export const canManageTeam = (role: OrgRole): boolean => role === "admin";
+
+/* Applications and the board (build step 4) ------------------------------------------------------------------------ */
+
+/** A job's board: Recruiter admins see every job's; anyone else only a job they are on. */
+export const canSeeBoard = (role: OrgRole, teamRole: JobTeamRole | null): boolean => role === "admin" || teamRole !== null;
+
+/** Moving candidates between lanes: the same people who may change the job. Interviewers never. */
+export const canMoveApplications = canEditJob;
+
+export type MoveRefusal = "same_stage" | "ai_off" | "withdrawn";
+
+/**
+ * Why a move can't happen. Any lane may follow any other (Not this time can be opened again), except the L1 AI lane
+ * while the job's AI round is off, and nothing moves once the candidate has withdrawn. The note for Not this time is
+ * checked by the schema.
+ */
+export function moveRefusal(from: ApplicationStage, to: ApplicationStage, app: { aiRound: boolean; withdrawn: boolean }): MoveRefusal | null {
+  if (app.withdrawn) return "withdrawn";
+  if (from === to) return "same_stage";
+  if (to === "ai" && !app.aiRound) return "ai_off";
+  return null;
+}
+
+/** People can apply only to a job candidates can see: open, from a verified company (not pending or suspended). */
+export const acceptsApplications = isLive;

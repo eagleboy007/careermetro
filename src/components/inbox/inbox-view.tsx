@@ -337,8 +337,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               </div>
               <span className="hidden flex-1 min-[760px]:block" />
               {current.kind === "application" && (
-                // Arrivals isn't built yet, so this is not a link.
-                <span className={`${ghost} hidden cursor-default text-muted hover:bg-surface min-[760px]:inline-flex`}>See on Arrivals · soon</span>
+                <Link href="/arrivals" className={`${ghost} hidden min-[760px]:inline-flex`}>
+                  See on Arrivals
+                </Link>
               )}
               {current.state !== "left" && (
                 <button

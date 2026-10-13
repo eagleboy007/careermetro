@@ -675,7 +675,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/departures", "/inbox", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();
@@ -901,6 +901,8 @@ await step("company review: not found for others; the admin verifies the new com
     await adm.close();
   }
 });
+// The job the jobs step posts, for the applications step after it.
+let postedTitle = null;
 // Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
 // again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
 // with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
@@ -910,7 +912,7 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to verify the company");
   const { default: postgres } = await import("postgres");
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
-  const title = `SOC Analyst L1 ${Date.now()}`;
+  const title = (postedTitle = `SOC Analyst L1 ${Date.now()}`);
   try {
     await sql`update organizations set review_status = 'verified', reviewed_at = now(), reviewed_by = 'e2e' where email_domain = ${domain}`;
     await q.setViewportSize({ width: 1280, height: 900 });
@@ -946,7 +948,8 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     await q.goto(BASE + "/departures");
     const card = q.getByRole("article").filter({ has: q.getByRole("heading", { name: title }) });
     await card.waitFor({ timeout: 10000 });
-    if (await card.getByRole("button", { name: "Apply on CareerMetro" }).isEnabled()) throw new Error("Apply is on before applications exist");
+    // This account has no resume, so the card asks for one before applying (the applications step applies for real).
+    await card.getByText(/Add your resume first, so Example Labs can see how you match this job/).waitFor();
     await card.getByText("Companies never ask for money").waitFor();
     const text = await card.innerText();
     if (text.includes("@") || text.includes("Meera")) throw new Error("a member or an email shown on the job card");
@@ -998,6 +1001,121 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     throw e;
   } finally {
     await sql.end();
+  }
+});
+// Applications and the board (dev/corporate-plan.md, build step 4): the company opens the job again, the walk's
+// candidate applies from Departures with the consent naming the company, the job team finds them on the board with
+// Match to this job in words and no email, moves them to Shortlisted, then closes it with Not this time and a note,
+// which the candidate reads on Arrivals.
+await step("corporate applications: apply with consent, the board, move a lane, Not this time on Arrivals", async () => {
+  if (!q || !postedTitle) throw new Error("no job from the step before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check the events");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  const NOTE = "We need hands-on SIEM for this role. Apply again once SIEM is proved.";
+  try {
+    // The jobs step paused it; open it again.
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("button", { name: `Open again ${title}` }).click();
+    await q.getByRole("status").getByText(/Open again\./).waitFor({ timeout: 10000 });
+
+    // The candidate applies: nothing goes without the consent tick.
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/departures");
+    const card = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
+    await card.waitFor({ timeout: 10000 });
+    await card.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
+    await card.getByRole("heading", { name: "Example Labs will see" }).waitFor();
+    if (!(await card.getByLabel("When can you join?").evaluate((el) => el === document.activeElement))) throw new Error("focus not on the first field of the consent");
+    await card.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await card.getByRole("button", { name: "Send application" }).click();
+    await card.getByRole("alert").getByText(/Tick the box to share these with Example Labs/).waitFor();
+    await shot("departures-apply-consent");
+    await a11y("departures-apply-consent");
+    await card.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
+    await card.getByRole("button", { name: "Send application" }).click();
+    await card.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+
+    // The job team's board.
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("link", { name: `Board for ${title}, 1 open application` }).click();
+    await q.waitForURL(/\/corporate\/jobs\/board\?id=/);
+    await q.getByRole("heading", { name: title, level: 1 }).waitFor({ timeout: 10000 });
+    const lane = (name) => q.locator("section", { has: q.getByRole("heading", { name, exact: true, level: 2 }) });
+    const open = lane("Applied").getByRole("button", { name: /^Priya Sharma/ });
+    await open.waitFor();
+    await open.getByText(/required proved/).waitFor();
+    const body = await q.locator("body").innerText();
+    if (body.includes(testEmail) || body.includes("@")) throw new Error("an email address is shown on the board");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-board.png`, fullPage: true });
+    await a11yOn(q, "corporate-board");
+    await open.click();
+    const drawer = q.getByRole("dialog", { name: "Priya Sharma" });
+    await drawer.getByText("Never shown to companies", { exact: false }).waitFor({ timeout: 10000 });
+    await drawer.getByRole("tab", { name: "Match to this job" }).click();
+    await drawer.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
+    if ((await drawer.innerText()).includes(testEmail)) throw new Error("email shown in the candidate drawer");
+    await a11yOn(q, "corporate-candidate");
+    // The L1 AI lane is off for this job.
+    if (!(await drawer.locator('option[value="ai"]').evaluate((o) => o.disabled))) throw new Error("the L1 AI lane is offered while it is off");
+    await drawer.getByLabel("Move to").selectOption("shortlisted");
+    await drawer.getByRole("button", { name: "Move", exact: true }).click();
+    await q.getByRole("status").getByText(/Moved Priya Sharma to Shortlisted/).waitFor({ timeout: 10000 });
+    await lane("Shortlisted").getByRole("button", { name: /^Priya Sharma/ }).click();
+    await drawer.getByRole("button", { name: "Not this time" }).click();
+    // A note is required.
+    await drawer.getByRole("button", { name: "Send Not this time" }).click();
+    await drawer.getByRole("alert").getByText(/Add a short note/).waitFor();
+    await drawer.getByLabel(/Note for Priya/).fill(NOTE);
+    await drawer.getByRole("button", { name: "Send Not this time" }).click();
+    await q.getByRole("status").getByText(/Not this time, with your note/).waitFor({ timeout: 10000 });
+    await lane("Not this time").getByRole("button", { name: /^Priya Sharma/ }).waitFor();
+
+    // Phone size in dark mode: the board fits with no sideways scroll.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: title, level: 1 }).waitFor({ timeout: 10000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("board: horizontal overflow " + overflow + "px");
+    await a11yOn(q, "corporate-board-phone-dark");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-board-phone-dark.png`, fullPage: true });
+
+    // The candidate reads it on Arrivals, with the company's note.
+    await p.goto(BASE + "/arrivals");
+    const mine = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
+    await mine.waitFor({ timeout: 10000 });
+    await p.locator("section", { has: p.getByRole("heading", { name: "Not this time", exact: true }) }).getByRole("heading", { name: title }).waitFor();
+    await mine.getByText(NOTE).waitFor();
+    await mine.getByText("Example Labs moved you to Shortlisted").waitFor();
+    await shot("arrivals");
+    await a11y("arrivals");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await mine.waitFor({ timeout: 10000 });
+    const pOverflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (pOverflow > 1) throw new Error("arrivals: horizontal overflow " + pOverflow + "px");
+    await a11y("arrivals-phone-dark");
+    await shot("arrivals-phone-dark");
+
+    const [app] = await sql`select a.id, a.stage, a.closed_at, c.purpose from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
+    if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");
+    const steps = (await sql`select kind, stage, note from application_events where application_id = ${app.id} order by created_at`).map((e) => `${e.kind}:${e.stage}${e.note ? ":note" : ""}`);
+    if (steps.join() !== "applied:applied,moved:shortlisted,moved:not_this_time:note") throw new Error("events: " + steps.join());
+    const [viewed] = await sql`select count(*)::int as n from audit_logs where target = ${`application:${app.id}`} and action = 'candidate_viewed'`;
+    if (viewed.n < 1) throw new Error("no audit line for opening the candidate");
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-corporate-applications.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await sql.end();
+    await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
     await corp?.close();
   }
 });

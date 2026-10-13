@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { afterWrongTry, codeMatches, codeState, hashCode, hashWorkEmail, isCodeShape, LOCK_MS, MAX_WRONG_TRIES, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
 import { checkWorkEmail, emailDomain, isFreeMail, normalWebsite, websiteHost, websiteMatchesDomain } from "./domains";
-import { canEditJob, canOpenJobs, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
+import { acceptsApplications, canEditJob, canMoveApplications, canOpenJobs, canSeeBoard, moveRefusal, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
 
 const NOW = new Date("2026-10-12T10:00:00Z");
 const DAY = 86_400_000;
@@ -199,5 +199,43 @@ describe("jobs rules (build step 3)", () => {
     expect(isLive("open", "pending")).toBe(false);
     expect(isLive("paused", "verified")).toBe(false);
     expect(isLive("draft", "verified")).toBe(false);
+  });
+});
+
+describe("the board (build step 4)", () => {
+  it("shows a job's board to admins, and to anyone else only on that job's team", () => {
+    expect(canSeeBoard("admin", null)).toBe(true);
+    expect(canSeeBoard("hiring", null)).toBe(false);
+    expect(canSeeBoard("hiring", "hiring")).toBe(true);
+    expect(canSeeBoard("interviewer", "interviewer")).toBe(true);
+    expect(canSeeBoard("interviewer", null)).toBe(false);
+  });
+
+  it("lets admins, and Hiring HR on the job, move candidates; never Interviewers", () => {
+    expect(canMoveApplications("admin", null)).toBe(true);
+    expect(canMoveApplications("hiring", "owner")).toBe(true);
+    expect(canMoveApplications("hiring", "hiring")).toBe(true);
+    expect(canMoveApplications("hiring", null)).toBe(false);
+    expect(canMoveApplications("hiring", "interviewer")).toBe(false);
+    expect(canMoveApplications("interviewer", "interviewer")).toBe(false);
+  });
+
+  it("refuses the L1 AI lane while the AI round is off, a move to the same lane, and any move after withdrawing", () => {
+    const off = { aiRound: false, withdrawn: false };
+    expect(moveRefusal("applied", "shortlisted", off)).toBeNull();
+    expect(moveRefusal("shortlisted", "ai", off)).toBe("ai_off");
+    expect(moveRefusal("shortlisted", "ai", { ...off, aiRound: true })).toBeNull();
+    expect(moveRefusal("team", "team", off)).toBe("same_stage");
+    expect(moveRefusal("not_this_time", "applied", off)).toBeNull();
+    expect(moveRefusal("offer", "applied", off)).toBeNull();
+    expect(moveRefusal("applied", "shortlisted", { ...off, withdrawn: true })).toBe("withdrawn");
+  });
+
+  it("takes applications only for open jobs of verified companies", () => {
+    expect(acceptsApplications("open", "verified")).toBe(true);
+    expect(acceptsApplications("open", "pending")).toBe(false);
+    expect(acceptsApplications("open", "suspended")).toBe(false);
+    expect(acceptsApplications("paused", "verified")).toBe(false);
+    expect(acceptsApplications("closed", "verified")).toBe(false);
   });
 });

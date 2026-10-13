@@ -24,7 +24,7 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
-import { JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+import { APPLICATION_EVENT_KINDS, APPLICATION_STAGES, CAN_JOIN, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
@@ -752,6 +752,83 @@ export const jobTeam = pgTable(
     role: jobTeamRole("role").notNull(),
   },
   (t) => [primaryKey({ columns: [t.jobId, t.userId] }), index("job_team_user").on(t.userId)],
+);
+
+export const applicationStage = pgEnum("application_stage", APPLICATION_STAGES);
+export const canJoin = pgEnum("can_join", CAN_JOIN);
+export const applicationEventKind = pgEnum("application_event_kind", APPLICATION_EVENT_KINDS);
+
+/**
+ * One application to a job posted on CareerMetro (dev/corporate-plan.md build step 4). Made only with its own consent
+ * row naming the company. The company sees the person's public profile and Match to this job, worked out from the
+ * resume sent (`resume_id`) and accepted proofs; never resume lines, email, phone, pay or notice period (only Can
+ * join). One application per person and job. `phone_shared` stays empty until interviews (step 6).
+ */
+export const applications = pgTable(
+  "applications",
+  {
+    id: id(),
+    jobId: uuid("job_id")
+      .notNull()
+      .references(() => jobs.id, { onDelete: "cascade" }),
+    /** Copied from the job, so a company's applications are read without the job. */
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    consentId: uuid("consent_id")
+      .notNull()
+      .references(() => consents.id),
+    stage: applicationStage("stage").notNull().default("applied"),
+    canJoin: canJoin("can_join").notNull(),
+    /** The resume sent. Its profile is read when the company looks, so the person's own corrections show. */
+    resumeId: uuid("resume_id").references(() => resumes.id, { onDelete: "set null" }),
+    /** Encrypted, empty until the person shares it at an accepted interview (step 6). */
+    phoneShared: text("phone_shared"),
+    withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
+    /** Set by Not this time or withdrawing; cleared when the company opens it again. */
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+    /** 180 days after closing; set by the clean-up job (step 7). */
+    companyAccessEndsAt: timestamp("company_access_ends_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("applications_job_user").on(t.jobId, t.userId),
+    index("applications_job_stage").on(t.jobId, t.stage),
+    index("applications_org").on(t.orgId),
+    index("applications_user").on(t.userId, t.createdAt),
+    index("applications_consent").on(t.consentId),
+    index("applications_resume").on(t.resumeId),
+  ],
+);
+
+/**
+ * Every step of an application: made, moved between lanes, withdrawn. Shown on the candidate's Arrivals and in the
+ * company's Activity. A move to Not this time carries the note the candidate reads. The mover's account may go; the
+ * event stays (by set to null).
+ */
+export const applicationEvents = pgTable(
+  "application_events",
+  {
+    id: id(),
+    applicationId: uuid("application_id")
+      .notNull()
+      .references(() => applications.id, { onDelete: "cascade" }),
+    kind: applicationEventKind("kind").notNull(),
+    /** The lane after this event. */
+    stage: applicationStage("stage").notNull(),
+    byUserId: uuid("by_user_id").references(() => users.id, { onDelete: "set null" }),
+    note: text("note"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("application_events_application").on(t.applicationId, t.createdAt),
+    index("application_events_by_user").on(t.byUserId),
+    check("application_events_note_length", sql`char_length(${t.note}) <= 500`),
+    check("application_events_not_this_time_note", sql`${t.kind} <> 'moved' or ${t.stage} <> 'not_this_time' or char_length(${t.note}) >= 10`),
+  ],
 );
 
 /* Audit ------------------------------------------------------------------- */

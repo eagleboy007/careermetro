@@ -141,6 +141,13 @@
       "when": 1791851916234,
       "tag": "0019_corporate_jobs",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791852814855,
+      "tag": "0020_corporate_applications",
+      "breakpoints": true
     }
   ]
 }

@@ -3,7 +3,8 @@
 import { refresh } from "next/cache";
 import { currentAccount } from "@/lib/auth/server";
 import { JOB_ERROR_TEXT, reportJob, saveJob, setJobStatus, type JobResult } from "@/lib/corporate/jobs-store";
-import type { JobFormValues, JobHonestyTicks, JobSaveResult } from "@/lib/corporate/types";
+import { APPLICATION_ERROR_TEXT, moveApplication, openCandidate, type ApplicationResult } from "@/lib/corporate/applications-store";
+import type { ApplicationStage, CandidateView, JobFormValues, JobHonestyTicks, JobSaveResult } from "@/lib/corporate/types";
 import type { ReportReason } from "@/lib/schemas/inbox";
 
 /*
@@ -39,4 +40,23 @@ export async function reportJobAction(jobId: string, reason: ReportReason, note:
   const account = await currentAccount();
   if (!account) return SIGN_IN;
   return words(await reportJob(account.id, { jobId, reason, note: note.trim() || undefined }));
+}
+
+const appWords = (r: ApplicationResult): string | null => (r.ok ? null : (r.message ?? APPLICATION_ERROR_TEXT[r.error]));
+
+/** Opens a candidate on the board: their public profile, Match to this job and Activity. The store audits each opening. */
+export async function openCandidateAction(applicationId: string): Promise<{ ok: true; candidate: CandidateView } | { ok: false; error: string }> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: SIGN_IN };
+  const r = await openCandidate(account.id, { applicationId });
+  return r.ok ? { ok: true, candidate: r.candidate } : { ok: false, error: appWords(r)! };
+}
+
+/** Moves a candidate to another lane (Not this time with its note); the board reloads on success. */
+export async function moveApplicationAction(applicationId: string, to: ApplicationStage, note: string): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  const message = appWords(await moveApplication(account.id, { applicationId, to, note }));
+  if (!message) refresh();
+  return message;
 }

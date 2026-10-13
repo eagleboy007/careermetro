@@ -82,5 +82,50 @@ export const JOBS_BLOCKED_TEXT = {
   suspended: "This company is suspended while we review it, so its jobs can't open and open jobs are hidden from candidates.",
   second_admin: "Add a second Recruiter admin to open jobs. Every company keeps two, so it is never locked out.",
 } as const;
-/** Applying through CareerMetro is build step 4; until then the button is off and says this. */
-export const APPLY_SOON_TEXT = "Applications on CareerMetro open soon. This button switches on then.";
+/** On a posted job when applying isn't possible from here: signed out, or the /design page. */
+export const APPLY_SOON_TEXT = "Sign in to apply on CareerMetro.";
+
+/* Applications and the board (dev/corporate-plan.md build step 4; handoff 12e and section 9) ------------------------- */
+
+/** The six lanes, in board order. Candidates see the same stages on Arrivals. */
+export const APPLICATION_STAGES = ["applied", "shortlisted", "ai", "team", "offer", "not_this_time"] as const;
+export const APPLICATION_STAGE_LABELS: Record<(typeof APPLICATION_STAGES)[number], string> = {
+  applied: "Applied",
+  shortlisted: "Shortlisted",
+  ai: "Level 1 AI interview",
+  team: "Level 2 team",
+  offer: "Offer",
+  not_this_time: "Not this time",
+};
+/** One line under each lane's name on the board. */
+export const APPLICATION_STAGE_HINTS: Record<(typeof APPLICATION_STAGES)[number], string> = {
+  applied: "New, not reviewed",
+  shortlisted: "Picked for interview",
+  ai: "Off until the AI interviewer exists",
+  team: "With your interviewers",
+  offer: "Sent, waiting on reply",
+  not_this_time: "Closed with a note",
+};
+/** "Can join" (never the notice period itself), as the candidate picks it on applying. */
+export const CAN_JOIN = ["now", "30", "60", "90"] as const;
+export const CAN_JOIN_LABELS: Record<(typeof CAN_JOIN)[number], string> = {
+  now: "Immediately",
+  "30": "Within 30 days",
+  "60": "30 to 60 days",
+  "90": "60 to 90 days",
+};
+/** What an application event records: the application, a move between lanes, or the candidate withdrawing. */
+export const APPLICATION_EVENT_KINDS = ["applied", "moved", "withdrawn"] as const;
+/** "Not this time" needs a note the candidate reads on Arrivals. */
+export const NOT_THIS_TIME_NOTE_MIN = 10;
+export const NOT_THIS_TIME_NOTE_MAX = 500;
+/** How a job's requirement reads for a company: worked out by the deterministic matcher, never by the model. */
+export const MATCH_WORDS = { proved: "Proved", on_resume: "On resume, not proved", not_on_resume: "Not on resume" } as const;
+/** The consent screen on applying (DPDP Act): what the company sees, and what it never sees. */
+export const APPLY_SHARES = [
+  "Your name, and your experience and education as job titles, employers and dates",
+  "Certifications on your resume",
+  "How your skills match this job, in words: Proved, On resume, or Not on resume",
+  "When you can join",
+] as const;
+export const APPLY_NEVER = "Never shared: your email, phone, pay, notice period, resume lines, goals, path, streak or other applications.";

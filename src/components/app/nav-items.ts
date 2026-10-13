@@ -8,7 +8,7 @@ export const NAV = {
   today: { key: "today", label: "Today", href: "/today", Icon: House, built: true },
   map: { key: "map", label: "Map", href: "/map", Icon: MapIcon, built: true },
   departures: { key: "departures", label: "Departures", href: "/departures", Icon: TrainFront, built: true },
-  arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: false },
+  arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: true },
   timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: false },
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },
   network: { key: "network", label: "Network", href: "/network", Icon: Users, built: false },

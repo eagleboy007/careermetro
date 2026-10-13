@@ -44,10 +44,10 @@ function SkillRow({ label, children, empty }: { label: string; children: ReactNo
 
 /**
  * A job posted on CareerMetro as candidates see it on Departures, and as the live preview on Post a job. The company's
- * name and its Verified badge only: never its members, email or phone. Applying comes with build step 4, so the
- * button is off and says so in one line. `report` is the Report this job control.
+ * name and its Verified badge only: never its members, email or phone. `apply` is the Apply control (Departures);
+ * without it (the Post a job preview, /design) the button is off and says so in one line. `report` is Report this job.
  */
-export function PostedJobCard({ job, report, headingLevel = 3 }: { job: PostedJobView; report?: ReactNode; headingLevel?: 2 | 3 }) {
+export function PostedJobCard({ job, report, apply, headingLevel = 3 }: { job: PostedJobView; report?: ReactNode; apply?: ReactNode; headingLevel?: 2 | 3 }) {
   const H = headingLevel === 2 ? "h2" : "h3";
   const titleId = `job-${job.id}-title`;
   const noteId = `job-${job.id}-apply`;
@@ -92,20 +92,22 @@ export function PostedJobCard({ job, report, headingLevel = 3 }: { job: PostedJo
           </li>
         ))}
       </SkillRow>
-      <div className="flex flex-col gap-1.5">
-        <button
-          type="button"
-          disabled
-          aria-describedby={noteId}
-          className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-line bg-surface-2 px-4 text-[0.86rem] font-medium text-muted disabled:cursor-not-allowed"
-        >
-          <Send {...ICON} />
-          Apply on CareerMetro
-        </button>
-        <p id={noteId} className="text-[0.8rem] text-muted">
-          {APPLY_SOON_TEXT}
-        </p>
-      </div>
+      {apply ?? (
+        <div className="flex flex-col gap-1.5">
+          <button
+            type="button"
+            disabled
+            aria-describedby={noteId}
+            className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-line bg-surface-2 px-4 text-[0.86rem] font-medium text-muted disabled:cursor-not-allowed"
+          >
+            <Send {...ICON} />
+            Apply on CareerMetro
+          </button>
+          <p id={noteId} className="text-[0.8rem] text-muted">
+            {APPLY_SOON_TEXT}
+          </p>
+        </div>
+      )}
       <AntiScamLine />
       {report}
     </article>
