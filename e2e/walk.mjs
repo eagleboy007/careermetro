@@ -89,6 +89,8 @@ const step = async (name, fn) => {
   } catch (e) {
     failed++;
     console.log("FAIL", name, "@", p.url(), e.message.split("\n")[0]);
+    // Job logs aren't readable from every place we debug CI, but annotations are.
+    if (process.env.GITHUB_ACTIONS) console.log(`::error title=e2e step failed::${name}: ${e.message.split("\n")[0]}`);
     await shot("fail-" + name);
   }
 };
@@ -1800,5 +1802,6 @@ if (process.env.DATABASE_URL) {
 }
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
+if (process.env.GITHUB_ACTIONS) for (const pr of problems) console.log(`::error title=e2e problem::${pr.split("\n")[0]}`);
 await b.close();
 if (failed || problems.length) process.exit(1);
