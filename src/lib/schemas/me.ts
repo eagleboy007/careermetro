@@ -47,6 +47,35 @@ export const meExperience = z.object({
   highlights: z.array(z.string().max(300)).max(8),
 });
 
+/** The only link a profile shows for a certificate: a verified badge's public Credly page, rebuilt from its id. */
+export const CREDLY_BADGE_PAGE = /^https:\/\/www\.credly\.com\/badges\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/**
+ * One certification on a profile (pending item 13, dev/profile-certs-plan.md): from an accepted certificate proof, or
+ * listed on the resume. `proofId`, `note` and `canCheck` are for the owner only; the public profile always clears
+ * them, and leaves out expired ones.
+ */
+export const meCertification = z.object({
+  /** The proof behind it, for the owner's "Check with Credly". Null for resume certificates. */
+  proofId: z.uuid().nullable(),
+  name: z.string().min(1).max(160),
+  /** From our certificate list; null for a resume certificate we can't place. */
+  issuer: z.string().max(120).nullable(),
+  /** When it was issued or passed, as "Mar 2025"; null when not known. */
+  date: z.string().max(40).nullable(),
+  /** "verified": its Credly badge matched. "added": added by the person, from the form or their resume. */
+  status: z.enum(["verified", "added"]),
+  fromResume: z.boolean(),
+  /** "Mar 2026" once it has expired; null while current. */
+  expired: z.string().max(40).nullable(),
+  /** The public Credly badge page, only for a verified badge. */
+  badgeUrl: z.string().regex(CREDLY_BADGE_PAGE).nullable(),
+  /** Owner only: why the last Credly check didn't verify it, in plain words. */
+  note: z.string().max(200).nullable(),
+  /** Owner only: it has a Credly badge link we can check. */
+  canCheck: z.boolean(),
+});
+
 export const meProfile = z.object({
   name: z.string().min(1).max(120),
   /** The person's own one line under their name, from Account settings. */
@@ -69,7 +98,7 @@ export const meProfile = z.object({
   interests: z.array(z.string().max(60)).max(30),
   stories: z.array(story).max(40),
   proofs: z.array(z.object({ title: z.string().max(160), detail: z.string().max(120) })).max(20),
-  certifications: z.array(z.object({ name: z.string().max(160), verified: z.boolean() })).max(30),
+  certifications: z.array(meCertification).max(30),
   /** When the resume was read, or null with no resume. */
   resumeReadOn: z.string().max(40).nullable(),
   /** Nearby lines from the target role (dev/nearby-lines-plan.md). Only the person sees them. Null before there are gaps. */
@@ -83,3 +112,4 @@ export type Story = z.infer<typeof story>;
 export type JourneyStop = z.infer<typeof journeyStop>;
 export type MeExperience = z.infer<typeof meExperience>;
 export type MeProfile = z.infer<typeof meProfile>;
+export type MeCertification = z.infer<typeof meCertification>;

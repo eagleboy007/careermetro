@@ -42,6 +42,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -417,6 +418,25 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
         <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
         <MeView me={exampleMe} others={publicProfile(exampleMe, DEFAULT_SETTINGS)} whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Certifications on a profile</h2>
+        <p className="text-sm text-muted">
+          Pending item 13: from accepted certificates and the resume. The owner sees every one, the reason a Credly check didn&apos;t verify one, an
+          expired one marked, and Check with Credly (example data, so nothing is checked). Others see at most 5 current ones: Verified with Credly
+          first, with the public badge link, then Added by the person.
+        </p>
+        <div className="grid gap-6 min-[760px]:grid-cols-2">
+          <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+            <h3 className="text-[0.95rem] font-semibold">Your own profile</h3>
+            <ProfileCertifications certs={exampleMe.certifications} mode="own" ownerName={exampleMe.name} />
+          </div>
+          <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+            <h3 className="text-[0.95rem] font-semibold">What others see</h3>
+            <ProfileCertifications certs={publicProfile(exampleMe, DEFAULT_SETTINGS).certifications} mode="public" ownerName={exampleMe.name} />
+          </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

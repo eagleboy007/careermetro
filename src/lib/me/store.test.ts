@@ -93,10 +93,41 @@ describe.skipIf(!db)("meFor (database)", () => {
     expect(meProfile.safeParse(theirMe).success).toBe(true);
     expect(theirMe).toMatchObject({ name: "Ravi", aim: role.title });
     expect(theirMe!.experience.map((e) => e.title)).toEqual(["Analyst"]);
-    expect(theirMe!.certifications).toEqual([{ name: "Made-up Certificate", verified: false }]);
+    expect(theirMe!.certifications.map((c) => [c.name, c.status, c.fromResume])).toEqual([["Made-up Certificate", "added", true]]);
     expect(theirMe!.skills.missing.length + theirMe!.skills.weak.length).toBe(gaps.analysis.gaps.length);
 
     const myMe = await meFor(mine, new Date(), db!);
     expect(myMe).toMatchObject({ name: "Asha", aim: null, experience: [], certifications: [] });
+  });
+
+  it("lists the person's own accepted certificate proofs, verified first, and never held ones or anyone else's", async () => {
+    const mine = await user("certs", "Asha Rao");
+    const theirs = await user("certs-other", "Ravi Menon");
+    const row = (userId: string, certId: string, over: Partial<typeof schema.gapProofs.$inferInsert> = {}) => ({
+      userId,
+      skillId: "aws",
+      type: "certification" as const,
+      status: "accepted" as const,
+      certId,
+      credentialKey: `${certId}-${userId}`,
+      issuedOn: "2025-03-01",
+      expiresOn: null,
+      evidence: { type: "certification" as const, certId, issuer: "x", url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002" },
+      ...over,
+    });
+    await db!.insert(schema.gapProofs).values([
+      row(mine, "aws-developer-associate", { issuedOn: "2026-01-01", checkNote: "earner_name" }),
+      row(mine, "aws-cloud-practitioner", { verifier: "credly", badgeId: "c4ed1100-0000-4000-8000-000000000002" }),
+      row(mine, "aws-security-specialty", { status: "pending", heldReason: "credential_reused" }),
+      row(theirs, "aws-devops-professional"),
+    ]);
+    const me = await meFor(mine, new Date("2026-10-13T06:00:00Z"), db!);
+    expect(meProfile.safeParse(me).success).toBe(true);
+    expect(me!.certifications.map((c) => [c.name, c.status, c.date])).toEqual([
+      ["AWS Certified Cloud Practitioner", "verified", "Mar 2025"],
+      ["AWS Certified Developer – Associate", "added", "Jan 2026"],
+    ]);
+    expect(me!.certifications[0].badgeUrl).toBe("https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002");
+    expect(me!.certifications[1].note).toMatch(/doesn't match your account/);
   });
 });

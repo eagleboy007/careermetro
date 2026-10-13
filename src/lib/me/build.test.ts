@@ -126,7 +126,7 @@ describe("meFromProfile", () => {
       }),
     );
     expect(me.skills).toEqual({ have: ["EXCEL", "Tableau"], weak: ["Power BI"], missing: ["SQL"] });
-    expect(me.certifications).toEqual([{ name: "Tableau", verified: false }]);
+    expect(me.certifications.map((c) => [c.name, c.status, c.fromResume])).toEqual([["Tableau", "added", true]]);
   });
 
   it("never marks a resume certificate verified, and stays inside the schema for long input", () => {
@@ -147,7 +147,7 @@ describe("meFromProfile", () => {
         }),
       }),
     );
-    expect(me.certifications).toEqual([{ name: "AWS Cloud Practitioner", verified: false }]);
+    expect(me.certifications.map((c) => [c.name, c.status, c.issuer])).toEqual([["AWS Cloud Practitioner", "added", "Amazon Web Services"]]);
     expect(meProfile.safeParse(me).success).toBe(true);
   });
 

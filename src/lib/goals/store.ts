@@ -16,6 +16,7 @@ import {
 } from "@/lib/schemas";
 import { resumeName } from "@/lib/account/name";
 import { credentialKey } from "@/lib/proofs/credential";
+import { credlyBadgeId } from "@/lib/proofs/credly";
 import { checkCertificate } from "@/lib/proofs/rules";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { fillingSkills, planGoalSync } from "./sync";
@@ -285,7 +286,8 @@ export const DAILY_CERTIFICATES = 10;
 /**
  * "Add a certificate" (dev/proof-plan.md). Runs the honesty rules, then:
  * - a certificate in the person's name, current and covering the goal is accepted at once and fills the goal;
- *   `verified` (the badge page confirmed it) labels it Verified, else Uploaded;
+ *   it is labelled "added" (Added by you) until its Credly badge is checked after this transaction
+ *   (src/lib/proofs/credly-store.ts); `verified` is for callers that already checked it;
  * - one another account already used (same certificate and credential id) is held for review and fills nothing;
  * - anything else is refused with a reason and nothing is stored.
  * The credential id and the name on the certificate are never stored; only a keyed hash of the id is.
@@ -320,18 +322,26 @@ export async function submitCertificate(
 
     const key = credentialKey(cert!.id, submission.credentialId, opts.env);
     const mine = and(eq(gapProofs.userId, userId), eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key), eq(gapProofs.skillId, check.skillId));
-    const [own] = await tx.select({ id: gapProofs.id, status: gapProofs.status, verifier: gapProofs.verifier }).from(gapProofs).where(mine);
+    const [own] = await tx.select({ id: gapProofs.id, status: gapProofs.status, verifier: gapProofs.verifier, evidence: gapProofs.evidence }).from(gapProofs).where(mine);
     // Sent again while held: still held, and no second row.
     if (own?.status === "pending") return { status: "held", skillId: check.skillId };
     if (own?.status === "accepted") {
       // The same certificate again, such as a renewal that keeps its credential id: the new dates and link replace
-      // the old ones, so a goal waiting to be renewed is met again.
+      // the old ones, so a goal waiting to be renewed is met again. A new link clears the old Credly check, since it
+      // was about the old link; the caller checks the new one.
+      const sameLink = own.evidence.type === "certification" && own.evidence.url === submission.url;
+      const verified = own.verifier === "credly" && sameLink;
       await tx
         .update(gapProofs)
-        .set({ issuedOn: submission.issuedOn, expiresOn: submission.expiresOn, evidence: { type: "certification", certId: cert!.id, issuer: cert!.issuer, url: submission.url } })
+        .set({
+          issuedOn: submission.issuedOn,
+          expiresOn: submission.expiresOn,
+          evidence: { type: "certification", certId: cert!.id, issuer: cert!.issuer, url: submission.url },
+          ...(sameLink ? {} : { verifier: null, badgeId: credlyBadgeId(submission.url), checkedAt: null, checkNote: null }),
+        })
         .where(eq(gapProofs.id, own.id));
       await refreshGoals(tx, userId, check.skillId, members, today);
-      return { status: "filled", label: own.verifier === "credly" ? "verified" : "uploaded", skillId: check.skillId };
+      return { status: "filled", label: verified ? "verified" : "added", skillId: check.skillId, proofId: own.id };
     }
 
     const row = {
@@ -344,6 +354,7 @@ export async function submitCertificate(
       expiresOn: submission.expiresOn,
       credentialKey: key,
       nameMatched: true,
+      badgeId: credlyBadgeId(submission.url),
     };
     // Rule 3: the first account to use a credential owns it, for every skill its certificate proves. Another account
     // sending it at the same moment waits on this row's key and then finds it taken.
@@ -358,9 +369,12 @@ export async function submitCertificate(
       return { status: "held", skillId: check.skillId };
     }
 
-    await tx.insert(gapProofs).values({ ...row, status: "accepted", verifier: opts.verified ? "credly" : null, verifiedAt: new Date() });
+    const [inserted] = await tx
+      .insert(gapProofs)
+      .values({ ...row, status: "accepted", verifier: opts.verified ? "credly" : null, verifiedAt: new Date(), checkedAt: opts.verified ? new Date() : null })
+      .returning({ id: gapProofs.id });
     await refreshGoals(tx, userId, check.skillId, members, today);
-    return { status: "filled", label: opts.verified ? "verified" : "uploaded", skillId: check.skillId };
+    return { status: "filled", label: opts.verified ? "verified" : "added", skillId: check.skillId, proofId: inserted.id };
   });
 }
 

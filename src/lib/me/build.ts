@@ -1,5 +1,6 @@
 import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "@/lib/map/life-layout";
+import { indiaDate, profileCertifications, type ProofCertRow } from "./certs";
 
 /** Goals shown one by one on the journey strip before the rest fold into "N more goals". */
 const GOAL_STOPS = 5;
@@ -16,6 +17,8 @@ export type MeInput = {
   joinedAt: Date;
   resumeReadAt: Date | null;
   now: Date;
+  /** The person's accepted certificate proofs (src/lib/me/store.ts); none for views that don't read proof. */
+  proofCerts?: ProofCertRow[];
 };
 
 /** Cut to the schema's limit at a word break. */
@@ -72,7 +75,8 @@ export function journeyFor(line: MapLine | null, opts: { joinedAt: Date; resumeR
 
 /**
  * Your profile from the confirmed profile and current gaps, in plain code. Stories, interests and proof stay empty until
- * their tables exist; certifications from a resume are listed but never marked verified.
+ * their tables exist. Certifications come from accepted certificate proof and the resume (src/lib/me/certs.ts); only a
+ * Credly badge that matched is ever marked verified.
  */
 export function meFromProfile(input: MeInput): MeProfile {
   const { profile, analysis, line, now } = input;
@@ -133,11 +137,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     interests: [],
     stories: [],
     proofs: [],
-    certifications: (profile?.certifications ?? [])
-      .map((c) => c.name.trim())
-      .filter((c, i, all) => c && all.findIndex((o) => o.toLowerCase() === c.toLowerCase()) === i)
-      .slice(0, 30)
-      .map((name) => ({ name: cut(name, 160), verified: false })),
+    certifications: profileCertifications({ proofs: input.proofCerts ?? [], resume: profile?.certifications ?? [], today: indiaDate(now) }),
     resumeReadOn: input.resumeReadAt ? monthLabel(input.resumeReadAt) : null,
     // Read from the line, so Me and the Map always show the same Nearby lines.
     nearby: line?.nearby ?? null,

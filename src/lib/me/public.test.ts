@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { exampleMe } from "./fixtures";
-import type { MeProfile } from "@/lib/schemas";
-import { PUBLIC_KEYS, publicProfile } from "./public";
+import { meCertification, type MeCertification, type MeProfile } from "@/lib/schemas";
+import { PUBLIC_CERTIFICATIONS, PUBLIC_KEYS, publicProfile } from "./public";
 
 const me = { ...exampleMe, headline: "IT support moving into security operations" };
 const all = { showTargetRole: true, showExperience: true, showEducation: true, showSkills: true, showGaps: true, showCertifications: true };
@@ -31,7 +31,7 @@ describe("the public profile", () => {
     expect(out.skills.have).toEqual(me.skills.have);
     expect(out.experience.map((e) => e.title)).toEqual(me.experience.map((e) => e.title));
     expect(out.education).toEqual(me.education);
-    expect(out.certifications).toEqual(me.certifications);
+    expect(out.certifications.map((c) => c.name)).toEqual(me.certifications.filter((c) => !c.expired).map((c) => c.name).slice(0, 5));
   });
 
   it("shows the target role and gaps only when turned on", () => {
@@ -66,5 +66,76 @@ describe("the public profile", () => {
     expect(out.skills).toEqual({ have: [], weak: [], missing: [] });
     expect(out.certifications).toEqual([]);
     expect(out.stats.find((s) => s.label === "skills found")).toBeUndefined();
+  });
+});
+
+describe("certifications on the public profile (pending item 13)", () => {
+  const cert = (over: Partial<MeCertification>): MeCertification => ({
+    proofId: "00000000-0000-4000-8000-0000000c00aa",
+    name: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    date: "Mar 2025",
+    status: "added",
+    fromResume: false,
+    expired: null,
+    badgeUrl: null,
+    note: null,
+    canCheck: true,
+    ...over,
+  });
+
+  it("shows at most 5, current ones only, in the profile's order: verified first", () => {
+    const out = publicProfile(me, all).certifications;
+    expect(PUBLIC_CERTIFICATIONS).toBe(5);
+    expect(me.certifications.length).toBeGreaterThan(5);
+    expect(out).toHaveLength(5);
+    expect(out[0]).toMatchObject({ status: "verified", badgeUrl: expect.stringMatching(/^https:\/\/www\.credly\.com\/badges\//) });
+    expect(out.every((c) => c.expired === null)).toBe(true);
+    expect(me.certifications.some((c) => c.expired)).toBe(true);
+    for (const c of out) expect(meCertification.safeParse(c).success).toBe(true);
+  });
+
+  it("carries the issuer, name, date and status, and nothing for the owner only", () => {
+    const owner = [
+      cert({ status: "verified", badgeUrl: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001" }),
+      cert({ name: "CompTIA Security+", note: "The name on the Credly badge doesn't match your account." }),
+    ];
+    const out = publicProfile({ ...me, certifications: owner }, all).certifications;
+    expect(out).toEqual([
+      {
+        proofId: null,
+        name: "AWS Certified Cloud Practitioner",
+        issuer: "Amazon Web Services",
+        date: "Mar 2025",
+        status: "verified",
+        fromResume: false,
+        expired: null,
+        badgeUrl: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001",
+        note: null,
+        canCheck: false,
+      },
+      { proofId: null, name: "CompTIA Security+", issuer: "Amazon Web Services", date: "Mar 2025", status: "added", fromResume: false, expired: null, badgeUrl: null, note: null, canCheck: false },
+    ]);
+    const text = JSON.stringify(out);
+    expect(text).not.toContain("0000000c00aa");
+    expect(text).not.toContain("doesn't match");
+  });
+
+  it("never shows a link that isn't a verified badge's public Credly page, nor anything a certificate entry picked up", () => {
+    const sneaky = [
+      cert({ status: "added", badgeUrl: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001" }),
+      cert({ status: "verified", badgeUrl: "https://learn.microsoft.com/en-us/users/priyasharma/credentials/abc" }),
+      { ...cert({}), credentialId: "SECRET-CRED", filePath: "proofs/u1/cert.pdf", nameOnCertificate: "Priya Sharma" } as MeCertification,
+    ];
+    const out = publicProfile({ ...me, certifications: sneaky }, all).certifications;
+    expect(out.map((c) => c.badgeUrl)).toEqual([null, null, null]);
+    const text = JSON.stringify(out);
+    for (const bad of ["learn.microsoft.com", "SECRET-CRED", "cert.pdf", "nameOnCertificate", "Priya"]) expect(text).not.toContain(bad);
+  });
+
+  it("hides expired ones, and all of them with the Certifications switch off", () => {
+    const out = publicProfile({ ...me, certifications: [cert({ expired: "Sep 2026" }), cert({ name: "Current" })] }, all).certifications;
+    expect(out.map((c) => c.name)).toEqual(["Current"]);
+    expect(publicProfile(me, { ...all, showCertifications: false }).certifications).toEqual([]);
   });
 });

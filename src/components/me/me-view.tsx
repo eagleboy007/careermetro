@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, Pe
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
+import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { StatusChip } from "@/components/ui/status-chip";
 import { initials } from "@/lib/departures/filter";
@@ -24,7 +25,20 @@ export type WhoSees = { visibility: string; link: string | null; shown: string[]
  * nothing hidden is even in the page. With `mode="public"` it is someone else's profile at /u/<username>, read only.
  * Parts that need their own tables are marked "soon".
  */
-export function MeView({ me: mine, others, mode = "own", whoSees }: { me: MeProfile; others?: MeProfile; mode?: "own" | "public"; whoSees?: WhoSees }) {
+export function MeView({
+  me: mine,
+  others,
+  mode = "own",
+  whoSees,
+  onCheckCertificate,
+}: {
+  me: MeProfile;
+  others?: MeProfile;
+  mode?: "own" | "public";
+  whoSees?: WhoSees;
+  /** "Check with Credly" (src/app/(app)/me/actions.ts); without it, example data says nothing is checked. */
+  onCheckCertificate?: (proofId: string) => Promise<CredlyCheckResult>;
+}) {
   const [asOthers, setAsOthers] = useState(false);
   const back = useRef<HTMLButtonElement>(null);
   const view = useRef<HTMLButtonElement>(null);
@@ -275,26 +289,14 @@ export function MeView({ me: mine, others, mode = "own", whoSees }: { me: MeProf
         )}
         {(!viewer || me.certifications.length > 0) && (
         <section>
-          <RailHead name="Certifications" note={`${me.certifications.filter((c) => c.verified).length} verified`} />
-          {me.certifications.length ? (
-            <ul className="flex flex-col gap-1.5">
-              {me.certifications.map((c, i) => (
-                <li key={i} className="flex items-center gap-2 text-[0.82rem]">
-                  <BadgeCheck size={16} {...ICON} className="shrink-0 text-muted" />
-                  <span className="min-w-0 flex-1">
-                    {c.name}
-                    <small className="block text-[0.72rem] text-muted">
-                      {c.verified ? "Credly badge checked" : viewer ? "From their resume, not checked yet" : "From your resume, not checked yet"}
-                    </small>
-                  </span>
-                  {c.verified && <StatusChip status="met" label="Verified" />}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[0.8rem] text-muted">None yet.</p>
+          <RailHead name="Certifications" note={`${me.certifications.filter((c) => c.status === "verified").length} verified`} />
+          <ProfileCertifications certs={me.certifications} mode={own ? "own" : "public"} ownerName={me.name} onCheck={onCheckCertificate} />
+          {own && (
+            <Link href="/today" className="inline-flex min-h-11 items-center gap-1 self-start text-[0.82rem] font-[550] text-muted hover:text-ink">
+              Add one from a goal on Today
+              <ArrowRight size={15} {...ICON} />
+            </Link>
           )}
-          {own && <span className="text-[0.8rem] text-muted">Add from Credly · soon</span>}
         </section>
         )}
         {own && (

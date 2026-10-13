@@ -13,7 +13,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 12;
+export const EXPORT_VERSION = 13;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -126,7 +126,12 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         certificate: gapProofs.certId,
         issuedOn: gapProofs.issuedOn,
         expiresOn: gapProofs.expiresOn,
+        verifier: gapProofs.verifier,
         verifiedAt: gapProofs.verifiedAt,
+        // The Credly check (dev/profile-certs-plan.md): the public badge id, when it was checked and why it wasn't verified.
+        badgeId: gapProofs.badgeId,
+        checkedAt: gapProofs.checkedAt,
+        checkNote: gapProofs.checkNote,
         createdAt: gapProofs.createdAt,
       })
       .from(gapProofs)
