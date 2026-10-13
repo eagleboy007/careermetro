@@ -47,7 +47,6 @@ describe.skipIf(!db)("applications and the board (database)", () => {
   const deps = (over: Partial<CorporateDeps> = {}): CorporateDeps => ({ db: db!, env, now: clock, delivery: "test", ...over });
   const at = (days = 0) => ({ db: db!, now: new Date(clock.getTime() + days * DAY) });
   const lines: string[] = [];
-  let addedRoleRow: string | null = null;
   const SLUG = "cyber-security-analyst";
   const role = roleBySlug(SLUG)!;
   const req = requirementsFromRole(role);
@@ -59,11 +58,9 @@ describe.skipIf(!db)("applications and the board (database)", () => {
       .insert(schema.skills)
       .values(skills.map(({ id, name, category }) => ({ id, name, category })))
       .onConflictDoNothing();
-    const [row] = await db!.select({ id: schema.roleProfiles.id }).from(schema.roleProfiles).where(eq(schema.roleProfiles.slug, SLUG)).limit(1);
-    if (!row) {
-      const [added] = await db!.insert(schema.roleProfiles).values({ slug: SLUG, version: 1, data: role, published: false, updatedOn: role.updatedOn }).returning({ id: schema.roleProfiles.id });
-      addedRoleRow = added.id;
-    }
+    // An unseeded database (CI) gets the role as an unpublished row. The three corporate test files share it and run
+    // at the same time, so it is added once and left in place: deleting it could pull it from under another file's jobs.
+    await db!.insert(schema.roleProfiles).values({ slug: SLUG, version: 1, data: role, published: false, updatedOn: role.updatedOn }).onConflictDoNothing();
   });
   beforeEach(() => {
     for (const level of ["log", "warn", "error"] as const) vi.spyOn(console, level).mockImplementation((line: unknown) => void lines.push(String(line)));
@@ -72,7 +69,6 @@ describe.skipIf(!db)("applications and the board (database)", () => {
   afterAll(async () => {
     await db!.delete(schema.organizations).where(like(schema.organizations.emailDomain, `%${run}%`));
     if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
-    if (addedRoleRow) await db!.delete(schema.roleProfiles).where(eq(schema.roleProfiles.id, addedRoleRow));
     await sqlClient!.end();
     // Logs carry event names and reasons only: never a name, a note or a resume line.
     const all = lines.join("\n");
