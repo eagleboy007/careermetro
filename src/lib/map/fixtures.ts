@@ -11,6 +11,7 @@ const goal = (g: Partial<MapGoal> & Pick<MapGoal, "skillId" | "name" | "status">
   goalId: null,
   certificates: [],
   renew: false,
+  notConfirmed: false,
   practice: null,
   ...g,
 });

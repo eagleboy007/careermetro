@@ -5,7 +5,7 @@ import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
-import { provedSkills, syncGoals } from "@/lib/goals/store";
+import { notConfirmedSkills, provedSkills, syncGoals } from "@/lib/goals/store";
 import { nearbyLinesFor } from "@/lib/nearby/build";
 import { nearbyOrNothing } from "@/lib/nearby/safe";
 import { goalName } from "@/lib/goals/name";
@@ -30,6 +30,10 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   if (!analysis) return null;
   const { result } = analysis;
   const userGoals = await syncGoals(userId, analysis, db);
+  // Certificates rejected after review (FR-44): their goals say so until proved.
+  const notConfirmed = await notConfirmedSkills(userId, db);
+  const isNotConfirmed = (own: (typeof userGoals)[number] | undefined, skillId: string) =>
+    !own?.proved && (own ? fillingSkills(own, skillGroupMembers) : [skillId]).some((id) => notConfirmed.has(id));
 
   const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
   const steps = path
@@ -77,6 +81,7 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
       goalId: own?.id ?? null,
       certificates: certificatesFor(own ? fillingSkills(own, skillGroupMembers) : [g.skillId]),
       renew: own?.status === "renew",
+      notConfirmed: isNotConfirmed(own, g.skillId),
       skillId: g.skillId,
       name: clip(goalName(g, proved, result.roleSlug), 80),
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
@@ -91,6 +96,7 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
     goalId: own.id,
     certificates: certificatesFor(fillingSkills(own, skillGroupMembers)),
     renew: own.status === "renew",
+    notConfirmed: isNotConfirmed(own, own.skillId),
     skillId: own.skillId,
     name: clip(choiceName(own.skillId), 80),
     status: own.status === "renew" ? "weak" : "missing",

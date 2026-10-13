@@ -90,6 +90,10 @@ describe("proxy", () => {
     refresh.mockResolvedValue({ response: NextResponse.next(), signedIn: false, identity: null });
     expect(rewrittenTo(await proxy(req("/admin/companies")))).toBe(notFound);
     expect(rewrittenTo(await proxy(req("/admin")))).toBe(notFound);
+    // The held-proof review sits behind the same gate.
+    expect(rewrittenTo(await proxy(req("/admin/proofs")))).toBe(notFound);
+    expect(rewrittenTo(await proxy(req("/admin/proofs", testUserCookie({ email: "asha@example.com", name: "Asha" }))))).toBe(notFound);
+    expect(rewrittenTo(await proxy(req("/admin/proofs", testUserCookie({ email: LOCAL_ADMIN_EMAIL, name: "Admin" }))))).toBeNull();
     expect(rewrittenTo(await proxy(req("/admin/companies", testUserCookie({ email: "asha@example.com", name: "Asha" }))))).toBe(notFound);
     const admin = await proxy(req("/admin/companies", testUserCookie({ email: LOCAL_ADMIN_EMAIL, name: "Admin" })));
     expect(rewrittenTo(admin)).toBeNull();

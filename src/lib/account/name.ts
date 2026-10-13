@@ -25,3 +25,16 @@ export function resumeName(account: { name: string | null; firstName: string | n
   if (!account) return null;
   return fullName(account.firstName, account.lastName) || account.name?.trim() || null;
 }
+
+/**
+ * A short name for CareerMetro's own admin pages: first name and last initial ("Priya S."), from first and last name,
+ * else the older single name split, else NO_NAME. Never anything from the email.
+ */
+export function shortName(account: { name: string | null; firstName: string | null; lastName: string | null }): string {
+  const split = splitName(account.name);
+  const first = account.firstName?.trim().split(/\s+/)[0] || split.first;
+  const last = (account.firstName?.trim() ? account.lastName?.trim() : split.last) || account.lastName?.trim() || "";
+  if (!first) return NO_NAME;
+  const initial = [...last][0];
+  return initial ? `${first} ${initial.toLocaleUpperCase("en-IN")}.` : first;
+}

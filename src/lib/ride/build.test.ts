@@ -50,6 +50,10 @@ describe("buildRide", () => {
     expect(cloud.summary).toMatch(/has expired/);
     expect(cloud.prove!.options.find((o) => o.kind === "cert")!.action).toBe("Renew");
 
+    // A certificate rejected after review (FR-44) is said on the prove pitstop.
+    expect(sql.prove!.notConfirmed).toBe(false);
+    expect(ride([goal({ goalId: "g4", skillId: "sql", notConfirmed: true })])!.prove!.notConfirmed).toBe(true);
+
     const none = ride([goal({ goalId: "g3", skillId: "no-such-skill" })])!;
     expect(none.prove!.certificates).toEqual([]);
     expect(none.prove!.options.find((o) => o.kind === "cert")!.detail).toMatch(/No certificate on our list/);

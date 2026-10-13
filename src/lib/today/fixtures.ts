@@ -17,6 +17,7 @@ export const exampleRide: Ride = {
     goalId: null,
     certificates: [{ id: "oracle-sql-associate", name: "Oracle Database SQL Certified Associate", issuer: "Oracle" }],
     renew: false,
+    notConfirmed: false,
     why: "Pitstop 4 (the course and tasks above) gets you ready. Only this pitstop fills the gap. You can prove it any time.",
     options: [
       { kind: "check", title: "Skill check", detail: "30 min, free, on camera. Real sales tables to query, from the same areas as your tasks.", action: "Take it" },

@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays } from "@/db/schema";
-import { goalsOf, syncGoals } from "@/lib/goals/store";
+import { goalsOf, notConfirmedSkills, syncGoals } from "@/lib/goals/store";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { skillGroupMembers, skills } from "@/content";
@@ -45,6 +45,7 @@ export async function rideGoalsFor(
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return null;
   const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
+  const notConfirmed = await notConfirmedSkills(userId, db);
   const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
   const steps = path
     ? await db
@@ -91,6 +92,7 @@ export async function rideGoalsFor(
       learnDone: Boolean(step?.doneAt),
       proofSkills: fillingSkills(g, skillGroupMembers),
       renew: g.status === "renew",
+      notConfirmed: !g.proved && fillingSkills(g, skillGroupMembers).some((id) => notConfirmed.has(id)),
       choice,
     };
   };

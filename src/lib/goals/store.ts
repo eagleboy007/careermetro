@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, eq, gte, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNotNull, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { certificateCredentials, gapAnalyses, gapProofs, jobChecks, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
 import { certifications, skillGroupMembers, skills } from "@/content";
@@ -227,7 +227,7 @@ export async function addProof(userId: string, skillId: string, evidence: ProofE
  * the goal, "renew" when only expired proof does, else open again. Skipped goals are left alone. The caller holds the
  * person's lock.
  */
-async function refreshGoals(tx: Tx, userId: string, skillId: string, members: ReadonlyMap<string, string[]>, today = indiaToday()): Promise<void> {
+export async function refreshGoals(tx: Tx, userId: string, skillId: string, members: ReadonlyMap<string, string[]>, today = indiaToday()): Promise<void> {
   const [proved, expired] = await Promise.all([provedSkills(userId, tx, today).then((r) => new Set(r)), expiredSkills(userId, tx, today).then((r) => new Set(r))]);
   // The goal for this skill, and any goal whose group has it.
   const groups = [...members].filter(([, ids]) => ids.includes(skillId)).map(([id]) => id);
@@ -464,4 +464,16 @@ export async function removeChoiceGoal(userId: string, goalId: string, db: Db = 
       .returning({ id: userGoals.id });
     return gone.length > 0;
   });
+}
+
+/**
+ * Skills with a certificate rejected after review (/admin/proofs, FR-44): status rejected with a held reason. The goals
+ * they would fill say the certificate couldn't be confirmed and point to Grievances. Read only.
+ */
+export async function notConfirmedSkills(userId: string, db: Db | Tx = getDb()): Promise<Set<string>> {
+  const rows = await db
+    .selectDistinct({ skillId: gapProofs.skillId })
+    .from(gapProofs)
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "rejected"), isNotNull(gapProofs.heldReason)));
+  return new Set(rows.map((r) => r.skillId));
 }

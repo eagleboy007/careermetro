@@ -3,6 +3,7 @@
 import { Award, BriefcaseBusiness, Check, CircleHelp, Route, TrainFront, Video } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import type { ProvePitstop, Ride, RideWeek } from "@/lib/schemas";
 import { TaskList } from "./task-list";
@@ -318,6 +319,7 @@ function ProveBox({
         </span>
       </div>
       <p className="text-[0.84rem] text-muted">{prove.why}</p>
+      {prove.notConfirmed && <NotConfirmedNote />}
       <ul className="flex flex-col gap-2">
         {prove.options.map((o) => {
           const Icon = PROVE_ICON[o.kind];

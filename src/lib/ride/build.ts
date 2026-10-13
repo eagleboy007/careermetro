@@ -18,6 +18,8 @@ export type RideGoal = {
   proofSkills?: string[];
   /** Its certificate expired, so it waits for a current one. */
   renew?: boolean;
+  /** A certificate for it was rejected after review (FR-44). */
+  notConfirmed?: boolean;
   /**
    * Set on a "Your choice" goal, with the company of the job check it came from. Such goals are never on the ride:
    * they sit on their own spur and never move the train or arrival.
@@ -170,6 +172,7 @@ export function buildRide(input: RideInput): Ride | null {
       goalId: current.goalId,
       certificates,
       renew: Boolean(current.renew),
+      notConfirmed: Boolean(current.notConfirmed) && !current.proved,
       why: `Pitstop ${pitstop} gets you ready. Only this pitstop fills the gap. You can prove it any time.`,
       options: [
         { kind: "check", title: "Skill check", detail: "A short check on camera, free, from the same areas as your tasks.", action: "Take it" },

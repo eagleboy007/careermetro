@@ -885,7 +885,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 14) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 15) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1434,6 +1434,93 @@ await step("company review: not found for others; the admin verifies the new com
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-companies-phone-dark.png`, fullPage: true });
   } finally {
     await adm.close();
+  }
+});
+// Held proofs (/admin/proofs, FR-44): not found when signed out; the admin sees two held certificates set up here in
+// the database (a Credly badge already verified on another account, and a reused credential), accepts the first, and
+// focus moves to the next row's first button, never to the page. The other account's claim on the badge is rejected.
+await step("held proofs: the admin accepts one, and focus moves to the next row", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to set up held proofs");
+  const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    const q = await out.newPage();
+    const res = await q.goto(BASE + "/admin/proofs");
+    if (res?.status() !== 404) throw new Error(`signed out: /admin/proofs answered ${res?.status()}, not 404`);
+  } finally {
+    await out.close();
+  }
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const run = `e2e-held-${Date.now()}`;
+  const hex = Date.now().toString(16).padStart(12, "0").slice(-12);
+  const badge = `c4ed1100-0000-4000-8000-${hex}`;
+  const proofRow = (userId, key, status, heldReason, checkNote, verifier) => sql`
+    insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, credential_key, badge_id, held_reason, check_note, verifier, verified_at, name_matched)
+    values (${userId}, 'aws', 'certification', ${status}, ${sql.json({ type: "certification", certId: "aws-cloud-practitioner", issuer: "Amazon Web Services", url: `https://www.credly.com/badges/${badge}` })},
+      'aws-cloud-practitioner', ${`${run}-${key}`}, ${badge}, ${heldReason}, ${checkNote}, ${verifier}, ${status === "accepted" ? new Date() : null}, true)
+    returning id`;
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await adm.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  try {
+    const person = async (n, first, last) =>
+      (await sql`insert into users (email, first_name, last_name, name) values (${`${run}-${n}@example.test`}, ${first}, ${last}, ${`${first} ${last}`}) returning id`)[0].id;
+    const holder = await person("a", "Meera", "Iyer");
+    const claimant = await person("b", "Walkhold", "Bose");
+    const second = await person("c", "Walksecond", "Das");
+    const [kept] = await proofRow(holder, "a", "accepted", null, null, "credly");
+    const [heldB] = await proofRow(claimant, "b", "pending", "badge_reused", "used_elsewhere", null);
+    // Submitted a moment later, so it is the next row.
+    const [heldC] = await sql`
+      insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, credential_key, held_reason, name_matched, created_at)
+      values (${second}, 'aws', 'certification', 'pending', ${sql.json({ type: "certification", certId: "aws-cloud-practitioner", issuer: "Amazon Web Services", url: null })},
+        'aws-cloud-practitioner', ${`${run}-c`}, 'credential_reused', true, now() + interval '1 second')
+      returning id`;
+
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.goto(BASE + "/admin/proofs");
+    await q.getByRole("heading", { name: "Held proofs", level: 1 }).waitFor({ timeout: 15000 });
+    const row = q.locator("article", { hasText: "Walkhold B." });
+    await row.waitFor();
+    await row.getByText("Its Credly badge is already verified on another account").waitFor();
+    const body = await q.locator("body").innerText();
+    if (/@/.test(body)) throw new Error("an email address is shown on the held-proof page");
+    if (/Bose|Iyer/.test(body)) throw new Error("a full last name is shown on the held-proof page");
+    const href = await row.getByRole("link", { name: /Badge page/ }).getAttribute("href");
+    if (href !== `https://www.credly.com/badges/${badge}`) throw new Error(`badge link ${href}`);
+    const accept = row.getByRole("button", { name: /^Accept for this person: Walkhold B\./ });
+    const box = await accept.boundingBox();
+    if (!box || box.height < 44) throw new Error(`Accept is ${box?.height}px tall, under 44px`);
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-proofs.png`, fullPage: true });
+    await axeOn(q, "admin-proofs");
+    await accept.click();
+    await q.getByRole("status").filter({ hasText: "Accepted for Walkhold B." }).waitFor({ timeout: 10000 });
+    await row.waitFor({ state: "detached", timeout: 10000 });
+    // Focus is on the next row's first button (the reused credential), never on the page.
+    await q.waitForFunction((id) => document.activeElement?.getAttribute("data-first-action") === id, heldC.id, { timeout: 5000 }).catch(async () => {
+      const at = await q.evaluate(() => `${document.activeElement?.tagName} ${document.activeElement?.getAttribute("aria-label") ?? document.activeElement?.textContent?.slice(0, 40)}`);
+      throw new Error(`focus after accept is on ${at}, not the next row's first button`);
+    });
+    const [b2] = await sql`select status, verifier, held_reason from gap_proofs where id = ${heldB.id}`;
+    const [a2] = await sql`select status, held_reason from gap_proofs where id = ${kept.id}`;
+    if (b2.status !== "accepted" || b2.verifier !== "credly" || b2.held_reason !== null) throw new Error(`accepted claim saved as ${JSON.stringify(b2)}`);
+    if (a2.status !== "rejected" || a2.held_reason !== "claimed_elsewhere") throw new Error(`competing claim saved as ${JSON.stringify(a2)}`);
+    const audit = await sql`select action from audit_logs where target in (${`gap_proof:${heldB.id}`}, ${`gap_proof:${kept.id}`}) order by action`;
+    if (audit.map((x) => x.action).join(",") !== "proof_accepted,proof_rejected_claimed_elsewhere") throw new Error(`audit lines ${JSON.stringify(audit)}`);
+    // Phone size in dark mode: no sideways scroll, and the same axe check.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Held proofs", level: 1 }).waitFor({ timeout: 15000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("admin-proofs: horizontal overflow " + overflow + "px");
+    await axeOn(q, "admin-proofs-phone-dark");
+  } finally {
+    await adm.close();
+    await sql`delete from users where email like ${`${run}-%`}`;
+    await sql.end();
   }
 });
 // The job the jobs step posts, for the applications step after it.
