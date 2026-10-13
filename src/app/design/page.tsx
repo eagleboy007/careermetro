@@ -84,6 +84,8 @@ import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-revie
 import { exampleReviewCompanies } from "@/components/admin/fixtures";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
+import { publicProfile } from "@/lib/me/public";
+import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
@@ -400,7 +402,16 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
         <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
-        <MeView me={exampleMe} />
+        <MeView me={exampleMe} others={publicProfile(exampleMe, DEFAULT_SETTINGS)} whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Someone&apos;s profile (/u/username)</h2>
+        <p className="text-sm text-muted">
+          What a signed-in person sees at a profile link, worked out on the server from the owner&apos;s privacy switches: here with the target role
+          and gaps turned on. Resume lines, pay, phone, email and notice period never show. Empty parts are left out.
+        </p>
+        <MeView me={publicProfile({ ...exampleMe, headline: "IT support moving into security operations" }, { ...DEFAULT_SETTINGS, showTargetRole: true, showGaps: true })} mode="public" />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -417,8 +428,9 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
         <p className="text-sm text-muted">
-          Section list, name with the unsaved-changes bar, the locked email, how the person signs in, download and delete with its DELETE check.
-          Example data, so nothing saves.
+          Section list, Your plan (Free during the beta, the Elite card with no way to buy), name, username with its availability check and
+          headline, the locked email, how the person signs in, private pay, privacy (who can see the profile and what it shows, switches in ink),
+          notifications stored for when email is on, download and delete with its DELETE check. Example data, so nothing saves.
         </p>
         <div className="rounded-lg border border-line px-4 pt-6">
           <SettingsView data={exampleSettings} />

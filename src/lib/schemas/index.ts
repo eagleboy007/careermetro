@@ -20,3 +20,4 @@ export * from "./job-check";
 export * from "./corporate";
 export * from "./admin";
 export * from "./nearby";
+export * from "./account-settings";

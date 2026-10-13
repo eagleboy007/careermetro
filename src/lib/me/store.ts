@@ -18,7 +18,7 @@ const skillNames = new Map(skills.map((s) => [s.id, s.name]));
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
   const [[user], analysis] = await Promise.all([
-    db.select({ name: users.name, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
+    db.select({ name: users.name, headline: users.headline, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
   ]);
   if (!user) return null;
@@ -36,6 +36,7 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
   return meFromProfile({
     // The email is never shown, not even its first part (T6).
     name: displayName(user.name),
+    headline: user.headline,
     profile: resume?.profile ?? null,
     analysis: resume ? analysis!.result : null,
     line: resume ? line : null,

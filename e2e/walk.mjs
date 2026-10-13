@@ -697,6 +697,141 @@ await step("account settings: name is locked, download works", async () => {
   const data = await res.json();
   if ((data.account?.lastName ?? "") !== lastName || !data.resumes?.length) throw new Error("download is missing data");
 });
+// Account settings part 2 (dev/account-settings-plan.md): a username with its availability check, a headline, private
+// pay and privacy are saved together; the download carries them; the profile link shows the name and headline but never
+// pay, the email or a resume line; another signed-in person sees it while it is open to everyone signed in, and gets
+// the not-found page once it is Only you; the old link redirects after a change is refused inside 30 days.
+await step("account settings part 2: username, privacy and pay saved, never on the public profile", async () => {
+  const handle = `e2e-${Date.now().toString(36)}`;
+  await p.goto(BASE + "/settings");
+  await settled();
+  // Nothing is set yet: no link, the profile starts hidden.
+  if (!(await p.getByLabel("Only you").isChecked())) throw new Error("profile visibility does not start at Only you");
+  const username = p.getByLabel("Username");
+  await username.fill("admin");
+  await p.getByText("That one is reserved. Try another.").waitFor({ timeout: 5000 });
+  await username.fill(handle.toUpperCase());
+  if ((await username.inputValue()) !== handle) throw new Error("username is not lowercased as typed");
+  await p.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+  await p.getByLabel(/^Headline/).fill("Data work, moving into analytics");
+  await p.getByLabel(/^Current pay/).fill("4.2");
+  await p.getByLabel(/^Expected pay/).fill("6");
+  await p.getByLabel("Everyone signed in").check({ force: true });
+  await p.getByText("You have unsaved changes.").waitFor();
+  await shot("settings-part2-dirty");
+  await p.getByRole("button", { name: "Save changes" }).click();
+  await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+  // Focus isn't lost with the bar: it moves to the status line that says the save worked.
+  await p.waitForFunction(() => document.activeElement?.getAttribute("role") === "status" && document.activeElement.textContent === "Settings saved.", null, { timeout: 5000 });
+  // Discard puts back what's saved, and focus goes to the status line too.
+  await p.getByLabel(/^Headline/).fill("Something else");
+  await p.getByRole("button", { name: "Discard" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent === "Changes discarded.", null, { timeout: 5000 });
+  if ((await p.getByLabel(/^Headline/).inputValue()) !== "Data work, moving into analytics") throw new Error("Discard did not restore the headline");
+  // A refused save moves focus to the field with the message.
+  await p.getByLabel(/^Current pay/).fill("4.255");
+  await p.getByRole("button", { name: "Save changes" }).click();
+  await p.waitForFunction(() => document.activeElement?.id === "acc-currentPay", null, { timeout: 10000 });
+  await p.getByRole("button", { name: "Discard" }).click();
+  await p.reload();
+  await settled();
+  if ((await p.getByLabel("Username").inputValue()) !== handle) throw new Error("username did not save");
+  if ((await p.getByLabel(/^Current pay/).inputValue()) !== "4.2") throw new Error("pay did not save");
+  if (!(await p.getByLabel("Everyone signed in").isChecked())) throw new Error("visibility did not save");
+  if (!(await p.getByLabel("Username").isDisabled())) throw new Error("username can change again inside 30 days");
+  await p.getByText(/Yours\. You can change it again on /).waitFor();
+  await shot("settings-part2");
+  await a11y("settings-part2");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("settings-part2-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload();
+  await settled();
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  await shot("settings-part2-phone");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  if (overflow) throw new Error("settings scroll sideways at 360px");
+
+  // The download has it all.
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  if (data.exportVersion !== 10) throw new Error(`export version ${data.exportVersion}`);
+  if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
+  if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
+  if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
+  const resumeLines = data.resumes.flatMap((r) => r.profiles.flatMap((x) => (x.data?.roles ?? []).flatMap((role) => role.highlights ?? [])));
+
+  // The public profile: name and headline; never pay, the email or a resume line.
+  // On a /u page the whole HTML is checked, the data the page carries for React included; on /me (the owner's own page,
+  // which holds their own resume lines for editing) only what is on screen.
+  const neverShown = async (q, where, { screenOnly = false } = {}) => {
+    const text = await q.locator("main").innerText();
+    for (const bad of ["4.2", "lakh", testEmail, "₹"]) if (text.includes(bad)) throw new Error(`${where} shows ${bad}`);
+    for (const line of resumeLines) if (line.length > 12 && text.includes(line)) throw new Error(`${where} shows a resume line`);
+    if (screenOnly) return;
+    const html = await q.content();
+    for (const bad of ["lakh", testEmail, "currentLakh", "expectedLakh"]) if (html.includes(bad)) throw new Error(`${where} carries ${bad} in its HTML: ...${html.slice(Math.max(0, html.indexOf(bad) - 120), html.indexOf(bad) + 40)}...`);
+    for (const line of resumeLines) if (line.length > 12 && html.includes(line)) throw new Error(`${where} carries a resume line in its HTML`);
+  };
+  await p.getByRole("link", { name: "Open your profile link" }).click();
+  await p.waitForURL(new RegExp(`/u/${handle}$`));
+  // Load it afresh: after a client-side move the settings page stays in the document, hidden, for the Back button.
+  await p.reload();
+  await settled();
+  await p.getByRole("heading", { level: 1, name: "Priya Sharma" }).waitFor({ timeout: 10000 });
+  await p.getByText("Data work, moving into analytics").waitFor();
+  await p.getByText("This is your profile as others see it.").waitFor();
+  await neverShown(p, "own /u page");
+  await shot("public-profile");
+  await a11y("public-profile");
+  // /me's View as others is the same projection.
+  await p.goto(BASE + "/me");
+  await settled();
+  await p.getByRole("button", { name: "View as others" }).click();
+  await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
+  await neverShown(p, "View as others", { screenOnly: true });
+
+  // Someone else, signed in: sees it while it is open, then the not-found page once it is Only you.
+  const other = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await other.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  await q.goto(BASE + "/sign-in");
+  await q.locator('input[name="name"]').fill("Ravi Menon");
+  await q.locator('input[name="email"]').fill(`e2e-viewer-${Date.now()}@example.com`);
+  await q.locator('form button[type="submit"]').last().click();
+  await q.waitForURL(/\/(sign-up\/finish|today)/, { timeout: 15000 });
+  if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+    await q.locator('input[name="age"]').check();
+    await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+    await q.waitForURL(/\/today/, { timeout: 15000 });
+  }
+  await q.goto(BASE + `/u/${handle.toUpperCase()}`);
+  await q.waitForURL(new RegExp(`/u/${handle}$`), { timeout: 10000 });
+  await q.getByRole("heading", { level: 1, name: "Priya Sharma" }).waitFor({ timeout: 10000 });
+  await q.getByText("Data work, moving into analytics").waitFor();
+  if (await q.getByText("This is your profile as others see it.").count()) throw new Error("a stranger sees the owner's note");
+  if (await q.getByRole("button", { name: "View as others" }).count()) throw new Error("a stranger sees edit controls");
+  await neverShown(q, "stranger's /u page");
+  await a11yOn(q, "public-profile-stranger");
+
+  await p.goto(BASE + "/settings");
+  await settled();
+  await p.getByLabel("Only you").check({ force: true });
+  await p.getByRole("button", { name: "Save changes" }).click();
+  await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+  await q.goto(BASE + `/u/${handle}`);
+  await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
+  // Another spelling of a hidden profile doesn't redirect either, so it doesn't show the profile exists.
+  await q.goto(BASE + `/u/${handle.toUpperCase()}`);
+  await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
+  if (!q.url().endsWith(`/u/${handle.toUpperCase()}`)) throw new Error("a hidden profile's other spelling redirected");
+  // A username nobody has looks the same.
+  await q.goto(BASE + `/u/${handle}-nobody`);
+  await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
+  await other.close();
+});
 await step("delete account, then restore it by signing in again", async () => {
   await p.goto(BASE + "/settings");
   await settled();

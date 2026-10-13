@@ -6,12 +6,13 @@ import { exportJobs } from "@/lib/corporate/jobs-store";
 import { exportInterviewer } from "@/lib/corporate/interviews-store";
 import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
+import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
 
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 9;
+export const EXPORT_VERSION = 10;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -29,6 +30,9 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
       createdAt: users.createdAt,
       ageConfirmedAt: users.ageConfirmedAt,
       lastSeenAt: users.lastSeenAt,
+      username: users.username,
+      usernameChangedAt: users.usernameChangedAt,
+      headline: users.headline,
     })
     .from(users)
     .where(eq(users.id, userId));
@@ -92,7 +96,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -133,6 +137,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportJobs(userId, db),
     exportApplications(userId, db),
     exportInterviewer(userId, db),
+    exportSettings(userId, db),
   ]);
 
   return {
@@ -170,5 +175,11 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     applications: applicationRows,
     // Interviews this account sat on for a company, and the feedback it wrote there (never the candidate's name).
     interviewer,
+    // Privacy and notification choices (the defaults, with savedAt null, until you save some).
+    settings: settings.settings,
+    // Your current and expected pay, in lakh a year: only you ever see it.
+    pay: settings.pay,
+    // Usernames you gave up that still redirect to your profile, and until when.
+    oldUsernames: settings.oldUsernames,
   };
 }

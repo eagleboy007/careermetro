@@ -1,4 +1,5 @@
 import { purgeDeletedAccounts } from "@/lib/account/delete";
+import { clearExpiredUsernameRedirects } from "@/lib/account/settings-store";
 import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "@/lib/corporate/cleanup";
 import { clearExpiredCodes } from "@/lib/corporate/store";
 import { renewExpiredGoals } from "@/lib/goals/store";
@@ -11,7 +12,8 @@ import { hasBearer } from "@/lib/secret";
  * more than 30 days ago, for good. It also turns goals whose certificate expired to "renew" (dev/proof-plan.md rule 4), and forgets the work email on
  * codes that ran out (dev/corporate-plan.md). For the employer side (build step 7) it records each application's
  * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
- * offered interview times that passed unbooked; reads already enforce every one of these cutoffs.
+ * offered interview times that passed unbooked; reads already enforce every one of these cutoffs. And it deletes old
+ * usernames whose 14-day redirect is over (account settings part 2).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -28,6 +30,8 @@ export async function GET(request: Request) {
     companyAccess: endCompanyAccess(),
     sharedNumbers: eraseClosedPhones().then((n) => ({ sharedNumbersErased: n })),
     offeredTimes: clearPastOfferedTimes().then((n) => ({ offeredTimesDeleted: n })),
+    // "oldLinks", not "usernames": the logger always redacts fields named after usernames.
+    oldLinks: clearExpiredUsernameRedirects().then((n) => ({ oldLinksCleared: n })),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -37,6 +41,7 @@ export async function GET(request: Request) {
     companyAccess: { accessEnded: null, readMarksCleared: null },
     sharedNumbers: { sharedNumbersErased: null },
     offeredTimes: { offeredTimesDeleted: null },
+    oldLinks: { oldLinksCleared: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

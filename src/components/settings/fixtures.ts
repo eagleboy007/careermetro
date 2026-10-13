@@ -9,4 +9,23 @@ export const exampleSettings: SettingsData = {
   method: "google",
   editable: false,
   nameLocked: true,
+  draft: {
+    username: "priya-n",
+    headline: "IT support moving into security operations",
+    currentPay: "4.2",
+    expectedPay: "6",
+    settings: {
+      visibility: "signed_in",
+      showTargetRole: false,
+      showExperience: true,
+      showEducation: true,
+      showSkills: true,
+      showGaps: false,
+      showCertifications: true,
+      rideReminder: "19:30",
+      emailCompanyMessages: true,
+      emailWeeklySummary: false,
+    },
+  },
+  usernameLockedUntil: null,
 };

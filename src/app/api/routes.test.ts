@@ -19,6 +19,7 @@ const m = vi.hoisted(() => ({
   endAccess: vi.fn(async () => ({ accessEnded: 0, readMarksCleared: 0 })),
   erasePhones: vi.fn(async () => 0),
   clearTimes: vi.fn(async () => 0),
+  clearOldLinks: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -44,6 +45,7 @@ vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
+vi.mock("@/lib/account/settings-store", () => ({ clearExpiredUsernameRedirects: m.clearOldLinks }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeChoiceGoal: m.removeChoiceGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -317,13 +319,14 @@ describe("daily cleanup", () => {
     m.endAccess.mockResolvedValueOnce({ accessEnded: 5, readMarksCleared: 7 });
     m.erasePhones.mockResolvedValueOnce(1);
     m.clearTimes.mockResolvedValueOnce(12);
+    m.clearOldLinks.mockResolvedValueOnce(3);
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

@@ -6,7 +6,8 @@ import { APIConnectionError, APIConnectionTimeoutError, APIError, APIUserAbortEr
  * (letters, digits and `_ . : / [ ] ( ) = + -`, at most 120 characters). Anything else, such as a name, an email or
  * a sentence quoted from a resume, is written as "[redacted]". The charset is a backstop, not a guarantee: a one-word
  * name or a token passes it, so fields whose names say they hold a person's details or a secret (session, cookie,
- * token, secret, password, email, phone, name) are always redacted, and ids that are logged must never be secrets.
+ * token, secret, password, email, phone, name, username, handle, headline, pay, salary, lakh) are always
+ * redacted, and ids that are logged must never be secrets.
  * Error messages are never logged; use errorFields.
  */
 export type LogValue = string | number | boolean | null | undefined;
@@ -17,6 +18,10 @@ const SAFE_STRING = /^[A-Za-z0-9_.:/[\]()=+-]{0,120}$/;
 const SAFE_KEY = /^[a-z][A-Za-z0-9_]{0,39}$/;
 const RESERVED = new Set(["level", "event", "at"]);
 const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$/i;
+/** Whole words in a camelCase or snake_case key ("currentPay", "user_handle"), so "payload" and "handled" stay readable. */
+const PERSONAL_WORDS = new Set(["username", "usernames", "handle", "handles", "headline", "pay", "salary", "lakh"]);
+const isPersonalKey = (key: string) =>
+  PERSONAL_KEY.test(key) || key.split(/_|(?=[A-Z])/).some((word) => PERSONAL_WORDS.has(word.toLowerCase()));
 export const REDACTED = "[redacted]";
 
 function clean(value: LogValue): LogValue {
@@ -31,7 +36,7 @@ export function logLine(level: Level, event: string, fields: LogFields = {}, at 
   const out: Record<string, LogValue> = { level, event: clean(event), at: at.toISOString() };
   for (const [key, value] of Object.entries(fields)) {
     if (!SAFE_KEY.test(key) || RESERVED.has(key) || value === undefined) continue;
-    out[key] = PERSONAL_KEY.test(key) ? REDACTED : clean(value);
+    out[key] = isPersonalKey(key) ? REDACTED : clean(value);
   }
   return JSON.stringify(out);
 }
