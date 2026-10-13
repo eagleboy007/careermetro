@@ -1505,7 +1505,7 @@ await step("held proofs: the admin accepts one, and focus moves to the next row"
     });
     const [b2] = await sql`select status, verifier, held_reason from gap_proofs where id = ${heldB.id}`;
     const [a2] = await sql`select status, held_reason from gap_proofs where id = ${kept.id}`;
-    if (b2.status !== "accepted" || b2.verifier !== "credly" || b2.held_reason !== null) throw new Error(`accepted claim saved as ${JSON.stringify(b2)}`);
+    if (b2.status !== "accepted" || b2.verifier !== null || b2.held_reason !== null) throw new Error(`accepted claim saved as ${JSON.stringify(b2)}`);
     if (a2.status !== "rejected" || a2.held_reason !== "claimed_elsewhere") throw new Error(`competing claim saved as ${JSON.stringify(a2)}`);
     const audit = await sql`select action from audit_logs where target in (${`gap_proof:${heldB.id}`}, ${`gap_proof:${kept.id}`}) order by action`;
     if (audit.map((x) => x.action).join(",") !== "proof_accepted,proof_rejected_claimed_elsewhere") throw new Error(`audit lines ${JSON.stringify(audit)}`);

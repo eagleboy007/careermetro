@@ -41,10 +41,11 @@ const held = inArray(gapProofs.heldReason, [...HELD_REASONS]);
 export async function heldProofsForReview(deps: ProofAdminDeps = {}): Promise<HeldProofView[]> {
   const db = deps.db ?? getDb();
   // Competing holders are other accounts with the same credential or badge, accepted or waiting. Accounts waiting to
-  // be deleted are left out of the list and the count.
+  // be deleted are left out of the list and the count. A held row with no credential hash (made before hashes were
+  // kept) is a claim of its own, keyed by its id, and competes by its badge only.
   const rows = await db.execute(sql`
     select * from (
-      select distinct on (p.user_id, p.cert_id, p.credential_key)
+      select distinct on (p.user_id, p.cert_id, coalesce(p.credential_key, p.id::text))
         p.id, p.cert_id as "certId", p.evidence->>'issuer' as issuer, p.held_reason as "heldReason",
         to_char(p.created_at at time zone 'Asia/Kolkata', 'YYYY-MM-DD') as submitted, p.badge_id as "badgeId",
         u.first_name as "firstName", u.last_name as "lastName", u.name, p.created_at,
@@ -54,8 +55,8 @@ export async function heldProofsForReview(deps: ProofAdminDeps = {}): Promise<He
             and ((o.cert_id = p.cert_id and o.credential_key = p.credential_key) or (p.badge_id is not null and o.badge_id = p.badge_id))) as others
       from gap_proofs p join users u on u.id = p.user_id
       where p.type = 'certification' and p.status = 'pending' and p.held_reason in ('credential_reused', 'badge_reused')
-        and p.cert_id is not null and p.credential_key is not null and u.deletion_requested_at is null
-      order by p.user_id, p.cert_id, p.credential_key, p.created_at, p.id
+        and p.cert_id is not null and u.deletion_requested_at is null
+      order by p.user_id, p.cert_id, coalesce(p.credential_key, p.id::text), p.created_at, p.id
     ) c
     order by c.created_at, c.id
     limit 200`);
@@ -88,8 +89,9 @@ const sentence = (name: string) => (name.endsWith(".") ? name : `${name}.`);
 type Claim = {
   userId: string;
   certId: string;
-  credentialKey: string;
-  rows: { id: string; skillId: string; heldReason: string | null; checkNote: string | null }[];
+  /** Null for a held row made before credential hashes were kept: the claim is that one row. */
+  credentialKey: string | null;
+  rows: { id: string; skillId: string }[];
   badgeIds: string[];
 };
 
@@ -99,9 +101,9 @@ async function readClaim(db: Db | Tx, proofId: string): Promise<Claim | null> {
     .select({ userId: gapProofs.userId, certId: gapProofs.certId, credentialKey: gapProofs.credentialKey })
     .from(gapProofs)
     .where(and(eq(gapProofs.id, proofId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "pending"), held));
-  if (!proof?.certId || !proof.credentialKey) return null;
+  if (!proof?.certId) return null;
   const rows = await db
-    .select({ id: gapProofs.id, skillId: gapProofs.skillId, heldReason: gapProofs.heldReason, checkNote: gapProofs.checkNote, badgeId: gapProofs.badgeId })
+    .select({ id: gapProofs.id, skillId: gapProofs.skillId, badgeId: gapProofs.badgeId })
     .from(gapProofs)
     .where(
       and(
@@ -110,16 +112,18 @@ async function readClaim(db: Db | Tx, proofId: string): Promise<Claim | null> {
         eq(gapProofs.status, "pending"),
         held,
         eq(gapProofs.certId, proof.certId),
-        eq(gapProofs.credentialKey, proof.credentialKey),
+        proof.credentialKey ? eq(gapProofs.credentialKey, proof.credentialKey) : eq(gapProofs.id, proofId),
       ),
     );
   const badgeIds = [...new Set(rows.flatMap((r) => (r.badgeId ? [r.badgeId] : [])))].sort();
-  return { userId: proof.userId, certId: proof.certId, credentialKey: proof.credentialKey, rows: rows.map((r) => ({ id: r.id, skillId: r.skillId, heldReason: r.heldReason, checkNote: r.checkNote })), badgeIds };
+  return { userId: proof.userId, certId: proof.certId, credentialKey: proof.credentialKey, rows: rows.map((r) => ({ id: r.id, skillId: r.skillId })), badgeIds };
 }
 
 /** Other accounts' rows of the same credential or badge that are accepted or waiting. */
 function competingRows(db: Db | Tx, claim: Claim) {
-  const sameCredential = and(eq(gapProofs.certId, claim.certId), eq(gapProofs.credentialKey, claim.credentialKey));
+  const sameCredential = claim.credentialKey ? and(eq(gapProofs.certId, claim.certId), eq(gapProofs.credentialKey, claim.credentialKey)) : undefined;
+  const sameBadge = claim.badgeIds.length ? inArray(gapProofs.badgeId, claim.badgeIds) : undefined;
+  const either = sameCredential && sameBadge ? or(sameCredential, sameBadge) : (sameCredential ?? sameBadge ?? sql`false`);
   return db
     .select({ id: gapProofs.id, userId: gapProofs.userId, skillId: gapProofs.skillId })
     .from(gapProofs)
@@ -128,7 +132,7 @@ function competingRows(db: Db | Tx, claim: Claim) {
         ne(gapProofs.userId, claim.userId),
         eq(gapProofs.type, "certification"),
         inArray(gapProofs.status, ["accepted", "pending"]),
-        claim.badgeIds.length ? or(sameCredential, inArray(gapProofs.badgeId, claim.badgeIds)) : sameCredential,
+        either,
       ),
     );
 }
@@ -141,8 +145,8 @@ type Outcome = { kind: "not_found" } | { kind: "retry"; people: string[] } | { k
  * per-badge lock credly-store.ts takes after a person's lock. The people to lock are read first and checked again
  * under the locks; if a new competing account appeared in between, it starts again with that account locked too.
  *
- * Accept: the claim's rows are accepted and fill the person's goals (a badge claim, which matched the person on
- * Credly, is labelled verified); the credential is theirs (certificate_credentials); every competing row of the same
+ * Accept: the claim's rows are accepted as "Added by you" and fill the person's goals (Check with Credly verifies a
+ * badge afterwards, the normal way); the credential is theirs (certificate_credentials); every competing row of the same
  * credential or badge on other accounts is rejected with held_reason "claimed_elsewhere" (or its own held reason) and
  * those goals are brought in line. Reject: the claim's rows are rejected, keeping their held reason, so the goal says
  * it couldn't be confirmed. One audit line per changed row: admin:<id>, an action and gap_proof:<id>.
@@ -186,18 +190,18 @@ export async function reviewHeldProof(adminUserId: string, input: unknown, deps:
       const unlocked = competing.filter((r) => !people.has(r.userId));
       if (unlocked.length) return { kind: "retry", people: [...people, ...unlocked.map((r) => r.userId)] };
 
-      for (const r of claim.rows) {
-        // A badge held only because another account had verified it matched this person on Credly.
-        const badgeMatched = r.heldReason === "badge_reused" && r.checkNote === "used_elsewhere";
-        await tx
-          .update(gapProofs)
-          .set({ status: "accepted", heldReason: null, verifiedAt: now, ...(badgeMatched ? { verifier: "credly" as const, checkNote: null } : { verifier: null }) })
-          .where(eq(gapProofs.id, r.id));
-      }
+      // Accepted as "Added by you": an admin's decision is not a Credly match. The old check is cleared, so the Check
+      // with Credly button sets the verifier and Credly's expiry through the normal path (credly-store.ts).
       await tx
-        .insert(certificateCredentials)
-        .values({ certId: claim.certId, credentialKey: claim.credentialKey, userId: claim.userId })
-        .onConflictDoUpdate({ target: [certificateCredentials.certId, certificateCredentials.credentialKey], set: { userId: claim.userId } });
+        .update(gapProofs)
+        .set({ status: "accepted", heldReason: null, verifiedAt: now, verifier: null, checkNote: null, checkedAt: null })
+        .where(inArray(gapProofs.id, ids));
+      if (claim.credentialKey) {
+        await tx
+          .insert(certificateCredentials)
+          .values({ certId: claim.certId, credentialKey: claim.credentialKey, userId: claim.userId })
+          .onConflictDoUpdate({ target: [certificateCredentials.certId, certificateCredentials.credentialKey], set: { userId: claim.userId } });
+      }
       if (competing.length) {
         await tx
           .update(gapProofs)

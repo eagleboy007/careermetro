@@ -4,6 +4,7 @@ import postgres from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { skills } from "@/content";
+import type { CredlyFetcher } from "@/lib/proofs/credly";
 
 const log = vi.hoisted(() => vi.fn());
 vi.mock("server-only", () => ({}));
@@ -12,6 +13,8 @@ vi.mock("@/lib/log", () => ({ logEvent: (...a: unknown[]) => log(...a), errorFie
 const { submitCertificate, notConfirmedSkills } = await import("@/lib/goals/store");
 const { heldProofsForReview, reviewHeldProof, PROOF_REVIEW_TEXT } = await import("./proofs");
 const { exportAccountData, EXPORT_VERSION } = await import("@/lib/account/export");
+const { checkCertificateWithCredly } = await import("@/lib/proofs/credly-store");
+const { credlyFixtureFetcher } = await import("@/lib/proofs/credly-fixtures");
 
 // The held-proof review (/admin/proofs, FR-44) against a real Postgres with migrations applied. Every fixture is made
 // here, so it runs on an unseeded database.
@@ -57,7 +60,7 @@ describe.skipIf(!db)("held-proof review (database)", () => {
   /** A certificate row as the proof code leaves it: accepted, or held with a reason. */
   async function proof(
     userId: string,
-    o: { key: string; badge?: string | null; status?: "accepted" | "pending"; heldReason?: string | null; checkNote?: "used_elsewhere" | null; verifier?: "credly" | null },
+    o: { key: string | null; badge?: string | null; status?: "accepted" | "pending"; heldReason?: string | null; checkNote?: "used_elsewhere" | null; verifier?: "credly" | null },
   ) {
     const [row] = await db!
       .insert(schema.gapProofs)
@@ -68,7 +71,7 @@ describe.skipIf(!db)("held-proof review (database)", () => {
         status: o.status ?? "pending",
         evidence: { type: "certification", certId: CERT, issuer: "Amazon Web Services", url: o.badge ? `https://www.credly.com/badges/${o.badge}` : "https://www.credly.com/badges/x" },
         certId: CERT,
-        credentialKey: `${run}-${o.key}`,
+        credentialKey: o.key === null ? null : `${run}-${o.key}`,
         badgeId: o.badge ?? null,
         heldReason: o.status === "accepted" ? null : (o.heldReason ?? "badge_reused"),
         checkNote: o.checkNote ?? null,
@@ -195,22 +198,62 @@ describe.skipIf(!db)("held-proof review (database)", () => {
   it("accepting one badge claim rejects every competing claim on that badge, accepted or waiting, so one account holds it", async () => {
     const a = await person("multi-a");
     const b = await person("multi-b");
-    const c = await person("multi-c", "Sana", "Khan");
+    const c = await person("multi-c");
     const badge = badgeId();
     const aId = await proof(a.userId, { key: "multi-a", badge, status: "accepted", verifier: "credly" });
     const bId = await proof(b.userId, { key: "multi-b", badge, checkNote: "used_elsewhere" });
     const cId = await proof(c.userId, { key: "multi-c", badge, checkNote: "used_elsewhere" });
     expect((await listed()).find((p) => p.id === cId)?.others).toBe(2);
 
-    expect(await review(cId, "accept")).toEqual({ ok: true, message: "Accepted for Sana K. The claims on 2 other accounts were rejected." });
-    // The badge matched Sana on Credly; it was held only because another account had it. Now it is verified, once.
-    expect(await row(cId)).toMatchObject({ status: "accepted", verifier: "credly", checkNote: null, heldReason: null });
+    await db!.update(schema.gapProofs).set({ checkedAt: new Date() }).where(eq(schema.gapProofs.id, cId));
+    expect(await review(cId, "accept")).toEqual({ ok: true, message: "Accepted for Priya S. The claims on 2 other accounts were rejected." });
+    // Accepted as "Added by you": the old check is cleared, and only a fresh Credly check verifies it.
+    expect(await row(cId)).toMatchObject({ status: "accepted", verifier: null, checkNote: null, checkedAt: null, heldReason: null });
     expect(await goalStatus(c.goalId)).toBe("met");
     expect(await row(aId)).toMatchObject({ status: "rejected", verifier: null, heldReason: "claimed_elsewhere" });
     expect(await row(bId)).toMatchObject({ status: "rejected", heldReason: "badge_reused" });
     const holders = await db!.select({ userId: schema.gapProofs.userId }).from(schema.gapProofs).where(and(eq(schema.gapProofs.badgeId, badge), eq(schema.gapProofs.status, "accepted")));
     expect(holders).toEqual([{ userId: c.userId }]);
     expect((await listed()).some((p) => p.id === bId)).toBe(false);
+
+    // Check with Credly then verifies it the normal way, with nobody else holding the badge, and applies Credly's expiry.
+    const fetcher: CredlyFetcher = async (id) => {
+      const f = await credlyFixtureFetcher("c4ed1100-0000-4000-8000-000000000001");
+      return f.kind === "ok" ? { kind: "ok", body: { data: { ...(f.body as { data: object }).data, id } } } : f;
+    };
+    expect(await checkCertificateWithCredly(c.userId, cId, { fetcher, db: db!, env, today: TODAY })).toEqual({ status: "verified" });
+    expect(await row(cId)).toMatchObject({ status: "accepted", verifier: "credly", checkNote: null, expiresOn: "2028-03-01" });
+  });
+
+  it("leaves out rows waiting for something other than review, such as a Credly check", async () => {
+    const a = await person("other-wait");
+    const waiting = await proof(a.userId, { key: "other-wait", badge: badgeId(), heldReason: "credly_check" });
+    expect((await listed()).some((p) => p.id === waiting)).toBe(false);
+    expect(await review(waiting, "accept")).toEqual({ ok: false, message: PROOF_REVIEW_TEXT.not_found });
+    expect(await row(waiting)).toMatchObject({ status: "pending", heldReason: "credly_check" });
+  });
+
+  it("reviews a held row with no credential hash as a claim of its own, competing by its badge only", async () => {
+    const a = await person("nokey-a");
+    const b = await person("nokey-b", "Kiran", "Menon");
+    const badge = badgeId();
+    const kept = await proof(a.userId, { key: "nokey-a", badge, status: "accepted", verifier: "credly" });
+    const held = await proof(b.userId, { key: null, badge, checkNote: "used_elsewhere" });
+    // A second keyless held row of the same person and certificate is a line of its own.
+    const other = await proof(b.userId, { key: null, badge: badgeId(), checkNote: "used_elsewhere" });
+    const list = await listed();
+    expect(list.find((p) => p.id === held)).toMatchObject({ person: "Kiran M.", others: 1, reason: "badge_reused" });
+    expect(list.find((p) => p.id === other)).toMatchObject({ person: "Kiran M.", others: 0 });
+
+    expect(await review(held, "accept")).toEqual({ ok: true, message: "Accepted for Kiran M. The claim on 1 other account was rejected." });
+    expect(await row(held)).toMatchObject({ status: "accepted", heldReason: null, verifier: null });
+    expect(await row(kept)).toMatchObject({ status: "rejected", heldReason: "claimed_elsewhere" });
+    // Only the reviewed row moved: the other keyless claim still waits, and no credential owner was written.
+    expect(await row(other)).toMatchObject({ status: "pending" });
+    expect(await goalStatus(b.goalId)).toBe("met");
+    expect(await review(other, "reject")).toMatchObject({ ok: true });
+    expect(await row(other)).toMatchObject({ status: "rejected" });
+    expect(await row(held)).toMatchObject({ status: "accepted" });
   });
 
   it("two admins accepting different claims on the same badge at once leave exactly one accepted", async () => {
