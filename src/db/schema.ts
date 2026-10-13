@@ -34,7 +34,7 @@ import {
   INTERVIEW_STATUSES,
   JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
+import type { GapAnalysis, JobCriteria, JobRequirements, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -823,6 +823,11 @@ export const jobs = pgTable(
     workType: jobWorkType("work_type").notNull().default("full_time"),
     city: text("city").notNull(),
     requirements: jsonb("requirements").$type<JobRequirements>().notNull(),
+    /** Express apply criteria (pending item 16): required skills that need accepted proof, and certificates. They warn, never block. */
+    criteria: jsonb("criteria")
+      .$type<JobCriteria>()
+      .notNull()
+      .default(sql`'{"verifiedSkills": [], "certificates": []}'::jsonb`),
     aiRound: boolean("ai_round").notNull().default(false),
     status: jobStatus("status").notNull().default("draft"),
     createdAt: createdAt(),
@@ -887,6 +892,11 @@ export const applications = pgTable(
     resumeId: uuid("resume_id").references(() => resumes.id, { onDelete: "set null" }),
     /** Encrypted (src/lib/corporate/phone.ts); empty until the person chooses to share it when accepting an interview. */
     phoneShared: text("phone_shared"),
+    /**
+     * The note sent with Express apply (pending item 16): at most 300 characters, no email address or phone number
+     * (checked by `applicationNote`, the only writer). Shown to the job team in the drawer; deleted with the application.
+     */
+    note: text("note"),
     withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
     /** Set by Not this time or withdrawing; cleared when the company opens it again. */
     closedAt: timestamp("closed_at", { withTimezone: true }),

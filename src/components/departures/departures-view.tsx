@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Bookmark, Clock, ExternalLink, Search, ShieldCheck, Target, Zap } from "lucide-react";
+import { ArrowRight, Bookmark, Clock, ExternalLink, Search, ShieldCheck, Target } from "lucide-react";
 import Link from "next/link";
 import { useId, useMemo, useState, type ReactNode } from "react";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
@@ -15,7 +15,6 @@ const pill =
   "inline-flex items-center gap-1.5 rounded-full border border-line px-[11px] py-1 text-[0.78rem] font-[550] text-muted aria-pressed:border-transparent aria-pressed:bg-surface-2 aria-pressed:text-ink";
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-[15px] py-[9px] text-[0.86rem] font-[550]";
 const primary = `${btn} bg-accent text-on-accent hover:opacity-90`;
-const ghostBtn = `${btn} border border-line bg-surface text-ink hover:bg-surface-2`;
 
 /**
  * Departures (handoff section 8): roles with readiness in words, search and filters, the person's Saved and Applied
@@ -38,7 +37,7 @@ export function DeparturesView({
   const [filters, setFilters] = useState<DepartureFilters>(NO_FILTERS);
   const [saved, setSaved] = useState(() => new Set(initialSaved));
   const [applied, setApplied] = useState(() => new Map(initialApplied));
-  const [selected, setSelected] = useState<string | null>(() => jobs.find((j) => j.express)?.id ?? jobs[0]?.id ?? null);
+  const [selected, setSelected] = useState<string | null>(() => jobs[0]?.id ?? null);
   const [said, setSaid] = useState("");
   const detailId = useId();
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied), [jobs, filters, saved, applied]);
@@ -70,7 +69,7 @@ export function DeparturesView({
           <div>
             <h2 className="text-[2rem] font-semibold leading-[1.1]">Departures</h2>
             <p className="mt-1.5 max-w-[60ch] text-[0.92rem] text-muted">
-              Roles from public company job boards and posts you paste. Apply on the company&apos;s site, or in one tap with Express apply where the company takes it.
+              Roles from public company job boards and posts you paste, applied for on the company&apos;s site. Jobs posted on CareerMetro, above, take Express apply.
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
@@ -242,12 +241,6 @@ function JobRow({
         </p>
         <div className="flex flex-wrap gap-1.5">
           {fit && (job.gaps.length ? job.gaps.map((g) => <StatusChip key={g.name} status={g.status} label={g.name} />) : <StatusChip status="met" label="No required gaps" />)}
-          {job.express && (
-            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium text-muted">
-              <Zap size={14} {...ICON} className="text-ink" />
-              Express apply
-            </span>
-          )}
         </div>
       </div>
       <div className="col-start-2 flex items-center justify-between gap-2.5 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
@@ -298,7 +291,7 @@ function JobDetail({
   stage: number;
   onStage: (stage: number) => void;
 }) {
-  const site = `Apply on ${job.company}'s site`;
+  const site = "Apply on company site";
   return (
     <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-4 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-center gap-3">
@@ -385,20 +378,15 @@ function JobDetail({
       ) : (
         <>
           <div className="flex flex-col gap-2">
-            {job.express && fit && (
-              <button type="button" disabled className={`${primary} cursor-not-allowed opacity-60`}>
-                <Zap size={17} {...ICON} />
-                Express apply · soon
-              </button>
-            )}
             {job.applyUrl ? (
-              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" onClick={() => onStage(1)} className={job.express && fit ? ghostBtn : primary}>
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" aria-label={`Apply on company site: ${job.company} (opens in a new tab)`} onClick={() => onStage(1)} className={primary}>
                 <ExternalLink size={17} {...ICON} />
                 {site}
               </a>
             ) : (
               // Example roles have no posting to open, so the button only shows how tracking works.
-              <button type="button" onClick={() => onStage(1)} className={job.express && fit ? ghostBtn : primary}>
+              <button type="button" onClick={() => onStage(1)} className={primary}>
+                <ExternalLink size={17} {...ICON} />
                 {site} · example
               </button>
             )}
@@ -406,9 +394,7 @@ function JobDetail({
           <Note Icon={ShieldCheck}>
             {!job.applyUrl
               ? "An example role: this marks it as applied so you can see the tracking. Real roles open the company's own posting."
-              : fit && job.express
-                ? "Express apply will fill everything from your profile: skills, verified certificates, proof of work and resume. You review it and nothing is sent until you say so."
-                : "Opens the company's own posting. We note that you applied so you can track it here."}
+              : "Opens the company's own posting. We note that you applied so you can track it here."}
           </Note>
           {fit && job.gaps.length > 0 && <Soon>Ask someone who got this role</Soon>}
         </>

@@ -1,8 +1,9 @@
-import { Archive, CircleDot, CirclePause, FilePen, MapPin, Send } from "lucide-react";
+import { Archive, CircleDot, CirclePause, FilePen, MapPin, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
-import type { JobStatus, PostedJobView } from "@/lib/corporate/types";
+import type { CriteriaView, JobStatus, PostedJobView } from "@/lib/corporate/types";
 import { APPLY_SOON_TEXT, JOB_STATUS_LABELS, JOB_WORK_TYPE_LABELS } from "@/lib/schemas/constants";
+import { CriteriaAsked, CriteriaList } from "./criteria-parts";
 import { AntiScamLine, ICON, OrgStatusBadge } from "./parts";
 
 /*
@@ -44,10 +45,23 @@ function SkillRow({ label, children, empty }: { label: string; children: ReactNo
 
 /**
  * A job posted on CareerMetro as candidates see it on Departures, and as the live preview on Post a job. The company's
- * name and its Verified badge only: never its members, email or phone. `apply` is the Apply control (Departures);
- * without it (the Post a job preview, /design) the button is off and says so in one line. `report` is Report this job.
+ * name and its Verified badge only: never its members, email or phone. `apply` is Express apply (Departures); without
+ * it (the Post a job preview, /design) the button is off and says so in one line. `report` is Report this job. The
+ * job's Express apply criteria show by name, or as met or not yet when `criteria` (the signed-in person's) is given.
  */
-export function PostedJobCard({ job, report, apply, headingLevel = 3 }: { job: PostedJobView; report?: ReactNode; apply?: ReactNode; headingLevel?: 2 | 3 }) {
+export function PostedJobCard({
+  job,
+  report,
+  apply,
+  criteria,
+  headingLevel = 3,
+}: {
+  job: PostedJobView;
+  report?: ReactNode;
+  apply?: ReactNode;
+  criteria?: CriteriaView;
+  headingLevel?: 2 | 3;
+}) {
   const H = headingLevel === 2 ? "h2" : "h3";
   const titleId = `job-${job.id}-title`;
   const noteId = `job-${job.id}-apply`;
@@ -92,6 +106,7 @@ export function PostedJobCard({ job, report, apply, headingLevel = 3 }: { job: P
           </li>
         ))}
       </SkillRow>
+      {criteria && criteria.total > 0 ? <CriteriaList criteria={criteria} compact /> : <CriteriaAsked names={job.criteria} />}
       {apply ?? (
         <div className="flex flex-col gap-1.5">
           <button
@@ -100,8 +115,8 @@ export function PostedJobCard({ job, report, apply, headingLevel = 3 }: { job: P
             aria-describedby={noteId}
             className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-line bg-surface-2 px-4 text-[0.86rem] font-medium text-muted disabled:cursor-not-allowed"
           >
-            <Send {...ICON} />
-            Apply on CareerMetro
+            <Zap {...ICON} />
+            Express apply
           </button>
           <p id={noteId} className="text-[0.8rem] text-muted">
             {APPLY_SOON_TEXT}

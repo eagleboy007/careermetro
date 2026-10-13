@@ -1,0 +1,3 @@
+-- Express apply (pending item 16, dev/express-apply-plan.md): applications gain the note the candidate sends (nullable; 300 characters at most and no email or phone, checked by the app's schema, the only writer) and jobs gain their Express apply criteria (required skills that need accepted proof, and certificates; empty by default, so every existing job asks for none). Expand only: a nullable column and a column with a default. No new table, so no new row level security; both tables already have it. Numbered 0028 because another branch may take 0027; renumber at merge.
+ALTER TABLE "applications" ADD COLUMN "note" text;--> statement-breakpoint
+ALTER TABLE "jobs" ADD COLUMN "criteria" jsonb DEFAULT '{"verifiedSkills": [], "certificates": []}'::jsonb NOT NULL;

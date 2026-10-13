@@ -4,8 +4,9 @@ import { ArrowLeft, Plus, ShieldCheck, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
-import type { JobFormActions, JobFormData, JobFormValues, JobHonestyTicks, JobRequirementsView, JobWorkType, SkillOptionView } from "@/lib/corporate/types";
+import type { CertificateOptionView, JobFormActions, JobFormData, JobFormValues, JobHonestyTicks, JobRequirementsView, JobWorkType, SkillOptionView } from "@/lib/corporate/types";
 import {
+  JOB_CRITERIA_CERTIFICATES_MAX,
   JOB_HONESTY_CHECKS,
   JOB_NICE_MAX,
   JOB_ONE_OF_GROUPS_MAX,
@@ -24,8 +25,9 @@ import { fieldClass, hintClass, ICON, inputClass, labelClass } from "./parts";
  * Post a job (handoff 12g, C9; dev/corporate-plan.md build step 3). Starts from one of our role profiles, which fills
  * the skills; the person adjusts them by picking from our skill list only (no free text, and the model never writes a
  * job). Title, work type and city; Hiring HR and interviewers from the company's team; the stages with the L1 AI round
- * off; three ticks before it opens; and a live preview of the Departures card. Workplace, experience, openings, pay and
- * a description come later (not in the jobs table yet).
+ * off; three ticks before it opens; and a live preview of the Departures card. Express apply criteria (pending item
+ * 16): required skills that need accepted proof, and certificates from our list; they warn candidates, never block.
+ * Workplace, experience, openings, pay and a description come later (not in the jobs table yet).
  */
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -121,6 +123,45 @@ function SkillAdder({
   );
 }
 
+/** Our certificates by issuer, without the ones already asked for, and an Add button. */
+function CertificateAdder({ id, certificates, used, disabled, onAdd }: { id: string; certificates: CertificateOptionView[]; used: Set<string>; disabled?: boolean; onAdd: (certId: string) => void }) {
+  const [picked, setPicked] = useState("");
+  const groups = useMemo(() => {
+    const m = new Map<string, CertificateOptionView[]>();
+    for (const c of certificates) if (!used.has(c.id)) m.set(c.issuer, [...(m.get(c.issuer) ?? []), c]);
+    return [...m.entries()];
+  }, [certificates, used]);
+  return (
+    <div className="flex flex-wrap gap-2">
+      <select id={id} aria-label="Add a certificate" value={picked} disabled={disabled} onChange={(e) => setPicked(e.target.value)} className={`${inputClass} min-h-11 min-w-0 flex-1 basis-[200px]`}>
+        <option value="">Pick a certificate</option>
+        {groups.map(([issuer, list]) => (
+          <optgroup key={issuer} label={issuer}>
+            {list.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+      <button
+        type="button"
+        className={actionBtn}
+        disabled={disabled || !picked}
+        onClick={() => {
+          onAdd(picked);
+          setPicked("");
+          document.getElementById(id)?.focus();
+        }}
+      >
+        <Plus {...ICON} />
+        Add
+      </button>
+    </div>
+  );
+}
+
 /** Skill chips, each with a Remove button (44px target). */
 function SkillChips({ ids, name, from, onRemove }: { ids: string[]; name: (id: string) => string; from: string; onRemove: (id: string) => void }) {
   if (!ids.length) return null;
@@ -152,6 +193,7 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
         workType: "full_time",
         city: "",
         requirements: firstRole?.requirements ?? { required: [], oneOf: [], nice: [] },
+        criteria: { verifiedSkills: [], certificates: [] },
         hiring: [],
         interviewers: [],
       },
@@ -167,6 +209,9 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
 
   const names = useMemo(() => new Map(data.skills.map((s) => [s.id, s.name])), [data.skills]);
   const name = (id: string) => names.get(id) ?? id;
+  const certNames = useMemo(() => new Map(data.certificates.map((c) => [c.id, c.name])), [data.certificates]);
+  const certName = (id: string) => certNames.get(id) ?? id;
+  const crit = values.criteria;
   const req = values.requirements;
   const used = useMemo(() => new Set([...req.required, ...req.oneOf.flat(), ...req.nice]), [req]);
   const closed = values.status === "closed";
@@ -176,8 +221,18 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
   const blocked = data.blocked;
   const whyNot = blocked ? JOBS_BLOCKED_TEXT[blocked] : req.required.length === 0 ? "Add at least one required skill to open the job." : !allTicked ? "Tick the three boxes to open the job." : "";
 
+  /** Proof can be asked for only of a required skill: one that leaves Required leaves the criteria too. */
+  const keepCriteria = (v: JobFormValues, next: JobRequirementsView) => ({ ...v.criteria, verifiedSkills: v.criteria.verifiedSkills.filter((s) => next.required.includes(s)) });
   const setReq = (next: JobRequirementsView, words: string) => {
-    setValues((v) => ({ ...v, requirements: next }));
+    setValues((v) => ({ ...v, requirements: next, criteria: keepCriteria(v, next) }));
+    setSaid(words);
+  };
+  const toggleProof = (skillId: string, on: boolean) => {
+    setValues((v) => ({ ...v, criteria: { ...v.criteria, verifiedSkills: on ? [...v.criteria.verifiedSkills, skillId] : v.criteria.verifiedSkills.filter((s) => s !== skillId) } }));
+    setSaid(on ? `Express apply asks for proof of ${name(skillId)}.` : `Proof of ${name(skillId)} no longer asked for.`);
+  };
+  const setCertificates = (certificates: string[], words: string) => {
+    setValues((v) => ({ ...v, criteria: { ...v.criteria, certificates } }));
     setSaid(words);
   };
   const add = (group: Group, id: string) => setReq({ ...req, [group]: [...req[group], id] }, `${name(id)} added to ${group === "required" ? "Required" : "Nice to have"}.`);
@@ -192,7 +247,13 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
     const role = data.roles.find((r) => r.slug === slug);
     if (!role) return;
     const previous = data.roles.find((r) => r.slug === values.roleSlug);
-    setValues((v) => ({ ...v, roleSlug: slug, requirements: role.requirements, title: !v.title.trim() || v.title === previous?.title ? role.title : v.title }));
+    setValues((v) => ({
+      ...v,
+      roleSlug: slug,
+      requirements: role.requirements,
+      criteria: keepCriteria(v, role.requirements),
+      title: !v.title.trim() || v.title === previous?.title ? role.title : v.title,
+    }));
     setSaid(`Skills set from ${role.title}. You can change them below.`);
   };
   const toggleTeam = (list: "hiring" | "interviewers", memberId: string, on: boolean) =>
@@ -220,10 +281,12 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
     required: req.required.map(name),
     oneOf: req.oneOf.map((g) => g.map(name)),
     nice: req.nice.map(name),
+    criteria: { verifiedSkills: crit.verifiedSkills.map(name), certificates: crit.certificates.map(certName) },
   };
   const hiringOptions = data.colleagues.filter((c) => c.role !== "interviewer");
   const reqSelect = `${ids}-req`;
   const niceSelect = `${ids}-nice`;
+  const certSelect = `${ids}-cert`;
 
   return (
     <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-[18px]">
@@ -348,6 +411,53 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
                   used={used}
                   disabled={req.nice.length >= JOB_NICE_MAX}
                   onAdd={(s) => add("nice", s)}
+                />
+              </div>
+            </Section>
+
+            <Section
+              id={`${ids}-express`}
+              title="Express apply criteria"
+              hint="Optional. Candidates see each one as met or not yet, from proof accepted on CareerMetro. Not met never stops anyone applying."
+            >
+              <fieldset className="flex flex-col gap-1">
+                <legend className="mb-1 text-[0.88rem] font-semibold">Proof of required skills</legend>
+                {req.required.length === 0 ? (
+                  <p className="text-[0.84rem] text-muted">Add required skills above to ask for proof of them.</p>
+                ) : (
+                  req.required.map((s) => (
+                    <label key={s} className="flex min-h-11 items-center gap-2.5 text-[0.88rem]">
+                      <input type="checkbox" className="size-[18px] accent-ink" checked={crit.verifiedSkills.includes(s)} onChange={(e) => toggleProof(s, e.target.checked)} />
+                      {name(s)}
+                    </label>
+                  ))
+                )}
+              </fieldset>
+              <div className="flex flex-col gap-2.5 rounded-[12px] border border-line p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <b className="text-[0.88rem] font-semibold">Certificates</b>
+                  <span className={`ml-auto ${monoLabel}`}>
+                    {crit.certificates.length} of {JOB_CRITERIA_CERTIFICATES_MAX} at most
+                  </span>
+                </div>
+                <SkillChips
+                  ids={crit.certificates}
+                  name={certName}
+                  from="Express apply criteria"
+                  onRemove={(c) => {
+                    setCertificates(
+                      crit.certificates.filter((x) => x !== c),
+                      `${certName(c)} removed.`,
+                    );
+                    document.getElementById(certSelect)?.focus();
+                  }}
+                />
+                <CertificateAdder
+                  id={certSelect}
+                  certificates={data.certificates}
+                  used={new Set(crit.certificates)}
+                  disabled={crit.certificates.length >= JOB_CRITERIA_CERTIFICATES_MAX}
+                  onAdd={(c) => setCertificates([...crit.certificates, c], `${certName(c)} added to Express apply criteria.`)}
                 />
               </div>
             </Section>

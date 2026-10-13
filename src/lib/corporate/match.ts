@@ -1,6 +1,8 @@
 import { matchProfile } from "@/lib/gaps/match";
 import { meFromProfile } from "@/lib/me/build";
 import type { Profile, RoleProfile } from "@/lib/schemas";
+import { applicationPacket, type ApplicationPacket, type JobCriteria } from "@/lib/schemas/corporate";
+import { criteriaStatus } from "./criteria";
 import { skillName } from "./job-content";
 export { matchSummary } from "./match-words";
 import type { CandidateProfileView, JobMatchView, JobRequirementsView, MatchLineView, MatchState } from "./types";
@@ -78,4 +80,21 @@ export function publicProfile(name: string, profile: Profile | null, now = new D
     education: me.education,
     certifications: me.certifications.map((c) => c.name),
   };
+}
+
+/**
+ * The application packet (Express apply, dev/express-apply-plan.md): the public profile, Match to this job and the
+ * job's criteria against current accepted proofs. The candidate's preview and the company's drawer both come from here
+ * and pass the strict schema, so what the preview shows is what the company receives, and nothing more (no gaps, path,
+ * goals, pay, phone, email, notice period or resume lines).
+ */
+export function applicationPacketFor(
+  input: { name: string; profile: Profile | null; requirements: JobRequirementsView; criteria: JobCriteria; proved: ReadonlySet<string>; certificates: ReadonlySet<string> },
+  now = new Date(),
+): ApplicationPacket {
+  return applicationPacket.parse({
+    profile: publicProfile(input.name, input.profile, now),
+    match: jobMatch(input.requirements, input.profile, input.proved, now),
+    criteria: criteriaStatus(input.criteria, input.proved, input.certificates),
+  });
 }

@@ -2,9 +2,9 @@
 
 import { refresh } from "next/cache";
 import { currentAccount } from "@/lib/auth/server";
-import { APPLICATION_ERROR_TEXT, applyToJob, withdrawApplication, type ApplicationResult } from "@/lib/corporate/applications-store";
+import { APPLICATION_ERROR_TEXT, applyPreview, applyToJob, withdrawApplication, type ApplicationResult } from "@/lib/corporate/applications-store";
 import { INTERVIEW_ERROR_TEXT, respondToInterview, stopSharingPhone, type InterviewResult } from "@/lib/corporate/interviews-store";
-import type { ArrivalsActions, CanJoin } from "@/lib/corporate/types";
+import type { ApplyPreviewAction, ArrivalsActions, CanJoin } from "@/lib/corporate/types";
 
 /*
  * The candidate's side of applications (dev/corporate-plan.md build step 4): apply from Departures with the consent
@@ -15,11 +15,19 @@ import type { ArrivalsActions, CanJoin } from "@/lib/corporate/types";
 const SIGN_IN = "Please sign in again.";
 const words = (r: ApplicationResult): string | null => (r.ok ? null : (r.message ?? APPLICATION_ERROR_TEXT[r.error]));
 
-/** Apply to a job posted on CareerMetro. Departures reloads to show it as applied. */
-export async function applyAction(jobId: string, canJoin: CanJoin, consent: boolean): Promise<string | null> {
+/** Express apply's preview: what the company would receive for this job. Reads only; nothing is shared. */
+export const previewAction: ApplyPreviewAction = async (jobId) => {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: SIGN_IN };
+  const r = await applyPreview(account.id, { jobId });
+  return r.ok ? { ok: true, packet: r.packet } : { ok: false, error: words(r)! };
+};
+
+/** Send the application from the preview (Express apply), with its note. Departures reloads to show it as applied. */
+export async function applyAction(jobId: string, canJoin: CanJoin, consent: boolean, note: string): Promise<string | null> {
   const account = await currentAccount();
   if (!account) return SIGN_IN;
-  const message = words(await applyToJob(account.id, { jobId, canJoin, consent }));
+  const message = words(await applyToJob(account.id, { jobId, canJoin, consent, note }));
   if (!message) refresh();
   return message;
 }

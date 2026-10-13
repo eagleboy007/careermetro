@@ -8,6 +8,7 @@ import { jobInput, jobReportInput, jobStatusInput } from "@/lib/schemas/corporat
 import { JOB_STATUSES, JOB_WORK_TYPE_LABELS, JOBS_BLOCKED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { writeAudit } from "./audit-line";
+import { certificateOptions, criteriaNames, unknownCertificates } from "./criteria";
 import { requirementNames, roleBySlug, roleOptions, skillOptions, unknownSkills } from "./job-content";
 import { canEditJob, canMoveApplications, canPostJobs, isLive, jobsBlocked, openRefusal, statusMoveRefusal, type OrgForJobs } from "./rules";
 import { activeMembership, liveAdminCount } from "./store";
@@ -30,6 +31,7 @@ export type JobError =
   | "not_found"
   | "unknown_role"
   | "unknown_skill"
+  | "unknown_certificate"
   | "not_colleague"
   | "limit"
   | "bad_move"
@@ -44,6 +46,7 @@ export const JOB_ERROR_TEXT: Record<JobError, string> = {
   not_found: "That job isn't available any more.",
   unknown_role: "Pick one of the role profiles.",
   unknown_skill: "Pick skills from the list.",
+  unknown_certificate: "Pick certificates from the list.",
   not_colleague: "Pick people from your company's team. Interviewers can't be Hiring HR on a job.",
   limit: "Your company has made a lot of jobs today. Try again tomorrow.",
   bad_move: "A closed job can't change. Post a new one instead.",
@@ -136,6 +139,7 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
   const input = parsed.data;
   if (!roleBySlug(input.roleSlug)) return fail("unknown_role");
   if (unknownSkills(input.requirements).length) return fail("unknown_skill");
+  if (unknownCertificates(input.criteria).length) return fail("unknown_certificate");
 
   const first = await activeMembership(userId, db);
   if (!first) return fail("not_member");
@@ -175,7 +179,7 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
     }
     // A job that stays open must still ask for a required skill (opening checks it; an edit must not undo it).
     if (status === "open" && input.requirements.required.length === 0) return fail("needs_required");
-    const fields = { roleProfileId: roleId, title: input.title, workType: input.workType, city: input.city, requirements: input.requirements, status };
+    const fields = { roleProfileId: roleId, title: input.title, workType: input.workType, city: input.city, requirements: input.requirements, criteria: input.criteria, status };
     let jobId: string;
     if (current) {
       jobId = current.id;
@@ -351,7 +355,7 @@ export async function jobForm(
   let values: JobFormValues | null = null;
   if (jobId) {
     const [job] = await db
-      .select({ id: jobs.id, status: jobs.status, title: jobs.title, workType: jobs.workType, city: jobs.city, requirements: jobs.requirements, slug: roleProfiles.slug })
+      .select({ id: jobs.id, status: jobs.status, title: jobs.title, workType: jobs.workType, city: jobs.city, requirements: jobs.requirements, criteria: jobs.criteria, slug: roleProfiles.slug })
       .from(jobs)
       .innerJoin(roleProfiles, eq(roleProfiles.id, jobs.roleProfileId))
       .where(and(eq(jobs.id, jobId), eq(jobs.orgId, me.orgId)));
@@ -370,6 +374,7 @@ export async function jobForm(
       workType: job.workType,
       city: job.city,
       requirements: job.requirements,
+      criteria: job.criteria,
       hiring: team.filter((t) => t.role === "hiring").map((t) => t.memberId),
       interviewers: team.filter((t) => t.role === "interviewer").map((t) => t.memberId),
     };
@@ -391,6 +396,7 @@ export async function jobForm(
       companyVerified: facts.reviewStatus === "verified",
       roles: roleOptions(),
       skills: skillOptions(),
+      certificates: certificateOptions(),
       colleagues: colleagues.map((c) => ({ memberId: c.memberId, name: displayName(c.name), role: c.role })),
       blocked: jobsBlocked(facts, now),
     },
@@ -404,13 +410,31 @@ export async function jobForm(
 export async function liveJobs(deps: { db?: Db } = {}, limit = 50): Promise<PostedJobView[]> {
   const db = deps.db ?? getDb();
   const rows = await db
-    .select({ id: jobs.id, title: jobs.title, company: organizations.name, city: jobs.city, workType: jobs.workType, requirements: jobs.requirements, createdAt: jobs.createdAt })
+    .select({
+      id: jobs.id,
+      title: jobs.title,
+      company: organizations.name,
+      city: jobs.city,
+      workType: jobs.workType,
+      requirements: jobs.requirements,
+      criteria: jobs.criteria,
+      createdAt: jobs.createdAt,
+    })
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
     .where(and(eq(jobs.status, "open"), eq(organizations.reviewStatus, "verified")))
     .orderBy(desc(jobs.createdAt))
     .limit(limit);
-  return rows.map((r) => ({ id: r.id, title: r.title, company: r.company, city: r.city, workType: r.workType, postedOn: isoDay(r.createdAt), ...requirementNames(r.requirements) }));
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    company: r.company,
+    city: r.city,
+    workType: r.workType,
+    postedOn: isoDay(r.createdAt),
+    ...requirementNames(r.requirements),
+    criteria: criteriaNames(r.criteria),
+  }));
 }
 
 /** Jobs the person made (owns), for "Download your data". */
@@ -424,6 +448,7 @@ export async function exportJobs(userId: string, db: Db = getDb()) {
       city: jobs.city,
       status: jobs.status,
       requirements: jobs.requirements,
+      criteria: jobs.criteria,
       createdAt: jobs.createdAt,
       closedAt: jobs.closedAt,
     })
