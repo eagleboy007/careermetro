@@ -214,12 +214,16 @@ function CandidateDrawer({
   const [note, setNote] = useState("");
   const [pending, start] = useTransition();
   const ids = useId();
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const tabRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
   const noteRef = useRef<HTMLTextAreaElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    dialogRef.current?.querySelector<HTMLElement>("[data-close]")?.focus();
+    // A native modal dialog: the page behind it is inert, so focus can't leave it.
+    const d = dialogRef.current;
+    if (d && !d.open) d.showModal();
+    d?.querySelector<HTMLElement>("[data-close]")?.focus();
     if (!actions) return;
     let live = true;
     actions.open(applicationId).then((r) => {
@@ -237,11 +241,29 @@ function CandidateDrawer({
   useEffect(() => {
     if (error && candidate) errorRef.current?.focus();
   }, [error, candidate]);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+
+  /** Closes the dialog first, so focus can go back to the card or on to the message. */
+  const close = (done?: string) => {
+    dialogRef.current?.close();
+    onClose(done);
+  };
+  /** Escape and the backdrop: never while a Not this time note is half written. */
+  const dismiss = () => {
+    if (closing && note.trim()) {
+      setError("Send the note or press Cancel first, so it isn't lost.");
+      return;
+    }
+    close();
+  };
+  const onTabKey = (e: React.KeyboardEvent, current: Tab) => {
+    const i = TABS.findIndex((t) => t.key === current);
+    const next = ({ ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TABS.length - 1 } as Record<string, number>)[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    const key = TABS[(next + TABS.length) % TABS.length].key;
+    setTab(key);
+    tabRefs.current[key]?.focus();
+  };
 
   const name = candidate?.profile.name ?? card?.name ?? "Candidate";
   const stage = candidate?.stage ?? card?.stage ?? "applied";
@@ -257,19 +279,20 @@ function CandidateDrawer({
       setError(null);
       const problem = await actions.move(applicationId, to, text);
       if (problem) setError(problem);
-      else onClose(to === "not_this_time" ? `${name}: Not this time, with your note. ${firstName(name)} sees it on Arrivals.` : `Moved ${name} to ${APPLICATION_STAGE_LABELS[to]}. ${firstName(name)} sees it on Arrivals.`);
+      else close(to === "not_this_time" ? `${name}: Not this time, with your note. ${firstName(name)} sees it on Arrivals.` : `Moved ${name} to ${APPLICATION_STAGE_LABELS[to]}. ${firstName(name)} sees it on Arrivals.`);
     });
 
   return (
-    <>
-      <div aria-hidden="true" className="fixed inset-0 z-40 bg-ink/30" onClick={() => onClose()} />
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={`${ids}-name`}
-        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[560px] flex-col border-l border-line bg-surface shadow-[0_20px_40px_-30px_var(--shadow)]"
-      >
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={`${ids}-name`}
+      onCancel={(e) => {
+        e.preventDefault();
+        dismiss();
+      }}
+      onClick={(e) => e.target === e.currentTarget && dismiss()}
+      className="my-0 mr-0 ml-auto h-dvh max-h-none w-full max-w-[560px] flex-col border-0 border-l border-line bg-surface p-0 text-ink shadow-[0_20px_40px_-30px_var(--shadow)] backdrop:bg-ink/30 open:flex"
+    >
         <div className="flex items-start gap-3 border-b border-line p-4">
           <div className="min-w-0 flex-1">
             <h2 id={`${ids}-name`} className="text-[1.25rem] font-semibold leading-[1.2] [overflow-wrap:anywhere]">
@@ -281,7 +304,7 @@ function CandidateDrawer({
               {card && <span className="rounded-full border border-line px-2.5 py-0.5">Can join: {CAN_JOIN_LABELS[card.canJoin]}</span>}
             </p>
           </div>
-          <button type="button" data-close aria-label="Close" className={`${actionBtn} w-11 px-0`} onClick={() => onClose()}>
+          <button type="button" data-close aria-label="Close" className={`${actionBtn} w-11 px-0`} onClick={() => close()}>
             <X {...ICON} />
           </button>
         </div>
@@ -291,10 +314,15 @@ function CandidateDrawer({
               key={t.key}
               type="button"
               role="tab"
+              ref={(el) => {
+                tabRefs.current[t.key] = el;
+              }}
               id={`${ids}-tab-${t.key}`}
               aria-selected={tab === t.key}
               aria-controls={`${ids}-panel`}
+              tabIndex={tab === t.key ? 0 : -1}
               onClick={() => setTab(t.key)}
+              onKeyDown={(e) => onTabKey(e, t.key)}
               className={`min-h-11 whitespace-nowrap border-b-2 px-3 text-[0.86rem] ${tab === t.key ? "border-ink font-semibold text-ink" : "border-transparent text-muted hover:text-ink"}`}
             >
               {t.label}
@@ -404,8 +432,7 @@ function CandidateDrawer({
             </div>
           )}
         </div>
-      </div>
-    </>
+    </dialog>
   );
 }
 

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { actionBtn } from "@/components/corporate/jobs-panel";
 import { ICON } from "@/components/corporate/parts";
 import { formatDay } from "@/lib/corporate/format";
+import { canWithdraw, withdrawConfirmText } from "@/lib/corporate/rules";
 import type { MyApplicationView, WithdrawAction } from "@/lib/corporate/types";
 import { APPLICATION_STAGE_LABELS, CAN_JOIN_LABELS } from "@/lib/schemas/constants";
 
@@ -90,7 +91,7 @@ function ApplicationCard({ app, withdraw, onDone }: { app: MyApplicationView; wi
 
   const moving = !app.withdrawn && MOVING.has(app.stage);
   const closedNote = app.stage === "not_this_time" ? [...app.events].reverse().find((e) => e.stage === "not_this_time" && e.note)?.note : null;
-  const canWithdraw = !app.withdrawn && app.stage !== "not_this_time";
+  const withdrawable = canWithdraw(app);
   return (
     <article aria-labelledby={`app-${app.id}`} className="flex min-w-0 flex-col gap-3 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5">
       <div className="flex flex-wrap items-start gap-2">
@@ -134,11 +135,11 @@ function ApplicationCard({ app, withdraw, onDone }: { app: MyApplicationView; wi
           </li>
         ))}
       </ol>
-      {canWithdraw && (
+      {withdrawable && (
         <div className="flex flex-wrap items-center gap-2">
           {confirming ? (
             <>
-              <span className="text-[0.84rem]">Withdraw? {app.company} stops seeing your profile for this job.</span>
+              <span className="text-[0.84rem]">{withdrawConfirmText(app.company, app.stage)}</span>
               <button
                 type="button"
                 className={actionBtn}

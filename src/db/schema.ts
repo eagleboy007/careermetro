@@ -827,7 +827,7 @@ export const applicationEvents = pgTable(
     index("application_events_application").on(t.applicationId, t.createdAt),
     index("application_events_by_user").on(t.byUserId),
     check("application_events_note_length", sql`char_length(${t.note}) <= 500`),
-    check("application_events_not_this_time_note", sql`${t.kind} <> 'moved' or ${t.stage} <> 'not_this_time' or char_length(${t.note}) >= 10`),
+    check("application_events_not_this_time_note", sql`${t.kind} <> 'moved' or ${t.stage} <> 'not_this_time' or coalesce(char_length(${t.note}), 0) >= 10`),
   ],
 );
 

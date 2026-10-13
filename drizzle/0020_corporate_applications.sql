@@ -11,7 +11,7 @@ CREATE TABLE "application_events" (
 	"note" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "application_events_note_length" CHECK (char_length("application_events"."note") <= 500),
-	CONSTRAINT "application_events_not_this_time_note" CHECK ("application_events"."kind" <> 'moved' or "application_events"."stage" <> 'not_this_time' or char_length("application_events"."note") >= 10)
+	CONSTRAINT "application_events_not_this_time_note" CHECK ("application_events"."kind" <> 'moved' or "application_events"."stage" <> 'not_this_time' or coalesce(char_length("application_events"."note"), 0) >= 10)
 );
 --> statement-breakpoint
 CREATE TABLE "applications" (

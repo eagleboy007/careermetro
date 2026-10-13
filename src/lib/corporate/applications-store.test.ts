@@ -305,11 +305,52 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     expect(consent.withdrawnAt).not.toBeNull();
     const b = await jobBoard(admin, jobId, at(1));
     expect(b).toMatchObject({ ok: true, board: { cards: [], withdrawn: 1 } });
-    expect(await openCandidate(admin, { applicationId: r.applicationId }, at(1))).toMatchObject({ ok: false, error: "withdrawn" });
-    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "shortlisted" }, at(1))).toMatchObject({ ok: false, error: "withdrawn" });
+    // The company learns nothing about a withdrawn application beyond the count: it reads as not there.
+    expect(await openCandidate(admin, { applicationId: r.applicationId }, at(1))).toMatchObject({ ok: false, error: "not_found" });
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "shortlisted" }, at(1))).toMatchObject({ ok: false, error: "not_found" });
     // Someone else can't withdraw it.
     const other = await person("withdraw-other");
     expect(await withdrawApplication(other, { applicationId: r.applicationId }, at(1))).toMatchObject({ ok: false, error: "not_found" });
+  });
+
+  it("lets the candidate withdraw after Not this time, and the company can't open it again", async () => {
+    const { admin, jobId } = await openJob("withdraw-closed");
+    const me = await candidate("withdraw-closed-cand");
+    const r = await apply(me, jobId);
+    if (!r.ok) throw new Error(r.error);
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at(1))).toEqual({ ok: true });
+    expect(await withdrawApplication(me, { applicationId: r.applicationId }, at(2))).toEqual({ ok: true });
+    const [row] = await db!.select().from(schema.applications).where(eq(schema.applications.id, r.applicationId));
+    expect(row.withdrawnAt).not.toBeNull();
+    // The close date stays the company's Not this time.
+    expect(row.closedAt?.toISOString()).toBe(new Date(clock.getTime() + DAY).toISOString());
+    const [consent] = await db!.select().from(schema.consents).where(eq(schema.consents.id, row.consentId));
+    expect(consent.withdrawnAt).not.toBeNull();
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "applied" }, at(3))).toMatchObject({ ok: false, error: "not_found" });
+    expect(await jobBoard(admin, jobId, at(3))).toMatchObject({ ok: true, board: { cards: [], withdrawn: 1 } });
+    const mine = await myApplications(me, { db: db! });
+    expect(mine[0]).toMatchObject({ stage: "not_this_time", withdrawn: true });
+    expect(mine[0].events.map((e) => e.kind)).toEqual(["applied", "moved", "withdrawn"]);
+  });
+
+  it("on a closed job, allows only Not this time", async () => {
+    const { admin, jobId } = await openJob("closed-job");
+    const me = await candidate("closed-job-cand");
+    const r = await apply(me, jobId);
+    if (!r.ok) throw new Error(r.error);
+    await db!.update(schema.jobs).set({ status: "closed", closedAt: clock }).where(eq(schema.jobs.id, jobId));
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "shortlisted" }, at())).toMatchObject({ ok: false, error: "job_closed" });
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at())).toEqual({ ok: true });
+    expect(await moveApplication(admin, { applicationId: r.applicationId, to: "applied" }, at())).toMatchObject({ ok: false, error: "job_closed" });
+  });
+
+  it("refuses a Not this time event without a note in the database too", async () => {
+    const { jobId } = await openJob("db-note");
+    const me = await candidate("db-note-cand");
+    const r = await apply(me, jobId);
+    if (!r.ok) throw new Error(r.error);
+    await expect(db!.insert(schema.applicationEvents).values({ applicationId: r.applicationId, kind: "moved", stage: "not_this_time", note: null })).rejects.toThrow();
+    await expect(db!.insert(schema.applicationEvents).values({ applicationId: r.applicationId, kind: "moved", stage: "not_this_time", note: "short" })).rejects.toThrow();
   });
 
   it("ends the company's view 180 days after Not this time", async () => {

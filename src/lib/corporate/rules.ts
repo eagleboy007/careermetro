@@ -88,19 +88,36 @@ export const canSeeBoard = (role: OrgRole, teamRole: JobTeamRole | null): boolea
 /** Moving candidates between lanes: the same people who may change the job. Interviewers never. */
 export const canMoveApplications = canEditJob;
 
-export type MoveRefusal = "same_stage" | "ai_off" | "withdrawn";
+export type MoveRefusal = "same_stage" | "ai_off" | "withdrawn" | "job_closed";
 
 /**
  * Why a move can't happen. Any lane may follow any other (Not this time can be opened again), except the L1 AI lane
- * while the job's AI round is off, and nothing moves once the candidate has withdrawn. The note for Not this time is
- * checked by the schema.
+ * while the job's AI round is off, and nothing moves once the candidate has withdrawn. Once the job is closed the only
+ * move left is Not this time, so no one is left waiting on a job that is gone. The note for Not this time is checked
+ * by the schema.
  */
-export function moveRefusal(from: ApplicationStage, to: ApplicationStage, app: { aiRound: boolean; withdrawn: boolean }): MoveRefusal | null {
+export function moveRefusal(
+  from: ApplicationStage,
+  to: ApplicationStage,
+  app: { aiRound: boolean; withdrawn: boolean; jobStatus?: JobStatus },
+): MoveRefusal | null {
   if (app.withdrawn) return "withdrawn";
   if (from === to) return "same_stage";
+  if (app.jobStatus === "closed" && to !== "not_this_time") return "job_closed";
   if (to === "ai" && !app.aiRound) return "ai_off";
   return null;
 }
+
+/**
+ * The candidate can always withdraw an application they haven't withdrawn yet, a closed one (Not this time) included:
+ * the company keeps a closed application for 180 days and could open it again, and withdrawing must be as easy as
+ * consenting (DPDP Act).
+ */
+export const canWithdraw = (app: { withdrawn: boolean }): boolean => !app.withdrawn;
+
+/** What withdrawing does, said before the person confirms. */
+export const withdrawConfirmText = (company: string, stage: ApplicationStage): string =>
+  stage === "not_this_time" ? `Withdraw? ${company} stops seeing your profile.` : `Withdraw? ${company} stops seeing your profile for this job.`;
 
 /** People can apply only to a job candidates can see: open, from a verified company (not pending or suspended). */
 export const acceptsApplications = isLive;

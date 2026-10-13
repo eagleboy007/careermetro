@@ -67,7 +67,8 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_found: "That application isn't available any more.",
   same_stage: "They're already in that lane.",
   ai_off: "The L1 AI interview is off for this job.",
-  withdrawn: "The candidate withdrew this application.",
+  withdrawn: "That application isn't available any more.",
+  job_closed: "This job is closed. Its candidates can only be moved to Not this time.",
 };
 
 export type ApplicationResult<T = object> = ({ ok: true } & T) | { ok: false; error: ApplicationError; message?: string };
@@ -370,6 +371,7 @@ async function visibleApplication(userId: string, applicationId: string, db: Db 
       name: users.name,
       deleted: users.deletionRequestedAt,
       aiRound: jobs.aiRound,
+      jobStatus: jobs.status,
       requirements: jobs.requirements,
     })
     .from(applications)
@@ -398,7 +400,8 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   const found = await visibleApplication(userId, parsed.data.applicationId, db, now);
   if (!found.ok) return found;
   const { app, access } = found;
-  if (app.withdrawnAt) return fail("withdrawn");
+  // A withdrawn application gives nothing away: the company sees only a count of them.
+  if (app.withdrawnAt) return fail("not_found");
   const [profileOf, proved, events] = await Promise.all([
     latestProfiles(app.resumeId ? [app.resumeId] : [], db),
     provedByUser([app.userId], db, now),
@@ -437,7 +440,8 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
     if (!found.ok) return found;
     const { app, access } = found;
     if (!access.canMove) return fail("not_allowed");
-    const refusal = moveRefusal(app.stage, to, { aiRound: app.aiRound, withdrawn: app.withdrawnAt !== null });
+    if (app.withdrawnAt) return fail("not_found");
+    const refusal = moveRefusal(app.stage, to, { aiRound: app.aiRound, withdrawn: false, jobStatus: app.jobStatus });
     if (refusal) return fail(refusal);
     const closing = to === "not_this_time";
     await tx

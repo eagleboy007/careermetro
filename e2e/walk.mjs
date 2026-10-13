@@ -1060,6 +1060,21 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await drawer.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
     if ((await drawer.innerText()).includes(testEmail)) throw new Error("email shown in the candidate drawer");
     await a11yOn(q, "corporate-candidate");
+    // The drawer is modal: Tab never leaves it. Arrow keys move between its tabs. Escape closes it, focus back on the card.
+    for (let k = 0; k < 15; k++) {
+      await q.keyboard.press("Tab");
+      // Past the last control the browser's own toolbar takes focus (the page reports body); never the page behind.
+      const where = await q.evaluate(() => (document.activeElement?.closest("dialog") ? "dialog" : document.activeElement === document.body ? "browser" : document.activeElement?.outerHTML.slice(0, 80)));
+      if (where !== "dialog" && where !== "browser") throw new Error("Tab left the candidate drawer for " + where);
+    }
+    await drawer.getByRole("tab", { name: "Match to this job" }).focus();
+    await q.keyboard.press("ArrowRight");
+    if ((await drawer.getByRole("tab", { name: "Activity" }).getAttribute("aria-selected")) !== "true") throw new Error("ArrowRight did not move to the next tab");
+    await q.keyboard.press("Escape");
+    await drawer.waitFor({ state: "hidden" });
+    await q.waitForFunction(() => document.activeElement?.textContent?.startsWith("PSPriya Sharma") || document.activeElement?.textContent?.startsWith("Priya Sharma"), null, { timeout: 5000 });
+    await open.click();
+    await drawer.getByText("Never shown to companies", { exact: false }).waitFor({ timeout: 10000 });
     // The L1 AI lane is off for this job.
     if (!(await drawer.locator('option[value="ai"]').evaluate((o) => o.disabled))) throw new Error("the L1 AI lane is offered while it is off");
     await drawer.getByLabel("Move to").selectOption("shortlisted");
@@ -1071,6 +1086,10 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await drawer.getByRole("button", { name: "Send Not this time" }).click();
     await drawer.getByRole("alert").getByText(/Add a short note/).waitFor();
     await drawer.getByLabel(/Note for Priya/).fill(NOTE);
+    // Escape doesn't throw away a note being written.
+    await q.keyboard.press("Escape");
+    await drawer.getByRole("alert").getByText(/Send the note or press Cancel first/).waitFor();
+    if ((await drawer.getByLabel(/Note for Priya/).inputValue()) !== NOTE) throw new Error("the note was lost on Escape");
     await drawer.getByRole("button", { name: "Send Not this time" }).click();
     await q.getByRole("status").getByText(/Not this time, with your note/).waitFor({ timeout: 10000 });
     await lane("Not this time").getByRole("button", { name: /^Priya Sharma/ }).waitFor();
@@ -1103,10 +1122,22 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await a11y("arrivals-phone-dark");
     await shot("arrivals-phone-dark");
 
-    const [app] = await sql`select a.id, a.stage, a.closed_at, c.purpose from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
+    // Withdrawing stays open after Not this time: the company kept the profile and could reopen it.
+    await mine.getByRole("button", { name: `Withdraw ${title} at Example Labs` }).click();
+    await mine.getByText("Withdraw? Example Labs stops seeing your profile.").waitFor();
+    await mine.getByRole("button", { name: "Withdraw application" }).click();
+    await p.getByRole("status").getByText(`Withdrawn: ${title} at Example Labs.`).waitFor({ timeout: 10000 });
+    await p.locator("section", { has: p.getByRole("heading", { name: "Withdrawn", exact: true }) }).getByRole("heading", { name: title }).waitFor();
+    // The company now sees only a count.
+    await q.reload();
+    await q.getByText(/1 withdrew/).waitFor({ timeout: 10000 });
+    if (await q.getByRole("button", { name: /^Priya Sharma/ }).count()) throw new Error("a withdrawn candidate is still on the board");
+
+    const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
     if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");
+    if (!app.withdrawn_at || !app.consent_withdrawn) throw new Error("withdrawal not saved on the application and its consent");
     const steps = (await sql`select kind, stage, note from application_events where application_id = ${app.id} order by created_at`).map((e) => `${e.kind}:${e.stage}${e.note ? ":note" : ""}`);
-    if (steps.join() !== "applied:applied,moved:shortlisted,moved:not_this_time:note") throw new Error("events: " + steps.join());
+    if (steps.join() !== "applied:applied,moved:shortlisted,moved:not_this_time:note,withdrawn:not_this_time") throw new Error("events: " + steps.join());
     const [viewed] = await sql`select count(*)::int as n from audit_logs where target = ${`application:${app.id}`} and action = 'candidate_viewed'`;
     if (viewed.n < 1) throw new Error("no audit line for opening the candidate");
   } catch (e) {

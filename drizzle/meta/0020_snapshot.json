@@ -234,7 +234,7 @@
         },
         "application_events_not_this_time_note": {
           "name": "application_events_not_this_time_note",
-          "value": "\"application_events\".\"kind\" <> 'moved' or \"application_events\".\"stage\" <> 'not_this_time' or char_length(\"application_events\".\"note\") >= 10"
+          "value": "\"application_events\".\"kind\" <> 'moved' or \"application_events\".\"stage\" <> 'not_this_time' or coalesce(char_length(\"application_events\".\"note\"), 0) >= 10"
         }
       },
       "isRLSEnabled": false

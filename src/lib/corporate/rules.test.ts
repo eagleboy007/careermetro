@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { afterWrongTry, codeMatches, codeState, hashCode, hashWorkEmail, isCodeShape, LOCK_MS, MAX_WRONG_TRIES, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
 import { checkWorkEmail, emailDomain, isFreeMail, normalWebsite, websiteHost, websiteMatchesDomain } from "./domains";
-import { acceptsApplications, canEditJob, canMoveApplications, canOpenJobs, canSeeBoard, moveRefusal, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
+import { acceptsApplications, canEditJob, canMoveApplications, canOpenJobs, canSeeBoard, canWithdraw, moveRefusal, withdrawConfirmText, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
 
 const NOW = new Date("2026-10-12T10:00:00Z");
 const DAY = 86_400_000;
@@ -229,6 +229,21 @@ describe("the board (build step 4)", () => {
     expect(moveRefusal("not_this_time", "applied", off)).toBeNull();
     expect(moveRefusal("offer", "applied", off)).toBeNull();
     expect(moveRefusal("applied", "shortlisted", { ...off, withdrawn: true })).toBe("withdrawn");
+  });
+
+  it("on a closed job, allows only Not this time", () => {
+    const closed = { aiRound: false, withdrawn: false, jobStatus: "closed" as const };
+    expect(moveRefusal("applied", "shortlisted", closed)).toBe("job_closed");
+    expect(moveRefusal("not_this_time", "applied", closed)).toBe("job_closed");
+    expect(moveRefusal("team", "not_this_time", closed)).toBeNull();
+    expect(moveRefusal("applied", "shortlisted", { ...closed, jobStatus: "paused" })).toBeNull();
+  });
+
+  it("lets the candidate withdraw any application not yet withdrawn, Not this time included", () => {
+    expect(canWithdraw({ withdrawn: false })).toBe(true);
+    expect(canWithdraw({ withdrawn: true })).toBe(false);
+    expect(withdrawConfirmText("Example Labs", "not_this_time")).toBe("Withdraw? Example Labs stops seeing your profile.");
+    expect(withdrawConfirmText("Example Labs", "team")).toBe("Withdraw? Example Labs stops seeing your profile for this job.");
   });
 
   it("takes applications only for open jobs of verified companies", () => {
