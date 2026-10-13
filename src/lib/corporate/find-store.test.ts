@@ -396,4 +396,18 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await clearOldProfileViews(db!, new Date(clock.getTime() + 31 * DAY))).toBeGreaterThanOrEqual(1);
     expect((await discoveryFor(p, fd())).views).toEqual([]);
   });
+
+  it("opening a Find people link fills in the form without searching: no limit used, no audit line (T41)", async () => {
+    const s = await setup("link");
+    await seeker("link-p");
+    const searches = async () => (await auditOf(s.orgId)).filter((l) => l.action === "people_searched").length;
+    for (let i = 0; i < 3; i++) {
+      const view = await findPeoplePage(s.admin, { jobId: s.jobId, band: "2-5", page: 2 }, fd());
+      expect(view).toMatchObject({ search: { jobId: s.jobId, band: "2-5", page: 2 }, results: null, error: null });
+    }
+    expect(await searches()).toBe(0);
+    // Pressing Search (searchPeople, from the server action) runs it and writes the line.
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+    expect(await searches()).toBe(1);
+  });
 });

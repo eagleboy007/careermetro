@@ -8,12 +8,14 @@ import {
   CORPORATE_ERROR_TEXT,
   finishCompanySignup,
   finishJoin,
+  finishRecheck,
   inviteMember,
   removeMember,
   requestAccess,
   saveCompanyPage,
   startCompanySignup,
   startJoin,
+  startRecheck,
   type Result,
 } from "@/lib/corporate/store";
 import type { CodeStep, CompanyPageDetails, OrgRole, SignupDetails } from "@/lib/corporate/types";
@@ -109,6 +111,25 @@ export async function finishJoinAction(workEmail: string, code: string): Promise
   const r = await finishJoin(account.id, { workEmail, code });
   if (!r.ok) return { ok: false, error: words(r)! };
   // Corporate now shows the company.
+  refresh();
+  return { ok: true };
+}
+
+/** The 180-day work-email re-check (Testing T40): a code to a work email on the company's domain. */
+export async function startRecheckAction(workEmail: string): Promise<CodeStep> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: SIGN_IN };
+  const r = await startRecheck(account.id, { workEmail });
+  if (!r.ok) return { ok: false, error: words(r)! };
+  return r.testCode ? { ok: true, testCode: r.testCode } : { ok: true };
+}
+
+export async function finishRecheckAction(workEmail: string, code: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: SIGN_IN };
+  const r = await finishRecheck(account.id, { workEmail, code });
+  if (!r.ok) return { ok: false, error: words(r)! };
+  // Corporate now shows the company again.
   refresh();
   return { ok: true };
 }

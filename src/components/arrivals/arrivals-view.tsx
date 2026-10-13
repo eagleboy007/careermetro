@@ -138,6 +138,12 @@ function ApplicationCard({
           {app.withdrawn ? "Withdrawn" : APPLICATION_STAGE_LABELS[app.stage]}
         </span>
       </div>
+      {app.companyBlocked && !app.withdrawn && (
+        <p className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem]">
+          You blocked {app.company}. It can&apos;t message you, ask for times or arrange interviews. This application stays open until you withdraw it or the company
+          closes it.
+        </p>
+      )}
       {closedNote && (
         <div className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.88rem]">
           <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Note from {app.company}</span>

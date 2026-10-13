@@ -99,8 +99,8 @@ type JobContext = { me: Member; job: { id: string; title: string; requirements: 
 const movesOnJob = (teamRole: JobTeamRole | null) => teamRole === "owner" || teamRole === "hiring";
 
 /** The person's live role, the company's state and the job, or why they can't search from it. */
-async function jobContext(userId: string, jobId: string, db: Db | Tx): Promise<FindResult<JobContext>> {
-  const me = await activeMembership(userId, db);
+async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date): Promise<FindResult<JobContext>> {
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   if (!UUID.test(jobId)) return fail("job_not_open");
   const [job] = await db
@@ -213,7 +213,7 @@ export async function searchPeople(userId: string, raw: unknown, deps: FindDeps 
   if (!parsed.success) return fail("invalid");
   const { jobId, band, page } = parsed.data;
   const result = await db.transaction(async (tx): Promise<FindResult<{ cards: FindPersonCard[]; total: number; hasMore: boolean }>> => {
-    const ctx = await jobContext(userId, jobId, tx);
+    const ctx = await jobContext(userId, jobId, tx, now);
     if (!ctx.ok) return ctx;
     const { me, job } = ctx;
     if (!sealRef(userId, me.orgId, deps.env)) return fail("unavailable");
@@ -303,7 +303,7 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
   const parsed = findOpenInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
   const result = await db.transaction(async (tx): Promise<FindResult<{ person: FoundPersonView }>> => {
-    const ctx = await jobContext(userId, parsed.data.jobId, tx);
+    const ctx = await jobContext(userId, parsed.data.jobId, tx, now);
     if (!ctx.ok) return ctx;
     const { me, job } = ctx;
     if (!(await takeShared(LIMITS.findOpensPerUserHour, userId, { db: tx, now: now.getTime() }))) return fail("limit");
@@ -346,7 +346,7 @@ export async function sendFoundRequest(userId: string, raw: unknown, deps: FindD
   if (!parsed.success) return fail(parsed.error.issues.some((i) => i.path[0] === "body") ? "message" : "invalid");
   const input = parsed.data;
   const result = await db.transaction(async (tx): Promise<FindResult<{ conversationId: string }>> => {
-    const ctx = await jobContext(userId, input.jobId, tx);
+    const ctx = await jobContext(userId, input.jobId, tx, now);
     if (!ctx.ok) return ctx;
     const { me, job } = ctx;
     const person = await resolve(ctx, userId, input.ref, tx, deps.env);
@@ -394,9 +394,9 @@ function foundChatsWhere(me: Member, userId: string): SQL {
 const candidateJoin = and(eq(conversationMembers.conversationId, conversations.id), eq(conversationMembers.role, "member"));
 
 /** The message requests the company sent to people it found, newest first, for Find people. */
-export async function sentRequests(userId: string, deps: { db?: Db } = {}): Promise<SentRequestView[]> {
+export async function sentRequests(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<SentRequestView[]> {
   const db = deps.db ?? getDb();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, deps.now);
   if (!me || me.role === "interviewer") return [];
   const rows = await db
     .select({ id: conversations.id, status: conversations.status, name: users.name, job: jobs.title, createdAt: conversations.createdAt })
@@ -418,7 +418,7 @@ export async function sentRequests(userId: string, deps: { db?: Db } = {}): Prom
 
 /** Corporate Messages' list items for found chats, with the same preview and unread rules as application chats. */
 export async function foundChatItems(userId: string, now: Date, db: Db = getDb()): Promise<(CompanyChatListItem & { lastAt: Date })[]> {
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me || me.role === "interviewer") return [];
   const rows = await db
     .select({ id: conversations.id, name: users.name, job: jobs.title, lastMessageAt: conversations.lastMessageAt })
@@ -459,9 +459,9 @@ export async function foundChatItems(userId: string, now: Date, db: Db = getDb()
 }
 
 /** One found chat the member may read, locked for a write when asked. */
-async function visibleFoundChat(userId: string, conversationId: string, db: Db | Tx, lock = false) {
+async function visibleFoundChat(userId: string, conversationId: string, db: Db | Tx, now: Date, lock = false) {
   if (!UUID.test(conversationId)) return fail("not_found");
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   if (me.role === "interviewer") return fail("interviewer");
   const q = db
@@ -499,7 +499,7 @@ async function foundChatState(chat: { status: string; orgStatus: string; candida
 export async function companyFoundChat(userId: string, conversationId: string, deps: FindDeps & { markRead?: boolean } = {}): Promise<FindResult<{ chat: CompanyChatView }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const found = await visibleFoundChat(userId, conversationId, db);
+  const found = await visibleFoundChat(userId, conversationId, db, now);
   if (!found.ok) return found;
   const { me, chat } = found;
   const rows = await db
@@ -548,7 +548,7 @@ export async function sendFoundMessage(userId: string, raw: unknown, deps: FindD
   const parsed = foundMessageInput.safeParse(raw);
   if (!parsed.success) return fail("message");
   const result = await db.transaction(async (tx): Promise<FindResult<{ messageId: string }>> => {
-    const found = await visibleFoundChat(userId, parsed.data.conversationId, tx, true);
+    const found = await visibleFoundChat(userId, parsed.data.conversationId, tx, now, true);
     if (!found.ok) return found;
     const { me, chat } = found;
     const state = await foundChatState(chat, me.orgId, tx);
@@ -588,14 +588,19 @@ async function searchableJobs(userId: string, me: Member, db: Db): Promise<FindJ
   return rows;
 }
 
-/** Corporate > Find people for this member, with the search the address asks for (if any) run now. */
+/**
+ * Corporate > Find people for this member. The job and band in the address only fill in the form: opening or sharing a
+ * link never runs a search, uses up a limit or writes an audit line (Testing T41). A search runs only when the member
+ * presses Search (searchPeople, from a server action).
+ */
 export async function findPeoplePage(
   userId: string,
   params: { jobId: string | null; band: FindBand | null; page: number },
   deps: FindDeps = {},
 ): Promise<FindPeopleView | null> {
   const db = deps.db ?? getDb();
-  const me = await activeMembership(userId, db);
+  const now = deps.now ?? new Date();
+  const me = await activeMembership(userId, db, now);
   if (!me) return null;
   const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
   const status = org?.status ?? "pending";
@@ -603,14 +608,10 @@ export async function findPeoplePage(
   if (me.role === "interviewer") return { ...view, refusal: "interviewer" };
   if (status !== "verified") return { ...view, refusal: "not_verified" };
   if (!sealRef(userId, me.orgId, deps.env)) return { ...view, refusal: "unavailable" };
-  const [jobOptions, sent] = await Promise.all([searchableJobs(userId, me, db), sentRequests(userId, { db })]);
+  const [jobOptions, sent] = await Promise.all([searchableJobs(userId, me, db), sentRequests(userId, { db, now })]);
   view.jobs = jobOptions;
   view.sent = sent;
-  if (!params.jobId) return view;
-  view.search = { jobId: params.jobId, band: params.band, page: params.page };
-  const r = await searchPeople(userId, { jobId: params.jobId, band: params.band, page: params.page }, deps);
-  if (r.ok) view.results = { cards: r.cards, total: r.total, hasMore: r.hasMore };
-  else view.error = FIND_ERROR_TEXT[r.error];
+  if (params.jobId) view.search = { jobId: params.jobId, band: params.band, page: params.page };
   return view;
 }
 

@@ -56,7 +56,7 @@ import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
-import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
+import { CorporateHome, CorporateStart, RecheckPanel } from "@/components/corporate/corporate-home";
 import {
   exampleApplications,
   exampleBoard,
@@ -498,6 +498,10 @@ export default function DesignPage() {
         <p className="text-sm text-muted">Corporate for someone with no company role: set up a company, or confirm a role they were given.</p>
         <div className="rounded-lg border border-line p-4">
           <CorporateStart open />
+        </div>
+        <p className="text-sm text-muted">Corporate when a role&apos;s 180-day work-email re-check is due: access is paused until the person confirms the email again.</p>
+        <div className="rounded-lg border border-line p-4">
+          <RecheckPanel company="Example Labs" domain="example-labs.in" open />
         </div>
       </section>
 

@@ -13,14 +13,18 @@ import {
   exportCorporate,
   finishCompanySignup,
   finishJoin,
+  finishRecheck,
   inviteMember,
   removeMember,
   requestAccess,
   saveCompanyPage,
   startCompanySignup,
   startJoin,
+  startRecheck,
+  recheckDue,
   type CorporateDeps,
 } from "./store";
+import { RECHECK_CLOSED_TEXT } from "@/lib/schemas/constants";
 
 vi.mock("server-only", () => ({}));
 
@@ -30,6 +34,7 @@ const sqlClient = url ? postgres(url, { max: 4, onnotice: () => {} }) : null;
 const db = sqlClient ? drizzle(sqlClient, { schema }) : null;
 const env = { NAME_HASH_KEY: "test-key" };
 const MIN = 60_000;
+const DAY = 86_400_000;
 
 describe.skipIf(!db)("corporate store (database)", () => {
   const run = `corp${Date.now()}`;
@@ -364,5 +369,47 @@ describe.skipIf(!db)("corporate store (database)", () => {
     const all = lines.join("\n");
     expect(lines.length).toBeGreaterThan(0);
     for (const secret of [started.testCode, "meera.iyer", d]) expect(all).not.toContain(secret);
+  });
+
+  it("pauses company access once the 180-day work-email re-check is due, until the person confirms the email again (T40)", async () => {
+    const admin = await person("recheck-admin");
+    const { domain: d } = await company(admin);
+    const hr = await person("recheck-hr", "Rahul Menon");
+    await join(admin, hr, d, "hiring", "rahul");
+    const day = (n: number) => new Date(clock.getTime() + n * DAY);
+    const due = deps({ now: day(181) });
+
+    // Day 179: on. Day 181: the role is still held, but it opens nothing.
+    expect(await activeMembership(hr, db!, day(179))).toMatchObject({ role: "hiring" });
+    expect(await activeMembership(hr, db!, day(181))).toBeNull();
+    expect(await corporateHome(hr, { db: db!, now: day(181) })).toBeNull();
+    expect(await recheckDue(hr, { db: db!, now: day(181) })).toEqual({ company: "Example Labs", domain: d });
+    expect(await recheckDue(hr, { db: db!, now: day(179) })).toBeNull();
+    // The admin's re-check is due too, so they can't manage the team either.
+    expect(await inviteMember(admin, { workEmail: `x@${d}`, role: "hiring" }, due)).toEqual({ ok: false, error: "not_member" });
+    // It is still their one role: no second company meanwhile.
+    expect(await startCompanySignup(hr, details(domain(), "rahul"), due)).toEqual({ ok: false, error: "has_role" });
+
+    // Re-checking takes a work email on the company's domain only, and a code, as joining did.
+    expect(await startRecheck(hr, { workEmail: "rahul@gmail.com" }, due)).toMatchObject({ ok: false, error: "invalid" });
+    expect(await startRecheck(hr, { workEmail: "rahul@other-company.test" }, due)).toMatchObject({ ok: false, error: "invalid" });
+    // In production without an email sender nothing is sent, and the words say access stays paused.
+    expect(await startRecheck(hr, { workEmail: `rahul@${d}` }, deps({ now: day(181), delivery: "off" }))).toEqual({ ok: false, error: "closed", message: RECHECK_CLOSED_TEXT });
+    const started = await startRecheck(hr, { workEmail: `rahul.menon@${d}` }, due);
+    if (!started.ok || !started.testCode) throw new Error("no code");
+    const wrong = started.testCode === "000000" ? "111111" : "000000";
+    expect(await finishRecheck(hr, { workEmail: `rahul.menon@${d}`, code: wrong }, due)).toEqual({ ok: false, error: "wrong" });
+    expect(await activeMembership(hr, db!, day(181))).toBeNull();
+    expect(await finishRecheck(hr, { workEmail: `rahul.menon@${d}`, code: started.testCode }, due)).toEqual({ ok: true });
+
+    // Access is back for another 180 days; only the domain and the date are kept.
+    expect(await activeMembership(hr, db!, day(181))).toMatchObject({ role: "hiring" });
+    const [row] = await db!.select().from(schema.orgMembers).where(eq(schema.orgMembers.userId, hr));
+    expect(row).toMatchObject({ workEmailDomain: d, workEmailVerifiedAt: day(181), recheckDueAt: day(361) });
+    expect(JSON.stringify(row)).not.toContain("rahul.menon");
+    expect((await codeRows(hr)).every((c) => c.email === null)).toBe(true);
+    // Nothing to re-check now.
+    expect(await startRecheck(hr, { workEmail: `rahul@${d}` }, due)).toEqual({ ok: false, error: "not_found" });
+    expect(lines.join("\n")).not.toContain("rahul");
   });
 });

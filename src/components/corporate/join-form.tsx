@@ -10,7 +10,16 @@ import { fieldClass, hintClass, labelClass, TestCodeBox } from "./parts";
  * "Confirm your work email" (handoff 12e): a person a Recruiter admin gave a role types the work email it was given
  * to, gets a 6-digit code there, and the role switches on. One login only: their own CareerMetro account.
  */
-export function JoinForm({ actions }: { actions?: JoinActions }) {
+export function JoinForm({
+  actions,
+  hint = "The email the Recruiter admin added, on your company's domain. We send a 6-digit code there.",
+  doneText = "Your role is on. Loading Corporate…",
+}: {
+  actions?: JoinActions;
+  /** The line under the email field; the 180-day re-check (Testing T40) names the company's domain instead. */
+  hint?: string;
+  doneText?: string;
+}) {
   const [stage, setStage] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -42,7 +51,7 @@ export function JoinForm({ actions }: { actions?: JoinActions }) {
   if (done) {
     return (
       <p role="status" className="text-sm text-muted">
-        Your role is on. Loading Corporate…
+        {doneText}
       </p>
     );
   }
@@ -72,7 +81,7 @@ export function JoinForm({ actions }: { actions?: JoinActions }) {
             aria-describedby={error ? errorId : undefined}
             className={fieldClass}
           />
-          <span className={hintClass}>The email the Recruiter admin added, on your company&apos;s domain. We send a 6-digit code there.</span>
+          <span className={hintClass}>{hint}</span>
         </label>
       ) : (
         <>

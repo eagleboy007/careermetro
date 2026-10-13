@@ -1980,6 +1980,15 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.waitForURL(/\/corporate\/people\?job=/);
     const address = new URL(q.url());
+    // Opening that address again fills in the form but runs no search (Testing T41): no limit used, no audit line.
+    const searched = async () => (await sql`select count(*)::int as n from audit_logs where org_id = ${org.id} and action = 'people_searched'`)[0].n;
+    const before = await searched();
+    await q.reload();
+    await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    if ((await q.getByLabel("Match to this job").inputValue()) !== job.id) throw new Error("the address did not fill in the job");
+    if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opening a search address ran the search");
+    if ((await searched()) !== before) throw new Error("opening a search address wrote a people_searched line");
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     if ([...address.searchParams.keys()].some((k) => !["job", "band", "page"].includes(k)) || address.searchParams.get("job") !== job.id || address.searchParams.get("band")) throw new Error("the search address holds more than the job and band: " + address.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
     await open.waitFor({ timeout: 10000 });
@@ -2005,6 +2014,7 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await q.setViewportSize({ width: 360, height: 780 });
     await q.emulateMedia({ colorScheme: "dark" });
     await q.reload();
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
     const overflow = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) throw new Error("find people on a phone: horizontal overflow " + overflow + "px");
@@ -2047,6 +2057,7 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await fp.waitForFunction(() => document.activeElement?.textContent === "Settings saved.", null, { timeout: 15000 });
     await q.reload();
     await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
     if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opting out did not remove the person from results");
 
@@ -2058,6 +2069,32 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     const audit = await sql`select action, target from audit_logs where org_id = ${org.id} and action in ('people_searched', 'found_profile_viewed', 'found_request_sent')`;
     for (const action of ["people_searched", "found_profile_viewed", "found_request_sent"]) if (!audit.some((a) => a.action === action)) throw new Error("no audit line for " + action);
     if (audit.some((a) => a.target !== `job:${job.id}`)) throw new Error("an audit line names more than the job: " + audit.map((a) => a.target).join());
+
+    // Blocking the whole company stops its application chats too (Testing T37). Arjun applies to the job; once he
+    // blocks Example Labs in Settings, the recruiter's message on that application doesn't reach him, and to the
+    // company the chat reads as closed, never as blocked.
+    await fp.goto(BASE + "/departures");
+    const fcard = fp.getByRole("article").filter({ has: fp.getByRole("heading", { name: title }) });
+    await fcard.waitFor({ timeout: 10000 });
+    await fcard.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
+    await fcard.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await fcard.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
+    await fcard.getByRole("button", { name: "Send application" }).click();
+    await fcard.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+    const [arjunApp] = await sql`select id from applications where user_id = ${user.id} and job_id = ${job.id}`;
+    await fp.goto(BASE + "/settings");
+    await fp.locator("[data-company-discovery]").getByRole("button", { name: "Block Example Labs" }).click();
+    await fp.getByText("Blocked Example Labs. They won't find or message you.").waitFor({ timeout: 10000 });
+    await q.goto(BASE + `/corporate/messages?application=${arjunApp.id}`);
+    const blockedChat = q.getByRole("region", { name: "Arjun Mehta" });
+    await blockedChat.waitFor({ timeout: 10000 });
+    await blockedChat.getByText(/This chat is closed/).waitFor({ timeout: 10000 });
+    if (await blockedChat.getByRole("textbox", { name: "Message" }).count()) throw new Error("the company can still write after the person blocked it");
+    if ((await blockedChat.innerText()).toLowerCase().includes("block")) throw new Error("the company is told it was blocked");
+    const [sent] = await sql`select count(*)::int as n from messages m join conversations c on c.id = m.conversation_id where c.application_id = ${arjunApp.id} and m.kind <> 'system'`;
+    if (sent.n !== 0) throw new Error("a company message reached a person who blocked the company");
+    await fp.goto(BASE + "/arrivals");
+    await fp.getByText(/You blocked Example Labs\. It can.t message you/).waitFor({ timeout: 10000 });
   } catch (e) {
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-find-people.png`, fullPage: true }).catch(() => {});
     throw e;
@@ -2102,7 +2139,7 @@ await step("corporate applications: withdraw after Not this time; the company se
     await p.getByRole("button", { name: /Example Labs/ }).first().click();
     await p.getByRole("region", { name: "Chat with Example Labs" }).getByText(/This chat is closed/).waitFor({ timeout: 10000 });
 
-    const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
+    const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title} order by a.created_at limit 1`;
     if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");
     if (!app.withdrawn_at || !app.consent_withdrawn) throw new Error("withdrawal not saved on the application and its consent");
     const steps = (await sql`select kind, stage, note from application_events where application_id = ${app.id} order by created_at`).map((e) => `${e.kind}:${e.stage}${e.note ? ":note" : ""}`);

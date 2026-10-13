@@ -14,6 +14,7 @@ import { askDaysOf } from "./interview-reads";
 import { askAnswered, askEnded, slotLabel } from "./slots";
 import { foundChatItems } from "./find-store";
 import { activeMembership } from "./store";
+import { companyBlocked } from "./company-blocks";
 import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, CompanyChatView, CompanyMessagesView } from "./types";
 
 /*
@@ -61,7 +62,7 @@ function stateFor(x: Parameters<typeof companySendRefusal>[0]): CompanyChatState
 export async function companyMessages(userId: string, deps: ChatDeps = {}): Promise<ChatResult<{ view: CompanyMessagesView }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
   const view: CompanyMessagesView = { company: me.orgName, status: org?.status ?? "pending", role: me.role, items: [] };
@@ -201,7 +202,8 @@ export async function companyChat(userId: string, applicationId: string, deps: C
     return { ...base, by: "team", who: m.senderId && !m.deleted ? displayName(m.name) : COMPANY_TEAM };
   });
   if (deps.markRead && conversation) await markCompanyRead(db, conversation.id, userId, now);
-  const closed = chatClosed(app, conversation?.status ?? "open", now);
+  // A person who blocked the company reads as a closed chat, never as "blocked" (Testing T37).
+  const closed = chatClosed(app, conversation?.status ?? "open", now) || (await companyBlocked(app.userId, app.orgId, db));
   return {
     ok: true,
     chat: {
@@ -231,7 +233,7 @@ export async function sendCompanyMessage(userId: string, raw: unknown, deps: Cha
   if (!parsed.success) return fail("invalid");
   const input = parsed.data;
   const result = await db.transaction(async (tx): Promise<ChatResult<{ messageId: string }>> => {
-    const me = await activeMembership(userId, tx);
+    const me = await activeMembership(userId, tx, now);
     if (!me) return fail("not_member");
     // Interviewers never send, whatever they are assigned to.
     if (me.role === "interviewer") return fail("read_only");
@@ -240,6 +242,8 @@ export async function sendCompanyMessage(userId: string, raw: unknown, deps: Cha
     const { app, access } = found;
     // A withdrawn application gives nothing away to the company, as on the board.
     if (app.withdrawnAt) return fail("not_found");
+    // The person blocked the company: to the company the chat reads as closed (Testing T37).
+    if (await companyBlocked(app.userId, app.orgId, tx)) return fail("closed");
     const conversationId = await openApplicationChat(tx, { applicationId: app.id, orgId: app.orgId, userId: app.userId }, now, false);
     const [conversation] = await tx.select({ status: conversations.status }).from(conversations).where(eq(conversations.id, conversationId)).for("update");
     const refusal = companySendRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, closed: chatClosed(app, conversation!.status, now) });
