@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useTransition, type KeyboardEvent } from "react";
 import { marketQueryHref, searchMarket, type MarketChoice, type MarketQuery } from "@/lib/market/search";
 
 /*
@@ -59,18 +59,30 @@ export function MarketSelect({
   const [seen, setSeen] = useState(here);
   const lastKey = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // The last address this select asked for, so leaving it after a pick doesn't ask again.
+  const sent = useRef<string | null>(null);
+  // The current view, read when a pick is committed: a keyboard pick commits after a pause, and by then another
+  // control may have changed the view, which the pick must keep. Updated after every render (refs can't be written
+  // during one).
+  const latest = useRef(base);
+  useLayoutEffect(() => {
+    latest.current = base;
+  });
   // The address changed (this pick landed, or something else moved): show what the server says.
   if (here !== seen) {
     setSeen(here);
     setLocal(value);
   }
+  // ...and forget the last address asked for, so picking it again (after going back to India, say) asks again.
+  useLayoutEffect(() => {
+    sent.current = null;
+  }, [here]);
   useEffect(() => () => clearTimeout(timer.current), []);
-  // The last address this select asked for, so leaving it after a pick doesn't ask again.
-  const sent = useRef<string | null>(null);
   const commit = (next: string) => {
     clearTimeout(timer.current);
-    const href = marketQueryHref(base, { [param]: next });
-    if (href === here || href === sent.current) return;
+    const now = latest.current;
+    const href = marketQueryHref(now, { [param]: next });
+    if (href === marketQueryHref(now) || href === sent.current) return;
     sent.current = href;
     go(href);
   };
