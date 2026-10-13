@@ -123,8 +123,12 @@ function SkillAdder({
   );
 }
 
-/** Our certificates by issuer, without the ones already asked for, and an Add button. */
-function CertificateAdder({ id, certificates, used, disabled, onAdd }: { id: string; certificates: CertificateOptionView[]; used: Set<string>; disabled?: boolean; onAdd: (certId: string) => void }) {
+/**
+ * Our certificates by issuer, without the ones already asked for, and an Add button. At the limit (`full`) the select
+ * stays focusable but marked aria-disabled and ignores picks, so focus moved to it after adding the last one or removing
+ * one never lands on a disabled control and drops to the page.
+ */
+function CertificateAdder({ id, certificates, used, full, onAdd }: { id: string; certificates: CertificateOptionView[]; used: Set<string>; full: boolean; onAdd: (certId: string) => void }) {
   const [picked, setPicked] = useState("");
   const groups = useMemo(() => {
     const m = new Map<string, CertificateOptionView[]>();
@@ -133,7 +137,15 @@ function CertificateAdder({ id, certificates, used, disabled, onAdd }: { id: str
   }, [certificates, used]);
   return (
     <div className="flex flex-wrap gap-2">
-      <select id={id} aria-label="Add a certificate" value={picked} disabled={disabled} onChange={(e) => setPicked(e.target.value)} className={`${inputClass} min-h-11 min-w-0 flex-1 basis-[200px]`}>
+      <select
+        id={id}
+        aria-label="Add a certificate"
+        aria-disabled={full || undefined}
+        aria-describedby={full ? `${id}-full` : undefined}
+        value={full ? "" : picked}
+        onChange={(e) => !full && setPicked(e.target.value)}
+        className={`${inputClass} min-h-11 min-w-0 flex-1 basis-[200px] aria-disabled:cursor-not-allowed aria-disabled:opacity-60`}
+      >
         <option value="">Pick a certificate</option>
         {groups.map(([issuer, list]) => (
           <optgroup key={issuer} label={issuer}>
@@ -148,8 +160,9 @@ function CertificateAdder({ id, certificates, used, disabled, onAdd }: { id: str
       <button
         type="button"
         className={actionBtn}
-        disabled={disabled || !picked}
+        disabled={full || !picked}
         onClick={() => {
+          if (full || !picked) return;
           onAdd(picked);
           setPicked("");
           document.getElementById(id)?.focus();
@@ -158,6 +171,11 @@ function CertificateAdder({ id, certificates, used, disabled, onAdd }: { id: str
         <Plus {...ICON} />
         Add
       </button>
+      {full && (
+        <p id={`${id}-full`} className={`${hintClass} basis-full`}>
+          {JOB_CRITERIA_CERTIFICATES_MAX} certificates is the most a job can ask for. Remove one to add another.
+        </p>
+      )}
     </div>
   );
 }
@@ -456,7 +474,7 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
                   id={certSelect}
                   certificates={data.certificates}
                   used={new Set(crit.certificates)}
-                  disabled={crit.certificates.length >= JOB_CRITERIA_CERTIFICATES_MAX}
+                  full={crit.certificates.length >= JOB_CRITERIA_CERTIFICATES_MAX}
                   onAdd={(c) => setCertificates([...crit.certificates, c], `${certName(c)} added to Express apply criteria.`)}
                 />
               </div>

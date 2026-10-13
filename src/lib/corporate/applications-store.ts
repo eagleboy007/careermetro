@@ -270,7 +270,8 @@ export async function withdrawApplication(userId: string, raw: unknown, deps: Ap
     if (!app) return fail("not_found");
     if (app.withdrawnAt) return { ok: true };
     // Withdrawing stops all sharing: interviews still ahead are cancelled and a phone shared for one is erased.
-    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now, phoneShared: null }).where(eq(applications.id, app.id));
+    // The note goes too: withdrawing stops sharing, so the company keeps nothing the person wrote to it.
+    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now, phoneShared: null, note: null }).where(eq(applications.id, app.id));
     await cancelUpcoming(tx, app.id, now);
     await tx.update(consents).set({ withdrawnAt: now }).where(and(eq(consents.id, app.consentId), isNull(consents.withdrawnAt)));
     await event(tx, app.id, "withdrawn", app.stage, userId, now);

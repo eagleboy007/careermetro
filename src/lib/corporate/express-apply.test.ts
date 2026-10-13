@@ -218,7 +218,7 @@ describe.skipIf(!db)("Express apply (database)", () => {
     expect(await criteriaStates(null, [jobId], at())).toEqual({});
   });
 
-  it("puts the note in Download your data, and the job's criteria in its maker's; withdrawing keeps it there, deleting the account removes it", async () => {
+  it("puts the note in Download your data, and the job's criteria in its maker's; withdrawing erases the note, deleting the account removes the application", async () => {
     const { admin, jobId } = await openJob("export");
     const me = await candidate("export-cand");
     const r = await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at());
@@ -228,8 +228,11 @@ describe.skipIf(!db)("Express apply (database)", () => {
     expect(data!.applications[0]).toMatchObject({ note: NOTE });
     const adminData = await exportAccountData(admin, db!, clock);
     expect(adminData!.jobsOwned.find((j) => j.title === "SOC Analyst L1")?.criteria).toEqual(criteria);
+    // Withdrawing stops sharing: the note is erased, like a shared phone.
     expect(await withdrawApplication(me, { applicationId: r.applicationId }, at(1))).toEqual({ ok: true });
-    expect((await exportAccountData(me, db!, clock))!.applications[0]).toMatchObject({ note: NOTE });
+    const [after] = await db!.select({ note: schema.applications.note }).from(schema.applications).where(eq(schema.applications.id, r.applicationId));
+    expect(after.note).toBeNull();
+    expect((await exportAccountData(me, db!, clock))!.applications[0]).toMatchObject({ note: null });
     // Deleting the account for good removes the application and its note.
     expect(await requestDeletion(me, db!, clock)).toBe(true);
     await purgeDeletedAccounts(db!, new Date(clock.getTime() + 31 * DAY));

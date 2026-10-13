@@ -214,6 +214,8 @@ export function ApplyPreview({
   const noteProblem = len > APPLICATION_NOTE_MAX ? APPLICATION_NOTE_LONG_TEXT : hasContactDetails(form.note) ? APPLICATION_NOTE_CONTACT_TEXT : null;
 
   const send = () => {
+    // Send stays focusable while sending (aria-disabled, not disabled), so focus never drops to the page body.
+    if (pending) return;
     if (!form.canJoin) return setError("Pick when you can join.");
     if (noteProblem) return setError(noteProblem);
     if (!form.consent) return setError(`Tick the box to send this to ${company}.`);
@@ -351,11 +353,17 @@ export function ApplyPreview({
             </p>
           )}
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className={inkBtn} disabled={pending || (!packet && !!preview)}>
+            <button
+              type="submit"
+              className={`${inkBtn} aria-disabled:cursor-not-allowed aria-disabled:opacity-50`}
+              aria-disabled={pending || undefined}
+              // Off only until the packet has loaded (nothing to send yet, and focus is on the heading then).
+              disabled={!packet && !!preview}
+            >
               <Send {...ICON} />
               Send application
             </button>
-            <button type="button" className={actionBtn} onClick={close} disabled={pending}>
+            <button type="button" className={`${actionBtn} aria-disabled:cursor-not-allowed aria-disabled:opacity-60`} onClick={close} aria-disabled={pending || undefined}>
               Cancel
             </button>
           </div>

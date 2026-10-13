@@ -1314,6 +1314,20 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     await cert.selectOption({ label: "CompTIA Security+" });
     await cert.locator("xpath=following-sibling::button").click();
     await q.getByRole("button", { name: "Remove CompTIA Security+ from Express apply criteria" }).waitFor();
+    // At the limit of 3 the picker stays focusable (aria-disabled), so focus never drops to the page: after adding the
+    // third, and after removing one of three.
+    const onPicker = () => cert.evaluate((el) => el === document.activeElement);
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await cert.selectOption({ label: extra });
+      await cert.locator("xpath=following-sibling::button").click();
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).waitFor();
+    }
+    if (!(await onPicker())) throw new Error("focus not on the certificate picker after adding the third");
+    if ((await cert.getAttribute("aria-disabled")) !== "true") throw new Error("the certificate picker isn't marked full at 3");
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).click();
+      if (!(await onPicker())) throw new Error("focus not on the certificate picker after removing one");
+    }
     await q.getByRole("article").getByText("Express apply asks for").waitFor();
     await q.getByRole("article").getByText(`Proof of ${proofSkill}`).waitFor();
     // Open job stays off until the three ticks.
