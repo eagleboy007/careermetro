@@ -1,12 +1,13 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, auditLogs, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
+import { applications, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { logEvent } from "@/lib/log";
 import { jobInput, jobReportInput, jobStatusInput } from "@/lib/schemas/corporate";
 import { JOB_STATUSES, JOB_WORK_TYPE_LABELS, JOBS_BLOCKED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { writeAudit } from "./audit-line";
 import { requirementNames, roleBySlug, roleOptions, skillOptions, unknownSkills } from "./job-content";
 import { canEditJob, canMoveApplications, canPostJobs, isLive, jobsBlocked, openRefusal, statusMoveRefusal, type OrgForJobs } from "./rules";
 import { activeMembership, liveAdminCount } from "./store";
@@ -117,8 +118,8 @@ async function roleRowId(slug: string, db: Db | Tx): Promise<string | null> {
   return row?.id ?? null;
 }
 
-const audit = (tx: Tx, memberId: string, to: keyof typeof AUDIT_ACTION, jobId: string, now: Date) =>
-  tx.insert(auditLogs).values({ actor: `member:${memberId}`, action: AUDIT_ACTION[to], target: `job:${jobId}`, createdAt: now });
+const audit = (tx: Tx, me: Member, to: keyof typeof AUDIT_ACTION, jobId: string, now: Date) =>
+  writeAudit(tx, { orgId: me.orgId, actor: { memberId: me.memberId }, action: AUDIT_ACTION[to], target: { job: jobId } }, now);
 
 /* Writing --------------------------------------------------------------------------------------------------------- */
 
@@ -188,9 +189,9 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
     }
     if (team.rows.length) await tx.insert(jobTeam).values(team.rows.map((r) => ({ jobId, ...r }))).onConflictDoNothing();
     const opened = status === "open" && from !== "open";
-    if (opened) await audit(tx, me.memberId, "open", jobId, now);
+    if (opened) await audit(tx, me, "open", jobId, now);
     // Changes to a job candidates can see (or could again) leave a line too, saying who, not what.
-    else if (from === "open" || from === "paused") await audit(tx, me.memberId, "edited", jobId, now);
+    else if (from === "open" || from === "paused") await audit(tx, me, "edited", jobId, now);
     return { ok: true, jobId, status, opened };
   });
   if (!result.ok) return result;
@@ -223,7 +224,7 @@ export async function setJobStatus(userId: string, raw: unknown, deps: JobDeps =
       .update(jobs)
       .set({ status: to, ...(to === "closed" ? { closedAt: now } : {}) })
       .where(eq(jobs.id, jobId));
-    await audit(tx, me.memberId, to, jobId, now);
+    await audit(tx, me, to, jobId, now);
     return { ok: true };
   });
   if (result.ok) logEvent("info", "job_status_changed", { to });

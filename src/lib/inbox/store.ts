@@ -5,7 +5,7 @@ import { applications, blocks, candidateSlots, conversationMembers, conversation
 import { displayName } from "@/lib/account/name";
 import { askDaysOf } from "@/lib/corporate/interview-reads";
 import { chatClosed } from "@/lib/corporate/rules";
-import { dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
+import { askAnswered, dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
 import { SLOT_TIMES } from "@/lib/schemas/constants";
 import { logEvent } from "@/lib/log";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
@@ -482,8 +482,18 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
           const given = offered.filter((o) => o.askMessageId === m.id).map((o) => slotLabel(o.startsAt));
           const keys = days.flatMap((d) => SLOT_TIMES.map((t) => `${d}T${t}`));
           const unavailable = keys.filter((k) => !slotOpen(slotStart(k) ?? new Date(0), now));
-          const open = !given.length && !closed && verified && !app.closedAt && unavailable.length < keys.length;
-          const ask = { messageId: m.id, days: days.map((day) => ({ day, label: dayParts(day) })), times: [...SLOT_TIMES], unavailable, offered: given.length ? given : null, open };
+          // Answered, its offered times since deleted by the daily clean-up (corporate build step 7).
+          const passed = !given.length && askAnswered(m.payload);
+          const open = !given.length && !passed && !closed && verified && !app.closedAt && unavailable.length < keys.length;
+          const ask = {
+            messageId: m.id,
+            days: days.map((day) => ({ day, label: dayParts(day) })),
+            times: [...SLOT_TIMES],
+            unavailable,
+            offered: given.length ? given : null,
+            open,
+            ...(passed ? { passed } : {}),
+          };
           return { id: m.id, by: "them", who, type: "times" as const, text: m.body, at: formatAt(m.createdAt, now), ask };
         }
         return { id: m.id, by: "them", who, ...(m.kind === "ask_question" ? { type: "question" as const } : {}), text: m.body, at: formatAt(m.createdAt, now) };

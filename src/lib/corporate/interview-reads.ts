@@ -152,6 +152,8 @@ export async function offeredState(applicationId: string, conversationId: string
               eq(messages.conversationId, conversationId),
               eq(messages.kind, "ask_times"),
               sql`not exists (select 1 from ${candidateSlots} s where s.ask_message_id = ${messages.id})`,
+              // Answered, its offered times since deleted by the daily clean-up (build step 7).
+              sql`coalesce(${messages.payload}->>'answered', '') <> 'true'`,
             ),
           )
       : Promise.resolve([] as { id: string; payload: unknown }[]),
@@ -203,11 +205,13 @@ export async function myInterviewsOf(applicationIds: string[], db: Db | Tx, now:
 }
 
 /** Cancels an application's interviews that are still ahead: on Not this time and on withdrawing. */
-export async function cancelUpcoming(tx: Tx, applicationId: string, now: Date): Promise<void> {
-  await tx
+export async function cancelUpcoming(tx: Tx, applicationId: string, now: Date): Promise<number> {
+  const cancelled = await tx
     .update(interviews)
     .set({ status: "cancelled", cancelledAt: now })
-    .where(and(eq(interviews.applicationId, applicationId), inArray(interviews.status, ["proposed", "accepted"]), gt(interviews.startsAt, now)));
+    .where(and(eq(interviews.applicationId, applicationId), inArray(interviews.status, ["proposed", "accepted"]), gt(interviews.startsAt, now)))
+    .returning({ id: interviews.id });
+  return cancelled.length;
 }
 
 

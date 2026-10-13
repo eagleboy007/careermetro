@@ -1,39 +1,67 @@
 import { purgeDeletedAccounts } from "@/lib/account/delete";
+import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "@/lib/corporate/cleanup";
 import { clearExpiredCodes } from "@/lib/corporate/store";
 import { renewExpiredGoals } from "@/lib/goals/store";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
-import { errorFields, logEvent } from "@/lib/log";
+import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
 
 /**
  * Daily job (vercel.json): deletes anonymous resumes and their profiles after 24 hours (FR-2), and accounts deleted
  * more than 30 days ago, for good. It also turns goals whose certificate expired to "renew" (dev/proof-plan.md rule 4), and forgets the work email on
- * codes that ran out (dev/corporate-plan.md).
+ * codes that ran out (dev/corporate-plan.md). For the employer side (build step 7) it records each application's
+ * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
+ * offered interview times that passed unbooked; reads already enforce every one of these cutoffs.
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
   if (!hasBearer(request, process.env.CRON_SECRET)) {
     return Response.json({ ok: false }, { status: 401 });
   }
-  // Each runs whatever happens to the other, so one failing never holds up the other's deletions.
-  const [deleted, accountsDeleted, renewed, codes] = await Promise.allSettled([deleteExpiredAnonymousResumes(), purgeDeletedAccounts(), renewExpiredGoals(), clearExpiredCodes()]);
-  if (deleted.status === "rejected") logEvent("error", "cleanup_anonymous_failed", errorFields(deleted.reason));
-  if (accountsDeleted.status === "rejected") logEvent("error", "cleanup_accounts_failed", errorFields(accountsDeleted.reason));
-  if (renewed.status === "rejected") logEvent("error", "cleanup_renew_failed", errorFields(renewed.reason));
-  if (codes.status === "rejected") logEvent("error", "cleanup_codes_failed", errorFields(codes.reason));
-  const ok = deleted.status === "fulfilled" && accountsDeleted.status === "fulfilled" && renewed.status === "fulfilled" && codes.status === "fulfilled";
-  // Counts only, so each run can be checked from the logs.
-  logEvent("info", "cleanup_done", {
-    anonymousResumesDeleted: deleted.status === "fulfilled" ? deleted.value : null,
-    accountsDeleted: accountsDeleted.status === "fulfilled" ? accountsDeleted.value : null,
-    peopleRenewed: renewed.status === "fulfilled" ? renewed.value : null,
-    workEmailCodesCleared: codes.status === "fulfilled" ? codes.value : null,
+  // Each runs whatever happens to the others, so one failing never holds up another's deletions. Every job answers
+  // with counts only. (Log keys avoid words such as "email" and "phone", which the logger always redacts.)
+  const jobs: Record<string, Promise<Record<string, number>>> = {
+    anonymous: deleteExpiredAnonymousResumes().then((n) => ({ anonymousResumesDeleted: n })),
+    accounts: purgeDeletedAccounts().then((n) => ({ accountsDeleted: n })),
+    goals: renewExpiredGoals().then((n) => ({ peopleRenewed: n })),
+    codes: clearExpiredCodes().then((n) => ({ workCodesCleared: n })),
+    companyAccess: endCompanyAccess(),
+    sharedNumbers: eraseClosedPhones().then((n) => ({ sharedNumbersErased: n })),
+    offeredTimes: clearPastOfferedTimes().then((n) => ({ offeredTimesDeleted: n })),
+  };
+  const empty: Record<string, Record<string, null>> = {
+    anonymous: { anonymousResumesDeleted: null },
+    accounts: { accountsDeleted: null },
+    goals: { peopleRenewed: null },
+    codes: { workCodesCleared: null },
+    companyAccess: { accessEnded: null, readMarksCleared: null },
+    sharedNumbers: { sharedNumbersErased: null },
+    offeredTimes: { offeredTimesDeleted: null },
+  };
+  const names = Object.keys(jobs);
+  const settled = await Promise.allSettled(Object.values(jobs));
+  const counts: LogFields = {};
+  let ok = true;
+  settled.forEach((result, i) => {
+    const job = names[i]!;
+    if (result.status === "fulfilled") return void Object.assign(counts, result.value);
+    ok = false;
+    Object.assign(counts, empty[job]);
+    logEvent("error", "cleanup_job_failed", { job, ...errorFields(result.reason) });
   });
+  // Counts only, so each run can be checked from the logs.
+  logEvent("info", "cleanup_done", counts);
   return Response.json(
     {
       ok,
-      deleted: deleted.status === "fulfilled" ? deleted.value : null,
-      accountsDeleted: accountsDeleted.status === "fulfilled" ? accountsDeleted.value : null,
+      deleted: counts.anonymousResumesDeleted,
+      accountsDeleted: counts.accountsDeleted,
+      corporate: {
+        accessEnded: counts.accessEnded,
+        readMarksCleared: counts.readMarksCleared,
+        sharedNumbersErased: counts.sharedNumbersErased,
+        offeredTimesDeleted: counts.offeredTimesDeleted,
+      },
     },
     { status: ok ? 200 : 500 },
   );

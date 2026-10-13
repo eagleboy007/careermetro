@@ -613,6 +613,8 @@ function Message({
           <small className="text-[0.78rem] text-muted">
             You offered {ask.offered.length} {ask.offered.length === 1 ? "time" : "times"}: {ask.offered.join(" · ")}
           </small>
+        ) : ask.passed ? (
+          <small className="text-[0.78rem] text-muted">You offered times for this. They have passed.</small>
         ) : !ask.open ? (
           <small className="text-[0.78rem] text-muted">This can&apos;t be answered now.</small>
         ) : !picking ? (

@@ -265,13 +265,17 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
                     {m.times.offered ? (
                       <>
                         {firstName(chat.candidate)} offered: {m.times.offered.join(" · ")}
-                        {chat.canAskTimes && (
+                        {chat.canAskTimes && !m.times.ended && (
                           <Link href={`/corporate/interviews?application=${chat.applicationId}`} className={`${actionBtn} mt-2 flex w-fit`}>
                             <CalendarPlus {...ICON} />
                             Schedule
                           </Link>
                         )}
                       </>
+                    ) : m.times.ended === "passed" ? (
+                      <span className="text-muted">{firstName(chat.candidate)} offered times. They have passed.</span>
+                    ) : m.times.ended === "unanswered" ? (
+                      <span className="text-muted">No times were picked. The days asked have passed.</span>
                     ) : (
                       <span className="text-muted">Waiting for {firstName(chat.candidate)} to pick times.</span>
                     )}

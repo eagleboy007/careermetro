@@ -1148,7 +1148,7 @@ await step("company chats: the job team writes from the board, the candidate rep
     await q.setViewportSize({ width: 1280, height: 900 });
     await q.emulateMedia({ colorScheme: "light" });
     await q.goto(BASE + "/corporate");
-    await q.getByRole("link", { name: "Messages", exact: true }).waitFor({ timeout: 10000 });
+    await q.getByRole("link", { name: /^Messages( \d+ unread)?$/ }).waitFor({ timeout: 10000 });
     await q.getByRole("link", { name: new RegExp(`^Board for ${title}`) }).click();
     await q.waitForURL(/\/corporate\/jobs\/board\?id=/);
     const lane = (name) => q.locator("section", { has: q.getByRole("heading", { name, exact: true, level: 2 }) });
@@ -1441,6 +1441,109 @@ await step("interviews: ask for times, the candidate offers one, book it, accept
     await q.emulateMedia({ colorScheme: "light" }).catch(() => {});
     await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
     await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
+  }
+});
+// Overview, audit and the daily clean-up (dev/corporate-plan.md, build step 7): after the interview step, the admin's
+// Overview counts match the database; the admin opens the audit and finds the booking and the cancellation, with no
+// contact details; the daily clean-up answers only with its secret, reports counts, and a second run finds nothing more.
+await step("overview, audit and the daily clean-up", async () => {
+  if (!q || !postedTitle || !corpDomain) throw new Error("no company or application from the steps before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check the counts");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  try {
+    const [org] = await sql`select id from organizations where email_domain = ${corpDomain}`;
+    const [job] = await sql`select id from jobs where org_id = ${org.id} and title = ${title}`;
+    const [open] = await sql`select count(*)::int as n from jobs where org_id = ${org.id} and status = 'open'`;
+    const lanes = await sql`select a.stage, count(*)::int as n from applications a join users u on u.id = a.user_id
+      where a.job_id = ${job.id} and a.withdrawn_at is null and u.deletion_requested_at is null group by a.stage`;
+    const lane = (stage) => lanes.find((l) => l.stage === stage)?.n ?? 0;
+    if (lane("not_this_time") < 1) throw new Error("expected the walk's application in Not this time");
+
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    const overview = q.locator("section#overview");
+    await overview.getByRole("heading", { name: "Overview", level: 2 }).waitFor({ timeout: 10000 });
+    const stat = async (label) => (await overview.locator("div, a").filter({ has: q.getByText(label, { exact: true }) }).last().locator("span.font-display").innerText()).trim();
+    if ((await stat("Open jobs")) !== String(open.n)) throw new Error(`Overview open jobs ${await stat("Open jobs")}, database ${open.n}`);
+    // The cancelled interview no longer counts this week.
+    const [week] = await sql`select count(*)::int as n from interviews i join applications a on a.id = i.application_id
+      where a.org_id = ${org.id} and i.status in ('proposed', 'accepted')
+        and i.starts_at >= date_trunc('week', now() at time zone 'Asia/Kolkata') at time zone 'Asia/Kolkata'
+        and i.starts_at < (date_trunc('week', now() at time zone 'Asia/Kolkata') + interval '7 days') at time zone 'Asia/Kolkata'`;
+    if ((await stat("Interviews")) !== String(week.n)) throw new Error(`Overview interviews ${await stat("Interviews")}, database ${week.n}`);
+    const jobLanes = overview.locator(`dl[aria-label=${JSON.stringify(`${title}: applications per stage`)}]`);
+    for (const [stage, label] of [["applied", "Applied"], ["shortlisted", "Shortlisted"], ["not_this_time", "Not this time"]]) {
+      const shown = (await jobLanes.locator("div", { has: q.getByText(label, { exact: true }) }).locator("dd").innerText()).trim();
+      if (shown !== String(lane(stage))) throw new Error(`Overview ${label}: ${shown}, database ${lane(stage)}`);
+    }
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-overview.png`, fullPage: true });
+    await a11yOn(q, "corporate-overview");
+
+    // The admin's audit: the booking and the cancellation, by whom, on which application; never contact details.
+    await q.getByRole("link", { name: "Audit", exact: true }).click();
+    await q.waitForURL(/\/corporate\/audit$/);
+    await q.getByRole("heading", { name: "Audit", level: 1 }).waitFor({ timeout: 10000 });
+    const lines = q.getByRole("region", { name: "Audit lines" });
+    await lines.getByText(/booked an interview/).first().waitFor({ timeout: 10000 });
+    await lines.getByText(/cancelled an interview/).first().waitFor({ timeout: 10000 });
+    await lines.getByText(/The candidate accepted an interview/).first().waitFor();
+    await lines.getByText(new RegExp(`Application [0-9a-f]{8} · ${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`)).first().waitFor();
+    const text = await q.locator("main").innerText();
+    for (const secret of ["@", "98765", "Priya", "phishing", "Splunk", testEmail]) if (text.includes(secret)) throw new Error("the audit shows " + secret);
+    const [stored] = await sql`select count(*)::int as n from audit_logs where org_id = ${org.id} and action in ('interview_booked', 'interview_cancelled')`;
+    if (stored.n < 2) throw new Error("audit lines for booking and cancelling: " + stored.n);
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-audit.png`, fullPage: true });
+    await a11yOn(q, "corporate-audit");
+    await q.setViewportSize({ width: 375, height: 800 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Audit", level: 1 }).waitFor({ timeout: 10000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflow > 1) throw new Error("audit on a phone: horizontal overflow " + overflow + "px");
+    await a11yOn(q, "corporate-audit-phone-dark");
+    await q.goto(BASE + "/corporate");
+    await q.locator("section#overview").waitFor({ timeout: 10000 });
+    const overflow2 = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflow2 > 1) throw new Error("overview on a phone: horizontal overflow " + overflow2 + "px");
+    await a11yOn(q, "corporate-overview-phone-dark");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-overview-phone-dark.png`, fullPage: true });
+    // A cursor that is not a time and an id is ignored, and nothing about a person ever goes in the address.
+    await q.goto(BASE + "/corporate/audit?before=Priya");
+    await q.getByRole("heading", { name: "Audit", level: 1 }).waitFor({ timeout: 10000 });
+
+    // The candidate has no company role: the audit is not theirs.
+    await p.goto(BASE + "/corporate/audit");
+    await p.getByRole("heading", { name: "You can't open the audit" }).waitFor({ timeout: 10000 });
+
+    // The daily clean-up: the secret from the server's environment, never from a page; counts only.
+    const secret = process.env.CRON_SECRET;
+    if (!secret) throw new Error("needs CRON_SECRET, as the server has it");
+    const refused = await fetch(BASE + "/api/cron/cleanup");
+    if (refused.status !== 401) throw new Error("the clean-up ran without its secret: " + refused.status);
+    const call = async () => {
+      const res = await fetch(BASE + "/api/cron/cleanup", { headers: { authorization: `Bearer ${secret}` } });
+      const body = await res.json();
+      if (res.status !== 200 || !body.ok) throw new Error("clean-up: " + res.status + " " + JSON.stringify(body));
+      for (const k of ["accessEnded", "readMarksCleared", "sharedNumbersErased", "offeredTimesDeleted"]) if (typeof body.corporate?.[k] !== "number") throw new Error("clean-up count missing: " + k);
+      return body.corporate;
+    };
+    const first = await call();
+    console.log("     clean-up counts:", JSON.stringify(first));
+    const again = await call();
+    if (again.accessEnded || again.readMarksCleared || again.sharedNumbersErased || again.offeredTimesDeleted) throw new Error("a second run found more: " + JSON.stringify(again));
+    // No shared phone is left on a closed application.
+    const [phones] = await sql`select count(*)::int as n from applications where closed_at is not null and phone_shared is not null`;
+    if (phones.n) throw new Error("phones left on closed applications: " + phones.n);
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-overview.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await sql.end();
+    await q.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await q.emulateMedia({ colorScheme: "light" }).catch(() => {});
   }
 });
 // The candidate withdraws after Not this time (step 4): the company keeps only a count, and the chat closes.

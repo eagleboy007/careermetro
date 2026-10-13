@@ -1,8 +1,9 @@
 import "server-only";
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull, ne, or, gte } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applicationEvents, applications, auditLogs, candidateSlots, consents, conversations, gapProofs, interviews, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
+import { applicationEvents, applications, candidateSlots, consents, conversations, gapProofs, interviews, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
+import { writeAudit } from "./audit-line";
 import { assignedApplications, assignedSubquery, cancelUpcoming, companyInterviewsOf, myInterviewsOf, offeredState, phoneAudience } from "./interview-reads";
 import { decryptPhone } from "./phone";
 import { currentAnalysis } from "@/lib/gaps/current";
@@ -441,7 +442,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt });
   const canSchedule =
     scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } }) === null;
-  await db.insert(auditLogs).values({ actor: `member:${access.me.memberId}`, action: "candidate_viewed", target: `application:${app.id}`, createdAt: now });
+  await writeAudit(db, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "candidate_viewed", target: { application: app.id } }, now);
   logEvent("info", "candidate_viewed");
   return {
     ok: true,
@@ -489,9 +490,15 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
       .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null, ...(closing ? { phoneShared: null } : {}) })
       .where(eq(applications.id, app.id));
     await event(tx, app.id, "moved", to, userId, now, closing ? note : null);
+    // Who moved it, and to which lane; never the note.
+    await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: `moved_${to}`, target: { application: app.id } }, now);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.
     if (closing) {
-      await cancelUpcoming(tx, app.id, now);
+      // One audit line per interview it cancelled, from the member who closed it (build step 7).
+      const cancelled = await cancelUpcoming(tx, app.id, now);
+      for (let k = 0; k < cancelled; k++) {
+        await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "interview_cancelled", target: { application: app.id } }, now);
+      }
       await tx.update(interviews).set({ phoneShared: false }).where(eq(interviews.applicationId, app.id));
     }
     return { ok: true };

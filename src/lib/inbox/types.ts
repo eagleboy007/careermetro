@@ -30,6 +30,8 @@ export type InboxAsk = {
   offered: string[] | null;
   /** The candidate can still answer. */
   open: boolean;
+  /** They answered, and the times they offered have passed and been deleted (corporate build step 7). */
+  passed?: boolean;
 };
 
 export type InboxThread = {

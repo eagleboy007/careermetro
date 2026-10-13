@@ -20,6 +20,7 @@ import {
 import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode } from "./codes";
+import { writeAudit } from "./audit-line";
 import { codeDelivery } from "./delivery";
 import { companyJobs } from "./jobs-store";
 import { checkWorkEmail, isOnDomain, websiteMatchesDomain, workEmailProblemText } from "./domains";
@@ -304,15 +305,19 @@ export async function finishCompanySignup(userId: string, raw: unknown, deps: Co
         createdAt: now,
       })
       .returning({ id: organizations.id });
-    await tx.insert(orgMembers).values({
-      orgId: org.id,
-      userId,
-      role: "admin",
-      workEmailDomain: domain.domain,
-      workEmailVerifiedAt: now,
-      recheckDueAt: recheckDueAt(now),
-      createdAt: now,
-    });
+    const [member] = await tx
+      .insert(orgMembers)
+      .values({
+        orgId: org.id,
+        userId,
+        role: "admin",
+        workEmailDomain: domain.domain,
+        workEmailVerifiedAt: now,
+        recheckDueAt: recheckDueAt(now),
+        createdAt: now,
+      })
+      .returning({ id: orgMembers.id });
+    await writeAudit(tx, { orgId: org.id, actor: { memberId: member.id }, action: "company_created", target: { company: org.id } }, now);
     logEvent("info", "company_created", { websiteMatches: websiteMatchesDomain(details.website, domain.domain) });
     return { ok: true as const, orgId: org.id };
   });
@@ -327,10 +332,13 @@ export async function saveCompanyPage(userId: string, raw: unknown, deps: Corpor
   if (!me) return fail("not_member");
   if (!canManageTeam(me.role)) return fail("not_admin");
   const p = parsed.data;
-  await db
-    .update(organizations)
-    .set({ about: p.about || null, industry: p.industry || null, offices: p.offices || null, gstinOrCin: p.gstinOrCin || null })
-    .where(eq(organizations.id, me.orgId));
+  await db.transaction(async (tx) => {
+    await tx
+      .update(organizations)
+      .set({ about: p.about || null, industry: p.industry || null, offices: p.offices || null, gstinOrCin: p.gstinOrCin || null })
+      .where(eq(organizations.id, me.orgId));
+    await writeAudit(tx, { orgId: me.orgId, actor: { memberId: me.memberId }, action: "company_page_saved", target: { company: me.orgId } }, deps.now ?? new Date());
+  });
   return { ok: true };
 }
 
@@ -390,15 +398,21 @@ export async function inviteMember(adminId: string, raw: unknown, deps: Corporat
     .where(and(eq(orgInvites.orgId, admin.me.orgId), eq(orgInvites.emailHash, emailHash), isNull(orgInvites.acceptedAt), isNull(orgInvites.cancelledAt), gt(orgInvites.expiresAt, now)))
     .limit(1);
   if (open) return fail("already_invited");
-  await db.insert(orgInvites).values({
-    orgId: admin.me.orgId,
-    kind: "invite",
-    role: parsed.data.role,
-    emailHash,
-    emailDomain: check.domain,
-    invitedBy: adminId,
-    createdAt: now,
-    expiresAt: inviteExpiresAt(now),
+  await db.transaction(async (tx) => {
+    const [invite] = await tx
+      .insert(orgInvites)
+      .values({
+        orgId: admin.me.orgId,
+        kind: "invite",
+        role: parsed.data.role,
+        emailHash,
+        emailDomain: check.domain,
+        invitedBy: adminId,
+        createdAt: now,
+        expiresAt: inviteExpiresAt(now),
+      })
+      .returning({ id: orgInvites.id });
+    await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "role_invited", target: { invite: invite.id } }, now);
   });
   return { ok: true };
 }
@@ -411,12 +425,16 @@ export async function cancelInvite(adminId: string, raw: unknown, deps: Corporat
   if (!parsed.success) return fail("invalid");
   const admin = await adminOf(adminId, db);
   if (!admin.ok) return admin;
-  const rows = await db
-    .update(orgInvites)
-    .set({ cancelledAt: now })
-    .where(and(eq(orgInvites.id, parsed.data.inviteId), eq(orgInvites.orgId, admin.me.orgId), isNull(orgInvites.acceptedAt), isNull(orgInvites.cancelledAt)))
-    .returning({ id: orgInvites.id });
-  return rows.length ? { ok: true } : fail("not_found");
+  const done = await db.transaction(async (tx) => {
+    const [row] = await tx
+      .update(orgInvites)
+      .set({ cancelledAt: now })
+      .where(and(eq(orgInvites.id, parsed.data.inviteId), eq(orgInvites.orgId, admin.me.orgId), isNull(orgInvites.acceptedAt), isNull(orgInvites.cancelledAt)))
+      .returning({ id: orgInvites.id });
+    if (row) await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "invite_cancelled", target: { invite: row.id } }, now);
+    return !!row;
+  });
+  return done ? { ok: true } : fail("not_found");
 }
 
 /** Answers an "Ask for access" request: a role (they then confirm their work email) or decline (they aren't told). */
@@ -429,22 +447,27 @@ export async function answerRequest(adminId: string, raw: unknown, deps: Corpora
   if (!admin.ok) return admin;
   const { requestId, answer } = parsed.data;
   const set = answer === "decline" ? { cancelledAt: now } : { role: answer, invitedBy: adminId, expiresAt: inviteExpiresAt(now) };
-  const rows = await db
-    .update(orgInvites)
-    .set(set)
-    .where(
-      and(
-        eq(orgInvites.id, requestId),
-        eq(orgInvites.orgId, admin.me.orgId),
-        eq(orgInvites.kind, "request"),
-        isNull(orgInvites.role),
-        isNull(orgInvites.acceptedAt),
-        isNull(orgInvites.cancelledAt),
-        gt(orgInvites.expiresAt, now),
-      ),
-    )
-    .returning({ id: orgInvites.id });
-  return rows.length ? { ok: true } : fail("not_found");
+  const done = await db.transaction(async (tx) => {
+    const [row] = await tx
+      .update(orgInvites)
+      .set(set)
+      .where(
+        and(
+          eq(orgInvites.id, requestId),
+          eq(orgInvites.orgId, admin.me.orgId),
+          eq(orgInvites.kind, "request"),
+          isNull(orgInvites.role),
+          isNull(orgInvites.acceptedAt),
+          isNull(orgInvites.cancelledAt),
+          gt(orgInvites.expiresAt, now),
+        ),
+      )
+      .returning({ id: orgInvites.id });
+    const action = answer === "decline" ? "request_declined" : "request_approved";
+    if (row) await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action, target: { invite: row.id } }, now);
+    return !!row;
+  });
+  return done ? { ok: true } : fail("not_found");
 }
 
 /**
@@ -471,6 +494,7 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
+    await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "member_removed", target: { member: target.id } }, now);
     // They leave every job team at this company too (owners stay named, the job stays the company's), so joining
     // again later never brings back rights on old jobs.
     const companyJobs = tx.select({ id: jobs.id }).from(jobs).where(eq(jobs.orgId, admin.me.orgId));
@@ -538,16 +562,20 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
       .where(and(eq(orgInvites.id, waiting.id), isNull(orgInvites.acceptedAt), isNull(orgInvites.cancelledAt)))
       .returning({ id: orgInvites.id });
     if (claimed.length === 0) return fail("no_invite");
-    await tx.insert(orgMembers).values({
-      orgId: waiting.orgId,
-      userId,
-      role: waiting.role,
-      workEmailDomain: check.domain,
-      workEmailVerifiedAt: now,
-      recheckDueAt: recheckDueAt(now),
-      grantedBy: waiting.invitedBy,
-      createdAt: now,
-    });
+    const [member] = await tx
+      .insert(orgMembers)
+      .values({
+        orgId: waiting.orgId,
+        userId,
+        role: waiting.role,
+        workEmailDomain: check.domain,
+        workEmailVerifiedAt: now,
+        recheckDueAt: recheckDueAt(now),
+        grantedBy: waiting.invitedBy,
+        createdAt: now,
+      })
+      .returning({ id: orgMembers.id });
+    await writeAudit(tx, { orgId: waiting.orgId, actor: { memberId: member.id }, action: "member_joined", target: { member: member.id } }, now);
     return { ok: true as const, orgId: waiting.orgId };
   });
 }

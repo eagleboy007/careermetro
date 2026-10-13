@@ -1,4 +1,4 @@
-import type { CompanyInterviewsView, SchedulerView } from "@/lib/corporate/types";
+import type { CompanyAuditView, CompanyInterviewsView, CompanyOverviewView, SchedulerView } from "@/lib/corporate/types";
 import type { InboxMessage } from "@/lib/inbox/types";
 import type { CandidateView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
 
@@ -335,4 +335,47 @@ export const exampleInboxAsk: InboxMessage = {
     offered: null,
     open: true,
   },
+};
+
+/** Corporate Overview for the example admin (build step 7): counts only. */
+export const exampleOverview: CompanyOverviewView = {
+  role: "admin",
+  assignedOnly: false,
+  openJobs: 1,
+  newApplications: 4,
+  interviewsToday: 1,
+  interviewsThisWeek: 3,
+  unreadChats: 2,
+  lanes: { applied: 3, shortlisted: 2, ai: 0, team: 1, offer: 0, not_this_time: 1 },
+  jobs: [
+    { id: "j1", title: "SOC Analyst L1", city: "Pune", status: "open", lanes: { applied: 3, shortlisted: 2, ai: 0, team: 1, offer: 0, not_this_time: 1 }, total: 7 },
+    { id: "j3", title: "Freelance QA tester", city: "Remote", status: "paused", lanes: { applied: 0, shortlisted: 0, ai: 0, team: 0, offer: 0, not_this_time: 0 }, total: 0 },
+  ],
+};
+
+/** An Interviewer's Overview: only the candidates they interview. */
+export const exampleInterviewerOverview: CompanyOverviewView = {
+  ...exampleOverview,
+  role: "interviewer",
+  assignedOnly: true,
+  newApplications: 0,
+  interviewsThisWeek: 1,
+  unreadChats: 0,
+  lanes: { applied: 0, shortlisted: 0, ai: 0, team: 1, offer: 0, not_this_time: 0 },
+  jobs: [{ id: "j1", title: "SOC Analyst L1", city: "Pune", status: "open", lanes: { applied: 0, shortlisted: 0, ai: 0, team: 1, offer: 0, not_this_time: 0 }, total: 1 }],
+};
+
+/** The example company's audit (build step 7): ids and fixed actions, never a candidate's name or contact details. */
+export const exampleAudit: CompanyAuditView = {
+  company: "Example Labs",
+  next: null,
+  lines: [
+    { id: "l1", at: "13 Oct 2026, 16:05", who: { kind: "member", name: "Rahul Menon", role: "hiring" }, action: "Cancelled an interview", on: { kind: "application", ref: "3f2a91c0", job: "SOC Analyst L1" } },
+    { id: "l2", at: "13 Oct 2026, 15:40", who: { kind: "candidate" }, action: "Accepted an interview", on: { kind: "application", ref: "8b14d2e7", job: "SOC Analyst L1" } },
+    { id: "l3", at: "13 Oct 2026, 15:30", who: { kind: "member", name: "Rahul Menon", role: "hiring" }, action: "Booked an interview", on: { kind: "application", ref: "8b14d2e7", job: "SOC Analyst L1" } },
+    { id: "l4", at: "13 Oct 2026, 11:12", who: { kind: "member", name: "Meera Iyer", role: "admin" }, action: "Opened a candidate", on: { kind: "application", ref: "3f2a91c0", job: "SOC Analyst L1" } },
+    { id: "l5", at: "12 Oct 2026, 18:20", who: { kind: "member", name: "Meera Iyer", role: "admin" }, action: "Removed a role", on: { kind: "member", name: "Farhan Shaikh", role: "hiring" } },
+    { id: "l6", at: "12 Oct 2026, 10:02", who: { kind: "member", name: "Meera Iyer", role: "admin" }, action: "Gave a role by work email", on: { kind: "invite", role: "interviewer", domain: "example-labs.test" } },
+    { id: "l7", at: "12 Oct 2026, 09:58", who: { kind: "former" }, action: "Opened a job", on: { kind: "job", ref: "5c0e7a11", title: "SOC Analyst L1" } },
+  ],
 };

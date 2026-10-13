@@ -335,8 +335,12 @@ export type CompanyChatMessage = {
   text: string;
   at?: string;
   question?: boolean;
-  /** An "Ask for times" card: the times the candidate offered in answer, or null while waiting. */
-  times?: { offered: string[] | null };
+  /**
+   * An "Ask for times" card: the times the candidate offered in answer, or null while waiting. `ended` once there is
+   * nothing left to book from it: `passed` when the times offered have gone by (the daily clean-up deletes them a week
+   * later), `unanswered` when every day asked has gone by without an answer.
+   */
+  times?: { offered: string[] | null; ended?: "passed" | "unanswered" };
 };
 
 /**
@@ -485,3 +489,54 @@ export type ArrivalsActions = {
   respond: (values: RespondValues) => Promise<string | null>;
   stopSharing: (applicationId: string) => Promise<string | null>;
 };
+
+/* Overview and audit (build step 7) --------------------------------------------------------------------------------- */
+
+/** Applications in each of the six lanes. */
+export type LaneCounts = Record<ApplicationStage, number>;
+
+/**
+ * Corporate Overview: counts of what this member may see now, under the same rules as the board, Messages and
+ * Interviews. Interviewers count only the candidates whose live interview they are on (`assignedOnly`).
+ */
+export type CompanyOverviewView = {
+  role: OrgRole;
+  assignedOnly: boolean;
+  openJobs: number;
+  /** Applications made in the last 7 days. */
+  newApplications: number;
+  /** Interviews booked (waiting for an answer or accepted), India time. */
+  interviewsToday: number;
+  /** This India week, Monday to Sunday. */
+  interviewsThisWeek: number;
+  /** Company chats with a message this member hasn't read. */
+  unreadChats: number;
+  /** Totals over the jobs below. */
+  lanes: LaneCounts;
+  /** Open and paused jobs this member may see, newest first, with their lanes. */
+  jobs: { id: string; title: string; city: string; status: "open" | "paused"; lanes: LaneCounts; total: number }[];
+};
+
+/** Who did something, as an admin reads it: a member's name and role, the candidate, or a former member. */
+export type AuditWhoView = { kind: "member"; name: string; role: OrgRole } | { kind: "candidate" } | { kind: "former" } | { kind: "system" };
+
+/** What it was done to: the company, a member, a role waiting for its code, a job (by title) or an application (by id and job title). */
+export type AuditOnView =
+  | { kind: "company"; name: string }
+  | { kind: "member"; name: string; role: OrgRole | null }
+  | { kind: "invite"; role: OrgRole | null; domain: string | null }
+  | { kind: "job"; ref: string; title: string | null }
+  | { kind: "application"; ref: string; job: string | null };
+
+export type AuditLineView = {
+  id: string;
+  /** "13 Oct 2026, 15:30", India time. */
+  at: string;
+  who: AuditWhoView;
+  /** A fixed label: "Booked an interview". */
+  action: string;
+  on: AuditOnView;
+};
+
+/** The company's audit view, Recruiter admins only, newest first. `next` opens the page before the last line shown. */
+export type CompanyAuditView = { company: string; lines: AuditLineView[]; next: string | null };

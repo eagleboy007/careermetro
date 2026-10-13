@@ -167,3 +167,67 @@ export const INTERVIEWERS_MAX = 5;
 /** Feedback length. */
 export const FEEDBACK_MIN = 20;
 export const FEEDBACK_MAX = 2000;
+
+/* Overview, audit and clean-up (dev/corporate-plan.md build step 7) ------------------------------------------------- */
+
+/**
+ * What a company's audit line can record: an action on the company, its team, a job or an application. Ids and these
+ * names only, never words someone typed. Moves between lanes are `moved_<stage>`.
+ */
+export const COMPANY_AUDIT_ACTIONS = [
+  "company_created",
+  "company_page_saved",
+  "role_invited",
+  "invite_cancelled",
+  "request_approved",
+  "request_declined",
+  "member_joined",
+  "member_removed",
+  "job_opened",
+  "job_paused",
+  "job_closed",
+  "job_edited",
+  "candidate_viewed",
+  ...APPLICATION_STAGES.map((s) => `moved_${s}` as const),
+  "times_asked",
+  "interview_booked",
+  "interview_cancelled",
+  "interview_accepted",
+  "interview_declined",
+  "feedback_saved",
+] as const;
+export type CompanyAuditAction = (typeof COMPANY_AUDIT_ACTIONS)[number];
+export const COMPANY_AUDIT_LABELS: Record<CompanyAuditAction, string> = {
+  company_created: "Set up the company",
+  company_page_saved: "Saved the company page",
+  role_invited: "Gave a role by work email",
+  invite_cancelled: "Cancelled a role waiting for its code",
+  request_approved: "Approved an access request",
+  request_declined: "Declined an access request",
+  member_joined: "Confirmed their work email and joined",
+  member_removed: "Removed a role",
+  job_opened: "Opened a job",
+  job_paused: "Paused a job",
+  job_closed: "Closed a job",
+  job_edited: "Edited a live job",
+  candidate_viewed: "Opened a candidate",
+  moved_applied: "Moved to Applied",
+  moved_shortlisted: "Moved to Shortlisted",
+  moved_ai: "Moved to Level 1 AI interview",
+  moved_team: "Moved to Level 2 team",
+  moved_offer: "Moved to Offer",
+  moved_not_this_time: "Moved to Not this time",
+  times_asked: "Asked for interview times",
+  interview_booked: "Booked an interview",
+  interview_cancelled: "Cancelled an interview",
+  interview_accepted: "Accepted an interview",
+  interview_declined: "Declined an interview",
+  feedback_saved: "Saved interview feedback",
+};
+/** Audit lines on one page of the company's audit view. */
+export const AUDIT_PAGE_SIZE = 50;
+/** The daily clean-up works in batches of this many rows, and at most this many batches per job per run. */
+export const CLEANUP_BATCH = 500;
+export const CLEANUP_MAX_BATCHES = 20;
+/** Offered times that were never booked are deleted this many days after they passed. */
+export const OFFERED_TIMES_KEEP_DAYS = 7;

@@ -1,0 +1,4 @@
+-- Company audit (dev/corporate-plan.md, build step 7): audit_logs gains org_id, the company a line belongs to, so a company's Recruiter admins can read their own lines, and an index to read them newest first. Expand only: a new nullable column old code never writes, and a plain index. Lines company members wrote before this (candidate_viewed and the job_* lines, actor "member:<org_members id>") get their company filled in from org_members. audit_logs already has row level security (0001).
+ALTER TABLE "audit_logs" ADD COLUMN "org_id" uuid;--> statement-breakpoint
+CREATE INDEX "audit_logs_org_created" ON "audit_logs" USING btree ("org_id","created_at");--> statement-breakpoint
+UPDATE "audit_logs" SET "org_id" = m."org_id" FROM "org_members" m WHERE "audit_logs"."org_id" IS NULL AND "audit_logs"."actor" = 'member:' || m."id"::text;
