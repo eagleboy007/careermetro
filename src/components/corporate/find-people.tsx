@@ -20,6 +20,8 @@ const REFUSALS: Record<NonNullable<FindPeopleView["refusal"]>, { title: string; 
   unavailable: { title: "Find people isn't available right now", text: "Please try again later." },
 };
 
+const pageBtn = `${actionBtn} aria-disabled:cursor-not-allowed aria-disabled:opacity-60`;
+
 const SENT_STATE: Record<FindPeopleView["sent"][number]["state"], string> = { waiting: "Waiting to accept", open: "Accepted", closed: "Closed" };
 
 /** The address of one search, with only the job, band and page: nothing personal is ever in it. */
@@ -46,14 +48,21 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
   const [results, setResults] = useState<FindPeopleResults | null>(view.results);
   const [error, setError] = useState<string | null>(view.error);
   const [searching, startSearch] = useTransition();
+  // Counts finished searches, so focus moves once each search has rendered its outcome.
+  const [searches, setSearches] = useState(0);
   const messageRef = useRef<HTMLParagraphElement>(null);
   const resultsRef = useRef<HTMLHeadingElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const ids = useId();
 
   useEffect(() => {
     if (message) messageRef.current?.focus();
   }, [message]);
+  useEffect(() => {
+    // After a search the results heading (or, if it failed, the error) exists in the page: focus goes there, never to the body.
+    if (searches) (errorRef.current ?? resultsRef.current)?.focus();
+  }, [searches]);
 
   const close = (ref: string, done?: string) => {
     setOpenRef(null);
@@ -62,8 +71,12 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
     else requestAnimationFrame(() => rootRef.current?.querySelector<HTMLElement>(`[data-card="${CSS.escape(ref)}"]`)?.focus());
   };
 
-  /** One search, on an explicit press only: never when the page opens. */
-  const run = (next: { jobId: string; band: FindBand | null; page: number }) =>
+  /**
+   * One search, on an explicit press only: never when the page opens. The buttons that start it stay enabled while it
+   * runs (aria-disabled), so the one holding focus keeps it; a press then does nothing.
+   */
+  const run = (next: { jobId: string; band: FindBand | null; page: number }) => {
+    if (searching) return;
     startSearch(async () => {
       if (!actions) return;
       setMessage(null);
@@ -72,14 +85,16 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
       if (!r.ok) {
         setError(r.error);
         setResults(null);
+        setSearches((n) => n + 1);
         return;
       }
       setError(null);
       setResults(r.results);
       // The address keeps the job, band and page (nothing typed or personal), without loading the page again.
       window.history.replaceState(null, "", searchHref(next, next.page));
-      requestAnimationFrame(() => resultsRef.current?.focus());
+      setSearches((n) => n + 1);
     });
+  };
 
   /** A request sent from the drawer: its card says so at once, without searching again. */
   const markSent = (ref: string) =>
@@ -158,14 +173,14 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
                 ))}
               </select>
             </label>
-            <button type="submit" className={inkBtn} disabled={searching}>
+            <button type="submit" className={`${inkBtn} aria-disabled:cursor-not-allowed aria-disabled:opacity-50`} aria-disabled={searching || undefined}>
               <Search {...ICON} />
               Search
             </button>
           </form>
 
           {error && (
-            <p role="alert" className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem]">
+            <p ref={errorRef} tabIndex={-1} role="alert" className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem] outline-none">
               {error}
             </p>
           )}
@@ -189,14 +204,14 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
               {(search.page > 1 || results.hasMore) && (
                 <nav aria-label="Pages" className="flex flex-wrap items-center gap-2">
                   {search.page > 1 && (
-                    <button type="button" className={actionBtn} disabled={searching} onClick={() => run({ ...search, page: search.page - 1 })}>
+                    <button type="button" className={pageBtn} aria-disabled={searching || undefined} onClick={() => run({ ...search, page: search.page - 1 })}>
                       <ChevronLeft {...ICON} />
                       Previous
                     </button>
                   )}
                   <span className="text-[0.84rem] text-muted">Page {search.page}</span>
                   {results.hasMore && (
-                    <button type="button" className={actionBtn} disabled={searching} onClick={() => run({ ...search, page: search.page + 1 })}>
+                    <button type="button" className={pageBtn} aria-disabled={searching || undefined} onClick={() => run({ ...search, page: search.page + 1 })}>
                       Next
                       <ChevronRight {...ICON} />
                     </button>

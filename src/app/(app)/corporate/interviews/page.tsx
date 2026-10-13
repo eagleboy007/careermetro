@@ -11,6 +11,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { companyInterviews, INTERVIEW_ERROR_TEXT, schedulingView } from "@/lib/corporate/interviews-store";
 import { askTimesAction, cancelInterviewAction, feedbackAction, scheduleAction } from "./actions";
+import { NoCompanyRole } from "../no-role";
 
 export const metadata: Metadata = { title: "Interviews · Corporate · CareerMetro", robots: { index: false } };
 
@@ -46,13 +47,14 @@ async function Interviews({ searchParams }: PageProps<"/corporate/interviews">) 
     const r = await schedulingView(account.id, application);
     if (!r.ok) {
       if (r.error === "not_found") notFound();
+      if (r.error === "not_member") return <NoCompanyRole userId={account.id} />;
       return <Refused title="You can't schedule this candidate" text={INTERVIEW_ERROR_TEXT[r.error]} />;
     }
     return <Scheduler view={r.view} actions={{ ...actions, schedule: scheduleAction }} />;
   }
   if (!account) return <CompanyInterviews view={exampleCompanyInterviews} note={exampleNote} />;
   const r = await companyInterviews(account.id);
-  if (!r.ok) return <Refused title="You don't have a company role" text="Set up your company, or confirm a role a Recruiter admin gave you, in Corporate." />;
+  if (!r.ok) return <NoCompanyRole userId={account.id} />;
   return <CompanyInterviews view={r.view} actions={actions} />;
 }
 

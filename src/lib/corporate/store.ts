@@ -51,6 +51,7 @@ export type CorporateError =
   | "not_found"
   | "keep_two_admins"
   | "last_admin"
+  | "self_removal"
   | "already_invited"
   | "wrong"
   | "expired"
@@ -69,6 +70,7 @@ export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   not_found: "That isn't available any more.",
   keep_two_admins: "Keep at least two Recruiter admins. Add another admin first.",
   last_admin: "You're the only Recruiter admin. Add another admin first.",
+  self_removal: "You can't remove your own access. Ask another Recruiter admin to remove you, so your jobs pass to them.",
   already_invited: "That work email already has access waiting.",
   wrong: CODE_ERROR_TEXT.wrong,
   expired: CODE_ERROR_TEXT.expired,
@@ -511,6 +513,8 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     // A deleted account isn't counted as an admin, so taking its role away never lowers the count.
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
+    // Removing yourself would leave the jobs you own with no one to pass them to (Testing T38): another admin does it.
+    if (target.userId === adminId) return fail("self_removal");
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
     await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "member_removed", target: { member: target.id } }, now);
     // They leave every job team at this company too, owner rows included, so joining again later never brings back
@@ -522,15 +526,13 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
       .where(and(eq(jobTeam.userId, target.userId), inArray(jobTeam.jobId, companyJobs)))
       .returning({ jobId: jobTeam.jobId, role: jobTeam.role });
     const ownedJobs = owned.filter((r) => r.role === "owner").map((r) => r.jobId);
-    if (target.userId !== adminId) {
-      if (ownedJobs.length) {
-        await tx
-          .insert(jobTeam)
-          .values(ownedJobs.map((jobId) => ({ jobId, userId: adminId, role: "owner" as const })))
-          .onConflictDoUpdate({ target: [jobTeam.jobId, jobTeam.userId], set: { role: "owner" } });
-      }
-      await tx.update(jobs).set({ ownerId: adminId }).where(and(eq(jobs.orgId, admin.me.orgId), eq(jobs.ownerId, target.userId)));
+    if (ownedJobs.length) {
+      await tx
+        .insert(jobTeam)
+        .values(ownedJobs.map((jobId) => ({ jobId, userId: adminId, role: "owner" as const })))
+        .onConflictDoUpdate({ target: [jobTeam.jobId, jobTeam.userId], set: { role: "owner" } });
     }
+    await tx.update(jobs).set({ ownerId: adminId }).where(and(eq(jobs.orgId, admin.me.orgId), eq(jobs.ownerId, target.userId)));
     return { ok: true as const };
   });
 }

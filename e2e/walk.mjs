@@ -1889,7 +1889,7 @@ await step("overview, audit and the daily clean-up", async () => {
 
     // The candidate has no company role: the audit is not theirs.
     await p.goto(BASE + "/corporate/audit");
-    await p.getByRole("heading", { name: "You can't open the audit" }).waitFor({ timeout: 10000 });
+    await p.getByRole("heading", { name: "You don't have a company role" }).waitFor({ timeout: 10000 });
 
     // The daily clean-up: the secret from the server's environment, never from a page; counts only.
     const secret = process.env.CRON_SECRET;
@@ -1979,6 +1979,8 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await q.getByLabel("Match to this job").selectOption(job.id);
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.waitForURL(/\/corporate\/people\?job=/);
+    // Focus lands on the results heading, never on the page body.
+    await q.waitForFunction(() => document.activeElement?.tagName === "H2" && /match/.test(document.activeElement.textContent ?? ""), null, { timeout: 10000 });
     const address = new URL(q.url());
     // Opening that address again fills in the form but runs no search (Testing T41): no limit used, no audit line.
     const searched = async () => (await sql`select count(*)::int as n from audit_logs where org_id = ${org.id} and action = 'people_searched'`)[0].n;

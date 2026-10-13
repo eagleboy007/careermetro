@@ -292,6 +292,9 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect(await removeMember(b, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "keep_two_admins" });
     await join(a, c, d, "admin", "anita");
     await join(a, hr, d, "hiring", "rahul");
+    // Three admins: an admin still can't remove themselves, so the jobs they own always pass to someone.
+    expect(await removeMember(a, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "self_removal" });
+    expect(await activeMembership(a, db!)).not.toBeNull();
     // Three admins: one can go, then the rule holds again.
     expect(await removeMember(c, { memberId: await memberId(a) }, deps())).toEqual({ ok: true });
     expect(await activeMembership(a, db!)).toBeNull();
