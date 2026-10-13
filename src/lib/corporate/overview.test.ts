@@ -454,4 +454,27 @@ describe.skipIf(!db)("overview, audit and clean-up (database)", () => {
     expect(late.some((l) => l.on.kind === "member")).toBe(true);
     expect(late.some((l) => l.on.kind === "job")).toBe(true);
   });
+
+  it("keeps lines about an application out of the audit once its account is purged and the row is gone (T45)", async () => {
+    const s = await setup("audpurge");
+    const other = await candidate("audpurge-cand2", "Ananya Ghosh");
+    const second = await applyToJob(other, { jobId: s.jobId, canJoin: "now", consent: true }, at());
+    if (!second.ok) throw new Error(second.error);
+    expect(await openCandidate(s.admin, { applicationId: second.applicationId }, at())).toMatchObject({ ok: true });
+    const about = async (applicationId: string) => (await audit(s.admin)).lines.filter((l) => l.on.kind === "application" && l.on.ref === applicationId.slice(0, 8));
+    expect((await about(second.applicationId)).length).toBeGreaterThan(0);
+
+    // The account is deleted: its lines go at once.
+    await db!.update(schema.users).set({ deletionRequestedAt: clock }).where(eq(schema.users.id, other));
+    expect(await about(second.applicationId)).toEqual([]);
+    // Purged 30 days later (the users row goes, and its applications with it): the lines stay out, rather than coming
+    // back as a bare short id with no job.
+    await db!.delete(schema.users).where(eq(schema.users.id, other));
+    expect(await db!.select({ id: schema.applications.id }).from(schema.applications).where(eq(schema.applications.id, second.applicationId))).toEqual([]);
+    expect(await about(second.applicationId)).toEqual([]);
+    // Every application line left names its job.
+    const lines = (await audit(s.admin)).lines.filter((l) => l.on.kind === "application");
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.every((l) => l.on.kind === "application" && l.on.job === "SOC Analyst L1")).toBe(true);
+  });
 });

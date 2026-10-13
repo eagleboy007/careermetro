@@ -24,7 +24,7 @@ import {
   submitFeedback,
 } from "./interviews-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
-import { saveJob } from "./jobs-store";
+import { jobForm, saveJob } from "./jobs-store";
 import { blockCompany, unblockCompany } from "./find-store";
 import { activeMembership, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
 
@@ -560,5 +560,64 @@ describe.skipIf(!db)("interviews (database)", () => {
     const exported = await exportApplications(s.me, db!, env);
     expect(exported[0]!.phoneSharedWithCompany).toBeNull();
     expect((await myApplications(s.me, at()))[0]!.phoneShared).toBe(false);
+  });
+
+  /* Testing T46, T47 and team pickers (2026-10-13) ------------------------------------------------------------------ */
+
+  it("doesn't offer to arrange interviews in the drawer once the candidate blocks the company, without saying why (T46)", async () => {
+    const s = await setup("blockdrawer");
+    const before = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
+    expect(before.ok && before.candidate.interviews.canSchedule).toBe(true);
+    expect(await blockCompany(s.me, { orgId: s.orgId }, at())).toBe(true);
+    for (const who of [s.hr, s.admin]) {
+      const drawer = await openCandidate(who, { applicationId: s.applicationId }, at());
+      if (!drawer.ok) throw new Error(drawer.error);
+      expect(drawer.candidate.interviews).toMatchObject({ canSchedule: false, waitingForTimes: false, offeredTimes: 0 });
+      expect(JSON.stringify(drawer).toLowerCase()).not.toContain("block");
+    }
+  });
+
+  it("leaves a shared phone alone when an interview it wasn't shared for is cancelled (T47)", async () => {
+    const s = await setup("unrelated");
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    // Interview A (Wed 14 Oct, 11:00 to 11:30): accepted with the phone shared. Its window closes Wed 21 Oct, 11:30.
+    const a = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    if (!a.ok) throw new Error(a.error);
+    expect(await respondToInterview(s.me, { interviewId: a.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    const stored = async () => (await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(eq(schema.applications.id, s.applicationId)))[0]!.phone;
+
+    // Wed 21 Oct, 15:30, after A's window: the team asks again and books B, which the candidate hasn't answered.
+    const later = at(8);
+    const asked = await askForTimes(s.hr, { applicationId: s.applicationId }, later);
+    if (!asked.ok) throw new Error(asked.error);
+    expect(await offerTimes(s.me, { messageId: asked.messageId, slots: ["2026-10-22T11:00"] }, later)).toEqual({ ok: true, offered: 1 });
+    const [slotB] = await db!.select().from(schema.candidateSlots).where(eq(schema.candidateSlots.askMessageId, asked.messageId));
+    const b = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slotB!.id, minutes: 30, interviewers: [s.ivMember] }, later);
+    if (!b.ok) throw new Error(b.error);
+
+    // Cancelling B, which the phone wasn't shared for, keeps it: the job team still sees it while the application is open.
+    expect(await cancelInterview(s.hr, { interviewId: b.interviewId }, later)).toEqual({ ok: true });
+    expect(await stored()).not.toBeNull();
+    const drawer = await openCandidate(s.hr, { applicationId: s.applicationId }, later);
+    expect(drawer.ok && drawer.candidate.interviews.phone).toBe(PHONE_SHOWN);
+    expect((await myApplications(s.me, later))[0]!.phoneShared).toBe(true);
+  });
+
+  it("leaves members whose work-email re-check is due out of the interviewer and team pickers", async () => {
+    const s = await setup("picker");
+    // Sana (Interviewer) and Farhan (Hiring HR) are due to confirm their work email again, so they can't open anything.
+    await db!.update(schema.orgMembers).set({ recheckDueAt: new Date(clock.getTime() - DAY) }).where(inArray(schema.orgMembers.id, [s.ivMember, s.otherMember]));
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const view = await schedulingView(s.hr, s.applicationId, at());
+    if (!view.ok) throw new Error(view.error);
+    expect(view.view.team.map((t) => t.name).sort()).toEqual(["Meera Iyer", "Rahul Menon"]);
+    expect(await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at())).toMatchObject({
+      ok: false,
+      error: "bad_interviewer",
+    });
+    // The Post a job form lists only colleagues who can use Corporate now.
+    const form = await jobForm(s.admin, null, at());
+    if (!form.ok) throw new Error(form.error);
+    expect(form.data.colleagues.map((c) => c.name)).toEqual(["Rahul Menon"]);
   });
 });

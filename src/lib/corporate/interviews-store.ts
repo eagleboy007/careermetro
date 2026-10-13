@@ -106,8 +106,11 @@ const fail = (error: InterviewError, message?: string) => ({ ok: false as const,
 const companyFail = (error: string): { ok: false; error: InterviewError } =>
   fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : "not_found");
 
-/** Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate. */
-async function teamOptions(orgId: string, jobId: string, candidateId: string, db: Db | Tx) {
+/**
+ * Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate, and
+ * never someone whose work-email re-check is due, who can't open the interview until they confirm it again.
+ */
+async function teamOptions(orgId: string, jobId: string, candidateId: string, db: Db | Tx, now: Date) {
   return db
     .select({ memberId: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role, name: users.name })
     .from(orgMembers)
@@ -117,6 +120,7 @@ async function teamOptions(orgId: string, jobId: string, candidateId: string, db
       and(
         eq(orgMembers.orgId, orgId),
         isNull(orgMembers.removedAt),
+        gt(orgMembers.recheckDueAt, now),
         isNull(users.deletionRequestedAt),
         ne(orgMembers.userId, candidateId),
         or(eq(orgMembers.role, "admin"), sql`${jobTeam.userId} is not null`),
@@ -260,7 +264,7 @@ export async function schedulingView(userId: string, applicationId: string, deps
       .select({ slotId: interviews.slotId, startsAt: interviews.startsAt })
       .from(interviews)
       .where(and(eq(interviews.applicationId, app.id), inArray(interviews.status, ["proposed", "accepted"]))),
-    teamOptions(app.orgId, app.jobId, app.userId, db),
+    teamOptions(app.orgId, app.jobId, app.userId, db, now),
     db.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.id)),
   ]);
   const open = slots.filter((s) => slotOpen(s.startsAt, now));
@@ -356,7 +360,7 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
       .where(and(eq(interviews.applicationId, app.id), eq(interviews.startsAt, slot.startsAt), inArray(interviews.status, ["proposed", "accepted"])))
       .limit(1);
     if (taken) return fail("slot_gone");
-    const options = await teamOptions(app.orgId, app.jobId, app.userId, tx);
+    const options = await teamOptions(app.orgId, app.jobId, app.userId, tx, now);
     const chosen = input.interviewers.map((memberId) => options.find((o) => o.memberId === memberId));
     if (chosen.some((c) => !c)) return fail("bad_interviewer");
     const people = chosen.map((c) => c!.userId);
@@ -398,8 +402,9 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     if (!found.access.canMove) return fail(found.access.me.role === "interviewer" ? "read_only" : "not_allowed");
     if (!canCancel(iv, now)) return fail("not_open");
     await tx.update(interviews).set({ status: "cancelled", cancelledAt: now }).where(eq(interviews.id, iv.id));
-    // The phone goes too, unless another accepted interview it was shared for still needs it (Testing T42).
-    await erasePhoneUnlessNeeded(tx, ref.applicationId, now);
+    // The phone goes too when it was shared for this interview, unless another accepted interview it was shared for
+    // still needs it (Testing T42, T47).
+    await erasePhoneUnlessNeeded(tx, ref.applicationId, iv.id, now);
     await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "interview_cancelled", target: { application: ref.applicationId } }, now);
     return { ok: true };
   });

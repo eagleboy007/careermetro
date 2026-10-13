@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, isNull, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { applications, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
@@ -380,7 +380,8 @@ export async function jobForm(
       .select({ memberId: orgMembers.id, name: users.name, role: orgMembers.role })
       .from(orgMembers)
       .innerJoin(users, eq(users.id, orgMembers.userId))
-      .where(and(eq(orgMembers.orgId, me.orgId), isNull(orgMembers.removedAt), isNull(users.deletionRequestedAt), ne(orgMembers.userId, userId)))
+      // Not someone whose work-email re-check is due: they can't open the job until they confirm it again.
+      .where(and(eq(orgMembers.orgId, me.orgId), isNull(orgMembers.removedAt), gt(orgMembers.recheckDueAt, now), isNull(users.deletionRequestedAt), ne(orgMembers.userId, userId)))
       .orderBy(asc(orgMembers.createdAt)),
   ]);
   return {

@@ -510,11 +510,12 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
       .innerJoin(users, eq(users.id, orgMembers.userId))
       .where(and(eq(orgMembers.id, parsed.data.memberId), eq(orgMembers.orgId, admin.me.orgId), isNull(orgMembers.removedAt)));
     if (!target) return fail("not_found");
+    // Removing yourself would leave the jobs you own with no one to pass them to (Testing T38): another admin does it.
+    // Checked first, so an admin of two is told that, not to add a third admin.
+    if (target.userId === adminId) return fail("self_removal");
     // A deleted account isn't counted as an admin, so taking its role away never lowers the count.
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
-    // Removing yourself would leave the jobs you own with no one to pass them to (Testing T38): another admin does it.
-    if (target.userId === adminId) return fail("self_removal");
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
     await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "member_removed", target: { member: target.id } }, now);
     // They leave every job team at this company too, owner rows included, so joining again later never brings back
