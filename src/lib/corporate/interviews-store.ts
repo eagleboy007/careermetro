@@ -23,11 +23,13 @@ import { indiaDay } from "@/lib/ride/days";
 import { applicationIdInput, askTimesInput, feedbackInput, interviewIdInput, offerTimesInput, respondInput, scheduleInput } from "@/lib/schemas/corporate";
 import { SLOT_MINUTES, SLOT_TIMES } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { COMPANY_ACCESS_DAYS, visibleApplication } from "./applications-store";
-import { askDaysOf, assignedSubquery, busyOf, companyInterviewsOf, offeredState, overlaps } from "./interview-reads";
+import { visibleApplication } from "./applications-store";
+import { writeAudit } from "./audit-line";
+import { askDaysOf, busyOf, companyInterviewsOf, offeredState, overlaps } from "./interview-reads";
 import { encryptPhone, phoneSharingAvailable } from "./phone";
 import { canCancel, canRespond, chatClosed, feedbackRefusal, scheduleRefusal, shownStatus, type FeedbackRefusal, type ScheduleRefusal } from "./rules";
 import { askDays, askText, dayParts, slotKeyOf, slotLabel, slotOpen, slotStart } from "./slots";
+import { visibleApplicationsWhere } from "./scope";
 import { activeMembership } from "./store";
 import type { CompanyInterviewsView, InterviewerOptionView, InterviewListItem, OrgRole, SchedulerView } from "./types";
 
@@ -154,6 +156,7 @@ export async function askForTimes(userId: string, raw: unknown, deps: InterviewD
       .insert(messages)
       .values({ conversationId, senderId: userId, kind: "ask_times", body: askText(days), payload: { days }, createdAt: now })
       .returning({ id: messages.id });
+    await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "times_asked", target: { application: app.id } }, now);
     await tx.update(conversations).set({ lastMessageAt: now }).where(eq(conversations.id, conversationId));
     await tx
       .insert(conversationMembers)
@@ -360,6 +363,7 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
       .values({ applicationId: app.id, round: input.round, startsAt: slot.startsAt, minutes: input.minutes, slotId: slot.id, createdBy: userId, createdAt: now })
       .returning({ id: interviews.id });
     await tx.insert(interviewInterviewers).values(people.map((p) => ({ interviewId: made.id, userId: p })));
+    await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "interview_booked", target: { application: app.id } }, now);
     return { ok: true, interviewId: made.id };
   });
   logEvent("info", result.ok ? "interview_booked" : "interview_book_refused", result.ok ? { interviewers: input.interviewers.length } : { reason: result.error });
@@ -387,6 +391,7 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     if (!found.access.canMove) return fail(found.access.me.role === "interviewer" ? "read_only" : "not_allowed");
     if (!canCancel(iv, now)) return fail("not_open");
     await tx.update(interviews).set({ status: "cancelled", cancelledAt: now }).where(eq(interviews.id, iv.id));
+    await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "interview_cancelled", target: { application: ref.applicationId } }, now);
     return { ok: true };
   });
   logEvent("info", result.ok ? "interview_cancelled" : "interview_cancel_refused", result.ok ? {} : { reason: result.error });
@@ -417,7 +422,14 @@ export async function respondToInterview(userId: string, raw: unknown, deps: Int
     const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, input.interviewId));
     if (!ref) return fail("not_found");
     const [app] = await tx
-      .select({ id: applications.id, owner: applications.userId, closedAt: applications.closedAt, withdrawnAt: applications.withdrawnAt, orgStatus: organizations.reviewStatus })
+      .select({
+        id: applications.id,
+        owner: applications.userId,
+        orgId: applications.orgId,
+        closedAt: applications.closedAt,
+        withdrawnAt: applications.withdrawnAt,
+        orgStatus: organizations.reviewStatus,
+      })
       .from(applications)
       .innerJoin(organizations, eq(organizations.id, applications.orgId))
       .where(eq(applications.id, ref.applicationId))
@@ -432,8 +444,11 @@ export async function respondToInterview(userId: string, raw: unknown, deps: Int
     if (app.withdrawnAt || app.closedAt) return fail("closed", CANDIDATE_CLOSED);
     if (row.status !== "proposed") return fail("answered");
     if (!canRespond(row, now)) return fail("not_open");
+    // The company's audit names the candidate only as "the candidate", and never says whether a phone was shared.
+    const line = { orgId: app.orgId, actor: "candidate", target: { application: app.id } } as const;
     if (input.answer === "decline") {
       await tx.update(interviews).set({ status: "declined", respondedAt: now }).where(eq(interviews.id, row.id));
+      await writeAudit(tx, { ...line, action: "interview_declined" }, now);
       return { ok: true };
     }
     if (app.orgStatus !== "verified") return fail("paused");
@@ -444,6 +459,7 @@ export async function respondToInterview(userId: string, raw: unknown, deps: Int
     }
     await tx.update(interviews).set({ status: "accepted", respondedAt: now, phoneShared: !!sealed }).where(eq(interviews.id, row.id));
     if (sealed) await tx.update(applications).set({ phoneShared: sealed }).where(eq(applications.id, app.id));
+    await writeAudit(tx, { ...line, action: "interview_accepted" }, now);
     return { ok: true };
   });
   logEvent("info", result.ok ? "interview_answered" : "interview_answer_refused", result.ok ? { answer: input.answer, shared: input.answer === "accept" && input.sharePhone } : { reason: result.error });
@@ -500,6 +516,8 @@ export async function submitFeedback(userId: string, raw: unknown, deps: Intervi
       .insert(interviewFeedback)
       .values({ interviewId: iv.id, interviewerId: userId, text: input.text, recommendation: input.recommendation, createdAt: now, updatedAt: now })
       .onConflictDoUpdate({ target: [interviewFeedback.interviewId, interviewFeedback.interviewerId], set: { text: input.text, recommendation: input.recommendation, updatedAt: now } });
+    // That feedback was saved, and by whom; never what it says or recommends.
+    await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "feedback_saved", target: { application: iv.applicationId } }, now);
     return { ok: true };
   });
   logEvent("info", result.ok ? "interview_feedback_saved" : "interview_feedback_refused", result.ok ? { recommendation: input.recommendation } : { reason: result.error });
@@ -518,13 +536,6 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
   const now = deps.now ?? new Date();
   const me = await activeMembership(userId, db);
   if (!me) return fail("not_member");
-  const cutoff = new Date(now.getTime() - COMPANY_ACCESS_DAYS * DAY);
-  const movesOn = db
-    .select({ jobId: jobTeam.jobId })
-    .from(jobTeam)
-    .where(and(eq(jobTeam.userId, userId), inArray(jobTeam.role, ["owner", "hiring"])));
-  const onTeam = db.select({ jobId: jobTeam.jobId }).from(jobTeam).where(eq(jobTeam.userId, userId));
-  const mover = me.role === "admin" ? undefined : me.role === "hiring" ? inArray(applications.jobId, movesOn) : sql`false`;
   const rows = await db
     .select({
       applicationId: applications.id,
@@ -540,15 +551,9 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
     .innerJoin(users, eq(users.id, applications.userId))
     .where(
       and(
-        eq(applications.orgId, me.orgId),
-        ne(applications.userId, userId),
-        isNull(applications.withdrawnAt),
-        isNull(users.deletionRequestedAt),
-        or(isNull(applications.closedAt), gt(applications.closedAt, cutoff)),
-        or(isNull(applications.companyAccessEndsAt), gt(applications.companyAccessEndsAt, now)),
+        visibleApplicationsWhere(me, userId, db, now),
         inArray(interviews.status, ["proposed", "accepted"]),
         gte(interviews.startsAt, new Date(now.getTime() - 7 * DAY)),
-        me.role === "admin" ? undefined : or(mover, and(inArray(applications.id, assignedSubquery(userId, db, now)), inArray(applications.jobId, onTeam))),
       ),
     )
     .orderBy(asc(interviews.startsAt))

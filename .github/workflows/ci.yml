@@ -77,6 +77,8 @@ jobs:
           ANTHROPIC_BASE_URL: http://127.0.0.1:4011
           # next start runs as production, where a shared phone needs its own key (corporate build step 6). Test-only value.
           PHONE_KEY: e2e-only-phone-key
+          # The walk calls the daily clean-up the way Vercel Cron does (corporate build step 7). Test-only value.
+          CRON_SECRET: e2e-only-cron-secret
           BASE: http://localhost:3211
         run: |
           node e2e/mock-ai.mjs > e2e-mock-ai.log 2>&1 &

@@ -70,6 +70,21 @@ export function askText(days: string[]): string {
   return `Which times work for you between ${a[0]} ${a[1]} and ${b[0]} ${b[1]}? Pick the ones that suit you; we only see the times you pick.`;
 }
 
+/**
+ * Whether an "Ask for times" has nothing left to book (build step 7): `passed` when every time offered is too soon or
+ * gone (or the daily clean-up already deleted them, `answered`), `unanswered` when every day asked has gone by with no
+ * answer. Undefined while it is still of use.
+ */
+export function askEnded(ask: { days: string[]; offered: Date[]; answered: boolean }, now: Date): "passed" | "unanswered" | undefined {
+  if (ask.offered.length) return ask.offered.some((at) => slotOpen(at, now)) ? undefined : "passed";
+  if (ask.answered) return "passed";
+  const today = indiaDay(now);
+  return ask.days.some((d) => d >= today) ? undefined : "unanswered";
+}
+
+/** The clean-up's mark on an ask whose offered times it deleted. */
+export const askAnswered = (payload: unknown): boolean => (payload as { answered?: unknown } | null)?.answered === true;
+
 /** Whole days from one India date to another (both "YYYY-MM-DD"). */
 export const daysBetween = (from: string, to: string): number => Math.round((dayOf(to).getTime() - dayOf(from).getTime()) / DAY);
 

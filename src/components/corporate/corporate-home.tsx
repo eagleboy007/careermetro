@@ -1,20 +1,34 @@
-import { Building2, CalendarClock, ExternalLink, KeyRound, MessageSquare } from "lucide-react";
+import { Building2, CalendarClock, ExternalLink, KeyRound, MessageSquare, ScrollText } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
-import type { CorporateHomeView, JobListActions, JoinActions, TeamActions } from "@/lib/corporate/types";
+import type { CompanyOverviewView, CorporateHomeView, JobListActions, JoinActions, TeamActions } from "@/lib/corporate/types";
 import { ORG_ROLE_LABELS, ORG_TYPE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
 import { JobsPanel } from "./jobs-panel";
 import { JoinForm } from "./join-form";
+import { OverviewPanel } from "./overview-panel";
 import { AntiScamLine, ghostSm, ICON, OrgStatusBadge, Panel, SecondAdminBanner } from "./parts";
 import { TeamAccess } from "./team-access";
 
 /**
- * Corporate home for a member (dev/corporate-plan.md, build steps 1 to 3): the company, its status badge, the
- * second-admin banner, the anti-scam line, Jobs and, for Recruiter admins, Team and access. Applications and chats
- * come in later steps.
+ * Corporate home for a member (dev/corporate-plan.md, build steps 1 to 3 and 7): the company, its status badge, the
+ * second-admin banner, the anti-scam line, the Overview counts, Jobs and, for Recruiter admins, Team and access and a
+ * link to the company's audit.
  */
-export function CorporateHome({ view, actions, jobActions, note }: { view: CorporateHomeView; actions?: TeamActions; jobActions?: JobListActions; note?: ReactNode }) {
+export function CorporateHome({
+  view,
+  overview,
+  actions,
+  jobActions,
+  note,
+}: {
+  view: CorporateHomeView;
+  overview?: CompanyOverviewView | null;
+  actions?: TeamActions;
+  jobActions?: JobListActions;
+  note?: ReactNode;
+}) {
+  const unread = overview?.unreadChats ?? 0;
   const { org, me } = view;
   const admin = me.role === "admin";
   return (
@@ -37,11 +51,23 @@ export function CorporateHome({ view, actions, jobActions, note }: { view: Corpo
         <Link href="/corporate/messages" className={`${ghostSm} min-h-11`}>
           <MessageSquare {...ICON} />
           Messages
+          {unread > 0 && (
+            <span className="grid h-[18px] min-w-[18px] place-items-center rounded-full bg-ink px-1 font-mono text-[0.62rem] text-bg">
+              {unread}
+              <span className="sr-only"> unread</span>
+            </span>
+          )}
         </Link>
         <Link href="/corporate/interviews" className={`${ghostSm} min-h-11`}>
           <CalendarClock {...ICON} />
           Interviews
         </Link>
+        {admin && (
+          <Link href="/corporate/audit" className={`${ghostSm} min-h-11`}>
+            <ScrollText {...ICON} />
+            Audit
+          </Link>
+        )}
         {org.website && (
           <a href={org.website} target="_blank" rel="noopener noreferrer" className={`${ghostSm} min-h-11`}>
             <ExternalLink {...ICON} />
@@ -68,6 +94,8 @@ export function CorporateHome({ view, actions, jobActions, note }: { view: Corpo
       )}
 
       <AntiScamLine />
+
+      {overview && <OverviewPanel view={overview} />}
 
       <Panel id="jobs" title="Jobs">
         <JobsPanel jobs={view.jobs} actions={jobActions} />

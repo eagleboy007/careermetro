@@ -42,7 +42,9 @@ import { MeView } from "@/components/me/me-view";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
+import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
+import { OverviewPanel } from "@/components/corporate/overview-panel";
 import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
 import {
   exampleApplications,
@@ -51,7 +53,10 @@ import {
   exampleCompanyChat,
   exampleCompanyInterviews,
   exampleCompanyMessages,
+  exampleAudit,
   exampleCorporateHome,
+  exampleInterviewerOverview,
+  exampleOverview,
   exampleInboxAsk,
   exampleInterviewerCandidate,
   exampleJobFormData,
@@ -598,6 +603,35 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <Scheduler view={{ ...exampleScheduler, slots: [], days: [], interviews: [], teamWeek: [], waitingForTimes: true, refusal: "Your company can't arrange interviews until CareerMetro has verified it." }} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Overview and audit (signed in)</h2>
+        <p className="text-sm text-muted">
+          Build step 7: the Overview on Corporate for a Recruiter admin (counts only), for an Interviewer (only the candidates they interview) and with no open
+          job, an ended &quot;Ask for times&quot; card, and the company&apos;s audit, Recruiter admins only. Example data.
+        </p>
+        <div className="flex flex-col gap-4">
+          <OverviewPanel view={exampleOverview} />
+          <OverviewPanel view={exampleInterviewerOverview} />
+          <OverviewPanel view={{ ...exampleOverview, openJobs: 0, newApplications: 0, interviewsToday: 0, interviewsThisWeek: 0, unreadChats: 0, jobs: [] }} />
+        </div>
+        <div className="max-w-[720px]">
+          <CompanyChat
+            chat={{
+              ...exampleTimesChat,
+              messages: exampleTimesChat.messages.map((m) => (m.times ? { ...m, times: { offered: null, ended: "unanswered" as const } } : m)),
+              canAskTimes: false,
+            }}
+            company="Example Labs"
+          />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyAudit view={exampleAudit} olderHref="#older" />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyAudit view={{ ...exampleAudit, lines: [] }} olderHref={null} />
         </div>
       </section>
 

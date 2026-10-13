@@ -16,6 +16,9 @@ const m = vi.hoisted(() => ({
   renewExpired: vi.fn(async () => 0),
   removeChoiceGoal: vi.fn(),
   clearCodes: vi.fn(async () => 0),
+  endAccess: vi.fn(async () => ({ accessEnded: 0, readMarksCleared: 0 })),
+  erasePhones: vi.fn(async () => 0),
+  clearTimes: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -43,6 +46,7 @@ vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpi
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeChoiceGoal: m.removeChoiceGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
+vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
 vi.mock("@/lib/jobs/role-requests", () => ({ countRoleRequest: m.countRoleRequest }));
@@ -306,29 +310,45 @@ describe("daily cleanup", () => {
     expect(m.deleteExpired).not.toHaveBeenCalled();
     expect(m.purgeDeleted).not.toHaveBeenCalled();
     expect(m.renewExpired).not.toHaveBeenCalled();
+    expect(m.endAccess).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
     m.purgeDeleted.mockResolvedValueOnce(1);
     m.renewExpired.mockResolvedValueOnce(4);
+    m.endAccess.mockResolvedValueOnce({ accessEnded: 5, readMarksCleared: 7 });
+    m.erasePhones.mockResolvedValueOnce(1);
+    m.clearTimes.mockResolvedValueOnce(12);
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
-    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1 } });
+    const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
-    expect(logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"))).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4/);
+    const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
+    expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12/);
     logs.mockRestore();
+    const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.
     m.deleteExpired.mockRejectedValueOnce(new Error("down"));
     m.purgeDeleted.mockResolvedValueOnce(3);
-    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: null, accountsDeleted: 3 } });
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: null, accountsDeleted: 3, corporate: none } });
     // Renewing goals failing is reported too, without holding up the deletions.
     m.deleteExpired.mockResolvedValueOnce(0);
     m.purgeDeleted.mockResolvedValueOnce(0);
     m.renewExpired.mockRejectedValueOnce(new Error("down"));
-    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0 } });
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0, corporate: none } });
     // So is forgetting the addresses on expired work-email codes.
     m.deleteExpired.mockResolvedValueOnce(0);
     m.purgeDeleted.mockResolvedValueOnce(0);
     m.clearCodes.mockRejectedValueOnce(new Error("down"));
-    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0 } });
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0, corporate: none } });
     expect(m.clearCodes).toHaveBeenCalled();
+    // And each employer-side job, which reports null for itself and lets the rest run.
+    m.deleteExpired.mockResolvedValueOnce(0);
+    m.purgeDeleted.mockResolvedValueOnce(0);
+    m.erasePhones.mockRejectedValueOnce(new Error("down"));
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0, corporate: { ...none, sharedNumbersErased: null } } });
+    expect(errors.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_job_failed"))).toMatch(/"job":"sharedNumbers"/);
+    errors.mockRestore();
   });
 });
 

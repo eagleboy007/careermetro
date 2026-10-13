@@ -4,6 +4,7 @@ import { SLOT_KEY } from "@/lib/corporate/slots";
 import {
   APPLICATION_STAGES,
   CAN_JOIN,
+  COMPANY_AUDIT_ACTIONS,
   FEEDBACK_MAX,
   FEEDBACK_MIN,
   INTERVIEW_MINUTES,
@@ -39,6 +40,8 @@ import { messageBody, REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
  * team and access. A work email is personal data: it is checked here, used once, and never logged.
  */
 
+export { COMPANY_AUDIT_ACTIONS, COMPANY_AUDIT_LABELS } from "./constants";
+export type { CompanyAuditAction } from "./constants";
 export { APPLICATION_STAGES, CAN_JOIN, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES };
 
 const text = (min: number, max: number, what: string) =>
@@ -295,3 +298,28 @@ export const feedbackInput = z.object({
     .max(FEEDBACK_MAX, { error: `Keep feedback under ${FEEDBACK_MAX.toLocaleString("en-IN")} characters.` }),
 });
 export type FeedbackInput = z.input<typeof feedbackInput>;
+
+/* Overview, audit and clean-up (build step 7) ---------------------------------------------------------------------- */
+
+const UUID_PART = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
+/** Who did it: a company member (their org_members id), the candidate, or the daily clean-up. Never a name or email. */
+export const auditActor = z.string().regex(new RegExp(`^(member:${UUID_PART}|candidate|system)$`));
+/** What it was done to, by id: the company, a member, a role waiting for its code, a job or an application. */
+export const auditTarget = z.string().regex(new RegExp(`^(company|member|invite|job|application):${UUID_PART}$`));
+
+/**
+ * One line of a company's audit (plan, "Audit"): who, which action, on what, when. Ids and fixed action names only, so
+ * no line can carry a message, a note, feedback or contact details.
+ */
+export const companyAuditLine = z.strictObject({
+  orgId: z.uuid(),
+  actor: auditActor,
+  action: z.enum(COMPANY_AUDIT_ACTIONS),
+  target: auditTarget,
+});
+export type CompanyAuditLine = z.infer<typeof companyAuditLine>;
+
+/** Where a page of the audit view starts: just before this line (its time and id), or the newest. */
+export const auditCursor = z.string().regex(new RegExp(`^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z_${UUID_PART}$`));
+export const auditPageInput = z.object({ before: auditCursor.optional().catch(undefined) });

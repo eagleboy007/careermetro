@@ -954,14 +954,24 @@ export const interviewFeedback = pgTable(
 
 /* Audit ------------------------------------------------------------------- */
 
-/** Any admin access to user data (SEC-8). */
-export const auditLogs = pgTable("audit_logs", {
-  id: id(),
-  actor: text("actor").notNull(),
-  action: text("action").notNull(),
-  target: text("target").notNull(),
-  createdAt: createdAt(),
-});
+/**
+ * Any admin access to user data (SEC-8), and every action a company member takes on its team, jobs and applications
+ * (corporate build step 7). Ids and fixed action names only (companyAuditLine in lib/schemas): never words someone typed.
+ * `org_id` is the company a line belongs to, so its Recruiter admins can read their own; no foreign key, because the
+ * record outlives what it is about.
+ */
+export const auditLogs = pgTable(
+  "audit_logs",
+  {
+    id: id(),
+    actor: text("actor").notNull(),
+    action: text("action").notNull(),
+    target: text("target").notNull(),
+    orgId: uuid("org_id"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("audit_logs_org_created").on(t.orgId, t.createdAt)],
+);
 
 /**
  * Abuse limits shared by every server (H11): one row per limit, keyed hash and fixed window, counting hits. The key is

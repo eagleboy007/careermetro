@@ -1,16 +1,17 @@
 import "server-only";
-import { and, asc, desc, eq, gt, inArray, isNull, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, candidateSlots, conversationMembers, conversations, jobs, jobTeam, messages, organizations, users } from "@/db/schema";
+import { applications, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT, openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { companyMessageInput } from "@/lib/schemas/corporate";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { COMPANY_ACCESS_DAYS, visibleApplication } from "./applications-store";
-import { assignedSubquery } from "./interview-reads";
+import { visibleApplication } from "./applications-store";
+import { visibleApplicationsWhere } from "./scope";
 import { chatClosed, companySendRefusal, scheduleRefusal, type CompanySendRefusal } from "./rules";
-import { slotLabel } from "./slots";
+import { askDaysOf } from "./interview-reads";
+import { askAnswered, askEnded, slotLabel } from "./slots";
 import { activeMembership } from "./store";
 import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, CompanyChatView, CompanyMessagesView } from "./types";
 
@@ -26,7 +27,6 @@ import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, Company
 type Db = ReturnType<typeof getDb>;
 export type ChatDeps = { db?: Db; now?: Date };
 
-const DAY = 86_400_000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export type CompanyChatError = "invalid" | "not_member" | "not_allowed" | "not_found" | "limit" | CompanySendRefusal;
@@ -64,15 +64,6 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
   if (!me) return fail("not_member");
   const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
   const view: CompanyMessagesView = { company: me.orgName, status: org?.status ?? "pending", role: me.role, items: [] };
-  const accessCutoff = new Date(now.getTime() - COMPANY_ACCESS_DAYS * DAY);
-  const onTeam = db
-    .select({ jobId: jobTeam.jobId })
-    .from(jobTeam)
-    .where(and(eq(jobTeam.userId, userId), inArray(jobTeam.role, ["owner", "hiring"])));
-  // Interviewers (and anyone on a job without moving its candidates) read the chats of candidates whose live interview
-  // they are on, while they are still on the job's team (build step 6).
-  const anyTeam = db.select({ jobId: jobTeam.jobId }).from(jobTeam).where(eq(jobTeam.userId, userId));
-  const assigned = and(inArray(applications.id, assignedSubquery(userId, db, now)), inArray(applications.jobId, anyTeam));
   const rows = await db
     .select({
       conversationId: conversations.id,
@@ -88,13 +79,9 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
     .where(
       and(
         eq(conversations.orgId, me.orgId),
-        eq(applications.orgId, me.orgId),
-        ne(applications.userId, userId),
-        isNull(applications.withdrawnAt),
-        isNull(users.deletionRequestedAt),
-        or(isNull(applications.closedAt), gt(applications.closedAt, accessCutoff)),
-        or(isNull(applications.companyAccessEndsAt), gt(applications.companyAccessEndsAt, now)),
-        me.role === "admin" ? undefined : me.role === "interviewer" ? assigned : or(inArray(applications.jobId, onTeam), assigned),
+        // Interviewers (and anyone on a job without moving its candidates) read the chats of candidates whose live
+        // interview they are on, while they are still on the job's team (build step 6).
+        visibleApplicationsWhere(me, userId, db, now),
         sql`exists (select 1 from ${messages} x where x.conversation_id = ${conversations.id} and x.kind <> 'system')`,
       ),
     )
@@ -156,7 +143,16 @@ export async function companyChat(userId: string, applicationId: string, deps: C
     .where(and(eq(conversations.applicationId, app.id), eq(conversations.orgId, app.orgId)));
   const rows = conversation
     ? await db
-        .select({ id: messages.id, senderId: messages.senderId, kind: messages.kind, body: messages.body, createdAt: messages.createdAt, name: users.name, deleted: users.deletionRequestedAt })
+        .select({
+          id: messages.id,
+          senderId: messages.senderId,
+          kind: messages.kind,
+          body: messages.body,
+          payload: messages.payload,
+          createdAt: messages.createdAt,
+          name: users.name,
+          deleted: users.deletionRequestedAt,
+        })
         .from(messages)
         .leftJoin(users, eq(users.id, messages.senderId))
         .where(
@@ -181,8 +177,9 @@ export async function companyChat(userId: string, applicationId: string, deps: C
     if (m.kind === "system") return { id: m.id, by: "system", who: "", text: m.body === "applied" ? "Applied on CareerMetro." : "" };
     const base = { id: m.id, text: m.body, at: formatAt(m.createdAt, now), ...(m.kind === "ask_question" ? { question: true } : {}) };
     if (m.kind === "ask_times") {
-      const times = offered.filter((o) => o.askMessageId === m.id).map((o) => slotLabel(o.startsAt));
-      Object.assign(base, { times: { offered: times.length ? times : null } });
+      const given = offered.filter((o) => o.askMessageId === m.id).map((o) => o.startsAt);
+      const ended = askEnded({ days: askDaysOf(m.payload), offered: given, answered: askAnswered(m.payload) }, now);
+      Object.assign(base, { times: { offered: given.length ? given.map(slotLabel) : null, ...(ended ? { ended } : {}) } });
     }
     if (m.senderId === userId) return { ...base, by: "me", who: "You" };
     if (m.senderId === app.userId) return { ...base, by: "candidate", who: candidate };

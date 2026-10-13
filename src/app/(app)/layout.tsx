@@ -12,6 +12,7 @@ import { currentIdentity, signedInAccount } from "@/lib/auth/server";
 import { isAdmin } from "@/lib/admin/access";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
+import { corporateUnread } from "@/lib/corporate/overview";
 import { unreadChats } from "@/lib/inbox/store";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
@@ -53,10 +54,12 @@ async function Shell({ children }: { children: React.ReactNode }) {
     const account = await signedInAccount();
     if (account?.deletionRequestedAt) redirect(RESTORE_PATH);
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
-    const [, streak, inboxUnread] = await Promise.all([
+    const [, streak, inboxUnread, companyUnread] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
       extra("inbox_unread", unreadChats(account.id), 0),
+      // Read from the person's live company role, so a removed role shows nothing.
+      extra("corporate_unread", corporateUnread(account.id), 0),
     ]);
     const name = displayName(account.name);
     // The streak shows once the person has ridden a day.
@@ -68,6 +71,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       showStreak: streak.days > 0,
       canSignOut: true,
       inboxUnread,
+      corporateUnread: companyUnread,
       isAdmin: isAdmin(await currentIdentity()),
     };
   } else {

@@ -18,6 +18,8 @@ export type ShellUser = {
   canSignOut: boolean;
   /** Unread chats and message requests, for the badge on the Inbox icon. */
   inboxUnread: number;
+  /** Unread company chats for someone with a company role (corporate build step 7): a count on Corporate in the menu. */
+  corporateUnread?: number;
   /** CareerMetro's own admins (ADMIN_EMAILS), worked out on the server: the menu shows Admin. */
   isAdmin?: boolean;
 };
@@ -163,6 +165,7 @@ function AvatarMenu({ user }: { user: ShellUser }) {
   }, [open]);
 
   const row = "flex items-center gap-2.5 rounded-sm px-2.5 py-2 text-sm";
+  const corporateUnread = user.corporateUnread ?? 0;
   return (
     <div ref={wrap} className="relative">
       <button
@@ -171,11 +174,12 @@ function AvatarMenu({ user }: { user: ShellUser }) {
         aria-expanded={open}
         aria-controls={menuId}
         // Starts with the initials it shows (WCAG 2.5.3, label in name).
-        aria-label={`${user.initials}: ${user.name}, open menu`}
+        aria-label={`${user.initials}: ${user.name}, open menu${corporateUnread ? `, Corporate ${corporateUnread} unread` : ""}`}
         onClick={() => setOpen((o) => !o)}
-        className="grid size-9 place-items-center rounded-full bg-ink font-mono text-[0.72rem] font-medium text-bg"
+        className="relative grid size-9 place-items-center rounded-full bg-ink font-mono text-[0.72rem] font-medium text-bg"
       >
         {user.initials}
+        {corporateUnread > 0 && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-bg bg-ink" />}
       </button>
       <div
         id={menuId}
@@ -202,6 +206,12 @@ function AvatarMenu({ user }: { user: ShellUser }) {
                 <Link href={item.href} onClick={() => setOpen(false)} aria-current={path === item.href ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
                   <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
                   {item.label}
+                  {item.key === "corporate" && corporateUnread > 0 && (
+                    <span className="ml-auto grid h-[18px] min-w-[18px] place-items-center rounded-full bg-ink px-1 font-mono text-[0.62rem] text-bg">
+                      {corporateUnread}
+                      <span className="sr-only"> unread</span>
+                    </span>
+                  )}
                 </Link>
               </li>
             ) : (
