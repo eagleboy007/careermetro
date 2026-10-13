@@ -1,11 +1,12 @@
-// The Companies workflow (.github/workflows/companies.yml, dev/corporate-plan.md call B): Milin reviews companies
-// during the beta. `list` writes the companies waiting for review, and any company left without a Recruiter admin, to
-// the job summary: name, domain, website, created date and member counts. No email address of anyone is read.
-// `verify` and `suspend` set one company's review status by its domain and write one audit line. It prints fixed
-// messages only, never the connection string.
+// The Companies workflow (.github/workflows/companies.yml, dev/corporate-plan.md call B), the fallback to the in-app
+// review page /admin/companies. Actions logs and summaries are public in a public repository, so `list` writes counts
+// only (waiting, suspended, no admin) and points to the page; no company's name, domain or website is printed.
+// `verify` and `suspend` set one company's review status by its domain and write one audit line (the same code as the
+// page, src/lib/corporate/review-queue.mjs), then print "done" only. Never the connection string.
 import { appendFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
+import { queueCounts, reviewQueue, setReviewStatus } from "../src/lib/corporate/review-queue.mjs";
 
 export const ACTIONS = ["list", "verify", "suspend"];
 /** Who ran the workflow, as "github:<login>" (GITHUB_ACTOR); "github" when run outside Actions. */
@@ -26,62 +27,19 @@ export function parseInputs(env) {
   return { action, domain };
 }
 
-/** True when the website's host is the email domain or a subdomain either way; a mismatch is flagged for the check. */
-export function websiteMatches(website, domain) {
-  try {
-    const host = new URL(website).hostname.toLowerCase();
-    return host === domain || host.endsWith(`.${domain}`) || domain.endsWith(`.${host}`);
-  } catch {
-    return false;
-  }
-}
-
-/** Markdown-safe: table cells can't break the table or carry links or HTML. */
-const cell = (v) => String(v ?? "").replace(/[|\\`*_<>[\]]/g, (c) => `\\${c}`).replace(/\s+/g, " ").slice(0, 120);
-
-/** The review list as a Markdown table for the job summary. */
-export function reviewTable(rows) {
-  if (!rows.length) return "## Companies\n\nNo company is waiting for review, and every company has a Recruiter admin.\n";
+/** The job summary for `list`: counts only, so no company is named in public Actions output. */
+export function countsSummary(counts) {
+  if (!counts.total) return "## Companies\n\nNo company is waiting for review, none is suspended, and every company has a Recruiter admin.\n";
   const lines = [
     "## Companies",
     "",
-    "| Company | Domain | Website | Created | Members | Admins | Status | Notes |",
-    "|---|---|---|---|---|---|---|---|",
-    ...rows.map((r) => {
-      const notes = [r.admins === 0 ? "no admin" : "", r.website && !websiteMatches(r.website, r.domain) ? "website on another domain" : ""].filter(Boolean).join("; ");
-      return `| ${cell(r.name)} | ${cell(r.domain)} | ${cell(r.website)} | ${cell(r.created)} | ${r.members} | ${r.admins} | ${cell(r.status)} | ${notes} |`;
-    }),
+    `- Waiting for review: ${counts.waiting}`,
+    `- Suspended: ${counts.suspended}`,
+    `- No Recruiter admin: ${counts.noAdmin}`,
     "",
-    "Run the workflow again with `verify` or `suspend` and the domain to change one.",
+    "Review them signed in to CareerMetro at /admin/companies.",
   ];
   return lines.join("\n") + "\n";
-}
-
-async function list(sql) {
-  // Waiting for review, or left without an active admin (for example after the only admin deleted their account).
-  return sql`
-    select o.name, o.email_domain as domain, o.website, to_char(o.created_at at time zone 'Asia/Kolkata', 'YYYY-MM-DD') as created,
-      o.review_status as status,
-      count(m.id) filter (where m.removed_at is null)::int as members,
-      count(m.id) filter (where m.removed_at is null and m.role = 'admin')::int as admins
-    from organizations o
-    left join org_members m on m.org_id = o.id
-    where o.email_domain is not null
-    group by o.id
-    having o.review_status = 'pending' or count(m.id) filter (where m.removed_at is null and m.role = 'admin') = 0
-    order by o.created_at`;
-}
-
-async function setStatus(sql, action, domain, reviewer) {
-  const status = action === "verify" ? "verified" : "suspended";
-  return sql.begin(async (tx) => {
-    const [org] = await tx`
-      update organizations set review_status = ${status}, reviewed_at = now(), reviewed_by = ${reviewer}
-      where email_domain = ${domain} returning id, name`;
-    if (!org) return null;
-    await tx`insert into audit_logs (actor, action, target) values (${reviewer}, ${`company_${status}`}, ${`organization:${org.id}`})`;
-    return org;
-  });
 }
 
 async function main() {
@@ -98,18 +56,18 @@ async function main() {
   const summary = (text) => (process.env.GITHUB_STEP_SUMMARY ? appendFileSync(process.env.GITHUB_STEP_SUMMARY, text) : process.stdout.write(text));
   try {
     if (input.action === "list") {
-      const rows = await list(sql);
-      summary(reviewTable(rows));
-      console.log(`companies: ${rows.length} listed`);
+      const counts = queueCounts(await reviewQueue(sql));
+      summary(countsSummary(counts));
+      console.log(`companies: ${counts.waiting} waiting, ${counts.suspended} suspended, ${counts.noAdmin} with no admin`);
       return;
     }
-    const org = await setStatus(sql, input.action, input.domain, reviewerOf(process.env));
+    const org = await setReviewStatus(sql, { domain: input.domain }, input.action, reviewerOf(process.env));
     if (!org) {
       console.error("companies: no company has that domain");
       process.exitCode = 1;
       return;
     }
-    summary(`## Companies\n\n${cell(org.name)} (${cell(input.domain)}) is now ${input.action === "verify" ? "verified" : "suspended"}.\n`);
+    summary(`## Companies\n\n${input.action} done.\n`);
     console.log(`companies: ${input.action} done`);
   } catch (error) {
     console.error(`companies: failed (${error?.code ?? "error"})`);

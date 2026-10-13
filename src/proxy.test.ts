@@ -6,7 +6,8 @@ vi.mock("@/lib/auth/proxy-session", () => ({ refreshSession: refresh }));
 
 import { NextResponse } from "next/server";
 import { TEST_USER_COOKIE, testUserCookie } from "@/lib/auth/test-user";
-import { config, proxy } from "./proxy";
+import { LOCAL_ADMIN_EMAIL } from "@/lib/admin/access";
+import { config, NOT_FOUND_PATH, proxy } from "./proxy";
 
 const req = (path: string, cookie?: string) => {
   const r = new NextRequest(new URL(path, "https://careermetro.test"));
@@ -69,6 +70,43 @@ describe("proxy", () => {
     expect(home.cookies.get("sb-x-auth-token")?.value).toBe("new");
     expect((await proxy(req("/today"))).headers.get("x-middleware-next")).toBe("1");
     expect((await proxy(req("/sign-in"))).headers.get("location")).toBe("https://careermetro.test/today");
+  });
+
+  it("answers the admin pages with the normal not-found page for anyone but an admin, signed out included", async () => {
+    const rewrittenTo = (r: Response) => r.headers.get("x-middleware-rewrite");
+    const notFound = `https://careermetro.test${NOT_FOUND_PATH}`;
+    // Production without the preview flag: no auth work, not found.
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("TODAY_PREVIEW", "");
+    expect(rewrittenTo(await proxy(req("/admin/companies")))).toBe(notFound);
+    expect(refresh).not.toHaveBeenCalled();
+
+    // A preview with the test sign-in: signed out, a test user who isn't the admin, and the documented local admin.
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("ADMIN_EMAILS", "");
+    refresh.mockResolvedValue({ response: NextResponse.next(), signedIn: false, identity: null });
+    expect(rewrittenTo(await proxy(req("/admin/companies")))).toBe(notFound);
+    expect(rewrittenTo(await proxy(req("/admin")))).toBe(notFound);
+    expect(rewrittenTo(await proxy(req("/admin/companies", testUserCookie({ email: "asha@example.com", name: "Asha" }))))).toBe(notFound);
+    const admin = await proxy(req("/admin/companies", testUserCookie({ email: LOCAL_ADMIN_EMAIL, name: "Admin" })));
+    expect(rewrittenTo(admin)).toBeNull();
+    expect(admin.headers.get("x-middleware-next")).toBe("1");
+    // Once ADMIN_EMAILS is set, the local default is off.
+    vi.stubEnv("ADMIN_EMAILS", "reviewer@example.com");
+    expect(rewrittenTo(await proxy(req("/admin/companies", testUserCookie({ email: LOCAL_ADMIN_EMAIL, name: "Admin" }))))).toBe(notFound);
+
+    // The real sign-in: only a proven email in ADMIN_EMAILS, and refreshed cookies are kept either way.
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://x.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "k");
+    const refreshed = NextResponse.next();
+    refreshed.cookies.set("sb-x-auth-token", "new");
+    refresh.mockResolvedValue({ response: refreshed, signedIn: true, identity: { subject: "s1", email: "someone@example.com", emailVerified: true, name: null, method: "google" } });
+    const other = await proxy(req("/admin/companies"));
+    expect(rewrittenTo(other)).toBe(notFound);
+    expect(other.cookies.get("sb-x-auth-token")?.value).toBe("new");
+    refresh.mockResolvedValue({ response: refreshed, signedIn: true, identity: { subject: "s2", email: "Reviewer@Example.com", emailVerified: true, name: null, method: "google" } });
+    expect(rewrittenTo(await proxy(req("/admin/companies")))).toBeNull();
   });
 
   it("skips static files", () => {

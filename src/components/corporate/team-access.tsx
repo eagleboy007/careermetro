@@ -35,7 +35,9 @@ export function TeamAccess({
   const rootRef = useRef<HTMLDivElement>(null);
   /** Where focus goes once the confirm buttons close: back to that person's Remove button after Keep. */
   const returnTo = useRef<string | null>(null);
-  const messageRef = useRef<HTMLParagraphElement>(null);
+  const noticeRef = useRef<HTMLParagraphElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   // The buttons that had focus unmount (Keep, a removed row), so move focus on: to the result, or back to Remove.
   useEffect(() => {
@@ -44,15 +46,21 @@ export function TeamAccess({
     returnTo.current = null;
     if (id) rootRef.current?.querySelector<HTMLElement>(`[data-remove="${CSS.escape(id)}"]`)?.focus();
   }, [confirming]);
+  // A notice moves focus to its line. An error is announced by its alert; focus stays where the person is working:
+  // on the work email field for an invite (the error describes it), or back on the control that was used.
   useEffect(() => {
-    if (notice || error) messageRef.current?.focus();
-  }, [notice, error]);
+    if (notice) noticeRef.current?.focus();
+  }, [notice]);
 
-  const act = (fn: () => Promise<string | null>, success: string) =>
+  const act = (fn: () => Promise<string | null>, success: string, on?: { field?: boolean; member?: string }) =>
     start(async () => {
       setError(null);
       setNotice(null);
       const message = await fn();
+      // The field is always there, so an invite error puts focus straight back on it. The confirm buttons close
+      // either way; after an error, focus returns to that person's Remove button.
+      if (message && on?.field) emailRef.current?.focus();
+      if (message && on?.member) returnTo.current = on.member;
       if (message) setError(message);
       else setNotice(success);
       setConfirming(null);
@@ -70,12 +78,13 @@ export function TeamAccess({
             const m = await actions.invite(email, role);
             if (!m) setEmail("");
             return m;
-          }, `Access is waiting. They sign in with their own CareerMetro account, open Corporate and confirm their @${domain} email with a code.`);
+          }, `Access is waiting. They sign in with their own CareerMetro account, open Corporate and confirm their @${domain} email with a code.`, { field: true });
         }}
       >
         <span className="text-[0.82rem] font-semibold">Give a role</span>
         <div className="flex flex-wrap gap-2">
           <input
+            ref={emailRef}
             type="email"
             aria-label="Colleague's work email"
             placeholder={`name@${domain}`}
@@ -100,12 +109,12 @@ export function TeamAccess({
       </form>
 
       {error && (
-        <p ref={messageRef} tabIndex={-1} id={errorId} role="alert" className="text-sm text-bad">
+        <p ref={errorRef} id={errorId} role="alert" className="text-sm text-bad">
           {error}
         </p>
       )}
       {notice && (
-        <p ref={messageRef} tabIndex={-1} role="status" className="text-sm text-muted">
+        <p ref={noticeRef} tabIndex={-1} role="status" className="text-sm text-muted">
           {notice}
         </p>
       )}
@@ -128,7 +137,7 @@ export function TeamAccess({
                   type="button"
                   autoFocus
                   disabled={pending}
-                  onClick={() => actions && act(() => actions.remove(m.id), `${m.name} no longer has access. Their own CareerMetro account stays as it is.`)}
+                  onClick={() => actions && act(() => actions.remove(m.id), `${m.name} no longer has access. Their own CareerMetro account stays as it is.`, { member: m.id })}
                   className={ghostSm}
                 >
                   <Check {...ICON} />

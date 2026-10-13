@@ -1,17 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import type { Identity } from "@/lib/account/store";
+import { identityFromClaims } from "./claims";
 import { authConfig, hasAuthCookie } from "./config";
 
 /**
  * Runs in the proxy before any render: refreshes an expiring session and writes the new cookies to both the request
  * (for this render) and the response (for the browser). Server components can't write cookies, so this is the one
  * place a refresh can be saved. Visitors without a session cookie skip it, with no network call.
- * Returns the response to send on and whether someone is signed in.
+ * Returns the response to send on, whether someone is signed in and who (for the admin pages' check).
  */
-export async function refreshSession(request: NextRequest): Promise<{ response: NextResponse; signedIn: boolean }> {
+export async function refreshSession(request: NextRequest): Promise<{ response: NextResponse; signedIn: boolean; identity?: Identity | null }> {
   let response = NextResponse.next({ request });
   const config = authConfig();
-  if (!config || !hasAuthCookie(request.cookies.getAll().map((c) => c.name))) return { response, signedIn: false };
+  if (!config || !hasAuthCookie(request.cookies.getAll().map((c) => c.name))) return { response, signedIn: false, identity: null };
 
   const supabase = createServerClient(config.url, config.anonKey, {
     cookies: {
@@ -27,5 +29,5 @@ export async function refreshSession(request: NextRequest): Promise<{ response: 
   // getClaims verifies the token and refreshes it when it has expired. Nothing may run between creating the client
   // and this call, or a refresh can be lost and sign the person out.
   const { data } = await supabase.auth.getClaims();
-  return { response, signedIn: Boolean(data?.claims?.sub) };
+  return { response, signedIn: Boolean(data?.claims?.sub), identity: identityFromClaims(data?.claims) };
 }

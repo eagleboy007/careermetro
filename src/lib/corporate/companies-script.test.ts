@@ -4,9 +4,11 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { parseInputs, reviewerOf, reviewTable, websiteMatches } from "../../../scripts/companies.mjs";
+import { countsSummary, parseInputs, reviewerOf } from "../../../scripts/companies.mjs";
+import { queueCounts, websiteMatches } from "./review-queue.mjs";
 
-// The Companies workflow's script (scripts/companies.mjs): Milin's review list and verify / suspend by domain.
+// The Companies workflow's script (scripts/companies.mjs): counts only in public Actions output, and verify / suspend
+// by domain with the same code as /admin/companies.
 const script = resolve(__dirname, "../../../scripts/companies.mjs");
 
 describe("reviewerOf", () => {
@@ -26,17 +28,21 @@ describe("companies script", () => {
     expect(parseInputs({ ACTION: "suspend", DOMAIN: "x'; drop table organizations;--" }).error).toBeDefined();
   });
 
-  it("writes a table with no email address, flagging no admin and a website on another domain", () => {
-    const table = reviewTable([
-      { name: "Example Labs", domain: "example-labs.test", website: "https://www.example-labs.test", created: "2026-10-12", members: 1, admins: 1, status: "pending" },
-      { name: "Left | Alone", domain: "left.test", website: "https://other.test", created: "2026-10-11", members: 0, admins: 0, status: "verified" },
+  it("writes counts only, pointing to the in-app page, and flags a website on another domain", () => {
+    const counts = queueCounts([
+      { status: "pending", admins: 1 },
+      { status: "verified", admins: 0 },
+      { status: "suspended", admins: 0 },
     ]);
-    expect(table).toContain("| Example Labs | example-labs.test | https://www.example-labs.test | 2026-10-12 | 1 | 1 | pending |  |");
-    expect(table).toContain("Left \\| Alone");
-    expect(table).toContain("no admin; website on another domain");
-    expect(table).not.toContain("@");
-    expect(reviewTable([])).toMatch(/No company is waiting/);
+    expect(counts).toEqual({ total: 3, waiting: 1, suspended: 1, noAdmin: 2 });
+    const text = countsSummary(counts);
+    expect(text).toContain("- Waiting for review: 1");
+    expect(text).toContain("- Suspended: 1");
+    expect(text).toContain("- No Recruiter admin: 2");
+    expect(text).toContain("/admin/companies");
+    expect(countsSummary(queueCounts([]))).toMatch(/No company is waiting/);
     expect(websiteMatches("https://careers.example-labs.test", "example-labs.test")).toBe(true);
+    expect(websiteMatches("https://other.test", "example-labs.test")).toBe(false);
     expect(websiteMatches("not a url", "example-labs.test")).toBe(false);
   });
 });
@@ -77,18 +83,26 @@ describe.skipIf(!sql)("companies script (database)", () => {
 
     const listed = exec({ ACTION: "list" });
     expect(listed.status).toBe(0);
-    expect(listed.summary).toMatch(new RegExp(`Example Labs \\| ${domain.replace(/\./g, "\\.")} .*\\| 1 \\| 1 \\| pending`));
-    expect(listed.summary).toMatch(/Lonely Labs .*no admin/);
-    expect(listed.summary).not.toContain(`${run}@example.test`);
-    expect(listed.stdout).not.toContain("postgres://");
+    // Counts only: Actions output is public, so no company's name, domain or website, and nobody's email.
+    expect(listed.summary).toMatch(/Waiting for review: [1-9]/);
+    expect(listed.summary).toMatch(/No Recruiter admin: [1-9]/);
+    for (const out of [listed.summary, listed.stdout]) {
+      expect(out).not.toContain("Example Labs");
+      expect(out).not.toContain("Lonely Labs");
+      expect(out).not.toContain(run);
+      expect(out).not.toContain("@");
+      expect(out).not.toContain("postgres://");
+    }
 
-    expect(exec({ ACTION: "verify", DOMAIN: domain, GITHUB_ACTOR: "cm-reviewer" }).status).toBe(0);
+    const verifiedRun = exec({ ACTION: "verify", DOMAIN: domain, GITHUB_ACTOR: "cm-reviewer" });
+    expect(verifiedRun.status).toBe(0);
+    expect(verifiedRun.summary).toBe("## Companies\n\nverify done.\n");
+    expect(verifiedRun.summary + verifiedRun.stdout).not.toContain(run);
     const [verified] = await sql!`select review_status, reviewed_by, reviewed_at from organizations where id = ${org.id}`;
     expect(verified).toMatchObject({ review_status: "verified", reviewed_by: "github:cm-reviewer" });
     expect(verified.reviewed_at).not.toBeNull();
     const audit = await sql!`select action from audit_logs where target = ${`organization:${org.id}`}`;
     expect(audit.map((a) => a.action)).toEqual(["company_verified"]);
-    expect(exec({ ACTION: "list" }).summary).not.toContain(`| ${domain} |`);
 
     expect(exec({ ACTION: "suspend", DOMAIN: domain, GITHUB_ACTOR: "cm-reviewer" }).status).toBe(0);
     expect((await sql!`select review_status from organizations where id = ${org.id}`)[0].review_status).toBe("suspended");

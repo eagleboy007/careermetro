@@ -42,6 +42,12 @@ To try one:
 2. On Today or /start, choose "Paste text" and paste the `resumeText` from their file in `fixtures/evals/` (the text between the quotes, with each `\n` as a new line). Or print it with `node -e "console.log(require('./fixtures/evals/full-stack-mern-bootcamp.json').resumeText)"`.
 3. Confirm what was found, then pick the role named in the file's `roleSlug`.
 
+## Company review (admin)
+
+The company review page, http://localhost:3000/admin/companies, is for CareerMetro's own admins. Locally (and on previews with the test sign-in), while `ADMIN_EMAILS` is empty, sign in with "Continue as test user" as `admin@careermetro.test` to use it; it then shows Admin in the avatar menu. Every other account, and anyone signed out, gets the normal "We can't find that page". Once `ADMIN_EMAILS` is set, only the addresses in it count, and a test user never does (its email ends in `.test`). Production never uses the local default: with `ADMIN_EMAILS` unset there, nobody is an admin.
+
+To have something to review, set up a company from Corporate first (see the walk in `e2e/README.md`).
+
 ## Getting the newest code
 
 `git pull && npm install && npm run db:migrate && npm run db:seed`, then start the two windows again. If a page shows "Something went wrong" after a pull, the database is usually missing a migration: run `npm run db:migrate`.
