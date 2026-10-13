@@ -304,10 +304,12 @@ describe.skipIf(!db)("corporate store (database)", () => {
     const hr = await person("rm-hr", "Rahul Menon");
     const memberId = async (u: string) => (await activeMembership(u, db!))!.memberId;
 
-    // One admin: can't remove themselves.
-    expect(await removeMember(a, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "last_admin" });
+    // One admin: can't remove themselves, and is told why in those words.
+    expect(await removeMember(a, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "self_removal" });
     await join(a, b, d, "admin", "karan");
     expect((await corporateHome(a, { db: db!, now: clock }))!.secondAdminDaysLeft).toBeNull();
+    // Two admins removing themselves are told it's self-removal, not to add a third admin.
+    expect(await removeMember(a, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "self_removal" });
     // Two admins: neither can go.
     expect(await removeMember(a, { memberId: await memberId(b) }, deps())).toEqual({ ok: false, error: "keep_two_admins" });
     expect(await removeMember(b, { memberId: await memberId(a) }, deps())).toEqual({ ok: false, error: "keep_two_admins" });

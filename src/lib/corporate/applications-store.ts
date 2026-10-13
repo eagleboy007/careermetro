@@ -540,7 +540,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   // A withdrawn application gives nothing away: the company sees only a count of them.
   if (app.withdrawnAt) return fail("not_found");
   const viewer = { userId, canMove: access.canMove };
-  const [profileOf, proved, certificates, events, booked, audience, [chat]] = await Promise.all([
+  const [profileOf, proved, certificates, events, booked, audience, [chat], blocked] = await Promise.all([
     latestProfiles(app.resumeId ? [app.resumeId] : [], db),
     provedByUser([app.userId], db, now),
     certificatesByUser([app.userId], db, now),
@@ -548,6 +548,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
     companyInterviewsOf([app.id], viewer, db, now),
     phoneAudience(app.id, viewer, db, now),
     db.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.id)),
+    companyBlocked(app.userId, app.orgId, db),
   ]);
   const offered = await offeredState(app.id, chat?.id ?? null, db, now);
   const profile = app.resumeId ? (profileOf.get(app.resumeId) ?? null) : null;
@@ -564,7 +565,10 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   );
   // The phone the candidate chose to share at an accepted interview: for that interview's team, while the application is open.
   const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt, orgStatus: app.orgStatus });
+  // A candidate who blocked the company can't be asked for times or booked (the server refuses both), so the drawer
+  // doesn't offer it. The company is never told why (Testing T46).
   const canSchedule =
+    !blocked &&
     scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } }) === null;
   await writeAudit(db, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "candidate_viewed", target: { application: app.id } }, now);
   logEvent("info", "candidate_viewed");
