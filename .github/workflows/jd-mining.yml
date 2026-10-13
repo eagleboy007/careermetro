@@ -2,8 +2,18 @@ name: Mine job postings
 
 # Reads public Greenhouse, Lever and Ashby job boards and measures how often each skill appears per role.
 # Results (aggregate counts, titles and links only) are pushed to the data/jd-snapshot branch.
+# Monthly (03:00 UTC on the 1st) it also counts /market openings: India postings on Lever and Greenhouse boards first
+# seen in the month that just ended (scripts/jd-mining/accumulate.mjs, dev/market-plan.md). market/seen.csv on the
+# data branch carries that history from run to run; every other run copies market/ forward unchanged.
 on:
+  schedule:
+    - cron: "0 3 1 * *"
   workflow_dispatch:
+    inputs:
+      market:
+        description: Count market openings for last month (only to redo a failed run from the 1st)
+        type: boolean
+        default: false
   push:
     branches-ignore: [main]
     paths: ["scripts/jd-mining/**"]
@@ -11,9 +21,11 @@ on:
 permissions:
   contents: write
 
+# Runs queue rather than cancel, so a branch push never cancels the monthly count and each run starts from the
+# snapshot the run before it pushed.
 concurrency:
   group: jd-mining
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   mine:
@@ -23,7 +35,29 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
+      - name: Fetch the previous snapshot
+        run: |
+          set +e
+          git ls-remote --exit-code --heads origin data/jd-snapshot > /dev/null
+          found=$?
+          set -e
+          if [ "$found" = 0 ]; then
+            git fetch -q --depth=1 origin data/jd-snapshot
+            git worktree add -q --detach "$RUNNER_TEMP/prev" FETCH_HEAD
+          elif [ "$found" = 2 ]; then
+            echo "No data/jd-snapshot branch yet, so the first market month is a baseline."
+            mkdir -p "$RUNNER_TEMP/prev"
+          else
+            exit "$found"
+          fi
       - run: node scripts/jd-mining/mine.mjs "$RUNNER_TEMP/jd-snapshot"
+      - name: Count market openings
+        if: github.event_name == 'schedule' || inputs.market == true
+        run: node scripts/jd-mining/accumulate.mjs "$RUNNER_TEMP/prev" "$RUNNER_TEMP/jd-snapshot"
+      - name: Carry market counts forward
+        if: ${{ !(github.event_name == 'schedule' || inputs.market == true) }}
+        run: |
+          if [ -d "$RUNNER_TEMP/prev/market" ]; then cp -R "$RUNNER_TEMP/prev/market" "$RUNNER_TEMP/jd-snapshot/"; fi
       - name: Push results to the data/jd-snapshot branch
         run: |
           cd "$RUNNER_TEMP/jd-snapshot"

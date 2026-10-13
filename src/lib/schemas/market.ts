@@ -17,6 +17,9 @@ export const MARKET_BAND_LABELS: Record<MarketBand, string> = { "0-2": "0–2 yr
 /** The source every example row carries. The screen labels any row with it EXAMPLE DATA. */
 export const EXAMPLE_SOURCE = "Example data";
 
+/** The source of openings counted from public ATS job boards (scripts/jd-mining/market.mjs writes the same string). */
+export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
+
 /** India's 28 states and 8 union territories, by their usual two-letter codes. */
 export const STATE_CODES = [
   "AN", "AP", "AR", "AS", "BR", "CG", "CH", "DH", "DL", "GA", "GJ", "HP", "HR", "JH", "JK", "KA", "KL", "LA",
