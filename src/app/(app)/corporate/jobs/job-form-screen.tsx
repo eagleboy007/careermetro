@@ -7,6 +7,7 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { roleOptions, skillOptions } from "@/lib/corporate/job-content";
+import { certificateOptions } from "@/lib/corporate/criteria";
 import { jobForm } from "@/lib/corporate/jobs-store";
 import { saveJobAction } from "./actions";
 import { NoCompanyRole } from "../no-role";
@@ -37,7 +38,7 @@ export async function JobFormScreen({ jobId }: { jobId: string | null }) {
   const account = accounts ? await currentAccount() : null;
   if (!account) {
     if (jobId) notFound();
-    return <JobForm data={{ ...exampleJobFormData, roles: roleOptions(), skills: skillOptions() }} initial={null} today={today} />;
+    return <JobForm data={{ ...exampleJobFormData, roles: roleOptions(), skills: skillOptions(), certificates: certificateOptions() }} initial={null} today={today} />;
   }
   const form = await jobForm(account.id, jobId);
   if (!form.ok) {

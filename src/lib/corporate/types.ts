@@ -155,6 +155,17 @@ export type ColleagueView = { memberId: string; name: string; role: OrgRole; rec
 export type RoleOptionView = { slug: string; title: string; requirements: JobRequirementsView };
 export type SkillOptionView = { id: string; name: string; category: string };
 
+/** A job's Express apply criteria as ids: required skills that need accepted proof, and certificates from our list. */
+export type JobCriteriaView = { verifiedSkills: string[]; certificates: string[] };
+/** The same, as names, for Departures. */
+export type JobCriteriaNames = { verifiedSkills: string[]; certificates: string[] };
+export type CertificateOptionView = { id: string; name: string; issuer: string };
+
+/** One Express apply criterion for one person: met by current accepted proof, or not yet. Never a gap. */
+export type CriteriaLineView = { kind: "skill" | "certificate"; label: string; met: boolean };
+/** A job's criteria for one person. Unmet ones warn and never block applying. */
+export type CriteriaView = { lines: CriteriaLineView[]; met: number; total: number };
+
 /** The Post a job form's values. Team members are org_members ids. */
 export type JobFormValues = {
   jobId: string | null;
@@ -164,6 +175,7 @@ export type JobFormValues = {
   workType: JobWorkType;
   city: string;
   requirements: JobRequirementsView;
+  criteria: JobCriteriaView;
   hiring: string[];
   interviewers: string[];
 };
@@ -174,6 +186,8 @@ export type JobFormData = {
   companyVerified: boolean;
   roles: RoleOptionView[];
   skills: SkillOptionView[];
+  /** Our certificate list, for Express apply criteria. */
+  certificates: CertificateOptionView[];
   colleagues: ColleagueView[];
   blocked: JobsBlocked | null;
 };
@@ -189,6 +203,8 @@ export type PostedJobView = {
   required: string[];
   oneOf: string[][];
   nice: string[];
+  /** Express apply criteria, as names. */
+  criteria: JobCriteriaNames;
   postedOn: string;
 };
 
@@ -275,6 +291,10 @@ export type CandidateView = {
   appliedOn: string;
   profile: CandidateProfileView;
   match: JobMatchView;
+  /** The job's Express apply criteria against the candidate's current accepted proofs. */
+  criteria: CriteriaView;
+  /** The note the candidate sent with the application, if any. */
+  note: string | null;
   events: ApplicationEventView[];
   /** Interviews, the shared phone (for that interview's team only) and whether the person can book (build step 6). */
   interviews: CandidateInterviewsView;
@@ -311,7 +331,14 @@ export type ApplyState =
   | { kind: "can_apply" }
   | { kind: "applied"; stage: ApplicationStage; withdrawn: boolean };
 
-export type ApplyAction = (jobId: string, canJoin: CanJoin, consent: boolean) => Promise<string | null>;
+export type ApplyAction = (jobId: string, canJoin: CanJoin, consent: boolean, note: string) => Promise<string | null>;
+
+/**
+ * What a company would receive for one job (Express apply's preview), built by the same code as the company's drawer:
+ * the public profile, Match to this job and the criteria. Can join and the note are added by the person in the preview.
+ */
+export type ApplyPacketView = { company: string; jobTitle: string; profile: CandidateProfileView; match: JobMatchView; criteria: CriteriaView };
+export type ApplyPreviewAction = (jobId: string) => Promise<{ ok: true; packet: ApplyPacketView } | { ok: false; error: string }>;
 export type WithdrawAction = (applicationId: string) => Promise<string | null>;
 
 /* Company chats (build step 5) -------------------------------------------------------------------------------------- */

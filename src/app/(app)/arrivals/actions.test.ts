@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const m = vi.hoisted(() => ({
   account: null as { id: string } | null,
   refresh: vi.fn(),
-  store: { applyToJob: vi.fn(), withdrawApplication: vi.fn() },
+  store: { applyToJob: vi.fn(), withdrawApplication: vi.fn(), applyPreview: vi.fn() },
   interviews: { respondToInterview: vi.fn(), stopSharingPhone: vi.fn() },
 }));
 vi.mock("next/cache", () => ({ refresh: m.refresh }));
@@ -19,7 +19,7 @@ vi.mock("@/lib/corporate/interviews-store", () => ({
   INTERVIEW_ERROR_TEXT: { paused: "This company's interviews are paused while we review it.", answered: "This has already been answered." },
 }));
 
-import { applyAction, respondAction, stopSharingAction, withdrawAction } from "./actions";
+import { applyAction, previewAction, respondAction, stopSharingAction, withdrawAction } from "./actions";
 
 const ME = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
 const JOB = "1c9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a70";
@@ -32,21 +32,32 @@ beforeEach(() => {
 describe("application actions", () => {
   it("ask a signed-out visitor to sign in, and touch nothing", async () => {
     m.account = null;
-    expect(await applyAction(JOB, "30", true)).toBe("Please sign in again.");
+    expect(await applyAction(JOB, "30", true, "")).toBe("Please sign in again.");
+    expect(await previewAction(JOB)).toEqual({ ok: false, error: "Please sign in again." });
     expect(await withdrawAction(JOB)).toBe("Please sign in again.");
     for (const fn of Object.values(m.store)) expect(fn).not.toHaveBeenCalled();
   });
 
   it("apply with the signed-in person's id and the consent as given, and reload on success only", async () => {
     m.store.applyToJob.mockResolvedValue({ ok: true, applicationId: "a" });
-    expect(await applyAction(JOB, "now", true)).toBeNull();
-    expect(m.store.applyToJob).toHaveBeenLastCalledWith(ME, { jobId: JOB, canJoin: "now", consent: true });
+    expect(await applyAction(JOB, "now", true, "I triage SIEM alerts daily.")).toBeNull();
+    expect(m.store.applyToJob).toHaveBeenLastCalledWith(ME, { jobId: JOB, canJoin: "now", consent: true, note: "I triage SIEM alerts daily." });
     expect(m.refresh).toHaveBeenCalledTimes(1);
     m.store.applyToJob.mockResolvedValue({ ok: false, error: "invalid", message: "Tick the box to share these with the company." });
-    expect(await applyAction(JOB, "now", false)).toMatch(/Tick the box/);
+    expect(await applyAction(JOB, "now", false, "")).toMatch(/Tick the box/);
     m.store.applyToJob.mockResolvedValue({ ok: false, error: "not_open" });
-    expect(await applyAction(JOB, "now", true)).toMatch(/isn't taking applications/);
+    expect(await applyAction(JOB, "now", true, "")).toMatch(/isn't taking applications/);
     expect(m.refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("preview the packet for the signed-in person, without reloading anything", async () => {
+    const packet = { company: "Example Labs", jobTitle: "SOC Analyst L1" };
+    m.store.applyPreview.mockResolvedValue({ ok: true, packet });
+    expect(await previewAction(JOB)).toEqual({ ok: true, packet });
+    expect(m.store.applyPreview).toHaveBeenLastCalledWith(ME, { jobId: JOB });
+    m.store.applyPreview.mockResolvedValue({ ok: false, error: "already" });
+    expect(await previewAction(JOB)).toEqual({ ok: false, error: "Already applied." });
+    expect(m.refresh).not.toHaveBeenCalled();
   });
 
   it("withdraw the person's own application", async () => {

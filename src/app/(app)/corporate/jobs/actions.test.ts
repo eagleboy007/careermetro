@@ -30,6 +30,7 @@ const values = {
   workType: "full_time" as const,
   city: "Pune",
   requirements: { required: ["siem"], oneOf: [], nice: [] },
+  criteria: { verifiedSkills: ["siem"], certificates: ["comptia-security-plus"] },
   hiring: [],
   interviewers: [],
 };
@@ -51,7 +52,7 @@ describe("jobs actions", () => {
   it("pass the signed-in person's id and the raw form, with the ticks only when opening", async () => {
     m.store.saveJob.mockResolvedValue({ ok: true, jobId: JOB, status: "draft" });
     expect(await saveJobAction(values, null)).toEqual({ ok: true, jobId: JOB });
-    expect(m.store.saveJob).toHaveBeenLastCalledWith(ME, expect.objectContaining({ jobId: undefined, roleSlug: "cyber-security-analyst" }));
+    expect(m.store.saveJob).toHaveBeenLastCalledWith(ME, expect.objectContaining({ jobId: undefined, roleSlug: "cyber-security-analyst", criteria: values.criteria }));
     expect(m.store.saveJob.mock.lastCall![1]).not.toHaveProperty("open");
     const ticks = { real: true, noFee: true, fair: false };
     await saveJobAction({ ...values, jobId: JOB }, ticks);

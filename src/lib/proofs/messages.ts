@@ -1,4 +1,31 @@
-import type { CertificateRefusal } from "@/lib/schemas";
+import type { CertificateRefusal, CredlyCheckNote, CredlyCheckOutcome } from "@/lib/schemas";
+
+/**
+ * Why a Credly check left a certificate "Added by you" (dev/profile-certs-plan.md). Only the owner reads these, on their
+ * profile and after saving the form. They never say whose name the badge shows.
+ */
+export const CREDLY_NOTE_MESSAGES: Record<CredlyCheckNote, string> = {
+  unreachable: "Credly didn't answer, so we couldn't check the badge. Try again later.",
+  not_found: "Credly has no badge at this link. Check the link from your Credly badge page.",
+  not_public: "The badge isn't public on Credly, or it was taken back. Make it public on Credly, then check again.",
+  badge_name: "The Credly badge is for a different certificate.",
+  issuer: "The Credly badge is from a different issuer.",
+  earner_name: "The name on the Credly badge doesn't match your account.",
+  no_name: "Add your name to your account first, then check again.",
+  expired: "Credly shows this badge as expired.",
+  used_elsewhere: "This badge is already verified on another account, so we'll review it.",
+};
+
+/** A Credly badge already verified on another account: held for review, like a reused credential. */
+export const CREDLY_HELD_MESSAGE =
+  "This Credly badge is already verified on another account, so we'll review it. The certificate doesn't fill the goal until then.";
+
+/** Why "Check with Credly" checked nothing. */
+export const CREDLY_REFUSAL_MESSAGES: Record<Extract<CredlyCheckOutcome, { status: "refused" }>["reason"], string> = {
+  not_found: "We couldn't find this certificate. Reload the page and try again.",
+  not_credly: "Only Credly badge links can be checked.",
+  too_many: "You've checked a lot of badges today. Please try again tomorrow.",
+};
 
 /** What the person reads when a certificate isn't accepted, with what to do next. Never says whose name it shows. */
 export const CERTIFICATE_REFUSAL_MESSAGES: Record<CertificateRefusal, string> = {

@@ -11,10 +11,11 @@ import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { storedProfile, type Profile } from "@/lib/schemas";
-import { applicationIdInput, applyInput, moveInput } from "@/lib/schemas/corporate";
+import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
 import { CAN_JOIN_LABELS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { jobMatch, publicProfile } from "./match";
+import { criteriaStatus } from "./criteria";
+import { applicationPacketFor, jobMatch, publicProfile } from "./match";
 import { acceptsApplications, canMoveApplications, canSeeBoard, moveRefusal, phoneVisible, scheduleRefusal, type MoveRefusal } from "./rules";
 import { activeMembership, heldMembership } from "./store";
 import { companyBlocked } from "./company-blocks";
@@ -22,9 +23,11 @@ import type {
   ApplicationEventKind,
   ApplicationEventView,
   ApplicationStage,
+  ApplyPacketView,
   ApplyState,
   BoardCardView,
   CandidateView,
+  CriteriaView,
   JobBoardView,
   JobTeamRole,
   MyApplicationView,
@@ -115,6 +118,28 @@ export async function provedByUser(userIds: string[], db: Db | Tx, now: Date): P
   return out;
 }
 
+/**
+ * Certificates with current accepted proof, per person (Express apply criteria): an accepted certificate proof from our
+ * list that hasn't expired. A certificate only named on the resume never counts.
+ */
+export async function certificatesByUser(userIds: string[], db: Db | Tx, now: Date): Promise<Map<string, Set<string>>> {
+  const out = new Map<string, Set<string>>(userIds.map((id) => [id, new Set()]));
+  if (!userIds.length) return out;
+  const rows = await db
+    .selectDistinct({ userId: gapProofs.userId, certId: gapProofs.certId })
+    .from(gapProofs)
+    .where(
+      and(
+        inArray(gapProofs.userId, userIds),
+        eq(gapProofs.status, "accepted"),
+        isNotNull(gapProofs.certId),
+        or(isNull(gapProofs.expiresOn), gte(gapProofs.expiresOn, indiaToday(now))),
+      ),
+    );
+  for (const r of rows) if (r.certId) out.get(r.userId)?.add(r.certId);
+  return out;
+}
+
 /** Every event of these applications, oldest first. Who made a move is never shown. */
 async function eventsOf(applicationIds: string[], db: Db | Tx): Promise<Map<string, ApplicationEventView[]>> {
   const out = new Map<string, ApplicationEventView[]>(applicationIds.map((id) => [id, []]));
@@ -137,8 +162,9 @@ const event = (tx: Tx, applicationId: string, kind: ApplicationEventKind, stage:
 /* The candidate --------------------------------------------------------------------------------------------------- */
 
 /**
- * Apply to a job posted on CareerMetro: open, from a verified company. Needs the consent tick and a resume read on
- * CareerMetro (the one sent is the current one). Writes the consent, the application and its first event. Someone
+ * Apply to a job posted on CareerMetro (Express apply, after its preview): open, from a verified company. Needs the
+ * consent tick and a resume read on CareerMetro (the one sent is the current one), and takes an optional note (no email
+ * or phone). Unmet Express apply criteria never block it. Writes the consent, the application and its first event. Someone
  * applying to their own company's job is taken off that job's team, so they never see their own application from the
  * company side. Nothing here reads or writes goals. 20 applications a day per person.
  */
@@ -173,7 +199,7 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .returning({ id: consents.id });
       const [app] = await tx
         .insert(applications)
-        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, createdAt: now })
+        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, note: input.note || null, createdAt: now })
         .returning({ id: applications.id });
       await event(tx, app.id, "applied", "applied", userId, now);
       // The application's chat with the company, in the person's Inbox from now on (build step 5).
@@ -192,6 +218,50 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
   return result;
 }
 
+/**
+ * Express apply's preview: exactly what the company would receive for this job, built by the same code as its drawer
+ * (`applicationPacketFor`): the public profile from the current resume, Match to this job and the job's criteria against
+ * current accepted proofs. The same conditions as applying (open job of a verified company, a resume, not applied yet).
+ * It reads only: nothing is shared or written until the person sends.
+ */
+export async function applyPreview(userId: string, raw: unknown, deps: ApplicationDeps = {}): Promise<ApplicationResult<{ packet: ApplyPacketView }>> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const parsed = previewInput.safeParse(raw);
+  if (!parsed.success) return fail("invalid");
+  const [job] = await db
+    .select({ id: jobs.id, orgId: jobs.orgId, title: jobs.title, status: jobs.status, requirements: jobs.requirements, criteria: jobs.criteria, company: organizations.name, orgStatus: organizations.reviewStatus })
+    .from(jobs)
+    .innerJoin(organizations, eq(organizations.id, jobs.orgId))
+    .where(eq(jobs.id, parsed.data.jobId));
+  if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
+  const [already] = await db.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
+  if (already) return fail("already");
+  // The same refusal as applyToJob: a company the person blocked can't be sent an application, so it isn't previewed.
+  if (await companyBlocked(userId, job.orgId, db)) return fail("blocked_company");
+  const analysis = await currentAnalysis(userId, db);
+  if (!analysis) return fail("no_resume");
+  const [[me], profileOf, proved, certificates] = await Promise.all([
+    db.select({ name: users.name }).from(users).where(eq(users.id, userId)),
+    latestProfiles([analysis.resumeId], db),
+    provedByUser([userId], db, now),
+    certificatesByUser([userId], db, now),
+  ]);
+  const packet = applicationPacketFor(
+    {
+      name: displayName(me?.name ?? null),
+      profile: profileOf.get(analysis.resumeId) ?? null,
+      requirements: job.requirements,
+      criteria: job.criteria,
+      proved: proved.get(userId) ?? new Set(),
+      certificates: certificates.get(userId) ?? new Set(),
+    },
+    now,
+  );
+  logEvent("info", "application_previewed");
+  return { ok: true, packet: { company: job.company, jobTitle: job.title, ...packet } };
+}
+
 /** Withdraw an application: it closes, its consent is withdrawn, and the company sees only that one was withdrawn. */
 export async function withdrawApplication(userId: string, raw: unknown, deps: ApplicationDeps = {}): Promise<ApplicationResult> {
   const db = deps.db ?? getDb();
@@ -207,7 +277,8 @@ export async function withdrawApplication(userId: string, raw: unknown, deps: Ap
     if (!app) return fail("not_found");
     if (app.withdrawnAt) return { ok: true };
     // Withdrawing stops all sharing: interviews still ahead are cancelled and a phone shared for one is erased.
-    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now, phoneShared: null }).where(eq(applications.id, app.id));
+    // The note goes too: withdrawing stops sharing, so the company keeps nothing the person wrote to it.
+    await tx.update(applications).set({ withdrawnAt: now, closedAt: app.closedAt ?? now, phoneShared: null, note: null }).where(eq(applications.id, app.id));
     await cancelUpcoming(tx, app.id, now);
     await tx.update(consents).set({ withdrawnAt: now }).where(and(eq(consents.id, app.consentId), isNull(consents.withdrawnAt)));
     await event(tx, app.id, "withdrawn", app.stage, userId, now);
@@ -282,6 +353,22 @@ export async function applyStates(userId: string | null, jobIds: string[], deps:
       return [id, analysis ? { kind: "can_apply" } : { kind: "no_resume" }];
     }),
   );
+}
+
+/**
+ * Each posted job's Express apply criteria against the person's current accepted proofs, for Departures. Signed out,
+ * there is nothing to read; a job that asks for nothing has no lines.
+ */
+export async function criteriaStates(userId: string | null, jobIds: string[], deps: { db?: Db; now?: Date } = {}): Promise<Record<string, CriteriaView>> {
+  if (!userId || !jobIds.length) return {};
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const [rows, proved, certificates] = await Promise.all([
+    db.select({ id: jobs.id, criteria: jobs.criteria }).from(jobs).where(inArray(jobs.id, jobIds)),
+    provedByUser([userId], db, now),
+    certificatesByUser([userId], db, now),
+  ]);
+  return Object.fromEntries(rows.map((r) => [r.id, criteriaStatus(r.criteria, proved.get(userId) ?? new Set(), certificates.get(userId) ?? new Set())]));
 }
 
 /* The company ----------------------------------------------------------------------------------------------------- */
@@ -404,6 +491,8 @@ export async function visibleApplication(userId: string, applicationId: string, 
       aiRound: jobs.aiRound,
       jobStatus: jobs.status,
       requirements: jobs.requirements,
+      criteria: jobs.criteria,
+      note: applications.note,
       jobTitle: jobs.title,
       orgId: applications.orgId,
       orgStatus: organizations.reviewStatus,
@@ -426,8 +515,9 @@ export async function visibleApplication(userId: string, applicationId: string, 
 }
 
 /**
- * The candidate drawer: public profile, Match to this job and Activity. Each opening writes one audit line (who,
- * which application, when; nothing of the person). A withdrawn application shows nothing.
+ * The candidate drawer: the application packet (public profile, Match to this job and the Express apply criteria, the
+ * same as the candidate's preview), Can join, their note, and Activity. Each opening writes one audit line (who, which
+ * application, when; nothing of the person). A withdrawn application shows nothing.
  */
 export async function openCandidate(userId: string, raw: unknown, deps: ApplicationDeps = {}): Promise<ApplicationResult<{ candidate: CandidateView }>> {
   const db = deps.db ?? getDb();
@@ -440,9 +530,10 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   // A withdrawn application gives nothing away: the company sees only a count of them.
   if (app.withdrawnAt) return fail("not_found");
   const viewer = { userId, canMove: access.canMove };
-  const [profileOf, proved, events, booked, audience, [chat], blocked] = await Promise.all([
+  const [profileOf, proved, certificates, events, booked, audience, [chat], blocked] = await Promise.all([
     latestProfiles(app.resumeId ? [app.resumeId] : [], db),
     provedByUser([app.userId], db, now),
+    certificatesByUser([app.userId], db, now),
     eventsOf([app.id], db),
     companyInterviewsOf([app.id], viewer, db, now),
     phoneAudience(app.id, viewer, db, now),
@@ -451,6 +542,17 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
   ]);
   const offered = await offeredState(app.id, chat?.id ?? null, db, now);
   const profile = app.resumeId ? (profileOf.get(app.resumeId) ?? null) : null;
+  const packet = applicationPacketFor(
+    {
+      name: displayName(app.name),
+      profile,
+      requirements: app.requirements,
+      criteria: app.criteria,
+      proved: proved.get(app.userId) ?? new Set(),
+      certificates: certificates.get(app.userId) ?? new Set(),
+    },
+    now,
+  );
   // The phone the candidate chose to share at an accepted interview: for that interview's team, while the application is open.
   const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt });
   // A candidate who blocked the company can't be asked for times or booked (the server refuses both), so the drawer
@@ -467,8 +569,10 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
       stage: app.stage,
       canJoin: app.canJoin,
       appliedOn: isoDay(app.createdAt),
-      profile: publicProfile(displayName(app.name), profile, now),
-      match: jobMatch(app.requirements, profile, proved.get(app.userId) ?? new Set(), now),
+      profile: packet.profile,
+      match: packet.match,
+      criteria: packet.criteria,
+      note: app.note,
       events: events.get(app.id) ?? [],
       interviews: {
         interviews: booked.get(app.id) ?? [],
@@ -532,6 +636,7 @@ export async function exportApplications(userId: string, db: Db = getDb(), env: 
       job: jobs.title,
       stage: applications.stage,
       canJoin: applications.canJoin,
+      note: applications.note,
       createdAt: applications.createdAt,
       withdrawnAt: applications.withdrawnAt,
       closedAt: applications.closedAt,

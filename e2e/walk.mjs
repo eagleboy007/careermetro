@@ -885,7 +885,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 12) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 14) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1073,6 +1073,154 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted
+// certificates go into the database (adding one runs through the Today form, covered by its own tests): a Credly badge
+// in her name, a Credly badge for another certificate, a Microsoft Learn link and an expired one. On /me she checks the
+// first two with Credly (local test mode answers from fixtures/credly, so nothing calls Credly): one turns Verified with
+// Credly with its badge link and keeps focus on its button, the other stays Added by you with the reason. The walk's
+// account then opens her /u page: the verified one first, "Added by Asha", never the expired one, the reason, the
+// Microsoft link or a credential key, even in the HTML. axe passes, and /me doesn't scroll sideways at 360px.
+if (process.env.DATABASE_URL) {
+  await step("certifications: check with Credly on Me, verified first on the public profile, nothing private shown", async () => {
+    const ctx2 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const q = await ctx2.newPage();
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    const email = `certs-${testEmail}`;
+    const handle = `ashacerts${Date.now() % 1e8}`;
+    const msLink = "https://learn.microsoft.com/api/credentials/share/en-us/AshaRaoWalk/WALKCERT1";
+    try {
+      await q.goto(BASE + "/sign-in");
+      await q.locator('input[name="name"]').fill("Asha Rao");
+      await q.locator('input[name="email"]').fill(email);
+      await q.locator('form button[type="submit"]').last().click();
+      await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/today/, { timeout: 15000 });
+
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [asha] = await sql`select id from users where email like ${email + "%"} order by created_at desc limit 1`;
+        if (!asha) throw new Error("Asha's account not found");
+        // Earlier walks on this database verified the same fixture badges; one badge counts for one account only.
+        await sql`delete from gap_proofs where badge_id like 'c4ed1100-%' and user_id in (select id from users where email like 'certs%' and id <> ${asha.id})`;
+        await sql`update users set username = ${handle} where id = ${asha.id}`;
+        await sql`insert into user_settings (user_id, profile_visibility) values (${asha.id}, 'signed_in')
+          on conflict (user_id) do update set profile_visibility = 'signed_in', show_certifications = true`;
+        const add = (certId, url, issuedOn, expiresOn) =>
+          sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, issued_on, expires_on, credential_key, name_matched, badge_id, verified_at)
+            values (${asha.id}, 'aws', 'certification', 'accepted', ${sql.json({ type: "certification", certId, issuer: "walk", url })}, ${certId}, ${issuedOn}, ${expiresOn},
+              ${`walk-${certId}-${asha.id}`}, true, ${url.match(/badges\/([0-9a-f-]{36})/)?.[1] ?? null}, now())`;
+        await add("aws-cloud-practitioner", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002", "2025-06-10", "2028-06-10");
+        await add("aws-security-specialty", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000003", "2026-02-01", null);
+        await add("azure-fundamentals", msLink, "2025-11-20", null);
+        await add("cka", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000009", "2023-01-05", "2026-01-05");
+      } finally {
+        await sql.end();
+      }
+
+      await q.goto(BASE + "/me");
+      await q.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      const rail = q.locator("section", { has: q.getByRole("heading", { name: /^Certifications/ }) });
+      await rail.getByText("AWS Certified Cloud Practitioner").waitFor({ timeout: 10000 });
+      if ((await rail.getByText("Added by you").count()) !== 4) throw new Error("expected 4 certificates Added by you before any check");
+      await rail.getByText(/Expired Jan 2026/).waitFor();
+      // The Microsoft Learn link can't be checked with Credly.
+      if ((await rail.getByRole("button", { name: /Check with Credly/ }).count()) !== 3) throw new Error("expected Check with Credly on the 3 Credly badges only");
+
+      const check = rail.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
+      await check.focus();
+      await q.keyboard.press("Enter");
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 15000 });
+      await rail.getByRole("link", { name: /See the badge on Credly/ }).waitFor();
+      const focused = await q.evaluate(() => document.activeElement?.getAttribute("aria-label") ?? document.activeElement?.tagName);
+      if (focused === "BODY" || !focused) throw new Error("focus fell to the page after the check");
+      if (!/AWS Certified Cloud Practitioner/.test(focused)) throw new Error(`focus moved to ${focused}`);
+
+      await rail.getByRole("button", { name: "Check with Credly: AWS Certified Security – Specialty" }).click();
+      await rail.getByText("Still Added by you. The Credly badge is for a different certificate.").waitFor({ timeout: 15000 });
+      await rail.getByText("The Credly badge is for a different certificate.", { exact: true }).waitFor({ timeout: 10000 });
+      await a11yOn(q, "me-certifications");
+      await q.emulateMedia({ colorScheme: "dark" });
+      await q.reload();
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 10000 });
+      await a11yOn(q, "me-certifications-dark");
+      await q.emulateMedia({ colorScheme: "light" });
+      await q.setViewportSize({ width: 360, height: 780 });
+      await q.reload();
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 10000 });
+      if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("/me scrolls sideways at 360px");
+      await q.screenshot({ path: `${OUT}me-certifications-phone.png`, fullPage: true });
+    } finally {
+      await ctx2.close();
+    }
+
+    // The walk's account opens Asha's profile link.
+    await p.goto(BASE + `/u/${handle}`);
+    await settled();
+    await p.getByRole("heading", { level: 1, name: "Asha Rao" }).waitFor({ timeout: 10000 });
+    const certs = p.locator("section", { has: p.getByRole("heading", { name: /^Certifications/ }) });
+    const names = await certs.locator("li span.font-semibold").allInnerTexts();
+    if (JSON.stringify(names) !== JSON.stringify(["AWS Certified Cloud Practitioner", "AWS Certified Security – Specialty", "Microsoft Certified: Azure Fundamentals (AZ-900)"]))
+      throw new Error(`public certifications: ${JSON.stringify(names)}`);
+    await certs.getByText("Verified with Credly", { exact: true }).waitFor();
+    if ((await certs.getByText("Added by Asha", { exact: true }).count()) !== 2) throw new Error("expected Added by Asha twice");
+    const badge = await certs.getByRole("link", { name: /See the badge on Credly/ }).getAttribute("href");
+    if (badge !== "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002") throw new Error(`badge link ${badge}`);
+    if (await certs.getByRole("button").count()) throw new Error("a visitor sees Check with Credly");
+    const html = await p.content();
+    for (const bad of ["Certified Kubernetes", "learn.microsoft.com", "AshaRaoWalk", "WALKCERT1", "different certificate", "walk-aws", "c4ed1100-0000-4000-8000-000000000003", "Expired"])
+      if (html.includes(bad)) throw new Error(`the public profile carries ${bad}`);
+    await shot("public-certifications");
+    await a11y("public-certifications");
+
+    // A second account, also named Asha Rao, adds the same badge and checks it: it is already verified on Asha's
+    // account, so it is held for review, not refused for good. The row leaves the list and focus moves to the
+    // Certifications heading, never to the page.
+    const ctx3 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const r = await ctx3.newPage();
+    r.on("pageerror", (e) => problems.push(`pageerror@${r.url()}: ${e.message.slice(0, 200)}`));
+    r.on("response", (res) => res.status() >= 500 && problems.push(`${res.status()} ${res.request().method()} ${res.url()}`));
+    const email2 = `certs2-${testEmail}`;
+    try {
+      await r.goto(BASE + "/sign-in");
+      await r.locator('input[name="name"]').fill("Asha Rao");
+      await r.locator('input[name="email"]').fill(email2);
+      await r.locator('form button[type="submit"]').last().click();
+      await r.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await r.locator('input[name="age"]').check();
+      await r.locator("form", { has: r.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await r.waitForURL(/\/today/, { timeout: 15000 });
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [other] = await sql`select id from users where email like ${email2 + "%"} order by created_at desc limit 1`;
+        if (!other) throw new Error("the second account was not found");
+        const url = "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002";
+        await sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, issued_on, expires_on, credential_key, name_matched, badge_id, verified_at)
+          values (${other.id}, 'aws', 'certification', 'accepted', ${sql.json({ type: "certification", certId: "aws-cloud-practitioner", issuer: "walk", url })},
+            'aws-cloud-practitioner', '2025-06-10', '2028-06-10', ${`walk-squat-${other.id}`}, true, 'c4ed1100-0000-4000-8000-000000000002', now())`;
+      } finally {
+        await sql.end();
+      }
+      await r.goto(BASE + "/me");
+      await r.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      const rail2 = r.locator("section", { has: r.getByRole("heading", { name: /^Certifications/ }) });
+      const check2 = rail2.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
+      await check2.focus();
+      await r.keyboard.press("Enter");
+      await rail2.getByText(/already verified on another account, so we'll review it/).waitFor({ timeout: 15000 });
+      await check2.waitFor({ state: "detached", timeout: 10000 });
+      const at = await r.evaluate(() => ({ tag: document.activeElement?.tagName, text: document.activeElement?.textContent ?? "" }));
+      if (at.tag === "BODY" || !/Certifications/.test(at.text)) throw new Error(`focus after the held check: ${JSON.stringify(at)}`);
+      await a11yOn(r, "me-certifications-held");
+    } finally {
+      await ctx3.close();
+    }
+  });
+}
 // The company the Corporate step sets up, for the company review step after it.
 let corpDomain = null;
 // Corporate (dev/corporate-plan.md, build steps 1 and 2): a signed-in person sets up a company with a work email on
@@ -1290,6 +1438,7 @@ await step("company review: not found for others; the admin verifies the new com
 });
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
+let proofSkill = "";
 // Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
 // again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
 // with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
@@ -1319,6 +1468,30 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     const added = await nice.locator("option:checked").innerText();
     await nice.locator("xpath=following-sibling::button").click();
     await q.getByRole("button", { name: `Remove ${added} from Nice to have` }).waitFor();
+    // Express apply criteria (pending item 16): proof of one required skill, and a certificate from our list.
+    const proofOf = q.getByRole("group", { name: "Proof of required skills" }).getByRole("checkbox").first();
+    await proofOf.check();
+    proofSkill = (await proofOf.locator("xpath=..").innerText()).trim();
+    const cert = q.getByLabel("Add a certificate");
+    await cert.selectOption({ label: "CompTIA Security+" });
+    await cert.locator("xpath=following-sibling::button").click();
+    await q.getByRole("button", { name: "Remove CompTIA Security+ from Express apply criteria" }).waitFor();
+    // At the limit of 3 the picker stays focusable (aria-disabled), so focus never drops to the page: after adding the
+    // third, and after removing one of three.
+    const onPicker = () => cert.evaluate((el) => el === document.activeElement);
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await cert.selectOption({ label: extra });
+      await cert.locator("xpath=following-sibling::button").click();
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).waitFor();
+    }
+    if (!(await onPicker())) throw new Error("focus not on the certificate picker after adding the third");
+    if ((await cert.getAttribute("aria-disabled")) !== "true") throw new Error("the certificate picker isn't marked full at 3");
+    for (const extra of ["Splunk Core Certified User", "Google Cybersecurity Professional Certificate"]) {
+      await q.getByRole("button", { name: `Remove ${extra} from Express apply criteria` }).click();
+      if (!(await onPicker())) throw new Error("focus not on the certificate picker after removing one");
+    }
+    await q.getByRole("article").getByText("Express apply asks for").waitFor();
+    await q.getByRole("article").getByText(`Proof of ${proofSkill}`).waitFor();
     // Open job stays off until the three ticks.
     if (await q.getByRole("button", { name: "Open job" }).isEnabled()) throw new Error("Open job enabled before the three ticks");
     for (const name of ["This job is real and open now.", "We never ask candidates for a fee, deposit or paid training.", /don't screen people out/])
@@ -1377,8 +1550,9 @@ await step("corporate jobs: post, open, see it on Departures, report, pause", as
     await q.getByRole("heading", { name: "Departures" }).first().waitFor();
     if (await q.getByRole("heading", { name: title }).count()) throw new Error("paused job still on Departures");
 
-    const [job] = await sql`select id, status, ai_round from jobs where title = ${title}`;
+    const [job] = await sql`select id, status, ai_round, criteria from jobs where title = ${title}`;
     if (job?.status !== "paused" || job.ai_round) throw new Error("job not saved as paused with the AI round off");
+    if (job.criteria?.verifiedSkills?.length !== 1 || job.criteria?.certificates?.join() !== "comptia-security-plus") throw new Error("criteria not saved: " + JSON.stringify(job.criteria));
     const actions = (await sql`select action from audit_logs where target = ${`job:${job.id}`} order by created_at`).map((r) => r.action);
     if (actions.join() !== "job_opened,job_paused") throw new Error("audit lines: " + actions.join());
     const [reported] = await sql`select count(*)::int as n from reports where target = 'job' and target_id = ${job.id}`;
@@ -1401,6 +1575,7 @@ await step("corporate applications: apply with consent, the board, move a lane, 
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
   const title = postedTitle;
   const NOTE = "We need hands-on SIEM for this role. Apply again once SIEM is proved.";
+  const EXPRESS_NOTE = "I triage SIEM alerts every week and wrote two incident runbooks. Happy to walk you through one.";
   try {
     // The jobs step paused it; open it again.
     await q.setViewportSize({ width: 1280, height: 900 });
@@ -1409,23 +1584,81 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await q.getByRole("button", { name: `Open again ${title}` }).click();
     await q.getByRole("status").getByText(/Open again\./).waitFor({ timeout: 10000 });
 
-    // The candidate applies: nothing goes without the consent tick.
+    // The candidate applies with Express apply (pending item 16): a preview of exactly what the company receives, the
+    // criteria as met or not yet, a note, and nothing goes without the consent tick.
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
     await p.goto(BASE + "/departures");
     const card = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
     await card.waitFor({ timeout: 10000 });
-    await card.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
-    await card.getByRole("heading", { name: "Example Labs will see" }).waitFor();
-    if (!(await card.getByLabel("When can you join?").evaluate((el) => el === document.activeElement))) throw new Error("focus not on the first field of the consent");
-    await card.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
-    await card.getByRole("button", { name: "Send application" }).click();
-    await card.getByRole("alert").getByText(/Tick the box to share these with Example Labs/).waitFor();
-    await shot("departures-apply-consent");
-    await a11y("departures-apply-consent");
-    await card.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
-    await card.getByRole("button", { name: "Send application" }).click();
-    await card.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+    // The card shows the job's criteria for this person: the certificate isn't proved, so it reads Not yet.
+    await card.getByText(/Express apply criteria · /).waitFor();
+    await card.getByText("CompTIA Security+: Not yet").waitFor();
+    const express = card.getByRole("button", { name: `Express apply: ${title}` });
+    await express.click();
+    const preview = p.getByRole("dialog", { name: "What Example Labs receives" });
+    await preview.waitFor();
+    // Focus starts inside the dialog, on its heading, never on the page body.
+    if (!(await preview.getByRole("heading", { name: "What Example Labs receives" }).evaluate((el) => el === document.activeElement))) throw new Error("focus not on the preview's heading");
+    await preview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
+    await preview.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
+    // The criteria, met or not yet, and the warning that unmet ones don't block.
+    await preview.getByText("Express apply criteria", { exact: true }).waitFor();
+    await preview.getByText(`Proof of ${proofSkill}`).waitFor();
+    await preview.getByText("CompTIA Security+", { exact: true }).waitFor();
+    await preview.getByText("Not yet").first().waitFor();
+    await preview.getByText(/Not met yet doesn't stop you/).waitFor();
+    await preview.getByText(/Never sent: your gaps, path, goals, pay, phone, email, notice period, resume lines/).waitFor();
+    const previewText = await preview.innerText();
+    if (previewText.includes(testEmail)) throw new Error("email shown in the preview");
+    // Escape closes it and focus goes back to Express apply; opening again keeps what was written.
+    await preview.getByLabel(/A note to Example Labs/).fill("Call me on 98765 43210 any evening.");
+    await p.keyboard.press("Escape");
+    await preview.waitFor({ state: "hidden" });
+    if (!(await express.evaluate((el) => el === document.activeElement))) throw new Error("focus not back on Express apply after Escape");
+    await express.click();
+    await preview.waitFor();
+    if ((await preview.getByLabel(/A note to Example Labs/).inputValue()) !== "Call me on 98765 43210 any evening.") throw new Error("the note was lost on closing the preview");
+    // The preview is modal: Tab never leaves it.
+    for (let k = 0; k < 25; k++) {
+      await p.keyboard.press("Tab");
+      const where = await p.evaluate(() => (document.activeElement?.closest("dialog") ? "dialog" : document.activeElement === document.body ? "browser" : document.activeElement?.outerHTML.slice(0, 80)));
+      if (where !== "dialog" && where !== "browser") throw new Error("Tab left the preview for " + where);
+    }
+    await preview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    // A phone number in the note is refused, as the headline does.
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.getByRole("alert").getByText(/Leave out email addresses and phone numbers/).waitFor();
+    if (!(await preview.getByRole("alert").evaluate((el) => el === document.activeElement))) throw new Error("focus not on the preview's error");
+    await preview.getByLabel(/A note to Example Labs/).fill(EXPRESS_NOTE);
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.getByRole("alert").getByText(/Tick the box to send this to Example Labs/).waitFor();
+    await shot("departures-express-preview");
+    await a11y("departures-express-preview");
+    // Phone size in dark mode: the preview fits with no sideways scroll at 360px.
+    await p.setViewportSize({ width: 360, height: 740 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    const wide = await preview.evaluate((d) => d.scrollWidth - d.clientWidth);
+    const pageWide = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (wide > 1 || pageWide > 1) throw new Error(`preview at 360px: sideways scroll ${wide}px / page ${pageWide}px`);
+    await a11y("departures-express-preview-phone-dark");
+    await shot("departures-express-preview-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await preview.getByRole("checkbox", { name: /I agree to send this to Example Labs/ }).check();
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.waitFor({ state: "hidden", timeout: 15000 });
+    const done = card.getByRole("status").getByText("Applied · Applied");
+    await done.waitFor({ timeout: 15000 });
+    // Focus lands on the confirmation, never on the page body.
+    const focused = await p.evaluate(() => (document.activeElement === document.body ? "body" : (document.activeElement?.textContent ?? "")));
+    if (!focused.includes("Applied · Applied")) throw new Error("focus after sending: " + focused.slice(0, 80));
+    const [sent] = await sql`select a.note from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
+    if (sent?.note !== EXPRESS_NOTE) throw new Error("the note was not saved with the application");
+
+    // Every other job keeps the external link: the example roles show "Apply on company site", never Express apply.
+    await p.getByRole("button", { name: /^Apply on company site/ }).or(p.getByRole("link", { name: /^Apply on company site/ })).first().waitFor();
+    if (await p.getByText("Express apply · soon").count()) throw new Error("an external role still offers Express apply");
 
     // The job team's board.
     await q.goto(BASE + "/corporate");
@@ -1443,9 +1676,31 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await open.click();
     const drawer = q.getByRole("dialog", { name: "Priya Sharma" });
     await drawer.getByText("Never shown to companies", { exact: false }).waitFor({ timeout: 10000 });
+    // The company reads the note on the Profile tab, and the criteria on Match to this job.
+    await drawer.getByText("Their note").waitFor();
+    await drawer.getByText(EXPRESS_NOTE).waitFor();
+    const profileHtml = await drawer.innerHTML();
     await drawer.getByRole("tab", { name: "Match to this job" }).click();
     await drawer.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
+    await drawer.getByText("Express apply criteria", { exact: true }).waitFor();
+    await drawer.getByText(`Proof of ${proofSkill}`).waitFor();
     if ((await drawer.innerText()).includes(testEmail)) throw new Error("email shown in the candidate drawer");
+    // No gaps in the packet the company received: none of the person's gap explanations or readiness words, and no
+    // email, goals or path, in the drawer's HTML on either tab.
+    const drawerHtml = profileHtml + (await drawer.innerHTML());
+    const [cand] = await sql`select a.user_id as id from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
+    const analyses = await sql`select ga.result from gap_analyses ga join profiles pr on pr.id = ga.profile_id join resumes r on r.id = pr.resume_id where r.user_id = ${cand.id}`;
+    const gapTexts = analyses.flatMap(({ result }) => [
+      // The person's own gap words: why each skill is a gap, and how ready they are. (A requirement is the role's text, and a
+      // quote can be a certificate name the public profile lists, so neither is checked.)
+      ...(result.gaps ?? []).map((g) => g.explanation),
+      result.readiness?.headline,
+      result.readiness?.explanation,
+    ]).filter((t) => typeof t === "string" && t.length > 12);
+    if (!gapTexts.length) throw new Error("no gap texts to check the drawer against");
+    const leaked = gapTexts.filter((t) => drawerHtml.includes(t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")) || drawerHtml.includes(t));
+    if (leaked.length) throw new Error("gap text in the company's drawer: " + leaked[0].slice(0, 60));
+    if (drawerHtml.includes(testEmail) || /Your goals|Your path|Between you and this role/.test(drawerHtml)) throw new Error("gaps, goals, path or email in the company's drawer");
     await a11yOn(q, "corporate-candidate");
     // The drawer is modal: Tab never leaves it. Arrow keys move between its tabs. Escape closes it, focus back on the card.
     for (let k = 0; k < 15; k++) {
@@ -2092,10 +2347,13 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await fp.goto(BASE + "/departures");
     const fcard = fp.getByRole("article").filter({ has: fp.getByRole("heading", { name: title }) });
     await fcard.waitFor({ timeout: 10000 });
-    await fcard.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
-    await fcard.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
-    await fcard.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
-    await fcard.getByRole("button", { name: "Send application" }).click();
+    await fcard.getByRole("button", { name: `Express apply: ${title}` }).click();
+    const fpreview = fp.getByRole("dialog", { name: "What Example Labs receives" });
+    await fpreview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
+    await fpreview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await fpreview.getByRole("checkbox", { name: /I agree to send this to Example Labs/ }).check();
+    await fpreview.getByRole("button", { name: "Send application" }).click();
+    await fpreview.waitFor({ state: "hidden", timeout: 15000 });
     await fcard.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
     const [arjunApp] = await sql`select id from applications where user_id = ${user.id} and job_id = ${job.id}`;
     await fp.goto(BASE + "/settings");

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
-import { jobMatch, matchSummary, publicProfile } from "./match";
+import { applicationPacketFor, jobMatch, matchSummary, publicProfile } from "./match";
 
 // Synthetic person (never a real resume).
 const NOW = new Date("2026-10-13T10:00:00Z");
@@ -59,8 +59,51 @@ describe("the public profile a company sees", () => {
     expect(text).not.toContain("laptops");
   });
 
+  it("lists only the public certifications: current ones, at most 5, never an expired one", () => {
+    const held = (name: string, expires: string | null = null) => ({ name, earned: "2024-01", expires });
+    const many: Profile = {
+      ...profile,
+      certifications: [
+        held("Old Cert A", "2025-06"),
+        held("Cert 1"),
+        held("Cert 2", "2027-01"),
+        held("Cert 3"),
+        held("Cert 4"),
+        held("Cert 5"),
+        held("Cert 6"),
+      ],
+    };
+    const names = publicProfile("Priya Nair", many, NOW).certifications;
+    expect(names).toEqual(["Cert 1", "Cert 2", "Cert 3", "Cert 4", "Cert 5"]);
+    expect(names).not.toContain("Old Cert A");
+    const packet = applicationPacketFor({ name: "Priya Nair", profile: many, requirements: req, criteria: { verifiedSkills: [], certificates: [] }, proved: new Set(), certificates: new Set() }, NOW);
+    expect(packet.profile.certifications).toEqual(names);
+  });
+
   it("says looking for a next role when no job is current, and nothing more without a resume", () => {
     expect(publicProfile("A", { ...profile, roles: [profile.roles[1]] }, NOW).headline).toBe("Looking for a next role");
     expect(publicProfile("A", null, NOW)).toEqual({ name: "A", headline: null, experience: [], education: [], certifications: [] });
+  });
+});
+
+describe("the application packet (Express apply)", () => {
+  const criteria = { verifiedSkills: ["siem", "aws"], certificates: ["comptia-security-plus"] };
+
+  it("holds the public profile, Match to this job and the criteria, and nothing else", () => {
+    const packet = applicationPacketFor({ name: "Priya Nair", profile, requirements: req, criteria, proved: new Set(["siem"]), certificates: new Set(["comptia-security-plus"]) }, NOW);
+    expect(Object.keys(packet).sort()).toEqual(["criteria", "match", "profile"]);
+    expect(Object.keys(packet.profile).sort()).toEqual(["certifications", "education", "experience", "headline", "name"]);
+    expect(packet.criteria).toMatchObject({ met: 2, total: 3 });
+    expect(packet.match.requiredProved).toBe(1);
+    // Never a resume line, a skill's evidence, gaps or the person's goals.
+    const text = JSON.stringify(packet);
+    for (const never of ["branches", "laptops", "highlights", "evidence", "gaps", "goal", "lastUsed", "totalYearsExperience"]) expect(text).not.toContain(never);
+  });
+
+  it("meets nothing from the resume alone", () => {
+    const packet = applicationPacketFor({ name: "Priya Nair", profile, requirements: req, criteria, proved: new Set(), certificates: new Set() }, NOW);
+    // SIEM is on the resume and Security+ is a certificate on it, but neither is accepted proof.
+    expect(packet.criteria.met).toBe(0);
+    expect(packet.profile.certifications).toEqual(["CompTIA Security+"]);
   });
 });

@@ -87,8 +87,8 @@ export function CertificateForm({
         </b>
         <span className="text-[0.8rem] text-muted">
           {result.label === "verified"
-            ? "Verified: the issuer confirmed this certificate."
-            : "Uploaded: we have your verify link, but couldn't check it with the issuer yet. It still fills the goal."}
+            ? "Verified with Credly: the badge matches this certificate and your name."
+            : `Added by you: it fills the goal and shows on your profile as added by you. ${result.note ?? "Only Credly badges can be checked for now."}`}
         </span>
       </div>
     );

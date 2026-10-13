@@ -57,7 +57,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
 
   it("fills the goal with a current certificate in the person's name, keeping only a hash of the credential id", async () => {
     const me = await person("fill");
-    expect(await submit(me.userId, cert(me.goalId), true)).toEqual({ status: "filled", label: "verified", skillId: "aws" });
+    expect(await submit(me.userId, cert(me.goalId), true)).toMatchObject({ status: "filled", label: "verified", skillId: "aws" });
     expect(await goalStatus(me.goalId)).toBe("met");
     expect((await goalsOf(me.userId, db!, noGroups))[0]).toMatchObject({ status: "met", proved: true });
     const [proof] = await proofsOf(me.userId);
@@ -66,7 +66,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
     expect(JSON.stringify(proof)).not.toContain("Priya");
 
     // Sending it again changes nothing.
-    expect(await submit(me.userId, cert(me.goalId, { credentialId: "abc123xyz" }))).toEqual({ status: "filled", label: "verified", skillId: "aws" });
+    expect(await submit(me.userId, cert(me.goalId, { credentialId: "abc123xyz" }))).toMatchObject({ status: "filled", label: "verified", skillId: "aws" });
     expect(await proofsOf(me.userId)).toHaveLength(1);
   });
 

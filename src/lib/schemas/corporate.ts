@@ -1,7 +1,11 @@
 import { z } from "zod";
 import { checkWorkEmail, normalWebsite, workEmailProblemText } from "@/lib/corporate/domains";
 import { SLOT_KEY } from "@/lib/corporate/slots";
+import { hasContactDetails } from "@/lib/account/username";
 import {
+  APPLICATION_NOTE_CONTACT_TEXT,
+  APPLICATION_NOTE_LONG_TEXT,
+  APPLICATION_NOTE_MAX,
   APPLICATION_STAGES,
   CAN_JOIN,
   COMPANY_AUDIT_ACTIONS,
@@ -11,10 +15,12 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEWERS_MAX,
+  MATCH_WORDS,
   SLOTS_MAX,
   NOT_THIS_TIME_NOTE_MAX,
   NOT_THIS_TIME_NOTE_MIN,
   JOB_CITY_MAX,
+  JOB_CRITERIA_CERTIFICATES_MAX,
   JOB_NICE_MAX,
   JOB_ONE_OF_GROUPS_MAX,
   JOB_ONE_OF_SIZE_MAX,
@@ -155,6 +161,30 @@ export const jobRequirements = z
   );
 export type JobRequirements = z.output<typeof jobRequirements>;
 
+/* Express apply criteria (pending item 16; dev/express-apply-plan.md) ------------------------------------------------ */
+
+/** A certificate id from our certificate list. The store checks it is one of ours; the shape is checked here. */
+const certificateId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: "Pick certificates from the list." }).max(80);
+const once = (ids: string[]) => new Set(ids).size === ids.length;
+
+/**
+ * What a job asks for before Express apply (C9): required skills that need accepted proof, and certificates from our
+ * list. Unmet criteria only warn the candidate; they never block applying. No DigiLocker, skill-check level, notice
+ * period or "gaps allowed" yet.
+ */
+export const jobCriteria = z.object({
+  verifiedSkills: z
+    .array(skillId)
+    .max(JOB_REQUIRED_MAX, { error: `Ask for proof of ${JOB_REQUIRED_MAX} skills at most.` })
+    .refine(once, { error: "Pick each skill once." }),
+  certificates: z
+    .array(certificateId)
+    .max(JOB_CRITERIA_CERTIFICATES_MAX, { error: `Ask for ${JOB_CRITERIA_CERTIFICATES_MAX} certificates at most.` })
+    .refine(once, { error: "Pick each certificate once." }),
+});
+export type JobCriteria = z.output<typeof jobCriteria>;
+export const noCriteria = (): JobCriteria => ({ verifiedSkills: [], certificates: [] });
+
 /** The three ticks before a job opens. All must be ticked. */
 export const jobHonesty = z.object(
   {
@@ -170,17 +200,23 @@ export const jobHonesty = z.object(
  * into the role_profiles row. Team members are org_members ids, checked against the live team. `open` carries the
  * three ticks when the person also opens the job.
  */
-export const jobInput = z.object({
-  jobId: z.uuid().optional(),
-  roleSlug: z.string().regex(/^[a-z0-9-]{1,80}$/, { error: "Pick a role profile." }),
-  title: text(2, JOB_TITLE_MAX, "job title"),
-  workType: z.enum(JOB_WORK_TYPES, { error: "Pick a work type." }),
-  city: text(2, JOB_CITY_MAX, "city"),
-  requirements: jobRequirements,
-  hiring: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
-  interviewers: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
-  open: jobHonesty.optional(),
-});
+export const jobInput = z
+  .object({
+    jobId: z.uuid().optional(),
+    roleSlug: z.string().regex(/^[a-z0-9-]{1,80}$/, { error: "Pick a role profile." }),
+    title: text(2, JOB_TITLE_MAX, "job title"),
+    workType: z.enum(JOB_WORK_TYPES, { error: "Pick a work type." }),
+    city: text(2, JOB_CITY_MAX, "city"),
+    requirements: jobRequirements,
+    criteria: jobCriteria.default(noCriteria),
+    hiring: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
+    interviewers: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
+    open: jobHonesty.optional(),
+  })
+  .refine((j) => j.criteria.verifiedSkills.every((s) => j.requirements.required.includes(s)), {
+    error: "Ask for proof only of the job's required skills.",
+    path: ["criteria", "verifiedSkills"],
+  });
 export type JobInput = z.input<typeof jobInput>;
 
 /** Pause, close, or open again a job that was open before (a draft opens from the form, with the three ticks). */
@@ -192,11 +228,63 @@ export const jobStatusInput = z.object({ jobId: z.uuid(), to: z.enum(["open", "p
  * Applying to a job posted on CareerMetro: the consent tick naming the company, and when the person can join. Nothing
  * else: never a notice period, pay or phone (unknown keys are dropped).
  */
+
+/**
+ * The note sent with an application (Express apply): optional, at most APPLICATION_NOTE_MAX characters once trimmed,
+ * with line breaks kept (at most one blank line in a row). Like the headline, it refuses email addresses and phone
+ * numbers, since a company reads it. "" is no note.
+ */
+export const applicationNote = z
+  .string()
+  .max(APPLICATION_NOTE_MAX * 4, { error: APPLICATION_NOTE_LONG_TEXT })
+  .transform((v) =>
+    v
+      .replace(/\r\n?/g, "\n")
+      .replace(/[^\S\n]+/g, " ")
+      .replace(/ *\n */g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim(),
+  )
+  .refine((v) => v.length <= APPLICATION_NOTE_MAX, { error: APPLICATION_NOTE_LONG_TEXT })
+  .refine((v) => !hasContactDetails(v), { error: APPLICATION_NOTE_CONTACT_TEXT });
+
 export const applyInput = z.object({
   jobId: z.uuid(),
   canJoin: z.enum(CAN_JOIN, { error: "Pick when you can join." }),
   consent: z.literal(true, { error: "Tick the box to share these with the company." }),
+  note: applicationNote.default(""),
 });
+
+/** "Express apply" opens the preview of what the company would receive for this job. */
+export const previewInput = z.object({ jobId: z.uuid() });
+
+/*
+ * The application packet: everything a company receives about a candidate for one job, besides Can join and the note.
+ * The preview and the company's drawer are both built through this strict schema (src/lib/corporate/match.ts), so an
+ * extra field (gaps, path, goals, pay, phone, email, notice period, resume lines) fails instead of being sent.
+ */
+const shortText = z.string().max(400);
+const MATCH_STATES = Object.keys(MATCH_WORDS) as [keyof typeof MATCH_WORDS, ...(keyof typeof MATCH_WORDS)[]];
+export const packetProfile = z.strictObject({
+  name: shortText,
+  headline: shortText.nullable(),
+  experience: z.array(z.strictObject({ title: shortText, employer: shortText, dates: shortText })),
+  education: z.array(z.strictObject({ qualification: shortText, institution: shortText, year: shortText })),
+  certifications: z.array(shortText),
+});
+export const packetMatch = z.strictObject({
+  lines: z.array(z.strictObject({ label: shortText, state: z.enum(MATCH_STATES), group: z.enum(["required", "one_of", "nice"]) })),
+  requiredProved: z.int().min(0),
+  requiredOnResume: z.int().min(0),
+  requiredTotal: z.int().min(0),
+});
+export const packetCriteria = z.strictObject({
+  lines: z.array(z.strictObject({ kind: z.enum(["skill", "certificate"]), label: shortText, met: z.boolean() })),
+  met: z.int().min(0),
+  total: z.int().min(0),
+});
+export const applicationPacket = z.strictObject({ profile: packetProfile, match: packetMatch, criteria: packetCriteria });
+export type ApplicationPacket = z.output<typeof applicationPacket>;
 
 /** A move on the board. "Not this time" needs a note the candidate reads on Arrivals. */
 export const moveInput = z

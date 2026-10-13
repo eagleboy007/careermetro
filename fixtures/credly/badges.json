@@ -1,0 +1,164 @@
+{
+  "_about": "Synthetic Credly public badge replies (https://www.credly.com/badges/<id>.json), recorded in the shape of Credly's public badge JSON with made-up people and ids. Used by unit tests and by local test mode (the stand-in Claude API, never production) instead of the network. An id not listed here answers 404. dev/profile-certs-plan.md.",
+  "badges": {
+    "c4ed1100-0000-4000-8000-000000000001": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000001",
+          "state": "accepted",
+          "public": true,
+          "issued_at_date": "2025-03-01",
+          "expires_at_date": "2028-03-01",
+          "issued_to": "Priya Sharma",
+          "issued_to_first_name": "Priya",
+          "issued_to_last_name": "Sharma",
+          "badge_template": {
+            "id": "00000000-0000-4000-8000-00000000a001",
+            "name": "AWS Certified Cloud Practitioner",
+            "issuer": { "summary": "issued by Amazon Web Services Training and Certification", "entities": [{ "label": "Issued by", "primary": true, "entity": { "type": "Organization", "name": "Amazon Web Services Training and Certification" } }] }
+          },
+          "issuer": { "summary": "issued by Amazon Web Services Training and Certification", "entities": [{ "label": "Issued by", "primary": true, "entity": { "type": "Organization", "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000002": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000002",
+          "state": "accepted",
+          "public": true,
+          "issued_at_date": "2025-06-10",
+          "expires_at_date": "2028-06-10",
+          "issued_to": "Asha Rao",
+          "issued_to_first_name": "Asha",
+          "issued_to_last_name": "Rao",
+          "badge_template": { "id": "00000000-0000-4000-8000-00000000a001", "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "type": "Organization", "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000003": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000003",
+          "state": "accepted",
+          "public": true,
+          "expires_at_date": null,
+          "issued_to": "Asha Rao",
+          "badge_template": { "name": "AWS Certified Developer – Associate" },
+          "issuer": { "entities": [{ "entity": { "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000004": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000004",
+          "state": "revoked",
+          "public": true,
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000005": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000005",
+          "state": "accepted",
+          "public": true,
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "name": "Acme Cloud Academy" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000006": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000006",
+          "state": "accepted",
+          "public": true,
+          "expires_at_date": "2026-01-01",
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000007": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000007",
+          "state": "accepted",
+          "public": true,
+          "issued_to": "Amit Verma",
+          "badge_template": { "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000008": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000008",
+          "state": "accepted",
+          "public": false,
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "AWS Certified Cloud Practitioner" },
+          "issuer": { "entities": [{ "entity": { "name": "Amazon Web Services Training and Certification" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-000000000009": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-000000000009",
+          "state": "accepted",
+          "public": true,
+          "issued_to": "Sharma Priya",
+          "badge_template": { "name": "Microsoft Certified: Azure Fundamentals" },
+          "issuer": { "entities": [{ "entity": { "name": "Microsoft" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-00000000000a": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-00000000000a",
+          "state": "accepted",
+          "public": true,
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "CKA: Certified Kubernetes Administrator" },
+          "issuer": { "entities": [{ "entity": { "name": "The Linux Foundation" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-00000000000b": {
+      "status": 200,
+      "body": {
+        "data": {
+          "id": "c4ed1100-0000-4000-8000-00000000000b",
+          "state": "accepted",
+          "public": true,
+          "issued_to": "Priya Sharma",
+          "badge_template": { "name": "ISC2 Certified in Cybersecurity (CC)" },
+          "issuer": { "entities": [{ "entity": { "name": "(ISC)²" } }] }
+        }
+      }
+    },
+    "c4ed1100-0000-4000-8000-0000000000f0": { "status": 503, "body": null },
+    "c4ed1100-0000-4000-8000-0000000000f1": { "status": 200, "body": { "unexpected": true } }
+  }
+}
