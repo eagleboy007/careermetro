@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, eq, gte, inArray, isNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { certificateCredentials, gapAnalyses, gapProofs, jobChecks, paths, pathSteps, profiles, resumes, userGoals, users } from "@/db/schema";
 import { certifications, skillGroupMembers, skills } from "@/content";
@@ -278,6 +278,29 @@ export async function setProofStatus(
     await refreshGoals(tx, userId, proof.skillId, members);
     return true;
   });
+}
+
+/**
+ * Holds some of a person's accepted proofs for review (status pending with a reason), the same way a reused credential
+ * is held: they stop filling goals until someone reviews them, and the goals they filled are brought in line. `extra`
+ * sets other columns on the same rows. The caller holds the person's lock. Returns how many rows were held.
+ */
+export async function holdProofs(
+  tx: Tx,
+  userId: string,
+  where: SQL | undefined,
+  reason: string,
+  extra: Partial<typeof gapProofs.$inferInsert> = {},
+  members: ReadonlyMap<string, string[]> = skillGroupMembers,
+): Promise<number> {
+  const held = await tx
+    .update(gapProofs)
+    .set({ ...extra, status: "pending", heldReason: reason, verifier: null, verifiedAt: null })
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.status, "accepted"), where))
+    .returning({ skillId: gapProofs.skillId });
+  for (const skillId of new Set(held.map((h) => h.skillId))) await refreshGoals(tx, userId, skillId, members);
+  if (held.length) logEvent("info", "certificate_held", { reason });
+  return held.length;
 }
 
 /** Certificates one person may add in a day (dev/proof-plan.md, limits). */

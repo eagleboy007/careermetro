@@ -5,11 +5,11 @@ import { gapProofs, users } from "@/db/schema";
 import { certifications } from "@/content";
 import { resumeName } from "@/lib/account/name";
 import { localMockActive } from "@/lib/ai/local-mock";
-import { indiaToday, lockPerson } from "@/lib/goals/store";
+import { holdProofs, indiaToday, lockPerson } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
-import type { CredlyCheckNote, CredlyCheckOutcome } from "@/lib/schemas";
+import type { CredlyCheckOutcome } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { checkCredlyBadge, credlyBadgeId, fetchCredlyBadge, type CredlyFetcher } from "./credly";
+import { credlyBadgeId, fetchCredlyBadge, readCredlyBadge, type CredlyFetcher } from "./credly";
 import { credlyFixtureFetcher } from "./credly-fixtures";
 
 type Db = ReturnType<typeof getDb>;
@@ -27,9 +27,11 @@ export const credlyFetcherFor = (env: Env = process.env): CredlyFetcher => (loca
  * against the limits (takeShared on the transaction); (2) fetch and compare; (3) under the lock again, write the result
  * to every row of that credential still on the same link.
  *
- * A match marks it verified (verifier 'credly', verified_at now). A mismatch or a definite failure leaves it "Added by
- * you" with the reason. Credly not answering never takes a verification away. Proof rules don't change: the goal is
- * filled or not exactly as before. Logs carry only the outcome.
+ * A match marks it verified (verifier 'credly', verified_at now), and its expiry becomes the earlier of the typed date and
+ * the badge's. A mismatch or a definite failure leaves it "Added by you" with the reason. Credly not answering never
+ * takes a verification away. A badge already verified on another account is held for review, like a reused credential,
+ * and stops filling the goal until then. Otherwise the goal is filled or not exactly as before. Logs carry only the
+ * outcome.
  */
 export async function checkCertificateWithCredly(
   userId: string,
@@ -65,19 +67,10 @@ export async function checkCertificateWithCredly(
   }
 
   const fetcher = opts.fetcher ?? credlyFetcherFor(env);
-  let note: CredlyCheckNote | null = await checkCredlyBadge(start.badgeId, { cert: start.cert, accountName: start.accountName, today: opts.today ?? indiaToday(), env, fetcher });
+  const { note, expires } = await readCredlyBadge(start.badgeId, { cert: start.cert, accountName: start.accountName, today: opts.today ?? indiaToday(), env, fetcher });
 
   const outcome = await db.transaction(async (tx): Promise<CredlyCheckOutcome> => {
     await lockPerson(tx, userId);
-    // One badge, one account: a badge already verified for someone else isn't verified again here.
-    if (note === null) {
-      const [elsewhere] = await tx
-        .select({ id: gapProofs.id })
-        .from(gapProofs)
-        .where(and(eq(gapProofs.badgeId, start.badgeId), eq(gapProofs.verifier, "credly"), ne(gapProofs.userId, userId)))
-        .limit(1);
-      if (elsewhere) note = "used_elsewhere";
-    }
     // Every row of this credential (one per skill it proves) that is still accepted and on the same link.
     const sameCredential = and(
       eq(gapProofs.userId, userId),
@@ -89,9 +82,31 @@ export async function checkCertificateWithCredly(
     );
     const at = now();
     if (note === null) {
+      // One badge, one account. Checks of the same badge from two accounts run one at a time (a lock per badge, taken
+      // after the person's), so both can't verify it at once. A badge already verified for someone else is held for
+      // review, as a reused credential is: anyone can name an account after the badge's earner, so the first to verify
+      // must not lock the real owner out for good, and neither is settled until someone looks.
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`credly-badge:${start.badgeId}`}))`);
+      const [elsewhere] = await tx
+        .select({ id: gapProofs.id })
+        .from(gapProofs)
+        .where(and(eq(gapProofs.badgeId, start.badgeId), eq(gapProofs.verifier, "credly"), ne(gapProofs.userId, userId)))
+        .limit(1);
+      if (elsewhere) {
+        const held = await holdProofs(tx, userId, sameCredential, "badge_reused", { checkedAt: at, checkNote: "used_elsewhere", badgeId: start.badgeId });
+        return held ? { status: "held" } : { status: "refused", reason: "not_found" };
+      }
+      // Verified never outlives the badge: the expiry becomes the earlier of the typed date and Credly's.
       const done = await tx
         .update(gapProofs)
-        .set({ verifier: "credly", verifiedAt: at, checkedAt: at, checkNote: null, badgeId: start.badgeId })
+        .set({
+          verifier: "credly",
+          verifiedAt: at,
+          checkedAt: at,
+          checkNote: null,
+          badgeId: start.badgeId,
+          ...(expires ? { expiresOn: sql`least(coalesce(${gapProofs.expiresOn}, ${expires}::date), ${expires}::date)` } : {}),
+        })
         .where(sameCredential)
         .returning({ id: gapProofs.id });
       return done.length ? { status: "verified" } : { status: "refused", reason: "not_found" };

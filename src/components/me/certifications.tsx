@@ -21,23 +21,57 @@ export function ProfileCertifications({
   mode,
   ownerName,
   onCheck,
+  headingId,
 }: {
   certs: MeCertification[];
   mode: "own" | "public";
   /** The profile's name, for "Added by Priya" when someone else is looking. */
   ownerName?: string;
   onCheck?: (proofId: string) => Promise<CredlyCheckResult>;
+  /** The id of the list's heading (tabIndex -1). Focus goes there if a check takes the pressed row away. */
+  headingId?: string;
 }) {
-  if (!certs.length) return <p className="text-[0.8rem] text-muted">None yet.</p>;
+  // The last check and its proof. A check can take its row off the list (a badge held for review no longer counts), so
+  // the list says what happened and moves focus to its heading rather than leaving it on the page.
+  const [last, setLast] = useState<{ proofId: string; result: CredlyCheckResult } | null>(null);
+  const gone = last && !certs.some((c) => c.proofId === last.proofId) ? last : null;
+  useEffect(() => {
+    if (!gone || !headingId) return;
+    const active = document.activeElement;
+    if (!active || active === document.body) document.getElementById(headingId)?.focus();
+  }, [gone, headingId]);
+  const check = onCheck
+    ? async (proofId: string) => {
+        const result = await onCheck(proofId);
+        setLast({ proofId, result });
+        return result;
+      }
+    : undefined;
+
   // "you" would mean the viewer, so others read the person's first name.
   const first = ownerName && ownerName !== NO_NAME ? firstName(ownerName) : "";
   const addedBy = mode === "own" ? "Added by you" : first ? `Added by ${first}` : "Added by them";
+  const status = mode === "own" && (
+    <p role="status" className={gone ? "text-[0.76rem] text-ink" : "sr-only"}>
+      {gone?.result.message ?? ""}
+    </p>
+  );
+  if (!certs.length)
+    return (
+      <>
+        {status}
+        <p className="text-[0.8rem] text-muted">None yet.</p>
+      </>
+    );
   return (
-    <ul className="flex flex-col gap-3">
-      {certs.map((c, i) => (
-        <CertificationRow key={c.proofId ?? `resume-${i}-${c.name}`} cert={c} own={mode === "own"} addedBy={addedBy} onCheck={onCheck} />
-      ))}
-    </ul>
+    <>
+      {status}
+      <ul className="flex flex-col gap-3">
+        {certs.map((c, i) => (
+          <CertificationRow key={c.proofId ?? `resume-${i}-${c.name}`} cert={c} own={mode === "own"} addedBy={addedBy} onCheck={check} />
+        ))}
+      </ul>
+    </>
   );
 }
 

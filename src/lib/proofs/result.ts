@@ -23,4 +23,4 @@ export type CertificateInput = {
 };
 
 /** What "Check with Credly" on the profile says back (src/app/(app)/me/actions.ts). */
-export type CredlyCheckResult = { status: "verified" | "added" | "refused"; message: string };
+export type CredlyCheckResult = { status: "verified" | "added" | "held" | "refused"; message: string };

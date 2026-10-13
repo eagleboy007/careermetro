@@ -429,8 +429,10 @@ export default function DesignPage() {
         </p>
         <div className="grid gap-6 min-[760px]:grid-cols-2">
           <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
-            <h3 className="text-[0.95rem] font-semibold">Your own profile</h3>
-            <ProfileCertifications certs={exampleMe.certifications} mode="own" ownerName={exampleMe.name} />
+            <h3 id="design-certs-own" tabIndex={-1} className="text-[0.95rem] font-semibold">
+              Your own profile
+            </h3>
+            <ProfileCertifications certs={exampleMe.certifications} mode="own" ownerName={exampleMe.name} headingId="design-certs-own" />
           </div>
           <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
             <h3 className="text-[0.95rem] font-semibold">What others see</h3>

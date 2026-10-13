@@ -1090,6 +1090,8 @@ if (process.env.DATABASE_URL) {
       try {
         const [asha] = await sql`select id from users where email like ${email + "%"} order by created_at desc limit 1`;
         if (!asha) throw new Error("Asha's account not found");
+        // Earlier walks on this database verified the same fixture badges; one badge counts for one account only.
+        await sql`delete from gap_proofs where badge_id like 'c4ed1100-%' and user_id in (select id from users where email like 'certs%' and id <> ${asha.id})`;
         await sql`update users set username = ${handle} where id = ${asha.id}`;
         await sql`insert into user_settings (user_id, profile_visibility) values (${asha.id}, 'signed_in')
           on conflict (user_id) do update set profile_visibility = 'signed_in', show_certifications = true`;
@@ -1159,6 +1161,50 @@ if (process.env.DATABASE_URL) {
       if (html.includes(bad)) throw new Error(`the public profile carries ${bad}`);
     await shot("public-certifications");
     await a11y("public-certifications");
+
+    // A second account, also named Asha Rao, adds the same badge and checks it: it is already verified on Asha's
+    // account, so it is held for review, not refused for good. The row leaves the list and focus moves to the
+    // Certifications heading, never to the page.
+    const ctx3 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const r = await ctx3.newPage();
+    r.on("pageerror", (e) => problems.push(`pageerror@${r.url()}: ${e.message.slice(0, 200)}`));
+    r.on("response", (res) => res.status() >= 500 && problems.push(`${res.status()} ${res.request().method()} ${res.url()}`));
+    const email2 = `certs2-${testEmail}`;
+    try {
+      await r.goto(BASE + "/sign-in");
+      await r.locator('input[name="name"]').fill("Asha Rao");
+      await r.locator('input[name="email"]').fill(email2);
+      await r.locator('form button[type="submit"]').last().click();
+      await r.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await r.locator('input[name="age"]').check();
+      await r.locator("form", { has: r.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await r.waitForURL(/\/today/, { timeout: 15000 });
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [other] = await sql`select id from users where email like ${email2 + "%"} order by created_at desc limit 1`;
+        if (!other) throw new Error("the second account was not found");
+        const url = "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002";
+        await sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, issued_on, expires_on, credential_key, name_matched, badge_id, verified_at)
+          values (${other.id}, 'aws', 'certification', 'accepted', ${sql.json({ type: "certification", certId: "aws-cloud-practitioner", issuer: "walk", url })},
+            'aws-cloud-practitioner', '2025-06-10', '2028-06-10', ${`walk-squat-${other.id}`}, true, 'c4ed1100-0000-4000-8000-000000000002', now())`;
+      } finally {
+        await sql.end();
+      }
+      await r.goto(BASE + "/me");
+      await r.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      const rail2 = r.locator("section", { has: r.getByRole("heading", { name: /^Certifications/ }) });
+      const check2 = rail2.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
+      await check2.focus();
+      await r.keyboard.press("Enter");
+      await rail2.getByText(/already verified on another account, so we'll review it/).waitFor({ timeout: 15000 });
+      await check2.waitFor({ state: "detached", timeout: 10000 });
+      const at = await r.evaluate(() => ({ tag: document.activeElement?.tagName, text: document.activeElement?.textContent ?? "" }));
+      if (at.tag === "BODY" || !/Certifications/.test(at.text)) throw new Error(`focus after the held check: ${JSON.stringify(at)}`);
+      await a11yOn(r, "me-certifications-held");
+    } finally {
+      await ctx3.close();
+    }
   });
 }
 // The company the Corporate step sets up, for the company review step after it.

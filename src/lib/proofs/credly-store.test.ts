@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -157,8 +157,70 @@ describe.skipIf(!db)("Credly check (database)", () => {
     const a = await added(first.userId, first.goalId, { credentialId: `B1-${run}`, url: one });
     const b = await added(second.userId, second.goalId, { credentialId: `B2-${run}`, url: one });
     expect(await check(first.userId, a)).toEqual({ status: "verified" });
-    expect(await check(second.userId, b)).toEqual({ status: "added", note: "used_elsewhere" });
+    expect(await check(second.userId, b)).toEqual({ status: "held" });
     expect((await proof(b)).verifier).toBeNull();
+  });
+
+  it("holds a badge already verified elsewhere for review, like a reused credential, so the first account can't lock the owner out", async () => {
+    // Anyone can name an account after a badge's earner. The first to verify keeps it for now; the second is held for
+    // review (not refused for good), and their goal waits for that review.
+    const squatter = await person("squat-first");
+    const owner = await person("squat-owner");
+    const { url } = ownBadge();
+    const a = await added(squatter.userId, squatter.goalId, { credentialId: `SQ1-${run}`, url });
+    const b = await added(owner.userId, owner.goalId, { credentialId: `SQ2-${run}`, url });
+    expect(await check(squatter.userId, a)).toEqual({ status: "verified" });
+    expect(await goalStatus(owner.goalId)).toBe("met");
+    expect(await check(owner.userId, b)).toEqual({ status: "held" });
+    expect(await proof(b)).toMatchObject({ status: "pending", heldReason: "badge_reused", verifier: null, checkNote: "used_elsewhere" });
+    expect(await goalStatus(owner.goalId)).toBe("active");
+    // Held, it isn't checked again, and sending the certificate again keeps it held with one row.
+    expect(await check(owner.userId, b)).toEqual({ status: "refused", reason: "not_found" });
+    const again = await submitCertificate(owner.userId, cert(owner.goalId, { credentialId: `SQ2-${run}`, url }), { today: TODAY, env, db: db!, members: noGroups });
+    expect(again).toEqual({ status: "held", skillId: "aws" });
+    expect(await db!.select().from(schema.gapProofs).where(eq(schema.gapProofs.userId, owner.userId))).toHaveLength(1);
+    expect((await proof(a)).verifier).toBe("credly");
+  });
+
+  it("lets only one of two accounts checking the same badge at once verify it", async () => {
+    for (let round = 0; round < 3; round++) {
+      const one = await person(`race-${round}-a`);
+      const two = await person(`race-${round}-b`);
+      const { url } = ownBadge();
+      const a = await added(one.userId, one.goalId, { credentialId: `RA-${round}-${run}`, url });
+      const b = await added(two.userId, two.goalId, { credentialId: `RB-${round}-${run}`, url });
+      // A slow Credly reply for both, so both reach the write at about the same moment.
+      const slow: CredlyFetcher = async (id) => {
+        await new Promise((r) => setTimeout(r, 50));
+        return fetcher(id);
+      };
+      const results = await Promise.all([check(one.userId, a, slow), check(two.userId, b, slow)]);
+      expect(results.map((r) => r.status).sort()).toEqual(["held", "verified"]);
+      const verified = await db!.select().from(schema.gapProofs).where(and(eq(schema.gapProofs.badgeId, (await proof(a)).badgeId!), eq(schema.gapProofs.verifier, "credly")));
+      expect(verified).toHaveLength(1);
+    }
+  });
+
+  it("never lets Verified outlive the badge: the expiry becomes the earlier of the typed date and Credly's", async () => {
+    const expiring = (expires: string | null): CredlyFetcher => async (id) => {
+      const f = await fetcher(id);
+      return f.kind === "ok" ? { kind: "ok", body: { data: { ...(f.body as { data: object }).data, expires_at_date: expires } } } : f;
+    };
+    const cases: [string | null, string | null, string | null][] = [
+      // typed, Credly's, stored after verifying
+      ["2028-03-01", "2027-01-01", "2027-01-01"],
+      [null, "2027-01-01", "2027-01-01"],
+      ["2026-12-01", "2027-01-01", "2026-12-01"],
+      ["2028-03-01", null, "2028-03-01"],
+      [null, null, null],
+    ];
+    for (const [i, [typed, theirs, stored]] of cases.entries()) {
+      const me = await person(`expiry-${i}`);
+      const id = await added(me.userId, me.goalId, { expiresOn: typed });
+      expect(await check(me.userId, id, expiring(theirs)), String(i)).toEqual({ status: "verified" });
+      expect((await proof(id)).expiresOn, String(i)).toBe(stored);
+      expect(await goalStatus(me.goalId)).toBe("met");
+    }
   });
 
   it("checks only the person's own accepted Credly certificates", async () => {

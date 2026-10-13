@@ -79,5 +79,7 @@ export type CredlyBadge = z.infer<typeof credlyBadge>;
 export type CredlyCheckOutcome =
   | { status: "verified" }
   | { status: "added"; note: CredlyCheckNote }
+  /** The badge is already verified on another account: held for review, so it fills nothing until then. */
+  | { status: "held" }
   /** Nothing was checked: not their accepted proof, not a Credly badge link, or over the limit. */
   | { status: "refused"; reason: "not_found" | "not_credly" | "too_many" };

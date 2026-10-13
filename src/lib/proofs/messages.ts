@@ -13,8 +13,12 @@ export const CREDLY_NOTE_MESSAGES: Record<CredlyCheckNote, string> = {
   earner_name: "The name on the Credly badge doesn't match your account.",
   no_name: "Add your name to your account first, then check again.",
   expired: "Credly shows this badge as expired.",
-  used_elsewhere: "This badge is already verified on another account.",
+  used_elsewhere: "This badge is already verified on another account, so we'll review it.",
 };
+
+/** A Credly badge already verified on another account: held for review, like a reused credential. */
+export const CREDLY_HELD_MESSAGE =
+  "This Credly badge is already verified on another account, so we'll review it. The certificate doesn't fill the goal until then.";
 
 /** Why "Check with Credly" checked nothing. */
 export const CREDLY_REFUSAL_MESSAGES: Record<Extract<CredlyCheckOutcome, { status: "refused" }>["reason"], string> = {

@@ -217,12 +217,24 @@ export async function checkCredlyBadge(
   badgeId: string,
   input: Parameters<typeof compareBadge>[1] & { fetcher: CredlyFetcher },
 ): Promise<CredlyCheckNote | null> {
+  return (await readCredlyBadge(badgeId, input)).note;
+}
+
+/**
+ * The same check, also giving the badge's own expiry date (YYYY-MM-DD, null when Credly gives none), so a verified
+ * certificate never shows as current past the date Credly holds.
+ */
+export async function readCredlyBadge(
+  badgeId: string,
+  input: Parameters<typeof compareBadge>[1] & { fetcher: CredlyFetcher },
+): Promise<{ note: CredlyCheckNote | null; expires: string | null }> {
   const got = await input.fetcher(badgeId);
-  if (got.kind === "not_found") return "not_found";
-  if (got.kind === "private") return "not_public";
-  if (got.kind === "unreachable") return "unreachable";
+  if (got.kind === "not_found") return { note: "not_found", expires: null };
+  if (got.kind === "private") return { note: "not_public", expires: null };
+  if (got.kind === "unreachable") return { note: "unreachable", expires: null };
   const parsed = credlyBadge.safeParse(got.body);
-  if (!parsed.success) return "unreachable";
-  if (parsed.data.data.id.toLowerCase() !== badgeId.toLowerCase()) return "not_found";
-  return compareBadge(parsed.data, input);
+  if (!parsed.success) return { note: "unreachable", expires: null };
+  if (parsed.data.data.id.toLowerCase() !== badgeId.toLowerCase()) return { note: "not_found", expires: null };
+  const date = parsed.data.data.expires_at_date?.slice(0, 10) ?? null;
+  return { note: compareBadge(parsed.data, input), expires: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null };
 }

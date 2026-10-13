@@ -34,9 +34,11 @@ describe("checkCertificateOnCredly", () => {
     expect(refresh).toHaveBeenCalledTimes(1);
     check.mockResolvedValueOnce({ status: "added", note: "issuer" });
     expect(await checkCertificateOnCredly(id)).toEqual({ status: "added", message: "Still Added by you. The Credly badge is from a different issuer." });
+    check.mockResolvedValueOnce({ status: "held" });
+    expect(await checkCertificateOnCredly(id)).toEqual({ status: "held", message: expect.stringMatching(/review it/) });
     check.mockResolvedValueOnce({ status: "refused", reason: "too_many" });
     expect(await checkCertificateOnCredly(id)).toMatchObject({ status: "refused", message: expect.stringMatching(/tomorrow/) });
-    expect(refresh).toHaveBeenCalledTimes(2);
+    expect(refresh).toHaveBeenCalledTimes(3);
   });
 
   it("says so when something breaks, logging no id", async () => {

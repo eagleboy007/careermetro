@@ -2,7 +2,7 @@
 
 import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, PenLine, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
@@ -40,6 +40,7 @@ export function MeView({
   onCheckCertificate?: (proofId: string) => Promise<CredlyCheckResult>;
 }) {
   const [asOthers, setAsOthers] = useState(false);
+  const certsHeading = `${useId()}-certifications`;
   const back = useRef<HTMLButtonElement>(null);
   const view = useRef<HTMLButtonElement>(null);
   const pending = useRef(false);
@@ -289,8 +290,8 @@ export function MeView({
         )}
         {(!viewer || me.certifications.length > 0) && (
         <section>
-          <RailHead name="Certifications" note={`${me.certifications.filter((c) => c.status === "verified").length} verified`} />
-          <ProfileCertifications certs={me.certifications} mode={own ? "own" : "public"} ownerName={me.name} onCheck={onCheckCertificate} />
+          <RailHead id={certsHeading} name="Certifications" note={`${me.certifications.filter((c) => c.status === "verified").length} verified`} />
+          <ProfileCertifications certs={me.certifications} mode={own ? "own" : "public"} ownerName={me.name} onCheck={onCheckCertificate} headingId={certsHeading} />
           {own && (
             <Link href="/today" className="inline-flex min-h-11 items-center gap-1 self-start text-[0.82rem] font-[550] text-muted hover:text-ink">
               Add one from a goal on Today
@@ -372,8 +373,13 @@ const More = ({ href, children }: { href: string; children: ReactNode }) => (
 
 const Soonish = ({ children }: { children: ReactNode }) => <span className="text-[0.82rem] font-[550] text-muted">{children} · soon</span>;
 
-const RailHead = ({ name, note }: { name: string; note?: string }) => (
-  <h3 className="flex items-center justify-between gap-2.5 text-[0.95rem] font-semibold">
+/** With an `id`, the heading can take focus from code (tabIndex -1), e.g. when the item that had it goes away. */
+const RailHead = ({ name, note, id }: { name: string; note?: string; id?: string }) => (
+  <h3
+    id={id}
+    tabIndex={id ? -1 : undefined}
+    className="flex items-center justify-between gap-2.5 text-[0.95rem] font-semibold focus-visible:outline-2 focus-visible:outline-accent"
+  >
     {name}
     {note && <span className={label}>{note}</span>}
   </h3>

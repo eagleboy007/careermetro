@@ -7,7 +7,7 @@ import { submitCertificate } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { credlyBadgeId } from "@/lib/proofs/credly";
 import { checkCertificateWithCredly } from "@/lib/proofs/credly-store";
-import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
+import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_HELD_MESSAGE, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
 import type { CertificateResult } from "@/lib/proofs/result";
 import { tickTask } from "@/lib/ride/store";
 import { certificateSubmission } from "@/lib/schemas";
@@ -52,6 +52,10 @@ export async function addCertificate(input: unknown): Promise<CertificateResult>
     if (label !== "verified" && credlyBadgeId(parsed.data.url)) {
       try {
         const check = await checkCertificateWithCredly(account.id, outcome.proofId);
+        if (check.status === "held") {
+          refresh();
+          return { status: "held", message: CREDLY_HELD_MESSAGE };
+        }
         if (check.status === "verified") label = "verified";
         else note = check.status === "added" ? CREDLY_NOTE_MESSAGES[check.note] : CREDLY_REFUSAL_MESSAGES[check.reason];
       } catch (error) {

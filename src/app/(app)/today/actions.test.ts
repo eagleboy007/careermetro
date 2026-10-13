@@ -74,6 +74,10 @@ describe("addCertificate", () => {
     submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "refused", reason: "too_many" });
     expect(await addCertificate(good)).toMatchObject({ status: "filled", label: "added", note: expect.stringMatching(/tomorrow/) });
+    // A badge already verified on another account is held for review, so the goal is no longer filled.
+    submit.mockResolvedValueOnce({ status: "filled", label: "added", skillId: "aws", proofId: "p1" });
+    credly.mockResolvedValueOnce({ status: "held" });
+    expect(await addCertificate(good)).toEqual({ status: "held", message: expect.stringMatching(/review it/) });
   });
 
   it("doesn't check other links, and a failed check never fails the save", async () => {
