@@ -21,7 +21,8 @@ const listWords = (words: string[]) => (words.length < 2 ? words.join("") : `${w
  * nothing. `suggestions` (the roles the resume already covers best, src/lib/gaps/suggest.ts) show first when given.
  * "My role isn't listed" leads to a job posting that stands in for the role. Only deliberate actions count a missing
  * role (role_requests, nothing about the person): Enter in a search that finds nothing, and a click on "My role isn't
- * listed" with text in the box. Typing alone never counts. The typed text goes to the next page through sessionStorage,
+ * listed" while the search finds nothing (otherwise the stand-in posting counts its title once saved). Typing alone
+ * never counts. The typed text goes to the next page through sessionStorage,
  * never the address (role-suggest-plan.md part B).
  */
 export function RolePicker({
@@ -164,7 +165,8 @@ export function RolePicker({
         onClick={() => {
           if (demo) return;
           saveStandInTitle(query);
-          countMissing(typed);
+          // Only a search that found nothing; otherwise the stand-in check counts its title once it is saved.
+          if (shown.length === 0) countMissing(typed);
         }}
         className="group flex items-start gap-3 rounded-lg border border-dashed border-line bg-bg p-4 transition-colors hover:border-ink"
       >
