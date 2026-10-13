@@ -1,16 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState, useTransition, type FormEvent } from "react";
-import { readApiReply } from "@/lib/api-reply";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import type { JobCheckView } from "@/lib/jobs/groups";
-import { JOB_COMPANY_MAX, JOB_TEXT_MAX, JOB_TEXT_MIN, JOB_TITLE_MAX } from "@/lib/schemas/constants";
 import { JobCheckResult, jobCheckHeadingId, type GoalsContext } from "./job-check-result";
-
-const input =
-  "min-w-0 rounded-md border border-line bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
-
-const count = (n: number) => n.toLocaleString("en-IN");
+import { JobPostingForm } from "./job-posting-form";
 
 /**
  * "Check against a job" on the Gaps page (role-suggest-plan.md part B): paste a posting, see what that one job asks
@@ -35,27 +29,8 @@ export function JobCheck({
 }) {
   const router = useRouter();
   const ids = useId();
-  const [company, setCompany] = useState("");
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
-  const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
-  /** The field a form error is about; null for errors from the server (limit, budget), which mark no field. */
-  const [errorField, setErrorField] = useState<"company" | "title" | "text" | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const fail = (message: string, field: "company" | "title" | "text" | null) => {
-    setError(message);
-    setErrorField(field);
-  };
   const focusId = useRef<string | null>(null);
   const [refreshing, startRefresh] = useTransition();
-  const busy = sending || refreshing;
-  // After an error, focus the field it is about, or the posting box, so focus never drops to the page.
-  useEffect(() => {
-    if (!error || busy) return;
-    formRef.current?.querySelector<HTMLElement>(`[name="${errorField ?? "text"}"]`)?.focus();
-  }, [error, errorField, busy]);
 
   /** Said once a check is removed, in this component's own polite live region. */
   const [removedNote, setRemovedNote] = useState("");
@@ -67,42 +42,6 @@ export function JobCheck({
     focusId.current = null;
   }, [refreshing, ids]);
 
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("");
-    setRemovedNote("");
-    const length = text.trim().length;
-    if (!company.trim()) return fail("Add the company and the job title.", "company");
-    if (!title.trim()) return fail("Add the company and the job title.", "title");
-    if (length < JOB_TEXT_MIN) return fail(`Paste the full job posting: at least ${JOB_TEXT_MIN} characters.`, "text");
-    if (length > JOB_TEXT_MAX) return fail(`Paste up to ${count(JOB_TEXT_MAX)} characters of the posting.`, "text");
-    fail("", null);
-    if (demo) return setStatus("Checked. The result is below.");
-    setSending(true);
-    try {
-      const res = await fetch("/api/job-checks", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ resumeId, roleSlug, company, title, text }),
-      });
-      const reply = await readApiReply(res);
-      if (!reply.ok || typeof reply.id !== "string") {
-        fail(reply.error ?? "Something went wrong. Please try again.", null);
-        return;
-      }
-      setStatus(reply.reused ? "You checked this posting before. Its result is below." : "Checked. The result is below.");
-      setCompany("");
-      setTitle("");
-      setText("");
-      focusId.current = reply.id;
-      startRefresh(() => router.refresh());
-    } catch {
-      fail("We couldn't reach CareerMetro. Check your connection and try again.", null);
-    } finally {
-      setSending(false);
-    }
-  }
-
   /** After "Remove this check": refresh, then focus the next check (or the one before it, or the heading). */
   function removed(id: string) {
     const at = checks.findIndex((c) => c.id === id);
@@ -112,9 +51,6 @@ export function JobCheck({
     startRefresh(() => router.refresh());
   }
 
-  const hint = `${ids}-hint`;
-  const err = `${ids}-error`;
-  const invalid = (field: "company" | "title" | "text") => (error && errorField === field ? true : undefined);
   return (
     <section className="flex flex-col gap-4" aria-labelledby={`${ids}-heading`}>
       <div className="flex flex-col gap-1">
@@ -126,76 +62,18 @@ export function JobCheck({
           lists, never the posting itself.
         </p>
       </div>
-      <form ref={formRef} onSubmit={submit} noValidate className="flex flex-col gap-3.5 rounded-lg border border-line bg-surface p-4">
-        <div className="grid gap-x-4 gap-y-3.5 min-[760px]:grid-cols-2">
-          <label className="flex min-w-0 flex-col gap-1.5">
-            <span className="text-[0.82rem] font-semibold">Company</span>
-            <input
-              name="company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              maxLength={JOB_COMPANY_MAX}
-              autoComplete="organization"
-              required
-              disabled={busy}
-              aria-invalid={invalid("company")}
-              aria-describedby={error ? err : undefined}
-              className={input}
-            />
-          </label>
-          <label className="flex min-w-0 flex-col gap-1.5">
-            <span className="text-[0.82rem] font-semibold">Job title</span>
-            <input
-              name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={JOB_TITLE_MAX}
-              autoComplete="off"
-              required
-              disabled={busy}
-              aria-invalid={invalid("title")}
-              aria-describedby={error ? err : undefined}
-              className={input}
-            />
-          </label>
-        </div>
-        <div className="flex min-w-0 flex-col gap-1.5">
-          <label htmlFor={`${ids}-text`} className="text-[0.82rem] font-semibold">
-            Job posting
-          </label>
-          <textarea
-            id={`${ids}-text`}
-            name="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={8}
-            maxLength={JOB_TEXT_MAX}
-            required
-            disabled={busy}
-            aria-invalid={invalid("text")}
-            aria-describedby={error ? `${hint} ${err}` : hint}
-            className={`${input} resize-y`}
-          />
-          <small id={hint} className="text-[0.78rem] text-muted">
-            Paste the whole posting, at least {JOB_TEXT_MIN} characters. {count(text.length)} of {count(JOB_TEXT_MAX)} used.
-          </small>
-        </div>
-        <p id={err} role="alert" className="text-sm text-bad">
-          {error}
-        </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="submit"
-            disabled={busy}
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-5 text-sm font-medium text-bg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {sending ? "Reading the posting…" : "Check this job"}
-          </button>
-          <p role="status" className="text-sm">
-            {sending ? "Reading the posting. This takes up to a minute." : status}
-          </p>
-        </div>
-      </form>
+      <JobPostingForm
+        resumeId={resumeId}
+        roleSlug={roleSlug}
+        busy={refreshing}
+        demo={demo}
+        onStart={() => setRemovedNote("")}
+        doneMessage={(reused) => (reused ? "You checked this posting before. Its result is below." : "Checked. The result is below.")}
+        onSaved={({ id }) => {
+          focusId.current = id;
+          startRefresh(() => router.refresh());
+        }}
+      />
       <p role="status" aria-live="polite" className="sr-only">
         {removedNote}
       </p>

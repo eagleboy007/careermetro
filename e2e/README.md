@@ -1,7 +1,9 @@
 # End-to-end walk
 
 `walk.mjs` drives a real browser through the main flow against a running production build: home, roles, upload the
-synthetic fixture resume, check the profile, pick a role, gaps, path (hours, mark a step done), the test sign-in that
+synthetic fixture resume, check the profile, pick a role, gaps (with "Asked in N of 10 postings"), check against a job,
+"My role isn't listed" (Enter in a search that finds nothing is counted, typing alone is not, then a posting stands in as the target, in light, dark
+and phone width), path (hours, mark a step done), the test sign-in that
 claims the anonymous resume, Today (own goals, hours saved, tick to Returning with a streak, untick), the loading
 frame, Map, Me, Departures, Corporate (a fresh account sets up a company on an example domain with the test-mode
 code and lands on "Waiting for verification"), company review (signed out and a non-admin get the not-found page with a 404; the local test admin `admin@careermetro.test` tries Suspend, cancels, and verifies that company), then phone size in dark mode with a horizontal-overflow check. It fails on any failed

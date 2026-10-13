@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { RolePicker } from "@/components/gaps/role-picker";
 import { roleProfiles } from "@/content";
 import { suggestRoles } from "@/lib/gaps/suggest";
+import { listStandInChecks } from "@/lib/jobs/store";
+import { errorFields, logEvent } from "@/lib/log";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
@@ -33,7 +35,21 @@ async function Picker({ params }: { params: Promise<{ id: string }> }) {
       </p>
     );
   }
-  return <RolePicker resumeId={id} roles={options} suggestions={suggestRoles(resume.profile, roleProfiles)} />;
+  // Jobs checked in place of a role we don't have; a failure to load them never hides the role list.
+  const standIns = owner
+    ? await listStandInChecks(id, owner).catch((error: unknown) => {
+        logEvent("error", "stand_in_list_failed", { route: "/resume/[id]/role", ...errorFields(error) });
+        return [];
+      })
+    : [];
+  return (
+    <RolePicker
+      resumeId={id}
+      roles={options}
+      suggestions={suggestRoles(resume.profile, roleProfiles)}
+      standIns={standIns.map(({ id: checkId, title, company }) => ({ id: checkId, title, company }))}
+    />
+  );
 }
 
 export default function RolePage({ params }: PageProps<"/resume/[id]/role">) {

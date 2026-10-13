@@ -1,23 +1,57 @@
 "use client";
 
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, FileText, Search } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { saveStandInTitle } from "@/lib/stand-in-title";
 
 export type RoleOption = { slug: string; title: string; experience: string; topSkills: string[] };
 export type SuggestedRole = { slug: string; title: string; experience: string; met: number; total: number; shown: string[]; fits: boolean };
+/** A saved job check standing in for a role we don't have (role-suggest-plan.md part B, point 4). */
+export type StandInLink = { id: string; title: string; company: string };
+
+/** Shorter than this is too vague to say which role is missing. */
+const COUNT_MIN_CHARS = 3;
 
 /** "JavaScript, Node.js and SQL". */
 const listWords = (words: string[]) => (words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`);
 
 /**
- * FR-8: pick the target role. Each card opens the Gaps page for that role. `demo` makes the cards inert. `suggestions`
- * (the roles the resume already covers best, src/lib/gaps/suggest.ts) show first when given.
+ * FR-8: pick the target role. Each card opens the Gaps page for that role. `demo` makes the cards inert and counts
+ * nothing. `suggestions` (the roles the resume already covers best, src/lib/gaps/suggest.ts) show first when given.
+ * "My role isn't listed" leads to a job posting that stands in for the role. Only deliberate actions count a missing
+ * role (role_requests, nothing about the person): Enter in a search that finds nothing, and a click on "My role isn't
+ * listed" with text in the box. Typing alone never counts. The typed text goes to the next page through sessionStorage,
+ * never the address (role-suggest-plan.md part B).
  */
-export function RolePicker({ resumeId, roles, suggestions, demo = false }: { resumeId: string; roles: RoleOption[]; suggestions?: SuggestedRole[]; demo?: boolean }) {
+export function RolePicker({
+  resumeId,
+  roles,
+  suggestions,
+  standIns = [],
+  demo = false,
+}: {
+  resumeId: string;
+  roles: RoleOption[];
+  suggestions?: SuggestedRole[];
+  standIns?: StandInLink[];
+  demo?: boolean;
+}) {
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
   const shown = q ? roles.filter((r) => [r.title, ...r.topSkills].some((t) => t.toLowerCase().includes(q))) : roles;
+  const typed = q.replace(/\s+/g, " ");
+
+  // Each title is sent once per visit; the server counts it at most once a day per person. keepalive lets the request
+  // finish while the page moves on.
+  const sent = useRef(new Set<string>());
+  const countMissing = (title: string) => {
+    if (demo || title.length < COUNT_MIN_CHARS || sent.current.has(title)) return;
+    sent.current.add(title);
+    fetch("/api/role-requests", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ title }), keepalive: true }).catch(
+      () => {},
+    );
+  };
 
   const href = (slug: string) => (demo ? "#" : `/resume/${resumeId}/gaps/${slug}`);
 
@@ -60,6 +94,29 @@ export function RolePicker({ resumeId, roles, suggestions, demo = false }: { res
           )}
         </section>
       )}
+      {standIns.length > 0 && (
+        <section aria-labelledby="stand-in-checks" className="flex flex-col gap-3">
+          <h2 id="stand-in-checks" className="mt-4 text-xl font-semibold">
+            Jobs you checked instead
+          </h2>
+          <ul className="grid gap-3">
+            {standIns.map((c) => (
+              <li key={c.id} className="flex">
+                <Link
+                  href={demo ? "#" : `/resume/${resumeId}/job/${c.id}`}
+                  prefetch={false}
+                  className="group flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-ink"
+                >
+                  <span className="min-w-0 break-words">
+                    <span className="font-semibold">{c.title}</span> <span className="text-muted">at {c.company}</span>
+                  </span>
+                  <ArrowRight size={18} strokeWidth={1.75} className="shrink-0 text-muted group-hover:text-ink" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {suggestions && <h2 className="mt-4 text-xl font-semibold">All roles</h2>}
       <label className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5 focus-within:border-ink focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
         <Search size={18} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
@@ -68,6 +125,7 @@ export function RolePicker({ resumeId, roles, suggestions, demo = false }: { res
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && shown.length === 0 && countMissing(typed)}
           placeholder="Search roles or skills, like SQL"
           className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted"
         />
@@ -76,7 +134,9 @@ export function RolePicker({ resumeId, roles, suggestions, demo = false }: { res
         {q ? `${shown.length} ${shown.length === 1 ? "role" : "roles"} found` : ""}
       </p>
       {shown.length === 0 ? (
-        <p className="text-sm text-muted">No role matches “{query}”. Try a shorter word.</p>
+        <p className="text-sm text-muted">
+          No role matches “<span className="break-words">{query}</span>”. Try a shorter word, or check a job posting for it below.
+        </p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {shown.map((r) => (
@@ -98,6 +158,23 @@ export function RolePicker({ resumeId, roles, suggestions, demo = false }: { res
           ))}
         </ul>
       )}
+      <Link
+        href={demo ? "#" : `/resume/${resumeId}/role/other`}
+        prefetch={false}
+        onClick={() => {
+          if (demo) return;
+          saveStandInTitle(query);
+          countMissing(typed);
+        }}
+        className="group flex items-start gap-3 rounded-lg border border-dashed border-line bg-bg p-4 transition-colors hover:border-ink"
+      >
+        <FileText size={20} strokeWidth={1.75} className="mt-0.5 shrink-0 text-muted group-hover:text-ink" aria-hidden="true" />
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="font-semibold leading-snug">My role isn&apos;t listed</span>
+          <span className="text-sm text-muted">Paste a job posting for it. It stands in as your target until we add the role.</span>
+        </span>
+        <ArrowRight size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-muted group-hover:text-ink" aria-hidden="true" />
+      </Link>
     </div>
   );
 }

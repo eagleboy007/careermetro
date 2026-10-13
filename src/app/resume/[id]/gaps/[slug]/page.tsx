@@ -15,6 +15,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
+import { askedInForGap, postingShares } from "@/lib/gaps/asked-in";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { goalSkillsOf, jobChecksForPage } from "@/lib/jobs/store";
@@ -70,6 +71,8 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   // Five gaps up front (the handoff's Gaps screen); every other required gap is stored (each is a goal) and one tap away.
   const top = analysis.gaps.slice(0, SHOWN_GAPS);
   const rest = analysis.gaps.slice(SHOWN_GAPS);
+  // "Asked in N of 10 postings" only where this role was measured on postings; otherwise nothing, never a guess.
+  const shares = postingShares(role);
   const met = analysis.metSkillIds.map((skillId) => ({ skillId, skillName: skillNames.get(skillId) ?? skillId, status: "met" as const }));
   return (
     <div className="flex flex-col gap-6">
@@ -84,7 +87,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
             {top.length === 1 ? "The gap to close" : `The ${top.length} gaps that matter most`}
           </h2>
           {top.map((g) => (
-            <GapCard key={g.skillId} gap={g} />
+            <GapCard key={g.skillId} gap={g} askedIn={askedInForGap(g, shares)} />
           ))}
           {rest.length > 0 && (
             <details className="group rounded-lg border border-line bg-surface">
@@ -99,7 +102,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
               </summary>
               <div className="flex flex-col gap-3 px-4 pb-4">
                 {rest.map((g) => (
-                  <GapCard key={g.skillId} gap={g} />
+                  <GapCard key={g.skillId} gap={g} askedIn={askedInForGap(g, shares)} />
                 ))}
               </div>
             </details>

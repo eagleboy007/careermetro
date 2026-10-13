@@ -1,0 +1,18 @@
+{
+  "note": "Synthetic job posting for a role our library doesn't have (a job check standing in as the target). The company is invented. `skills` is what the stand-in Claude API (e2e/mock-ai.mjs) answers for this posting; one quote is invented on purpose and must be dropped.",
+  "company": "Example Freight Pvt Ltd",
+  "title": "Supply Chain Analyst",
+  "text": "Supply Chain Analyst - Example Freight Pvt Ltd, Chennai (On site)\n\nAbout the role\nExample Freight Pvt Ltd moves goods for manufacturers across South India. You will join the planning team and work with warehouse and transport leads every day.\n\nWhat you will do\n- Write SQL queries on shipment and inventory tables\n- Keep the weekly stock plan in Excel\n- Clean messy order data before each planning cycle (data cleaning)\n- Use statistics to explain late deliveries\n- Build demand forecasting sheets with the planning lead\n- Publish dashboards in Power BI for the operations head\n\nWhat we need\n- 0 to 2 years of experience in an analyst role\n- Strong SQL and Excel\n- Working knowledge of SAP MM\n\nGood to have\n- Python for automating reports\n- Tableau\n\nNotice period: immediate joiners preferred.",
+  "skills": [
+    { "name": "SQL", "quote": "Write SQL queries", "level": "required" },
+    { "name": "Excel", "quote": "Strong SQL and Excel", "level": "required" },
+    { "name": "Data cleaning", "quote": "data cleaning", "level": "required" },
+    { "name": "Statistics", "quote": "Use statistics", "level": "required" },
+    { "name": "Power BI", "quote": "dashboards in Power BI", "level": "required" },
+    { "name": "Demand forecasting", "quote": "demand forecasting", "level": "required" },
+    { "name": "SAP MM", "quote": "SAP MM", "level": "required" },
+    { "name": "Kubernetes", "quote": "Run services on Kubernetes", "level": "required" },
+    { "name": "Python", "quote": "Python for automating reports", "level": "nice" },
+    { "name": "Tableau", "quote": "Tableau", "level": "nice" }
+  ]
+}

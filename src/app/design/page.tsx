@@ -5,6 +5,8 @@ import { JobCheck } from "@/components/gaps/job-check";
 import { JobCheckResult } from "@/components/gaps/job-check-result";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
 import { ApplyHere } from "@/components/route/apply-here";
+import { StandInForm } from "@/components/gaps/stand-in-form";
+import { StandInNote, UnknownSkills } from "@/components/gaps/stand-in-note";
 import { GapCard } from "@/components/route/gap-card";
 import { MarkDone } from "@/components/route/mark-done";
 import { PathEnd } from "@/components/route/path-end";
@@ -463,8 +465,9 @@ export default function DesignPage() {
               estimatedHours: 19,
             }}
           />
-          {exampleGaps.map((g) => (
-            <GapCard key={g.skillId} gap={g} />
+          {/* "Asked in N of 10 postings" only where the role was measured on postings; the last example has no data. */}
+          {exampleGaps.map((g, i) => (
+            <GapCard key={g.skillId} gap={g} askedIn={["Asked in 7 of 10 postings", "Asked in fewer than 1 of 10 postings"][i] ?? null} />
           ))}
         </div>
         <div className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-5">
@@ -508,6 +511,7 @@ export default function DesignPage() {
               { slug: "full-stack-developer", title: "Full Stack Developer (MERN)", experience: "1 to 5 years", met: 5, total: 10, shown: ["JavaScript", "Node.js", "SQL"], fits: true },
               { slug: "senior-backend-engineer", title: "Senior Backend Engineer", experience: "5 to 10 years", met: 4, total: 9, shown: ["Node.js", "SQL"], fits: false },
             ]}
+            standIns={[{ id: "example-stand-in", title: "Supply Chain Analyst", company: "Example Freight Pvt Ltd" }]}
             demo
           />
         </div>
@@ -560,6 +564,34 @@ export default function DesignPage() {
             goals={{ skills: [], here: "/design" }}
             demo
           />
+        </div>
+      </section>
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">My role isn&apos;t listed</h2>
+          <StandInForm resumeId="example" initialTitle="Supply Chain Analyst" demo />
+        </div>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">A job standing in for the role</h2>
+          <StandInNote title="Supply Chain Analyst" />
+          <ReadinessCard
+            readiness={{
+              headline: "You cover 2 of the 5 skills this job asks for.",
+              explanation: "As a rough estimate, about 28 hours of focused work gets you ready to prove the rest.",
+              estimatedHours: 28,
+            }}
+          />
+          <GapCard
+            gap={{
+              skillId: "statistics",
+              skillName: "Statistics",
+              status: "missing",
+              resumeQuote: null,
+              requirement: "Asked for in this job posting",
+              explanation: "This job posting asks for Statistics.",
+            }}
+          />
+          <UnknownSkills names={["Demand forecasting", "SAP MM"]} />
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">
