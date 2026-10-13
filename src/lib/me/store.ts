@@ -1,7 +1,7 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { resumes, users } from "@/db/schema";
+import { gapProofs, resumes, users } from "@/db/schema";
 import { skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { mapLineFor } from "@/lib/map/store";
@@ -9,17 +9,43 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
+import type { ProofCertRow } from "./certs";
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
+
+/**
+ * The person's accepted certificate proofs, for Certifications on their profile (pending item 13). Held and refused
+ * ones never show. Only what the profile needs: never the credential key's meaning, a file path or a name.
+ */
+export async function certificateProofsFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<ProofCertRow[]> {
+  return db
+    .select({
+      proofId: gapProofs.id,
+      certId: gapProofs.certId,
+      credentialKey: gapProofs.credentialKey,
+      issuedOn: gapProofs.issuedOn,
+      expiresOn: gapProofs.expiresOn,
+      verifier: gapProofs.verifier,
+      url: sql<string | null>`${gapProofs.evidence}->>'url'`,
+      badgeId: gapProofs.badgeId,
+      checkNote: gapProofs.checkNote,
+      createdAt: gapProofs.createdAt,
+    })
+    .from(gapProofs)
+    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "accepted")))
+    .orderBy(desc(gapProofs.createdAt))
+    .limit(200);
+}
 
 /**
  * The signed-in person's own profile page: their account, the latest saved profile behind their current gaps, and their
  * line. Everything is read through the owner, so it only ever shows the person their own data. Null without an account.
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
-  const [[user], analysis] = await Promise.all([
+  const [[user], analysis, proofCerts] = await Promise.all([
     db.select({ name: users.name, headline: users.headline, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
+    certificateProofsFor(userId, db),
   ]);
   if (!user) return null;
   const [resume, [read], line] = analysis
@@ -44,5 +70,6 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
     joinedAt: user.createdAt,
     resumeReadAt: resume ? (read?.createdAt ?? null) : null,
     now,
+    proofCerts,
   });
 }

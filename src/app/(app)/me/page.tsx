@@ -9,6 +9,7 @@ import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile, whoSeesFor } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
+import { checkCertificateOnCredly } from "./actions";
 
 export const metadata: Metadata = { title: "Your profile · CareerMetro", robots: { index: false } };
 
@@ -36,7 +37,7 @@ async function MeScreen() {
           ? "Only you can see this page. Pick a username and who can see your profile in Account settings."
           : "Your stories, interests and status come next."}
       </p>
-      {me && <MeView me={me} others={publicProfile(me, settings)} whoSees={whoSeesFor(settings, saved?.username ?? null)} />}
+      {me && <MeView me={me} others={publicProfile(me, settings)} whoSees={whoSeesFor(settings, saved?.username ?? null)} onCheckCertificate={checkCertificateOnCredly} />}
     </div>
   );
 }

@@ -5,7 +5,9 @@ import { setWeeklyHours } from "@/lib/account/store";
 import { currentAccount } from "@/lib/auth/server";
 import { submitCertificate } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
-import { CERTIFICATE_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
+import { credlyBadgeId } from "@/lib/proofs/credly";
+import { checkCertificateWithCredly } from "@/lib/proofs/credly-store";
+import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_HELD_MESSAGE, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
 import type { CertificateResult } from "@/lib/proofs/result";
 import { tickTask } from "@/lib/ride/store";
 import { certificateSubmission } from "@/lib/schemas";
@@ -23,8 +25,9 @@ const FIELD_MESSAGES: Record<string, string> = {
 };
 
 /**
- * "Add a certificate" on Today and the Map (dev/proof-plan.md). Checked again here, whatever the browser sent. The
- * credential id and the printed name never reach a log: only the outcome does.
+ * "Add a certificate" on Today and the Map (dev/proof-plan.md). Checked again here, whatever the browser sent. A Credly
+ * badge link is then checked with Credly, after the save (dev/profile-certs-plan.md). The credential id, the printed
+ * name and the link never reach a log: only the outcome does.
  */
 export async function addCertificate(input: unknown): Promise<CertificateResult> {
   const account = await currentAccount();
@@ -39,11 +42,29 @@ export async function addCertificate(input: unknown): Promise<CertificateResult>
     const outcome = await submitCertificate(account.id, parsed.data);
     logEvent("info", "certificate_added", { status: outcome.status, ...(outcome.status === "refused" ? { reason: outcome.reason } : {}) });
     if (outcome.status === "refused") return { status: "refused", message: CERTIFICATE_REFUSAL_MESSAGES[outcome.reason] };
-    refresh();
     if (outcome.status === "held") {
+      refresh();
       return { status: "held", message: "This certificate is already on another account, so we'll check it first. It doesn't fill the goal until then." };
     }
-    return { status: "filled", label: outcome.label };
+    // The goal is filled now, whatever Credly says: the check only changes the label (dev/profile-certs-plan.md).
+    let label = outcome.label;
+    let note: string | undefined;
+    if (label !== "verified" && credlyBadgeId(parsed.data.url)) {
+      try {
+        const check = await checkCertificateWithCredly(account.id, outcome.proofId);
+        if (check.status === "held") {
+          refresh();
+          return { status: "held", message: CREDLY_HELD_MESSAGE };
+        }
+        if (check.status === "verified") label = "verified";
+        else note = check.status === "added" ? CREDLY_NOTE_MESSAGES[check.note] : CREDLY_REFUSAL_MESSAGES[check.reason];
+      } catch (error) {
+        logEvent("error", "certificate_check_failed", errorFields(error));
+        note = CREDLY_NOTE_MESSAGES.unreachable;
+      }
+    }
+    refresh();
+    return note ? { status: "filled", label, note } : { status: "filled", label };
   } catch (error) {
     logEvent("error", "certificate_failed", errorFields(error));
     return { status: "refused", message: "Something went wrong saving that. Please try again." };

@@ -1,6 +1,7 @@
 import { story, type MeProfile, type Profile, type Story } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
 import { meFromProfile } from "./build";
+import type { ProofCertRow } from "./certs";
 
 /* A synthetic profile for Priya on the Data Analyst line, for the design page and the preview. Companies are made up. */
 
@@ -35,8 +36,67 @@ export const exampleMeResume: Profile = {
     { qualification: "B.Com", institution: "Savitribai Phule Pune University", year: "2020-2023" },
     { qualification: "Higher Secondary (Commerce)", institution: "Maharashtra State Board", year: "2020" },
   ],
-  certifications: [{ name: "Google Data Analytics Certificate", earned: null, expires: null }],
+  certifications: [
+    { name: "Google Data Analytics Certificate", earned: "2024-05", expires: "none" },
+    { name: "Excel for Business Analytics (NPTEL)", earned: "2023", expires: null },
+  ],
 };
+
+/**
+ * Example certificate proofs (pending item 13): one verified with its Credly badge, one whose Credly badge showed
+ * another name, one with a Microsoft Learn link (no check), and one expired. Synthetic ids; nothing here is real.
+ */
+const day = (iso: string) => new Date(`${iso}T00:00:00Z`);
+export const exampleProofCerts: ProofCertRow[] = [
+  {
+    proofId: "00000000-0000-4000-8000-0000000c0001",
+    certId: "oracle-sql-associate",
+    credentialKey: "example-1",
+    issuedOn: "2025-08-12",
+    expiresOn: null,
+    verifier: "credly",
+    url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000e0001",
+    badgeId: "c4ed1100-0000-4000-8000-0000000e0001",
+    checkNote: null,
+    createdAt: day("2026-09-20"),
+  },
+  {
+    proofId: "00000000-0000-4000-8000-0000000c0002",
+    certId: "tableau-desktop-specialist",
+    credentialKey: "example-2",
+    issuedOn: "2026-02-03",
+    expiresOn: null,
+    verifier: null,
+    url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000e0002",
+    badgeId: "c4ed1100-0000-4000-8000-0000000e0002",
+    checkNote: "earner_name",
+    createdAt: day("2026-09-21"),
+  },
+  {
+    proofId: "00000000-0000-4000-8000-0000000c0003",
+    certId: "power-bi-data-analyst",
+    credentialKey: "example-3",
+    issuedOn: "2026-05-18",
+    expiresOn: "2027-05-18",
+    verifier: null,
+    url: "https://learn.microsoft.com/api/credentials/share/en-us/ExampleUser/EXAMPLE3",
+    badgeId: null,
+    checkNote: null,
+    createdAt: day("2026-09-22"),
+  },
+  {
+    proofId: "00000000-0000-4000-8000-0000000c0004",
+    certId: "snowflake-snowpro-core",
+    credentialKey: "example-4",
+    issuedOn: "2024-09-30",
+    expiresOn: "2026-09-30",
+    verifier: null,
+    url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000e0004",
+    badgeId: "c4ed1100-0000-4000-8000-0000000e0004",
+    checkNote: null,
+    createdAt: day("2024-10-01"),
+  },
+];
 
 const s = (x: Omit<Story, "hint" | "confirmed" | "fromGoal"> & Partial<Pick<Story, "hint" | "confirmed" | "fromGoal">>): Story =>
   story.parse({ hint: null, confirmed: false, fromGoal: false, ...x });
@@ -113,6 +173,7 @@ const built = meFromProfile({
   joinedAt: new Date("2026-09-02T00:00:00Z"),
   resumeReadAt: new Date("2026-09-02T00:00:00Z"),
   now: new Date("2026-10-10T00:00:00Z"),
+  proofCerts: exampleProofCerts,
 });
 
 export const exampleMe: MeProfile = {
@@ -125,5 +186,4 @@ export const exampleMe: MeProfile = {
     { title: "Three joins on a public orders dataset", detail: "SQL joins goal · 18 Sep · public" },
     { title: "Mean, median and spread of one month's loans", detail: "Statistics basics goal · 29 Sep · connections only" },
   ],
-  certifications: [{ name: "Google Data Analytics Certificate", verified: true }],
 };
