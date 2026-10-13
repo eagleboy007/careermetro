@@ -36,6 +36,9 @@ export type SentRequestView = {
   sentOn: string;
 };
 
+/** One page of a search's results. */
+export type FindPeopleResults = { cards: FindPersonCard[]; total: number; hasMore: boolean };
+
 /** Corporate > Find people. */
 export type FindPeopleView = {
   company: string;
@@ -44,7 +47,7 @@ export type FindPeopleView = {
   refusal: FindPageRefusal | null;
   jobs: FindJobOption[];
   search: { jobId: string; band: FindBand | null; page: number } | null;
-  results: { cards: FindPersonCard[]; total: number; hasMore: boolean } | null;
+  results: FindPeopleResults | null;
   /** Words to show when the search asked for in the address was refused. */
   error: string | null;
   sent: SentRequestView[];
@@ -61,6 +64,8 @@ export type FoundPersonView = {
 };
 
 export type FindActions = {
+  /** Runs one search (a server action, never on page load): one page of people matched to the job. */
+  search: (jobId: string, band: FindBand | null, page: number) => Promise<{ ok: true; results: FindPeopleResults } | { ok: false; error: string }>;
   open: (jobId: string, ref: string) => Promise<{ ok: true; person: FoundPersonView } | { ok: false; error: string }>;
   /** Sends the one message of a request. Returns the words to show on failure, or null. */
   request: (jobId: string, ref: string, body: string) => Promise<string | null>;

@@ -48,15 +48,16 @@ async function unreadChatCount(me: Member, userId: string, db: Db | Tx, now: Dat
 /** The unread count on the Corporate tab: 0 for someone with no company role. */
 export async function corporateUnread(userId: string, deps: OverviewDeps = {}): Promise<number> {
   const db = deps.db ?? getDb();
-  const me = await activeMembership(userId, db);
-  return me ? unreadChatCount(me, userId, db, deps.now ?? new Date()) : 0;
+  const now = deps.now ?? new Date();
+  const me = await activeMembership(userId, db, now);
+  return me ? unreadChatCount(me, userId, db, now) : 0;
 }
 
 /** The Overview for a member, or null when the person has no company role. */
 export async function companyOverview(userId: string, deps: OverviewDeps = {}): Promise<CompanyOverviewView | null> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return null;
   const visible = visibleApplicationsWhere(me, userId, db, now);
 

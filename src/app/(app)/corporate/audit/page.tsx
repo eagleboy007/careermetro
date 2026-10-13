@@ -9,6 +9,7 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { AUDIT_ERROR_TEXT, companyAudit } from "@/lib/corporate/audit";
+import { NoCompanyRole } from "../no-role";
 
 export const metadata: Metadata = { title: "Audit · Corporate · CareerMetro", robots: { index: false } };
 
@@ -26,6 +27,7 @@ async function Audit({ searchParams }: PageProps<"/corporate/audit">) {
   }
   const r = await companyAudit(account.id, { before: (await searchParams).before });
   if (!r.ok) {
+    if (r.error === "not_member") return <NoCompanyRole userId={account.id} />;
     return (
       <div className="mx-auto flex max-w-[720px] flex-col gap-3">
         <h1 className="text-[1.7rem] font-semibold leading-[1.1]">You can&apos;t open the audit</h1>

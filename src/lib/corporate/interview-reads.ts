@@ -1,7 +1,7 @@
 import "server-only";
-import { and, asc, eq, gt, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { candidateSlots, interviewFeedback, interviewInterviewers, interviews, messages, users } from "@/db/schema";
+import { applications, candidateSlots, interviewFeedback, interviewInterviewers, interviews, messages, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { indiaDay } from "@/lib/ride/days";
 import { canCancel, canRespond, feedbackRefusal, shownStatus } from "./rules";
@@ -22,7 +22,7 @@ export const FORMER_MEMBER = "A former team member";
 
 /** An interviewer's access lasts while the interview is proposed or accepted, until 7 days after it ends. */
 export const INTERVIEWER_ACCESS_DAYS = 7;
-const interviewerWindow = (now: Date) =>
+export const interviewerWindow = (now: Date) =>
   and(
     inArray(interviews.status, ["proposed", "accepted"]),
     sql`${interviews.startsAt} + make_interval(mins => ${interviews.minutes}) + make_interval(days => ${INTERVIEWER_ACCESS_DAYS}) > ${now.toISOString()}::timestamptz`,
@@ -120,8 +120,13 @@ export async function companyInterviewsOf(applicationIds: string[], viewer: View
   return out;
 }
 
-/** Whether a shared phone may be shown to this person: on file for an accepted interview, and they are its team. */
-export async function phoneAudience(applicationId: string, viewer: Viewer, db: Db | Tx): Promise<{ anyShared: boolean; assignedToShared: boolean }> {
+/**
+ * Whether a shared phone may be shown to this person: on file for an accepted interview, and they are on that
+ * interview's team while its access window is still open (7 days after it ends). Being on another interview for the
+ * same candidate, live or not, never shows a phone that was shared for an interview whose window has closed (Testing
+ * T39).
+ */
+export async function phoneAudience(applicationId: string, viewer: Viewer, db: Db | Tx, now: Date): Promise<{ anyShared: boolean; assignedToShared: boolean }> {
   const shared = await db
     .select({ id: interviews.id })
     .from(interviews)
@@ -130,9 +135,27 @@ export async function phoneAudience(applicationId: string, viewer: Viewer, db: D
   const [mine] = await db
     .select({ id: interviewInterviewers.interviewId })
     .from(interviewInterviewers)
-    .where(and(eq(interviewInterviewers.userId, viewer.userId), inArray(interviewInterviewers.interviewId, shared.map((s) => s.id))))
+    .innerJoin(interviews, eq(interviews.id, interviewInterviewers.interviewId))
+    .where(and(eq(interviewInterviewers.userId, viewer.userId), inArray(interviewInterviewers.interviewId, shared.map((s) => s.id)), interviewerWindow(now)))
     .limit(1);
   return { anyShared: true, assignedToShared: !!mine };
+}
+
+/**
+ * After an interview is cancelled: erases the phone shared with the company, as Not this time does, unless another
+ * accepted interview it was shared for is still within its access window (Testing T42). Run inside the cancel's
+ * transaction, which holds the application row.
+ */
+export async function erasePhoneUnlessNeeded(tx: Tx, applicationId: string, now: Date): Promise<boolean> {
+  const [needed] = await tx
+    .select({ id: interviews.id })
+    .from(interviews)
+    .where(and(eq(interviews.applicationId, applicationId), eq(interviews.phoneShared, true), eq(interviews.status, "accepted"), interviewerWindow(now)))
+    .limit(1);
+  if (needed) return false;
+  await tx.update(applications).set({ phoneShared: null }).where(and(eq(applications.id, applicationId), isNotNull(applications.phoneShared)));
+  await tx.update(interviews).set({ phoneShared: false }).where(and(eq(interviews.applicationId, applicationId), eq(interviews.phoneShared, true)));
+  return true;
 }
 
 /** Offered times still ahead and not booked, and whether an "Ask for times" is still waiting for an answer. */

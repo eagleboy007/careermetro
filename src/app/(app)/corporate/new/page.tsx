@@ -8,7 +8,7 @@ import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { firstName } from "@/lib/account/name";
 import { currentAccount } from "@/lib/auth/server";
 import { codeDelivery } from "@/lib/corporate/delivery";
-import { activeMembership } from "@/lib/corporate/store";
+import { heldMembership } from "@/lib/corporate/store";
 import { askForAccessAction, finishSignupAction, inviteSecondAdminAction, savePageAction, startSignupAction } from "../actions";
 
 export const metadata: Metadata = { title: "Set up your company · CareerMetro", robots: { index: false } };
@@ -23,7 +23,7 @@ async function NewCompany() {
   const account = await currentAccount();
   if (!account) return <OrgSignupForm />;
   // Not a redirect: the form itself carries on to the company page step once the company exists.
-  const member = await activeMembership(account.id);
+  const member = await heldMembership(account.id);
   if (member) {
     return (
       <div className="mx-auto flex max-w-[720px] flex-col gap-3">

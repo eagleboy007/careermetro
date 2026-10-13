@@ -762,6 +762,20 @@ await step("market: search, open a state, a thin one says Not enough data, every
   await skip.focus();
   await p.keyboard.press("Enter");
   await p.waitForFunction(() => document.activeElement?.textContent === "India · Machine Learning Engineer", null, { timeout: 5000 });
+  // The Place select: pick Karnataka, go back to India, and picking Karnataka again still goes there.
+  const placeSelect = p.getByLabel("Place", { exact: true });
+  for (const round of [1, 2]) {
+    await placeSelect.selectOption("KA");
+    await p.waitForURL(/place=KA&/, { timeout: 15000 }).catch(() => {
+      throw new Error(`picking Karnataka in the Place select (round ${round}) didn't open it`);
+    });
+    await p.getByRole("heading", { name: "Karnataka · Machine Learning Engineer" }).waitFor();
+    if (round === 1) {
+      await p.getByRole("link", { name: "Show all of India" }).click();
+      await p.waitForURL(/place=IN&/, { timeout: 15000 });
+      await p.getByRole("heading", { name: "India · Machine Learning Engineer" }).waitFor();
+    }
+  }
   // Back to the thin state for the checks below.
   await p.locator('main a[data-state="MZ"]').click();
   await p.waitForURL(/place=MZ&/, { timeout: 15000 });
@@ -1059,6 +1073,154 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted
+// certificates go into the database (adding one runs through the Today form, covered by its own tests): a Credly badge
+// in her name, a Credly badge for another certificate, a Microsoft Learn link and an expired one. On /me she checks the
+// first two with Credly (local test mode answers from fixtures/credly, so nothing calls Credly): one turns Verified with
+// Credly with its badge link and keeps focus on its button, the other stays Added by you with the reason. The walk's
+// account then opens her /u page: the verified one first, "Added by Asha", never the expired one, the reason, the
+// Microsoft link or a credential key, even in the HTML. axe passes, and /me doesn't scroll sideways at 360px.
+if (process.env.DATABASE_URL) {
+  await step("certifications: check with Credly on Me, verified first on the public profile, nothing private shown", async () => {
+    const ctx2 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const q = await ctx2.newPage();
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    const email = `certs-${testEmail}`;
+    const handle = `ashacerts${Date.now() % 1e8}`;
+    const msLink = "https://learn.microsoft.com/api/credentials/share/en-us/AshaRaoWalk/WALKCERT1";
+    try {
+      await q.goto(BASE + "/sign-in");
+      await q.locator('input[name="name"]').fill("Asha Rao");
+      await q.locator('input[name="email"]').fill(email);
+      await q.locator('form button[type="submit"]').last().click();
+      await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/today/, { timeout: 15000 });
+
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [asha] = await sql`select id from users where email like ${email + "%"} order by created_at desc limit 1`;
+        if (!asha) throw new Error("Asha's account not found");
+        // Earlier walks on this database verified the same fixture badges; one badge counts for one account only.
+        await sql`delete from gap_proofs where badge_id like 'c4ed1100-%' and user_id in (select id from users where email like 'certs%' and id <> ${asha.id})`;
+        await sql`update users set username = ${handle} where id = ${asha.id}`;
+        await sql`insert into user_settings (user_id, profile_visibility) values (${asha.id}, 'signed_in')
+          on conflict (user_id) do update set profile_visibility = 'signed_in', show_certifications = true`;
+        const add = (certId, url, issuedOn, expiresOn) =>
+          sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, issued_on, expires_on, credential_key, name_matched, badge_id, verified_at)
+            values (${asha.id}, 'aws', 'certification', 'accepted', ${sql.json({ type: "certification", certId, issuer: "walk", url })}, ${certId}, ${issuedOn}, ${expiresOn},
+              ${`walk-${certId}-${asha.id}`}, true, ${url.match(/badges\/([0-9a-f-]{36})/)?.[1] ?? null}, now())`;
+        await add("aws-cloud-practitioner", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002", "2025-06-10", "2028-06-10");
+        await add("aws-security-specialty", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000003", "2026-02-01", null);
+        await add("azure-fundamentals", msLink, "2025-11-20", null);
+        await add("cka", "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000009", "2023-01-05", "2026-01-05");
+      } finally {
+        await sql.end();
+      }
+
+      await q.goto(BASE + "/me");
+      await q.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      const rail = q.locator("section", { has: q.getByRole("heading", { name: /^Certifications/ }) });
+      await rail.getByText("AWS Certified Cloud Practitioner").waitFor({ timeout: 10000 });
+      if ((await rail.getByText("Added by you").count()) !== 4) throw new Error("expected 4 certificates Added by you before any check");
+      await rail.getByText(/Expired Jan 2026/).waitFor();
+      // The Microsoft Learn link can't be checked with Credly.
+      if ((await rail.getByRole("button", { name: /Check with Credly/ }).count()) !== 3) throw new Error("expected Check with Credly on the 3 Credly badges only");
+
+      const check = rail.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
+      await check.focus();
+      await q.keyboard.press("Enter");
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 15000 });
+      await rail.getByRole("link", { name: /See the badge on Credly/ }).waitFor();
+      const focused = await q.evaluate(() => document.activeElement?.getAttribute("aria-label") ?? document.activeElement?.tagName);
+      if (focused === "BODY" || !focused) throw new Error("focus fell to the page after the check");
+      if (!/AWS Certified Cloud Practitioner/.test(focused)) throw new Error(`focus moved to ${focused}`);
+
+      await rail.getByRole("button", { name: "Check with Credly: AWS Certified Security – Specialty" }).click();
+      await rail.getByText("Still Added by you. The Credly badge is for a different certificate.").waitFor({ timeout: 15000 });
+      await rail.getByText("The Credly badge is for a different certificate.", { exact: true }).waitFor({ timeout: 10000 });
+      await a11yOn(q, "me-certifications");
+      await q.emulateMedia({ colorScheme: "dark" });
+      await q.reload();
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 10000 });
+      await a11yOn(q, "me-certifications-dark");
+      await q.emulateMedia({ colorScheme: "light" });
+      await q.setViewportSize({ width: 360, height: 780 });
+      await q.reload();
+      await rail.getByText("Verified with Credly", { exact: true }).waitFor({ timeout: 10000 });
+      if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("/me scrolls sideways at 360px");
+      await q.screenshot({ path: `${OUT}me-certifications-phone.png`, fullPage: true });
+    } finally {
+      await ctx2.close();
+    }
+
+    // The walk's account opens Asha's profile link.
+    await p.goto(BASE + `/u/${handle}`);
+    await settled();
+    await p.getByRole("heading", { level: 1, name: "Asha Rao" }).waitFor({ timeout: 10000 });
+    const certs = p.locator("section", { has: p.getByRole("heading", { name: /^Certifications/ }) });
+    const names = await certs.locator("li span.font-semibold").allInnerTexts();
+    if (JSON.stringify(names) !== JSON.stringify(["AWS Certified Cloud Practitioner", "AWS Certified Security – Specialty", "Microsoft Certified: Azure Fundamentals (AZ-900)"]))
+      throw new Error(`public certifications: ${JSON.stringify(names)}`);
+    await certs.getByText("Verified with Credly", { exact: true }).waitFor();
+    if ((await certs.getByText("Added by Asha", { exact: true }).count()) !== 2) throw new Error("expected Added by Asha twice");
+    const badge = await certs.getByRole("link", { name: /See the badge on Credly/ }).getAttribute("href");
+    if (badge !== "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002") throw new Error(`badge link ${badge}`);
+    if (await certs.getByRole("button").count()) throw new Error("a visitor sees Check with Credly");
+    const html = await p.content();
+    for (const bad of ["Certified Kubernetes", "learn.microsoft.com", "AshaRaoWalk", "WALKCERT1", "different certificate", "walk-aws", "c4ed1100-0000-4000-8000-000000000003", "Expired"])
+      if (html.includes(bad)) throw new Error(`the public profile carries ${bad}`);
+    await shot("public-certifications");
+    await a11y("public-certifications");
+
+    // A second account, also named Asha Rao, adds the same badge and checks it: it is already verified on Asha's
+    // account, so it is held for review, not refused for good. The row leaves the list and focus moves to the
+    // Certifications heading, never to the page.
+    const ctx3 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const r = await ctx3.newPage();
+    r.on("pageerror", (e) => problems.push(`pageerror@${r.url()}: ${e.message.slice(0, 200)}`));
+    r.on("response", (res) => res.status() >= 500 && problems.push(`${res.status()} ${res.request().method()} ${res.url()}`));
+    const email2 = `certs2-${testEmail}`;
+    try {
+      await r.goto(BASE + "/sign-in");
+      await r.locator('input[name="name"]').fill("Asha Rao");
+      await r.locator('input[name="email"]').fill(email2);
+      await r.locator('form button[type="submit"]').last().click();
+      await r.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await r.locator('input[name="age"]').check();
+      await r.locator("form", { has: r.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await r.waitForURL(/\/today/, { timeout: 15000 });
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [other] = await sql`select id from users where email like ${email2 + "%"} order by created_at desc limit 1`;
+        if (!other) throw new Error("the second account was not found");
+        const url = "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002";
+        await sql`insert into gap_proofs (user_id, skill_id, type, status, evidence, cert_id, issued_on, expires_on, credential_key, name_matched, badge_id, verified_at)
+          values (${other.id}, 'aws', 'certification', 'accepted', ${sql.json({ type: "certification", certId: "aws-cloud-practitioner", issuer: "walk", url })},
+            'aws-cloud-practitioner', '2025-06-10', '2028-06-10', ${`walk-squat-${other.id}`}, true, 'c4ed1100-0000-4000-8000-000000000002', now())`;
+      } finally {
+        await sql.end();
+      }
+      await r.goto(BASE + "/me");
+      await r.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      const rail2 = r.locator("section", { has: r.getByRole("heading", { name: /^Certifications/ }) });
+      const check2 = rail2.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
+      await check2.focus();
+      await r.keyboard.press("Enter");
+      await rail2.getByText(/already verified on another account, so we'll review it/).waitFor({ timeout: 15000 });
+      await check2.waitFor({ state: "detached", timeout: 10000 });
+      const at = await r.evaluate(() => ({ tag: document.activeElement?.tagName, text: document.activeElement?.textContent ?? "" }));
+      if (at.tag === "BODY" || !/Certifications/.test(at.text)) throw new Error(`focus after the held check: ${JSON.stringify(at)}`);
+      await a11yOn(r, "me-certifications-held");
+    } finally {
+      await ctx3.close();
+    }
+  });
+}
 // The company the Corporate step sets up, for the company review step after it.
 let corpDomain = null;
 // Corporate (dev/corporate-plan.md, build steps 1 and 2): a signed-in person sets up a company with a work email on
@@ -1996,7 +2158,7 @@ await step("overview, audit and the daily clean-up", async () => {
 
     // The candidate has no company role: the audit is not theirs.
     await p.goto(BASE + "/corporate/audit");
-    await p.getByRole("heading", { name: "You can't open the audit" }).waitFor({ timeout: 10000 });
+    await p.getByRole("heading", { name: "You don't have a company role" }).waitFor({ timeout: 10000 });
 
     // The daily clean-up: the secret from the server's environment, never from a page; counts only.
     const secret = process.env.CRON_SECRET;
@@ -2086,7 +2248,18 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await q.getByLabel("Match to this job").selectOption(job.id);
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.waitForURL(/\/corporate\/people\?job=/);
+    // Focus lands on the results heading, never on the page body.
+    await q.waitForFunction(() => document.activeElement?.tagName === "H2" && /match/.test(document.activeElement.textContent ?? ""), null, { timeout: 10000 });
     const address = new URL(q.url());
+    // Opening that address again fills in the form but runs no search (Testing T41): no limit used, no audit line.
+    const searched = async () => (await sql`select count(*)::int as n from audit_logs where org_id = ${org.id} and action = 'people_searched'`)[0].n;
+    const before = await searched();
+    await q.reload();
+    await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    if ((await q.getByLabel("Match to this job").inputValue()) !== job.id) throw new Error("the address did not fill in the job");
+    if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opening a search address ran the search");
+    if ((await searched()) !== before) throw new Error("opening a search address wrote a people_searched line");
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     if ([...address.searchParams.keys()].some((k) => !["job", "band", "page"].includes(k)) || address.searchParams.get("job") !== job.id || address.searchParams.get("band")) throw new Error("the search address holds more than the job and band: " + address.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
     await open.waitFor({ timeout: 10000 });
@@ -2112,6 +2285,7 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await q.setViewportSize({ width: 360, height: 780 });
     await q.emulateMedia({ colorScheme: "dark" });
     await q.reload();
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
     const overflow = await q.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 1) throw new Error("find people on a phone: horizontal overflow " + overflow + "px");
@@ -2154,6 +2328,7 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await fp.waitForFunction(() => document.activeElement?.textContent === "Settings saved.", null, { timeout: 15000 });
     await q.reload();
     await q.getByRole("heading", { name: "Find people", level: 1 }).waitFor({ timeout: 10000 });
+    await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
     if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opting out did not remove the person from results");
 
@@ -2165,6 +2340,32 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     const audit = await sql`select action, target from audit_logs where org_id = ${org.id} and action in ('people_searched', 'found_profile_viewed', 'found_request_sent')`;
     for (const action of ["people_searched", "found_profile_viewed", "found_request_sent"]) if (!audit.some((a) => a.action === action)) throw new Error("no audit line for " + action);
     if (audit.some((a) => a.target !== `job:${job.id}`)) throw new Error("an audit line names more than the job: " + audit.map((a) => a.target).join());
+
+    // Blocking the whole company stops its application chats too (Testing T37). Arjun applies to the job; once he
+    // blocks Example Labs in Settings, the recruiter's message on that application doesn't reach him, and to the
+    // company the chat reads as closed, never as blocked.
+    await fp.goto(BASE + "/departures");
+    const fcard = fp.getByRole("article").filter({ has: fp.getByRole("heading", { name: title }) });
+    await fcard.waitFor({ timeout: 10000 });
+    await fcard.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
+    await fcard.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await fcard.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
+    await fcard.getByRole("button", { name: "Send application" }).click();
+    await fcard.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+    const [arjunApp] = await sql`select id from applications where user_id = ${user.id} and job_id = ${job.id}`;
+    await fp.goto(BASE + "/settings");
+    await fp.locator("[data-company-discovery]").getByRole("button", { name: "Block Example Labs" }).click();
+    await fp.getByText("Blocked Example Labs. They won't find or message you.").waitFor({ timeout: 10000 });
+    await q.goto(BASE + `/corporate/messages?application=${arjunApp.id}`);
+    const blockedChat = q.getByRole("region", { name: "Arjun Mehta" });
+    await blockedChat.waitFor({ timeout: 10000 });
+    await blockedChat.getByText(/This chat is closed/).waitFor({ timeout: 10000 });
+    if (await blockedChat.getByRole("textbox", { name: "Message" }).count()) throw new Error("the company can still write after the person blocked it");
+    if ((await blockedChat.innerText()).toLowerCase().includes("block")) throw new Error("the company is told it was blocked");
+    const [sent] = await sql`select count(*)::int as n from messages m join conversations c on c.id = m.conversation_id where c.application_id = ${arjunApp.id} and m.kind <> 'system'`;
+    if (sent.n !== 0) throw new Error("a company message reached a person who blocked the company");
+    await fp.goto(BASE + "/arrivals");
+    await fp.getByText(/You blocked Example Labs\. It can.t message you/).waitFor({ timeout: 10000 });
   } catch (e) {
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-find-people.png`, fullPage: true }).catch(() => {});
     throw e;
@@ -2209,7 +2410,7 @@ await step("corporate applications: withdraw after Not this time; the company se
     await p.getByRole("button", { name: /Example Labs/ }).first().click();
     await p.getByRole("region", { name: "Chat with Example Labs" }).getByText(/This chat is closed/).waitFor({ timeout: 10000 });
 
-    const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
+    const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title} order by a.created_at limit 1`;
     if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");
     if (!app.withdrawn_at || !app.consent_withdrawn) throw new Error("withdrawal not saved on the application and its consent");
     const steps = (await sql`select kind, stage, note from application_events where application_id = ${app.id} order by created_at`).map((e) => `${e.kind}:${e.stage}${e.note ? ":note" : ""}`);

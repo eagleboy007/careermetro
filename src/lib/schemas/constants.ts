@@ -42,6 +42,10 @@ export const ORG_ABOUT_MAX_CHARS = 400;
 export const ANTI_SCAM_LINE = "Companies never ask for money, OTPs or bank details. Report anyone who does.";
 /** What a person sees when someone tries to set up a company whose domain is taken. Never names its admins. */
 export const DOMAIN_TAKEN_TEXT = "This company is already on CareerMetro. Ask one of its Recruiter admins to add you.";
+/** Re-checking a work email (every 180 days) while no email sender exists (production before pending item 21). */
+export const RECHECK_CLOSED_TEXT =
+  "We can't send work-email codes yet, so your company access stays paused until we can. Your personal CareerMetro account isn't affected.";
+
 export const SIGNUP_CLOSED_TEXT = "Company sign-up opens soon.";
 /** "Your choice" goals one person may have: goals they add themselves, such as from a job check's "Only for this job". */
 export const MAX_CHOICE_GOALS = 20;

@@ -357,6 +357,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     const r = await apply(me, jobId);
     if (!r.ok) throw new Error(r.error);
     expect(await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at())).toEqual({ ok: true });
+    // The admin re-checked their work email in the meantime (it is due 180 days after joining, Testing T40).
+    await db!.update(schema.orgMembers).set({ recheckDueAt: new Date(clock.getTime() + 400 * DAY) }).where(eq(schema.orgMembers.userId, admin));
     const soon = await jobBoard(admin, jobId, at(179));
     expect(soon.ok && soon.board.cards.length).toBe(1);
     const later = await jobBoard(admin, jobId, at(181));

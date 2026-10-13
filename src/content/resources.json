@@ -3303,5 +3303,1442 @@
     ],
     "minutes": 90,
     "free": true
+  },
+  {
+    "title": "Microsoft Azure Fundamentals: Describe cloud concepts",
+    "url": "https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "azure"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Google Cloud Associate Cloud Engineer full course (about 11 hours)",
+    "url": "https://www.freecodecamp.org/news/pass-the-google-cloud-associate-cloud-engineer-exam/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "gcp"
+    ],
+    "minutes": 660,
+    "free": true
+  },
+  {
+    "title": "GitHub Actions quickstart",
+    "url": "https://docs.github.com/en/actions/get-started/quickstart",
+    "provider": "GitHub Docs",
+    "kind": "practice",
+    "skillIds": [
+      "ci-cd"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Explore Azure Pipelines",
+    "url": "https://learn.microsoft.com/en-us/training/modules/explore-azure-pipelines/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "ci-cd"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "HashiCorp Terraform Associate certification course",
+    "url": "https://www.freecodecamp.org/news/hashicorp-terraform-associate-certification-study-course-pass-the-exam-with-this-free-12-hour-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "terraform"
+    ],
+    "minutes": 420,
+    "free": true
+  },
+  {
+    "title": "OpenTelemetry: Observability primer",
+    "url": "https://opentelemetry.io/docs/concepts/observability-primer/",
+    "provider": "OpenTelemetry (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "monitoring"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "OpenTelemetry: Getting started for developers",
+    "url": "https://opentelemetry.io/docs/getting-started/dev/",
+    "provider": "OpenTelemetry (CNCF)",
+    "kind": "practice",
+    "skillIds": [
+      "monitoring"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to GitOps (LFS169)",
+    "url": "https://training.linuxfoundation.org/training/introduction-to-gitops-lfs169/",
+    "provider": "Linux Foundation",
+    "kind": "course",
+    "skillIds": [
+      "gitops"
+    ],
+    "minutes": 210,
+    "free": true
+  },
+  {
+    "title": "Cryptography and Network Security (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105162",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "network-security"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-41 Rev. 1: Guidelines on Firewalls and Firewall Policy",
+    "url": "https://csrc.nist.gov/pubs/sp/800/41/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "network-security"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-207: Zero Trust Architecture",
+    "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-architecture",
+      "network-security"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Microsoft Cybersecurity Reference Architectures (MCRA)",
+    "url": "https://learn.microsoft.com/en-us/security/adoption/mcra",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "security-architecture"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "AWS Well-Architected Framework: Security Pillar",
+    "url": "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "security-architecture",
+      "cloud-security"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "CCSK v5 Prep Kit",
+    "url": "https://cloudsecurityalliance.org/artifacts/ccsk-v5-prep-kit",
+    "provider": "Cloud Security Alliance",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-security"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "The Site Reliability Workbook (free online)",
+    "url": "https://sre.google/workbook/table-of-contents/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "sre-practices"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Get started with Elastic Security SIEM: detect and respond to threats",
+    "url": "https://www.elastic.co/docs/solutions/security/get-started/get-started-detect-with-siem",
+    "provider": "Elastic",
+    "kind": "practice",
+    "skillIds": [
+      "siem"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CISA Stakeholder-Specific Vulnerability Categorization (SSVC)",
+    "url": "https://www.cisa.gov/ssvc",
+    "provider": "CISA",
+    "kind": "docs",
+    "skillIds": [
+      "vulnerability-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "CIS Benchmarks: Microsoft Windows Desktop",
+    "url": "https://www.cisecurity.org/benchmark/microsoft_windows_desktop",
+    "provider": "Center for Internet Security",
+    "kind": "docs",
+    "skillIds": [
+      "endpoint-security"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SC-300T00: Microsoft Identity and Access Administrator",
+    "url": "https://learn.microsoft.com/training/courses/sc-300t00",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "identity-access-management"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "CIS Critical Security Controls v8.1",
+    "url": "https://www.cisecurity.org/controls/v8-1",
+    "provider": "Center for Internet Security",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-frameworks",
+      "security-policies"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-12 Rev. 1: An Introduction to Information Security",
+    "url": "https://csrc.nist.gov/pubs/sp/800/12/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-policies"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Recognize and Report Phishing (Secure Our World)",
+    "url": "https://www.cisa.gov/secure-our-world/recognize-and-report-phishing",
+    "provider": "CISA",
+    "kind": "docs",
+    "skillIds": [
+      "security-awareness"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MISP training materials (CIRCL)",
+    "url": "https://circl.lu/services/misp-training-materials/",
+    "provider": "CIRCL / MISP Project",
+    "kind": "practice",
+    "skillIds": [
+      "threat-intelligence"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "STIX Version 2.1 specification",
+    "url": "https://docs.oasis-open.org/cti/stix/v2.1/stix-v2.1.html",
+    "provider": "OASIS CTI TC",
+    "kind": "docs",
+    "skillIds": [
+      "threat-intelligence"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Windows Forensic Analysis poster",
+    "url": "https://www.sans.org/posters/windows-forensic-analysis",
+    "provider": "SANS",
+    "kind": "docs",
+    "skillIds": [
+      "digital-forensics"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Malware Analysis: Tips & Tricks poster",
+    "url": "https://www.sans.org/posters/malware-analysis-tips-tricks-poster",
+    "provider": "SANS",
+    "kind": "docs",
+    "skillIds": [
+      "malware-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "REMnux: A Linux Toolkit for Malware Analysis (docs)",
+    "url": "https://docs.remnux.org",
+    "provider": "REMnux",
+    "kind": "practice",
+    "skillIds": [
+      "malware-analysis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-83 Rev. 1: Guide to Malware Incident Prevention and Handling",
+    "url": "https://csrc.nist.gov/pubs/sp/800/83/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "malware-analysis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Threat response with Microsoft Sentinel playbooks",
+    "url": "https://learn.microsoft.com/en-us/training/modules/threat-response-sentinel-playbooks/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "soar"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Automation in Microsoft Sentinel",
+    "url": "https://learn.microsoft.com/en-us/training/modules/automation-microsoft-sentinel/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "soar"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Creating and using playbooks in Splunk SOAR",
+    "url": "https://lantern.splunk.com/Security/Getting_Started/Creating_and_using_playbooks_in_SOAR",
+    "provider": "Splunk Lantern",
+    "kind": "docs",
+    "skillIds": [
+      "soar"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Pwning OWASP Juice Shop (companion guide)",
+    "url": "https://pwning.owasp-juice.shop/",
+    "provider": "OWASP",
+    "kind": "practice",
+    "skillIds": [
+      "secure-code-review"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "OWASP SAMM (Software Assurance Maturity Model)",
+    "url": "https://owaspsamm.org/about/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "devsecops",
+      "secure-code-review"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "DPDP Rules, 2025 notified (PIB backgrounder)",
+    "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2190655",
+    "provider": "Press Information Bureau, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "data-privacy",
+      "data-breach-response"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "NIST Privacy Framework: Getting started and Quick Start Guide",
+    "url": "https://www.nist.gov/privacy-framework/new-framework/getting-started",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "privacy-program-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Data Breach Response: A Guide for Business",
+    "url": "https://www.ftc.gov/business-guidance/resources/data-breach-response-guide-business",
+    "provider": "US Federal Trade Commission",
+    "kind": "docs",
+    "skillIds": [
+      "data-breach-response"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Vendor SCRM template for small and medium businesses",
+    "url": "https://www.cisa.gov/resources-tools/resources/operationalizing-vendor-scrm-template-smbs",
+    "provider": "CISA",
+    "kind": "practice",
+    "skillIds": [
+      "third-party-risk"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST SP 1305: CSF 2.0 Quick-Start Guide for Cybersecurity Supply Chain Risk Management",
+    "url": "https://csrc.nist.gov/pubs/sp/1305/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-risk"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "ICT Supply Chain Resource Library",
+    "url": "https://www.cisa.gov/ict-supply-chain-library",
+    "provider": "CISA",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-risk"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Business Continuity Plan (Ready.gov)",
+    "url": "https://www.ready.gov/business-continuity-plan",
+    "provider": "Ready.gov (FEMA)",
+    "kind": "docs",
+    "skillIds": [
+      "business-continuity"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Disaster recovery planning guide (Google Cloud)",
+    "url": "https://docs.cloud.google.com/architecture/dr-scenarios-planning-guide",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "business-continuity",
+      "gcp"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Design your site recovery solution in Azure",
+    "url": "https://learn.microsoft.com/en-us/training/modules/design-your-site-recovery-solution-in-azure/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "business-continuity",
+      "azure"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Security Command Center overview",
+    "url": "https://cloud.google.com/security-command-center/docs/security-command-center-overview",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-security-posture",
+      "gcp"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get started with FinOps",
+    "url": "https://learn.microsoft.com/en-us/training/modules/get-started-with-finops/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cloud-cost"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Adopt FinOps on Azure",
+    "url": "https://learn.microsoft.com/en-us/training/modules/adopt-finops-on-azure/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cloud-cost",
+      "azure"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Virtual Private Cloud (VPC) overview",
+    "url": "https://docs.cloud.google.com/vpc/docs/overview",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-networking",
+      "gcp"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Bash scripting tutorial for beginners",
+    "url": "https://www.freecodecamp.org/news/learn-bash-scripting-tutorial/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "scripting-bash"
+    ],
+    "minutes": 48,
+    "free": true
+  },
+  {
+    "title": "Beginner's Series to JavaScript",
+    "url": "https://learn.microsoft.com/en-us/shows/beginners-series-to-javascript",
+    "provider": "Microsoft Learn",
+    "kind": "video",
+    "skillIds": [
+      "javascript"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Build JavaScript applications using TypeScript",
+    "url": "https://learn.microsoft.com/en-us/training/paths/build-javascript-applications-typescript/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "typescript"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Learn TypeScript with interactive lessons (Scrimba course)",
+    "url": "https://www.freecodecamp.org/news/learn-typescript-with-interactive-lessons/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "typescript"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "PostgreSQL docs: WITH Queries (Common Table Expressions)",
+    "url": "https://www.postgresql.org/docs/current/queries-with.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "sql-window-functions"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Object Oriented Analysis and Design (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105153",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "oop"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Introduction to Git",
+    "url": "https://learn.microsoft.com/en-us/training/modules/intro-to-git/",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "git"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to MongoDB",
+    "url": "https://learn.mongodb.com/learning-paths/introduction-to-mongodb",
+    "provider": "MongoDB University",
+    "kind": "course",
+    "skillIds": [
+      "nosql"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Excel video training",
+    "url": "https://support.microsoft.com/en-us/office/excel-video-training-9bc05390-e94c-46af-a5b3-d7c22f6990bb",
+    "provider": "Microsoft Support",
+    "kind": "video",
+    "skillIds": [
+      "excel"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "VLOOKUP function",
+    "url": "https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "excel-pivot-lookup",
+      "excel"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Probability and Statistics (MIT 18.05, Spring 2022)",
+    "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "statistics"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "GrowthBook docs: Statistics overview",
+    "url": "https://docs.growthbook.io/statistics/overview",
+    "provider": "GrowthBook",
+    "kind": "docs",
+    "skillIds": [
+      "ab-testing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn Pandas for Data Science (full course)",
+    "url": "https://www.freecodecamp.org/news/learn-pandas-for-data-science/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "data-cleaning"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Introduction to Azure Data Factory",
+    "url": "https://learn.microsoft.com/en-us/training/modules/intro-to-azure-data-factory/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "etl"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Spark SQL, DataFrames and Datasets Guide",
+    "url": "https://spark.apache.org/docs/latest/sql-programming-guide.html",
+    "provider": "Apache Spark",
+    "kind": "docs",
+    "skillIds": [
+      "spark"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Natural Language Processing (IIT Kharagpur, Pawan Goyal)",
+    "url": "https://nptel.ac.in/courses/106105158",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "nlp"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Generative AI for Beginners",
+    "url": "https://microsoft.github.io/generative-ai-for-beginners/",
+    "provider": "Microsoft",
+    "kind": "course",
+    "skillIds": [
+      "llm-apps"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "ML Crash Course: ROC and AUC",
+    "url": "https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc",
+    "provider": "Google for Developers",
+    "kind": "practice",
+    "skillIds": [
+      "model-evaluation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "End-to-end machine learning operations (MLOps) with Azure Machine Learning",
+    "url": "https://learn.microsoft.com/en-us/training/paths/build-first-machine-operations-workflow",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "mlops"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Write your first Selenium script",
+    "url": "https://www.selenium.dev/documentation/webdriver/getting_started/first_script/",
+    "provider": "Selenium",
+    "kind": "practice",
+    "skillIds": [
+      "selenium"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Build your first end-to-end test with Playwright",
+    "url": "https://learn.microsoft.com/en-us/training/modules/build-with-playwright",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "playwright-cypress"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Playwright docs: API testing",
+    "url": "https://playwright.dev/docs/api-testing",
+    "provider": "Playwright",
+    "kind": "docs",
+    "skillIds": [
+      "api-testing",
+      "playwright-cypress"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Grafana Learning Hub: k6 performance testing",
+    "url": "https://grafana.com/docs/learning-hub/k6-performance-testing/01-intro/01-course-overview/",
+    "provider": "Grafana Labs",
+    "kind": "practice",
+    "skillIds": [
+      "performance-testing"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Take your first steps with Go",
+    "url": "https://learn.microsoft.com/en-us/training/paths/go-first-steps/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "go"
+    ],
+    "minutes": 420,
+    "free": true
+  },
+  {
+    "title": "Kotlin tour",
+    "url": "https://kotlinlang.org/docs/kotlin-tour-welcome.html",
+    "provider": "Kotlin (JetBrains)",
+    "kind": "practice",
+    "skillIds": [
+      "kotlin"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Foundational C# with Microsoft",
+    "url": "https://www.freecodecamp.org/learn/foundational-c-sharp-with-microsoft/",
+    "provider": "freeCodeCamp and Microsoft",
+    "kind": "course",
+    "skillIds": [
+      "csharp-dotnet"
+    ],
+    "minutes": 2100,
+    "free": true
+  },
+  {
+    "title": "Refactoring SQL for Modularity",
+    "url": "https://courses.getdbt.com/courses/refactoring-sql-for-modularity",
+    "provider": "dbt Labs",
+    "kind": "course",
+    "skillIds": [
+      "dbt"
+    ],
+    "minutes": 210,
+    "free": true
+  },
+  {
+    "title": "PostgreSQL docs: Indexes",
+    "url": "https://www.postgresql.org/docs/current/indexes.html",
+    "provider": "PostgreSQL",
+    "kind": "docs",
+    "skillIds": [
+      "query-optimization"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Programming in Modern C++ (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105234",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "cpp"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "LearnCpp.com",
+    "url": "https://www.learncpp.com/",
+    "provider": "LearnCpp.com",
+    "kind": "docs",
+    "skillIds": [
+      "cpp"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "C++ language documentation",
+    "url": "https://learn.microsoft.com/en-us/cpp/cpp/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cpp"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn C++ with this free 31-hour course",
+    "url": "https://www.freecodecamp.org/news/learn-c-with-free-31-hour-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "cpp"
+    ],
+    "minutes": 1860,
+    "free": true
+  },
+  {
+    "title": "Scala 3 Book",
+    "url": "https://docs.scala-lang.org/scala3/book/introduction.html",
+    "provider": "Scala (official docs)",
+    "kind": "docs",
+    "skillIds": [
+      "scala"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Tour of Scala",
+    "url": "https://docs.scala-lang.org/tour/tour-of-scala.html",
+    "provider": "Scala (official docs)",
+    "kind": "docs",
+    "skillIds": [
+      "scala"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Looker docs: Introduction to LookML",
+    "url": "https://docs.cloud.google.com/looker/docs/write-lookml-intro",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "looker"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Looker docs: LookML data modeling basics",
+    "url": "https://docs.cloud.google.com/looker/docs/data-modeling",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "looker"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Databases for Developers: Foundations",
+    "url": "https://devgym.oracle.com/devgym/database-for-developers.html",
+    "provider": "Oracle Dev Gym",
+    "kind": "course",
+    "skillIds": [
+      "oracle-database"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Oracle Live SQL",
+    "url": "https://www.oracle.com/database/technologies/oracle-live-sql/",
+    "provider": "Oracle",
+    "kind": "practice",
+    "skillIds": [
+      "oracle-database"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to Microsoft Purview",
+    "url": "https://learn.microsoft.com/en-us/training/modules/intro-to-microsoft-purview/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-governance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Dagster Essentials",
+    "url": "https://courses.dagster.io/courses/dagster-essentials",
+    "provider": "Dagster University",
+    "kind": "course",
+    "skillIds": [
+      "data-orchestration"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Apache Flink 101",
+    "url": "https://developer.confluent.io/courses/apache-flink/",
+    "provider": "Confluent Developer",
+    "kind": "course",
+    "skillIds": [
+      "streaming-data"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Deploy a model to a managed online endpoint",
+    "url": "https://learn.microsoft.com/en-us/training/modules/deploy-model-managed-online-endpoint",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "model-serving"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Full Stack Deep Learning (2022 course)",
+    "url": "https://fullstackdeeplearning.com/course/2022/",
+    "provider": "Full Stack Deep Learning",
+    "kind": "course",
+    "skillIds": [
+      "ml-system-design",
+      "model-serving"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "ML Crash Course: Production ML systems",
+    "url": "https://developers.google.com/machine-learning/crash-course/production-ml-systems",
+    "provider": "Google for Developers",
+    "kind": "course",
+    "skillIds": [
+      "ml-system-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Weaviate Academy: Hands-on Weaviate with Python",
+    "url": "https://academy.weaviate.io/courses/wa101t-py",
+    "provider": "Weaviate",
+    "kind": "practice",
+    "skillIds": [
+      "vector-search"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Hugging Face Cookbook: Advanced RAG",
+    "url": "https://huggingface.co/learn/cookbook/advanced_rag",
+    "provider": "Hugging Face",
+    "kind": "practice",
+    "skillIds": [
+      "vector-search",
+      "llm-apps"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CSS layout (MDN Learn web development)",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout",
+    "provider": "MDN Web Docs",
+    "kind": "docs",
+    "skillIds": [
+      "html-css"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Next.js installation and getting started (App Router)",
+    "url": "https://nextjs.org/docs/app/getting-started/installation",
+    "provider": "Next.js (Vercel)",
+    "kind": "docs",
+    "skillIds": [
+      "nextjs"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Next.js for Beginners - Full Course (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/learn-next-js-tutorial/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "nextjs"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Learn App Development with Spring Boot 3 (freeCodeCamp, Dan Vega)",
+    "url": "https://www.freecodecamp.org/news/learn-app-development-with-spring-boot-3",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "spring-boot"
+    ],
+    "minutes": 210,
+    "free": true
+  },
+  {
+    "title": "Web performance (MDN Learn web development)",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Performance",
+    "provider": "MDN Web Docs",
+    "kind": "docs",
+    "skillIds": [
+      "web-performance"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Digital Accessibility Foundations (W3C WAI)",
+    "url": "https://www.w3.org/WAI/courses/foundations-course/",
+    "provider": "W3C Web Accessibility Initiative",
+    "kind": "course",
+    "skillIds": [
+      "accessibility"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "React State Management Course (freeCodeCamp, Jack Herrington)",
+    "url": "https://www.freecodecamp.org/news/how-to-manage-state-in-react/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "state-management"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Zustand Course: React State Management (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/zustand-course-react-state-management/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "state-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "RabbitMQ Tutorials (official)",
+    "url": "https://www.rabbitmq.com/tutorials",
+    "provider": "RabbitMQ",
+    "kind": "practice",
+    "skillIds": [
+      "messaging-queues"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Product Discovery Handbook",
+    "url": "https://www.atlassian.com/software/jira/product-discovery/resources/discovery-handbook",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "product-discovery",
+      "roadmapping"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Prioritization frameworks",
+    "url": "https://www.atlassian.com/agile/product-management/prioritization-framework",
+    "provider": "Atlassian Agile Coach",
+    "kind": "docs",
+    "skillIds": [
+      "roadmapping"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Product management KPIs",
+    "url": "https://www.atlassian.com/agile/product-management/product-management-kpis",
+    "provider": "Atlassian Agile Coach",
+    "kind": "docs",
+    "skillIds": [
+      "product-metrics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What are Wireframes? (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/what-is-wireframing/",
+    "provider": "freeCodeCamp",
+    "kind": "docs",
+    "skillIds": [
+      "wireframing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Prototypes vs Wireframes in UX Projects (NN/g video)",
+    "url": "https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/",
+    "provider": "Nielsen Norman Group",
+    "kind": "video",
+    "skillIds": [
+      "wireframing",
+      "prototyping"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Learn design with Figma: Getting started",
+    "url": "https://www.figma.com/resources/learn-design/getting-started/",
+    "provider": "Figma",
+    "kind": "course",
+    "skillIds": [
+      "figma"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Overview: Introduction to design systems (Figma Learn)",
+    "url": "https://help.figma.com/hc/en-us/articles/14552901442839-Overview-Introduction-to-design-systems",
+    "provider": "Figma Learn",
+    "kind": "course",
+    "skillIds": [
+      "design-systems",
+      "figma"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "When to Use Which User-Experience Research Methods",
+    "url": "https://www.nngroup.com/articles/which-ux-research-methods/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "ux-research"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a basic flowchart in Visio",
+    "url": "https://support.microsoft.com/en-us/office/create-a-basic-flowchart-in-visio-e207d975-4a51-4bfa-a356-eeec314bd276",
+    "provider": "Microsoft Support",
+    "kind": "practice",
+    "skillIds": [
+      "process-mapping"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Supporting public service transformation: cost benefit analysis guidance for local partnerships",
+    "url": "https://www.gov.uk/government/publications/supporting-public-service-transformation-cost-benefit-analysis-guidance-for-local-partnerships",
+    "provider": "HM Treasury (GOV.UK)",
+    "kind": "docs",
+    "skillIds": [
+      "business-case"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Management of Commercial Banking (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105143",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "domain-bfsi"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Testing strategy: test types (Dynamics 365 implementation guide)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy-test-types",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "uat"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEO Guide for Web Developers (Google Search Central)",
+    "url": "https://developers.google.com/search/docs/fundamentals/get-started-developers",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "seo"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Free Google Ads training (Skillshop)",
+    "url": "https://skillshop.withgoogle.com/googleads/",
+    "provider": "Google Skillshop",
+    "kind": "course",
+    "skillIds": [
+      "sem-google-ads"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Start marketing with Meta technologies (Meta Blueprint)",
+    "url": "https://www.facebookblueprint.com/student/path/211554-meta-marketing",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "social-media-marketing"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Promote a business with content (Google Digital Garage)",
+    "url": "https://learndigital.withgoogle.com/digitalgarage/course/promote-with-content",
+    "provider": "Google Digital Garage",
+    "kind": "course",
+    "skillIds": [
+      "content-marketing"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Connect through email (Google Digital Garage)",
+    "url": "https://learndigital.withgoogle.com/digitalgarage/course/promote-business-online/module/4",
+    "provider": "Google Digital Garage",
+    "kind": "course",
+    "skillIds": [
+      "email-marketing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "GraphQL Course for Beginners (freeCodeCamp, The Net Ninja)",
+    "url": "https://www.freecodecamp.org/news/graphql-database-tutorial/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "graphql"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Salesforce CRM Software Guide (Trailhead)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_basics",
+    "provider": "Salesforce Trailhead",
+    "kind": "practice",
+    "skillIds": [
+      "crm-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Jetpack Compose basics (codelab)",
+    "url": "https://developer.android.com/codelabs/jetpack-compose-basics",
+    "provider": "Android Developers",
+    "kind": "practice",
+    "skillIds": [
+      "android"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Develop in Swift Tutorials",
+    "url": "https://developer.apple.com/tutorials/develop-in-swift/welcome-to-develop-in-swift-tutorials",
+    "provider": "Apple Developer",
+    "kind": "course",
+    "skillIds": [
+      "swift-ios"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Flutter Course for Beginners (freeCodeCamp, 37 hours)",
+    "url": "https://www.freecodecamp.org/news/learn-flutter-full-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "flutter"
+    ],
+    "minutes": 2220,
+    "free": true
+  },
+  {
+    "title": "Intro to React Native Course (freeCodeCamp)",
+    "url": "https://www.freecodecamp.org/news/react-native-course-for-beginners/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "react-native"
+    ],
+    "minutes": 140,
+    "free": true
+  },
+  {
+    "title": "Submit an app (App Store Connect Help)",
+    "url": "https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-app/",
+    "provider": "Apple Developer",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-release"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Design Systems 101",
+    "url": "https://www.nngroup.com/articles/design-systems-101/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "design-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "UX Prototypes: Low Fidelity vs. High Fidelity",
+    "url": "https://www.nngroup.com/articles/ux-prototype-hi-lo-fidelity/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "prototyping"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Paper Prototyping: A Cutout Kit",
+    "url": "https://www.nngroup.com/articles/paper-prototyping-cutout-kit/",
+    "provider": "Nielsen Norman Group",
+    "kind": "practice",
+    "skillIds": [
+      "prototyping",
+      "wireframing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Usability testing: qualitative studies",
+    "url": "https://www.gov.uk/guidance/usability-testing-qualitative-studies",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "usability-testing"
+    ],
+    "minutes": 20,
+    "free": true
   }
 ]

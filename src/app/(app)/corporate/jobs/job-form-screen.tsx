@@ -10,6 +10,7 @@ import { roleOptions, skillOptions } from "@/lib/corporate/job-content";
 import { certificateOptions } from "@/lib/corporate/criteria";
 import { jobForm } from "@/lib/corporate/jobs-store";
 import { saveJobAction } from "./actions";
+import { NoCompanyRole } from "../no-role";
 
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -42,7 +43,7 @@ export async function JobFormScreen({ jobId }: { jobId: string | null }) {
   const form = await jobForm(account.id, jobId);
   if (!form.ok) {
     if (form.error === "not_found") notFound();
-    if (form.error === "not_member") return <Refused title="You don't have a company role" text="Set up your company, or confirm a role a Recruiter admin gave you, in Corporate." />;
+    if (form.error === "not_member") return <NoCompanyRole userId={account.id} />;
     return <Refused title="Only Recruiter admins and Hiring HR post jobs" text="Interviewers see the jobs they are on in Corporate. Ask a Recruiter admin if you need to post one." />;
   }
   return <JobForm data={form.data} initial={form.values} today={today} actions={{ save: saveJobAction }} />;

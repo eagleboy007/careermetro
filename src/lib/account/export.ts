@@ -126,7 +126,12 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         certificate: gapProofs.certId,
         issuedOn: gapProofs.issuedOn,
         expiresOn: gapProofs.expiresOn,
+        verifier: gapProofs.verifier,
         verifiedAt: gapProofs.verifiedAt,
+        // The Credly check (dev/profile-certs-plan.md): the public badge id, when it was checked and why it wasn't verified.
+        badgeId: gapProofs.badgeId,
+        checkedAt: gapProofs.checkedAt,
+        checkNote: gapProofs.checkNote,
         createdAt: gapProofs.createdAt,
       })
       .from(gapProofs)

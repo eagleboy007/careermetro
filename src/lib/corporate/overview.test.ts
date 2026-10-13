@@ -8,7 +8,7 @@ import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { listThreads } from "@/lib/inbox/store";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { AUDIT_PAGE_SIZE } from "@/lib/schemas/constants";
-import { applyToJob, jobBoard, moveApplication, openCandidate } from "./applications-store";
+import { applyToJob, jobBoard, moveApplication, openCandidate, withdrawApplication } from "./applications-store";
 import { companyAudit } from "./audit";
 import { companyChat, companyMessages } from "./chats-store";
 import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "./cleanup";
@@ -125,6 +125,9 @@ describe.skipIf(!db)("overview, audit and clean-up (database)", () => {
     const applied = await applyToJob(me, { jobId: saved.jobId, canJoin: "30", consent: true }, at());
     if (!applied.ok) throw new Error(applied.error);
     await moveApplication(hr, { applicationId: applied.applicationId, to: "shortlisted", note: "" }, at());
+    // Everyone here confirms their work email again in time (due 180 days after joining, Testing T40), so the 180-day
+    // checks below are about applications only.
+    await db!.update(schema.orgMembers).set({ recheckDueAt: new Date(clock.getTime() + 400 * DAY) }).where(eq(schema.orgMembers.orgId, done.orgId));
     return { d, orgId: done.orgId, admin, adminMember, hr, hrMember, otherHr, otherMember, iv, ivMember, me, jobId: saved.jobId, applicationId: applied.applicationId };
   }
   type Company = Awaited<ReturnType<typeof setup>>;
@@ -421,5 +424,34 @@ describe.skipIf(!db)("overview, audit and clean-up (database)", () => {
     const left = async () => (await db!.select({ id: schema.candidateSlots.id }).from(schema.candidateSlots).where(and(eq(schema.candidateSlots.applicationId, s.applicationId)))).length;
     expect(await clearPastOfferedTimes(db!, clock, { orgId: s.orgId })).toBe(1100);
     expect(await left()).toBe(0);
+  });
+
+  it("leaves audit lines about withdrawn applications, and those 180 days past closing, out of the audit page (T43)", async () => {
+    const s = await setup("audvis");
+    const other = await candidate("audvis-cand2", "Ananya Ghosh");
+    const second = await applyToJob(other, { jobId: s.jobId, canJoin: "now", consent: true }, at());
+    if (!second.ok) throw new Error(second.error);
+    for (const applicationId of [s.applicationId, second.applicationId]) expect(await openCandidate(s.admin, { applicationId }, at())).toMatchObject({ ok: true });
+    const page = async (days: number) => {
+      const r = await companyAudit(s.admin, {}, { db: db!, now: at(days).now });
+      if (!r.ok) throw new Error(r.error);
+      return r.view.lines;
+    };
+    const about = (lines: Awaited<ReturnType<typeof page>>, applicationId: string) => lines.filter((l) => l.on.kind === "application" && l.on.ref === applicationId.slice(0, 8));
+    expect(about(await page(0), second.applicationId).length).toBeGreaterThan(0);
+
+    // Withdrawn: the company sees only a count of withdrawn applications, so the audit drops their lines too.
+    expect(await withdrawApplication(other, { applicationId: second.applicationId }, at())).toEqual({ ok: true });
+    expect(about(await page(0), second.applicationId)).toEqual([]);
+    expect(about(await page(0), s.applicationId).length).toBeGreaterThan(0);
+
+    // Not this time: its lines stay for 180 days, then go with the rest of the company's view of it.
+    await moveApplication(s.hr, { applicationId: s.applicationId, to: "not_this_time", note: "We picked someone with more cloud log work." }, at());
+    expect(about(await page(179), s.applicationId).length).toBeGreaterThan(0);
+    const late = await page(181);
+    expect(about(late, s.applicationId)).toEqual([]);
+    // Lines about the team and the job stay: they hold nothing of a candidate.
+    expect(late.some((l) => l.on.kind === "member")).toBe(true);
+    expect(late.some((l) => l.on.kind === "job")).toBe(true);
   });
 });

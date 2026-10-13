@@ -30,6 +30,10 @@ export const LIMITS = {
   inboxReportsPerUser: { bucket: "inbox-report", max: 20, windowMs: 24 * HOUR },
   /** Tries at adding a certificate, whatever the outcome, so names and credential ids can't be guessed at by script. */
   certificateTriesPerUser: { bucket: "certificate-try", max: 30, windowMs: 24 * HOUR },
+  /** Credly badge checks one person runs a day, on adding a certificate or from their profile (dev/profile-certs-plan.md). */
+  credlyChecksPerUser: { bucket: "credly-check-user", max: 10, windowMs: 24 * HOUR },
+  /** Credly badge checks an hour from everyone together, keyed "all", so we stay a polite caller of Credly. */
+  credlyChecksAll: { bucket: "credly-check-all", max: 300, windowMs: HOUR },
   /** Work-email codes one person asks for (handoff 12d): 3 an hour and 10 a day. */
   workEmailCodePerUserHour: { bucket: "work-email-code-user-hour", max: 3, windowMs: HOUR },
   workEmailCodePerUserDay: { bucket: "work-email-code-user-day", max: 10, windowMs: 24 * HOUR },

@@ -1,4 +1,17 @@
-/* The Market search (handoff C6). Kept free of the schemas, so the search box in the browser stays small. */
+/*
+ * The Market search and the Market's addresses (handoff C6). Kept free of the schemas, so the pickers in the browser
+ * stay small: the server sends the current view's parameters and each option's key, and the browser builds the address.
+ */
+
+/** The Market's address parameters: a role slug, place keys ("IN", "KA", "KA:Bengaluru") and the map metric. */
+export type MarketQuery = { role: string; place: string; map: string; a: string; b: string };
+
+/** The address for the view with some parameters changed, always in the order role, place, map, a, b. */
+export function marketQueryHref(base: MarketQuery, patch: Partial<MarketQuery> = {}): string {
+  const v = { ...base, ...patch };
+  const q = new URLSearchParams({ role: v.role, place: v.place, map: v.map, a: v.a, b: v.b });
+  return `/market?${q.toString()}`;
+}
 
 export type MarketChoice = { kind: "role" | "state" | "city"; label: string; hint: string; patch: { role?: string; place?: string } };
 

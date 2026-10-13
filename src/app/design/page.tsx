@@ -42,6 +42,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -56,7 +57,7 @@ import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
-import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
+import { CorporateHome, CorporateStart, RecheckPanel } from "@/components/corporate/corporate-home";
 import {
   exampleApplications,
   exampleApplyPacket,
@@ -425,6 +426,27 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Certifications on a profile</h2>
+        <p className="text-sm text-muted">
+          Pending item 13: from accepted certificates and the resume. The owner sees every one, the reason a Credly check didn&apos;t verify one, an
+          expired one marked, and Check with Credly (example data, so nothing is checked). Others see at most 5 current ones: Verified with Credly
+          first, with the public badge link, then Added by the person.
+        </p>
+        <div className="grid gap-6 min-[760px]:grid-cols-2">
+          <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+            <h3 id="design-certs-own" tabIndex={-1} className="text-[0.95rem] font-semibold">
+              Your own profile
+            </h3>
+            <ProfileCertifications certs={exampleMe.certifications} mode="own" ownerName={exampleMe.name} headingId="design-certs-own" />
+          </div>
+          <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+            <h3 className="text-[0.95rem] font-semibold">What others see</h3>
+            <ProfileCertifications certs={publicProfile(exampleMe, DEFAULT_SETTINGS).certifications} mode="public" ownerName={exampleMe.name} />
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Someone&apos;s profile (/u/username)</h2>
         <p className="text-sm text-muted">
           What a signed-in person sees at a profile link, worked out on the server from the owner&apos;s privacy switches: here with the target role
@@ -503,6 +525,10 @@ export default function DesignPage() {
         <p className="text-sm text-muted">Corporate for someone with no company role: set up a company, or confirm a role they were given.</p>
         <div className="rounded-lg border border-line p-4">
           <CorporateStart open />
+        </div>
+        <p className="text-sm text-muted">Corporate when a role&apos;s 180-day work-email re-check is due: access is paused until the person confirms the email again.</p>
+        <div className="rounded-lg border border-line p-4">
+          <RecheckPanel company="Example Labs" domain="example-labs.in" open />
         </div>
       </section>
 

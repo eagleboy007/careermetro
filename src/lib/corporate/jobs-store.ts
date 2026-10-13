@@ -79,8 +79,8 @@ async function teamRoleOf(jobId: string, userId: string, db: Db | Tx): Promise<J
 }
 
 /** A job of the person's company that they may change, locked for the rest of the transaction. */
-async function editableJob(userId: string, jobId: string, tx: Tx) {
-  const me = await activeMembership(userId, tx);
+async function editableJob(userId: string, jobId: string, tx: Tx, now: Date) {
+  const me = await activeMembership(userId, tx, now);
   if (!me) return fail("not_member");
   const [job] = await tx
     .select({ id: jobs.id, status: jobs.status, ownerId: jobs.ownerId, requirements: jobs.requirements })
@@ -141,7 +141,7 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
   if (unknownSkills(input.requirements).length) return fail("unknown_skill");
   if (unknownCertificates(input.criteria).length) return fail("unknown_certificate");
 
-  const first = await activeMembership(userId, db);
+  const first = await activeMembership(userId, db, now);
   if (!first) return fail("not_member");
   if (!canPostJobs(first.role)) return fail("not_allowed");
   if (!input.jobId && !(await takeShared(LIMITS.jobsPerCompanyDay, first.orgId, { db, now: now.getTime() }))) {
@@ -153,13 +153,13 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
     let me: Member;
     let current: { id: string; status: JobStatus; ownerId: string | null } | null = null;
     if (input.jobId) {
-      const found = await editableJob(userId, input.jobId, tx);
+      const found = await editableJob(userId, input.jobId, tx, now);
       if (!found.ok) return found;
       me = found.me;
       current = found.job;
       if (current.status === "closed") return fail("bad_move");
     } else {
-      const m = await activeMembership(userId, tx);
+      const m = await activeMembership(userId, tx, now);
       if (!m) return fail("not_member");
       if (!canPostJobs(m.role)) return fail("not_allowed");
       me = m;
@@ -215,7 +215,7 @@ export async function setJobStatus(userId: string, raw: unknown, deps: JobDeps =
   if (!parsed.success) return fail("invalid");
   const { jobId, to } = parsed.data;
   const result = await db.transaction(async (tx): Promise<JobResult> => {
-    const found = await editableJob(userId, jobId, tx);
+    const found = await editableJob(userId, jobId, tx, now);
     if (!found.ok) return found;
     const { me, job } = found;
     if (statusMoveRefusal(job.status, to)) return fail("bad_move");
@@ -349,7 +349,7 @@ export async function jobForm(
 ): Promise<JobResult<{ data: JobFormData; values: JobFormValues | null }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   if (!canPostJobs(me.role)) return fail("not_allowed");
   let values: JobFormValues | null = null;

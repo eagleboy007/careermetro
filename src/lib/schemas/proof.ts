@@ -26,7 +26,60 @@ export type CertificateSubmission = z.infer<typeof certificateSubmission>;
 export const CERTIFICATE_REFUSALS = ["not_found", "unknown_cert", "not_covered", "expired", "issued_in_future", "name", "no_name", "link", "too_many"] as const;
 export type CertificateRefusal = (typeof CERTIFICATE_REFUSALS)[number];
 
+/**
+ * How a certificate is labelled (dev/profile-certs-plan.md): "verified" when its Credly badge matched, else "added"
+ * (Added by you). Both fill the goal; the label only says how much it was checked.
+ */
+export const CERTIFICATE_LABELS = ["verified", "added"] as const;
+export type CertificateLabel = (typeof CERTIFICATE_LABELS)[number];
+
 export type CertificateOutcome =
-  | { status: "filled"; label: "verified" | "uploaded"; skillId: string }
+  /** `proofId` is the accepted proof, so its Credly link can be checked once the transaction is done. */
+  | { status: "filled"; label: CertificateLabel; skillId: string; proofId: string }
   | { status: "held"; skillId: string }
   | { status: "refused"; reason: CertificateRefusal };
+
+/**
+ * Why a Credly check left a certificate "Added by you" (gap_proofs.check_note). Only the owner sees the reason.
+ * `unreachable` is the only one that isn't about the badge itself: Credly didn't answer in time.
+ */
+export const CREDLY_CHECK_NOTES = ["unreachable", "not_found", "not_public", "badge_name", "issuer", "earner_name", "no_name", "expired", "used_elsewhere"] as const;
+export const credlyCheckNote = z.enum(CREDLY_CHECK_NOTES);
+export type CredlyCheckNote = z.infer<typeof credlyCheckNote>;
+
+const credlyIssuer = z
+  .object({ entities: z.array(z.object({ entity: z.object({ name: z.string().max(300) }).loose() }).loose()).max(20).default([]) })
+  .loose();
+
+/**
+ * The parts of Credly's public badge JSON (https://www.credly.com/badges/<id>.json) the check reads. Everything else
+ * is ignored. Loose objects, so a field Credly adds later doesn't break the check; a field we need that is missing
+ * fails it.
+ */
+export const credlyBadge = z
+  .object({
+    data: z
+      .object({
+        id: z.string().max(80),
+        state: z.string().max(40),
+        public: z.boolean().optional(),
+        issued_to: z.string().max(300).nullish(),
+        issued_to_first_name: z.string().max(150).nullish(),
+        issued_to_last_name: z.string().max(150).nullish(),
+        expires_at_date: z.string().max(40).nullish(),
+        badge_template: z.object({ name: z.string().min(1).max(300), issuer: credlyIssuer.optional() }).loose(),
+        issuer: credlyIssuer.optional(),
+      })
+      .loose(),
+  })
+  .loose();
+export type CredlyBadge = z.infer<typeof credlyBadge>;
+
+/** What the owner's "Check with Credly" gets back. */
+export type CredlyCheckOutcome =
+  | { status: "verified" }
+  | { status: "added"; note: CredlyCheckNote }
+  /** The badge is already verified on another account: held for review, so it fills nothing until then. */
+  | { status: "held" }
+  /** Nothing was checked: not their accepted proof, not a Credly badge link, or over the limit. */
+  | { status: "refused"; reason: "not_found" | "not_credly" | "too_many" };

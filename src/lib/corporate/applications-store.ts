@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, count, desc, eq, inArray, isNotNull, isNull, ne, or, gte } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applicationEvents, applications, candidateSlots, consents, conversations, gapProofs, interviews, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
+import { applicationEvents, applications, candidateSlots, companyBlocks, consents, conversations, gapProofs, interviews, jobs, jobTeam, organizations, profiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { writeAudit } from "./audit-line";
 import { assignedApplications, assignedSubquery, cancelUpcoming, companyInterviewsOf, myInterviewsOf, offeredState, phoneAudience } from "./interview-reads";
@@ -17,7 +17,8 @@ import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { criteriaStatus } from "./criteria";
 import { applicationPacketFor, jobMatch, publicProfile } from "./match";
 import { acceptsApplications, canMoveApplications, canSeeBoard, moveRefusal, phoneVisible, scheduleRefusal, type MoveRefusal } from "./rules";
-import { activeMembership } from "./store";
+import { activeMembership, heldMembership } from "./store";
+import { companyBlocked } from "./company-blocks";
 import type {
   ApplicationEventKind,
   ApplicationEventView,
@@ -61,6 +62,7 @@ export type ApplicationError =
   | "not_member"
   | "not_allowed"
   | "not_found"
+  | "blocked_company"
   | MoveRefusal;
 
 export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
@@ -72,6 +74,7 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_member: "You don't have access to this company.",
   not_allowed: "Only Recruiter admins, and Hiring HR on this job, can move candidates.",
   not_found: "That application isn't available any more.",
+  blocked_company: "You've blocked this company. Unblock it in Settings, under Privacy, to apply to its jobs.",
   same_stage: "They're already in that lane.",
   ai_off: "The L1 AI interview is off for this job.",
   withdrawn: "That application isn't available any more.",
@@ -186,6 +189,8 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
       if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
       const [already] = await tx.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
       if (already) return fail("already");
+      // A company the person blocked can't reach them, so it can't be sent a new application either (Testing T37).
+      if (await companyBlocked(userId, job.orgId, tx)) return fail("blocked_company");
       const analysis = await currentAnalysis(userId, tx);
       if (!analysis) return fail("no_resume");
       const [consent] = await tx
@@ -200,7 +205,7 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
       // The application's chat with the company, in the person's Inbox from now on (build step 5).
       await openApplicationChat(tx, { applicationId: app.id, orgId: job.orgId, userId }, now);
       // An employee's own job search stays hidden from their company's side: off this job's team.
-      const me = await activeMembership(userId, tx);
+      const me = await heldMembership(userId, tx);
       if (me?.orgId === job.orgId) await tx.delete(jobTeam).where(and(eq(jobTeam.jobId, job.id), eq(jobTeam.userId, userId)));
       return { ok: true, applicationId: app.id };
     })
@@ -295,6 +300,7 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
       createdAt: applications.createdAt,
       withdrawnAt: applications.withdrawnAt,
       phoneShared: applications.phoneShared,
+      orgId: applications.orgId,
     })
     .from(applications)
     .innerJoin(jobs, eq(jobs.id, applications.jobId))
@@ -302,7 +308,12 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
     .where(eq(applications.userId, userId))
     .orderBy(desc(applications.createdAt));
   const ids = rows.map((r) => r.id);
-  const [events, booked] = await Promise.all([eventsOf(ids, db), myInterviewsOf(ids, db, deps.now ?? new Date())]);
+  const [events, booked, blocked] = await Promise.all([
+    eventsOf(ids, db),
+    myInterviewsOf(ids, db, deps.now ?? new Date()),
+    ids.length ? db.select({ orgId: companyBlocks.orgId }).from(companyBlocks).where(eq(companyBlocks.userId, userId)) : Promise.resolve([]),
+  ]);
+  const blockedOrgs = new Set(blocked.map((b) => b.orgId));
   return rows.map((r) => ({
     id: r.id,
     title: r.title,
@@ -315,6 +326,7 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
     events: events.get(r.id) ?? [],
     interviews: booked.get(r.id) ?? [],
     phoneShared: r.phoneShared !== null,
+    ...(blockedOrgs.has(r.orgId) ? { companyBlocked: true } : {}),
   }));
 }
 
@@ -362,8 +374,8 @@ export async function criteriaStates(userId: string | null, jobIds: string[], de
 type Access = { me: NonNullable<Awaited<ReturnType<typeof activeMembership>>>; teamRole: JobTeamRole | null; canMove: boolean };
 
 /** The person's live access to one of their company's jobs, or why not. */
-async function jobAccess(userId: string, jobId: string, db: Db | Tx): Promise<ApplicationResult<Access>> {
-  const me = await activeMembership(userId, db);
+async function jobAccess(userId: string, jobId: string, db: Db | Tx, now: Date): Promise<ApplicationResult<Access>> {
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   const teamRole = await teamRoleOf(jobId, userId, db);
   if (!canSeeBoard(me.role, teamRole)) return fail("not_allowed");
@@ -380,14 +392,14 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   if (!UUID.test(jobId)) return fail("not_found");
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   const [job] = await db
     .select({ id: jobs.id, title: jobs.title, city: jobs.city, workType: jobs.workType, status: jobs.status, aiRound: jobs.aiRound, requirements: jobs.requirements })
     .from(jobs)
     .where(and(eq(jobs.id, jobId), eq(jobs.orgId, me.orgId)));
   if (!job) return fail("not_found");
-  const access = await jobAccess(userId, jobId, db);
+  const access = await jobAccess(userId, jobId, db, now);
   if (!access.ok) return access;
   const assignedOnly = !access.canMove;
   const rows = await db
@@ -458,7 +470,7 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
  */
 export async function visibleApplication(userId: string, applicationId: string, db: Db | Tx, now: Date, lock = false) {
   if (!UUID.test(applicationId)) return fail("not_found");
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   const q = db
     .select({
@@ -493,7 +505,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
   const [app] = lock ? await q.for("update", { of: applications }) : await q;
   // The person's own application, a deleted account, or one past the company's 180 days reads as not there.
   if (!app || app.userId === userId || app.deleted || !companyMaySee(app, now)) return fail("not_found");
-  const access = await jobAccess(userId, app.jobId, db);
+  const access = await jobAccess(userId, app.jobId, db, now);
   if (!access.ok) return fail(access.error);
   // Interviewers see only candidates whose live interview they are on (build step 6), read live like the role.
   if (!access.canMove && !(await assignedApplications(userId, [app.id], db, now)).has(app.id)) return fail("not_found");
@@ -522,7 +534,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
     certificatesByUser([app.userId], db, now),
     eventsOf([app.id], db),
     companyInterviewsOf([app.id], viewer, db, now),
-    phoneAudience(app.id, viewer, db),
+    phoneAudience(app.id, viewer, db, now),
     db.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.id)),
   ]);
   const offered = await offeredState(app.id, chat?.id ?? null, db, now);

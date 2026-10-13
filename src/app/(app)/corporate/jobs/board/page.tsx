@@ -12,6 +12,7 @@ import { testSignInEnabled } from "@/lib/auth/test-user";
 import { jobBoard } from "@/lib/corporate/applications-store";
 import { askTimesAction, cancelInterviewAction, feedbackAction } from "../../interviews/actions";
 import { moveApplicationAction, openCandidateAction } from "../actions";
+import { NoCompanyRole } from "../../no-role";
 
 export const metadata: Metadata = { title: "Job board · CareerMetro", robots: { index: false } };
 
@@ -43,7 +44,7 @@ async function Board({ searchParams }: PageProps<"/corporate/jobs/board">) {
   if (typeof id !== "string" || !UUID.test(id)) notFound();
   const r = await jobBoard(account.id, id);
   if (!r.ok) {
-    if (r.error === "not_member") return <Refused title="You don't have a company role" text="Set up your company, or confirm a role a Recruiter admin gave you, in Corporate." />;
+    if (r.error === "not_member") return <NoCompanyRole userId={account.id} />;
     if (r.error === "not_allowed") return <Refused title="You aren't on this job's team" text="Recruiter admins see every job's board; anyone else sees the boards of jobs they are on." />;
     notFound();
   }

@@ -319,6 +319,8 @@ export type MyApplicationView = {
   interviews: MyInterviewView[];
   /** A phone the person shared for an interview is on file with the company. */
   phoneShared: boolean;
+  /** The person blocked this company: it can't message them, ask for times or book interviews (Testing T37). */
+  companyBlocked?: boolean;
 };
 
 /** Whether the person can apply to a posted job on Departures, or already has. */

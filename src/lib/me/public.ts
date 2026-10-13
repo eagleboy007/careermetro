@@ -1,4 +1,4 @@
-import type { MeProfile, PublicParts, UserSettings } from "@/lib/schemas";
+import { CREDLY_BADGE_PAGE, type MeCertification, type MeProfile, type PublicParts, type UserSettings } from "@/lib/schemas";
 import { PROFILE_VISIBILITY_LABELS } from "@/lib/schemas/constants";
 
 const PART_NAMES: [keyof PublicParts, string][] = [
@@ -17,6 +17,33 @@ export function whoSeesFor(settings: UserSettings, username: string | null) {
     link: username,
     shown: PART_NAMES.filter(([key]) => settings[key]).map(([, name]) => name),
   };
+}
+
+/** The most certifications a public profile shows (pending item 13, dev/profile-certs-plan.md decision 1). */
+export const PUBLIC_CERTIFICATIONS = 5;
+
+/**
+ * The certifications others see: current ones only, in the profile's order (Verified with Credly first, then the most
+ * recent), at most PUBLIC_CERTIFICATIONS. Field by field: the proof id, the owner's Credly reason and the Check button
+ * are cleared, and the only link is a verified badge's public Credly page. Credential ids, file names and the name on
+ * a certificate are never in a profile at all.
+ */
+export function publicCertifications(certs: MeCertification[]): MeCertification[] {
+  return certs
+    .filter((c) => c.expired === null)
+    .slice(0, PUBLIC_CERTIFICATIONS)
+    .map((c) => ({
+      proofId: null,
+      name: c.name,
+      issuer: c.issuer,
+      date: c.date,
+      status: c.status,
+      fromResume: c.fromResume,
+      expired: null,
+      badgeUrl: c.status === "verified" && c.badgeUrl && CREDLY_BADGE_PAGE.test(c.badgeUrl) ? c.badgeUrl : null,
+      note: null,
+      canCheck: false,
+    }));
 }
 
 /**
@@ -74,7 +101,7 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
     interests: [],
     stories: [],
     proofs: [],
-    certifications: parts.showCertifications ? me.certifications.map((c) => ({ name: c.name, verified: c.verified })) : [],
+    certifications: parts.showCertifications ? publicCertifications(me.certifications) : [],
     resumeReadOn: null,
     nearby: null,
     changeRoleHref: null,

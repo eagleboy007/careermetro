@@ -1,6 +1,6 @@
 {
-  "id": "f094e161-90ce-4b4d-9f64-81dd510b05a5",
-  "prevId": "a2b4b532-a3f6-40a7-ba61-f7581c09d26b",
+  "id": "0fe0c31f-0e5c-4f4f-a324-fc888c0b238c",
+  "prevId": "68f3bc39-79e3-49e1-8429-1727a3da708e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1748,6 +1748,24 @@
           "primaryKey": false,
           "notNull": false
         },
+        "badge_id": {
+          "name": "badge_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "checked_at": {
+          "name": "checked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "check_note": {
+          "name": "check_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -1795,6 +1813,22 @@
             }
           ],
           "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "gap_proofs_badge": {
+          "name": "gap_proofs_badge",
+          "columns": [
+            {
+              "expression": "badge_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"gap_proofs\".\"verifier\" = 'credly'",
           "concurrently": false,
           "method": "btree",
           "with": {}
