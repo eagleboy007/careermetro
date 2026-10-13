@@ -885,7 +885,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 13) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 14) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -2347,10 +2347,13 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await fp.goto(BASE + "/departures");
     const fcard = fp.getByRole("article").filter({ has: fp.getByRole("heading", { name: title }) });
     await fcard.waitFor({ timeout: 10000 });
-    await fcard.getByRole("button", { name: `Apply on CareerMetro: ${title}` }).click();
-    await fcard.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
-    await fcard.getByRole("checkbox", { name: /I agree to share these with Example Labs/ }).check();
-    await fcard.getByRole("button", { name: "Send application" }).click();
+    await fcard.getByRole("button", { name: `Express apply: ${title}` }).click();
+    const fpreview = fp.getByRole("dialog", { name: "What Example Labs receives" });
+    await fpreview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
+    await fpreview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await fpreview.getByRole("checkbox", { name: /I agree to send this to Example Labs/ }).check();
+    await fpreview.getByRole("button", { name: "Send application" }).click();
+    await fpreview.waitFor({ state: "hidden", timeout: 15000 });
     await fcard.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
     const [arjunApp] = await sql`select id from applications where user_id = ${user.id} and job_id = ${job.id}`;
     await fp.goto(BASE + "/settings");

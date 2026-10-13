@@ -230,13 +230,15 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
   const parsed = previewInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
   const [job] = await db
-    .select({ id: jobs.id, title: jobs.title, status: jobs.status, requirements: jobs.requirements, criteria: jobs.criteria, company: organizations.name, orgStatus: organizations.reviewStatus })
+    .select({ id: jobs.id, orgId: jobs.orgId, title: jobs.title, status: jobs.status, requirements: jobs.requirements, criteria: jobs.criteria, company: organizations.name, orgStatus: organizations.reviewStatus })
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
     .where(eq(jobs.id, parsed.data.jobId));
   if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
   const [already] = await db.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
   if (already) return fail("already");
+  // The same refusal as applyToJob: a company the person blocked can't be sent an application, so it isn't previewed.
+  if (await companyBlocked(userId, job.orgId, db)) return fail("blocked_company");
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return fail("no_resume");
   const [[me], profileOf, proved, certificates] = await Promise.all([

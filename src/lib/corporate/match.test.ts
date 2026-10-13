@@ -59,6 +59,27 @@ describe("the public profile a company sees", () => {
     expect(text).not.toContain("laptops");
   });
 
+  it("lists only the public certifications: current ones, at most 5, never an expired one", () => {
+    const held = (name: string, expires: string | null = null) => ({ name, earned: "2024-01", expires });
+    const many: Profile = {
+      ...profile,
+      certifications: [
+        held("Old Cert A", "2025-06"),
+        held("Cert 1"),
+        held("Cert 2", "2027-01"),
+        held("Cert 3"),
+        held("Cert 4"),
+        held("Cert 5"),
+        held("Cert 6"),
+      ],
+    };
+    const names = publicProfile("Priya Nair", many, NOW).certifications;
+    expect(names).toEqual(["Cert 1", "Cert 2", "Cert 3", "Cert 4", "Cert 5"]);
+    expect(names).not.toContain("Old Cert A");
+    const packet = applicationPacketFor({ name: "Priya Nair", profile: many, requirements: req, criteria: { verifiedSkills: [], certificates: [] }, proved: new Set(), certificates: new Set() }, NOW);
+    expect(packet.profile.certifications).toEqual(names);
+  });
+
   it("says looking for a next role when no job is current, and nothing more without a resume", () => {
     expect(publicProfile("A", { ...profile, roles: [profile.roles[1]] }, NOW).headline).toBe("Looking for a next role");
     expect(publicProfile("A", null, NOW)).toEqual({ name: "A", headline: null, experience: [], education: [], certifications: [] });

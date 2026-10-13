@@ -582,7 +582,7 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Applications and the board (signed in)</h2>
         <p className="text-sm text-muted">
-          Build step 4: Apply on CareerMetro with its consent on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
+          Build step 4: Express apply (its preview and consent) on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
           words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals. Example data, so nothing saves or moves.
         </p>
         <div className="rounded-lg border border-line p-4">

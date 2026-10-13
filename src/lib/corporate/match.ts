@@ -1,5 +1,6 @@
 import { matchProfile } from "@/lib/gaps/match";
 import { meFromProfile } from "@/lib/me/build";
+import { publicCertifications } from "@/lib/me/public";
 import type { Profile, RoleProfile } from "@/lib/schemas";
 import { applicationPacket, type ApplicationPacket, type JobCriteria } from "@/lib/schemas/corporate";
 import { criteriaStatus } from "./criteria";
@@ -67,7 +68,8 @@ export function jobMatch(r: JobRequirementsView, profile: Profile | null, proved
 
 /**
  * The public profile a company sees: name, and from the resume sent only job titles, employers, dates, education and
- * certification names. Never the lines under a job, the skills' evidence, or the person's gaps.
+ * certification names. Certifications are the public list (publicCertifications: current only, at most 5), never the
+ * owner's full list with expired ones. Never the lines under a job, the skills' evidence, or the person's gaps.
  */
 export function publicProfile(name: string, profile: Profile | null, now = new Date()): CandidateProfileView {
   if (!profile) return { name, headline: null, experience: [], education: [], certifications: [] };
@@ -78,7 +80,7 @@ export function publicProfile(name: string, profile: Profile | null, now = new D
     headline: current ? `Working at ${current.employer}` : "Looking for a next role",
     experience: me.experience.map(({ title, employer, dates }) => ({ title, employer, dates })),
     education: me.education,
-    certifications: me.certifications.map((c) => c.name),
+    certifications: publicCertifications(me.certifications).map((c) => c.name),
   };
 }
 

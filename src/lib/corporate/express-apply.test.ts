@@ -191,6 +191,19 @@ describe.skipIf(!db)("Express apply (database)", () => {
     expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: false, error: "not_open" });
   });
 
+  it("refuses the preview and the send for a company the person blocked, and allows both after Unblock", async () => {
+    const { jobId } = await openJob("preview-blocked");
+    const me = await candidate("preview-blocked-cand");
+    const [job] = await db!.select({ orgId: schema.jobs.orgId }).from(schema.jobs).where(eq(schema.jobs.id, jobId));
+    await db!.insert(schema.companyBlocks).values({ userId: me, orgId: job.orgId, createdAt: clock });
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: false, error: "blocked_company" });
+    expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: false, error: "blocked_company" });
+    expect(await db!.select({ id: schema.applications.id }).from(schema.applications).where(eq(schema.applications.jobId, jobId))).toEqual([]);
+    await db!.delete(schema.companyBlocks).where(eq(schema.companyBlocks.userId, me));
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: true });
+    expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: true });
+  });
+
   it("refuses a note with an email address or a phone number, and sends nothing", async () => {
     const { jobId } = await openJob("note");
     const me = await candidate("note-cand");
@@ -224,7 +237,7 @@ describe.skipIf(!db)("Express apply (database)", () => {
     const r = await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at());
     if (!r.ok) throw new Error(r.error);
     const data = await exportAccountData(me, db!, clock);
-    expect(data!.exportVersion).toBe(13);
+    expect(data!.exportVersion).toBe(14);
     expect(data!.applications[0]).toMatchObject({ note: NOTE });
     const adminData = await exportAccountData(admin, db!, clock);
     expect(adminData!.jobsOwned.find((j) => j.title === "SOC Analyst L1")?.criteria).toEqual(criteria);
