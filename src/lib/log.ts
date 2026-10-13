@@ -6,7 +6,8 @@ import { APIConnectionError, APIConnectionTimeoutError, APIError, APIUserAbortEr
  * (letters, digits and `_ . : / [ ] ( ) = + -`, at most 120 characters). Anything else, such as a name, an email or
  * a sentence quoted from a resume, is written as "[redacted]". The charset is a backstop, not a guarantee: a one-word
  * name or a token passes it, so fields whose names say they hold a person's details or a secret (session, cookie,
- * token, secret, password, email, phone, name) are always redacted, and ids that are logged must never be secrets.
+ * token, secret, password, email, phone, name, username, handle, headline, pay, salary, lakh) are always
+ * redacted, and ids that are logged must never be secrets.
  * Error messages are never logged; use errorFields.
  */
 export type LogValue = string | number | boolean | null | undefined;
@@ -16,7 +17,7 @@ type Level = "info" | "warn" | "error";
 const SAFE_STRING = /^[A-Za-z0-9_.:/[\]()=+-]{0,120}$/;
 const SAFE_KEY = /^[a-z][A-Za-z0-9_]{0,39}$/;
 const RESERVED = new Set(["level", "event", "at"]);
-const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$/i;
+const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$|username|handle|headline|pay|salary|lakh/i;
 export const REDACTED = "[redacted]";
 
 function clean(value: LogValue): LogValue {

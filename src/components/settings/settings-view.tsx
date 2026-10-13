@@ -1,9 +1,13 @@
-import { Building2, Download, KeyRound, Lock, Mail, Trash2, User } from "lucide-react";
+import { Building2, Download, KeyRound, Lock, Mail, ShieldCheck, Trash2, User } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import { BasicsForm } from "./basics-form";
 import { DeleteAccount } from "./delete-account";
+import { PlanCard } from "./plan-card";
+import { ProfileLinkFields } from "./profile-link-fields";
+import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
+import { NotificationFields, PayFields, PrivacyFields } from "./settings-fields";
 import { SettingsNav } from "./settings-nav";
 
 export type SettingsData = {
@@ -16,13 +20,21 @@ export type SettingsData = {
   editable: boolean;
   /** True once the account has a name: it is shown, never edited here (Milin, 2026-10-12). */
   nameLocked: boolean;
+  /** Part 2: username, headline, pay (as typed), privacy and notifications, as saved. */
+  draft: SettingsDraftValues;
+  /** When the username can next change ("12 Nov 2026"), or null when it can change now. */
+  usernameLockedUntil: string | null;
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
 
 export const SETTINGS_SECTIONS = [
+  { id: "acc-plan", label: "Your plan" },
   { id: "acc-basics", label: "Profile basics" },
   { id: "acc-signin", label: "Email and sign-in" },
+  { id: "acc-pay", label: "Pay" },
+  { id: "acc-privacy", label: "Privacy" },
+  { id: "acc-notif", label: "Notifications" },
   { id: "acc-company", label: "Company" },
   { id: "acc-data", label: "Your data" },
 ] as const;
@@ -30,8 +42,10 @@ export const SETTINGS_SECTIONS = [
 const ghostSm = "inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[0.8rem] font-medium text-ink hover:bg-surface-2";
 
 /**
- * Account settings (handoff 12c, prototype v32), part 1: name, the locked sign-in email, how the person signs in,
- * download and delete. Photo, username, pay, privacy and notifications come in part 2 (dev/account-settings-plan.md).
+ * Account settings (handoff 12c, prototype v32). Part 1: name, the locked sign-in email, how the person signs in,
+ * download and delete. Part 2 (dev/account-settings-plan.md): Your plan (shown only), username and headline, private
+ * pay, privacy and stored-only notifications, saved together from one sticky bar. Photo, two-step verification and
+ * signed-in devices wait on storage and the full sign-in.
  */
 export function SettingsView({ data }: { data: SettingsData }) {
   return (
@@ -53,8 +67,16 @@ export function SettingsView({ data }: { data: SettingsData }) {
           <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">Preview with example data. Sign in to change your own settings.</p>
         )}
 
+        <SettingsDraft initial={data.draft} editable={data.editable}>
+        <Section id="acc-plan" title="Your plan" chip="Free · beta">
+          <PlanCard />
+        </Section>
+
         <Section id="acc-basics" title="Profile basics" tag="shown on your profile">
           <BasicsForm firstName={data.firstName} lastName={data.lastName} editable={data.editable && !data.nameLocked} locked={data.nameLocked} />
+          <div className="grid gap-x-4 gap-y-3.5 min-[760px]:grid-cols-2">
+            <ProfileLinkFields lockedUntil={data.usernameLockedUntil} />
+          </div>
         </Section>
 
         <Section id="acc-signin" title="Email and sign-in" tag="private">
@@ -69,7 +91,25 @@ export function SettingsView({ data }: { data: SettingsData }) {
           </div>
           <List>
             <Item icon={data.method === "google" ? <User {...ICON} /> : data.method === "test" ? <KeyRound {...ICON} /> : <Mail {...ICON} />} {...signInRow(data)} action={<Chip>Connected</Chip>} />
+            <Item
+              icon={<ShieldCheck {...ICON} />}
+              title="Two-step verification and signed-in devices"
+              detail="Come with the full sign-in. Until then there is nothing to set up here."
+              action={<Chip>Soon</Chip>}
+            />
           </List>
+        </Section>
+
+        <Section id="acc-pay" title="Pay" tag="private">
+          <PayFields />
+        </Section>
+
+        <Section id="acc-privacy" title="Privacy">
+          <PrivacyFields />
+        </Section>
+
+        <Section id="acc-notif" title="Notifications" tag="stored only">
+          <NotificationFields />
         </Section>
 
         <Section id="acc-company" title="Company" tag="for employers">
@@ -102,7 +142,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             <Item
               icon={<Download {...ICON} />}
               title="Download your data"
-              detail="Your account, resume profiles, gap results, paths, goals, proofs, ride days, messages and company roles in one file. Your original resume file is never kept, so it isn't included."
+              detail="Your account, resume profiles, gap results, paths, goals, proofs, ride days, messages, company roles, settings and pay in one file. Your original resume file is never kept, so it isn't included."
               action={
                 data.editable ? (
                   <a href="/api/account/export" download className={ghostSm}>
@@ -118,6 +158,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             <DeleteAccount editable={data.editable} icon={<Trash2 {...ICON} />} />
           </List>
         </Section>
+        </SettingsDraft>
       </div>
     </div>
   );
@@ -129,7 +170,7 @@ function signInRow(data: SettingsData): { title: string; detail: string } {
   return { title: "Emailed code", detail: `We email a 6-digit code to ${data.email} each time you sign in. There is no password to remember.` };
 }
 
-function Section({ id, title, tag, children }: { id: string; title: string; tag?: string; children: ReactNode }) {
+function Section({ id, title, tag, chip, children }: { id: string; title: string; tag?: string; chip?: string; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={`${id}-h`} className="flex scroll-mt-20 flex-col gap-4 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5">
       <div className="flex flex-wrap items-center gap-2.5">
@@ -137,6 +178,7 @@ function Section({ id, title, tag, children }: { id: string; title: string; tag?
           {title}
         </h2>
         {tag && <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">{tag}</span>}
+        {chip && <Chip>{chip}</Chip>}
       </div>
       {children}
     </section>

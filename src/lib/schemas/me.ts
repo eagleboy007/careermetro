@@ -49,6 +49,8 @@ export const meExperience = z.object({
 
 export const meProfile = z.object({
   name: z.string().min(1).max(120),
+  /** The person's own one line under their name, from Account settings. */
+  headline: z.string().max(80).nullable().default(null),
   /** Destination role, null before there is one. */
   aim: z.string().max(120).nullable(),
   /** `private` stats (the gap count) are hidden from others. */

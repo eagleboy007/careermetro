@@ -51,6 +51,10 @@ export const LIMITS = {
   companyMessagesPerApplicationDay: { bucket: "company-message-application", max: 20, windowMs: 24 * HOUR },
   /** Messages one person sends in their application chats a day, across every company. */
   applicationMessagesPerUserDay: { bucket: "application-message-user", max: 50, windowMs: 24 * HOUR },
+  /** "Is this username free?" checks one person makes, so the list of usernames can't be read out by script. */
+  usernameChecksPerUser: { bucket: "username-check", max: 60, windowMs: HOUR },
+  /** Tries at saving a new username, whatever the outcome. The 30-day rule limits changes that succeed. */
+  usernameSavesPerUser: { bucket: "username-save", max: 10, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

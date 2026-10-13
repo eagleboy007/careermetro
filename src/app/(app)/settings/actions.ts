@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { requestDeletion } from "@/lib/account/delete";
+import { checkUsername, saveAccountSettings, type UsernameCheck } from "@/lib/account/settings-store";
 import { nameLocked, saveNames } from "@/lib/account/store";
+import { settingsErrors, settingsInput, type SettingsField } from "@/lib/schemas";
 import { hasUsableName } from "@/lib/resume/name-match";
 import { currentAccount, signOut } from "@/lib/auth/server";
 import { SESSION_COOKIE } from "@/lib/session";
@@ -40,4 +42,29 @@ export async function deleteAccount(_: DeleteState, formData: FormData): Promise
   await signOut();
   (await cookies()).delete(SESSION_COOKIE);
   redirect("/account/deleted");
+}
+
+export type SettingsState = { errors: Partial<Record<SettingsField, string>>; saved: boolean };
+
+/**
+ * Saves username, headline, pay, privacy and notification choices from Account settings in one go (part 2,
+ * dev/account-settings-plan.md). The payload is what the form holds; it is checked here, and nothing in it is logged.
+ */
+export async function saveSettings(_: SettingsState, payload: unknown): Promise<SettingsState> {
+  const account = await currentAccount();
+  if (!account) return { errors: { settings: "Please sign in again to save changes." }, saved: false };
+  const parsed = settingsInput.safeParse(payload);
+  if (!parsed.success) return { errors: settingsErrors(parsed.error), saved: false };
+  const result = await saveAccountSettings(account.id, parsed.data, new Date());
+  if (!result.ok) return { errors: result.errors, saved: false };
+  // The profile and its link read these too.
+  refresh();
+  return { errors: {}, saved: true };
+}
+
+/** "Is this username free?" while the person types. A server action, so the name never goes into a URL. */
+export async function checkUsernameAction(raw: unknown): Promise<UsernameCheck> {
+  const account = await currentAccount();
+  if (!account || typeof raw !== "string") return { state: "limited" };
+  return checkUsername(account.id, raw, new Date());
 }

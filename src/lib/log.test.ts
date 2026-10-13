@@ -38,7 +38,7 @@ describe("logLine", () => {
     }
   });
 
-  it.each(["sessionId", "cookie", "accessToken", "secret", "password", "email", "workEmail", "phone", "name", "fullName"])(
+  it.each(["sessionId", "cookie", "accessToken", "secret", "password", "email", "workEmail", "phone", "name", "fullName", "username", "handle", "headline", "currentPay", "expectedLakh", "salary"])(
     "always redacts the %s field",
     (key) => {
       expect(parse(logLine("info", "e", { [key]: "Priya" }, at))[key]).toBe(REDACTED);

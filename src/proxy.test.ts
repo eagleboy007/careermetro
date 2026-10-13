@@ -24,7 +24,7 @@ describe("proxy", () => {
   it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
-    for (const p of ["/today", "/map", "/departures", "/arrivals", "/inbox", "/grievances", "/me", "/settings", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
+    for (const p of ["/today", "/map", "/departures", "/arrivals", "/inbox", "/grievances", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
     expect((await proxy(req("/start"))).headers.get("x-middleware-next")).toBe("1");
     expect(refresh).not.toHaveBeenCalled();
   });
@@ -36,6 +36,8 @@ describe("proxy", () => {
     expect((await proxy(req("/today"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Ftoday");
     expect((await proxy(req("/map"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fmap");
     expect((await proxy(req("/settings"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fsettings");
+    expect((await proxy(req("/u/priya-n"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fu%2Fpriya-n");
+    expect((await proxy(req("/upload"))).headers.get("location")).toBeNull();
     expect((await proxy(req("/account/restore"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Faccount%2Frestore");
     // Where a deleted account lands, signed out.
     expect((await proxy(req("/account/deleted"))).headers.get("x-middleware-next")).toBe("1");

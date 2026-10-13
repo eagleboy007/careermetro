@@ -169,6 +169,13 @@
       "when": 1791860440817,
       "tag": "0023_company_audit",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791863480012,
+      "tag": "0024_account_settings_2",
+      "breakpoints": true
     }
   ]
 }

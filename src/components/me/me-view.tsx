@@ -15,11 +15,16 @@ const ghost = `${btn} border border-line bg-surface px-[15px] py-[9px] text-[0.8
 const quiet = `${btn} px-2 py-[9px] text-[0.86rem] text-muted`;
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
 
+/** Who sees what, as saved in Account settings, for the rail on the person's own profile. */
+export type WhoSees = { visibility: string; link: string | null; shown: string[] };
+
 /**
- * Your profile (handoff section 11): the person's own profile with edit controls, and "View as others", which hides
- * private parts and edit controls the way a public profile will. Parts that need their own tables are marked "soon".
+ * Your profile (handoff section 11): the person's own profile with edit controls, and "View as others", which shows
+ * exactly what /u/<username> shows: `others` is the public profile the server worked out (src/lib/me/public.ts), so
+ * nothing hidden is even in the page. With `mode="public"` it is someone else's profile at /u/<username>, read only.
+ * Parts that need their own tables are marked "soon".
  */
-export function MeView({ me }: { me: MeProfile }) {
+export function MeView({ me: mine, others, mode = "own", whoSees }: { me: MeProfile; others?: MeProfile; mode?: "own" | "public"; whoSees?: WhoSees }) {
   const [asOthers, setAsOthers] = useState(false);
   const back = useRef<HTMLButtonElement>(null);
   const view = useRef<HTMLButtonElement>(null);
@@ -34,15 +39,20 @@ export function MeView({ me }: { me: MeProfile }) {
     pending.current = true;
     setAsOthers(next);
   };
-  const own = !asOthers;
+  const viewer = mode === "public";
+  const own = !asOthers && !viewer;
+  // What is on screen: everything for the owner; the public profile otherwise.
+  const me = own ? mine : (others ?? mine);
   const hasResume = me.resumeReadOn !== null;
+  const fromResume = viewer ? "from their resume" : "from your resume";
+  const gapsShown = me.skills.weak.length + me.skills.missing.length > 0;
   return (
     <div className="grid min-w-0 gap-6 min-[760px]:grid-cols-[minmax(0,1fr)_300px] min-[760px]:gap-10">
       <div className="flex min-w-0 flex-col">
         {asOthers && (
           <div role="status" className="mb-1.5 flex flex-wrap items-center gap-2.5 rounded-[14px] bg-surface-2 px-3.5 py-2.5 text-[0.85rem]">
             <Eye size={16} {...ICON} className="shrink-0 text-muted" />
-            <span className="flex-1">You are seeing your profile the way other people will. Private parts and your gaps are hidden.</span>
+            <span className="flex-1">You are seeing your profile the way other people will, as your privacy settings choose. Private parts are hidden.</span>
             <button ref={back} type="button" className={`${ghost} px-[11px] py-1.5 text-[0.8rem]`} onClick={() => toggle(false)}>
               Back to editing
             </button>
@@ -58,9 +68,10 @@ export function MeView({ me }: { me: MeProfile }) {
           </span>
           <div className="flex min-w-[220px] flex-1 flex-col gap-1">
             <h1 className="text-[1.7rem] font-semibold leading-[1.1]">{me.name}</h1>
-            <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>
-            {/* The target role says the person is looking, so only they see it until who-sees-what switches exist. */}
-            {own && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
+            {me.headline && <p className="text-[0.95rem]">{me.headline}</p>}
+            {!viewer && <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>}
+            {/* The target role says the person is looking, so others see it only when they turn it on in Account settings. */}
+            {(own || me.aim) && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-1 self-center">
             {own && (
@@ -95,10 +106,11 @@ export function MeView({ me }: { me: MeProfile }) {
           </Section>
         )}
 
+        {(!viewer || me.experience.length > 0) && (
         <Section
           first={!own}
           title="Experience"
-          note={me.experienceTotal ? `${me.experienceTotal} · from your resume` : "from your resume"}
+          note={me.experienceTotal ? `${me.experienceTotal} · ${fromResume}` : fromResume}
           action={own && <Soonish>+ Add role</Soonish>}
         >
           {me.experience.length ? (
@@ -135,12 +147,14 @@ export function MeView({ me }: { me: MeProfile }) {
           ) : (
             <Empty Icon={FileText}>Your roles fill in from your resume.</Empty>
           )}
-          {!own && me.experience.some((e) => e.highlights.length) && (
+          {asOthers && me.experience.length > 0 && mine.experience.some((e) => e.highlights.length) && (
             <Note>Lines from your resume stay private. Your stories show what you did.</Note>
           )}
         </Section>
+        )}
 
-        <Section title="Your stories" note={me.stories.length ? storyCount(me.stories) : "none yet"} action={own && <Soonish>+ Add story</Soonish>}>
+        {(!viewer || me.stories.length > 0) && (
+        <Section title={viewer ? "Stories" : "Your stories"} note={me.stories.length ? storyCount(me.stories) : "none yet"} action={own && <Soonish>+ Add story</Soonish>}>
           <p className="text-[0.86rem] text-muted">
             Every piece of work you have done, as a short Situation, Task, Action, Result story, sorted into what interviewers ask about. Recruiters
             see it when they open your profile.
@@ -154,8 +168,10 @@ export function MeView({ me }: { me: MeProfile }) {
             </Empty>
           )}
         </Section>
+        )}
 
-        <Section title="Education" note="from your resume" action={own && <Soonish>+ Add</Soonish>}>
+        {(!viewer || me.education.length > 0) && (
+        <Section title="Education" note={fromResume} action={own && <Soonish>+ Add</Soonish>}>
           {me.education.length ? (
             <ul className="flex flex-col gap-3">
               {me.education.map((e, i) => (
@@ -174,19 +190,22 @@ export function MeView({ me }: { me: MeProfile }) {
             <Empty Icon={BookOpen}>Degrees and courses fill in from your resume.</Empty>
           )}
         </Section>
+        )}
 
-        <Section title="Skills" note="from your resume and proof tasks">
+        {(!viewer || me.skills.have.length + me.skills.weak.length + me.skills.missing.length > 0) && (
+        <Section title="Skills" note={viewer ? "from their resume and proof tasks" : "from your resume and proof tasks"}>
           {me.skills.have.length + me.skills.weak.length + me.skills.missing.length === 0 ? (
             <Empty Icon={FileText}>Your skills and gaps fill in from your resume.</Empty>
           ) : (
-            <div className={`grid gap-5 ${own ? "min-[760px]:grid-cols-3" : ""}`}>
+            <div className={`grid gap-5 ${own || gapsShown ? "min-[760px]:grid-cols-3" : ""}`}>
               <SkillCol name="Have" names={me.skills.have} status="met" />
-              {own && <SkillCol name="Weak" names={me.skills.weak} status="weak" />}
-              {own && <SkillCol name="Missing" names={me.skills.missing} status="missing" />}
+              {(own || gapsShown) && <SkillCol name="Weak" names={me.skills.weak} status="weak" />}
+              {(own || gapsShown) && <SkillCol name="Missing" names={me.skills.missing} status="missing" />}
             </div>
           )}
-          {!own && <Note>Your gaps show only to connections unless you turn that on.</Note>}
+          {asOthers && !gapsShown && <Note>Your gaps are hidden from others unless you turn them on in Account settings.</Note>}
         </Section>
+        )}
 
         {/* Nearby lines come from the target role and the gaps, so only the person sees them. */}
         {own && me.nearby && (
@@ -195,6 +214,7 @@ export function MeView({ me }: { me: MeProfile }) {
           </Section>
         )}
 
+        {(!viewer || me.interests.length > 0) && (
         <Section title="Interests" note="anything, not only work">
           <div className="flex flex-wrap gap-1.5">
             {me.interests.map((t) => (
@@ -205,8 +225,10 @@ export function MeView({ me }: { me: MeProfile }) {
             {own && <span className="rounded-full border border-dashed border-muted px-2.5 py-1 text-[0.78rem] text-muted">+ Add · soon</span>}
           </div>
         </Section>
+        )}
 
-        <Section title="Proof of work" note="tasks you finished on your path">
+        {(!viewer || me.proofs.length > 0) && (
+        <Section title="Proof of work" note={viewer ? "tasks finished on CareerMetro" : "tasks you finished on your path"}>
           {me.proofs.length ? (
             <ul className="flex flex-col gap-2">
               {me.proofs.map((p, i) => (
@@ -223,6 +245,7 @@ export function MeView({ me }: { me: MeProfile }) {
             <Empty Icon={FlaskConical}>Your proof appears here as you meet goals.</Empty>
           )}
         </Section>
+        )}
       </div>
 
       <aside
@@ -250,6 +273,7 @@ export function MeView({ me }: { me: MeProfile }) {
             )}
           </section>
         )}
+        {(!viewer || me.certifications.length > 0) && (
         <section>
           <RailHead name="Certifications" note={`${me.certifications.filter((c) => c.verified).length} verified`} />
           {me.certifications.length ? (
@@ -260,7 +284,7 @@ export function MeView({ me }: { me: MeProfile }) {
                   <span className="min-w-0 flex-1">
                     {c.name}
                     <small className="block text-[0.72rem] text-muted">
-                      {c.verified ? "Credly badge checked" : "From your resume, not checked yet"}
+                      {c.verified ? "Credly badge checked" : viewer ? "From their resume, not checked yet" : "From your resume, not checked yet"}
                     </small>
                   </span>
                   {c.verified && <StatusChip status="met" label="Verified" />}
@@ -272,34 +296,33 @@ export function MeView({ me }: { me: MeProfile }) {
           )}
           {own && <span className="text-[0.8rem] text-muted">Add from Credly · soon</span>}
         </section>
+        )}
         {own && (
           <section>
-            <RailHead name="Who sees what" note="soon" />
-            <ul className="flex flex-col gap-2.5 text-[0.84rem] text-muted">
-              {[
-                ["Looking for a job", true],
-                ["Show me in people lists", true],
-                ["Show my pitstop on the map", true],
-                ["Show my gaps to everyone", false],
-              ].map(([name, on]) => (
-                <li key={name as string} className="flex items-center gap-2">
-                  <i
-                    aria-hidden="true"
-                    className={`relative h-5 w-9 rounded-full opacity-50 after:absolute after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface ${on ? "bg-ink after:left-[18px]" : "bg-line after:left-0.5"}`}
-                  />
-                  {name} <span className="sr-only">{on ? "(on by default)" : "(off by default)"}</span>
-                </li>
-              ))}
-            </ul>
-            <small className="text-[0.74rem] text-muted">
-              These switches come with the profile settings. Until then nobody else can see your profile.
-            </small>
+            <RailHead name="Who sees what" />
+            {whoSees ? (
+              <>
+                <p className="text-[0.84rem]">
+                  <b className="font-semibold">{whoSees.visibility}</b>
+                  <small className="block text-[0.76rem] text-muted">
+                    {whoSees.link ? `Your link: careermetro.com/u/${whoSees.link}` : "Pick a username for your profile link."}
+                  </small>
+                </p>
+                <p className="text-[0.8rem] text-muted">{whoSees.shown.length ? `Shows ${whoSees.shown.join(", ")}.` : "Shows your name and headline only."}</p>
+              </>
+            ) : (
+              <p className="text-[0.8rem] text-muted">Example data.</p>
+            )}
+            <Link href="/settings#acc-privacy" className="inline-flex min-h-11 items-center gap-1 self-start text-[0.82rem] font-[550] text-muted hover:text-ink">
+              Change in Account settings
+              <ArrowRight size={15} {...ICON} />
+            </Link>
           </section>
         )}
         <section>
           <RailHead name="Never shown" />
           <p className="flex items-start gap-2 text-[0.78rem] text-muted">
-            <ShieldCheck size={15} {...ICON} className="mt-0.5 shrink-0 text-good" />
+            <ShieldCheck size={15} {...ICON} className="mt-0.5 shrink-0 text-muted" />
             Phone, email, salary, notice period and resume text are never on a profile.
           </p>
         </section>

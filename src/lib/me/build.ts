@@ -6,6 +6,8 @@ const GOAL_STOPS = 5;
 
 export type MeInput = {
   name: string;
+  /** From Account settings; null when none. */
+  headline?: string | null;
   profile: Profile | null;
   analysis: GapAnalysis | null;
   /** The person's line, for the journey strip and the destination. */
@@ -113,6 +115,7 @@ export function meFromProfile(input: MeInput): MeProfile {
   const aim = line?.role.title ?? null;
   return meProfile.parse({
     name: cut(input.name, 120),
+    headline: input.headline ?? null,
     aim: aim && cut(aim, 120),
     stats: [
       { value: String(have.length), label: "skills found", private: false },

@@ -231,3 +231,23 @@ export const CLEANUP_BATCH = 500;
 export const CLEANUP_MAX_BATCHES = 20;
 /** Offered times that were never booked are deleted this many days after they passed. */
 export const OFFERED_TIMES_KEEP_DAYS = 7;
+
+/* Account settings, part 2 (dev/account-settings-plan.md, handoff 12c) ----------------------------------------------- */
+
+export const USERNAME_MIN = 3;
+export const USERNAME_MAX = 30;
+/** After a username is saved, the next change waits this long; the old link redirects for USERNAME_REDIRECT_DAYS. */
+export const USERNAME_CHANGE_DAYS = 30;
+export const USERNAME_REDIRECT_DAYS = 14;
+export const HEADLINE_MAX = 80;
+/** Pay is kept in lakh a year, two decimals. */
+export const PAY_MAX_LAKH = 999;
+/** Who can open the person's profile at /u/<username>. Nobody else can until they choose (decided 2026-10-13). */
+export const PROFILE_VISIBILITIES = ["signed_in", "line", "only_me"] as const;
+export const PROFILE_VISIBILITY_LABELS: Record<(typeof PROFILE_VISIBILITIES)[number], string> = {
+  signed_in: "Everyone signed in",
+  line: "People on your line",
+  only_me: "Only you",
+};
+/** When the ride reminder would go out, India time, once email is on (pending item 21). */
+export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as const;

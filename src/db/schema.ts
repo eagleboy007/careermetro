@@ -32,7 +32,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
@@ -105,10 +105,81 @@ export const users = pgTable(
     weeklyHours: integer("weekly_hours").notNull().default(5),
     createdAt: createdAt(),
     deletionRequestedAt: timestamp("deletion_requested_at", { withTimezone: true }),
+    /**
+     * The profile link careermetro.com/u/<username> (account settings part 2). Stored lowercase, unique ignoring case.
+     * Never logged and never in a URL except that link.
+     */
+    username: text("username"),
+    /** When the username was last saved; the next change waits USERNAME_CHANGE_DAYS. */
+    usernameChangedAt: timestamp("username_changed_at", { withTimezone: true }),
+    /** Optional one line under the name on the profile. */
+    headline: text("headline"),
   },
-  // Matching by email when the provider changes must ignore case.
-  (t) => [uniqueIndex("users_email_lower").on(sql`lower(${t.email})`)],
+  // Matching by email when the provider changes must ignore case. So must usernames.
+  (t) => [uniqueIndex("users_email_lower").on(sql`lower(${t.email})`), uniqueIndex("users_username_lower").on(sql`lower(${t.username})`)],
 );
+
+export const profileVisibility = pgEnum("profile_visibility", PROFILE_VISIBILITIES);
+export const rideReminder = pgEnum("ride_reminder", RIDE_REMINDERS);
+
+/**
+ * An old username after a change: /u/<old> redirects to the person's profile until `expires_at` (14 days), and nobody
+ * else can take it before then. Removed with the account.
+ */
+export const usernameRedirects = pgTable(
+  "username_redirects",
+  {
+    /** Lowercase, as in users.username. */
+    username: text("username").primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("username_redirects_user").on(t.userId)],
+);
+
+/**
+ * Current and expected pay, in lakh a year (handoff 12c). Owner-only: read by the person's own settings and download,
+ * never by a profile, a company or anything else, and never logged. Clearing both removes the row.
+ */
+export const userPay = pgTable(
+  "user_pay",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    currentLakh: numeric("current_lakh", { precision: 6, scale: 2, mode: "number" }),
+    expectedLakh: numeric("expected_lakh", { precision: 6, scale: 2, mode: "number" }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check("user_pay_current", sql`${t.currentLakh} is null or ${t.currentLakh} between 0.1 and 999`),
+    check("user_pay_expected", sql`${t.expectedLakh} is null or ${t.expectedLakh} between 0.1 and 999`),
+  ],
+);
+
+/**
+ * Privacy and notification choices from Account settings. No row means DEFAULT_SETTINGS (src/lib/schemas/account-settings.ts).
+ * Notification choices are stored only: nothing is sent until there is an email sender (pending item 21).
+ */
+export const userSettings = pgTable("user_settings", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  profileVisibility: profileVisibility("profile_visibility").notNull().default("only_me"),
+  showTargetRole: boolean("show_target_role").notNull().default(false),
+  showExperience: boolean("show_experience").notNull().default(true),
+  showEducation: boolean("show_education").notNull().default(true),
+  showSkills: boolean("show_skills").notNull().default(true),
+  showGaps: boolean("show_gaps").notNull().default(false),
+  showCertifications: boolean("show_certifications").notNull().default(true),
+  rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
+  emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
+  emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 /** What the user agreed to and when (DPDP Act, SEC-1). */
 export const consents = pgTable("consents", {
