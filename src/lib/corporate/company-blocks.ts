@@ -12,8 +12,10 @@ type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 /**
- * Blocks a company: it never finds the person again, can't open their profile, and any found chat with it closes for
- * good and leaves the person's Inbox. Silent: the company is not told. Run inside the caller's transaction.
+ * Blocks a company: it never finds the person again, can't open their profile, and every found chat with it leaves the
+ * person's Inbox. Silent: the company is not told. A request still waiting stays "Waiting" for the company, exactly as
+ * a deleted one does; a chat the person had accepted closes for good, as an application chat does when blocked. Run
+ * inside the caller's transaction.
  */
 export async function blockCompanyIn(tx: Db | Tx, userId: string, orgId: string, now: Date): Promise<void> {
   await tx.insert(companyBlocks).values({ userId, orgId, createdAt: now }).onConflictDoNothing();
@@ -25,7 +27,10 @@ export async function blockCompanyIn(tx: Db | Tx, userId: string, orgId: string,
       and(eq(conversationMembers.conversationId, conversations.id), eq(conversationMembers.userId, userId), eq(conversationMembers.role, "member")),
     )
     .where(and(eq(conversations.orgId, orgId), eq(conversations.kind, "found")));
-  await tx.update(conversations).set({ status: "closed" }).where(inArray(conversations.id, chats));
+  await tx
+    .update(conversations)
+    .set({ status: "closed" })
+    .where(and(inArray(conversations.id, chats), eq(conversations.status, "open")));
   await tx
     .update(conversationMembers)
     .set({ hiddenAt: now })

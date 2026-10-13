@@ -32,6 +32,7 @@ import {
   findSearchInput,
   foundMessageInput,
   gapAnalysis,
+  storedProfile,
   type FindBand,
   type GapAnalysis,
   type Profile,
@@ -39,7 +40,7 @@ import {
 } from "@/lib/schemas";
 import { FIND_PAGE_SIZE, FIND_SCAN_MAX, FIND_VIEWS_KEEP_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { latestProfiles, provedByUser } from "./applications-store";
+import { provedByUser } from "./applications-store";
 import { writeAudit } from "./audit-line";
 import { blockCompanyIn } from "./company-blocks";
 import { openRef, sealRef } from "./find-ref";
@@ -144,26 +145,33 @@ const personColumns = {
 };
 type Person = { id: string; name: string | null; headline: string | null; createdAt: Date } & Omit<PublicParts, "showGaps">;
 
-/** The people found, read fresh: the switch, blocks and roles as they are now. */
+/**
+ * The people found, read fresh: the switch, blocks and roles as they are now. At most FIND_SCAN_MAX are read, most
+ * recently saved settings first (turning the switch on saves them), so the cap drops the longest-standing opt-ins
+ * rather than ever hiding a new one. Reaching the cap is logged with the count only.
+ */
 async function findable(orgId: string, searcherId: string, jobId: string, db: Db | Tx, only?: string): Promise<Person[]> {
-  return db
+  const rows = await db
     .select(personColumns)
     .from(userSettings)
     .innerJoin(users, eq(users.id, userSettings.userId))
     .where(and(findableWhere(orgId, searcherId, jobId), only ? eq(users.id, only) : undefined))
-    .orderBy(asc(users.createdAt))
+    .orderBy(desc(userSettings.updatedAt), asc(users.id))
     .limit(FIND_SCAN_MAX);
+  if (!only && rows.length >= FIND_SCAN_MAX) logEvent("warn", "find_scan_capped", { scanned: rows.length });
+  return rows;
 }
 
 /**
  * Each person's current analysis and resume, as on their own Gaps page: the newest analysis of the latest version of
  * one of their resumes' profiles. People without one aren't listed.
  */
-async function currentResumes(userIds: string[], db: Db | Tx): Promise<Map<string, { resumeId: string; analysis: GapAnalysis }>> {
-  const out = new Map<string, { resumeId: string; analysis: GapAnalysis }>();
+async function currentResumes(userIds: string[], db: Db | Tx): Promise<Map<string, { resumeId: string; analysis: GapAnalysis; profile: Profile }>> {
+  const out = new Map<string, { resumeId: string; analysis: GapAnalysis; profile: Profile }>();
   if (!userIds.length) return out;
+  // One row per person, with the profile of that latest version: never every version of every resume.
   const rows = await db
-    .selectDistinctOn([resumes.userId], { userId: resumes.userId, resumeId: resumes.id, result: gapAnalyses.result })
+    .selectDistinctOn([resumes.userId], { userId: resumes.userId, resumeId: resumes.id, result: gapAnalyses.result, data: profiles.data })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
@@ -171,7 +179,7 @@ async function currentResumes(userIds: string[], db: Db | Tx): Promise<Map<strin
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
     const parsed = gapAnalysis.safeParse(r.result);
-    if (r.userId && parsed.success) out.set(r.userId, { resumeId: r.resumeId, analysis: parsed.data });
+    if (r.userId && parsed.success) out.set(r.userId, { resumeId: r.resumeId, analysis: parsed.data, profile: storedProfile(r.data) });
   }
   return out;
 }
@@ -239,21 +247,14 @@ async function rankPeople(orgId: string, searcherId: string, job: JobContext["jo
     db,
   );
   const withResume = people.filter((p) => current.has(p.id));
-  const [profileOf, proved] = await Promise.all([
-    latestProfiles(
-      withResume.map((p) => current.get(p.id)!.resumeId),
-      db,
-    ),
-    provedByUser(
-      withResume.map((p) => p.id),
-      db,
-      now,
-    ),
-  ]);
+  const proved = await provedByUser(
+    withResume.map((p) => p.id),
+    db,
+    now,
+  );
   const found: { userId: string; card: Omit<FindPersonCard, "request">; match: FindPersonCard["match"]; ref: string }[] = [];
   for (const person of withResume) {
-    const profile = profileOf.get(current.get(person.id)!.resumeId);
-    if (!profile) continue;
+    const { profile } = current.get(person.id)!;
     const years = yearsWorked(profile, now);
     if (!inBand(band, years, person.showExperience)) continue;
     const match = jobMatch(job.requirements, profile, proved.get(person.id) ?? new Set(), now);
@@ -309,8 +310,8 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
     const person = await resolve(ctx, userId, parsed.data.ref, tx, deps.env);
     if (!person) return fail("not_found");
     const current = (await currentResumes([person.id], tx)).get(person.id);
-    const profile = current ? (await latestProfiles([current.resumeId], tx)).get(current.resumeId) : undefined;
-    if (!current || !profile) return fail("not_found");
+    if (!current) return fail("not_found");
+    const { profile } = current;
     const proved = (await provedByUser([person.id], tx, now)).get(person.id) ?? new Set<string>();
     const state = (await requestStates(me.orgId, [person.id], tx)).get(person.id) ?? { state: "none" as const };
     await tx.insert(companyProfileViews).values({ orgId: me.orgId, userId: person.id, jobId: job.id, viewedAt: now });
@@ -386,9 +387,8 @@ function foundChatsWhere(me: Member, userId: string): SQL {
     me.role === "admin"
       ? undefined
       : sql`exists (select 1 from ${jobTeam} t where t.job_id = ${conversations.jobId} and t.user_id = ${userId} and t.role in ('owner', 'hiring'))`;
-  // A person who blocked the company is gone from its side altogether: requests, chats and names.
-  const notBlocked = sql`not exists (select 1 from ${companyBlocks} cb where cb.user_id = ${users.id} and cb.org_id = ${me.orgId})`;
-  return and(eq(conversations.orgId, me.orgId), eq(conversations.kind, "found"), isNull(users.deletionRequestedAt), notBlocked, scope)!;
+  // A block is silent: the company's list reads as it did, so a blocked request looks exactly like a deleted one.
+  return and(eq(conversations.orgId, me.orgId), eq(conversations.kind, "found"), isNull(users.deletionRequestedAt), scope)!;
 }
 
 const candidateJoin = and(eq(conversationMembers.conversationId, conversations.id), eq(conversationMembers.role, "member"));
@@ -489,9 +489,10 @@ async function visibleFoundChat(userId: string, conversationId: string, db: Db |
 async function foundChatState(chat: { status: string; orgStatus: string; candidateId: string }, orgId: string, db: Db | Tx): Promise<CompanyChatView["state"]> {
   if (chat.orgStatus !== "verified") return "suspended";
   if (chat.status === "closed") return "closed";
+  // A request the person blocked reads "Waiting", like one they deleted: nothing more can be sent either way.
+  if (chat.status === "request") return "waiting";
   const [blocked] = await db.select({ at: companyBlocks.createdAt }).from(companyBlocks).where(and(eq(companyBlocks.userId, chat.candidateId), eq(companyBlocks.orgId, orgId)));
-  if (blocked) return "closed";
-  return chat.status === "request" ? "waiting" : "open";
+  return blocked ? "closed" : "open";
 }
 
 /** One found chat for the company, as Corporate Messages shows it. With `markRead` it counts as read up to now. */

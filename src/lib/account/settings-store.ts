@@ -156,7 +156,9 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
 
       const { visibility, ...rest } = input.settings;
       // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
-      const [was] = await tx.select({ on: userSettings.companiesCanFind }).from(userSettings).where(eq(userSettings.userId, userId));
+      // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
+      // both see the switch off and record two consents, or both see it on and withdraw none.
+      const [was] = await tx.select({ on: userSettings.companiesCanFind }).from(userSettings).where(eq(userSettings.userId, userId)).for("update");
       const wasOn = was?.on ?? false;
       if (rest.companiesCanFind && !wasOn)
         await tx.insert(consents).values({ userId, purpose: FIND_CONSENT_PURPOSE, policyVersion: FIND_POLICY_VERSION, givenAt: now });

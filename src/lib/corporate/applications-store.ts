@@ -88,7 +88,7 @@ const companyMaySee = (app: { closedAt: Date | null; companyAccessEndsAt: Date |
 /* Reading helpers ------------------------------------------------------------------------------------------------- */
 
 /** The latest saved profile of each resume. */
-export async function latestProfiles(resumeIds: string[], db: Db | Tx): Promise<Map<string, Profile>> {
+async function latestProfiles(resumeIds: string[], db: Db | Tx): Promise<Map<string, Profile>> {
   if (!resumeIds.length) return new Map();
   const rows = await db
     .select({ resumeId: profiles.resumeId, data: profiles.data })

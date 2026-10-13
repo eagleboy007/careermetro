@@ -300,7 +300,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     }
   });
 
-  it("closes the chat and blocks the company when the person blocks from the Inbox; deleting a request leaves it waiting", async () => {
+  it("blocks the company silently from the Inbox: a blocked request reads exactly like a deleted one; an accepted chat closes", async () => {
     const s = await setup("inbox");
     const p = await seeker("inbox-p");
     const q = await seeker("inbox-q", { name: "Arjun Mehta" });
@@ -313,13 +313,34 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockInChat(p, toP.conversationId, fd())).toEqual({ ok: true });
     expect(await listThreads(p, fd())).toEqual([]);
     expect(names(await found(s.admin, s.jobId))).toEqual(["Arjun Mehta"]);
-    // Gone from the company's side altogether.
-    expect((await sentRequests(s.admin, { db: db! })).map((r) => r.name)).toEqual(["Arjun Mehta"]);
-    expect(await companyFoundChat(s.admin, toP.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
-
     expect(await deleteRequest(q, toQ.conversationId, fd())).toEqual({ ok: true });
     expect(await listThreads(q, fd())).toEqual([]);
+
+    // The company can't tell the blocked request from the deleted one: both stay "Waiting", and nothing more sends.
+    const sent = await sentRequests(s.admin, { db: db! });
+    expect(sent.map((r) => [r.name, r.state]).sort()).toEqual([
+      ["Arjun Mehta", "waiting"],
+      ["Priya Nair", "waiting"],
+    ]);
+    const chatOf = async (id: string) => {
+      const r = await companyFoundChat(s.admin, id, fd());
+      if (!r.ok) throw new Error(r.error);
+      return { state: r.chat.state, messages: r.chat.messages.map((m) => m.text) };
+    };
+    expect(await chatOf(toP.conversationId)).toEqual(await chatOf(toQ.conversationId));
+    expect((await chatOf(toP.conversationId)).state).toBe("waiting");
+    for (const id of [toP.conversationId, toQ.conversationId])
+      expect(await sendFoundMessage(s.admin, { conversationId: id, body: "Any news?" }, fd())).toEqual({ ok: false, error: "waiting" });
     expect((await found(s.admin, s.jobId))[0].request.state).toBe("waiting");
+
+    // A chat the person had accepted closes for good when they block the company, as an application chat does.
+    const r = await seeker("inbox-r", { name: "Kavya Reddy" });
+    const toR = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: (await found(s.admin, s.jobId)).find((c) => c.name === "Kavya Reddy")!.ref, body: HELLO }, fd());
+    if (!toR.ok) throw new Error(toR.error);
+    expect(await acceptRequest(r, toR.conversationId, fd())).toEqual({ ok: true });
+    expect(await blockCompany(r, { orgId: s.orgId }, fd())).toBe(true);
+    expect((await chatOf(toR.conversationId)).state).toBe("closed");
+    expect(await listThreads(r, fd())).toEqual([]);
   });
 
   it("limits searches per person and per company", async () => {

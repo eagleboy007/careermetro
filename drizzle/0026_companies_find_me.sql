@@ -1,4 +1,5 @@
 -- Let companies find me (pending item 19, dev/companies-find-me-plan.md): user_settings gains companies_can_find (off by default); conversations gain job_id (a found chat's job) and conversation_kind gains 'found' (a company's message request to someone it found); new tables company_profile_views (which companies opened a person's profile, kept 30 days) and company_blocks (companies a person blocked), each with row level security and no policies. Expand only: new types, tables, a nullable column, a column with a default and an enum value.
+-- The new enum value: conversation_kind gains 'found' with ALTER TYPE ... ADD VALUE. Postgres can't use a value in the transaction that adds it, so nothing here uses it; the first 'found' row is written later by the app. An enum value can't be dropped, so a rollback keeps it: deploy the code that reads 'found' chats before any company can send one, and an older build must not run against rows of that kind (it has no rules for them).
 ALTER TYPE "public"."conversation_kind" ADD VALUE 'found';--> statement-breakpoint
 CREATE TABLE "company_blocks" (
 	"user_id" uuid NOT NULL,
