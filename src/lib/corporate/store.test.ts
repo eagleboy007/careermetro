@@ -139,6 +139,11 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect(await requestAccess(second, { workEmail: `rahul@${d}` }, deps())).toEqual({ ok: true });
     const home = await corporateHome(first, { db: db!, now: clock });
     expect(home!.team!.requests).toEqual([expect.objectContaining({ name: "Meera Iyer", domain: d })]);
+    // One audit line for the one request, naming the request only (security review 2026-10-13).
+    const [org] = await db!.select({ id: schema.organizations.id }).from(schema.organizations).where(eq(schema.organizations.emailDomain, d));
+    const [request] = await db!.select({ id: schema.orgInvites.id }).from(schema.orgInvites).where(eq(schema.orgInvites.userId, second));
+    const asked = (await db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.orgId, org.id))).filter((a) => a.action === "access_requested");
+    expect(asked.map((a) => [a.actor, a.target])).toEqual([["requester", `invite:${request.id}`]]);
   });
 
   it("refuses a second company while the code is out: the domain is checked again when the code comes back", async () => {
@@ -191,6 +196,22 @@ describe.skipIf(!db)("corporate store (database)", () => {
     const hour = new Date("2026-10-13T05:00:00Z");
     for (let i = 0; i < 3; i++) expect(await startCompanySignup(me, details(d), deps({ now: hour }))).toMatchObject({ ok: true });
     expect(await startCompanySignup(me, details(d), deps({ now: hour }))).toEqual({ ok: false, error: "limit" });
+  });
+
+  it("refuses every work-email step in production without NAME_HASH_KEY, whatever CRON_SECRET is (security review 2026-10-13)", async () => {
+    const admin = await person("nokey-admin");
+    const { domain: d } = await company(admin);
+    const me = await person("nokey");
+    const noKey = deps({ env: { NODE_ENV: "production", VERCEL_ENV: "production", CRON_SECRET: "c" } });
+    const notSetUp = { ok: false, error: "not_set_up" };
+    expect(await startCompanySignup(me, details(domain()), noKey)).toEqual(notSetUp);
+    expect(await finishCompanySignup(me, { details: details(domain()), code: "123456" }, noKey)).toEqual(notSetUp);
+    expect(await inviteMember(admin, { workEmail: `rahul@${d}`, role: "hiring" }, noKey)).toEqual(notSetUp);
+    expect(await startJoin(me, { workEmail: `rahul@${d}` }, noKey)).toEqual(notSetUp);
+    expect(await finishJoin(me, { workEmail: `rahul@${d}`, code: "123456" }, noKey)).toEqual(notSetUp);
+    expect(await startRecheck(admin, { workEmail: `meera@${d}` }, noKey)).toEqual(notSetUp);
+    expect(await finishRecheck(admin, { workEmail: `meera@${d}`, code: "123456" }, noKey)).toEqual(notSetUp);
+    expect(await codeRows(me)).toHaveLength(0);
   });
 
   it("sends nothing while delivery is off (production without an email sender)", async () => {
@@ -404,6 +425,10 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect(await finishRecheck(hr, { workEmail: `rahul.menon@${d}`, code: wrong }, due)).toEqual({ ok: false, error: "wrong" });
     expect(await activeMembership(hr, db!, day(181))).toBeNull();
     expect(await finishRecheck(hr, { workEmail: `rahul.menon@${d}`, code: started.testCode }, due)).toEqual({ ok: true });
+    // Access coming back is an access change: one audit line, the member by id only (security review 2026-10-13).
+    const [held] = await db!.select({ id: schema.orgMembers.id, orgId: schema.orgMembers.orgId }).from(schema.orgMembers).where(eq(schema.orgMembers.userId, hr));
+    const rechecked = (await db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.orgId, held.orgId))).filter((a) => a.action === "access_rechecked");
+    expect(rechecked.map((a) => [a.actor, a.target])).toEqual([[`member:${held.id}`, `member:${held.id}`]]);
 
     // Access is back for another 180 days; only the domain and the date are kept.
     expect(await activeMembership(hr, db!, day(181))).toMatchObject({ role: "hiring" });

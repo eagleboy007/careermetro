@@ -46,6 +46,7 @@ async function Board({ searchParams }: PageProps<"/corporate/jobs/board">) {
   if (!r.ok) {
     if (r.error === "not_member") return <NoCompanyRole userId={account.id} />;
     if (r.error === "not_allowed") return <Refused title="You aren't on this job's team" text="Recruiter admins see every job's board; anyone else sees the boards of jobs they are on." />;
+    if (r.error === "paused") return <Refused title="Candidates are paused" text="Your company's candidates are paused while we review it. Write to us from the Grievances page if you think this is a mistake." />;
     notFound();
   }
   return (

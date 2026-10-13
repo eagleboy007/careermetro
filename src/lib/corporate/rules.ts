@@ -203,10 +203,11 @@ export function feedbackRefusal(x: { assigned: boolean; status: InterviewStatus 
 }
 
 /**
- * Whether a company member sees the phone the candidate shared: only while the application is open, and only the
- * people who arrange interviews (`canMove`) or an interviewer on an accepted interview the phone was shared for.
+ * Whether a company member sees the phone the candidate shared: only while the application is open and the company is
+ * verified (a suspended company sees no phone, security review 2026-10-13), and only the people who arrange interviews
+ * (`canMove`) or an interviewer on an accepted interview the phone was shared for.
  */
-export function phoneVisible(x: { canMove: boolean; assignedToShared: boolean; anyShared: boolean; closed: boolean }): boolean {
-  if (x.closed || !x.anyShared) return false;
+export function phoneVisible(x: { canMove: boolean; assignedToShared: boolean; anyShared: boolean; closed: boolean; orgStatus: OrgReviewStatus }): boolean {
+  if (x.closed || !x.anyShared || x.orgStatus !== "verified") return false;
   return x.canMove || x.assignedToShared;
 }

@@ -104,7 +104,7 @@ const CHAT_CLOSED_COMPANY = "This chat is closed, so you can't ask for times in 
 export type InterviewResult<T = object> = ({ ok: true } & T) | { ok: false; error: InterviewError; message?: string };
 const fail = (error: InterviewError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const companyFail = (error: string): { ok: false; error: InterviewError } =>
-  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : "not_found");
+  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : error === "paused" ? "suspended" : "not_found");
 
 /** Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate. */
 async function teamOptions(orgId: string, jobId: string, candidateId: string, db: Db | Tx) {
@@ -387,7 +387,7 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     // Lock order everywhere: the application row first, then the interview.
     const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, parsed.data.interviewId));
     if (!ref) return fail("not_found");
-    const found = await visibleApplication(userId, ref.applicationId, tx, now, true);
+    const found = await visibleApplication(userId, ref.applicationId, tx, now, true, true);
     if (!found.ok) return companyFail(found.error);
     const [iv] = await tx
       .select({ id: interviews.id, status: interviews.status, startsAt: interviews.startsAt })

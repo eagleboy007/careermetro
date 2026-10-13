@@ -391,8 +391,11 @@ export type FeedbackInput = z.input<typeof feedbackInput>;
 
 const UUID_PART = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-/** Who did it: a company member (their org_members id), the candidate, or the daily clean-up. Never a name or email. */
-export const auditActor = z.string().regex(new RegExp(`^(member:${UUID_PART}|candidate|system)$`));
+/**
+ * Who did it: a company member (their org_members id), the candidate, the daily clean-up, or someone with no role
+ * yet asking for access. Never a name or email.
+ */
+export const auditActor = z.string().regex(new RegExp(`^(member:${UUID_PART}|candidate|system|requester)$`));
 /** What it was done to, by id: the company, a member, a role waiting for its code, a job or an application. */
 export const auditTarget = z.string().regex(new RegExp(`^(company|member|invite|job|application):${UUID_PART}$`));
 
