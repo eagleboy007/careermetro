@@ -43,7 +43,13 @@ import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView } from "@/components/inbox/inbox-view";
 import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
-import { exampleCorporateHome, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { JobForm } from "@/components/corporate/job-form";
+import { JobStatusBadge, PostedJobCard } from "@/components/corporate/job-parts";
+import { JobReport } from "@/components/corporate/job-report";
+import { JobsPanel } from "@/components/corporate/jobs-panel";
+import { PostedJobs } from "@/components/departures/posted-jobs";
+import { roleOptions, skillOptions } from "@/lib/corporate/job-content";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
@@ -435,6 +441,35 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <CompanyReview companies={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Corporate jobs (signed in)</h2>
+        <p className="text-sm text-muted">
+          Build step 3: job status badges, the Jobs list with counts (C7), the Post a job form with its Departures preview (C9), and the card candidates
+          see on Departures with Report this job. Example data, so nothing saves.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <JobStatusBadge status="draft" />
+          <JobStatusBadge status="open" />
+          <JobStatusBadge status="paused" />
+          <JobStatusBadge status="closed" />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobsPanel jobs={exampleCorporateHome.jobs} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobsPanel jobs={{ counts: { draft: 0, open: 0, paused: 0, closed: 0 }, items: [], canPost: true, blocked: null }} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobForm data={{ ...exampleJobFormData, roles: roleOptions(), skills: skillOptions() }} initial={null} today="2026-10-13" />
+        </div>
+        <div className="max-w-[560px]">
+          <PostedJobCard job={examplePostedJob} report={<JobReport jobId={examplePostedJob.id} title={examplePostedJob.title} />} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <PostedJobs jobs={[examplePostedJob, { ...examplePostedJob, id: "example-job-2", title: "Freelance QA tester", workType: "freelance", city: "Remote", oneOf: [], nice: [] }]} />
         </div>
       </section>
 

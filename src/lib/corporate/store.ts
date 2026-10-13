@@ -21,6 +21,7 @@ import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/sc
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
+import { companyJobs } from "./jobs-store";
 import { checkWorkEmail, isOnDomain, websiteMatchesDomain, workEmailProblemText } from "./domains";
 import { canManageTeam, canOpenJobs, inviteExpiresAt, recheckDueAt, removalRefusal, secondAdminDaysLeft, secondAdminDueAt } from "./rules";
 import type { CodeDelivery, CorporateHomeView } from "./types";
@@ -101,7 +102,7 @@ export async function activeMembership(userId: string, db: Db | Tx = getDb()) {
 }
 
 /** Admins who count for the two-admin rule: active role, account not deleted. */
-async function liveAdminCount(orgId: string, db: Db | Tx): Promise<number> {
+export async function liveAdminCount(orgId: string, db: Db | Tx): Promise<number> {
   const [row] = await db
     .select({ n: count() })
     .from(orgMembers)
@@ -550,8 +551,8 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
 /* Reading --------------------------------------------------------------------------------------------------------- */
 
 /**
- * Corporate home for a member: the company, its status badge, the second-admin countdown and, for admins, Team and
- * access. Null when the person has no active role. No email address of anyone is read.
+ * Corporate home for a member: the company, its status badge, the second-admin countdown, its jobs and, for admins,
+ * Team and access. Null when the person has no active role. No email address of anyone is read.
  */
 export async function corporateHome(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<CorporateHomeView | null> {
   const db = deps.db ?? getDb();
@@ -573,6 +574,7 @@ export async function corporateHome(userId: string, deps: { db?: Db; now?: Date 
     .where(eq(organizations.id, me.orgId));
   const adminCount = await liveAdminCount(me.orgId, db);
   const facts = { reviewStatus: org.status, adminCount, secondAdminDueAt: org.secondAdminDueAt };
+  const jobs = await companyJobs(userId, me, { ...facts, orgId: me.orgId }, db, now);
   let team: CorporateHomeView["team"] = null;
   if (canManageTeam(me.role)) {
     const [members, waiting] = await Promise.all([
@@ -609,6 +611,7 @@ export async function corporateHome(userId: string, deps: { db?: Db; now?: Date 
     adminCount,
     secondAdminDaysLeft: secondAdminDaysLeft({ adminCount, secondAdminDueAt: org.secondAdminDueAt }, now),
     canOpenJobs: canOpenJobs(facts, now),
+    jobs,
     team,
   };
 }

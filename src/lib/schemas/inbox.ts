@@ -11,7 +11,10 @@ export const CONVERSATION_STATUSES = ["request", "open", "closed"] as const;
 export const MEMBER_ROLES = ["member", "company_team", "interviewer_read_only"] as const;
 /** `ask_times` and `ask_question` are a company's cards (part 2); `system` lines hold a code, never free text. */
 export const MESSAGE_KINDS = ["text", "ask_times", "ask_question", "system"] as const;
-export const REPORT_TARGETS = ["message", "person", "chat"] as const;
+/** `job` is a job posted on CareerMetro (Corporate build step 3), reported from Departures. */
+export const REPORT_TARGETS = ["message", "person", "chat", "job"] as const;
+/** What the Inbox's Report panel can report. */
+export const CHAT_REPORT_TARGETS = ["message", "person", "chat"] as const;
 export const REPORT_REASONS = ["money_or_otp", "harassment", "intimate_or_impersonation", "fake_or_spam", "other"] as const;
 export const REPORT_STATUSES = ["open", "actioned", "dismissed"] as const;
 /** What a `system` message's body may say. Shown as words by the Inbox, so the stored line never holds personal data. */
@@ -40,7 +43,7 @@ export const conversationInput = z.object({ conversationId: z.uuid() });
 export const reportInput = z
   .object({
     conversationId: z.uuid(),
-    target: z.enum(REPORT_TARGETS),
+    target: z.enum(CHAT_REPORT_TARGETS),
     /** Set when the report is about one message. */
     messageId: z.uuid().optional(),
     reason: z.enum(REPORT_REASONS),

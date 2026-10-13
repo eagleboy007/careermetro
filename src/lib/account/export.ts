@@ -1,6 +1,7 @@
 import "server-only";
 import { asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
+import { exportJobs } from "@/lib/corporate/jobs-store";
 import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -8,7 +9,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 5;
+export const EXPORT_VERSION = 6;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -89,7 +90,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -127,6 +128,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     db.select({ createdAt: jobDescriptions.createdAt, text: jobDescriptions.rawText }).from(jobDescriptions).where(eq(jobDescriptions.userId, userId)).orderBy(asc(jobDescriptions.createdAt)),
     exportInbox(userId, db),
     exportCorporate(userId, db),
+    exportJobs(userId, db),
   ]);
 
   return {
@@ -158,5 +160,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     inbox,
     // Company roles held on this account: company, role, since, the work-email domain and date (never the address).
     companyRoles,
+    // Jobs this account posted for a company (it stays the company's when the account goes).
+    jobsOwned,
   };
 }

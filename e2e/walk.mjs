@@ -54,6 +54,18 @@ const a11y = async (name) => {
     else a11yNotes.push(line);
   }
 };
+/** The same check on another page (a second signed-in context). */
+const a11yOn = async (page, name) => {
+  await page.addScriptTag({ content: AXE });
+  const result = await page.evaluate(() =>
+    axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
+  );
+  for (const v of result.violations) {
+    const line = `${name}: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
+    if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
+    else a11yNotes.push(line);
+  }
+};
 let i = 0;
 const settled = () =>
   p
@@ -678,15 +690,18 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
 let corpDomain = null;
 // Corporate (dev/corporate-plan.md, build steps 1 and 2): a signed-in person sets up a company with a work email on
 // an example domain, types the test-mode code (no email sender yet), and lands on Corporate waiting for verification.
+// The company admin's browser stays open for the jobs step after the company review.
+let corp = null;
+let q = null;
+const domain = `labs${Date.now()}.example-labs.test`;
 await step("corporate: set up a company, confirm the code, wait for verification", async () => {
-  const corp = await b.newContext({ viewport: { width: 1280, height: 900 } });
-  const q = await corp.newPage();
+  corp = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  q = await corp.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
   q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
-  const domain = `labs${Date.now()}.example-labs.test`;
   corpDomain = domain;
-  try {
+  {
     await q.goto(BASE + "/today");
     await q.waitForURL(/\/sign-in/);
     await q.locator('input[name="name"]').fill("Meera Iyer");
@@ -771,8 +786,6 @@ await step("corporate: set up a company, confirm the code, wait for verification
         await sql.end();
       }
     }
-  } finally {
-    await corp.close();
   }
 });
 // Company review (/admin/companies): signed out and a non-admin get the normal not-found page with a 404; the admin
@@ -886,6 +899,106 @@ await step("company review: not found for others; the admin verifies the new com
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-companies-phone-dark.png`, fullPage: true });
   } finally {
     await adm.close();
+  }
+});
+// Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
+// again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
+// with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
+// takes it off Departures.
+await step("corporate jobs: post, open, see it on Departures, report, pause", async () => {
+  if (!q) throw new Error("no company from the step before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to verify the company");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = `SOC Analyst L1 ${Date.now()}`;
+  try {
+    await sql`update organizations set review_status = 'verified', reviewed_at = now(), reviewed_by = 'e2e' where email_domain = ${domain}`;
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByText("Verified company").first().waitFor({ timeout: 10000 });
+    await q.getByRole("heading", { name: "Jobs", exact: true }).waitFor();
+    await q.getByRole("link", { name: "Post a job" }).click();
+    await q.waitForURL(/\/corporate\/jobs\/new$/);
+    await q.getByRole("heading", { name: "Post a job", level: 1 }).waitFor();
+    await q.getByLabel("Role profile").selectOption("cyber-security-analyst");
+    await q.getByLabel("Job title as you post it").fill(title);
+    await q.getByLabel("City").fill("Pune");
+    // Skills come from our list only: add one nice-to-have from the picker.
+    const nice = q.getByLabel("Add a nice-to-have skill");
+    await nice.selectOption({ index: 1 });
+    const added = await nice.locator("option:checked").innerText();
+    await nice.locator("xpath=following-sibling::button").click();
+    await q.getByRole("button", { name: `Remove ${added} from Nice to have` }).waitFor();
+    // Open job stays off until the three ticks.
+    if (await q.getByRole("button", { name: "Open job" }).isEnabled()) throw new Error("Open job enabled before the three ticks");
+    for (const name of ["This job is real and open now.", "We never ask candidates for a fee, deposit or paid training.", /don't screen people out/])
+      await q.getByRole("checkbox", { name }).check();
+    await q.getByRole("article").getByRole("heading", { name: title }).waitFor();
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-post-job.png`, fullPage: true });
+    await a11yOn(q, "corporate-post-job");
+    await q.getByRole("button", { name: "Open job" }).click();
+    await q.waitForURL(/\/corporate(#jobs)?$/, { timeout: 15000 });
+    const row = q.getByRole("listitem").filter({ has: q.getByRole("heading", { name: title }) });
+    await row.getByText("Live on Departures").waitFor({ timeout: 10000 });
+    await a11yOn(q, "corporate-jobs");
+
+    await q.goto(BASE + "/departures");
+    const card = q.getByRole("article").filter({ has: q.getByRole("heading", { name: title }) });
+    await card.waitFor({ timeout: 10000 });
+    if (await card.getByRole("button", { name: "Apply on CareerMetro" }).isEnabled()) throw new Error("Apply is on before applications exist");
+    await card.getByText("Companies never ask for money").waitFor();
+    const text = await card.innerText();
+    if (text.includes("@") || text.includes("Meera")) throw new Error("a member or an email shown on the job card");
+    await card.getByRole("button", { name: /Report this job/ }).click();
+    const first = card.getByRole("radio").first();
+    await first.waitFor();
+    if (!(await first.evaluate((el) => el === document.activeElement))) throw new Error("focus not on the first reason");
+    await card.getByRole("button", { name: "Cancel" }).click();
+    const again = card.getByRole("button", { name: /Report this job/ });
+    await again.waitFor();
+    if (!(await again.evaluate((el) => el === document.activeElement))) throw new Error("focus not back on Report this job");
+    await again.click();
+    await card.getByRole("radio", { name: "Fake job, scam or spam" }).check();
+    await card.getByRole("button", { name: "Send report" }).click();
+    await card.getByRole("status").getByText(/Reported/).waitFor({ timeout: 10000 });
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-departures-posted-job.png`, fullPage: true });
+    await a11yOn(q, "departures-posted-job");
+
+    // Phone size in dark mode: the form, Corporate's Jobs and Departures fit with no sideways scroll.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    for (const path of ["/corporate/jobs/new", "/corporate", "/departures"]) {
+      await q.goto(BASE + path);
+      await q.getByRole("heading", { level: 1 }).or(q.getByRole("heading", { name: title })).first().waitFor({ timeout: 10000 });
+      const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      if (overflow > 1) throw new Error(`${path}: horizontal overflow ${overflow}px`);
+      await a11yOn(q, `${path}-phone-dark`);
+    }
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-departures-phone-dark.png`, fullPage: true });
+
+    // Pausing takes it off Departures.
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("button", { name: `Pause ${title}` }).click();
+    await q.getByRole("status").getByText(/Paused\./).waitFor({ timeout: 10000 });
+    await q.goto(BASE + "/departures");
+    await q.getByRole("heading", { name: "Departures" }).first().waitFor();
+    if (await q.getByRole("heading", { name: title }).count()) throw new Error("paused job still on Departures");
+
+    const [job] = await sql`select id, status, ai_round from jobs where title = ${title}`;
+    if (job?.status !== "paused" || job.ai_round) throw new Error("job not saved as paused with the AI round off");
+    const actions = (await sql`select action from audit_logs where target = ${`job:${job.id}`} order by created_at`).map((r) => r.action);
+    if (actions.join() !== "job_opened,job_paused") throw new Error("audit lines: " + actions.join());
+    const [reported] = await sql`select count(*)::int as n from reports where target = 'job' and target_id = ${job.id}`;
+    if (reported.n !== 1) throw new Error("report not filed");
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-corporate-jobs.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await sql.end();
+    await corp?.close();
   }
 });
 await step("phone inbox: list first, chat full screen", async () => {

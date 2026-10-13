@@ -39,6 +39,8 @@ export const LIMITS = {
   roleRequestsPerOwner: { bucket: "role-request", max: 10, windowMs: 24 * HOUR },
   /** The same missing role counted for one person: once a day, however often they search for it. */
   roleRequestTitlePerOwner: { bucket: "role-request-title", max: 1, windowMs: 24 * HOUR },
+  /** New jobs one company makes a day (dev/corporate-plan.md, Abuse and compliance). Keyed by the company's id. */
+  jobsPerCompanyDay: { bucket: "job-create-company", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */
