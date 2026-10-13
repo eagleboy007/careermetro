@@ -149,7 +149,8 @@ export type JobsView = {
 };
 
 /** A colleague who can be put on a job's team. */
-export type ColleagueView = { memberId: string; name: string; role: OrgRole };
+/** A colleague for the job's team. recheckDue: their work-email re-check is due; listed only while already on this job's team. */
+export type ColleagueView = { memberId: string; name: string; role: OrgRole; recheckDue?: boolean };
 
 export type RoleOptionView = { slug: string; title: string; requirements: JobRequirementsView };
 export type SkillOptionView = { id: string; name: string; category: string };

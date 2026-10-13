@@ -454,4 +454,58 @@ describe.skipIf(!db)("overview, audit and clean-up (database)", () => {
     expect(late.some((l) => l.on.kind === "member")).toBe(true);
     expect(late.some((l) => l.on.kind === "job")).toBe(true);
   });
+
+  it("keeps lines about an application out of the audit once its account is purged and the row is gone (T45)", async () => {
+    const s = await setup("audpurge");
+    const other = await candidate("audpurge-cand2", "Ananya Ghosh");
+    const second = await applyToJob(other, { jobId: s.jobId, canJoin: "now", consent: true }, at());
+    if (!second.ok) throw new Error(second.error);
+    expect(await openCandidate(s.admin, { applicationId: second.applicationId }, at())).toMatchObject({ ok: true });
+    const about = async (applicationId: string) => (await audit(s.admin)).lines.filter((l) => l.on.kind === "application" && l.on.ref === applicationId.slice(0, 8));
+    expect((await about(second.applicationId)).length).toBeGreaterThan(0);
+
+    // The account is deleted: its lines go at once.
+    await db!.update(schema.users).set({ deletionRequestedAt: clock }).where(eq(schema.users.id, other));
+    expect(await about(second.applicationId)).toEqual([]);
+    // Purged 30 days later (the users row goes, and its applications with it): the lines stay out, rather than coming
+    // back as a bare short id with no job.
+    await db!.delete(schema.users).where(eq(schema.users.id, other));
+    expect(await db!.select({ id: schema.applications.id }).from(schema.applications).where(eq(schema.applications.id, second.applicationId))).toEqual([]);
+    expect(await about(second.applicationId)).toEqual([]);
+    // Every application line left names its job.
+    const lines = (await audit(s.admin)).lines.filter((l) => l.on.kind === "application");
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.every((l) => l.on.kind === "application" && l.on.job === "SOC Analyst L1")).toBe(true);
+  });
+
+  it("erases a phone still shared when company access ends 180 days after closing", async () => {
+    const s = await setup("endph");
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const id = await book(s, slot("2026-10-14T11:00"));
+    expect(await respondToInterview(s.me, { interviewId: id, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    // Closed without the phone being erased (as if the daily erase hadn't reached it yet).
+    await db!.update(schema.applications).set({ closedAt: clock }).where(eq(schema.applications.id, s.applicationId));
+    const app = async () => (await db!.select().from(schema.applications).where(eq(schema.applications.id, s.applicationId)))[0]!;
+    expect((await app()).phoneShared).not.toBeNull();
+    expect((await endCompanyAccess(db!, at(181).now, { orgId: s.orgId })).accessEnded).toBe(1);
+    expect((await app()).phoneShared).toBeNull();
+    expect((await db!.select().from(schema.interviews).where(eq(schema.interviews.id, id)))[0]!.phoneShared).toBe(false);
+  });
+
+  it("finds each audit line's application by its id, not by scanning the company's applications", async () => {
+    const s = await setup("audplan");
+    expect(await openCandidate(s.admin, { applicationId: s.applicationId }, at())).toMatchObject({ ok: true });
+    // The audit's own query, read back as SQL and explained. Postgres either hashes the company's visible applications
+    // once, or probes each line's application by its primary key; never a scan of the applications for every line,
+    // which grows with lines times applications.
+    const captured: { sql: string; params: unknown[] }[] = [];
+    const logged = drizzle(sqlClient!, { schema, logger: { logQuery: (q: string, params: unknown[]) => void captured.push({ sql: q, params }) } });
+    const r = await companyAudit(s.admin, {}, { db: logged, now: clock });
+    expect(r.ok).toBe(true);
+    const query = captured.find((q) => q.sql.includes('from "audit_logs"'))!;
+    const plan = (await sqlClient!.unsafe(`explain ${query.sql}`, query.params as never[])).map((row) => String(Object.values(row)[0])).join("\n");
+    if (!/hashed SubPlan/.test(plan)) expect(plan).toContain("applications_pkey");
+    // Postgres can probe by the key: a line names its application as "application:<uuid>" and nothing else.
+    expect(query.sql).toContain("a.id = (case when");
+  });
 });

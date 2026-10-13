@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { applications, jobs, jobTeam, orgMembers, organizations, reports, roleProfiles, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
@@ -97,15 +97,23 @@ async function editableJob(userId: string, jobId: string, tx: Tx, now: Date) {
  * Hiring HR on a job must be a Recruiter admin or Hiring HR. Someone picked for both is Hiring HR. The owner
  * and the person saving are already on the team (or stay as they are) and are left out.
  */
-async function teamRows(me: Member, picked: { hiring: string[]; interviewers: string[] }, keep: (string | null)[], tx: Tx) {
+async function teamRows(me: Member, picked: { hiring: string[]; interviewers: string[] }, keep: (string | null)[], jobId: string | null, tx: Tx, now: Date) {
   const ids = [...new Set([...picked.hiring, ...picked.interviewers])];
   if (!ids.length) return { ok: true as const, rows: [] as { userId: string; role: JobTeamRole }[] };
   const found = await tx
-    .select({ id: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role })
+    .select({ id: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role, recheckDueAt: orgMembers.recheckDueAt })
     .from(orgMembers)
     .innerJoin(users, eq(users.id, orgMembers.userId))
     .where(and(inArray(orgMembers.id, ids), eq(orgMembers.orgId, me.orgId), isNull(orgMembers.removedAt), isNull(users.deletionRequestedAt)));
   if (found.length !== ids.length) return fail("not_colleague");
+  // Someone whose work-email re-check is due can stay on the job's team, but can't be newly added until they confirm it.
+  const due = found.filter((m) => m.recheckDueAt <= now);
+  if (due.length) {
+    const onTeam = jobId
+      ? new Set((await tx.select({ userId: jobTeam.userId }).from(jobTeam).where(eq(jobTeam.jobId, jobId))).map((r) => r.userId))
+      : new Set<string>();
+    if (due.some((m) => !onTeam.has(m.userId))) return fail("not_colleague");
+  }
   const byId = new Map(found.map((m) => [m.id, m]));
   if (picked.hiring.some((id) => byId.get(id)!.role === "interviewer")) return fail("not_colleague");
   const hiring = new Set(picked.hiring);
@@ -167,7 +175,7 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
     const roleId = await roleRowId(input.roleSlug, tx);
     if (!roleId) return fail("unknown_role");
     const ownerId = current ? current.ownerId : userId;
-    const team = await teamRows(me, input, [ownerId, userId], tx);
+    const team = await teamRows(me, input, [ownerId, userId], current?.id ?? null, tx, now);
     if (!team.ok) return team;
 
     const from: JobStatus = current?.status ?? "draft";
@@ -379,13 +387,24 @@ export async function jobForm(
       interviewers: team.filter((t) => t.role === "interviewer").map((t) => t.memberId),
     };
   }
+  // Someone whose work-email re-check is due can't open the job until they confirm it, so they aren't offered. One
+  // already on this job's team is still listed, marked, so the form can keep them or take them off.
+  const onTeam = values ? [...values.hiring, ...values.interviewers] : [];
   const [facts, colleagues] = await Promise.all([
     orgFacts(me.orgId, db),
     db
-      .select({ memberId: orgMembers.id, name: users.name, role: orgMembers.role })
+      .select({ memberId: orgMembers.id, name: users.name, role: orgMembers.role, recheckDueAt: orgMembers.recheckDueAt })
       .from(orgMembers)
       .innerJoin(users, eq(users.id, orgMembers.userId))
-      .where(and(eq(orgMembers.orgId, me.orgId), isNull(orgMembers.removedAt), isNull(users.deletionRequestedAt), ne(orgMembers.userId, userId)))
+      .where(
+        and(
+          eq(orgMembers.orgId, me.orgId),
+          isNull(orgMembers.removedAt),
+          onTeam.length ? or(gt(orgMembers.recheckDueAt, now), inArray(orgMembers.id, onTeam)) : gt(orgMembers.recheckDueAt, now),
+          isNull(users.deletionRequestedAt),
+          ne(orgMembers.userId, userId),
+        ),
+      )
       .orderBy(asc(orgMembers.createdAt)),
   ]);
   return {
@@ -397,7 +416,7 @@ export async function jobForm(
       roles: roleOptions(),
       skills: skillOptions(),
       certificates: certificateOptions(),
-      colleagues: colleagues.map((c) => ({ memberId: c.memberId, name: displayName(c.name), role: c.role })),
+      colleagues: colleagues.map((c) => ({ memberId: c.memberId, name: displayName(c.name), role: c.role, ...(c.recheckDueAt <= now ? { recheckDue: true } : {}) })),
       blocked: jobsBlocked(facts, now),
     },
   };
