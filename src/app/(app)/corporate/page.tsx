@@ -2,15 +2,24 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
-import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
+import { CorporateHome, CorporateStart, RecheckPanel } from "@/components/corporate/corporate-home";
 import { exampleCorporateHome, exampleOverview } from "@/components/corporate/fixtures";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { codeDelivery } from "@/lib/corporate/delivery";
 import { companyOverview } from "@/lib/corporate/overview";
-import { corporateHome } from "@/lib/corporate/store";
-import { answerRequestAction, cancelInviteAction, finishJoinAction, inviteAction, removeMemberAction, startJoinAction } from "./actions";
+import { corporateHome, recheckDue } from "@/lib/corporate/store";
+import {
+  answerRequestAction,
+  cancelInviteAction,
+  finishJoinAction,
+  finishRecheckAction,
+  inviteAction,
+  removeMemberAction,
+  startJoinAction,
+  startRecheckAction,
+} from "./actions";
 import { setJobStatusAction } from "./jobs/actions";
 
 export const metadata: Metadata = { title: "Corporate · CareerMetro", robots: { index: false } };
@@ -35,6 +44,11 @@ async function Corporate() {
   }
   // Each reads the person's live company role itself.
   const [home, overview] = await Promise.all([corporateHome(account.id), companyOverview(account.id)]);
+  if (!home) {
+    // A role whose 180-day work-email re-check is due gives no access until it is confirmed again (Testing T40).
+    const due = await recheckDue(account.id);
+    if (due) return <RecheckPanel company={due.company} domain={due.domain} open={codeDelivery() !== "off"} actions={{ startJoin: startRecheckAction, finishJoin: finishRecheckAction }} />;
+  }
   if (!home) return <CorporateStart open={codeDelivery() !== "off"} joinActions={{ startJoin: startJoinAction, finishJoin: finishJoinAction }} />;
   return (
     <CorporateHome

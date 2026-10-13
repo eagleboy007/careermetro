@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
 import type { CompanyOverviewView, CorporateHomeView, JobListActions, JoinActions, TeamActions } from "@/lib/corporate/types";
-import { ORG_ROLE_LABELS, ORG_TYPE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
+import { ORG_ROLE_LABELS, ORG_TYPE_LABELS, RECHECK_CLOSED_TEXT, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
 import { JobsPanel } from "./jobs-panel";
 import { JoinForm } from "./join-form";
 import { OverviewPanel } from "./overview-panel";
@@ -131,6 +131,35 @@ export function CorporateHome({
  * Corporate for someone with no company role: set up a company, or confirm a role a Recruiter admin gave them. While
  * codes can't be delivered (production without an email sender) it says sign-up opens soon.
  */
+/**
+ * The 180-day work-email re-check (Testing T40): the person's role is held but gives no company access until they
+ * confirm a work email on the company's domain again with a code. Their personal account is untouched.
+ */
+export function RecheckPanel({ company, domain, open, actions }: { company: string; domain: string; open: boolean; actions?: JoinActions }) {
+  return (
+    <div className="mx-auto flex w-full max-w-[720px] flex-col gap-[18px]">
+      <div>
+        <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">Corporate · {company}</span>
+        <h1 className="mt-1.5 text-[clamp(1.6rem,3.5vw,2.2rem)] font-semibold leading-[1.1]">Confirm your work email again</h1>
+        <p className="mt-1.5 max-w-[620px] text-[0.95rem] text-muted">
+          Every 180 days we check that you still work at {company}. Until you confirm your work email, your company access is paused. Your own CareerMetro
+          account isn&apos;t affected.
+        </p>
+      </div>
+      <Panel id="recheck" title="Your work email">
+        {open ? (
+          <JoinForm actions={actions} hint={`Your work email on ${domain || "your company's domain"}. We send a 6-digit code there.`} doneText="Confirmed. Loading Corporate…" />
+        ) : (
+          <p role="status" className="text-[0.9rem]">
+            {RECHECK_CLOSED_TEXT}
+          </p>
+        )}
+      </Panel>
+      <AntiScamLine />
+    </div>
+  );
+}
+
 export function CorporateStart({ open, joinActions }: { open: boolean; joinActions?: JoinActions }) {
   return (
     <div className="mx-auto flex w-full max-w-[920px] flex-col gap-[18px]">

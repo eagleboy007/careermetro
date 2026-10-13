@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { and, asc, count, desc, eq, gt, inArray, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, inArray, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { jobTeam, jobs, orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
@@ -17,7 +17,7 @@ import {
   signupDetails,
   signupFinish,
 } from "@/lib/schemas/corporate";
-import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
+import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, RECHECK_CLOSED_TEXT, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode } from "./codes";
 import { writeAudit } from "./audit-line";
@@ -51,6 +51,7 @@ export type CorporateError =
   | "not_found"
   | "keep_two_admins"
   | "last_admin"
+  | "self_removal"
   | "already_invited"
   | "wrong"
   | "expired"
@@ -69,6 +70,7 @@ export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   not_found: "That isn't available any more.",
   keep_two_admins: "Keep at least two Recruiter admins. Add another admin first.",
   last_admin: "You're the only Recruiter admin. Add another admin first.",
+  self_removal: "You can't remove your own access. Ask another Recruiter admin to remove you, so your jobs pass to them.",
   already_invited: "That work email already has access waiting.",
   wrong: CODE_ERROR_TEXT.wrong,
   expired: CODE_ERROR_TEXT.expired,
@@ -84,8 +86,8 @@ const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 
 /* Membership ------------------------------------------------------------------------------------------------------ */
 
-/** The person's active company role, read live. Null when they have none. */
-export async function activeMembership(userId: string, db: Db | Tx = getDb()) {
+/** The person's company role, whether or not its work-email re-check is due. Null when they hold none. */
+export async function heldMembership(userId: string, db: Db | Tx = getDb()) {
   const [row] = await db
     .select({
       memberId: orgMembers.id,
@@ -94,12 +96,30 @@ export async function activeMembership(userId: string, db: Db | Tx = getDb()) {
       since: orgMembers.createdAt,
       orgName: organizations.name,
       emailDomain: organizations.emailDomain,
+      recheckDueAt: orgMembers.recheckDueAt,
     })
     .from(orgMembers)
     .innerJoin(organizations, eq(organizations.id, orgMembers.orgId))
     .where(and(eq(orgMembers.userId, userId), isNull(orgMembers.removedAt)))
     .limit(1);
   return row ?? null;
+}
+
+/**
+ * The person's active company role, read live. Null when they have none, and while the 180-day work-email re-check
+ * is due (Testing T40): the role is held but gives no company access until they confirm the work email again
+ * (recheckWorkEmail). A role is still one per person, so sign-up and joining check heldMembership.
+ */
+export async function activeMembership(userId: string, db: Db | Tx = getDb(), now: Date = new Date()) {
+  const row = await heldMembership(userId, db);
+  return row && row.recheckDueAt > now ? row : null;
+}
+
+/** A role whose work-email re-check is due: the company and its domain, for the re-check screen. Null otherwise. */
+export async function recheckDue(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<{ company: string; domain: string } | null> {
+  const row = await heldMembership(userId, deps.db ?? getDb());
+  if (!row || row.recheckDueAt > (deps.now ?? new Date())) return null;
+  return { company: row.orgName, domain: row.emailDomain ?? "" };
 }
 
 /** Admins who count for the two-admin rule: active role, account not deleted. */
@@ -266,7 +286,7 @@ export async function startCompanySignup(userId: string, raw: unknown, deps: Cor
   const details = parsed.data;
   const domain = checkWorkEmail(details.workEmail);
   if (!domain.ok) return fail("invalid", workEmailProblemText(domain.problem));
-  if (await activeMembership(userId, db)) return fail("has_role");
+  if (await heldMembership(userId, db)) return fail("has_role");
   if (await companyCovering(domain.domain, db)) return fail("taken");
   return issueCode(userId, { email: details.workEmail, domain: domain.domain, orgId: null }, deps);
 }
@@ -286,7 +306,7 @@ export async function finishCompanySignup(userId: string, raw: unknown, deps: Co
   return db.transaction(async (tx) => {
     await userLock(userId, tx);
     await domainsLock(tx);
-    if (await activeMembership(userId, tx)) return fail("has_role");
+    if (await heldMembership(userId, tx)) return fail("has_role");
     if (await companyCovering(domain.domain, tx)) return fail("taken");
     const refused = await useCode(userId, { email: details.workEmail, orgId: null }, code, tx, deps);
     if (refused) return fail(refused);
@@ -328,7 +348,7 @@ export async function saveCompanyPage(userId: string, raw: unknown, deps: Corpor
   const db = deps.db ?? getDb();
   const parsed = companyPage.safeParse(raw);
   if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, deps.now);
   if (!me) return fail("not_member");
   if (!canManageTeam(me.role)) return fail("not_admin");
   const p = parsed.data;
@@ -353,7 +373,7 @@ export async function requestAccess(userId: string, raw: unknown, deps: Corporat
   if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
   const domain = checkWorkEmail(parsed.data.workEmail);
   if (!domain.ok) return fail("invalid", workEmailProblemText(domain.problem));
-  if (await activeMembership(userId, db)) return fail("has_role");
+  if (await heldMembership(userId, db)) return fail("has_role");
   const org = await companyCovering(domain.domain, db);
   if (!org) return fail("not_found");
   const [open] = await db
@@ -370,8 +390,8 @@ export async function requestAccess(userId: string, raw: unknown, deps: Corporat
 /* Team and access ------------------------------------------------------------------------------------------------- */
 
 /** The person's role, if they are a Recruiter admin of their company. */
-async function adminOf(userId: string, db: Db | Tx) {
-  const me = await activeMembership(userId, db);
+async function adminOf(userId: string, db: Db | Tx, now: Date) {
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   if (!canManageTeam(me.role)) return fail("not_admin");
   return { ok: true as const, me };
@@ -386,7 +406,7 @@ export async function inviteMember(adminId: string, raw: unknown, deps: Corporat
   const now = deps.now ?? new Date();
   const parsed = inviteInput.safeParse(raw);
   if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
-  const admin = await adminOf(adminId, db);
+  const admin = await adminOf(adminId, db, now);
   if (!admin.ok) return admin;
   const orgDomain = admin.me.emailDomain!;
   const check = checkWorkEmail(parsed.data.workEmail, orgDomain);
@@ -423,7 +443,7 @@ export async function cancelInvite(adminId: string, raw: unknown, deps: Corporat
   const now = deps.now ?? new Date();
   const parsed = inviteIdInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
-  const admin = await adminOf(adminId, db);
+  const admin = await adminOf(adminId, db, now);
   if (!admin.ok) return admin;
   const done = await db.transaction(async (tx) => {
     const [row] = await tx
@@ -443,7 +463,7 @@ export async function answerRequest(adminId: string, raw: unknown, deps: Corpora
   const now = deps.now ?? new Date();
   const parsed = answerRequestInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
-  const admin = await adminOf(adminId, db);
+  const admin = await adminOf(adminId, db, now);
   if (!admin.ok) return admin;
   const { requestId, answer } = parsed.data;
   const set = answer === "decline" ? { cancelledAt: now } : { role: answer, invitedBy: adminId, expiresAt: inviteExpiresAt(now) };
@@ -480,7 +500,7 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
   const parsed = memberIdInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
   return db.transaction(async (tx) => {
-    const admin = await adminOf(adminId, tx);
+    const admin = await adminOf(adminId, tx, now);
     if (!admin.ok) return admin;
     // The company row is locked so two admins removing each other at once can't both pass the two-admin check.
     await tx.select({ id: organizations.id }).from(organizations).where(eq(organizations.id, admin.me.orgId)).for("update");
@@ -493,12 +513,26 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     // A deleted account isn't counted as an admin, so taking its role away never lowers the count.
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
+    // Removing yourself would leave the jobs you own with no one to pass them to (Testing T38): another admin does it.
+    if (target.userId === adminId) return fail("self_removal");
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
     await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "member_removed", target: { member: target.id } }, now);
-    // They leave every job team at this company too (owners stay named, the job stays the company's), so joining
-    // again later never brings back rights on old jobs.
+    // They leave every job team at this company too, owner rows included, so joining again later never brings back
+    // rights on old jobs, their candidates or a phone shared with them (Testing T38). The jobs they owned pass to the
+    // admin who removed them, who could already manage them; the member_removed line above stays in the audit.
     const companyJobs = tx.select({ id: jobs.id }).from(jobs).where(eq(jobs.orgId, admin.me.orgId));
-    await tx.delete(jobTeam).where(and(eq(jobTeam.userId, target.userId), ne(jobTeam.role, "owner"), inArray(jobTeam.jobId, companyJobs)));
+    const owned = await tx
+      .delete(jobTeam)
+      .where(and(eq(jobTeam.userId, target.userId), inArray(jobTeam.jobId, companyJobs)))
+      .returning({ jobId: jobTeam.jobId, role: jobTeam.role });
+    const ownedJobs = owned.filter((r) => r.role === "owner").map((r) => r.jobId);
+    if (ownedJobs.length) {
+      await tx
+        .insert(jobTeam)
+        .values(ownedJobs.map((jobId) => ({ jobId, userId: adminId, role: "owner" as const })))
+        .onConflictDoUpdate({ target: [jobTeam.jobId, jobTeam.userId], set: { role: "owner" } });
+    }
+    await tx.update(jobs).set({ ownerId: adminId }).where(and(eq(jobs.orgId, admin.me.orgId), eq(jobs.ownerId, target.userId)));
     return { ok: true as const };
   });
 }
@@ -533,7 +567,7 @@ export async function startJoin(userId: string, raw: unknown, deps: CorporateDep
   if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
   const check = checkWorkEmail(parsed.data.workEmail);
   if (!check.ok) return fail("invalid", workEmailProblemText(check.problem));
-  if (await activeMembership(userId, db)) return fail("has_role");
+  if (await heldMembership(userId, db)) return fail("has_role");
   const waiting = await waitingRole(userId, parsed.data.workEmail, check.domain, db, now, deps.env);
   if (!waiting) return fail("no_invite");
   return issueCode(userId, { email: parsed.data.workEmail, domain: check.domain, orgId: waiting.orgId, limitDomain: waiting.orgDomain ?? undefined }, deps);
@@ -550,7 +584,7 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
   if (!check.ok) return fail("invalid", workEmailProblemText(check.problem));
   return db.transaction(async (tx) => {
     await userLock(userId, tx);
-    if (await activeMembership(userId, tx)) return fail("has_role");
+    if (await heldMembership(userId, tx)) return fail("has_role");
     const waiting = await waitingRole(userId, workEmail, check.domain, tx, now, deps.env);
     if (!waiting) return fail("no_invite");
     const refused = await useCode(userId, { email: workEmail, orgId: waiting.orgId }, code, tx, deps);
@@ -580,6 +614,50 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
   });
 }
 
+/* The 180-day re-check (Testing T40) ------------------------------------------------------------------------------ */
+
+/**
+ * Someone whose role is due for its work-email re-check types a work email on the company's domain again: a code
+ * goes there, as when they joined. Until a sender exists production sends nothing ("closed"), so the role stays
+ * paused there; previews and local copies show the code on screen.
+ */
+export async function startRecheck(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ testCode?: string }>> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const parsed = joinStart.safeParse(raw);
+  if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
+  const held = await heldMembership(userId, db);
+  if (!held || held.recheckDueAt > now || !held.emailDomain) return fail("not_found");
+  const check = checkWorkEmail(parsed.data.workEmail, held.emailDomain);
+  if (!check.ok) return fail("invalid", workEmailProblemText(check.problem, held.emailDomain));
+  const r = await issueCode(userId, { email: parsed.data.workEmail, domain: check.domain, orgId: held.orgId, limitDomain: held.emailDomain }, deps);
+  return !r.ok && r.error === "closed" ? fail("closed", RECHECK_CLOSED_TEXT) : r;
+}
+
+/** The right code confirms the work email again: the role's company access is back for another 180 days. */
+export async function finishRecheck(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const parsed = joinFinish.safeParse(raw);
+  if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
+  const { workEmail, code } = parsed.data;
+  return db.transaction(async (tx) => {
+    await userLock(userId, tx);
+    const held = await heldMembership(userId, tx);
+    if (!held || held.recheckDueAt > now || !held.emailDomain) return fail("not_found");
+    const check = checkWorkEmail(workEmail, held.emailDomain);
+    if (!check.ok) return fail("invalid", workEmailProblemText(check.problem, held.emailDomain));
+    const refused = await useCode(userId, { email: workEmail, orgId: held.orgId }, code, tx, deps);
+    if (refused) return fail(refused);
+    await tx
+      .update(orgMembers)
+      .set({ workEmailDomain: check.domain, workEmailVerifiedAt: now, recheckDueAt: recheckDueAt(now) })
+      .where(eq(orgMembers.id, held.memberId));
+    logEvent("info", "work_email_rechecked");
+    return { ok: true as const };
+  });
+}
+
 /* Reading --------------------------------------------------------------------------------------------------------- */
 
 /**
@@ -589,7 +667,7 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
 export async function corporateHome(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<CorporateHomeView | null> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return null;
   const [org] = await db
     .select({

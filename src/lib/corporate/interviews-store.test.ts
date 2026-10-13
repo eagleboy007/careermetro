@@ -25,7 +25,8 @@ import {
 } from "./interviews-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { saveJob } from "./jobs-store";
-import { activeMembership, finishCompanySignup, finishJoin, inviteMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
+import { blockCompany, unblockCompany } from "./find-store";
+import { activeMembership, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -416,5 +417,148 @@ describe.skipIf(!db)("interviews (database)", () => {
       .innerJoin(schema.interviews, eq(schema.interviews.id, schema.interviewInterviewers.interviewId))
       .where(and(eq(schema.interviewInterviewers.userId, s.iv), eq(schema.interviews.status, "proposed")));
     expect(count.n).toBe(1);
+  });
+
+  /* Testing T37 to T42 (2026-10-13) ---------------------------------------------------------------------------------- */
+
+  it("stops every way in once the candidate blocks the whole company, and reads to the company as a closed chat (T37)", async () => {
+    const s = await setup("block");
+    const { slot } = await offered(s, ["2026-10-14T11:00", "2026-10-15T10:00"]);
+    const one = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    if (!one.ok) throw new Error(one.error);
+    expect(await respondToInterview(s.me, { interviewId: one.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    expect(await sendCompanyMessage(s.hr, { applicationId: s.applicationId, body: "See you on Wednesday.", question: false }, at())).toMatchObject({ ok: true });
+
+    // The candidate blocks Example Labs from Settings > Privacy.
+    expect(await blockCompany(s.me, { orgId: s.orgId }, at())).toBe(true);
+
+    // Nothing new reaches them: no message, no question, no ask for times, no interview on the times they had offered.
+    const msg = { applicationId: s.applicationId, body: "Are you still interested?" };
+    expect(await sendCompanyMessage(s.hr, { ...msg, question: false }, at())).toEqual({ ok: false, error: "closed" });
+    expect(await sendCompanyMessage(s.admin, { ...msg, question: true }, at())).toEqual({ ok: false, error: "closed" });
+    expect(await askForTimes(s.admin, { applicationId: s.applicationId }, at())).toMatchObject({ ok: false, error: "closed" });
+    expect(await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-15T10:00"), minutes: 30, interviewers: [s.ivMember] }, at())).toMatchObject({
+      ok: false,
+      error: "not_offered",
+    });
+    const messages = await db!
+      .select({ body: schema.messages.body })
+      .from(schema.messages)
+      .innerJoin(schema.conversations, eq(schema.conversations.id, schema.messages.conversationId))
+      .where(eq(schema.conversations.applicationId, s.applicationId));
+    expect(messages.map((m) => m.body)).not.toContain("Are you still interested?");
+
+    // To the company it is a closed chat: never the word "blocked". The times not yet booked and the phone are gone.
+    const chat = await companyChat(s.hr, s.applicationId, at());
+    if (!chat.ok) throw new Error(chat.error);
+    expect(chat.chat).toMatchObject({ state: "closed", canAskTimes: false });
+    const view = await schedulingView(s.hr, s.applicationId, at());
+    expect(view.ok && view.view.slots.map((x) => [x.label, x.taken])).toEqual([["Wed 14 Oct, 11:00", true]]);
+    const drawer = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
+    expect(drawer.ok && drawer.candidate.interviews.phone).toBeNull();
+    expect(JSON.stringify([chat, view, drawer]).toLowerCase()).not.toContain("block");
+
+    // The candidate: the chat has left their Inbox; the application goes on, on Arrivals, with a line saying why it is quiet.
+    expect((await listThreads(s.me, at())).filter((t) => t.kind === "application")).toEqual([]);
+    const [mine] = await myApplications(s.me, at());
+    expect(mine).toMatchObject({ stage: "shortlisted", withdrawn: false, companyBlocked: true, phoneShared: false });
+    // A new application to that company is refused while the block stands; after Unblock it goes through.
+    const job2 = await saveJob(s.admin, { roleSlug: SLUG, title: "SOC Analyst L2", workType: "full_time", city: "Pune", requirements: req, open: yes, hiring: [s.hrMember], interviewers: [] }, deps());
+    if (!job2.ok) throw new Error(job2.error);
+    expect(await applyToJob(s.me, { jobId: job2.jobId, canJoin: "30", consent: true }, at())).toMatchObject({ ok: false, error: "blocked_company" });
+    expect(await unblockCompany(s.me, { orgId: s.orgId }, at())).toBe(true);
+    expect(await applyToJob(s.me, { jobId: job2.jobId, canJoin: "30", consent: true }, at())).toMatchObject({ ok: true });
+    // The chats the block closed stay closed.
+    expect(await sendCompanyMessage(s.hr, { ...msg, question: false }, at())).toEqual({ ok: false, error: "closed" });
+  });
+
+  it("takes a removed Hiring HR's jobs away for good: invited back, they get no rights on old jobs (T38)", async () => {
+    const s = await setup("removed");
+    // Farhan (Hiring HR) posts his own job, so he is its owner, and has a candidate whose phone is shared.
+    const own = await saveJob(s.otherHr, { roleSlug: SLUG, title: "Cloud Support Associate", workType: "full_time", city: "Pune", requirements: req, open: yes, hiring: [], interviewers: [] }, deps());
+    if (!own.ok) throw new Error(own.error);
+    const cand = await candidate("removed-cand2", "Ananya Ghosh");
+    const app = await applyToJob(cand, { jobId: own.jobId, canJoin: "now", consent: true }, at());
+    if (!app.ok) throw new Error(app.error);
+    const { slot } = await offered({ hr: s.otherHr, me: cand, applicationId: app.applicationId }, ["2026-10-14T11:00"]);
+    const iv = await scheduleInterview(s.otherHr, { applicationId: app.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.adminMember] }, at());
+    if (!iv.ok) throw new Error(iv.error);
+    expect(await respondToInterview(cand, { interviewId: iv.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    // A closed application from earlier, still within the company's 180 days.
+    expect(await moveApplication(s.otherHr, { applicationId: app.applicationId, to: "not_this_time", note: "We picked someone with more cloud log work." }, at())).toEqual({ ok: true });
+
+    expect(await removeMember(s.admin, { memberId: s.otherMember }, deps())).toEqual({ ok: true });
+    // Ownership passes to the admin who removed him; the removal stays in the audit.
+    const team = await db!.select({ userId: schema.jobTeam.userId, role: schema.jobTeam.role }).from(schema.jobTeam).where(eq(schema.jobTeam.jobId, own.jobId));
+    expect(team).toEqual([{ userId: s.admin, role: "owner" }]);
+    const [jobRow] = await db!.select({ ownerId: schema.jobs.ownerId }).from(schema.jobs).where(eq(schema.jobs.id, own.jobId));
+    expect(jobRow.ownerId).toBe(s.admin);
+    const removed = await db!.select().from(schema.auditLogs).where(and(eq(schema.auditLogs.orgId, s.orgId), eq(schema.auditLogs.action, "member_removed")));
+    expect(removed.map((l) => l.target)).toEqual([`member:${s.otherMember}`]);
+
+    // Invited back as Hiring HR: nothing of the old job comes back.
+    const [org] = await db!.select({ domain: schema.organizations.emailDomain }).from(schema.organizations).where(eq(schema.organizations.id, s.orgId));
+    const later = deps({ now: new Date(clock.getTime() + 60_000) });
+    expect(await inviteMember(s.admin, { workEmail: `farhan@${org.domain}`, role: "hiring" }, later)).toEqual({ ok: true });
+    const again = await startJoin(s.otherHr, { workEmail: `farhan@${org.domain}` }, later);
+    if (!again.ok || !again.testCode) throw new Error("no join code");
+    expect(await finishJoin(s.otherHr, { workEmail: `farhan@${org.domain}`, code: again.testCode }, later)).toMatchObject({ ok: true });
+    expect(await jobBoard(s.otherHr, own.jobId, at())).toMatchObject({ ok: false, error: "not_allowed" });
+    expect(await openCandidate(s.otherHr, { applicationId: app.applicationId }, at())).toMatchObject({ ok: false });
+    expect(await moveApplication(s.otherHr, { applicationId: app.applicationId, to: "team", note: "" }, at())).toMatchObject({ ok: false });
+    expect(await saveJob(s.otherHr, { jobId: own.jobId, roleSlug: SLUG, title: "Mine again", workType: "full_time", city: "Pune", requirements: req, hiring: [], interviewers: [] }, deps())).toMatchObject({
+      ok: false,
+      error: "not_allowed",
+    });
+    const msgs = await companyMessages(s.otherHr, at());
+    expect(msgs.ok && msgs.view.items).toEqual([]);
+    // The admin, now the owner, still has it all.
+    expect((await jobBoard(s.admin, own.jobId, at())).ok).toBe(true);
+  });
+
+  it("shows a shared phone to an interviewer only through the interview it was shared for, while its window is open (T39)", async () => {
+    const s = await setup("window");
+    const { slot } = await offered(s, ["2026-10-14T11:00", "2026-10-20T15:00"]);
+    // Interview A (Wed 14 Oct, 11:00 to 11:30 India time): accepted with the phone shared. Sana is on it.
+    const a = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    // Interview B (Tue 20 Oct): Sana again, accepted without sharing.
+    const b = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-20T15:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    if (!a.ok || !b.ok) throw new Error("not booked");
+    expect(await respondToInterview(s.me, { interviewId: a.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    expect(await respondToInterview(s.me, { interviewId: b.interviewId, answer: "accept", sharePhone: false }, at())).toEqual({ ok: true });
+    const phoneFor = async (who: string, now: Date) => {
+      const r = await openCandidate(who, { applicationId: s.applicationId }, { db: db!, env, now });
+      if (!r.ok) throw new Error(r.error);
+      return r.candidate.interviews.phone;
+    };
+    // A's window ends 7 days after it ends: Wed 21 Oct, 11:30 India time (06:00Z).
+    expect(await phoneFor(s.iv, new Date("2026-10-21T05:30:00Z"))).toBe(PHONE_SHOWN);
+    // After that, Sana still sees the candidate through live interview B, but not the phone shared for A.
+    expect(await phoneFor(s.iv, new Date("2026-10-21T07:00:00Z"))).toBeNull();
+    // The job team still sees it while the application is open.
+    expect(await phoneFor(s.hr, new Date("2026-10-21T07:00:00Z"))).toBe(PHONE_SHOWN);
+  });
+
+  it("erases a shared phone when the interview it was shared for is cancelled, unless another still needs it (T42)", async () => {
+    const s = await setup("cancelphone");
+    const { slot } = await offered(s, ["2026-10-14T11:00", "2026-10-15T10:00"]);
+    const a = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    const b = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-15T10:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    if (!a.ok || !b.ok) throw new Error("not booked");
+    expect(await respondToInterview(s.me, { interviewId: a.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    expect(await respondToInterview(s.me, { interviewId: b.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    const stored = async () => (await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(eq(schema.applications.id, s.applicationId)))[0]!.phone;
+
+    // B still needs it: cancelling A keeps the phone.
+    expect(await cancelInterview(s.hr, { interviewId: a.interviewId }, at())).toEqual({ ok: true });
+    expect(await stored()).not.toBeNull();
+    // The last interview it was shared for is cancelled: the phone is erased, from the drawer and the download alike.
+    expect(await cancelInterview(s.hr, { interviewId: b.interviewId }, at())).toEqual({ ok: true });
+    expect(await stored()).toBeNull();
+    const drawer = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
+    expect(drawer.ok && drawer.candidate.interviews.phone).toBeNull();
+    const exported = await exportApplications(s.me, db!, env);
+    expect(exported[0]!.phoneSharedWithCompany).toBeNull();
+    expect((await myApplications(s.me, at()))[0]!.phoneShared).toBe(false);
   });
 });

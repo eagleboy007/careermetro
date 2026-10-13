@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
@@ -12,6 +11,7 @@ import { COMPANY_CHAT_ERROR_TEXT, companyChat, companyMessages } from "@/lib/cor
 import { companyFoundChat, FIND_ERROR_TEXT } from "@/lib/corporate/find-store";
 import { askTimesAction } from "../interviews/actions";
 import { sendCompanyMessageAction, sendFoundMessageAction } from "./actions";
+import { NoCompanyRole } from "../no-role";
 
 export const metadata: Metadata = { title: "Messages · Corporate · CareerMetro", robots: { index: false } };
 
@@ -44,15 +44,7 @@ async function Messages({ searchParams }: PageProps<"/corporate/messages">) {
         : null;
   const list = await companyMessages(account.id);
   if (!list.ok) {
-    return (
-      <div className="mx-auto flex max-w-[720px] flex-col gap-3">
-        <h1 className="text-[1.7rem] font-semibold leading-[1.1]">You don&apos;t have a company role</h1>
-        <p className="text-muted">Set up your company, or confirm a role a Recruiter admin gave you, in Corporate.</p>
-        <Link href="/corporate" className="inline-flex min-h-11 items-center self-start text-ink underline underline-offset-2">
-          Open Corporate
-        </Link>
-      </div>
-    );
+    return <NoCompanyRole userId={account.id} />;
   }
   return (
     <CompanyMessages

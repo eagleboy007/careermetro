@@ -5,6 +5,7 @@ import { applications, auditLogs, jobs, orgInvites, orgMembers, organizations, u
 import { displayName } from "@/lib/account/name";
 import { auditPageInput, COMPANY_AUDIT_ACTIONS, COMPANY_AUDIT_LABELS, type CompanyAuditAction } from "@/lib/schemas/corporate";
 import { AUDIT_PAGE_SIZE } from "@/lib/schemas/constants";
+import { COMPANY_ACCESS_DAYS } from "./applications-store";
 import { canManageTeam } from "./rules";
 import { slotKeyOf } from "./slots";
 import { activeMembership } from "./store";
@@ -17,7 +18,8 @@ import { formatDay } from "./format";
  * member), what (a fixed label) and to which job, application, member or role-in-waiting, by title or short id. A line
  * never holds anything a person typed, and this view adds no candidate's name, email, phone or anything else from
  * their profile: an application is named by its id and its job's title only. Lines about the admin's own application
- * (someone applying to their own company's job) are left out, as that application is everywhere else.
+ * (someone applying to their own company's job) are left out, as that application is everywhere else, and so are lines
+ * about applications the company no longer sees (withdrawn, a deleted account, or 180 days past closing).
  */
 
 type Db = ReturnType<typeof getDb>;
@@ -47,10 +49,12 @@ function split(text: string): { kind: string; id: string } | null {
 
 export async function companyAudit(userId: string, raw: unknown, deps: AuditDeps = {}): Promise<AuditResult<{ view: CompanyAuditView }>> {
   const db = deps.db ?? getDb();
-  const me = await activeMembership(userId, db);
+  const now = deps.now ?? new Date();
+  const me = await activeMembership(userId, db, now);
   if (!me) return { ok: false, error: "not_member" };
   if (!canManageTeam(me.role)) return { ok: false, error: "not_admin" };
   const { before } = auditPageInput.parse(raw ?? {});
+  const cutoff = new Date(now.getTime() - COMPANY_ACCESS_DAYS * 86_400_000);
   const cursor = before ? { at: new Date(before.slice(0, 24)), id: before.slice(25) } : null;
 
   const rows = await db
@@ -63,6 +67,12 @@ export async function companyAudit(userId: string, raw: unknown, deps: AuditDeps
         cursor ? sql`(date_trunc('milliseconds', ${auditLogs.createdAt}), ${auditLogs.id}) < (${cursor.at.toISOString()}::timestamptz, ${cursor.id}::uuid)` : undefined,
         // Never the admin's own application, which they can't see from the company side.
         sql`not exists (select 1 from ${applications} a where a.user_id = ${userId} and ${auditLogs.target} = 'application:' || a.id::text)`,
+        // Nor an application the rest of Corporate no longer shows (Testing T43): withdrawn, a deleted account, or more
+        // than 180 days past closing. Lines about the team and jobs stay; they hold nothing of a candidate.
+        sql`not exists (select 1 from ${applications} a join ${users} u on u.id = a.user_id
+              where ${auditLogs.target} = 'application:' || a.id::text
+                and (a.withdrawn_at is not null or u.deletion_requested_at is not null
+                  or a.closed_at <= ${cutoff.toISOString()}::timestamptz or a.company_access_ends_at <= ${now.toISOString()}::timestamptz))`,
       ),
     )
     .orderBy(desc(sql`date_trunc('milliseconds', ${auditLogs.createdAt})`), desc(auditLogs.id))

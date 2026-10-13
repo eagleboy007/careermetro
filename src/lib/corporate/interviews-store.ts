@@ -25,12 +25,13 @@ import { SLOT_MINUTES, SLOT_TIMES } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { visibleApplication } from "./applications-store";
 import { writeAudit } from "./audit-line";
-import { askDaysOf, busyOf, companyInterviewsOf, offeredState, overlaps } from "./interview-reads";
+import { askDaysOf, busyOf, companyInterviewsOf, erasePhoneUnlessNeeded, offeredState, overlaps } from "./interview-reads";
 import { encryptPhone, phoneSharingAvailable } from "./phone";
 import { canCancel, canRespond, chatClosed, feedbackRefusal, scheduleRefusal, shownStatus, type FeedbackRefusal, type ScheduleRefusal } from "./rules";
 import { askDays, askText, dayParts, slotKeyOf, slotLabel, slotOpen, slotStart } from "./slots";
 import { visibleApplicationsWhere } from "./scope";
 import { activeMembership } from "./store";
+import { companyBlocked } from "./company-blocks";
 import type { CompanyInterviewsView, InterviewerOptionView, InterviewListItem, OrgRole, SchedulerView } from "./types";
 
 /*
@@ -97,6 +98,8 @@ export const INTERVIEW_ERROR_TEXT: Record<InterviewError, string> = {
 /** The candidate's words for a closed application (INTERVIEW_ERROR_TEXT.closed speaks to the company). */
 const CANDIDATE_CLOSED = "This application is closed, so this interview can't be answered.";
 const CHAT_CLOSED = "This chat is closed, so times can't be offered here.";
+/** The company's words when the chat is closed (INTERVIEW_ERROR_TEXT.closed is about the application). */
+const CHAT_CLOSED_COMPANY = "This chat is closed, so you can't ask for times in it.";
 
 export type InterviewResult<T = object> = ({ ok: true } & T) | { ok: false; error: InterviewError; message?: string };
 const fail = (error: InterviewError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
@@ -135,7 +138,7 @@ export async function askForTimes(userId: string, raw: unknown, deps: InterviewD
   const parsed = askTimesInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
   const result = await db.transaction(async (tx): Promise<InterviewResult<{ messageId: string }>> => {
-    const me = await activeMembership(userId, tx);
+    const me = await activeMembership(userId, tx, now);
     if (!me) return fail("not_member");
     if (me.role === "interviewer") return fail("read_only");
     const found = await visibleApplication(userId, parsed.data.applicationId, tx, now, true);
@@ -144,9 +147,11 @@ export async function askForTimes(userId: string, raw: unknown, deps: InterviewD
     if (app.withdrawnAt) return fail("not_found");
     const refusal = scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } });
     if (refusal) return fail(refusal);
+    // The person blocked the company: the chat reads as closed to it, as when they block from inside it (Testing T37).
+    if (await companyBlocked(app.userId, app.orgId, tx)) return fail("closed", CHAT_CLOSED_COMPANY);
     const conversationId = await openApplicationChat(tx, { applicationId: app.id, orgId: app.orgId, userId: app.userId }, now, false);
     const [conversation] = await tx.select({ status: conversations.status }).from(conversations).where(eq(conversations.id, conversationId)).for("update");
-    if (chatClosed(app, conversation!.status, now)) return fail("closed");
+    if (chatClosed(app, conversation!.status, now)) return fail("closed", CHAT_CLOSED_COMPANY);
     if ((await offeredState(app.id, conversationId, tx, now)).waitingForTimes) return fail("already_asked");
     const at = { db: tx, now: now.getTime() };
     if (!(await takeShared(LIMITS.companyMessagesPerApplicationDay, app.id, at))) return fail("limit");
@@ -327,7 +332,7 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
   if (!parsed.success) return fail("invalid", parsed.error.issues[0]?.message);
   const input = parsed.data;
   const result = await db.transaction(async (tx): Promise<InterviewResult<{ interviewId: string }>> => {
-    const me = await activeMembership(userId, tx);
+    const me = await activeMembership(userId, tx, now);
     if (!me) return fail("not_member");
     if (me.role === "interviewer") return fail("read_only");
     const found = await visibleApplication(userId, input.applicationId, tx, now, true);
@@ -336,6 +341,8 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
     if (app.withdrawnAt) return fail("not_found");
     const refusal = scheduleRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, app: { stage: app.stage, withdrawn: false, jobStatus: app.jobStatus } });
     if (refusal) return fail(refusal);
+    // The person blocked the company: their offered times were taken back, so there is nothing to book (Testing T37).
+    if (await companyBlocked(app.userId, app.orgId, tx)) return fail("not_offered");
     const [slot] = await tx
       .select({ id: candidateSlots.id, startsAt: candidateSlots.startsAt, minutes: candidateSlots.minutes })
       .from(candidateSlots)
@@ -391,6 +398,8 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     if (!found.access.canMove) return fail(found.access.me.role === "interviewer" ? "read_only" : "not_allowed");
     if (!canCancel(iv, now)) return fail("not_open");
     await tx.update(interviews).set({ status: "cancelled", cancelledAt: now }).where(eq(interviews.id, iv.id));
+    // The phone goes too, unless another accepted interview it was shared for still needs it (Testing T42).
+    await erasePhoneUnlessNeeded(tx, ref.applicationId, now);
     await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "interview_cancelled", target: { application: ref.applicationId } }, now);
     return { ok: true };
   });
@@ -534,7 +543,7 @@ export async function submitFeedback(userId: string, raw: unknown, deps: Intervi
 export async function companyInterviews(userId: string, deps: InterviewDeps = {}): Promise<InterviewResult<{ view: CompanyInterviewsView }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  const me = await activeMembership(userId, db);
+  const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
   const rows = await db
     .select({
