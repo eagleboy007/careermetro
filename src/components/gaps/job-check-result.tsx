@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ConfirmKeyword, KeywordAnnouncer } from "@/components/resume/confirm-keyword";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { AddGoal, RemoveCheck, type GoalState } from "./job-check-actions";
@@ -51,6 +52,8 @@ export function Row({ name, children }: { name: string; children?: ReactNode }) 
  */
 export function JobCheckResult({
   check,
+  resumeId,
+  profileVersion = null,
   roleTitle,
   planHref,
   goals,
@@ -58,6 +61,10 @@ export function JobCheckResult({
   demo = false,
 }: {
   check: JobCheckView;
+  /** For "I have this" on skills the resume doesn't name (FR-34 screening check). */
+  resumeId: string;
+  /** The confirmed profile version the page shows; without it, "I have this" is not offered. */
+  profileVersion?: number | null;
   roleTitle: string;
   /** The Path page for this job: "Plan for this job". */
   planHref: string;
@@ -67,8 +74,21 @@ export function JobCheckResult({
   demo?: boolean;
 }) {
   const asked = check.covered.length + check.alsoGoals.length + check.onlyThisJob.length;
+  // Keywords this posting asks for that the resume doesn't name at all (FR-34): the person can confirm they have one.
+  const unnamed = [...check.alsoGoals, ...check.onlyThisJob].filter((s) => s.status === "missing").length;
+  const confirm = (s: { skillId: string; skillName: string; status: string }) =>
+    s.status === "missing" && profileVersion !== null ? (
+      <ConfirmKeyword
+        resumeId={resumeId}
+        keyword={{ skillId: s.skillId, skillName: s.skillName, options: [{ skillId: s.skillId, skillName: s.skillName }] }}
+        target={{ checkId: check.id }}
+        version={profileVersion}
+        demo={demo}
+      />
+    ) : null;
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
+      <KeywordAnnouncer headingId={jobCheckHeadingId(check.id)}>
       <div className="flex flex-col gap-1">
         <h3 id={jobCheckHeadingId(check.id)} tabIndex={-1} className="font-sans text-base font-semibold tracking-normal focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           {check.title} <span className="font-normal text-muted">at</span> {check.company}
@@ -79,6 +99,12 @@ export function JobCheckResult({
             ? "This posting asks for no skills we can check yet."
             : `You cover ${check.covered.length} of the ${asked} skills this job asks for.`}
         </p>
+        {unnamed > 0 && profileVersion !== null && (
+          <p className="text-sm text-muted">
+            {unnamed === 1 ? "One skill marked Missing isn't named" : `${unnamed} skills marked Missing aren't named`} on your resume, and screening software
+            looks for them. Have one? Press I have this.
+          </p>
+        )}
       </div>
       <Group title="Covered" count={check.covered.length}>
         {check.covered.map((s) => (
@@ -91,6 +117,7 @@ export function JobCheckResult({
         {check.alsoGoals.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
+            {confirm(s)}
           </Row>
         ))}
       </Group>
@@ -102,6 +129,7 @@ export function JobCheckResult({
         {check.onlyThisJob.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
+            {confirm(s)}
             <AddGoal
               checkId={check.id}
               skillId={s.skillId}
@@ -142,6 +170,7 @@ export function JobCheckResult({
         )}
         <RemoveCheck checkId={check.id} label={`${check.title} at ${check.company}`} onRemoved={onRemoved} demo={demo} />
       </div>
+      </KeywordAnnouncer>
     </div>
   );
 }

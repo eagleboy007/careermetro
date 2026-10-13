@@ -1,0 +1,2 @@
+-- FR-34 screening-readiness check (dev/resume-check-plan.md): resumes gains a nullable screening column holding what the upload found about layout (counts and yes/no flags) and section headings (fixed codes), read while the file was in memory. Never resume text. Rows uploaded before this stay null and the page asks for the file again. Expand only: one nullable column on an existing table, no new table, so row level security is unchanged.
+ALTER TABLE "resumes" ADD COLUMN "screening" jsonb;

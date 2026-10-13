@@ -72,6 +72,26 @@ describe.skipIf(!db)("ingestResume (database)", () => {
     expect(JSON.stringify(call)).not.toContain("Priya");
   });
 
+  it("keeps the screening check's layout flags and heading codes from the file, and no text (FR-34)", async () => {
+    const pasted = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-sp` }, clientHash: `h-${session}-sp` }, { db: db!, client: client(JSON.stringify(parsed)).client });
+    const word = await ingestResume(
+      { bytes: new Uint8Array(readFileSync("fixtures/resumes/priya-sharma.docx")), owner: { sessionId: `${session}-sw` }, clientHash: `h-${session}-sw` },
+      { db: db!, client: client(JSON.stringify(parsed)).client },
+    );
+    if (!pasted.ok || !word.ok) throw new Error("upload failed");
+    created.push(pasted.resumeId, word.resumeId);
+    const rows = await db!.select({ id: schema.resumes.id, screening: schema.resumes.screening }).from(schema.resumes).where(inArray(schema.resumes.id, [pasted.resumeId, word.resumeId]));
+    const byId = new Map(rows.map((r) => [r.id, r.screening]));
+    const headings = { summary: "standard", experience: "standard", education: "standard", skills: "standard", projects: "not_found", certifications: "standard" };
+    expect(byId.get(pasted.resumeId)).toEqual({ version: 1, layout: "pasted", headings });
+    expect(byId.get(word.resumeId)).toEqual({
+      version: 1,
+      layout: { fileType: "docx", tables: 0, columns: false, images: 0, textBoxes: 0, headerFooterText: false },
+      headings,
+    });
+    expect(JSON.stringify(rows)).not.toMatch(/Priya|SQL|Pune/);
+  });
+
   it("marks the resume failed when the model output can't be used", async () => {
     const { client: c } = client("not json");
     const result = await ingestResume({ bytes, as: "text", owner: { sessionId: `${session}-f` }, clientHash: `h-${session}-f` }, { db: db!, client: c });

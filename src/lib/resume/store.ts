@@ -35,9 +35,17 @@ export type ConfirmResult = { ok: true; version: number } | { ok: false; reason:
  * Evidence quotes and highlights are kept only if the parsed profile already had them: the user can remove
  * them but not add new ones, so every quote still comes from the resume (AI-5).
  */
-export async function confirmProfile(resumeId: string, owner: Owner, profile: Profile, db: Db = getDb()): Promise<ConfirmResult> {
+export async function confirmProfile(
+  resumeId: string,
+  owner: Owner,
+  profile: Profile,
+  db: Db = getDb(),
+  /** The version the change was made on; a newer one saved since (another tab) is a conflict, not overwritten. */
+  expectedVersion?: number,
+): Promise<ConfirmResult> {
   const current = await getResumeForOwner(resumeId, owner, db);
   if (!current) return { ok: false, reason: "not_found" };
+  if (expectedVersion !== undefined && current.version !== expectedVersion) return { ok: false, reason: "conflict" };
   if (current.version >= MAX_PROFILE_VERSIONS) return { ok: false, reason: "too_many" };
 
   const known = new Set([...current.profile.roles.flatMap((r) => r.highlights), ...current.profile.skills.flatMap((s) => s.evidence)]);

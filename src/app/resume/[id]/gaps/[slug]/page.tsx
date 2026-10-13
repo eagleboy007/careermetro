@@ -8,6 +8,7 @@ import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
+import { ScreeningCheck } from "@/components/resume/screening-check";
 import { GapCard } from "@/components/route/gap-card";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
@@ -19,6 +20,8 @@ import { askedInForGap, postingShares } from "@/lib/gaps/asked-in";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { goalSkillsOf, jobChecksForPage } from "@/lib/jobs/store";
+import { screeningForPage } from "@/lib/resume/screening-store";
+import type { ScreeningView } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -67,6 +70,13 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
   } catch (error) {
     logEvent("error", "job_checks_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
     checks = null;
+  }
+  // The screening check (FR-34) is extra: a failure to work it out never hides the gaps.
+  let screening: ScreeningView | null = null;
+  try {
+    screening = owner ? await screeningForPage(id, owner, { role }) : null;
+  } catch (error) {
+    logEvent("error", "screening_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
   }
   // Five gaps up front (the handoff's Gaps screen); every other required gap is stored (each is a goal) and one tap away.
   const top = analysis.gaps.slice(0, SHOWN_GAPS);
@@ -119,8 +129,10 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
           <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
         </section>
       )}
+      {screening && <ScreeningCheck view={screening} resumeId={id} />}
       <JobCheck
         resumeId={id}
+        profileVersion={screening?.profileVersion ?? null}
         roleSlug={role.slug}
         roleTitle={role.title}
         checks={checks ?? []}

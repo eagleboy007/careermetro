@@ -34,7 +34,7 @@ import {
   INTERVIEW_STATUSES,
   JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
+import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -227,6 +227,12 @@ export const resumes = pgTable(
      * (src/lib/resume/name-match.ts). The name itself is never stored. Null when the resume shows no name.
      */
     nameHashes: text("name_hashes").array(),
+    /**
+     * FR-34: what the upload found about layout and section headings, read while the file was in memory
+     * (src/lib/resume/layout.ts, sections.ts). Counts, yes/no flags and fixed codes only, never resume text.
+     * Null for resumes uploaded before the check, which are never guessed.
+     */
+    screening: jsonb("screening").$type<ResumeScreening>(),
     createdAt: createdAt(),
     /** When the raw file must be removed (SEC-5). Null when no file was kept, the default: text is read in memory. */
     fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }),
