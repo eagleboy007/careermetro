@@ -69,10 +69,10 @@ describe("roleRequestTitle", () => {
   });
 
   it("refuses bare links, but keeps technology names with dots", () => {
-    for (const bad of ["linkedin.com/in/priya", "priya.dev/about", "example.com", "Analyst at example.co.in", "careers.example.io", "myname.org", "site.net", "example.co"]) {
+    for (const bad of ["linkedin.com/in/priya", "priya.dev/about", "example.com", "Analyst at example.co.in", "careers.example.io", "myname.org", "site.net", "example.co", "priya.dev", "about.me", "example.ai", "resume.app", "portfolio.xyz", "careers.example.tech"]) {
       expect(title(bad).success, bad).toBe(false);
     }
-    for (const good of [".NET Developer", "ASP.NET Developer", "Node.js Developer", "Vue.js Engineer", "VB.NET Programmer", "B.Com Accountant", "Sr. Analyst", "UI/UX Designer"]) {
+    for (const good of [".NET Developer", "ASP.NET Developer", "Node.js Developer", "Vue.js Engineer", "VB.NET Programmer", "B.Com Accountant", "M.Tech Graduate Engineer", "B.Tech Trainee", "Next.js Developer", "D3.js Visualisation Engineer", "Sr. Analyst", "UI/UX Designer", "AI Engineer", "Mobile App Developer"]) {
       expect(title(good).success, good).toBe(true);
     }
   });

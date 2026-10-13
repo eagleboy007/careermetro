@@ -42,16 +42,17 @@ export type PostingSkills = z.infer<typeof postingSkills>;
 export const jobCheckGoalRequest = z.object({ skillId: z.string().regex(/^[a-z0-9-]{1,80}$/) }).strict();
 export type JobCheckGoalRequest = z.infer<typeof jobCheckGoalRequest>;
 
-/** Names with a dot that are skills or degrees, not addresses: "ASP.NET", "VB.NET", "B.Com". */
-const DOTTED_NAMES = /(?<![\p{L}\p{N}])(?:asp|ado|vb)\.net(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])[bm]\.com(?![\p{L}\p{N}])/giu;
+/** Names with a dot that are skills or degrees, not addresses: "ASP.NET", "VB.NET", "B.Com", "M.Tech". */
+const DOTTED_NAMES = /(?<![\p{L}\p{N}])(?:(?:asp|ado|vb)\.net|[bm]\.(?:com|tech))(?![\p{L}\p{N}])/giu;
 
 /**
  * A bare link such as "linkedin.com/in/priya" or "example.co.in": a dotted word followed by "/", or a word ending in a
- * common domain ending. ".NET" on its own and "Node.js" or "Vue.js" are not links.
+ * common domain ending, older or newer (.com, .in, .io, .org, .co, .net, .dev, .me, .ai, .app, .xyz, .tech). ".NET" on
+ * its own and "Node.js", "Vue.js", "Next.js" or "D3.js" are not links.
  */
 function looksLikeLink(raw: string): boolean {
   const text = raw.replace(DOTTED_NAMES, " ");
-  return /[\p{L}\p{N}-]\.[\p{L}\p{N}.-]*\//u.test(text) || /[\p{L}\p{N}-]\.(?:com|in|io|org|co|net)(?![\p{L}\p{N}])/iu.test(text);
+  return /[\p{L}\p{N}-]\.[\p{L}\p{N}.-]*\//u.test(text) || /[\p{L}\p{N}-]\.(?:com|in|io|org|co|net|dev|me|ai|app|xyz|tech)(?![\p{L}\p{N}])/iu.test(text);
 }
 
 /** The most a typed title may be before it is read at all; longer input is refused, not cut. */
