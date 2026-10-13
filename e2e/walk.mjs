@@ -713,6 +713,20 @@ await step("market: search, open a state, a thin one says Not enough data, every
   await p.locator("main").getByText("Not enough data.").first().waitFor();
   if (await p.locator("main").getByText("openings a month", { exact: true }).count()) throw new Error("a thin place shows a figure");
   await shot("market");
+  // "Show all of India" goes away once India shows, so focus lands on the panel's heading, never the page.
+  await p.getByRole("link", { name: "Show all of India" }).focus();
+  await p.keyboard.press("Enter");
+  await p.waitForURL(/place=IN&/, { timeout: 15000 });
+  await p.waitForFunction(() => document.activeElement?.textContent === "India · Machine Learning Engineer", null, { timeout: 10000 });
+  // "Skip the map" takes keyboard users past the 36 squares to the same heading.
+  const skip = p.getByRole("link", { name: "Skip the map" });
+  await skip.focus();
+  await p.keyboard.press("Enter");
+  await p.waitForFunction(() => document.activeElement?.textContent === "India · Machine Learning Engineer", null, { timeout: 5000 });
+  // Back to the thin state for the checks below.
+  await p.locator('main a[data-state="MZ"]').click();
+  await p.waitForURL(/place=MZ&/, { timeout: 15000 });
+  await panel.waitFor();
   await a11y("market");
   // The avatar menu leads here too.
   await p.locator("header button[aria-expanded]").last().click();

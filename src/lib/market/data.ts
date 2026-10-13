@@ -1,3 +1,4 @@
+import "server-only";
 import { roleProfiles } from "@/content";
 import { market, marketStates } from "@/content/market";
 import { createMarket } from "./query";

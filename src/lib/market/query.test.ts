@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MarketRow, MarketState, MarketTable } from "@/lib/schemas";
-import { compareSentence, count, createMarket, heatRanges, heatSteps, lakh, monthLabel, trendOf } from "./query";
+import { compareSentence, count, createMarket, heatRanges, heatSteps, isExampleSource, lakh, mergeSources, middleText, monthLabel, payText, trendOf } from "./query";
 
 const states: MarketState[] = [
   { code: "KA", name: "Karnataka", col: 1, row: 5, cities: ["Bengaluru", "Mysuru"] },
@@ -37,7 +37,7 @@ describe("market cells", () => {
     const ka = market.cell("data-analyst", { kind: "state", state: "KA" });
     expect(ka.openings).toBe(30);
     expect(ka.enough).toBe(true);
-    expect(ka.bands["3-5"].pay).toEqual({ p25: 8, median: 10, p75: 12 });
+    expect(ka.bands["3-5"].pay).toEqual({ p25: 8, median: 10, p75: 12, combined: false });
     // 10 openings at 0-2 years: under the line, so no pay for that band.
     expect(ka.bands["0-2"]).toEqual({ openings: 10, enough: false, pay: null });
     expect(ka.sources).toEqual(["Example data"]);
@@ -48,7 +48,8 @@ describe("market cells", () => {
     expect(market.cell("data-analyst", { kind: "state", state: "MZ" }).enough).toBe(false);
     expect(market.cell("data-analyst", { kind: "city", state: "KA", city: "Mysuru" }).enough).toBe(false);
     const none = market.cell("ui-ux-designer", { kind: "india" });
-    expect([none.openings, none.enough, none.sources]).toEqual([0, false, []]);
+    // An empty cell names the table's sources rather than defaulting to example data.
+    expect([none.openings, none.enough, none.sources]).toEqual([0, false, ["Example data"]]);
   });
 
   it("combines India from the state rows, never adding city rows on top, with pay weighted by openings", () => {
@@ -58,6 +59,18 @@ describe("market cells", () => {
     expect(pay.median).toBeCloseTo(10);
     const mixed = createMarket({ latestMonth: "2026-09", rows: [r({}), r({ state: "MZ", openings: 60, payP25: 16, payMedian: 20, payP75: 24 })] }, states);
     expect(mixed.cell("data-analyst", { kind: "india" }).bands["3-5"].pay!.median).toBeCloseTo((20 * 10 + 60 * 20) / 80);
+  });
+
+  it("needs 15 openings that carry pay before it shows pay, and says when pay is combined", () => {
+    const thinPay = createMarket(
+      { latestMonth: "2026-09", rows: [r({ openings: 3 }), r({ state: "MZ", openings: 20, payP25: null, payMedian: null, payP75: null })] },
+      states,
+    );
+    const band = thinPay.cell("data-analyst", { kind: "india" }).bands["3-5"];
+    expect([band.openings, band.enough, band.pay]).toEqual([23, true, null]);
+    const both = createMarket({ latestMonth: "2026-09", rows: [r({}), r({ state: "MZ", openings: 20 })] }, states);
+    expect(both.cell("data-analyst", { kind: "india" }).bands["3-5"].pay!.combined).toBe(true);
+    expect(both.cell("data-analyst", { kind: "state", state: "KA" }).bands["3-5"].pay!.combined).toBe(false);
   });
 
   it("colours the map by openings or by the median at 3-5 years, null where data is thin", () => {
@@ -73,6 +86,11 @@ describe("market cells", () => {
       ["Mysuru", false],
     ]);
     expect(market.topCities("data-analyst", { kind: "india" }).map((x) => x.city)).toEqual(["Bengaluru"]);
+  });
+
+  it("puts thin cities last by name, so their hidden counts don't show through the order", () => {
+    const m = createMarket({ latestMonth: "2026-09", rows: [r({ city: "Mysuru", openings: 9 }), r({ city: "Bengaluru", openings: 2 })] }, states);
+    expect(m.topCities("data-analyst", { kind: "state", state: "KA" }, { keepThin: true }).map((x) => x.city)).toEqual(["Bengaluru", "Mysuru"]);
   });
 
   it("reads a city's trend from its state", () => {
@@ -110,13 +128,29 @@ describe("heat steps", () => {
 });
 
 describe("words", () => {
+  it("says example only when every source is the example, and merges two cards' sources", () => {
+    expect(isExampleSource({ sources: ["Example data"], month: "2026-09" })).toBe(true);
+    expect(isExampleSource({ sources: [], month: "2026-09" })).toBe(false);
+    expect(isExampleSource({ sources: ["Example data", "Licensed feed"], month: "2026-09" })).toBe(false);
+    expect(mergeSources({ sources: ["Example data"], month: "2026-08" }, { sources: ["Licensed feed", "Example data"], month: "2026-09" })).toEqual({
+      sources: ["Example data", "Licensed feed"],
+      month: "2026-09",
+    });
+  });
+
+  it("says about for combined pay", () => {
+    expect(payText({ median: 7.24, combined: true })).toBe("about ₹7.2 L");
+    expect(payText({ median: 7.24, combined: false })).toBe("₹7.2 L");
+    expect(middleText({ p25: 5.7, median: 7, p75: 9, combined: true })).toBe("about ₹5.7 L to ₹9.0 L");
+  });
+
   it("formats pay, counts and months", () => {
     expect([lakh(6.54), lakh(14.4), count(12345), monthLabel("2026-09")]).toEqual(["₹6.5 L", "₹14 L", "12,345", "Sep 2026"]);
   });
 
   it("compares two places in one sentence, and says nothing when either is thin", () => {
     const a = { name: "Bengaluru", cell: market.cell("data-analyst", { kind: "state", state: "KA" }) };
-    const b = { name: "Pune", cell: { ...a.cell, openings: 18, bands: { ...a.cell.bands, "3-5": { openings: 18, enough: true, pay: { p25: 9, median: 11, p75: 13 } } } } };
+    const b = { name: "Pune", cell: { ...a.cell, openings: 18, bands: { ...a.cell.bands, "3-5": { openings: 18, enough: true, pay: { p25: 9, median: 11, p75: 13, combined: false } } } } };
     expect(compareSentence("Data Analyst", a, b)).toBe("For Data Analyst, Pune has 40% fewer openings than Bengaluru, and 10% higher pay at 3–5 years.");
     expect(compareSentence("Data Analyst", a, { name: "Pune", cell: a.cell })).toBe(
       "For Data Analyst, Pune has about as many openings as Bengaluru, and about the same pay at 3–5 years.",

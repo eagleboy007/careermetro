@@ -18,7 +18,11 @@ import {
  * the rows below them weighted by openings.
  */
 
-export type Pay = { p25: number; median: number; p75: number };
+/**
+ * `combined` is true when the figure merges several rows (India, or a state from its parts): then p25, median and p75
+ * are openings-weighted averages, not true percentiles, and the screen says "about".
+ */
+export type Pay = { p25: number; median: number; p75: number; combined: boolean };
 export type BandFigure = { openings: number; enough: boolean; pay: Pay | null };
 /** Where a card's figures come from: the sources' names and the month they cover. */
 export type Sourced = { sources: string[]; month: string };
@@ -27,7 +31,10 @@ export type Cell = Sourced & { openings: number; enough: boolean; bands: Record<
 /** The band the map, the state panel and the compare card use for "median pay". */
 export const PAY_BAND: MarketBand = "3-5";
 
-export const isExampleSource = (s: Sourced) => s.sources.length === 0 || s.sources.every((n) => n === EXAMPLE_SOURCE);
+export const isExampleSource = (s: Sourced) => s.sources.length > 0 && s.sources.every((n) => n === EXAMPLE_SOURCE);
+
+/** Both sides' sources together, for a card that shows two places. */
+export const mergeSources = (a: Sourced, b: Sourced): Sourced => ({ sources: [...new Set([...a.sources, ...b.sources])], month: a.month > b.month ? a.month : b.month });
 
 export type MarketData = ReturnType<typeof createMarket>;
 
@@ -45,6 +52,8 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
   const cityState = new Map(states.flatMap((s) => s.cities.map((c) => [c, s.code] as const)));
   const roles = [...new Set(table.rows.map((r) => r.role))];
   const months = [...new Set(table.rows.map((r) => r.month))].sort().slice(-12);
+  // A cell with no rows still names the table's sources, so an empty cell never reads as example data by default.
+  const tableSources = [...new Set(table.rows.map((r) => r.source))];
 
   const rowsFor = (role: string, place: MarketPlace, month: string): MarketRow[] =>
     place.kind === "india"
@@ -61,12 +70,14 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
         const paid = inBand.filter((r) => r.payMedian !== null && r.openings > 0);
         const weight = paid.reduce((s, r) => s + r.openings, 0);
         const avg = (pick: (r: MarketRow) => number | null) => paid.reduce((s, r) => s + pick(r)! * r.openings, 0) / weight;
-        const pay = enough && weight > 0 ? { p25: avg((r) => r.payP25), median: avg((r) => r.payMedian), p75: avg((r) => r.payP75) } : null;
+        // Pay needs 15 openings that carry pay, not just 15 openings in the band.
+        const pay =
+          weight >= MARKET_MIN_OPENINGS ? { p25: avg((r) => r.payP25), median: avg((r) => r.payMedian), p75: avg((r) => r.payP75), combined: paid.length > 1 } : null;
         return [band, { openings, enough, pay }];
       }),
     ) as Record<MarketBand, BandFigure>;
     const openings = rows.reduce((s, r) => s + r.openings, 0);
-    return { openings, enough: openings >= MARKET_MIN_OPENINGS, bands, sources: [...new Set(rows.map((r) => r.source))], month };
+    return { openings, enough: openings >= MARKET_MIN_OPENINGS, bands, sources: rows.length ? [...new Set(rows.map((r) => r.source))] : tableSources, month };
   }
 
   return {
@@ -100,7 +111,10 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
       return list
         .map((x) => ({ ...x, cell: cell(role, { kind: "city", state: x.state, city: x.city }) }))
         .filter((x) => keepThin || x.cell.enough)
-        .sort((a, b) => Number(b.cell.enough) - Number(a.cell.enough) || b.cell.openings - a.cell.openings || a.city.localeCompare(b.city))
+        // Thin cities go last, by name, so their hidden counts don't show through the order.
+        .sort((a, b) =>
+          a.cell.enough !== b.cell.enough ? Number(b.cell.enough) - Number(a.cell.enough) : a.cell.enough ? b.cell.openings - a.cell.openings || a.city.localeCompare(b.city) : a.city.localeCompare(b.city),
+        )
         .slice(0, limit);
     },
     /** Openings a month over the last 12 months, for India or a state (a city reads its state). */
@@ -146,6 +160,10 @@ export function heatRanges(values: (number | null)[]): ({ lo: number; hi: number
 
 /** "₹6.5 L" under ten lakh, "₹14 L" from ten up. */
 export const lakh = (v: number) => `₹${v >= 10 ? Math.round(v) : v.toFixed(1)} L`;
+/** The median in words, with "about" when it combines several rows. */
+export const payText = (p: Pick<Pay, "median" | "combined">) => `${p.combined ? "about " : ""}${lakh(p.median)}`;
+/** The middle half in words: "₹5.7 L to ₹9.0 L", with "about" when combined. */
+export const middleText = (p: Pay) => `${p.combined ? "about " : ""}${lakh(p.p25)} to ${lakh(p.p75)}`;
 export const count = (n: number) => n.toLocaleString("en-IN");
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 /** "2026-09" → "Sep 2026". */

@@ -2,11 +2,12 @@ import { ArrowRight, FlaskConical, MoveRight, TrendingDown, TrendingUp } from "l
 import Link from "next/link";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { DEFAULT_MARKET_ROLE, marketData, marketRoles } from "@/lib/market/data";
-import { compareSentence, count, heatRanges, heatSteps, lakh, monthLabel, PAY_BAND, placeName, shortMonth, type Cell, type MarketData } from "@/lib/market/query";
+import { compareSentence, count, heatRanges, heatSteps, lakh, mergeSources, middleText, monthLabel, PAY_BAND, payText, placeName, shortMonth, type Cell, type MarketData } from "@/lib/market/query";
 import { INDIA_PLACE, marketChoices, marketHref, parsePlace, placeKey, readMarketView, type MarketView as View } from "@/lib/market/view";
 import { MARKET_BAND_LABELS, MARKET_BANDS, type MarketPlace, type MarketTrend, type NearbyLines, type StateCode } from "@/lib/schemas";
 import { Card, ICON, label, NotEnough, SourceLine, Stat } from "./market-parts";
 import { MarketSearch, MarketSelect, type PickGroup } from "./market-pickers";
+import { PanelHeading } from "./panel-heading";
 import { TileMap, type Tile } from "./tile-map";
 
 const JOB_BOARD_SHAPE = "in the shape of public company job-board counts (role × place × month)";
@@ -95,7 +96,7 @@ export function MarketView({
           className="min-[960px]:col-span-2"
           source={
             <p className="font-mono text-[0.66rem] tracking-[0.04em] text-muted">
-              Source: CareerMetro role profiles{nearby.example ? " and an example resume" : " and your resume"} · {monthLabel(today.toISOString().slice(0, 7))}
+              Source: CareerMetro role profiles{nearby.nearby ? (nearby.example ? " and an example resume" : " and your resume") : ""} · {monthLabel(today.toISOString().slice(0, 7))}
             </p>
           }
         >
@@ -151,6 +152,7 @@ function MapCard({ ids, view, roleTitle, market, href, className }: { ids: strin
       source={<SourceLine of={market.cell(view.role, { kind: "india" })} shape={view.metric === "openings" ? JOB_BOARD_SHAPE : PAY_SHAPE} />}
     >
       <TileMap
+        skipTo={`${ids}-place`}
         tiles={tiles}
         selected={selected}
         metric={view.metric}
@@ -160,32 +162,31 @@ function MapCard({ ids, view, roleTitle, market, href, className }: { ids: strin
         valueName={view.metric === "openings" ? "Openings a month" : "Median pay, 3–5 yrs"}
         unit={view.metric === "openings" ? "openings a month" : "median pay at 3–5 years"}
       />
-      <PlacePanel view={view} roleTitle={roleTitle} market={market} href={href} />
+      <PlacePanel ids={ids} view={view} roleTitle={roleTitle} market={market} href={href} />
     </Card>
   );
 }
 
 /** The picked place: its figures, and for a state (or a city's state) its top roles and top cities. */
-function PlacePanel({ view, roleTitle, market, href }: { view: View; roleTitle: string; market: MarketData; href: (p: Partial<View>) => string }) {
+function PlacePanel({ ids, view, roleTitle, market, href }: { ids: string; view: View; roleTitle: string; market: MarketData; href: (p: Partial<View>) => string }) {
   const cell = market.cell(view.role, view.place);
   const pay = cell.bands[PAY_BAND].pay;
   const state = view.place.kind === "india" ? null : market.state(view.place.state);
   return (
-    <div aria-live="polite" className="flex flex-col gap-3 rounded-md bg-surface-2 px-4 py-3.5">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="text-[1.05rem] font-semibold tracking-[-0.01em]">
-          {placeName(view.place, market)} · {roleTitle}
-        </h3>
-        {view.place.kind !== "india" && (
-          <Link href={href({ place: { kind: "india" } })} scroll={false} className="ml-auto inline-flex min-h-11 items-center text-[0.82rem] font-[550] text-muted underline-offset-2 hover:text-ink hover:underline">
-            Show all of India
-          </Link>
-        )}
-      </div>
+    <div className="flex flex-col gap-3 rounded-md bg-surface-2 px-4 py-3.5">
+      <PanelHeading
+        id={`${ids}-place`}
+        title={`${placeName(view.place, market)} · ${roleTitle}`}
+        backHref={view.place.kind === "india" ? null : href({ place: { kind: "india" } })}
+      />
+      {/* One sentence for screen readers when the place or role changes, instead of reading the whole panel. */}
+      <p role="status" className="sr-only">
+        {placeName(view.place, market)}, {roleTitle}: {cell.enough ? `${count(cell.openings)} openings a month` : "Not enough data"}
+      </p>
       {cell.enough ? (
         <div className="grid grid-cols-2 gap-2.5">
           <Stat value={count(cell.openings)}>openings a month</Stat>
-          <Stat value={pay ? lakh(pay.median) : "Not enough data"}>median pay, 3–5 yrs</Stat>
+          <Stat value={pay ? payText(pay) : "Not enough data"}>median pay, 3–5 yrs</Stat>
         </div>
       ) : (
         <NotEnough />
@@ -318,7 +319,7 @@ function PayCard({ ids, cell, where }: { ids: string; cell: Cell; where: string 
                         <i className="absolute -inset-y-1 -ml-[1.5px] w-[3px] rounded-[2px] bg-ink" style={{ left: `${(pay.median / max) * 100}%` }} />
                       </div>
                       <p className="col-start-2 text-[0.78rem] text-muted">
-                        <b className="font-semibold tabular-nums text-ink">{lakh(pay.median)}</b> median · {lakh(pay.p25)} to {lakh(pay.p75)}
+                        <b className="font-semibold tabular-nums text-ink">{payText(pay)}</b> median · {middleText(pay)}
                       </p>
                     </>
                   ) : (
@@ -328,7 +329,7 @@ function PayCard({ ids, cell, where }: { ids: string; cell: Cell; where: string 
               );
             })}
           </ul>
-          <p className="text-[0.78rem] text-muted">Bar: middle half of offers. Tick: median. Per year, before tax.</p>
+          <p className="text-[0.78rem] text-muted">Bar: middle half of offers. Tick: median. Per year, before tax. &quot;About&quot; means the figure combines several places.</p>
         </>
       ) : (
         <NotEnough />
@@ -358,7 +359,7 @@ function CitiesCard({ ids, view, market }: { ids: string; view: View; market: Ma
                 <span className="font-mono text-[0.72rem] text-muted">{i + 1}</span>
                 <b className={on ? "font-bold" : "font-semibold"}>{x.city}</b>
                 <span className="text-right text-[0.78rem] tabular-nums text-muted">
-                  {count(x.cell.openings)} a month{pay ? ` · ${lakh(pay.median)}` : ""}
+                  {count(x.cell.openings)} a month{pay ? ` · ${payText(pay)}` : ""}
                 </span>
                 <i aria-hidden="true" className="col-span-2 col-start-2 block h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <i className="block h-full rounded-full bg-ink/55" style={{ width: `${Math.round((x.cell.openings / most) * 100)}%` }} />
@@ -389,10 +390,11 @@ function CompareCard({
   groups: { a: PickGroup[]; b: PickGroup[] };
   href: (p: Partial<View>) => string;
 }) {
-  const sides = [view.a, view.b].map((p) => ({ place: p, name: placeName(p, market), cell: market.cell(view.role, p) }));
+  // A state says so, so Chandigarh the state and Chandigarh the city never read the same.
+  const sides = [view.a, view.b].map((p) => ({ place: p, name: placeName(p, market) + (p.kind === "state" ? " (state)" : ""), cell: market.cell(view.role, p) }));
   const sentence = compareSentence(roleTitle, sides[0]!, sides[1]!);
   return (
-    <Card id={`${ids}-compare`} title="Compare two places" note={<span className={label}>Planning a move?</span>} source={<SourceLine of={sides[0]!.cell.sources.length ? sides[0]!.cell : sides[1]!.cell} shape={JOB_BOARD_SHAPE} />}>
+    <Card id={`${ids}-compare`} title="Compare two places" note={<span className={label}>Planning a move?</span>} source={<SourceLine of={mergeSources(sides[0]!.cell, sides[1]!.cell)} shape={JOB_BOARD_SHAPE} />}>
       <div className="grid grid-cols-2 gap-3">
         <MarketSelect label="First place" value={href({})} groups={groups.a} />
         <MarketSelect label="Second place" value={href({})} groups={groups.b} />
@@ -408,9 +410,9 @@ function CompareCard({
                 <dl className="flex flex-col text-[0.84rem]">
                   {[
                     ["Openings", `${count(s.cell.openings)} a month`],
-                    ["Median, 3–5 yrs", mid ? lakh(mid.median) : "Not enough data"],
-                    ["Middle half, 3–5 yrs", mid ? `${lakh(mid.p25)} to ${lakh(mid.p75)}` : "Not enough data"],
-                    ["Median, 0–2 yrs", junior ? lakh(junior.median) : "Not enough data"],
+                    ["Median, 3–5 yrs", mid ? payText(mid) : "Not enough data"],
+                    ["Middle half, 3–5 yrs", mid ? middleText(mid) : "Not enough data"],
+                    ["Median, 0–2 yrs", junior ? payText(junior) : "Not enough data"],
                   ].map(([k, v]) => (
                     <div key={k} className="flex flex-col gap-0.5 border-t border-line py-1.5">
                       <dt className="text-muted">{k}</dt>

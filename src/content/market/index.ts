@@ -1,3 +1,4 @@
+import "server-only";
 import { marketTable, type MarketTable } from "@/lib/schemas";
 import { exampleMarketTable } from "./example";
 

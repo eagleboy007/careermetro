@@ -29,6 +29,7 @@ export function TileMap({
   rangeText,
   valueName,
   unit,
+  skipTo,
 }: {
   tiles: Tile[];
   selected: string | null;
@@ -40,6 +41,8 @@ export function TileMap({
   valueName: string;
   /** Said after the figure: "openings a month" or "median pay at 3–5 years". */
   unit: string;
+  /** The id "Skip the map" moves to: the place panel's heading. */
+  skipTo: string;
 }) {
   const said = (t: Tile) => (t.figure === null ? "Not enough data" : `${t.figure} ${unit}`);
   const at = new Map(tiles.map((t) => [`${t.state.col},${t.state.row}`, t]));
@@ -59,6 +62,12 @@ export function TileMap({
         ))}
       </div>
 
+      <a
+        href={`#${skipTo}`}
+        className="sr-only self-start rounded-full bg-surface-2 px-3.5 text-[0.82rem] font-[550] focus:not-sr-only focus:inline-flex focus:min-h-11 focus:items-center"
+      >
+        Skip the map
+      </a>
       <div role="group" aria-label="States of India, one square each. Pick a state." className="mx-auto grid w-full max-w-[460px] grid-cols-9 gap-1 min-[480px]:gap-[5px]">
         {Array.from({ length: 7 * 9 }, (_, i) => {
           const t = at.get(`${i % 9},${Math.floor(i / 9)}`);
@@ -73,7 +82,7 @@ export function TileMap({
               title={`${t.state.name} · ${said(t)}`}
               data-state={t.state.code}
               className={`flex aspect-square min-w-0 flex-col items-center justify-center rounded-[7px] font-mono text-[0.62rem] font-medium leading-[1.1] tracking-[0.02em] transition-transform hover:-translate-y-px min-[480px]:rounded-[9px] min-[480px]:text-[0.7rem] ${
-                t.step ? STEP[t.step] : "border-[1.5px] border-dashed border-line text-muted"
+                t.step ? STEP[t.step] : "border-[1.5px] border-dashed border-muted text-muted"
               } ${on ? "ring-2 ring-ink ring-offset-2 ring-offset-surface" : ""}`}
             >
               {/* The name starts with the code it shows (WCAG 2.5.3), then says the state and its figure in words. */}
@@ -83,7 +92,7 @@ export function TileMap({
               </small>
               <span className="sr-only">
                 {" "}
-                · {t.state.name}: {said(t)}
+                {t.short} · {t.state.name}: {said(t)}
               </span>
             </Link>
           );
@@ -100,7 +109,7 @@ export function TileMap({
           ) : null,
         )}
         <li className="inline-flex items-center gap-1.5">
-          <i aria-hidden="true" className="inline-block size-3.5 rounded-[4px] border-[1.5px] border-dashed border-line" />
+          <i aria-hidden="true" className="inline-block size-3.5 rounded-[4px] border-[1.5px] border-dashed border-muted" />
           Not enough data
         </li>
       </ul>

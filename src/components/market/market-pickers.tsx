@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useId, useState, useTransition, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent } from "react";
 import { searchMarket, type MarketChoice } from "@/lib/market/search";
 
 /*
@@ -24,16 +24,59 @@ function useGo() {
 export type PickOption = { label: string; href: string };
 export type PickGroup = { label: string; options: PickOption[] };
 
-/** A labelled select whose options are addresses: picking one shows it. */
+/** How long a run of arrow or type-ahead steps must pause before the select's choice counts as made. */
+const KEY_SETTLE_MS = 700;
+
+/**
+ * A labelled select whose options are addresses: picking one shows it. A pick with the pointer (or from the open
+ * list) goes at once. Arrow keys and type-ahead on a closed select change it one step at a time, so those wait until
+ * Enter, leaving the select, or a short pause, instead of loading the page for every step. The select keeps showing
+ * the person's choice while the new figures load.
+ */
 export function MarketSelect({ label, value, options, groups = [], className = "" }: { label: string; value: string; options?: PickOption[]; groups?: PickGroup[]; className?: string }) {
   const { go, pending } = useGo();
   const id = useId();
+  const [local, setLocal] = useState(value);
+  const [seen, setSeen] = useState(value);
+  const lastKey = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // The address changed (this pick landed, or something else moved): show what the server says.
+  if (value !== seen) {
+    setSeen(value);
+    setLocal(value);
+  }
+  useEffect(() => () => clearTimeout(timer.current), []);
+  // The last address this select asked for, so leaving it after a pick doesn't ask again.
+  const sent = useRef<string | null>(null);
+  const commit = (next: string) => {
+    clearTimeout(timer.current);
+    if (next === value || next === sent.current) return;
+    sent.current = next;
+    go(next);
+  };
   return (
     <div className={`flex min-w-0 flex-col gap-1 ${className}`}>
       <label htmlFor={id} className="font-mono text-[0.68rem] uppercase tracking-[0.06em] text-muted">
         {label}
       </label>
-      <select id={id} value={value} aria-busy={pending || undefined} onChange={(e) => go(e.target.value)} className={`${field} cursor-pointer`}>
+      <select
+        id={id}
+        value={local}
+        aria-busy={pending || undefined}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") commit(local);
+          else lastKey.current = Date.now();
+        }}
+        onChange={(e) => {
+          const next = e.target.value;
+          setLocal(next);
+          clearTimeout(timer.current);
+          if (Date.now() - lastKey.current < 100) timer.current = setTimeout(() => commit(next), KEY_SETTLE_MS);
+          else commit(next);
+        }}
+        onBlur={() => commit(local)}
+        className={`${field} cursor-pointer`}
+      >
         {options?.map((o) => (
           <option key={o.href} value={o.href}>
             {o.label}
