@@ -77,6 +77,8 @@ jobs:
           ANTHROPIC_BASE_URL: http://127.0.0.1:4011
           # next start runs as production, where a shared phone needs its own key (corporate build step 6). Test-only value.
           PHONE_KEY: e2e-only-phone-key
+          # Find people's opaque ids need their own key in production too, never CRON_SECRET (pending item 19). Test-only value.
+          FIND_REF_KEY: e2e-only-find-ref-key
           # The walk calls the daily clean-up the way Vercel Cron does (corporate build step 7). Test-only value.
           CRON_SECRET: e2e-only-cron-secret
           BASE: http://localhost:3211

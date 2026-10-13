@@ -64,3 +64,17 @@ export function phoneKeySecret(env: Env = process.env): string | null {
   if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
   return `phone|${legacy(env)}`;
 }
+
+/**
+ * The secret that seals a person's id into the opaque, per-company ref a company sees in search results (pending item
+ * 19, dev/companies-find-me-plan.md). A guessable key would let a company read internal ids back, so in production there
+ * is no built-in fallback: FIND_REF_KEY, else NAME_HASH_KEY; with neither, search is off. CRON_SECRET is never used:
+ * it travels in request headers and is shared with the scheduler. Elsewhere (local, tests, previews) it falls back to
+ * a fixed development-only key. Rotating it only changes refs, which live one page.
+ */
+export function findRefSecret(env: Env = process.env): string | null {
+  const key = env.FIND_REF_KEY || env.NAME_HASH_KEY;
+  if (key) return `find-ref|${key}`;
+  if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
+  return "find-ref|local-development-only";
+}

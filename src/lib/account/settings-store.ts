@@ -1,11 +1,11 @@
 import "server-only";
-import { and, eq, gt, lt, ne, sql } from "drizzle-orm";
+import { and, eq, gt, isNull, lt, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
-import { blocks, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
+import { blocks, consents, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { DEFAULT_SETTINGS, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
-import { USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
+import { FIND_CONSENT_PURPOSE, FIND_POLICY_VERSION, USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { normalUsername, USERNAME_MESSAGES, usernameProblem } from "./username";
 
@@ -38,6 +38,7 @@ const settingsColumns = {
   showSkills: userSettings.showSkills,
   showGaps: userSettings.showGaps,
   showCertifications: userSettings.showCertifications,
+  companiesCanFind: userSettings.companiesCanFind,
   rideReminder: userSettings.rideReminder,
   emailCompanyMessages: userSettings.emailCompanyMessages,
   emailWeeklySummary: userSettings.emailWeeklySummary,
@@ -154,6 +155,18 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
       }
 
       const { visibility, ...rest } = input.settings;
+      // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
+      // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
+      // both see the switch off and record two consents, or both see it on and withdraw none.
+      const [was] = await tx.select({ on: userSettings.companiesCanFind }).from(userSettings).where(eq(userSettings.userId, userId)).for("update");
+      const wasOn = was?.on ?? false;
+      if (rest.companiesCanFind && !wasOn)
+        await tx.insert(consents).values({ userId, purpose: FIND_CONSENT_PURPOSE, policyVersion: FIND_POLICY_VERSION, givenAt: now });
+      if (!rest.companiesCanFind && wasOn)
+        await tx
+          .update(consents)
+          .set({ withdrawnAt: now })
+          .where(and(eq(consents.userId, userId), eq(consents.purpose, FIND_CONSENT_PURPOSE), isNull(consents.withdrawnAt)));
       const row = { profileVisibility: visibility, ...rest, updatedAt: now };
       await tx.insert(userSettings).values({ userId, ...row }).onConflictDoUpdate({ target: userSettings.userId, set: row });
       return { ok: true } as const;

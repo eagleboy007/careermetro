@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CalendarClock, CalendarPlus, HelpCircle, LayoutGrid, Send, Users } from "lucide-react";
+import { ArrowLeft, CalendarClock, CalendarPlus, HelpCircle, LayoutGrid, Send, UserSearch, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
@@ -40,7 +40,16 @@ const STATE_TEXT: Record<Exclude<CompanyChatState, "open">, string> = {
   not_allowed: "Only Recruiter admins, and Hiring HR on this job, can message its candidates.",
   suspended: "Your company's messages are paused while we review it.",
   closed: "This chat is closed. Chats close 30 days after an application does.",
+  waiting: "Your message request is waiting for them to accept. You can write more once they do.",
 };
+
+/** A found chat's closed line: it closes only when the person blocks the company. */
+const FOUND_CLOSED = "This chat is closed.";
+
+/** The address of a chat in Corporate Messages: an application's, or a found chat's (pending item 19). */
+export const chatHref = (c: { applicationId: string; found?: string }) =>
+  c.found ? `/corporate/messages?found=${c.found}` : `/corporate/messages?application=${c.applicationId}`;
+const chatKey = (c: { applicationId: string; found?: string }) => c.found ?? c.applicationId;
 
 export function CompanyMessages({
   view,
@@ -78,7 +87,7 @@ export function CompanyMessages({
           <OrgStatusBadge status={view.status} />
         </div>
         <p className="max-w-[680px] text-[0.9rem] text-muted">
-          Chats with people who applied to your jobs. They belong to the company: Recruiter admins and each job&apos;s team read them, and the candidate sees
+          Chats with people who applied to your jobs, and with people you found who accepted your message request. They belong to the company: Recruiter admins and each job&apos;s team read them, and the candidate sees
           each sender&apos;s name and {view.company}. Your personal Inbox stays separate.
         </p>
       </div>
@@ -95,10 +104,10 @@ export function CompanyMessages({
           ) : (
             <ul className="flex flex-col gap-0.5 p-2">
               {view.items.map((item) => (
-                <li key={item.applicationId}>
+                <li key={chatKey(item)}>
                   <Link
-                    href={`/corporate/messages?application=${item.applicationId}`}
-                    aria-current={chat?.applicationId === item.applicationId ? "page" : undefined}
+                    href={chatHref(item)}
+                    aria-current={chat && chatKey(chat) === chatKey(item) ? "page" : undefined}
                     className="grid min-h-11 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2.5 rounded-md p-2.5 hover:bg-surface-2 aria-[current=page]:bg-surface-2"
                   >
                     <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-2 font-mono text-[0.74rem] font-medium">
@@ -107,6 +116,7 @@ export function CompanyMessages({
                     <span className="min-w-0">
                       <b className="block text-[0.88rem] font-semibold leading-[1.25] [overflow-wrap:anywhere]">{item.name}</b>
                       <small className="block truncate text-[0.76rem] text-muted">
+                        {item.found ? "Found · " : ""}
                         {item.job} · {item.preview}
                       </small>
                     </span>
@@ -127,7 +137,7 @@ export function CompanyMessages({
         </nav>
 
         {chat ? (
-          <CompanyChat key={chat.applicationId} chat={chat} company={view.company} actions={actions} />
+          <CompanyChat key={chatKey(chat)} chat={chat} company={view.company} actions={actions} />
         ) : chatError ? (
           <section aria-label="Chat" className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
             <Link href="/corporate/messages" className="inline-flex min-h-11 items-center gap-1.5 self-start text-[0.86rem] text-muted hover:text-ink min-[760px]:hidden">
@@ -160,11 +170,12 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
   const messages = [...chat.messages, ...sent];
   // Read out politely to screen readers: "Sent." after a send, and a message that arrives with the 30-second check.
   const [heard, setHeard] = useState("");
-  const [seen, setSeen] = useState({ id: chat.applicationId, count: chat.messages.length });
-  if (seen.id !== chat.applicationId || seen.count !== chat.messages.length) {
+  const key = chatKey(chat);
+  const [seen, setSeen] = useState({ id: key, count: chat.messages.length });
+  if (seen.id !== key || seen.count !== chat.messages.length) {
     const last = chat.messages.at(-1);
-    if (seen.id === chat.applicationId && chat.messages.length > seen.count && last && (last.by === "team" || last.by === "candidate")) setHeard(`New message from ${last.who}`);
-    setSeen({ id: chat.applicationId, count: chat.messages.length });
+    if (seen.id === key && chat.messages.length > seen.count && last && (last.by === "team" || last.by === "candidate")) setHeard(`New message from ${last.who}`);
+    setSeen({ id: key, count: chat.messages.length });
   }
 
   useEffect(() => {
@@ -189,7 +200,11 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
       return;
     }
     start(async () => {
-      const problem = await actions.send(chat.applicationId, text, question);
+      const problem = chat.found
+        ? actions.sendFound
+          ? await actions.sendFound(chat.found, text)
+          : "Example chat. Nothing is sent here."
+        : await actions.send(chat.applicationId, text, question);
       if (problem) {
         setError(problem);
         draftRef.current?.focus();
@@ -227,18 +242,27 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
             {chat.candidate}
           </h2>
           <small className="block text-[0.78rem] text-muted [overflow-wrap:anywhere]">
-            {chat.job} · {APPLICATION_STAGE_LABELS[chat.stage]}
+            {chat.job} · {chat.stage ? APPLICATION_STAGE_LABELS[chat.stage] : "found in a search"}
           </small>
         </div>
-        <Link href={`/corporate/jobs/board?id=${chat.jobId}`} className={`${actionBtn} max-[519px]:basis-full`}>
-          <LayoutGrid {...ICON} />
-          Open board
-        </Link>
+        {chat.found ? (
+          chat.jobId && (
+            <Link href={`/corporate/people?job=${chat.jobId}`} className={`${actionBtn} max-[519px]:basis-full`}>
+              <UserSearch {...ICON} />
+              Find people
+            </Link>
+          )
+        ) : (
+          <Link href={`/corporate/jobs/board?id=${chat.jobId}`} className={`${actionBtn} max-[519px]:basis-full`}>
+            <LayoutGrid {...ICON} />
+            Open board
+          </Link>
+        )}
       </div>
       <p className="mx-3 mt-3 flex items-start gap-2 rounded-md bg-surface-2 px-3 py-2 text-[0.8rem] text-muted min-[760px]:mx-4">
         <Users {...ICON} className="mt-0.5 shrink-0" />
         <span>
-          Shared with {company}&apos;s Recruiter admins and this job&apos;s team. {firstName(chat.candidate)} sees each sender&apos;s name and {company}, never your email
+          Shared with {company}&apos;s Recruiter admins and this job&apos;s {chat.found ? "Hiring HR" : "team"}. {firstName(chat.candidate)} sees each sender&apos;s name and {company}, never your email
           or phone.
         </span>
       </p>
@@ -295,7 +319,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
       </p>
       <div className="flex flex-col gap-2 border-t border-line px-3 py-2.5">
         {chat.state !== "open" ? (
-          <p className="py-1.5 text-[0.84rem] text-muted">{STATE_TEXT[chat.state]}</p>
+          <p className="py-1.5 text-[0.84rem] text-muted">{chat.found && chat.state === "closed" ? FOUND_CLOSED : STATE_TEXT[chat.state]}</p>
         ) : (
           <form
             className="flex flex-col gap-2"
@@ -304,6 +328,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
               send();
             }}
           >
+            {!chat.found && (
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
@@ -327,6 +352,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
                 {question ? "Your next message goes as a question. Keep it about the job." : chat.canAskTimes ? "They pick slots; you see only the times they pick." : ""}
               </span>
             </div>
+            )}
             {error && (
               <p id={`${ids}-error`} role="alert" className="text-[0.84rem] font-medium">
                 {error}

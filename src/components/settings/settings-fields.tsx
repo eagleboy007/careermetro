@@ -117,10 +117,23 @@ export function PrivacyFields() {
           </Switch>
         ))}
       </fieldset>
+      <fieldset className="flex min-w-0 flex-col" disabled={!editable}>
+        <legend className="mb-1 text-[0.82rem] font-semibold">Companies</legend>
+        <Switch
+          checked={s.companiesCanFind}
+          onChange={(on) => setSetting("companiesCanFind", on)}
+          disabled={!editable}
+          hint="Verified companies can find you when they search from one of their open jobs. They see the parts of your profile switched on above, never your gaps, and how your skills match that job, which shows even with Skills off. Never your email, phone, pay, notice period or resume. They can only send you a message request, which you accept or delete. Off by default; turning it off takes you out of their searches at once."
+        >
+          Let companies find me
+        </Switch>
+      </fieldset>
       <FieldError id="acc-settings-error" message={errors.settings} />
       <PrivacyLine>Email, phone, pay, notice period and lines from your resume are never on your profile, whatever you choose here.</PrivacyLine>
       <PrivacyLine>
-        Companies can&apos;t search for people on CareerMetro. They see only the applications you send them, and only what each one shares.
+        {s.companiesCanFind
+          ? "Companies you block never find you, and every search and profile view by a company is recorded."
+          : "Companies can't find you. They see only the applications you send them, and only what each one shares."}
       </PrivacyLine>
     </>
   );

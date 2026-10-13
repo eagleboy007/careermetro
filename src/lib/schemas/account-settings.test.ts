@@ -44,4 +44,12 @@ describe("account settings schemas", () => {
     expect(DEFAULT_SETTINGS.showGaps).toBe(false);
     expect(userSettings.parse(DEFAULT_SETTINGS)).toEqual(DEFAULT_SETTINGS);
   });
+
+  it("keep companies out until the person lets them find them (pending item 19)", () => {
+    expect(DEFAULT_SETTINGS.companiesCanFind).toBe(false);
+    expect(userSettings.safeParse({ ...DEFAULT_SETTINGS, companiesCanFind: "on" }).success).toBe(false);
+    const without: Partial<typeof DEFAULT_SETTINGS> = { ...DEFAULT_SETTINGS };
+    delete without.companiesCanFind;
+    expect(userSettings.safeParse(without).success).toBe(false);
+  });
 });

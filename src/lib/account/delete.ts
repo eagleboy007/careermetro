@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, gte, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { auditLogs, consents, users, waitlistEntries } from "@/db/schema";
+import { purgeFoundChats } from "@/lib/corporate/find-store";
 import { keepCompanyMessages, removeEmptyChats } from "@/lib/inbox/store";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -73,6 +74,8 @@ export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): 
           .for("update");
         if (!still) return;
         await keepCompanyMessages(tx, user.id);
+        // Let companies find me: chats companies started with this person go; their own messages in a company's found chats stay as the company's.
+        await purgeFoundChats(tx, user.id);
         const gone = await tx
           .delete(users)
           .where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))))

@@ -195,6 +195,10 @@ export const COMPANY_AUDIT_ACTIONS = [
   "interview_accepted",
   "interview_declined",
   "feedback_saved",
+  // Let companies find me (dev/companies-find-me-plan.md): each with the job searched from as its target.
+  "people_searched",
+  "found_profile_viewed",
+  "found_request_sent",
 ] as const;
 export type CompanyAuditAction = (typeof COMPANY_AUDIT_ACTIONS)[number];
 export const COMPANY_AUDIT_LABELS: Record<CompanyAuditAction, string> = {
@@ -223,6 +227,9 @@ export const COMPANY_AUDIT_LABELS: Record<CompanyAuditAction, string> = {
   interview_accepted: "Accepted an interview",
   interview_declined: "Declined an interview",
   feedback_saved: "Saved interview feedback",
+  people_searched: "Searched for people from a job",
+  found_profile_viewed: "Opened a profile found in a search",
+  found_request_sent: "Sent a message request to someone found in a search",
 };
 /** Audit lines on one page of the company's audit view. */
 export const AUDIT_PAGE_SIZE = 50;
@@ -251,3 +258,26 @@ export const PROFILE_VISIBILITY_LABELS: Record<(typeof PROFILE_VISIBILITIES)[num
 };
 /** When the ride reminder would go out, India time, once email is on (pending item 21). */
 export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as const;
+
+/* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
+
+/** Experience bands a company can filter a search by, in years, from the confirmed profile. */
+export const FIND_BANDS = ["0-2", "2-5", "5-10", "10+"] as const;
+export const FIND_BAND_LABELS: Record<(typeof FIND_BANDS)[number], string> = {
+  "0-2": "Up to 2 years",
+  "2-5": "2 to 5 years",
+  "5-10": "5 to 10 years",
+  "10+": "10 years or more",
+};
+/** People on one page of results. */
+export const FIND_PAGE_SIZE = 20;
+/** Pages a search can reach: 50 pages of 20, enough for the beta. */
+export const FIND_PAGES_MAX = 50;
+/** Opted-in people read per search, before ranking (a database-side ranking replaces this before the beta outgrows it). */
+export const FIND_SCAN_MAX = 2000;
+/** How long the person sees which companies opened their profile; older views are deleted by the daily clean-up. */
+export const FIND_VIEWS_KEEP_DAYS = 30;
+/** The consent row's purpose while the switch is on (withdrawn when it goes off). */
+export const FIND_CONSENT_PURPOSE = "company_discovery";
+/** The wording the "Let companies find me" consent was given under (Settings > Privacy). */
+export const FIND_POLICY_VERSION = "2026-10-draft";

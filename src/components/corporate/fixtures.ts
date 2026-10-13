@@ -1,5 +1,8 @@
 import type { CompanyAuditView, CompanyInterviewsView, CompanyOverviewView, SchedulerView } from "@/lib/corporate/types";
+import type { FindPeopleView, FoundPersonView } from "@/lib/corporate/find-types";
 import type { InboxMessage } from "@/lib/inbox/types";
+import { exampleMe } from "@/lib/me/fixtures";
+import { publicProfile } from "@/lib/me/public";
 import type { CandidateView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
 
 /** Made-up company and people for /design and the example preview. No real company or person. */
@@ -377,5 +380,84 @@ export const exampleAudit: CompanyAuditView = {
     { id: "l5", at: "12 Oct 2026, 18:20", who: { kind: "member", name: "Meera Iyer", role: "admin" }, action: "Removed a role", on: { kind: "member", name: "Farhan Shaikh", role: "hiring" } },
     { id: "l6", at: "12 Oct 2026, 10:02", who: { kind: "member", name: "Meera Iyer", role: "admin" }, action: "Gave a role by work email", on: { kind: "invite", role: "interviewer", domain: "example-labs.test" } },
     { id: "l7", at: "12 Oct 2026, 09:58", who: { kind: "former" }, action: "Opened a job", on: { kind: "job", ref: "5c0e7a11", title: "SOC Analyst L1" } },
+  ],
+};
+
+/* Find people (pending item 19): example data for the preview and /design. Refs are made up, never real ones. */
+
+const exampleRef = (n: number) => `ExampleRef${String(n).padStart(2, "0")}`.padEnd(59, "x");
+
+export const exampleFindPeople: FindPeopleView = {
+  company: "Example Labs",
+  status: "verified",
+  role: "admin",
+  refusal: null,
+  jobs: [
+    { id: "00000000-0000-4000-8000-0000000000b1", title: "SOC Analyst L1", city: "Pune" },
+    { id: "00000000-0000-4000-8000-0000000000b2", title: "Cloud Support Associate", city: "Bengaluru" },
+  ],
+  search: { jobId: "00000000-0000-4000-8000-0000000000b1", band: null, page: 1 },
+  results: {
+    total: 3,
+    hasMore: false,
+    cards: [
+      {
+        ref: exampleRef(1),
+        name: "Priya Nair",
+        headline: "IT support moving into security operations",
+        experience: "3 years 4 months",
+        match: match(["proved", "proved", "on_resume", "proved", "on_resume"]),
+        request: { state: "none" },
+      },
+      {
+        ref: exampleRef(2),
+        name: "Rohan Kulkarni",
+        headline: null,
+        experience: null,
+        match: match(["proved", "on_resume", "on_resume", "not_on_resume", "on_resume"]),
+        request: { state: "waiting", conversationId: "00000000-0000-4000-8000-0000000000c1" },
+      },
+      {
+        ref: exampleRef(3),
+        name: "Kavya Reddy",
+        headline: "Network engineer",
+        experience: "1 year 8 months",
+        match: match(["on_resume", "on_resume", "not_on_resume", "not_on_resume", "on_resume"]),
+        request: { state: "open", conversationId: "00000000-0000-4000-8000-0000000000c2" },
+      },
+    ],
+  },
+  error: null,
+  sent: [
+    { conversationId: "00000000-0000-4000-8000-0000000000c1", name: "Rohan Kulkarni", job: "SOC Analyst L1", state: "waiting", sentOn: "2026-10-12" },
+    { conversationId: "00000000-0000-4000-8000-0000000000c2", name: "Kavya Reddy", job: "SOC Analyst L1", state: "open", sentOn: "2026-10-09" },
+  ],
+};
+
+export const exampleFoundPerson: FoundPersonView = {
+  ref: exampleRef(1),
+  jobId: "00000000-0000-4000-8000-0000000000b1",
+  job: "SOC Analyst L1",
+  profile: publicProfile(
+    { ...exampleMe, name: "Priya Nair", headline: "IT support moving into security operations" },
+    { showTargetRole: true, showExperience: true, showEducation: true, showSkills: true, showCertifications: true, showGaps: false },
+  ),
+  match: exampleFindPeople.results!.cards[0].match,
+  request: { state: "none" },
+};
+
+/** An accepted found chat on the company side (pending item 19). */
+export const exampleFoundChat: CompanyChatView = {
+  applicationId: "",
+  found: "00000000-0000-4000-8000-0000000000c2",
+  jobId: "00000000-0000-4000-8000-0000000000b1",
+  job: "SOC Analyst L1",
+  candidate: "Kavya Reddy",
+  stage: null,
+  state: "open",
+  canAskTimes: false,
+  messages: [
+    { by: "me", who: "You", text: "Hello Kavya, we found you from our SOC Analyst L1 job. Are you open to a short call?", at: "Fri 16:02" },
+    { by: "candidate", who: "Kavya Reddy", text: "Yes, happy to talk. Weekday evenings suit me best.", at: "Fri 18:40" },
   ],
 };

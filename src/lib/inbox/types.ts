@@ -39,8 +39,13 @@ export type InboxThread = {
   kind: InboxKind;
   /** The company for an application, otherwise the person. */
   name: string;
-  /** Application chats: the job applied for. */
+  /** Application chats: the job applied for. Found chats: the job the company searched from. */
   job?: string;
+  /**
+   * A company that found the person in a search and sent a message request (pending item 19). It reads as a request
+   * until accepted, then as a company chat (`application` kind) that isn't about an application.
+   */
+  found?: boolean;
   /** Application chats: the company is verified now. The badge shows only then; the anti-scam line always. */
   verified?: boolean;
   /** People and requests: the status they set (Working at X, Studying and so on). */

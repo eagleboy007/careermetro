@@ -66,6 +66,9 @@ import {
   exampleCompanyMessages,
   exampleAudit,
   exampleCorporateHome,
+  exampleFindPeople,
+  exampleFoundChat,
+  exampleFoundPerson,
   exampleInterviewerOverview,
   exampleOverview,
   exampleInboxAsk,
@@ -80,6 +83,8 @@ import { InterviewsTab } from "@/components/corporate/interview-parts";
 import { CompanyInterviews, Scheduler } from "@/components/corporate/interviews-screens";
 import { ArrivalsView } from "@/components/arrivals/arrivals-view";
 import { JobBoard } from "@/components/corporate/job-board";
+import { FindPeople } from "@/components/corporate/find-people";
+import { CompanyDiscovery } from "@/components/settings/company-discovery";
 import { MatchDots, MatchList } from "@/components/corporate/match-parts";
 import { JobForm } from "@/components/corporate/job-form";
 import { JobStatusBadge, PostedJobCard } from "@/components/corporate/job-parts";
@@ -91,7 +96,7 @@ import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
 import { exampleReviewCompanies } from "@/components/admin/fixtures";
-import { exampleThreads } from "@/lib/inbox/fixtures";
+import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
@@ -610,6 +615,29 @@ export default function DesignPage() {
           <CompanyMessages view={{ ...exampleCompanyMessages, role: "interviewer", items: [] }} chat={null} />
         </div>
         <InboxView threads={exampleThreads.filter((t) => t.kind === "application")} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Find people (signed in)</h2>
+        <p className="text-sm text-muted">
+          Pending item 19: a verified company&apos;s Recruiter admins and Hiring HR search from one of their open jobs for people who turned on &ldquo;Let companies find
+          me&rdquo;, ranked by Match, proven skills first; the drawer shows the public profile parts and Match, and sends one message request. Then the refused page an
+          Interviewer sees, the person&apos;s side in Settings (companies that viewed them, blocked companies), the request and accepted chat in their Inbox, and the
+          company&apos;s found chat. Example data, so nothing sends.
+        </p>
+        <div className="rounded-lg border border-line p-4">
+          <FindPeople view={exampleFindPeople} example={exampleFoundPerson} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <FindPeople view={{ ...exampleFindPeople, role: "interviewer", refusal: "interviewer", jobs: [], search: null, results: null, sent: [] }} />
+        </div>
+        <div className="max-w-[640px] rounded-lg border border-line p-4">
+          <CompanyDiscovery data={exampleSettings.discovery} />
+        </div>
+        <InboxView threads={exampleFoundThreads} />
+        <div className="max-w-[720px]">
+          <CompanyChat chat={exampleFoundChat} company="Example Labs" />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

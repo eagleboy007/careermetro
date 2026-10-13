@@ -101,7 +101,7 @@ async function latestProfiles(resumeIds: string[], db: Db | Tx): Promise<Map<str
 }
 
 /** Skills with current accepted proof, per person. */
-async function provedByUser(userIds: string[], db: Db | Tx, now: Date): Promise<Map<string, Set<string>>> {
+export async function provedByUser(userIds: string[], db: Db | Tx, now: Date): Promise<Map<string, Set<string>>> {
   const out = new Map<string, Set<string>>(userIds.map((id) => [id, new Set()]));
   if (!userIds.length) return out;
   const rows = await db

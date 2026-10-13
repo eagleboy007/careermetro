@@ -315,10 +315,14 @@ export type WithdrawAction = (applicationId: string) => Promise<string | null>;
 
 /** One application's chat in Corporate Messages' list. The preview is the last message anyone wrote, never a system line. */
 export type CompanyChatListItem = {
+  /** Empty for a found chat. */
   applicationId: string;
+  /** A found chat's id (pending item 19): someone the company found in a search, not an application. */
+  found?: string;
   name: string;
   job: string;
-  stage: ApplicationStage;
+  /** Null for a found chat. */
+  stage: ApplicationStage | null;
   preview: string | null;
   at: string | null;
   unread: boolean;
@@ -348,15 +352,21 @@ export type CompanyChatMessage = {
  * team), `suspended` (the company isn't verified now), `closed` (30 days after the application closed, withdrawn, or
  * blocked by the candidate).
  */
-export type CompanyChatState = "open" | "read_only" | "not_allowed" | "suspended" | "closed";
+/** `waiting`: a found chat's message request the person hasn't accepted yet (pending item 19). */
+export type CompanyChatState = "open" | "read_only" | "not_allowed" | "suspended" | "closed" | "waiting";
 
 /** One application's chat on the company side. Never the candidate's email, phone, pay or notice period. */
 export type CompanyChatView = {
+  /** Empty for a found chat. */
   applicationId: string;
+  /** A found chat's id (pending item 19): the person accepted a message request after the company found them. */
+  found?: string;
+  /** Empty when a found chat's job is gone. */
   jobId: string;
   job: string;
   candidate: string;
-  stage: ApplicationStage;
+  /** Null for a found chat. */
+  stage: ApplicationStage | null;
   messages: CompanyChatMessage[];
   state: CompanyChatState;
   /** The person may "Ask for times" now (build step 6): the job team of a verified company, the application open. */
@@ -377,6 +387,8 @@ export type CompanyChatActions = {
   send: (applicationId: string, body: string, question: boolean) => Promise<string | null>;
   /** "Ask for times" (build step 6). */
   askTimes?: (applicationId: string) => Promise<string | null>;
+  /** A message in a found chat (pending item 19). */
+  sendFound?: (conversationId: string, body: string) => Promise<string | null>;
 };
 
 /* Interviews (build step 6) ----------------------------------------------------------------------------------------- */
