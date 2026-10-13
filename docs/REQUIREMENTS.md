@@ -86,6 +86,7 @@ MVP builds for the job seeker. The employer side for jobs posted on CareerMetro 
 
 ### 5.7 Job matching (MVP scope)
 - FR-24: Show which role profiles the user is ready for now, and which are within N weeks.
+- FR-24a: Nearby lines (pending item 24a, built 2026-10-13, dev/nearby-lines-plan.md): on Me and as interchange stations on the Map, the live roles that share at least half their key skills with the person (at least two, at most 4 shown), with the share ("shares 4 of its 7 key skills with you"), the skills to add and the ones only listed on the resume. Plain code over the same matcher as the Gaps page; only skills shown in work or proved count as shared. Looking only: never changes goals, gaps, the match or the train.
 - FR-25: Phase 2: connect to real listings through a licensed or partner feed.
 
 ### 5.8 Growth and content (B2C channel)

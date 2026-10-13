@@ -103,6 +103,13 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(after!.goals.every((g) => g.goalId && !g.renew)).toBe(true);
     expect(after!.goals.every((g) => g.certificates.every((c) => c.id && c.issuer))).toBe(true);
     expect(mapLine.safeParse(after).success).toBe(true);
+    // Nearby lines come from the same profile, and only an interchange that is a Nearby line is marked as one.
+    expect(after!.nearby).toBeDefined();
+    for (const o of after!.otherLines.filter((x) => x.nearby)) expect(after!.nearby!.lines.some((n) => n.slug === o.slug)).toBe(true);
+    // Reading them changes no goal.
+    const goalsBefore = await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
+    await mapLineFor(userId, db!);
+    expect(await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, userId))).toEqual(goalsBefore);
 
     const life = await lifeLineFor(userId, new Date(), db!);
     expect(lifeLine.safeParse(life).success).toBe(true);
@@ -154,5 +161,25 @@ describe("otherLines", () => {
       const other = roleProfiles.find((r) => r.slug === l.slug)!;
       expect(other.skills.some((s) => s.skillId === l.skillId && s.importance === "required")).toBe(true);
     }
+  });
+  it("puts Nearby lines first, each crossing at a goal it also needs, then fills with other roles", () => {
+    const goal = (skillId: string) => ({ skillId, name: skillId, status: "missing" as const, learnDone: false, proved: false, resources: [], practice: null });
+    const goals = ["statistics", "machine-learning", "power-bi"].map(goal);
+    const nearby = {
+      lines: [
+        { slug: "data-scientist", title: "Data Scientist", crossSkillIds: ["statistics", "machine-learning"] },
+        { slug: "business-analyst", title: "Business Analyst", crossSkillIds: ["machine-learning"] },
+        { slug: "data-engineer", title: "Data Engineer", crossSkillIds: [] },
+      ],
+    };
+    const lines = otherLines("data-analyst", goals, nearby);
+    expect(lines[0]).toEqual({ slug: "data-scientist", title: "Data Scientist", skillId: "machine-learning", nearby: true });
+    // Machine learning is taken, so Business Analyst has no free goal to cross at and the last slot goes to another role.
+    expect(lines.some((l) => l.slug === "business-analyst" && l.nearby)).toBe(false);
+    expect(lines.some((l) => l.slug === "data-engineer")).toBe(false);
+    expect(lines).toHaveLength(2);
+    expect(lines[1].nearby).toBeUndefined();
+    expect(new Set(lines.map((l) => l.skillId)).size).toBe(2);
+    expect(mapLine.shape.otherLines.safeParse(lines).success).toBe(true);
   });
 });

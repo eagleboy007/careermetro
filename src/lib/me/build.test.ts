@@ -162,8 +162,18 @@ describe("meFromProfile", () => {
     expect(me.resumeReadOn).toBeNull();
   });
 
+  it("shows the line's Nearby lines and links to the existing role picker, and nothing before there is a line", () => {
+    const nearby = { lines: [], closest: { slug: "data-engineer", title: "Data Engineer", shared: 2, total: 9 } };
+    const me = meFromProfile(input({ line: { ...exampleMapLine, resumeId: "r1", nearby } }));
+    expect(me.nearby).toEqual(nearby);
+    expect(me.changeRoleHref).toBe("/resume/r1/role");
+    const none = meFromProfile(input({}));
+    expect([none.nearby, none.changeRoleHref]).toEqual([null, null]);
+  });
+
   it("builds a valid example", () => {
     expect(meProfile.safeParse(exampleMe).success).toBe(true);
+    expect(exampleMe.nearby?.lines.length).toBeGreaterThan(0);
     expect(exampleMe.stories.some((s) => s.fromGoal)).toBe(true);
   });
 });

@@ -136,5 +136,8 @@ export function meFromProfile(input: MeInput): MeProfile {
       .slice(0, 30)
       .map((name) => ({ name: cut(name, 160), verified: false })),
     resumeReadOn: input.resumeReadAt ? monthLabel(input.resumeReadAt) : null,
+    // Read from the line, so Me and the Map always show the same Nearby lines.
+    nearby: line?.nearby ?? null,
+    changeRoleHref: line?.resumeId ? `/resume/${line.resumeId}/role` : null,
   });
 }

@@ -42,7 +42,7 @@ export const indiaToday = (now = new Date()): string => new Intl.DateTimeFormat(
  * The skills this person has current accepted proof for. Proof is per skill, so it counts for every role. A proof
  * past its expiry date no longer counts (dev/proof-plan.md rule 4).
  */
-async function provedSkills(userId: string, db: Db | Tx, today = indiaToday()): Promise<string[]> {
+export async function provedSkills(userId: string, db: Db | Tx, today = indiaToday()): Promise<string[]> {
   const rows = await db
     .selectDistinct({ skillId: gapProofs.skillId })
     .from(gapProofs)

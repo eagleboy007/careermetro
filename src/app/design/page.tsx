@@ -39,6 +39,8 @@ import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
+import { NearbyLinesList } from "@/components/nearby/nearby-lines";
+import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
@@ -399,6 +401,17 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
         <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
         <MeView me={exampleMe} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Nearby lines (Me and Map)</h2>
+        <p className="text-sm text-muted">
+          Roles sharing at least half their key skills, worked out by the matcher from a synthetic profile. On the Map each one that shares a goal is an
+          interchange station (see the Map above). Below: the empty state, with and without a closest role.
+        </p>
+        <NearbyLinesList nearby={exampleNearby} changeRoleHref="/design" />
+        <NearbyLinesList nearby={{ lines: [], closest: { slug: "data-scientist", title: "Data Scientist", shared: 2, total: 8 } }} />
+        <NearbyLinesList nearby={{ lines: [], closest: null }} />
       </section>
 
       <section className="flex flex-col gap-4">
