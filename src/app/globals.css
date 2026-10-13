@@ -29,6 +29,15 @@
   --board-good: #4cc79a;
   --board-warn: #f0b45a;
   --shadow: rgba(18, 21, 28, 0.35);
+  /* Market heat map (handoff C6): five plum steps, kept apart from cobalt (progress) and red, amber and green (gap
+     status). Steps 1 to 3 take heat-ink text, steps 4 and 5 heat-ink-strong; every pair is at least 4.5:1. */
+  --heat-1: #f7e6f0;
+  --heat-2: #efc1da;
+  --heat-3: #dc8bba;
+  --heat-4: #a84b8d;
+  --heat-5: #7f2f73;
+  --heat-ink: #2a1024;
+  --heat-ink-strong: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +61,13 @@
     --board-ink: #eceef3;
     --board-line: #1f2430;
     --shadow: rgba(0, 0, 0, 0.6);
+    --heat-1: #33202e;
+    --heat-2: #57304c;
+    --heat-3: #8a4677;
+    --heat-4: #c46aa6;
+    --heat-5: #f2a9d4;
+    --heat-ink: #f6e3ef;
+    --heat-ink-strong: #1a0c16;
     color-scheme: dark;
   }
 }
@@ -76,6 +92,13 @@
   --board-ink: #eceef3;
   --board-line: #1f2430;
   --shadow: rgba(0, 0, 0, 0.6);
+  --heat-1: #33202e;
+  --heat-2: #57304c;
+  --heat-3: #8a4677;
+  --heat-4: #c46aa6;
+  --heat-5: #f2a9d4;
+  --heat-ink: #f6e3ef;
+  --heat-ink-strong: #1a0c16;
   color-scheme: dark;
 }
 
@@ -102,6 +125,13 @@
   --color-board-good: var(--board-good);
   --color-board-warn: var(--board-warn);
   --color-shadow: var(--shadow);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+  --color-heat-5: var(--heat-5);
+  --color-heat-ink: var(--heat-ink);
+  --color-heat-ink-strong: var(--heat-ink-strong);
 
   --font-display: var(--font-bricolage), "Segoe UI", system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
