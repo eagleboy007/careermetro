@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CalendarDays, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CalendarDays, ShieldAlert, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
@@ -16,6 +16,7 @@ import {
   type InboxMessage,
   type InboxThread,
 } from "@/lib/inbox/types";
+import { ANTI_SCAM_LINE } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
 
@@ -65,9 +66,15 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   const [calendarOn, setCalendarOn] = useState(true);
   const [draft, setDraft] = useState("");
   const [toast, setToast] = useState<string | null>(null);
+  // Read out politely to screen readers: "Sent." after a send, and a new message that arrives in the chat on screen.
+  const [heard, setHeard] = useState("");
   // New data from the server (after an action, or the 30-second check) replaces the list.
   const [shownFrom, setShownFrom] = useState(initial);
   if (initial !== shownFrom) {
+    const before = threads.find((t) => t.id === currentId);
+    const after = initial.find((t) => t.id === currentId);
+    const last = after?.messages.at(-1);
+    if (before && after && after.messages.length > before.messages.length && last?.by === "them") setHeard(`New message from ${last.who ?? after.name}`);
     setShownFrom(initial);
     setThreads(initial);
     if (!initial.some((t) => t.id === currentId)) {
@@ -150,7 +157,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
         if (error) {
           setDraft((now) => now || text);
           say(error);
-        }
+        } else setHeard("Sent.");
       });
       return;
     }
@@ -159,6 +166,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
       messages: [...t.messages, { by: "me", text, at: "now" }],
     }));
     setDraft("");
+    setHeard("Sent.");
   };
 
   const sendPicks = () => {
@@ -224,9 +232,15 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   const sendReport = (reason: ReportReason, note: string, block: boolean) => {
     if (!current) return;
     const target = current.kind === "application" ? "chat" : "person";
-    const blocks = block && current.kind !== "application";
+    const blocks = block;
     const finish = () => {
-      if (blocks) drop(current.id, `Reported and blocked. We confirm within 24 hours. ${current.name.split(" ")[0]} is not told.`);
+      if (blocks)
+        drop(
+          current.id,
+          current.kind === "application"
+            ? `Reported and blocked. We confirm within 24 hours. ${current.name} can't message you in this chat any more.`
+            : `Reported and blocked. We confirm within 24 hours. ${current.name.split(" ")[0]} is not told.`,
+        );
       else {
         const from = reporting?.from;
         setReporting(null);
@@ -330,7 +344,10 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               </button>
               <Avatar thread={current} />
               <div className="min-w-0 flex-1 min-[760px]:flex-none">
-                <b className="font-semibold">{current.name}</b>
+                <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                  <b className="font-semibold">{current.name}</b>
+                  {current.kind === "application" && current.verified && <VerifiedBadge />}
+                </span>
                 <small className="block truncate text-[0.78rem] text-muted">
                   {current.kind === "application" ? `${current.job} · your application` : current.status}
                 </small>
@@ -348,9 +365,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                   onClick={() => startReport(false, "header")}
                   aria-expanded={!!reporting}
                   aria-controls={reporting ? "report-panel" : undefined}
-                  className={quiet}
+                  className={`${quiet} min-h-11`}
                 >
-                  {current.kind === "application" ? "Report" : "Block or report"}
+                  Block or report
                 </button>
               )}
             </div>
@@ -359,7 +376,8 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               <ReportPanel
                 key={current.id}
                 name={current.name}
-                canBlock={current.kind !== "application"}
+                company={current.kind === "application"}
+                canBlock
                 block={reporting.block}
                 pending={pending}
                 onSubmit={sendReport}
@@ -373,8 +391,11 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
 
             {current.kind === "application" && (
               <p className="mx-4 mt-3 flex items-start gap-2 rounded-[12px] bg-surface-2 px-2.5 py-2 text-[0.78rem] text-muted">
-                <ShieldCheck {...ICON} className="mt-0.5 shrink-0" />
-                <span>{current.name} is a verified company. Companies on careermetro never ask for money, OTPs or bank details. Report it if anyone does.</span>
+                <ShieldAlert {...ICON} className="mt-0.5 shrink-0" />
+                <span>
+                  {current.verified ? `${current.name} is a verified company. ` : ""}
+                  {ANTI_SCAM_LINE}
+                </span>
               </p>
             )}
 
@@ -426,7 +447,11 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                     ? `Your message request is waiting for ${current.name.split(" ")[0]} to accept. You can send more once they do.`
                     : current.state === "left"
                       ? "This person has left CareerMetro, so you can't reply."
-                      : "This chat is closed."}
+                      : current.state === "paused"
+                        ? `${current.name}'s messages are paused while we review the company.`
+                        : current.kind === "application"
+                          ? "This chat is closed. Application chats close 30 days after the application does."
+                          : "This chat is closed."}
                 </p>
               ) : (
                 <div className="flex items-end gap-2">
@@ -495,6 +520,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
         </aside>
       </div>
 
+      <p role="status" aria-live="polite" className="sr-only">
+        {heard}
+      </p>
       <p
         role="status"
         className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink min-[700px]:rounded-full px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
@@ -647,9 +675,20 @@ function Slots({ time, ti, busy, picks, onToggle }: { time: string; ti: number; 
   );
 }
 
+/** The verified-company badge on an application chat. Shown only while CareerMetro has the company verified. */
+export function VerifiedBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-line bg-surface-2 px-2 py-0.5 text-[0.7rem] font-medium text-ink">
+      <ShieldCheck size={12} strokeWidth={1.75} aria-hidden="true" />
+      Verified company
+    </span>
+  );
+}
+
 /** Report, with an optional block: a reason (it sets how fast the grievance team must act), a note, then send. */
 function ReportPanel({
   name,
+  company = false,
   canBlock,
   block: blockAtFirst,
   pending,
@@ -657,6 +696,8 @@ function ReportPanel({
   onCancel,
 }: {
   name: string;
+  /** An application chat: blocking closes the chat with the company instead of blocking a person. */
+  company?: boolean;
   canBlock: boolean;
   block: boolean;
   pending: boolean;
@@ -720,7 +761,7 @@ function ReportPanel({
       {canBlock && (
         <label className={row}>
           <input type="checkbox" checked={block} onChange={(e) => setBlock(e.target.checked)} className="accent-ink" />
-          Also block {name.split(" ")[0]}. They are not told.
+          {company ? `Also block ${name}. This chat closes and they can't message you in it again.` : `Also block ${name.split(" ")[0]}. They are not told.`}
         </label>
       )}
       <div className="flex flex-wrap items-center gap-2">

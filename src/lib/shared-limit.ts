@@ -2,7 +2,9 @@ import "server-only";
 import { createHmac } from "node:crypto";
 import { ipHashKey } from "@/lib/hash-keys";
 import { and, eq, lt, sql } from "drizzle-orm";
+import { PgTransaction } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
+import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -43,6 +45,12 @@ export const LIMITS = {
   jobsPerCompanyDay: { bucket: "job-create-company", max: 20, windowMs: 24 * HOUR },
   /** Applications one person makes a day on CareerMetro (corporate build step 4), so no script can spray a company. */
   applicationsPerUserDay: { bucket: "application-user", max: 20, windowMs: 24 * HOUR },
+  /** Messages one company sends in its application chats a day, all its people together (plan, Abuse and compliance). Keyed by the company's id. */
+  companyMessagesPerCompanyDay: { bucket: "company-message", max: 200, windowMs: 24 * HOUR },
+  /** Messages a company sends in one application chat a day, so one candidate can't be flooded. Keyed by the application's id. */
+  companyMessagesPerApplicationDay: { bucket: "company-message-application", max: 20, windowMs: 24 * HOUR },
+  /** Messages one person sends in their application chats a day, across every company. */
+  applicationMessagesPerUserDay: { bucket: "application-message-user", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */
@@ -58,21 +66,29 @@ const windowStart = (limit: SharedLimit, now: number) => new Date(Math.floor(now
  * new count, so two servers can't both pass the last free hit. Windows are fixed, so a burst across a boundary can
  * reach twice the limit; fine for abuse limits. If the database can't be reached the request is let through and
  * logged: a broken limiter must not lock everyone out.
+ *
+ * Inside a transaction, pass the transaction as `db`: the hit then uses the connection the transaction already holds
+ * (a second pooled connection per send would deadlock the pool under load) and is undone if the transaction rolls
+ * back. It runs in a savepoint, so a failed count can't abort the caller's transaction, and the occasional cleanup is
+ * skipped, since an unawaited statement on a transaction's connection could outlive it.
  */
-export async function takeShared(limit: SharedLimit, key: string, deps: { db?: Db; now?: number } = {}): Promise<boolean> {
+export async function takeShared(limit: SharedLimit, key: string, deps: { db?: Db | Tx; now?: number } = {}): Promise<boolean> {
   const now = deps.now ?? Date.now();
   try {
     const db = deps.db ?? getDb();
-    const [row] = await db
-      .insert(rateLimits)
-      .values({ bucket: limit.bucket, keyHash: keyHash(limit.bucket, key), windowStart: windowStart(limit, now) })
-      .onConflictDoUpdate({
-        target: [rateLimits.bucket, rateLimits.keyHash, rateLimits.windowStart],
-        set: { hits: sql`${rateLimits.hits} + 1` },
-      })
-      .returning({ hits: rateLimits.hits });
+    const inTransaction = db instanceof PgTransaction;
+    const count = (on: Db | Tx) =>
+      on
+        .insert(rateLimits)
+        .values({ bucket: limit.bucket, keyHash: keyHash(limit.bucket, key), windowStart: windowStart(limit, now) })
+        .onConflictDoUpdate({
+          target: [rateLimits.bucket, rateLimits.keyHash, rateLimits.windowStart],
+          set: { hits: sql`${rateLimits.hits} + 1` },
+        })
+        .returning({ hits: rateLimits.hits });
+    const [row] = inTransaction ? await db.transaction((savepoint) => count(savepoint)) : await count(db);
     // Cleanup failing must not turn this answer into a yes, so it is neither awaited nor allowed to throw here.
-    if (Math.random() < 0.01)
+    if (!inTransaction && Math.random() < 0.01)
       db.delete(rateLimits)
         .where(lt(rateLimits.windowStart, new Date(now - KEEP_MS)))
         .catch((error: unknown) => logEvent("error", "rate_limit_cleanup_failed", errorFields(error)));

@@ -304,3 +304,61 @@ export type ApplyState =
 
 export type ApplyAction = (jobId: string, canJoin: CanJoin, consent: boolean) => Promise<string | null>;
 export type WithdrawAction = (applicationId: string) => Promise<string | null>;
+
+/* Company chats (build step 5) -------------------------------------------------------------------------------------- */
+
+/** One application's chat in Corporate Messages' list. The preview is the last message anyone wrote, never a system line. */
+export type CompanyChatListItem = {
+  applicationId: string;
+  name: string;
+  job: string;
+  stage: ApplicationStage;
+  preview: string | null;
+  at: string | null;
+  unread: boolean;
+};
+
+/**
+ * One message as the company sees it. `team` is someone else on the company's side, named; a deleted account's
+ * messages stay, from "The company team".
+ */
+export type CompanyChatMessage = {
+  id?: string;
+  by: "me" | "team" | "candidate" | "system";
+  who: string;
+  text: string;
+  at?: string;
+  question?: boolean;
+};
+
+/**
+ * Whether the person can write now, and if not why: `read_only` (Interviewers), `not_allowed` (not on the job's
+ * team), `suspended` (the company isn't verified now), `closed` (30 days after the application closed, withdrawn, or
+ * blocked by the candidate).
+ */
+export type CompanyChatState = "open" | "read_only" | "not_allowed" | "suspended" | "closed";
+
+/** One application's chat on the company side. Never the candidate's email, phone, pay or notice period. */
+export type CompanyChatView = {
+  applicationId: string;
+  jobId: string;
+  job: string;
+  candidate: string;
+  stage: ApplicationStage;
+  messages: CompanyChatMessage[];
+  state: CompanyChatState;
+};
+
+/** Corporate Messages: the company's application chats the person may read. */
+export type CompanyMessagesView = {
+  company: string;
+  /** The company's review state: only a verified company writes. */
+  status: OrgReviewStatus;
+  role: OrgRole;
+  items: CompanyChatListItem[];
+};
+
+export type CompanyChatActions = {
+  /** Sends a message, or a question with `question`. Returns the words to show on failure, or null. */
+  send: (applicationId: string, body: string, question: boolean) => Promise<string | null>;
+};

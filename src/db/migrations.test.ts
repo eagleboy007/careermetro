@@ -113,6 +113,12 @@ const GRANDFATHERED: Record<string, string> = {
   "0003_sign_in.sql: adds a unique index to an existing table":
     "users had no rows when sign-in was built, and code before it never inserted users",
   "0003_sign_in.sql: adds a constraint to an existing table": "users had no rows when sign-in was built",
+  // Checked by hand (corporate build step 5): conversations.application_id existed from 0012 but no code wrote it before
+  // 0021, so every row is null and neither the foreign key nor the unique index can refuse a write old code makes.
+  "0021_company_chats.sql: adds a constraint to an existing table: ALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_application_id":
+    "conversations.application_id was never written before 0021",
+  "0021_company_chats.sql: adds a unique index to an existing table: CREATE UNIQUE INDEX \"conversations_application\"":
+    "conversations.application_id was never written before 0021",
 };
 
 describe("migrations", () => {

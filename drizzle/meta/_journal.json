@@ -148,6 +148,13 @@
       "when": 1791852814855,
       "tag": "0020_corporate_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791854655648,
+      "tag": "0021_company_chats",
+      "breakpoints": true
     }
   ]
 }

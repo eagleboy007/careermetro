@@ -1,8 +1,9 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { blocks, conversationMembers, conversations, messages, reports, users } from "@/db/schema";
+import { applications, blocks, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
+import { chatClosed } from "@/lib/corporate/rules";
 import { logEvent } from "@/lib/log";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -11,12 +12,17 @@ import type { InboxMessage, InboxThread } from "./types";
 /*
  * The Inbox's rules (dev/inbox-plan.md, approved by Milin 2026-10-11). Every function takes the signed-in person's id
  * and checks membership itself, so a caller can't read or write a chat it isn't in. Message text is never logged.
+ *
+ * Application chats (corporate build step 5) are the candidate's here: the person who applied is their one `member`.
+ * The company's side reads and writes them only through Corporate Messages (src/lib/corporate/chats-store.ts), which
+ * checks the live company role every time; its `company_team` member rows only hold unread counts, so the personal
+ * Inbox neither lists nor writes those chats for a recruiter.
  */
 
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 
-export type InboxError = "not_found" | "unavailable" | "waiting" | "accept_first" | "read_only" | "closed" | "limit" | "self" | "invalid";
+export type InboxError = "not_found" | "unavailable" | "waiting" | "accept_first" | "read_only" | "closed" | "paused" | "limit" | "self" | "invalid";
 
 /** What each refusal tells the person. "unavailable" is deliberately vague: a block is never revealed. */
 export const INBOX_ERROR_TEXT: Record<InboxError, string> = {
@@ -26,6 +32,7 @@ export const INBOX_ERROR_TEXT: Record<InboxError, string> = {
   accept_first: "Accept the request to reply.",
   read_only: "You can read this chat but not send in it.",
   closed: "This chat is closed.",
+  paused: "This company's messages are paused while we review it.",
   limit: "You've reached today's limit for this. Try again tomorrow.",
   self: "You can't message yourself.",
   invalid: "Write a message of up to 2,000 characters.",
@@ -103,6 +110,51 @@ export async function startDirect(fromId: string, toId: string, body: string, de
   });
 }
 
+/**
+ * The chat for an application (corporate build step 5): one per application, owned by the company, with the person who
+ * applied as its one member and a first line saying the company can write here. Run inside the transaction that
+ * makes the application, or later for an application that has none yet (then without the first line). Returns its id.
+ */
+export async function openApplicationChat(
+  tx: Tx,
+  app: { applicationId: string; orgId: string; userId: string },
+  now: Date,
+  firstLine = true,
+): Promise<string> {
+  const [made] = await tx
+    .insert(conversations)
+    .values({ kind: "application", status: "open", startedBy: app.userId, applicationId: app.applicationId, orgId: app.orgId, createdAt: now, lastMessageAt: now })
+    .onConflictDoNothing({ target: conversations.applicationId })
+    .returning({ id: conversations.id });
+  if (!made) {
+    const [existing] = await tx.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.applicationId));
+    return existing!.id;
+  }
+  await tx.insert(conversationMembers).values({ conversationId: made.id, userId: app.userId, lastReadAt: now });
+  if (firstLine) await tx.insert(messages).values({ conversationId: made.id, senderId: null, kind: "system", body: "applied", createdAt: now });
+  return made.id;
+}
+
+/** An application chat's application and company, for its rules: open or closed, the company verified or not. */
+async function applicationOf(conversationId: string, db: Db | Tx) {
+  const [row] = await db
+    .select({ closedAt: applications.closedAt, withdrawnAt: applications.withdrawnAt, orgStatus: organizations.reviewStatus })
+    .from(conversations)
+    .innerJoin(applications, eq(applications.id, conversations.applicationId))
+    .innerJoin(organizations, eq(organizations.id, applications.orgId))
+    .where(eq(conversations.id, conversationId));
+  return row ?? null;
+}
+
+/** Closes an application chat for good and takes it off the candidate's Inbox: Block on a company chat. */
+async function closeApplicationChat(userId: string, conversationId: string, tx: Tx, now: Date) {
+  await tx.update(conversations).set({ status: "closed" }).where(eq(conversations.id, conversationId));
+  await tx
+    .update(conversationMembers)
+    .set({ hiddenAt: now })
+    .where(and(eq(conversationMembers.conversationId, conversationId), eq(conversationMembers.userId, userId)));
+}
+
 /** The person's own membership of a chat, with the chat, locked for the rest of the transaction. */
 async function membership(userId: string, conversationId: string, tx: Tx) {
   const [row] = await tx
@@ -130,9 +182,17 @@ export async function sendMessage(userId: string, conversationId: string, body: 
   return db.transaction(async (tx) => {
     const me = await membership(userId, conversationId, tx);
     if (!me) return fail("not_found");
+    // The company writes in an application chat only from Corporate Messages, under its live role.
+    if (me.kind === "application" && me.role !== "member") return fail("not_found");
     if (me.role === "interviewer_read_only") return fail("read_only");
     if (me.status === "closed") return fail("closed");
     if (me.status === "request") return fail(me.startedBy === userId ? "waiting" : "accept_first");
+    if (me.kind === "application") {
+      const app = await applicationOf(conversationId, tx);
+      if (!app || chatClosed(app, me.status, now)) return fail("closed");
+      if (app.orgStatus !== "verified") return fail("paused");
+      if (!(await takeShared(LIMITS.applicationMessagesPerUserDay, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    }
     const others = await othersIn(userId, conversationId, tx);
     // A direct chat whose other person left, or who is blocked either way, takes no more messages.
     if (me.kind === "direct") {
@@ -188,14 +248,19 @@ export async function deleteRequest(userId: string, conversationId: string, deps
 }
 
 /**
- * Blocks the other person in a direct chat. Silent: they are not told, and they can no longer reach the person. The
- * chat leaves the person's Inbox. Application chats are with a company, so they are reported, not blocked.
+ * Blocks the other side of a chat. In a direct chat: silent, they are not told, and they can no longer reach the
+ * person. In an application chat (the candidate blocking the company): the chat closes for good, so nobody at the
+ * company can write in it, and the application itself goes on. Either way the chat leaves the person's Inbox.
  */
 export async function blockInChat(userId: string, conversationId: string, deps: { db?: Db; now?: Date } = {}): Promise<InboxResult> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
     const me = await membership(userId, conversationId, tx);
+    if (me?.kind === "application" && me.role === "member") {
+      await closeApplicationChat(userId, conversationId, tx, now);
+      return { ok: true as const };
+    }
     if (!me || me.kind !== "direct") return fail("not_found");
     const [other] = await othersIn(userId, conversationId, tx);
     if (other) await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
@@ -227,14 +292,19 @@ export async function report(userId: string, input: ReportInput, deps: { db?: Db
   const result = await db.transaction(async (tx) => {
     const me = await membership(userId, r.conversationId, tx);
     if (!me) return fail("not_found");
+    // An application chat is reported by the candidate, about the company: the chat or one of its messages.
+    const application = me.kind === "application";
+    if (application && (me.role !== "member" || r.target === "person")) return fail("not_found");
     const [other] = await othersIn(userId, r.conversationId, tx);
     let targetId = r.conversationId;
     if (r.target === "message") {
       const [message] = await tx
-        .select({ senderId: messages.senderId })
+        .select({ senderId: messages.senderId, kind: messages.kind })
         .from(messages)
         .where(and(eq(messages.id, r.messageId!), eq(messages.conversationId, r.conversationId)));
-      if (!message || !message.senderId || message.senderId === userId) return fail("not_found");
+      // A company message whose writer's account has gone stays the company's, so it can still be reported.
+      const fromSomeoneElse = message && message.kind !== "system" && message.senderId !== userId && (message.senderId !== null || application);
+      if (!fromSomeoneElse) return fail("not_found");
       targetId = r.messageId!;
     } else if (r.target === "person") {
       if (!other) return fail("not_found");
@@ -244,6 +314,7 @@ export async function report(userId: string, input: ReportInput, deps: { db?: Db
       .insert(reports)
       .values({ reporterId: userId, target: r.target, targetId, reason: r.reason, note: r.note || null, createdAt: now })
       .returning({ id: reports.id });
+    if (r.block && application) await closeApplicationChat(userId, r.conversationId, tx, now);
     if (r.block && me.kind === "direct") {
       if (other) await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
       await tx
@@ -285,6 +356,8 @@ async function visibleChats(userId: string, db: Db) {
     .where(
       and(
         eq(conversationMembers.userId, userId),
+        // A recruiter's company-side rows belong to Corporate Messages, never their personal Inbox.
+        eq(conversationMembers.role, "member"),
         isNull(conversationMembers.hiddenAt),
         sql`not exists (select 1 from ${conversationMembers} o join ${blocks} b on b.blocked_id = o.user_id
               where o.conversation_id = ${conversations.id} and o.user_id <> ${userId} and b.blocker_id = ${userId})`,
@@ -301,7 +374,7 @@ export async function unreadChats(userId: string, db: Db = getDb()): Promise<num
   const [row] = await db.execute<{ n: number }>(sql`
     select count(*)::int as n
     from ${conversationMembers} m join ${conversations} c on c.id = m.conversation_id
-    where m.user_id = ${userId} and m.hidden_at is null
+    where m.user_id = ${userId} and m.role = 'member' and m.hidden_at is null
       and not exists (select 1 from ${conversationMembers} o join ${blocks} b on b.blocked_id = o.user_id
                       where o.conversation_id = c.id and o.user_id <> ${userId} and b.blocker_id = ${userId})
       and ((c.status = 'request' and c.started_by is distinct from ${userId})
@@ -330,15 +403,26 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
   const chats = await visibleChats(userId, db);
   if (!chats.length) return [];
   const ids = chats.map((c) => c.id);
-  const [others, rows] = await Promise.all([
+  const appIds = chats.filter((c) => c.kind === "application").map((c) => c.id);
+  const [others, rows, apps] = await Promise.all([
     db
       .select({ conversationId: conversationMembers.conversationId, name: users.name, deleted: users.deletionRequestedAt })
       .from(conversationMembers)
       .innerJoin(users, eq(users.id, conversationMembers.userId))
       .where(and(inArray(conversationMembers.conversationId, ids), ne(conversationMembers.userId, userId))),
     db
-      .select({ id: messages.id, conversationId: messages.conversationId, senderId: messages.senderId, kind: messages.kind, body: messages.body, createdAt: messages.createdAt })
+      .select({
+        id: messages.id,
+        conversationId: messages.conversationId,
+        senderId: messages.senderId,
+        senderName: users.name,
+        senderDeleted: users.deletionRequestedAt,
+        kind: messages.kind,
+        body: messages.body,
+        createdAt: messages.createdAt,
+      })
       .from(messages)
+      .leftJoin(users, eq(users.id, messages.senderId))
       .where(
         and(
           inArray(messages.conversationId, ids),
@@ -347,39 +431,99 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
         ),
       )
       .orderBy(asc(messages.createdAt)),
+    // Application chats: the company, its state now, the job, and whether the application still takes messages.
+    appIds.length
+      ? db
+          .select({
+            conversationId: conversations.id,
+            company: organizations.name,
+            orgStatus: organizations.reviewStatus,
+            job: jobs.title,
+            closedAt: applications.closedAt,
+            withdrawnAt: applications.withdrawnAt,
+          })
+          .from(conversations)
+          .innerJoin(applications, eq(applications.id, conversations.applicationId))
+          .innerJoin(jobs, eq(jobs.id, applications.jobId))
+          .innerJoin(organizations, eq(organizations.id, applications.orgId))
+          .where(inArray(conversations.id, appIds))
+      : Promise.resolve([]),
   ]);
 
-  return chats.map((c): InboxThread => {
+  return chats.flatMap((c): InboxThread[] => {
+    const mine = rows.filter((m) => m.conversationId === c.id);
+    const unread = mine.some((m) => m.kind !== "system" && m.senderId !== userId && m.createdAt > (c.lastReadAt ?? new Date(0)));
+
+    if (c.kind === "application") {
+      const app = apps.find((a) => a.conversationId === c.id);
+      if (!app) return [];
+      const verified = app.orgStatus === "verified";
+      const list: InboxMessage[] = mine.map((m) => {
+        if (m.kind === "system") return { id: m.id, by: "system", text: m.body === "applied" ? `You applied on CareerMetro. ${app.company} can message you here about this application.` : "" };
+        if (m.senderId === userId) return { id: m.id, by: "me", text: m.body, at: formatAt(m.createdAt, now) };
+        // A message stays the company's when its writer's account goes: it is then from the company team.
+        const who = m.senderId && !m.senderDeleted ? displayName(m.senderName) : COMPANY_TEAM;
+        return { id: m.id, by: "them", who, ...(m.kind === "ask_question" ? { type: "question" as const } : {}), text: m.body, at: formatAt(m.createdAt, now) };
+      });
+      return [
+        {
+          id: c.id,
+          kind: "application",
+          name: app.company,
+          job: app.job,
+          verified,
+          unread,
+          messages: list.filter((m) => m.text),
+          state: chatClosed(app, c.status, now) ? "closed" : verified ? undefined : "paused",
+        },
+      ];
+    }
+
     const other = others.find((o) => o.conversationId === c.id);
     const left = !other || !!other.deleted;
     const requestToMe = c.status === "request" && c.startedBy !== userId;
-    const mine = rows.filter((m) => m.conversationId === c.id);
     const list: InboxMessage[] = mine.map((m) =>
       m.kind === "system"
         ? { id: m.id, by: "system", text: m.body === "accepted" ? "Request accepted. You can now message each other." : "" }
         : { id: m.id, by: m.senderId === userId ? "me" : "them", text: m.body, at: formatAt(m.createdAt, now) },
     );
     if (left) list.push({ by: "system", text: "This person has left CareerMetro." });
-    const unread =
-      requestToMe ||
-      mine.some((m) => m.kind !== "system" && m.senderId !== userId && m.createdAt > (c.lastReadAt ?? new Date(0)));
-    return {
-      id: c.id,
-      kind: c.kind === "application" ? "application" : requestToMe ? "request" : "person",
-      name: left ? "Former member" : displayName(other.name),
-      unread,
-      messages: list.filter((m) => m.text),
-      state: left ? "left" : c.status === "closed" ? "closed" : c.status === "request" && !requestToMe ? "waiting" : undefined,
-    };
+    return [
+      {
+        id: c.id,
+        kind: requestToMe ? "request" : "person",
+        name: left ? "Former member" : displayName(other.name),
+        unread: requestToMe || unread,
+        messages: list.filter((m) => m.text),
+        state: left ? "left" : c.status === "closed" ? "closed" : c.status === "request" && !requestToMe ? "waiting" : undefined,
+      },
+    ];
   });
 }
+
+/** Who wrote a company message whose writer's account has gone (the plan keeps such messages as the company's). */
+export const COMPANY_TEAM = "The company team";
 
 /** For "Download your data": the person's chats (their own messages only), blocks they made and reports they filed. */
 export async function exportInbox(userId: string, db: Db = getDb()) {
   const chats = await db
-    .select({ id: conversations.id, kind: conversations.kind, status: conversations.status, startedBy: conversations.startedBy, createdAt: conversations.createdAt, hiddenAt: conversationMembers.hiddenAt })
+    .select({
+      id: conversations.id,
+      kind: conversations.kind,
+      status: conversations.status,
+      startedBy: conversations.startedBy,
+      createdAt: conversations.createdAt,
+      hiddenAt: conversationMembers.hiddenAt,
+      role: conversationMembers.role,
+      // Application chats name the company and the job; never the candidate, for someone on the company's side.
+      company: organizations.name,
+      job: jobs.title,
+    })
     .from(conversationMembers)
     .innerJoin(conversations, eq(conversations.id, conversationMembers.conversationId))
+    .leftJoin(applications, eq(applications.id, conversations.applicationId))
+    .leftJoin(jobs, eq(jobs.id, applications.jobId))
+    .leftJoin(organizations, eq(organizations.id, conversations.orgId))
     .where(eq(conversationMembers.userId, userId))
     .orderBy(asc(conversations.createdAt));
   const ids = chats.map((c) => c.id);
@@ -402,6 +546,10 @@ export async function exportInbox(userId: string, db: Db = getDb()) {
     // Other people's messages are theirs, so only the person's own are included.
     chats: chats.map((c) => ({
       kind: c.kind,
+      // Application chats: "candidate" when you applied, "company" when you wrote for the company.
+      side: c.kind === "application" ? (c.role === "member" ? "candidate" : "company") : null,
+      company: c.company,
+      job: c.job,
       status: c.status,
       startedByYou: c.startedBy === userId,
       createdAt: c.createdAt,
@@ -411,6 +559,17 @@ export async function exportInbox(userId: string, db: Db = getDb()) {
     blocksMade: blockRows,
     reportsMade: reportRows,
   };
+}
+
+/**
+ * Run inside the account purge, before the user row goes: messages the person wrote for a company in its application
+ * chats stay, from "the company team" (sender emptied), so nothing is lost when someone leaves. Their messages
+ * anywhere else, their own applications' chats included, go with the account as before.
+ */
+export async function keepCompanyMessages(tx: Tx | Db, userId: string): Promise<void> {
+  await tx.execute(sql`update ${messages} m set sender_id = null
+    from ${conversations} c join ${applications} a on a.id = c.application_id
+    where m.conversation_id = c.id and m.sender_id = ${userId} and a.user_id <> ${userId}`);
 }
 
 /**

@@ -23,19 +23,15 @@ describe.skipIf(!db)("corporate jobs store (database)", () => {
   const clock = new Date("2026-10-13T10:00:00Z");
   const deps = (over: Partial<CorporateDeps> = {}): CorporateDeps => ({ db: db!, env, now: clock, delivery: "test", ...over });
   const lines: string[] = [];
-  /** A role_profiles row this test added because the database wasn't seeded; removed at the end. */
-  let addedRoleRow: string | null = null;
   const SLUG = "cyber-security-analyst";
   const role = roleBySlug(SLUG)!;
   const req = requirementsFromRole(role);
   const yes = { real: true, noFee: true, fair: true } as const;
 
   beforeAll(async () => {
-    const [row] = await db!.select({ id: schema.roleProfiles.id }).from(schema.roleProfiles).where(eq(schema.roleProfiles.slug, SLUG)).limit(1);
-    if (!row) {
-      const [added] = await db!.insert(schema.roleProfiles).values({ slug: SLUG, version: 1, data: role, published: false, updatedOn: role.updatedOn }).returning({ id: schema.roleProfiles.id });
-      addedRoleRow = added.id;
-    }
+    // An unseeded database (CI) gets the role as an unpublished row. The three corporate test files share it and run
+    // at the same time, so it is added once and left in place: deleting it could pull it from under another file's jobs.
+    await db!.insert(schema.roleProfiles).values({ slug: SLUG, version: 1, data: role, published: false, updatedOn: role.updatedOn }).onConflictDoNothing();
   });
   beforeEach(() => {
     for (const level of ["log", "warn", "error"] as const) vi.spyOn(console, level).mockImplementation((line: unknown) => void lines.push(String(line)));
@@ -47,7 +43,6 @@ describe.skipIf(!db)("corporate jobs store (database)", () => {
       await db!.delete(schema.reports).where(inArray(schema.reports.reporterId, userIds));
       await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
     }
-    if (addedRoleRow) await db!.delete(schema.roleProfiles).where(eq(schema.roleProfiles.id, addedRoleRow));
     await sqlClient!.end();
   });
 

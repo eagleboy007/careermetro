@@ -17,8 +17,11 @@ export const REPORT_TARGETS = ["message", "person", "chat", "job"] as const;
 export const CHAT_REPORT_TARGETS = ["message", "person", "chat"] as const;
 export const REPORT_REASONS = ["money_or_otp", "harassment", "intimate_or_impersonation", "fake_or_spam", "other"] as const;
 export const REPORT_STATUSES = ["open", "actioned", "dismissed"] as const;
-/** What a `system` message's body may say. Shown as words by the Inbox, so the stored line never holds personal data. */
-export const SYSTEM_CODES = ["accepted"] as const;
+/**
+ * What a `system` message's body may say. Shown as words by the Inbox, so the stored line never holds personal data.
+ * `applied` is the first line of an application chat (corporate build step 5).
+ */
+export const SYSTEM_CODES = ["accepted", "applied"] as const;
 
 export const MESSAGE_MAX_CHARS = 2000;
 export const REPORT_NOTE_MAX_CHARS = 500;

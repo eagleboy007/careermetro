@@ -121,3 +121,34 @@ export const withdrawConfirmText = (company: string, stage: ApplicationStage): s
 
 /** People can apply only to a job candidates can see: open, from a verified company (not pending or suspended). */
 export const acceptsApplications = isLive;
+
+/* Company chats (build step 5) -------------------------------------------------------------------------------------- */
+
+/** Both sides can write in an application's chat while it is open and for this long after it closes (plan, chats). */
+export const CHAT_WRITE_DAYS = 30;
+
+/** Sending in an application's chat: the people who move its candidates. Interviewers read only, never send. */
+export const canSendCompanyMessages = canEditJob;
+
+/**
+ * Whether an application's chat takes no more messages: closed by the candidate's Block (`status` closed), withdrawn,
+ * or 30 days past the application closing. Worked out on every read and write, so no daily job is needed for it.
+ */
+export function chatClosed(app: { closedAt: Date | null; withdrawnAt: Date | null }, status: "request" | "open" | "closed", now: Date): boolean {
+  if (status === "closed" || app.withdrawnAt) return true;
+  return !!app.closedAt && now.getTime() - app.closedAt.getTime() >= CHAT_WRITE_DAYS * DAY;
+}
+
+export type CompanySendRefusal = "read_only" | "not_allowed" | "suspended" | "closed";
+
+/**
+ * Why a company member can't send in an application's chat now, or null. Interviewers read only; Hiring HR only on the
+ * job's team; only a verified company messages (a suspended or unverified one starts and continues no chat); and the
+ * chat must still be open.
+ */
+export function companySendRefusal(x: { role: OrgRole; teamRole: JobTeamRole | null; orgStatus: OrgReviewStatus; closed: boolean }): CompanySendRefusal | null {
+  if (x.role === "interviewer") return "read_only";
+  if (!canSendCompanyMessages(x.role, x.teamRole)) return "not_allowed";
+  if (x.orgStatus !== "verified") return "suspended";
+  return x.closed ? "closed" : null;
+}

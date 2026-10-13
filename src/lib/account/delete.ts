@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, gte, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { auditLogs, consents, users, waitlistEntries } from "@/db/schema";
-import { removeEmptyChats } from "@/lib/inbox/store";
+import { keepCompanyMessages, removeEmptyChats } from "@/lib/inbox/store";
 import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
@@ -47,7 +47,8 @@ export const restoreUntil = (deletionRequestedAt: Date | null): Date | null =>
 
 /**
  * The daily job: removes accounts deleted more than DELETE_GRACE_DAYS ago, for good. Deleting the user row removes
- * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents, their messages,
+ * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents, their messages
+ * except those written for a company in its application chats, which stay from "the company team",
  * chat memberships and blocks; chats nobody is left in go too, and reports they filed stay without their name); a waitlist
  * sign-up with the same email goes too. The sign-in identity goes when the database has Supabase's auth schema; if
  * that step fails, our data is still removed and the failure is logged. One audit line per account, with no personal
@@ -64,6 +65,14 @@ export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): 
     const overdueDays = Math.floor((graceEnds(now).getTime() - user.deletionRequestedAt!.getTime()) / 86_400_000);
     try {
       await db.transaction(async (tx) => {
+        // Locked first, so a restore can't land between keeping the company's messages and the delete.
+        const [still] = await tx
+          .select({ id: users.id })
+          .from(users)
+          .where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))))
+          .for("update");
+        if (!still) return;
+        await keepCompanyMessages(tx, user.id);
         const gone = await tx
           .delete(users)
           .where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))))
