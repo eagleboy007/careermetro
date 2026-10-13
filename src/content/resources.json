@@ -3494,17 +3494,6 @@
     "free": true
   },
   {
-    "title": "Introducing the DFIR Hunt Evil poster (webcast)",
-    "url": "https://www.sans.org/webcasts/introducing-dfir-hunt-evil-poster-107940",
-    "provider": "SANS",
-    "kind": "video",
-    "skillIds": [
-      "threat-detection"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "CIS Benchmarks: Microsoft Windows Desktop",
     "url": "https://www.cisecurity.org/benchmark/microsoft_windows_desktop",
     "provider": "Center for Internet Security",
@@ -3962,18 +3951,6 @@
       "ab-testing"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "The Open Guide to A/B Testing (GrowthBook)",
-    "url": "https://docs.growthbook.io/open-guide-to-ab-testing.v1.0.pdf",
-    "provider": "GrowthBook",
-    "kind": "docs",
-    "skillIds": [
-      "ab-testing",
-      "statistics"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
