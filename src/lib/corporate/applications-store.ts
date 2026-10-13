@@ -5,6 +5,7 @@ import { applicationEvents, applications, auditLogs, consents, gapProofs, jobs, 
 import { displayName } from "@/lib/account/name";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
+import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput } from "@/lib/schemas/corporate";
@@ -167,6 +168,8 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, createdAt: now })
         .returning({ id: applications.id });
       await event(tx, app.id, "applied", "applied", userId, now);
+      // The application's chat with the company, in the person's Inbox from now on (build step 5).
+      await openApplicationChat(tx, { applicationId: app.id, orgId: job.orgId, userId }, now);
       // An employee's own job search stays hidden from their company's side: off this job's team.
       const me = await activeMembership(userId, tx);
       if (me?.orgId === job.orgId) await tx.delete(jobTeam).where(and(eq(jobTeam.jobId, job.id), eq(jobTeam.userId, userId)));
@@ -351,8 +354,11 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
   };
 }
 
-/** One application the person may see on the company side, with its job, or null. */
-async function visibleApplication(userId: string, applicationId: string, db: Db | Tx, now: Date, lock = false) {
+/**
+ * One application the person may see on the company side, with its job and the company's state, or why not. Shared
+ * with company chats (chats-store.ts), so the board and Messages answer to the same live access rules.
+ */
+export async function visibleApplication(userId: string, applicationId: string, db: Db | Tx, now: Date, lock = false) {
   if (!UUID.test(applicationId)) return fail("not_found");
   const me = await activeMembership(userId, db);
   if (!me) return fail("not_member");
@@ -373,10 +379,14 @@ async function visibleApplication(userId: string, applicationId: string, db: Db 
       aiRound: jobs.aiRound,
       jobStatus: jobs.status,
       requirements: jobs.requirements,
+      jobTitle: jobs.title,
+      orgId: applications.orgId,
+      orgStatus: organizations.reviewStatus,
     })
     .from(applications)
     .innerJoin(jobs, eq(jobs.id, applications.jobId))
     .innerJoin(users, eq(users.id, applications.userId))
+    .innerJoin(organizations, eq(organizations.id, applications.orgId))
     .where(and(eq(applications.id, applicationId), eq(applications.orgId, me.orgId)));
   const [app] = lock ? await q.for("update", { of: applications }) : await q;
   // The person's own application, a deleted account, or one past the company's 180 days reads as not there.

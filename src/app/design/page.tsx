@@ -41,9 +41,10 @@ import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
-import { InboxView } from "@/components/inbox/inbox-view";
+import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
+import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-home";
-import { exampleApplications, exampleBoard, exampleCandidate, exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
+import { exampleApplications, exampleBoard, exampleCandidate, exampleCompanyChat, exampleCompanyMessages, exampleCorporateHome, exampleJobFormData, examplePostedJob, exampleSignupDetails } from "@/components/corporate/fixtures";
 import { ArrivalsView } from "@/components/arrivals/arrivals-view";
 import { JobBoard } from "@/components/corporate/job-board";
 import { MatchDots, MatchList } from "@/components/corporate/match-parts";
@@ -519,6 +520,30 @@ export default function DesignPage() {
         <div className="rounded-lg border border-line p-4">
           <ArrivalsView applications={[]} />
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Company chats (signed in)</h2>
+        <p className="text-sm text-muted">
+          Build step 5: Corporate Messages with the list and one application&apos;s chat (shared-with line, anti-scam line, Ask a question), a closed chat, the
+          Interviewer&apos;s read-only view, and the candidate&apos;s side in the Inbox with the verified badge. Example data, so nothing sends.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <VerifiedBadge />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyMessages view={exampleCompanyMessages} chat={exampleCompanyChat} />
+        </div>
+        <div className="max-w-[720px]">
+          <CompanyChat chat={{ ...exampleCompanyChat, applicationId: "a4", state: "closed" }} company="Example Labs" />
+        </div>
+        <div className="max-w-[720px]">
+          <CompanyChat chat={{ ...exampleCompanyChat, applicationId: "a5", state: "suspended" }} company="Example Labs" />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyMessages view={{ ...exampleCompanyMessages, role: "interviewer", items: [] }} chat={null} />
+        </div>
+        <InboxView threads={exampleThreads.filter((t) => t.kind === "application")} />
       </section>
 
       <section className="flex flex-col gap-4">

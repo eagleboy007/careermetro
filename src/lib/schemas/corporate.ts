@@ -24,7 +24,7 @@ import {
   ORG_TYPES,
   WORK_EMAIL_PURPOSES,
 } from "./constants";
-import { REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
+import { messageBody, REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
 
 /*
  * Corporate, build steps 1 and 2 (dev/corporate-plan.md; handoff 12e and 12f): company sign-up, the work-email code,
@@ -207,3 +207,16 @@ export const jobReportInput = z.object({
   reason: z.enum(REPORT_REASONS),
   note: z.string().trim().max(REPORT_NOTE_MAX_CHARS).optional(),
 });
+
+/* Company chats (build step 5) ------------------------------------------------------------------------------------- */
+
+/**
+ * A message from the job team in an application's chat. `question` sends it as "Ask a question": the same text, shown
+ * to the candidate under a Question label. Never anything else: no attachments, no contact details asked for here.
+ */
+export const companyMessageInput = z.object({
+  applicationId: z.uuid(),
+  body: messageBody,
+  question: z.boolean().default(false),
+});
+export type CompanyMessageInput = z.input<typeof companyMessageInput>;

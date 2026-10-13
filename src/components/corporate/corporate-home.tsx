@@ -1,4 +1,4 @@
-import { Building2, ExternalLink, KeyRound } from "lucide-react";
+import { Building2, ExternalLink, KeyRound, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
@@ -34,8 +34,12 @@ export function CorporateHome({ view, actions, jobActions, note }: { view: Corpo
             </span>
           </div>
         </div>
+        <Link href="/corporate/messages" className={`${ghostSm} min-h-11`}>
+          <MessageSquare {...ICON} />
+          Messages
+        </Link>
         {org.website && (
-          <a href={org.website} target="_blank" rel="noopener noreferrer" className={ghostSm}>
+          <a href={org.website} target="_blank" rel="noopener noreferrer" className={`${ghostSm} min-h-11`}>
             <ExternalLink {...ICON} />
             Website
             <span className="sr-only">(opens in a new tab)</span>

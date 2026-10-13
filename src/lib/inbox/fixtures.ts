@@ -10,6 +10,7 @@ export const exampleThreads: InboxThread[] = [
     kind: "application",
     name: "Konark Payments",
     job: "Security operations trainee",
+    verified: true,
     unread: true,
     messages: [
       { by: "system", text: "Conversation started when you applied with Express apply, 7 Oct." },

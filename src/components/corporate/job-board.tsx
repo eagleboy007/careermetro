@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Lock, MapPin, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lock, MapPin, MessageSquare, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { formatDay } from "@/lib/corporate/format";
@@ -236,6 +236,12 @@ function CandidateDrawer({
     };
   }, [actions, applicationId]);
   useEffect(() => {
+    // Leaving the page with the drawer open (Message, or Back): a kept-alive page must not leave a modal dialog in the
+    // top layer, which would make the next page inert.
+    const d = dialogRef.current;
+    return () => d?.close();
+  }, []);
+  useEffect(() => {
     if (closing) noteRef.current?.focus();
   }, [closing]);
   useEffect(() => {
@@ -303,6 +309,13 @@ function CandidateDrawer({
               <span className="rounded-full bg-surface-2 px-2.5 py-0.5 font-medium">{APPLICATION_STAGE_LABELS[stage]}</span>
               {card && <span className="rounded-full border border-line px-2.5 py-0.5">Can join: {CAN_JOIN_LABELS[card.canJoin]}</span>}
             </p>
+            {canMove && (
+              // The application's chat in Corporate Messages (build step 5). Interviewers never write, so they get no link.
+              <Link href={`/corporate/messages?application=${applicationId}`} onClick={() => dialogRef.current?.close()} className={`${actionBtn} mt-2.5`}>
+                <MessageSquare {...ICON} />
+                Message {firstName(name)}
+              </Link>
+            )}
           </div>
           <button type="button" data-close aria-label="Close" className={`${actionBtn} w-11 px-0`} onClick={() => close()}>
             <X {...ICON} />

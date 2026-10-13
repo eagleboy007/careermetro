@@ -26,7 +26,7 @@ p.on(
     m.type() === "error" &&
     !failingOnPurpose &&
     !(new URL(p.url()).pathname === expected404 && m.text().includes("404")) &&
-    problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}${m.text().includes("404") ? ` (recent 404s: ${recent404.join(", ")})` : ""}`),
+    problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}${m.text().includes("404") ? ` (resource: ${m.location()?.url ?? "?"}; recent 404s: ${recent404.join(", ")})` : ""}`),
 );
 p.on("pageerror", (e) => problems.push(`pageerror@${p.url()}: ${e.message.slice(0, 200)}`));
 p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
@@ -1121,6 +1121,147 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     if (pOverflow > 1) throw new Error("arrivals: horizontal overflow " + pOverflow + "px");
     await a11y("arrivals-phone-dark");
     await shot("arrivals-phone-dark");
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-corporate-applications.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await sql.end();
+    await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
+  }
+});
+// Company chats (dev/corporate-plan.md, build step 5): within 30 days of Not this time the job team still writes. The
+// admin opens the candidate on the board, goes to the chat, sends a message and asks a question; the candidate finds
+// it in their Inbox with the verified badge and the anti-scam line and replies; the company reads the reply; an
+// Interviewer on the job sees no chat and nowhere to write.
+await step("company chats: the job team writes from the board, the candidate replies in the Inbox, an Interviewer can't send", async () => {
+  if (!q || !postedTitle) throw new Error("no application from the step before");
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to add the interviewer");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  const HELLO = "Thanks for applying, Priya. We'd still like to hear about your SIEM practice.";
+  const QUESTION = "Which SIEM tools have you used so far?";
+  const REPLY = "Splunk on the BOTS data set, about forty searches so far.";
+  let iv = null;
+  try {
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("link", { name: "Messages", exact: true }).waitFor({ timeout: 10000 });
+    await q.getByRole("link", { name: new RegExp(`^Board for ${title}`) }).click();
+    await q.waitForURL(/\/corporate\/jobs\/board\?id=/);
+    const lane = (name) => q.locator("section", { has: q.getByRole("heading", { name, exact: true, level: 2 }) });
+    await lane("Not this time").getByRole("button", { name: /^Priya Sharma/ }).click();
+    const drawer = q.getByRole("dialog", { name: "Priya Sharma" });
+    await drawer.getByRole("link", { name: "Message Priya" }).click();
+    await q.waitForURL(/\/corporate\/messages\?application=/, { timeout: 15000 });
+    const appId = new URL(q.url()).searchParams.get("application");
+    const chat = q.getByRole("region", { name: "Priya Sharma" });
+    await chat.waitFor({ timeout: 10000 });
+    await chat.getByText("Companies never ask for money", { exact: false }).waitFor();
+    await chat.getByText("Applied on CareerMetro.").waitFor();
+    // A message, then a question.
+    await chat.getByRole("textbox", { name: "Message" }).fill(HELLO);
+    await chat.getByRole("button", { name: "Send" }).click();
+    await chat.getByText(HELLO).waitFor({ timeout: 10000 });
+    await chat.getByRole("button", { name: "Ask a question" }).click();
+    await chat.getByRole("textbox", { name: "Question" }).fill(QUESTION);
+    await chat.getByRole("button", { name: "Send" }).click();
+    await chat.getByText(QUESTION).waitFor({ timeout: 10000 });
+    const body = await q.locator("body").innerText();
+    if (body.includes(testEmail) || body.includes("@")) throw new Error("an email address is shown in Corporate Messages");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-messages.png`, fullPage: true });
+    await a11yOn(q, "corporate-messages");
+
+    // The candidate: the chat in the Inbox, from Example Labs with the verified badge and the anti-scam line.
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/inbox");
+    await p.getByRole("button", { name: /Example Labs/ }).first().click();
+    const thread = p.getByRole("region", { name: "Chat with Example Labs" });
+    await thread.getByText(QUESTION).waitFor({ timeout: 10000 });
+    await thread.getByText("Verified company", { exact: true }).waitFor();
+    await thread.getByText(/Example Labs is a verified company\. Companies never ask for money, OTPs or bank details/).waitFor();
+    await thread.getByText(HELLO).waitFor();
+    await thread.getByText("Question", { exact: true }).waitFor();
+    await thread.getByText(/^Meera Iyer · Example Labs/).first().waitFor();
+    await thread.getByRole("textbox", { name: "Message" }).fill(REPLY);
+    await thread.getByRole("button", { name: "Send" }).click();
+    await thread.getByText(REPLY).waitFor({ timeout: 10000 });
+    await shot("inbox-company-chat");
+    await a11y("inbox-company-chat");
+    // Report and Block are there on a company chat (opened and cancelled here; the store tests file them).
+    await thread.getByRole("button", { name: "Block or report" }).click();
+    await thread.getByRole("checkbox", { name: /Also block Example Labs/ }).waitFor();
+    await thread.getByRole("button", { name: "Cancel" }).click();
+
+    // The company reads the reply.
+    await q.reload();
+    await chat.getByText(REPLY).waitFor({ timeout: 10000 });
+
+    // Phone size in dark mode: Corporate Messages and the chat fit with no sideways scroll.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await chat.waitFor({ timeout: 10000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("corporate messages: horizontal overflow " + overflow + "px");
+    await a11yOn(q, "corporate-messages-phone-dark");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-messages-phone-dark.png`, fullPage: true });
+    await q.setViewportSize({ width: 1280, height: 900 });
+    await q.emulateMedia({ colorScheme: "light" });
+
+    // An Interviewer on the job: no chats to read yet (assignments come with interviews) and nowhere to write.
+    iv = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const ivp = await iv.newPage();
+    ivp.on("pageerror", (e) => problems.push(`pageerror@${ivp.url()}: ${e.message.slice(0, 200)}`));
+    ivp.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    const ivEmail = `iv-${testEmail}`;
+    await signInAs(ivp, "Sana Qureshi", ivEmail);
+    const [ivUser] = await sql`select id from users where email like ${ivEmail + "%"} order by created_at desc limit 1`;
+    const [org] = await sql`select id, email_domain from organizations where email_domain = ${domain}`;
+    const [job] = await sql`select id from jobs where title = ${title}`;
+    await sql`insert into org_members (org_id, user_id, role, work_email_domain, work_email_verified_at, recheck_due_at)
+      values (${org.id}, ${ivUser.id}, 'interviewer', ${org.email_domain}, now(), now() + interval '180 days')`;
+    await sql`insert into job_team (job_id, user_id, role) values (${job.id}, ${ivUser.id}, 'interviewer')`;
+    await ivp.goto(BASE + "/corporate/messages");
+    await ivp.getByText(/Interviewers read the chats of candidates assigned to them/).waitFor({ timeout: 10000 });
+    await ivp.goto(BASE + `/corporate/messages?application=${appId}`);
+    await ivp.getByRole("alert").getByText("That chat isn't available.").waitFor({ timeout: 10000 });
+    if (await ivp.getByRole("textbox", { name: /Message|Question/ }).count()) throw new Error("an Interviewer was offered a box to write in");
+    const ivText = await ivp.locator("body").innerText();
+    if (ivText.includes(HELLO) || ivText.includes(REPLY)) throw new Error("an Interviewer read the chat");
+    await a11yOn(ivp, "corporate-messages-interviewer");
+
+    const [conv] = await sql`select c.id, c.org_id, c.kind from conversations c where c.application_id = ${appId}`;
+    if (conv?.kind !== "application" || conv.org_id !== org.id) throw new Error("the chat isn't the company's");
+    const kinds = (await sql`select m.kind, (m.sender_id = a.user_id) as from_candidate from messages m join conversations c on c.id = m.conversation_id join applications a on a.id = c.application_id where c.id = ${conv.id} order by m.created_at`).map((m) => `${m.kind}${m.from_candidate ? ":candidate" : ""}`);
+    if (kinds.join() !== "system,text,ask_question,text:candidate") throw new Error("messages: " + kinds.join());
+  } catch (e) {
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-fail-company-chats.png`, fullPage: true }).catch(() => {});
+    throw e;
+  } finally {
+    await iv?.close();
+    await sql.end();
+    await p.setViewportSize({ width: 1280, height: 900 }).catch(() => {});
+    await p.emulateMedia({ colorScheme: "light" }).catch(() => {});
+  }
+});
+// The candidate withdraws after Not this time (step 4): the company keeps only a count, and the chat closes.
+await step("corporate applications: withdraw after Not this time; the company sees a count and the chat closes", async () => {
+  if (!q || !postedTitle) throw new Error("no application from the steps before");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const title = postedTitle;
+  try {
+    await p.goto(BASE + "/arrivals");
+    const mine = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
+    await mine.waitFor({ timeout: 10000 });
+    await q.goto(BASE + "/corporate");
+    await q.getByRole("link", { name: new RegExp(`^Board for ${title}`) }).click();
+    await q.waitForURL(/\/corporate\/jobs\/board\?id=/);
+    await q.getByRole("heading", { name: title, level: 1 }).waitFor({ timeout: 10000 });
 
     // Withdrawing stays open after Not this time: the company kept the profile and could reopen it.
     await mine.getByRole("button", { name: `Withdraw ${title} at Example Labs` }).click();
@@ -1132,6 +1273,13 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await q.reload();
     await q.getByText(/1 withdrew/).waitFor({ timeout: 10000 });
     if (await q.getByRole("button", { name: /^Priya Sharma/ }).count()) throw new Error("a withdrawn candidate is still on the board");
+    // The chat closes for both sides: gone from Corporate Messages, closed in the candidate's Inbox.
+    await q.goto(BASE + "/corporate/messages");
+    await q.getByRole("heading", { name: "Messages", level: 1 }).waitFor({ timeout: 10000 });
+    if (await q.getByRole("link", { name: /Priya Sharma/ }).count()) throw new Error("a withdrawn candidate's chat is still in Corporate Messages");
+    await p.goto(BASE + "/inbox");
+    await p.getByRole("button", { name: /Example Labs/ }).first().click();
+    await p.getByRole("region", { name: "Chat with Example Labs" }).getByText(/This chat is closed/).waitFor({ timeout: 10000 });
 
     const [app] = await sql`select a.id, a.stage, a.closed_at, a.withdrawn_at, c.purpose, c.withdrawn_at as consent_withdrawn from applications a join jobs j on j.id = a.job_id join consents c on c.id = a.consent_id where j.title = ${title}`;
     if (app?.stage !== "not_this_time" || !app.closed_at || app.purpose !== "job_application") throw new Error("application not saved as closed with its consent");

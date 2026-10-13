@@ -1,4 +1,5 @@
 import {
+  type AnyPgColumn,
   boolean,
   check,
   date,
@@ -506,7 +507,9 @@ export const reportStatus = pgEnum("report_status", REPORT_STATUSES);
 
 /**
  * One chat (dev/inbox-plan.md, approved 2026-10-11). A direct chat with someone who isn't a connection is a `request`
- * until the other person accepts. `application_id` links an application chat once applications exist (employer side).
+ * until the other person accepts. An application chat (corporate build step 5) is one per application and belongs to
+ * the company (`org_id`), not to one recruiter: who may read it is checked against the live `org_members` and
+ * `job_team` rows every time, and its company-side member rows only hold unread counts.
  */
 export const conversations = pgTable(
   "conversations",
@@ -515,11 +518,18 @@ export const conversations = pgTable(
     kind: conversationKind("kind").notNull(),
     status: conversationStatus("status").notNull(),
     startedBy: uuid("started_by").references(() => users.id, { onDelete: "set null" }),
-    applicationId: uuid("application_id"),
+    /** The application an application chat is about. The chat goes with it. */
+    applicationId: uuid("application_id").references((): AnyPgColumn => applications.id, { onDelete: "cascade" }),
+    /** The company that owns an application chat. Null for direct chats. */
+    orgId: uuid("org_id").references((): AnyPgColumn => organizations.id, { onDelete: "cascade" }),
     createdAt: createdAt(),
     lastMessageAt: timestamp("last_message_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("conversations_started_by").on(t.startedBy)],
+  (t) => [
+    index("conversations_started_by").on(t.startedBy),
+    uniqueIndex("conversations_application").on(t.applicationId),
+    index("conversations_org").on(t.orgId, t.lastMessageAt),
+  ],
 );
 
 /** Who is in a chat. `last_read_at` drives unread; `hidden_at` is "Delete" on a request, which the sender is never told. */

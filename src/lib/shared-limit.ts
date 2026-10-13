@@ -43,6 +43,10 @@ export const LIMITS = {
   jobsPerCompanyDay: { bucket: "job-create-company", max: 20, windowMs: 24 * HOUR },
   /** Applications one person makes a day on CareerMetro (corporate build step 4), so no script can spray a company. */
   applicationsPerUserDay: { bucket: "application-user", max: 20, windowMs: 24 * HOUR },
+  /** Messages one company sends in its application chats a day, all its people together (plan, Abuse and compliance). Keyed by the company's id. */
+  companyMessagesPerCompanyDay: { bucket: "company-message", max: 200, windowMs: 24 * HOUR },
+  /** Messages one person sends in their application chats a day, across every company. */
+  applicationMessagesPerUserDay: { bucket: "application-message-user", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

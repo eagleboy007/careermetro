@@ -21,15 +21,19 @@ export type InboxThread = {
   name: string;
   /** Application chats: the job applied for. */
   job?: string;
+  /** Application chats: the company is verified now. The badge shows only then; the anti-scam line always. */
+  verified?: boolean;
   /** People and requests: the status they set (Working at X, Studying and so on). */
   status?: string;
   unread: boolean;
   messages: InboxMessage[];
   /**
    * `waiting`: my message request, not accepted yet, so I can't send more. `left`: the other person deleted their account
-   * (their messages went with it). `closed`: the chat was closed. Example threads have none.
+   * (their messages went with it). `closed`: the chat was closed (an application chat 30 days after the application
+   * closed, or when it was withdrawn or blocked). `paused`: the company is suspended while we review it. Example
+   * threads have none.
    */
-  state?: "waiting" | "left" | "closed";
+  state?: "waiting" | "left" | "closed" | "paused";
 };
 
 export const INBOX_FILTERS: { key: InboxFilter; label: string }[] = [

@@ -1,4 +1,4 @@
-import type { CandidateView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
+import type { CandidateView, CompanyChatView, CompanyMessagesView, CorporateHomeView, JobBoardView, JobFormData, JobMatchView, MyApplicationView, PostedJobView, SignupDetails } from "@/lib/corporate/types";
 
 /** Made-up company and people for /design and the example preview. No real company or person. */
 export const exampleCorporateHome: CorporateHomeView = {
@@ -150,3 +150,29 @@ export const exampleApplications: MyApplicationView[] = [
     ],
   },
 ];
+
+/** Corporate Messages for a Recruiter admin (build step 5). Made-up people; no email or phone anywhere. */
+export const exampleCompanyMessages: CompanyMessagesView = {
+  company: "Example Labs",
+  status: "verified",
+  role: "admin",
+  items: [
+    { applicationId: "a1", name: "Priya Nair", job: "SOC Analyst L1", stage: "team", preview: "Happy to. I built three dashboards for branch login alerts.", at: "Tue 10:12", unread: true },
+    { applicationId: "a4", name: "Ananya Ghosh", job: "SOC Analyst L1", stage: "shortlisted", preview: "Thanks for applying. We'll write again this week.", at: "Mon 16:40", unread: false },
+  ],
+};
+
+export const exampleCompanyChat: CompanyChatView = {
+  applicationId: "a1",
+  jobId: "j1",
+  job: "SOC Analyst L1",
+  candidate: "Priya Nair",
+  stage: "team",
+  state: "open",
+  messages: [
+    { by: "system", who: "", text: "Applied on CareerMetro." },
+    { by: "team", who: "Rahul Menon", text: "Thanks for applying, Priya. Could you tell us about the Splunk dashboards on your resume?", at: "Mon 11:02" },
+    { by: "me", who: "You", question: true, text: "Which SIEM tools have you used on shift work?", at: "Mon 11:05" },
+    { by: "candidate", who: "Priya Nair", text: "Happy to. I built three dashboards for branch login alerts.", at: "Tue 10:12" },
+  ],
+};

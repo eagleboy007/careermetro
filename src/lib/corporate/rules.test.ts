@@ -2,7 +2,28 @@ import { describe, expect, it } from "vitest";
 import { afterWrongTry, codeMatches, codeState, hashCode, hashWorkEmail, isCodeShape, LOCK_MS, MAX_WRONG_TRIES, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
 import { checkWorkEmail, emailDomain, isFreeMail, normalWebsite, websiteHost, websiteMatchesDomain } from "./domains";
-import { acceptsApplications, canEditJob, canMoveApplications, canOpenJobs, canSeeBoard, canWithdraw, moveRefusal, withdrawConfirmText, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
+import {
+  acceptsApplications,
+  CHAT_WRITE_DAYS,
+  canEditJob,
+  canMoveApplications,
+  canOpenJobs,
+  canSeeBoard,
+  canSendCompanyMessages,
+  canWithdraw,
+  chatClosed,
+  companySendRefusal,
+  moveRefusal,
+  withdrawConfirmText,
+  canPostJobs,
+  isLive,
+  jobsBlocked,
+  openRefusal,
+  removalRefusal,
+  secondAdminDaysLeft,
+  secondAdminDueAt,
+  statusMoveRefusal,
+} from "./rules";
 
 const NOW = new Date("2026-10-12T10:00:00Z");
 const DAY = 86_400_000;
@@ -252,5 +273,42 @@ describe("the board (build step 4)", () => {
     expect(acceptsApplications("open", "suspended")).toBe(false);
     expect(acceptsApplications("paused", "verified")).toBe(false);
     expect(acceptsApplications("closed", "verified")).toBe(false);
+  });
+});
+
+describe("company chats (build step 5)", () => {
+  const open = { closedAt: null, withdrawnAt: null };
+
+  it("let Recruiter admins and Hiring HR on the job send; never Interviewers", () => {
+    expect(canSendCompanyMessages("admin", null)).toBe(true);
+    expect(canSendCompanyMessages("hiring", "owner")).toBe(true);
+    expect(canSendCompanyMessages("hiring", "hiring")).toBe(true);
+    expect(canSendCompanyMessages("hiring", null)).toBe(false);
+    expect(canSendCompanyMessages("interviewer", "interviewer")).toBe(false);
+    expect(canSendCompanyMessages("interviewer", null)).toBe(false);
+  });
+
+  it("keep a chat open while the application is open and for 30 days after it closes", () => {
+    expect(CHAT_WRITE_DAYS).toBe(30);
+    expect(chatClosed(open, "open", NOW)).toBe(false);
+    const closedAt = new Date(NOW.getTime() - 29 * DAY);
+    expect(chatClosed({ closedAt, withdrawnAt: null }, "open", NOW)).toBe(false);
+    expect(chatClosed({ closedAt, withdrawnAt: null }, "open", new Date(closedAt.getTime() + 30 * DAY))).toBe(true);
+  });
+
+  it("close a chat at once when the candidate withdraws or blocks", () => {
+    expect(chatClosed({ closedAt: NOW, withdrawnAt: NOW }, "open", NOW)).toBe(true);
+    expect(chatClosed(open, "closed", NOW)).toBe(true);
+  });
+
+  it("say why the company can't send: interviewers first, then the job team, the company's state, the chat", () => {
+    const ok = { role: "hiring" as const, teamRole: "hiring" as const, orgStatus: "verified" as const, closed: false };
+    expect(companySendRefusal(ok)).toBeNull();
+    expect(companySendRefusal({ ...ok, role: "interviewer", teamRole: "interviewer", orgStatus: "suspended" })).toBe("read_only");
+    expect(companySendRefusal({ ...ok, teamRole: null })).toBe("not_allowed");
+    expect(companySendRefusal({ ...ok, orgStatus: "suspended" })).toBe("suspended");
+    expect(companySendRefusal({ ...ok, orgStatus: "pending" })).toBe("suspended");
+    expect(companySendRefusal({ ...ok, closed: true })).toBe("closed");
+    expect(companySendRefusal({ ...ok, role: "admin", teamRole: null })).toBeNull();
   });
 });

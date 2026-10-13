@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // The icon is src/app/icon.svg. While a server action's refresh briefly re-renders the head, a browser can fall back
+  // to /favicon.ico; answer it with the same icon instead of a 404.
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/icon.svg" }];
+  },
   turbopack: {
     rules: {
       "*.css": {
