@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { StandInNote, UnknownSkills } from "@/components/gaps/stand-in-note";
+import { ScreeningCheck } from "@/components/resume/screening-check";
 import { GapCard } from "@/components/route/gap-card";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
@@ -12,6 +13,8 @@ import { SiteHeader } from "@/components/site/site-header";
 import { ButtonLink } from "@/components/ui/button";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { standInForPage } from "@/lib/jobs/store";
+import { screeningForPage } from "@/lib/resume/screening-store";
+import type { ScreeningView } from "@/lib/schemas";
 import { errorFields, logEvent } from "@/lib/log";
 import { readOwner } from "@/lib/session";
 
@@ -52,6 +55,13 @@ async function StandInGaps({ params }: { params: Promise<{ id: string; checkId: 
     );
   }
 
+  // The screening check (FR-34) against this posting; a failure to work it out never hides the gaps.
+  let screening: ScreeningView | null = null;
+  try {
+    screening = owner ? await screeningForPage(id, owner, { checkId }) : null;
+  } catch (error) {
+    logEvent("error", "screening_failed", { route: "/resume/[id]/job/[checkId]", ...errorFields(error) });
+  }
   const top = view.gaps.slice(0, SHOWN_GAPS);
   const rest = view.gaps.slice(SHOWN_GAPS);
   return (
@@ -91,6 +101,7 @@ async function StandInGaps({ params }: { params: Promise<{ id: string; checkId: 
       <CoveredSkills title="Skills your resume already shows" skills={view.met} />
       <CoveredSkills title="Good to have" skills={view.goodToHave} />
       <UnknownSkills names={view.unknown} />
+      {screening && <ScreeningCheck view={screening} resumeId={id} />}
       <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
         <p className="font-semibold">Found a role from our list that fits?</p>
         <p className="text-sm text-muted">A role from our list gives you goals and a short path with free resources.</p>

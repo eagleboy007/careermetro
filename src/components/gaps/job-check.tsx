@@ -84,6 +84,7 @@ export function JobCheck({
             <JobCheckResult
               key={c.id}
               check={c}
+              resumeId={resumeId}
               roleTitle={roleTitle}
               planHref={`/resume/${resumeId}/path/${roleSlug}?job=${c.id}`}
               goals={goals}

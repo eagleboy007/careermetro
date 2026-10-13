@@ -229,6 +229,44 @@ await step("gaps say how often postings ask for a skill, where we measured it", 
   const labels = await p.locator("article").getByText(/^Asked in (\d+|fewer than 1) of 10 postings$/).count();
   if (labels < 1) throw new Error("no gap says how often postings ask for it");
 });
+await step("screening check: keywords, layout and headings for the uploaded PDF, and nothing added without a yes", async () => {
+  // FR-34 (dev/resume-check-plan.md). The walk uploaded a one-column PDF with standard headings.
+  const check = p.locator('section[aria-labelledby="screening-check"]');
+  await check.waitFor({ timeout: 10000 });
+  const text = await check.innerText();
+  // The labels are set in capitals by CSS, which innerText follows.
+  for (const label of ["KEYWORDS", "LAYOUT", "HEADINGS"]) if (!text.includes(label)) throw new Error(`summary has no ${label} line`);
+  if (/%|score/i.test(text)) throw new Error("screening readiness shown as a number");
+  if (!text.includes("We found nothing in your PDF that screening software reads badly.")) throw new Error("layout of the uploaded PDF not checked");
+  if (!text.includes("Your headings use names screening software knows")) throw new Error("headings not checked");
+  if (!/A PDF doesn't tell us about tables, text boxes and headers and footers/.test(text)) throw new Error("PDF limits not said");
+  const href = await check.getByRole("link", { name: "Download Word" }).getAttribute("href");
+  if (!/\/api\/resume\/[0-9a-f-]+\/export\?format=docx$/.test(href ?? "")) throw new Error("fix-up doesn't link to the download: " + href);
+  const keywords = check.getByRole("button", { name: /^I have this: / });
+  if ((await keywords.count()) < 1) throw new Error("no missing keyword to confirm");
+  // Opening and cancelling saves nothing: the gaps stay as they were.
+  const gapsBefore = await p.locator("article").allInnerTexts();
+  await keywords.first().click();
+  await check.getByText("We add only the skill's name. It stays a goal until you prove it.").waitFor({ timeout: 5000 });
+  await a11y("screening-confirm-open");
+  await check.getByRole("button", { name: "Cancel" }).click();
+  await p.reload();
+  await settled();
+  if (JSON.stringify(await p.locator("article").allInnerTexts()) !== JSON.stringify(gapsBefore)) throw new Error("cancelling a keyword changed the gaps");
+  await check.scrollIntoViewIfNeeded();
+  await shot("screening-check");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("screening-check-dark");
+  await p.setViewportSize({ width: 360, height: 780 });
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  await check.scrollIntoViewIfNeeded();
+  await shot("screening-check-phone-dark");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  await p.emulateMedia({ colorScheme: "light" });
+  if (overflow > 1) throw new Error("gaps with the screening check scroll sideways at 360px: " + overflow + "px");
+});
 // A role our library doesn't have (role-suggest-plan.md part B, point 4): the search counts it, and a posting stands in.
 let roleGapsUrl = "";
 await step("my role isn't listed: the search counts it, and a posting stands in as the target", async () => {
@@ -289,6 +327,7 @@ await step("my role isn't listed: the search counts it, and a posting stands in 
   if (/Kubernetes/.test(text)) throw new Error("a skill with an invented quote was kept");
   if (/Asked in/.test(text)) throw new Error("a posting's gaps claim how common a skill is");
   if (!text.includes("Not in our skill list yet")) throw new Error("unknown skills not listed");
+  if (!/Screening check[\s\S]*asks for/i.test(text)) throw new Error("no screening check against the posting");
   await shot("stand-in-gaps");
   await a11y("stand-in-gaps");
   await p.emulateMedia({ colorScheme: "dark" });
@@ -2010,6 +2049,24 @@ if (process.env.DATABASE_URL) {
     await a11y("today-arrived-your-choice");
   });
 }
+// After everything else, since it saves a new profile version: "I have this" adds the skill as listed only, so it leaves
+// the missing keywords and stays a gap with weak evidence.
+await step("screening check: confirm a missing keyword, and it stays a weak gap", async () => {
+  await p.goto(pathUrl.replace("/path/", "/gaps/"));
+  await settled();
+  const check = p.locator('section[aria-labelledby="screening-check"]');
+  const first = check.getByRole("button", { name: /^I have this: / }).first();
+  const name = (await first.getAttribute("aria-label")).replace(/^I have this: /, "");
+  await first.click();
+  await check.getByRole("button", { name: `Add ${name}`, exact: true }).click();
+  await check.getByRole("status").filter({ hasText: `Added ${name} to your skills list` }).waitFor({ timeout: 15000 });
+  await p.reload();
+  await settled();
+  if (await check.getByRole("button", { name: `I have this: ${name}`, exact: true }).count()) throw new Error("a confirmed keyword is still listed as missing");
+  const card = p.locator("article").filter({ hasText: name }).first();
+  await card.getByText("Weak evidence").waitFor({ timeout: 10000 });
+  await shot("screening-confirmed");
+});
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
 if (process.env.GITHUB_ACTIONS) for (const pr of problems) console.log(`::error title=e2e problem::${pr.split("\n")[0]}`);

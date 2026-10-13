@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ConfirmKeyword } from "@/components/resume/confirm-keyword";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { AddGoal, RemoveCheck, type GoalState } from "./job-check-actions";
@@ -51,6 +52,7 @@ export function Row({ name, children }: { name: string; children?: ReactNode }) 
  */
 export function JobCheckResult({
   check,
+  resumeId,
   roleTitle,
   planHref,
   goals,
@@ -58,6 +60,8 @@ export function JobCheckResult({
   demo = false,
 }: {
   check: JobCheckView;
+  /** For "I have this" on skills the resume doesn't name (FR-34 screening check). */
+  resumeId: string;
   roleTitle: string;
   /** The Path page for this job: "Plan for this job". */
   planHref: string;
@@ -67,6 +71,10 @@ export function JobCheckResult({
   demo?: boolean;
 }) {
   const asked = check.covered.length + check.alsoGoals.length + check.onlyThisJob.length;
+  // Keywords this posting asks for that the resume doesn't name at all (FR-34): the person can confirm they have one.
+  const unnamed = [...check.alsoGoals, ...check.onlyThisJob].filter((s) => s.status === "missing").length;
+  const confirm = (s: { skillId: string; skillName: string; status: string }) =>
+    s.status === "missing" ? <ConfirmKeyword resumeId={resumeId} keyword={{ skillId: s.skillId, skillName: s.skillName, options: [{ skillId: s.skillId, skillName: s.skillName }] }} demo={demo} /> : null;
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
       <div className="flex flex-col gap-1">
@@ -79,6 +87,12 @@ export function JobCheckResult({
             ? "This posting asks for no skills we can check yet."
             : `You cover ${check.covered.length} of the ${asked} skills this job asks for.`}
         </p>
+        {unnamed > 0 && (
+          <p className="text-sm text-muted">
+            {unnamed === 1 ? "One skill marked Missing isn't named" : `${unnamed} skills marked Missing aren't named`} on your resume, and screening software
+            looks for them. Have one? Press I have this.
+          </p>
+        )}
       </div>
       <Group title="Covered" count={check.covered.length}>
         {check.covered.map((s) => (
@@ -91,6 +105,7 @@ export function JobCheckResult({
         {check.alsoGoals.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
+            {confirm(s)}
           </Row>
         ))}
       </Group>
@@ -102,6 +117,7 @@ export function JobCheckResult({
         {check.onlyThisJob.map((s) => (
           <Row key={s.skillId} name={s.skillName}>
             <StatusChip status={s.status} />
+            {confirm(s)}
             <AddGoal
               checkId={check.id}
               skillId={s.skillId}

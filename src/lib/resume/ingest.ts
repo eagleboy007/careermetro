@@ -10,6 +10,8 @@ import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
 import { checkName, NAME_MISMATCH_MESSAGE, NAME_NEEDED_MESSAGE, nameHashes } from "./name-match";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
+import { detectHeadings } from "./sections";
+import type { ResumeScreening } from "@/lib/schemas";
 
 export const RESUME_POLICY_VERSION = "2026-10-draft";
 export const LIMITS = {
@@ -83,7 +85,7 @@ async function checkLimits(tx: Db | Tx, owner: Owner, hash: string): Promise<Ing
 }
 
 /** Checks limits and inserts the consent and a "parsing" resume row under one lock. Returns the resume id. */
-function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestResult | string> {
+function reserve(db: Db, input: IngestInput, type: ResumeType, screening: ResumeScreening): Promise<IngestResult | string> {
   return db.transaction(async (tx) => {
     // Waiting uploads hold a pooled connection, so give up quickly rather than queue.
     await tx.execute(sql.raw(`set local lock_timeout = ${Math.trunc(LIMITS.reserveLockTimeoutMs)}`));
@@ -105,6 +107,7 @@ function reserve(db: Db, input: IngestInput, type: ResumeType): Promise<IngestRe
         mimeType: MIME[type],
         sizeBytes: input.bytes.length,
         status: "parsing",
+        screening,
       })
       .returning({ id: resumes.id });
     return resume.id;
@@ -145,10 +148,16 @@ export async function ingestResume(input: IngestInput, deps: { db?: Db; client?:
     throw error;
   }
   const masked = maskPii(extracted.text).text;
+  // FR-34: layout and headings are read now, while the file is in memory; only flags and codes are kept.
+  const screening: ResumeScreening = {
+    version: 1,
+    layout: extracted.type === "text" ? "pasted" : (extracted.layout ?? "unread"),
+    headings: detectHeadings(extracted.text),
+  };
 
   let reserved;
   try {
-    reserved = await reserve(db, input, extracted.type);
+    reserved = await reserve(db, input, extracted.type, screening);
   } catch (error) {
     // 55P03 is lock_not_available: too many uploads at once. A retry soon will work, unlike a spent budget.
     if (pgCode(error) === "55P03") {

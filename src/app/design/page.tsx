@@ -17,6 +17,14 @@ import { SkillCoverageBar } from "@/components/route/skill-coverage-bar";
 import { ProfileEditor } from "@/components/resume/profile-editor";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { ResumeDownload } from "@/components/resume/resume-download";
+import { ScreeningCheck } from "@/components/resume/screening-check";
+import {
+  exampleScreeningDocx,
+  exampleScreeningOld,
+  exampleScreeningPasted,
+  exampleScreeningPdf,
+  exampleScreeningReady,
+} from "@/lib/resume/screening-fixtures";
 import { UploadForm } from "@/components/resume/upload-form";
 import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
@@ -781,9 +789,10 @@ export default function DesignPage() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check result</h2>
           <p className="text-sm text-muted">Signed in: Power BI is a Your choice goal already, so it can be removed; the other skill can be added.</p>
-          <JobCheckResult check={exampleJobCheck} roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], chosen: { "power-bi": "example-goal" }, here: "/design" }} demo />
+          <JobCheckResult check={exampleJobCheck} resumeId="example" roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], chosen: { "power-bi": "example-goal" }, here: "/design" }} demo />
           <p className="text-sm text-muted">Not signed in: goals are kept for an account.</p>
           <JobCheckResult
+            resumeId="example"
             check={{ ...exampleJobCheck, id: "example-anonymous", alsoGoals: [], notAsked: [], covered: [], goodToHave: [], unknown: [] }}
             roleTitle="Data Analyst"
             planHref="/design"
@@ -791,6 +800,7 @@ export default function DesignPage() {
             demo
           />
           <JobCheckResult
+            resumeId="example"
             check={{ ...exampleJobCheck, id: "example-empty", company: "Sample Retail LLP", title: "MIS Executive", covered: [], alsoGoals: [], onlyThisJob: [], goodToHave: [], unknown: ["Tally"] }}
             roleTitle="Data Analyst"
             planHref="/design"
@@ -839,6 +849,23 @@ export default function DesignPage() {
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
           <p className="text-sm text-muted">Shown above the check once the resume is confirmed.</p>
           <ResumeDownload resumeId="example" named={false} demo />
+        </div>
+      </section>
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="flex min-w-0 flex-col gap-4">
+          <h2 className="text-2xl font-semibold">Screening check</h2>
+          <p className="text-sm text-muted">On the Gaps page, against the target role: a two-column PDF with a photo and renamed headings.</p>
+          <ScreeningCheck view={exampleScreeningPdf} resumeId="example" demo />
+          <p className="text-sm text-muted">A Word file with a table, text boxes and header text, against a role with a &ldquo;one of these&rdquo; group.</p>
+          <ScreeningCheck view={exampleScreeningDocx} resumeId="example" demo />
+        </div>
+        <div className="flex min-w-0 flex-col gap-4">
+          <p className="text-sm text-muted">Against a pasted job the resume fully covers, from a clean Word file.</p>
+          <ScreeningCheck view={exampleScreeningReady} resumeId="example" demo />
+          <p className="text-sm text-muted">Pasted resume text: no layout to check.</p>
+          <ScreeningCheck view={exampleScreeningPasted} resumeId="example" demo />
+          <p className="text-sm text-muted">Uploaded before the check: no flags, so it asks for the file again and never guesses.</p>
+          <ScreeningCheck view={exampleScreeningOld} resumeId="example" demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>

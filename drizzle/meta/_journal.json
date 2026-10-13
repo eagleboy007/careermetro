@@ -176,6 +176,13 @@
       "when": 1791863480012,
       "tag": "0024_account_settings_2",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1791867990332,
+      "tag": "0026_resume_screening",
+      "breakpoints": true
     }
   ]
 }
