@@ -45,3 +45,5 @@ export const DOMAIN_TAKEN_TEXT = "This company is already on CareerMetro. Ask on
 export const SIGNUP_CLOSED_TEXT = "Company sign-up opens soon.";
 /** "Your choice" goals one person may have: goals they add themselves, such as from a job check's "Only for this job". */
 export const MAX_CHOICE_GOALS = 20;
+/** A role someone looked for and we don't have (role_requests): its title is cut to this many characters. */
+export const ROLE_REQUEST_TITLE_MAX = 80;

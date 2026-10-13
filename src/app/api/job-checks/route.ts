@@ -1,4 +1,5 @@
 import { roleProfiles } from "@/content";
+import { countRoleRequest } from "@/lib/jobs/role-requests";
 import { createJobCheck, JOB_CHECK_LIMITS, type CreateJobCheckResult } from "@/lib/jobs/store";
 import { jobCheckRequest, JOB_TEXT_MAX } from "@/lib/schemas";
 import { isSameOrigin, readOwner } from "@/lib/session";
@@ -28,8 +29,9 @@ const FAILURES: Record<Exclude<CreateJobCheckResult, { ok: true }>["reason"], [n
 
 /**
  * "Check against a job" (role-suggest-plan.md part B): reads the skills a pasted posting asks for and saves them for
- * this resume and target role. Body: { resumeId, roleSlug, company, title, text }. The posting text is never stored,
- * logged or sent back.
+ * this resume and target role. Body: { resumeId, roleSlug, company, title, text }. A null roleSlug saves a check that
+ * stands in as the target for a role our library doesn't have, and counts its job title in role_requests (part 3).
+ * The posting text is never stored, logged or sent back.
  */
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail(403, "Please check a job from the CareerMetro website.");
@@ -47,17 +49,25 @@ export async function POST(request: Request) {
     const own = issue && ["company", "title", "text"].includes(String(issue.path[0])) && issue.code !== "invalid_type";
     return fail(400, own ? issue.message : "Add the company, the job title and the posting text.");
   }
-  if (!roleProfiles.some((r) => r.slug === parsed.data.roleSlug)) return fail(404, "We couldn't find this role.");
+  const { roleSlug } = parsed.data;
+  if (roleSlug !== null && !roleProfiles.some((r) => r.slug === roleSlug)) return fail(404, "We couldn't find this role.");
+  // Logged as the role's slug, or "stand-in" for a role we don't have: never the typed title.
+  const role = roleSlug ?? "stand-in";
 
   const owner = await readOwner();
   if (!owner) return fail(404, NOT_FOUND);
   try {
     const result = await createJobCheck(parsed.data, owner);
     if (result.ok) {
-      logEvent("info", "job_check_saved", { route: "/api/job-checks", role: parsed.data.roleSlug, reused: result.reused });
+      logEvent("info", "job_check_saved", { route: "/api/job-checks", role, reused: result.reused });
+      // A role we don't have is counted once its posting is saved; countRoleRequest never throws.
+      if (roleSlug === null && !result.reused) {
+        const outcome = await countRoleRequest(parsed.data.title, owner);
+        logEvent("info", "role_request", { route: "/api/job-checks", outcome });
+      }
       return Response.json({ ok: true, id: result.id, reused: result.reused });
     }
-    logEvent("warn", "job_check_refused", { route: "/api/job-checks", role: parsed.data.roleSlug, reason: result.reason });
+    logEvent("warn", "job_check_refused", { route: "/api/job-checks", role, reason: result.reason });
     const [status, message] = FAILURES[result.reason];
     return fail(status, message);
   } catch (error) {

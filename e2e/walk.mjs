@@ -203,6 +203,97 @@ await step("check against a job: the groups show, and the gaps stay as they were
   await a11y("job-check-dark");
   await p.emulateMedia({ colorScheme: "light" });
 });
+await step("gaps say how often postings ask for a skill, where we measured it", async () => {
+  // Data Analyst was measured on public postings (data/jd-snapshots), so its gaps carry the number.
+  const labels = await p.locator("article").getByText(/^Asked in (\d+|fewer than 1) of 10 postings$/).count();
+  if (labels < 1) throw new Error("no gap says how often postings ask for it");
+});
+// A role our library doesn't have (role-suggest-plan.md part B, point 4): the search counts it, and a posting stands in.
+let roleGapsUrl = "";
+await step("my role isn't listed: the search counts it, and a posting stands in as the target", async () => {
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-freight-supply-chain-analyst.json", import.meta.url), "utf8"));
+  roleGapsUrl = p.url().split("?")[0];
+  await p.goto(roleGapsUrl.replace(/\/gaps\/[^/]+$/, "/role"));
+  const search = p.getByRole("searchbox", { name: "Search roles or skills" });
+  // Typing, pausing and leaving the box count nothing: only Enter or the "My role isn't listed" link does.
+  let sentEarly = 0;
+  const watch = (r) => r.method() === "POST" && r.url().includes("/api/role-requests") && sentEarly++;
+  p.on("request", watch);
+  await search.pressSequentially(posting.title, { delay: 20 });
+  await p.getByText(/^No role matches/).waitFor({ timeout: 5000 });
+  await p.waitForTimeout(3500);
+  await p.getByRole("heading", { name: "All roles" }).click();
+  await p.waitForTimeout(500);
+  p.off("request", watch);
+  if (sentEarly) throw new Error(`typing alone sent ${sentEarly} role requests`);
+  await search.focus();
+  const [counted] = await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/api/role-requests"), { timeout: 10000 }),
+    search.press("Enter"),
+  ]);
+  if (counted.status() !== 200) throw new Error(`role request answered ${counted.status()}`);
+  if (process.env.DATABASE_URL) {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+    try {
+      const [row] = await sql`select count from role_requests where title = ${posting.title.toLowerCase()}`;
+      if (!row || row.count < 1) throw new Error("the missing role wasn't counted");
+    } finally {
+      await sql.end();
+    }
+  }
+  await shot("role-not-listed");
+  await a11y("role-not-listed");
+
+  await p.getByRole("link", { name: /My role isn't listed/ }).click();
+  await p.waitForURL(/\/role\/other$/, { timeout: 15000 });
+  if (/title|supply/i.test(p.url())) throw new Error("the typed title is in the address");
+  await p.getByLabel("Job title", { exact: true }).waitFor({ timeout: 10000 });
+  // Carried in sessionStorage, read once the page is in the browser.
+  const carried = await p
+    .waitForFunction((t) => document.querySelector('input[name="title"]')?.value === t, posting.title, { timeout: 10000 })
+    .then(() => true, () => false);
+  if (!carried) throw new Error("typed title not carried over");
+  await a11y("stand-in-form");
+  await p.getByLabel("Company", { exact: true }).fill(posting.company);
+  await p.getByLabel("Job posting", { exact: true }).fill(posting.text);
+  await p.getByRole("button", { name: "Check my gaps for this job" }).click();
+  await p.waitForURL(/\/job\/[0-9a-f-]+$/, { timeout: 60000 });
+  await settled();
+  await p.getByRole("heading", { level: 1, name: "Your gaps for this job" }).waitFor({ timeout: 10000 });
+  await p.getByRole("note").getByText("This job posting stands in until we add the role").waitFor();
+  const text = await p.locator("body").innerText();
+  if ((await p.locator("article").count()) < 1) throw new Error("no gaps shown for the posting");
+  if (!/You cover \d+ of the \d+ skills this job asks for\./.test(text)) throw new Error("readiness not in words about this job");
+  if (/Kubernetes/.test(text)) throw new Error("a skill with an invented quote was kept");
+  if (/Asked in/.test(text)) throw new Error("a posting's gaps claim how common a skill is");
+  if (!text.includes("Not in our skill list yet")) throw new Error("unknown skills not listed");
+  await shot("stand-in-gaps");
+  await a11y("stand-in-gaps");
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("stand-in-gaps-dark");
+  await p.setViewportSize({ width: 360, height: 780 });
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  await shot("stand-in-gaps-phone-dark");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  await p.emulateMedia({ colorScheme: "light" });
+  if (overflow > 1) throw new Error("stand-in gaps scroll sideways at 360px: " + overflow + "px");
+
+  // The role list now offers it again, and the role's own Gaps page is as it was.
+  await p.goto(roleGapsUrl.replace(/\/gaps\/[^/]+$/, "/role"));
+  await p.getByRole("link", { name: new RegExp(`${posting.title} at ${posting.company}`) }).waitFor({ timeout: 10000 });
+  await p.setViewportSize({ width: 360, height: 780 });
+  const roleOverflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  await p.setViewportSize({ width: 1280, height: 900 });
+  if (roleOverflow > 1) throw new Error("role list scrolls sideways at 360px: " + roleOverflow + "px");
+});
+await step("back to the role's gaps", async () => {
+  await p.goto(roleGapsUrl);
+  await settled();
+  await p.getByRole("link", { name: /build my path/i }).waitFor({ timeout: 10000 });
+});
 let pathUrl = "";
 await step("path", async () => {
   await p.getByRole("link", { name: /build my path/i }).click();

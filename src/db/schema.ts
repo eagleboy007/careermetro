@@ -235,7 +235,8 @@ export const jobChecks = pgTable(
     resumeId: uuid("resume_id")
       .notNull()
       .references(() => resumes.id, { onDelete: "cascade" }),
-    roleSlug: text("role_slug").notNull(),
+    /** The target role checked against; null when the check stands in for a role our library doesn't have yet. */
+    roleSlug: text("role_slug"),
     company: text("company").notNull(),
     title: text("title").notNull(),
     requiredSkillIds: text("required_skill_ids").array().notNull().default(sql`'{}'::text[]`),
@@ -249,6 +250,18 @@ export const jobChecks = pgTable(
   },
   (t) => [index("job_checks_resume").on(t.resumeId, t.createdAt)],
 );
+
+/**
+ * Roles people looked for that our library doesn't have (role-suggest-plan.md part B): a typed title, normalised
+ * (src/lib/schemas/job-check.ts), and how often it was asked for. Nothing about the person is kept, so the daily
+ * cleanup leaves it alone. Counted by src/lib/jobs/role-requests.ts, at most once a day per person and title.
+ */
+export const roleRequests = pgTable("role_requests", {
+  title: text("title").primaryKey(),
+  count: integer("count").notNull().default(1),
+  firstSeen: timestamp("first_seen", { withTimezone: true }).notNull().defaultNow(),
+  lastSeen: timestamp("last_seen", { withTimezone: true }).notNull().defaultNow(),
+});
 
 /* AI calls and analyses --------------------------------------------------- */
 

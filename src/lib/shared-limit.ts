@@ -35,6 +35,10 @@ export const LIMITS = {
   workEmailCodePerDomainDay: { bucket: "work-email-code-domain", max: 20, windowMs: 24 * HOUR },
   /** "Ask for access" requests one person sends to companies. */
   corporateRequestsPerUser: { bucket: "corporate-request", max: 5, windowMs: 24 * HOUR },
+  /** Missing roles one person adds to role_requests a day (role-suggest-plan.md part B), so no one can fill the list. */
+  roleRequestsPerOwner: { bucket: "role-request", max: 10, windowMs: 24 * HOUR },
+  /** The same missing role counted for one person: once a day, however often they search for it. */
+  roleRequestTitlePerOwner: { bucket: "role-request-title", max: 1, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the writes below, now and then. */

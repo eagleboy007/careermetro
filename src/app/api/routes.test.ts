@@ -24,6 +24,7 @@ const m = vi.hoisted(() => ({
   createJobCheck: vi.fn(),
   addJobCheckGoal: vi.fn(),
   deleteJobCheck: vi.fn(),
+  countRoleRequest: vi.fn(async () => "counted"),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -44,6 +45,7 @@ vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeC
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
+vi.mock("@/lib/jobs/role-requests", () => ({ countRoleRequest: m.countRoleRequest }));
 vi.mock("@/db", () => ({ getDb: m.getDb }));
 vi.mock("@/lib/resume/parse", async (original) => ({ ...(await original<typeof import("@/lib/resume/parse")>()), parseResume: m.parseResume }));
 vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
@@ -58,6 +60,7 @@ import { POST as checkJob } from "@/app/api/job-checks/route";
 import { DELETE as removeCheck } from "@/app/api/job-checks/[id]/route";
 import { DELETE as removeGoalRoute } from "@/app/api/goals/[id]/route";
 import { POST as addCheckGoal } from "@/app/api/job-checks/[id]/goals/route";
+import { POST as requestRole } from "@/app/api/role-requests/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
@@ -477,6 +480,24 @@ describe("job check", () => {
     expect(m.createJobCheck).toHaveBeenCalledWith({ ...good, text: posting.trim() }, { userId: "user-1" });
   });
 
+  it("stands in for a role we don't have, and counts its title once it is saved", async () => {
+    const standIn = { ...good, roleSlug: null, title: "Supply Chain Analyst" };
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-2", reused: false });
+    expect(await json(await checkJob(post(standIn)))).toEqual({ status: 200, body: { ok: true, id: "check-2", reused: false } });
+    expect(m.createJobCheck).toHaveBeenCalledWith({ ...standIn, text: posting.trim() }, { sessionId: SESSION });
+    expect(m.countRoleRequest).toHaveBeenCalledWith("Supply Chain Analyst", { sessionId: SESSION });
+
+    // Not again for a posting checked before, nor when nothing was saved, nor for a library role.
+    m.countRoleRequest.mockClear();
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-2", reused: true });
+    await checkJob(post(standIn));
+    m.createJobCheck.mockResolvedValueOnce({ ok: false, reason: "limit" });
+    await checkJob(post(standIn));
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-3", reused: false });
+    await checkJob(post(good));
+    expect(m.countRoleRequest).not.toHaveBeenCalled();
+  });
+
   it("says plainly why nothing was saved", async () => {
     const cases = [
       ["not_found", 404, /couldn't find/],
@@ -611,5 +632,45 @@ describe("remove from my goals", () => {
     expect((await del()).status).toBe(404);
     m.removeChoiceGoal.mockRejectedValueOnce(new Error("Failed query"));
     expect((await del()).status).toBe(500);
+  });
+});
+
+describe("role requests", () => {
+  const post = (body: unknown, origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    new Request(SITE + "/api/role-requests", {
+      method: "POST",
+      headers: { ...(origin ? { origin } : {}), "content-type": "application/json", ...headers },
+      body: typeof body === "string" ? body : JSON.stringify(body),
+    });
+
+  it("refuses another site, big or wrong bodies, and no session, before counting anything", async () => {
+    for (const origin of [null, "https://evil.example"]) expect((await requestRole(post({ title: "Supply Chain Analyst" }, origin))).status).toBe(403);
+    expect((await requestRole(post({ title: "Supply Chain Analyst" }, SITE, { "content-length": "5000" }))).status).toBe(413);
+    for (const body of ["not json", {}, { title: 5 }, { title: "priya@example.com" }, { title: "Analyst", email: "a@b.c" }, { title: "x".repeat(300) }]) {
+      expect((await requestRole(post(body))).status).toBe(400);
+    }
+    m.jar!.clear();
+    expect((await requestRole(post({ title: "Supply Chain Analyst" }))).status).toBe(404);
+    expect(m.countRoleRequest).not.toHaveBeenCalled();
+  });
+
+  it("counts for the session or account, and answers the same whether or not it counted", async () => {
+    for (const outcome of ["counted", "repeat", "limit", "known", "failed"]) {
+      m.countRoleRequest.mockResolvedValueOnce(outcome);
+      expect(await json(await requestRole(post({ title: "  Supply   Chain Analyst" })))).toEqual({ status: 200, body: { ok: true } });
+    }
+    expect(m.countRoleRequest).toHaveBeenLastCalledWith("supply chain analyst", { sessionId: SESSION });
+    m.account = { id: "user-1" };
+    await requestRole(post({ title: "Supply Chain Analyst" }));
+    expect(m.countRoleRequest).toHaveBeenLastCalledWith("supply chain analyst", { userId: "user-1" });
+  });
+
+  it("never logs the title", async () => {
+    const lines: string[] = [];
+    const spy = vi.spyOn(console, "log").mockImplementation((...a: unknown[]) => void lines.push(a.map(String).join(" ")));
+    await requestRole(post({ title: "Supply Chain Analyst" }));
+    expect(lines.join(" ")).toContain("role_request");
+    expect(lines.join(" ").toLowerCase()).not.toContain("supply");
+    spy.mockRestore();
   });
 });

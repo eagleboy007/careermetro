@@ -6,6 +6,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 import * as schema from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { exportAccountData } from "@/lib/account/export";
+import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
 import { buildGapAnalysis } from "@/lib/gaps/analysis";
 import { matchProfile, MATCHER_VERSION } from "@/lib/gaps/match";
 import type { Owner } from "@/lib/owner";
@@ -15,7 +16,7 @@ import { todayStateFor } from "@/lib/today/state";
 import { mapLineFor } from "@/lib/map/store";
 import { rideGoalsFor } from "@/lib/ride/store";
 import { mapLine, MAX_CHOICE_GOALS } from "@/lib/schemas";
-import { addJobCheckGoal, createJobCheck, deleteJobCheck, goalSkillsOf, JOB_CHECK_LIMITS, jobChecksForPage, jobTextHash, listJobChecks, ownJobCheck } from "./store";
+import { addJobCheckGoal, createJobCheck, deleteJobCheck, goalSkillsOf, JOB_CHECK_LIMITS, jobChecksForPage, jobTextHash, listJobChecks, listStandInChecks, ownJobCheck, standInForPage } from "./store";
 import type { ParseJdClient } from "./parse";
 
 vi.mock("server-only", () => ({}));
@@ -390,6 +391,81 @@ describe.skipIf(!db)("job checks (database)", () => {
       const anon = await seed();
       const made = await createJobCheck(request(anon.resumeId), anon.owner, { db: db!, client: jdClient().client });
       expect(made.ok && (await deleteJobCheck(made.id, anon.owner, db!))).toBe(true);
+    });
+  });
+
+  describe("standing in for a role we don't have", () => {
+    const standIn = JSON.parse(readFileSync("fixtures/job-postings/example-freight-supply-chain-analyst.json", "utf8")) as typeof fixture;
+    const standInRequest = (resumeId: string): JobCheckRequest => ({ resumeId, roleSlug: null, company: standIn.company, title: standIn.title, text: standIn.text });
+
+    it("saves with no role, shows the posting's skills as gaps, and makes no goal, analysis, path or ride", async () => {
+      const me = await seed({ account: true });
+      const snapshot = async () => ({
+        goals: await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, me.userId!)),
+        analyses: await db!.select().from(schema.gapAnalyses).where(sql`${schema.gapAnalyses.profileId} in (select id from profiles where resume_id = ${me.resumeId})`),
+        ride: await db!.select().from(schema.rideDays).where(eq(schema.rideDays.userId, me.userId!)),
+        paths: await db!.select().from(schema.paths).where(sql`${schema.paths.gapAnalysisId} in (select g.id from gap_analyses g join profiles p on p.id = g.profile_id where p.resume_id = ${me.resumeId})`),
+      });
+      const before = await snapshot();
+      const result = await createJobCheck(standInRequest(me.resumeId), me.owner, { db: db!, client: jdClient(standIn.skills).client });
+      expect(result).toMatchObject({ ok: true, reused: false });
+      expect(await snapshot()).toEqual(before);
+
+      const [row] = await checksOf(me.resumeId);
+      expect(row).toMatchObject({ roleSlug: null, title: "Supply Chain Analyst", unknownSkills: ["Demand forecasting", "SAP MM"] });
+      const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
+      expect(call.inputRefs).toEqual({ resumeId: me.resumeId });
+
+      const view = await standInForPage(me.resumeId, row.id, me.owner, { db: db! });
+      expect(view).not.toBeNull();
+      expect(view!.gaps.map((g) => g.skillId)).toEqual(["excel", "data-cleaning", "statistics", "power-bi"]);
+      expect(view!.met.map((m) => m.skillId)).toEqual(["sql"]);
+      expect(view!.readiness.headline).toBe("You cover 1 of the 5 skills this job asks for.");
+
+      // A stand-in check isn't one of the role's job checks, and a role's check isn't a stand-in.
+      expect(await listJobChecks(me.resumeId, me.owner, role.slug, db!)).toEqual([]);
+      expect(await listStandInChecks(me.resumeId, me.owner, db!)).toEqual([{ id: row.id, company: standIn.company, title: standIn.title, createdAt: row.createdAt }]);
+
+      // It makes no goals: "Add as my goal" and the job plan belong to checks against a library role.
+      expect(await ownJobCheck(row.id, me.owner, { db: db! })).toBeNull();
+      expect(await addJobCheckGoal(row.id, "statistics", me.userId!, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+      expect(await snapshot()).toEqual(before);
+    });
+
+    it("reuses the same posting as a stand-in, and checks it apart against a library role", async () => {
+      const me = await seed();
+      const { client, create } = jdClient(standIn.skills);
+      const first = await createJobCheck(standInRequest(me.resumeId), me.owner, { db: db!, client });
+      expect(await createJobCheck(standInRequest(me.resumeId), me.owner, { db: db!, client })).toEqual({ ok: true, id: first.ok && first.id, reused: true });
+      expect(await createJobCheck({ ...standInRequest(me.resumeId), roleSlug: role.slug }, me.owner, { db: db!, client })).toMatchObject({ ok: true, reused: false });
+      expect(create).toHaveBeenCalledTimes(2);
+      expect(await listStandInChecks(me.resumeId, me.owner, db!)).toHaveLength(1);
+    });
+
+    it("is only for its owner, its resume, and checks that stand in", async () => {
+      const me = await seed();
+      const other = await seed();
+      const { client } = jdClient(standIn.skills);
+      const own = await createJobCheck(standInRequest(me.resumeId), me.owner, { db: db!, client });
+      const forRole = await createJobCheck(request(me.resumeId), me.owner, { db: db!, client: jdClient().client });
+      if (!own.ok || !forRole.ok) throw new Error("not saved");
+      expect(await standInForPage(me.resumeId, own.id, other.owner, { db: db! })).toBeNull();
+      expect(await standInForPage(other.resumeId, own.id, other.owner, { db: db! })).toBeNull();
+      expect(await standInForPage(me.resumeId, forRole.id, me.owner, { db: db! })).toBeNull();
+      expect(await standInForPage(me.resumeId, "not-a-uuid", me.owner, { db: db! })).toBeNull();
+      expect(await listStandInChecks(me.resumeId, other.owner, db!)).toEqual([]);
+    });
+
+    it("goes with an anonymous resume after 24 hours", async () => {
+      const me = await seed();
+      const saved = await createJobCheck(standInRequest(me.resumeId), me.owner, { db: db!, client: jdClient(standIn.skills).client });
+      if (!saved.ok) throw new Error("not saved");
+      await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, me.resumeId));
+      // Hidden at once, before the daily cleanup deletes it with its resume.
+      expect(await standInForPage(me.resumeId, saved.id, me.owner, { db: db! })).toBeNull();
+      expect(await listStandInChecks(me.resumeId, me.owner, db!)).toEqual([]);
+      await deleteExpiredAnonymousResumes(db!);
+      expect(await checksOf(me.resumeId)).toHaveLength(0);
     });
   });
 });

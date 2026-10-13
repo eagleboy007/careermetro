@@ -16,6 +16,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import { MAX_CHOICE_GOALS, MAX_GAPS, type GapAnalysis, type JobCheckRequest } from "@/lib/schemas";
 import { jobCheckView, type JobCheckView, type StoredJobCheck } from "./groups";
 import { PARSE_JD_MODEL, parseJobPosting, type ParseJdClient } from "./parse";
+import { standInView, type StandInView } from "./stand-in";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -54,20 +55,23 @@ export type CreateJobCheckResult =
  * returns the reserved call's id, or why not. Under its own lock, held for a few milliseconds, so parallel requests
  * (any owner, any server) see each other's reservations before the model is called.
  */
-async function reserveJobCheck(tx: Tx, owner: Owner, resumeId: string, roleSlug: string): Promise<string | "limit" | "budget"> {
+/** The ids an AI call is logged with: the resume, and the role unless the check stands in for one we don't have. */
+const callRefs = (resumeId: string, roleSlug: string | null): Record<string, string> => (roleSlug ? { resumeId, roleSlug } : { resumeId });
+
+async function reserveJobCheck(tx: Tx, owner: Owner, resumeId: string, roleSlug: string | null): Promise<string | "limit" | "budget"> {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext('cm-ai:parse-jd'))`);
   const ownResumes = tx.select({ id: sql<string>`${resumes.id}::text` }).from(resumes).where(uploadedBy(owner));
   const used = await usedToday(tx, "parse-jd", IN_FLIGHT_JD_USD, refIn("resumeId", ownResumes));
   if (used.mine >= JOB_CHECK_LIMITS.perOwnerPerDay) return "limit";
   if (used.usd >= JOB_CHECK_LIMITS.dailyBudgetUsd()) return "budget";
-  return reserveCall(tx, { purpose: "parse-jd", model: PARSE_JD_MODEL, promptVersion: loadPrompt("parse-jd").id, inputRefs: { resumeId, roleSlug } });
+  return reserveCall(tx, { purpose: "parse-jd", model: PARSE_JD_MODEL, promptVersion: loadPrompt("parse-jd").id, inputRefs: callRefs(resumeId, roleSlug) });
 }
 
-async function existingCheck(tx: Tx, resumeId: string, roleSlug: string, textHash: string): Promise<string | null> {
+async function existingCheck(tx: Tx, resumeId: string, roleSlug: string | null, textHash: string): Promise<string | null> {
   const [row] = await tx
     .select({ id: jobChecks.id })
     .from(jobChecks)
-    .where(and(eq(jobChecks.resumeId, resumeId), eq(jobChecks.roleSlug, roleSlug), eq(jobChecks.textHash, textHash)))
+    .where(and(eq(jobChecks.resumeId, resumeId), roleSlug ? eq(jobChecks.roleSlug, roleSlug) : isNull(jobChecks.roleSlug), eq(jobChecks.textHash, textHash)))
     .limit(1);
   return row?.id ?? null;
 }
@@ -75,7 +79,8 @@ async function existingCheck(tx: Tx, resumeId: string, roleSlug: string, textHas
 /**
  * "Check against a job" (role-suggest-plan.md part B): reads the skills a pasted posting names and saves them for this
  * owner's resume and target role. Only the skill ids, unknown names and a keyed hash of the text are saved; never the
- * text. It never touches goals, analyses, paths or the ride. The same text for the same resume and role returns the
+ * text. It never touches goals, analyses, paths or the ride. A null role saves a check that stands in as the target for
+ * a role our library doesn't have yet; it never makes goals either. The same text for the same resume and role returns the
  * saved check without a model call. Over the daily limit, or when the model fails, nothing is saved.
  *
  * The model call runs between two short locked transactions, never inside one, like the Gaps page's explanations.
@@ -103,7 +108,7 @@ export async function createJobCheck(
   if (!("reservedId" in first)) return first;
 
   // Settled at once, outside any lock, so the cost counts even if saving fails below.
-  const parsed = await runReserved(db, first.reservedId, () => parseJobPosting(text, { resumeId, roleSlug }, deps.client));
+  const parsed = await runReserved(db, first.reservedId, () => parseJobPosting(text, callRefs(resumeId, roleSlug), deps.client));
   if (!parsed.ok) return { ok: false, reason: parsed.reason };
   if (parsed.requiredSkillIds.length + parsed.niceSkillIds.length + parsed.unknownSkills.length === 0) return { ok: false, reason: "no_skills" };
 
@@ -150,6 +155,53 @@ export async function listJobChecks(resumeId: string, owner: Owner, roleSlug: st
     .limit(JOB_CHECK_LIMITS.shown);
 }
 
+/** This owner's saved checks that stand in for a role we don't have, newest first. Anyone else's resume has none. */
+export async function listStandInChecks(
+  resumeId: string,
+  owner: Owner,
+  db: Pick<Db, "select"> = getDb(),
+): Promise<{ id: string; company: string; title: string; createdAt: Date }[]> {
+  return db
+    .select({ id: jobChecks.id, company: jobChecks.company, title: jobChecks.title, createdAt: jobChecks.createdAt })
+    .from(jobChecks)
+    .innerJoin(resumes, eq(resumes.id, jobChecks.resumeId))
+    .where(and(eq(jobChecks.resumeId, resumeId), isNull(jobChecks.roleSlug), ownsResume(owner)))
+    .orderBy(desc(jobChecks.createdAt), desc(jobChecks.id))
+    .limit(JOB_CHECK_LIMITS.shown);
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * One saved check standing in for a role we don't have, as its Gaps page shows it, against the confirmed profile. Null
+ * when it isn't this owner's, isn't on this resume, belongs to a library role, or the resume isn't confirmed. Read-only.
+ */
+export async function standInForPage(
+  resumeId: string,
+  checkId: string,
+  owner: Owner,
+  { db = getDb(), now = new Date() }: { db?: Db; now?: Date } = {},
+): Promise<StandInView | null> {
+  if (!UUID.test(checkId)) return null;
+  const resume = await getResumeForOwner(resumeId, owner, db);
+  if (!resume?.confirmed) return null;
+  const [check] = await db
+    .select({
+      id: jobChecks.id,
+      company: jobChecks.company,
+      title: jobChecks.title,
+      requiredSkillIds: jobChecks.requiredSkillIds,
+      niceSkillIds: jobChecks.niceSkillIds,
+      unknownSkills: jobChecks.unknownSkills,
+      createdAt: jobChecks.createdAt,
+    })
+    .from(jobChecks)
+    .innerJoin(resumes, eq(resumes.id, jobChecks.resumeId))
+    .where(and(eq(jobChecks.id, checkId), eq(jobChecks.resumeId, resumeId), isNull(jobChecks.roleSlug), ownsResume(owner)));
+  if (!check) return null;
+  return standInView(check, resume.profile, await provedSkills(owner, db), { now });
+}
+
 /**
  * Skills with current accepted proof, for a signed-in account only: proof belongs to the account, and an anonymous
  * resume has none.
@@ -181,8 +233,6 @@ export async function jobChecksForPage(
 }
 
 /* "Add as my goal", "Plan for this job" and "Remove this check" (role-suggest-plan.md part B, part 2) ------------- */
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** One saved check with the resume and role it was made for, sorted into its groups. */
 export type OwnJobCheck = { resumeId: string; roleSlug: string; view: JobCheckView };
@@ -218,8 +268,8 @@ export async function ownJobCheck(checkId: string, owner: Owner, { db = getDb(),
   const match = matchProfile(resume.profile, role, now);
   const target = buildGapAnalysis({ ...match, gaps: match.gaps.slice(0, MAX_GAPS) }, null);
   const proved = await provedSkills(owner, db);
-  const { resumeId, roleSlug, ...check } = row;
-  return { resumeId, roleSlug, view: jobCheckView(check, resume.profile, target, proved, { now }) };
+  // A check standing in for a role we don't have has no library role, so it returned null above and makes no goals.
+  return { resumeId: row.resumeId, roleSlug: role.slug, view: jobCheckView(row, resume.profile, target, proved, { now }) };
 }
 
 export type AddJobCheckGoalResult = { ok: true; goalId: string } | { ok: false; reason: "not_found" | "not_this_job" | "already" | "limit" };
