@@ -6,7 +6,7 @@ import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
 import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
 import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
@@ -596,6 +596,7 @@ function ChoiceGoals({
   const [note, setNote] = useState("");
   const [refreshing, startRefresh] = useTransition();
   const heading = useRef<HTMLHeadingElement>(null);
+  const headingId = useId();
   const moveFocus = useRef(false);
   // A removed goal leaves the list once the page refreshes; focus moves to the list's heading, never to the page.
   useEffect(() => {
@@ -604,9 +605,9 @@ function ChoiceGoals({
     moveFocus.current = false;
   }, [refreshing]);
   return (
-    <section aria-labelledby="your-choice" className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
+    <section aria-labelledby={headingId} className="flex flex-col gap-3 rounded-[20px] border border-line bg-surface p-4">
       <div className="flex flex-col gap-1">
-        <h3 ref={heading} id="your-choice" tabIndex={-1} className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+        <h3 ref={heading} id={headingId} tabIndex={-1} className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           Your choice
         </h3>
         <p className="text-[0.86rem] text-muted">
