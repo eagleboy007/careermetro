@@ -1,5 +1,6 @@
 import {
   EXAMPLE_SOURCE,
+  INDIA_ROW,
   MARKET_BANDS,
   MARKET_MIN_OPENINGS,
   type MarketBand,
@@ -55,9 +56,11 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
   // A cell with no rows still names the table's sources, so an empty cell never reads as example data by default.
   const tableSources = [...new Set(table.rows.map((r) => r.source))];
 
+  // India reads its own rows (INDIA_ROW) when the table has them for the role and month, and adds up the states
+  // otherwise, so a posting listed in two states is not counted twice.
   const rowsFor = (role: string, place: MarketPlace, month: string): MarketRow[] =>
     place.kind === "india"
-      ? states.flatMap((s) => byKey.get(key(role, s.code, null, month)) ?? [])
+      ? (byKey.get(key(role, INDIA_ROW, null, month)) ?? states.flatMap((s) => byKey.get(key(role, s.code, null, month)) ?? []))
       : (byKey.get(key(role, place.state, place.kind === "city" ? place.city : null, month)) ?? []);
 
   function cell(role: string, place: MarketPlace, month = table.latestMonth): Cell {

@@ -120,13 +120,38 @@ export const CITIES = [
   ["PY", "Puducherry", /\b(puducherry|pondicherry)\b/i],
   ["AN", "Port Blair", /\bport blair\b/i],
 ];
+/**
+ * State and union-territory names, for a location that names a state but no city of it ("Karnataka, India"): the
+ * posting counts in the state, with no city. Delhi is left to the city pattern above.
+ */
+export const STATES = [
+  ["AN", /\bandaman\b/i], ["AP", /\bandhra pradesh\b/i], ["AR", /\barunachal pradesh\b/i], ["AS", /\bassam\b/i],
+  ["BR", /\bbihar\b/i], ["CG", /\bchhattisgarh\b/i], ["CH", /\bchandigarh\b/i], ["DH", /\b(dadra|daman)\b/i],
+  ["GA", /\bgoa\b/i], ["GJ", /\bgujarat\b/i], ["HP", /\bhimachal\b/i], ["HR", /\bharyana\b/i], ["JH", /\bjharkhand\b/i],
+  ["JK", /\bjammu (and|&) kashmir\b/i], ["KA", /\bkarnataka\b/i], ["KL", /\bkerala\b/i], ["LA", /\bladakh\b/i],
+  ["LD", /\blakshadweep\b/i], ["MH", /\bmaharashtra\b/i], ["ML", /\bmeghalaya\b/i], ["MN", /\bmanipur\b/i],
+  ["MP", /\bmadhya pradesh\b/i], ["MZ", /\bmizoram\b/i], ["NL", /\bnagaland\b/i], ["OD", /\b(odisha|orissa)\b/i],
+  ["PB", /\bpunjab\b/i], ["PY", /\b(puducherry|pondicherry)\b/i], ["RJ", /\brajasthan\b/i], ["SK", /\bsikkim\b/i],
+  ["TG", /\btelangana\b/i], ["TN", /\btamil ?nadu\b/i], ["TR", /\btripura\b/i], ["UK", /\b(uttarakhand|uttaranchal)\b/i],
+  ["UP", /\buttar pradesh\b/i], ["WB", /\bwest bengal\b/i],
+];
 const INDIA = /\b(india|ind|delhi ncr|ncr)\b/i;
+// Names shared with places outside India ("Delhi, NY", "Hyderabad, Sindh", Pakistan's Punjab) count only when the
+// location also says India or names another Indian place, or names no other country.
+const SHARED_NAMES = new Set(["New Delhi", "Hyderabad", "PB"]);
+const ABROAD = /\b(united states|usa|new york|ny|ontario|canada|pakistan|sindh|lahore|karachi|islamabad|united kingdom)\b|\bU\.?S\.?(?![a-z])/i;
 
-/** Every Indian city a posting lists, de-duplicated, with its state code. Empty when it names none. */
+/**
+ * Every Indian place a posting lists, de-duplicated, as { state, city }: each city named, and each state named with
+ * no city of it named (city ""). Empty when it names none.
+ */
 export function placesOf(location) {
-  const out = [];
-  for (const [state, city, re] of CITIES) if (re.test(location) && !out.some((p) => p.city === city)) out.push({ state, city });
-  return out;
+  const cities = CITIES.filter(([, , re]) => re.test(location)).map(([state, city]) => ({ state, city }));
+  const states = STATES.filter(([state, re]) => re.test(location) && !cities.some((c) => c.state === state)).map(([state]) => ({ state, city: "" }));
+  const all = [...cities, ...states];
+  const shared = (p) => SHARED_NAMES.has(p.city || p.state);
+  const india = INDIA.test(location) || all.some((p) => !shared(p)) || !ABROAD.test(location);
+  return india ? all : all.filter((p) => !shared(p));
 }
 export const isIndia = (location) => INDIA.test(location) || placesOf(location).length > 0;
 
@@ -138,16 +163,19 @@ export const isIndia = (location) => INDIA.test(location) || placesOf(location).
  * ("8+ years of experience, including 2+ years with Kafka"), so the band comes from the highest stated minimum.
  * Company blurbs ("for over 25 years", "founded 30 years ago") are skipped by their wording and by ignoring anything
  * over 15 years, which no requirement in the bands needs to be read exactly.
+ * Whitespace is collapsed first, so the patterns allow at most one space between parts and never backtrack over long
+ * runs of spaces.
  */
 const NUM = String.raw`(\d{1,2}(?:\.\d)?)`;
-const YEARS = new RegExp(String.raw`(?<![\d.])${NUM}\s*(?:\+|plus)?\s*(?:(?:-|–|—|to)\s*\d{1,2}(?:\.\d)?\s*)?\+?\s*(?:years?|yrs?)\b`, "gi");
-const MIN_WORDS = new RegExp(String.raw`\b(?:minimum|min\.?|at least)\s+(?:of\s+)?${NUM}\s*\+?\s*(?:years?|yrs?)\b`, "gi");
+const YEARS = new RegExp(String.raw`(?<![\d.])${NUM} ?(?:(?:\+|plus) ?)?(?:(?:-|–|—|to) ?\d{1,2}(?:\.\d)? ?)?(?:\+ ?)?(?:years?|yrs?)\b`, "gi");
+const MIN_WORDS = new RegExp(String.raw`\b(?:minimum|min\.?|at least) (?:of )?${NUM} ?(?:\+ ?)?(?:years?|yrs?)\b`, "gi");
 const CONTEXT = /experience|\bexp\b|working|industry|hands-on|professional|background|relevant/;
 const NOT_REQUIREMENT_AFTER = /\b(old|age|warranty|contract|tenure|founded|history|ago|in business|of (our|the) company)\b/;
-const NOT_REQUIREMENT_BEFORE = /\b(for over|for more than|founded|since|trusted|serving|we've been|we have been|history of|legacy of)\s*$/;
+const NOT_REQUIREMENT_BEFORE = /\b(for over|for more than|founded|since|trusted|serving|we've been|we have been|history of|legacy of) ?$/;
 const MAX_YEARS = 15;
 
-export function experienceBand(text) {
+export function experienceBand(raw) {
+  const text = raw.replace(/\s+/g, " ");
   const mins = [];
   const keep = (m, needsContext) => {
     const after = text.slice(m.index + m[0].length, m.index + m[0].length + 30).toLowerCase();
@@ -165,9 +193,9 @@ export function experienceBand(text) {
 }
 
 /**
- * This run's India postings for the market counts: one row per posting and city it lists, as
- * { url, role, state, city, band }. A posting that names India but no city gets one row with state and city blank:
- * it counts nowhere on the map but is still remembered as seen. Deduped on URL and city.
+ * This run's India postings for the market counts: one row per posting and place it lists, as
+ * { url, role, state, city, band } (city "" when only the state is named). A posting that names India but no place
+ * gets one row with state and city blank: it counts only in the India row. Deduped on URL, state and city.
  */
 export function marketPostings(postings) {
   const rows = [];
@@ -180,7 +208,7 @@ export function marketPostings(postings) {
     const band = experienceBand(p.text ?? "") ?? "";
     const places = placesOf(p.location);
     for (const { state, city } of places.length ? places : [{ state: "", city: "" }]) {
-      const key = `${p.url}|${city}`;
+      const key = `${p.url}|${state}|${city}`;
       if (keys.has(key)) continue;
       keys.add(key);
       rows.push({ url: p.url, role, state, city, band });
