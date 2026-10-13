@@ -1,7 +1,7 @@
 import { MARKET_METRICS, stateCode, type MarketMetric, type MarketPlace, type MarketState } from "@/lib/schemas";
-import type { MarketChoice } from "./search";
+import { marketQueryHref, type MarketChoice, type MarketQuery } from "./search";
 
-export { searchMarket, type MarketChoice } from "./search";
+export { marketQueryHref, searchMarket, type MarketChoice, type MarketQuery } from "./search";
 
 /*
  * What the Market screen shows lives in its address (/market?role=…&place=…&map=…&a=…&b=…), so a choice survives a
@@ -52,13 +52,13 @@ export function readMarketView(params: Params, { roles, states, defaultRole }: {
   };
 }
 
+/** The view as its address parameters, so the pickers can build their addresses in the browser. */
+export const marketQuery = (v: MarketView): MarketQuery => ({ role: v.role, place: placeKey(v.place), map: v.metric, a: placeKey(v.a), b: placeKey(v.b) });
+
 /** The address for the view with some parts changed. */
 export function marketHref(view: MarketView, patch: Partial<MarketView> = {}): string {
-  const v = { ...view, ...patch };
-  const q = new URLSearchParams({ role: v.role, place: placeKey(v.place), map: v.metric, a: placeKey(v.a), b: placeKey(v.b) });
-  return `/market?${q.toString()}`;
+  return marketQueryHref(marketQuery({ ...view, ...patch }));
 }
-
 
 /** Everything the search can find: roles, then states, then cities. */
 export function marketChoices(roles: { slug: string; title: string }[], states: MarketState[]): MarketChoice[] {

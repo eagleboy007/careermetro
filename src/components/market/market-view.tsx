@@ -3,7 +3,7 @@ import Link from "next/link";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { DEFAULT_MARKET_ROLE, marketData, marketRoles } from "@/lib/market/data";
 import { compareSentence, count, heatRanges, heatSteps, lakh, mergeSources, middleText, monthLabel, PAY_BAND, payText, placeName, shortMonth, type Cell, type MarketData } from "@/lib/market/query";
-import { INDIA_PLACE, marketChoices, marketHref, parsePlace, placeKey, readMarketView, type MarketView as View } from "@/lib/market/view";
+import { INDIA_PLACE, marketChoices, marketHref, marketQuery, placeKey, readMarketView, type MarketQuery, type MarketView as View } from "@/lib/market/view";
 import { MARKET_BAND_LABELS, MARKET_BANDS, type MarketPlace, type MarketTrend, type NearbyLines, type StateCode } from "@/lib/schemas";
 import { Card, ICON, label, NotEnough, SourceLine, Stat } from "./market-parts";
 import { MarketSearch, MarketSelect, type PickGroup } from "./market-pickers";
@@ -42,20 +42,18 @@ export function MarketView({
   const here = market.cell(view.role, view.place);
   const where = placeName(view.place, market);
   const href = (patch: Partial<View>) => marketHref(view, patch);
-
-  const choices = marketChoices(marketRoles, market.states).map((c) => ({
-    ...c,
-    href: href({ ...(c.patch.role ? { role: c.patch.role } : {}), ...(c.patch.place ? { place: parsePlace(c.patch.place, market.states) ?? INDIA_PLACE } : {}) }),
-  }));
-  const placeGroups = (patchKey: "place" | "a" | "b"): PickGroup[] => [
-    { label: "India", options: [{ label: "All India", href: href({ [patchKey]: INDIA_PLACE }) }] },
+  // The pickers get the view's parameters and option keys, and build their addresses in the browser. One place list
+  // serves all three place selects, so the page carries it once.
+  const base = marketQuery(view);
+  const placeGroups: PickGroup[] = [
+    { label: "India", options: [{ label: "All India", key: placeKey(INDIA_PLACE) }] },
     ...[...market.states]
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((s) => ({
         label: s.name,
         options: [
-          { label: `${s.name} (state)`, href: href({ [patchKey]: { kind: "state", state: s.code } }) },
-          ...s.cities.map((city) => ({ label: city, href: href({ [patchKey]: { kind: "city", state: s.code, city } }) })),
+          { label: `${s.name} (state)`, key: placeKey({ kind: "state", state: s.code }) },
+          ...s.cities.map((city) => ({ label: city, key: placeKey({ kind: "city", state: s.code, city }) })),
         ],
       })),
   ];
@@ -77,10 +75,10 @@ export function MarketView({
         checked. Every card names its source and month.
       </p>
 
-      <MarketSearch choices={choices} />
+      <MarketSearch choices={marketChoices(marketRoles, market.states)} base={base} />
       <div className="grid gap-3 min-[560px]:grid-cols-2">
-        <MarketSelect label="Role" value={href({})} options={marketRoles.map((r) => ({ label: r.title, href: href({ role: r.slug }) }))} />
-        <MarketSelect label="Place" value={href({})} groups={placeGroups("place")} />
+        <MarketSelect label="Role" base={base} param="role" options={marketRoles.map((r) => ({ label: r.title, key: r.slug }))} />
+        <MarketSelect label="Place" base={base} param="place" groups={placeGroups} />
       </div>
 
       <div className="grid gap-4 min-[960px]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] min-[960px]:items-start">
@@ -88,7 +86,7 @@ export function MarketView({
         <TrendCard ids={ids} view={view} roleTitle={role.title} market={market} />
         <PayCard ids={ids} cell={here} where={where} />
         <CitiesCard ids={ids} view={view} market={market} />
-        <CompareCard ids={ids} view={view} roleTitle={role.title} market={market} groups={{ a: placeGroups("a"), b: placeGroups("b") }} href={href} />
+        <CompareCard ids={ids} view={view} roleTitle={role.title} market={market} groups={placeGroups} base={base} />
         <Card
           id={`${ids}-nearby`}
           title="Nearby lines"
@@ -273,30 +271,44 @@ function TrendCard({ ids, view, roleTitle, market }: { ids: string; view: View; 
   );
 }
 
-/** Twelve months of openings as a line, in ink. The label says the trend in words. */
+/**
+ * Twelve months of openings as a line, in ink. The label says the trend in words. The month labels are HTML under the
+ * drawing, so they keep their size on a phone instead of shrinking with the viewBox; they are hidden from screen
+ * readers, which get the label.
+ */
 function TrendChart({ points, months, label: said }: { points: number[]; months: string[]; label: string }) {
   const W = 460;
-  const H = 150;
+  // The plot's floor; the drawing ends 2 below it so the line's stroke isn't cut.
+  const B = 130;
   const P = 6;
   const lo = Math.min(...points) * 0.9;
   const hi = Math.max(...points) * 1.05;
-  const xy = points.map((v, i) => [P + (i * (W - 2 * P)) / 11, H - 20 - ((v - lo) / (hi - lo || 1)) * (H - 34)] as const);
+  const xy = points.map((v, i) => [P + (i * (W - 2 * P)) / 11, B - ((v - lo) / (hi - lo || 1)) * (B - 14)] as const);
   const d = xy.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
   const last = xy[xy.length - 1]!;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={said} className="block h-auto max-h-[190px] w-full overflow-visible">
-      {[0.33, 0.66].map((f) => (
-        <line key={f} x1="0" x2={W} y1={(H - 20) * f + 6} y2={(H - 20) * f + 6} className="stroke-line" strokeDasharray="3 4" />
-      ))}
-      <path d={`${d} L${last[0]} ${H - 20} L${xy[0]![0]} ${H - 20}Z`} className="fill-ink/[0.07]" />
-      <path d={d} className="fill-none stroke-ink" strokeWidth={2.2} strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={last[0]} cy={last[1]} r={4} className="fill-ink" />
-      {[0, 3, 6, 9, 11].map((i) => (
-        <text key={i} x={xy[i]![0]} y={H - 4} textAnchor={i === 0 ? "start" : i === 11 ? "end" : "middle"} className="fill-muted font-mono text-[13px]">
-          {months[i] ? shortMonth(months[i]) : ""}
-        </text>
-      ))}
-    </svg>
+    // At most 583px wide, the width the old 190px-high drawing reached, so wide cards centre it as before.
+    <div className="mx-auto flex w-full max-w-[583px] flex-col gap-1">
+      <svg viewBox={`0 0 ${W} ${B + 2}`} role="img" aria-label={said} className="block h-auto w-full overflow-visible">
+        {[0.33, 0.66].map((f) => (
+          <line key={f} x1="0" x2={W} y1={B * f + 6} y2={B * f + 6} className="stroke-line" strokeDasharray="3 4" />
+        ))}
+        <path d={`${d} L${last[0]} ${B} L${xy[0]![0]} ${B}Z`} className="fill-ink/[0.07]" />
+        <path d={d} className="fill-none stroke-ink" strokeWidth={2.2} strokeLinejoin="round" strokeLinecap="round" />
+        <circle cx={last[0]} cy={last[1]} r={4} className="fill-ink" />
+      </svg>
+      <div aria-hidden="true" className="relative h-4 font-mono text-[0.75rem] leading-4 text-muted">
+        {[0, 3, 6, 9, 11].map((i) => (
+          <span
+            key={i}
+            className={`absolute top-0 whitespace-nowrap ${i === 0 ? "" : i === 11 ? "-translate-x-full" : "-translate-x-1/2"}`}
+            style={{ left: `${(xy[i]![0] / W) * 100}%` }}
+          >
+            {months[i] ? shortMonth(months[i]) : ""}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -381,14 +393,14 @@ function CompareCard({
   roleTitle,
   market,
   groups,
-  href,
+  base,
 }: {
   ids: string;
   view: View;
   roleTitle: string;
   market: MarketData;
-  groups: { a: PickGroup[]; b: PickGroup[] };
-  href: (p: Partial<View>) => string;
+  groups: PickGroup[];
+  base: MarketQuery;
 }) {
   // A state says so, so Chandigarh the state and Chandigarh the city never read the same.
   const sides = [view.a, view.b].map((p) => ({ place: p, name: placeName(p, market) + (p.kind === "state" ? " (state)" : ""), cell: market.cell(view.role, p) }));
@@ -396,8 +408,8 @@ function CompareCard({
   return (
     <Card id={`${ids}-compare`} title="Compare two places" note={<span className={label}>Planning a move?</span>} source={<SourceLine of={mergeSources(sides[0]!.cell, sides[1]!.cell)} shape={JOB_BOARD_SHAPE} />}>
       <div className="grid grid-cols-2 gap-3">
-        <MarketSelect label="First place" value={href({})} groups={groups.a} />
-        <MarketSelect label="Second place" value={href({})} groups={groups.b} />
+        <MarketSelect label="First place" base={base} param="a" groups={groups} />
+        <MarketSelect label="Second place" base={base} param="b" groups={groups} />
       </div>
       <div className="grid grid-cols-2 gap-2.5 min-[480px]:gap-3">
         {sides.map((s, i) => {

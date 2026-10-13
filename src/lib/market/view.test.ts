@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MarketState } from "@/lib/schemas";
-import { marketChoices, marketHref, parsePlace, placeKey, readMarketView, searchMarket } from "./view";
+import { marketChoices, marketHref, marketQuery, marketQueryHref, parsePlace, placeKey, readMarketView, searchMarket } from "./view";
 
 const states: MarketState[] = [
   { code: "KA", name: "Karnataka", col: 1, row: 5, cities: ["Bengaluru", "Mysuru"] },
@@ -35,6 +35,16 @@ describe("market address", () => {
   it("builds links with only slugs and place names in them", () => {
     const v = readMarketView({}, { roles, states, defaultRole: "data-analyst" });
     expect(marketHref(v, { place: { kind: "state", state: "KA" } })).toBe("/market?role=data-analyst&place=KA&map=openings&a=KA%3ABengaluru&b=MH%3APune");
+  });
+
+  it("builds the same links in the browser from the view's parameters and an option key", () => {
+    const v = readMarketView({ role: "ml-engineer", map: "pay" }, { roles, states, defaultRole: "data-analyst" });
+    const base = marketQuery(v);
+    expect(base).toEqual({ role: "ml-engineer", place: "IN", map: "pay", a: "KA:Bengaluru", b: "MH:Pune" });
+    expect(marketQueryHref(base)).toBe(marketHref(v));
+    expect(marketQueryHref(base, { b: "KA:Mysuru" })).toBe(marketHref(v, { b: { kind: "city", state: "KA", city: "Mysuru" } }));
+    expect(marketQueryHref(base, { role: "data-analyst" })).toBe(marketHref(v, { role: "data-analyst" }));
+    expect(marketQueryHref(base, { place: "KA" })).toBe(marketHref(v, { place: { kind: "state", state: "KA" } }));
   });
 });
 

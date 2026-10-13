@@ -3,12 +3,13 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent } from "react";
-import { searchMarket, type MarketChoice } from "@/lib/market/search";
+import { marketQueryHref, searchMarket, type MarketChoice, type MarketQuery } from "@/lib/market/search";
 
 /*
  * The Market's controls (handoff C6). Each choice is a link to the same screen with the address changed, so the
- * server works out the figures and nothing is stored. Navigation runs in a transition: the screen stays as it is,
- * focus included, until the new figures are in.
+ * server works out the figures and nothing is stored. The server sends the current view's parameters and each
+ * option's key, and the address is built here, so the page doesn't carry a few hundred full links. Navigation runs in
+ * a transition: the screen stays as it is, focus included, until the new figures are in.
  */
 
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -21,7 +22,8 @@ function useGo() {
   return { pending, go: (href: string) => start(() => router.push(href, { scroll: false })) };
 }
 
-export type PickOption = { label: string; href: string };
+/** `key` is the option's value for the select's parameter: a role slug or a place key. */
+export type PickOption = { label: string; key: string };
 export type PickGroup = { label: string; options: PickOption[] };
 
 /** How long a run of arrow or type-ahead steps must pause before the select's choice counts as made. */
@@ -31,18 +33,35 @@ const KEY_SETTLE_MS = 700;
  * A labelled select whose options are addresses: picking one shows it. A pick with the pointer (or from the open
  * list) goes at once. Arrow keys and type-ahead on a closed select change it one step at a time, so those wait until
  * Enter, leaving the select, or a short pause, instead of loading the page for every step. The select keeps showing
- * the person's choice while the new figures load.
+ * the person's choice while the new figures load. `base` is the current view's address and `param` the part this
+ * select changes.
  */
-export function MarketSelect({ label, value, options, groups = [], className = "" }: { label: string; value: string; options?: PickOption[]; groups?: PickGroup[]; className?: string }) {
+export function MarketSelect({
+  label,
+  base,
+  param,
+  options,
+  groups = [],
+  className = "",
+}: {
+  label: string;
+  base: MarketQuery;
+  param: "role" | "place" | "a" | "b";
+  options?: PickOption[];
+  groups?: PickGroup[];
+  className?: string;
+}) {
   const { go, pending } = useGo();
   const id = useId();
+  const value = base[param];
+  const here = marketQueryHref(base);
   const [local, setLocal] = useState(value);
-  const [seen, setSeen] = useState(value);
+  const [seen, setSeen] = useState(here);
   const lastKey = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // The address changed (this pick landed, or something else moved): show what the server says.
-  if (value !== seen) {
-    setSeen(value);
+  if (here !== seen) {
+    setSeen(here);
     setLocal(value);
   }
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -50,9 +69,10 @@ export function MarketSelect({ label, value, options, groups = [], className = "
   const sent = useRef<string | null>(null);
   const commit = (next: string) => {
     clearTimeout(timer.current);
-    if (next === value || next === sent.current) return;
-    sent.current = next;
-    go(next);
+    const href = marketQueryHref(base, { [param]: next });
+    if (href === here || href === sent.current) return;
+    sent.current = href;
+    go(href);
   };
   return (
     <div className={`flex min-w-0 flex-col gap-1 ${className}`}>
@@ -78,14 +98,14 @@ export function MarketSelect({ label, value, options, groups = [], className = "
         className={`${field} cursor-pointer`}
       >
         {options?.map((o) => (
-          <option key={o.href} value={o.href}>
+          <option key={o.key} value={o.key}>
             {o.label}
           </option>
         ))}
         {groups.map((g) => (
           <optgroup key={g.label} label={g.label}>
             {g.options.map((o) => (
-              <option key={o.href} value={o.href}>
+              <option key={o.key} value={o.key}>
                 {o.label}
               </option>
             ))}
@@ -96,26 +116,26 @@ export function MarketSelect({ label, value, options, groups = [], className = "
   );
 }
 
-export type SearchChoice = MarketChoice & { href: string };
+const choiceKey = (c: MarketChoice) => `${c.kind}:${c.patch.role ?? c.patch.place}`;
 
 /**
  * Search by role, state or city: a combobox (ARIA 1.2 pattern). Up and Down move through the matches, Enter picks the
- * highlighted one (or the first), Escape closes the list.
+ * highlighted one (or the first), Escape closes the list. A pick changes the current view (`base`) by its patch.
  */
-export function MarketSearch({ choices }: { choices: SearchChoice[] }) {
+export function MarketSearch({ choices, base }: { choices: MarketChoice[]; base: MarketQuery }) {
   const { go } = useGo();
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const listId = useId();
   const statusId = useId();
-  const matches = open ? (searchMarket(choices, text) as SearchChoice[]) : [];
-  const pick = (c: SearchChoice | undefined) => {
+  const matches = open ? searchMarket(choices, text) : [];
+  const pick = (c: MarketChoice | undefined) => {
     if (!c) return;
     setText("");
     setOpen(false);
     setActive(-1);
-    go(c.href);
+    go(marketQueryHref(base, c.patch));
   };
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
@@ -169,7 +189,7 @@ export function MarketSearch({ choices }: { choices: SearchChoice[] }) {
       >
         {matches.map((c, i) => (
           <li
-            key={c.href}
+            key={choiceKey(c)}
             id={`${listId}-${i}`}
             role="option"
             aria-selected={i === active}
