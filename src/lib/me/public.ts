@@ -39,6 +39,9 @@ export const PUBLIC_KEYS = [
   "proofs",
   "certifications",
   "resumeReadOn",
+  // Nearby lines are only ever the person's own: always null here.
+  "nearby",
+  "changeRoleHref",
 ] as const;
 
 /**
@@ -73,6 +76,8 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
     proofs: [],
     certifications: parts.showCertifications ? me.certifications.map((c) => ({ name: c.name, verified: c.verified })) : [],
     resumeReadOn: null,
+    nearby: null,
+    changeRoleHref: null,
   };
   return out;
 }

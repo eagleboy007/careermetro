@@ -46,11 +46,13 @@ describe("the public profile", () => {
     expect(Object.keys(publicProfile(me, all)).sort()).toEqual(allowed);
     expect(Object.keys(publicProfile(me, none)).sort()).toEqual(allowed);
     // Fields other work adds to MeProfile (Nearby lines adds `nearby` and `changeRoleHref`) stay off /u.
-    const withMore = { ...me, nearby: [{ title: "BI Analyst" }], changeRoleHref: "/resume/x/role" } as MeProfile;
-    const out = publicProfile(withMore, all) as Record<string, unknown>;
+    const withMore = { ...me, nearby: me.nearby ?? [{ title: "BI Analyst" }], changeRoleHref: "/resume/x/role", future: "x" } as unknown as MeProfile;
+    expect(withMore.nearby).not.toBeNull();
+    const out = publicProfile(withMore, all);
     expect(Object.keys(out).sort()).toEqual(allowed);
-    expect(out.nearby ?? null).toBeNull();
-    expect(out.changeRoleHref ?? null).toBeNull();
+    expect(out.nearby).toBeNull();
+    expect(out.changeRoleHref).toBeNull();
+    expect("future" in out).toBe(false);
     // Nested parts are copied field by field too.
     const extraRole = { ...me, experience: me.experience.map((e) => ({ ...e, salary: "x" })) } as MeProfile;
     expect(JSON.stringify(publicProfile(extraRole, all))).not.toContain("salary");
