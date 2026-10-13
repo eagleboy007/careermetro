@@ -92,7 +92,7 @@ export function PrivacyFields() {
                 value={v}
                 checked={s.visibility === v}
                 onChange={() => setSetting("visibility", v)}
-                aria-describedby="acc-visibility-note"
+                aria-describedby={v === "line" ? "acc-visibility-note acc-line-hint" : "acc-visibility-note"}
                 className="peer sr-only"
               />
               <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
@@ -103,6 +103,9 @@ export function PrivacyFields() {
         </div>
         <small id="acc-visibility-note" className="text-[0.78rem] text-muted">
           {VISIBILITY_NOTES[s.visibility]}
+        </small>
+        <small id="acc-line-hint" className="text-[0.78rem] text-muted">
+          &ldquo;People on your line&rdquo; shows your profile to people whose target role is the same as yours.
         </small>
       </fieldset>
       <fieldset className="flex min-w-0 flex-col" disabled={!editable}>

@@ -721,6 +721,18 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await shot("settings-part2-dirty");
   await p.getByRole("button", { name: "Save changes" }).click();
   await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+  // Focus isn't lost with the bar: it moves to the status line that says the save worked.
+  await p.waitForFunction(() => document.activeElement?.getAttribute("role") === "status" && document.activeElement.textContent === "Settings saved.", null, { timeout: 5000 });
+  // Discard puts back what's saved, and focus goes to the status line too.
+  await p.getByLabel(/^Headline/).fill("Something else");
+  await p.getByRole("button", { name: "Discard" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent === "Changes discarded.", null, { timeout: 5000 });
+  if ((await p.getByLabel(/^Headline/).inputValue()) !== "Data work, moving into analytics") throw new Error("Discard did not restore the headline");
+  // A refused save moves focus to the field with the message.
+  await p.getByLabel(/^Current pay/).fill("4.255");
+  await p.getByRole("button", { name: "Save changes" }).click();
+  await p.waitForFunction(() => document.activeElement?.id === "acc-currentPay", null, { timeout: 10000 });
+  await p.getByRole("button", { name: "Discard" }).click();
   await p.reload();
   await settled();
   if ((await p.getByLabel("Username").inputValue()) !== handle) throw new Error("username did not save");
@@ -811,6 +823,10 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
   await q.goto(BASE + `/u/${handle}`);
   await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
+  // Another spelling of a hidden profile doesn't redirect either, so it doesn't show the profile exists.
+  await q.goto(BASE + `/u/${handle.toUpperCase()}`);
+  await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
+  if (!q.url().endsWith(`/u/${handle.toUpperCase()}`)) throw new Error("a hidden profile's other spelling redirected");
   // A username nobody has looks the same.
   await q.goto(BASE + `/u/${handle}-nobody`);
   await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });

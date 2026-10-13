@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { DEFAULT_SETTINGS, settingsInput, type SettingsInput } from "@/lib/schemas";
 import { exportAccountData } from "./export";
-import { canViewProfile, checkUsername, findProfile, readAccountSettings, saveAccountSettings, settingsFor } from "./settings-store";
+import { canViewProfile, checkUsername, clearExpiredUsernameRedirects, findProfile, readAccountSettings, resolveProfile, saveAccountSettings, settingsFor } from "./settings-store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests. Every user here is this run's own.
 const url = process.env.TEST_DATABASE_URL;
@@ -81,8 +81,9 @@ describe.skipIf(!db)("account settings store (database)", () => {
 
     const later = new Date(t0.getTime() + 31 * DAY);
     expect(await saveAccountSettings(a, form({ username: `${run}-a2` }), later, db!)).toEqual({ ok: true });
-    expect(await findProfile(`${run}-A`, later, db!)).toEqual({ redirectTo: `${run}-a2` });
-    expect((await findProfile(`${run}-a2`, later, db!)) && "owner" in (await findProfile(`${run}-a2`, later, db!))!).toBe(true);
+    expect(await findProfile(`${run}-a`, later, db!)).toMatchObject({ owner: { id: a, username: `${run}-a2` }, redirectTo: `${run}-a2` });
+    expect(await findProfile(`${run}-a2`, later, db!)).toEqual({ owner: expect.objectContaining({ id: a }) });
+    expect(await findProfile(`${run}-A2`, later, db!)).toMatchObject({ redirectTo: `${run}-a2` });
     // Nobody else can take the old one while it redirects; after 14 days it is free.
     expect(await saveAccountSettings(b, form({ username: `${run}-a` }), new Date(later.getTime() + DAY), db!)).toEqual({
       ok: false,
@@ -92,6 +93,38 @@ describe.skipIf(!db)("account settings store (database)", () => {
     expect(await findProfile(`${run}-a`, after, db!)).toBeNull();
     expect(await saveAccountSettings(b, form({ username: `${run}-a` }), after, db!)).toEqual({ ok: true });
     expect(await findProfile(`${run}-a`, after, db!)).toMatchObject({ owner: { id: b } });
+  });
+
+  it("decides who may see a profile before any redirect, so old names and other spellings never show a hidden one", async () => {
+    const [f, g] = await Promise.all([makeUser("f"), makeUser("g")]);
+    const t0 = new Date();
+    const later = new Date(t0.getTime() + 31 * DAY);
+    await saveAccountSettings(f, form({ username: `${run}-f` }), t0, db!);
+    await saveAccountSettings(f, form({ username: `${run}-f2` }), later, db!);
+    const notFound = { kind: "not_found" };
+    // Only you (the default): an old name and the wrong case answer exactly like a name nobody has.
+    expect(await resolveProfile(`${run}-f`, g, later, db!)).toEqual(notFound);
+    expect(await resolveProfile(`${run}-F2`, g, later, db!)).toEqual(notFound);
+    expect(await resolveProfile(`${run}-f2`, g, later, db!)).toEqual(notFound);
+    expect(await resolveProfile(`${run}-nobody`, g, later, db!)).toEqual(notFound);
+    // The owner is sent on from either.
+    expect(await resolveProfile(`${run}-f`, f, later, db!)).toEqual({ kind: "redirect", to: `${run}-f2` });
+    // Open to everyone signed in: redirects, then the profile.
+    const open = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const };
+    await saveAccountSettings(f, form({ username: `${run}-f2`, settings: open }), later, db!);
+    expect(await resolveProfile(`${run}-f`, g, later, db!)).toEqual({ kind: "redirect", to: `${run}-f2` });
+    expect(await resolveProfile(`${run}-F2`, g, later, db!)).toEqual({ kind: "redirect", to: `${run}-f2` });
+    expect(await resolveProfile(`${run}-f2`, g, later, db!)).toMatchObject({ kind: "show", owner: { id: f } });
+    // Blocked: the old name and the wrong case are not found too.
+    await db!.insert(schema.blocks).values({ blockerId: f, blockedId: g });
+    expect(await resolveProfile(`${run}-f`, g, later, db!)).toEqual(notFound);
+    expect(await resolveProfile(`${run}-F2`, g, later, db!)).toEqual(notFound);
+    expect(await resolveProfile(`${run}-f2`, g, later, db!)).toEqual(notFound);
+    // The daily clean-up deletes old names once their 14 days are over.
+    expect(await clearExpiredUsernameRedirects(db!, new Date(later.getTime() + 13 * DAY))).toBeGreaterThanOrEqual(0);
+    expect(await db!.select().from(schema.usernameRedirects).where(eq(schema.usernameRedirects.userId, f))).toHaveLength(1);
+    expect(await clearExpiredUsernameRedirects(db!, new Date(later.getTime() + 15 * DAY))).toBeGreaterThanOrEqual(1);
+    expect(await db!.select().from(schema.usernameRedirects).where(eq(schema.usernameRedirects.userId, f))).toHaveLength(0);
   });
 
   it("deletes pay when both values are cleared", async () => {

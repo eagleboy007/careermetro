@@ -104,6 +104,7 @@ export function ProfileLinkFields({ lockedUntil }: { lockedUntil: string | null 
           Headline <em className="font-normal not-italic text-muted">optional</em>
         </span>
         <input
+          id="acc-headline"
           value={draft.headline}
           onChange={(e) => set({ headline: e.target.value })}
           maxLength={HEADLINE_MAX}

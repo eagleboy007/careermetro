@@ -17,7 +17,11 @@ type Level = "info" | "warn" | "error";
 const SAFE_STRING = /^[A-Za-z0-9_.:/[\]()=+-]{0,120}$/;
 const SAFE_KEY = /^[a-z][A-Za-z0-9_]{0,39}$/;
 const RESERVED = new Set(["level", "event", "at"]);
-const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$|username|handle|headline|pay|salary|lakh/i;
+const PERSONAL_KEY = /session|cookie|token|secret|password|email|phone|^name$|Name$/i;
+/** Whole words in a camelCase or snake_case key ("currentPay", "user_handle"), so "payload" and "handled" stay readable. */
+const PERSONAL_WORDS = new Set(["username", "usernames", "handle", "handles", "headline", "pay", "salary", "lakh"]);
+const isPersonalKey = (key: string) =>
+  PERSONAL_KEY.test(key) || key.split(/_|(?=[A-Z])/).some((word) => PERSONAL_WORDS.has(word.toLowerCase()));
 export const REDACTED = "[redacted]";
 
 function clean(value: LogValue): LogValue {
@@ -32,7 +36,7 @@ export function logLine(level: Level, event: string, fields: LogFields = {}, at 
   const out: Record<string, LogValue> = { level, event: clean(event), at: at.toISOString() };
   for (const [key, value] of Object.entries(fields)) {
     if (!SAFE_KEY.test(key) || RESERVED.has(key) || value === undefined) continue;
-    out[key] = PERSONAL_KEY.test(key) ? REDACTED : clean(value);
+    out[key] = isPersonalKey(key) ? REDACTED : clean(value);
   }
   return JSON.stringify(out);
 }

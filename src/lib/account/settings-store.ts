@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, gt, ne, sql } from "drizzle-orm";
+import { and, eq, gt, lt, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { blocks, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
@@ -168,29 +168,47 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
 export type ProfileOwner = { id: string; username: string; headline: string | null; settings: UserSettings };
 
 /**
- * Whose profile /u/<username> is: the person holding it now, or a redirect to their new username when it is one they
- * gave up within the last 14 days. Accounts waiting out their deletion have no profile.
+ * Whose profile /u/<username> is: the person holding it now, or the person who gave it up within the last 14 days.
+ * `redirectTo` is set when the address isn't the canonical one (an old username, or other letter case). The caller must
+ * check canViewProfile before following it: a redirect names the new username and would show the profile exists.
+ * Accounts waiting out their deletion have no profile.
  */
-export async function findProfile(raw: string, now: Date, db: Db = getDb()): Promise<{ owner: ProfileOwner } | { redirectTo: string } | null> {
+export async function findProfile(raw: string, now: Date, db: Db = getDb()): Promise<{ owner: ProfileOwner; redirectTo?: string } | null> {
   const name = normalUsername(raw.slice(0, 60));
   // A name that could never have been saved needs no query.
   if (usernameProblem(name)) return null;
-  const [user] = await db
-    .select({ id: users.id, username: users.username, headline: users.headline, deletionRequestedAt: users.deletionRequestedAt })
-    .from(users)
-    .where(sql`lower(${users.username}) = ${name}`)
-    .limit(1);
-  if (user?.username) {
-    if (user.deletionRequestedAt) return null;
-    return { owner: { id: user.id, username: user.username, headline: user.headline, settings: await settingsFor(user.id, db) } };
+  const ownerColumns = { id: users.id, username: users.username, headline: users.headline, deletionRequestedAt: users.deletionRequestedAt };
+  let [user] = await db.select(ownerColumns).from(users).where(sql`lower(${users.username}) = ${name}`).limit(1);
+  if (!user) {
+    [user] = await db
+      .select(ownerColumns)
+      .from(usernameRedirects)
+      .innerJoin(users, eq(users.id, usernameRedirects.userId))
+      .where(and(eq(usernameRedirects.username, name), gt(usernameRedirects.expiresAt, now)))
+      .limit(1);
   }
-  const [old] = await db
-    .select({ username: users.username, deletionRequestedAt: users.deletionRequestedAt })
-    .from(usernameRedirects)
-    .innerJoin(users, eq(users.id, usernameRedirects.userId))
-    .where(and(eq(usernameRedirects.username, name), gt(usernameRedirects.expiresAt, now)))
-    .limit(1);
-  return old?.username && !old.deletionRequestedAt ? { redirectTo: old.username } : null;
+  if (!user?.username || user.deletionRequestedAt) return null;
+  const owner = { id: user.id, username: user.username, headline: user.headline, settings: await settingsFor(user.id, db) };
+  return raw === user.username ? { owner } : { owner, redirectTo: user.username };
+}
+
+export type ProfileAnswer = { kind: "not_found" } | { kind: "redirect"; to: string } | { kind: "show"; owner: ProfileOwner };
+
+/**
+ * What /u/<username> answers a signed-in viewer. Visibility is checked before any redirect, so a hidden profile, one
+ * whose owner blocked the viewer and a username nobody has all answer the same not-found, whatever spelling or old
+ * username was used.
+ */
+export async function resolveProfile(raw: string, viewerId: string, now: Date, db: Db = getDb()): Promise<ProfileAnswer> {
+  const found = await findProfile(raw, now, db);
+  if (!found || !(await canViewProfile(found.owner, viewerId, db))) return { kind: "not_found" };
+  return found.redirectTo ? { kind: "redirect", to: found.redirectTo } : { kind: "show", owner: found.owner };
+}
+
+/** Old usernames whose 14 days are over, for the daily clean-up. Reads already ignore them; this deletes them. */
+export async function clearExpiredUsernameRedirects(db: Db = getDb(), now = new Date()): Promise<number> {
+  const gone = await db.delete(usernameRedirects).where(lt(usernameRedirects.expiresAt, now)).returning({ username: usernameRedirects.username });
+  return gone.length;
 }
 
 /**

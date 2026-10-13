@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { exampleMe } from "./fixtures";
-import { publicProfile } from "./public";
+import type { MeProfile } from "@/lib/schemas";
+import { PUBLIC_KEYS, publicProfile } from "./public";
 
 const me = { ...exampleMe, headline: "IT support moving into security operations" };
 const all = { showTargetRole: true, showExperience: true, showEducation: true, showSkills: true, showGaps: true, showCertifications: true };
@@ -38,6 +39,21 @@ describe("the public profile", () => {
     expect(out.aim).toBe(me.aim);
     expect(out.skills.missing).toEqual(me.skills.missing);
     expect(out.skills.weak).toEqual(me.skills.weak);
+  });
+
+  it("is built from the allowed keys only, so a field added to the person's own profile never rides along", () => {
+    const allowed = [...PUBLIC_KEYS].sort();
+    expect(Object.keys(publicProfile(me, all)).sort()).toEqual(allowed);
+    expect(Object.keys(publicProfile(me, none)).sort()).toEqual(allowed);
+    // Fields other work adds to MeProfile (Nearby lines adds `nearby` and `changeRoleHref`) stay off /u.
+    const withMore = { ...me, nearby: [{ title: "BI Analyst" }], changeRoleHref: "/resume/x/role" } as MeProfile;
+    const out = publicProfile(withMore, all) as Record<string, unknown>;
+    expect(Object.keys(out).sort()).toEqual(allowed);
+    expect(out.nearby ?? null).toBeNull();
+    expect(out.changeRoleHref ?? null).toBeNull();
+    // Nested parts are copied field by field too.
+    const extraRole = { ...me, experience: me.experience.map((e) => ({ ...e, salary: "x" })) } as MeProfile;
+    expect(JSON.stringify(publicProfile(extraRole, all))).not.toContain("salary");
   });
 
   it("hides each part that is turned off", () => {

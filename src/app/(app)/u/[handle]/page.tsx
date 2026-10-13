@@ -6,7 +6,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MeView } from "@/components/me/me-view";
-import { canViewProfile, findProfile } from "@/lib/account/settings-store";
+import { resolveProfile } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { publicProfile } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
@@ -26,13 +26,12 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
   const viewer = await currentAccount();
   if (!viewer) notFound();
   const now = new Date();
-  const found = await findProfile(handle, now);
-  if (!found) notFound();
-  if ("redirectTo" in found) redirect(`/u/${found.redirectTo}`);
-  const { owner } = found;
-  // The canonical spelling, so one profile has one link.
-  if (handle !== owner.username) redirect(`/u/${owner.username}`);
-  if (!(await canViewProfile(owner, viewer.id))) notFound();
+  // Who may see it is decided before any redirect (to the new username, or the canonical spelling), so a redirect
+  // never shows that a hidden profile exists.
+  const answer = await resolveProfile(handle, viewer.id, now);
+  if (answer.kind === "not_found") notFound();
+  if (answer.kind === "redirect") redirect(`/u/${answer.to}`);
+  const { owner } = answer;
   const me = await meFor(owner.id, now);
   if (!me) notFound();
   const yours = owner.id === viewer.id;

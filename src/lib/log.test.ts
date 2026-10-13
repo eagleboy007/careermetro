@@ -38,12 +38,16 @@ describe("logLine", () => {
     }
   });
 
-  it.each(["sessionId", "cookie", "accessToken", "secret", "password", "email", "workEmail", "phone", "name", "fullName", "username", "handle", "headline", "currentPay", "expectedLakh", "salary"])(
+  it.each(["sessionId", "cookie", "accessToken", "secret", "password", "email", "workEmail", "phone", "name", "fullName", "username", "handle", "headline", "currentPay", "expectedLakh", "salary", "user_handle", "pay", "oldUsernames"])(
     "always redacts the %s field",
     (key) => {
       expect(parse(logLine("info", "e", { [key]: "Priya" }, at))[key]).toBe(REDACTED);
     },
   );
+
+  it.each(["payload", "handled", "paymentMode", "headlines_seen"])("does not redact %s, which only contains a personal word", (key) => {
+    expect(parse(logLine("info", "e", { [key]: "x1" }, at))[key]).toBe("x1");
+  });
 
   it("drops unsafe keys and keys that would overwrite level, event or time", () => {
     const out = parse(logLine("info", "e", { "Priya Sharma": "x", level: "info2", event: "x", at: "x", "bad-key": 1, good: 1 }, at));
