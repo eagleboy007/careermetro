@@ -762,6 +762,20 @@ await step("market: search, open a state, a thin one says Not enough data, every
   await skip.focus();
   await p.keyboard.press("Enter");
   await p.waitForFunction(() => document.activeElement?.textContent === "India · Machine Learning Engineer", null, { timeout: 5000 });
+  // The Place select: pick Karnataka, go back to India, and picking Karnataka again still goes there.
+  const placeSelect = p.getByLabel("Place", { exact: true });
+  for (const round of [1, 2]) {
+    await placeSelect.selectOption("KA");
+    await p.waitForURL(/place=KA&/, { timeout: 15000 }).catch(() => {
+      throw new Error(`picking Karnataka in the Place select (round ${round}) didn't open it`);
+    });
+    await p.getByRole("heading", { name: "Karnataka · Machine Learning Engineer" }).waitFor();
+    if (round === 1) {
+      await p.getByRole("link", { name: "Show all of India" }).click();
+      await p.waitForURL(/place=IN&/, { timeout: 15000 });
+      await p.getByRole("heading", { name: "India · Machine Learning Engineer" }).waitFor();
+    }
+  }
   // Back to the thin state for the checks below.
   await p.locator('main a[data-state="MZ"]').click();
   await p.waitForURL(/place=MZ&/, { timeout: 15000 });
