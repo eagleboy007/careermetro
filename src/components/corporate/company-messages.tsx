@@ -156,6 +156,14 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
   const listRef = useRef<HTMLOListElement>(null);
   const ids = useId();
   const messages = [...chat.messages, ...sent];
+  // Read out politely to screen readers: "Sent." after a send, and a message that arrives with the 30-second check.
+  const [heard, setHeard] = useState("");
+  const [seen, setSeen] = useState({ id: chat.applicationId, count: chat.messages.length });
+  if (seen.id !== chat.applicationId || seen.count !== chat.messages.length) {
+    const last = chat.messages.at(-1);
+    if (seen.id === chat.applicationId && chat.messages.length > seen.count && last && (last.by === "team" || last.by === "candidate")) setHeard(`New message from ${last.who}`);
+    setSeen({ id: chat.applicationId, count: chat.messages.length });
+  }
 
   useEffect(() => {
     const list = listRef.current;
@@ -175,6 +183,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
       setSent((s) => [...s, { by: "me", who: "You", text, at: "now", ...(question ? { question: true } : {}) }]);
       setDraft("");
       setQuestion(false);
+      setHeard("Sent.");
       return;
     }
     start(async () => {
@@ -185,6 +194,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
       } else {
         setDraft("");
         setQuestion(false);
+        setHeard("Sent.");
       }
     });
   };
@@ -244,6 +254,9 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
         )}
       </ol>
 
+      <p role="status" aria-live="polite" className="sr-only">
+        {heard}
+      </p>
       <div className="flex flex-col gap-2 border-t border-line px-3 py-2.5">
         {chat.state !== "open" ? (
           <p className="py-1.5 text-[0.84rem] text-muted">{STATE_TEXT[chat.state]}</p>

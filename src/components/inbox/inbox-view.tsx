@@ -66,9 +66,15 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   const [calendarOn, setCalendarOn] = useState(true);
   const [draft, setDraft] = useState("");
   const [toast, setToast] = useState<string | null>(null);
+  // Read out politely to screen readers: "Sent." after a send, and a new message that arrives in the chat on screen.
+  const [heard, setHeard] = useState("");
   // New data from the server (after an action, or the 30-second check) replaces the list.
   const [shownFrom, setShownFrom] = useState(initial);
   if (initial !== shownFrom) {
+    const before = threads.find((t) => t.id === currentId);
+    const after = initial.find((t) => t.id === currentId);
+    const last = after?.messages.at(-1);
+    if (before && after && after.messages.length > before.messages.length && last?.by === "them") setHeard(`New message from ${last.who ?? after.name}`);
     setShownFrom(initial);
     setThreads(initial);
     if (!initial.some((t) => t.id === currentId)) {
@@ -151,7 +157,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
         if (error) {
           setDraft((now) => now || text);
           say(error);
-        }
+        } else setHeard("Sent.");
       });
       return;
     }
@@ -160,6 +166,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
       messages: [...t.messages, { by: "me", text, at: "now" }],
     }));
     setDraft("");
+    setHeard("Sent.");
   };
 
   const sendPicks = () => {
@@ -513,6 +520,9 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
         </aside>
       </div>
 
+      <p role="status" aria-live="polite" className="sr-only">
+        {heard}
+      </p>
       <p
         role="status"
         className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink min-[700px]:rounded-full px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
@@ -665,7 +675,6 @@ function Slots({ time, ti, busy, picks, onToggle }: { time: string; ti: number; 
   );
 }
 
-/** Report, with an optional block: a reason (it sets how fast the grievance team must act), a note, then send. */
 /** The verified-company badge on an application chat. Shown only while CareerMetro has the company verified. */
 export function VerifiedBadge() {
   return (
@@ -676,6 +685,7 @@ export function VerifiedBadge() {
   );
 }
 
+/** Report, with an optional block: a reason (it sets how fast the grievance team must act), a note, then send. */
 function ReportPanel({
   name,
   company = false,

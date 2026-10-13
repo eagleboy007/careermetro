@@ -311,7 +311,7 @@ function CandidateDrawer({
             </p>
             {canMove && (
               // The application's chat in Corporate Messages (build step 5). Interviewers never write, so they get no link.
-              <Link href={`/corporate/messages?application=${applicationId}`} onClick={() => dialogRef.current?.close()} className={`${actionBtn} mt-2.5`}>
+              <Link href={`/corporate/messages?application=${applicationId}`} onClick={() => close()} className={`${actionBtn} mt-2.5`}>
                 <MessageSquare {...ICON} />
                 Message {firstName(name)}
               </Link>

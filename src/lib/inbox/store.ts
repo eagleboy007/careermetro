@@ -191,7 +191,7 @@ export async function sendMessage(userId: string, conversationId: string, body: 
       const app = await applicationOf(conversationId, tx);
       if (!app || chatClosed(app, me.status, now)) return fail("closed");
       if (app.orgStatus !== "verified") return fail("paused");
-      if (!(await takeShared(LIMITS.applicationMessagesPerUserDay, userId, { db, now: now.getTime() }))) return fail("limit");
+      if (!(await takeShared(LIMITS.applicationMessagesPerUserDay, userId, { db: tx, now: now.getTime() }))) return fail("limit");
     }
     const others = await othersIn(userId, conversationId, tx);
     // A direct chat whose other person left, or who is blocked either way, takes no more messages.

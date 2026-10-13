@@ -289,6 +289,15 @@ describe.skipIf(!db)("company chats (database)", () => {
     expect(await sendMessage(s.me, chatId, REPLY, at())).toMatchObject({ ok: false, error: "limit" });
   });
 
+  it("limits the company's messages to one candidate a day, whoever on the team writes", async () => {
+    const s = await setup("perapp");
+    for (let i = 0; i < LIMITS.companyMessagesPerApplicationDay.max; i++)
+      expect(await send(i % 2 ? s.hr : s.admin, s.applicationId, `Note ${i}`, (i + 1) / 1440)).toMatchObject({ ok: true });
+    expect(await send(s.hr, s.applicationId, HELLO, 30 / 1440)).toMatchObject({ ok: false, error: "limit" });
+    // The next day the chat takes messages again.
+    expect(await send(s.hr, s.applicationId, HELLO, 1)).toMatchObject({ ok: true });
+  });
+
   it("keeps a deleted recruiter's messages, from the company team", async () => {
     const s = await setup("purge");
     expect(await send(s.hr, s.applicationId, HELLO, 1 / 1440)).toMatchObject({ ok: true });

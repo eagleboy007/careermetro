@@ -212,8 +212,11 @@ export async function sendCompanyMessage(userId: string, raw: unknown, deps: Cha
     const [conversation] = await tx.select({ status: conversations.status }).from(conversations).where(eq(conversations.id, conversationId)).for("update");
     const refusal = companySendRefusal({ role: access.me.role, teamRole: access.teamRole, orgStatus: app.orgStatus, closed: chatClosed(app, conversation!.status, now) });
     if (refusal) return fail(refusal);
-    // Counted last, so refusals above don't use up the company's day. The limit lives in the database for every server.
-    if (!(await takeShared(LIMITS.companyMessagesPerCompanyDay, app.orgId, { db, now: now.getTime() }))) return fail("limit");
+    // Counted last, so refusals above don't use up the company's day. The limits live in the database for every server,
+    // and are counted on this transaction, so a send that rolls back uses up nothing. One candidate first, then the company.
+    const at = { db: tx, now: now.getTime() };
+    if (!(await takeShared(LIMITS.companyMessagesPerApplicationDay, app.id, at))) return fail("limit");
+    if (!(await takeShared(LIMITS.companyMessagesPerCompanyDay, app.orgId, at))) return fail("limit");
     const [message] = await tx
       .insert(messages)
       .values({ conversationId, senderId: userId, kind: input.question ? "ask_question" : "text", body: input.body, createdAt: now })

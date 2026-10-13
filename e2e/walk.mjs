@@ -1165,6 +1165,8 @@ await step("company chats: the job team writes from the board, the candidate rep
     await chat.getByRole("textbox", { name: "Message" }).fill(HELLO);
     await chat.getByRole("button", { name: "Send" }).click();
     await chat.getByText(HELLO).waitFor({ timeout: 10000 });
+    // Screen readers hear it went, politely.
+    await chat.locator('[role="status"][aria-live="polite"]').filter({ hasText: /^Sent\.$/ }).waitFor({ state: "attached", timeout: 5000 });
     await chat.getByRole("button", { name: "Ask a question" }).click();
     await chat.getByRole("textbox", { name: "Question" }).fill(QUESTION);
     await chat.getByRole("button", { name: "Send" }).click();
@@ -1173,6 +1175,14 @@ await step("company chats: the job team writes from the board, the candidate rep
     if (body.includes(testEmail) || body.includes("@")) throw new Error("an email address is shown in Corporate Messages");
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-messages.png`, fullPage: true });
     await a11yOn(q, "corporate-messages");
+    // Back goes to the board with the drawer shut: the link closed it the way Close does.
+    await q.goBack();
+    await q.waitForURL(/\/corporate\/jobs\/board\?id=/, { timeout: 10000 });
+    await lane("Not this time").getByRole("button", { name: /^Priya Sharma/ }).waitFor({ timeout: 10000 });
+    await q.waitForTimeout(500);
+    if (await drawer.isVisible()) throw new Error("Back from Messages opened the candidate drawer again");
+    await q.goForward();
+    await chat.getByText(QUESTION).waitFor({ timeout: 10000 });
 
     // The candidate: the chat in the Inbox, from Example Labs with the verified badge and the anti-scam line.
     await p.setViewportSize({ width: 1280, height: 900 });
@@ -1189,6 +1199,7 @@ await step("company chats: the job team writes from the board, the candidate rep
     await thread.getByRole("textbox", { name: "Message" }).fill(REPLY);
     await thread.getByRole("button", { name: "Send" }).click();
     await thread.getByText(REPLY).waitFor({ timeout: 10000 });
+    await p.locator('[role="status"][aria-live="polite"]').filter({ hasText: /^Sent\.$/ }).waitFor({ state: "attached", timeout: 5000 });
     await shot("inbox-company-chat");
     await a11y("inbox-company-chat");
     // Report and Block are there on a company chat (opened and cancelled here; the store tests file them).
@@ -1196,6 +1207,9 @@ await step("company chats: the job team writes from the board, the candidate rep
     await thread.getByRole("checkbox", { name: /Also block Example Labs/ }).waitFor();
     await thread.getByRole("button", { name: "Cancel" }).click();
 
+    // The reply reaches the open chat with the 30-second check, and is read out politely.
+    await chat.getByText(REPLY).waitFor({ timeout: 45000 });
+    await chat.locator('[role="status"][aria-live="polite"]').filter({ hasText: /^New message from Priya Sharma$/ }).waitFor({ state: "attached", timeout: 5000 });
     // The company reads the reply.
     await q.reload();
     await chat.getByText(REPLY).waitFor({ timeout: 10000 });

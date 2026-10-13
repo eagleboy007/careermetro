@@ -68,6 +68,42 @@ describe.skipIf(!db)("shared rate limits (database)", () => {
     });
   });
 
+  it("counts on a transaction it is given: a rolled-back hit uses up nothing, a committed one counts", async () => {
+    const l = limit(1);
+    const now = Date.now();
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    const deletes = vi.spyOn(db!, "delete");
+    try {
+      for (let i = 0; i < 3; i++)
+        await expect(
+          db!.transaction(async (tx) => {
+            expect(await takeShared(l, "k", { db: tx, now })).toBe(true);
+            throw new Error("rolled back");
+          }),
+        ).rejects.toThrow("rolled back");
+      expect(await allowsShared(l, "k", { db: db!, now })).toBe(true);
+      await db!.transaction(async (tx) => {
+        expect(await takeShared(l, "k", { db: tx, now })).toBe(true);
+        // The caller's transaction goes on after the count: it ran in a savepoint on the same connection.
+        expect(await tx.select({ hits: schema.rateLimits.hits }).from(schema.rateLimits).where(eq(schema.rateLimits.bucket, l.bucket))).toEqual([{ hits: 1 }]);
+      });
+      // No background cleanup is started on a transaction's connection.
+      expect(deletes).not.toHaveBeenCalled();
+      expect(await allowsShared(l, "k", { db: db!, now })).toBe(false);
+    } finally {
+      random.mockRestore();
+      deletes.mockRestore();
+    }
+  });
+
+  it("never needs a second connection inside a transaction, so a full pool of senders can't deadlock", async () => {
+    const l = limit(100);
+    const now = Date.now();
+    // The pool has 4 connections; 8 transactions each counting a hit would wait forever if the count took another one.
+    const results = await Promise.all(Array.from({ length: 8 }, () => db!.transaction((tx) => takeShared(l, "k", { db: tx, now }))));
+    expect(results).toEqual(Array(8).fill(true));
+  }, 10_000);
+
   it("still says no when the cleanup fails", async () => {
     const l = limit(1, 60_000);
     const failing = { ...db!, insert: db!.insert.bind(db!), delete: () => ({ where: () => Promise.reject(new Error("down")) }) } as unknown as typeof db;
