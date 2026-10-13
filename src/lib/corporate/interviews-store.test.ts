@@ -619,5 +619,22 @@ describe.skipIf(!db)("interviews (database)", () => {
     const form = await jobForm(s.admin, null, at());
     if (!form.ok) throw new Error(form.error);
     expect(form.data.colleagues.map((c) => c.name)).toEqual(["Rahul Menon"]);
+    // Editing the job Sana is already on: she is still listed, ticked and marked, so she can be kept or taken off.
+    const edit = await jobForm(s.admin, s.jobId, at());
+    if (!edit.ok) throw new Error(edit.error);
+    expect([...edit.data.colleagues].sort((a, b) => a.name.localeCompare(b.name))).toEqual([
+      { memberId: s.hrMember, name: "Rahul Menon", role: "hiring" },
+      { memberId: s.ivMember, name: "Sana Qureshi", role: "interviewer", recheckDue: true },
+    ]);
+    expect(edit.values).toMatchObject({ hiring: [s.hrMember], interviewers: [s.ivMember] });
+    const job = { jobId: s.jobId, roleSlug: SLUG, title: "SOC Analyst L1", workType: "full_time", city: "Pune", requirements: req };
+    // Keeping her saves; adding Farhan, whose re-check is due and who isn't on the job, is refused.
+    expect(await saveJob(s.admin, { ...job, hiring: [s.hrMember], interviewers: [s.ivMember] }, at())).toMatchObject({ ok: true });
+    expect(await saveJob(s.admin, { ...job, hiring: [s.hrMember, s.otherMember], interviewers: [s.ivMember] }, at())).toMatchObject({ ok: false, error: "not_colleague" });
+    // Taken off, she can't be put back until she confirms her work email.
+    expect(await saveJob(s.admin, { ...job, hiring: [s.hrMember], interviewers: [] }, at())).toMatchObject({ ok: true });
+    expect(await saveJob(s.admin, { ...job, hiring: [s.hrMember], interviewers: [s.ivMember] }, at())).toMatchObject({ ok: false, error: "not_colleague" });
+    const after = await jobForm(s.admin, s.jobId, at());
+    expect(after.ok && after.data.colleagues.map((c) => c.name)).toEqual(["Rahul Menon"]);
   });
 });

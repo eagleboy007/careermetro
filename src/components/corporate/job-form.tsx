@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, ShieldCheck, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
-import type { JobFormActions, JobFormData, JobFormValues, JobHonestyTicks, JobRequirementsView, JobWorkType, SkillOptionView } from "@/lib/corporate/types";
+import type { ColleagueView, JobFormActions, JobFormData, JobFormValues, JobHonestyTicks, JobRequirementsView, JobWorkType, SkillOptionView } from "@/lib/corporate/types";
 import {
   JOB_HONESTY_CHECKS,
   JOB_NICE_MAX,
@@ -221,7 +221,12 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
     oneOf: req.oneOf.map((g) => g.map(name)),
     nice: req.nice.map(name),
   };
-  const hiringOptions = data.colleagues.filter((c) => c.role !== "interviewer");
+  // Someone whose work-email re-check is due is listed only where they were already on the team: they can be taken
+  // off, but not newly added until they confirm their work email.
+  const listed = (list: "hiring" | "interviewers") => (c: ColleagueView) => !c.recheckDue || !!initial?.[list].includes(c.memberId);
+  const hiringOptions = data.colleagues.filter((c) => c.role !== "interviewer").filter(listed("hiring"));
+  const interviewerOptions = data.colleagues.filter(listed("interviewers"));
+  const recheckHint = (c: ColleagueView) => c.recheckDue && <span className="text-[0.8rem] text-muted">Work email re-check due</span>;
   const reqSelect = `${ids}-req`;
   const niceSelect = `${ids}-nice`;
 
@@ -411,12 +416,13 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
                         <input type="checkbox" className="size-[18px] accent-ink" checked={values.hiring.includes(c.memberId)} onChange={(e) => toggleTeam("hiring", c.memberId, e.target.checked)} />
                         {c.name}
                         <span className="text-[0.8rem] text-muted">{ORG_ROLE_LABELS[c.role]}</span>
+                        {recheckHint(c)}
                       </label>
                     ))}
                   </fieldset>
                   <fieldset className="flex flex-col">
                     <legend className="mb-1 text-[0.82rem] font-semibold">Interviewers</legend>
-                    {data.colleagues.map((c) => (
+                    {interviewerOptions.map((c) => (
                       <label key={c.memberId} className="flex min-h-11 items-center gap-2.5 text-[0.88rem]">
                         <input
                           type="checkbox"
@@ -426,6 +432,7 @@ export function JobForm({ data, initial, today, actions }: { data: JobFormData; 
                         />
                         {c.name}
                         <span className="text-[0.8rem] text-muted">{ORG_ROLE_LABELS[c.role]}</span>
+                        {recheckHint(c)}
                       </label>
                     ))}
                   </fieldset>

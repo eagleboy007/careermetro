@@ -477,4 +477,35 @@ describe.skipIf(!db)("overview, audit and clean-up (database)", () => {
     expect(lines.length).toBeGreaterThan(0);
     expect(lines.every((l) => l.on.kind === "application" && l.on.job === "SOC Analyst L1")).toBe(true);
   });
+
+  it("erases a phone still shared when company access ends 180 days after closing", async () => {
+    const s = await setup("endph");
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const id = await book(s, slot("2026-10-14T11:00"));
+    expect(await respondToInterview(s.me, { interviewId: id, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    // Closed without the phone being erased (as if the daily erase hadn't reached it yet).
+    await db!.update(schema.applications).set({ closedAt: clock }).where(eq(schema.applications.id, s.applicationId));
+    const app = async () => (await db!.select().from(schema.applications).where(eq(schema.applications.id, s.applicationId)))[0]!;
+    expect((await app()).phoneShared).not.toBeNull();
+    expect((await endCompanyAccess(db!, at(181).now, { orgId: s.orgId })).accessEnded).toBe(1);
+    expect((await app()).phoneShared).toBeNull();
+    expect((await db!.select().from(schema.interviews).where(eq(schema.interviews.id, id)))[0]!.phoneShared).toBe(false);
+  });
+
+  it("finds each audit line's application by its id, not by scanning the company's applications", async () => {
+    const s = await setup("audplan");
+    expect(await openCandidate(s.admin, { applicationId: s.applicationId }, at())).toMatchObject({ ok: true });
+    // The audit's own query, read back as SQL and explained. Postgres either hashes the company's visible applications
+    // once, or probes each line's application by its primary key; never a scan of the applications for every line,
+    // which grows with lines times applications.
+    const captured: { sql: string; params: unknown[] }[] = [];
+    const logged = drizzle(sqlClient!, { schema, logger: { logQuery: (q: string, params: unknown[]) => void captured.push({ sql: q, params }) } });
+    const r = await companyAudit(s.admin, {}, { db: logged, now: clock });
+    expect(r.ok).toBe(true);
+    const query = captured.find((q) => q.sql.includes('from "audit_logs"'))!;
+    const plan = (await sqlClient!.unsafe(`explain ${query.sql}`, query.params as never[])).map((row) => String(Object.values(row)[0])).join("\n");
+    if (!/hashed SubPlan/.test(plan)) expect(plan).toContain("applications_pkey");
+    // Postgres can probe by the key: a line names its application as "application:<uuid>" and nothing else.
+    expect(query.sql).toContain("a.id = (case when");
+  });
 });
