@@ -28,6 +28,8 @@ export const ORG_STATUS_LABELS: Record<(typeof ORG_REVIEW_STATUSES)[number], str
   verified: "Verified company",
   suspended: "Suspended",
 };
+/** What the company review page (/admin/companies) can do to a company. */
+export const REVIEW_DECISIONS = ["verify", "suspend"] as const;
 export const ORG_ROLES = ["admin", "hiring", "interviewer"] as const;
 export const ORG_ROLE_LABELS: Record<(typeof ORG_ROLES)[number], string> = { admin: "Recruiter admin", hiring: "Hiring HR", interviewer: "Interviewer" };
 /** One code check serves both: joining a company, and later the verified current job (handoff 12d). */

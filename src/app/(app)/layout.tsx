@@ -9,6 +9,7 @@ import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
 import { RESTORE_PATH } from "@/lib/auth/after-sign-in";
 import { currentIdentity, signedInAccount } from "@/lib/auth/server";
+import { isAdmin } from "@/lib/admin/access";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { unreadChats } from "@/lib/inbox/store";
@@ -67,6 +68,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       showStreak: streak.days > 0,
       canSignOut: true,
       inboxUnread,
+      isAdmin: isAdmin(await currentIdentity()),
     };
   } else {
     user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: unreadCount(exampleThreads) };

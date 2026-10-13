@@ -18,3 +18,4 @@ export * from "./resume-document";
 export * from "./proof";
 export * from "./job-check";
 export * from "./corporate";
+export * from "./admin";

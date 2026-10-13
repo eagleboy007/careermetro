@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { StreakChip } from "@/components/today/streak-chip";
 import { Logo } from "@/components/ui/logo";
-import { MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
+import { ADMIN_LINK, MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
 
 export type ShellUser = {
   name: string;
@@ -18,6 +18,8 @@ export type ShellUser = {
   canSignOut: boolean;
   /** Unread chats and message requests, for the badge on the Inbox icon. */
   inboxUnread: number;
+  /** CareerMetro's own admins (ADMIN_EMAILS), worked out on the server: the menu shows Admin. */
+  isAdmin?: boolean;
 };
 
 /**
@@ -208,6 +210,14 @@ function AvatarMenu({ user }: { user: ShellUser }) {
                 {item.label} <Soon />
               </li>
             ),
+          )}
+          {user.isAdmin && (
+            <li className="border-t border-line pt-0.5">
+              <Link href={ADMIN_LINK.href} onClick={() => setOpen(false)} aria-current={path.startsWith("/admin") ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
+                <ADMIN_LINK.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                {ADMIN_LINK.label}
+              </Link>
+            </li>
           )}
           <li className="border-t border-line pt-0.5">
             {user.canSignOut ? (

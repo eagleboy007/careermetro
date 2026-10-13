@@ -1,4 +1,4 @@
-import type { ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES } from "@/lib/schemas/constants";
+import type { ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, REVIEW_DECISIONS } from "@/lib/schemas/constants";
 
 /*
  * What the Corporate screens get. Plain data, safe to hand to client components: no email address of anyone, and no
@@ -75,3 +75,31 @@ export type SignupDetails = {
 
 /** Step 3, the company page. All optional. */
 export type CompanyPageDetails = { about: string; industry: string; offices: string; gstinOrCin: string };
+
+/* The company review page, /admin/companies (CareerMetro's own admins) ------------------------------------------- */
+
+export type ReviewDecision = (typeof REVIEW_DECISIONS)[number];
+
+/** One company on the review list. Company fields and counts only: never anyone's email address or phone. */
+export type AdminCompanyView = {
+  id: string;
+  name: string;
+  type: OrgType;
+  domain: string;
+  website: string | null;
+  /** The website's host is not the email domain or a subdomain of it: check it is the same company. */
+  websiteOnOtherDomain: boolean;
+  city: string | null;
+  size: string | null;
+  /** ISO day the company signed up, in India time. */
+  createdOn: string;
+  members: number;
+  admins: number;
+  /** No active Recruiter admin left. */
+  noAdmin: boolean;
+  status: OrgReviewStatus;
+};
+
+/** A review from the page: words to announce, whether it worked or not. */
+export type ReviewResult = { ok: boolean; message: string };
+export type ReviewAction = (orgId: string, decision: ReviewDecision) => Promise<ReviewResult>;

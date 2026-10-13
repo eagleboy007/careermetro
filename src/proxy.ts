@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { isAdmin } from "@/lib/admin/access";
 import { authConfig } from "@/lib/auth/config";
 import { refreshSession } from "@/lib/auth/proxy-session";
 import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/auth/test-user";
@@ -8,6 +9,11 @@ import { signedInPreviewEnabled } from "@/lib/preview";
 const SIGNED_IN_PREFIXES = ["/today", "/map", "/departures", "/inbox", "/grievances", "/me", "/settings", "/account", "/sign-in", "/sign-up", "/auth"];
 /** Screens that need someone signed in once sign-in is set up. */
 const NEEDS_SIGN_IN = ["/today", "/map", "/departures", "/inbox", "/me", "/settings", "/account/restore"];
+
+/** CareerMetro's own admin pages: anyone who isn't an admin gets the normal not-found page, with a 404. */
+const ADMIN_PREFIXES = ["/admin"];
+/** No route lives here, so a rewrite to it renders the app's not-found page with a 404 status. */
+export const NOT_FOUND_PATH = "/_no-such-page";
 
 const under = (path: string, prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 
@@ -24,21 +30,37 @@ function redirectKeeping(response: NextResponse, url: URL): NextResponse {
 }
 
 /**
+ * The normal not-found page, decided here before anything streams so the status is a real 404 (a notFound() inside
+ * the streamed signed-in layout would answer 200). Keeps any cookies the session refresh wrote.
+ */
+function notFoundKeeping(request: NextRequest, response?: NextResponse): NextResponse {
+  const out = NextResponse.rewrite(new URL(NOT_FOUND_PATH, request.url));
+  for (const cookie of response?.cookies.getAll() ?? []) out.cookies.set(cookie);
+  return out;
+}
+
+/**
  * Runs before any render.
  * - Outside previews the signed-in screens answer a plain 404 here: a notFound() inside the streamed layout would
  *   already have sent a 200 with the page's data. Production does no auth work at all until sign-in launches.
  * - Elsewhere it refreshes the sign-in session (the only place a refresh can be saved), sends signed-out visitors
  *   from signed-in screens to /sign-in and signed-in visitors from the home page to /today.
+ * - The admin pages answer not-found to everyone but an admin (src/lib/admin/access.ts): signed out included, so the
+ *   page never shows it exists. The page and its actions check again themselves.
  */
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  const adminPage = under(path, ADMIN_PREFIXES);
   if (!signedInPreviewEnabled()) {
+    if (adminPage) return notFoundKeeping(request);
     return under(path, SIGNED_IN_PREFIXES) ? new NextResponse(null, { status: 404 }) : NextResponse.next();
   }
-  const { response, signedIn: withProvider } = await refreshSession(request);
+  const { response, signedIn: withProvider, identity: providerIdentity } = await refreshSession(request);
   // Until the real sign-in has its keys, previews use the stand-in test user instead.
-  if (!authConfig() && !testSignInEnabled()) return response;
-  const signedIn = withProvider || testUserIdentity(request.cookies.get(TEST_USER_COOKIE)?.value) !== null;
+  if (!authConfig() && !testSignInEnabled()) return adminPage ? notFoundKeeping(request, response) : response;
+  const testUser = testUserIdentity(request.cookies.get(TEST_USER_COOKIE)?.value);
+  const signedIn = withProvider || testUser !== null;
+  if (adminPage && !isAdmin(providerIdentity ?? testUser)) return notFoundKeeping(request, response);
   if (!signedIn && under(path, NEEDS_SIGN_IN)) {
     const url = new URL("/sign-in", request.url);
     url.searchParams.set("next", path + request.nextUrl.search);

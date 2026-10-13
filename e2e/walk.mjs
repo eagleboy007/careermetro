@@ -498,6 +498,8 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// The company the Corporate step sets up, for the company review step after it.
+let corpDomain = null;
 // Corporate (dev/corporate-plan.md, build steps 1 and 2): a signed-in person sets up a company with a work email on
 // an example domain, types the test-mode code (no email sender yet), and lands on Corporate waiting for verification.
 await step("corporate: set up a company, confirm the code, wait for verification", async () => {
@@ -507,6 +509,7 @@ await step("corporate: set up a company, confirm the code, wait for verification
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
   q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   const domain = `labs${Date.now()}.example-labs.test`;
+  corpDomain = domain;
   try {
     await q.goto(BASE + "/today");
     await q.waitForURL(/\/sign-in/);
@@ -594,6 +597,119 @@ await step("corporate: set up a company, confirm the code, wait for verification
     }
   } finally {
     await corp.close();
+  }
+});
+// Company review (/admin/companies): signed out and a non-admin get the normal not-found page with a 404; the admin
+// (the documented local default, admin@careermetro.test, while ADMIN_EMAILS is unset) sees the company the Corporate
+// step set up, tries Suspend and cancels, verifies it, and it leaves the list with focus kept on the page.
+const axeOn = async (q, name) => {
+  await q.addScriptTag({ content: AXE });
+  const result = await q.evaluate(() =>
+    axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
+  );
+  for (const v of result.violations) {
+    const line = `${name}: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
+    if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
+    else a11yNotes.push(line);
+  }
+};
+const signInAs = async (q, name, email) => {
+  await q.goto(BASE + "/sign-in");
+  await q.locator('input[name="name"]').fill(name);
+  await q.locator('input[name="email"]').fill(email);
+  await q.locator('form button[type="submit"]').last().click();
+  await q.waitForURL(/\/(sign-up\/finish|today)/, { timeout: 15000 });
+  // The admin test account is the same on every run: after the first, it is already signed up.
+  if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+    await q.locator('input[name="age"]').check();
+    await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+    await q.waitForURL(/\/today/, { timeout: 15000 });
+  }
+};
+const expectNotFound = async (q, who) => {
+  const res = await q.goto(BASE + "/admin/companies");
+  if (res?.status() !== 404) throw new Error(`${who}: /admin/companies answered ${res?.status()}, not 404`);
+  await q.getByRole("heading", { name: "We can't find that page" }).waitFor();
+  if (await q.getByText("Company review").count()) throw new Error(`${who}: the review page showed`);
+};
+await step("company review: not found for others; the admin verifies the new company", async () => {
+  if (!corpDomain) throw new Error("the Corporate step set up no company");
+  // Signed out.
+  const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    await expectNotFound(await out.newPage(), "signed out");
+  } finally {
+    await out.close();
+  }
+  // Signed in, not an admin: not found, and no Admin in the avatar menu.
+  const other = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    const q = await other.newPage();
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    await signInAs(q, "Ravi Kumar", `notadmin-${testEmail}`);
+    await q.getByRole("button", { name: /open menu$/ }).click();
+    await q.getByRole("link", { name: "Corporate", exact: true }).waitFor();
+    if (await q.getByRole("link", { name: "Admin", exact: true }).count()) throw new Error("Admin shown in a non-admin's menu");
+    await expectNotFound(q, "non-admin");
+  } finally {
+    await other.close();
+  }
+  // The admin.
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await adm.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  try {
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.getByRole("button", { name: /open menu$/ }).click();
+    await q.getByRole("link", { name: "Admin", exact: true }).click();
+    await q.waitForURL(/\/admin\/companies$/);
+    await q.getByRole("heading", { name: "Company review", level: 1 }).waitFor({ timeout: 15000 });
+    const row = q.locator("article", { hasText: corpDomain });
+    await row.waitFor();
+    await row.getByText("Waiting for verification").waitFor();
+    const body = await q.locator("body").innerText();
+    if (/@/.test(body)) throw new Error("an email address is shown on the review page");
+    const verify = row.getByRole("button", { name: "Verify Example Labs" });
+    const box = await verify.boundingBox();
+    if (!box || box.height < 44) throw new Error(`Verify is ${box?.height}px tall, under 44px`);
+    // Suspend asks first; Cancel puts focus back on Suspend.
+    await row.getByRole("button", { name: "Suspend Example Labs" }).click();
+    await row.getByRole("button", { name: "Suspend company" }).waitFor();
+    if ((await q.evaluate(() => document.activeElement?.textContent?.trim())) !== "Suspend company") throw new Error("confirm step did not take focus");
+    await row.getByRole("button", { name: "Cancel" }).click();
+    await q.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "Suspend Example Labs", null, { timeout: 5000 });
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-companies.png`, fullPage: true });
+    await axeOn(q, "admin-companies");
+    await verify.click();
+    await q.getByRole("status").filter({ hasText: "Example Labs is verified." }).waitFor({ timeout: 10000 });
+    await row.waitFor({ state: "detached", timeout: 10000 });
+    // The row left; focus moved to the next row's name or the empty-list line, not to the page.
+    await q.waitForFunction(() => document.activeElement && document.activeElement !== document.body && document.activeElement.isConnected, null, { timeout: 5000 });
+    if (process.env.DATABASE_URL) {
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        const [org] = await sql`select id, review_status, reviewed_by from organizations where email_domain = ${corpDomain}`;
+        if (org?.review_status !== "verified" || !/^admin:[0-9a-f-]{36}$/.test(org.reviewed_by ?? "")) throw new Error("review not saved with the admin's id");
+        const [audit] = await sql`select count(*)::int as n from audit_logs where target = ${`organization:${org.id}`} and action = 'company_verified'`;
+        if (audit.n !== 1) throw new Error("no audit line for the review");
+      } finally {
+        await sql.end();
+      }
+    }
+    // Phone size in dark mode: no sideways scroll, and the same axe check.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Company review", level: 1 }).waitFor({ timeout: 15000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("admin-companies: horizontal overflow " + overflow + "px");
+    await axeOn(q, "admin-companies-phone-dark");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-companies-phone-dark.png`, fullPage: true });
+  } finally {
+    await adm.close();
   }
 });
 await step("phone inbox: list first, chat full screen", async () => {

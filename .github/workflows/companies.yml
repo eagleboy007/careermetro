@@ -1,8 +1,9 @@
 name: Companies
 
-# Milin's review of new companies during the beta (dev/corporate-plan.md, call B). Run it from the Actions tab:
-# `list` writes the companies waiting for review (and any left without a Recruiter admin) to the job summary;
-# `verify` or `suspend` with a company's email domain changes its badge and writes one audit line.
+# Milin's review of new companies during the beta (dev/corporate-plan.md, call B). The review itself is the in-app page
+# /admin/companies; this workflow is the fallback. Actions output is public in a public repository, so:
+# `list` writes counts only (waiting, suspended, no Recruiter admin) to the job summary and log, and points to the page;
+# `verify` or `suspend` with a company's email domain changes its badge, writes one audit line and prints "done" only.
 # Uses the same database secret as the Migrate database workflow; no new keys.
 on:
   workflow_dispatch:

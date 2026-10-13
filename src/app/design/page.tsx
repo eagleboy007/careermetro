@@ -41,6 +41,8 @@ import { CorporateHome, CorporateStart } from "@/components/corporate/corporate-
 import { exampleCorporateHome, exampleSignupDetails } from "@/components/corporate/fixtures";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
+import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
+import { exampleReviewCompanies } from "@/components/admin/fixtures";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
@@ -357,10 +359,28 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Company review (admins only)</h2>
+        <p className="text-sm text-muted">
+          /admin/companies: one row per company waiting for review, suspended, or left with no Recruiter admin. Flags for no admin and a website on
+          another domain; Verify, Suspend with a confirm step, and Verify again. Example data, so the buttons are off.
+        </p>
+        <AdminCompanyRow company={{ ...exampleReviewCompanies[0]!, id: "design-row-verify" }} pending={false} confirming={false} />
+        <p className="text-sm text-muted">Suspend asks first.</p>
+        <AdminCompanyRow company={{ ...exampleReviewCompanies[1]!, id: "design-row-confirm" }} pending={false} confirming />
+        <p className="text-sm text-muted">The whole page, and the list with nothing left to review.</p>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyReview companies={exampleReviewCompanies} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <CompanyReview companies={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
-        <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu. Sections not built yet show as Soon.</p>
+        <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu (Admin shows only for admins). Sections not built yet show as Soon.</p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2 }}>
+          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>
