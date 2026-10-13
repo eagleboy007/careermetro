@@ -5,6 +5,7 @@ import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { roleProfiles } from "@/content";
+import { exportAccountData } from "@/lib/account/export";
 import { matchProfile } from "@/lib/gaps/match";
 import type { Profile } from "@/lib/schemas";
 import { ingestResume } from "./ingest";
@@ -75,20 +76,50 @@ describe.skipIf(!db)("screening check (database)", () => {
     expect(view).toMatchObject({ layout: { state: "unknown" }, headings: { state: "unknown" } });
   });
 
+  const role = { roleSlug: "data-analyst" };
+
   it("adds a confirmed skill as listed only: it stays a weak gap, and only once", async () => {
     const s = `${session}-c`;
     const owner = { sessionId: s };
     const id = await confirmed(s);
-    expect(await confirmKeyword(id, owner, "python", { db: db! })).toEqual({ ok: true, version: 3 });
+    expect(await confirmKeyword(id, owner, { skillId: "python", target: role, version: 2 }, { db: db! })).toEqual({ ok: true, version: 3 });
     const after = await getResumeForOwner(id, owner, db!);
     expect(after!.confirmed).toBe(true);
     expect(after!.profile.skills.at(-1)).toEqual({ name: "Python", lastUsed: null, evidence: [] });
     expect(matchProfile(after!.profile, dataAnalyst).gaps.find((g) => g.skillId === "python")?.status).toBe("weak");
     // Named now, and SQL was always named: neither can be added again.
-    expect(await confirmKeyword(id, owner, "python", { db: db! })).toEqual({ ok: false, reason: "already" });
-    expect(await confirmKeyword(id, owner, "sql", { db: db! })).toEqual({ ok: false, reason: "already" });
-    expect(await confirmKeyword(id, owner, "not-a-skill", { db: db! })).toEqual({ ok: false, reason: "unknown_skill" });
-    expect(await confirmKeyword(id, { sessionId: `${s}-other` }, "statistics", { db: db! })).toEqual({ ok: false, reason: "not_found" });
+    expect(await confirmKeyword(id, owner, { skillId: "python", target: role, version: 3 }, { db: db! })).toEqual({ ok: false, reason: "already" });
+    expect(await confirmKeyword(id, owner, { skillId: "sql", target: role, version: 3 }, { db: db! })).toEqual({ ok: false, reason: "already" });
+    expect(await confirmKeyword(id, owner, { skillId: "not-a-skill", target: role, version: 3 }, { db: db! })).toEqual({ ok: false, reason: "unknown_skill" });
+    expect(await confirmKeyword(id, { sessionId: `${s}-other` }, { skillId: "statistics", target: role, version: 3 }, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+  });
+
+  it("accepts only a missing keyword of the page's own role or job check", async () => {
+    const s = `${session}-t`;
+    const owner = { sessionId: s };
+    const id = await confirmed(s);
+    // Terraform is a real skill, but Data Analyst doesn't ask for it.
+    expect(await confirmKeyword(id, owner, { skillId: "terraform", target: role, version: 2 }, { db: db! })).toEqual({ ok: false, reason: "not_asked" });
+    expect(await confirmKeyword(id, owner, { skillId: "python", target: { roleSlug: "no-such-role" }, version: 2 }, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+    const [check] = await db!
+      .insert(schema.jobChecks)
+      .values({ resumeId: id, roleSlug: "data-analyst", company: "Example Labs", title: "Analyst", requiredSkillIds: ["sql", "tableau"], textHash: `t-${s}` })
+      .returning({ id: schema.jobChecks.id });
+    const job = { checkId: check.id };
+    expect(await confirmKeyword(id, owner, { skillId: "python", target: job, version: 2 }, { db: db! })).toEqual({ ok: false, reason: "not_asked" });
+    expect(await confirmKeyword(id, { sessionId: `${s}-other` }, { skillId: "tableau", target: job, version: 2 }, { db: db! })).toEqual({ ok: false, reason: "not_found" });
+    expect(await confirmKeyword(id, owner, { skillId: "tableau", target: job, version: 2 }, { db: db! })).toEqual({ ok: true, version: 3 });
+  });
+
+  it("refuses a change made on an older profile version, saved since in another tab", async () => {
+    const s = `${session}-v`;
+    const owner = { sessionId: s };
+    const id = await confirmed(s);
+    await confirmProfile(id, owner, parsed, db!);
+    expect(await confirmKeyword(id, owner, { skillId: "python", target: role, version: 2 }, { db: db! })).toEqual({ ok: false, reason: "conflict" });
+    expect((await getResumeForOwner(id, owner, db!))!.version).toBe(3);
+    // confirmProfile itself refuses a stale version.
+    expect(await confirmProfile(id, owner, parsed, db!, 2)).toEqual({ ok: false, reason: "conflict" });
   });
 
   it("refuses before the person has confirmed their profile", async () => {
@@ -96,6 +127,20 @@ describe.skipIf(!db)("screening check (database)", () => {
     const r = await ingestResume({ bytes, as: "text", owner: { sessionId: s }, clientHash: `h-${s}` }, { db: db!, client });
     if (!r.ok) throw new Error("setup failed");
     created.push(r.resumeId);
-    expect(await confirmKeyword(r.resumeId, { sessionId: s }, "python", { db: db! })).toEqual({ ok: false, reason: "not_confirmed" });
+    expect(await confirmKeyword(r.resumeId, { sessionId: s }, { skillId: "python", target: role, version: 1 }, { db: db! })).toEqual({ ok: false, reason: "not_confirmed" });
+  });
+
+  it("puts the screening flags in the account's data download", async () => {
+    const s = `${session}-x`;
+    const id = await confirmed(s);
+    const [user] = await db!.insert(schema.users).values({ email: `${s}@example.test` }).returning({ id: schema.users.id });
+    try {
+      await db!.update(schema.resumes).set({ userId: user.id }).where(eq(schema.resumes.id, id));
+      const exported = await exportAccountData(user.id, db!);
+      expect(exported?.exportVersion).toBe(11);
+      expect(exported?.resumes[0].screening).toMatchObject({ version: 1, layout: "pasted", headings: { experience: "standard" } });
+    } finally {
+      await db!.delete(schema.users).where(eq(schema.users.id, user.id));
+    }
   });
 });

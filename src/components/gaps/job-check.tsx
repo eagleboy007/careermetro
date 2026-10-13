@@ -17,9 +17,12 @@ export function JobCheck({
   roleTitle,
   checks,
   goals,
+  profileVersion = null,
   demo = false,
 }: {
   resumeId: string;
+  /** The confirmed profile version the page shows, for "I have this" (FR-34); null hides it. */
+  profileVersion?: number | null;
   roleSlug: string;
   roleTitle: string;
   checks: JobCheckView[];
@@ -85,6 +88,7 @@ export function JobCheck({
               key={c.id}
               check={c}
               resumeId={resumeId}
+              profileVersion={profileVersion}
               roleTitle={roleTitle}
               planHref={`/resume/${resumeId}/path/${roleSlug}?job=${c.id}`}
               goals={goals}

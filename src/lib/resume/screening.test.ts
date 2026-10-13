@@ -118,7 +118,7 @@ describe("headingsView", () => {
 
 describe("screeningSummary", () => {
   it("is words, never a percentage", () => {
-    const view = buildScreeningView({ against: "role", profile, role: role("data-analyst"), stored: stored(), now });
+    const view = buildScreeningView({ target: { roleSlug: "data-analyst" }, profileVersion: 2, profile, role: role("data-analyst"), stored: stored(), now });
     expect(screeningView.parse(view)).toEqual(view);
     const summary = screeningSummary(view);
     expect(JSON.stringify(summary)).not.toMatch(/%|score/i);
@@ -127,7 +127,11 @@ describe("screeningSummary", () => {
   });
 
   it("says ready only when everything was checked and nothing is left", () => {
-    const done: ScreeningView = { against: "job", keywords: { asked: 2, missing: [] }, layout: { state: "checked", fileType: "docx", issues: [], unchecked: [] }, headings: { state: "checked", issues: [] } };
+    const done: ScreeningView = {
+      against: "job",
+      target: { checkId: "8f0c2a5e-3b1d-4c6e-9a7f-1d2e3f4a5b6c" },
+      profileVersion: 2,
+      keywords: { asked: 2, missing: [] }, layout: { state: "checked", fileType: "docx", issues: [], unchecked: [] }, headings: { state: "checked", issues: [] } };
     expect(screeningSummary(done).headline).toBe("Nothing to fix for screening software.");
     expect(screeningSummary({ ...done, layout: { state: "unknown" } }).headline).toBe("Nothing to fix in what we could check.");
     expect(screeningSummary({ ...done, layout: { state: "unknown" } }).parts[1].text).toMatch(/Upload your file again/);

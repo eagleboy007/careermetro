@@ -132,6 +132,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
       {screening && <ScreeningCheck view={screening} resumeId={id} />}
       <JobCheck
         resumeId={id}
+        profileVersion={screening?.profileVersion ?? null}
         roleSlug={role.slug}
         roleTitle={role.title}
         checks={checks ?? []}

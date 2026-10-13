@@ -24,6 +24,8 @@ describe("readHeading", () => {
     expect(readHeading("Tools: Jira, Git")).toBeNull();
     expect(readHeading("Training: onboarded 12 new analysts")).toBeNull();
     expect(readHeading("Experience with SQL and Python")).toBeNull();
+    // Everyday words that also head sub-lists are never section headings.
+    for (const word of ["Tools", "Training", "Learning", "Career", "Jobs", "Roles", "About", "Studies"]) expect(readHeading(word)).toBeNull();
   });
 });
 

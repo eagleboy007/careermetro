@@ -12,7 +12,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 10;
+export const EXPORT_VERSION = 11;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -39,7 +39,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
   if (!account) return null;
 
   const resumeRows = await db
-    .select({ id: resumes.id, createdAt: resumes.createdAt, status: resumes.status, mimeType: resumes.mimeType, sizeBytes: resumes.sizeBytes })
+    // screening: the FR-34 layout flags and heading codes found at upload (counts and codes, never text).
+    .select({ id: resumes.id, createdAt: resumes.createdAt, status: resumes.status, mimeType: resumes.mimeType, sizeBytes: resumes.sizeBytes, screening: resumes.screening })
     .from(resumes)
     .where(eq(resumes.userId, userId))
     .orderBy(asc(resumes.createdAt));

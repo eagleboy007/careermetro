@@ -3,8 +3,8 @@ import { confirmKeywordRequest } from "@/lib/schemas";
 import { isSameOrigin, readOwner } from "@/lib/session";
 import { errorFields, logEvent } from "@/lib/log";
 
-/** The largest body worth reading: one skill id and its JSON quoting. */
-const MAX_BODY_BYTES = 200;
+/** The largest body worth reading: one skill id, its target and the profile version, with JSON quoting. */
+const MAX_BODY_BYTES = 400;
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 const NOT_FOUND = "We couldn't find this resume. It may have expired.";
@@ -13,14 +13,15 @@ const FAILURES: Record<Extract<ConfirmKeywordResult, { ok: false }>["reason"], [
   not_found: [404, NOT_FOUND],
   not_confirmed: [409, "Check your resume and press Looks right first."],
   unknown_skill: [400, "Send one skill."],
+  not_asked: [409, "Only skills this role or job asks for can be added from here."],
   already: [409, "Your resume already names this skill."],
-  conflict: [409, "Your resume was saved from another tab. Reload the page to see the latest."],
+  conflict: [409, "Your profile changed since this page loaded. Reload the page and try again."],
   too_many: [429, "This resume has been saved many times. Upload it again to start fresh."],
 };
 
 /**
  * "I have this" (FR-34 screening check): adds one skill the person confirms they have to their confirmed profile,
- * listed only. Body: { skillId }. The skill stays a gap and a goal until proved. Never logs the resume or the skill.
+ * listed only. Body: { skillId, target: { roleSlug } | { checkId }, version }. The skill stays a gap and a goal until proved. Never logs the resume or the skill.
  */
 export async function POST(request: Request, { params }: RouteContext<"/api/resume/[id]/keywords">) {
   if (!isSameOrigin(request)) return fail(403, "Please confirm skills from the CareerMetro website.");
@@ -38,7 +39,7 @@ export async function POST(request: Request, { params }: RouteContext<"/api/resu
   if (!owner) return fail(404, NOT_FOUND);
   const { id } = await params;
   try {
-    const result = await confirmKeyword(id, owner, parsed.data.skillId);
+    const result = await confirmKeyword(id, owner, parsed.data);
     if (result.ok) {
       logEvent("info", "screening_keyword_confirmed", { route: "/api/resume/[id]/keywords" });
       return Response.json({ ok: true, version: result.version });

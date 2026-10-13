@@ -9,6 +9,8 @@ import { buildScreeningView } from "./screening";
  */
 
 const now = new Date("2026-10-13T00:00:00Z");
+/** A made-up job check id; /design saves nothing. */
+const EXAMPLE_CHECK_ID = "8f0c2a5e-3b1d-4c6e-9a7f-1d2e3f4a5b6c";
 
 const exampleProfile: Profile = {
   headline: "MIS Executive",
@@ -34,7 +36,8 @@ const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 
 /** A two-column PDF with a photo, a renamed summary and a renamed experience heading, against Data Analyst. */
 export const exampleScreeningPdf: ScreeningView = buildScreeningView({
-  against: "role",
+  target: { roleSlug: "data-analyst" },
+  profileVersion: 2,
   profile: exampleProfile,
   role: role("data-analyst"),
   stored: {
@@ -47,7 +50,8 @@ export const exampleScreeningPdf: ScreeningView = buildScreeningView({
 
 /** A Word file with a table and contact details in the header, against Cloud Engineer (a "one of these" group). */
 export const exampleScreeningDocx: ScreeningView = buildScreeningView({
-  against: "role",
+  target: { roleSlug: "cloud-engineer" },
+  profileVersion: 2,
   profile: exampleProfile,
   role: role("cloud-engineer"),
   stored: {
@@ -60,7 +64,8 @@ export const exampleScreeningDocx: ScreeningView = buildScreeningView({
 
 /** A pasted job the resume fully covers, from a clean Word file: nothing to fix. */
 export const exampleScreeningReady: ScreeningView = buildScreeningView({
-  against: "job",
+  target: { checkId: EXAMPLE_CHECK_ID },
+  profileVersion: 2,
   profile: exampleProfile,
   role: postingRole({ requiredSkillIds: ["excel", "sql"], niceSkillIds: [] }, now),
   stored: {
@@ -73,7 +78,8 @@ export const exampleScreeningReady: ScreeningView = buildScreeningView({
 
 /** A resume uploaded before the check: no flags, so it asks for the file again. */
 export const exampleScreeningOld: ScreeningView = buildScreeningView({
-  against: "job",
+  target: { checkId: EXAMPLE_CHECK_ID },
+  profileVersion: 2,
   profile: exampleProfile,
   role: postingRole({ requiredSkillIds: ["excel", "sql", "tableau"], niceSkillIds: [] }, now),
   stored: null,

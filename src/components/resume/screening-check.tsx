@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { StatusChip } from "@/components/ui/status-chip";
 import { headingWords, LAYOUT_WORDS, screeningSummary, UNCHECKED_WORDS } from "@/lib/resume/screening";
 import type { LayoutKind, ScreeningView } from "@/lib/schemas";
-import { ConfirmKeyword } from "./confirm-keyword";
+import { ConfirmKeyword, KeywordAnnouncer } from "./confirm-keyword";
 
 const LAYOUT_ICONS: Record<LayoutKind, LucideIcon> = {
   columns: Columns2,
@@ -41,9 +41,10 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
   const neverChecked = view.layout.state === "unknown" && view.headings.state === "unknown";
   return (
     <section aria-labelledby={SCREENING_ID} className="flex min-w-0 flex-col gap-4 rounded-lg border border-line bg-surface p-4">
+      <KeywordAnnouncer headingId={SCREENING_ID}>
       <div className="flex flex-col gap-1">
         <p className="font-mono text-xs uppercase tracking-wider text-muted">Screening check</p>
-        <h2 id={SCREENING_ID} className="text-xl font-semibold leading-tight">
+        <h2 id={SCREENING_ID} tabIndex={-1} className="text-xl font-semibold leading-tight focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           {summary.headline}
         </h2>
         <p className="text-sm text-muted">Many job portals use screening software that reads your resume before a person does. This is what it may miss.</p>
@@ -70,7 +71,7 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
                   <span className="min-w-0 break-words font-medium">{k.options.length > 1 ? `One of: ${listWords(k.options.map((o) => o.skillName))}` : k.skillName}</span>
                   <StatusChip status="missing" label="Not on your resume" />
                 </span>
-                <ConfirmKeyword resumeId={resumeId} keyword={k} demo={demo} />
+                <ConfirmKeyword resumeId={resumeId} keyword={k} target={view.target} version={view.profileVersion} demo={demo} />
               </li>
             ))}
           </ul>
@@ -132,7 +133,7 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
               <p className="text-sm">
                 Not checked for this upload.{" "}
                 <Link href="/start" className="font-medium underline underline-offset-2">
-                  Upload again to check layout
+                  Upload again to check headings
                 </Link>
               </p>
             ) : view.headings.issues.length === 0 ? (
@@ -175,6 +176,7 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
           ))}
         </div>
       </div>
+      </KeywordAnnouncer>
     </section>
   );
 }

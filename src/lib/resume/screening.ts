@@ -83,14 +83,17 @@ export function headingsView(stored: ResumeScreening | null, profile: Profile): 
 
 /** The whole check for one target: the role from our library, or a pasted job as a role (postingRole). */
 export function buildScreeningView(input: {
-  against: ScreeningView["against"];
+  target: ScreeningView["target"];
+  profileVersion: number;
   profile: Profile;
   role: RoleProfile;
   stored: ResumeScreening | null;
   now?: Date;
 }): ScreeningView {
   return {
-    against: input.against,
+    against: "roleSlug" in input.target ? "role" : "job",
+    target: input.target,
+    profileVersion: input.profileVersion,
     keywords: missingKeywords(input.profile, input.role, input.now),
     layout: layoutView(input.stored),
     headings: headingsView(input.stored, input.profile),

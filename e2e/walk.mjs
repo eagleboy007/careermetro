@@ -2060,6 +2060,8 @@ await step("screening check: confirm a missing keyword, and it stays a weak gap"
   await first.click();
   await check.getByRole("button", { name: `Add ${name}`, exact: true }).click();
   await check.getByRole("status").filter({ hasText: `Added ${name} to your skills list` }).waitFor({ timeout: 15000 });
+  // The pressed row is gone after the refresh, so focus moves to the section's heading, never to the page.
+  await p.waitForFunction(() => document.activeElement?.id === "screening-check", null, { timeout: 15000 });
   await p.reload();
   await settled();
   if (await check.getByRole("button", { name: `I have this: ${name}`, exact: true }).count()) throw new Error("a confirmed keyword is still listed as missing");

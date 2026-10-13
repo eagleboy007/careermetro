@@ -75,9 +75,19 @@ export const layoutKind = z.enum(LAYOUT_KINDS);
 export type LayoutKind = z.infer<typeof layoutKind>;
 
 /** The check as the page shows it. Plain data, so /design can render it with example data. */
+/** What "I have this" is checked against: a role from our library, or a saved job check of this resume. */
+export const screeningTarget = z.union([
+  z.object({ roleSlug: z.string().regex(/^[a-z0-9-]{1,80}$/) }).strict(),
+  z.object({ checkId: z.uuid() }).strict(),
+]);
+export type ScreeningTarget = z.infer<typeof screeningTarget>;
+
 export const screeningView = z.object({
   /** What the keywords were checked against: the target role, or a pasted job. */
   against: z.enum(["role", "job"]),
+  target: screeningTarget,
+  /** The confirmed profile version the check was made on, sent back with "I have this". */
+  profileVersion: z.number().int().positive(),
   keywords: z.object({ asked: z.number().int().nonnegative(), missing: z.array(screeningKeyword) }),
   layout: z.discriminatedUnion("state", [
     z.object({
@@ -99,5 +109,7 @@ export const screeningView = z.object({
 export type ScreeningView = z.infer<typeof screeningView>;
 
 /** "I have this": adds one taxonomy skill to the confirmed profile's skills list, listed only. */
-export const confirmKeywordRequest = z.object({ skillId: z.string().regex(/^[a-z0-9-]{1,80}$/) }).strict();
+export const confirmKeywordRequest = z
+  .object({ skillId: z.string().regex(/^[a-z0-9-]{1,80}$/), target: screeningTarget, version: z.number().int().positive().max(1000) })
+  .strict();
 export type ConfirmKeywordRequest = z.infer<typeof confirmKeywordRequest>;

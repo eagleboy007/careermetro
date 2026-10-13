@@ -789,10 +789,11 @@ export default function DesignPage() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check result</h2>
           <p className="text-sm text-muted">Signed in: Power BI is a Your choice goal already, so it can be removed; the other skill can be added.</p>
-          <JobCheckResult check={exampleJobCheck} resumeId="example" roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], chosen: { "power-bi": "example-goal" }, here: "/design" }} demo />
+          <JobCheckResult check={exampleJobCheck} resumeId="example" profileVersion={2} roleTitle="Data Analyst" planHref="/design" goals={{ skills: ["power-bi"], chosen: { "power-bi": "example-goal" }, here: "/design" }} demo />
           <p className="text-sm text-muted">Not signed in: goals are kept for an account.</p>
           <JobCheckResult
             resumeId="example"
+            profileVersion={2}
             check={{ ...exampleJobCheck, id: "example-anonymous", alsoGoals: [], notAsked: [], covered: [], goodToHave: [], unknown: [] }}
             roleTitle="Data Analyst"
             planHref="/design"
@@ -801,6 +802,7 @@ export default function DesignPage() {
           />
           <JobCheckResult
             resumeId="example"
+            profileVersion={2}
             check={{ ...exampleJobCheck, id: "example-empty", company: "Sample Retail LLP", title: "MIS Executive", covered: [], alsoGoals: [], onlyThisJob: [], goodToHave: [], unknown: ["Tally"] }}
             roleTitle="Data Analyst"
             planHref="/design"

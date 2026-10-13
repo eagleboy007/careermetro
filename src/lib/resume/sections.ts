@@ -7,6 +7,8 @@ import { SECTION_KEYS, type HeadingFlags, type HeadingState, type SectionKey } f
  *
  * Standard names are the ones screening software is built around: the FR-20 download's heading and its common long
  * forms. Renamed ones are other names people use for the same section, which some software doesn't file correctly.
+ * Single everyday words that also head sub-lists ("Tools", "Training", "Roles", "About") are left out, so a line like
+ * that is never taken for a section heading.
  */
 const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
   summary: {
@@ -14,7 +16,6 @@ const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
     renamed: [
       "profile",
       "about me",
-      "about",
       "objective",
       "career objective",
       "objectives",
@@ -58,9 +59,6 @@ const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
       "career path",
       "organisational experience",
       "organizational experience",
-      "career",
-      "jobs",
-      "roles",
       "professional history",
     ],
   },
@@ -78,8 +76,6 @@ const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
       "qualifications",
       "qualification",
       "schooling",
-      "studies",
-      "learning",
       "scholastic record",
       "scholastics",
       "academia",
@@ -103,7 +99,6 @@ const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
       "technical proficiency",
       "proficiencies",
       "technologies",
-      "tools",
       "abilities",
       "capabilities",
       "superpowers",
@@ -121,7 +116,6 @@ const NAMES: Record<SectionKey, { standard: string[]; renamed: string[] }> = {
       "courses and certificates",
       "online courses",
       "trainings",
-      "training",
       "professional development",
       "learning and development",
       "badges",

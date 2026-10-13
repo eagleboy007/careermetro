@@ -11,22 +11,77 @@ import type { LayoutFlags } from "@/lib/schemas";
 export const isLayoutPart = (name: string) => name === "word/document.xml" || /^word\/(header|footer)\d*\.xml$/.test(name);
 
 /**
- * Word writes a drawing twice, a modern version and a fallback for old readers (mc:AlternateContent). Only the modern
- * one counts, or every text box and picture would count twice.
+ * Layout parts larger than these are not checked (layout "unread"): a real resume's document part is well under 1 MB,
+ * and the checks below, though linear, need not run over a crafted file.
  */
-const withoutFallbacks = (xml: string) => xml.replace(/<mc:Fallback\b[\s\S]*?<\/mc:Fallback>/g, "");
+export const MAX_LAYOUT_PART_BYTES = 2 * 1024 * 1024;
+export const MAX_LAYOUT_TOTAL_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Word writes a drawing twice, a modern version and a fallback for old readers (mc:AlternateContent). Only the modern
+ * one counts, or every text box and picture would count twice. A loop over indexOf, so it stays linear on any input;
+ * a fallback that never closes drops the rest of the part.
+ */
+export function withoutFallbacks(xml: string): string {
+  const open = "<mc:Fallback";
+  const close = "</mc:Fallback>";
+  let out = "";
+  let at = 0;
+  for (;;) {
+    const start = xml.indexOf(open, at);
+    if (start < 0) return out + xml.slice(at);
+    out += xml.slice(at, start);
+    const end = xml.indexOf(close, start + open.length);
+    if (end < 0) return out;
+    at = end + close.length;
+  }
+}
 
 const countOf = (xml: string, pattern: RegExp) => xml.match(pattern)?.length ?? 0;
 
-/** The visible text of a Word part, joined: the w:t runs only, so field codes (PAGE, NUMPAGES) are left out. */
-function runText(xml: string): string {
+/** Longer than this, header or footer text is more than a page number. */
+const PAGE_NUMBER_MAX = 100;
+
+/**
+ * The visible text of a Word part, joined: the w:t runs only, so field codes (PAGE, NUMPAGES) are left out. Stops once
+ * it has more than `limit` characters. A loop over indexOf, linear on any input.
+ */
+export function runText(xml: string, limit = PAGE_NUMBER_MAX): string {
   let out = "";
-  for (const m of xml.matchAll(/<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g)) out += m[1];
+  let at = 0;
+  while (out.length <= limit) {
+    const start = xml.indexOf("<w:t", at);
+    if (start < 0) break;
+    const next = xml[start + 4];
+    const tagEnd = xml.indexOf(">", start);
+    if (tagEnd < 0) break;
+    at = tagEnd + 1;
+    // <w:t> or <w:t xml:space="preserve">, not <w:tab/>, <w:tbl> or a self-closed <w:t/>.
+    if ((next !== ">" && next !== " ") || xml[tagEnd - 1] === "/") continue;
+    const textEnd = xml.indexOf("<", at);
+    if (textEnd < 0) break;
+    out += xml.slice(at, textEnd);
+    at = textEnd;
+  }
   return out;
 }
 
-/** "Page 1 of 2", "1", "- 2 -": a page number, which software skipping the footer loses nothing by. */
-const pageNumberOnly = (text: string) => /^[\s\d\-–/|.]*(?:page|pg\.?|of|[\s\d\-–/|.])*$/i.test(text);
+/** "Page 1 of 2", "1", "- 2 -": a page number, which software skipping the footer loses nothing by. Linear. */
+export const pageNumberOnly = (text: string) => text.length <= PAGE_NUMBER_MAX && /^(?:page|pg\.?|of|[\s\d\-–/|.])*$/i.test(text);
+
+/** True when any section asks for two or more newspaper columns (w:cols w:num). Linear on any input. */
+function hasColumns(xml: string): boolean {
+  let at = 0;
+  for (;;) {
+    const start = xml.indexOf("<w:cols", at);
+    if (start < 0) return false;
+    const end = xml.indexOf(">", start);
+    if (end < 0) return false;
+    const num = /\bw:num="(\d{1,4})"/.exec(xml.slice(start, end));
+    if (num && Number(num[1]) >= 2) return true;
+    at = end + 1;
+  }
+}
 
 /** Layout flags of a .docx from its main document and its header and footer parts (by part name). */
 export function docxLayout(parts: ReadonlyMap<string, string>): LayoutFlags {
@@ -43,7 +98,7 @@ export function docxLayout(parts: ReadonlyMap<string, string>): LayoutFlags {
       tables += countOf(xml, /<w:tbl>|<w:tbl\s/g);
       textBoxes += countOf(xml, /<w:txbxContent\b/g);
       // Newspaper columns: a section with w:num of 2 or more.
-      columns = [...xml.matchAll(/<w:cols\b[^>]*\bw:num="(\d+)"/g)].some((m) => Number(m[1]) >= 2);
+      columns = hasColumns(xml);
     } else {
       if (!pageNumberOnly(runText(xml))) headerFooterText = true;
     }
@@ -106,13 +161,25 @@ export function pageSetInColumns(items: readonly PlacedText[], pageWidth: number
   return best >= MIN_COLUMN_LINES && best >= lines.length * 0.25;
 }
 
-/** Layout flags of a PDF from each page's placed text and how many images each page paints. */
-export function pdfLayout(pages: readonly { items: readonly PlacedText[]; width: number; images: number }[]): LayoutFlags {
+/**
+ * The pictures a PDF holds, counted from its bytes: image objects (/Subtype /Image), less the soft masks that only
+ * carry another picture's transparency. Image objects are streams, which PDF never packs into compressed object
+ * streams, so their dictionaries are always plain bytes. Nothing is decoded; both patterns are linear.
+ */
+export function countPdfImages(bytes: Uint8Array): number {
+  const raw = Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength).toString("latin1");
+  const images = raw.match(/\/Subtype\s*\/Image\b/g)?.length ?? 0;
+  const masks = raw.match(/\/SMask\s+\d+\s+\d+\s+R/g)?.length ?? 0;
+  return Math.max(0, images - masks);
+}
+
+/** Layout flags of a PDF from each page's placed text and the number of pictures in the file. */
+export function pdfLayout(pages: readonly { items: readonly PlacedText[]; width: number }[], images: number): LayoutFlags {
   return {
     fileType: "pdf",
     tables: null,
     columns: pages.some((p) => pageSetInColumns(p.items, p.width)),
-    images: pages.reduce((sum, p) => sum + p.images, 0),
+    images,
     textBoxes: null,
     headerFooterText: null,
   };
