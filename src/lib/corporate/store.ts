@@ -1,8 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { and, asc, count, desc, eq, gt, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, inArray, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
+import { jobTeam, jobs, orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { sendEmail } from "@/lib/email/send";
 import { logEvent } from "@/lib/log";
@@ -462,7 +462,7 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     // The company row is locked so two admins removing each other at once can't both pass the two-admin check.
     await tx.select({ id: organizations.id }).from(organizations).where(eq(organizations.id, admin.me.orgId)).for("update");
     const [target] = await tx
-      .select({ id: orgMembers.id, role: orgMembers.role, deleted: users.deletionRequestedAt })
+      .select({ id: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role, deleted: users.deletionRequestedAt })
       .from(orgMembers)
       .innerJoin(users, eq(users.id, orgMembers.userId))
       .where(and(eq(orgMembers.id, parsed.data.memberId), eq(orgMembers.orgId, admin.me.orgId), isNull(orgMembers.removedAt)));
@@ -471,6 +471,10 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
+    // They leave every job team at this company too (owners stay named, the job stays the company's), so joining
+    // again later never brings back rights on old jobs.
+    const companyJobs = tx.select({ id: jobs.id }).from(jobs).where(eq(jobs.orgId, admin.me.orgId));
+    await tx.delete(jobTeam).where(and(eq(jobTeam.userId, target.userId), ne(jobTeam.role, "owner"), inArray(jobTeam.jobId, companyJobs)));
     return { ok: true as const };
   });
 }

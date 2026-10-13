@@ -48,7 +48,7 @@ export function JobReport({ jobId, title, action }: { jobId: string; title: stri
   }
   if (!open) {
     return (
-      <button ref={buttonRef} type="button" aria-label={`Report this job: ${title}`} className={`${actionBtn} self-start`} aria-expanded={false} onClick={() => setOpen(true)}>
+      <button ref={buttonRef} type="button" aria-label={`Report this job: ${title}`} className={`${actionBtn} self-start`} onClick={() => setOpen(true)}>
         <Flag {...ICON} />
         Report this job
       </button>

@@ -257,6 +257,24 @@ describe.skipIf(!db)("corporate jobs store (database)", () => {
     const hrRow = await db!.select({ id: schema.orgMembers.id }).from(schema.orgMembers).where(and(eq(schema.orgMembers.userId, hr)));
     expect(await removeMember(admin, { memberId: hrRow[0].id }, deps())).toEqual({ ok: true });
     expect(await saveJob(hr, job({ jobId: saved.jobId, title: "After removal" }), deps())).toMatchObject({ ok: false, error: "not_member" });
+    // They leave the job's team too, so being added again later brings back no rights on it.
+    expect((await team(saved.jobId)).map((t) => t.role).sort()).toEqual(["interviewer", "owner"]);
+  });
+
+  it("keeps a required skill on an open job and notes each edit to it", async () => {
+    const admin = await person("edit-open");
+    await company(admin);
+    const saved = await saveJob(admin, job({ open: yes }), deps());
+    if (!saved.ok) throw new Error("not saved");
+    expect(await saveJob(admin, job({ jobId: saved.jobId, requirements: { ...req, required: [] } }), deps())).toMatchObject({ ok: false, error: "needs_required" });
+    expect((await jobRow(saved.jobId)).requirements).toEqual(req);
+    expect(await saveJob(admin, job({ jobId: saved.jobId, title: "SOC Analyst (L1)" }), deps())).toMatchObject({ ok: true, status: "open" });
+    expect(await audits(saved.jobId)).toEqual(["job_edited", "job_opened"]);
+    // A draft's edits are nobody else's business yet.
+    const draft = await saveJob(admin, job(), deps());
+    if (!draft.ok) throw new Error("not saved");
+    expect(await saveJob(admin, job({ jobId: draft.jobId, title: "Draft two" }), deps())).toMatchObject({ ok: true });
+    expect(await audits(draft.jobId)).toEqual([]);
   });
 
   it("can't touch another company's job", async () => {

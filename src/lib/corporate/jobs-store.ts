@@ -55,7 +55,7 @@ export type JobResult<T = object> = ({ ok: true } & T) | { ok: false; error: Job
 
 const fail = (error: JobError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
-const AUDIT_ACTION = { open: "job_opened", paused: "job_paused", closed: "job_closed" } as const;
+const AUDIT_ACTION = { open: "job_opened", paused: "job_paused", closed: "job_closed", edited: "job_edited" } as const;
 
 type Member = NonNullable<Awaited<ReturnType<typeof activeMembership>>>;
 
@@ -172,6 +172,8 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
       if (refusal) return fail(refusal);
       status = "open";
     }
+    // A job that stays open must still ask for a required skill (opening checks it; an edit must not undo it).
+    if (status === "open" && input.requirements.required.length === 0) return fail("needs_required");
     const fields = { roleProfileId: roleId, title: input.title, workType: input.workType, city: input.city, requirements: input.requirements, status };
     let jobId: string;
     if (current) {
@@ -187,6 +189,8 @@ export async function saveJob(userId: string, raw: unknown, deps: JobDeps = {}):
     if (team.rows.length) await tx.insert(jobTeam).values(team.rows.map((r) => ({ jobId, ...r }))).onConflictDoNothing();
     const opened = status === "open" && from !== "open";
     if (opened) await audit(tx, me.memberId, "open", jobId, now);
+    // Changes to a job candidates can see (or could again) leave a line too, saying who, not what.
+    else if (from === "open" || from === "paused") await audit(tx, me.memberId, "edited", jobId, now);
     return { ok: true, jobId, status, opened };
   });
   if (!result.ok) return result;
