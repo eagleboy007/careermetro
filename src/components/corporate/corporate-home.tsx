@@ -2,18 +2,19 @@ import { Building2, ExternalLink, KeyRound } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatDay } from "@/lib/corporate/format";
-import type { CorporateHomeView, JoinActions, TeamActions } from "@/lib/corporate/types";
+import type { CorporateHomeView, JobListActions, JoinActions, TeamActions } from "@/lib/corporate/types";
 import { ORG_ROLE_LABELS, ORG_TYPE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
+import { JobsPanel } from "./jobs-panel";
 import { JoinForm } from "./join-form";
 import { AntiScamLine, ghostSm, ICON, OrgStatusBadge, Panel, SecondAdminBanner } from "./parts";
 import { TeamAccess } from "./team-access";
 
 /**
- * Corporate home for a member (dev/corporate-plan.md, build steps 1 and 2): the company, its status badge, the
- * second-admin banner, the anti-scam line and, for Recruiter admins, Team and access. Jobs, applications and chats
+ * Corporate home for a member (dev/corporate-plan.md, build steps 1 to 3): the company, its status badge, the
+ * second-admin banner, the anti-scam line, Jobs and, for Recruiter admins, Team and access. Applications and chats
  * come in later steps.
  */
-export function CorporateHome({ view, actions, note }: { view: CorporateHomeView; actions?: TeamActions; note?: ReactNode }) {
+export function CorporateHome({ view, actions, jobActions, note }: { view: CorporateHomeView; actions?: TeamActions; jobActions?: JobListActions; note?: ReactNode }) {
   const { org, me } = view;
   const admin = me.role === "admin";
   return (
@@ -59,6 +60,10 @@ export function CorporateHome({ view, actions, note }: { view: CorporateHomeView
       )}
 
       <AntiScamLine />
+
+      <Panel id="jobs" title="Jobs">
+        <JobsPanel jobs={view.jobs} actions={jobActions} />
+      </Panel>
 
       {view.team ? (
         <Panel id="team" title="Team and access" tag="admins only">

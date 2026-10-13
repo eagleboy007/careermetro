@@ -1,13 +1,33 @@
 import { z } from "zod";
 import { checkWorkEmail, normalWebsite, workEmailProblemText } from "@/lib/corporate/domains";
-import { ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "./constants";
+import {
+  JOB_CITY_MAX,
+  JOB_NICE_MAX,
+  JOB_ONE_OF_GROUPS_MAX,
+  JOB_ONE_OF_SIZE_MAX,
+  JOB_ONE_OF_SIZE_MIN,
+  JOB_REQUIRED_MAX,
+  JOB_STATUSES,
+  JOB_TEAM_MAX,
+  JOB_TEAM_ROLES,
+  JOB_TITLE_MAX,
+  JOB_WORK_TYPES,
+  ORG_ABOUT_MAX_CHARS,
+  ORG_INDUSTRIES,
+  ORG_REVIEW_STATUSES,
+  ORG_ROLES,
+  ORG_SIZES,
+  ORG_TYPES,
+  WORK_EMAIL_PURPOSES,
+} from "./constants";
+import { REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
 
 /*
  * Corporate, build steps 1 and 2 (dev/corporate-plan.md; handoff 12e and 12f): company sign-up, the work-email code,
  * team and access. A work email is personal data: it is checked here, used once, and never logged.
  */
 
-export { ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES };
+export { JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_ABOUT_MAX_CHARS, ORG_INDUSTRIES, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_SIZES, ORG_TYPES, WORK_EMAIL_PURPOSES };
 
 const text = (min: number, max: number, what: string) =>
   z
@@ -87,3 +107,73 @@ export const inviteIdInput = z.object({ inviteId: z.uuid() });
 export const answerRequestInput = z.object({ requestId: z.uuid(), answer: z.union([z.enum(ORG_ROLES), z.literal("decline")]) });
 export const joinStart = z.object({ workEmail });
 export const joinFinish = z.object({ workEmail, code: workEmailCode });
+
+/* Jobs (build step 3; handoff 12g) --------------------------------------------------------------------------------- */
+
+/** A skill id from our taxonomy. The store checks it is one of ours; the shape is checked here. */
+const skillId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,59}$/, { error: "Pick skills from the list." });
+
+/**
+ * What a job asks for, as skill ids only (no free-text skills): Required (all of them), One of these (any one skill
+ * of each group counts) and Nice to have (never blocks). A skill sits in one place only. A draft may have no required
+ * skill yet; opening needs one (src/lib/corporate/rules.ts).
+ */
+export const jobRequirements = z
+  .object({
+    required: z.array(skillId).max(JOB_REQUIRED_MAX, { error: `Keep required skills to ${JOB_REQUIRED_MAX} at most.` }),
+    oneOf: z
+      .array(
+        z
+          .array(skillId)
+          .min(JOB_ONE_OF_SIZE_MIN, { error: "A \"one of these\" group needs at least two skills." })
+          .max(JOB_ONE_OF_SIZE_MAX, { error: `Keep a "one of these" group to ${JOB_ONE_OF_SIZE_MAX} skills.` }),
+      )
+      .max(JOB_ONE_OF_GROUPS_MAX, { error: `Keep to ${JOB_ONE_OF_GROUPS_MAX} "one of these" groups.` }),
+    nice: z.array(skillId).max(JOB_NICE_MAX, { error: `Keep nice-to-have skills to ${JOB_NICE_MAX} at most.` }),
+  })
+  .refine(
+    (r) => {
+      const all = [...r.required, ...r.oneOf.flat(), ...r.nice];
+      return new Set(all).size === all.length;
+    },
+    { error: "Each skill goes in one group only." },
+  );
+export type JobRequirements = z.output<typeof jobRequirements>;
+
+/** The three ticks before a job opens. All must be ticked. */
+export const jobHonesty = z.object(
+  {
+    real: z.literal(true, { error: "Tick the three boxes to open the job." }),
+    noFee: z.literal(true, { error: "Tick the three boxes to open the job." }),
+    fair: z.literal(true, { error: "Tick the three boxes to open the job." }),
+  },
+  { error: "Tick the three boxes to open the job." },
+);
+
+/**
+ * The Post a job form (C9): a new job (no jobId) or an edit. The role profile is named by slug; the store turns it
+ * into the role_profiles row. Team members are org_members ids, checked against the live team. `open` carries the
+ * three ticks when the person also opens the job.
+ */
+export const jobInput = z.object({
+  jobId: z.uuid().optional(),
+  roleSlug: z.string().regex(/^[a-z0-9-]{1,80}$/, { error: "Pick a role profile." }),
+  title: text(2, JOB_TITLE_MAX, "job title"),
+  workType: z.enum(JOB_WORK_TYPES, { error: "Pick a work type." }),
+  city: text(2, JOB_CITY_MAX, "city"),
+  requirements: jobRequirements,
+  hiring: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
+  interviewers: z.array(z.uuid()).max(JOB_TEAM_MAX).default([]),
+  open: jobHonesty.optional(),
+});
+export type JobInput = z.input<typeof jobInput>;
+
+/** Pause, close, or open again a job that was open before (a draft opens from the form, with the three ticks). */
+export const jobStatusInput = z.object({ jobId: z.uuid(), to: z.enum(["open", "paused", "closed"]) });
+
+/** "Report this job" (plan, Abuse and compliance), into the same reports queue as the Inbox. */
+export const jobReportInput = z.object({
+  jobId: z.uuid(),
+  reason: z.enum(REPORT_REASONS),
+  note: z.string().trim().max(REPORT_NOTE_MAX_CHARS).optional(),
+});

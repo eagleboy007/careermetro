@@ -1,4 +1,4 @@
-import type { OrgReviewStatus, OrgRole } from "@/lib/corporate/types";
+import type { JobsBlocked, JobStatus, JobTeamRole, OrgReviewStatus, OrgRole } from "@/lib/corporate/types";
 
 /*
  * Company rules (dev/corporate-plan.md; admin rule from Milin, 2026-10-12, replacing plan call D). Pure: the store
@@ -29,14 +29,41 @@ export function secondAdminDaysLeft(org: { adminCount: number; secondAdminDueAt:
 export type OrgForJobs = { reviewStatus: OrgReviewStatus; adminCount: number; secondAdminDueAt: Date | null };
 
 /**
- * Whether the company may open a new job: CareerMetro has verified it, and it has two Recruiter admins or is still
- * within 14 days of signing up. Jobs come in build step 3; they ask this.
+ * Why the company can't open a job now, or null when it can: CareerMetro hasn't verified it (or suspended it), or it
+ * is past 14 days with one Recruiter admin. Jobs already open stay open after the 14 days; a suspended company's open
+ * jobs are hidden (isLive).
  */
-export function canOpenJobs(org: OrgForJobs, now: Date): boolean {
-  if (org.reviewStatus !== "verified") return false;
-  if (org.adminCount >= MIN_ADMINS) return true;
-  return !!org.secondAdminDueAt && now < org.secondAdminDueAt;
+export function jobsBlocked(org: OrgForJobs, now: Date): JobsBlocked | null {
+  if (org.reviewStatus === "suspended") return "suspended";
+  if (org.reviewStatus !== "verified") return "pending";
+  if (org.adminCount >= MIN_ADMINS) return null;
+  return !!org.secondAdminDueAt && now < org.secondAdminDueAt ? null : "second_admin";
 }
+
+/** Whether the company may open a job: verified, and two Recruiter admins or still within 14 days of signing up. */
+export const canOpenJobs = (org: OrgForJobs, now: Date): boolean => jobsBlocked(org, now) === null;
+
+/** Recruiter admins and Hiring HR post jobs; Interviewers never do. */
+export const canPostJobs = (role: OrgRole): boolean => role === "admin" || role === "hiring";
+
+/** Admins edit any of the company's jobs; Hiring HR only a job they own or are Hiring HR on; Interviewers none. */
+export function canEditJob(role: OrgRole, teamRole: JobTeamRole | null): boolean {
+  if (role === "admin") return true;
+  return role === "hiring" && (teamRole === "owner" || teamRole === "hiring");
+}
+
+const MOVES: Record<JobStatus, JobStatus[]> = { draft: ["open", "closed"], open: ["paused", "closed"], paused: ["open", "closed"], closed: [] };
+
+/** A job moves draft → open → paused ⇄ open → closed; a draft can be closed unopened; closed is final. */
+export const statusMoveRefusal = (from: JobStatus, to: JobStatus): "bad_move" | null => (MOVES[from].includes(to) ? null : "bad_move");
+
+/** Why a job can't open now: the company's state first, then a job with no required skill. */
+export function openRefusal(org: OrgForJobs, requirements: { required: string[] }, now: Date): JobsBlocked | "needs_required" | null {
+  return jobsBlocked(org, now) ?? (requirements.required.length === 0 ? "needs_required" : null);
+}
+
+/** Candidates see a job only while it is open and its company is verified (a suspended company's jobs are hidden). */
+export const isLive = (status: JobStatus, orgStatus: OrgReviewStatus): boolean => status === "open" && orgStatus === "verified";
 
 export type RemovalRefusal = "keep_two_admins" | "last_admin";
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { afterWrongTry, codeMatches, codeState, hashCode, hashWorkEmail, isCodeShape, LOCK_MS, MAX_WRONG_TRIES, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
 import { checkWorkEmail, emailDomain, isFreeMail, normalWebsite, websiteHost, websiteMatchesDomain } from "./domains";
-import { canOpenJobs, removalRefusal, secondAdminDaysLeft, secondAdminDueAt } from "./rules";
+import { canEditJob, canOpenJobs, canPostJobs, isLive, jobsBlocked, openRefusal, removalRefusal, secondAdminDaysLeft, secondAdminDueAt, statusMoveRefusal } from "./rules";
 
 const NOW = new Date("2026-10-12T10:00:00Z");
 const DAY = 86_400_000;
@@ -137,5 +137,67 @@ describe("the admin rule (Milin, 2026-10-12)", () => {
     expect(removalRefusal("admin", 3)).toBeNull();
     expect(removalRefusal("hiring", 1)).toBeNull();
     expect(removalRefusal("interviewer", 2)).toBeNull();
+  });
+});
+
+describe("jobs rules (build step 3)", () => {
+  const due = secondAdminDueAt(NOW);
+  const verified = { reviewStatus: "verified" as const, adminCount: 1, secondAdminDueAt: due };
+
+  it("say why a company can't open jobs, and agree with canOpenJobs", () => {
+    const cases = [
+      [verified, NOW, null],
+      [{ ...verified, reviewStatus: "pending" as const }, NOW, "pending"],
+      [{ ...verified, reviewStatus: "suspended" as const, adminCount: 2 }, NOW, "suspended"],
+      [verified, due, "second_admin"],
+      [{ ...verified, adminCount: 2 }, new Date(due.getTime() + 100 * DAY), null],
+    ] as const;
+    for (const [org, at, reason] of cases) {
+      expect(jobsBlocked(org, at)).toBe(reason);
+      expect(canOpenJobs(org, at)).toBe(reason === null);
+    }
+  });
+
+  it("let Recruiter admins and Hiring HR post jobs, never Interviewers", () => {
+    expect(canPostJobs("admin")).toBe(true);
+    expect(canPostJobs("hiring")).toBe(true);
+    expect(canPostJobs("interviewer")).toBe(false);
+  });
+
+  it("let admins edit any job, Hiring HR only jobs they are on as owner or Hiring HR, and Interviewers none", () => {
+    expect(canEditJob("admin", null)).toBe(true);
+    expect(canEditJob("hiring", "owner")).toBe(true);
+    expect(canEditJob("hiring", "hiring")).toBe(true);
+    expect(canEditJob("hiring", "interviewer")).toBe(false);
+    expect(canEditJob("hiring", null)).toBe(false);
+    expect(canEditJob("interviewer", "owner")).toBe(false);
+  });
+
+  it("move a job only along draft, open, paused and closed, and never out of closed", () => {
+    expect(statusMoveRefusal("draft", "open")).toBeNull();
+    expect(statusMoveRefusal("draft", "closed")).toBeNull();
+    expect(statusMoveRefusal("draft", "paused")).toBe("bad_move");
+    expect(statusMoveRefusal("open", "paused")).toBeNull();
+    expect(statusMoveRefusal("open", "closed")).toBeNull();
+    expect(statusMoveRefusal("paused", "open")).toBeNull();
+    expect(statusMoveRefusal("paused", "closed")).toBeNull();
+    expect(statusMoveRefusal("closed", "open")).toBe("bad_move");
+    expect(statusMoveRefusal("open", "open")).toBe("bad_move");
+  });
+
+  it("open a job only for a company that may, and with a required skill", () => {
+    const req = { required: ["siem"], oneOf: [], nice: [] };
+    expect(openRefusal(verified, req, NOW)).toBeNull();
+    expect(openRefusal({ ...verified, reviewStatus: "pending" }, req, NOW)).toBe("pending");
+    expect(openRefusal(verified, { ...req, required: [] }, NOW)).toBe("needs_required");
+    expect(openRefusal({ ...verified, reviewStatus: "suspended" }, { ...req, required: [] }, NOW)).toBe("suspended");
+  });
+
+  it("show a job to candidates only while it is open and the company is verified", () => {
+    expect(isLive("open", "verified")).toBe(true);
+    expect(isLive("open", "suspended")).toBe(false);
+    expect(isLive("open", "pending")).toBe(false);
+    expect(isLive("paused", "verified")).toBe(false);
+    expect(isLive("draft", "verified")).toBe(false);
   });
 });

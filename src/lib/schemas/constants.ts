@@ -47,3 +47,40 @@ export const SIGNUP_CLOSED_TEXT = "Company sign-up opens soon.";
 export const MAX_CHOICE_GOALS = 20;
 /** A role someone looked for and we don't have (role_requests): its title is cut to this many characters. */
 export const ROLE_REQUEST_TITLE_MAX = 80;
+
+/* Corporate jobs (dev/corporate-plan.md build step 3; handoff 12g, C9) ---------------------------------------------- */
+
+export const JOB_STATUSES = ["draft", "open", "paused", "closed"] as const;
+export const JOB_STATUS_LABELS: Record<(typeof JOB_STATUSES)[number], string> = { draft: "Draft", open: "Open", paused: "Paused", closed: "Closed" };
+export const JOB_WORK_TYPES = ["full_time", "part_time", "freelance"] as const;
+/** As Departures shows work type (WORK_TYPES). */
+export const JOB_WORK_TYPE_LABELS: Record<(typeof JOB_WORK_TYPES)[number], (typeof WORK_TYPES)[number]> = {
+  full_time: "Full time",
+  part_time: "Part time",
+  freelance: "Freelance",
+};
+export const JOB_TEAM_ROLES = ["owner", "hiring", "interviewer"] as const;
+export const JOB_TEAM_ROLE_LABELS: Record<(typeof JOB_TEAM_ROLES)[number], string> = { owner: "Owner", hiring: "Hiring HR", interviewer: "Interviewer" };
+/** Handoff 12g: Required at most 8. One-of groups and nice-to-have are capped so a job stays readable. */
+export const JOB_REQUIRED_MAX = 8;
+export const JOB_ONE_OF_GROUPS_MAX = 4;
+export const JOB_ONE_OF_SIZE_MIN = 2;
+export const JOB_ONE_OF_SIZE_MAX = 6;
+export const JOB_NICE_MAX = 10;
+export const JOB_CITY_MAX = 60;
+/** People on one job's team besides its owner. */
+export const JOB_TEAM_MAX = 20;
+/** The three ticks before a job opens (handoff 12g). */
+export const JOB_HONESTY_CHECKS = [
+  { key: "real", text: "This job is real and open now." },
+  { key: "noFee", text: "We never ask candidates for a fee, deposit or paid training." },
+  { key: "fair", text: "The requirements don't screen people out by gender, religion, caste, age, disability or marital status." },
+] as const;
+/** Why a company can't open jobs now, in words (jobsBlocked in src/lib/corporate/rules.ts). */
+export const JOBS_BLOCKED_TEXT = {
+  pending: "Jobs can open once we've verified your company, usually within one working day. You can save drafts meanwhile.",
+  suspended: "This company is suspended while we review it, so its jobs can't open and open jobs are hidden from candidates.",
+  second_admin: "Add a second Recruiter admin to open jobs. Every company keeps two, so it is never locked out.",
+} as const;
+/** Applying through CareerMetro is build step 4; until then the button is off and says this. */
+export const APPLY_SOON_TEXT = "Applications on CareerMetro open soon. This button switches on then.";

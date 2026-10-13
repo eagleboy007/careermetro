@@ -10,11 +10,12 @@ import { testSignInEnabled } from "@/lib/auth/test-user";
 import { codeDelivery } from "@/lib/corporate/delivery";
 import { corporateHome } from "@/lib/corporate/store";
 import { answerRequestAction, cancelInviteAction, finishJoinAction, inviteAction, removeMemberAction, startJoinAction } from "./actions";
+import { setJobStatusAction } from "./jobs/actions";
 
 export const metadata: Metadata = { title: "Corporate · CareerMetro", robots: { index: false } };
 
 /**
- * Corporate (dev/corporate-plan.md, build steps 1 and 2). A member sees their company, read from their live role on
+ * Corporate (dev/corporate-plan.md, build steps 1 to 3). A member sees their company, read from their live role on
  * every request, so a removed role ends access at once. Anyone else can set up a company or confirm a role they were
  * given. Without accounts (the example preview) it shows an example company where nothing is saved.
  */
@@ -32,7 +33,13 @@ async function Corporate() {
   }
   const home = await corporateHome(account.id);
   if (!home) return <CorporateStart open={codeDelivery() !== "off"} joinActions={{ startJoin: startJoinAction, finishJoin: finishJoinAction }} />;
-  return <CorporateHome view={home} actions={{ invite: inviteAction, cancelInvite: cancelInviteAction, answerRequest: answerRequestAction, remove: removeMemberAction }} />;
+  return (
+    <CorporateHome
+      view={home}
+      actions={{ invite: inviteAction, cancelInvite: cancelInviteAction, answerRequest: answerRequestAction, remove: removeMemberAction }}
+      jobActions={{ setStatus: setJobStatusAction }}
+    />
+  );
 }
 
 export default function CorporatePage() {

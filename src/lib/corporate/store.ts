@@ -1,8 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { and, asc, count, desc, eq, gt, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, inArray, isNotNull, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
+import { jobTeam, jobs, orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { sendEmail } from "@/lib/email/send";
 import { logEvent } from "@/lib/log";
@@ -21,6 +21,7 @@ import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, SIGNUP_CLOSED_TEXT } from "@/lib/sc
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode } from "./codes";
 import { codeDelivery } from "./delivery";
+import { companyJobs } from "./jobs-store";
 import { checkWorkEmail, isOnDomain, websiteMatchesDomain, workEmailProblemText } from "./domains";
 import { canManageTeam, canOpenJobs, inviteExpiresAt, recheckDueAt, removalRefusal, secondAdminDaysLeft, secondAdminDueAt } from "./rules";
 import type { CodeDelivery, CorporateHomeView } from "./types";
@@ -101,7 +102,7 @@ export async function activeMembership(userId: string, db: Db | Tx = getDb()) {
 }
 
 /** Admins who count for the two-admin rule: active role, account not deleted. */
-async function liveAdminCount(orgId: string, db: Db | Tx): Promise<number> {
+export async function liveAdminCount(orgId: string, db: Db | Tx): Promise<number> {
   const [row] = await db
     .select({ n: count() })
     .from(orgMembers)
@@ -461,7 +462,7 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     // The company row is locked so two admins removing each other at once can't both pass the two-admin check.
     await tx.select({ id: organizations.id }).from(organizations).where(eq(organizations.id, admin.me.orgId)).for("update");
     const [target] = await tx
-      .select({ id: orgMembers.id, role: orgMembers.role, deleted: users.deletionRequestedAt })
+      .select({ id: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role, deleted: users.deletionRequestedAt })
       .from(orgMembers)
       .innerJoin(users, eq(users.id, orgMembers.userId))
       .where(and(eq(orgMembers.id, parsed.data.memberId), eq(orgMembers.orgId, admin.me.orgId), isNull(orgMembers.removedAt)));
@@ -470,6 +471,10 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     const refusal = target.deleted ? null : removalRefusal(target.role, await liveAdminCount(admin.me.orgId, tx));
     if (refusal) return fail(refusal);
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
+    // They leave every job team at this company too (owners stay named, the job stays the company's), so joining
+    // again later never brings back rights on old jobs.
+    const companyJobs = tx.select({ id: jobs.id }).from(jobs).where(eq(jobs.orgId, admin.me.orgId));
+    await tx.delete(jobTeam).where(and(eq(jobTeam.userId, target.userId), ne(jobTeam.role, "owner"), inArray(jobTeam.jobId, companyJobs)));
     return { ok: true as const };
   });
 }
@@ -550,8 +555,8 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
 /* Reading --------------------------------------------------------------------------------------------------------- */
 
 /**
- * Corporate home for a member: the company, its status badge, the second-admin countdown and, for admins, Team and
- * access. Null when the person has no active role. No email address of anyone is read.
+ * Corporate home for a member: the company, its status badge, the second-admin countdown, its jobs and, for admins,
+ * Team and access. Null when the person has no active role. No email address of anyone is read.
  */
 export async function corporateHome(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<CorporateHomeView | null> {
   const db = deps.db ?? getDb();
@@ -573,6 +578,7 @@ export async function corporateHome(userId: string, deps: { db?: Db; now?: Date 
     .where(eq(organizations.id, me.orgId));
   const adminCount = await liveAdminCount(me.orgId, db);
   const facts = { reviewStatus: org.status, adminCount, secondAdminDueAt: org.secondAdminDueAt };
+  const jobs = await companyJobs(userId, me, { ...facts, orgId: me.orgId }, db, now);
   let team: CorporateHomeView["team"] = null;
   if (canManageTeam(me.role)) {
     const [members, waiting] = await Promise.all([
@@ -609,6 +615,7 @@ export async function corporateHome(userId: string, deps: { db?: Db; now?: Date 
     adminCount,
     secondAdminDaysLeft: secondAdminDaysLeft({ adminCount, secondAdminDueAt: org.secondAdminDueAt }, now),
     canOpenJobs: canOpenJobs(facts, now),
+    jobs,
     team,
   };
 }

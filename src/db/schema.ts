@@ -24,9 +24,9 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
-import { ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+import { JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { GapAnalysis, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
+import type { GapAnalysis, JobRequirements, Profile, ProofEvidence, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -693,6 +693,65 @@ export const workEmailCodes = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("work_email_codes_user").on(t.userId, t.createdAt), index("work_email_codes_expires").on(t.expiresAt).where(sql`${t.email} is not null`)],
+);
+
+export const jobStatus = pgEnum("job_status", JOB_STATUSES);
+export const jobWorkType = pgEnum("job_work_type", JOB_WORK_TYPES);
+export const jobTeamRole = pgEnum("job_team_role", JOB_TEAM_ROLES);
+
+/**
+ * A job a company posts on CareerMetro (dev/corporate-plan.md build step 3, handoff 12g). It starts from one of our
+ * role profiles and asks for skills from our taxonomy only: required, "one of these" groups and nice to have. The
+ * model never writes a job. Candidates see it on Departures only while it is open and the company is verified.
+ * `ai_round` is kept for the L1 AI interviewer and can't be turned on until that exists.
+ */
+export const jobs = pgTable(
+  "jobs",
+  {
+    id: id(),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    /** Who made it. The job belongs to the company, so it stays (owner set to null) when that account is deleted. */
+    ownerId: uuid("owner_id").references(() => users.id, { onDelete: "set null" }),
+    /** The role profile version it started from. */
+    roleProfileId: uuid("role_profile_id")
+      .notNull()
+      .references(() => roleProfiles.id),
+    /** A track of that role. Null until role profiles have tracks (handoff build order item 10). */
+    track: text("track"),
+    title: text("title").notNull(),
+    workType: jobWorkType("work_type").notNull().default("full_time"),
+    city: text("city").notNull(),
+    requirements: jsonb("requirements").$type<JobRequirements>().notNull(),
+    aiRound: boolean("ai_round").notNull().default(false),
+    status: jobStatus("status").notNull().default("draft"),
+    createdAt: createdAt(),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("jobs_org_status").on(t.orgId, t.status),
+    index("jobs_status_created").on(t.status, t.createdAt),
+    index("jobs_owner").on(t.ownerId),
+    check("jobs_title_length", sql`char_length(${t.title}) between 2 and 120`),
+    check("jobs_city_length", sql`char_length(${t.city}) between 2 and 60`),
+    check("jobs_ai_round_off", sql`not ${t.aiRound}`),
+  ],
+);
+
+/** Who works on which job: its owner, Hiring HR and interviewers. Access is still checked against live org_members. */
+export const jobTeam = pgTable(
+  "job_team",
+  {
+    jobId: uuid("job_id")
+      .notNull()
+      .references(() => jobs.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: jobTeamRole("role").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.jobId, t.userId] }), index("job_team_user").on(t.userId)],
 );
 
 /* Audit ------------------------------------------------------------------- */
