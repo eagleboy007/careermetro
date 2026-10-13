@@ -17,6 +17,9 @@ export const MARKET_BAND_LABELS: Record<MarketBand, string> = { "0-2": "0–2 yr
 /** The source every example row carries. The screen labels any row with it EXAMPLE DATA. */
 export const EXAMPLE_SOURCE = "Example data";
 
+/** The source of openings counted from public ATS job boards (scripts/jd-mining/market.mjs writes the same string). */
+export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
+
 /** India's 28 states and 8 union territories, by their usual two-letter codes. */
 export const STATE_CODES = [
   "AN", "AP", "AR", "AS", "BR", "CG", "CH", "DH", "DL", "GA", "GJ", "HP", "HR", "JH", "JK", "KA", "KL", "LA",
@@ -24,6 +27,12 @@ export const STATE_CODES = [
 ] as const;
 export const stateCode = z.enum(STATE_CODES);
 export type StateCode = z.infer<typeof stateCode>;
+
+/**
+ * The state code of an all-India row. When a month has India rows for a role, India's figures read them instead of
+ * adding up the states: a posting listed in two states, or only as "India", counts once there.
+ */
+export const INDIA_ROW = "IN";
 
 const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "month is YYYY-MM");
 /** Pay in lakh rupees a year, before tax. */
@@ -33,7 +42,8 @@ export const marketRow = z
   .object({
     /** A live role profile's slug (a content test checks it). */
     role: z.string().regex(/^[a-z0-9-]+$/),
-    state: stateCode,
+    /** A state, or INDIA_ROW for all of India (always with no city). */
+    state: z.union([stateCode, z.literal(INDIA_ROW)]),
     /** Null for the whole state. A city row is part of its state's row, never added to it. */
     city: z.string().min(1).max(60).nullable(),
     band: z.enum(MARKET_BANDS),
@@ -50,7 +60,8 @@ export const marketRow = z
   .refine((r) => [r.payP25, r.payMedian, r.payP75].every((v) => v === null) || [r.payP25, r.payMedian, r.payP75].every((v) => v !== null), {
     message: "pay is all three figures or none",
   })
-  .refine((r) => r.payP25 === null || (r.payP25 <= r.payMedian! && r.payMedian! <= r.payP75!), { message: "p25 ≤ median ≤ p75" });
+  .refine((r) => r.payP25 === null || (r.payP25 <= r.payMedian! && r.payMedian! <= r.payP75!), { message: "p25 ≤ median ≤ p75" })
+  .refine((r) => r.state !== INDIA_ROW || r.city === null, { message: "an India row has no city" });
 export type MarketRow = z.infer<typeof marketRow>;
 
 /** A place a person can pick: all of India, a state or a city. */

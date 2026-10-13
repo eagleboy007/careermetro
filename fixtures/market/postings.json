@@ -1,0 +1,74 @@
+[
+  {
+    "ats": "lever",
+    "company": "example-labs",
+    "title": "Senior Data Analyst",
+    "location": "Bengaluru, Karnataka, India",
+    "url": "https://jobs.lever.co/example-labs/00000000-0000-4000-8000-000000000001",
+    "text": "You have 3-5 years of experience with SQL and dashboards. Questions? Write to Priya Example at priya@example-labs.test."
+  },
+  {
+    "ats": "lever",
+    "company": "example-labs",
+    "title": "Data Analyst",
+    "location": "Mumbai, Bangalore",
+    "url": "https://jobs.lever.co/example-labs/00000000-0000-4000-8000-000000000002",
+    "text": "Minimum 1 year in analytics. Example Labs has served customers for over 20 years."
+  },
+  {
+    "ats": "greenhouse",
+    "company": "example-pay",
+    "title": "Product Manager, Payments",
+    "location": "Gurgaon",
+    "url": "https://job-boards.greenhouse.io/example-pay/jobs/1000001",
+    "text": "7+ years of product experience, including 2+ years of experience in payments."
+  },
+  {
+    "ats": "greenhouse",
+    "company": "example-pay",
+    "title": "Full Stack Engineer",
+    "location": "Remote - India",
+    "url": "https://job-boards.greenhouse.io/example-pay/jobs/1000002",
+    "text": "2+ years of professional experience with React and Node."
+  },
+  {
+    "ats": "greenhouse",
+    "company": "example-pay",
+    "title": "Frontend Engineer",
+    "location": "Pune, India",
+    "url": "https://job-boards.greenhouse.io/example-pay/jobs/1000003",
+    "text": "Build our web app. Strong hands-on experience with React."
+  },
+  {
+    "ats": "ashby",
+    "company": "example-ai",
+    "title": "Data Analyst",
+    "location": "Bengaluru",
+    "url": "https://jobs.ashbyhq.com/example-ai/00000000-0000-4000-8000-000000000003",
+    "text": "2 years of experience."
+  },
+  {
+    "ats": "lever",
+    "company": "example-labs",
+    "title": "Data Analyst",
+    "location": "London, United Kingdom",
+    "url": "https://jobs.lever.co/example-labs/00000000-0000-4000-8000-000000000004",
+    "text": "3+ years of experience."
+  },
+  {
+    "ats": "lever",
+    "company": "example-labs",
+    "title": "Sales Engineer",
+    "location": "Bengaluru",
+    "url": "https://jobs.lever.co/example-labs/00000000-0000-4000-8000-000000000005",
+    "text": "5+ years of experience."
+  },
+  {
+    "ats": "lever",
+    "company": "example-labs",
+    "title": "Chief Information Security Officer",
+    "location": "Hyderabad",
+    "url": "https://jobs.lever.co/example-labs/00000000-0000-4000-8000-000000000006",
+    "text": "15+ years of experience."
+  }
+]
