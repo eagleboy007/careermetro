@@ -186,7 +186,7 @@ export function shownStatus(i: { status: InterviewStatus; startsAt: Date; minute
 }
 
 /** Statuses that keep an interviewer assigned: they see the candidate (read only) while one of these stands. */
-export const LIVE_INTERVIEW: InterviewStatus[] = ["proposed", "accepted", "done"];
+export const LIVE_INTERVIEW: InterviewStatus[] = ["proposed", "accepted"];
 
 /** The candidate answers an interview only while it is proposed and hasn't started. */
 export const canRespond = (i: { status: InterviewStatus; startsAt: Date }, now: Date): boolean => i.status === "proposed" && i.startsAt > now;

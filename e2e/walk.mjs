@@ -1346,11 +1346,17 @@ await step("interviews: ask for times, the candidate offers one, book it, accept
     await p.getByRole("list", { name: "The next 10 days" }).getByRole("listitem", { name: /1 interview$/ }).waitFor();
     const mine = p.getByRole("article").filter({ has: p.getByRole("heading", { name: title }) });
     await mine.getByRole("button", { name: /^Accept the interview on / }).click();
-    await mine.getByRole("checkbox", { name: "Share my phone with this interview's team" }).check();
+    const share = mine.getByRole("checkbox", { name: /^Share my phone with Example Labs's Recruiter admins, Hiring HR on this job, and this interview's interviewers/ });
+    // Focus goes to the choice to share; Not now puts it back on Accept.
+    await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "checkbox", null, { timeout: 5000 });
+    await mine.getByRole("button", { name: "Not now" }).click();
+    await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label")?.startsWith("Accept the interview on"), null, { timeout: 5000 });
+    await mine.getByRole("button", { name: /^Accept the interview on / }).click();
+    await share.check();
     await mine.getByLabel("Mobile number").fill(PHONE);
     await mine.getByRole("button", { name: "Accept interview" }).click();
     await p.getByRole("status").getByText(/^Accepted: /).waitFor({ timeout: 10000 });
-    await mine.getByText(/Your phone is shared with Example Labs's interview team/).waitFor({ timeout: 10000 });
+    await mine.getByText(/Your phone is shared with Example Labs's Recruiter admins, Hiring HR on this job/).waitFor({ timeout: 10000 });
     await mine.getByRole("button", { name: "Stop sharing" }).waitFor();
     await shot("arrivals-interview");
     await a11y("arrivals-interview");
@@ -1409,7 +1415,7 @@ await step("interviews: ask for times, the candidate offers one, book it, accept
       (select count(*)::int from interview_interviewers x where x.interview_id = i.id) as interviewers
       from interviews i join applications a on a.id = i.application_id where a.id = ${app.id}`;
     if (row?.status !== "accepted" || !row.phone_shared || row.feedback !== 1 || row.interviewers !== 1) throw new Error("interview not saved: " + JSON.stringify({ ...row, sealed: undefined }));
-    if (!String(row.sealed).startsWith("v1:") || String(row.sealed).includes("98765")) throw new Error("the phone isn't stored sealed");
+    if (!String(row.sealed).startsWith("v2:") || String(row.sealed).includes("98765")) throw new Error("the phone isn't stored sealed");
     const [slots] = await sql`select count(*)::int as n from candidate_slots where application_id = ${app.id}`;
     if (slots.n !== 1) throw new Error("offered slots: " + slots.n);
     // No phone, feedback or name in an address the walk visited.

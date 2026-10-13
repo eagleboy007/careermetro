@@ -25,7 +25,7 @@ import { SLOT_MINUTES, SLOT_TIMES } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { COMPANY_ACCESS_DAYS, visibleApplication } from "./applications-store";
 import { askDaysOf, assignedSubquery, busyOf, companyInterviewsOf, offeredState, overlaps } from "./interview-reads";
-import { encryptPhone } from "./phone";
+import { encryptPhone, phoneSharingAvailable } from "./phone";
 import { canCancel, canRespond, chatClosed, feedbackRefusal, scheduleRefusal, shownStatus, type FeedbackRefusal, type ScheduleRefusal } from "./rules";
 import { askDays, askText, dayParts, slotKeyOf, slotLabel, slotOpen, slotStart } from "./slots";
 import { activeMembership } from "./store";
@@ -66,7 +66,8 @@ export type InterviewError =
   | "slot_gone"
   | "busy"
   | "bad_interviewer"
-  | "not_open";
+  | "not_open"
+  | "phone_unavailable";
 
 export const INTERVIEW_ERROR_TEXT: Record<InterviewError, string> = {
   invalid: "Check the details and try again.",
@@ -88,7 +89,12 @@ export const INTERVIEW_ERROR_TEXT: Record<InterviewError, string> = {
   busy: "One of the interviewers already has an interview then. Pick another time or interviewer.",
   bad_interviewer: "Pick interviewers from this job's team.",
   not_open: "That interview can't be changed now.",
+  phone_unavailable: "Sharing a phone isn't available right now. You can accept without it.",
 };
+
+/** The candidate's words for a closed application (INTERVIEW_ERROR_TEXT.closed speaks to the company). */
+const CANDIDATE_CLOSED = "This application is closed, so this interview can't be answered.";
+const CHAT_CLOSED = "This chat is closed, so times can't be offered here.";
 
 export type InterviewResult<T = object> = ({ ok: true } & T) | { ok: false; error: InterviewError; message?: string };
 const fail = (error: InterviewError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
@@ -189,7 +195,7 @@ export async function offerTimes(userId: string, raw: unknown, deps: InterviewDe
       .where(eq(messages.id, parsed.data.messageId))
       .for("update", { of: conversations });
     if (!row || row.kind !== "ask_times" || row.owner !== userId) return fail("not_found");
-    if (row.closedAt || chatClosed(row, row.status, now)) return fail("closed");
+    if (row.closedAt || chatClosed(row, row.status, now)) return fail("closed", CHAT_CLOSED);
     if (row.orgStatus !== "verified") return fail("paused");
     const [done] = await tx.select({ id: candidateSlots.id }).from(candidateSlots).where(eq(candidateSlots.askMessageId, parsed.data.messageId)).limit(1);
     if (done) return fail("answered");
@@ -344,6 +350,9 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
     const chosen = input.interviewers.map((memberId) => options.find((o) => o.memberId === memberId));
     if (chosen.some((c) => !c)) return fail("bad_interviewer");
     const people = chosen.map((c) => c!.userId);
+    // Two bookings at once (for different candidates) must not both pass the busy check for the same interviewer:
+    // take a lock per interviewer, in a fixed order so two bookings can't wait on each other, then check.
+    for (const id of [...people].sort()) await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`interviewer:${id}`}))`);
     const clash = await busyOf(people, slot.startsAt, new Date(slot.startsAt.getTime() + input.minutes * 60_000), tx);
     if (clash.length) return fail("busy");
     const [made] = await tx
@@ -364,14 +373,17 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
   const parsed = interviewIdInput.safeParse(raw);
   if (!parsed.success) return fail("invalid");
   const result = await db.transaction(async (tx): Promise<InterviewResult> => {
+    // Lock order everywhere: the application row first, then the interview.
+    const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, parsed.data.interviewId));
+    if (!ref) return fail("not_found");
+    const found = await visibleApplication(userId, ref.applicationId, tx, now, true);
+    if (!found.ok) return companyFail(found.error);
     const [iv] = await tx
-      .select({ id: interviews.id, applicationId: interviews.applicationId, status: interviews.status, startsAt: interviews.startsAt })
+      .select({ id: interviews.id, status: interviews.status, startsAt: interviews.startsAt })
       .from(interviews)
       .where(eq(interviews.id, parsed.data.interviewId))
       .for("update");
     if (!iv) return fail("not_found");
-    const found = await visibleApplication(userId, iv.applicationId, tx, now, true);
-    if (!found.ok) return companyFail(found.error);
     if (!found.access.canMove) return fail(found.access.me.role === "interviewer" ? "read_only" : "not_allowed");
     if (!canCancel(iv, now)) return fail("not_open");
     await tx.update(interviews).set({ status: "cancelled", cancelledAt: now }).where(eq(interviews.id, iv.id));
@@ -394,38 +406,47 @@ export async function respondToInterview(userId: string, raw: unknown, deps: Int
   const parsed = respondInput.safeParse(raw);
   if (!parsed.success) return fail("invalid", parsed.error.issues[0]?.message);
   const input = parsed.data;
+  // Without a key (production before PHONE_KEY or NAME_HASH_KEY is set) a phone can't be kept safely, so sharing is off.
+  if (input.answer === "accept" && input.sharePhone && !phoneSharingAvailable(deps.env)) {
+    logEvent("warn", "phone_key_missing");
+    logEvent("info", "interview_answer_refused", { reason: "phone_unavailable" });
+    return fail("phone_unavailable");
+  }
   const result = await db.transaction(async (tx): Promise<InterviewResult> => {
-    const [row] = await tx
-      .select({
-        id: interviews.id,
-        status: interviews.status,
-        startsAt: interviews.startsAt,
-        applicationId: applications.id,
-        owner: applications.userId,
-        closedAt: applications.closedAt,
-        withdrawnAt: applications.withdrawnAt,
-        orgStatus: organizations.reviewStatus,
-      })
-      .from(interviews)
-      .innerJoin(applications, eq(applications.id, interviews.applicationId))
+    // Lock order everywhere: the application row first, then the interview.
+    const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, input.interviewId));
+    if (!ref) return fail("not_found");
+    const [app] = await tx
+      .select({ id: applications.id, owner: applications.userId, closedAt: applications.closedAt, withdrawnAt: applications.withdrawnAt, orgStatus: organizations.reviewStatus })
+      .from(applications)
       .innerJoin(organizations, eq(organizations.id, applications.orgId))
+      .where(eq(applications.id, ref.applicationId))
+      .for("update", { of: applications });
+    if (!app || app.owner !== userId) return fail("not_found");
+    const [row] = await tx
+      .select({ id: interviews.id, status: interviews.status, startsAt: interviews.startsAt })
+      .from(interviews)
       .where(eq(interviews.id, input.interviewId))
-      .for("update", { of: interviews });
-    if (!row || row.owner !== userId) return fail("not_found");
-    if (row.withdrawnAt || row.closedAt) return fail("closed");
+      .for("update");
+    if (!row) return fail("not_found");
+    if (app.withdrawnAt || app.closedAt) return fail("closed", CANDIDATE_CLOSED);
     if (row.status !== "proposed") return fail("answered");
     if (!canRespond(row, now)) return fail("not_open");
     if (input.answer === "decline") {
       await tx.update(interviews).set({ status: "declined", respondedAt: now }).where(eq(interviews.id, row.id));
       return { ok: true };
     }
-    if (row.orgStatus !== "verified") return fail("paused");
-    const share = input.sharePhone;
-    await tx.update(interviews).set({ status: "accepted", respondedAt: now, phoneShared: share }).where(eq(interviews.id, row.id));
-    if (share && "phone" in input) await tx.update(applications).set({ phoneShared: encryptPhone(input.phone, deps.env) }).where(eq(applications.id, row.applicationId));
+    if (app.orgStatus !== "verified") return fail("paused");
+    let sealed: string | null = null;
+    if (input.sharePhone) {
+      sealed = encryptPhone(input.phone, app.id, deps.env);
+      if (!sealed) return fail("phone_unavailable");
+    }
+    await tx.update(interviews).set({ status: "accepted", respondedAt: now, phoneShared: !!sealed }).where(eq(interviews.id, row.id));
+    if (sealed) await tx.update(applications).set({ phoneShared: sealed }).where(eq(applications.id, app.id));
     return { ok: true };
   });
-  logEvent("info", result.ok ? "interview_answered" : "interview_answer_refused", result.ok ? { answer: input.answer, phoneShared: input.answer === "accept" && input.sharePhone } : { reason: result.error });
+  logEvent("info", result.ok ? "interview_answered" : "interview_answer_refused", result.ok ? { answer: input.answer, shared: input.answer === "accept" && input.sharePhone } : { reason: result.error });
   return result;
 }
 
@@ -527,7 +548,7 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
         or(isNull(applications.companyAccessEndsAt), gt(applications.companyAccessEndsAt, now)),
         inArray(interviews.status, ["proposed", "accepted"]),
         gte(interviews.startsAt, new Date(now.getTime() - 7 * DAY)),
-        me.role === "admin" ? undefined : or(mover, and(inArray(applications.id, assignedSubquery(userId, db)), inArray(applications.jobId, onTeam))),
+        me.role === "admin" ? undefined : or(mover, and(inArray(applications.id, assignedSubquery(userId, db, now)), inArray(applications.jobId, onTeam))),
       ),
     )
     .orderBy(asc(interviews.startsAt))

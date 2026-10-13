@@ -53,9 +53,14 @@ export function workEmailHashKey(env: Env = process.env): string {
 
 /**
  * The secret a phone number shared for an interview is encrypted with (applications.phone_shared, corporate build
- * step 6). Unlike the others it is not a hash: the interview's team must read the number back. It follows
- * NAME_HASH_KEY, which is never rotated, so numbers saved earlier can still be read.
+ * step 6). Unlike the others it is not a hash: the interview's team must read the number back, so a guessable key
+ * would expose every number. PHONE_KEY if set, else NAME_HASH_KEY (never rotated, so numbers saved earlier still
+ * read). In production there is no fallback: without either key it is null and phone sharing is off. Elsewhere
+ * (local, tests, previews) it falls back as the other keys do.
  */
-export function phoneKeySecret(env: Env = process.env): string {
-  return `phone|${env.NAME_HASH_KEY || legacy(env)}`;
+export function phoneKeySecret(env: Env = process.env): string | null {
+  const key = env.PHONE_KEY || env.NAME_HASH_KEY;
+  if (key) return `phone|${key}`;
+  if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
+  return `phone|${legacy(env)}`;
 }

@@ -72,7 +72,7 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
   // Interviewers (and anyone on a job without moving its candidates) read the chats of candidates whose live interview
   // they are on, while they are still on the job's team (build step 6).
   const anyTeam = db.select({ jobId: jobTeam.jobId }).from(jobTeam).where(eq(jobTeam.userId, userId));
-  const assigned = and(inArray(applications.id, assignedSubquery(userId, db)), inArray(applications.jobId, anyTeam));
+  const assigned = and(inArray(applications.id, assignedSubquery(userId, db, now)), inArray(applications.jobId, anyTeam));
   const rows = await db
     .select({
       conversationId: conversations.id,

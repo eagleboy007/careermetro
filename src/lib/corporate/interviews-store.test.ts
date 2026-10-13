@@ -1,4 +1,4 @@
-import { and, eq, inArray, like } from "drizzle-orm";
+import { and, eq, inArray, like, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
@@ -266,13 +266,21 @@ describe.skipIf(!db)("interviews (database)", () => {
     // Feedback waits for the candidate's answer.
     expect(await submitFeedback(s.iv, { interviewId: one.interviewId, recommendation: "yes", text: FEEDBACK }, at())).toMatchObject({ ok: false, error: "not_accepted" });
 
+    // In production without PHONE_KEY or NAME_HASH_KEY, sharing is off; nothing changes and accepting without it works.
+    const noKey = { db: db!, now: clock, env: { VERCEL_ENV: "production", CRON_SECRET: "c" } };
+    expect(await respondToInterview(s.me, { interviewId: one.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, noKey)).toMatchObject({ ok: false, error: "phone_unavailable" });
+    expect((await myApplications(s.me, at()))[0]!.interviews[0]!.status).toBe("proposed");
+
     expect(await respondToInterview(s.me, { interviewId: one.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
     expect(await respondToInterview(s.me, { interviewId: one.interviewId, answer: "decline" }, at())).toMatchObject({ ok: false, error: "answered" });
     // Stored sealed, never as typed.
     const [row] = await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(eq(schema.applications.id, s.applicationId));
-    expect(row.phone).toMatch(/^v1:/);
+    expect(row.phone).toMatch(/^v2:/);
     expect(row.phone).not.toContain("98765");
 
+    // Without the key in production it isn't opened for anyone.
+    const blind = await openCandidate(s.hr, { applicationId: s.applicationId }, noKey);
+    expect(blind.ok && blind.candidate.interviews.phone).toBeNull();
     // The job team and the interviewer on it see it; Hiring HR off the job sees nothing of the candidate.
     for (const who of [s.hr, s.admin, s.iv]) {
       const r = await openCandidate(who, { applicationId: s.applicationId }, at());
@@ -320,6 +328,12 @@ describe.skipIf(!db)("interviews (database)", () => {
     expect(team.ok && team.candidate.interviews.interviews[0]!.status).toBe("done");
     const own = await openCandidate(s.iv, { applicationId: s.applicationId }, at(2));
     expect(own.ok && own.candidate.interviews.interviews[0]).toMatchObject({ canGiveFeedback: true, feedback: [{ by: "Sana Qureshi", mine: true }] });
+    // Her access ends 7 days after the interview ends (Wed 14 Oct, 12:00 India time): there on the 21st at 11:00, gone at 12:30.
+    expect((await openCandidate(s.iv, { applicationId: s.applicationId }, { db: db!, env, now: new Date("2026-10-21T05:30:00Z") })).ok).toBe(true);
+    expect(await openCandidate(s.iv, { applicationId: s.applicationId }, { db: db!, env, now: new Date("2026-10-21T07:00:00Z") })).toMatchObject({ ok: false });
+    const lateBoard = await jobBoard(s.iv, s.jobId, { db: db!, env, now: new Date("2026-10-21T07:00:00Z") });
+    expect(lateBoard.ok && lateBoard.board.cards).toEqual([]);
+    expect(await submitFeedback(s.iv, { interviewId: one.interviewId, recommendation: "yes", text: FEEDBACK }, { db: db!, now: new Date("2026-10-21T07:00:00Z") })).toMatchObject({ ok: false });
 
     // The candidate never sees feedback: not on Arrivals, not in their download.
     expect(JSON.stringify(await myApplications(s.me, at(2)))).not.toContain("debrief");
@@ -363,18 +377,44 @@ describe.skipIf(!db)("interviews (database)", () => {
     const statuses = async () => (await db!.select().from(schema.interviews).where(eq(schema.interviews.applicationId, s.applicationId))).map((x) => x.status).sort();
     expect(await statuses()).toEqual(["cancelled", "declined"]);
     expect(await askForTimes(s.hr, { applicationId: s.applicationId }, at())).toMatchObject({ ok: false, error: "closed" });
-    // A closed application shows nobody the phone.
+    // Not this time erases the shared phone too.
     const closed = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
     expect(closed.ok && closed.candidate.interviews.phone).toBeNull();
+    const [erased] = await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(eq(schema.applications.id, s.applicationId));
+    expect(erased.phone).toBeNull();
+    // The candidate is told in their own words that a closed application can't be answered.
+    expect(await respondToInterview(s.me, { interviewId: b.interviewId, answer: "decline" }, at())).toMatchObject({ ok: false, error: "closed", message: expect.stringMatching(/application is closed/) });
 
     // Open again, book, and withdraw: the interview is cancelled and the phone erased.
     expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "team", note: "" }, at())).toEqual({ ok: true });
     const c = await book("2026-10-16T15:00");
-    expect(c.ok).toBe(true);
+    if (!c.ok) throw new Error(c.error);
+    expect(await respondToInterview(s.me, { interviewId: c.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
     expect(await withdrawApplication(s.me, { applicationId: s.applicationId }, at())).toEqual({ ok: true });
     expect(await statuses()).toEqual(["cancelled", "cancelled", "declined"]);
     const [row] = await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(and(eq(schema.applications.id, s.applicationId)));
     expect(row.phone).toBeNull();
     expect(await openCandidate(s.iv, { applicationId: s.applicationId }, at())).toMatchObject({ ok: false });
+  });
+
+  it("never double-books an interviewer when two bookings for different candidates run at the same time", async () => {
+    const s = await setup("race");
+    const other = await candidate("race-cand2", "Ananya Ghosh");
+    const second = await applyToJob(other, { jobId: s.jobId, canJoin: "now", consent: true }, at());
+    if (!second.ok) throw new Error(second.error);
+    const one = await offered(s, ["2026-10-14T11:00"]);
+    const two = await offered({ hr: s.hr, me: other, applicationId: second.applicationId }, ["2026-10-14T11:00"]);
+    const results = await Promise.all([
+      scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: one.slot("2026-10-14T11:00"), minutes: 45, interviewers: [s.ivMember] }, at()),
+      scheduleInterview(s.admin, { applicationId: second.applicationId, slotId: two.slot("2026-10-14T11:00"), minutes: 45, interviewers: [s.ivMember] }, at()),
+    ]);
+    expect(results.filter((r) => r.ok)).toHaveLength(1);
+    expect(results.find((r) => !r.ok)).toMatchObject({ ok: false, error: "busy" });
+    const [count] = await db!
+      .select({ n: sql<number>`count(*)::int` })
+      .from(schema.interviewInterviewers)
+      .innerJoin(schema.interviews, eq(schema.interviews.id, schema.interviewInterviewers.interviewId))
+      .where(and(eq(schema.interviewInterviewers.userId, s.iv), eq(schema.interviews.status, "proposed")));
+    expect(count.n).toBe(1);
   });
 });

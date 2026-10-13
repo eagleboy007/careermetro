@@ -20,24 +20,32 @@ type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 /** Who wrote feedback whose account has gone: the feedback stays the company's. */
 export const FORMER_MEMBER = "A former team member";
 
-/** The applications among these where the person is on a live interview (proposed, accepted or done). */
-export async function assignedApplications(userId: string, applicationIds: string[], db: Db | Tx): Promise<Set<string>> {
+/** An interviewer's access lasts while the interview is proposed or accepted, until 7 days after it ends. */
+export const INTERVIEWER_ACCESS_DAYS = 7;
+const interviewerWindow = (now: Date) =>
+  and(
+    inArray(interviews.status, ["proposed", "accepted"]),
+    sql`${interviews.startsAt} + make_interval(mins => ${interviews.minutes}) + make_interval(days => ${INTERVIEWER_ACCESS_DAYS}) > ${now.toISOString()}::timestamptz`,
+  );
+
+/** The applications among these where the person is on an interview still in its access window. */
+export async function assignedApplications(userId: string, applicationIds: string[], db: Db | Tx, now: Date): Promise<Set<string>> {
   if (!applicationIds.length) return new Set();
   const rows = await db
     .selectDistinct({ applicationId: interviews.applicationId })
     .from(interviews)
     .innerJoin(interviewInterviewers, eq(interviewInterviewers.interviewId, interviews.id))
-    .where(and(eq(interviewInterviewers.userId, userId), inArray(interviews.applicationId, applicationIds), inArray(interviews.status, ["proposed", "accepted", "done"])));
+    .where(and(eq(interviewInterviewers.userId, userId), inArray(interviews.applicationId, applicationIds), interviewerWindow(now)));
   return new Set(rows.map((r) => r.applicationId));
 }
 
-/** Application ids (any job) the person is on a live interview of: a subquery for lists. */
-export const assignedSubquery = (userId: string, db: Db | Tx) =>
+/** Application ids (any job) the person is on an interview of, within its access window: a subquery for lists. */
+export const assignedSubquery = (userId: string, db: Db | Tx, now: Date) =>
   db
     .select({ id: interviews.applicationId })
     .from(interviews)
     .innerJoin(interviewInterviewers, eq(interviewInterviewers.interviewId, interviews.id))
-    .where(and(eq(interviewInterviewers.userId, userId), inArray(interviews.status, ["proposed", "accepted", "done"])));
+    .where(and(eq(interviewInterviewers.userId, userId), interviewerWindow(now)));
 
 type Viewer = { userId: string; canMove: boolean };
 
@@ -117,7 +125,7 @@ export async function phoneAudience(applicationId: string, viewer: Viewer, db: D
   const shared = await db
     .select({ id: interviews.id })
     .from(interviews)
-    .where(and(eq(interviews.applicationId, applicationId), eq(interviews.phoneShared, true), inArray(interviews.status, ["accepted", "done"])));
+    .where(and(eq(interviews.applicationId, applicationId), eq(interviews.phoneShared, true), eq(interviews.status, "accepted")));
   if (!shared.length) return { anyShared: false, assignedToShared: false };
   const [mine] = await db
     .select({ id: interviewInterviewers.interviewId })

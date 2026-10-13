@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarClock, Phone, PhoneOff } from "lucide-react";
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { actionBtn, inkBtn } from "@/components/corporate/jobs-panel";
 import { fieldClass, hintClass, ICON } from "@/components/corporate/parts";
 import { dayParts, nextDays } from "@/lib/corporate/slots";
@@ -100,7 +100,10 @@ export function ApplicationInterviews({ app, actions, onDone }: { app: MyApplica
       {app.phoneShared && (
         <div className="flex flex-wrap items-center gap-2 text-[0.84rem]">
           <Phone {...ICON} className="text-muted" />
-          <span className="min-w-0 flex-1">Your phone is shared with {app.company}&apos;s interview team, and no one else.</span>
+          <span className="min-w-0 flex-1">
+            Your phone is shared with {app.company}&apos;s Recruiter admins, Hiring HR on this job, and the interviewers of the interview you shared it for,
+            while your application is open. No one else sees it.
+          </span>
           <button
             type="button"
             className={actionBtn}
@@ -128,6 +131,15 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
   const [phone, setPhone] = useState("");
   const [pending, start] = useTransition();
   const id = useId();
+  const acceptRef = useRef<HTMLButtonElement>(null);
+  const shareRef = useRef<HTMLInputElement>(null);
+  const was = useRef(false);
+  useEffect(() => {
+    // Opening the form puts focus on the choice to share; Not now puts it back on Accept.
+    if (accepting) shareRef.current?.focus();
+    else if (was.current) acceptRef.current?.focus();
+    was.current = accepting;
+  }, [accepting]);
   const answer = (kind: "accept" | "decline") =>
     start(async () => {
       if (!respond) return onDone({ error: true, text: "Example applications. Nothing changes here." });
@@ -150,7 +162,7 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
       </div>
       {iv.canRespond && !accepting && (
         <div className="flex flex-wrap gap-2">
-          <button type="button" className={inkBtn} disabled={pending} onClick={() => setAccepting(true)} aria-label={`Accept the interview on ${iv.when}`}>
+          <button ref={acceptRef} type="button" className={inkBtn} disabled={pending} onClick={() => setAccepting(true)} aria-label={`Accept the interview on ${iv.when}`}>
             Accept
           </button>
           <button type="button" className={actionBtn} disabled={pending} onClick={() => answer("decline")} aria-label={`Decline the interview on ${iv.when}`}>
@@ -167,14 +179,17 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
           }}
         >
           <label className="flex min-h-11 items-center gap-2.5 text-[0.86rem]">
-            <input type="checkbox" className="size-5 shrink-0 accent-ink" checked={share} onChange={(e) => setShare(e.target.checked)} />
-            Share my phone with this interview&apos;s team
+            <input ref={shareRef} type="checkbox" className="size-5 shrink-0 accent-ink" checked={share} onChange={(e) => setShare(e.target.checked)} />
+            <span>
+              Share my phone with {app.company}&apos;s Recruiter admins, Hiring HR on this job, and this interview&apos;s interviewers (until a week after it), while
+              your application is open.
+            </span>
           </label>
           {share && (
             <label htmlFor={`${id}-phone`} className="flex flex-col gap-1.5 text-[0.82rem] font-semibold">
               Mobile number
               <input id={`${id}-phone`} type="tel" inputMode="tel" autoComplete="tel" required className={fieldClass} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98765 43210" />
-              <span className={hintClass}>Only {app.company}&apos;s team for this interview sees it, while your application is open. You can stop sharing any time.</span>
+              <span className={hintClass}>No one else sees it. It is erased when you stop sharing or withdraw, or if {app.company} closes your application.</span>
             </label>
           )}
           {!share && <p className={hintClass}>Your phone stays private. The company can reach you in Messages.</p>}

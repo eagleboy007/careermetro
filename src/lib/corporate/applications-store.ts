@@ -325,7 +325,7 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
             isNull(applications.withdrawnAt),
             isNull(users.deletionRequestedAt),
             // Interviewers see only the candidates whose live interviews they are on (build step 6).
-            assignedOnly ? inArray(applications.id, assignedSubquery(userId, db)) : undefined,
+            assignedOnly ? inArray(applications.id, assignedSubquery(userId, db, now)) : undefined,
           ),
         )
         .orderBy(asc(applications.createdAt));
@@ -408,7 +408,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
   const access = await jobAccess(userId, app.jobId, db);
   if (!access.ok) return fail(access.error);
   // Interviewers see only candidates whose live interview they are on (build step 6), read live like the role.
-  if (!access.canMove && !(await assignedApplications(userId, [app.id], db)).has(app.id)) return fail("not_found");
+  if (!access.canMove && !(await assignedApplications(userId, [app.id], db, now)).has(app.id)) return fail("not_found");
   return { ok: true as const, app, access };
 }
 
@@ -455,7 +455,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
       events: events.get(app.id) ?? [],
       interviews: {
         interviews: booked.get(app.id) ?? [],
-        phone: showPhone ? decryptPhone(app.phoneSealed, deps.env) : null,
+        phone: showPhone ? decryptPhone(app.phoneSealed, app.id, deps.env) : null,
         canSchedule,
         ...offered,
       },
@@ -485,11 +485,15 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
     const closing = to === "not_this_time";
     await tx
       .update(applications)
-      .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null })
+      // Not this time also erases a phone shared for an interview: the application is closed, so no one needs it.
+      .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null, ...(closing ? { phoneShared: null } : {}) })
       .where(eq(applications.id, app.id));
     await event(tx, app.id, "moved", to, userId, now, closing ? note : null);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.
-    if (closing) await cancelUpcoming(tx, app.id, now);
+    if (closing) {
+      await cancelUpcoming(tx, app.id, now);
+      await tx.update(interviews).set({ phoneShared: false }).where(eq(interviews.applicationId, app.id));
+    }
     return { ok: true };
   });
   logEvent("info", result.ok ? "application_moved" : "application_move_refused", result.ok ? { to } : { to, reason: result.error });
@@ -556,7 +560,7 @@ export async function exportApplications(userId: string, db: Db = getDb(), env: 
     ...r,
     canJoin: CAN_JOIN_LABELS[r.canJoin],
     // The phone you chose to share with this company's interview team, while it is on file.
-    phoneSharedWithCompany: decryptPhone(phoneSealed, env),
+    phoneSharedWithCompany: decryptPhone(phoneSealed, id, env),
     events: events.filter((e) => e.applicationId === id).map((e) => ({ kind: e.kind, stage: e.stage, note: e.note, createdAt: e.createdAt })),
     interviews: booked.filter((x) => x.applicationId === id).map((x) => ({ round: x.round, startsAt: x.startsAt, minutes: x.minutes, status: x.status, phoneSharedWithTeam: x.phoneSharedWithTeam, respondedAt: x.respondedAt, cancelledAt: x.cancelledAt, createdAt: x.createdAt })),
     timesOffered: offered.filter((x) => x.applicationId === id).map((x) => ({ startsAt: x.startsAt, minutes: x.minutes, offeredAt: x.offeredAt })),

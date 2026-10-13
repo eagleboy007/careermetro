@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { decryptPhone, encryptPhone } from "./phone";
+import { phoneKeySecret } from "@/lib/hash-keys";
+import { decryptPhone, encryptPhone, phoneSharingAvailable } from "./phone";
 import { canCancel, canRespond, feedbackRefusal, phoneVisible, scheduleRefusal, shownStatus } from "./rules";
 import { askDays, askText, dayParts, daysBetween, nextDays, slotKeyOf, slotLabel, slotOpen, slotStart, timeRange } from "./slots";
 
@@ -92,14 +93,38 @@ describe("interview rules", () => {
 
 describe("a shared phone at rest", () => {
   const env = { NAME_HASH_KEY: "test-key" };
-  it("is encrypted, reads back with the same key only, and never the same twice", () => {
-    const a = encryptPhone("+91 98765 43210", env);
+  const APP = "2d9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a71";
+  it("is encrypted for one application, reads back with the same key only, and never the same twice", () => {
+    const a = encryptPhone("+91 98765 43210", APP, env)!;
+    expect(a).toMatch(/^v2:/);
     expect(a).not.toContain("98765");
-    expect(a).not.toBe(encryptPhone("+91 98765 43210", env));
-    expect(decryptPhone(a, env)).toBe("+91 98765 43210");
-    expect(decryptPhone(a, { NAME_HASH_KEY: "other" })).toBeNull();
-    expect(decryptPhone(`${a.slice(0, -2)}xx`, env)).toBeNull();
-    expect(decryptPhone(null, env)).toBeNull();
-    expect(decryptPhone("+91 98765 43210", env)).toBeNull();
+    expect(a).not.toBe(encryptPhone("+91 98765 43210", APP, env));
+    expect(decryptPhone(a, APP, env)).toBe("+91 98765 43210");
+    expect(decryptPhone(a, APP, { NAME_HASH_KEY: "other" })).toBeNull();
+    // Copied to another application, it doesn't open.
+    expect(decryptPhone(a, "3e9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a72", env)).toBeNull();
+    expect(decryptPhone(`${a.slice(0, -2)}xx`, APP, env)).toBeNull();
+    // A short IV or tag is refused.
+    const [iv, tag, body] = a.slice(3).split(".");
+    expect(decryptPhone(`v2:${iv!.slice(0, 8)}.${tag}.${body}`, APP, env)).toBeNull();
+    expect(decryptPhone(`v2:${iv}.${tag!.slice(0, 8)}.${body}`, APP, env)).toBeNull();
+    expect(decryptPhone(null, APP, env)).toBeNull();
+    expect(decryptPhone("+91 98765 43210", APP, env)).toBeNull();
+  });
+
+  it("has no key in production without PHONE_KEY or NAME_HASH_KEY: sharing is off, nothing seals or opens", () => {
+    const a = encryptPhone("+91 98765 43210", APP, { CRON_SECRET: "c" })!;
+    for (const prod of [{ VERCEL_ENV: "production" }, { NODE_ENV: "production" }]) {
+      const off = { ...prod, CRON_SECRET: "c" };
+      expect(phoneKeySecret(off)).toBeNull();
+      expect(phoneSharingAvailable(off)).toBe(false);
+      expect(encryptPhone("+91 98765 43210", APP, off)).toBeNull();
+      expect(decryptPhone(a, APP, off)).toBeNull();
+      expect(phoneSharingAvailable({ ...off, PHONE_KEY: "k" })).toBe(true);
+      expect(phoneSharingAvailable({ ...off, NAME_HASH_KEY: "k" })).toBe(true);
+    }
+    // PHONE_KEY wins over NAME_HASH_KEY.
+    expect(phoneKeySecret({ PHONE_KEY: "p", NAME_HASH_KEY: "n" })).toBe("phone|p");
+    expect(phoneSharingAvailable({ VERCEL_ENV: "preview" })).toBe(true);
   });
 });
