@@ -89,3 +89,76 @@ export function compareFound(a: { match: JobMatchView; ref: string }, b: { match
     (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0)
   );
 }
+
+/* Typed search: name, role and current company (Milin 2026-10-15) ---------------------------------------------------- */
+
+/** Lowercase letters and digits only, single-spaced: "Priya  N." and "priya n" read the same. */
+export function searchKey(text: string): string {
+  return text
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/** Words that say what kind of company it is, not which one, so "Example Labs Pvt. Ltd." is "Example Labs". */
+const COMPANY_SUFFIXES = new Set(["pvt", "private", "ltd", "limited", "llp", "inc", "corp", "corporation", "co", "company", "plc", "llc", "gmbh"]);
+
+/** A company name to compare by: its search key without the legal-form words. */
+export function companyKey(name: string): string {
+  return searchKey(name)
+    .split(" ")
+    .filter((w) => w && !COMPANY_SUFFIXES.has(w))
+    .join(" ");
+}
+
+/**
+ * The person's current jobs on the confirmed profile: the ones with no end date; with none open, the latest one
+ * (Project manager, 2026-10-15: the latest job stands in for the current employer, which isn't stored separately).
+ */
+export function currentJobs(profile: Profile): Profile["roles"] {
+  const open = profile.roles.filter((r) => !r.end);
+  if (open.length) return open;
+  const latest = [...profile.roles].sort((a, b) => (readYearMonth(b.end)?.t ?? 0) - (readYearMonth(a.end)?.t ?? 0))[0];
+  return latest ? [latest] : [];
+}
+
+/**
+ * Whether the person works at the searching company now, by their current employer on the profile matching the
+ * company's name or legal name. A company never sees them (Project manager under Milin's delegation, 2026-10-15,
+ * keeping his 2026-10-09 rule that an employee's job search stays hidden from their employer).
+ */
+export function worksAt(profile: Profile, companyNames: readonly (string | null)[]): boolean {
+  const keys = new Set(companyNames.map((n) => (n ? companyKey(n) : "")).filter(Boolean));
+  return currentJobs(profile).some((r) => keys.has(companyKey(r.employer)));
+}
+
+/** Every word typed is the start of a word in the name: "pri nai" finds Priya Nair. */
+export function nameMatches(query: string, name: string | null): boolean {
+  const words = searchKey(name ?? "").split(" ");
+  const asked = searchKey(query).split(" ").filter(Boolean);
+  return asked.length > 0 && asked.every((q) => words.some((w) => w.startsWith(q)));
+}
+
+/** The typed words appear together in one of these texts. */
+const appearsIn = (query: string, texts: (string | null | undefined)[]) => {
+  const q = searchKey(query);
+  return texts.some((t) => !!t && ` ${searchKey(t)} `.includes(` ${q}`));
+};
+
+/**
+ * Whether a person passes the typed search. Name: every word starts a word of their name. Role: their target role
+ * (companies always see it) or a current job title. Company: a current employer. Job titles and employers count only
+ * when experience shows on their profile, so a part they hid is never searchable.
+ */
+export function passesText(
+  q: { name: string; title: string; company: string },
+  p: { name: string | null; aim: string | null; profile: Profile; experienceShown: boolean },
+): boolean {
+  if (q.name && !nameMatches(q.name, p.name)) return false;
+  const jobs = p.experienceShown ? currentJobs(p.profile) : [];
+  if (q.title && !appearsIn(q.title, [p.aim, ...jobs.map((r) => r.title)])) return false;
+  if (q.company && !jobs.some((r) => companyKey(r.employer).includes(companyKey(q.company)) && companyKey(q.company) !== "")) return false;
+  return true;
+}

@@ -2580,6 +2580,9 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await searchForm.locator("summary", { hasText: "City" }).click();
     await searchForm.getByLabel("Pune", { exact: true }).check();
     await searchForm.getByLabel("2 to 5 years").check();
+    // And by name and current company: typed words never go into the address.
+    await searchForm.getByLabel("Name", { exact: true }).fill("arjun");
+    await searchForm.getByLabel("Current company", { exact: true }).fill("Garuda");
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
     await q.getByText("Aiming for Cyber Security Analyst").waitFor();
@@ -2589,7 +2592,8 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
       [...filtered.searchParams.keys()].some((k) => !allowed.includes(k)) ||
       filtered.searchParams.get("role") !== "cyber-security-analyst" ||
       filtered.searchParams.get("band") !== "2-5" ||
-      filtered.searchParams.get("city") !== "Pune"
+      filtered.searchParams.get("city") !== "Pune" ||
+      /arjun|garuda/i.test(filtered.search)
     )
       throw new Error("the search address holds more than the job and filters: " + filtered.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });

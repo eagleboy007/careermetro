@@ -6,7 +6,7 @@ import { useEffect, useId, useRef, useState, useTransition } from "react";
 import type { FindActions, FindPeopleResults, FindPeopleView, FindPersonCard, FoundPersonView, FoundRequestState } from "@/lib/corporate/find-types";
 import { formatDay } from "@/lib/corporate/format";
 import type { FindBand, FindSearch } from "@/lib/schemas";
-import { FIND_BAND_LABELS, FIND_BANDS, FIND_CITIES_MAX, FIND_ROLES_MAX, PERSON_CITIES, type PersonCity } from "@/lib/schemas/constants";
+import { FIND_BAND_LABELS, FIND_BANDS, FIND_CITIES_MAX, FIND_ROLES_MAX, FIND_TEXT_MAX, PERSON_CITIES, type PersonCity } from "@/lib/schemas/constants";
 import { monoLabel } from "./job-parts";
 import { actionBtn, inkBtn } from "./jobs-panel";
 import { MatchDots, MatchList } from "./match-parts";
@@ -215,7 +215,15 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
               e.preventDefault();
               const data = new FormData(e.currentTarget);
               const bands = data.getAll("band").filter((b): b is FindBand => (FIND_BANDS as readonly string[]).includes(String(b)));
-              run({ jobId: String(data.get("job") ?? ""), bands, roles, cities, verified: data.get("verified") === "1", page: 1 });
+              const typed = (key: string) => String(data.get(key) ?? "").trim().replace(/\s+/g, " ");
+              const [name, title, company] = [typed("name"), typed("title"), typed("company")];
+              const problem = name && name.length < 2 ? "Type at least 2 letters of the name." : !name && (title || company) ? "Add a name to search by role or company." : null;
+              if (problem) {
+                setError(problem);
+                setSearches((n) => n + 1);
+                return;
+              }
+              run({ jobId: String(data.get("job") ?? ""), name, title, company, bands, roles, cities, verified: data.get("verified") === "1", page: 1 });
             }}
           >
             <label className={`${labelClass} min-w-0`}>
@@ -228,6 +236,27 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
                 ))}
               </select>
             </label>
+            <fieldset className="flex min-w-0 flex-col gap-1.5">
+              <legend className={labelClass}>Look for someone (optional)</legend>
+              <div className="grid grid-cols-1 gap-3 min-[640px]:grid-cols-3">
+                <label className={`${labelClass} min-w-0`}>
+                  Name
+                  <input name="name" defaultValue={search?.name} maxLength={FIND_TEXT_MAX} autoComplete="off" className={`${inputClass} min-h-11 w-full`} />
+                </label>
+                <label className={`${labelClass} min-w-0`}>
+                  Role
+                  <input name="title" defaultValue={search?.title} maxLength={FIND_TEXT_MAX} autoComplete="off" className={`${inputClass} min-h-11 w-full`} />
+                </label>
+                <label className={`${labelClass} min-w-0`}>
+                  Current company
+                  <input name="company" defaultValue={search?.company} maxLength={FIND_TEXT_MAX} autoComplete="off" className={`${inputClass} min-h-11 w-full`} />
+                </label>
+              </div>
+              <small className="text-[0.76rem] text-muted">
+                A name, then a role and their current company if you like. A name finds the person even without the job&apos;s skills. Role matches the role they aim
+                for or a current job title; company matches a current employer, only where their profile shows experience. Your own staff never show.
+              </small>
+            </fieldset>
             <div className="flex flex-wrap gap-x-8 gap-y-4">
               <fieldset className="flex min-w-0 flex-col">
                 <legend className={labelClass}>Experience</legend>
@@ -287,7 +316,7 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
               </h2>
               {results.total === 0 ? (
                 <p className="text-[0.88rem] text-muted">
-                  Only people who turned on &ldquo;Let companies find me&rdquo; and have at least one of the job&apos;s required skills show here. Try another job or fewer filters.
+                  Only people who turned on &ldquo;Let companies find me&rdquo; and have at least one of the job&apos;s required skills (or match the name you typed) show here. Try another job or fewer filters.
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2.5">
