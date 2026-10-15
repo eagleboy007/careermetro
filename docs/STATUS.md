@@ -60,7 +60,7 @@ Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/acco
 - Thread containers can't reach `registry.npmjs.org`, so CI is the npm check.
 - CI logs are readable only through the GitHub MCP `get_job_logs` with `return_content`.
 - CI's DB is unseeded. Tests must not rely on seeded rows or delete shared fixtures. Run tests on both the seeded and a fresh DB.
-- e2e: check the FAIL lines and the exit code.
+- e2e: check the FAIL lines and the exit code. The local walk needs `NAME_HASH_KEY=e2e-only-name-hash-key` (as in CI), or the corporate steps fail.
 - Worktrees are locked; remove them with `git worktree remove -f -f`.
 - `.claude/` is in git's local exclude file; use `git add -f`.
 - Next 16 differs from the Next you know; read `node_modules/next/dist/docs/` first.
