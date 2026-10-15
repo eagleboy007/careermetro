@@ -425,7 +425,7 @@ export const exampleFindPeople: FindPeopleView = {
     { slug: "data-analyst", title: "Data Analyst" },
     { slug: "soc-analyst-l1", title: "SOC Analyst L1" },
   ],
-  search: { jobId: "00000000-0000-4000-8000-0000000000b1", bands: [], roles: ["cyber-security-analyst", "soc-analyst-l1"], cities: [], verified: false, page: 1 },
+  search: { jobId: "00000000-0000-4000-8000-0000000000b1", name: "", title: "", company: "", bands: [], roles: ["cyber-security-analyst", "soc-analyst-l1"], cities: [], verified: false, page: 1 },
   results: {
     total: 3,
     hasMore: false,

@@ -43,10 +43,10 @@ const env = { NAME_HASH_KEY: "test-key" };
 const DAY = 86_400_000;
 
 const RESUME_LINE = "Looked after the help desk for 30 branch offices.";
-const profileWith = (skillNames: string[], start = "2023-06"): Profile => ({
+const profileWith = (skillNames: string[], start = "2023-06", employer = "Konkan Co-operative Bank"): Profile => ({
   headline: null,
   totalYearsExperience: 3,
-  roles: [{ title: "IT support analyst", employer: "Konkan Co-operative Bank", start, end: null, highlights: [RESUME_LINE] }],
+  roles: [{ title: "IT support analyst", employer, start, end: null, highlights: [RESUME_LINE] }],
   skills: skillNames.map((name) => ({ name, lastUsed: "2025", evidence: [] })),
   education: [{ qualification: "B.Sc. IT", institution: "Pune University", year: "2023" }],
   certifications: [],
@@ -245,6 +245,41 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(opened.person.profile.aim).toBe("Cyber Security Analyst");
     expect(opened.person.city).toBeNull();
     expect(JSON.stringify(opened.person)).not.toContain("AWS");
+  });
+
+  it("finds people by name, name + role and name + role + company, and never the company's own current staff", async () => {
+    const s = await setup("names");
+    const priya = await seeker("n-priya", { name: "Priya Nair" });
+    // No required skill for the job: only a typed name finds her.
+    await seeker("n-kavya", { name: "Kavya Reddy", skills: ["Excel"] });
+    const staff = await seeker("n-staff", { name: "Priya Sharma" });
+
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair", "Priya Sharma"]);
+    expect(names(await found(s.admin, s.jobId, { name: "kavya" }))).toEqual(["Kavya Reddy"]);
+    expect(names(await found(s.admin, s.jobId, { name: "pri" }))).toEqual(["Priya Nair", "Priya Sharma"]);
+    expect(names(await found(s.admin, s.jobId, { name: "priya nai" }))).toEqual(["Priya Nair"]);
+    expect(names(await found(s.admin, s.jobId, { name: "priya", title: "it support" }))).toEqual(["Priya Nair", "Priya Sharma"]);
+    expect(names(await found(s.admin, s.jobId, { name: "priya", title: "cyber security" }))).toEqual(["Priya Nair", "Priya Sharma"]);
+    expect(await found(s.admin, s.jobId, { name: "priya", title: "data engineer" })).toEqual([]);
+    expect(names(await found(s.admin, s.jobId, { name: "priya", title: "it support", company: "Konkan" }))).toEqual(["Priya Nair", "Priya Sharma"]);
+    expect(await found(s.admin, s.jobId, { name: "priya", company: "Garuda" })).toEqual([]);
+    // Hidden experience: the employer can't be searched.
+    await setFind(priya, true, false);
+    expect(names(await found(s.admin, s.jobId, { name: "priya", company: "Konkan" }))).toEqual(["Priya Sharma"]);
+    await setFind(priya, true, true);
+    // Role or company without a name is refused, and nothing typed reaches the audit line.
+    expect(await searchPeople(s.admin, { jobId: s.jobId, company: "Konkan" }, fd())).toEqual({ ok: false, error: "invalid" });
+    expect(JSON.stringify(await auditOf(s.orgId))).not.toMatch(/kavya|konkan|garuda/i);
+
+    // Priya Sharma moves to the searching company (her profile's current job): it never sees her again, even by name,
+    // and a ref it already had opens nobody.
+    const [card] = (await found(s.admin, s.jobId, { name: "priya sharma" }));
+    const [resume] = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.userId, staff));
+    await db!.update(schema.profiles).set({ data: profileWith(["Python", "Linux"], "2026-01", "Example Labs Pvt. Ltd.") }).where(eq(schema.profiles.resumeId, resume.id));
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+    expect(await found(s.admin, s.jobId, { name: "priya sharma" })).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
   });
 
   it("lets only Recruiter admins and Hiring HR on the job of a verified company search", async () => {

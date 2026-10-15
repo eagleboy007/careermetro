@@ -8,9 +8,12 @@ const REF = "A".repeat(20) + "b-_".repeat(13);
 
 describe("find people schemas (pending item 19)", () => {
   it("search by a job and a page, with any of experience bands, target roles and verified profiles (T44)", () => {
-    expect(findSearchInput.parse({ jobId: JOB })).toEqual({ jobId: JOB, bands: [], roles: [], cities: [], verified: false, page: 1 });
+    expect(findSearchInput.parse({ jobId: JOB })).toEqual({ jobId: JOB, name: "", title: "", company: "", bands: [], roles: [], cities: [], verified: false, page: 1 });
     expect(findSearchInput.parse({ jobId: JOB, bands: ["2-5", "10+", "2-5"], roles: ["data-analyst", "soc-analyst-l1"], cities: ["Pune", "Kochi", "Pune"], verified: true, page: 3 })).toEqual({
       jobId: JOB,
+      name: "",
+      title: "",
+      company: "",
       bands: ["2-5", "10+"],
       roles: ["data-analyst", "soc-analyst-l1"],
       cities: ["Pune", "Kochi"],
@@ -36,7 +39,19 @@ describe("find people schemas (pending item 19)", () => {
     }
   });
 
-  it("take no free text a company could put a name or a phone in", () => {
+  it("take a typed name, then a role and a current company, trimmed (Milin 2026-10-15)", () => {
+    expect(findSearchInput.parse({ jobId: JOB, name: "  Priya   Nair ", title: " SOC  analyst", company: "Garuda " })).toMatchObject({
+      name: "Priya Nair",
+      title: "SOC analyst",
+      company: "Garuda",
+    });
+    expect(findSearchInput.safeParse({ jobId: JOB, name: "Priya", company: "Garuda" }).success).toBe(true);
+    for (const bad of [{ name: "P" }, { title: "SOC analyst" }, { company: "Garuda" }, { name: "x".repeat(81) }]) {
+      expect(findSearchInput.safeParse({ jobId: JOB, ...bad }).success).toBe(false);
+    }
+  });
+
+  it("take no other free text", () => {
     const r = findSearchInput.safeParse({ jobId: JOB, query: "Priya Sharma +91 98765 43210" });
     // Unknown keys are dropped, never searched.
     expect(r.success).toBe(true);

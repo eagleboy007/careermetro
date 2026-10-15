@@ -366,6 +366,9 @@ export type PersonCity = (typeof PERSON_CITIES)[number];
 /** At most this many cities in one Find people search. */
 export const FIND_CITIES_MAX = 10;
 
+/** Longest name, role or company a company can type into Find people. */
+export const FIND_TEXT_MAX = 80;
+
 /** At most this many target roles in one Find people search (T44). */
 export const FIND_ROLES_MAX = 10;
 

@@ -45,7 +45,7 @@ import { provedByUser } from "./applications-store";
 import { writeAudit, writeAuditOncePerDay } from "./audit-line";
 import { blockCompanyIn } from "./company-blocks";
 import { openRef, sealRef } from "./find-ref";
-import { compareFound, findRefusal, inBands, matchesJob, passesFilters, yearsWorked, type FindRefusal } from "./find-rules";
+import { compareFound, findRefusal, inBands, matchesJob, passesFilters, passesText, worksAt, yearsWorked, type FindRefusal } from "./find-rules";
 import type { DiscoveryView, FindJobOption, FindPeopleView, FindRoleOption, FindPersonCard, FoundPersonView, FoundRequestState, SentRequestView } from "./find-types";
 import { formatDay } from "./format";
 import { jobMatch } from "./match";
@@ -96,7 +96,12 @@ const fail = (error: FindError) => ({ ok: false as const, error });
 /* Who may search, from which job ---------------------------------------------------------------------------------- */
 
 type Member = NonNullable<Awaited<ReturnType<typeof activeMembership>>>;
-type JobContext = { me: Member; job: { id: string; title: string; requirements: (typeof jobs.$inferSelect)["requirements"] } };
+type JobContext = {
+  me: Member;
+  job: { id: string; title: string; requirements: (typeof jobs.$inferSelect)["requirements"] };
+  /** The company's name and legal name, to keep its own current staff out of its searches. */
+  companyNames: (string | null)[];
+};
 
 const movesOnJob = (teamRole: JobTeamRole | null) => teamRole === "owner" || teamRole === "hiring";
 
@@ -106,7 +111,15 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
   if (!me) return fail("not_member");
   if (!UUID.test(jobId)) return fail("job_not_open");
   const [job] = await db
-    .select({ id: jobs.id, title: jobs.title, status: jobs.status, requirements: jobs.requirements, orgStatus: organizations.reviewStatus })
+    .select({
+      id: jobs.id,
+      title: jobs.title,
+      status: jobs.status,
+      requirements: jobs.requirements,
+      orgStatus: organizations.reviewStatus,
+      orgName: organizations.name,
+      legalName: organizations.legalName,
+    })
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
     .where(and(eq(jobs.id, jobId), eq(jobs.orgId, me.orgId)));
@@ -114,7 +127,7 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
   const [team] = job ? await db.select({ role: jobTeam.role }).from(jobTeam).where(and(eq(jobTeam.jobId, job.id), eq(jobTeam.userId, userId))) : [];
   const refusal = findRefusal({ role: me.role, onJobTeam: movesOnJob(team?.role ?? null), orgStatus: job?.orgStatus ?? org?.status ?? "pending", jobStatus: job?.status ?? "none" });
   if (refusal) return fail(refusal);
-  return { ok: true, me, job: { id: job!.id, title: job!.title, requirements: job!.requirements } };
+  return { ok: true, me, job: { id: job!.id, title: job!.title, requirements: job!.requirements }, companyNames: [job!.orgName, job!.legalName] };
 }
 
 /**
@@ -226,7 +239,7 @@ export async function searchPeople(userId: string, raw: unknown, deps: FindDeps 
     const at = { db: tx, now: now.getTime() };
     if (!(await takeShared(LIMITS.findSearchesPerUserHour, userId, at))) return fail("limit");
     if (!(await takeShared(LIMITS.findSearchesPerCompanyDay, me.orgId, at))) return fail("limit");
-    const ranked = await rankPeople(me.orgId, userId, job, parsed.data, tx, now, deps.env);
+    const ranked = await rankPeople(ctx, userId, parsed.data, tx, now, deps.env);
     const slice = ranked.slice((page - 1) * FIND_PAGE_SIZE, page * FIND_PAGE_SIZE);
     const states = await requestStates(
       me.orgId,
@@ -245,8 +258,15 @@ export async function searchPeople(userId: string, raw: unknown, deps: FindDeps 
   return result;
 }
 
-/** Every findable person who matches the job and the filters, ranked. Internal: the user id never leaves this module. */
-async function rankPeople(orgId: string, searcherId: string, job: JobContext["job"], filters: FindSearch, db: Db | Tx, now: Date, env?: Record<string, string | undefined>) {
+/**
+ * Every findable person who matches the job and the filters, ranked. People whose current employer is the searching
+ * company never show. A typed name finds the person even without one of the job's required skills (the company is
+ * looking for someone in particular); Match still ranks and shows how they fit. Internal: the user id never leaves this
+ * module, and the typed words are never logged.
+ */
+async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSearch, db: Db | Tx, now: Date, env?: Record<string, string | undefined>) {
+  const orgId = ctx.me.orgId;
+  const { job } = ctx;
   const people = await findable(orgId, searcherId, job.id, db);
   const current = await currentResumes(
     people.map((p) => p.id),
@@ -265,8 +285,11 @@ async function rankPeople(orgId: string, searcherId: string, job: JobContext["jo
     if (!inBands(filters.bands, years, person.showExperience)) continue;
     const provedSkills = proved.get(person.id) ?? new Set<string>();
     if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, provedSkills: provedSkills.size })) continue;
+    if (worksAt(profile, ctx.companyNames)) continue;
+    const aim = roleTitles.get(analysis.roleSlug) ?? null;
+    if (!passesText(filters, { name: person.name, aim, profile, experienceShown: person.showExperience })) continue;
     const match = jobMatch(job.requirements, profile, provedSkills, now);
-    if (!matchesJob(match)) continue;
+    if (!filters.name && !matchesJob(match)) continue;
     const ref = sealRef(person.id, orgId, env);
     if (!ref) continue;
     const card = {
@@ -274,7 +297,7 @@ async function rankPeople(orgId: string, searcherId: string, job: JobContext["jo
       name: displayName(person.name),
       headline: person.headline,
       experience: experienceText(person, years),
-      aim: roleTitles.get(analysis.roleSlug) ?? null,
+      aim,
       city: person.city,
       verified: provedSkills.size > 0,
       match,
@@ -306,12 +329,17 @@ function companyView(person: Person, profile: Profile, analysis: GapAnalysis, no
   return publicMe({ ...me, aim }, { ...person, showTargetRole: true, showGaps: false });
 }
 
-/** A person found from a search, resolved from the company's ref and checked again now. */
+/**
+ * A person found from a search, resolved from the company's ref and checked again now, including that they don't work
+ * at the company now.
+ */
 async function resolve(ctx: JobContext, userId: string, ref: string, db: Db | Tx, env?: Record<string, string | undefined>): Promise<Person | null> {
   const target = openRef(ref, ctx.me.orgId, env);
   if (!target) return null;
   const [person] = await findable(ctx.me.orgId, userId, ctx.job.id, db, target);
-  return person ?? null;
+  if (!person) return null;
+  const current = (await currentResumes([person.id], db)).get(person.id);
+  return current && !worksAt(current.profile, ctx.companyNames) ? person : null;
 }
 
 /**
@@ -655,7 +683,7 @@ const roleOptions: FindRoleOption[] = roleProfiles.map((r) => ({ slug: r.slug, t
  */
 export async function findPeoplePage(
   userId: string,
-  params: { jobId: string | null } & Omit<FindSearch, "jobId">,
+  params: { jobId: string | null } & Omit<FindSearch, "jobId" | "name" | "title" | "company">,
   deps: FindDeps = {},
 ): Promise<FindPeopleView | null> {
   const db = deps.db ?? getDb();
@@ -672,7 +700,7 @@ export async function findPeoplePage(
   view.jobs = jobOptions;
   view.roles = roleOptions;
   view.sent = sent;
-  if (params.jobId) view.search = { ...params, jobId: params.jobId };
+  if (params.jobId) view.search = { ...params, jobId: params.jobId, name: "", title: "", company: "" };
   return view;
 }
 

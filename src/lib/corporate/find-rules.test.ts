@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
-import { bandOf, compareFound, findRefusal, inBands, matchesJob, passesFilters, yearsWorked } from "./find-rules";
+import { bandOf, companyKey, compareFound, currentJobs, findRefusal, inBands, matchesJob, nameMatches, passesFilters, passesText, worksAt, yearsWorked } from "./find-rules";
 import type { JobMatchView, MatchLineView } from "./types";
 
 const line = (state: MatchLineView["state"], group: MatchLineView["group"] = "required"): MatchLineView => ({ label: "x", state, group });
@@ -85,5 +85,58 @@ describe("find rules (pending item 19)", () => {
       { ref: "b", match: match([line("proved"), line("on_resume"), line("not_on_resume")]) },
     ];
     expect([...people].sort(compareFound).map((p) => p.ref)).toEqual(["b", "c", "a", "d", "e"]);
+  });
+
+  it("find a name from the start of each word typed, ignoring case, dots and accents", () => {
+    expect(nameMatches("priya", "Priya Nair")).toBe(true);
+    expect(nameMatches("Pri  NAI", "Priya Nair")).toBe(true);
+    expect(nameMatches("nair priya", "Priya Nair")).toBe(true);
+    expect(nameMatches("riya", "Priya Nair")).toBe(false);
+    expect(nameMatches("priya sharma", "Priya Nair")).toBe(false);
+    expect(nameMatches("zoe", "Zoë D'Souza")).toBe(true);
+    expect(nameMatches("d souza", "Zoë D'Souza")).toBe(true);
+    expect(nameMatches("priya", null)).toBe(false);
+  });
+
+  it("read the current employer from open jobs, else the latest one, and compare companies without Pvt Ltd", () => {
+    const p = (roles: { employer: string; title?: string; start: string | null; end: string | null }[]) =>
+      ({ headline: null, totalYearsExperience: null, roles: roles.map((r) => ({ title: "Analyst", highlights: [], ...r })), skills: [], education: [], certifications: [] }) as Profile;
+    expect(currentJobs(p([{ employer: "A", start: "2020", end: "2022" }, { employer: "B", start: "2022", end: null }])).map((r) => r.employer)).toEqual(["B"]);
+    expect(currentJobs(p([{ employer: "A", start: "2020", end: "2024-03" }, { employer: "B", start: "2018", end: "2020" }])).map((r) => r.employer)).toEqual(["A"]);
+    expect(currentJobs(p([]))).toEqual([]);
+    expect(companyKey("Example Labs Pvt. Ltd.")).toBe("example labs");
+    const atLabs = p([{ employer: "Example Labs Private Limited", start: "2023", end: null }]);
+    expect(worksAt(atLabs, ["Example Labs", null])).toBe(true);
+    expect(worksAt(atLabs, ["Other Co", "Other Company Pvt Ltd"])).toBe(false);
+    // Only the current job: someone who left Example Labs before their latest job isn't hidden from it.
+    expect(worksAt(p([{ employer: "Example Labs", start: "2019", end: "2021" }, { employer: "Garuda", start: "2021", end: null }]), ["Example Labs"])).toBe(false);
+    // A company name made only of legal-form words never matches anyone.
+    expect(worksAt(p([{ employer: "Pvt Ltd", start: "2023", end: null }]), ["Private Limited"])).toBe(false);
+  });
+
+  it("search by name, name + role, and name + role + company, never by a part the person hid", () => {
+    const profile = {
+      headline: null,
+      totalYearsExperience: 3,
+      roles: [{ title: "Security operations analyst", employer: "Garuda Logistics Pvt Ltd", start: "2023-04", end: null, highlights: [] }],
+      skills: [],
+      education: [],
+      certifications: [],
+    } as Profile;
+    const arjun = { name: "Arjun Mehta", aim: "Cyber Security Analyst", profile, experienceShown: true };
+    const q = (name: string, title = "", company = "") => ({ name, title, company });
+    expect(passesText(q(""), arjun)).toBe(true);
+    expect(passesText(q("arjun"), arjun)).toBe(true);
+    expect(passesText(q("arjun", "security analyst"), arjun)).toBe(true);
+    expect(passesText(q("arjun", "operations"), arjun)).toBe(true);
+    expect(passesText(q("arjun", "data analyst"), arjun)).toBe(false);
+    expect(passesText(q("arjun", "operations", "garuda"), arjun)).toBe(true);
+    expect(passesText(q("arjun", "", "Garuda Logistics Ltd"), arjun)).toBe(true);
+    expect(passesText(q("arjun", "operations", "konkan"), arjun)).toBe(false);
+    // With experience hidden, the job title and employer aren't searchable; the target role still is.
+    const hidden = { ...arjun, experienceShown: false };
+    expect(passesText(q("arjun", "operations"), hidden)).toBe(false);
+    expect(passesText(q("arjun", "cyber security"), hidden)).toBe(true);
+    expect(passesText(q("arjun", "", "garuda"), hidden)).toBe(false);
   });
 });
