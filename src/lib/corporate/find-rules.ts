@@ -5,7 +5,7 @@ import type { JobMatchView, OrgReviewStatus, OrgRole } from "./types";
 
 /*
  * The rules of "Let companies find me" (pending item 19, dev/companies-find-me-plan.md) as plain functions, so they are
- * tested without a database: who may search, the experience band, who is listed and in which order. No model and no
+ * tested without a database: who may search, the filters, who is listed and in which order. No model and no
  * score: the order comes from Match to this job in words, the same for everyone.
  */
 
@@ -48,12 +48,22 @@ export function bandOf(years: number): FindBand {
 }
 
 /**
- * Whether a person passes the band filter. With a band, only people whose experience shows on their profile can match,
- * so a part they hid is never searchable.
+ * Whether a person passes the experience filter: any band when none is chosen, else one of the chosen bands. With a
+ * band chosen, only people whose experience shows on their profile can match, so a part they hid is never searchable.
  */
-export function inBand(band: FindBand | null, years: number, experienceShown: boolean): boolean {
-  if (!band) return true;
-  return experienceShown && bandOf(years) === band;
+export function inBands(bands: readonly FindBand[], years: number, experienceShown: boolean): boolean {
+  if (!bands.length) return true;
+  return experienceShown && bands.includes(bandOf(years));
+}
+
+/**
+ * Whether a person passes the other filters (T44): one of the chosen target roles, when any is chosen (companies see the
+ * target role of everyone who lets them find them), and a verified profile, when asked: at least one skill proved by
+ * CareerMetro proof (an exam, a verified certificate or corroborated work), never a resume line alone.
+ */
+export function passesFilters(f: { roles: readonly string[]; verified: boolean }, p: { roleSlug: string; provedSkills: number }): boolean {
+  if (f.roles.length && !f.roles.includes(p.roleSlug)) return false;
+  return !f.verified || p.provedSkills > 0;
 }
 
 /** Listed only when at least one required skill (or "one of these" group) is proved or on the resume. */

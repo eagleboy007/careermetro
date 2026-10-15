@@ -306,6 +306,8 @@ export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as con
 /* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
 
 /** Experience bands a company can filter a search by, in years, from the confirmed profile. */
+/** At most this many target roles in one Find people search (T44). */
+export const FIND_ROLES_MAX = 10;
 export const FIND_BANDS = ["0-2", "2-5", "5-10", "10+"] as const;
 export const FIND_BAND_LABELS: Record<(typeof FIND_BANDS)[number], string> = {
   "0-2": "Up to 2 years",

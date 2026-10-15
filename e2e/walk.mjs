@@ -2565,8 +2565,23 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     if ((await q.getByLabel("Match to this job").inputValue()) !== job.id) throw new Error("the address did not fill in the job");
     if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opening a search address ran the search");
     if ((await searched()) !== before) throw new Error("opening a search address wrote a people_searched line");
+    if ([...address.searchParams.keys()].some((k) => k !== "job") || address.searchParams.get("job") !== job.id) throw new Error("the search address holds more than the job: " + address.search);
+    // Filters (T44), one or several together. Verified profiles only: Arjun has proved nothing yet, so no one shows.
+    const searchForm = q.getByRole("form", { name: "Search" });
+    await searchForm.getByLabel("Verified profiles only").check();
     await q.getByRole("button", { name: "Search", exact: true }).click();
-    if ([...address.searchParams.keys()].some((k) => !["job", "band", "page"].includes(k)) || address.searchParams.get("job") !== job.id || address.searchParams.get("band")) throw new Error("the search address holds more than the job and band: " + address.search);
+    await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
+    // Experience 2 to 5 years with the target role he aims for: he shows, with that role on his card.
+    await searchForm.getByLabel("Verified profiles only").uncheck();
+    await searchForm.locator("summary").click();
+    await searchForm.getByLabel("Cyber Security Analyst", { exact: true }).check();
+    await searchForm.getByLabel("2 to 5 years").check();
+    await q.getByRole("button", { name: "Search", exact: true }).click();
+    await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
+    await q.getByText("Aiming for Cyber Security Analyst").waitFor();
+    const filtered = new URL(q.url());
+    if ([...filtered.searchParams.keys()].some((k) => !["job", "band", "role", "verified", "page"].includes(k)) || filtered.searchParams.get("role") !== "cyber-security-analyst" || filtered.searchParams.get("band") !== "2-5")
+      throw new Error("the search address holds more than the job and filters: " + filtered.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
     await open.waitFor({ timeout: 10000 });
     await open.click();

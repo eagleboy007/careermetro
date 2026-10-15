@@ -123,7 +123,7 @@ export function PrivacyFields() {
           checked={s.companiesCanFind}
           onChange={(on) => setSetting("companiesCanFind", on)}
           disabled={!editable}
-          hint="Verified companies can find you when they search from one of their open jobs. They see the parts of your profile switched on above, never your gaps, and how your skills match that job, which shows even with Skills off. Never your email, phone, pay, notice period or resume. They can only send you a message request, which you accept or delete. Off by default; turning it off takes you out of their searches at once."
+          hint="Verified companies can find you when they search from one of their open jobs. They see your target role, the parts of your profile switched on above and how your skills match that job (both even when switched off above), never your goals or gaps. They can narrow a search by experience, target role and proved skills. Never your email, phone, pay, notice period or resume. They can only send you a message request, which you accept or delete. Off by default; turning it off takes you out of their searches at once."
         >
           Let companies find me
         </Switch>
