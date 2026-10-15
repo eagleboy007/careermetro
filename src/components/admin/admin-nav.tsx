@@ -4,6 +4,7 @@ import Link from "next/link";
 const PAGES = [
   { key: "companies", href: "/admin/companies", label: "Company review" },
   { key: "proofs", href: "/admin/proofs", label: "Held proofs" },
+  { key: "reports", href: "/admin/reports", label: "Reports" },
 ] as const;
 
 export function AdminNav({ current }: { current: (typeof PAGES)[number]["key"] }) {

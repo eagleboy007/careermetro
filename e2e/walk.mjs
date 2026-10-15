@@ -1525,6 +1525,84 @@ await step("held proofs: the admin accepts one, and focus moves to the next row"
     await sql.end();
   }
 });
+// Reports (/admin/reports, FR-45): not found when signed out; the admin sees a report set up here in the database
+// with its reason, the reported message and the deadlines, acknowledges it (focus stays on the row), then marks action
+// taken and the row leaves the list. One audit line each.
+await step("reports: the admin acknowledges one, then closes it", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to set up a report");
+  const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    const q = await out.newPage();
+    const res = await q.goto(BASE + "/admin/reports");
+    if (res?.status() !== 404) throw new Error(`signed out: /admin/reports answered ${res?.status()}, not 404`);
+  } finally {
+    await out.close();
+  }
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const run = `e2e-report-${Date.now()}`;
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await adm.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  try {
+    const person = async (n, first, last) =>
+      (await sql`insert into users (email, first_name, last_name, name) values (${`${run}-${n}@example.test`}, ${first}, ${last}, ${`${first} ${last}`}) returning id`)[0].id;
+    const reporter = await person("a", "Walkreport", "Rao");
+    const other = await person("b", "Walkother", "Sen");
+    const [chat] = await sql`insert into conversations (kind, status, started_by) values ('direct', 'open', ${other}) returning id`;
+    await sql`insert into conversation_members (conversation_id, user_id, role) values (${chat.id}, ${reporter}, 'member'), (${chat.id}, ${other}, 'member')`;
+    const [msg] = await sql`insert into messages (conversation_id, sender_id, body) values (${chat.id}, ${other}, ${`Send me the OTP ${run}`}) returning id`;
+    const [rep] = await sql`insert into reports (reporter_id, target, target_id, reason, note) values (${reporter}, 'message', ${msg.id}, 'money_or_otp', 'Asked for my OTP.') returning id`;
+
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.goto(BASE + "/admin/reports");
+    await q.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+    const row = q.locator("article", { hasText: `Send me the OTP ${run}` });
+    await row.waitFor();
+    await row.getByText("Message from Walkother S.").waitFor();
+    await row.getByText("Walkreport R.").waitFor();
+    // Other steps' reports may be open too, so only this row is checked.
+    const body = await row.innerText();
+    if (/@/.test(body)) throw new Error("an email address is shown on the reports page");
+    if (/Walkreport Rao|Walkother Sen/.test(body)) throw new Error("a full last name is shown on the reports page");
+    const ack = row.getByRole("button", { name: /^Acknowledge: / });
+    const box = await ack.boundingBox();
+    if (!box || box.height < 44) throw new Error(`Acknowledge is ${box?.height}px tall, under 44px`);
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-reports.png`, fullPage: true });
+    await axeOn(q, "admin-reports");
+    await ack.click();
+    await q.getByRole("status").filter({ hasText: "Acknowledged." }).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: /^Acknowledge: / }).waitFor({ state: "detached", timeout: 10000 });
+    // Focus stays on the row: its first button is now Action taken, never the page.
+    await q.waitForFunction((id) => document.activeElement?.getAttribute("data-first-action") === id, rep.id, { timeout: 5000 }).catch(async () => {
+      const at = await q.evaluate(() => `${document.activeElement?.tagName} ${document.activeElement?.getAttribute("aria-label") ?? document.activeElement?.textContent?.slice(0, 40)}`);
+      throw new Error(`focus after acknowledge is on ${at}, not the row's Action taken button`);
+    });
+    await row.getByRole("button", { name: /^Action taken: / }).click();
+    await q.getByRole("status").filter({ hasText: "Marked as action taken." }).waitFor({ timeout: 10000 });
+    await row.waitFor({ state: "detached", timeout: 10000 });
+    const [saved] = await sql`select status, acknowledged_at, resolved_at from reports where id = ${rep.id}`;
+    if (saved.status !== "actioned" || !saved.acknowledged_at || !saved.resolved_at) throw new Error(`report saved as ${JSON.stringify(saved)}`);
+    const audit = await sql`select action from audit_logs where target = ${`report:${rep.id}`} order by action`;
+    if (audit.map((x) => x.action).join(",") !== "report_acknowledged,report_actioned") throw new Error(`audit lines ${JSON.stringify(audit)}`);
+    // Phone size in dark mode: no sideways scroll, and the same axe check.
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("admin-reports: horizontal overflow " + overflow + "px");
+    await axeOn(q, "admin-reports-phone-dark");
+  } finally {
+    await adm.close();
+    await sql`delete from reports where note = 'Asked for my OTP.' and reporter_id in (select id from users where email like ${`${run}-%`})`;
+    await sql`delete from conversations where started_by in (select id from users where email like ${`${run}-%`})`;
+    await sql`delete from users where email like ${`${run}-%`}`;
+    await sql.end();
+  }
+});
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
 let proofSkill = "";

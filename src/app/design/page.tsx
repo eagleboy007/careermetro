@@ -101,7 +101,8 @@ import { ApplyPanel } from "@/components/departures/apply-panel";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
-import { exampleHeldProofs, exampleReviewCompanies } from "@/components/admin/fixtures";
+import { exampleHeldProofs, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
+import { ReportReview, ReportRow } from "@/components/admin/report-review";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
@@ -567,6 +568,23 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <ProofReview proofs={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Reports (admins only)</h2>
+        <p className="text-sm text-muted">
+          /admin/reports: open reports from chats and job pages, oldest first. The reason, what was reported with the message or job title, who reported
+          it as first name and last initial, their note, and the deadlines; a passed one reads Overdue in words, not colour. Acknowledge, Action taken and
+          Dismiss. Example data, so the buttons do nothing.
+        </p>
+        <ReportRow report={{ ...exampleReports[1]!, id: "7b6a5f4e-3d2c-4b1a-8f9e-8d7c6b5a4f3f" }} now={exampleReportsNow} pending={false} />
+        <p className="text-sm text-muted">The whole page, and the list with nothing open.</p>
+        <div className="rounded-lg border border-line p-4">
+          <ReportReview reports={exampleReports} now={exampleReportsNow} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <ReportReview reports={[]} now={exampleReportsNow} />
         </div>
       </section>
 

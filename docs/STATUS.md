@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (found-chat unread counts).
+Last updated: 2026-10-15 (report review, FR-45).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -14,7 +14,8 @@ Last updated: 2026-10-15 (found-chat unread counts).
   - Certificate proof (#109, #110) and profile certifications with the Credly check (#132).
   - A Credly link fills a goal only after the check (#135, migration 0029).
   - The held-proof review screen `/admin/proofs`, FR-44 (#137).
-- **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, this PR), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
+- **Admin:** report review `/admin/reports` with the IT Rules deadlines, FR-45 (`docs/plans/reports-review-plan.md`). Report notes are kept, as the privacy notice will say (launch-readiness item 8).
+- **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, #139), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
@@ -28,14 +29,13 @@ Last updated: 2026-10-15 (found-chat unread counts).
 ## Next up
 
 1. T44, once Milin answers the card.
-2. Reports review tool, and the privacy notice line.
-3. Switch Market from example data once Data research says the cells reach 15 a month.
-4. Photo and certificate upload, once the storage keys exist.
-5. Find people DB-side ranking, when opted-in people pass 1,000 or `find_scan_capped` is logged (`dev/companies-find-me-plan.md`, 2026-10-15).
+2. Switch Market from example data once Data research says the cells reach 15 a month.
+3. Photo and certificate upload, once the storage keys exist.
+4. Find people DB-side ranking, when opted-in people pass 1,000 or `find_scan_capped` is logged (`dev/companies-find-me-plan.md`, 2026-10-15).
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-44.
+Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-45.
 
 ## Decisions log (newest first)
 
@@ -53,7 +53,7 @@ Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/acco
 ## Known issues and blockers
 
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
-- **Milin, decisions:** the T44 card; the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
+- **Milin, decisions:** the T44 card; whether the report tool may remove a message or suspend a person's account (`docs/plans/reports-review-plan.md`); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
 - **Project manager:** deleting merged remote branches, which the permission check blocks for Development.
 - `reopenUnconfirmedGoals` (daily cleanup) re-checks every rejected or held certificate each day. That is fine at beta scale, but limit it to recent rows when there are many.
 - `/mnt/project-files` sometimes gives I/O errors. When it does, write to `docs/` and copy across later.
