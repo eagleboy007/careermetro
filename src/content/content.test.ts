@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
-import { certifications, normalizeSkillTerm, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -166,5 +166,25 @@ describe("resource catalog", () => {
     expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
     expect(ids.filter((id) => !known.has(id))).toEqual([]);
     expect(roleSkills.filter((id) => !ids.includes(id))).toEqual([]);
+  });
+});
+
+// The practice bank (handoff 12h) is v1, self-checked by Data research only; no expert has reviewed it yet.
+describe("practice question bank", () => {
+  const known = new Set(skills.map((s) => s.id));
+
+  it("names only known skills, with 5 questions for each", () => {
+    expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
+    const perSkill = new Map<string, number>();
+    for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
+    expect(perSkill.size).toBe(15);
+    expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
+  });
+
+  it("has unique ids and no question twice", () => {
+    const ids = practiceQuestions.map((q) => q.id);
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+    const texts = practiceQuestions.map((q) => q.question.toLowerCase());
+    expect(texts.filter((t, i) => texts.indexOf(t) !== i)).toEqual([]);
   });
 });

@@ -1,14 +1,15 @@
 "use client";
 
-import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, PenLine, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, MessageSquareText, PenLine, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
+import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
 import { StatusChip } from "@/components/ui/status-chip";
 import { initials } from "@/lib/departures/filter";
-import type { JourneyStop, MeProfile, Story } from "@/lib/schemas";
+import type { JourneyStop, MeProfile, PracticeTrend, Story } from "@/lib/schemas";
 import { SMART, STORY_BOXES } from "@/lib/schemas/constants";
 
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-[550]";
@@ -30,12 +31,15 @@ export function MeView({
   others,
   mode = "own",
   whoSees,
+  practice,
   onCheckCertificate,
 }: {
   me: MeProfile;
   others?: MeProfile;
   mode?: "own" | "public";
   whoSees?: WhoSees;
+  /** "Practice confidence" (FR-23): the person's own ratings per skill. Shown on their own view only, never to others. */
+  practice?: PracticeTrend[];
   /** "Check with Credly" (src/app/(app)/me/actions.ts); without it, example data says nothing is checked. */
   onCheckCertificate?: (proofId: string) => Promise<CredlyCheckResult>;
 }) {
@@ -240,6 +244,29 @@ export function MeView({
             {own && <span className="rounded-full border border-dashed border-muted px-2.5 py-1 text-[0.78rem] text-muted">+ Add · soon</span>}
           </div>
         </Section>
+        )}
+
+        {/* Practice confidence (FR-23) is the person's own rating, so only they see it: never "View as others", the
+            public profile or a company. It is a separate prop, so it is never part of `others`. */}
+        {own && practice && (
+          <Section title="Practice confidence" note="only you see this" action={<More href="/practice">Practise</More>}>
+            {practice.length ? (
+              <ul className="flex flex-col gap-2.5">
+                {practice.map((t) => (
+                  <li key={t.skillId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-[0.88rem] min-[560px]:grid-cols-[minmax(0,150px)_minmax(0,1fr)_auto]">
+                    <b className="min-w-0 font-semibold">{t.name}</b>
+                    <ConfidenceSpark ratings={t.ratings} className="col-span-2 row-start-2 max-h-9 min-[560px]:col-span-1 min-[560px]:row-start-auto" />
+                    <span className="whitespace-nowrap text-[0.76rem] text-muted min-[560px]:col-start-3 min-[560px]:row-start-1">
+                      {confidenceWord(t.ratings[t.ratings.length - 1])} · {sessionsText(t.ratings.length)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <Empty Icon={MessageSquareText}>Practise a question and rate how sure you feel to start your trend.</Empty>
+            )}
+            <p className="text-[0.78rem] text-muted">How sure you said you felt after each answer. Not a score, and it never fills a goal.</p>
+          </Section>
         )}
 
         {(!viewer || me.proofs.length > 0) && (

@@ -573,8 +573,8 @@ function Sheet({
   if (station.id === "practice") {
     return (
       <Panel kicker={station.state === "now" ? "You are here" : "Opens after your goals"} title="Practice">
-        <p>Short interview rounds on the goals you just met. Signal checks on Today are a taste.</p>
-        <Soon>Practice rounds</Soon>
+        <p>Interview questions on your goals, with feedback in words and a stronger sample. No scores, and practice never fills a goal or moves your train.</p>
+        <Cta href="/practice">Practise questions</Cta>
       </Panel>
     );
   }

@@ -195,7 +195,7 @@ export default function PathPage(props: PageProps<"/resume/[id]/path/[slug]">) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
-      <ProgressRoute current="Path" />
+      <ProgressRoute current="Path" linked />
       <Suspense fallback={<p className="text-sm text-muted">Building your path…</p>}>
         <Path {...props} />
       </Suspense>

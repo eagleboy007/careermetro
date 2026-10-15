@@ -51,7 +51,10 @@ import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
 import { MatchView } from "@/components/match/match-view";
+import { ConfidenceSpark } from "@/components/practice/confidence-spark";
+import { PracticeView } from "@/components/practice/practice-view";
 import { exampleMatch } from "@/lib/match/fixtures";
+import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
@@ -428,7 +431,12 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
         <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
-        <MeView me={exampleMe} others={publicProfile(exampleMe, DEFAULT_SETTINGS)} whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }} />
+        <MeView
+          me={exampleMe}
+          others={publicProfile(exampleMe, DEFAULT_SETTINGS)}
+          whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }}
+          practice={exampleTrends}
+        />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -490,6 +498,22 @@ export default function DesignPage() {
         </p>
         <MatchView list={exampleMatch} />
         <MatchView list={null} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Practice (signed in)</h2>
+        <p className="text-sm text-muted">
+          The skill picker (the person&apos;s goals, tagged current, ahead or met), a bank question with the answer box and word count, then the feedback
+          card in words with A stronger answer and the confidence question. Example data, so nothing is saved: Get feedback shows made-up feedback. Below
+          it, the feedback card open, a met goal (&quot;keeps it sharp&quot;) at 0 answers left, the empty state, and the confidence sparkline on its own.
+        </p>
+        <PracticeView view={examplePractice} sampleFeedback={exampleFeedback} />
+        <PracticeView view={examplePractice} initial={{ answer: "A list can change and a tuple can't, so I use tuples for fixed records.", feedback: exampleFeedback }} />
+        <PracticeView view={{ ...examplePracticeSpent, skills: examplePracticeSpent.skills.filter((s) => s.tag === "met") }} sampleFeedback={exampleFeedback} />
+        <PracticeView view={{ skills: [], left: 10, noQuestions: ["Statistics", "Data visualization"] }} />
+        <div className="max-w-[300px] rounded-lg border border-line bg-surface p-4">
+          <ConfidenceSpark ratings={[1, 2, 2, 3, 4]} width={260} height={70} />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

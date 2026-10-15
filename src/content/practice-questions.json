@@ -1,0 +1,527 @@
+[
+  {
+    "id": "communication-1",
+    "skillId": "communication",
+    "question": "Tell me about yourself and why you are applying for this role.",
+    "lookFor": "A clear two-minute story from education to current work to this role, without reading out the resume.",
+    "level": "L1"
+  },
+  {
+    "id": "communication-2",
+    "skillId": "communication",
+    "question": "Describe a time you had to explain a technical issue to someone without a technical background.",
+    "lookFor": "Plain words, checking the listener understood, and an outcome rather than jargon.",
+    "level": "L1"
+  },
+  {
+    "id": "communication-3",
+    "skillId": "communication",
+    "question": "How would you write a status update to your manager when a task is going to miss its deadline?",
+    "lookFor": "Early warning, the reason, the new date and what help is needed, kept short.",
+    "level": "L1"
+  },
+  {
+    "id": "communication-4",
+    "skillId": "communication",
+    "question": "Tell me about a disagreement with a teammate and how you handled it.",
+    "lookFor": "Listening, staying on facts, and a resolution that kept the working relationship.",
+    "level": "L1"
+  },
+  {
+    "id": "communication-5",
+    "skillId": "communication",
+    "question": "How do you make sure you have understood a task correctly before starting it?",
+    "lookFor": "Asking clarifying questions, restating the ask and confirming the expected output.",
+    "level": "L1"
+  },
+  {
+    "id": "python-1",
+    "skillId": "python",
+    "question": "What is the difference between a list and a tuple in Python, and when would you use each?",
+    "lookFor": "Mutability, tuples as fixed records or dict keys, and a sensible example.",
+    "level": "L1"
+  },
+  {
+    "id": "python-2",
+    "skillId": "python",
+    "question": "How would you read a large CSV file in Python without loading it all into memory?",
+    "lookFor": "Iterating line by line or with csv.reader, generators, or chunked reading in pandas.",
+    "level": "L1"
+  },
+  {
+    "id": "python-3",
+    "skillId": "python",
+    "question": "Explain how exceptions work in Python and how you would handle a failed API call.",
+    "lookFor": "try/except with specific exceptions, retries or logging, and not swallowing errors silently.",
+    "level": "L1"
+  },
+  {
+    "id": "python-4",
+    "skillId": "python",
+    "question": "What is a virtual environment and why do you use one?",
+    "lookFor": "Isolating project dependencies and pinning versions in requirements.txt or similar.",
+    "level": "L1"
+  },
+  {
+    "id": "python-5",
+    "skillId": "python",
+    "question": "Write a function that returns the count of each word in a sentence.",
+    "lookFor": "A dict or collections.Counter, handling case and punctuation, and clean readable code.",
+    "level": "L1"
+  },
+  {
+    "id": "sql-1",
+    "skillId": "sql",
+    "question": "What is the difference between INNER JOIN and LEFT JOIN?",
+    "lookFor": "Unmatched rows kept on the left side with NULLs, explained with a small example.",
+    "level": "L1"
+  },
+  {
+    "id": "sql-2",
+    "skillId": "sql",
+    "question": "How would you find duplicate email addresses in a customers table?",
+    "lookFor": "GROUP BY with HAVING COUNT(*) > 1, and how to see the full duplicate rows.",
+    "level": "L1"
+  },
+  {
+    "id": "sql-3",
+    "skillId": "sql",
+    "question": "What is the difference between WHERE and HAVING?",
+    "lookFor": "WHERE filters rows before grouping, HAVING filters groups after aggregation.",
+    "level": "L1"
+  },
+  {
+    "id": "sql-4",
+    "skillId": "sql",
+    "question": "Write a query to get the second highest salary from an employees table.",
+    "lookFor": "A correct approach using ORDER BY with OFFSET, a subquery or a window function, and handling ties.",
+    "level": "L1"
+  },
+  {
+    "id": "sql-5",
+    "skillId": "sql",
+    "question": "What is an index and when can it slow things down?",
+    "lookFor": "Faster reads on filtered columns, slower writes and extra storage, and not indexing everything.",
+    "level": "L1"
+  },
+  {
+    "id": "git-1",
+    "skillId": "git",
+    "question": "What is the difference between git merge and git rebase?",
+    "lookFor": "Merge keeps history with a merge commit, rebase rewrites it linearly, and not rebasing shared branches.",
+    "level": "L1"
+  },
+  {
+    "id": "git-2",
+    "skillId": "git",
+    "question": "How do you resolve a merge conflict?",
+    "lookFor": "Reading both sides, editing the file, testing, then adding and committing the result.",
+    "level": "L1"
+  },
+  {
+    "id": "git-3",
+    "skillId": "git",
+    "question": "What would you do if you committed a file containing a password by mistake?",
+    "lookFor": "Rotate the secret first, then remove it from history, and add the file to .gitignore.",
+    "level": "L1"
+  },
+  {
+    "id": "git-4",
+    "skillId": "git",
+    "question": "Describe the branching workflow you have used in a team.",
+    "lookFor": "Feature branches, pull requests with review, and how releases or hotfixes were handled.",
+    "level": "L1"
+  },
+  {
+    "id": "git-5",
+    "skillId": "git",
+    "question": "What does git stash do and when would you use it?",
+    "lookFor": "Saving uncommitted work temporarily to switch tasks, then applying it back.",
+    "level": "L1"
+  },
+  {
+    "id": "rest-apis-1",
+    "skillId": "rest-apis",
+    "question": "What are the common HTTP methods and when do you use each?",
+    "lookFor": "GET, POST, PUT, PATCH and DELETE matched to read, create, replace, update and delete, with idempotency.",
+    "level": "L1"
+  },
+  {
+    "id": "rest-apis-2",
+    "skillId": "rest-apis",
+    "question": "What do the status codes 200, 201, 400, 401, 403, 404 and 500 mean?",
+    "lookFor": "Correct meanings, especially the difference between 401 and 403.",
+    "level": "L1"
+  },
+  {
+    "id": "rest-apis-3",
+    "skillId": "rest-apis",
+    "question": "How would you design the endpoints for a simple to-do list API?",
+    "lookFor": "Resource-based URLs, correct methods, status codes and a sensible request and response shape.",
+    "level": "L1"
+  },
+  {
+    "id": "rest-apis-4",
+    "skillId": "rest-apis",
+    "question": "How do you handle pagination in an API that returns thousands of records?",
+    "lookFor": "Limit and offset or cursor-based pagination, and the trade-offs between them.",
+    "level": "L1"
+  },
+  {
+    "id": "rest-apis-5",
+    "skillId": "rest-apis",
+    "question": "How would you secure a REST API?",
+    "lookFor": "HTTPS, authentication such as tokens, authorisation checks, input validation and rate limiting.",
+    "level": "L1"
+  },
+  {
+    "id": "stakeholder-management-1",
+    "skillId": "stakeholder-management",
+    "question": "How do you handle a stakeholder who keeps changing requirements mid-sprint?",
+    "lookFor": "Making the impact visible, a change process, and agreeing priorities rather than silently absorbing work.",
+    "level": "L1"
+  },
+  {
+    "id": "stakeholder-management-2",
+    "skillId": "stakeholder-management",
+    "question": "Tell me about a time you had to say no to a senior stakeholder.",
+    "lookFor": "A respectful no backed by data, with an alternative offered.",
+    "level": "L1"
+  },
+  {
+    "id": "stakeholder-management-3",
+    "skillId": "stakeholder-management",
+    "question": "How do you keep business and technical teams aligned on a project?",
+    "lookFor": "Regular updates, shared written scope, and one owner for decisions.",
+    "level": "L1"
+  },
+  {
+    "id": "stakeholder-management-4",
+    "skillId": "stakeholder-management",
+    "question": "How do you decide when two stakeholders want conflicting things?",
+    "lookFor": "Linking each ask to business goals, involving the decision owner and documenting the choice.",
+    "level": "L1"
+  },
+  {
+    "id": "stakeholder-management-5",
+    "skillId": "stakeholder-management",
+    "question": "How do you communicate a delay to a client?",
+    "lookFor": "Telling them early and honestly, with the cause, the new plan and what is being done to recover.",
+    "level": "L1"
+  },
+  {
+    "id": "aws-1",
+    "skillId": "aws",
+    "question": "What is the difference between EC2, Lambda and ECS, and when would you choose each?",
+    "lookFor": "Servers versus functions versus containers, matched to workload, cost and control.",
+    "level": "L1"
+  },
+  {
+    "id": "aws-2",
+    "skillId": "aws",
+    "question": "How would you give an EC2 instance access to an S3 bucket securely?",
+    "lookFor": "An IAM role on the instance with least privilege, not access keys stored on the server.",
+    "level": "L1"
+  },
+  {
+    "id": "aws-3",
+    "skillId": "aws",
+    "question": "What is a VPC and what are public and private subnets?",
+    "lookFor": "Network isolation, internet gateway for public subnets, NAT for private subnets reaching out.",
+    "level": "L1"
+  },
+  {
+    "id": "aws-4",
+    "skillId": "aws",
+    "question": "How would you make a web application on AWS highly available?",
+    "lookFor": "Multiple availability zones, a load balancer, auto scaling and a managed database with failover.",
+    "level": "L1"
+  },
+  {
+    "id": "aws-5",
+    "skillId": "aws",
+    "question": "How do you keep an eye on AWS costs?",
+    "lookFor": "Budgets and alerts, Cost Explorer, tagging, right-sizing and stopping unused resources.",
+    "level": "L1"
+  },
+  {
+    "id": "linux-1",
+    "skillId": "linux",
+    "question": "How do you check which process is using the most CPU or memory on a Linux server?",
+    "lookFor": "top or htop, ps with sorting, and what to do next.",
+    "level": "L1"
+  },
+  {
+    "id": "linux-2",
+    "skillId": "linux",
+    "question": "What do file permissions like 755 and 644 mean?",
+    "lookFor": "Owner, group and others with read, write and execute, and when to use each.",
+    "level": "L1"
+  },
+  {
+    "id": "linux-3",
+    "skillId": "linux",
+    "question": "How would you find what is using the space when a server's disk is full?",
+    "lookFor": "df to find the filesystem, du to find large folders, and checking logs before deleting.",
+    "level": "L1"
+  },
+  {
+    "id": "linux-4",
+    "skillId": "linux",
+    "question": "How would you find all lines containing ERROR in a log file and count them?",
+    "lookFor": "grep with -c or a pipe to wc -l, and tail -f for live logs.",
+    "level": "L1"
+  },
+  {
+    "id": "linux-5",
+    "skillId": "linux",
+    "question": "How do you check whether a service is running and restart it?",
+    "lookFor": "systemctl status and restart, and journalctl to read why it failed.",
+    "level": "L1"
+  },
+  {
+    "id": "azure-1",
+    "skillId": "azure",
+    "question": "What is the difference between a resource group and a subscription in Azure?",
+    "lookFor": "Subscription as the billing and access boundary, resource groups as logical containers inside it.",
+    "level": "L1"
+  },
+  {
+    "id": "azure-2",
+    "skillId": "azure",
+    "question": "How would you give an application access to Azure resources without storing a password?",
+    "lookFor": "A managed identity with role-based access, and Key Vault for any secrets.",
+    "level": "L1"
+  },
+  {
+    "id": "azure-3",
+    "skillId": "azure",
+    "question": "What is the difference between Azure VMs, App Service and Azure Functions?",
+    "lookFor": "Infrastructure versus managed web hosting versus serverless, with a fitting use case for each.",
+    "level": "L1"
+  },
+  {
+    "id": "azure-4",
+    "skillId": "azure",
+    "question": "What is Microsoft Entra ID used for?",
+    "lookFor": "Identity and access management, users and groups, single sign-on and conditional access.",
+    "level": "L1"
+  },
+  {
+    "id": "azure-5",
+    "skillId": "azure",
+    "question": "How would you control who can do what in an Azure subscription?",
+    "lookFor": "Azure RBAC with built-in roles at the right scope and least privilege.",
+    "level": "L1"
+  },
+  {
+    "id": "gcp-1",
+    "skillId": "gcp",
+    "question": "What is the difference between Compute Engine, App Engine, Cloud Run and GKE?",
+    "lookFor": "VMs, managed apps, serverless containers and managed Kubernetes, with when to use each.",
+    "level": "L1"
+  },
+  {
+    "id": "gcp-2",
+    "skillId": "gcp",
+    "question": "How do service accounts work in Google Cloud?",
+    "lookFor": "Identities for workloads, granted IAM roles with least privilege, and avoiding downloaded keys.",
+    "level": "L1"
+  },
+  {
+    "id": "gcp-3",
+    "skillId": "gcp",
+    "question": "How is a Google Cloud project used to organise resources?",
+    "lookFor": "Projects as the unit for billing, APIs and access, grouped under folders and an organisation.",
+    "level": "L1"
+  },
+  {
+    "id": "gcp-4",
+    "skillId": "gcp",
+    "question": "What is BigQuery and how is it billed?",
+    "lookFor": "Serverless data warehouse, paying for storage and data scanned, and using partitions to cut cost.",
+    "level": "L1"
+  },
+  {
+    "id": "gcp-5",
+    "skillId": "gcp",
+    "question": "How would you store files that the public can download from Google Cloud?",
+    "lookFor": "Cloud Storage buckets with careful access settings or signed URLs, not making everything public.",
+    "level": "L1"
+  },
+  {
+    "id": "system-design-1",
+    "skillId": "system-design",
+    "question": "How would you design a URL shortener?",
+    "lookFor": "Generating short keys, a data store, handling redirects at scale and caching popular links.",
+    "level": "L1"
+  },
+  {
+    "id": "system-design-2",
+    "skillId": "system-design",
+    "question": "What is the difference between horizontal and vertical scaling?",
+    "lookFor": "Adding machines versus bigger machines, with limits and trade-offs of each.",
+    "level": "L1"
+  },
+  {
+    "id": "system-design-3",
+    "skillId": "system-design",
+    "question": "When would you add a cache to a system and what problems can it cause?",
+    "lookFor": "Faster reads for hot data, plus stale data, invalidation and cache misses.",
+    "level": "L1"
+  },
+  {
+    "id": "system-design-4",
+    "skillId": "system-design",
+    "question": "How would you design a system to send OTP messages to millions of users?",
+    "lookFor": "A queue, retries, rate limits, provider failover and expiry of the codes.",
+    "level": "L1"
+  },
+  {
+    "id": "system-design-5",
+    "skillId": "system-design",
+    "question": "What is a load balancer and why is it needed?",
+    "lookFor": "Spreading traffic across servers, health checks and removing a single point of failure.",
+    "level": "L1"
+  },
+  {
+    "id": "terraform-1",
+    "skillId": "terraform",
+    "question": "What is Terraform state and why does it matter?",
+    "lookFor": "State maps code to real resources, kept in a remote backend with locking, never edited by hand.",
+    "level": "L1"
+  },
+  {
+    "id": "terraform-2",
+    "skillId": "terraform",
+    "question": "What is the difference between terraform plan and terraform apply?",
+    "lookFor": "Plan previews changes and apply makes them, with plans reviewed before applying.",
+    "level": "L1"
+  },
+  {
+    "id": "terraform-3",
+    "skillId": "terraform",
+    "question": "How do you reuse Terraform code across environments?",
+    "lookFor": "Modules with variables, and separate state per environment.",
+    "level": "L1"
+  },
+  {
+    "id": "terraform-4",
+    "skillId": "terraform",
+    "question": "How do you keep secrets out of Terraform code?",
+    "lookFor": "Variables from a secrets manager or environment, marking them sensitive, and not committing tfvars with secrets.",
+    "level": "L1"
+  },
+  {
+    "id": "terraform-5",
+    "skillId": "terraform",
+    "question": "How does Terraform handle a resource that someone changed manually in the console?",
+    "lookFor": "Drift shows in the next plan, and the fix is to update code or re-apply rather than leave it.",
+    "level": "L1"
+  },
+  {
+    "id": "docker-1",
+    "skillId": "docker",
+    "question": "What is the difference between a Docker image and a container?",
+    "lookFor": "Image as the read-only template, container as a running instance of it.",
+    "level": "L1"
+  },
+  {
+    "id": "docker-2",
+    "skillId": "docker",
+    "question": "How would you make a Docker image smaller?",
+    "lookFor": "Slim base images, multi-stage builds, fewer layers and a .dockerignore file.",
+    "level": "L1"
+  },
+  {
+    "id": "docker-3",
+    "skillId": "docker",
+    "question": "How do containers talk to each other in Docker Compose?",
+    "lookFor": "A shared network where services reach each other by service name.",
+    "level": "L1"
+  },
+  {
+    "id": "docker-4",
+    "skillId": "docker",
+    "question": "How do you keep data when a container is removed?",
+    "lookFor": "Volumes or bind mounts, not writing important data inside the container layer.",
+    "level": "L1"
+  },
+  {
+    "id": "docker-5",
+    "skillId": "docker",
+    "question": "How would you debug a container that exits right after starting?",
+    "lookFor": "docker logs, checking the command and entrypoint, and running it interactively.",
+    "level": "L1"
+  },
+  {
+    "id": "ci-cd-1",
+    "skillId": "ci-cd",
+    "question": "What is the difference between continuous integration, continuous delivery and continuous deployment?",
+    "lookFor": "Automatic build and test, ready-to-release builds, and automatic release to production.",
+    "level": "L1"
+  },
+  {
+    "id": "ci-cd-2",
+    "skillId": "ci-cd",
+    "question": "What stages would you put in a pipeline for a web application?",
+    "lookFor": "Build, unit tests, linting or security scans, packaging, deploy to staging, then production.",
+    "level": "L1"
+  },
+  {
+    "id": "ci-cd-3",
+    "skillId": "ci-cd",
+    "question": "How do you store secrets used by a CI/CD pipeline?",
+    "lookFor": "The CI tool's secret store or a vault, never in the repository or logs.",
+    "level": "L1"
+  },
+  {
+    "id": "ci-cd-4",
+    "skillId": "ci-cd",
+    "question": "How should a pipeline help you recover when a deployment breaks production?",
+    "lookFor": "Quick rollback to the last good version, and smaller, frequent releases to limit risk.",
+    "level": "L1"
+  },
+  {
+    "id": "ci-cd-5",
+    "skillId": "ci-cd",
+    "question": "How would you stop broken code from being merged to the main branch?",
+    "lookFor": "Required checks and reviews on pull requests, with branch protection rules.",
+    "level": "L1"
+  },
+  {
+    "id": "application-security-1",
+    "skillId": "application-security",
+    "question": "What is SQL injection and how do you prevent it?",
+    "lookFor": "Untrusted input changing a query, prevented with parameterised queries and input validation.",
+    "level": "L1"
+  },
+  {
+    "id": "application-security-2",
+    "skillId": "application-security",
+    "question": "What is cross-site scripting and how do you prevent it?",
+    "lookFor": "Injected scripts in pages, prevented by output encoding, input checks and a content security policy.",
+    "level": "L1"
+  },
+  {
+    "id": "application-security-3",
+    "skillId": "application-security",
+    "question": "Name a few items from the OWASP Top 10 and explain one in detail.",
+    "lookFor": "Correct items such as broken access control, with a clear real-world example and fix.",
+    "level": "L1"
+  },
+  {
+    "id": "application-security-4",
+    "skillId": "application-security",
+    "question": "How should passwords be stored in a database?",
+    "lookFor": "Salted hashes with a slow algorithm such as bcrypt or Argon2, never plain text or simple hashes.",
+    "level": "L1"
+  },
+  {
+    "id": "application-security-5",
+    "skillId": "application-security",
+    "question": "What is the difference between authentication and authorisation?",
+    "lookFor": "Who you are versus what you can do, with an example of each failing.",
+    "level": "L1"
+  }
+]
