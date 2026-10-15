@@ -3,14 +3,15 @@ import { clearExpiredUsernameRedirects } from "@/lib/account/settings-store";
 import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "@/lib/corporate/cleanup";
 import { clearOldProfileViews } from "@/lib/corporate/find-store";
 import { clearExpiredCodes } from "@/lib/corporate/store";
-import { renewExpiredGoals } from "@/lib/goals/store";
+import { renewExpiredGoals, reopenUnconfirmedGoals } from "@/lib/goals/store";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
 import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
 
 /**
  * Daily job (vercel.json): deletes anonymous resumes and their profiles after 24 hours (FR-2), and accounts deleted
- * more than 30 days ago, for good. It also turns goals whose certificate expired to "renew" (dev/proof-plan.md rule 4), and forgets the work email on
+ * more than 30 days ago, for good. It also turns goals whose certificate expired to "renew" (dev/proof-plan.md rule 4), reopens goals still met by a
+ * certificate that no longer counts (an unconfirmed Credly badge or a refused one), and forgets the work email on
  * codes that ran out (dev/corporate-plan.md). For the employer side (build step 7) it records each application's
  * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
  * offered interview times that passed unbooked; reads already enforce every one of these cutoffs. And it deletes old
@@ -28,6 +29,8 @@ export async function GET(request: Request) {
     anonymous: deleteExpiredAnonymousResumes().then((n) => ({ anonymousResumesDeleted: n })),
     accounts: purgeDeletedAccounts().then((n) => ({ accountsDeleted: n })),
     goals: renewExpiredGoals().then((n) => ({ peopleRenewed: n })),
+    // Goals still met by a certificate that no longer counts (migration 0029, review B2); idempotent.
+    unconfirmed: reopenUnconfirmedGoals().then((n) => ({ unconfirmedChecked: n })),
     codes: clearExpiredCodes().then((n) => ({ workCodesCleared: n })),
     companyAccess: endCompanyAccess(),
     sharedNumbers: eraseClosedPhones().then((n) => ({ sharedNumbersErased: n })),
@@ -40,6 +43,7 @@ export async function GET(request: Request) {
     anonymous: { anonymousResumesDeleted: null },
     accounts: { accountsDeleted: null },
     goals: { peopleRenewed: null },
+    unconfirmed: { unconfirmedChecked: null },
     codes: { workCodesCleared: null },
     companyAccess: { accessEnded: null, readMarksCleared: null },
     sharedNumbers: { sharedNumbersErased: null },

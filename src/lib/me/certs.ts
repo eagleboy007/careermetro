@@ -15,6 +15,11 @@ export type ProofCertRow = {
   url: string | null;
   badgeId: string | null;
   checkNote: CredlyCheckNote | null;
+  /**
+   * A Credly badge waiting for its Credly check (decision of 2026-10-13): "Added by you, check pending", seen by the
+   * owner only, filling nothing. Absent or false for accepted ones.
+   */
+  pending?: boolean;
   createdAt: Date;
 };
 
@@ -40,8 +45,9 @@ for (const c of certifications) for (const n of [c.name, ...c.aliases]) if (!byN
  */
 export function profileCertifications(input: { proofs: ProofCertRow[]; resume: HeldCertification[]; today: string }): MeCertification[] {
   const { today } = input;
-  // The best proof of each certificate: verified, then current, then the most recently issued.
-  const rank = (p: ProofCertRow) => [p.verifier === "credly" ? 1 : 0, !p.expiresOn || p.expiresOn >= today ? 1 : 0, p.issuedOn ?? "", p.createdAt.toISOString()] as const;
+  // The best proof of each certificate: verified, then accepted (not waiting for its check), then current, then the
+  // most recently issued.
+  const rank = (p: ProofCertRow) => [p.verifier === "credly" ? 1 : 0, p.pending ? 0 : 1, !p.expiresOn || p.expiresOn >= today ? 1 : 0, p.issuedOn ?? "", p.createdAt.toISOString()] as const;
   const better = (a: ProofCertRow, b: ProofCertRow) => {
     const [x, y] = [rank(a), rank(b)];
     for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i];
@@ -69,7 +75,7 @@ export function profileCertifications(input: { proofs: ProofCertRow[]; resume: H
         name: cut(cert.name, 160),
         issuer: cut(cert.issuer, 120),
         date: month(p.issuedOn),
-        status: p.verified ? "verified" : "added",
+        status: p.verified ? "verified" : p.pending ? "pending" : "added",
         fromResume: false,
         expired,
         badgeUrl: p.verified && p.badgeId ? credlyBadgePage(p.badgeId) : null,

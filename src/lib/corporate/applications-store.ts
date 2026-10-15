@@ -179,10 +179,6 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
   const parsed = applyInput.safeParse(raw);
   if (!parsed.success) return fail("invalid", parsed.error.issues[0]?.message);
   const input = parsed.data;
-  if (!(await takeShared(LIMITS.applicationsPerUserDay, userId, { db, now: now.getTime() }))) {
-    logEvent("warn", "application_limited");
-    return fail("limit");
-  }
   const result = await db
     .transaction(async (tx): Promise<ApplicationResult<{ applicationId: string }>> => {
       const [job] = await tx
@@ -198,6 +194,12 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
       if (await companyBlocked(userId, job.orgId, tx)) return fail("blocked_company");
       const analysis = await currentAnalysis(userId, tx);
       if (!analysis) return fail("no_resume");
+      // Counted only once the cheap checks pass, so tries on closed jobs, repeats and blocked companies don't use up
+      // the day's applications (Testing T52). On the transaction, so a failed application doesn't count either.
+      if (!(await takeShared(LIMITS.applicationsPerUserDay, userId, { db: tx, now: now.getTime() }))) {
+        logEvent("warn", "application_limited");
+        return fail("limit");
+      }
       const [consent] = await tx
         .insert(consents)
         .values({ userId, purpose: APPLICATION_CONSENT_PURPOSE, policyVersion: APPLICATION_POLICY_VERSION, givenAt: now })

@@ -47,7 +47,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
     issuedOn: "2025-03-01",
     expiresOn: "2028-03-01",
     nameOnCertificate: "Priya Sharma",
-    url: "https://www.credly.com/badges/example",
+    url: "https://learn.microsoft.com/api/credentials/share/en-us/ExampleUser/EXAMPLE",
     confirmed: true,
     ...over,
   });
@@ -82,7 +82,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
     const second = await person("second", "Asha", "Rao");
     const shared = { credentialId: `SHARED-${run}`, nameOnCertificate: "Asha Rao" };
     expect((await submit(first.userId, cert(first.goalId, shared))).status).toBe("filled");
-    expect(await submit(second.userId, cert(second.goalId, shared))).toEqual({ status: "held", skillId: "aws" });
+    expect(await submit(second.userId, cert(second.goalId, shared))).toEqual({ status: "held", skillId: "aws", reason: "credential" });
     expect(await goalStatus(second.goalId)).toBe("active");
     const [held] = await proofsOf(second.userId);
     expect(held).toMatchObject({ status: "pending", heldReason: "credential_reused" });
@@ -95,7 +95,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
     const second = await person("multi-second", "Asha", "Rao", "system-design");
     const shared = { certId: "aws-solutions-architect-associate", credentialId: `MULTI-${run}`, nameOnCertificate: "Asha Rao" };
     expect((await submit(first.userId, cert(first.goalId, shared))).status).toBe("filled");
-    expect(await submit(second.userId, cert(second.goalId, shared))).toEqual({ status: "held", skillId: "system-design" });
+    expect(await submit(second.userId, cert(second.goalId, shared))).toEqual({ status: "held", skillId: "system-design", reason: "credential" });
     expect(await goalStatus(second.goalId)).toBe("active");
   });
 

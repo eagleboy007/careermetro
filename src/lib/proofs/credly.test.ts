@@ -199,6 +199,12 @@ describe("compareBadge", () => {
     expect(compareBadge(badge("01"), { ...ctx, accountName: "Sharma" })).toBe("earner_name");
   });
 
+  it("says expired only for a badge that is otherwise the person's own, so another name is never just expired", () => {
+    // Fixture 06 is Priya's and expired: for someone else it is a name mismatch first.
+    expect(compareBadge(badge("06"), { ...ctx, accountName: "Amit Verma" })).toBe("earner_name");
+    expect(compareBadge(badge("06"), { ...ctx, cert: cert("aws-developer-associate") })).toBe("badge_name");
+  });
+
   it("doesn't take a short alias or a word inside another word as a match", () => {
     const b = badge("01");
     const named = (name: string) => ({ ...b, data: { ...b.data, badge_template: { ...b.data.badge_template, name } } });

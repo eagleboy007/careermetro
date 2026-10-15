@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { certifications } from "@/content";
-import { allowedVerifyLink, checkCertificate } from "./rules";
+import { allowedVerifyLink, checkCertificate, credlyLinkWithoutBadge } from "./rules";
 
 const env = { NAME_HASH_KEY: "test-key" };
 const aws = certifications.find((c) => c.id === "aws-cloud-practitioner")!;
 const base = {
-  submission: { issuedOn: "2025-03-01", expiresOn: "2028-03-01", nameOnCertificate: "Priya Sharma", url: "https://www.credly.com/badges/abc" },
+  submission: { issuedOn: "2025-03-01", expiresOn: "2028-03-01", nameOnCertificate: "Priya Sharma", url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001" },
   cert: aws,
   fillingSkills: ["aws"],
   accountName: "Priya Sharma",
@@ -47,13 +47,25 @@ describe("checkCertificate", () => {
 
   it("refuses links that aren't a badge platform or an issuer's verify page", () => {
     expect(checkCertificate({ ...base, submission: { ...base.submission, url: "https://my-certs.example.com/aws" } })).toEqual({ ok: false, reason: "link" });
+    // A Credly link without a badge id could never be checked (review B1).
+    for (const url of ["https://www.credly.com/badges/anything", `https://www.credly.com/badges/${"c4ed1100-0000-4000-8000-000000000001"}.json`])
+      expect(checkCertificate({ ...base, submission: { ...base.submission, url } }), url).toEqual({ ok: false, reason: "link" });
+    expect(credlyLinkWithoutBadge("https://www.credly.com/badges/anything")).toBe(true);
+    expect(credlyLinkWithoutBadge("https://www.credly.com/users/someone")).toBe(true);
+    expect(credlyLinkWithoutBadge("https://learn.microsoft.com/api/credentials/share/en-us/x")).toBe(false);
   });
 });
 
 describe("allowedVerifyLink", () => {
   it.each([
-    ["https://www.credly.com/badges/1", true],
-    ["https://credly.com/badges/1", true],
+    ["https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001", true],
+    ["https://credly.com/badges/c4ed1100-0000-4000-8000-000000000001/public_url", true],
+    ["https://www.youracclaim.com/badges/c4ed1100-0000-4000-8000-000000000001", true],
+    // A Credly link must name its badge (review B1).
+    ["https://www.credly.com/badges/1", false],
+    ["https://www.credly.com/badges/anything", false],
+    ["https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001.json", false],
+    ["https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000001x", false],
     ["https://learn.microsoft.com/api/credentials/share/en-us/x", true],
     ["https://cp.certmetrics.com/amazon/en/public/verify/credential/x", true],
     ["http://www.credly.com/badges/1", false],

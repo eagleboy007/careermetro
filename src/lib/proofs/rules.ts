@@ -9,10 +9,15 @@ import { checkName, nameHashes } from "@/lib/resume/name-match";
  * issue a credential there. Issuers whose verify pages we haven't confirmed are left out until we have; their
  * certificates can still be added with the file once upload ships.
  */
+/** Credly's badge pages: only a badge id (a UUID) as the first part of the path, so every Credly link can be checked. */
+const CREDLY_BADGE_PATH = /^\/badges\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(\/|$)/i;
+/** Hosts whose links are Credly badges, read with credlyBadgeId (./credly.ts). */
+export const BADGE_LINK_HOSTS = new Set(["www.credly.com", "credly.com", "www.youracclaim.com"]);
+
 export const VERIFY_LINKS: { host: string; path: RegExp }[] = [
-  { host: "www.credly.com", path: /^\/badges\/[\w-]+/ },
-  { host: "credly.com", path: /^\/badges\/[\w-]+/ },
-  { host: "www.youracclaim.com", path: /^\/badges\/[\w-]+/ },
+  { host: "www.credly.com", path: CREDLY_BADGE_PATH },
+  { host: "credly.com", path: CREDLY_BADGE_PATH },
+  { host: "www.youracclaim.com", path: CREDLY_BADGE_PATH },
   { host: "learn.microsoft.com", path: /^\/api\/credentials\/share\// },
   { host: "learn.microsoft.com", path: /^\/[a-z]{2}-[a-z]{2}\/users\/[\w.-]+\/credentials\/[\w-]+/ },
   { host: "cp.certmetrics.com", path: /^\/[a-z0-9]+\/[a-z]{2}\/public\/verify\/credential\// },
@@ -42,6 +47,17 @@ export function allowedVerifyLink(url: string): boolean {
   return VERIFY_LINKS.some((l) => l.host === host && l.path.test(parsed.pathname));
 }
 
+/** A link on a Credly badge host whose path doesn't start with a badge id (credlyBadgeId would read none). */
+export function credlyLinkWithoutBadge(url: string): boolean {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  return BADGE_LINK_HOSTS.has(parsed.hostname.toLowerCase()) && !CREDLY_BADGE_PATH.test(parsed.pathname);
+}
+
 /**
  * The honesty rules a certificate must pass before it is stored (dev/proof-plan.md rules 2 and 4, plus the form's own
  * checks). Plain code, no database: the credential-reuse rule (3) needs other accounts and lives in the store.
@@ -64,6 +80,8 @@ export function checkCertificate(input: {
   if (submission.issuedOn > input.today) return { ok: false, reason: "issued_in_future" };
   if (submission.expiresOn && submission.expiresOn < input.today) return { ok: false, reason: "expired" };
   if (!allowedVerifyLink(submission.url)) return { ok: false, reason: "link" };
+  // A Credly link must name its badge, or it could never be checked and would skip the check (review B1).
+  if (credlyLinkWithoutBadge(submission.url)) return { ok: false, reason: "link" };
   const name = checkName(input.accountName, nameHashes(submission.nameOnCertificate, input.env), input.env);
   if (name === "unnamed") return { ok: false, reason: "no_name" };
   if (name !== "match") return { ok: false, reason: "name" };

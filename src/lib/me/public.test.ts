@@ -31,7 +31,7 @@ describe("the public profile", () => {
     expect(out.skills.have).toEqual(me.skills.have);
     expect(out.experience.map((e) => e.title)).toEqual(me.experience.map((e) => e.title));
     expect(out.education).toEqual(me.education);
-    expect(out.certifications.map((c) => c.name)).toEqual(me.certifications.filter((c) => !c.expired).map((c) => c.name).slice(0, 5));
+    expect(out.certifications.map((c) => c.name)).toEqual(me.certifications.filter((c) => !c.expired && c.status !== "pending").map((c) => c.name).slice(0, 5));
   });
 
   it("shows the target role and gaps only when turned on", () => {

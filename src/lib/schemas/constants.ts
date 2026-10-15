@@ -135,6 +135,12 @@ export const APPLY_SHARES = [
 ] as const;
 export const APPLY_NEVER = "Never sent: your gaps, path, goals, pay, phone, email, notice period, resume lines, streak or other applications.";
 
+/**
+ * The preview is a snapshot, but the company's drawer reads the profile and proof live (T51, decision in
+ * dev/express-apply-plan.md), so the preview says so.
+ */
+export const PREVIEW_LIVE_NOTE = "If you update your profile or add proof later, the company sees the latest.";
+
 /* Express apply (pending item 16; dev/express-apply-plan.md) --------------------------------------------------------- */
 
 /** The note sent with an application, after trimming. */

@@ -23,7 +23,7 @@ export const certificateSubmission = z
 export type CertificateSubmission = z.infer<typeof certificateSubmission>;
 
 /** Why a certificate was not accepted. Each has its own plain message (src/lib/proofs/messages.ts). */
-export const CERTIFICATE_REFUSALS = ["not_found", "unknown_cert", "not_covered", "expired", "issued_in_future", "name", "no_name", "link", "too_many"] as const;
+export const CERTIFICATE_REFUSALS = ["not_found", "unknown_cert", "not_covered", "expired", "issued_in_future", "name", "no_name", "link", "too_many", "reviewed"] as const;
 export type CertificateRefusal = (typeof CERTIFICATE_REFUSALS)[number];
 
 /**
@@ -36,8 +36,18 @@ export type CertificateLabel = (typeof CERTIFICATE_LABELS)[number];
 export type CertificateOutcome =
   /** `proofId` is the accepted proof, so its Credly link can be checked once the transaction is done. */
   | { status: "filled"; label: CertificateLabel; skillId: string; proofId: string }
-  | { status: "held"; skillId: string }
+  /** Held for review: a credential (`credential`) or a Credly badge (`badge`) another account already uses. */
+  | { status: "held"; skillId: string; reason: "credential" | "badge" }
+  /**
+   * A Credly badge link waiting for its Credly check (dev/profile-certs-plan.md, decision of 2026-10-13): saved, shown to
+   * the person only as "Added by you, check pending", and fills nothing until Credly confirms it.
+   */
+  | { status: "pending"; skillId: string; proofId: string }
   | { status: "refused"; reason: CertificateRefusal };
+
+/** Why a proof waits instead of filling its goal (gap_proofs.held_reason). */
+export const HELD_REASONS = ["credential_reused", "badge_reused", "credly_check"] as const;
+export type HeldReason = (typeof HELD_REASONS)[number];
 
 /**
  * Why a Credly check left a certificate "Added by you" (gap_proofs.check_note). Only the owner sees the reason.
@@ -78,8 +88,13 @@ export type CredlyBadge = z.infer<typeof credlyBadge>;
 /** What the owner's "Check with Credly" gets back. */
 export type CredlyCheckOutcome =
   | { status: "verified" }
+  /** An older certificate, accepted before Credly links waited for a check, left as it was: Credly didn't answer. */
   | { status: "added"; note: CredlyCheckNote }
-  /** The badge is already verified on another account: held for review, so it fills nothing until then. */
+  /** Not confirmed: the certificate waits as "Added by you, check pending" and fills nothing. */
+  | { status: "pending"; note: CredlyCheckNote }
+  /** The badge is already on another account: held for review, so it fills nothing until then. */
   | { status: "held" }
+  /** Credly shows someone else's name: refused as a name mismatch, and it fills nothing. */
+  | { status: "rejected"; reason: "name" }
   /** Nothing was checked: not their accepted proof, not a Credly badge link, or over the limit. */
   | { status: "refused"; reason: "not_found" | "not_credly" | "too_many" };

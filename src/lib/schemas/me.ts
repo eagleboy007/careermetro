@@ -63,8 +63,11 @@ export const meCertification = z.object({
   issuer: z.string().max(120).nullable(),
   /** When it was issued or passed, as "Mar 2025"; null when not known. */
   date: z.string().max(40).nullable(),
-  /** "verified": its Credly badge matched. "added": added by the person, from the form or their resume. */
-  status: z.enum(["verified", "added"]),
+  /**
+   * "verified": its Credly badge matched. "added": added by the person, from the form or their resume. "pending": a
+   * Credly badge waiting for its check, owner only (it fills nothing and is never on the public profile).
+   */
+  status: z.enum(["verified", "added", "pending"]),
   fromResume: z.boolean(),
   /** "Mar 2026" once it has expired; null while current. */
   expired: z.string().max(40).nullable(),

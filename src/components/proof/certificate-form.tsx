@@ -45,7 +45,7 @@ export function CertificateForm({
 
   // The form is replaced by the result; move focus to it so the Save button's focus isn't lost and it is read out.
   useEffect(() => {
-    if (result?.status === "filled") done.current?.focus();
+    if (result?.status === "filled" || result?.status === "saved") done.current?.focus();
     if (badField)
       formRef.current
         ?.querySelector<HTMLElement>(`[name="${badField}"]`)
@@ -90,6 +90,21 @@ export function CertificateForm({
             ? "Verified with Credly: the badge matches this certificate and your name."
             : `Added by you: it fills the goal and shows on your profile as added by you. ${result.note ?? "Only Credly badges can be checked for now."}`}
         </span>
+      </div>
+    );
+  }
+
+  // Saved, but it doesn't fill the goal yet: a Credly badge waiting for its check, or one Credly shows as expired.
+  if (result?.status === "saved") {
+    return (
+      <div
+        ref={done}
+        tabIndex={-1}
+        role="status"
+        className="flex flex-col gap-1 rounded-[14px] bg-surface-2 px-3 py-2.5 text-[0.86rem] focus:outline-2 focus:outline-accent"
+      >
+        <b className="font-semibold">Certificate saved. {goalName} isn&apos;t proved yet.</b>
+        <span className="text-[0.8rem] text-muted">{result.message}</span>
       </div>
     );
   }
