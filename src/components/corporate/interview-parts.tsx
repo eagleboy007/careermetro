@@ -164,7 +164,7 @@ export function FeedbackForm({
           maxLength={FEEDBACK_MAX}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="rounded-sm border border-line bg-surface px-3 py-2 text-[0.88rem] font-normal text-ink"
+          className="rounded-sm border border-line-strong bg-surface px-3 py-2 text-[0.88rem] font-normal text-ink"
         />
       </label>
       {error && (

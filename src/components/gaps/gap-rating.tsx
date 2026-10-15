@@ -14,6 +14,7 @@ export function GapRating({ analysisId, initial, demo = false }: { analysisId: s
   });
 
   async function rate(value: number) {
+    if (state.kind === "saving") return;
     // Shown at once; put back to the last saved answer if saving fails, so the page never shows an answer we don't have.
     const saved = rating;
     setRating(value);
@@ -48,9 +49,10 @@ export function GapRating({ analysisId, initial, demo = false }: { analysisId: s
               type="button"
               aria-pressed={chosen}
               aria-label={`${value}: ${label}`}
-              disabled={state.kind === "saving"}
+              // aria-disabled, not disabled: a disabled button drops keyboard focus to the page while it saves.
+              aria-disabled={state.kind === "saving" || undefined}
               onClick={() => rate(value)}
-              className={`h-10 w-10 rounded-full border font-mono text-sm transition-colors disabled:opacity-60 ${
+              className={`h-10 w-10 rounded-full border font-mono text-sm transition-colors aria-disabled:opacity-60 ${
                 chosen ? "border-ink bg-ink text-bg" : "border-line hover:border-ink"
               }`}
             >

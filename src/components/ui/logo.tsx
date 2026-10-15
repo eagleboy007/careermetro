@@ -16,11 +16,11 @@ export function BrandMark({ size = 22, className = "" }: { size?: number; classN
 }
 
 /** Mark and wordmark: "careermetro", lowercase, Bricolage Grotesque Bold. */
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", wordmarkClassName = "" }: { className?: string; wordmarkClassName?: string }) {
   return (
     <span className={`inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight ${className}`}>
       <BrandMark />
-      careermetro
+      <span className={wordmarkClassName}>careermetro</span>
     </span>
   );
 }

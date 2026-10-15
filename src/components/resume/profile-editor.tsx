@@ -6,7 +6,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
 import type { Profile } from "@/lib/schemas";
 
-const field = "w-full min-w-0 rounded-sm border border-line bg-surface px-3 py-2 text-sm text-ink";
+const field = "w-full min-w-0 rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink";
 const label = "flex min-w-0 flex-col gap-1 text-xs font-medium text-muted";
 
 const DATE = /^\d{4}(-(0[1-9]|1[0-2]))?$/;

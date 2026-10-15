@@ -37,7 +37,7 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
       <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1240px] items-center gap-4 px-4 py-3">
           <Link href="/today" aria-label="CareerMetro, Today">
-            <Logo />
+            <Logo wordmarkClassName="max-[359px]:hidden" />
           </Link>
           <nav aria-label="Main" className="hidden flex-1 items-center gap-1 text-sm min-[760px]:flex">
             {TOP_NAV.map((item) => (

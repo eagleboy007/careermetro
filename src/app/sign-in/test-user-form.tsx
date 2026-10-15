@@ -5,13 +5,13 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { continueAsTestUser, type TestStep } from "./actions";
 
-const field = "rounded-sm border border-line bg-surface px-3 py-2.5 font-normal text-ink";
+const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 font-normal text-ink";
 
 /** The stand-in sign-in for preview links, until the real one has its keys. Nothing is checked. */
 export function TestUserForm({ next }: { next: string }) {
   const [state, action, pending] = useActionState<TestStep, FormData>(continueAsTestUser, { error: null });
   return (
-    <form action={action} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-5" noValidate>
+    <form action={action} onSubmit={(e) => pending && e.preventDefault()} className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-5" noValidate>
       <p className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Preview only</p>
       <p className="text-sm text-muted">
         Real sign-in (Google or an emailed code) isn&apos;t switched on yet. Type any name and email to try the signed-in screens. Nothing is
@@ -41,7 +41,7 @@ export function TestUserForm({ next }: { next: string }) {
         </p>
       )}
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" busy={pending}>
           <FlaskConical size={16} strokeWidth={1.75} aria-hidden="true" />
           Continue as test user
         </Button>

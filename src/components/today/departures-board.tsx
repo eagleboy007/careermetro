@@ -21,6 +21,7 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
   return (
     <section
       aria-label="Departures: roles you are heading toward"
+      data-board=""
       className="shadow-raised relative flex min-w-0 flex-col gap-2.5 rounded-[20px] bg-board px-[18px] pb-3.5 pt-[18px] text-board-ink"
     >
       <div className="flex flex-wrap items-baseline gap-2.5">

@@ -14,7 +14,7 @@ import { marketQueryHref, searchMarket, type MarketChoice, type MarketQuery } fr
 
 const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
 export const field =
-  "min-h-11 w-full min-w-0 rounded-full border border-line bg-surface px-3.5 text-[0.88rem] text-ink hover:border-muted focus-visible:border-ink";
+  "min-h-11 w-full min-w-0 rounded-full border border-line-strong bg-surface px-3.5 text-[0.88rem] text-ink hover:border-muted focus-visible:border-ink";
 
 function useGo() {
   const router = useRouter();
@@ -167,7 +167,7 @@ export function MarketSearch({ choices, base }: { choices: MarketChoice[]; base:
   const said = !open || !text.trim() ? "" : matches.length ? `${matches.length} ${matches.length === 1 ? "match" : "matches"}` : "No role, state or city matches. Try SOC, Pune or Kerala.";
   return (
     <div className="relative min-w-0">
-      <div className="flex min-h-11 items-center gap-2.5 rounded-full border border-line bg-surface px-4 focus-within:border-ink">
+      <div className="flex min-h-11 items-center gap-2.5 rounded-full border border-line-strong bg-surface px-4 focus-within:border-ink">
         <Search size={18} {...ICON} className="shrink-0 text-muted" />
         <input
           type="search"

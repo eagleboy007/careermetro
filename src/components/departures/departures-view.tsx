@@ -2,7 +2,7 @@
 
 import { ArrowRight, Bookmark, Clock, ExternalLink, Search, ShieldCheck, Target } from "lucide-react";
 import Link from "next/link";
-import { useId, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
@@ -78,7 +78,7 @@ export function DeparturesView({
           </div>
         </div>
 
-        <label className="flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
+        <label className="flex items-center gap-2.5 rounded-full border border-line-strong bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
           <Search size={18} {...ICON} />
           <input
             type="search"
@@ -95,7 +95,7 @@ export function DeparturesView({
           <Pills label="Work type" value={filters.workType} options={WORK_TYPES} any="Any type" onPick={(workType) => set({ workType })} />
           <label className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap text-[0.84rem] font-[550]">
             <input type="checkbox" checked={filters.boardingOnly} onChange={(e) => set({ boardingOnly: e.target.checked })} className="peer sr-only" />
-            <i className="relative h-5 w-9 rounded-full bg-line transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] peer-checked:bg-accent peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent" />
+            <i className="relative h-5 w-9 rounded-full bg-line-strong transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] peer-checked:bg-ink peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent" />
             Boarding now only
           </label>
         </div>
@@ -292,6 +292,21 @@ function JobDetail({
   onStage: (stage: number) => void;
 }) {
   const site = "Apply on company site";
+  // Marking applied swaps the apply control for the tracker, and "I didn't apply" swaps it back: focus follows the
+  // swap instead of dropping to the page (WCAG 2.4.3).
+  const firstStage = useRef<HTMLButtonElement>(null);
+  const applyControl = useRef<HTMLButtonElement & HTMLAnchorElement>(null);
+  const [moved, setMoved] = useState(0);
+  useEffect(() => {
+    if (!moved) return;
+    (stage > 0 ? firstStage.current : applyControl.current)?.focus();
+    // Runs once per swap; stage is read at that moment.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moved]);
+  const swap = (next: number) => {
+    onStage(next);
+    setMoved((n) => n + 1);
+  };
   return (
     <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-4 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-center gap-3">
@@ -353,12 +368,13 @@ function JobDetail({
             {APPLY_STAGES.map((name, i) => (
               <li key={name}>
                 <button
+                  ref={i === 0 ? firstStage : undefined}
                   type="button"
                   aria-pressed={i < stage}
                   onClick={() => onStage(i + 1)}
                   className="flex w-full items-center gap-2.5 rounded-sm py-2 text-left text-[0.86rem] text-muted aria-pressed:font-[550] aria-pressed:text-ink"
                 >
-                  <span className={`h-[18px] w-[18px] shrink-0 rounded-full border-2 ${i < stage ? "border-accent bg-accent" : "border-line bg-surface"}`} />
+                  <span className={`h-[18px] w-[18px] shrink-0 rounded-full border-2 ${i < stage ? "border-accent bg-accent" : "border-line-strong bg-surface"}`} />
                   {name}
                   {i === 0 && " · on the company site"}
                 </button>
@@ -368,7 +384,7 @@ function JobDetail({
           <p className="text-[0.86rem] text-muted">
             Tap a step when it happens. Only you see this.{" "}
             {stage === 1 && (
-              <button type="button" onClick={() => onStage(0)} className="font-[550] text-ink underline underline-offset-2">
+              <button type="button" onClick={() => swap(0)} className="font-[550] text-ink underline underline-offset-2">
                 I didn&apos;t apply
               </button>
             )}
@@ -379,13 +395,13 @@ function JobDetail({
         <>
           <div className="flex flex-col gap-2">
             {job.applyUrl ? (
-              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" aria-label={`Apply on company site: ${job.company} (opens in a new tab)`} onClick={() => onStage(1)} className={primary}>
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" aria-label={`Apply on company site: ${job.company} (opens in a new tab)`} ref={applyControl} onClick={() => swap(1)} className={primary}>
                 <ExternalLink size={17} {...ICON} />
                 {site}
               </a>
             ) : (
               // Example roles have no posting to open, so the button only shows how tracking works.
-              <button type="button" onClick={() => onStage(1)} className={primary}>
+              <button ref={applyControl} type="button" onClick={() => swap(1)} className={primary}>
                 <ExternalLink size={17} {...ICON} />
                 {site} · example
               </button>
@@ -421,7 +437,7 @@ function PasteBox() {
         disabled
         aria-label="Job post"
         placeholder="Paste the full job description here. We compare it with your resume and show the gaps for this one role."
-        className="w-full resize-y rounded-[12px] border border-line bg-bg px-3 py-2.5 text-[0.88rem] text-ink disabled:cursor-not-allowed"
+        className="w-full resize-y rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink disabled:cursor-not-allowed"
       />
       <div className="flex flex-wrap items-center gap-2.5">
         <button type="button" disabled className={`${primary} cursor-not-allowed px-[11px] py-1.5 text-[0.8rem] opacity-60`}>

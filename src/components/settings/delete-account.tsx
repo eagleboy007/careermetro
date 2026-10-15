@@ -56,7 +56,7 @@ export function DeleteAccount({ editable, icon }: { editable: boolean; icon: Rea
             spellCheck={false}
             required
             aria-describedby={state.error ? `${panelId}-error` : undefined}
-            className="w-40 rounded-md border border-line bg-surface px-3 py-[9px] font-mono text-[0.9rem] tracking-[0.1em] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+            className="w-40 rounded-md border border-line-strong bg-surface px-3 py-[9px] font-mono text-[0.9rem] tracking-[0.1em] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
           />
         </label>
         {state.error && (

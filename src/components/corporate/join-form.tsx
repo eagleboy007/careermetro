@@ -62,6 +62,7 @@ export function JoinForm({
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
+        if (pending) return;
         if (stage === "email") send();
         else confirm();
       }}
@@ -114,7 +115,7 @@ export function JoinForm({
         </p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" disabled={pending || !actions}>
+        <Button type="submit" busy={pending} disabled={!actions}>
           {stage === "email" ? <Mail size={16} strokeWidth={1.75} aria-hidden="true" /> : <KeyRound size={16} strokeWidth={1.75} aria-hidden="true" />}
           {stage === "email" ? "Send code" : "Confirm"}
         </Button>

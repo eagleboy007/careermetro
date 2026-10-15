@@ -324,7 +324,7 @@ const exampleToday: TodayData = {
   greeting: "Evening",
 };
 
-const colors = ["accent", "ink", "muted", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5"] as const;
+const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5"] as const;
 
 export default function DesignPage() {
   return (
@@ -366,7 +366,9 @@ export default function DesignPage() {
         <div className="flex flex-wrap gap-3">
           <Button>Upload resume</Button>
           <Button variant="ghost">Paste a job description</Button>
+          <Button busy>Reading your resume…</Button>
         </div>
+        <p className="text-sm text-muted">A busy button keeps keyboard focus while its work runs; disabled would drop focus to the page.</p>
         <div className="flex flex-wrap gap-2">
           <StatusChip status="missing" />
           <StatusChip status="weak" />

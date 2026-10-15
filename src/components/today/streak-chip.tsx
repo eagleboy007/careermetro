@@ -53,7 +53,9 @@ export function StreakChip({ days, todayCounted }: { days: number; todayCounted:
           "Day 1"
         ) : (
           <span>
-            <span className="font-mono font-medium">{days}</span>-day streak
+            {/* Just the number on narrow phones, so the top bar fits at 360px with a streak (WCAG 1.4.10). */}
+            <span className="font-mono font-medium">{days}</span>
+            <span className="max-[399px]:hidden">-day streak</span>
           </span>
         )}
       </button>

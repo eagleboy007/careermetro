@@ -119,7 +119,7 @@ export function RolePicker({
         </section>
       )}
       {suggestions && <h2 className="mt-4 text-xl font-semibold">All roles</h2>}
-      <label className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5 focus-within:border-ink focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
+      <label className="flex items-center gap-2 rounded-full border border-line-strong bg-surface px-4 py-2.5 focus-within:border-ink focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
         <Search size={18} strokeWidth={1.75} className="text-muted" aria-hidden="true" />
         <span className="sr-only">Search roles or skills</span>
         <input

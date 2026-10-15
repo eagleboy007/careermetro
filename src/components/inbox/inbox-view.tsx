@@ -415,7 +415,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
               </p>
             )}
 
-            <ol aria-label="Messages" className="flex max-h-[560px] flex-1 flex-col gap-2.5 overflow-y-auto p-4">
+            <ol aria-label="Messages" tabIndex={0} className="flex max-h-[560px] flex-1 flex-col gap-2.5 overflow-y-auto p-4">
               {current.messages.map((m, i) => (
                 <Message
                   key={m.id ?? i}
@@ -483,7 +483,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                     maxLength={2000}
                     placeholder="Write a message"
                     aria-label="Message"
-                    className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+                    className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
                   />
                   <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
                     Send
@@ -864,7 +864,7 @@ function ReportPanel({
           maxLength={500}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="resize-none rounded-[10px] border border-line bg-bg px-2.5 py-2 text-[0.84rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+          className="resize-none rounded-[10px] border border-line-strong bg-bg px-2.5 py-2 text-[0.84rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
         />
       </label>
       {canBlock && (

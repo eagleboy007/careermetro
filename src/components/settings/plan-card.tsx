@@ -28,7 +28,7 @@ export function PlanCard() {
       <p className="text-[0.88rem] text-muted">
         Everything you use today is free during the beta: your gaps, path, daily rides, Departures and the Inbox. There is nothing to pay.
       </p>
-      <div className="flex flex-col gap-3.5 rounded-[18px] bg-board p-[18px] text-board-ink">
+      <div data-board="" className="flex flex-col gap-3.5 rounded-[18px] bg-board p-[18px] text-board-ink">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-board-line px-2.5 py-1 font-mono text-[0.78rem] uppercase tracking-[0.14em]">
             <Award size={14} {...ICON} />

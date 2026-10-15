@@ -138,6 +138,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
             noValidate
             onSubmit={(e) => {
               e.preventDefault();
+              if (pending) return;
               sendCode();
             }}
           >
@@ -206,7 +207,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
               </p>
             )}
             <div className="flex flex-wrap items-center gap-3">
-              <Button type="submit" disabled={pending || !actions}>
+              <Button type="submit" busy={pending} disabled={!actions}>
                 <Mail {...ICON} />
                 Continue
               </Button>
@@ -223,6 +224,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
             noValidate
             onSubmit={(e) => {
               e.preventDefault();
+              if (pending) return;
               verify();
             }}
           >
@@ -248,7 +250,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
             </label>
             {errorBox}
             <div className="flex flex-wrap items-center gap-3">
-              <Button type="submit" disabled={pending || !actions}>
+              <Button type="submit" busy={pending} disabled={!actions}>
                 Verify
               </Button>
               <button type="button" onClick={sendCode} disabled={pending} className="text-sm text-muted underline underline-offset-2 hover:text-ink">
@@ -272,6 +274,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
             noValidate
             onSubmit={(e) => {
               e.preventDefault();
+              if (pending) return;
               sendForReview();
             }}
           >
@@ -333,7 +336,7 @@ export function OrgSignupForm({ actions, firstName, initial = EMPTY, startAt = 0
               </p>
             )}
             <div>
-              <Button type="submit" disabled={pending || !actions}>
+              <Button type="submit" busy={pending} disabled={!actions}>
                 Send for review
               </Button>
             </div>

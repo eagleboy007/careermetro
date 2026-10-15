@@ -88,7 +88,7 @@ export function JobReport({ jobId, title, action }: { jobId: string; title: stri
       </fieldset>
       <label className="flex flex-col gap-1 text-[0.8rem] text-muted">
         Anything we should know (optional)
-        <textarea rows={2} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} className="resize-none rounded-[10px] border border-line bg-bg px-2.5 py-2 text-[0.84rem] text-ink" />
+        <textarea rows={2} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} className="resize-none rounded-[10px] border border-line-strong bg-bg px-2.5 py-2 text-[0.84rem] text-ink" />
       </label>
       {error && (
         <p ref={errorRef} tabIndex={-1} role="alert" className="text-[0.84rem] font-medium text-ink">

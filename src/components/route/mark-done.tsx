@@ -21,7 +21,7 @@ export function MarkDone({ stepId, title, done, demo = false }: { stepId: string
   }
 
   async function toggle() {
-    if (saving) return;
+    if (saving || pending) return;
     const next = !isDone;
     setError(null);
     if (demo) return setDone(next);
@@ -49,10 +49,11 @@ export function MarkDone({ stepId, title, done, demo = false }: { stepId: string
       <button
         type="button"
         onClick={toggle}
-        disabled={saving || pending}
+        // aria-disabled, not disabled: a disabled button drops keyboard focus to the page while it saves.
+        aria-disabled={saving || pending || undefined}
         // Starts with the visible text (WCAG 2.5.3, label in name), then says which step.
         aria-label={`${label}: ${title}`}
-        className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-60 ${
+        className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors aria-disabled:opacity-60 ${
           isDone ? "border-line text-muted hover:text-ink" : "border-accent text-accent hover:bg-accent-soft"
         }`}
       >

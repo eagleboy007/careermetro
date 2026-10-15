@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type State = { kind: "idle" } | { kind: "sending" } | { kind: "done" } | { kind: "error"; message: string };
 
 export function WaitlistForm() {
   const [state, setState] = useState<State>({ kind: "idle" });
+  const done = useRef<HTMLDivElement>(null);
+  // The form goes away once joined: move focus to the confirmation, so it doesn't fall back to the page.
+  useEffect(() => {
+    if (state.kind === "done") done.current?.focus();
+  }, [state.kind]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state.kind === "sending") return;
     const form = new FormData(event.currentTarget);
     setState({ kind: "sending" });
     try {
@@ -32,7 +38,7 @@ export function WaitlistForm() {
 
   if (state.kind === "done") {
     return (
-      <div role="status" className="rounded-md bg-good-soft p-4 text-sm text-ink">
+      <div ref={done} tabIndex={-1} role="status" className="rounded-md bg-good-soft p-4 text-sm text-ink">
         <p className="font-semibold">You’re on the list.</p>
         <p className="text-muted">We’ll email you when the first roles open.</p>
       </div>
@@ -51,7 +57,7 @@ export function WaitlistForm() {
             required
             autoComplete="email"
             placeholder="you@example.com"
-            className="rounded-sm border border-line bg-surface px-3 py-2.5 font-normal text-ink"
+            className="rounded-sm border border-line-strong bg-surface px-3 py-2.5 font-normal text-ink"
           />
         </label>
         <label className="flex flex-1 flex-col gap-1.5 text-sm font-medium">
@@ -60,7 +66,7 @@ export function WaitlistForm() {
             id="waitlist-role"
             name="role"
             placeholder="Data Analyst (optional)"
-            className="rounded-sm border border-line bg-surface px-3 py-2.5 font-normal text-ink"
+            className="rounded-sm border border-line-strong bg-surface px-3 py-2.5 font-normal text-ink"
           />
         </label>
       </div>
@@ -74,7 +80,7 @@ export function WaitlistForm() {
           {state.message}
         </p>
       )}
-      <Button type="submit" disabled={state.kind === "sending"} className="self-start">
+      <Button type="submit" busy={state.kind === "sending"} className="self-start">
         {state.kind === "sending" ? "Joining…" : "Join the waitlist"}
       </Button>
     </form>

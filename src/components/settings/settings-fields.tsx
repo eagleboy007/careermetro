@@ -26,7 +26,7 @@ export function PayFields() {
       <label htmlFor={`acc-${key}`} className="text-[0.82rem] font-semibold">
         {label} <em className="font-normal not-italic text-muted">optional</em>
       </label>
-      <div className="flex min-h-11 min-w-0 items-center overflow-hidden rounded-md border border-line bg-bg focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
+      <div className="flex min-h-11 min-w-0 items-center overflow-hidden rounded-md border border-line-strong bg-bg focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
         <span aria-hidden="true" className="px-2.5 text-[0.84rem] text-muted">
           ₹
         </span>
@@ -95,7 +95,7 @@ export function PrivacyFields() {
                 aria-describedby={v === "line" ? "acc-visibility-note acc-line-hint" : "acc-visibility-note"}
                 className="peer sr-only"
               />
-              <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
+              <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-checked:ring-1 peer-checked:ring-line-strong peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
                 {PROFILE_VISIBILITY_LABELS[v]}
               </span>
             </label>
@@ -162,7 +162,7 @@ export function NotificationFields() {
           value={s.rideReminder}
           onChange={(e) => setSetting("rideReminder", e.target.value as UserSettings["rideReminder"])}
           disabled={!editable}
-          className="min-h-11 rounded-md border border-line bg-bg px-3 text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70"
+          className="min-h-11 rounded-md border border-line-strong bg-bg px-3 text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70"
         >
           {RIDE_REMINDERS.map((r) => (
             <option key={r} value={r}>
