@@ -933,7 +933,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 16) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 17) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
