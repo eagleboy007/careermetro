@@ -1,8 +1,8 @@
 "use client";
 
 import { Award, BriefcaseBusiness, Check, CircleHelp, Route, TrainFront, Video } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
-import { CertificateForm } from "@/components/proof/certificate-form";
+import { Suspense, useEffect, useId, useRef, useState } from "react";
+import { LazyCertificateForm, preloadCertificateForm } from "@/components/proof/certificate-form-lazy";
 import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import type { ProvePitstop, Ride, RideWeek } from "@/lib/schemas";
@@ -335,6 +335,8 @@ function ProveBox({
                   type="button"
                   ref={o.kind === "cert" ? opener : undefined}
                   onClick={() => choose(o.kind)}
+                  onPointerEnter={o.kind === "cert" ? preloadCertificateForm : undefined}
+                  onFocus={o.kind === "cert" ? preloadCertificateForm : undefined}
                   aria-expanded={o.kind === "cert" && canAdd ? adding : undefined}
                   className="col-start-2 justify-self-start whitespace-nowrap rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold sm:col-start-3"
                 >
@@ -342,17 +344,19 @@ function ProveBox({
                 </button>
               </div>
               {o.kind === "cert" && adding && (
-                <CertificateForm
-                  goalId={prove.goalId ?? ""}
-                  goalName={goalName}
-                  certificates={prove.certificates}
-                  renew={prove.renew}
-                  onSave={prove.goalId ? onAddCertificate : undefined}
-                  onCancel={() => {
-                    setAdding(false);
-                    opener.current?.focus();
-                  }}
-                />
+                <Suspense fallback={null}>
+                  <LazyCertificateForm
+                    goalId={prove.goalId ?? ""}
+                    goalName={goalName}
+                    certificates={prove.certificates}
+                    renew={prove.renew}
+                    onSave={prove.goalId ? onAddCertificate : undefined}
+                    onCancel={() => {
+                      setAdding(false);
+                      opener.current?.focus();
+                    }}
+                  />
+                </Suspense>
               )}
             </li>
           );

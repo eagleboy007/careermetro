@@ -40,7 +40,7 @@ export function TaskList({ tasks, done, onToggle }: { tasks: RideTask[]; done: R
               <input type="checkbox" className="peer sr-only" checked={checked} disabled={t.locked} onChange={() => onToggle(t.id)} />
               <span
                 aria-hidden="true"
-                className="grid size-6 place-items-center rounded-sm border-2 border-line bg-surface transition-colors peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
+                className="grid size-6 place-items-center rounded-sm border-2 border-line-strong bg-surface transition-colors peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
               >
                 {checked && <Check size={14} strokeWidth={1.75} className="text-on-accent" />}
               </span>

@@ -102,7 +102,8 @@ async function Today({ searchParams }: PageProps<"/today">) {
       <TodayView
         state={found.state}
         data={own}
-        upload={<Upload key="upload" />}
+        // Only the No resume state shows the upload form; leaving it out otherwise keeps it out of the page's payload.
+        upload={found.state === "no_resume" ? <Upload key="upload" /> : null}
         departuresHref="/departures"
         mapHref="/map"
         onToggleTask={tickRideTask}

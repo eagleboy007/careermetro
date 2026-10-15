@@ -12,7 +12,7 @@ import { ANTI_SCAM_LINE, ORG_STATUS_LABELS } from "@/lib/schemas/constants";
 export const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
 
 /** A text field without a width, for fields that sit in a row. */
-export const inputClass = "rounded-sm border border-line bg-surface px-3 py-2.5 text-[0.92rem] text-ink";
+export const inputClass = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-[0.92rem] text-ink";
 export const fieldClass = `w-full ${inputClass}`;
 export const labelClass = "flex flex-col gap-1.5 text-[0.82rem] font-semibold";
 export const hintClass = "text-[0.78rem] font-normal text-muted";

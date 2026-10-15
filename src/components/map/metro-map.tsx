@@ -1,19 +1,23 @@
 "use client";
 
-import { CertificateForm } from "@/components/proof/certificate-form";
+import { LazyCertificateForm, preloadCertificateForm } from "@/components/proof/certificate-form-lazy";
 import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
+import { Suspense, useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
 import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
 import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
 import type { LifeLine, MapLine } from "@/lib/schemas";
-import { LifeLegend, LifeSheet, LifeSvg } from "./life-line";
+// The Life line shows only after "Life line" is picked, so it loads then, not with the map.
+const LifeSvg = dynamic(() => import("./life-line").then((m) => m.LifeSvg));
+const LifeSheet = dynamic(() => import("./life-line").then((m) => m.LifeSheet));
+const LifeLegend = dynamic(() => import("./life-line").then((m) => m.LifeLegend));
 import { emptySentence, sharesSentence, toAddText } from "@/components/nearby/nearby-lines";
 
 const NAME_MAX = 18;
@@ -119,7 +123,9 @@ export function MetroMap({
 
         <div ref={scroller} className="relative overflow-x-auto rounded-[20px] border border-line bg-surface">
           {showLife ? (
-            <LifeSvg layout={lifeLayout} selected={lifeSelected} onSelect={setLifeSelected} />
+            <Suspense fallback={null}>
+              <LifeSvg layout={lifeLayout} selected={lifeSelected} onSelect={setLifeSelected} />
+            </Suspense>
           ) : layout && line ? (
             <MapSvg layout={layout} line={line} selected={selected} onSelect={setSelected} replay={replay} />
           ) : (
@@ -127,7 +133,11 @@ export function MetroMap({
           )}
         </div>
 
-        {showLife && <LifeLegend />}
+        {showLife && (
+          <Suspense fallback={null}>
+            <LifeLegend />
+          </Suspense>
+        )}
         {!showLife && line && (
           <ul className="flex flex-wrap items-center gap-4 text-[0.78rem] text-muted" aria-label="Key">
             <Key swatch="bg-accent">Ridden: learned, or proved ✓</Key>
@@ -167,7 +177,9 @@ export function MetroMap({
       {line && layout && (
         <aside aria-live="polite" aria-label={showLife ? "Moment details" : "Pitstop details"} className="flex min-w-0 flex-col gap-3.5 border-t border-line bg-surface px-4 py-5 min-[960px]:border-t-0 min-[960px]:p-[22px]">
           {showLife ? (
-            <LifeSheet key={`life-${lifeSelected ?? "none"}`} id={lifeSelected} line={life} layout={lifeLayout} onSelect={setLifeSelected} onZoom={() => setZoom("recent")} />
+            <Suspense fallback={null}>
+              <LifeSheet key={`life-${lifeSelected ?? "none"}`} id={lifeSelected} line={life} layout={lifeLayout} onSelect={setLifeSelected} onZoom={() => setZoom("recent")} />
+            </Suspense>
           ) : (
             <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} onAddCertificate={onAddCertificate} />
           )}
@@ -435,11 +447,7 @@ function LockedMap() {
 function AddCertificate({ goal, onSave }: { goal: MapLine["goals"][number]; onSave?: (input: CertificateInput) => Promise<CertificateResult> }) {
   const [open, setOpen] = useState(false);
   const opener = useRef<HTMLButtonElement>(null);
-  const formBox = useRef<HTMLDivElement>(null);
-  // Opening moves focus to the first field; Cancel brings it back to the button.
-  useEffect(() => {
-    if (open) formBox.current?.querySelector<HTMLElement>("select, input")?.focus();
-  }, [open]);
+  // Opening moves focus to the first field (the form does it once it has loaded); Cancel brings it back to the button.
   return (
     <>
       <button
@@ -447,13 +455,16 @@ function AddCertificate({ goal, onSave }: { goal: MapLine["goals"][number]; onSa
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
+        onPointerEnter={preloadCertificateForm}
+        onFocus={preloadCertificateForm}
         className="min-h-11 self-start rounded-full border border-line bg-surface px-3.5 py-1.5 text-[0.84rem] font-semibold"
       >
         {goal.renew ? "Renew certificate" : "Add a certificate"}
       </button>
       {open && (
-        <div ref={formBox}>
-          <CertificateForm
+        <Suspense fallback={null}>
+          <LazyCertificateForm
+            focusFirst
             goalId={goal.goalId ?? ""}
             goalName={goal.name}
             certificates={goal.certificates}
@@ -464,7 +475,7 @@ function AddCertificate({ goal, onSave }: { goal: MapLine["goals"][number]; onSa
               opener.current?.focus();
             }}
           />
-        </div>
+        </Suspense>
       )}
     </>
   );

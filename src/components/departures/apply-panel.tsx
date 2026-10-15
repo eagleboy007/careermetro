@@ -303,7 +303,7 @@ export function ApplyPreview({
               <select
                 value={form.canJoin}
                 onChange={(e) => form.setCanJoin(e.target.value as CanJoin)}
-                className="min-h-11 rounded-sm border border-line bg-surface px-3 text-[0.88rem] font-normal text-ink"
+                className="min-h-11 rounded-sm border border-line-strong bg-surface px-3 text-[0.88rem] font-normal text-ink"
               >
                 <option value="">Choose</option>
                 {CAN_JOIN.map((c) => (
@@ -324,7 +324,7 @@ export function ApplyPreview({
                 onChange={(e) => form.setNote(e.target.value)}
                 aria-describedby={`${ids}-note-hint ${ids}-note-count`}
                 aria-invalid={noteProblem ? true : undefined}
-                className="rounded-sm border border-line bg-bg px-3 py-2 text-[0.88rem] font-normal text-ink"
+                className="rounded-sm border border-line-strong bg-bg px-3 py-2 text-[0.88rem] font-normal text-ink"
               />
               <span id={`${ids}-note-count`} className={`self-end font-mono text-[0.72rem] font-normal ${len > APPLICATION_NOTE_MAX ? "text-ink" : "text-muted"}`}>
                 {len} of {APPLICATION_NOTE_MAX}

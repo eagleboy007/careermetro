@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, useTransition } from "react";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 
 const input =
-  "min-w-0 rounded-md border border-line bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
+  "min-w-0 rounded-md border border-line-strong bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
 
 export type CertificateOption = { id: string; name: string; issuer: string };
 
@@ -20,6 +20,7 @@ export function CertificateForm({
   renew = false,
   onSave,
   onCancel,
+  focusFirst = false,
 }: {
   goalId: string;
   goalName: string;
@@ -28,6 +29,8 @@ export function CertificateForm({
   onSave?: (input: CertificateInput) => Promise<CertificateResult>;
   /** Closes the form; without it there is no Cancel button (design page). */
   onCancel?: () => void;
+  /** Moves focus to the first field when the form opens. */
+  focusFirst?: boolean;
 }) {
   const id = useId();
   const [pending, start] = useTransition();
@@ -42,6 +45,12 @@ export function CertificateForm({
     badField === name
       ? { "aria-invalid": true as const, "aria-describedby": `${id}-result` }
       : {};
+
+  useEffect(() => {
+    if (focusFirst) formRef.current?.querySelector<HTMLElement>("select, input")?.focus();
+    // Once, when the form opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // The form is replaced by the result; move focus to it so the Save button's focus isn't lost and it is read out.
   useEffect(() => {

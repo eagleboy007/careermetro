@@ -9,7 +9,7 @@ import { HEADLINE_MAX, USERNAME_CHANGE_DAYS, USERNAME_MAX, USERNAME_REDIRECT_DAY
 import { FieldError, useSettingsDraft } from "./settings-draft";
 
 const input =
-  "min-h-11 min-w-0 rounded-md border border-line bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
+  "min-h-11 min-w-0 rounded-md border border-line-strong bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
 
 type Hint = { tone: "ok" | "bad" | "plain"; text: string };
 
@@ -71,7 +71,7 @@ export function ProfileLinkFields({ lockedUntil }: { lockedUntil: string | null 
         <label htmlFor="acc-username" className="text-[0.82rem] font-semibold">
           Username
         </label>
-        <div className="flex min-h-11 min-w-0 items-stretch overflow-hidden rounded-md border border-line bg-bg focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
+        <div className="flex min-h-11 min-w-0 items-stretch overflow-hidden rounded-md border border-line-strong bg-bg focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
           <span aria-hidden="true" className="grid place-items-center border-r border-line bg-surface-2 px-1.5 font-mono text-[0.7rem] text-muted min-[760px]:px-2.5 min-[760px]:text-[0.78rem]">
             careermetro.com/u/
           </span>

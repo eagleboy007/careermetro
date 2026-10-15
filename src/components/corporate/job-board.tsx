@@ -448,7 +448,7 @@ function CandidateDrawer({
                   maxLength={NOT_THIS_TIME_NOTE_MAX}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="rounded-sm border border-line bg-bg px-3 py-2 text-[0.88rem] font-normal text-ink"
+                  className="rounded-sm border border-line-strong bg-bg px-3 py-2 text-[0.88rem] font-normal text-ink"
                 />
               </label>
               <div className="flex flex-wrap gap-2">
@@ -467,7 +467,7 @@ function CandidateDrawer({
                 <select
                   value={moveTo}
                   onChange={(e) => setMoveTo(e.target.value as ApplicationStage)}
-                  className="min-h-11 rounded-sm border border-line bg-surface px-3 text-[0.88rem] font-normal text-ink"
+                  className="min-h-11 rounded-sm border border-line-strong bg-surface px-3 text-[0.88rem] font-normal text-ink"
                 >
                   {targets.map((s) => (
                     <option key={s} value={s} disabled={s === "ai" && !aiRound}>

@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { continueWithGoogle, emailStep, type EmailStep } from "./actions";
 
-const field = "rounded-sm border border-line bg-surface px-3 py-2.5 text-ink";
+const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
 
 /** Google or an emailed code. `error` comes from a failed redirect back to this page. */
 export function SignInForm({ next, error }: { next: string; error: string | null }) {
@@ -28,7 +28,7 @@ export function SignInForm({ next, error }: { next: string; error: string | null
         <span className="h-px flex-1 bg-line" />
       </div>
 
-      <form action={action} className="flex flex-col gap-4" noValidate>
+      <form action={action} onSubmit={(e) => pending && e.preventDefault()} className="flex flex-col gap-4" noValidate>
         <input type="hidden" name="next" value={next} />
         {state.stage === "email" ? (
           <label className="flex flex-col gap-1.5 text-sm font-medium">
@@ -72,7 +72,7 @@ export function SignInForm({ next, error }: { next: string; error: string | null
           </p>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" busy={pending}>
             <Mail size={16} strokeWidth={1.75} aria-hidden="true" />
             {state.stage === "email" ? "Email me a code" : "Sign in"}
           </Button>

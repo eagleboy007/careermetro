@@ -10,7 +10,7 @@ type Mode = "file" | "text";
 type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string };
 
 const MAX_MB = 4;
-const field = "rounded-sm border border-line bg-surface px-3 py-2.5 text-ink";
+const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
 
 /** Upload a resume or paste it (FR-4). Consent is required before anything is sent (SEC-1). `demo` never uploads, for /design. */
 export function UploadForm({ demo = false }: { demo?: boolean }) {
@@ -22,6 +22,7 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state.kind === "reading") return;
     const form = new FormData(event.currentTarget);
     if (form.get("consent") !== "yes") {
       setState({ kind: "error", message: "Please tick the box to agree to how we use your resume." });
@@ -124,7 +125,7 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" disabled={reading}>
+        <Button type="submit" busy={reading}>
           {reading ? "Reading your resume…" : "Read my resume"}
         </Button>
         {reading && (

@@ -25,7 +25,7 @@ For the signed-in app (sign-up, Today, goals, map, jobs, profile), build from `d
 
 ## Design system
 
-Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surface`, `surface-2`, `ink`, `muted`, `line`, `accent`, `accent-soft`, `on-accent`, `good`, `warn`, `bad` (plus `-soft`).
+Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surface`, `surface-2`, `ink`, `muted`, `line`, `line-strong` (edges of controls: fields, switches, check boxes), `accent`, `accent-soft`, `on-accent`, `good`, `warn`, `bad` (plus `-soft`).
 
 - Cobalt (`accent`) means progress only. Red, amber and green are for gap status only.
 - Fonts: Bricolage Grotesque for headings, Geist for text, Geist Mono for labels.

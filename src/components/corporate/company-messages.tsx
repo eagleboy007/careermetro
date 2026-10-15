@@ -272,7 +272,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
         <AntiScamLine />
       </div>
 
-      <ol ref={listRef} aria-label="Messages" className="flex max-h-[520px] min-h-[200px] flex-1 flex-col gap-2.5 overflow-y-auto p-3 min-[760px]:p-4">
+      <ol ref={listRef} aria-label="Messages" tabIndex={0} className="flex max-h-[520px] min-h-[200px] flex-1 flex-col gap-2.5 overflow-y-auto p-3 min-[760px]:p-4">
         {messages.map((m, i) =>
           m.by === "system" ? (
             <li key={m.id ?? i} className="max-w-[90%] self-center text-center text-[0.76rem] text-muted">
@@ -370,7 +370,7 @@ export function CompanyChat({ chat, company, actions }: { chat: CompanyChatView;
                 placeholder={question ? "Your question. Keep it about the job." : "Write a message"}
                 aria-label={question ? "Question" : "Message"}
                 aria-describedby={error ? `${ids}-error` : undefined}
-                className="min-h-11 flex-1 resize-none rounded-md border border-line bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+                className="min-h-11 flex-1 resize-none rounded-md border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
               />
               <button type="submit" className={inkBtn} disabled={pending}>
                 <Send {...ICON} />

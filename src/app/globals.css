@@ -12,6 +12,9 @@
   --ink: #12151c;
   --muted: #586072;
   --line: #dce0e8;
+  /* Borders that mark a control (text fields, switch tracks, check boxes): 3:1 on bg, surface and surface-2 (WCAG 1.4.11).
+     Plain line stays for dividers and card edges, which carry no meaning. */
+  --line-strong: #7f8798;
   --accent: #2448f5;
   --accent-soft: #e6ebff;
   --on-accent: #ffffff;
@@ -48,6 +51,7 @@
     --ink: #eceef3;
     --muted: #9aa2b3;
     --line: #2a2f3b;
+    --line-strong: #666e80;
     --accent: #7e94ff;
     --accent-soft: #1d2452;
     --on-accent: #0c0e13;
@@ -79,6 +83,7 @@
   --ink: #eceef3;
   --muted: #9aa2b3;
   --line: #2a2f3b;
+  --line-strong: #666e80;
   --accent: #7e94ff;
   --accent-soft: #1d2452;
   --on-accent: #0c0e13;
@@ -109,6 +114,7 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
@@ -159,6 +165,21 @@ h3 {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* The Departures board is dark in both modes; light cobalt is only 2.9:1 on it, so its focus ring takes board ink. */
+[data-board] :focus-visible {
+  outline-color: var(--board-ink);
+}
+
+/* Keyboard focus never lands under the sticky top bar, or under the phone tab bar (WCAG 2.2, 2.4.11). */
+html {
+  scroll-padding-top: 4.5rem;
+}
+@media (max-width: 759px) {
+  html {
+    scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* Raised things only: the board, the train, popovers. */

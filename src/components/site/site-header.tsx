@@ -9,7 +9,7 @@ import { testSignInEnabled } from "@/lib/auth/test-user";
 /** Top bar shared by public pages. "Sign in" shows only where sign-in is on (Supabase keys, or test sign-in on previews). */
 export function SiteHeader() {
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-line py-5">
+    <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-line py-5">
       <Link href="/" aria-label="CareerMetro home">
         <Logo />
       </Link>

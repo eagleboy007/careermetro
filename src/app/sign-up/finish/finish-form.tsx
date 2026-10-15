@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { splitName } from "@/lib/account/name";
 import { finishSignUp, type FinishState } from "./actions";
 
-const field = "rounded-sm border border-line bg-surface px-3 py-2.5 text-ink";
+const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
 
 export function FinishForm({ next, name }: { next: string; name: string | null }) {
   const { first, last } = splitName(name);
   const [state, action, pending] = useActionState<FinishState, FormData>(finishSignUp, { error: null });
   return (
-    <form action={action} className="flex flex-col gap-5">
+    <form action={action} onSubmit={(e) => pending && e.preventDefault()} className="flex flex-col gap-5">
       <input type="hidden" name="next" value={next} />
       <fieldset className="flex flex-col gap-1.5 text-sm" aria-describedby="finish-name-hint">
         <legend className="sr-only">Your name</legend>
@@ -50,7 +50,7 @@ export function FinishForm({ next, name }: { next: string; name: string | null }
         </p>
       )}
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" busy={pending}>
           Create my account
         </Button>
         {pending && (

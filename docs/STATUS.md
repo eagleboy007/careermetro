@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (#137).
+Last updated: 2026-10-15 (#138).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -17,21 +17,21 @@ Last updated: 2026-10-15 (#137).
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
+  - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 424 free resource links (#129).
 - **Switched off until keys arrive:** sign-in (preview uses a test user), company sign-up and join, find-people, phone sharing, the email sender, and photo and certificate upload.
 
 ## In progress
 
-- A11y AA and phone-speed pass. The audit is in `docs/dev/a11y-audit-2026-10-13.md`.
+- Nothing.
 
 ## Next up
 
-1. The a11y and phone-speed pass. Merge it, then update this page.
-2. T44, once Milin answers the card.
-3. Find people unread counts, and DB-side ranking past 2,000 people.
-4. Reports review tool, and the privacy notice line.
-5. Switch Market from example data once Data research says the cells reach 15 a month.
-6. Photo and certificate upload, once the storage keys exist.
+1. T44, once Milin answers the card.
+2. Find people unread counts, and DB-side ranking past 2,000 people.
+3. Reports review tool, and the privacy notice line.
+4. Switch Market from example data once Data research says the cells reach 15 a month.
+5. Photo and certificate upload, once the storage keys exist.
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
@@ -60,7 +60,7 @@ Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/acco
 - Thread containers can't reach `registry.npmjs.org`, so CI is the npm check.
 - CI logs are readable only through the GitHub MCP `get_job_logs` with `return_content`.
 - CI's DB is unseeded. Tests must not rely on seeded rows or delete shared fixtures. Run tests on both the seeded and a fresh DB.
-- e2e: check the FAIL lines and the exit code.
+- e2e: check the FAIL lines and the exit code. The local walk needs `NAME_HASH_KEY=e2e-only-name-hash-key` (as in CI), or the corporate steps fail.
 - Worktrees are locked; remove them with `git worktree remove -f -f`.
 - `.claude/` is in git's local exclude file; use `git add -f`.
 - Next 16 differs from the Next you know; read `node_modules/next/dist/docs/` first.
