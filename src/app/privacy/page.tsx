@@ -10,6 +10,9 @@ export const metadata: Metadata = { title: "Privacy · CareerMetro", robots: { i
  * Development 2026-10-15 from what the app actually stores; every retention period here matches the code that enforces
  * it (src/app/api/cron/cleanup/route.ts). A draft until Milin's legal adviser approves it, so it sits behind the preview
  * gate in src/proxy.ts. Change this page whenever what we store changes.
+ *
+ * For the legal adviser (launch-readiness (b) 8): confirm Anthropic's commercial terms on training before the line in
+ * "Our AI provider" ships; confirm Supabase's encryption at rest and region in its DPA; confirm the minimum age.
  */
 
 const a = "underline underline-offset-2";
@@ -44,7 +47,8 @@ const sections: LegalSection[] = [
           (exam results, certificates and Credly badges). A certificate&apos;s credential number is kept only as a one-way code.
         </li>
         <li>
-          <strong>Job descriptions you paste:</strong> kept for you only, to check your resume against them.
+          <strong>Job descriptions you paste:</strong> we keep the skills the posting asks for, to check your resume against them, but not the posting&apos;s
+          text.
         </li>
         <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
@@ -101,7 +105,10 @@ const sections: LegalSection[] = [
     body: (
       <ul>
         <li>A resume checked without an account: deleted after 24 hours.</li>
-        <li>Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind; after that everything is removed for good.</li>
+        <li>
+          Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,
+          except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.
+        </li>
         <li>Company profile views: 30 days.</li>
         <li>What a company can see of an application: up to 180 days after the application closes.</li>
         <li>A phone number shared for an interview: erased when the application closes.</li>
@@ -132,7 +139,12 @@ const sections: LegalSection[] = [
   {
     id: "cookies",
     heading: "Cookies",
-    body: <p>We only use the cookies that keep you signed in and remember your settings. There are no advertising or tracking cookies.</p>,
+    body: (
+      <p>
+        We use only the cookies the app needs: one that keeps you signed in, and one that links a resume you check without an account to your browser for
+        24 hours. There are no advertising or tracking cookies.
+      </p>
+    ),
   },
   {
     id: "breach",
