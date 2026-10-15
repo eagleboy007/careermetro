@@ -106,3 +106,48 @@ export type HeldProofView = z.infer<typeof heldProofView>;
 /** What a review says back: words to announce on the page. */
 export type ProofReviewResult = { ok: boolean; message: string };
 export type ProofReviewAction = (proofId: string, decision: ProofReviewDecision) => Promise<ProofReviewResult>;
+
+/*
+ * The report review page, /admin/reports (FR-45; docs/plans/reports-review-plan.md). Open reports from the Inbox and
+ * from job pages, with the IT Rules 2021 deadlines the Grievances page promises. What a review takes from the browser
+ * and the row the page shows. Never an email or phone; names are first name and last initial.
+ */
+
+export const REPORT_DECISIONS = ["acknowledge", "actioned", "dismissed"] as const;
+export type ReportDecision = (typeof REPORT_DECISIONS)[number];
+
+/** One review: which report (by id) and what to do. The admin comes from the session, never the browser. */
+export const reportReviewInput = z.object({ reportId: z.uuid(), decision: z.enum(REPORT_DECISIONS) }).strict();
+export type ReportReviewInput = z.infer<typeof reportReviewInput>;
+
+const ISO_INSTANT = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/);
+
+/** One open report on the review page. */
+export const reportReviewView = z
+  .object({
+    id: z.uuid(),
+    reason: z.string().min(1).max(80),
+    /** What was reported, in words: "A message", "A person", "A chat" or "A job". */
+    what: z.string().min(1).max(20),
+    reportedAt: ISO_INSTANT,
+    acknowledgedAt: ISO_INSTANT.nullable(),
+    acknowledgeBy: ISO_INSTANT,
+    decideBy: ISO_INSTANT,
+    reporter: z.string().min(1).max(80),
+    note: z.string().max(500).nullable(),
+    /** The reported thing as the admin needs it to decide, or null when it is gone. */
+    context: z
+      .object({
+        /** "Message from Priya S.", "Person", "Chat with Example Labs", "Job at Example Labs". */
+        label: z.string().min(1).max(200),
+        /** The message text or the job title; null for a person or a chat. */
+        text: z.string().max(4000).nullable(),
+      })
+      .strict()
+      .nullable(),
+  })
+  .strict();
+export type ReportReviewView = z.infer<typeof reportReviewView>;
+
+export type ReportReviewResult = { ok: boolean; message: string };
+export type ReportReviewAction = (reportId: string, decision: ReportDecision) => Promise<ReportReviewResult>;

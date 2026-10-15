@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { companyReviewInput, HELD_REASON_TEXT, REVIEW_HELD_REASONS, heldProofRow, heldProofView, proofReviewInput, reviewQueueRow } from "@/lib/schemas";
+import { companyReviewInput, HELD_REASON_TEXT, REVIEW_HELD_REASONS, heldProofRow, heldProofView, proofReviewInput, reportReviewInput, reportReviewView, reviewQueueRow } from "@/lib/schemas";
 
 const ORG = "6f1d2c3b-4a59-4e6f-8a7b-9c0d1e2f3a4b";
 const row = { id: ORG, name: "Example Labs", type: "company", domain: "example-labs.test", website: "https://example-labs.test", city: "Pune", size: "51 to 200", created: "2026-10-12", status: "pending", members: 1, admins: 1 };
@@ -65,5 +65,32 @@ describe("held-proof review schemas", () => {
     // A row waiting for the Credly check waits for no person, so it never reaches the review page.
     expect(REVIEW_HELD_REASONS).not.toContain("credly_check");
     expect(heldProofRow.safeParse({ ...held, heldReason: "credly_check" }).success).toBe(false);
+  });
+});
+
+describe("report review schemas", () => {
+  it("take a report id and acknowledge, action taken or dismiss, and nothing else", () => {
+    for (const decision of ["acknowledge", "actioned", "dismissed"]) expect(reportReviewInput.safeParse({ reportId: ORG, decision }).success).toBe(true);
+    expect(reportReviewInput.safeParse({ reportId: ORG, decision: "delete" }).success).toBe(false);
+    expect(reportReviewInput.safeParse({ reportId: "x", decision: "dismissed" }).success).toBe(false);
+    expect(reportReviewInput.safeParse({ reportId: ORG, decision: "dismissed", adminId: ORG }).success).toBe(false);
+  });
+
+  it("show a view with no extra fields such as an email", () => {
+    const view = {
+      id: ORG,
+      reason: "Harassment or abuse",
+      what: "A person",
+      reportedAt: "2026-10-15T04:30:00.000Z",
+      acknowledgedAt: null,
+      acknowledgeBy: "2026-10-16T04:30:00.000Z",
+      decideBy: "2026-10-18T04:30:00.000Z",
+      reporter: "Asha V.",
+      note: null,
+      context: { label: "Person: Ravi K.", text: null },
+    };
+    expect(reportReviewView.safeParse(view).success).toBe(true);
+    expect(reportReviewView.safeParse({ ...view, email: "a@example.test" }).success).toBe(false);
+    expect(reportReviewView.safeParse({ ...view, context: { ...view.context, email: "a@example.test" } }).success).toBe(false);
   });
 });

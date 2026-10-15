@@ -1,5 +1,5 @@
 import type { AdminCompanyView } from "@/lib/corporate/types";
-import type { HeldProofView } from "@/lib/schemas/admin";
+import type { HeldProofView, ReportReviewView } from "@/lib/schemas/admin";
 
 /** Example rows of the company review list for /design. Synthetic companies on reserved example domains. */
 export const exampleReviewCompanies: AdminCompanyView[] = [
@@ -73,5 +73,48 @@ export const exampleHeldProofs: HeldProofView[] = [
     person: "Ravi K.",
     others: 2,
     badgeUrl: null,
+  },
+];
+
+/** The time /design reads the example reports at, so one deadline shows as passed. */
+export const exampleReportsNow = "2026-10-15T09:00:00.000Z";
+
+/** Example rows of the report review (/admin/reports) for /design. Synthetic people and companies. */
+export const exampleReports: ReportReviewView[] = [
+  {
+    id: "4e3d2c1b-0a9f-4e8d-9c7b-6a5f4e3d2c1b",
+    reason: "Asked for money, an OTP or bank details",
+    what: "A message",
+    reportedAt: "2026-10-12T05:10:00.000Z",
+    acknowledgedAt: "2026-10-12T09:00:00.000Z",
+    acknowledgeBy: "2026-10-13T05:10:00.000Z",
+    decideBy: "2026-10-15T05:10:00.000Z",
+    reporter: "Asha V.",
+    note: "They asked me to pay a fee before the interview.",
+    context: { label: "Message from Hari M. at Example Labs", text: "Please pay 5,000 to book your interview slot today." },
+  },
+  {
+    id: "5f4e3d2c-1b0a-4f9e-8d7c-6b5a4f3e2d1d",
+    reason: "Sexual content, or pretending to be someone",
+    what: "A person",
+    reportedAt: "2026-10-15T07:40:00.000Z",
+    acknowledgedAt: null,
+    acknowledgeBy: "2026-10-16T07:40:00.000Z",
+    decideBy: "2026-10-16T07:40:00.000Z",
+    reporter: "Meera I.",
+    note: null,
+    context: { label: "Person: Ravi K.", text: null },
+  },
+  {
+    id: "6a5f4e3d-2c1b-4a0f-9e8d-7c6b5a4f3e2e",
+    reason: "Fake job, scam or spam",
+    what: "A job",
+    reportedAt: "2026-10-15T08:20:00.000Z",
+    acknowledgedAt: null,
+    acknowledgeBy: "2026-10-16T08:20:00.000Z",
+    decideBy: "2026-10-18T08:20:00.000Z",
+    reporter: "A deleted account",
+    note: null,
+    context: { label: "Job at Demo Payments", text: "Data entry from home, earn 50,000 a week" },
   },
 ];
