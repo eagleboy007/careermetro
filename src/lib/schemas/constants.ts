@@ -332,3 +332,5 @@ export const PRACTICE_MAX_CHARS = 4000;
 export const PRACTICE_KEEP_DAYS = 30;
 /** The self-rating after feedback, 1 to 4 (FR-23). It is the person's own word, never a score. */
 export const PRACTICE_CONFIDENCE_WORDS = ["Not yet", "A little", "Fairly", "Very"] as const;
+/** The longest reason an admin may give for hiding a message or suspending an account (FR-46). */
+export const REMOVAL_REASON_MAX = 500;

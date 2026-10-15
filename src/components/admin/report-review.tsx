@@ -2,16 +2,16 @@
 
 import { Check, Eye, EyeOff, Lock, LockOpen, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
-import {
-  REMOVAL_REASON_MAX,
-  type HiddenMessageView,
-  type RemovalState,
-  type ReportDecision,
-  type ReportRemovalAct,
-  type ReportRemovalInput,
-  type ReportReviewAction,
-  type ReportReviewView,
-  type SuspendedAccountView,
+import { REMOVAL_REASON_MAX } from "@/lib/schemas/constants";
+import type {
+  HiddenMessageView,
+  RemovalState,
+  ReportDecision,
+  ReportRemovalAct,
+  ReportRemovalInput,
+  ReportReviewAction,
+  ReportReviewView,
+  SuspendedAccountView,
 } from "@/lib/schemas/admin";
 
 /*

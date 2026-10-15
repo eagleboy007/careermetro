@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { ORG_REVIEW_STATUSES, ORG_TYPES, REVIEW_DECISIONS } from "./constants";
+import { ORG_REVIEW_STATUSES, ORG_TYPES, REMOVAL_REASON_MAX, REVIEW_DECISIONS } from "./constants";
+
+export { REMOVAL_REASON_MAX };
 
 /*
  * The company review page, /admin/companies (dev/corporate-plan.md, call B). What a review action takes from the
@@ -129,7 +131,6 @@ const ISO_INSTANT = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{
  * it works after the report is closed. The admin comes from the session, never the browser.
  */
 
-export const REMOVAL_REASON_MAX = 500;
 /** The admin's reason: 1 to 500 characters. The suspended person reads it on their notice. */
 export const removalReason = z
   .string()

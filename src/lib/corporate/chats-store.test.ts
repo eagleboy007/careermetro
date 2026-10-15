@@ -225,7 +225,7 @@ describe.skipIf(!db)("company chats (database)", () => {
   });
 
   it("takes a suspended candidate off the company's board, chats and drawer until the suspension is lifted (FR-46)", async () => {
-    const s = await setup("suspended");
+    const s = await setup("suspended-person");
     expect(await send(s.hr, s.applicationId, HELLO)).toMatchObject({ ok: true });
     const suspend = (on: boolean) =>
       db!
