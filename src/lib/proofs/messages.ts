@@ -49,3 +49,10 @@ export const CERTIFICATE_REFUSAL_MESSAGES: Record<CertificateRefusal, string> = 
   reviewed:
     "We reviewed this certificate and couldn't confirm it for your account, so it can't be added again. If you think that's wrong, tell us from the Grievances page.",
 };
+
+/**
+ * On a goal whose certificate was rejected after review (/admin/proofs, FR-44): it couldn't be confirmed for this
+ * person, and how to raise it. Never says who else holds it. The Grievances link follows these words.
+ */
+export const CERTIFICATE_NOT_CONFIRMED_MESSAGE =
+  "We reviewed your certificate for this goal and couldn't confirm it is yours, so it doesn't fill the gap. If it is yours, raise it with us from the Grievances page and we'll look again.";

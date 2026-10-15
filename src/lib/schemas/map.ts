@@ -35,6 +35,11 @@ export const mapGoal = z.object({
     .default([]),
   /** Its certificate expired, so it waits for a current one. */
   renew: z.boolean().default(false),
+  /**
+   * A certificate for this goal was rejected after review (/admin/proofs, FR-44): it couldn't be confirmed for this
+   * person, so the goal says so and points to Grievances. Only while the goal isn't proved.
+   */
+  notConfirmed: z.boolean().default(false),
   /** Set on a "Your choice" goal (in `choiceGoals`): not a gap of the role, so it never changes the match or the train. */
   choice: goalChoice.nullable().optional(),
 });

@@ -24,7 +24,8 @@ CLAUDE.md and docs/REQUIREMENTS.md stay the contract. This skill covers how to w
 
 ## 2b. Before writing code
 - Search for an existing helper, component or store function first (`rg`), and reuse it. Do not write near-duplicate code for each screen.
-- Read only the section of a large file you need, such as the handoff, the plan or REQUIREMENTS. Do not read it from the top every time.
+- Read `docs/REQUIREMENTS.md` (about 34k characters) and `docs/design/post-login-handoff.md` only for the section the task needs. Find it with `rg -n`, then read that line range. Never read either file in full. The same goes for plan files.
+- Aim for a session that starts at about 10k tokens: CLAUDE.md, docs/STATUS.md and the one plan file the task needs.
 - Pick the next free migration number and the current `EXPORT_VERSION` from `origin/main` once, when the branch starts.
 - At most two builders run at a time, and each works in a different area. Two branches must never both touch `src/lib/goals/store.ts`, migrations or the export version.
 

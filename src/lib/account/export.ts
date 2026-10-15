@@ -13,7 +13,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 14;
+export const EXPORT_VERSION = 15;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -132,6 +132,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         badgeId: gapProofs.badgeId,
         checkedAt: gapProofs.checkedAt,
         checkNote: gapProofs.checkNote,
+        // Why a certificate was held for review; with status "rejected", it was rejected after review (FR-44).
+        heldReason: gapProofs.heldReason,
         createdAt: gapProofs.createdAt,
       })
       .from(gapProofs)

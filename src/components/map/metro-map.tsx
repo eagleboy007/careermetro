@@ -1,6 +1,7 @@
 "use client";
 
 import { CertificateForm } from "@/components/proof/certificate-form";
+import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
@@ -627,6 +628,7 @@ function Sheet({
           { Icon: BriefcaseBusiness, title: `${goal.name} work you did`, detail: "a manager or colleague confirms · soon" },
         ]}
       />
+      {!goal.proved && goal.notConfirmed && <NotConfirmedNote />}
       {!goal.proved && goal.certificates.length > 0 && <AddCertificate goal={goal} onSave={line.resumeId ? onAddCertificate : undefined} />}
       {!fresh && resources.length > 0 && (
         <>
@@ -691,6 +693,7 @@ function ChoiceGoals({
                 . Prove: a skill check, a certificate or work you did.
               </p>
             )}
+            {!g.proved && g.notConfirmed && <NotConfirmedNote />}
             <div className="flex flex-wrap items-start justify-between gap-2">
               {!g.proved && g.certificates.length > 0 ? <AddCertificate goal={g} onSave={g.goalId ? onAddCertificate : undefined} /> : <span />}
               <RemoveGoal
