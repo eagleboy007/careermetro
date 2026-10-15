@@ -9,8 +9,8 @@ import {
   USERNAME_MESSAGES,
   usernameProblem,
 } from "@/lib/account/username";
-import { PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
-export { PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS } from "./constants";
+import { PERSON_CITIES, PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
+export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
 /**
  * Account settings, part 2 (dev/account-settings-plan.md, handoff 12c): username, headline, private pay, privacy and
@@ -93,10 +93,17 @@ export const DEFAULT_SETTINGS: UserSettings = {
   emailWeeklySummary: false,
 };
 
+/**
+ * The person's city (T44, Milin 2026-10-15), one of PERSON_CITIES or "" for none. Only companies that can find them
+ * see it and search by it; it isn't on the public profile. Left out of a save, it stays as it was.
+ */
+export const personCity = z.union([z.literal("").transform(() => null), z.enum(PERSON_CITIES)]);
+
 /** One save of the settings form. A blank username means "keep what I have" (it can't be cleared once set). */
 export const settingsInput = z.object({
   username: z.union([z.literal("").transform(() => null), username]),
   headline,
+  city: personCity.optional(),
   currentPay: payInput,
   expectedPay: payInput,
   settings: userSettings,
@@ -108,14 +115,15 @@ export type NotificationPrefs = z.infer<typeof notificationPrefs>;
 export type UserSettings = z.infer<typeof userSettings>;
 export type SettingsInput = z.infer<typeof settingsInput>;
 /** The fields a save can fail on, for the message next to each. */
-export type SettingsField = "username" | "headline" | "currentPay" | "expectedPay" | "settings";
+export type SettingsField = "username" | "headline" | "city" | "currentPay" | "expectedPay" | "settings";
 
 /** The first message for each field that failed, keyed by its top-level name. */
 export function settingsErrors(error: z.ZodError): Partial<Record<SettingsField, string>> {
   const out: Partial<Record<SettingsField, string>> = {};
   for (const issue of error.issues) {
     const field = (issue.path[0] ?? "settings") as SettingsField;
-    out[field] ??= field === "settings" ? "Something in these settings isn't one of the choices. Reload the page and try again." : issue.message;
+    out[field] ??=
+      field === "settings" ? "Something in these settings isn't one of the choices. Reload the page and try again." : field === "city" ? "Pick a city from the list." : issue.message;
   }
   return out;
 }

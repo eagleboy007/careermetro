@@ -933,7 +933,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 16) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 17) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -2533,6 +2533,8 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     const [resume] = await sql`insert into resumes (user_id, mime_type, size_bytes, status) values (${user.id}, 'text/plain', 1, 'parsed') returning id`;
     const [prof] = await sql`insert into profiles (resume_id, version, data, confirmed_by_user) values (${resume.id}, 1, ${sql.json(profile)}, true) returning id`;
     await sql`insert into gap_analyses (profile_id, result, matcher_version) values (${prof.id}, ${sql.json(analysis)}, ${matcher})`;
+    // The optional city he picked in Settings (T44); companies that can find him filter by it.
+    await sql`update users set city = 'Pune' where id = ${user.id}`;
 
     // Off by default; turned on in Settings > Privacy, with the plain words about what companies see.
     await fp.goto(BASE + "/settings");
@@ -2565,8 +2567,31 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     if ((await q.getByLabel("Match to this job").inputValue()) !== job.id) throw new Error("the address did not fill in the job");
     if (await q.getByRole("button", { name: "View profile of Arjun Mehta" }).count()) throw new Error("opening a search address ran the search");
     if ((await searched()) !== before) throw new Error("opening a search address wrote a people_searched line");
+    if ([...address.searchParams.keys()].some((k) => k !== "job") || address.searchParams.get("job") !== job.id) throw new Error("the search address holds more than the job: " + address.search);
+    // Filters (T44), one or several together. Verified profiles only: Arjun has proved nothing yet, so no one shows.
+    const searchForm = q.getByRole("form", { name: "Search" });
+    await searchForm.getByLabel("Verified profiles only").check();
     await q.getByRole("button", { name: "Search", exact: true }).click();
-    if ([...address.searchParams.keys()].some((k) => !["job", "band", "page"].includes(k)) || address.searchParams.get("job") !== job.id || address.searchParams.get("band")) throw new Error("the search address holds more than the job and band: " + address.search);
+    await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
+    // Experience 2 to 5 years with the target role he aims for and his city: he shows, with that role on his card.
+    await searchForm.getByLabel("Verified profiles only").uncheck();
+    await searchForm.locator("summary", { hasText: "Target role" }).click();
+    await searchForm.getByLabel("Cyber Security Analyst", { exact: true }).check();
+    await searchForm.locator("summary", { hasText: "City" }).click();
+    await searchForm.getByLabel("Pune", { exact: true }).check();
+    await searchForm.getByLabel("2 to 5 years").check();
+    await q.getByRole("button", { name: "Search", exact: true }).click();
+    await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
+    await q.getByText("Aiming for Cyber Security Analyst").waitFor();
+    const filtered = new URL(q.url());
+    const allowed = ["job", "band", "role", "city", "verified", "page"];
+    if (
+      [...filtered.searchParams.keys()].some((k) => !allowed.includes(k)) ||
+      filtered.searchParams.get("role") !== "cyber-security-analyst" ||
+      filtered.searchParams.get("band") !== "2-5" ||
+      filtered.searchParams.get("city") !== "Pune"
+    )
+      throw new Error("the search address holds more than the job and filters: " + filtered.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
     await open.waitFor({ timeout: 10000 });
     await open.click();

@@ -769,7 +769,8 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Find people (signed in)</h2>
         <p className="text-sm text-muted">
           Pending item 19: a verified company&apos;s Recruiter admins and Hiring HR search from one of their open jobs for people who turned on &ldquo;Let companies find
-          me&rdquo;, ranked by Match, proven skills first; the drawer shows the public profile parts and Match, and sends one message request. Then the refused page an
+          me&rdquo;, ranked by Match, proven skills first, filtered by experience, target role and verified profile, one or several together (T44), each card showing
+          the target role; the drawer shows the public profile parts and Match, and sends one message request. Then the refused page an
           Interviewer sees, the person&apos;s side in Settings (companies that viewed them, blocked companies), the request and accepted chat in their Inbox, and the
           company&apos;s found chat. Example data, so nothing sends.
         </p>

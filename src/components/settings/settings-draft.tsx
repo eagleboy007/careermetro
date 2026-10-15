@@ -9,6 +9,8 @@ import type { SettingsField, UserSettings } from "@/lib/schemas";
 export type SettingsDraftValues = {
   username: string;
   headline: string;
+  /** One of PERSON_CITIES, or "" for none. */
+  city: string;
   currentPay: string;
   expectedPay: string;
   settings: UserSettings;
@@ -36,7 +38,7 @@ const comparable = (v: SettingsDraftValues) =>
   JSON.stringify({ ...v, username: normalUsername(v.username), headline: cleanHeadline(v.headline), currentPay: v.currentPay.trim(), expectedPay: v.expectedPay.trim() });
 
 /** Where focus goes when a save is refused: the first field with a message, in page order. */
-const FIELD_ORDER: SettingsField[] = ["username", "headline", "currentPay", "expectedPay", "settings"];
+const FIELD_ORDER: SettingsField[] = ["username", "headline", "city", "currentPay", "expectedPay", "settings"];
 const fieldElement = (field: SettingsField): HTMLElement | null =>
   field === "settings" ? document.querySelector<HTMLElement>('input[name="acc-visibility"]:checked') : document.getElementById(`acc-${field}`);
 

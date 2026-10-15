@@ -1,4 +1,4 @@
-import type { FindBand, MeProfile } from "@/lib/schemas";
+import type { FindSearch, MeProfile } from "@/lib/schemas";
 import type { JobMatchView, OrgReviewStatus, OrgRole } from "./types";
 
 /*
@@ -17,12 +17,21 @@ export type FindPersonCard = {
   headline: string | null;
   /** "3 years 2 months" when experience shows on their profile, else null. */
   experience: string | null;
+  /** The role they aim at (T44): companies see it for everyone who lets them find them. Never their gaps. */
+  aim: string | null;
+  /** The city they gave (T44), seen only by companies that can find them; null when none. */
+  city: string | null;
+  /** At least one skill proved by CareerMetro proof (an exam, a verified certificate or corroborated work). */
+  verified: boolean;
   match: JobMatchView;
   request: FoundRequestState;
 };
 
 /** An open job the person may search from. */
 export type FindJobOption = { id: string; title: string; city: string };
+
+/** A target role a company may filter by (T44). */
+export type FindRoleOption = { slug: string; title: string };
 
 /** Why the page offers no search: an Interviewer, a company not verified now, or refs off (no key in production). */
 export type FindPageRefusal = "interviewer" | "not_verified" | "unavailable";
@@ -46,7 +55,8 @@ export type FindPeopleView = {
   role: OrgRole;
   refusal: FindPageRefusal | null;
   jobs: FindJobOption[];
-  search: { jobId: string; band: FindBand | null; page: number } | null;
+  roles: FindRoleOption[];
+  search: FindSearch | null;
   results: FindPeopleResults | null;
   /** Words to show when the search asked for in the address was refused. */
   error: string | null;
@@ -58,6 +68,8 @@ export type FoundPersonView = {
   ref: string;
   jobId: string;
   job: string;
+  /** The city they gave (T44), or null. Not part of the public profile. */
+  city: string | null;
   profile: MeProfile;
   match: JobMatchView;
   request: FoundRequestState;
@@ -65,7 +77,7 @@ export type FoundPersonView = {
 
 export type FindActions = {
   /** Runs one search (a server action, never on page load): one page of people matched to the job. */
-  search: (jobId: string, band: FindBand | null, page: number) => Promise<{ ok: true; results: FindPeopleResults } | { ok: false; error: string }>;
+  search: (search: FindSearch) => Promise<{ ok: true; results: FindPeopleResults } | { ok: false; error: string }>;
   open: (jobId: string, ref: string) => Promise<{ ok: true; person: FoundPersonView } | { ok: false; error: string }>;
   /** Sends the one message of a request. Returns the words to show on failure, or null. */
   request: (jobId: string, ref: string, body: string) => Promise<string | null>;

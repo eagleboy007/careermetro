@@ -52,4 +52,14 @@ describe("account settings schemas", () => {
     delete without.companiesCanFind;
     expect(userSettings.safeParse(without).success).toBe(false);
   });
+  it("take an optional city from the list only (T44)", () => {
+    expect(settingsInput.parse({ ...base, city: "Pune" }).city).toBe("Pune");
+    expect(settingsInput.parse({ ...base, city: "" }).city).toBeNull();
+    expect(settingsInput.parse(base).city).toBeUndefined();
+    for (const city of ["Pune, Maharashtra", "pune", "Flat 4, MG Road", 42]) {
+      const r = settingsInput.safeParse({ ...base, city });
+      expect(r.success).toBe(false);
+      if (!r.success) expect(settingsErrors(r.error)).toEqual({ city: "Pick a city from the list." });
+    }
+  });
 });

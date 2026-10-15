@@ -15,10 +15,10 @@ import type { FindActions } from "@/lib/corporate/find-types";
  * Runs one search when the member presses Search (Testing T41): a POST, so opening or sharing a /corporate/people link
  * never uses up the limits or writes an audit line. The store checks the role, the job and the limits.
  */
-export const searchPeopleAction: FindActions["search"] = async (jobId, band, page) => {
+export const searchPeopleAction: FindActions["search"] = async (search) => {
   const account = await currentAccount();
   if (!account) return { ok: false, error: "Please sign in again." };
-  const r = await searchPeople(account.id, { jobId, band, page });
+  const r = await searchPeople(account.id, search);
   return r.ok ? { ok: true, results: { cards: r.cards, total: r.total, hasMore: r.hasMore } } : { ok: false, error: FIND_ERROR_TEXT[r.error] };
 };
 

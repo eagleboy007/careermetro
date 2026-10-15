@@ -15,8 +15,8 @@ import { NoCompanyRole } from "../no-role";
 export const metadata: Metadata = { title: "Find people · Corporate · CareerMetro", robots: { index: false } };
 
 /*
- * Corporate > Find people (pending item 19), at `/corporate/people?job=…&band=…&page=…`: the address holds only a job
- * id, an experience band and a page, never anything typed or personal. Opening it fills in the form; the search itself
+ * Corporate > Find people (pending item 19), at `/corporate/people?job=…&band=…&role=…&verified=1&page=…`: the address
+ * holds only a job id, the filters picked from fixed choices (T44) and a page, never anything typed or personal. Opening it fills in the form; the search itself
  * runs only when Search is pressed (a server action, Testing T41). The person's live company role, job team and the
  * company's state are read on every request. Without accounts (the example preview) it shows example data where
  * nothing is sent.

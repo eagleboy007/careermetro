@@ -7,10 +7,31 @@ const ORG = "3e9f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a72";
 const REF = "A".repeat(20) + "b-_".repeat(13);
 
 describe("find people schemas (pending item 19)", () => {
-  it("search by a job, an optional band and a page", () => {
-    expect(findSearchInput.parse({ jobId: JOB })).toEqual({ jobId: JOB, band: null, page: 1 });
-    expect(findSearchInput.parse({ jobId: JOB, band: "2-5", page: 3 })).toEqual({ jobId: JOB, band: "2-5", page: 3 });
-    for (const bad of [{ jobId: "SOC analyst" }, { jobId: JOB, band: "3-4" }, { jobId: JOB, page: 0 }, { jobId: JOB, page: 51 }, { jobId: JOB, page: 1.5 }]) {
+  it("search by a job and a page, with any of experience bands, target roles and verified profiles (T44)", () => {
+    expect(findSearchInput.parse({ jobId: JOB })).toEqual({ jobId: JOB, bands: [], roles: [], cities: [], verified: false, page: 1 });
+    expect(findSearchInput.parse({ jobId: JOB, bands: ["2-5", "10+", "2-5"], roles: ["data-analyst", "soc-analyst-l1"], cities: ["Pune", "Kochi", "Pune"], verified: true, page: 3 })).toEqual({
+      jobId: JOB,
+      bands: ["2-5", "10+"],
+      roles: ["data-analyst", "soc-analyst-l1"],
+      cities: ["Pune", "Kochi"],
+      verified: true,
+      page: 3,
+    });
+    const tooManyRoles = Array.from({ length: 11 }, (_, i) => `role-${i}`);
+    for (const bad of [
+      { jobId: "SOC analyst" },
+      { jobId: JOB, bands: ["3-4"] },
+      { jobId: JOB, bands: "2-5" },
+      { jobId: JOB, roles: ["Data Analyst"] },
+      { jobId: JOB, roles: ["../x"] },
+      { jobId: JOB, roles: tooManyRoles },
+      { jobId: JOB, cities: ["pune"] },
+      { jobId: JOB, cities: ["Flat 4, MG Road, Pune"] },
+      { jobId: JOB, verified: "yes" },
+      { jobId: JOB, page: 0 },
+      { jobId: JOB, page: 51 },
+      { jobId: JOB, page: 1.5 },
+    ]) {
       expect(findSearchInput.safeParse(bad).success).toBe(false);
     }
   });
@@ -23,9 +44,18 @@ describe("find people schemas (pending item 19)", () => {
   });
 
   it("read an address leniently, dropping what isn't one of the choices", () => {
-    expect(findSearchFromParams({ job: JOB, band: "5-10", page: "2" })).toEqual({ jobId: JOB, band: "5-10", page: 2 });
-    expect(findSearchFromParams({ job: "x", band: "any", page: "-3" })).toEqual({ jobId: null, band: null, page: 1 });
-    expect(findSearchFromParams({ job: [JOB, JOB], page: "999" })).toEqual({ jobId: null, band: null, page: 1 });
+    const empty = { bands: [], roles: [], cities: [], verified: false };
+    expect(findSearchFromParams({ job: JOB, band: "5-10", page: "2" })).toEqual({ jobId: JOB, ...empty, bands: ["5-10"], page: 2 });
+    expect(findSearchFromParams({ job: JOB, band: ["0-2", "any", "10+"], role: ["data-analyst", "Data Analyst"], city: ["Kochi", "Atlantis"], verified: "1" })).toEqual({
+      jobId: JOB,
+      bands: ["0-2", "10+"],
+      roles: ["data-analyst"],
+      cities: ["Kochi"],
+      verified: true,
+      page: 1,
+    });
+    expect(findSearchFromParams({ job: "x", band: "any", verified: "yes", page: "-3" })).toEqual({ jobId: null, ...empty, page: 1 });
+    expect(findSearchFromParams({ job: [JOB, JOB], page: "999" })).toEqual({ jobId: null, ...empty, page: 1 });
   });
 
   it("name people only by an opaque ref of the right shape", () => {

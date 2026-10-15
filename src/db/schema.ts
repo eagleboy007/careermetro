@@ -116,6 +116,11 @@ export const users = pgTable(
     /** Optional one line under the name on the profile. */
     headline: text("headline"),
     /**
+     * Optional city, one of PERSON_CITIES (T44, Milin 2026-10-15). Only companies that can find the person see it and
+     * filter by it; never on the public profile. Checked by Zod, so no CHECK constraint on this existing table.
+     */
+    city: text("city"),
+    /**
      * Suspended by a CareerMetro admin after a report (FR-46, docs/plans/reports-review-plan.md): the person sees only the
      * suspension notice and companies stop seeing them. Lifting clears all three. Never deletes anything.
      */

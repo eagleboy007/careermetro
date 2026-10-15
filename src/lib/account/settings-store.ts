@@ -26,6 +26,8 @@ export type AccountSettings = {
   /** When the username can next change; null when it can change now (or none is set yet). */
   usernameLockedUntil: Date | null;
   headline: string | null;
+  /** One of PERSON_CITIES, or null (T44). */
+  city: string | null;
   settings: UserSettings;
   pay: Pay;
 };
@@ -59,7 +61,7 @@ const lockedUntil = (changedAt: Date | null, now: Date): Date | null => {
 /** Everything the settings page shows for part 2. Pay is read here for its owner only. */
 export async function readAccountSettings(userId: string, now: Date, db: Db = getDb()): Promise<AccountSettings | null> {
   const [[user], settings, [pay]] = await Promise.all([
-    db.select({ username: users.username, changedAt: users.usernameChangedAt, headline: users.headline }).from(users).where(eq(users.id, userId)).limit(1),
+    db.select({ username: users.username, changedAt: users.usernameChangedAt, headline: users.headline, city: users.city }).from(users).where(eq(users.id, userId)).limit(1),
     settingsFor(userId, db),
     db.select({ currentLakh: userPay.currentLakh, expectedLakh: userPay.expectedLakh }).from(userPay).where(eq(userPay.userId, userId)).limit(1),
   ]);
@@ -68,6 +70,7 @@ export async function readAccountSettings(userId: string, now: Date, db: Db = ge
     username: user.username,
     usernameLockedUntil: user.username ? lockedUntil(user.changedAt, now) : null,
     headline: user.headline,
+    city: user.city,
     settings,
     pay: pay ?? { currentLakh: null, expectedLakh: null },
   };
@@ -126,6 +129,7 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
       if (!me || me.deletionRequestedAt) return fail({ settings: "Please sign in again to save changes." });
 
       const changes: Partial<typeof users.$inferInsert> = { headline: input.headline };
+      if (input.city !== undefined) changes.city = input.city;
       const name = input.username;
       if (name && name !== me.username) {
         const until = me.username ? lockedUntil(me.changedAt, now) : null;

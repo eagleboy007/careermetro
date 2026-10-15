@@ -41,7 +41,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
 
   it("starts with the defaults and no pay", async () => {
     const s = await readAccountSettings(a, new Date(), db!);
-    expect(s).toEqual({ username: null, usernameLockedUntil: null, headline: null, settings: DEFAULT_SETTINGS, pay: { currentLakh: null, expectedLakh: null } });
+    expect(s).toEqual({ username: null, usernameLockedUntil: null, headline: null, city: null, settings: DEFAULT_SETTINGS, pay: { currentLakh: null, expectedLakh: null } });
   });
 
   it("saves username, headline, pay and settings together", async () => {
@@ -55,6 +55,16 @@ describe.skipIf(!db)("account settings store (database)", () => {
     expect(s?.pay).toEqual({ currentLakh: 4.2, expectedLakh: 6 });
     expect(s?.settings).toEqual(settings);
     expect(s?.usernameLockedUntil?.getTime()).toBe(now.getTime() + 30 * DAY);
+  });
+
+  it("saves an optional city from the list, keeps it when a save leaves it out, and clears it (T44)", async () => {
+    const now = new Date();
+    expect(await saveAccountSettings(b, form({ city: "Pune" }), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(b, now, db!))?.city).toBe("Pune");
+    expect(await saveAccountSettings(b, form(), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(b, now, db!))?.city).toBe("Pune");
+    expect(await saveAccountSettings(b, form({ city: "" }), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(b, now, db!))?.city).toBeNull();
   });
 
   it("treats usernames as one ignoring case, for checks and saves", async () => {
