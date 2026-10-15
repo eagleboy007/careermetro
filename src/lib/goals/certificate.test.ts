@@ -47,7 +47,7 @@ describe.skipIf(!db)("certificate proof (database)", () => {
     issuedOn: "2025-03-01",
     expiresOn: "2028-03-01",
     nameOnCertificate: "Priya Sharma",
-    url: "https://www.credly.com/badges/example",
+    url: "https://learn.microsoft.com/api/credentials/share/en-us/ExampleUser/EXAMPLE",
     confirmed: true,
     ...over,
   });

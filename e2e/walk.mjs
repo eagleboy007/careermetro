@@ -454,7 +454,7 @@ await step("add a certificate: the form opens, and a name that isn't yours is re
   await form.getByLabel("Your name as printed").fill("Amit Verma");
   await form.getByLabel("Date issued").fill("2025-03-01");
   await form.getByLabel("It never expires").check();
-  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/walk-test");
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f1");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();
   await form.getByText(/doesn't match your account/).waitFor({ timeout: 10000 });
@@ -471,7 +471,7 @@ await step("design page: the certificate form says example data is never saved",
   await form.getByLabel("Your name as printed").fill("Priya Sharma");
   await form.getByLabel("Date issued").fill("2025-03-01");
   await form.getByLabel("Expiry date").fill("2028-03-01");
-  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/example");
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f2");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();
   await form.getByText(/example data, so nothing is saved/).waitFor({ timeout: 5000 });

@@ -85,6 +85,10 @@ describe("addCertificate", () => {
     submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "added", note: "expired" });
     expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/Renew/) });
+    // Credly not answering about an older accepted row of the same credential: this goal's row still waits.
+    submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
+    credly.mockResolvedValueOnce({ status: "added", note: "unreachable" });
+    expect(await addCertificate(good)).toEqual({ status: "saved", message: expect.stringMatching(/check pending.*Credly didn't answer/) });
     // A badge already on another account is held for review.
     submit.mockResolvedValueOnce({ status: "pending", skillId: "aws", proofId: "p1" });
     credly.mockResolvedValueOnce({ status: "held" });

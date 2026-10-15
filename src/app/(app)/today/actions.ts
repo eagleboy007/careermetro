@@ -75,7 +75,9 @@ export async function addCertificate(input: unknown): Promise<CertificateResult>
       case "rejected":
         return { status: "refused", message: CERTIFICATE_REFUSAL_MESSAGES.name };
       case "added":
-        return check.note === "expired" ? { status: "saved", message: CREDLY_EXPIRED_MESSAGE } : { status: "filled", label: "added", note: CREDLY_NOTE_MESSAGES[check.note] };
+        // "added" here is about an older accepted row of the same credential; this goal's row is still waiting for its
+        // check, so the goal isn't proved.
+        return check.note === "expired" ? { status: "saved", message: CREDLY_EXPIRED_MESSAGE } : { status: "saved", message: `${CREDLY_PENDING_MESSAGE} ${CREDLY_NOTE_MESSAGES[check.note]}` };
       case "pending":
         return { status: "saved", message: `${CREDLY_PENDING_MESSAGE} ${CREDLY_NOTE_MESSAGES[check.note]}` };
       case "refused":

@@ -375,26 +375,62 @@ describe.skipIf(!db)("Credly check (database)", () => {
     expect(await db!.select().from(schema.gapProofs).where(eq(schema.gapProofs.userId, b.userId))).toHaveLength(1);
     const { CERTIFICATE_REFUSAL_MESSAGES } = await import("./messages");
     expect(CERTIFICATE_REFUSAL_MESSAGES.reviewed).toMatch(/Grievances/);
-    // A different certificate is still welcome, and a Credly refusal for another name (no review) isn't "reviewed".
+    // A different certificate is still welcome.
     expect(await submit(b.userId, cert(b.goalId, { credentialId: `RV-D-${run}` }))).toMatchObject({ status: "pending" });
-    const c = await person("reviewed-c");
-    const cid = await added(c.userId, c.goalId, { url: badge("07"), credentialId: `RV-E-${run}` });
-    expect(await check(c.userId, cid)).toEqual({ status: "rejected", reason: "name" });
-    expect(await submit(c.userId, cert(c.goalId, { url: badge("07"), credentialId: `RV-E-${run}` }))).toMatchObject({ status: "pending" });
   });
 
   it("never takes a refused row as the person's existing certificate, so sending it again keeps one accepted row", async () => {
     const me = await person("refused-row");
     const credentialId = `RR-${run}`;
-    const refused = await added(me.userId, me.goalId, { url: badge("07"), credentialId });
-    expect(await check(me.userId, refused)).toEqual({ status: "rejected", reason: "name" });
     const ms = "https://learn.microsoft.com/api/credentials/share/en-us/PriyaSharma/RR";
+    const old = await submit(me.userId, cert(me.goalId, { url: ms, credentialId }));
+    if (old.status !== "filled") throw new Error(JSON.stringify(old));
+    // Refused some other way than a review or Credly's name check (setProofStatus).
+    await db!.update(schema.gapProofs).set({ status: "rejected", verifier: null }).where(eq(schema.gapProofs.id, old.proofId));
     const first = await submit(me.userId, cert(me.goalId, { url: ms, credentialId }));
     expect(first).toMatchObject({ status: "filled", label: "added" });
+    expect((first as { proofId: string }).proofId).not.toBe(old.proofId);
     for (let i = 0; i < 3; i++) expect(await submit(me.userId, cert(me.goalId, { url: ms, credentialId, issuedOn: `2025-0${i + 4}-01` }))).toEqual(first);
     const rows = await db!.select({ status: schema.gapProofs.status }).from(schema.gapProofs).where(eq(schema.gapProofs.userId, me.userId));
     expect(rows.map((r) => r.status).sort()).toEqual(["accepted", "rejected"]);
-    expect((await proof(refused)).status).toBe("rejected");
+  });
+
+  // Review B1: a Credly link that names no badge would skip the check and fill the goal at once.
+  describe("B1: Credly links must name a badge", () => {
+    it("refuses the victim's badge link with .json added, saving nothing", async () => {
+      const a = await person("b1-victim");
+      const b = await person("b1-copier", "Amit", "Verma");
+      const { url } = ownBadge();
+      await verified(a.userId, a.goalId, { credentialId: `B1A-${run}`, url });
+      expect(await submit(b.userId, cert(b.goalId, { credentialId: `B1B-${run}`, nameOnCertificate: "Amit Verma", url: `${url}.json` }))).toEqual({ status: "refused", reason: "link" });
+      expect(await db!.select().from(schema.gapProofs).where(eq(schema.gapProofs.userId, b.userId))).toEqual([]);
+      expect(await goalStatus(b.goalId)).toBe("active");
+    });
+
+    it("refuses the same credential again after Credly named another earner, with any link", async () => {
+      const me = await person("b1-renamed");
+      const credentialId = `B1C-${run}`;
+      const id = await added(me.userId, me.goalId, { url: badge("07"), credentialId });
+      expect(await check(me.userId, id)).toEqual({ status: "rejected", reason: "name" });
+      expect(await submit(me.userId, cert(me.goalId, { url: `${badge("07")}.json`, credentialId }))).toEqual({ status: "refused", reason: "link" });
+      expect(await submit(me.userId, cert(me.goalId, { url: badge("07"), credentialId }))).toEqual({ status: "refused", reason: "name" });
+      expect(await submit(me.userId, cert(me.goalId, { url: "https://learn.microsoft.com/api/credentials/share/en-us/PriyaSharma/B1C", credentialId }))).toEqual({
+        status: "refused",
+        reason: "name",
+      });
+      expect(await goalStatus(me.goalId)).toBe("active");
+      expect(await met(me.userId)).toBe(false);
+    });
+
+    it("never accepts a pending Credly certificate sent again with a link that names no badge", async () => {
+      const me = await person("b1-pending");
+      const credentialId = `B1D-${run}`;
+      const id = await added(me.userId, me.goalId, { credentialId });
+      expect(await submit(me.userId, cert(me.goalId, { url: "https://www.credly.com/badges/anything", credentialId }))).toEqual({ status: "refused", reason: "link" });
+      expect(await proof(id)).toMatchObject({ status: "pending", heldReason: "credly_check" });
+      expect(await goalStatus(me.goalId)).toBe("active");
+      expect(await met(me.userId)).toBe(false);
+    });
   });
 
   it("verifies one badge on one account only", async () => {

@@ -1,6 +1,7 @@
 import { credlyBadge, type CredlyBadge, type CredlyCheckNote, type Certification } from "@/lib/schemas";
 import { checkName, nameHashes } from "@/lib/resume/name-match";
-import { allowedVerifyLink } from "./rules";
+// BADGE_LINK_HOSTS: hosts whose badge links we read a badge id from. rules.ts has already accepted the link.
+import { allowedVerifyLink, BADGE_LINK_HOSTS } from "./rules";
 
 /**
  * The Credly badge check (pending item 13, dev/profile-certs-plan.md). Credly's public badge JSON needs no key. This
@@ -8,8 +9,6 @@ import { allowedVerifyLink } from "./rules";
  * network call is `fetchCredlyBadge`, and everything else takes a fetcher so tests and local test mode never call out.
  */
 
-/** Hosts whose badge links we read a badge id from. rules.ts has already accepted the link. */
-const BADGE_LINK_HOSTS = new Set(["www.credly.com", "credly.com", "www.youracclaim.com"]);
 /** The only hosts the check ever calls: Credly and its API host. */
 const FETCH_HOSTS = new Set(["www.credly.com", "credly.com", "api.credly.com"]);
 export const CREDLY_TIMEOUT_MS = 4000;

@@ -394,12 +394,23 @@ export async function submitCertificate(
     // Rejected after review (the held-proof review keeps the held reason on the rejected row): the same credential or
     // badge from the same person is settled, so it isn't sent to review again; Grievances is the way to dispute it.
     const sameClaim = badgeId ? or(and(eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key)), eq(gapProofs.badgeId, badgeId)) : and(eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key));
-    const [reviewed] = await tx
-      .select({ id: gapProofs.id })
+    // Likewise a credential Credly showed in another earner's name: sent again (with any link), it is refused with the
+    // name-mismatch message, which also points to Grievances (review B1).
+    const sameCredential = and(eq(gapProofs.certId, cert!.id), eq(gapProofs.credentialKey, key));
+    const [settled] = await tx
+      .select({ heldReason: gapProofs.heldReason })
       .from(gapProofs)
-      .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "rejected"), isNotNull(gapProofs.heldReason), sameClaim))
+      .where(
+        and(
+          eq(gapProofs.userId, userId),
+          eq(gapProofs.type, "certification"),
+          eq(gapProofs.status, "rejected"),
+          or(and(isNotNull(gapProofs.heldReason), sameClaim), and(eq(gapProofs.checkNote, "earner_name"), sameCredential)),
+        ),
+      )
+      .orderBy(sql`${gapProofs.heldReason} is null`)
       .limit(1);
-    if (reviewed) return { status: "refused", reason: "reviewed" };
+    if (settled) return { status: "refused", reason: settled.heldReason ? "reviewed" : "name" };
 
     const since = new Date(Date.now() - 24 * 3600_000);
     const [{ added }] = await tx
@@ -540,6 +551,40 @@ export async function renewExpiredGoals(today = indiaToday(), db: Db = getDb(), 
       await refreshGoals(tx, e.userId, e.skillId, members, today);
     });
     people.add(e.userId);
+  }
+  return people.size;
+}
+
+/**
+ * Daily job, and the one-off step after migration 0029 (review B2): goals still "met" by a certificate that no longer
+ * counts (waiting for its Credly check, held for review, or refused) are brought in line, each under the person's
+ * lock. A goal their resume or another current proof meets stays met, so running it again changes nothing. Returns how
+ * many people were looked at.
+ */
+export async function reopenUnconfirmedGoals(
+  db: Db = getDb(),
+  members: ReadonlyMap<string, string[]> = skillGroupMembers,
+  /** Only these people (tests share one database). */
+  only?: string[],
+): Promise<number> {
+  const stale = await db
+    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId })
+    .from(gapProofs)
+    .innerJoin(userGoals, and(eq(userGoals.userId, gapProofs.userId), eq(userGoals.status, "met")))
+    .where(
+      and(
+        eq(gapProofs.type, "certification"),
+        or(eq(gapProofs.status, "rejected"), and(eq(gapProofs.status, "pending"), isNotNull(gapProofs.heldReason))),
+        only ? inArray(gapProofs.userId, only) : undefined,
+      ),
+    );
+  const people = new Set<string>();
+  for (const s of stale) {
+    await db.transaction(async (tx) => {
+      await lockPerson(tx, s.userId);
+      await refreshGoals(tx, s.userId, s.skillId, members);
+    });
+    people.add(s.userId);
   }
   return people.size;
 }
