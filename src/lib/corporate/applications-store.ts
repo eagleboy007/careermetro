@@ -85,6 +85,9 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
 
 export type ApplicationResult<T = object> = ({ ok: true } & T) | { ok: false; error: ApplicationError; message?: string };
 
+/** What the candidate reads when a suspended company moves them to Not this time, in place of the company's note. */
+export const PAUSED_NOT_THIS_TIME_NOTE = "This company closed your application while CareerMetro reviews it. You can apply to other jobs on Departures.";
+
 const fail = (error: ApplicationError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -620,7 +623,10 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
       // Not this time also erases a phone shared for an interview: the application is closed, so no one needs it.
       .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null, ...(closing ? { phoneShared: null } : {}) })
       .where(eq(applications.id, app.id));
-    await event(tx, app.id, "moved", to, userId, now, closing ? note : null);
+    // A company that isn't verified may still close an application, but the candidate reads fixed wording, never its
+    // own note: a company we no longer trust gets no free-text channel to them (security review 2026-10-13).
+    const paused = app.orgStatus !== "verified";
+    await event(tx, app.id, "moved", to, userId, now, closing ? (paused ? PAUSED_NOT_THIS_TIME_NOTE : note) : null);
     // Who moved it, and to which lane; never the note.
     await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: `moved_${to}`, target: { application: app.id } }, now);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.

@@ -550,6 +550,11 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
   const now = deps.now ?? new Date();
   const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
+  // A company that isn't verified (suspended, say) sees no candidate, interviewer or feedback here, as on the board and
+  // in Messages (security review 2026-10-13).
+  const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
+  const status = org?.status ?? "pending";
+  if (status !== "verified") return { ok: true, view: { company: me.orgName, role: me.role, status, items: [] } };
   const rows = await db
     .select({
       applicationId: applications.id,
@@ -597,7 +602,7 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
     if (!view) return [];
     return [{ ...view, applicationId: r.applicationId, jobId: r.jobId, candidate: displayName(r.candidate), job: r.job, day: indiaDay(r.startsAt), assigned: assigned.has(r.interviewId) }];
   });
-  return { ok: true, view: { company: me.orgName, role: me.role, items } };
+  return { ok: true, view: { company: me.orgName, role: me.role, status, items } };
 }
 
 /* Download your data ---------------------------------------------------------------------------------------------- */
