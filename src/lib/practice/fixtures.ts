@@ -19,7 +19,7 @@ const skill = (skillId: string, tag: PracticeTag, ratings: number[]) => ({
 export const examplePractice: PracticeView = practiceView.parse({
   skills: [skill("python", "current", [1, 2, 2, 3]), skill("communication", "ahead", [2]), skill("sql", "met", [3, 3, 4])],
   left: 7,
-  noQuestions: [nameOf("statistics"), nameOf("data-visualization")],
+  noQuestions: [nameOf("tableau"), nameOf("power-bi")],
 });
 
 /** The same person at 0 answers left today, for the design page. */

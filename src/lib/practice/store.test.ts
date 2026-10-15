@@ -119,7 +119,7 @@ describe.skipIf(!db)("practice store (database)", () => {
   });
 
   it("rates only the person's own answers, and builds the picker and the trend from those ratings", async () => {
-    const me = await person("rate", [{ skillId: "sql", status: "met" }, { skillId: "python" }, { skillId: "statistics" }, { skillId: "docker" }]);
+    const me = await person("rate", [{ skillId: "sql", status: "met" }, { skillId: "python" }, { skillId: "tableau" }, { skillId: "docker" }]);
     const other = await person("rate-other", [{ skillId: "python" }]);
     const { client: c } = client(JSON.stringify(good));
     const a = await submitPracticeAnswer(me, { questionId: "python-1", answer: ANSWER }, { db: db!, client: c, now: clock });
@@ -140,7 +140,7 @@ describe.skipIf(!db)("practice store (database)", () => {
     ]);
     expect(view.skills.find((s) => s.skillId === "python")!.ratings).toEqual([1, 3]);
     expect(view.skills[0].questions).toHaveLength(5);
-    expect(view.noQuestions).toEqual(["Statistics"]);
+    expect(view.noQuestions).toEqual(["Tableau"]);
     expect(await practiceTrendsFor(me, db!)).toEqual([{ skillId: "python", name: "Python", ratings: [1, 3] }]);
     expect(await practiceTrendsFor(other, db!)).toEqual([]);
   });
