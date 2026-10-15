@@ -63,13 +63,15 @@ const postingsDir = new URL("fixtures/job-postings/", root);
 const postings = readdirSync(postingsDir)
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(readFileSync(new URL(f, postingsDir), "utf8")));
+// MOCK_AI_DELAY_MS holds each answer back, as a real call takes 10 to 40 seconds (the load test, e2e/load-upload.mjs).
+const delay = Number(process.env.MOCK_AI_DELAY_MS ?? 0);
 let n = 0;
 http
   .createServer((req, res) => {
     let body = "";
     req.on("data", (c) => (body += c));
     req.on("end", () => {
-      n++;
+      const id = ++n;
       const j = JSON.parse(body || "{}");
       const sys = typeof j.system === "string" ? j.system : JSON.stringify(j.system ?? "");
       const sent = JSON.stringify(j.messages ?? "");
@@ -79,20 +81,24 @@ http
       const content = typeof j.messages?.[0]?.content === "string" ? j.messages[0].content : "";
       const posting = isJd ? postings.find((p) => content.includes(p.text.split("\n")[0])) : undefined;
       const text = isJd ? JSON.stringify({ skills: posting?.skills ?? [] }) : isParse ? JSON.stringify(persona?.profile ?? profile) : "not json";
-      console.log(n, req.url, isJd ? "parse-jd" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(
-        JSON.stringify({
-          id: "msg_" + n,
-          type: "message",
-          role: "assistant",
-          model: j.model,
-          stop_reason: "end_turn",
-          stop_sequence: null,
-          usage: { input_tokens: 1000, output_tokens: 300 },
-          content: [{ type: "text", text }],
-        }),
-      );
+      console.log(id, req.url, isJd ? "parse-jd" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
+      const answer = () => {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(
+          JSON.stringify({
+            id: "msg_" + id,
+            type: "message",
+            role: "assistant",
+            model: j.model,
+            stop_reason: "end_turn",
+            stop_sequence: null,
+            usage: { input_tokens: 1000, output_tokens: 300 },
+            content: [{ type: "text", text }],
+          }),
+        );
+      };
+      if (delay > 0) setTimeout(answer, delay);
+      else answer();
     });
   })
   .listen(Number(process.env.MOCK_AI_PORT ?? 4011), () => console.log(`mock on ${process.env.MOCK_AI_PORT ?? 4011}`));

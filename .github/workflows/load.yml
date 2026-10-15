@@ -1,0 +1,86 @@
+name: Load test
+
+# Uploads at launch-day traffic against a production build with the stand-in Claude API, which answers after 15
+# seconds like a real parse (e2e/load-upload.mjs, launch-readiness (c) 7). It runs when the upload path or the
+# database pool changes, and by hand.
+on:
+  pull_request:
+    paths:
+      - e2e/load-upload.mjs
+      - e2e/mock-ai.mjs
+      - src/app/api/resume/route.ts
+      - src/lib/resume/ingest.ts
+      - src/lib/resume/parse.ts
+      - src/db/index.ts
+      - .github/workflows/load.yml
+  workflow_dispatch:
+    inputs:
+      burst:
+        description: "Uploads sent at the same moment"
+        required: false
+        default: "40"
+      rate:
+        description: "Uploads a second in the steady phase"
+        required: false
+        default: "2"
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: public.ecr.aws/docker/library/postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cm
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run build
+      - name: Upload at launch traffic
+        env:
+          VERCEL_ENV: preview
+          ANTHROPIC_API_KEY: sk-e2e
+          ANTHROPIC_BASE_URL: http://127.0.0.1:4011
+          MOCK_AI_DELAY_MS: "15000"
+          # The stand-in's calls are priced like real ones; the test is about connections, not the spend cap.
+          PARSE_DAILY_BUDGET_USD: "1000"
+          PHONE_KEY: e2e-only-phone-key
+          FIND_REF_KEY: e2e-only-find-ref-key
+          NAME_HASH_KEY: e2e-only-name-hash-key
+          CRON_SECRET: e2e-only-cron-secret
+          BASE: http://localhost:3211
+          BURST: ${{ inputs.burst || '40' }}
+          RATE: ${{ inputs.rate || '2' }}
+        run: |
+          node e2e/mock-ai.mjs > load-mock-ai.log 2>&1 &
+          npx next start -p 3211 > load-server.log 2>&1 &
+          # The home page, not /api/health: health calls the stand-in, which now waits 15 seconds.
+          for i in $(seq 60); do curl -sf "$BASE/" > /dev/null && break; sleep 1; done
+          curl -sf "$BASE/" > /dev/null || { echo "The app did not start"; cat load-server.log; exit 1; }
+          node e2e/load-upload.mjs
+      - name: Keep the report and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: load-results
+          path: |
+            e2e/results/load.json
+            load-server.log
+            load-mock-ai.log
+          retention-days: 7
