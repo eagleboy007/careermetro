@@ -1563,7 +1563,8 @@ await step("reports: the admin acknowledges one, then closes it", async () => {
     await row.waitFor();
     await row.getByText("Message from Walkother S.").waitFor();
     await row.getByText("Walkreport R.").waitFor();
-    const body = await q.locator("body").innerText();
+    // Other steps' reports may be open too, so only this row is checked.
+    const body = await row.innerText();
     if (/@/.test(body)) throw new Error("an email address is shown on the reports page");
     if (/Walkreport Rao|Walkother Sen/.test(body)) throw new Error("a full last name is shown on the reports page");
     const ack = row.getByRole("button", { name: /^Acknowledge: / });

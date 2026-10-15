@@ -10,7 +10,7 @@ Date: 2026-10-15. Decided by Development under Milin's standing delegation; Mili
 
 ## Decisions
 - Deadlines follow the Grievances page: acknowledge every report within 24 hours. Sexual content or impersonation: act within 24 hours. Money or OTP asks, harassment, fake jobs and spam: act within 72 hours (each is a request to act on something that breaks the rules). Something else: decide within 15 days.
-- The admin sees the reported message text or job title, because they can't decide without it. People are first name and last initial only. It is admin-only and never logged.
+- The admin sees the reported message text or job title, because they can't decide without it. People are first name and last initial only. It is admin-only and never logged. The message and the reporter's note are shown as they were written, so anything a person typed into them (a phone number, say) shows too; the admin needs the words to decide.
 - Action taken records the decision. The tool itself doesn't remove content. The admin suspends a company from Company review. Removing a message and suspending a person's account are the next step; they wait for Milin, because they delete or lock real user data.
 - Telling the reporter the outcome waits for the email sender key.
 - Report notes are kept with the report. The privacy notice says so (launch-readiness item 8, already listed), and the IT Rules want grievance records kept. Notes are not cleared at purge. This settles inbox-plan.md's DPDP line.
