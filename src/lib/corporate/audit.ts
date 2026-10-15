@@ -122,6 +122,7 @@ export async function companyAudit(userId: string, raw: unknown, deps: AuditDeps
   const who = (actor: string): AuditWhoView => {
     if (actor === "candidate") return { kind: "candidate" };
     if (actor === "system") return { kind: "system" };
+    if (actor === "requester") return { kind: "requester" };
     const m = memberOf.get(split(actor)?.id ?? "");
     // A member whose account was deleted (the row goes with it) or is being deleted.
     return m && !m.deleted ? { kind: "member", name: displayName(m.name), role: m.role } : { kind: "former" };

@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, gt, inArray, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { jobTeam, jobs, orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
+import { conversationMembers, conversations, jobTeam, jobs, orgInvites, orgMembers, organizations, users, workEmailCodes } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { sendEmail } from "@/lib/email/send";
 import { logEvent } from "@/lib/log";
@@ -19,7 +19,7 @@ import {
 } from "@/lib/schemas/corporate";
 import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, RECHECK_CLOSED_TEXT, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode } from "./codes";
+import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode, workEmailReady } from "./codes";
 import { writeAudit } from "./audit-line";
 import { codeDelivery } from "./delivery";
 import { companyJobs } from "./jobs-store";
@@ -56,7 +56,8 @@ export type CorporateError =
   | "wrong"
   | "expired"
   | "locked"
-  | "none";
+  | "none"
+  | "not_set_up";
 
 export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   invalid: "Check the details and try again.",
@@ -76,12 +77,15 @@ export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   expired: CODE_ERROR_TEXT.expired,
   locked: CODE_ERROR_TEXT.locked,
   none: CODE_ERROR_TEXT.none,
+  not_set_up: "Work email checks aren't set up yet. Company sign-up opens soon.",
 };
 
 export type Result<T = object> = ({ ok: true } & T) | { ok: false; error: CorporateError; message?: string };
 
 const fail = (error: CorporateError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const firstIssue = (e: { issues: { message: string }[] }) => e.issues[0]?.message;
+/** Production without NAME_HASH_KEY: no work email or code can be hashed, so every work-email step is refused. */
+const notSetUp = (deps: CorporateDeps) => !workEmailReady(deps.env ?? process.env);
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 
 /* Membership ------------------------------------------------------------------------------------------------------ */
@@ -280,6 +284,7 @@ export async function clearExpiredCodes(db: Db = getDb(), now = new Date()): Pro
  * mail, for a domain another company already has (without naming its admins), and for someone who already has a role.
  */
 export async function startCompanySignup(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ testCode?: string }>> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const parsed = signupDetails.safeParse(raw);
   if (!parsed.success) return fail("invalid", firstIssue(parsed.error));
@@ -296,6 +301,7 @@ export async function startCompanySignup(userId: string, raw: unknown, deps: Cor
  * Recruiter admin. The second admin is due within 14 days.
  */
 export async function finishCompanySignup(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ orgId: string }>> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = signupFinish.safeParse(raw);
@@ -383,7 +389,14 @@ export async function requestAccess(userId: string, raw: unknown, deps: Corporat
     .limit(1);
   if (open) return { ok: true };
   if (!(await takeShared(LIMITS.corporateRequestsPerUser, userId, { db, now: now.getTime() }))) return fail("limit");
-  await db.insert(orgInvites).values({ orgId: org.id, kind: "request", emailDomain: domain.domain, userId, createdAt: now, expiresAt: inviteExpiresAt(now) });
+  await db.transaction(async (tx) => {
+    const [request] = await tx
+      .insert(orgInvites)
+      .values({ orgId: org.id, kind: "request", emailDomain: domain.domain, userId, createdAt: now, expiresAt: inviteExpiresAt(now) })
+      .returning({ id: orgInvites.id });
+    // The asker has no role yet, so the line names the request only (security review 2026-10-13).
+    await writeAudit(tx, { orgId: org.id, actor: "requester", action: "access_requested", target: { invite: request.id } }, now);
+  });
   return { ok: true };
 }
 
@@ -402,6 +415,7 @@ async function adminOf(userId: string, db: Db | Tx, now: Date) {
  * signs in with their own account, types that address in Corporate, and the code switches the role on.
  */
 export async function inviteMember(adminId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = inviteInput.safeParse(raw);
@@ -518,6 +532,17 @@ export async function removeMember(adminId: string, raw: unknown, deps: Corporat
     if (refusal) return fail(refusal);
     await tx.update(orgMembers).set({ removedAt: now, removedBy: adminId }).where(eq(orgMembers.id, target.id));
     await writeAudit(tx, { orgId: admin.me.orgId, actor: { memberId: admin.me.memberId }, action: "member_removed", target: { member: target.id } }, now);
+    // Their company-side read marks on this company's chats go too: they only held unread times, and no stale row is
+    // left behind for anything to mistake for membership (security review 2026-10-13).
+    await tx
+      .delete(conversationMembers)
+      .where(
+        and(
+          eq(conversationMembers.userId, target.userId),
+          eq(conversationMembers.role, "company_team"),
+          inArray(conversationMembers.conversationId, tx.select({ id: conversations.id }).from(conversations).where(eq(conversations.orgId, admin.me.orgId))),
+        ),
+      );
     // They leave every job team at this company too, owner rows included, so joining again later never brings back
     // rights on old jobs, their candidates or a phone shared with them (Testing T38). The jobs they owned pass to the
     // admin who removed them, who could already manage them; the member_removed line above stays in the audit.
@@ -562,6 +587,7 @@ async function waitingRole(userId: string, email: string, domain: string, db: Db
 
 /** Someone given a role types their work email: if access is waiting for it, a code goes there. */
 export async function startJoin(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ testCode?: string }>> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = joinStart.safeParse(raw);
@@ -576,6 +602,7 @@ export async function startJoin(userId: string, raw: unknown, deps: CorporateDep
 
 /** The right code switches the role on. One active role per person, so a second company is refused. */
 export async function finishJoin(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ orgId: string }>> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = joinFinish.safeParse(raw);
@@ -623,6 +650,7 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
  * paused there; previews and local copies show the code on screen.
  */
 export async function startRecheck(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ testCode?: string }>> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = joinStart.safeParse(raw);
@@ -637,6 +665,7 @@ export async function startRecheck(userId: string, raw: unknown, deps: Corporate
 
 /** The right code confirms the work email again: the role's company access is back for another 180 days. */
 export async function finishRecheck(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result> {
+  if (notSetUp(deps)) return fail("not_set_up");
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const parsed = joinFinish.safeParse(raw);
@@ -654,6 +683,8 @@ export async function finishRecheck(userId: string, raw: unknown, deps: Corporat
       .update(orgMembers)
       .set({ workEmailDomain: check.domain, workEmailVerifiedAt: now, recheckDueAt: recheckDueAt(now) })
       .where(eq(orgMembers.id, held.memberId));
+    // Company access is back: an access change, so it gets a line (security review 2026-10-13).
+    await writeAudit(tx, { orgId: held.orgId, actor: { memberId: held.memberId }, action: "access_rechecked", target: { member: held.memberId } }, now);
     logEvent("info", "work_email_rechecked");
     return { ok: true as const };
   });

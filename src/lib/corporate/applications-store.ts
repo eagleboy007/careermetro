@@ -63,6 +63,7 @@ export type ApplicationError =
   | "not_allowed"
   | "not_found"
   | "blocked_company"
+  | "paused"
   | MoveRefusal;
 
 export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
@@ -75,6 +76,7 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_allowed: "Only Recruiter admins, and Hiring HR on this job, can move candidates.",
   not_found: "That application isn't available any more.",
   blocked_company: "You've blocked this company. Unblock it in Settings, under Privacy, to apply to its jobs.",
+  paused: "Your company's candidates are paused while we review it.",
   same_stage: "They're already in that lane.",
   ai_off: "The L1 AI interview is off for this job.",
   withdrawn: "That application isn't available any more.",
@@ -82,6 +84,9 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
 };
 
 export type ApplicationResult<T = object> = ({ ok: true } & T) | { ok: false; error: ApplicationError; message?: string };
+
+/** What the candidate reads when a suspended company moves them to Not this time, in place of the company's note. */
+export const PAUSED_NOT_THIS_TIME_NOTE = "This company closed your application while CareerMetro reviews it. You can apply to other jobs on Departures.";
 
 const fail = (error: ApplicationError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
@@ -403,6 +408,9 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
   if (!job) return fail("not_found");
   const access = await jobAccess(userId, jobId, db, now);
   if (!access.ok) return access;
+  // Only a verified company sees its candidates: a suspended one sees "paused" (security review 2026-10-13).
+  const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
+  if (org?.status !== "verified") return fail("paused");
   const assignedOnly = !access.canMove;
   const rows = await db
         .select({
@@ -442,6 +450,8 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
       .from(applications)
       .where(and(eq(applications.jobId, jobId), isNotNull(applications.withdrawnAt), ne(applications.userId, userId))),
   ]);
+  // One line per board opening, naming the job only: never one per candidate shown.
+  await writeAudit(db, { orgId: me.orgId, actor: { memberId: access.me.memberId }, action: "board_viewed", target: { job: job.id } }, now);
   const cards: BoardCardView[] = seen.map((r) => {
     const profile = r.resumeId ? (profileOf.get(r.resumeId) ?? null) : null;
     return {
@@ -468,9 +478,11 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
 
 /**
  * One application the person may see on the company side, with its job and the company's state, or why not. Shared
- * with company chats (chats-store.ts), so the board and Messages answer to the same live access rules.
+ * with company chats (chats-store.ts), so the board and Messages answer to the same live access rules. A company that
+ * isn't verified (suspended, say) is refused with "paused" (security review 2026-10-13), except for the few writes
+ * that only help the candidate and return nothing of them (`evenIfPaused`): moving a lane and cancelling an interview.
  */
-export async function visibleApplication(userId: string, applicationId: string, db: Db | Tx, now: Date, lock = false) {
+export async function visibleApplication(userId: string, applicationId: string, db: Db | Tx, now: Date, lock = false, evenIfPaused = false) {
   if (!UUID.test(applicationId)) return fail("not_found");
   const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
@@ -511,6 +523,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
   if (!access.ok) return fail(access.error);
   // Interviewers see only candidates whose live interview they are on (build step 6), read live like the role.
   if (!access.canMove && !(await assignedApplications(userId, [app.id], db, now)).has(app.id)) return fail("not_found");
+  if (app.orgStatus !== "verified" && !evenIfPaused) return fail("paused");
   return { ok: true as const, app, access };
 }
 
@@ -554,7 +567,7 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
     now,
   );
   // The phone the candidate chose to share at an accepted interview: for that interview's team, while the application is open.
-  const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt });
+  const showPhone = phoneVisible({ canMove: access.canMove, ...audience, closed: !!app.closedAt, orgStatus: app.orgStatus });
   // A candidate who blocked the company can't be asked for times or booked (the server refuses both), so the drawer
   // doesn't offer it. The company is never told why (Testing T46).
   const canSchedule =
@@ -596,7 +609,8 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
   if (!parsed.success) return fail("invalid", parsed.error.issues[0]?.message);
   const { applicationId, to, note } = parsed.data;
   const result = await db.transaction(async (tx): Promise<ApplicationResult> => {
-    const found = await visibleApplication(userId, applicationId, tx, now, true);
+    // A suspended company may still move its candidates (corporate plan, step 4): the move returns nothing of them.
+    const found = await visibleApplication(userId, applicationId, tx, now, true, true);
     if (!found.ok) return found;
     const { app, access } = found;
     if (!access.canMove) return fail("not_allowed");
@@ -609,7 +623,10 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
       // Not this time also erases a phone shared for an interview: the application is closed, so no one needs it.
       .set({ stage: to, closedAt: closing ? now : null, companyAccessEndsAt: null, ...(closing ? { phoneShared: null } : {}) })
       .where(eq(applications.id, app.id));
-    await event(tx, app.id, "moved", to, userId, now, closing ? note : null);
+    // A company that isn't verified may still close an application, but the candidate reads fixed wording, never its
+    // own note: a company we no longer trust gets no free-text channel to them (security review 2026-10-13).
+    const paused = app.orgStatus !== "verified";
+    await event(tx, app.id, "moved", to, userId, now, closing ? (paused ? PAUSED_NOT_THIS_TIME_NOTE : note) : null);
     // Who moved it, and to which lane; never the note.
     await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: `moved_${to}`, target: { application: app.id } }, now);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.

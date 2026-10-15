@@ -218,6 +218,14 @@ export const COMPANY_AUDIT_ACTIONS = [
   "people_searched",
   "found_profile_viewed",
   "found_request_sent",
+  // Reads and sends the security review (2026-10-13) found unaudited: ids only, never what was read or written.
+  "board_viewed",
+  "chat_read",
+  "found_chat_read",
+  "message_sent",
+  "found_message_sent",
+  "access_rechecked",
+  "access_requested",
 ] as const;
 export type CompanyAuditAction = (typeof COMPANY_AUDIT_ACTIONS)[number];
 export const COMPANY_AUDIT_LABELS: Record<CompanyAuditAction, string> = {
@@ -249,6 +257,13 @@ export const COMPANY_AUDIT_LABELS: Record<CompanyAuditAction, string> = {
   people_searched: "Searched for people from a job",
   found_profile_viewed: "Opened a profile found in a search",
   found_request_sent: "Sent a message request to someone found in a search",
+  board_viewed: "Opened a job's board",
+  chat_read: "Read a candidate's chat",
+  found_chat_read: "Read a chat with someone found in a search",
+  message_sent: "Sent a message to a candidate",
+  found_message_sent: "Sent a message to someone found in a search",
+  access_rechecked: "Confirmed their work email again",
+  access_requested: "Asked for access",
 };
 /** Audit lines on one page of the company's audit view. */
 export const AUDIT_PAGE_SIZE = 50;

@@ -104,7 +104,7 @@ const CHAT_CLOSED_COMPANY = "This chat is closed, so you can't ask for times in 
 export type InterviewResult<T = object> = ({ ok: true } & T) | { ok: false; error: InterviewError; message?: string };
 const fail = (error: InterviewError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const companyFail = (error: string): { ok: false; error: InterviewError } =>
-  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : "not_found");
+  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : error === "paused" ? "suspended" : "not_found");
 
 /**
  * Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate, and
@@ -391,7 +391,7 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     // Lock order everywhere: the application row first, then the interview.
     const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, parsed.data.interviewId));
     if (!ref) return fail("not_found");
-    const found = await visibleApplication(userId, ref.applicationId, tx, now, true);
+    const found = await visibleApplication(userId, ref.applicationId, tx, now, true, true);
     if (!found.ok) return companyFail(found.error);
     const [iv] = await tx
       .select({ id: interviews.id, status: interviews.status, startsAt: interviews.startsAt })
@@ -550,6 +550,11 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
   const now = deps.now ?? new Date();
   const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
+  // A company that isn't verified (suspended, say) sees no candidate, interviewer or feedback here, as on the board and
+  // in Messages (security review 2026-10-13).
+  const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
+  const status = org?.status ?? "pending";
+  if (status !== "verified") return { ok: true, view: { company: me.orgName, role: me.role, status, items: [] } };
   const rows = await db
     .select({
       applicationId: applications.id,
@@ -597,7 +602,7 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
     if (!view) return [];
     return [{ ...view, applicationId: r.applicationId, jobId: r.jobId, candidate: displayName(r.candidate), job: r.job, day: indiaDay(r.startsAt), assigned: assigned.has(r.interviewId) }];
   });
-  return { ok: true, view: { company: me.orgName, role: me.role, items } };
+  return { ok: true, view: { company: me.orgName, role: me.role, status, items } };
 }
 
 /* Download your data ---------------------------------------------------------------------------------------------- */

@@ -501,7 +501,8 @@ export type SchedulerActions = {
 /** One line of Corporate Interviews. */
 export type InterviewListItem = CompanyInterviewView & { applicationId: string; jobId: string; candidate: string; job: string; day: string; assigned: boolean };
 
-export type CompanyInterviewsView = { company: string; role: OrgRole; items: InterviewListItem[] };
+/** `status`: the company's review status; one that isn't verified (suspended) sees no interviews (security review 2026-10-13). */
+export type CompanyInterviewsView = { company: string; role: OrgRole; status: OrgReviewStatus; items: InterviewListItem[] };
 
 /** Drawer actions for interviews (build step 6). */
 export type InterviewActions = {
@@ -560,7 +561,7 @@ export type CompanyOverviewView = {
 };
 
 /** Who did something, as an admin reads it: a member's name and role, the candidate, or a former member. */
-export type AuditWhoView = { kind: "member"; name: string; role: OrgRole } | { kind: "candidate" } | { kind: "former" } | { kind: "system" };
+export type AuditWhoView = { kind: "member"; name: string; role: OrgRole } | { kind: "candidate" } | { kind: "former" } | { kind: "system" } | { kind: "requester" };
 
 /** What it was done to: the company, a member, a role waiting for its code, a job (by title) or an application (by id and job title). */
 export type AuditOnView =

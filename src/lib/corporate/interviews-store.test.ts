@@ -9,7 +9,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { listThreads } from "@/lib/inbox/store";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
-import { applyToJob, exportApplications, jobBoard, moveApplication, myApplications, openCandidate, withdrawApplication } from "./applications-store";
+import { applyToJob, exportApplications, jobBoard, moveApplication, myApplications, openCandidate, PAUSED_NOT_THIS_TIME_NOTE, withdrawApplication } from "./applications-store";
 import { companyChat, companyMessages, sendCompanyMessage } from "./chats-store";
 import {
   askForTimes,
@@ -26,6 +26,7 @@ import {
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { jobForm, saveJob } from "./jobs-store";
 import { blockCompany, unblockCompany } from "./find-store";
+import { reviewCompany } from "@/lib/admin/companies";
 import { activeMembership, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
 
 vi.mock("server-only", () => ({}));
@@ -396,6 +397,73 @@ describe.skipIf(!db)("interviews (database)", () => {
     const [row] = await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(and(eq(schema.applications.id, s.applicationId)));
     expect(row.phone).toBeNull();
     expect(await openCandidate(s.iv, { applicationId: s.applicationId }, at())).toMatchObject({ ok: false });
+  });
+
+  it("shows a suspended company no candidates and erases every shared phone on suspension; the board open is one audit line (security review 2026-10-13)", async () => {
+    const s = await setup("suspend");
+    const { slot } = await offered(s, ["2026-10-14T11:00", "2026-10-15T10:00"]);
+    const one = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    const two = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-15T10:00"), minutes: 30, interviewers: [s.ivMember] }, at());
+    if (!one.ok || !two.ok) throw new Error("not booked");
+    expect(await respondToInterview(s.me, { interviewId: one.interviewId, answer: "accept", sharePhone: true, phone: PHONE }, at())).toEqual({ ok: true });
+    const seen = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
+    expect(seen.ok && seen.candidate.interviews.phone).toBe(PHONE_SHOWN);
+
+    // Each board opening writes one line naming the job, however many candidates it shows.
+    const boardLines = async () => (await db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.orgId, s.orgId))).filter((a) => a.action === "board_viewed");
+    expect((await jobBoard(s.admin, s.jobId, at())).ok).toBe(true);
+    expect((await jobBoard(s.hr, s.jobId, at())).ok).toBe(true);
+    expect((await boardLines()).map((l) => [l.actor, l.target]).sort()).toEqual(
+      [
+        [`member:${s.adminMember}`, `job:${s.jobId}`],
+        [`member:${s.hrMember}`, `job:${s.jobId}`],
+      ].sort(),
+    );
+
+    const listed = await companyInterviews(s.admin, at());
+    expect(listed.ok && listed.view).toMatchObject({ status: "verified" });
+    expect(listed.ok && listed.view.items.length).toBeGreaterThan(0);
+
+    // CareerMetro suspends the company from /admin/companies: the phones go in the same step.
+    const reviewer = await person("suspend-reviewer", "Milin Shah");
+    expect(await reviewCompany(reviewer, { orgId: s.orgId, decision: "suspend" }, { sql: sqlClient! })).toMatchObject({ ok: true });
+    const [app] = await db!.select({ phone: schema.applications.phoneShared }).from(schema.applications).where(eq(schema.applications.id, s.applicationId));
+    expect(app.phone).toBeNull();
+    const ivs = await db!.select({ phone: schema.interviews.phoneShared }).from(schema.interviews).where(eq(schema.interviews.applicationId, s.applicationId));
+    expect(ivs.map((x) => x.phone)).toEqual([false, false]);
+
+    // Nobody at the company sees the board, a candidate or a chat now, and no line is written for a refused board.
+    for (const who of [s.admin, s.hr, s.iv]) {
+      expect(await jobBoard(who, s.jobId, at())).toMatchObject({ ok: false });
+      expect(await openCandidate(who, { applicationId: s.applicationId }, at())).toMatchObject({ ok: false });
+    }
+    expect(await jobBoard(s.admin, s.jobId, at())).toEqual({ ok: false, error: "paused" });
+    expect(await openCandidate(s.hr, { applicationId: s.applicationId }, at())).toEqual({ ok: false, error: "paused" });
+    expect(await schedulingView(s.hr, s.applicationId, at())).toMatchObject({ ok: false, error: "suspended" });
+    expect(await boardLines()).toHaveLength(2);
+    // Corporate Interviews shows no candidate, interviewer or feedback either, to anyone at the company.
+    for (const who of [s.admin, s.hr, s.iv]) {
+      const r = await companyInterviews(who, at());
+      expect(r.ok && r.view).toMatchObject({ status: "suspended", items: [] });
+      expect(JSON.stringify(r)).not.toMatch(/Priya|Sana|Rahul/);
+    }
+    // Writes that only help the candidate still work: cancelling an interview ahead, and moving a lane.
+    expect(await cancelInterview(s.hr, { interviewId: two.interviewId }, at())).toEqual({ ok: true });
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "not_this_time", note: "Call me on 98765 43210 instead." }, at())).toEqual({ ok: true });
+    // The candidate reads fixed wording, never the suspended company's own note.
+    const [closedBy] = await db!
+      .select({ note: schema.applicationEvents.note })
+      .from(schema.applicationEvents)
+      .where(and(eq(schema.applicationEvents.applicationId, s.applicationId), eq(schema.applicationEvents.stage, "not_this_time")));
+    expect(closedBy.note).toBe(PAUSED_NOT_THIS_TIME_NOTE);
+    const [arrival] = await myApplications(s.me, at());
+    expect(JSON.stringify(arrival)).not.toContain("98765 43210");
+
+    // Verified again, nothing comes back: the phone stays erased.
+    expect(await reviewCompany(reviewer, { orgId: s.orgId, decision: "verify" }, { sql: sqlClient! })).toMatchObject({ ok: true });
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "team", note: "" }, at())).toEqual({ ok: true });
+    const back = await openCandidate(s.hr, { applicationId: s.applicationId }, at());
+    expect(back.ok && back.candidate.interviews.phone).toBeNull();
   });
 
   it("never double-books an interviewer when two bookings for different candidates run at the same time", async () => {

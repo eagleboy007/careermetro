@@ -8,6 +8,16 @@ import { workEmailHashKey } from "@/lib/hash-keys";
 
 type Env = Record<string, string | undefined>;
 
+/** The work-email key. Callers check workEmailReady first, so a missing key here is a bug, never a person's doing. */
+function key(env: Env): string {
+  const k = workEmailHashKey(env);
+  if (!k) throw new Error("work-email key not set");
+  return k;
+}
+
+/** Whether work-email codes and invites can be hashed here: false in production until NAME_HASH_KEY is set. */
+export const workEmailReady = (env: Env = process.env): boolean => workEmailHashKey(env) !== null;
+
 export const CODE_DIGITS = 6;
 export const CODE_TTL_MS = 10 * 60_000;
 export const MAX_WRONG_TRIES = 5;
@@ -21,7 +31,7 @@ export const isCodeShape = (code: string): boolean => /^\d{6}$/.test(code);
 
 /** The stored hash of a code, bound to the person and the code row, so a hash can't be replayed for anyone else. */
 export function hashCode(rowId: string, userId: string, code: string, env: Env = process.env): string {
-  return createHmac("sha256", workEmailHashKey(env)).update(`code|${rowId}|${userId}|${code}`).digest("base64url");
+  return createHmac("sha256", key(env)).update(`code|${rowId}|${userId}|${code}`).digest("base64url");
 }
 
 /** Compares a typed code with the stored hash in constant time (both are fixed-length digests). */
@@ -37,7 +47,7 @@ export function codeMatches(stored: string | null, rowId: string, userId: string
  * colleague can type it in any case.
  */
 export function hashWorkEmail(email: string, env: Env = process.env): string {
-  return createHmac("sha256", workEmailHashKey(env)).update(`invite|${email.trim().toLowerCase()}`).digest("base64url");
+  return createHmac("sha256", key(env)).update(`invite|${email.trim().toLowerCase()}`).digest("base64url");
 }
 
 export type CodeRow = { expiresAt: Date; attempts: number; lockedUntil: Date | null; usedAt: Date | null; codeHash: string | null };
