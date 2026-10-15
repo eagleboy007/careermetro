@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (report review, FR-45).
+Last updated: 2026-10-15 (privacy and terms drafts, launch-day checklist).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -20,6 +20,7 @@ Last updated: 2026-10-15 (report review, FR-45).
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 424 free resource links (#129).
+- **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
 - **Switched off until keys arrive:** sign-in (preview uses a test user), company sign-up and join, find-people, phone sharing, the email sender, and photo and certificate upload.
 
 ## In progress
@@ -28,10 +29,13 @@ Last updated: 2026-10-15 (report review, FR-45).
 
 ## Next up
 
-1. T44, once Milin answers the card.
-2. Switch Market from example data once Data research says the cells reach 15 a month.
-3. Photo and certificate upload, once the storage keys exist.
-4. Find people DB-side ranking, when opted-in people pass 1,000 or `find_scan_capped` is logged (`dev/companies-find-me-plan.md`, 2026-10-15).
+Project manager's queue (2026-10-15), in order:
+1. Launch readiness (c) items that need no keys or money: error alerts to a person (6) and the upload load test (7). Items 3, 10 and 12 are done, and 4 and 5 are drafted. See `dev/launch-readiness.md`.
+2. Practice step (the L1 skill check), only from an approved handoff design. Otherwise send the Project manager a 10-line plan.
+3. Match step, on the same terms.
+4. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It waits on Milin's details.
+
+Waiting: T44 and the Reports removal tools (Milin's cards); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 

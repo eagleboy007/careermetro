@@ -2,8 +2,12 @@ name: Smoke check
 
 # After Vercel finishes a production deploy, open /api/health on it. A red run means the live site
 # can't reach the database or Claude (for example a missing key or an empty credit balance).
+# It also runs every 6 hours, so an outage between deploys turns a run red and GitHub emails the
+# person who last changed the schedule (launch-readiness (c) 6: error alerts to a person).
 on:
   deployment_status:
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
     inputs:
       url:
@@ -19,7 +23,7 @@ permissions:
 jobs:
   health:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' ||
       (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
     runs-on: ubuntu-latest
     steps:

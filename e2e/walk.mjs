@@ -587,7 +587,7 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
-for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/grievances"]) {
+for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
