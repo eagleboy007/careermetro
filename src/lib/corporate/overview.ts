@@ -1,9 +1,10 @@
 import "server-only";
 import { and, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, conversations, interviews, jobs, jobTeam, users } from "@/db/schema";
+import { applications, conversations, interviews, jobs, jobTeam, organizations, users } from "@/db/schema";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
 import { APPLICATION_STAGES } from "@/lib/schemas/constants";
+import { unreadFoundChats } from "./find-store";
 import { visibleApplicationsWhere } from "./scope";
 import { activeMembership } from "./store";
 import type { CompanyOverviewView, LaneCounts } from "./types";
@@ -27,22 +28,30 @@ const zeroLanes = (): LaneCounts => Object.fromEntries(APPLICATION_STAGES.map((s
 /** The instant an India date starts. */
 const indiaMidnight = (day: string) => new Date(`${day}T00:00:00+05:30`);
 
-/** Company chats with a message from someone else that this member hasn't read. */
+/**
+ * Company chats with a message from someone else that this member hasn't read: application chats and found chats
+ * (people the company found). A company that isn't verified reads no chats, so it counts none (Messages shows it none).
+ */
 async function unreadChatCount(me: Member, userId: string, db: Db | Tx, now: Date): Promise<number> {
-  const [row] = await db
-    .select({ n: count() })
-    .from(conversations)
-    .innerJoin(applications, eq(applications.id, conversations.applicationId))
-    .innerJoin(users, eq(users.id, applications.userId))
-    .where(
-      and(
-        eq(conversations.orgId, me.orgId),
-        visibleApplicationsWhere(me, userId, db, now),
-        sql`exists (select 1 from messages x where x.conversation_id = ${conversations.id} and x.kind <> 'system' and x.sender_id is distinct from ${userId}
+  const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
+  if (org?.status !== "verified") return 0;
+  const [[row], found] = await Promise.all([
+    db
+      .select({ n: count() })
+      .from(conversations)
+      .innerJoin(applications, eq(applications.id, conversations.applicationId))
+      .innerJoin(users, eq(users.id, applications.userId))
+      .where(
+        and(
+          eq(conversations.orgId, me.orgId),
+          visibleApplicationsWhere(me, userId, db, now),
+          sql`exists (select 1 from messages x where x.conversation_id = ${conversations.id} and x.kind <> 'system' and x.sender_id is distinct from ${userId}
           and x.created_at > coalesce((select m.last_read_at from conversation_members m where m.conversation_id = ${conversations.id} and m.user_id = ${userId}), '-infinity'::timestamptz))`,
+        ),
       ),
-    );
-  return row?.n ?? 0;
+    unreadFoundChats(me, userId, db),
+  ]);
+  return (row?.n ?? 0) + found;
 }
 
 /** The unread count on the Corporate tab: 0 for someone with no company role. */

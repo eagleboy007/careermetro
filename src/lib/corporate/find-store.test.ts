@@ -28,6 +28,7 @@ import {
   unblockCompany,
 } from "./find-store";
 import { saveJob } from "./jobs-store";
+import { corporateUnread } from "./overview";
 import { activeMembership, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
 
 vi.mock("server-only", () => ({}));
@@ -262,6 +263,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect((await discoveryFor(p, fd())).views).toMatchObject([{ orgId: s.orgId, company: "Example Labs", times: 1, blocked: false }]);
 
     // A request: one message, then nothing until they accept.
+    const base = { hr: await corporateUnread(s.hr, fd()), admin: await corporateUnread(s.admin, fd()), iv: await corporateUnread(s.iv, fd()) };
     const sent = await sendFoundRequest(s.hr, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
     if (!sent.ok) throw new Error(sent.error);
     expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "waiting" });
@@ -281,6 +283,12 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     [thread] = await listThreads(p, fd());
     expect(thread).toMatchObject({ kind: "application", found: true });
     expect((await sendMessage(p, sent.conversationId, REPLY, fd())).ok).toBe(true);
+    // The reply counts on the Corporate tab for the team who may read the chat, not for the Interviewer, until read.
+    expect(await corporateUnread(s.hr, fd())).toBe(base.hr + 1);
+    expect(await corporateUnread(s.admin, fd())).toBe(base.admin + 1);
+    expect(await corporateUnread(s.iv, fd())).toBe(base.iv);
+    expect((await companyFoundChat(s.hr, sent.conversationId, { ...fd(1 / 24), markRead: true })).ok).toBe(true);
+    expect(await corporateUnread(s.hr, fd(1 / 24))).toBe(base.hr);
     expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Great, thanks." }, fd())).ok).toBe(true);
     const chat = await companyFoundChat(s.hr, sent.conversationId, fd());
     if (!chat.ok) throw new Error(chat.error);
@@ -393,7 +401,11 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     ]);
     for (const l of lines) expect(JSON.stringify(l)).not.toContain(p);
 
+    expect((await sendMessage(p, sent.conversationId, REPLY, fd(1 / 24))).ok).toBe(true);
+    expect(await corporateUnread(s.admin, fd(1 / 24))).toBe(1);
     await db!.update(schema.organizations).set({ reviewStatus: "suspended" }).where(eq(schema.organizations.id, s.orgId));
+    // A suspended company reads no chats, so its Corporate tab counts none.
+    expect(await corporateUnread(s.admin, fd(1))).toBe(0);
     const rowsOf = async () =>
       (await db!.select().from(schema.conversationMembers).where(eq(schema.conversationMembers.conversationId, sent.conversationId))).map((r) => [r.userId, r.role, r.lastReadAt?.toISOString()]).sort();
     const before = await rowsOf();
