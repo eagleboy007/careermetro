@@ -17,6 +17,8 @@ const unindexedOk = new Set([
   "gap_proofs.skill_id",
   "job_checks.ai_call_id",
   "path_steps.skill_id",
+  "practice_answers.ai_call_id",
+  "practice_answers.skill_id",
   "paths.ai_call_id",
   "profiles.ai_call_id",
     "skill_aliases.skill_id",
