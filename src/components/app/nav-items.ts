@@ -1,6 +1,6 @@
-import { BookOpen, Building2, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessagesSquare, Shield, TrainFront, TrendingUp, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Building2, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessagesSquare, Route, Shield, TrainFront, TrendingUp, Users, type LucideIcon } from "lucide-react";
 
-export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox" | "corporate" | "market";
+export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox" | "corporate" | "market" | "match";
 export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIcon; built: boolean };
 
 /** Signed-in sections (handoff section 3). `built` is false until the screen exists; those show as "Soon". */
@@ -18,12 +18,14 @@ export const NAV = {
   corporate: { key: "corporate", label: "Corporate", href: "/corporate", Icon: Building2, built: true },
   /** Openings, pay and trends by role and place (handoff C6). Example figures until a licensed source exists. */
   market: { key: "market", label: "Market", href: "/market", Icon: TrendingUp, built: true },
+  /** Roles the person is ready for now, and the ones a few weeks away (handoff 12i). */
+  match: { key: "match", label: "Match", href: "/match", Icon: Route, built: true },
 } satisfies Record<NavKey, NavItem>;
 
 /** Desktop top bar. */
 export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", "junction", "market"] as const).map((k) => NAV[k]);
 /** Phone tab bar; Network, Library, Market and Timetable move to the avatar menu. */
 export const TAB_NAV = (["today", "map", "departures", "arrivals", "junction"] as const).map((k) => NAV[k]);
-export const MENU_NAV = (["inbox", "corporate", "library", "market", "network", "timetable"] as const).map((k) => NAV[k]);
+export const MENU_NAV = (["inbox", "corporate", "library", "match", "market", "network", "timetable"] as const).map((k) => NAV[k]);
 /** CareerMetro's own company review page. In the avatar menu only for admins, decided on the server (src/lib/admin). */
 export const ADMIN_LINK = { label: "Admin", href: "/admin/companies", Icon: Shield } as const;

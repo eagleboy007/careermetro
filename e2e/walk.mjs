@@ -587,7 +587,7 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
-for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
+for (const path of ["/map", "/match", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -596,6 +596,21 @@ for (const path of ["/map", "/me", "/departures", "/settings", "/inbox", "/griev
     await a11y(path.slice(1));
   });
 }
+// Match (handoff 12i). Signed in, with a confirmed resume and goals: Ready now heads the list (or the empty state shows
+// when nothing is within 26 weeks), the hours select regroups the roles in place, and axe passes.
+await step("match: ready now and within N weeks, regrouped by the hours select", async () => {
+  await p.goto(BASE + "/match");
+  await settled();
+  const ready = p.getByRole("heading", { name: "Ready now", level: 2 });
+  const empty = p.getByRole("heading", { name: "No roles to show yet", level: 2 });
+  await ready.or(empty).first().waitFor({ timeout: 10000 });
+  if (await ready.count()) {
+    const hours = p.getByLabel("I can give");
+    await hours.selectOption("10");
+    await p.getByText("at 10 hours a week", { exact: true }).waitFor({ timeout: 5000 });
+  }
+  await a11y("match");
+});
 // Nearby lines (dev/nearby-lines-plan.md). The walk's resume shares under half the key skills of every other role, so
 // Me shows the plain empty state with the closest role's real counts (pinned in src/lib/nearby/build.test.ts).
 await step("nearby lines: the walk's resume gets the plain empty state with the closest role's counts", async () => {
@@ -1062,7 +1077,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();

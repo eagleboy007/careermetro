@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (upload load test).
+Last updated: 2026-10-15 (Match step, `/match`).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -32,7 +32,7 @@ Last updated: 2026-10-15 (upload load test).
 Project manager's queue (2026-10-15), in order:
 1. Launch readiness (c): 6 is part done (6-hourly smoke check; full alerts need a log drain on Milin's account). 7, the upload load test, is `.github/workflows/load.yml` (`e2e/load-upload.mjs`: a burst of 40 and 2 a second for 60 s, 15 s stand-in parses, pool of 5). First run: all 160 uploads parsed with no "crowded" answer and other pages stayed at p95 7 ms. It found 6 connections from two module copies of the pool, so `src/db/index.ts` now keeps one pool per process on globalThis. Items 3, 4, 5, 10 and 12 are done or drafted. See `dev/launch-readiness.md`.
 2. Practice step (the L1 skill check): plan approved by the Project manager (`dev/practice-match-plan.md`). Build once the screens are approved in the handoff.
-3. Match step, on the same terms.
+3. Match step: built as `/match` (FR-24, handoff 12i approved 2026-10-15), no AI and no migration. Linked from the avatar menu and the Map's Match stop; the step line no longer says Soon for Match. Path hours are the stored step's, else the Gaps hours table. See `dev/practice-match-plan.md` "Match build notes".
 4. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It waits on Milin's details.
 
 Waiting: T44 and the Reports removal tools (Milin's cards); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).

@@ -445,6 +445,27 @@ Approved by Milin on 2026-10-12 (C9, pending item 18). Opened from "Post a job" 
 - Before sending, three required ticks: the job is real and open; no fee, deposit or paid training; no screening by gender, religion, caste, age, disability or marital status. Every new job is checked before it goes live; anyone can report a job and reports are looked at within 24 hours. Live preview shows the Departures card.
 - Tables (proposed): jobs (org_id, role_profile_id, title, min_years, max_years, openings, work_type, workplace, city, pay_min, pay_max, description, express_apply, ai_round, owner_id, status draft/in_review/live/paused/closed, reviewed_by, reviewed_at), job_skills, job_interviewers, job_reports.
 
+## 12h. Practice (`/practice`)
+
+Approved by the Project manager on Milin's behalf on 2026-10-15 (C10; Milin can reverse it). Prototype v37. From Development's plan (dev/practice-match-plan.md, FR-21 to FR-23).
+
+- Opens from the Path step "Practice", the avatar menu, the map's Practice pitstop and "Practice confidence" on Me.
+- Skill picker: the user's goals, tagged current goal, goal ahead or goal met. 5 questions per skill from a reviewed question bank; the model never writes questions.
+- Question card: the question, one line on what interviewers look for, an answer box with a word count, "Get feedback" (needs 5 words) and "Skip question". Privacy line: only you see answers, kept 30 days, in the data download.
+- Feedback card: Structure, Specificity and Correctness in plain words, then "A stronger answer" (a sample to learn from, not a script). No score anywhere. Prompt prompts/practice-feedback/v1, logged in ai_calls; answers never logged.
+- After feedback: "How sure do you feel about this now?" Not yet / A little / Fairly / Very. That self-rating is the only input to the confidence trend (FR-23), shown beside the question and on Me.
+- Me: "Practice confidence" section, one sparkline per skill with the latest rating and session count. Private: hidden in "View as others" and never shown to companies.
+- Practice never fills a goal or moves the train. On a met goal it says practice "keeps it sharp".
+- Limits: 10 answers a day per person, shown as "N of 10 answers left today"; "Get feedback" disables at 0.
+
+## 12i. Match (`/match`)
+
+Approved by the Project manager on Milin's behalf on 2026-10-15 (C11; Milin can reverse it). Built 2026-10-15. Prototype v37. No AI; reuses the Nearby lines and "Closest to your resume" matcher (FR-24).
+
+- Two groups. Ready now: every required skill met or proved. Within N weeks: path hours left on that role's open goals divided by the user's hours a week (3, 6 or 10), rounded up, sorted by weeks; the heading shows the largest N. Roles more than 26 weeks away stay off.
+- Each card: role, "on your line" tag when it's on the destination line, weeks and path hours, cobalt bar of required skills met (progress), the open goals as chips, "Gaps for this role" and "N open jobs in Departures".
+- Empty state ("No roles to show yet") when there's no resume or nothing within 26 weeks, with "Add your resume" and "Browse departures".
+
 ## 13. Data model proposals (need Milin's approval before any migration)
 
 Current tables: organizations, users, consents, waitlist_entries, resumes, profiles, skills, skill_aliases, role_profiles, job_descriptions, ai_calls, gap_analyses, resources, resource_checks, paths, path_steps, audit_logs.
@@ -494,3 +515,5 @@ Every change to prototype v2 after this handoff was first given to Development. 
 | C7 | 2026-10-12 | Corporate workspace (employer side) | Corporate mockup v1 brought into the handoff: Corporate tab and roles, work-email code, Jobs board lanes, candidate drawer with "Match to this job" only, Interviews, Team and access, company-owned application messages. Milin set Corporate before Market and Nearby lines (2026-10-12). | corporate v1 | 12e | approved (Milin, 2026-10-12) |
 | C8 | 2026-10-12 | Organization sign-up | New flow: company details, domain check (free mail refused, claimed domain asks for access), code or DNS verify, company page, second admin within 14 days, manual review before jobs go live. First Recruiter admin. Pending item 17. | corporate v2 | 12f | approved (Milin, 2026-10-12) |
 | C9 | 2026-10-12 | Post a job | New form: from a role profile, required / one-of / nice-to-have skills, work type, workplace, city, optional pay, Express apply, stages with L1 AI toggle, three required honesty ticks, review before live, live Departures preview. Pending item 18. | corporate v2 | 12g | approved (Milin, 2026-10-12) |
+| C10 | 2026-10-15 | Practice (`/practice`) and Me | New screen from Development's Practice plan: skill picker, question with answer box, feedback in words with a stronger sample answer (no score), self-rated confidence feeding a private per-skill trend on Me. Never fills a goal; 10 answers a day. | v37 | 12h | approved (Project manager on Milin's behalf, 2026-10-15) |
+| C11 | 2026-10-15 | Match (`/match`) | New screen from Development's Match plan: roles grouped "Ready now" and "Within N weeks" (path hours ÷ hours a week), open goals per role, links to Gaps and Departures, empty state. No AI. | v37 | 12i | approved (Project manager on Milin's behalf, 2026-10-15); built 2026-10-15 |

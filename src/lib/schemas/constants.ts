@@ -10,6 +10,10 @@ export const LIFE_ROWS = ["journey", "education", "work", "certificates", "inter
 /** FR-15: the weekly hours a user can pick, and the default. */
 export const WEEKLY_HOURS = [3, 5, 8, 10] as const;
 export const DEFAULT_WEEKLY_HOURS = 5;
+/** Match (handoff 12i): the hours a week its select offers, the default, and how many weeks ahead a role may be and still show. */
+export const MATCH_HOURS = [3, 6, 10] as const;
+export const DEFAULT_MATCH_HOURS = 6;
+export const MATCH_MAX_WEEKS = 26;
 export const USER_STATES = ["no_resume", "first", "returning"] as const;
 /** "Check against a job" (role-suggest-plan.md part B): how long a pasted posting and its labels may be. */
 export const JOB_TEXT_MIN = 200;
