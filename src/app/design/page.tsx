@@ -50,6 +50,8 @@ import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
+import { MatchView } from "@/components/match/match-view";
+import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
@@ -478,6 +480,16 @@ export default function DesignPage() {
         </p>
         <MarketView ids="design-market" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
         <MarketView ids="design-market-thin" params={{ place: "MZ", map: "pay", role: "soc-lead" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Match (signed in)</h2>
+        <p className="text-sm text-muted">
+          Ready now, then Within N weeks at the hours a week picked (3, 6 or 10). Worked out by the matcher from a synthetic profile with three goals
+          proved; the open-job counts are made up. Below it, the empty state with no resume.
+        </p>
+        <MatchView list={exampleMatch} />
+        <MatchView list={null} />
       </section>
 
       <section className="flex flex-col gap-4">

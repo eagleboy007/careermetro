@@ -1,7 +1,7 @@
 export const ROUTE_STEPS = ["Resume", "Gaps", "Path", "Practice", "Match"] as const;
 export type RouteStep = (typeof ROUTE_STEPS)[number];
 /** Steps not built yet: shown as coming soon, never as the next thing to do. */
-const COMING_SOON: readonly RouteStep[] = ["Practice", "Match"];
+const COMING_SOON: readonly RouteStep[] = ["Practice"];
 
 /**
  * The progress line shown at the top of every signed-in screen (DES-2).

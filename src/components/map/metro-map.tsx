@@ -585,7 +585,10 @@ function Sheet({
           Your next role, not your last. Roles and job posts are matched against your updated profile. Once you get there, pick a new destination and a new
           line starts from here.
         </p>
-        <Soon>See departures</Soon>
+        <Cta href="/match">See matching roles</Cta>
+        <Cta href="/departures" ghost>
+          See departures
+        </Cta>
       </Panel>
     );
   }
