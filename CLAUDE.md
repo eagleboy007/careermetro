@@ -1,10 +1,16 @@
 @AGENTS.md
 
+## Start every session here
+- Read `docs/STATUS.md` first. At the end of each task, update it in 2–3 lines in the same PR.
+- Read only the section of `docs/REQUIREMENTS.md` and `docs/design/post-login-handoff.md` the task needs (`rg -n`, then that range; never the whole file), plus the feature's plan file.
+- One PR per feature, one review pass, the full check before the single push, and delete the branch after merge. Details: `.claude/skills/careermetro-dev/SKILL.md`.
+- When a thread passes about 150k tokens, or a big feature starts, a fresh thread takes over from CLAUDE.md, STATUS.md and that plan file.
+
 # CareerMetro
 
 Web app for job seekers in India: resume plus target role in, specific skill gaps with evidence and a short upskilling path out.
 
-Read `docs/REQUIREMENTS.md` before any design or implementation work. It is the contract; update it when a requirement changes.
+Read the section of `docs/REQUIREMENTS.md` your task needs before any design or implementation work. It is the contract; update it when a requirement changes.
 
 For the signed-in app (sign-up, Today, goals, map, jobs, profile), build from `docs/design/post-login-handoff.md`. It collects the prototype's screens, rules, fonts and tokens.
 

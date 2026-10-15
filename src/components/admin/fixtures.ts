@@ -1,4 +1,5 @@
 import type { AdminCompanyView } from "@/lib/corporate/types";
+import type { HeldProofView } from "@/lib/schemas/admin";
 
 /** Example rows of the company review list for /design. Synthetic companies on reserved example domains. */
 export const exampleReviewCompanies: AdminCompanyView[] = [
@@ -46,5 +47,31 @@ export const exampleReviewCompanies: AdminCompanyView[] = [
     admins: 0,
     noAdmin: true,
     status: "suspended",
+  },
+];
+
+/** Example rows of the held-proof review (/admin/proofs) for /design. Synthetic people and badge ids. */
+export const exampleHeldProofs: HeldProofView[] = [
+  {
+    id: "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+    certificate: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    reason: "badge_reused",
+    reasonText: "Its Credly badge is already verified on another account",
+    submittedOn: "2026-10-12",
+    person: "Priya S.",
+    others: 1,
+    badgeUrl: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000aa",
+  },
+  {
+    id: "4e3d2c1b-0a9f-4e8d-9c7b-6a5f4e3d2c1b",
+    certificate: "Microsoft Certified: Azure Fundamentals",
+    issuer: "Microsoft",
+    reason: "credential_reused",
+    reasonText: "Its credential id was already used on another account",
+    submittedOn: "2026-10-11",
+    person: "Ravi K.",
+    others: 2,
+    badgeUrl: null,
   },
 ];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { displayName, firstName, fullName, NO_NAME, resumeName, splitName } from "./name";
+import { displayName, firstName, fullName, NO_NAME, resumeName, shortName, splitName } from "./name";
 
 describe("account names (T6)", () => {
   it("uses the given name, else a neutral label, never the email", () => {
@@ -29,5 +29,15 @@ describe("resumeName", () => {
     expect(resumeName({ name: " Asha Rao ", firstName: null, lastName: " " })).toBe("Asha Rao");
     expect(resumeName({ name: "  ", firstName: null, lastName: null })).toBeNull();
     expect(resumeName(null)).toBeNull();
+  });
+
+  it("shortens a name to first name and last initial for the admin pages, never using the email", () => {
+    expect(shortName({ name: "Priya Sharma", firstName: "Priya", lastName: "Sharma" })).toBe("Priya S.");
+    expect(shortName({ name: null, firstName: " Priya  Devi ", lastName: " sharma " })).toBe("Priya S.");
+    expect(shortName({ name: "Asha Rao Kumar", firstName: null, lastName: null })).toBe("Asha R.");
+    expect(shortName({ name: "Asha", firstName: null, lastName: null })).toBe("Asha");
+    expect(shortName({ name: null, firstName: "Ravi", lastName: null })).toBe("Ravi");
+    expect(shortName({ name: "  ", firstName: null, lastName: "Kumar" })).toBe(NO_NAME);
+    expect(shortName({ name: null, firstName: null, lastName: null })).toBe(NO_NAME);
   });
 });

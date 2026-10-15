@@ -101,7 +101,8 @@ import { ApplyPanel } from "@/components/departures/apply-panel";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
-import { exampleReviewCompanies } from "@/components/admin/fixtures";
+import { exampleHeldProofs, exampleReviewCompanies } from "@/components/admin/fixtures";
+import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
@@ -549,6 +550,23 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <CompanyReview companies={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Held proofs (admins only)</h2>
+        <p className="text-sm text-muted">
+          /admin/proofs: certificates held because their credential id or Credly badge is already on another account. One row per claim with the person
+          as first name and last initial, the reason in words, the date, how many other accounts hold it and the Credly badge page. Accept for this person
+          and Reject. Example data, so the buttons do nothing.
+        </p>
+        <HeldProofRow proof={{ ...exampleHeldProofs[0]!, id: "5f4e3d2c-1b0a-4f9e-8d7c-6b5a4f3e2d1c" }} pending={false} />
+        <p className="text-sm text-muted">The whole page, and the list with nothing left to review.</p>
+        <div className="rounded-lg border border-line p-4">
+          <ProofReview proofs={exampleHeldProofs} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <ProofReview proofs={[]} />
         </div>
       </section>
 

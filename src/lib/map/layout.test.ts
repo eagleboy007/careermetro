@@ -9,6 +9,7 @@ const goal = (skillId: string, status: MapGoal["status"], extra: Partial<MapGoal
   goalId: null,
   certificates: [],
   renew: false,
+  notConfirmed: false,
   status,
   learnDone: false,
   proved: false,

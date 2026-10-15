@@ -44,6 +44,8 @@ export const provePitstop = z.object({
     .default([]),
   /** The goal's certificate expired, so it needs a current one to fill the gap again. */
   renew: z.boolean().default(false),
+  /** A certificate for this goal was rejected after review (FR-44): say it couldn't be confirmed, and point to Grievances. */
+  notConfirmed: z.boolean().default(false),
   why: z.string().min(1).max(200),
   options: z
     .array(
