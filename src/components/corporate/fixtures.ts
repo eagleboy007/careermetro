@@ -227,6 +227,7 @@ export const exampleScheduler: SchedulerView = {
 export const exampleCompanyInterviews: CompanyInterviewsView = {
   company: "Example Labs",
   role: "admin",
+  status: "verified",
   items: [
     { ...exampleCandidate.interviews.interviews[0]!, applicationId: "a1", jobId: "j1", candidate: "Priya Nair", job: "SOC Analyst L1", day: "2026-10-14", assigned: false },
     {

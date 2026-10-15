@@ -41,6 +41,16 @@ describe("checkCertificateOnCredly", () => {
     expect(refresh).toHaveBeenCalledTimes(3);
   });
 
+  it("says a badge Credly hasn't confirmed is still pending, an expired one moves to Renew, and another name is refused", async () => {
+    check.mockResolvedValueOnce({ status: "pending", note: "unreachable" });
+    expect(await checkCertificateOnCredly(id)).toEqual({ status: "pending", message: expect.stringMatching(/^Check pending, so it doesn't fill the goal yet\. Credly didn't answer/) });
+    check.mockResolvedValueOnce({ status: "added", note: "expired" });
+    expect(await checkCertificateOnCredly(id)).toEqual({ status: "added", message: expect.stringMatching(/Renew/) });
+    check.mockResolvedValueOnce({ status: "rejected", reason: "name" });
+    expect(await checkCertificateOnCredly(id)).toEqual({ status: "refused", message: expect.stringMatching(/doesn't match your account/) });
+    expect(refresh).toHaveBeenCalledTimes(3);
+  });
+
   it("says so when something breaks, logging no id", async () => {
     check.mockRejectedValueOnce(new Error("boom"));
     expect((await checkCertificateOnCredly(id)).status).toBe("refused");

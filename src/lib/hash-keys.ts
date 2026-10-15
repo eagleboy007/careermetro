@@ -46,9 +46,15 @@ export function jobTextHashKey(env: Env = process.env): string {
  * The key for work-email hashes (dev/corporate-plan.md): the 6-digit codes and the invited work emails. An invite is
  * found again by the hash of the email the colleague types, days later, so the key must stay fixed: it follows
  * NAME_HASH_KEY, which is never rotated. Codes live 10 minutes, so they could take any key; one key keeps it simple.
+ * CRON_SECRET is never used (security review 2026-10-13): it travels in request headers and is shared with the
+ * scheduler and CI, and with it and a database copy guessed work emails could be tested offline. In production without
+ * NAME_HASH_KEY it is null and work-email checks are off ("not set up yet"). Elsewhere (local, tests, previews) it
+ * falls back to a fixed development-only key.
  */
-export function workEmailHashKey(env: Env = process.env): string {
-  return `work-email|${env.NAME_HASH_KEY || legacy(env)}`;
+export function workEmailHashKey(env: Env = process.env): string | null {
+  if (env.NAME_HASH_KEY) return `work-email|${env.NAME_HASH_KEY}`;
+  if (env.VERCEL_ENV === "production" || env.NODE_ENV === "production") return null;
+  return "work-email|local-development-only";
 }
 
 /**

@@ -43,8 +43,9 @@ export const exampleMeResume: Profile = {
 };
 
 /**
- * Example certificate proofs (pending item 13): one verified with its Credly badge, one whose Credly badge showed
- * another name, one with a Microsoft Learn link (no check), and one expired. Synthetic ids; nothing here is real.
+ * Example certificate proofs (pending item 13): one verified with its Credly badge, an older accepted one Credly
+ * couldn't be reached for, one with a Microsoft Learn link (no check), one expired, and a new Credly badge still
+ * waiting for its check (owner only). Synthetic ids; nothing here is real.
  */
 const day = (iso: string) => new Date(`${iso}T00:00:00Z`);
 export const exampleProofCerts: ProofCertRow[] = [
@@ -69,8 +70,21 @@ export const exampleProofCerts: ProofCertRow[] = [
     verifier: null,
     url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000e0002",
     badgeId: "c4ed1100-0000-4000-8000-0000000e0002",
-    checkNote: "earner_name",
+    checkNote: "unreachable",
     createdAt: day("2026-09-21"),
+  },
+  {
+    proofId: "00000000-0000-4000-8000-0000000c0005",
+    certId: "databricks-data-engineer-associate",
+    credentialKey: "example-5",
+    issuedOn: "2026-09-01",
+    expiresOn: null,
+    verifier: null,
+    url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000e0005",
+    badgeId: "c4ed1100-0000-4000-8000-0000000e0005",
+    checkNote: "unreachable",
+    pending: true,
+    createdAt: day("2026-10-12"),
   },
   {
     proofId: "00000000-0000-4000-8000-0000000c0003",

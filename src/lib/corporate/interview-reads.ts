@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNotNull, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { applications, candidateSlots, interviewFeedback, interviewInterviewers, interviews, messages, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
@@ -142,15 +142,29 @@ export async function phoneAudience(applicationId: string, viewer: Viewer, db: D
 }
 
 /**
- * After an interview is cancelled: erases the phone shared with the company, as Not this time does, unless another
- * accepted interview it was shared for is still within its access window (Testing T42). Run inside the cancel's
- * transaction, which holds the application row.
+ * After an interview is cancelled: erases the phone shared with the company, as Not this time does, when the
+ * cancelled interview is one it was shared for and no other accepted interview it was shared for is still within its
+ * access window (Testing T42, T47). Cancelling an interview the phone wasn't shared for leaves it alone. Run inside the
+ * cancel's transaction, which holds the application row.
  */
-export async function erasePhoneUnlessNeeded(tx: Tx, applicationId: string, now: Date): Promise<boolean> {
+export async function erasePhoneUnlessNeeded(tx: Tx, applicationId: string, cancelledId: string, now: Date): Promise<boolean> {
+  const [cancelled] = await tx
+    .select({ phoneShared: interviews.phoneShared })
+    .from(interviews)
+    .where(and(eq(interviews.id, cancelledId), eq(interviews.applicationId, applicationId)));
+  if (!cancelled?.phoneShared) return false;
   const [needed] = await tx
     .select({ id: interviews.id })
     .from(interviews)
-    .where(and(eq(interviews.applicationId, applicationId), eq(interviews.phoneShared, true), eq(interviews.status, "accepted"), interviewerWindow(now)))
+    .where(
+      and(
+        eq(interviews.applicationId, applicationId),
+        ne(interviews.id, cancelledId),
+        eq(interviews.phoneShared, true),
+        eq(interviews.status, "accepted"),
+        interviewerWindow(now),
+      ),
+    )
     .limit(1);
   if (needed) return false;
   await tx.update(applications).set({ phoneShared: null }).where(and(eq(applications.id, applicationId), isNotNull(applications.phoneShared)));

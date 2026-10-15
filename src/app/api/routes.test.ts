@@ -14,6 +14,7 @@ const m = vi.hoisted(() => ({
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
   renewExpired: vi.fn(async () => 0),
+  reopenUnconfirmed: vi.fn(async () => 0),
   removeChoiceGoal: vi.fn(),
   clearCodes: vi.fn(async () => 0),
   endAccess: vi.fn(async () => ({ accessEnded: 0, readMarksCleared: 0 })),
@@ -47,7 +48,7 @@ vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResu
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/account/settings-store", () => ({ clearExpiredUsernameRedirects: m.clearOldLinks }));
-vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, removeChoiceGoal: m.removeChoiceGoal }));
+vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, reopenUnconfirmedGoals: m.reopenUnconfirmed, removeChoiceGoal: m.removeChoiceGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/corporate/find-store", () => ({ clearOldProfileViews: m.clearViews }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -314,10 +315,12 @@ describe("daily cleanup", () => {
     expect(m.deleteExpired).not.toHaveBeenCalled();
     expect(m.purgeDeleted).not.toHaveBeenCalled();
     expect(m.renewExpired).not.toHaveBeenCalled();
+    expect(m.reopenUnconfirmed).not.toHaveBeenCalled();
     expect(m.endAccess).not.toHaveBeenCalled();
     m.deleteExpired.mockResolvedValueOnce(2);
     m.purgeDeleted.mockResolvedValueOnce(1);
     m.renewExpired.mockResolvedValueOnce(4);
+    m.reopenUnconfirmed.mockResolvedValueOnce(2);
     m.endAccess.mockResolvedValueOnce({ accessEnded: 5, readMarksCleared: 7 });
     m.erasePhones.mockResolvedValueOnce(1);
     m.clearTimes.mockResolvedValueOnce(12);
@@ -328,7 +331,7 @@ describe("daily cleanup", () => {
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
-    expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4/);
+    expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
     expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
@@ -340,6 +343,11 @@ describe("daily cleanup", () => {
     m.deleteExpired.mockResolvedValueOnce(0);
     m.purgeDeleted.mockResolvedValueOnce(0);
     m.renewExpired.mockRejectedValueOnce(new Error("down"));
+    expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0, corporate: none } });
+    // So is reopening goals still met by a certificate that no longer counts (review B2).
+    m.deleteExpired.mockResolvedValueOnce(0);
+    m.purgeDeleted.mockResolvedValueOnce(0);
+    m.reopenUnconfirmed.mockRejectedValueOnce(new Error("down"));
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 500, body: { ok: false, deleted: 0, accountsDeleted: 0, corporate: none } });
     // So is forgetting the addresses on expired work-email codes.
     m.deleteExpired.mockResolvedValueOnce(0);

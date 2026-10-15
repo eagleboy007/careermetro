@@ -20,8 +20,20 @@ describe("hash keys (H7)", () => {
   });
 
   it("keep work-email hashes apart from the other keys, and fixed with NAME_HASH_KEY", () => {
-    expect(workEmailHashKey({ CRON_SECRET: "c" })).toBe("work-email|c");
+    // The same key as before whenever NAME_HASH_KEY is set, so invites and codes made earlier still match.
     expect(workEmailHashKey({ CRON_SECRET: "c", NAME_HASH_KEY: "n" })).toBe("work-email|n");
+    expect(workEmailHashKey({ NAME_HASH_KEY: "n", NODE_ENV: "production", VERCEL_ENV: "production" })).toBe("work-email|n");
     expect(workEmailHashKey({ NAME_HASH_KEY: "n" })).not.toBe(credentialHashKey({ NAME_HASH_KEY: "n" }));
+  });
+
+  it("never use CRON_SECRET for work-email hashes, and are off in production without NAME_HASH_KEY (security review 2026-10-13)", () => {
+    for (const env of [{ NODE_ENV: "production" }, { VERCEL_ENV: "production" }, { VERCEL_ENV: "preview", NODE_ENV: "production" }]) {
+      expect(workEmailHashKey({ ...env, CRON_SECRET: "c" })).toBeNull();
+      expect(workEmailHashKey(env)).toBeNull();
+    }
+    // Local copies and tests: a fixed development-only key, whatever CRON_SECRET is.
+    expect(workEmailHashKey({ NODE_ENV: "development", CRON_SECRET: "c" })).toBe("work-email|local-development-only");
+    expect(workEmailHashKey({ NODE_ENV: "test" })).toBe("work-email|local-development-only");
+    expect(workEmailHashKey({ NODE_ENV: "test", CRON_SECRET: "c" })).not.toContain("c|");
   });
 });

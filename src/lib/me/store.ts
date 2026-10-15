@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { gapProofs, resumes, users } from "@/db/schema";
 import { skills } from "@/content";
@@ -14,8 +14,8 @@ import type { ProofCertRow } from "./certs";
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 
 /**
- * The person's accepted certificate proofs, for Certifications on their profile (pending item 13). Held and refused
- * ones never show. Only what the profile needs: never the credential key's meaning, a file path or a name.
+ * The person's accepted certificate proofs, and Credly badges waiting for their check, for Certifications on their
+ * profile (pending item 13). Ones held for review and refused ones never show. Only what the profile needs: never the credential key's meaning, a file path or a name.
  */
 export async function certificateProofsFor(userId: string, db: ReturnType<typeof getDb> = getDb()): Promise<ProofCertRow[]> {
   return db
@@ -29,10 +29,18 @@ export async function certificateProofsFor(userId: string, db: ReturnType<typeof
       url: sql<string | null>`${gapProofs.evidence}->>'url'`,
       badgeId: gapProofs.badgeId,
       checkNote: gapProofs.checkNote,
+      pending: sql<boolean>`${gapProofs.status} = 'pending'`,
       createdAt: gapProofs.createdAt,
     })
     .from(gapProofs)
-    .where(and(eq(gapProofs.userId, userId), eq(gapProofs.type, "certification"), eq(gapProofs.status, "accepted")))
+    .where(
+      and(
+        eq(gapProofs.userId, userId),
+        eq(gapProofs.type, "certification"),
+        // Accepted ones, and Credly badges waiting for their check, which only the owner ever sees.
+        or(eq(gapProofs.status, "accepted"), and(eq(gapProofs.status, "pending"), eq(gapProofs.heldReason, "credly_check"))),
+      ),
+    )
     .orderBy(desc(gapProofs.createdAt))
     .limit(200);
 }

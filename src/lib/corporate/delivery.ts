@@ -1,4 +1,5 @@
 import { testSignInEnabled } from "@/lib/auth/test-user";
+import { workEmailReady } from "./codes";
 import type { CodeDelivery } from "./types";
 
 type Env = Record<string, string | undefined>;
@@ -13,6 +14,8 @@ type Env = Record<string, string | undefined>;
  */
 export function codeDelivery(env: Env = process.env): CodeDelivery {
   if (env.VERCEL_ENV === "production") return "off";
+  // No work-email key (production without NAME_HASH_KEY): codes can't be hashed, so work-email checks are off.
+  if (!workEmailReady(env)) return "off";
   const local = !env.VERCEL_ENV && env.NODE_ENV !== "production";
   return testSignInEnabled(env) || local ? "test" : "off";
 }

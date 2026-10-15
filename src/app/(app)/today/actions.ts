@@ -5,12 +5,19 @@ import { setWeeklyHours } from "@/lib/account/store";
 import { currentAccount } from "@/lib/auth/server";
 import { submitCertificate } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
-import { credlyBadgeId } from "@/lib/proofs/credly";
 import { checkCertificateWithCredly } from "@/lib/proofs/credly-store";
-import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_HELD_MESSAGE, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
+import {
+  CERTIFICATE_REFUSAL_MESSAGES,
+  CREDENTIAL_HELD_MESSAGE,
+  CREDLY_EXPIRED_MESSAGE,
+  CREDLY_HELD_MESSAGE,
+  CREDLY_NOTE_MESSAGES,
+  CREDLY_PENDING_MESSAGE,
+  CREDLY_REFUSAL_MESSAGES,
+} from "@/lib/proofs/messages";
 import type { CertificateResult } from "@/lib/proofs/result";
 import { tickTask } from "@/lib/ride/store";
-import { certificateSubmission } from "@/lib/schemas";
+import { certificateSubmission, type CredlyCheckOutcome } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 
 /** The first field that is wrong, in the person's words. */
@@ -44,27 +51,40 @@ export async function addCertificate(input: unknown): Promise<CertificateResult>
     if (outcome.status === "refused") return { status: "refused", message: CERTIFICATE_REFUSAL_MESSAGES[outcome.reason] };
     if (outcome.status === "held") {
       refresh();
-      return { status: "held", message: "This certificate is already on another account, so we'll check it first. It doesn't fill the goal until then." };
+      return { status: "held", message: outcome.reason === "badge" ? CREDLY_HELD_MESSAGE : CREDENTIAL_HELD_MESSAGE };
     }
-    // The goal is filled now, whatever Credly says: the check only changes the label (dev/profile-certs-plan.md).
-    let label = outcome.label;
-    let note: string | undefined;
-    if (label !== "verified" && credlyBadgeId(parsed.data.url)) {
-      try {
-        const check = await checkCertificateWithCredly(account.id, outcome.proofId);
-        if (check.status === "held") {
-          refresh();
-          return { status: "held", message: CREDLY_HELD_MESSAGE };
-        }
-        if (check.status === "verified") label = "verified";
-        else note = check.status === "added" ? CREDLY_NOTE_MESSAGES[check.note] : CREDLY_REFUSAL_MESSAGES[check.reason];
-      } catch (error) {
-        logEvent("error", "certificate_check_failed", errorFields(error));
-        note = CREDLY_NOTE_MESSAGES.unreachable;
-      }
+    if (outcome.status === "filled") {
+      refresh();
+      return { status: "filled", label: outcome.label };
+    }
+    // A Credly badge fills the goal only once Credly confirms it (decision of 2026-10-13). Until then it is saved as
+    // "Added by you, check pending", and the person can check it again from their profile.
+    let check: CredlyCheckOutcome;
+    try {
+      check = await checkCertificateWithCredly(account.id, outcome.proofId);
+    } catch (error) {
+      logEvent("error", "certificate_check_failed", errorFields(error));
+      check = { status: "pending", note: "unreachable" };
     }
     refresh();
-    return note ? { status: "filled", label, note } : { status: "filled", label };
+    switch (check.status) {
+      case "verified":
+        return { status: "filled", label: "verified" };
+      case "held":
+        return { status: "held", message: CREDLY_HELD_MESSAGE };
+      case "rejected":
+        return { status: "refused", message: CERTIFICATE_REFUSAL_MESSAGES.name };
+      case "added":
+        // "added" here is about an older accepted row of the same credential; this goal's row is still waiting for its
+        // check, so the goal isn't proved.
+        return check.note === "expired" ? { status: "saved", message: CREDLY_EXPIRED_MESSAGE } : { status: "saved", message: `${CREDLY_PENDING_MESSAGE} ${CREDLY_NOTE_MESSAGES[check.note]}` };
+      case "pending":
+        return { status: "saved", message: `${CREDLY_PENDING_MESSAGE} ${CREDLY_NOTE_MESSAGES[check.note]}` };
+      case "refused":
+        return check.reason === "too_many"
+          ? { status: "saved", message: `${CREDLY_PENDING_MESSAGE} ${CREDLY_REFUSAL_MESSAGES.too_many}` }
+          : { status: "refused", message: CREDLY_REFUSAL_MESSAGES[check.reason] };
+    }
   } catch (error) {
     logEvent("error", "certificate_failed", errorFields(error));
     return { status: "refused", message: "Something went wrong saving that. Please try again." };

@@ -104,10 +104,13 @@ const CHAT_CLOSED_COMPANY = "This chat is closed, so you can't ask for times in 
 export type InterviewResult<T = object> = ({ ok: true } & T) | { ok: false; error: InterviewError; message?: string };
 const fail = (error: InterviewError, message?: string) => ({ ok: false as const, error, ...(message ? { message } : {}) });
 const companyFail = (error: string): { ok: false; error: InterviewError } =>
-  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : "not_found");
+  fail(error === "not_member" || error === "not_allowed" ? (error as InterviewError) : error === "paused" ? "suspended" : "not_found");
 
-/** Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate. */
-async function teamOptions(orgId: string, jobId: string, candidateId: string, db: Db | Tx) {
+/**
+ * Interviewer choices for a job: active members on the job's team, and Recruiter admins. Never the candidate, and
+ * never someone whose work-email re-check is due, who can't open the interview until they confirm it again.
+ */
+async function teamOptions(orgId: string, jobId: string, candidateId: string, db: Db | Tx, now: Date) {
   return db
     .select({ memberId: orgMembers.id, userId: orgMembers.userId, role: orgMembers.role, name: users.name })
     .from(orgMembers)
@@ -117,6 +120,7 @@ async function teamOptions(orgId: string, jobId: string, candidateId: string, db
       and(
         eq(orgMembers.orgId, orgId),
         isNull(orgMembers.removedAt),
+        gt(orgMembers.recheckDueAt, now),
         isNull(users.deletionRequestedAt),
         ne(orgMembers.userId, candidateId),
         or(eq(orgMembers.role, "admin"), sql`${jobTeam.userId} is not null`),
@@ -260,7 +264,7 @@ export async function schedulingView(userId: string, applicationId: string, deps
       .select({ slotId: interviews.slotId, startsAt: interviews.startsAt })
       .from(interviews)
       .where(and(eq(interviews.applicationId, app.id), inArray(interviews.status, ["proposed", "accepted"]))),
-    teamOptions(app.orgId, app.jobId, app.userId, db),
+    teamOptions(app.orgId, app.jobId, app.userId, db, now),
     db.select({ id: conversations.id }).from(conversations).where(eq(conversations.applicationId, app.id)),
   ]);
   const open = slots.filter((s) => slotOpen(s.startsAt, now));
@@ -356,7 +360,7 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
       .where(and(eq(interviews.applicationId, app.id), eq(interviews.startsAt, slot.startsAt), inArray(interviews.status, ["proposed", "accepted"])))
       .limit(1);
     if (taken) return fail("slot_gone");
-    const options = await teamOptions(app.orgId, app.jobId, app.userId, tx);
+    const options = await teamOptions(app.orgId, app.jobId, app.userId, tx, now);
     const chosen = input.interviewers.map((memberId) => options.find((o) => o.memberId === memberId));
     if (chosen.some((c) => !c)) return fail("bad_interviewer");
     const people = chosen.map((c) => c!.userId);
@@ -387,7 +391,7 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     // Lock order everywhere: the application row first, then the interview.
     const [ref] = await tx.select({ applicationId: interviews.applicationId }).from(interviews).where(eq(interviews.id, parsed.data.interviewId));
     if (!ref) return fail("not_found");
-    const found = await visibleApplication(userId, ref.applicationId, tx, now, true);
+    const found = await visibleApplication(userId, ref.applicationId, tx, now, true, true);
     if (!found.ok) return companyFail(found.error);
     const [iv] = await tx
       .select({ id: interviews.id, status: interviews.status, startsAt: interviews.startsAt })
@@ -398,8 +402,9 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     if (!found.access.canMove) return fail(found.access.me.role === "interviewer" ? "read_only" : "not_allowed");
     if (!canCancel(iv, now)) return fail("not_open");
     await tx.update(interviews).set({ status: "cancelled", cancelledAt: now }).where(eq(interviews.id, iv.id));
-    // The phone goes too, unless another accepted interview it was shared for still needs it (Testing T42).
-    await erasePhoneUnlessNeeded(tx, ref.applicationId, now);
+    // The phone goes too when it was shared for this interview, unless another accepted interview it was shared for
+    // still needs it (Testing T42, T47).
+    await erasePhoneUnlessNeeded(tx, ref.applicationId, iv.id, now);
     await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "interview_cancelled", target: { application: ref.applicationId } }, now);
     return { ok: true };
   });
@@ -545,6 +550,11 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
   const now = deps.now ?? new Date();
   const me = await activeMembership(userId, db, now);
   if (!me) return fail("not_member");
+  // A company that isn't verified (suspended, say) sees no candidate, interviewer or feedback here, as on the board and
+  // in Messages (security review 2026-10-13).
+  const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
+  const status = org?.status ?? "pending";
+  if (status !== "verified") return { ok: true, view: { company: me.orgName, role: me.role, status, items: [] } };
   const rows = await db
     .select({
       applicationId: applications.id,
@@ -592,7 +602,7 @@ export async function companyInterviews(userId: string, deps: InterviewDeps = {}
     if (!view) return [];
     return [{ ...view, applicationId: r.applicationId, jobId: r.jobId, candidate: displayName(r.candidate), job: r.job, day: indiaDay(r.startsAt), assigned: assigned.has(r.interviewId) }];
   });
-  return { ok: true, view: { company: me.orgName, role: me.role, items } };
+  return { ok: true, view: { company: me.orgName, role: me.role, status, items } };
 }
 
 /* Download your data ---------------------------------------------------------------------------------------------- */

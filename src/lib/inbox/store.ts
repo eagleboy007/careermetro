@@ -236,7 +236,9 @@ export async function acceptRequest(userId: string, conversationId: string, deps
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
     const me = await membership(userId, conversationId, tx);
-    if (!me || me.startedBy === userId || me.hiddenAt) return fail("not_found");
+    // Only the person the request was sent to answers it: never a company-side row (a colleague of the sender who
+    // opened the chat in Corporate Messages, or a former member), whatever the chat's kind.
+    if (!me || me.role !== "member" || me.startedBy === userId || me.hiddenAt) return fail("not_found");
     // Accepted already (another tab, a double tap): fine.
     if (me.status === "open") return { ok: true as const };
     if (me.status !== "request") return fail("not_found");
@@ -256,7 +258,8 @@ export async function deleteRequest(userId: string, conversationId: string, deps
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
     const me = await membership(userId, conversationId, tx);
-    if (!me || me.status !== "request" || me.startedBy === userId) return fail("not_found");
+    // The person's own row only, as in acceptRequest: a company-side row never answers a request.
+    if (!me || me.role !== "member" || me.status !== "request" || me.startedBy === userId) return fail("not_found");
     await tx
       .update(conversationMembers)
       .set({ hiddenAt: now })

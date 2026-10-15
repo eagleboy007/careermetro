@@ -53,7 +53,13 @@ export function CompanyInterviews({ view, actions, note }: { view: CompanyInterv
       </div>
       {note}
       <Notice note={message} />
-      {view.items.length === 0 ? (
+      {view.status !== "verified" ? (
+        <p className="rounded-lg border border-dashed border-line p-5 text-[0.9rem] text-muted">
+          {view.status === "suspended"
+            ? "Your company's interviews are paused while we review it. Write to us from the Grievances page if you think this is a mistake."
+            : "Interviews open once CareerMetro has verified your company."}
+        </p>
+      ) : view.items.length === 0 ? (
         <p className="rounded-lg border border-dashed border-line p-5 text-[0.9rem] text-muted">No interviews in the past week or ahead.</p>
       ) : (
         days.map((day) => {

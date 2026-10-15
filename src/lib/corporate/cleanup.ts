@@ -35,7 +35,8 @@ async function inBatches(step: () => Promise<number>): Promise<number> {
 
 /**
  * The 180-day access end: applications closed 180 days ago or more get `company_access_ends_at` (the day the access
- * ended), and the company-side read marks on their chats go. Reads already refuse these applications; a reopen can't
+ * ended), any phone still shared with the company is erased (closing erases it already; this makes sure), and the
+ * company-side read marks on their chats go. Reads already refuse these applications; a reopen can't
  * happen, because moving an application needs the company to see it.
  */
 export async function endCompanyAccess(db: Db = getDb(), now = new Date(), only?: Only): Promise<{ accessEnded: number; readMarksCleared: number }> {
@@ -44,7 +45,7 @@ export async function endCompanyAccess(db: Db = getDb(), now = new Date(), only?
   const accessEnded = await inBatches(() =>
     db.transaction(async (tx) => {
       const ended = await tx.execute<{ id: string }>(sql`
-        update applications set company_access_ends_at = closed_at + make_interval(days => ${COMPANY_ACCESS_DAYS})
+        update applications set company_access_ends_at = closed_at + make_interval(days => ${COMPANY_ACCESS_DAYS}), phone_shared = null
         where id in (
           select a.id from applications a
           where a.closed_at is not null and a.closed_at <= ${cutoff.toISOString()}::timestamptz and a.company_access_ends_at is null ${inOrg(only)}
@@ -52,6 +53,7 @@ export async function endCompanyAccess(db: Db = getDb(), now = new Date(), only?
         returning id`);
       const ids = [...ended].map((r) => r.id);
       if (ids.length) {
+        await tx.execute(sql`update interviews set phone_shared = false where phone_shared and application_id in ${ids}`);
         const cleared = await tx.execute<{ conversation_id: string }>(sql`
           delete from conversation_members where role <> 'member'
             and conversation_id in (select id from conversations where application_id in ${ids})

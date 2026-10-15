@@ -97,7 +97,9 @@ export function CompanyMessages({
         <nav aria-label="Chats" className={`min-w-0 rounded-lg border border-line bg-surface ${showing ? "max-[759px]:hidden" : ""}`}>
           {view.items.length === 0 ? (
             <p className="p-4 text-[0.86rem] text-muted">
-              {interviewer
+              {view.status === "suspended"
+                ? "Your company's chats are paused while we review it."
+                : interviewer
                 ? "Interviewers read the chats of candidates whose interviews they are on. Hiring HR and Recruiter admins send messages."
                 : "No chats yet. Open a candidate on a job's board and choose Message to write to them."}
             </p>

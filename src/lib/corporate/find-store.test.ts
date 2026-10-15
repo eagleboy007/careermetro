@@ -28,7 +28,7 @@ import {
   unblockCompany,
 } from "./find-store";
 import { saveJob } from "./jobs-store";
-import { activeMembership, finishCompanySignup, finishJoin, inviteMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
+import { activeMembership, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -145,7 +145,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
       deps(),
     );
     if (!saved.ok) throw new Error(saved.error);
-    return { orgId: done.orgId, admin, hr, otherHr, iv, jobId: saved.jobId };
+    return { orgId: done.orgId, domain: d, admin, hr, hrMember, otherHr, iv, jobId: saved.jobId };
   }
   /** The ids behind a search's refs, read back through the database (refs never carry them in the clear). */
   async function found(userId: string, jobId: string, extra: Record<string, unknown> = {}, days = 0) {
@@ -341,6 +341,80 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(r, { orgId: s.orgId }, fd())).toBe(true);
     expect((await chatOf(toR.conversationId)).state).toBe("closed");
     expect(await listThreads(r, fd())).toEqual([]);
+  });
+
+  it("never lets a colleague of the sender accept or delete the company's own request on the person's behalf (security review 2026-10-13)", async () => {
+    const s = await setup("exploit");
+    const p = await seeker("exploit-p");
+    const adminB = await person("exploit-admin-b", "Anil Kapoor");
+    const adminBMember = await join(s.admin, adminB, s.domain, "admin", "anil");
+    const [card] = await found(s.admin, s.jobId);
+    // Admin A sends the request.
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    // Admin B opens the chat in Corporate Messages, which gives B a company-side read row.
+    expect((await companyFoundChat(adminB, sent.conversationId, { ...fd(), markRead: true })).ok).toBe(true);
+    const rowsOf = async () => db!.select().from(schema.conversationMembers).where(eq(schema.conversationMembers.conversationId, sent.conversationId));
+    expect((await rowsOf()).find((r) => r.userId === adminB)).toMatchObject({ role: "company_team", hiddenAt: null });
+    // B tries to answer the request from the Inbox side: refused, and the chat stays a request the person can answer.
+    expect(await acceptRequest(adminB, sent.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await deleteRequest(adminB, sent.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
+    const statusOf = async () => (await db!.select({ status: schema.conversations.status }).from(schema.conversations).where(eq(schema.conversations.id, sent.conversationId)))[0].status;
+    expect(await statusOf()).toBe("request");
+    const msgs = await db!.select().from(schema.messages).where(eq(schema.messages.conversationId, sent.conversationId));
+    expect(msgs.filter((m) => m.kind === "system")).toEqual([]);
+    expect(await sendFoundMessage(adminB, { conversationId: sent.conversationId, body: "Any news?" }, fd())).toEqual({ ok: false, error: "waiting" });
+    // The person still sees the request; after they delete it, B can't bring it back either.
+    expect((await listThreads(p, fd()))[0]).toMatchObject({ id: sent.conversationId, kind: "request" });
+    expect(await deleteRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect(await acceptRequest(adminB, sent.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await statusOf()).toBe("request");
+    // Removing B (a third admin keeps the two-admin rule) takes their company-side rows away too.
+    await join(s.admin, await person("exploit-admin-c", "Kavita Rao"), s.domain, "admin", "kavita");
+    expect(await removeMember(s.admin, { memberId: adminBMember }, deps())).toEqual({ ok: true });
+    expect((await rowsOf()).some((r) => r.userId === adminB)).toBe(false);
+    expect(await companyFoundChat(adminB, sent.conversationId, { ...fd(), markRead: true })).toEqual({ ok: false, error: "not_member" });
+    expect((await rowsOf()).some((r) => r.userId === adminB)).toBe(false);
+  });
+
+  it("shows a suspended company nothing of a found chat and writes no row for it; reads and sends are audited by job (security review 2026-10-13)", async () => {
+    const s = await setup("found-audit");
+    const p = await seeker("found-audit-p");
+    const [card] = await found(s.admin, s.jobId);
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect((await sendFoundMessage(s.hr, { conversationId: sent.conversationId, body: "Great, thanks." }, fd())).ok).toBe(true);
+    for (let k = 0; k < 3; k++) expect((await companyFoundChat(s.hr, sent.conversationId, { ...fd(), markRead: true })).ok).toBe(true);
+    const lines = (await auditOf(s.orgId)).filter((a) => ["found_chat_read", "found_message_sent"].includes(a.action));
+    expect(lines.map((l) => [l.action, l.actor, l.target]).sort()).toEqual([
+      ["found_chat_read", `member:${s.hrMember}`, `job:${s.jobId}`],
+      ["found_message_sent", `member:${s.hrMember}`, `job:${s.jobId}`],
+    ]);
+    for (const l of lines) expect(JSON.stringify(l)).not.toContain(p);
+
+    await db!.update(schema.organizations).set({ reviewStatus: "suspended" }).where(eq(schema.organizations.id, s.orgId));
+    const rowsOf = async () =>
+      (await db!.select().from(schema.conversationMembers).where(eq(schema.conversationMembers.conversationId, sent.conversationId))).map((r) => [r.userId, r.role, r.lastReadAt?.toISOString()]).sort();
+    const before = await rowsOf();
+    expect(before.some(([id]) => id === s.otherHr)).toBe(false);
+    expect(await companyFoundChat(s.otherHr, sent.conversationId, { ...fd(1), markRead: true })).toEqual({ ok: false, error: "not_found" });
+    expect(await companyFoundChat(s.admin, sent.conversationId, { ...fd(1), markRead: true })).toEqual({ ok: false, error: "paused" });
+    expect(await companyFoundChat(s.hr, sent.conversationId, { ...fd(1), markRead: true })).toEqual({ ok: false, error: "paused" });
+    // No row added or touched while the company is suspended.
+    expect(await rowsOf()).toEqual(before);
+  });
+
+  it("limits profile openings per member and per company (security review 2026-10-13)", async () => {
+    const s = await setup("open-limit");
+    await seeker("open-limit-p");
+    const [card] = await found(s.admin, s.jobId);
+    expect((await openFoundPerson(s.hr, { jobId: s.jobId, ref: card.ref }, fd())).ok).toBe(true);
+    for (let i = 0; i < LIMITS.findOpensPerCompanyDay.max; i++) await takeShared(LIMITS.findOpensPerCompanyDay, s.orgId, { db: db!, now: clock.getTime() });
+    // Every member of the company is out, though neither has used their own hour.
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "limit" });
+    expect(await openFoundPerson(s.hr, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "limit" });
+    expect(LIMITS.findOpensPerCompanyDay.max).toBe(300);
   });
 
   it("limits searches per person and per company", async () => {

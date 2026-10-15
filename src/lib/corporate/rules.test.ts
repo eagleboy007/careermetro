@@ -122,8 +122,11 @@ describe("code delivery until an email sender exists", () => {
     expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", TODAY_PREVIEW: "1" })).toBe("off");
   });
   it("shows the code on screen with the test sign-in, and locally", () => {
-    expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production" })).toBe("test");
+    expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", NAME_HASH_KEY: "n" })).toBe("test");
     expect(codeDelivery({ NODE_ENV: "development" })).toBe("test");
+  });
+  it("is off on a production build without NAME_HASH_KEY, whatever CRON_SECRET is: work-email checks aren't set up yet", () => {
+    expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", CRON_SECRET: "c" })).toBe("off");
   });
   it("sends nothing on a preview that has real sign-in, or a production build run elsewhere", () => {
     expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBe("off");

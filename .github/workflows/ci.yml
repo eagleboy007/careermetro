@@ -79,6 +79,9 @@ jobs:
           PHONE_KEY: e2e-only-phone-key
           # Find people's opaque ids need their own key in production too, never CRON_SECRET (pending item 19). Test-only value.
           FIND_REF_KEY: e2e-only-find-ref-key
+          # Work-email codes and invites are hashed with NAME_HASH_KEY, never CRON_SECRET; without it production turns
+          # them off (security review 2026-10-13). Test-only value.
+          NAME_HASH_KEY: e2e-only-name-hash-key
           # The walk calls the daily clean-up the way Vercel Cron does (corporate build step 7). Test-only value.
           CRON_SECRET: e2e-only-cron-secret
           BASE: http://localhost:3211

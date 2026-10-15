@@ -454,7 +454,7 @@ await step("add a certificate: the form opens, and a name that isn't yours is re
   await form.getByLabel("Your name as printed").fill("Amit Verma");
   await form.getByLabel("Date issued").fill("2025-03-01");
   await form.getByLabel("It never expires").check();
-  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/walk-test");
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f1");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();
   await form.getByText(/doesn't match your account/).waitFor({ timeout: 10000 });
@@ -471,7 +471,7 @@ await step("design page: the certificate form says example data is never saved",
   await form.getByLabel("Your name as printed").fill("Priya Sharma");
   await form.getByLabel("Date issued").fill("2025-03-01");
   await form.getByLabel("Expiry date").fill("2028-03-01");
-  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/example");
+  await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f2");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();
   await form.getByText(/example data, so nothing is saved/).waitFor({ timeout: 5000 });
@@ -1140,7 +1140,8 @@ if (process.env.DATABASE_URL) {
       if (!/AWS Certified Cloud Practitioner/.test(focused)) throw new Error(`focus moved to ${focused}`);
 
       await rail.getByRole("button", { name: "Check with Credly: AWS Certified Security – Specialty" }).click();
-      await rail.getByText("Still Added by you. The Credly badge is for a different certificate.").waitFor({ timeout: 15000 });
+      await rail.getByText("Check pending, so it doesn't fill the goal yet. The Credly badge is for a different certificate.").waitFor({ timeout: 15000 });
+      await rail.getByText(/Added by you, check pending/).waitFor({ timeout: 10000 });
       await rail.getByText("The Credly badge is for a different certificate.", { exact: true }).waitFor({ timeout: 10000 });
       await a11yOn(q, "me-certifications");
       await q.emulateMedia({ colorScheme: "dark" });
@@ -1163,15 +1164,16 @@ if (process.env.DATABASE_URL) {
     await p.getByRole("heading", { level: 1, name: "Asha Rao" }).waitFor({ timeout: 10000 });
     const certs = p.locator("section", { has: p.getByRole("heading", { name: /^Certifications/ }) });
     const names = await certs.locator("li span.font-semibold").allInnerTexts();
-    if (JSON.stringify(names) !== JSON.stringify(["AWS Certified Cloud Practitioner", "AWS Certified Security – Specialty", "Microsoft Certified: Azure Fundamentals (AZ-900)"]))
+    // The Security Specialty badge Credly didn't confirm waits as check pending, which only Asha sees.
+    if (JSON.stringify(names) !== JSON.stringify(["AWS Certified Cloud Practitioner", "Microsoft Certified: Azure Fundamentals (AZ-900)"]))
       throw new Error(`public certifications: ${JSON.stringify(names)}`);
     await certs.getByText("Verified with Credly", { exact: true }).waitFor();
-    if ((await certs.getByText("Added by Asha", { exact: true }).count()) !== 2) throw new Error("expected Added by Asha twice");
+    if ((await certs.getByText("Added by Asha", { exact: true }).count()) !== 1) throw new Error("expected Added by Asha once");
     const badge = await certs.getByRole("link", { name: /See the badge on Credly/ }).getAttribute("href");
     if (badge !== "https://www.credly.com/badges/c4ed1100-0000-4000-8000-000000000002") throw new Error(`badge link ${badge}`);
     if (await certs.getByRole("button").count()) throw new Error("a visitor sees Check with Credly");
     const html = await p.content();
-    for (const bad of ["Certified Kubernetes", "learn.microsoft.com", "AshaRaoWalk", "WALKCERT1", "different certificate", "walk-aws", "c4ed1100-0000-4000-8000-000000000003", "Expired"])
+    for (const bad of ["Certified Kubernetes", "Security – Specialty", "check pending", "learn.microsoft.com", "AshaRaoWalk", "WALKCERT1", "different certificate", "walk-aws", "c4ed1100-0000-4000-8000-000000000003", "Expired"])
       if (html.includes(bad)) throw new Error(`the public profile carries ${bad}`);
     await shot("public-certifications");
     await a11y("public-certifications");
@@ -1211,7 +1213,7 @@ if (process.env.DATABASE_URL) {
       const check2 = rail2.getByRole("button", { name: "Check with Credly: AWS Certified Cloud Practitioner" });
       await check2.focus();
       await r.keyboard.press("Enter");
-      await rail2.getByText(/already verified on another account, so we'll review it/).waitFor({ timeout: 15000 });
+      await rail2.getByText(/already on another account, so we'll review it/).waitFor({ timeout: 15000 });
       await check2.waitFor({ state: "detached", timeout: 10000 });
       const at = await r.evaluate(() => ({ tag: document.activeElement?.tagName, text: document.activeElement?.textContent ?? "" }));
       if (at.tag === "BODY" || !/Certifications/.test(at.text)) throw new Error(`focus after the held check: ${JSON.stringify(at)}`);
@@ -1600,6 +1602,8 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await preview.waitFor();
     // Focus starts inside the dialog, on its heading, never on the page body.
     if (!(await preview.getByRole("heading", { name: "What Example Labs receives" }).evaluate((el) => el === document.activeElement))) throw new Error("focus not on the preview's heading");
+    // The company's drawer reads the profile and proof live, and the preview says so (T51).
+    await preview.getByText("If you update your profile or add proof later, the company sees the latest.").waitFor();
     await preview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 10000 });
     await preview.getByText(/^(Proved|On resume, not proved|Not on resume)$/).first().waitFor();
     // The criteria, met or not yet, and the warning that unmet ones don't block.

@@ -91,7 +91,7 @@ export function CorporateHome({
       )}
       {org.status === "suspended" && (
         <p className="rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem] text-muted">
-          This company is suspended while we review it. Its jobs and messages are paused. Write to us from the Grievances page if you think this is a mistake.
+          This company is suspended while we review it. Its jobs, candidates and messages are paused. Write to us from the Grievances page if you think this is a mistake.
         </p>
       )}
 

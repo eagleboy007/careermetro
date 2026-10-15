@@ -41,7 +41,7 @@ import {
 import { FIND_PAGE_SIZE, FIND_SCAN_MAX, FIND_VIEWS_KEEP_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { provedByUser } from "./applications-store";
-import { writeAudit } from "./audit-line";
+import { writeAudit, writeAuditOncePerDay } from "./audit-line";
 import { blockCompanyIn } from "./company-blocks";
 import { openRef, sealRef } from "./find-ref";
 import { compareFound, findRefusal, inBand, matchesJob, yearsWorked, type FindRefusal } from "./find-rules";
@@ -71,7 +71,7 @@ const skillNames = new Map(skills.map((s) => [s.id, s.name]));
 const roleTitles = new Map(roleProfiles.map((r) => [r.slug, r.title]));
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
 
-export type FindError = "invalid" | "not_member" | FindRefusal | "not_found" | "limit" | "unavailable" | "waiting" | "accepted" | "message";
+export type FindError = "invalid" | "not_member" | FindRefusal | "not_found" | "limit" | "unavailable" | "waiting" | "accepted" | "message" | "paused";
 
 export const FIND_ERROR_TEXT: Record<FindError, string> = {
   invalid: "Check the details and try again.",
@@ -86,6 +86,7 @@ export const FIND_ERROR_TEXT: Record<FindError, string> = {
   waiting: "Your message request is waiting for them to accept.",
   accepted: "They accepted your request. Write to them in Messages.",
   message: "Write a message of up to 2,000 characters.",
+  paused: "Your company's messages are paused while we review it.",
 };
 
 export type FindResult<T = object> = ({ ok: true } & T) | { ok: false; error: FindError };
@@ -306,7 +307,10 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
     const ctx = await jobContext(userId, parsed.data.jobId, tx, now);
     if (!ctx.ok) return ctx;
     const { me, job } = ctx;
-    if (!(await takeShared(LIMITS.findOpensPerUserHour, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    const at = { db: tx, now: now.getTime() };
+    if (!(await takeShared(LIMITS.findOpensPerUserHour, userId, at))) return fail("limit");
+    // And per company, so adding more Hiring HR doesn't add more openings (security review 2026-10-13).
+    if (!(await takeShared(LIMITS.findOpensPerCompanyDay, me.orgId, at))) return fail("limit");
     const person = await resolve(ctx, userId, parsed.data.ref, tx, deps.env);
     if (!person) return fail("not_found");
     const current = (await currentResumes([person.id], tx)).get(person.id);
@@ -495,13 +499,18 @@ async function foundChatState(chat: { status: string; orgStatus: string; candida
   return blocked ? "closed" : "open";
 }
 
-/** One found chat for the company, as Corporate Messages shows it. With `markRead` it counts as read up to now. */
+/**
+ * One found chat for the company, as Corporate Messages shows it. With `markRead` it counts as read up to now. Only a
+ * verified company reads it (security review 2026-10-13): a suspended one sees "paused" and nothing of the chat, and no
+ * company-side row is written for it. Each reading writes at most one audit line a day per member and chat's job.
+ */
 export async function companyFoundChat(userId: string, conversationId: string, deps: FindDeps & { markRead?: boolean } = {}): Promise<FindResult<{ chat: CompanyChatView }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const found = await visibleFoundChat(userId, conversationId, db, now);
   if (!found.ok) return found;
   const { me, chat } = found;
+  if (chat.orgStatus !== "verified") return fail("paused");
   const rows = await db
     .select({ id: messages.id, senderId: messages.senderId, kind: messages.kind, body: messages.body, createdAt: messages.createdAt, name: users.name, deleted: users.deletionRequestedAt })
     .from(messages)
@@ -516,12 +525,15 @@ export async function companyFoundChat(userId: string, conversationId: string, d
     if (m.senderId === chat.candidateId) return { ...base, by: "candidate", who: candidate };
     return { ...base, by: "team", who: m.senderId && !m.deleted ? displayName(m.name) : COMPANY_TEAM };
   });
+  // The read mark is a company-side row only (role company_team), written for a live, re-checked Recruiter admin or
+  // Hiring HR on the job of a verified company: visibleFoundChat and the check above. It never answers the request.
   if (deps.markRead) {
     await db
       .insert(conversationMembers)
       .values({ conversationId: chat.id, userId, role: "company_team", lastReadAt: now })
       .onConflictDoUpdate({ target: [conversationMembers.conversationId, conversationMembers.userId], set: { lastReadAt: now } });
   }
+  await writeAuditOncePerDay(db, { orgId: me.orgId, actor: { memberId: me.memberId }, action: "found_chat_read", target: chat.jobId ? { job: chat.jobId } : { company: me.orgId } }, now);
   return {
     ok: true,
     chat: {
@@ -564,6 +576,8 @@ export async function sendFoundMessage(userId: string, raw: unknown, deps: FindD
       .insert(conversationMembers)
       .values({ conversationId: chat.id, userId, role: "company_team", lastReadAt: now })
       .onConflictDoUpdate({ target: [conversationMembers.conversationId, conversationMembers.userId], set: { lastReadAt: now } });
+    // Who at the company wrote, and from which job; never the message.
+    await writeAudit(tx, { orgId: me.orgId, actor: { memberId: me.memberId }, action: "found_message_sent", target: chat.jobId ? { job: chat.jobId } : { company: me.orgId } }, now);
     return { ok: true, messageId: message.id };
   });
   logEvent("info", result.ok ? "found_message_sent" : "found_message_refused", result.ok ? {} : { reason: result.error });
