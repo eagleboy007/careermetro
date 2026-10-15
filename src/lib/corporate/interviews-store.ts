@@ -192,6 +192,7 @@ export async function offerTimes(userId: string, raw: unknown, deps: InterviewDe
       .select({
         kind: messages.kind,
         payload: messages.payload,
+        hiddenAt: messages.hiddenAt,
         conversationId: messages.conversationId,
         status: conversations.status,
         applicationId: applications.id,
@@ -206,7 +207,8 @@ export async function offerTimes(userId: string, raw: unknown, deps: InterviewDe
       .innerJoin(organizations, eq(organizations.id, applications.orgId))
       .where(eq(messages.id, parsed.data.messageId))
       .for("update", { of: conversations });
-    if (!row || row.kind !== "ask_times" || row.owner !== userId) return fail("not_found");
+    // A card an admin hid after a report (FR-46) shows as the notice only, so it takes no answer either.
+    if (!row || row.kind !== "ask_times" || row.owner !== userId || row.hiddenAt) return fail("not_found");
     if (row.closedAt || chatClosed(row, row.status, now)) return fail("closed", CHAT_CLOSED);
     if (row.orgStatus !== "verified") return fail("paused");
     const [done] = await tx.select({ id: candidateSlots.id }).from(candidateSlots).where(eq(candidateSlots.askMessageId, parsed.data.messageId)).limit(1);

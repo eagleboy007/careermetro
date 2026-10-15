@@ -43,7 +43,10 @@ function breakingSteps(sql: string): string[] {
   );
   const columnsOf = (s: string) => {
     const m = /\b(?:UNIQUE|FOREIGN\s+KEY|PRIMARY\s+KEY)\s*(?:NULLS\s+(?:NOT\s+)?DISTINCT\s*)?\(([^)]*)\)/i.exec(s) ?? /\bUSING\s+\w+\s*\(([^)]*)\)/i.exec(s);
-    return m ? [...m[1].matchAll(/"(\w+)"/g)].map((c) => c[1]) : [];
+    if (m) return [...m[1].matchAll(/"(\w+)"/g)].map((c) => c[1]);
+    // A check names its columns as "table"."column", as drizzle writes them; an unqualified one counts as unknown.
+    const check = /\bCHECK\s*\(([\s\S]*)\)/i.exec(s);
+    return check ? [...check[1].matchAll(/"\w+"\."(\w+)"/g)].map((c) => c[1]) : [];
   };
   const target = (s: string) => /\b(?:ALTER\s+TABLE(?:\s+ONLY)?|\bON(?:\s+ONLY)?)\s+(?:"?\w+"?\.)?"?(\w+)"?/i.exec(s)?.[1];
   return statements.flatMap((s) => {
@@ -78,6 +81,7 @@ describe("breakingSteps", () => {
     ['ALTER TABLE "items" ADD COLUMN "price" numeric(10, 2) NOT NULL;', "adds a required column without a default"],
     ['ALTER TABLE "users" ADD CONSTRAINT "users_email_unique" UNIQUE("email");', "adds a constraint to an existing table"],
     ['ALTER TABLE "users" ADD CONSTRAINT "age_check" CHECK ("age" > 0);', "adds a constraint to an existing table"],
+    ['ALTER TABLE "users" ADD CONSTRAINT "users_name_length" CHECK (char_length("users"."name") <= 80);', "adds a constraint to an existing table"],
     ['ALTER TABLE "goals" ADD CONSTRAINT "goals_user_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id");', "adds a constraint to an existing table"],
     ['CREATE UNIQUE INDEX "users_email" ON "users" USING btree ("email");', "adds a unique index to an existing table"],
     ['DROP INDEX "user_goals_skill";', "drops an index"],
@@ -99,6 +103,7 @@ describe("breakingSteps", () => {
     'CREATE TABLE "t" ("id" uuid PRIMARY KEY NOT NULL);\n--> statement-breakpoint\nALTER TABLE "t" ADD CONSTRAINT "t_u_fk" FOREIGN KEY ("u") REFERENCES "public"."users"("id");',
     'CREATE TABLE "t" ("id" uuid NOT NULL);\n--> statement-breakpoint\nCREATE UNIQUE INDEX "t_id" ON "t" USING btree ("id");',
     'ALTER TABLE "resumes" ADD COLUMN "consent_id" uuid;\n--> statement-breakpoint\nALTER TABLE "resumes" ADD CONSTRAINT "r_fk" FOREIGN KEY ("consent_id") REFERENCES "public"."consents"("id");',
+    'ALTER TABLE "users" ADD COLUMN "bio" text;\n--> statement-breakpoint\nALTER TABLE "users" ADD CONSTRAINT "users_bio_length" CHECK (char_length("users"."bio") between 1 and 500);',
   ])("allows %s", (sql) => {
     expect(breakingSteps(sql)).toEqual([]);
   });

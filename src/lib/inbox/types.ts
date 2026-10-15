@@ -1,5 +1,11 @@
 import type { ReportReason } from "@/lib/schemas/inbox";
 
+/**
+ * What everyone in a chat sees in place of a message a CareerMetro admin hid after a report (FR-46). The text itself
+ * never reaches a chat: src/lib/inbox/hidden.ts swaps it in the database.
+ */
+export const HIDDEN_MESSAGE_TEXT = "This message was hidden by CareerMetro after a report.";
+
 export type InboxKind = "application" | "person" | "request";
 export type InboxFilter = "all" | InboxKind;
 

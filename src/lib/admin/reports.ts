@@ -7,6 +7,7 @@ import { REPORT_REASON_LABELS } from "@/lib/inbox/types";
 import { logEvent } from "@/lib/log";
 import { reportReviewInput, reportReviewView, type ReportReviewResult, type ReportReviewView } from "@/lib/schemas/admin";
 import type { ReportReason } from "@/lib/schemas/inbox";
+import { removalStates } from "./removals";
 import { reportDeadlines } from "./report-deadlines";
 
 /*
@@ -19,6 +20,8 @@ import { reportDeadlines } from "./report-deadlines";
 
 type Db = ReturnType<typeof getDb>;
 export type ReportAdminDeps = { db?: Db; now?: Date };
+/** `adminUserId`: the admin looking, who may not suspend their own account (FR-46). */
+export type ReportListDeps = ReportAdminDeps & { adminUserId?: string; env?: Record<string, string | undefined> };
 
 const WHAT = { message: "A message", person: "A person", chat: "A chat", job: "A job" } as const;
 const GONE = "A deleted account";
@@ -87,8 +90,11 @@ async function contexts(rows: { target: string; targetId: string; reporterId: st
   return out;
 }
 
-/** Open reports, oldest first, at most 200, with their deadlines and what was reported. */
-export async function reportsForReview(deps: ReportAdminDeps = {}): Promise<ReportReviewView[]> {
+/**
+ * Open reports, oldest first, at most 200, with their deadlines, what was reported, and the reported message and
+ * account with whether they are hidden or suspended (FR-46).
+ */
+export async function reportsForReview(deps: ReportListDeps = {}): Promise<ReportReviewView[]> {
   const db = deps.db ?? getDb();
   const rows = await db
     .select({
@@ -107,7 +113,7 @@ export async function reportsForReview(deps: ReportAdminDeps = {}): Promise<Repo
     .where(eq(reports.status, "open"))
     .orderBy(asc(reports.createdAt), asc(reports.id))
     .limit(200);
-  const found = await contexts(rows, db);
+  const [found, removals] = await Promise.all([contexts(rows, db), removalStates(rows, deps.adminUserId ?? null, { db, env: deps.env })]);
   return rows.map((r) => {
     const { acknowledgeBy, decideBy } = reportDeadlines(r.reason as ReportReason, r.createdAt);
     return reportReviewView.parse({
@@ -121,6 +127,8 @@ export async function reportsForReview(deps: ReportAdminDeps = {}): Promise<Repo
       reporter: r.reporterId ? nameOf(r) : GONE,
       note: r.note,
       context: found.get(r.targetId) ?? null,
+      message: removals.get(r.id)?.message ?? null,
+      account: removals.get(r.id)?.account ?? null,
     });
   });
 }

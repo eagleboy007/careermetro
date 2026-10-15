@@ -1651,6 +1651,95 @@ await step("reports: the admin acknowledges one, then closes it", async () => {
     await sql.end();
   }
 });
+// Reports removal tools (FR-46): the admin hides a reported message with a reason (a blank reason is refused first),
+// the row says so in words and focus stays on it; the person who reported it sees the notice in their Inbox and the
+// text never reaches the page; then the admin shows it again from the list in force. One audit line each.
+await step("reports: the admin hides the reported message, and the other side sees the notice", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to set up a report");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const run = `e2e-hide-${Date.now()}`;
+  const reporterEmail = `${run}-a@example.test`;
+  const text = `Pay the booking fee first ${run}`;
+  const why = "Asked for money to book an interview.";
+  const them = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const r = await them.newPage();
+  const q = await adm.newPage();
+  for (const pg of [r, q]) {
+    pg.on("pageerror", (e) => problems.push(`pageerror@${pg.url()}: ${e.message.slice(0, 200)}`));
+    pg.on("response", (x) => x.status() >= 500 && problems.push(`${x.status()} ${x.request().method()} ${x.url()}`));
+    pg.on("console", (m) => m.type() === "error" && problems.push(`console@${pg.url()}: ${m.text().slice(0, 200)}`));
+  }
+  try {
+    // The person who reports it signs in for real, so their Inbox can be read; the sender is set up in the database.
+    await signInAs(r, "Walkhide Rao", reporterEmail);
+    const [reporter] = await sql`select id from users where email = ${reporterEmail}`;
+    if (!reporter) throw new Error("the reporter's account was not made");
+    const [other] = await sql`insert into users (email, first_name, last_name, name) values (${`${run}-b@example.test`}, 'Walksender', 'Sen', 'Walksender Sen') returning id`;
+    const [chat] = await sql`insert into conversations (kind, status, started_by) values ('direct', 'open', ${other.id}) returning id`;
+    await sql`insert into conversation_members (conversation_id, user_id, role) values (${chat.id}, ${reporter.id}, 'member'), (${chat.id}, ${other.id}, 'member')`;
+    const [msg] = await sql`insert into messages (conversation_id, sender_id, body) values (${chat.id}, ${other.id}, ${text}) returning id`;
+    const [rep] = await sql`insert into reports (reporter_id, target, target_id, reason, note) values (${reporter.id}, 'message', ${msg.id}, 'money_or_otp', 'Asked me to pay.') returning id`;
+
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.goto(BASE + "/admin/reports");
+    await q.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+    // By the row's own heading id: once hidden, the list in force shows the same text in another row.
+    const row = q.locator(`article[aria-labelledby="report-${rep.id}"]`);
+    await row.waitFor();
+    await row.getByRole("button", { name: /^Hide message: / }).click();
+    const reason = row.getByLabel("Reason", { exact: true });
+    await reason.waitFor();
+    if (!(await reason.evaluate((el) => el === document.activeElement))) throw new Error("focus did not move to the reason field");
+    await row.getByRole("button", { name: "Hide message", exact: true }).click();
+    await row.getByRole("alert").getByText("Write the reason.").waitFor({ timeout: 5000 });
+    await reason.fill(why);
+    await axeOn(q, "admin-reports-hide");
+    await row.getByRole("button", { name: "Hide message", exact: true }).click();
+    await q.getByRole("status").filter({ hasText: "Message hidden." }).waitFor({ timeout: 10000 });
+    await row.getByText(/^Message hidden \d+ \w+ by .+\. Reason: Asked for money/).waitFor({ timeout: 10000 });
+    // Focus is back on the row's button, which now shows the message again; never the page.
+    await q.waitForFunction(() => /^Unhide message: /.test(document.activeElement?.getAttribute("aria-label") ?? ""), null, { timeout: 5000 }).catch(async () => {
+      const at = await q.evaluate(() => `${document.activeElement?.tagName} ${document.activeElement?.getAttribute("aria-label") ?? ""}`);
+      throw new Error(`focus after hiding is on ${at}, not the row's Unhide message button`);
+    });
+    const [saved] = await sql`select body, hidden_at, hidden_reason from messages where id = ${msg.id}`;
+    if (saved.body !== text || !saved.hidden_at || saved.hidden_reason !== why) throw new Error("the hide was not saved, or the text was changed");
+    const [still] = await sql`select status from reports where id = ${rep.id}`;
+    if (still.status !== "open") throw new Error(`hiding closed the report (${still.status})`);
+    const hiddenRow = q.locator(`article[aria-labelledby="hidden-${msg.id}"]`);
+    await hiddenRow.waitFor();
+
+    // The other side: the notice in place of the text, and the text nowhere in the page.
+    await r.goto(BASE + "/inbox");
+    await r.getByRole("button", { name: /Walksender Sen/ }).first().click();
+    await r.locator('ol[aria-label="Messages"]').getByText("This message was hidden by CareerMetro after a report.").waitFor({ timeout: 10000 });
+    if ((await r.content()).includes(text)) throw new Error("the hidden message's text reached the Inbox page");
+    await axeOn(r, "inbox-hidden-message");
+    await r.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-inbox-hidden-message.png`, fullPage: true });
+
+    // Shown again from the list in force; the row leaves it and the Inbox reads the text again.
+    await hiddenRow.getByRole("button", { name: /^Unhide message: / }).click();
+    await hiddenRow.getByRole("button", { name: "Unhide message", exact: true }).click();
+    await q.getByRole("status").filter({ hasText: "Message shown again." }).waitFor({ timeout: 10000 });
+    await hiddenRow.waitFor({ state: "detached", timeout: 10000 });
+    const [back] = await sql`select hidden_at from messages where id = ${msg.id}`;
+    if (back.hidden_at) throw new Error("the message is still hidden");
+    const audit = await sql`select action from audit_logs where target = ${`message:${msg.id}`} order by action`;
+    if (audit.map((x) => x.action).join(",") !== "message_hidden,message_unhidden") throw new Error(`audit lines ${JSON.stringify(audit)}`);
+    await r.reload();
+    await r.getByRole("button", { name: /Walksender Sen/ }).first().click();
+    await r.locator('ol[aria-label="Messages"]').getByText(text).waitFor({ timeout: 10000 });
+  } finally {
+    await them.close();
+    await adm.close();
+    await sql`delete from reports where reporter_id in (select id from users where email like ${`${run}-%`})`;
+    await sql`delete from conversations where started_by in (select id from users where email like ${`${run}-%`})`;
+    await sql`delete from users where email like ${`${run}-%`}`;
+    await sql.end();
+  }
+});
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
 let proofSkill = "";

@@ -8,9 +8,10 @@ import { purgeDeletedAccounts } from "@/lib/account/delete";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { listThreads, markRead, report, sendMessage, unreadChats } from "@/lib/inbox/store";
+import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { applyToJob, moveApplication, withdrawApplication } from "./applications-store";
+import { applyToJob, jobBoard, moveApplication, openCandidate, withdrawApplication } from "./applications-store";
 import { companyChat, companyMessages, sendCompanyMessage } from "./chats-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { saveJob } from "./jobs-store";
@@ -183,6 +184,65 @@ describe.skipIf(!db)("company chats (database)", () => {
     expect(JSON.stringify([list, opened])).not.toContain("@example.test");
     const [row] = await db!.select({ kind: schema.messages.kind }).from(schema.messages).where(and(eq(schema.messages.body, QUESTION), eq(schema.messages.conversationId, (await conversationOf(s.applicationId)).id)));
     expect(row.kind).toBe("ask_question");
+  });
+
+  it("shows a hidden message as the notice on both sides, never its text, and drops its question mark (FR-46)", async () => {
+    const s = await setup("hidden");
+    const MIN = 1 / 1440;
+    expect(await send(s.hr, s.applicationId, HELLO, MIN)).toMatchObject({ ok: true });
+    expect(await send(s.admin, s.applicationId, QUESTION, 2 * MIN, true)).toMatchObject({ ok: true });
+    const chat = await conversationOf(s.applicationId);
+    const hide = (on: boolean) =>
+      db!
+        .update(schema.messages)
+        .set(on ? { hiddenAt: clock, hiddenBy: s.admin, hiddenReason: "Test." } : { hiddenAt: null, hiddenBy: null, hiddenReason: null })
+        .where(and(eq(schema.messages.conversationId, chat.id), inArray(schema.messages.body, [HELLO, QUESTION])));
+    await hide(true);
+
+    const [thread] = await listThreads(s.me, at(3 * MIN));
+    expect(thread.messages.slice(1)).toEqual([
+      { id: expect.any(String), by: "them", who: "Rahul Menon", text: HIDDEN_MESSAGE_TEXT, at: expect.any(String) },
+      { id: expect.any(String), by: "them", who: "Meera Iyer", text: HIDDEN_MESSAGE_TEXT, at: expect.any(String) },
+    ]);
+    const opened = await companyChat(s.hr, s.applicationId, at(3 * MIN));
+    if (!opened.ok) throw new Error(opened.error);
+    expect(opened.chat.messages.slice(1).map((m) => [m.by, m.text, m.question ?? false])).toEqual([
+      ["me", HIDDEN_MESSAGE_TEXT, false],
+      ["team", HIDDEN_MESSAGE_TEXT, false],
+    ]);
+    const list = await companyMessages(s.hr, at(3 * MIN));
+    if (!list.ok) throw new Error(list.error);
+    expect(list.view.items[0].preview).toBe(HIDDEN_MESSAGE_TEXT);
+    for (const read of [thread, opened, list]) {
+      expect(JSON.stringify(read)).not.toContain(HELLO);
+      expect(JSON.stringify(read)).not.toContain(QUESTION);
+    }
+
+    // Shown again: the text is back, as it was.
+    await hide(false);
+    const [back] = await listThreads(s.me, at(3 * MIN));
+    expect(back.messages.slice(1).map((m) => m.text)).toEqual([HELLO, QUESTION]);
+  });
+
+  it("takes a suspended candidate off the company's board, chats and drawer until the suspension is lifted (FR-46)", async () => {
+    const s = await setup("suspended-person");
+    expect(await send(s.hr, s.applicationId, HELLO)).toMatchObject({ ok: true });
+    const suspend = (on: boolean) =>
+      db!
+        .update(schema.users)
+        .set(on ? { suspendedAt: clock, suspendedBy: s.admin, suspendedReason: "Test." } : { suspendedAt: null, suspendedBy: null, suspendedReason: null })
+        .where(eq(schema.users.id, s.me));
+    const seen = async () => {
+      const board = await jobBoard(s.admin, s.jobId, at());
+      const list = await companyMessages(s.admin, at());
+      if (!board.ok || !list.ok) throw new Error("unavailable");
+      return { cards: board.board.cards.length, chats: list.view.items.length, chat: (await companyChat(s.admin, s.applicationId, at())).ok, drawer: (await openCandidate(s.admin, { applicationId: s.applicationId }, at())).ok };
+    };
+    expect(await seen()).toEqual({ cards: 1, chats: 1, chat: true, drawer: true });
+    await suspend(true);
+    expect(await seen()).toEqual({ cards: 0, chats: 0, chat: false, drawer: false });
+    await suspend(false);
+    expect(await seen()).toEqual({ cards: 1, chats: 1, chat: true, drawer: true });
   });
 
   it("keeps company chats out of a recruiter's personal Inbox, and the personal Inbox can't write in them", async () => {

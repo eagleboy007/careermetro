@@ -190,7 +190,7 @@ export async function findProfile(raw: string, now: Date, db: Db = getDb()): Pro
   const name = normalUsername(raw.slice(0, 60));
   // A name that could never have been saved needs no query.
   if (usernameProblem(name)) return null;
-  const ownerColumns = { id: users.id, username: users.username, headline: users.headline, deletionRequestedAt: users.deletionRequestedAt };
+  const ownerColumns = { id: users.id, username: users.username, headline: users.headline, deletionRequestedAt: users.deletionRequestedAt, suspendedAt: users.suspendedAt };
   let [user] = await db.select(ownerColumns).from(users).where(sql`lower(${users.username}) = ${name}`).limit(1);
   if (!user) {
     [user] = await db
@@ -200,7 +200,8 @@ export async function findProfile(raw: string, now: Date, db: Db = getDb()): Pro
       .where(and(eq(usernameRedirects.username, name), gt(usernameRedirects.expiresAt, now)))
       .limit(1);
   }
-  if (!user?.username || user.deletionRequestedAt) return null;
+  // A suspended account's profile (FR-46) reads as not there, like a deleted one, until the suspension is lifted.
+  if (!user?.username || user.deletionRequestedAt || user.suspendedAt) return null;
   const owner = { id: user.id, username: user.username, headline: user.headline, settings: await settingsFor(user.id, db) };
   return raw === user.username ? { owner } : { owner, redirectTo: user.username };
 }

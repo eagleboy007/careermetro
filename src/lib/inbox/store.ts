@@ -11,6 +11,7 @@ import { SLOT_TIMES } from "@/lib/schemas/constants";
 import { logEvent } from "@/lib/log";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { isHidden, shownBody } from "./hidden";
 import type { InboxMessage, InboxThread } from "./types";
 
 /*
@@ -446,7 +447,9 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
         senderName: users.name,
         senderDeleted: users.deletionRequestedAt,
         kind: messages.kind,
-        body: messages.body,
+        // A hidden message's text never leaves the database (FR-46): the notice comes back in its place.
+        body: shownBody(),
+        hidden: isHidden(),
         payload: messages.payload,
         createdAt: messages.createdAt,
       })
@@ -511,6 +514,8 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
         if (m.senderId === userId) return { id: m.id, by: "me", text: m.body, at: formatAt(m.createdAt, now) };
         // A message stays the company's when its writer's account goes: it is then from the company team.
         const who = m.senderId && !m.senderDeleted ? displayName(m.senderName) : COMPANY_TEAM;
+        // A hidden card is the notice only: no times to pick, no question to answer.
+        if (m.hidden) return { id: m.id, by: "them", who, text: m.body, at: formatAt(m.createdAt, now) };
         if (m.kind === "ask_times") {
           const days = askDaysOf(m.payload);
           const given = offered.filter((o) => o.askMessageId === m.id).map((o) => slotLabel(o.startsAt));

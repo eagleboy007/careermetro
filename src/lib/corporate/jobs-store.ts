@@ -313,6 +313,7 @@ export async function companyJobs(userId: string, me: Member, org: OrgForJobs & 
             inArray(applications.jobId, ids),
             isNull(applications.withdrawnAt),
             isNull(users.deletionRequestedAt),
+            isNull(users.suspendedAt),
             ne(applications.userId, userId),
             ne(applications.stage, "not_this_time"),
           ),

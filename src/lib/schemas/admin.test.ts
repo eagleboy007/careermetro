@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { companyReviewInput, HELD_REASON_TEXT, REVIEW_HELD_REASONS, heldProofRow, heldProofView, proofReviewInput, reportReviewInput, reportReviewView, reviewQueueRow } from "@/lib/schemas";
+import {
+  companyReviewInput,
+  HELD_REASON_TEXT,
+  REVIEW_HELD_REASONS,
+  heldProofRow,
+  heldProofView,
+  hiddenMessageView,
+  proofReviewInput,
+  reportRemovalInput,
+  reportReviewInput,
+  reportReviewView,
+  reviewQueueRow,
+  suspendedAccountView,
+} from "@/lib/schemas";
 
 const ORG = "6f1d2c3b-4a59-4e6f-8a7b-9c0d1e2f3a4b";
 const row = { id: ORG, name: "Example Labs", type: "company", domain: "example-labs.test", website: "https://example-labs.test", city: "Pune", size: "51 to 200", created: "2026-10-12", status: "pending", members: 1, admins: 1 };
@@ -88,9 +101,53 @@ describe("report review schemas", () => {
       reporter: "Asha V.",
       note: null,
       context: { label: "Person: Ravi K.", text: null },
+      message: null,
+      account: { id: ORG, name: "Ravi K.", suspended: null, canSuspend: true },
     };
     expect(reportReviewView.safeParse(view).success).toBe(true);
     expect(reportReviewView.safeParse({ ...view, email: "a@example.test" }).success).toBe(false);
     expect(reportReviewView.safeParse({ ...view, context: { ...view.context, email: "a@example.test" } }).success).toBe(false);
+    expect(reportReviewView.safeParse({ ...view, account: { ...view.account, email: "a@example.test" } }).success).toBe(false);
+    const state = { at: "2026-10-15T06:30:00.000Z", by: "Milin S.", reason: "Asked for money." };
+    expect(reportReviewView.safeParse({ ...view, message: { id: ORG, hidden: state }, account: { ...view.account, suspended: state } }).success).toBe(true);
+    // The admin's id stays on the server: the state names them, nothing more.
+    expect(reportReviewView.safeParse({ ...view, message: { id: ORG, hidden: { ...state, adminId: ORG } } }).success).toBe(false);
+  });
+});
+
+describe("report removal schemas (FR-46)", () => {
+  const reason = "Asked for an OTP in the chat.";
+
+  it("hide and suspend take an open report and a reason; the undoing takes the message or account", () => {
+    expect(reportRemovalInput.parse({ action: "hide_message", reportId: ORG, reason: `  ${reason} ` })).toEqual({ action: "hide_message", reportId: ORG, reason });
+    expect(reportRemovalInput.safeParse({ action: "suspend_account", reportId: ORG, reason }).success).toBe(true);
+    expect(reportRemovalInput.safeParse({ action: "unhide_message", messageId: ORG }).success).toBe(true);
+    expect(reportRemovalInput.safeParse({ action: "lift_suspension", userId: ORG }).success).toBe(true);
+  });
+
+  it("refuse a missing, blank or over-long reason, other actions, bad ids and extra fields", () => {
+    for (const action of ["hide_message", "suspend_account"]) {
+      expect(reportRemovalInput.safeParse({ action, reportId: ORG }).success).toBe(false);
+      expect(reportRemovalInput.safeParse({ action, reportId: ORG, reason: "   " }).success).toBe(false);
+      expect(reportRemovalInput.safeParse({ action, reportId: ORG, reason: "x".repeat(501) }).success).toBe(false);
+      expect(reportRemovalInput.safeParse({ action, reportId: ORG, reason: "x".repeat(500) }).success).toBe(true);
+      expect(reportRemovalInput.safeParse({ action, reportId: "x", reason }).success).toBe(false);
+      // The admin comes from the session, never the browser.
+      expect(reportRemovalInput.safeParse({ action, reportId: ORG, reason, adminId: ORG }).success).toBe(false);
+    }
+    expect(reportRemovalInput.safeParse({ action: "delete_message", reportId: ORG, reason }).success).toBe(false);
+    expect(reportRemovalInput.safeParse({ action: "unhide_message", reportId: ORG }).success).toBe(false);
+    expect(reportRemovalInput.safeParse({ action: "lift_suspension", userId: "x" }).success).toBe(false);
+  });
+
+  it("list what is in force with no extra fields such as an email", () => {
+    const hidden = { at: "2026-10-15T06:30:00.000Z", by: "Milin S.", reason };
+    const message = { id: ORG, label: "Message from Hari M. at Example Labs", text: "Send me the OTP.", hidden };
+    expect(hiddenMessageView.safeParse(message).success).toBe(true);
+    expect(hiddenMessageView.safeParse({ ...message, hidden: null }).success).toBe(false);
+    expect(hiddenMessageView.safeParse({ ...message, email: "a@example.test" }).success).toBe(false);
+    const account = { id: ORG, name: "Ravi K.", suspended: hidden };
+    expect(suspendedAccountView.safeParse(account).success).toBe(true);
+    expect(suspendedAccountView.safeParse({ ...account, email: "a@example.test" }).success).toBe(false);
   });
 });

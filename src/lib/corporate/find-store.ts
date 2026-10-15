@@ -21,6 +21,7 @@ import {
 } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
+import { shownBody } from "@/lib/inbox/hidden";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { duration, meFromProfile } from "@/lib/me/build";
@@ -118,13 +119,15 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
 
 /**
  * The people a company may find, as one condition on `users` joined to `user_settings`: the switch on; not deleted;
- * not the searcher; not on the company's own team (an employee's job search stays hidden); not blocking the company;
- * no block either way with the searcher; not already applied to this job (they are on its board).
+ * not suspended after a report (FR-46); not the searcher; not on the company's own team (an employee's job search
+ * stays hidden); not blocking the company; no block either way with the searcher; not already applied to this job
+ * (they are on its board).
  */
 function findableWhere(orgId: string, searcherId: string, jobId: string): SQL {
   return and(
     eq(userSettings.companiesCanFind, true),
     isNull(users.deletionRequestedAt),
+    isNull(users.suspendedAt),
     ne(users.id, searcherId),
     sql`not exists (select 1 from ${orgMembers} m where m.user_id = ${users.id} and m.org_id = ${orgId} and m.removed_at is null)`,
     sql`not exists (select 1 from ${companyBlocks} cb where cb.user_id = ${users.id} and cb.org_id = ${orgId})`,
@@ -384,7 +387,7 @@ export async function sendFoundRequest(userId: string, raw: unknown, deps: FindD
 
 /**
  * The company's found chats this member may read: Recruiter admins all of them; Hiring HR those whose job they move
- * candidates on. Interviewers none. People whose accounts are deleted never show.
+ * candidates on. Interviewers none. People whose accounts are deleted, or suspended after a report (FR-46), never show.
  */
 function foundChatsWhere(me: Member, userId: string): SQL {
   const scope =
@@ -392,7 +395,7 @@ function foundChatsWhere(me: Member, userId: string): SQL {
       ? undefined
       : sql`exists (select 1 from ${jobTeam} t where t.job_id = ${conversations.jobId} and t.user_id = ${userId} and t.role in ('owner', 'hiring'))`;
   // A block is silent: the company's list reads as it did, so a blocked request looks exactly like a deleted one.
-  return and(eq(conversations.orgId, me.orgId), eq(conversations.kind, "found"), isNull(users.deletionRequestedAt), scope)!;
+  return and(eq(conversations.orgId, me.orgId), eq(conversations.kind, "found"), isNull(users.deletionRequestedAt), isNull(users.suspendedAt), scope)!;
 }
 
 const candidateJoin = and(eq(conversationMembers.conversationId, conversations.id), eq(conversationMembers.role, "member"));
@@ -457,7 +460,7 @@ export async function foundChatItems(userId: string, now: Date, db: Db = getDb()
   if (!rows.length) return [];
   const ids = rows.map((r) => r.id);
   const last = await db
-    .selectDistinctOn([messages.conversationId], { conversationId: messages.conversationId, body: messages.body, createdAt: messages.createdAt })
+    .selectDistinctOn([messages.conversationId], { conversationId: messages.conversationId, body: shownBody(), createdAt: messages.createdAt })
     .from(messages)
     .where(and(inArray(messages.conversationId, ids), ne(messages.kind, "system")))
     .orderBy(messages.conversationId, desc(messages.createdAt));
@@ -533,7 +536,8 @@ export async function companyFoundChat(userId: string, conversationId: string, d
   const { me, chat } = found;
   if (chat.orgStatus !== "verified") return fail("paused");
   const rows = await db
-    .select({ id: messages.id, senderId: messages.senderId, kind: messages.kind, body: messages.body, createdAt: messages.createdAt, name: users.name, deleted: users.deletionRequestedAt })
+    // A hidden message's text never leaves the database (FR-46): the notice comes back in its place.
+    .select({ id: messages.id, senderId: messages.senderId, kind: messages.kind, body: shownBody(), createdAt: messages.createdAt, name: users.name, deleted: users.deletionRequestedAt })
     .from(messages)
     .leftJoin(users, eq(users.id, messages.senderId))
     .where(and(eq(messages.conversationId, chat.id), sql`${messages.id} in (select id from ${messages} where conversation_id = ${chat.id} order by created_at desc limit ${MESSAGES_PER_CHAT})`))

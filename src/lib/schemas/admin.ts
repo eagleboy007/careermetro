@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { ORG_REVIEW_STATUSES, ORG_TYPES, REVIEW_DECISIONS } from "./constants";
+import { ORG_REVIEW_STATUSES, ORG_TYPES, REMOVAL_REASON_MAX, REVIEW_DECISIONS } from "./constants";
+
+export { REMOVAL_REASON_MAX };
 
 /*
  * The company review page, /admin/companies (dev/corporate-plan.md, call B). What a review action takes from the
@@ -122,6 +124,57 @@ export type ReportReviewInput = z.infer<typeof reportReviewInput>;
 
 const ISO_INSTANT = z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/);
 
+/*
+ * The removal tools on the same page (FR-46; Project manager's decision under Milin's delegation, 2026-10-15): hide the
+ * message a report points at, and suspend the account it points at; both can be undone and nothing is deleted. Hiding
+ * and suspending start from an open report and need the admin's reason; undoing takes the message or account itself, so
+ * it works after the report is closed. The admin comes from the session, never the browser.
+ */
+
+/** The admin's reason: 1 to 500 characters. The suspended person reads it on their notice. */
+export const removalReason = z
+  .string()
+  .trim()
+  .min(1, "Write the reason.")
+  .max(REMOVAL_REASON_MAX, `Keep the reason to ${REMOVAL_REASON_MAX} characters.`);
+
+export const REMOVAL_ACTIONS = ["hide_message", "unhide_message", "suspend_account", "lift_suspension"] as const;
+export type RemovalAction = (typeof REMOVAL_ACTIONS)[number];
+
+export const reportRemovalInput = z.discriminatedUnion("action", [
+  z.object({ action: z.literal("hide_message"), reportId: z.uuid(), reason: removalReason }).strict(),
+  z.object({ action: z.literal("unhide_message"), messageId: z.uuid() }).strict(),
+  z.object({ action: z.literal("suspend_account"), reportId: z.uuid(), reason: removalReason }).strict(),
+  z.object({ action: z.literal("lift_suspension"), userId: z.uuid() }).strict(),
+]);
+export type ReportRemovalInput = z.infer<typeof reportRemovalInput>;
+
+/** A hide or a suspension in force: when, which admin (first name and last initial) and why. */
+export const removalState = z
+  .object({
+    at: ISO_INSTANT,
+    by: z.string().min(1).max(80),
+    reason: z.string().min(1).max(REMOVAL_REASON_MAX),
+  })
+  .strict();
+export type RemovalState = z.infer<typeof removalState>;
+
+/** The reported message, when the report is about one that is still there, and whether it is hidden. */
+const reportedMessage = z.object({ id: z.uuid(), hidden: removalState.nullable() }).strict();
+
+/**
+ * The account the report points at: the reported person, the writer of a reported message, or the other person in a
+ * reported direct chat. `canSuspend` is false for an admin's account and the viewing admin's own.
+ */
+const reportedAccount = z
+  .object({
+    id: z.uuid(),
+    name: z.string().min(1).max(80),
+    suspended: removalState.nullable(),
+    canSuspend: z.boolean(),
+  })
+  .strict();
+
 /** One open report on the review page. */
 export const reportReviewView = z
   .object({
@@ -145,9 +198,36 @@ export const reportReviewView = z
       })
       .strict()
       .nullable(),
+    /** Null when the report isn't about a message, or the message is gone. */
+    message: reportedMessage.nullable(),
+    /** Null when the report points at no one person's account (a company chat, a job), or the account is gone. */
+    account: reportedAccount.nullable(),
   })
   .strict();
 export type ReportReviewView = z.infer<typeof reportReviewView>;
 
+/** A hidden message, listed until it is shown again, whatever became of its report. */
+export const hiddenMessageView = z
+  .object({
+    id: z.uuid(),
+    /** "Message from Hari M. at Example Labs". */
+    label: z.string().min(1).max(200),
+    text: z.string().max(4000),
+    hidden: removalState,
+  })
+  .strict();
+export type HiddenMessageView = z.infer<typeof hiddenMessageView>;
+
+/** A suspended account, listed until the suspension is lifted. */
+export const suspendedAccountView = z
+  .object({
+    id: z.uuid(),
+    name: z.string().min(1).max(80),
+    suspended: removalState,
+  })
+  .strict();
+export type SuspendedAccountView = z.infer<typeof suspendedAccountView>;
+
 export type ReportReviewResult = { ok: boolean; message: string };
 export type ReportReviewAction = (reportId: string, decision: ReportDecision) => Promise<ReportReviewResult>;
+export type ReportRemovalAct = (input: ReportRemovalInput) => Promise<ReportReviewResult>;

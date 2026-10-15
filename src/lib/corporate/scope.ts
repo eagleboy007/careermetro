@@ -35,6 +35,8 @@ export function visibleApplicationsWhere(me: Pick<Member, "orgId" | "role">, use
     ne(applications.userId, userId),
     isNull(applications.withdrawnAt),
     isNull(users.deletionRequestedAt),
+    // Suspended after a report (FR-46): the company sees none of it until the suspension is lifted.
+    isNull(users.suspendedAt),
     or(isNull(applications.closedAt), gt(applications.closedAt, cutoff)),
     or(isNull(applications.companyAccessEndsAt), gt(applications.companyAccessEndsAt, now)),
     scope,

@@ -3,10 +3,13 @@ import { claimAnonymousResumes, findAccount, touchLastSeen } from "@/lib/account
 import { syncCurrentGoals } from "@/lib/goals/store";
 import { hasUsableName } from "@/lib/resume/name-match";
 import { readSessionId } from "@/lib/session";
-import { currentIdentity } from "./server";
+import { currentIdentity, suspendedFor } from "./server";
 
 /** Where a person whose account is waiting to be deleted goes after signing in. */
 export const RESTORE_PATH = "/account/restore";
+
+/** Where a person whose account an admin suspended after a report goes instead of any signed-in page (FR-46). */
+export const SUSPENDED_PATH = "/account/suspended";
 
 /** The query flag that makes Today say a resume was left out of the account because it shows another name. */
 export const NAME_NOTICE = "resume-name";
@@ -26,6 +29,8 @@ export async function afterSignIn(next: string): Promise<string> {
   const account = await findAccount(identity.subject);
   // A deleted account claims nothing; the person chooses to restore it or keep it deleted.
   if (account?.deletionRequestedAt) return RESTORE_PATH;
+  // A suspended account claims nothing either; it sees only the notice until the suspension is lifted.
+  if (suspendedFor(account, identity)) return SUSPENDED_PATH;
   // No account yet, or one without a name to check resumes against: the finish step asks for it first.
   if (!account || !hasUsableName(account.name)) return `/sign-up/finish?next=${encodeURIComponent(next)}`;
   const sessionId = await readSessionId();

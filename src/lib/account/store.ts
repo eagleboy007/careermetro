@@ -36,6 +36,13 @@ export type Account = {
   weeklyHours: number;
   /** Set while a deleted account waits out its grace period (src/lib/account/delete.ts); it then counts as signed out. */
   deletionRequestedAt: Date | null;
+  /**
+   * Set while an admin has the account suspended after a report (FR-46): it counts as signed out everywhere but the
+   * suspension notice, unless the person is an admin (src/lib/auth/server.ts).
+   */
+  suspendedAt: Date | null;
+  /** The admin's reason, for the notice. Never logged. */
+  suspendedReason: string | null;
 };
 
 const accountColumns = {
@@ -46,6 +53,8 @@ const accountColumns = {
   lastName: users.lastName,
   weeklyHours: users.weeklyHours,
   deletionRequestedAt: users.deletionRequestedAt,
+  suspendedAt: users.suspendedAt,
+  suspendedReason: users.suspendedReason,
 };
 
 const normalEmail = (email: string) => email.trim().toLowerCase();

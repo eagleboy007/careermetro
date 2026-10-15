@@ -40,3 +40,13 @@ export function isAdmin(identity: Pick<Identity, "email" | "emailVerified" | "me
   if (listed.length) return listed.includes(email);
   return testUser && email === LOCAL_ADMIN_EMAIL;
 }
+
+/**
+ * True when a stored account's email belongs to an admin: listed in ADMIN_EMAILS, or the documented local admin. Only
+ * for refusing to suspend an admin's account (FR-46), so it errs towards yes; it never opens anything.
+ */
+export function isAdminEmail(email: string | null | undefined, env: Env = process.env): boolean {
+  if (!email) return false;
+  const e = email.trim().toLowerCase();
+  return e === LOCAL_ADMIN_EMAIL || adminEmails(env).includes(e);
+}

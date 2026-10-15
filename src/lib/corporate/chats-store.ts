@@ -3,6 +3,7 @@ import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { applications, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
+import { isHidden, shownBody } from "@/lib/inbox/hidden";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT, openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { companyMessageInput } from "@/lib/schemas/corporate";
@@ -112,7 +113,7 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
   // The last message in each chat that anyone wrote, and whether someone other than the person wrote since they read it.
   const ids = rows.map((r) => r.conversationId);
   const last = await db
-    .selectDistinctOn([messages.conversationId], { conversationId: messages.conversationId, body: messages.body, createdAt: messages.createdAt })
+    .selectDistinctOn([messages.conversationId], { conversationId: messages.conversationId, body: shownBody(), createdAt: messages.createdAt })
     .from(messages)
     .where(and(inArray(messages.conversationId, ids), ne(messages.kind, "system")))
     .orderBy(messages.conversationId, desc(messages.createdAt));
@@ -170,7 +171,9 @@ export async function companyChat(userId: string, applicationId: string, deps: C
           id: messages.id,
           senderId: messages.senderId,
           kind: messages.kind,
-          body: messages.body,
+          // A hidden message's text never leaves the database (FR-46): the notice comes back in its place.
+          body: shownBody(),
+          hidden: isHidden(),
           payload: messages.payload,
           createdAt: messages.createdAt,
           name: users.name,
@@ -198,8 +201,9 @@ export async function companyChat(userId: string, applicationId: string, deps: C
     : [];
   const list = rows.map((m): CompanyChatMessage => {
     if (m.kind === "system") return { id: m.id, by: "system", who: "", text: m.body === "applied" ? "Applied on CareerMetro." : "" };
-    const base = { id: m.id, text: m.body, at: formatAt(m.createdAt, now), ...(m.kind === "ask_question" ? { question: true } : {}) };
-    if (m.kind === "ask_times") {
+    // A hidden card is the notice only: no question mark and no times.
+    const base = { id: m.id, text: m.body, at: formatAt(m.createdAt, now), ...(m.kind === "ask_question" && !m.hidden ? { question: true } : {}) };
+    if (m.kind === "ask_times" && !m.hidden) {
       const given = offered.filter((o) => o.askMessageId === m.id).map((o) => o.startsAt);
       const ended = askEnded({ days: askDaysOf(m.payload), offered: given, answered: askAnswered(m.payload) }, now);
       Object.assign(base, { times: { offered: given.length ? given.map(slotLabel) : null, ...(ended ? { ended } : {}) } });
