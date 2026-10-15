@@ -282,11 +282,12 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
     [thread] = await listThreads(p, fd());
     expect(thread).toMatchObject({ kind: "application", found: true });
-    expect((await sendMessage(p, sent.conversationId, REPLY, fd())).ok).toBe(true);
+    // A little after the request (the sender's read mark is the request's own time, and only later messages are new).
+    expect((await sendMessage(p, sent.conversationId, REPLY, fd(1 / 48))).ok).toBe(true);
     // The reply counts on the Corporate tab for the team who may read the chat, not for the Interviewer, until read.
-    expect(await corporateUnread(s.hr, fd())).toBe(base.hr + 1);
-    expect(await corporateUnread(s.admin, fd())).toBe(base.admin + 1);
-    expect(await corporateUnread(s.iv, fd())).toBe(base.iv);
+    expect(await corporateUnread(s.hr, fd(1 / 48))).toBe(base.hr + 1);
+    expect(await corporateUnread(s.admin, fd(1 / 48))).toBe(base.admin + 1);
+    expect(await corporateUnread(s.iv, fd(1 / 48))).toBe(base.iv);
     expect((await companyFoundChat(s.hr, sent.conversationId, { ...fd(1 / 24), markRead: true })).ok).toBe(true);
     expect(await corporateUnread(s.hr, fd(1 / 24))).toBe(base.hr);
     expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Great, thanks." }, fd())).ok).toBe(true);
