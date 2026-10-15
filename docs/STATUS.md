@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (#HELD).
+Last updated: 2026-10-15 (#137).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -13,7 +13,7 @@ Last updated: 2026-10-15 (#HELD).
 - **Proof**
   - Certificate proof (#109, #110) and profile certifications with the Credly check (#132).
   - A Credly link fills a goal only after the check (#135, migration 0029).
-  - The held-proof review screen `/admin/proofs`, FR-44 (#HELD).
+  - The held-proof review screen `/admin/proofs`, FR-44 (#137).
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
