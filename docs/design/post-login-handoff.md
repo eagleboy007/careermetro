@@ -447,7 +447,7 @@ Approved by Milin on 2026-10-12 (C9, pending item 18). Opened from "Post a job" 
 
 ## 12h. Practice (`/practice`)
 
-Approved by the Project manager on Milin's behalf on 2026-10-15 (C10; Milin can reverse it). Prototype v37. From Development's plan (dev/practice-match-plan.md, FR-21 to FR-23).
+Approved by Milin on 2026-10-15 (C10, "Approve both" on the design thread card). Prototype v37. From Development's plan (dev/practice-match-plan.md, FR-21 to FR-23).
 
 - Opens from the Path step "Practice", the avatar menu, the map's Practice pitstop and "Practice confidence" on Me.
 - Skill picker: the user's goals, tagged current goal, goal ahead or goal met. 5 questions per skill from a reviewed question bank; the model never writes questions.
@@ -460,7 +460,7 @@ Approved by the Project manager on Milin's behalf on 2026-10-15 (C10; Milin can 
 
 ## 12i. Match (`/match`)
 
-Approved by the Project manager on Milin's behalf on 2026-10-15 (C11; Milin can reverse it). Built 2026-10-15. Prototype v37. No AI; reuses the Nearby lines and "Closest to your resume" matcher (FR-24).
+Approved by Milin on 2026-10-15 (C11, "Approve both" on the design thread card). Built 2026-10-15. Prototype v37. No AI; reuses the Nearby lines and "Closest to your resume" matcher (FR-24).
 
 - Two groups. Ready now: every required skill met or proved. Within N weeks: path hours left on that role's open goals divided by the user's hours a week (3, 6 or 10), rounded up, sorted by weeks; the heading shows the largest N. Roles more than 26 weeks away stay off.
 - Each card: role, "on your line" tag when it's on the destination line, weeks and path hours, cobalt bar of required skills met (progress), the open goals as chips, "Gaps for this role" and "N open jobs in Departures".
@@ -515,5 +515,5 @@ Every change to prototype v2 after this handoff was first given to Development. 
 | C7 | 2026-10-12 | Corporate workspace (employer side) | Corporate mockup v1 brought into the handoff: Corporate tab and roles, work-email code, Jobs board lanes, candidate drawer with "Match to this job" only, Interviews, Team and access, company-owned application messages. Milin set Corporate before Market and Nearby lines (2026-10-12). | corporate v1 | 12e | approved (Milin, 2026-10-12) |
 | C8 | 2026-10-12 | Organization sign-up | New flow: company details, domain check (free mail refused, claimed domain asks for access), code or DNS verify, company page, second admin within 14 days, manual review before jobs go live. First Recruiter admin. Pending item 17. | corporate v2 | 12f | approved (Milin, 2026-10-12) |
 | C9 | 2026-10-12 | Post a job | New form: from a role profile, required / one-of / nice-to-have skills, work type, workplace, city, optional pay, Express apply, stages with L1 AI toggle, three required honesty ticks, review before live, live Departures preview. Pending item 18. | corporate v2 | 12g | approved (Milin, 2026-10-12) |
-| C10 | 2026-10-15 | Practice (`/practice`) and Me | New screen from Development's Practice plan: skill picker, question with answer box, feedback in words with a stronger sample answer (no score), self-rated confidence feeding a private per-skill trend on Me. Never fills a goal; 10 answers a day. | v37 | 12h | approved (Project manager on Milin's behalf, 2026-10-15) |
-| C11 | 2026-10-15 | Match (`/match`) | New screen from Development's Match plan: roles grouped "Ready now" and "Within N weeks" (path hours ÷ hours a week), open goals per role, links to Gaps and Departures, empty state. No AI. | v37 | 12i | approved (Project manager on Milin's behalf, 2026-10-15); built 2026-10-15 |
+| C10 | 2026-10-15 | Practice (`/practice`) and Me | New screen from Development's Practice plan: skill picker, question with answer box, feedback in words with a stronger sample answer (no score), self-rated confidence feeding a private per-skill trend on Me. Never fills a goal; 10 answers a day. | v37 | 12h | approved (Milin, 2026-10-15) |
+| C11 | 2026-10-15 | Match (`/match`) | New screen from Development's Match plan: roles grouped "Ready now" and "Within N weeks" (path hours ÷ hours a week), open goals per role, links to Gaps and Departures, empty state. No AI. | v37 | 12i | approved (Milin, 2026-10-15); built 2026-10-15 |

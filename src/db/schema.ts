@@ -10,6 +10,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
   uniqueIndex,
@@ -34,7 +35,7 @@ import {
   INTERVIEW_STATUSES,
   JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
+import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -1097,6 +1098,41 @@ export const companyBlocks = pgTable(
     createdAt: createdAt(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.orgId] }), index("company_blocks_org").on(t.orgId)],
+);
+
+/* Practice ---------------------------------------------------------------- */
+
+/**
+ * Practice answers (handoff 12h, FR-21 to FR-23): one row per "Get feedback", only ever read by its owner. The answer
+ * is kept 30 days (the daily clean-up deletes older rows), is in the person's data download and never goes in a log.
+ * `feedback` is the model's words (null when feedback wasn't available, and then the answer used none of the day's
+ * 10); `confidence` is the person's own rating afterwards, 1 Not yet to 4 Very, the only input to their trend. Nothing
+ * here fills a goal or moves the train. Deleting the account deletes the rows (on delete cascade).
+ */
+export const practiceAnswers = pgTable(
+  "practice_answers",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    skillId: text("skill_id")
+      .notNull()
+      .references(() => skills.id),
+    /** The bank question's stable id, such as "python-3" (src/content/practice-questions.json). */
+    questionId: text("question_id").notNull(),
+    answer: text("answer").notNull(),
+    feedback: jsonb("feedback").$type<PracticeFeedback>(),
+    confidence: smallint("confidence"),
+    aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("practice_answers_user").on(t.userId, t.createdAt),
+    index("practice_answers_created").on(t.createdAt),
+    check("practice_answers_answer_length", sql`char_length(${t.answer}) between 1 and 4000`),
+    check("practice_answers_confidence", sql`${t.confidence} is null or ${t.confidence} between 1 and 4`),
+  ],
 );
 
 /* Audit ------------------------------------------------------------------- */

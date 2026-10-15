@@ -1,18 +1,21 @@
 import { z } from "zod";
 import {
   certification,
+  practiceQuestion,
   proofTask,
   resource,
   roleProfile,
   skillGroups,
   skill,
   type Certification,
+  type PracticeQuestion,
   type ProofTask,
   type Resource,
   type RoleProfile,
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import practiceQuestionsJson from "./practice-questions.json";
 import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
 import skillsJson from "./skills.json";
@@ -59,6 +62,15 @@ export const resources: Resource[] = z.array(resource).parse(resourcesJson);
 
 /** Fallback proof-of-skill tasks, one per skill, for when the model is not available. */
 export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
+
+/**
+ * Practice questions (handoff 12h): 5 L1 questions per skill. 15 skills role profiles most often require come from
+ * Data research's practice-questions-v1 (2026-10-15); 4 data-analyst skills (statistics, data cleaning, data
+ * visualization, Excel) were added by Development so the most common target role has questions for its gaps. Content, never written by the model. v1 is self-checked only:
+ * no expert has reviewed it yet, so it isn't called "reviewed" in the app. `lookFor` guides the person; nothing scores
+ * an answer by matching its words.
+ */
+export const practiceQuestions: PracticeQuestion[] = z.array(practiceQuestion).parse(practiceQuestionsJson);
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z

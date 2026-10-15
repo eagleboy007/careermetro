@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (Match step, `/match`).
+Last updated: 2026-10-15 (Practice step, `/practice`).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -31,7 +31,7 @@ Last updated: 2026-10-15 (Match step, `/match`).
 
 Project manager's queue (2026-10-15), in order:
 1. Launch readiness (c): 6 is part done (6-hourly smoke check; full alerts need a log drain on Milin's account). 7, the upload load test, is `.github/workflows/load.yml` (`e2e/load-upload.mjs`: a burst of 40 and 2 a second for 60 s, 15 s stand-in parses, pool of 5). First run: all 160 uploads parsed with no "crowded" answer and other pages stayed at p95 7 ms. It found 6 connections from two module copies of the pool, so `src/db/index.ts` now keeps one pool per process on globalThis. Items 3, 4, 5, 10 and 12 are done or drafted. See `dev/launch-readiness.md`.
-2. Practice step (the L1 skill check): plan approved by the Project manager (`dev/practice-match-plan.md`). Build once the screens are approved in the handoff.
+2. Practice step: built as `/practice` (FR-21 to FR-23, handoff 12h): goal skills with 5 bank questions each (`src/content/practice-questions.json`, 95 questions over 19 skills: 15 from Data research, 4 data-analyst skills by Development; v1 self-checked only, no expert review yet), feedback in words from prompts/practice-feedback/v1, 10 a day, self-rated confidence on Me (private). Migration 0030 (`practice_answers`, kept 30 days), `EXPORT_VERSION` 16. See `dev/practice-match-plan.md` "Practice build notes".
 3. Match step: built as `/match` (FR-24, handoff 12i approved 2026-10-15), no AI and no migration. Linked from the avatar menu and the Map's Match stop; the step line no longer says Soon for Match. Path hours are the stored step's, else the Gaps hours table. See `dev/practice-match-plan.md` "Match build notes".
 4. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It waits on Milin's details.
 
@@ -39,7 +39,7 @@ Waiting: T44 and the Reports removal tools (Milin's cards); photo and certificat
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0030**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-45.
+Numbers: the next migration is **0031**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-45.
 
 ## Decisions log (newest first)
 

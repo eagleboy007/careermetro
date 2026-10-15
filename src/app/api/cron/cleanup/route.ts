@@ -4,6 +4,7 @@ import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "@/li
 import { clearOldProfileViews } from "@/lib/corporate/find-store";
 import { clearExpiredCodes } from "@/lib/corporate/store";
 import { renewExpiredGoals, reopenUnconfirmedGoals } from "@/lib/goals/store";
+import { clearOldPracticeAnswers } from "@/lib/practice/store";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
 import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
@@ -15,8 +16,8 @@ import { hasBearer } from "@/lib/secret";
  * codes that ran out (dev/corporate-plan.md). For the employer side (build step 7) it records each application's
  * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
  * offered interview times that passed unbooked; reads already enforce every one of these cutoffs. And it deletes old
- * usernames whose 14-day redirect is over (account settings part 2), and company profile views older than 30 days
- * (pending item 19).
+ * usernames whose 14-day redirect is over (account settings part 2), company profile views older than 30 days
+ * (pending item 19), and practice answers older than 30 days (handoff 12h).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -38,6 +39,7 @@ export async function GET(request: Request) {
     // "oldLinks", not "usernames": the logger always redacts fields named after usernames.
     oldLinks: clearExpiredUsernameRedirects().then((n) => ({ oldLinksCleared: n })),
     profileViews: clearOldProfileViews().then((n) => ({ profileViewsCleared: n })),
+    practice: clearOldPracticeAnswers().then((n) => ({ practiceAnswersDeleted: n })),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -50,6 +52,7 @@ export async function GET(request: Request) {
     offeredTimes: { offeredTimesDeleted: null },
     oldLinks: { oldLinksCleared: null },
     profileViews: { profileViewsCleared: null },
+    practice: { practiceAnswersDeleted: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

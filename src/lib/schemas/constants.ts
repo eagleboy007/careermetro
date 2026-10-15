@@ -325,3 +325,10 @@ export const FIND_VIEWS_KEEP_DAYS = 30;
 export const FIND_CONSENT_PURPOSE = "company_discovery";
 /** The wording the "Let companies find me" consent was given under (Settings > Privacy). */
 export const FIND_POLICY_VERSION = "2026-10-draft";
+/** Practice (handoff 12h): answers with feedback one person gets a day (an India day), the fewest words "Get feedback" takes, and how long answers are kept. */
+export const PRACTICE_DAILY_ANSWERS = 10;
+export const PRACTICE_MIN_WORDS = 5;
+export const PRACTICE_MAX_CHARS = 4000;
+export const PRACTICE_KEEP_DAYS = 30;
+/** The self-rating after feedback, 1 to 4 (FR-23). It is the person's own word, never a score. */
+export const PRACTICE_CONFIDENCE_WORDS = ["Not yet", "A little", "Fairly", "Very"] as const;

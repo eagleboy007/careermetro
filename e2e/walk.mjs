@@ -587,7 +587,7 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
-for (const path of ["/map", "/match", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
+for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -610,6 +610,39 @@ await step("match: ready now and within N weeks, regrouped by the hours select",
     await p.getByText("at 10 hours a week", { exact: true }).waitFor({ timeout: 5000 });
   }
   await a11y("match");
+});
+// Practice (handoff 12h). Signed in, with goals from the walk's resume (the data-analyst gaps, such as statistics and Excel, have bank questions):
+// pick a skill, answer in 5 or more words, get feedback from the stand-in model (e2e/mock-ai.mjs), rate it, and axe
+// passes. One answer with feedback uses one of the day's 10. Me then shows Practice confidence, which View as others hides.
+await step("practice: answer a bank question, get feedback in words, rate it, and Me shows the trend", async () => {
+  await p.goto(BASE + "/practice");
+  await settled();
+  const skillsPicker = p.getByRole("group", { name: "Pick a skill" }).getByRole("button");
+  const none = p.getByRole("heading", { name: "No practice questions for your goals yet", level: 2 });
+  await skillsPicker.first().or(none).first().waitFor({ timeout: 10000 });
+  if (await none.count()) throw new Error("the walk's goals have no practice questions");
+  await skillsPicker.first().click();
+  const leftNow = async () => Number(((await p.getByText(/ of 10 answers left today/).first().textContent()) ?? "").match(/(\d+) of 10/)?.[1] ?? NaN);
+  const before = await leftNow();
+  const send = p.getByRole("button", { name: "Get feedback" });
+  await p.getByLabel("Your answer").fill("Too short");
+  if ((await send.getAttribute("aria-disabled")) !== "true") throw new Error("Get feedback works with under 5 words");
+  await p.getByLabel("Your answer").fill("I would start with the simplest version that works and test it on a small example first.");
+  await send.click();
+  await p.getByText("A stronger answer", { exact: true }).waitFor({ timeout: 30000 });
+  for (const name of ["Structure", "Specificity", "Correctness"]) await p.getByText(name, { exact: true }).first().waitFor();
+  await p.getByRole("button", { name: "Fairly" }).click();
+  await p.getByRole("button", { name: "Fairly", pressed: true }).waitFor({ timeout: 5000 });
+  const after = await leftNow();
+  if (after !== before - 1) throw new Error(`answers left went from ${before} to ${after}`);
+  await a11y("practice");
+  await p.goto(BASE + "/me");
+  await settled();
+  await p.getByRole("heading", { name: "Practice confidence" }).waitFor({ timeout: 10000 });
+  await p.getByText(/Fairly · \d+ sessions?/).first().waitFor({ timeout: 5000 });
+  await p.getByRole("button", { name: "View as others" }).click();
+  await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
+  if (await p.getByRole("heading", { name: "Practice confidence" }).count()) throw new Error("View as others shows Practice confidence");
 });
 // Nearby lines (dev/nearby-lines-plan.md). The walk's resume shares under half the key skills of every other role, so
 // Me shows the plain empty state with the closest role's real counts (pinned in src/lib/nearby/build.test.ts).
@@ -900,7 +933,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 15) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 16) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1077,7 +1110,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/match", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();
