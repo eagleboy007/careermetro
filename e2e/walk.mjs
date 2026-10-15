@@ -611,7 +611,7 @@ await step("match: ready now and within N weeks, regrouped by the hours select",
   }
   await a11y("match");
 });
-// Practice (handoff 12h). Signed in, with goals from the walk's resume (Python and communication have bank questions):
+// Practice (handoff 12h). Signed in, with goals from the walk's resume (the data-analyst gaps, such as statistics and Excel, have bank questions):
 // pick a skill, answer in 5 or more words, get feedback from the stand-in model (e2e/mock-ai.mjs), rate it, and axe
 // passes. One answer with feedback uses one of the day's 10. Me then shows Practice confidence, which View as others hides.
 await step("practice: answer a bank question, get feedback in words, rate it, and Me shows the trend", async () => {

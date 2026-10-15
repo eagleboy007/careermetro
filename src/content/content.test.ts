@@ -169,7 +169,8 @@ describe("resource catalog", () => {
   });
 });
 
-// The practice bank (handoff 12h) is v1, self-checked by Data research only; no expert has reviewed it yet.
+// The practice bank (handoff 12h) is v1: 15 skills from Data research and 4 data-analyst skills (statistics, data
+// cleaning, data visualization, Excel) written by Development. Self-checked only; no expert has reviewed it yet.
 describe("practice question bank", () => {
   const known = new Set(skills.map((s) => s.id));
 
@@ -177,7 +178,7 @@ describe("practice question bank", () => {
     expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
     const perSkill = new Map<string, number>();
     for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
-    expect(perSkill.size).toBe(15);
+    expect(perSkill.size).toBe(19);
     expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
   });
 

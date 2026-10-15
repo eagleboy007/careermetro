@@ -523,5 +523,145 @@
     "question": "What is the difference between authentication and authorisation?",
     "lookFor": "Who you are versus what you can do, with an example of each failing.",
     "level": "L1"
+  },
+  {
+    "id": "statistics-1",
+    "skillId": "statistics",
+    "question": "Your manager says average order value went up this month. What would you check before agreeing?",
+    "lookFor": "Looking at the median and the spread, outliers and sample size, not just the mean.",
+    "level": "L1"
+  },
+  {
+    "id": "statistics-2",
+    "skillId": "statistics",
+    "question": "How would you explain a p-value to a sales manager with no statistics background?",
+    "lookFor": "Plain words about how surprising the result would be by chance, without overclaiming.",
+    "level": "L1"
+  },
+  {
+    "id": "statistics-3",
+    "skillId": "statistics",
+    "question": "When would you report the median instead of the average?",
+    "lookFor": "Skewed data such as salaries or order values, with a concrete example.",
+    "level": "L1"
+  },
+  {
+    "id": "statistics-4",
+    "skillId": "statistics",
+    "question": "Two campaigns had conversion rates of 3.1% and 3.4%. How would you decide if the difference is real?",
+    "lookFor": "Sample sizes, a significance test or confidence interval, and practical importance.",
+    "level": "L1"
+  },
+  {
+    "id": "statistics-5",
+    "skillId": "statistics",
+    "question": "What is the difference between correlation and causation, with an example from business data?",
+    "lookFor": "A realistic example and what extra evidence would be needed to claim cause.",
+    "level": "L1"
+  },
+  {
+    "id": "data-cleaning-1",
+    "skillId": "data-cleaning",
+    "question": "You receive a customer file with duplicate rows and missing phone numbers. How do you clean it?",
+    "lookFor": "A clear order of steps: define a duplicate, decide how to treat blanks, and keep a record of changes.",
+    "level": "L1"
+  },
+  {
+    "id": "data-cleaning-2",
+    "skillId": "data-cleaning",
+    "question": "Dates in a sheet come in three different formats. How would you fix them?",
+    "lookFor": "Detecting each format, converting to one standard, and checking rows that fail.",
+    "level": "L1"
+  },
+  {
+    "id": "data-cleaning-3",
+    "skillId": "data-cleaning",
+    "question": "How do you decide whether to drop, fill or flag missing values?",
+    "lookFor": "Reasoning from how much is missing, why it is missing and what the analysis needs.",
+    "level": "L1"
+  },
+  {
+    "id": "data-cleaning-4",
+    "skillId": "data-cleaning",
+    "question": "City names are spelt differently across rows, such as Bengaluru and Bangalore. What would you do?",
+    "lookFor": "A mapping table or rules, applied consistently, and a check for new variants.",
+    "level": "L1"
+  },
+  {
+    "id": "data-cleaning-5",
+    "skillId": "data-cleaning",
+    "question": "How do you check that your cleaning didn't change the totals you report?",
+    "lookFor": "Row counts and key totals compared before and after, with reasons for any difference.",
+    "level": "L1"
+  },
+  {
+    "id": "data-visualization-1",
+    "skillId": "data-visualization",
+    "question": "A manager wants to see monthly sales by region. Which chart would you use, and why?",
+    "lookFor": "Picking a chart for the question, such as lines over time, and keeping it readable.",
+    "level": "L1"
+  },
+  {
+    "id": "data-visualization-2",
+    "skillId": "data-visualization",
+    "question": "When is a pie chart a poor choice?",
+    "lookFor": "Many categories or close values, and a better alternative such as a sorted bar chart.",
+    "level": "L1"
+  },
+  {
+    "id": "data-visualization-3",
+    "skillId": "data-visualization",
+    "question": "How would you design a dashboard for a store manager who has two minutes each morning?",
+    "lookFor": "The few numbers that matter first, clear labels, and detail only on demand.",
+    "level": "L1"
+  },
+  {
+    "id": "data-visualization-4",
+    "skillId": "data-visualization",
+    "question": "Tell me about a chart you made that changed someone's decision.",
+    "lookFor": "A specific situation, the choice of chart, and the decision it led to.",
+    "level": "L1"
+  },
+  {
+    "id": "data-visualization-5",
+    "skillId": "data-visualization",
+    "question": "How do you avoid a chart that misleads?",
+    "lookFor": "Honest axes, consistent scales, clear labels and context such as targets or last year.",
+    "level": "L1"
+  },
+  {
+    "id": "excel-1",
+    "skillId": "excel",
+    "question": "How would you combine two sheets that share a customer ID?",
+    "lookFor": "XLOOKUP or INDEX-MATCH, handling IDs that don't match, and checking the result.",
+    "level": "L1"
+  },
+  {
+    "id": "excel-2",
+    "skillId": "excel",
+    "question": "Walk me through building a pivot table to show sales by month and product.",
+    "lookFor": "Clean source data, the right rows, columns and values, and grouping dates.",
+    "level": "L1"
+  },
+  {
+    "id": "excel-3",
+    "skillId": "excel",
+    "question": "A formula returns #N/A for some rows. How do you find out why?",
+    "lookFor": "Checking for extra spaces, data types and missing keys before hiding errors.",
+    "level": "L1"
+  },
+  {
+    "id": "excel-4",
+    "skillId": "excel",
+    "question": "How would you make a monthly report in Excel quicker to update next time?",
+    "lookFor": "Tables, named ranges or Power Query, and fewer manual copy-paste steps.",
+    "level": "L1"
+  },
+  {
+    "id": "excel-5",
+    "skillId": "excel",
+    "question": "What checks do you do before sending a spreadsheet to your manager?",
+    "lookFor": "Totals cross-checked, formulas not broken, clear labels and no hidden mistakes.",
+    "level": "L1"
   }
 ]

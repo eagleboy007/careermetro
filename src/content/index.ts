@@ -64,8 +64,9 @@ export const resources: Resource[] = z.array(resource).parse(resourcesJson);
 export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
 
 /**
- * Practice questions (handoff 12h): 5 L1 questions for each of the 15 skills role profiles most often require, from
- * Data research's practice-questions-v1 (2026-10-15). Content, never written by the model. v1 is self-checked only:
+ * Practice questions (handoff 12h): 5 L1 questions per skill. 15 skills role profiles most often require come from
+ * Data research's practice-questions-v1 (2026-10-15); 4 data-analyst skills (statistics, data cleaning, data
+ * visualization, Excel) were added by Development so the most common target role has questions for its gaps. Content, never written by the model. v1 is self-checked only:
  * no expert has reviewed it yet, so it isn't called "reviewed" in the app. `lookFor` guides the person; nothing scores
  * an answer by matching its words.
  */
