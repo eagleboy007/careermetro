@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gte, inArray, isNull, lt, ne, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNull, lt, ne, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   applications,
@@ -418,6 +418,27 @@ export async function sentRequests(userId: string, deps: { db?: Db; now?: Date }
     state: r.status === "request" ? "waiting" : r.status === "open" ? "open" : "closed",
     sentOn: isoDay(r.createdAt),
   }));
+}
+
+/**
+ * Found chats this member may read with a message from someone else they haven't read: the same scope and unread rule
+ * as Corporate Messages' list, for the Corporate tab and Overview counts. Interviewers read none, so count none.
+ */
+export async function unreadFoundChats(me: Member, userId: string, db: Db | Tx): Promise<number> {
+  if (me.role === "interviewer") return 0;
+  const [row] = await db
+    .select({ n: count() })
+    .from(conversations)
+    .innerJoin(conversationMembers, candidateJoin)
+    .innerJoin(users, eq(users.id, conversationMembers.userId))
+    .where(
+      and(
+        foundChatsWhere(me, userId),
+        sql`exists (select 1 from ${messages} x where x.conversation_id = ${conversations.id} and x.kind <> 'system' and x.sender_id is distinct from ${userId}
+          and x.created_at > coalesce((select m.last_read_at from ${conversationMembers} m where m.conversation_id = ${conversations.id} and m.user_id = ${userId}), '-infinity'::timestamptz))`,
+      ),
+    );
+  return row?.n ?? 0;
 }
 
 /** Corporate Messages' list items for found chats, with the same preview and unread rules as application chats. */
