@@ -22,3 +22,11 @@ node e2e/mock-ai.mjs &
 VERCEL_ENV=preview ANTHROPIC_API_KEY=sk-e2e ANTHROPIC_BASE_URL=http://127.0.0.1:4011 PHONE_KEY=e2e-only-phone-key FIND_REF_KEY=e2e-only-find-ref-key NAME_HASH_KEY=e2e-only-name-hash-key CRON_SECRET=e2e-only-cron-secret npx next start -p 3211 &
 BASE=http://localhost:3211 node e2e/walk.mjs   # needs `npm install --no-save playwright` once
 ```
+
+## Upload load test
+
+`load-upload.mjs` sends a burst of uploads at once, then a steady rate, each from its own session and IP, against a
+production build with `MOCK_AI_DELAY_MS` making the stand-in answer like a real 15-second parse. It counts the app's
+database connections (pool of 5) and opens a saved resume's page once a second meanwhile, and fails on any 5xx other
+than "crowded", on more than 5 connections, or on "crowded" in the steady phase. `.github/workflows/load.yml` runs it
+when the upload path changes, or by hand with other `burst` and `rate` values.
