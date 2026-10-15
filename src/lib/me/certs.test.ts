@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { certifications } from "@/content";
 import { meCertification } from "@/lib/schemas";
 import { profileCertifications, type ProofCertRow } from "./certs";
+import { publicCertifications } from "./public";
 
 const TODAY = "2026-10-13";
 let n = 0;
@@ -114,6 +115,15 @@ describe("profileCertifications", () => {
       ["Tableau Desktop Specialist", "Tableau (Salesforce)", "2024", "added", true, false, null],
       ["My college hackathon", null, null, "added", true, false, null],
     ]);
+  });
+
+  it("shows a Credly badge waiting for its check as pending, below an accepted proof of the same certificate, and never publicly", () => {
+    const [waiting] = profileCertifications({ proofs: [proof({ pending: true, checkNote: "unreachable" })], resume: [], today: TODAY });
+    expect(waiting).toMatchObject({ status: "pending", note: expect.stringMatching(/Credly didn't answer/), canCheck: true });
+    const both = profileCertifications({ proofs: [proof({ pending: true }), proof({ credentialKey: "other" })], resume: [], today: TODAY });
+    expect(both).toHaveLength(1);
+    expect(both[0].status).toBe("added");
+    expect(publicCertifications([waiting])).toEqual([]);
   });
 
   it("keeps inside the schema for long names and many certificates", () => {

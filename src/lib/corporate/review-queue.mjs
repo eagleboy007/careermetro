@@ -61,7 +61,8 @@ export function queueCounts(rows) {
 export const DECISION_STATUS = /** @type {const} */ ({ verify: "verified", suspend: "suspended" });
 
 /**
- * Sets one company's review status, when and by whom, and writes one audit line, in one transaction. The company is
+ * Sets one company's review status, when and by whom, and writes one audit line, in one transaction (a suspension also
+ * erases the phones candidates shared with it). The company is
  * found by its id (the page) or its email domain (the workflow). `reviewer` is "admin:<user id>" or "github:<login>",
  * never an email address. Returns the company's id and name, or null when no company matches.
  * @param {import("postgres").Sql} sql
@@ -79,6 +80,14 @@ export async function setReviewStatus(sql, which, decision, reviewer) {
         update organizations set review_status = ${status}, reviewed_at = now(), reviewed_by = ${reviewer}
         where ${match} and email_domain is not null returning id, name`;
       if (!org) return null;
+      // Suspending erases every phone a candidate shared with the company, as Not this time and Block do, so a company
+      // we no longer trust keeps no contact details (security review 2026-10-13). Verifying it again brings none back.
+      if (status === "suspended") {
+        await tx`update applications set phone_shared = null where org_id = ${org.id} and phone_shared is not null`;
+        await tx`
+          update interviews set phone_shared = false
+          where phone_shared and application_id in (select id from applications where org_id = ${org.id})`;
+      }
       await tx`insert into audit_logs (actor, action, target) values (${reviewer}, ${`company_${status}`}, ${`organization:${org.id}`})`;
       return { id: String(org.id), name: String(org.name) };
     })

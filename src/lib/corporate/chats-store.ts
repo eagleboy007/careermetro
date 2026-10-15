@@ -14,6 +14,7 @@ import { askDaysOf } from "./interview-reads";
 import { askAnswered, askEnded, slotLabel } from "./slots";
 import { foundChatItems } from "./find-store";
 import { activeMembership } from "./store";
+import { writeAudit, writeAuditOncePerDay } from "./audit-line";
 import { companyBlocked } from "./company-blocks";
 import type { CompanyChatListItem, CompanyChatMessage, CompanyChatState, CompanyChatView, CompanyMessagesView } from "./types";
 
@@ -48,6 +49,10 @@ export type ChatResult<T = object> = ({ ok: true } & T) | { ok: false; error: Co
 
 const fail = (error: CompanyChatError) => ({ ok: false as const, error });
 
+/** visibleApplication's refusal as a chat error: a company that isn't verified reads "paused while we review it". */
+const chatError = (error: string): CompanyChatError =>
+  error === "not_member" || error === "not_allowed" ? error : error === "paused" ? "suspended" : "not_found";
+
 /** The company's state for a chat the person can read: whether they can write, and if not why. */
 function stateFor(x: Parameters<typeof companySendRefusal>[0]): CompanyChatState {
   return companySendRefusal(x) ?? "open";
@@ -66,6 +71,8 @@ export async function companyMessages(userId: string, deps: ChatDeps = {}): Prom
   if (!me) return fail("not_member");
   const [org] = await db.select({ status: organizations.reviewStatus }).from(organizations).where(eq(organizations.id, me.orgId));
   const view: CompanyMessagesView = { company: me.orgName, status: org?.status ?? "pending", role: me.role, items: [] };
+  // A company that isn't verified (suspended, say) reads no candidate's chats, not even the list (security review 2026-10-13).
+  if (view.status !== "verified") return { ok: true, view };
   const rows = await db
     .select({
       conversationId: conversations.id,
@@ -150,7 +157,7 @@ export async function companyChat(userId: string, applicationId: string, deps: C
   const now = deps.now ?? new Date();
   if (!UUID.test(applicationId)) return fail("not_found");
   const found = await visibleApplication(userId, applicationId, db, now);
-  if (!found.ok) return fail(found.error === "not_member" || found.error === "not_allowed" ? found.error : "not_found");
+  if (!found.ok) return fail(chatError(found.error));
   const { app, access } = found;
   if (app.withdrawnAt) return fail("not_found");
   const [conversation] = await db
@@ -202,6 +209,8 @@ export async function companyChat(userId: string, applicationId: string, deps: C
     return { ...base, by: "team", who: m.senderId && !m.deleted ? displayName(m.name) : COMPANY_TEAM };
   });
   if (deps.markRead && conversation) await markCompanyRead(db, conversation.id, userId, now);
+  // Who read which application's chat, at most once a day each; never what it says.
+  await writeAuditOncePerDay(db, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "chat_read", target: { application: app.id } }, now);
   // A person who blocked the company reads as a closed chat, never as "blocked" (Testing T37).
   const closed = chatClosed(app, conversation?.status ?? "open", now) || (await companyBlocked(app.userId, app.orgId, db));
   return {
@@ -238,7 +247,7 @@ export async function sendCompanyMessage(userId: string, raw: unknown, deps: Cha
     // Interviewers never send, whatever they are assigned to.
     if (me.role === "interviewer") return fail("read_only");
     const found = await visibleApplication(userId, input.applicationId, tx, now, true);
-    if (!found.ok) return fail(found.error === "not_member" || found.error === "not_allowed" ? found.error : "not_found");
+    if (!found.ok) return fail(chatError(found.error));
     const { app, access } = found;
     // A withdrawn application gives nothing away to the company, as on the board.
     if (app.withdrawnAt) return fail("not_found");
@@ -263,6 +272,8 @@ export async function sendCompanyMessage(userId: string, raw: unknown, deps: Cha
       .insert(conversationMembers)
       .values({ conversationId, userId, role: "company_team", lastReadAt: now })
       .onConflictDoUpdate({ target: [conversationMembers.conversationId, conversationMembers.userId], set: { lastReadAt: now } });
+    // Who at the company wrote, in which application's chat; never the message.
+    await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "message_sent", target: { application: app.id } }, now);
     return { ok: true, messageId: message.id };
   });
   logEvent("info", result.ok ? "company_message_sent" : "company_message_refused", result.ok ? { kind: input.question ? "ask_question" : "text" } : { reason: result.error });

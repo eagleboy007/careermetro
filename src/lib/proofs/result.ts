@@ -6,7 +6,11 @@ import type { CertificateLabel } from "@/lib/schemas";
  */
 export type CertificateResult =
   | { status: "filled"; label: CertificateLabel; note?: string }
-  | { status: "held" | "refused"; message: string }
+  /**
+   * "saved": kept but not filling the goal yet: a Credly badge waiting for its check (check pending), or one Credly
+   * shows as expired (the goal reads Renew).
+   */
+  | { status: "held" | "refused" | "saved"; message: string }
   /** `field` is the input the message is about, so the form can mark and focus it. */
   | { status: "invalid"; message: string; field?: string };
 
@@ -23,4 +27,4 @@ export type CertificateInput = {
 };
 
 /** What "Check with Credly" on the profile says back (src/app/(app)/me/actions.ts). */
-export type CredlyCheckResult = { status: "verified" | "added" | "held" | "refused"; message: string };
+export type CredlyCheckResult = { status: "verified" | "added" | "pending" | "held" | "refused"; message: string };

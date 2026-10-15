@@ -4,13 +4,13 @@ import { getDb } from "@/db";
 import { auditLogs, certificateCredentials, gapProofs, users } from "@/db/schema";
 import { certifications, skillGroupMembers } from "@/content";
 import { shortName } from "@/lib/account/name";
-import { lockPerson, refreshGoals } from "@/lib/goals/store";
+import { lockBadge, lockPerson, refreshGoals } from "@/lib/goals/store";
 import { credlyBadgePage } from "@/lib/proofs/credly";
 import { logEvent } from "@/lib/log";
 import {
   CLAIMED_ELSEWHERE,
   HELD_REASON_TEXT,
-  HELD_REASONS,
+  REVIEW_HELD_REASONS,
   heldProofRow,
   heldProofView,
   proofReviewInput,
@@ -35,7 +35,7 @@ type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 export type ProofAdminDeps = { db?: Db; members?: ReadonlyMap<string, string[]> };
 
 const certById = new Map(certifications.map((c) => [c.id, c]));
-const held = inArray(gapProofs.heldReason, [...HELD_REASONS]);
+const held = inArray(gapProofs.heldReason, [...REVIEW_HELD_REASONS]);
 
 /** Held claims, oldest first, at most 200: one line per person and credential, never an email or the credential hash. */
 export async function heldProofsForReview(deps: ProofAdminDeps = {}): Promise<HeldProofView[]> {
@@ -185,7 +185,7 @@ export async function reviewHeldProof(adminUserId: string, input: unknown, deps:
         return { kind: "done", person, rows: ids.length, competing: 0, accounts: 0 };
       }
 
-      for (const badgeId of claim.badgeIds) await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`credly-badge:${badgeId}`}))`);
+      for (const badgeId of claim.badgeIds) await lockBadge(tx, badgeId);
       const competing = await competingRows(tx, claim);
       const unlocked = competing.filter((r) => !people.has(r.userId));
       if (unlocked.length) return { kind: "retry", people: [...people, ...unlocked.map((r) => r.userId)] };

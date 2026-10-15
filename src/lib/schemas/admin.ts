@@ -39,9 +39,12 @@ export const reviewQueueRow = z
 
 const BADGE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
-/** Why a certificate proof waits for review (gap_proofs.held_reason). Only these reach the review page. */
-export const HELD_REASONS = ["credential_reused", "badge_reused"] as const;
-export type HeldReason = (typeof HELD_REASONS)[number];
+/**
+ * The held reasons that wait for a person's review (gap_proofs.held_reason). Only these reach the review page; a row
+ * held as "credly_check" (HELD_REASONS in ./proof) waits for the Credly check, not for a person.
+ */
+export const REVIEW_HELD_REASONS = ["credential_reused", "badge_reused"] as const;
+export type ReviewHeldReason = (typeof REVIEW_HELD_REASONS)[number];
 
 /**
  * Set on a proof another account's claim won (gap_proofs.held_reason, with status rejected). With status rejected, any
@@ -50,7 +53,7 @@ export type HeldReason = (typeof HELD_REASONS)[number];
 export const CLAIMED_ELSEWHERE = "claimed_elsewhere";
 
 /** Plain words for each held reason, for the review page. */
-export const HELD_REASON_TEXT: Record<HeldReason, string> = {
+export const HELD_REASON_TEXT: Record<ReviewHeldReason, string> = {
   credential_reused: "Its credential id was already used on another account",
   badge_reused: "Its Credly badge is already verified on another account",
 };
@@ -68,7 +71,7 @@ export const heldProofRow = z
     id: z.uuid(),
     certId: z.string().min(1).max(80),
     issuer: z.string().max(120).nullable(),
-    heldReason: z.enum(HELD_REASONS),
+    heldReason: z.enum(REVIEW_HELD_REASONS),
     submitted: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     badgeId: z.string().regex(BADGE_ID).nullable(),
     firstName: z.string().nullable(),
@@ -85,7 +88,7 @@ export const heldProofView = z
     id: z.uuid(),
     certificate: z.string().min(1).max(200),
     issuer: z.string().max(120),
-    reason: z.enum(HELD_REASONS),
+    reason: z.enum(REVIEW_HELD_REASONS),
     reasonText: z.string().min(1),
     submittedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     person: z.string().min(1).max(80),

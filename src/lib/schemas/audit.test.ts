@@ -9,6 +9,11 @@ describe("company audit schemas (corporate build step 7)", () => {
     const line = { orgId: ORG, actor: `member:${ID}`, action: "interview_booked", target: `application:${ID}` };
     expect(companyAuditLine.parse(line)).toEqual(line);
     expect(companyAuditLine.parse({ ...line, actor: "candidate", action: "interview_accepted" }).actor).toBe("candidate");
+    // Someone with no role yet asking for access (security review 2026-10-13).
+    expect(companyAuditLine.parse({ ...line, actor: "requester", action: "access_requested", target: `invite:${ID}` }).actor).toBe("requester");
+    for (const action of ["board_viewed", "chat_read", "found_chat_read", "message_sent", "found_message_sent", "access_rechecked", "access_requested"]) {
+      expect(companyAuditLine.safeParse({ ...line, action }).success).toBe(true);
+    }
     for (const target of [`job:${ID}`, `member:${ID}`, `invite:${ID}`, `company:${ORG}`]) expect(companyAuditLine.safeParse({ ...line, target }).success).toBe(true);
   });
 

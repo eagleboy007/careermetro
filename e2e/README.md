@@ -19,6 +19,6 @@ CI runs it in the `e2e` job (`.github/workflows/ci.yml`). Locally, with Postgres
 ```sh
 npm run build
 node e2e/mock-ai.mjs &
-VERCEL_ENV=preview ANTHROPIC_API_KEY=sk-e2e ANTHROPIC_BASE_URL=http://127.0.0.1:4011 PHONE_KEY=e2e-only-phone-key FIND_REF_KEY=e2e-only-find-ref-key CRON_SECRET=e2e-only-cron-secret npx next start -p 3211 &
+VERCEL_ENV=preview ANTHROPIC_API_KEY=sk-e2e ANTHROPIC_BASE_URL=http://127.0.0.1:4011 PHONE_KEY=e2e-only-phone-key FIND_REF_KEY=e2e-only-find-ref-key NAME_HASH_KEY=e2e-only-name-hash-key CRON_SECRET=e2e-only-cron-secret npx next start -p 3211 &
 BASE=http://localhost:3211 node e2e/walk.mjs   # needs `npm install --no-save playwright` once
 ```

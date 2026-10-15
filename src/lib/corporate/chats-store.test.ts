@@ -223,11 +223,38 @@ describe.skipIf(!db)("company chats (database)", () => {
     expect(await send(s.hr, s.applicationId, HELLO)).toMatchObject({ ok: true });
     await db!.update(schema.organizations).set({ reviewStatus: "suspended" }).where(eq(schema.organizations.id, s.orgId));
     expect(await send(s.hr, s.applicationId, "Another")).toMatchObject({ ok: false, error: "suspended" });
-    const opened = await companyChat(s.admin, s.applicationId, at());
-    expect(opened.ok && opened.chat.state).toBe("suspended");
+    // A suspended company reads nothing of its candidates' chats, not even the list (security review 2026-10-13).
+    expect(await companyChat(s.admin, s.applicationId, at())).toEqual({ ok: false, error: "suspended" });
+    const list = await companyMessages(s.admin, at());
+    expect(list.ok && list.view).toMatchObject({ status: "suspended", items: [] });
     const [thread] = await listThreads(s.me, at());
     expect(thread).toMatchObject({ verified: false, state: "paused" });
     expect(await sendMessage(s.me, thread.id, REPLY, at())).toMatchObject({ ok: false, error: "paused" });
+  });
+
+  it("audits each message sent, and chat reads once a day per member and application, with ids only (security review 2026-10-13)", async () => {
+    const s = await setup("audit");
+    const auditOf = async () =>
+      (await db!.select().from(schema.auditLogs).where(eq(schema.auditLogs.orgId, s.orgId))).filter((a) => ["message_sent", "chat_read"].includes(a.action));
+    expect(await send(s.hr, s.applicationId, HELLO)).toMatchObject({ ok: true });
+    expect(await send(s.hr, s.applicationId, QUESTION, 0, true)).toMatchObject({ ok: true });
+    // Read three times today by Hiring HR, once by the admin, then again the next day.
+    for (let k = 0; k < 3; k++) expect((await companyChat(s.hr, s.applicationId, { ...at(), markRead: true })).ok).toBe(true);
+    expect((await companyChat(s.admin, s.applicationId, at())).ok).toBe(true);
+    expect((await companyChat(s.hr, s.applicationId, at(1))).ok).toBe(true);
+    const lines = await auditOf();
+    const hrActor = `member:${s.hrMember}`;
+    expect(lines.filter((l) => l.action === "message_sent").map((l) => [l.actor, l.target])).toEqual([
+      [hrActor, `application:${s.applicationId}`],
+      [hrActor, `application:${s.applicationId}`],
+    ]);
+    const reads = lines.filter((l) => l.action === "chat_read");
+    expect(reads.filter((l) => l.actor === hrActor)).toHaveLength(2);
+    expect(reads.filter((l) => l.actor !== hrActor)).toHaveLength(1);
+    for (const l of lines) {
+      expect(l.target).toBe(`application:${s.applicationId}`);
+      expect(JSON.stringify(l)).not.toMatch(/Splunk|SIEM|Priya|Rahul/);
+    }
   });
 
   it("closes the chat 30 days after Not this time, and at once when the candidate withdraws", async () => {

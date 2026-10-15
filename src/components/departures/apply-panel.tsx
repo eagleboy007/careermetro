@@ -17,6 +17,7 @@ import {
   APPLY_NEVER,
   CAN_JOIN,
   CAN_JOIN_LABELS,
+  PREVIEW_LIVE_NOTE,
 } from "@/lib/schemas/constants";
 
 /**
@@ -250,6 +251,8 @@ export function ApplyPreview({
             What {company} receives
           </h2>
           <p className="text-[0.84rem] text-muted [overflow-wrap:anywhere]">For {title}. Nothing is sent until you press Send.</p>
+          {/* The company's drawer reads the profile and proof live (dev/express-apply-plan.md, decision on T51). */}
+          <p className="text-[0.84rem] text-muted">{PREVIEW_LIVE_NOTE}</p>
         </div>
         <button type="button" aria-label="Close the preview" className={`${actionBtn} w-11 shrink-0 px-0`} onClick={close}>
           <X {...ICON} />

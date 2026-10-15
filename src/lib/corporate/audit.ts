@@ -19,7 +19,7 @@ import { formatDay } from "./format";
  * never holds anything a person typed, and this view adds no candidate's name, email, phone or anything else from
  * their profile: an application is named by its id and its job's title only. Lines about the admin's own application
  * (someone applying to their own company's job) are left out, as that application is everywhere else, and so are lines
- * about applications the company no longer sees (withdrawn, a deleted account, or 180 days past closing).
+ * about applications the company no longer sees (withdrawn, a deleted or purged account, or 180 days past closing).
  */
 
 type Db = ReturnType<typeof getDb>;
@@ -65,14 +65,20 @@ export async function companyAudit(userId: string, raw: unknown, deps: AuditDeps
         eq(auditLogs.orgId, me.orgId),
         // Compared at the cursor's precision (milliseconds), so a line is never skipped or shown twice between pages.
         cursor ? sql`(date_trunc('milliseconds', ${auditLogs.createdAt}), ${auditLogs.id}) < (${cursor.at.toISOString()}::timestamptz, ${cursor.id}::uuid)` : undefined,
-        // Never the admin's own application, which they can't see from the company side.
-        sql`not exists (select 1 from ${applications} a where a.user_id = ${userId} and ${auditLogs.target} = 'application:' || a.id::text)`,
-        // Nor an application the rest of Corporate no longer shows (Testing T43): withdrawn, a deleted account, or more
-        // than 180 days past closing. Lines about the team and jobs stay; they hold nothing of a candidate.
-        sql`not exists (select 1 from ${applications} a join ${users} u on u.id = a.user_id
-              where ${auditLogs.target} = 'application:' || a.id::text
-                and (a.withdrawn_at is not null or u.deletion_requested_at is not null
-                  or a.closed_at <= ${cutoff.toISOString()}::timestamptz or a.company_access_ends_at <= ${now.toISOString()}::timestamptz))`,
+        // A line about an application shows only while the company still sees that application (Testing T43, T45): not
+        // the admin's own application, which they can't see from the company side, nor one withdrawn, of a deleted
+        // account, or more than 180 days past closing. A positive match, so lines about an application whose row is
+        // gone (an account purged after deletion) never come back as a bare short id. Lines about the team and jobs
+        // stay; they hold nothing of a candidate. The application is found by its primary key, one probe per line:
+        // writeAudit stores "application:<uuid>" (companyAuditLine), and the pattern guards the cast so a line that
+        // somehow isn't one reads as a gone application rather than an error.
+        sql`(${auditLogs.target} not like 'application:%' or exists (select 1 from ${applications} a join ${users} u on u.id = a.user_id
+              where a.id = (case when ${auditLogs.target} ~ '^application:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+                                 then substring(${auditLogs.target} from 13)::uuid end)
+                and a.org_id = ${me.orgId} and a.user_id <> ${userId}
+                and a.withdrawn_at is null and u.deletion_requested_at is null
+                and (a.closed_at is null or a.closed_at > ${cutoff.toISOString()}::timestamptz)
+                and (a.company_access_ends_at is null or a.company_access_ends_at > ${now.toISOString()}::timestamptz)))`,
       ),
     )
     .orderBy(desc(sql`date_trunc('milliseconds', ${auditLogs.createdAt})`), desc(auditLogs.id))
@@ -116,6 +122,7 @@ export async function companyAudit(userId: string, raw: unknown, deps: AuditDeps
   const who = (actor: string): AuditWhoView => {
     if (actor === "candidate") return { kind: "candidate" };
     if (actor === "system") return { kind: "system" };
+    if (actor === "requester") return { kind: "requester" };
     const m = memberOf.get(split(actor)?.id ?? "");
     // A member whose account was deleted (the row goes with it) or is being deleted.
     return m && !m.deleted ? { kind: "member", name: displayName(m.name), role: m.role } : { kind: "former" };

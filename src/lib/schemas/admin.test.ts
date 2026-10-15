@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { companyReviewInput, HELD_REASON_TEXT, HELD_REASONS, heldProofRow, heldProofView, proofReviewInput, reviewQueueRow } from "@/lib/schemas";
+import { companyReviewInput, HELD_REASON_TEXT, REVIEW_HELD_REASONS, heldProofRow, heldProofView, proofReviewInput, reviewQueueRow } from "@/lib/schemas";
 
 const ORG = "6f1d2c3b-4a59-4e6f-8a7b-9c0d1e2f3a4b";
 const row = { id: ORG, name: "Example Labs", type: "company", domain: "example-labs.test", website: "https://example-labs.test", city: "Pune", size: "51 to 200", created: "2026-10-12", status: "pending", members: 1, admins: 1 };
@@ -61,6 +61,9 @@ describe("held-proof review schemas", () => {
     expect(heldProofView.parse(view)).toEqual(view);
     expect(heldProofView.safeParse({ ...view, email: "priya@example.test" }).success).toBe(false);
     expect(heldProofView.safeParse({ ...view, badgeUrl: "https://evil.example/badges/x" }).success).toBe(false);
-    for (const reason of HELD_REASONS) expect(HELD_REASON_TEXT[reason]).toMatch(/another account/);
+    for (const reason of REVIEW_HELD_REASONS) expect(HELD_REASON_TEXT[reason]).toMatch(/another account/);
+    // A row waiting for the Credly check waits for no person, so it never reaches the review page.
+    expect(REVIEW_HELD_REASONS).not.toContain("credly_check");
+    expect(heldProofRow.safeParse({ ...held, heldReason: "credly_check" }).success).toBe(false);
   });
 });

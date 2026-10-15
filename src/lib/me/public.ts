@@ -23,14 +23,14 @@ export function whoSeesFor(settings: UserSettings, username: string | null) {
 export const PUBLIC_CERTIFICATIONS = 5;
 
 /**
- * The certifications others see: current ones only, in the profile's order (Verified with Credly first, then the most
+ * The certifications others see: current ones only, never one waiting for its Credly check, in the profile's order (Verified with Credly first, then the most
  * recent), at most PUBLIC_CERTIFICATIONS. Field by field: the proof id, the owner's Credly reason and the Check button
  * are cleared, and the only link is a verified badge's public Credly page. Credential ids, file names and the name on
  * a certificate are never in a profile at all.
  */
 export function publicCertifications(certs: MeCertification[]): MeCertification[] {
   return certs
-    .filter((c) => c.expired === null)
+    .filter((c) => c.expired === null && c.status !== "pending")
     .slice(0, PUBLIC_CERTIFICATIONS)
     .map((c) => ({
       proofId: null,

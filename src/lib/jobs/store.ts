@@ -334,7 +334,9 @@ export async function goalSkillsOf(userId: string, db: Pick<Db, "select"> = getD
   const rows = await db
     .select({ id: userGoals.id, skillId: userGoals.skillId, source: userGoals.source, status: userGoals.status })
     .from(userGoals)
-    .where(eq(userGoals.userId, userId));
+    .where(eq(userGoals.userId, userId))
+    // Line order, so callers (and tests) see the same order every time; without it Postgres returns any order.
+    .orderBy(userGoals.position, userGoals.id);
   const open = rows.filter((r) => !(r.source === "user" && r.status === "skipped"));
   return {
     skills: open.map((r) => r.skillId),

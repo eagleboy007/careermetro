@@ -82,12 +82,17 @@ describe("interview rules", () => {
     expect(feedbackRefusal({ assigned: false, status: "accepted" })).toBe("not_assigned");
   });
 
-  it("show a shared phone only to that interview's team, and only while the application is open", () => {
-    expect(phoneVisible({ canMove: true, assignedToShared: false, anyShared: true, closed: false })).toBe(true);
-    expect(phoneVisible({ canMove: false, assignedToShared: true, anyShared: true, closed: false })).toBe(true);
-    expect(phoneVisible({ canMove: false, assignedToShared: false, anyShared: true, closed: false })).toBe(false);
-    expect(phoneVisible({ canMove: true, assignedToShared: false, anyShared: false, closed: false })).toBe(false);
-    expect(phoneVisible({ canMove: true, assignedToShared: true, anyShared: true, closed: true })).toBe(false);
+  it("show a shared phone only to that interview's team, only while the application is open, and only for a verified company", () => {
+    const v = { orgStatus: "verified" } as const;
+    expect(phoneVisible({ ...v, canMove: true, assignedToShared: false, anyShared: true, closed: false })).toBe(true);
+    expect(phoneVisible({ ...v, canMove: false, assignedToShared: true, anyShared: true, closed: false })).toBe(true);
+    expect(phoneVisible({ ...v, canMove: false, assignedToShared: false, anyShared: true, closed: false })).toBe(false);
+    expect(phoneVisible({ ...v, canMove: true, assignedToShared: false, anyShared: false, closed: false })).toBe(false);
+    expect(phoneVisible({ ...v, canMove: true, assignedToShared: true, anyShared: true, closed: true })).toBe(false);
+    // A suspended (or never verified) company sees no phone, whoever asks (security review 2026-10-13).
+    for (const orgStatus of ["suspended", "pending"] as const) {
+      expect(phoneVisible({ orgStatus, canMove: true, assignedToShared: true, anyShared: true, closed: false })).toBe(false);
+    }
   });
 });
 

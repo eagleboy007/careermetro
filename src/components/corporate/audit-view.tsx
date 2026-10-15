@@ -19,6 +19,8 @@ function whoText(who: AuditWhoView): string {
       return "The candidate";
     case "system":
       return "CareerMetro";
+    case "requester":
+      return "Someone asking for access";
     default:
       return "A former team member";
   }

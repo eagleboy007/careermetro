@@ -85,7 +85,7 @@ describe.skipIf(!db)("held-proof review (database)", () => {
   const submit = (who: { userId: string; goalId: string }, credentialId: string) =>
     submitCertificate(
       who.userId,
-      { goalId: who.goalId, certId: CERT, credentialId, issuedOn: "2025-03-01", expiresOn: "2028-03-01", nameOnCertificate: "Priya Sharma", url: "https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000aa", confirmed: true },
+      { goalId: who.goalId, certId: CERT, credentialId, issuedOn: "2025-03-01", expiresOn: "2028-03-01", nameOnCertificate: "Priya Sharma", url: "https://cp.certmetrics.com/amazon/en/public/verify/credential/EXAMPLE1", confirmed: true },
       { today: TODAY, env, db: db!, members: noGroups },
     );
   const row = async (id: string) => (await db!.select().from(schema.gapProofs).where(eq(schema.gapProofs.id, id)))[0]!;

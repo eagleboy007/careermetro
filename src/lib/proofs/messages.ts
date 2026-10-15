@@ -13,12 +13,20 @@ export const CREDLY_NOTE_MESSAGES: Record<CredlyCheckNote, string> = {
   earner_name: "The name on the Credly badge doesn't match your account.",
   no_name: "Add your name to your account first, then check again.",
   expired: "Credly shows this badge as expired.",
-  used_elsewhere: "This badge is already verified on another account, so we'll review it.",
+  used_elsewhere: "This badge is already on another account, so we'll review it.",
 };
 
-/** A Credly badge already verified on another account: held for review, like a reused credential. */
-export const CREDLY_HELD_MESSAGE =
-  "This Credly badge is already verified on another account, so we'll review it. The certificate doesn't fill the goal until then.";
+/** A Credly badge already on another account: held for review, like a reused credential. */
+export const CREDLY_HELD_MESSAGE = "This Credly badge is already on another account, so we'll review it. The certificate doesn't fill the goal until then.";
+
+/** A credential another account already used: held for review. */
+export const CREDENTIAL_HELD_MESSAGE = "This certificate is already on another account, so we'll check it first. It doesn't fill the goal until then.";
+
+/** A Credly badge saved but not yet confirmed by Credly (decision of 2026-10-13). Only its owner sees it. */
+export const CREDLY_PENDING_MESSAGE = "Saved as Added by you, check pending. It fills the goal once Credly confirms the badge; until then only you see it.";
+
+/** Credly shows the badge as expired: the certificate is kept with Credly's date, and its goal reads Renew. */
+export const CREDLY_EXPIRED_MESSAGE = "Credly shows this badge as expired, so the goal moves to Renew. Add the renewed certificate when you have it.";
 
 /** Why "Check with Credly" checked nothing. */
 export const CREDLY_REFUSAL_MESSAGES: Record<Extract<CredlyCheckOutcome, { status: "refused" }>["reason"], string> = {
@@ -38,6 +46,8 @@ export const CERTIFICATE_REFUSAL_MESSAGES: Record<CertificateRefusal, string> = 
   no_name: "Please add your name to your account first, then add the certificate.",
   link: "Use the verify link from the issuer or from Credly. Other links can't be checked.",
   too_many: "You've added a lot of certificates today. Please try again tomorrow.",
+  reviewed:
+    "We reviewed this certificate and couldn't confirm it for your account, so it can't be added again. If you think that's wrong, tell us from the Grievances page.",
 };
 
 /**

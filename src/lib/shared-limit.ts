@@ -65,6 +65,11 @@ export const LIMITS = {
   findSearchesPerCompanyDay: { bucket: "find-search-company", max: 200, windowMs: 24 * HOUR },
   /** Profiles one company member opens from searches an hour. */
   findOpensPerUserHour: { bucket: "find-open-user", max: 60, windowMs: HOUR },
+  /**
+   * Profiles one company opens from searches a day, all its people together, so adding Hiring HR adds no openings
+   * (security review 2026-10-13). 1.5 times the company's 200 searches. Keyed by the company's id.
+   */
+  findOpensPerCompanyDay: { bucket: "find-open-company", max: 300, windowMs: 24 * HOUR },
   /** Messages a company sends in one found chat a day, after the person accepted. Keyed by the chat's id. */
   companyMessagesPerFoundChatDay: { bucket: "company-message-found", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
