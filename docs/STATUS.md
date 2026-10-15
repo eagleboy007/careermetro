@@ -33,7 +33,7 @@ Project manager's queue (2026-10-15), in order:
 1. Launch readiness (c) items that need no keys or money: error alerts to a person (6) and the upload load test (7). Items 3, 10 and 12 are done, and 4 and 5 are drafted. See `dev/launch-readiness.md`.
 2. Practice step (the L1 skill check), only from an approved handoff design. Otherwise send the Project manager a 10-line plan.
 3. Match step, on the same terms.
-4. Pending item 1, post-upload issues: ask Testing for open T-numbers.
+4. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It waits on Milin's details.
 
 Waiting: T44 and the Reports removal tools (Milin's cards); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
