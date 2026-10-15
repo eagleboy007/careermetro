@@ -24,7 +24,7 @@ describe("proxy", () => {
   it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
-    for (const p of ["/today", "/map", "/market", "/departures", "/arrivals", "/inbox", "/corporate", "/corporate/jobs/board", "/grievances", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
+    for (const p of ["/today", "/map", "/market", "/departures", "/arrivals", "/inbox", "/corporate", "/corporate/jobs/board", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
     expect((await proxy(req("/start"))).headers.get("x-middleware-next")).toBe("1");
     expect(refresh).not.toHaveBeenCalled();
   });
