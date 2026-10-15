@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adminEmails, isAdmin, LOCAL_ADMIN_EMAIL } from "./access";
+import { adminEmails, isAdmin, isAdminEmail, LOCAL_ADMIN_EMAIL } from "./access";
 
 // Who may open /admin/companies: a proven sign-in whose email is in ADMIN_EMAILS; the test user's local default only
 // in test mode; nobody in production while ADMIN_EMAILS is unset.
@@ -43,5 +43,14 @@ describe("admin access", () => {
     // With the real sign-in set up, the test sign-in is off, and so is the default.
     expect(isAdmin(test(LOCAL_ADMIN_EMAIL), { ...local, NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBe(false);
     expect(isAdmin(google(LOCAL_ADMIN_EMAIL), local)).toBe(false);
+  });
+
+  it("names an admin's stored email for refusing a suspension, in any case, and nobody else", () => {
+    const env = { ...prod, ADMIN_EMAILS: "reviewer@example.com" };
+    expect(isAdminEmail(" Reviewer@Example.com", env)).toBe(true);
+    expect(isAdminEmail(LOCAL_ADMIN_EMAIL, env)).toBe(true);
+    expect(isAdminEmail(LOCAL_ADMIN_EMAIL, {})).toBe(true);
+    expect(isAdminEmail("someone@example.com", env)).toBe(false);
+    expect(isAdminEmail(null, env)).toBe(false);
   });
 });

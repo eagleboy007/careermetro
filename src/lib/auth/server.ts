@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { connection } from "next/server";
 import { cache } from "react";
 import { findAccount, type Account, type Identity } from "@/lib/account/store";
+import { isAdmin } from "@/lib/admin/access";
 import { identityFromClaims } from "./claims";
 import { signedInPreviewEnabled } from "@/lib/preview";
 import { authConfig, hasAuthCookie } from "./config";
@@ -55,12 +56,23 @@ export const signedInAccount = cache(async (): Promise<Account | null> => {
 });
 
 /**
- * Our user for the signed-in person, or null when signed out, before they finish sign-up, or while their account is
- * deleted: a deleted account counts as signed out everywhere until it is restored.
+ * True while an admin has this account suspended after a report (FR-46) and the person signed in isn't an admin
+ * themselves: admins are never blocked.
+ */
+export function suspendedFor(account: Pick<Account, "suspendedAt"> | null, identity: Identity | null): boolean {
+  return !!account?.suspendedAt && !isAdmin(identity);
+}
+
+/**
+ * Our user for the signed-in person, or null when signed out, before they finish sign-up, while their account is
+ * deleted, or while it is suspended: a deleted account counts as signed out everywhere until it is restored, and a
+ * suspended one until the suspension is lifted, so no page or action works for it. The signed-in layout sends either
+ * to its notice page.
  */
 export const currentAccount = cache(async (): Promise<Account | null> => {
   const account = await signedInAccount();
-  return account && !account.deletionRequestedAt ? account : null;
+  if (!account || account.deletionRequestedAt) return null;
+  return suspendedFor(account, await currentIdentity()) ? null : account;
 });
 
 export type AuthStep = { ok: true } | { ok: false; reason: "not_configured" | "rejected" };

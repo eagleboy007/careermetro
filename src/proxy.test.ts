@@ -42,6 +42,7 @@ describe("proxy", () => {
     expect((await proxy(req("/u/priya-n"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fu%2Fpriya-n");
     expect((await proxy(req("/upload"))).headers.get("location")).toBeNull();
     expect((await proxy(req("/account/restore"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Faccount%2Frestore");
+    expect((await proxy(req("/account/suspended"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Faccount%2Fsuspended");
     // Where a deleted account lands, signed out.
     expect((await proxy(req("/account/deleted"))).headers.get("x-middleware-next")).toBe("1");
     expect((await proxy(req("/today", "forged.value"))).headers.get("location")).toContain("/sign-in");

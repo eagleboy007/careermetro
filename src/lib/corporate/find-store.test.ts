@@ -9,6 +9,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { saveAccountSettings } from "@/lib/account/settings-store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
+import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -307,6 +308,45 @@ describe.skipIf(!db)("let companies find me (database)", () => {
       expect(JSON.stringify(a)).not.toContain(p);
       expect(JSON.stringify(a)).not.toContain("Priya");
     }
+  });
+
+  it("shows a hidden found-chat message as the notice on both sides, and leaves a suspended person out until lifted (FR-46)", async () => {
+    const s = await setup("removal");
+    const p = await seeker("removal-p", { name: "Divya Rao" });
+    const [card] = await found(s.admin, s.jobId);
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    const hello = and(eq(schema.messages.conversationId, sent.conversationId), eq(schema.messages.body, HELLO));
+    await db!.update(schema.messages).set({ hiddenAt: clock, hiddenBy: s.admin, hiddenReason: "Test." }).where(hello);
+
+    const [thread] = await listThreads(p, fd());
+    expect(thread.messages.map((m) => m.text)).toContain(HIDDEN_MESSAGE_TEXT);
+    const chat = await companyFoundChat(s.admin, sent.conversationId, fd());
+    if (!chat.ok) throw new Error(chat.error);
+    expect(chat.chat.messages.map((m) => m.text)).toContain(HIDDEN_MESSAGE_TEXT);
+    const list = await companyMessages(s.admin, fd());
+    if (!list.ok) throw new Error(list.error);
+    expect(list.view.items.find((i) => i.found === sent.conversationId)?.preview).toBe(HIDDEN_MESSAGE_TEXT);
+    for (const read of [thread, chat, list]) expect(JSON.stringify(read)).not.toContain(HELLO);
+    await db!.update(schema.messages).set({ hiddenAt: null, hiddenBy: null, hiddenReason: null }).where(hello);
+    expect((await listThreads(p, fd()))[0].messages.map((m) => m.text)).toContain(HELLO);
+
+    // Suspended after a report: out of Find people and the company's found chats; lifting brings them back.
+    const suspend = (on: boolean) =>
+      db!
+        .update(schema.users)
+        .set(on ? { suspendedAt: clock, suspendedBy: s.admin, suspendedReason: "Test." } : { suspendedAt: null, suspendedBy: null, suspendedReason: null })
+        .where(eq(schema.users.id, p));
+    await suspend(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await companyFoundChat(s.admin, sent.conversationId, fd())).toEqual({ ok: false, error: "not_found" });
+    const hiddenList = await companyMessages(s.admin, fd());
+    expect(hiddenList.ok && hiddenList.view.items.some((i) => i.found === sent.conversationId)).toBe(false);
+    await suspend(false);
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Divya Rao"]);
+    expect((await companyFoundChat(s.admin, sent.conversationId, fd())).ok).toBe(true);
   });
 
   it("blocks the company silently from the Inbox: a blocked request reads exactly like a deleted one; an accepted chat closes", async () => {

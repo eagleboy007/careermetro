@@ -434,6 +434,8 @@ export async function jobBoard(userId: string, jobId: string, deps: ApplicationD
             ne(applications.userId, userId),
             isNull(applications.withdrawnAt),
             isNull(users.deletionRequestedAt),
+            // Suspended after a report (FR-46): off the board until the suspension is lifted.
+            isNull(users.suspendedAt),
             // Interviewers see only the candidates whose live interviews they are on (build step 6).
             assignedOnly ? inArray(applications.id, assignedSubquery(userId, db, now)) : undefined,
           ),
@@ -502,6 +504,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
       withdrawnAt: applications.withdrawnAt,
       name: users.name,
       deleted: users.deletionRequestedAt,
+      suspended: users.suspendedAt,
       aiRound: jobs.aiRound,
       jobStatus: jobs.status,
       requirements: jobs.requirements,
@@ -519,8 +522,9 @@ export async function visibleApplication(userId: string, applicationId: string, 
     .innerJoin(organizations, eq(organizations.id, applications.orgId))
     .where(and(eq(applications.id, applicationId), eq(applications.orgId, me.orgId)));
   const [app] = lock ? await q.for("update", { of: applications }) : await q;
-  // The person's own application, a deleted account, or one past the company's 180 days reads as not there.
-  if (!app || app.userId === userId || app.deleted || !companyMaySee(app, now)) return fail("not_found");
+  // The person's own application, a deleted or suspended account (FR-46), or one past the company's 180 days reads as
+  // not there.
+  if (!app || app.userId === userId || app.deleted || app.suspended || !companyMaySee(app, now)) return fail("not_found");
   const access = await jobAccess(userId, app.jobId, db, now);
   if (!access.ok) return fail(access.error);
   // Interviewers see only candidates whose live interview they are on (build step 6), read live like the role.

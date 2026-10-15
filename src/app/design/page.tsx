@@ -106,8 +106,9 @@ import { ApplyPanel } from "@/components/departures/apply-panel";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
-import { exampleHeldProofs, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
-import { ReportReview, ReportRow } from "@/components/admin/report-review";
+import { exampleHeldProofs, exampleInForce, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
+import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
+import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
@@ -615,12 +616,26 @@ export default function DesignPage() {
           Dismiss. Example data, so the buttons do nothing.
         </p>
         <ReportRow report={{ ...exampleReports[1]!, id: "7b6a5f4e-3d2c-4b1a-8f9e-8d7c6b5a4f3f" }} now={exampleReportsNow} pending={false} />
+        <p className="text-sm text-muted">
+          The removal tools (FR-46): a report about a message offers Hide message, and one that points at a person&apos;s account offers Suspend
+          account. Each opens a small form in the row with a required reason and confirms; what is in force reads in words, never in a status colour.
+          Below, the hidden messages and suspended accounts in force, each with its undo.
+        </p>
+        <ReportRow report={exampleOpenMessageReport} now={exampleReportsNow} pending={false} />
+        <HiddenMessageRow message={{ ...exampleInForce.messages[0]!, id: "4c3b2a1f-0e9d-4c8b-9a7f-6e5d4c3b2a17" }} off={false} />
+        <SuspendedAccountRow account={{ ...exampleInForce.accounts[0]!, id: "5d4c3b2a-1f0e-4d9c-8b8a-7f6e5d4c3b28" }} off={false} />
         <p className="text-sm text-muted">The whole page, and the list with nothing open.</p>
         <div className="rounded-lg border border-line p-4">
-          <ReportReview reports={exampleReports} now={exampleReportsNow} />
+          <ReportReview reports={exampleReports} now={exampleReportsNow} inForce={exampleInForce} />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <ReportReview reports={[]} now={exampleReportsNow} />
+          <ReportReview reports={[]} now={exampleReportsNow} inForce={{ messages: [], accounts: [] }} />
+        </div>
+        <p className="text-sm text-muted">
+          /account/suspended: what a suspended person sees instead of any signed-in page, with the admin&apos;s reason and the grievance officer.
+        </p>
+        <div className="rounded-lg border border-line p-4">
+          <SuspendedNotice reason="Asked people for money to book interviews." />
         </div>
       </section>
 

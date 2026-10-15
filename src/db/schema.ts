@@ -115,9 +115,22 @@ export const users = pgTable(
     usernameChangedAt: timestamp("username_changed_at", { withTimezone: true }),
     /** Optional one line under the name on the profile. */
     headline: text("headline"),
+    /**
+     * Suspended by a CareerMetro admin after a report (FR-46, docs/plans/reports-review-plan.md): the person sees only the
+     * suspension notice and companies stop seeing them. Lifting clears all three. Never deletes anything.
+     */
+    suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+    /** The admin who suspended the account. Not indexed: an admin's id, never queried by. */
+    suspendedBy: uuid("suspended_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    /** The admin's reason, shown to the person on the notice. Never logged. */
+    suspendedReason: text("suspended_reason"),
   },
   // Matching by email when the provider changes must ignore case. So must usernames.
-  (t) => [uniqueIndex("users_email_lower").on(sql`lower(${t.email})`), uniqueIndex("users_username_lower").on(sql`lower(${t.username})`)],
+  (t) => [
+    uniqueIndex("users_email_lower").on(sql`lower(${t.email})`),
+    uniqueIndex("users_username_lower").on(sql`lower(${t.username})`),
+    check("users_suspended_reason_length", sql`char_length(${t.suspendedReason}) between 1 and 500`),
+  ],
 );
 
 export const profileVisibility = pgEnum("profile_visibility", PROFILE_VISIBILITIES);
@@ -662,11 +675,21 @@ export const messages = pgTable(
     /** The offered slots of an `ask_times` card (part 2). */
     payload: jsonb("payload"),
     createdAt: createdAt(),
+    /**
+     * Hidden by a CareerMetro admin after a report (FR-46): every read shows HIDDEN_MESSAGE_TEXT in its place
+     * (src/lib/inbox/hidden.ts) and the body never leaves the database. The body is kept; unhiding clears all three.
+     */
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+    /** The admin who hid it. Not indexed: an admin's id, never queried by. */
+    hiddenBy: uuid("hidden_by").references(() => users.id, { onDelete: "set null" }),
+    /** The admin's reason. Admin pages only; never logged. */
+    hiddenReason: text("hidden_reason"),
   },
   (t) => [
     index("messages_conversation_created").on(t.conversationId, t.createdAt),
     index("messages_sender").on(t.senderId),
     check("messages_body_length", sql`char_length(${t.body}) between 1 and 2000`),
+    check("messages_hidden_reason_length", sql`char_length(${t.hiddenReason}) between 1 and 500`),
   ],
 );
 

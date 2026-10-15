@@ -7,8 +7,8 @@ import { displayName } from "@/lib/account/name";
 import { touchLastSeen } from "@/lib/account/store";
 import { rideStatsFor } from "@/lib/ride/store";
 import { authConfig } from "@/lib/auth/config";
-import { RESTORE_PATH } from "@/lib/auth/after-sign-in";
-import { currentIdentity, signedInAccount } from "@/lib/auth/server";
+import { RESTORE_PATH, SUSPENDED_PATH } from "@/lib/auth/after-sign-in";
+import { currentIdentity, signedInAccount, suspendedFor } from "@/lib/auth/server";
 import { isAdmin } from "@/lib/admin/access";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
@@ -54,6 +54,8 @@ async function Shell({ children }: { children: React.ReactNode }) {
     const account = await signedInAccount();
     if (account?.deletionRequestedAt) redirect(RESTORE_PATH);
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
+    // Suspended after a report (FR-46): the notice instead of any signed-in page. Admins are never blocked.
+    if (suspendedFor(account, await currentIdentity())) redirect(SUSPENDED_PATH);
     const [, streak, inboxUnread, companyUnread] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),

@@ -1,5 +1,5 @@
 import type { AdminCompanyView } from "@/lib/corporate/types";
-import type { HeldProofView, ReportReviewView } from "@/lib/schemas/admin";
+import type { HeldProofView, HiddenMessageView, ReportReviewView, SuspendedAccountView } from "@/lib/schemas/admin";
 
 /** Example rows of the company review list for /design. Synthetic companies on reserved example domains. */
 export const exampleReviewCompanies: AdminCompanyView[] = [
@@ -92,6 +92,11 @@ export const exampleReports: ReportReviewView[] = [
     reporter: "Asha V.",
     note: "They asked me to pay a fee before the interview.",
     context: { label: "Message from Hari M. at Example Labs", text: "Please pay 5,000 to book your interview slot today." },
+    message: {
+      id: "8c7b6a5f-4e3d-4c2b-9a1f-0e9d8c7b6a51",
+      hidden: { at: "2026-10-15T06:30:00.000Z", by: "Milin S.", reason: "Asked for money to book an interview." },
+    },
+    account: { id: "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b62", name: "Hari M.", suspended: null, canSuspend: true },
   },
   {
     id: "5f4e3d2c-1b0a-4f9e-8d7c-6b5a4f3e2d1d",
@@ -104,6 +109,13 @@ export const exampleReports: ReportReviewView[] = [
     reporter: "Meera I.",
     note: null,
     context: { label: "Person: Ravi K.", text: null },
+    message: null,
+    account: {
+      id: "0e9d8c7b-6a5f-4e4d-9c3b-2a1f0e9d8c73",
+      name: "Ravi K.",
+      suspended: { at: "2026-10-15T08:10:00.000Z", by: "Milin S.", reason: "Pretended to be a recruiter at another company." },
+      canSuspend: true,
+    },
   },
   {
     id: "6a5f4e3d-2c1b-4a0f-9e8d-7c6b5a4f3e2e",
@@ -116,5 +128,34 @@ export const exampleReports: ReportReviewView[] = [
     reporter: "A deleted account",
     note: null,
     context: { label: "Job at Demo Payments", text: "Data entry from home, earn 50,000 a week" },
+    message: null,
+    account: null,
   },
 ];
+
+/** A report about a message, with nothing hidden or suspended yet, for /design's row on its own. */
+export const exampleOpenMessageReport: ReportReviewView = {
+  ...exampleReports[0]!,
+  id: "1f0e9d8c-7b6a-4f5e-8d4c-3b2a1f0e9d84",
+  message: { id: "2a1f0e9d-8c7b-4a6f-9e5d-4c3b2a1f0e95", hidden: null },
+  account: { id: "3b2a1f0e-9d8c-4b7a-8f6e-5d4c3b2a1f06", name: "Hari M.", suspended: null, canSuspend: true },
+};
+
+/** Hidden messages and suspended accounts in force on /admin/reports, for /design. Synthetic people. */
+export const exampleInForce: { messages: HiddenMessageView[]; accounts: SuspendedAccountView[] } = {
+  messages: [
+    {
+      id: "8c7b6a5f-4e3d-4c2b-9a1f-0e9d8c7b6a51",
+      label: "Message from Hari M. at Example Labs",
+      text: "Please pay 5,000 to book your interview slot today.",
+      hidden: { at: "2026-10-15T06:30:00.000Z", by: "Milin S.", reason: "Asked for money to book an interview." },
+    },
+  ],
+  accounts: [
+    {
+      id: "0e9d8c7b-6a5f-4e4d-9c3b-2a1f0e9d8c73",
+      name: "Ravi K.",
+      suspended: { at: "2026-10-15T08:10:00.000Z", by: "Milin S.", reason: "Pretended to be a recruiter at another company." },
+    },
+  ],
+};

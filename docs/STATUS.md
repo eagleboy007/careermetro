@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-15 (Practice step, `/practice`).
+Last updated: 2026-10-15 (Reports removal tools, FR-46).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -15,6 +15,7 @@ Last updated: 2026-10-15 (Practice step, `/practice`).
   - A Credly link fills a goal only after the check (#135, migration 0029).
   - The held-proof review screen `/admin/proofs`, FR-44 (#137).
 - **Admin:** report review `/admin/reports` with the IT Rules deadlines, FR-45 (`docs/plans/reports-review-plan.md`). Report notes are kept, as the privacy notice will say (launch-readiness item 8).
+  - Removal tools, FR-46 (Project manager's decision under Milin's delegation, 2026-10-15): hide a reported message and suspend an account, both reversible, with reason and audit line; migration 0031. See the plan's "Removal tools".
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, #139), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
@@ -35,14 +36,15 @@ Project manager's queue (2026-10-15), in order:
 3. Match step: built as `/match` (FR-24, handoff 12i approved 2026-10-15), no AI and no migration. Linked from the avatar menu and the Map's Match stop; the step line no longer says Soon for Match. Path hours are the stored step's, else the Gaps hours table. See `dev/practice-match-plan.md` "Match build notes".
 4. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It waits on Milin's details.
 
-Waiting: T44 and the Reports removal tools (Milin's cards); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
+Waiting: T44 (Milin's card); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0031**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-45.
+Numbers: the next migration is **0032**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-46.
 
 ## Decisions log (newest first)
 
+- 2026-10-15: The report tool may hide a reported message and suspend an account, both reversible and nothing deleted (Project manager under Milin's delegation; Milin can reverse it). See `docs/plans/reports-review-plan.md`.
 - 2026-10-15: Full pace without repeated work: one PR per feature, one review pass, push once, and fresh threads that start from this page (Milin). See the skill.
 - 2026-10-15: A Credly link fills a goal only after the Credly check (T48). See `dev/profile-certs-plan.md` decision 19.
 - 2026-10-13: With "Let companies find me" on, companies also see the target role (Project manager's call; Milin can reverse it). See `dev/corporate-plan.md`.
@@ -57,7 +59,7 @@ Numbers: the next migration is **0031**. `EXPORT_VERSION` lives in `src/lib/acco
 ## Known issues and blockers
 
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
-- **Milin, decisions:** the T44 card; whether the report tool may remove a message or suspend a person's account (`docs/plans/reports-review-plan.md`); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
+- **Milin, decisions:** the T44 card; the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
 - **Project manager:** deleting merged remote branches, which the permission check blocks for Development.
 - `reopenUnconfirmedGoals` (daily cleanup) re-checks every rejected or held certificate each day. That is fine at beta scale, but limit it to recent rows when there are many.
 - `/mnt/project-files` sometimes gives I/O errors. When it does, write to `docs/` and copy across later.
