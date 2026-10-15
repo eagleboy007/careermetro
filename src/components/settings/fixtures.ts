@@ -12,6 +12,7 @@ export const exampleSettings: SettingsData = {
   draft: {
     username: "priya-n",
     headline: "IT support moving into security operations",
+    city: "Pune",
     currentPay: "4.2",
     expectedPay: "6",
     settings: {

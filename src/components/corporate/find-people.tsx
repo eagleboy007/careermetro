@@ -1,12 +1,12 @@
 "use client";
 
-import { ArrowLeft, BadgeCheck, ChevronLeft, ChevronRight, MessageSquare, Search, Send, X } from "lucide-react";
+import { ArrowLeft, BadgeCheck, ChevronLeft, ChevronRight, MapPin, MessageSquare, Search, Send, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import type { FindActions, FindPeopleResults, FindPeopleView, FindPersonCard, FoundPersonView, FoundRequestState } from "@/lib/corporate/find-types";
 import { formatDay } from "@/lib/corporate/format";
 import type { FindBand, FindSearch } from "@/lib/schemas";
-import { FIND_BAND_LABELS, FIND_BANDS, FIND_ROLES_MAX } from "@/lib/schemas/constants";
+import { FIND_BAND_LABELS, FIND_BANDS, FIND_CITIES_MAX, FIND_ROLES_MAX, PERSON_CITIES, type PersonCity } from "@/lib/schemas/constants";
 import { monoLabel } from "./job-parts";
 import { actionBtn, inkBtn } from "./jobs-panel";
 import { MatchDots, MatchList } from "./match-parts";
@@ -29,20 +29,78 @@ function searchHref(search: FindSearch) {
   const q = new URLSearchParams({ job: search.jobId });
   for (const b of search.bands) q.append("band", b);
   for (const r of search.roles) q.append("role", r);
+  for (const c of search.cities) q.append("city", c);
   if (search.verified) q.set("verified", "1");
   if (search.page > 1) q.set("page", String(search.page));
   return `/corporate/people?${q}`;
 }
 
 const checkClass = "size-4 shrink-0 accent-ink";
-const choiceClass = "flex min-h-11 items-center gap-2 text-[0.86rem]";
+const choiceClass = "flex min-h-11 items-center gap-2 text-[0.86rem] has-[:disabled]:text-muted";
+
+const cityOptions = PERSON_CITIES.map((c) => ({ value: c, label: c }));
+
+/**
+ * A closed-by-default list of choices to tick, up to `max` (target roles, cities). Once `max` are ticked the rest
+ * can't be ticked until one is cleared. Open at first only when the address chose some; after that the person opens
+ * and closes it.
+ */
+function ChoiceList<T extends string>({
+  legend,
+  options,
+  chosen,
+  onChange,
+  max,
+  hint,
+}: {
+  legend: string;
+  options: { value: T; label: string }[];
+  chosen: T[];
+  onChange: (next: T[]) => void;
+  max: number;
+  hint: string;
+}) {
+  const [startOpen] = useState(chosen.length > 0);
+  const full = chosen.length >= max;
+  return (
+    <details className="rounded-md border border-line" open={startOpen || undefined}>
+      <summary className="flex min-h-11 cursor-pointer items-center px-3 text-[0.86rem] font-medium">
+        {legend}
+        {chosen.length ? ` · ${chosen.length} chosen` : " · any"}
+      </summary>
+      <fieldset className="flex flex-col gap-1 border-t border-line px-3 pt-1 pb-3">
+        <legend className="sr-only">{legend}</legend>
+        <div className="grid max-h-[280px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-x-4 overflow-y-auto">
+          {options.map((o) => {
+            const on = chosen.includes(o.value);
+            return (
+              <label key={o.value} className={choiceClass}>
+                <input
+                  type="checkbox"
+                  value={o.value}
+                  checked={on}
+                  disabled={!on && full}
+                  onChange={(e) => onChange(e.target.checked ? [...chosen, o.value] : chosen.filter((x) => x !== o.value))}
+                  className={checkClass}
+                />
+                {o.label}
+              </label>
+            );
+          })}
+        </div>
+        <small className="text-[0.76rem] text-muted">{hint}</small>
+      </fieldset>
+    </details>
+  );
+}
 
 /**
  * Corporate > Find people (pending item 19, dev/companies-find-me-plan.md): Recruiter admins, and Hiring HR on the job,
  * search from one of the company's open jobs for people who turned on "Let companies find me", ranked by Match to the
  * job, proven skills first. Opening a person shows their public profile parts and Match, and lets the company send one
  * message request, which the person accepts or deletes in their Inbox. The search can be narrowed by experience, target
- * role and verified profiles, one or several of each together (T44); each card shows the person's target role. Without
+ * role, city and verified profiles, one or several of each together (T44); each card shows the person's target role and
+ * city. Without
  * `actions` (preview, /design) nothing is sent and the drawer shows `example`. A search runs only when Search (or a page
  * button) is pressed, through `actions.search`; the address then holds the job, filters and page, and opening that
  * address fills in the form without searching (Testing T41).
@@ -55,8 +113,7 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
   const [error, setError] = useState<string | null>(view.error);
   const [searching, startSearch] = useTransition();
   const [roles, setRoles] = useState<string[]>(view.search?.roles ?? []);
-  // Open at first only when the address chose roles; after that the person opens and closes it.
-  const [rolesOpen] = useState(roles.length > 0);
+  const [cities, setCities] = useState<PersonCity[]>(view.search?.cities ?? []);
   // Counts finished searches, so focus moves once each search has rendered its outcome.
   const [searches, setSearches] = useState(0);
   const messageRef = useRef<HTMLParagraphElement>(null);
@@ -86,11 +143,6 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
    */
   const run = (next: FindSearch) => {
     if (searching) return;
-    if (next.roles.length > FIND_ROLES_MAX) {
-      setError(`Pick up to ${FIND_ROLES_MAX} target roles.`);
-      setSearches((n) => n + 1);
-      return;
-    }
     startSearch(async () => {
       if (!actions) return;
       setMessage(null);
@@ -163,7 +215,7 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
               e.preventDefault();
               const data = new FormData(e.currentTarget);
               const bands = data.getAll("band").filter((b): b is FindBand => (FIND_BANDS as readonly string[]).includes(String(b)));
-              run({ jobId: String(data.get("job") ?? ""), bands, roles, verified: data.get("verified") === "1", page: 1 });
+              run({ jobId: String(data.get("job") ?? ""), bands, roles, cities, verified: data.get("verified") === "1", page: 1 });
             }}
           >
             <label className={`${labelClass} min-w-0`}>
@@ -199,30 +251,23 @@ export function FindPeople({ view, actions, example, startOpen }: { view: FindPe
                 </small>
               </fieldset>
             </div>
-            <details className="rounded-md border border-line" open={rolesOpen || undefined}>
-              <summary className="flex min-h-11 cursor-pointer items-center px-3 text-[0.86rem] font-medium">
-                Target role{roles.length ? ` · ${roles.length} chosen` : " · any"}
-              </summary>
-              <fieldset className="flex flex-col gap-1 border-t border-line px-3 pt-1 pb-3">
-                <legend className="sr-only">Target role</legend>
-                <div className="grid max-h-[280px] grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-x-4 overflow-y-auto">
-                  {view.roles.map((r) => (
-                    <label key={r.slug} className={choiceClass}>
-                      <input
-                        type="checkbox"
-                        value={r.slug}
-                        checked={roles.includes(r.slug)}
-                        onChange={(e) => setRoles((cur) => (e.target.checked ? [...cur, r.slug] : cur.filter((x) => x !== r.slug)))}
-                        className={checkClass}
-                      />
-                      {r.title}
-                    </label>
-                  ))}
-                </div>
-                <small className="text-[0.76rem] text-muted">Pick up to {FIND_ROLES_MAX}. People show if they aim for any of them.</small>
-              </fieldset>
-            </details>
-            <p className="text-[0.78rem] text-muted">Nothing ticked in a group means any. Location isn&apos;t a filter yet: people don&apos;t give a city on CareerMetro.</p>
+            <ChoiceList
+              legend="Target role"
+              options={view.roles.map((r) => ({ value: r.slug, label: r.title }))}
+              chosen={roles}
+              onChange={setRoles}
+              max={FIND_ROLES_MAX}
+              hint={`Pick up to ${FIND_ROLES_MAX}. People show if they aim for any of them.`}
+            />
+            <ChoiceList
+              legend="City"
+              options={cityOptions}
+              chosen={cities}
+              onChange={setCities}
+              max={FIND_CITIES_MAX}
+              hint={`Pick up to ${FIND_CITIES_MAX}. Only people who gave one of these cities show.`}
+            />
+            <p className="text-[0.78rem] text-muted">Nothing ticked in a group means any.</p>
             <button type="submit" className={`${inkBtn} self-start aria-disabled:cursor-not-allowed aria-disabled:opacity-50`} aria-disabled={searching || undefined}>
               <Search {...ICON} />
               Search
@@ -335,12 +380,18 @@ function PersonCard({ card, onOpen }: { card: FindPersonCard; onOpen: () => void
         </span>
         <RequestChip request={card.request} />
       </div>
-      {(card.aim || card.verified) && (
+      {(card.aim || card.city || card.verified) && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.84rem]">
           {card.aim && (
             <span className="[overflow-wrap:anywhere]">
               <span className="text-muted">Aiming for </span>
               {card.aim}
+            </span>
+          )}
+          {card.city && (
+            <span className="inline-flex items-center gap-1">
+              <MapPin {...ICON} />
+              {card.city}
             </span>
           )}
           {card.verified && (
@@ -448,7 +499,10 @@ function PersonDrawer({
             {name}
           </h2>
           {(p?.headline ?? card?.headline) && <p className="text-[0.86rem] text-muted [overflow-wrap:anywhere]">{p?.headline ?? card?.headline}</p>}
-          <p className="mt-1 text-[0.78rem] text-muted">Found from {person?.job ?? "your job"}</p>
+          <p className="mt-1 text-[0.78rem] text-muted">
+            Found from {person?.job ?? "your job"}
+            {(person?.city ?? card?.city) && ` · ${person?.city ?? card?.city}`}
+          </p>
         </div>
         <button type="button" data-close aria-label="Close" className={`${actionBtn} w-11 px-0`} onClick={() => close()}>
           <X {...ICON} />

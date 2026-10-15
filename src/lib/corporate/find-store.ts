@@ -140,6 +140,7 @@ const personColumns = {
   id: users.id,
   name: users.name,
   headline: users.headline,
+  city: users.city,
   createdAt: users.createdAt,
   showTargetRole: userSettings.showTargetRole,
   showExperience: userSettings.showExperience,
@@ -147,7 +148,7 @@ const personColumns = {
   showSkills: userSettings.showSkills,
   showCertifications: userSettings.showCertifications,
 };
-type Person = { id: string; name: string | null; headline: string | null; createdAt: Date } & Omit<PublicParts, "showGaps">;
+type Person = { id: string; name: string | null; headline: string | null; city: string | null; createdAt: Date } & Omit<PublicParts, "showGaps">;
 
 /**
  * The people found, read fresh: the switch, blocks and roles as they are now. At most FIND_SCAN_MAX are read, most
@@ -208,7 +209,7 @@ const experienceText = (person: Person, years: number) => (person.showExperience
 
 /**
  * One page of people found from one of the company's open jobs, ranked by Match to this job, narrowed by any of the
- * filters asked (experience bands, target roles, verified profiles; T44). Counts against the person's and the company's
+ * filters asked (experience bands, target roles, cities, verified profiles; T44). Counts against the person's and the company's
  * search limits, inside the transaction that writes the audit line.
  */
 export async function searchPeople(userId: string, raw: unknown, deps: FindDeps = {}): Promise<FindResult<{ cards: FindPersonCard[]; total: number; hasMore: boolean }>> {
@@ -263,7 +264,7 @@ async function rankPeople(orgId: string, searcherId: string, job: JobContext["jo
     const years = yearsWorked(profile, now);
     if (!inBands(filters.bands, years, person.showExperience)) continue;
     const provedSkills = proved.get(person.id) ?? new Set<string>();
-    if (!passesFilters(filters, { roleSlug: analysis.roleSlug, provedSkills: provedSkills.size })) continue;
+    if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, provedSkills: provedSkills.size })) continue;
     const match = jobMatch(job.requirements, profile, provedSkills, now);
     if (!matchesJob(match)) continue;
     const ref = sealRef(person.id, orgId, env);
@@ -274,6 +275,7 @@ async function rankPeople(orgId: string, searcherId: string, job: JobContext["jo
       headline: person.headline,
       experience: experienceText(person, years),
       aim: roleTitles.get(analysis.roleSlug) ?? null,
+      city: person.city,
       verified: provedSkills.size > 0,
       match,
     };
@@ -344,6 +346,7 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
         ref: parsed.data.ref,
         jobId: job.id,
         job: job.title,
+        city: person.city,
         profile: companyView(person, profile, current.analysis, now),
         match: jobMatch(job.requirements, profile, proved, now),
         request: state,

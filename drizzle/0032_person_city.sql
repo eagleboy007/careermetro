@@ -1,0 +1,2 @@
+-- Optional city for a person (T44, Milin 2026-10-15): one of the cities the Market map knows, set in Settings. Only companies that can find the person ("Let companies find me") see it and filter Find people by it; it is never on the public profile. Expand only: one nullable column, no constraint (Zod checks the value). The table already has row level security.
+ALTER TABLE "users" ADD COLUMN "city" text;

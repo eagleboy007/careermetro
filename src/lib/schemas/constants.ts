@@ -305,9 +305,71 @@ export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as con
 
 /* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
 
-/** Experience bands a company can filter a search by, in years, from the confirmed profile. */
+/**
+ * The cities a person may give (T44, Milin 2026-10-15: optional city, nothing more of an address): the cities the
+ * Market map knows (src/content/market/places.ts), alphabetical. Companies that can find a person filter by these.
+ */
+export const PERSON_CITIES = [
+  "Agartala",
+  "Ahmedabad",
+  "Aizawl",
+  "Bengaluru",
+  "Bhopal",
+  "Bhubaneswar",
+  "Chandigarh",
+  "Chennai",
+  "Coimbatore",
+  "Dehradun",
+  "Faridabad",
+  "Gandhinagar",
+  "Gangtok",
+  "Gurugram",
+  "Guwahati",
+  "Hyderabad",
+  "Imphal",
+  "Indore",
+  "Itanagar",
+  "Jaipur",
+  "Jammu",
+  "Kavaratti",
+  "Kochi",
+  "Kohima",
+  "Kolkata",
+  "Leh",
+  "Lucknow",
+  "Ludhiana",
+  "Mangaluru",
+  "Mohali",
+  "Mumbai",
+  "Mysuru",
+  "Nagpur",
+  "New Delhi",
+  "Noida",
+  "Panaji",
+  "Patna",
+  "Port Blair",
+  "Puducherry",
+  "Pune",
+  "Raipur",
+  "Ranchi",
+  "Shillong",
+  "Shimla",
+  "Silvassa",
+  "Srinagar",
+  "Thiruvananthapuram",
+  "Udaipur",
+  "Vadodara",
+  "Vijayawada",
+  "Visakhapatnam",
+] as const;
+export type PersonCity = (typeof PERSON_CITIES)[number];
+/** At most this many cities in one Find people search. */
+export const FIND_CITIES_MAX = 10;
+
 /** At most this many target roles in one Find people search (T44). */
 export const FIND_ROLES_MAX = 10;
+
+/** Experience bands a company can filter a search by, in years, from the confirmed profile. */
 export const FIND_BANDS = ["0-2", "2-5", "5-10", "10+"] as const;
 export const FIND_BAND_LABELS: Record<(typeof FIND_BANDS)[number], string> = {
   "0-2": "Up to 2 years",

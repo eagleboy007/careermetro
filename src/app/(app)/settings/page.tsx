@@ -36,6 +36,7 @@ async function SettingsScreen() {
     draft: {
       username: saved?.username ?? "",
       headline: saved?.headline ?? "",
+      city: saved?.city ?? "",
       currentPay: lakhText(saved?.pay.currentLakh ?? null),
       expectedPay: lakhText(saved?.pay.expectedLakh ?? null),
       settings: saved?.settings ?? DEFAULT_SETTINGS,

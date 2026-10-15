@@ -17,7 +17,7 @@ Last updated: 2026-10-15 (T44 and Find people filters, Development 3).
 - **Admin:** report review `/admin/reports` with the IT Rules deadlines, FR-45 (`docs/plans/reports-review-plan.md`). Report notes are kept, as the privacy notice will say (launch-readiness item 8).
   - Removal tools, FR-46, #146 (Project manager's decision under Milin's delegation, 2026-10-15): hide a reported message and suspend an account, both reversible, with reason and audit line; migration 0031. See the plan's "Removal tools".
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, #139), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
-  - T44 (Milin, 2026-10-15): Find people shows each person's target role and filters by experience, target role and verified profile, one or several together. No location filter: people have no stored city (raised with the Project manager). See `dev/companies-find-me-plan.md`.
+  - T44 (Milin, 2026-10-15), #148: Find people shows each person's target role and city, and filters by experience, target role, city and verified profile, one or several together. People give an optional city in Settings (migration 0032, export version 17). See `dev/companies-find-me-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
@@ -40,15 +40,15 @@ Open, all waiting on someone else:
 
 Handover (2026-10-15 18:25 UTC): "Development 3" took over from Development 2 for T44.
 
-Waiting: a city for people, so Find people can filter by location (Project manager / Milin); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
+Waiting: name search for companies and Network (Milin finishing the spec with the Project manager); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0032**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-46.
+Numbers: the next migration is **0033**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-46.
 
 ## Decisions log (newest first)
 
-- 2026-10-15: Companies see the target role of everyone findable, and Find people filters by experience, target role and verified profile (Milin, T44). "Verified" means at least one skill proved (Development; Milin can reverse). See `dev/companies-find-me-plan.md`.
+- 2026-10-15: Companies see the target role of everyone findable, and Find people filters by experience, target role, city and verified profile, with an optional city for people (Milin, T44). "Verified" means at least one skill proved (Development; Milin can reverse). See `dev/companies-find-me-plan.md`.
 - 2026-10-15: The report tool may hide a reported message and suspend an account, both reversible and nothing deleted (Project manager under Milin's delegation; Milin can reverse it). See `docs/plans/reports-review-plan.md`.
 - 2026-10-15: Full pace without repeated work: one PR per feature, one review pass, push once, and fresh threads that start from this page (Milin). See the skill.
 - 2026-10-15: A Credly link fills a goal only after the Credly check (T48). See `dev/profile-certs-plan.md` decision 19.
@@ -64,7 +64,7 @@ Numbers: the next migration is **0032**. `EXPORT_VERSION` lives in `src/lib/acco
 ## Known issues and blockers
 
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
-- **Milin, decisions:** whether to ask people for a city (Find people location filter); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
+- **Milin, decisions:** the name-search spec and the employer-hiding rule; the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
 - **Project manager:** deleting merged remote branches, which the permission check blocks for Development.
 - `reopenUnconfirmedGoals` (daily cleanup) re-checks every rejected or held certificate each day. That is fine at beta scale, but limit it to recent rows when there are many.
 - `/mnt/project-files` sometimes gives I/O errors. When it does, write to `docs/` and copy across later.

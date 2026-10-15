@@ -189,3 +189,12 @@ describe("practice question bank", () => {
     expect(texts.filter((t, i) => texts.indexOf(t) !== i)).toEqual([]);
   });
 });
+
+describe("person cities (T44)", () => {
+  it("are exactly the cities the Market map knows, alphabetical and once each", async () => {
+    const { marketStates } = await import("./market/places");
+    const { PERSON_CITIES } = await import("@/lib/schemas/constants");
+    const known = [...new Set(marketStates.flatMap((s) => s.cities))].sort();
+    expect([...PERSON_CITIES]).toEqual(known);
+  });
+});

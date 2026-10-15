@@ -220,12 +220,18 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     // The target role shows to companies even with "your target role" off on the public profile (T44); gaps never do.
     await db!.update(schema.userSettings).set({ showTargetRole: false }).where(eq(schema.userSettings.userId, soc));
 
+    // An optional city (T44): only Kavya gave one.
+    await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, proved));
+
     const all = await found(s.admin, s.jobId);
-    expect(all.map((c) => [c.name, c.aim, c.verified]).sort()).toEqual([
-      ["Arjun Mehta", "Data Analyst", false],
-      ["Kavya Reddy", "Data Analyst", true],
-      ["Priya Nair", "Cyber Security Analyst", false],
+    expect(all.map((c) => [c.name, c.aim, c.city, c.verified]).sort()).toEqual([
+      ["Arjun Mehta", "Data Analyst", null, false],
+      ["Kavya Reddy", "Data Analyst", "Pune", true],
+      ["Priya Nair", "Cyber Security Analyst", null, false],
     ]);
+    expect(names(await found(s.admin, s.jobId, { cities: ["Pune", "Kochi"] }))).toEqual(["Kavya Reddy"]);
+    expect(await found(s.admin, s.jobId, { cities: ["Kochi"] })).toEqual([]);
+    expect(await searchPeople(s.admin, { jobId: s.jobId, cities: ["MG Road, Pune"] }, fd())).toEqual({ ok: false, error: "invalid" });
     expect(names(await found(s.admin, s.jobId, { roles: ["data-analyst"] }))).toEqual(["Arjun Mehta", "Kavya Reddy"]);
     expect(names(await found(s.admin, s.jobId, { roles: ["data-analyst", "cyber-security-analyst"] }))).toEqual(["Arjun Mehta", "Kavya Reddy", "Priya Nair"]);
     expect(names(await found(s.admin, s.jobId, { verified: true }))).toEqual(["Kavya Reddy"]);
@@ -237,6 +243,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     const opened = await openFoundPerson(s.admin, { jobId: s.jobId, ref: priya.ref }, fd());
     if (!opened.ok) throw new Error(opened.error);
     expect(opened.person.profile.aim).toBe("Cyber Security Analyst");
+    expect(opened.person.city).toBeNull();
     expect(JSON.stringify(opened.person)).not.toContain("AWS");
   });
 
@@ -250,14 +257,14 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await searchPeople(outsider, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "not_member" });
     expect(await searchPeople(s.admin, { jobId: "not-a-uuid" }, fd())).toEqual({ ok: false, error: "invalid" });
 
-    const page = await findPeoplePage(s.iv, { jobId: s.jobId, bands: [], roles: [], verified: false, page: 1 }, fd());
+    const page = await findPeoplePage(s.iv, { jobId: s.jobId, bands: [], roles: [], cities: [], verified: false, page: 1 }, fd());
     expect(page).toMatchObject({ refusal: "interviewer", jobs: [], results: null });
-    expect((await findPeoplePage(s.otherHr, { jobId: null, bands: [], roles: [], verified: false, page: 1 }, fd()))!.jobs).toEqual([]);
-    expect((await findPeoplePage(s.hr, { jobId: null, bands: [], roles: [], verified: false, page: 1 }, fd()))!.jobs.map((j) => j.id)).toEqual([s.jobId]);
+    expect((await findPeoplePage(s.otherHr, { jobId: null, bands: [], roles: [], cities: [], verified: false, page: 1 }, fd()))!.jobs).toEqual([]);
+    expect((await findPeoplePage(s.hr, { jobId: null, bands: [], roles: [], cities: [], verified: false, page: 1 }, fd()))!.jobs.map((j) => j.id)).toEqual([s.jobId]);
 
     await db!.update(schema.organizations).set({ reviewStatus: "suspended" }).where(eq(schema.organizations.id, s.orgId));
     expect(await searchPeople(s.admin, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "not_verified" });
-    expect((await findPeoplePage(s.admin, { jobId: s.jobId, bands: [], roles: [], verified: false, page: 1 }, fd()))!.refusal).toBe("not_verified");
+    expect((await findPeoplePage(s.admin, { jobId: s.jobId, bands: [], roles: [], cities: [], verified: false, page: 1 }, fd()))!.refusal).toBe("not_verified");
     await db!.update(schema.organizations).set({ reviewStatus: "verified" }).where(eq(schema.organizations.id, s.orgId));
     await db!.update(schema.jobs).set({ status: "paused" }).where(eq(schema.jobs.id, s.jobId));
     expect(await searchPeople(s.admin, { jobId: s.jobId }, fd())).toEqual({ ok: false, error: "job_not_open" });
@@ -525,8 +532,8 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
 
     const data = await exportAccountData(p, db!, clock);
-    expect(EXPORT_VERSION).toBe(16);
-    expect(data!.exportVersion).toBe(16);
+    expect(EXPORT_VERSION).toBe(17);
+    expect(data!.exportVersion).toBe(17);
     expect(data!.companyDiscovery.companiesCanFind).toBe(true);
     expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
     expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);
@@ -561,7 +568,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     await seeker("link-p");
     const searches = async () => (await auditOf(s.orgId)).filter((l) => l.action === "people_searched").length;
     for (let i = 0; i < 3; i++) {
-      const search = { jobId: s.jobId, bands: ["2-5" as const], roles: ["data-analyst"], verified: true, page: 2 };
+      const search = { jobId: s.jobId, bands: ["2-5" as const], roles: ["data-analyst"], cities: ["Pune" as const], verified: true, page: 2 };
       const view = await findPeoplePage(s.admin, search, fd());
       expect(view).toMatchObject({ search, results: null, error: null });
     }

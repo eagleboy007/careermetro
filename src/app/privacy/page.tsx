@@ -89,8 +89,8 @@ const sections: LegalSection[] = [
         <li>Companies never see your gaps, goals or path, your email address, your phone number (unless you share it), your pay or your notice period.</li>
         <li>
           If you switch on <strong>Let companies find me</strong> in Settings, verified companies can find you from one of their open jobs. They see the
-          parts of your profile you chose to show, the role you are aiming at, and how well you match the job. They can narrow a search by your
-          experience (only if your profile shows it), the role you are aiming at and whether you have proved skills. Each time a company opens your profile it is
+          parts of your profile you chose to show, the role you are aiming at, your city if you gave one in Settings, and how well you match the job. They can narrow a
+          search by your experience (only if your profile shows it), the role you are aiming at, your city and whether you have proved skills. Each time a company opens your profile it is
           logged, and you can see which companies viewed you in the last 30 days. You can block a company at any time, and switching it off hides you at once.
         </li>
         <li>

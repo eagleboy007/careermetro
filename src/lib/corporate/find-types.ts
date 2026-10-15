@@ -19,6 +19,8 @@ export type FindPersonCard = {
   experience: string | null;
   /** The role they aim at (T44): companies see it for everyone who lets them find them. Never their gaps. */
   aim: string | null;
+  /** The city they gave (T44), seen only by companies that can find them; null when none. */
+  city: string | null;
   /** At least one skill proved by CareerMetro proof (an exam, a verified certificate or corroborated work). */
   verified: boolean;
   match: JobMatchView;
@@ -66,6 +68,8 @@ export type FoundPersonView = {
   ref: string;
   jobId: string;
   job: string;
+  /** The city they gave (T44), or null. Not part of the public profile. */
+  city: string | null;
   profile: MeProfile;
   match: JobMatchView;
   request: FoundRequestState;

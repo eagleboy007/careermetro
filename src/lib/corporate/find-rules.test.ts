@@ -56,14 +56,18 @@ describe("find rules (pending item 19)", () => {
   });
 
   it("filter by target roles and verified profiles, alone or together (T44)", () => {
-    const analyst = { roleSlug: "data-analyst", provedSkills: 0 };
-    const provedSoc = { roleSlug: "cyber-security-analyst", provedSkills: 2 };
-    const none = { roles: [], verified: false };
+    const analyst = { roleSlug: "data-analyst", city: null, provedSkills: 0 };
+    const provedSoc = { roleSlug: "cyber-security-analyst", city: "Pune", provedSkills: 2 };
+    const none = { roles: [], cities: [], verified: false };
     expect([analyst, provedSoc].map((p) => passesFilters(none, p))).toEqual([true, true]);
-    expect([analyst, provedSoc].map((p) => passesFilters({ roles: ["data-analyst"], verified: false }, p))).toEqual([true, false]);
-    expect([analyst, provedSoc].map((p) => passesFilters({ roles: ["data-analyst", "cyber-security-analyst"], verified: false }, p))).toEqual([true, true]);
-    expect([analyst, provedSoc].map((p) => passesFilters({ roles: [], verified: true }, p))).toEqual([false, true]);
-    expect([analyst, provedSoc].map((p) => passesFilters({ roles: ["data-analyst"], verified: true }, p))).toEqual([false, false]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, roles: ["data-analyst"] }, p))).toEqual([true, false]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, roles: ["data-analyst", "cyber-security-analyst"] }, p))).toEqual([true, true]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, verified: true }, p))).toEqual([false, true]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, roles: ["data-analyst"], verified: true }, p))).toEqual([false, false]);
+    // A city matches only people who gave one of the chosen cities.
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, cities: ["Pune", "Kochi"] }, p))).toEqual([false, true]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ ...none, cities: ["Kochi"] }, p))).toEqual([false, false]);
+    expect([analyst, provedSoc].map((p) => passesFilters({ roles: ["cyber-security-analyst"], cities: ["Pune"], verified: true }, p))).toEqual([false, true]);
   });
 
   it("list only people who have at least one required skill, proved or on the resume", () => {

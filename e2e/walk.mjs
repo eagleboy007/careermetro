@@ -2533,6 +2533,8 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     const [resume] = await sql`insert into resumes (user_id, mime_type, size_bytes, status) values (${user.id}, 'text/plain', 1, 'parsed') returning id`;
     const [prof] = await sql`insert into profiles (resume_id, version, data, confirmed_by_user) values (${resume.id}, 1, ${sql.json(profile)}, true) returning id`;
     await sql`insert into gap_analyses (profile_id, result, matcher_version) values (${prof.id}, ${sql.json(analysis)}, ${matcher})`;
+    // The optional city he picked in Settings (T44); companies that can find him filter by it.
+    await sql`update users set city = 'Pune' where id = ${user.id}`;
 
     // Off by default; turned on in Settings > Privacy, with the plain words about what companies see.
     await fp.goto(BASE + "/settings");
@@ -2571,16 +2573,24 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await searchForm.getByLabel("Verified profiles only").check();
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("heading", { name: "No one matches yet" }).waitFor({ timeout: 10000 });
-    // Experience 2 to 5 years with the target role he aims for: he shows, with that role on his card.
+    // Experience 2 to 5 years with the target role he aims for and his city: he shows, with that role on his card.
     await searchForm.getByLabel("Verified profiles only").uncheck();
-    await searchForm.locator("summary").click();
+    await searchForm.locator("summary", { hasText: "Target role" }).click();
     await searchForm.getByLabel("Cyber Security Analyst", { exact: true }).check();
+    await searchForm.locator("summary", { hasText: "City" }).click();
+    await searchForm.getByLabel("Pune", { exact: true }).check();
     await searchForm.getByLabel("2 to 5 years").check();
     await q.getByRole("button", { name: "Search", exact: true }).click();
     await q.getByRole("button", { name: "View profile of Arjun Mehta" }).waitFor({ timeout: 10000 });
     await q.getByText("Aiming for Cyber Security Analyst").waitFor();
     const filtered = new URL(q.url());
-    if ([...filtered.searchParams.keys()].some((k) => !["job", "band", "role", "verified", "page"].includes(k)) || filtered.searchParams.get("role") !== "cyber-security-analyst" || filtered.searchParams.get("band") !== "2-5")
+    const allowed = ["job", "band", "role", "city", "verified", "page"];
+    if (
+      [...filtered.searchParams.keys()].some((k) => !allowed.includes(k)) ||
+      filtered.searchParams.get("role") !== "cyber-security-analyst" ||
+      filtered.searchParams.get("band") !== "2-5" ||
+      filtered.searchParams.get("city") !== "Pune"
+    )
       throw new Error("the search address holds more than the job and filters: " + filtered.search);
     const open = q.getByRole("button", { name: "View profile of Arjun Mehta" });
     await open.waitFor({ timeout: 10000 });

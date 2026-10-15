@@ -225,6 +225,13 @@
       "when": 1792140000000,
       "tag": "0031_report_removals",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792149000000,
+      "tag": "0032_person_city",
+      "breakpoints": true
     }
   ]
 }
