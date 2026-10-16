@@ -101,7 +101,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobCheckRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -205,6 +205,6 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     practiceAnswers: practiceRows,
     // Verified current job (FR-47): each work-email check of a job, with the company, the job's start month, the email's
     // domain (never the address), its state (verified, review: waiting for CareerMetro, or refused) and when.
-    jobEmailChecks: jobCheckRows,
+    jobEmailChecks: jobEmailCheckRows,
   };
 }
