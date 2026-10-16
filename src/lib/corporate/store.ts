@@ -59,7 +59,11 @@ export type CorporateError =
   | "expired"
   | "locked"
   | "none"
-  | "not_set_up";
+  | "not_set_up"
+  | "not_sent";
+
+/** The email didn't go out: the sender refused it or timed out. */
+export const NOT_SENT_TEXT = "We couldn't send the code just now. Please try again in a few minutes.";
 
 export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   invalid: "Check the details and try again.",
@@ -80,6 +84,7 @@ export const CORPORATE_ERROR_TEXT: Record<CorporateError, string> = {
   locked: CODE_ERROR_TEXT.locked,
   none: CODE_ERROR_TEXT.none,
   not_set_up: "Work email checks aren't set up yet. Company sign-up opens soon.",
+  not_sent: NOT_SENT_TEXT,
 };
 
 export type Result<T = object> = ({ ok: true } & T) | { ok: false; error: CorporateError; message?: string };
@@ -216,12 +221,19 @@ export async function issueCode(
     logEvent("info", "work_email_code_issued", { delivery });
     return { ok: true, testCode: code };
   }
-  const sent = await sendEmail({
-    to: target.email,
-    subject: "Your CareerMetro work email code",
-    text: `Your code is ${code}. It works for 10 minutes. If you didn't ask for it, you can ignore this email.`,
-  });
-  if (!sent.ok) return fail("closed");
+  const sent = await sendEmail(
+    {
+      to: target.email,
+      subject: "Your CareerMetro work email code",
+      text: `Your code is ${code}. It works for 10 minutes. If you didn't ask for it, you can ignore this email.`,
+    },
+    deps.env ?? process.env,
+  );
+  // An unsent code can't be used: spend it, so a retry starts clean. The send still counted toward the limits.
+  if (!sent.ok) {
+    await db.update(workEmailCodes).set({ email: null, codeHash: null }).where(eq(workEmailCodes.id, id));
+    return fail(sent.reason === "failed" ? "not_sent" : "closed");
+  }
   logEvent("info", "work_email_code_issued", { delivery });
   return { ok: true };
 }
@@ -657,7 +669,7 @@ export async function finishJoin(userId: string, raw: unknown, deps: CorporateDe
 
 /**
  * Someone whose role is due for its work-email re-check types a work email on the company's domain again: a code
- * goes there, as when they joined. Until a sender exists production sends nothing ("closed"), so the role stays
+ * goes there, as when they joined. Where no email sender is set up nothing is sent ("closed"), so the role stays
  * paused there; previews and local copies show the code on screen.
  */
 export async function startRecheck(userId: string, raw: unknown, deps: CorporateDeps = {}): Promise<Result<{ testCode?: string }>> {
