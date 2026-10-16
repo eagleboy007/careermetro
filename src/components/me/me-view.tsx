@@ -1,14 +1,17 @@
 "use client";
 
-import { ArrowRight, BadgeCheck, BookOpen, Eye, FileText, FlaskConical, Lock, MessageSquareText, PenLine, ShieldCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CircleDashed, Eye, FileText, FlaskConical, Hourglass, Lock, Mail, MessageSquareText, PenLine, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
+import { JoinForm } from "@/components/corporate/join-form";
 import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
 import { StatusChip } from "@/components/ui/status-chip";
+import type { JoinActions } from "@/lib/corporate/types";
 import { initials } from "@/lib/departures/filter";
+import { experienceCheckText } from "@/lib/me/job-check-rules";
 import type { JourneyStop, MeProfile, PracticeTrend, Story } from "@/lib/schemas";
 import { SMART, STORY_BOXES } from "@/lib/schemas/constants";
 
@@ -33,6 +36,7 @@ export function MeView({
   whoSees,
   practice,
   onCheckCertificate,
+  jobCheck,
 }: {
   me: MeProfile;
   others?: MeProfile;
@@ -42,6 +46,11 @@ export function MeView({
   practice?: PracticeTrend[];
   /** "Check with Credly" (src/app/(app)/me/actions.ts); without it, example data says nothing is checked. */
   onCheckCertificate?: (proofId: string) => Promise<CredlyCheckResult>;
+  /**
+   * "Verify with your work email" on the current job (FR-47): `open` is false where no code can be sent yet
+   * (production until the email sender exists). Without it, example data shows the button switched off.
+   */
+  jobCheck?: { open: boolean; actions?: JoinActions };
 }) {
   const [asOthers, setAsOthers] = useState(false);
   const certsHeading = `${useId()}-certifications`;
@@ -152,6 +161,8 @@ export function MeView({
                     <span className="text-[0.8rem] text-muted">
                       {e.employer} · {e.dates}
                     </span>
+                    {e.check && <JobCheckBadge check={e.check} own={own} />}
+                    {own && e.check?.state === "not_verified" && <VerifyJob employer={e.employer} jobCheck={jobCheck} />}
                     {own && e.highlights.length > 0 && (
                       <ul className="mt-0.5 flex list-disc flex-col gap-[3px] pl-[18px] text-[0.86rem]">
                         {e.highlights.map((h, j) => (
@@ -524,6 +535,43 @@ function Stories({ stories }: { stories: Story[] }) {
         })}
       </div>
     </>
+  );
+}
+
+type ExperienceCheck = NonNullable<MeProfile["experience"][number]["check"]>;
+
+/** The work-email check of a job (FR-47) in words. Neutral colours: cobalt means progress and red, amber, green gaps. */
+function JobCheckBadge({ check, own }: { check: ExperienceCheck; own: boolean }) {
+  const verified = check.state === "verified" || check.state === "verified_while_there";
+  const Icon = verified ? BadgeCheck : check.state === "review" ? Hourglass : check.state === "self_declared" ? PenLine : CircleDashed;
+  return (
+    <span className={`inline-flex w-fit items-center gap-1.5 text-[0.76rem] ${verified ? "font-medium text-ink" : "text-muted"}`}>
+      <Icon size={14} {...ICON} />
+      {experienceCheckText(check, own)}
+    </span>
+  );
+}
+
+/** "Verify with your work email": a code to the person's email at that company. The address is never shown or kept. */
+function VerifyJob({ employer, jobCheck }: { employer: string; jobCheck?: { open: boolean; actions?: JoinActions } }) {
+  return (
+    <details className="group mt-0.5 rounded-[12px] border border-line bg-surface px-3 py-2.5">
+      <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-[0.84rem] font-medium [&::-webkit-details-marker]:hidden">
+        <Mail size={15} {...ICON} />
+        Verify with your work email
+      </summary>
+      <div className="mt-2.5">
+        {jobCheck?.open ? (
+          <JoinForm
+            actions={jobCheck.actions}
+            hint={`Your email at ${employer}. We send a 6-digit code there. Companies see only that it's verified, never the address.`}
+            doneText="Checked. Updating your profile…"
+          />
+        ) : (
+          <p className="text-[0.84rem] text-muted">Work-email checks open soon.</p>
+        )}
+      </div>
+    </details>
   );
 }
 

@@ -25,6 +25,8 @@ import { shownBody } from "@/lib/inbox/hidden";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { duration, meFromProfile } from "@/lib/me/build";
+import type { JobCheckRow } from "@/lib/me/job-check-rules";
+import { jobChecksFor, verifiedDomainsFor } from "@/lib/me/job-email-check";
 import { publicProfile as publicMe } from "@/lib/me/public";
 import {
   companyBlockInput,
@@ -44,6 +46,7 @@ import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { provedByUser } from "./applications-store";
 import { writeAudit, writeAuditOncePerDay } from "./audit-line";
 import { blockCompanyIn } from "./company-blocks";
+import { isOnDomain } from "./domains";
 import { openRef, sealRef } from "./find-ref";
 import { compareFound, findRefusal, inBands, matchesJob, passesFilters, passesText, worksAt, yearsWorked, type FindRefusal } from "./find-rules";
 import type { DiscoveryView, FindJobOption, FindPeopleView, FindRoleOption, FindPersonCard, FoundPersonView, FoundRequestState, SentRequestView } from "./find-types";
@@ -101,6 +104,8 @@ type JobContext = {
   job: { id: string; title: string; requirements: (typeof jobs.$inferSelect)["requirements"] };
   /** The company's name and legal name, to keep its own current staff out of its searches. */
   companyNames: (string | null)[];
+  /** The company's email domain: people whose current job is verified on it are its staff too (FR-47). */
+  companyDomain: string | null;
 };
 
 const movesOnJob = (teamRole: JobTeamRole | null) => teamRole === "owner" || teamRole === "hiring";
@@ -119,6 +124,7 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
       orgStatus: organizations.reviewStatus,
       orgName: organizations.name,
       legalName: organizations.legalName,
+      orgDomain: organizations.emailDomain,
     })
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
@@ -127,7 +133,7 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
   const [team] = job ? await db.select({ role: jobTeam.role }).from(jobTeam).where(and(eq(jobTeam.jobId, job.id), eq(jobTeam.userId, userId))) : [];
   const refusal = findRefusal({ role: me.role, onJobTeam: movesOnJob(team?.role ?? null), orgStatus: job?.orgStatus ?? org?.status ?? "pending", jobStatus: job?.status ?? "none" });
   if (refusal) return fail(refusal);
-  return { ok: true, me, job: { id: job!.id, title: job!.title, requirements: job!.requirements }, companyNames: [job!.orgName, job!.legalName] };
+  return { ok: true, me, job: { id: job!.id, title: job!.title, requirements: job!.requirements }, companyNames: [job!.orgName, job!.legalName], companyDomain: job!.orgDomain };
 }
 
 /**
@@ -268,6 +274,7 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
   const orgId = ctx.me.orgId;
   const { job } = ctx;
   const people = await findable(orgId, searcherId, job.id, db);
+  const staffDomains = await verifiedDomainsFor(people.map((p) => p.id), db);
   const current = await currentResumes(
     people.map((p) => p.id),
     db,
@@ -285,7 +292,7 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
     if (!inBands(filters.bands, years, person.showExperience)) continue;
     const provedSkills = proved.get(person.id) ?? new Set<string>();
     if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, provedSkills: provedSkills.size })) continue;
-    if (worksAt(profile, ctx.companyNames)) continue;
+    if (worksAt(profile, ctx.companyNames) || onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain)) continue;
     const aim = roleTitles.get(analysis.roleSlug) ?? null;
     if (!passesText(filters, { name: person.name, aim, profile, experienceShown: person.showExperience })) continue;
     const match = jobMatch(job.requirements, profile, provedSkills, now);
@@ -313,7 +320,7 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
  * What a company sees of one person: the profile parts they switched on (never gaps) and the role they aim at, which
  * companies see for everyone who lets them find them (T44, Milin 2026-10-15).
  */
-function companyView(person: Person, profile: Profile, analysis: GapAnalysis, now: Date) {
+function companyView(person: Person, profile: Profile, analysis: GapAnalysis, now: Date, jobChecks: JobCheckRow[]) {
   const me = meFromProfile({
     name: displayName(person.name),
     headline: person.headline,
@@ -324,10 +331,14 @@ function companyView(person: Person, profile: Profile, analysis: GapAnalysis, no
     joinedAt: person.createdAt,
     resumeReadAt: null,
     now,
+    jobChecks,
   });
   const aim = roleTitles.get(analysis.roleSlug) ?? null;
   return publicMe({ ...me, aim }, { ...person, showTargetRole: true, showGaps: false });
 }
+
+/** Whether any of a person's verified work-email domains is the company's own (FR-47): then they work there. */
+const onCompanyDomain = (domains: string[] | undefined, companyDomain: string | null) => !!companyDomain && !!domains?.some((d) => isOnDomain(d, companyDomain));
 
 /**
  * A person found from a search, resolved from the company's ref and checked again now, including that they don't work
@@ -338,8 +349,8 @@ async function resolve(ctx: JobContext, userId: string, ref: string, db: Db | Tx
   if (!target) return null;
   const [person] = await findable(ctx.me.orgId, userId, ctx.job.id, db, target);
   if (!person) return null;
-  const current = (await currentResumes([person.id], db)).get(person.id);
-  return current && !worksAt(current.profile, ctx.companyNames) ? person : null;
+  const [current, staffDomains] = await Promise.all([currentResumes([person.id], db).then((m) => m.get(person.id)), verifiedDomainsFor([person.id], db)]);
+  return current && !worksAt(current.profile, ctx.companyNames) && !onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain) ? person : null;
 }
 
 /**
@@ -365,6 +376,7 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
     if (!current) return fail("not_found");
     const { profile } = current;
     const proved = (await provedByUser([person.id], tx, now)).get(person.id) ?? new Set<string>();
+    const jobChecks = (await jobChecksFor([person.id], tx)).get(person.id) ?? [];
     const state = (await requestStates(me.orgId, [person.id], tx)).get(person.id) ?? { state: "none" as const };
     await tx.insert(companyProfileViews).values({ orgId: me.orgId, userId: person.id, jobId: job.id, viewedAt: now });
     await writeAudit(tx, { orgId: me.orgId, actor: { memberId: me.memberId }, action: "found_profile_viewed", target: { job: job.id } }, now);
@@ -375,7 +387,7 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
         jobId: job.id,
         job: job.title,
         city: person.city,
-        profile: companyView(person, profile, current.analysis, now),
+        profile: companyView(person, profile, current.analysis, now, jobChecks),
         match: jobMatch(job.requirements, profile, proved, now),
         request: state,
       },

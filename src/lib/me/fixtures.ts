@@ -1,5 +1,6 @@
 import { story, type MeProfile, type Profile, type Story } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
+import { companyKey } from "@/lib/profile/employer";
 import { meFromProfile } from "./build";
 import type { ProofCertRow } from "./certs";
 
@@ -188,6 +189,8 @@ const built = meFromProfile({
   resumeReadAt: new Date("2026-09-02T00:00:00Z"),
   now: new Date("2026-10-10T00:00:00Z"),
   proofCerts: exampleProofCerts,
+  // Her current job, checked with her work email (FR-47).
+  jobChecks: [{ employerKey: companyKey("Konkan Co-operative Bank"), startMonth: "2024-06", status: "verified", checkedAt: new Date("2026-10-08T00:00:00Z") }],
 });
 
 export const exampleMe: MeProfile = {

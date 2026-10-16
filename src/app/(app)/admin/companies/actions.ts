@@ -3,6 +3,7 @@
 import { refresh } from "next/cache";
 import { reviewCompany } from "@/lib/admin/companies";
 import { currentAdmin } from "@/lib/admin/server";
+import { reviewJobCheck, type JobCheckReviewResult } from "@/lib/me/job-email-check";
 import type { ReviewDecision, ReviewResult } from "@/lib/corporate/types";
 
 /*
@@ -16,6 +17,15 @@ export async function reviewCompanyAction(orgId: string, decision: ReviewDecisio
   const admin = await currentAdmin();
   if (!admin) return NOT_AVAILABLE;
   const result = await reviewCompany(admin.userId, { orgId, decision });
+  if (result.ok) refresh();
+  return result;
+}
+
+/** A work-email check of someone's current job whose domain didn't plainly match the company (FR-47). */
+export async function reviewJobCheckAction(id: string, decision: "verify" | "refuse"): Promise<JobCheckReviewResult> {
+  const admin = await currentAdmin();
+  if (!admin) return NOT_AVAILABLE;
+  const result = await reviewJobCheck(admin.userId, { id, decision });
   if (result.ok) refresh();
   return result;
 }

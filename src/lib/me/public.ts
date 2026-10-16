@@ -71,6 +71,9 @@ export const PUBLIC_KEYS = [
   "changeRoleHref",
 ] as const;
 
+/** A job's work-email check as others see it: a domain still waiting for an admin is simply not verified (FR-47). */
+const othersSee = (c: MeProfile["experience"][number]["check"]) => (c?.state === "review" ? { state: "not_verified" as const, month: null } : (c ?? null));
+
 /**
  * What other people see of a profile, at /u/<username> and in "View as others" on /me (handoff section 11): worked
  * out on the server, so nothing hidden ever reaches another person's browser. The switches come from Account settings.
@@ -89,7 +92,7 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
     journey: [],
     journeyLabel: "",
     experience: parts.showExperience
-      ? me.experience.map((e) => ({ id: e.id, title: e.title, employer: e.employer, dates: e.dates, current: e.current, highlights: [] }))
+      ? me.experience.map((e) => ({ id: e.id, title: e.title, employer: e.employer, dates: e.dates, current: e.current, highlights: [], check: othersSee(e.check) }))
       : [],
     experienceTotal: parts.showExperience ? me.experienceTotal : null,
     education: parts.showEducation ? me.education.map((e) => ({ qualification: e.qualification, institution: e.institution, year: e.year })) : [],

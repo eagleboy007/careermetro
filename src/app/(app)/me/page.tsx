@@ -7,12 +7,13 @@ import { readAccountSettings } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile, whoSeesFor } from "@/lib/me/public";
+import { jobCheckOpen } from "@/lib/me/job-email-check";
 import { meFor } from "@/lib/me/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTrends } from "@/lib/practice/fixtures";
 import { practiceTrendsFor } from "@/lib/practice/store";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { checkCertificateOnCredly } from "./actions";
+import { checkCertificateOnCredly, confirmJobCheckCode, sendJobCheckCode } from "./actions";
 
 export const metadata: Metadata = { title: "Your profile · CareerMetro", robots: { index: false } };
 
@@ -55,6 +56,7 @@ async function MeScreen() {
           whoSees={whoSeesFor(settings, saved?.username ?? null)}
           practice={practice}
           onCheckCertificate={checkCertificateOnCredly}
+          jobCheck={{ open: jobCheckOpen(), actions: { startJoin: sendJobCheckCode, finishJoin: confirmJobCheckCode } }}
         />
       )}
     </div>

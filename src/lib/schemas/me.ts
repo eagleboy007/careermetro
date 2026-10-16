@@ -45,6 +45,14 @@ export const meExperience = z.object({
   current: z.boolean(),
   /** Lines from the person's own resume. Shown to them only, never to others. */
   highlights: z.array(z.string().max(300)).max(8),
+  /**
+   * The work-email check of the job (FR-47): only the current job and jobs whose check passed have one. "review" is
+   * shown to the person only; others see it as "not_verified".
+   */
+  check: z
+    .object({ state: z.enum(["verified", "verified_while_there", "review", "self_declared", "not_verified"]), month: z.string().max(20).nullable() })
+    .nullable()
+    .optional(),
 });
 
 /** The only link a profile shows for a certificate: a verified badge's public Credly page, rebuilt from its id. */

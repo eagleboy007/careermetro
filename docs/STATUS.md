@@ -18,6 +18,7 @@ Last updated: 2026-10-15 (Find people name search, Development 3).
   - Removal tools, FR-46, #146 (Project manager's decision under Milin's delegation, 2026-10-15): hide a reported message and suspend an account, both reversible, with reason and audit line; migration 0031. See the plan's "Removal tools".
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, #139), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
   - T44 (Milin, 2026-10-15), #148: Find people shows each person's target role and city, and filters by experience, target role, city and verified profile, one or several together. People give an optional city in Settings (migration 0032, export version 17). Name search (name, name + role, name + role + current company) and a company never seeing its current staff (latest job on the profile), #149. Network name search waits for Network. See `dev/companies-find-me-plan.md`.
+  - Verified current job by work email, FR-47 (C5, 2026-10-16): a code to the person's email at their current company sets "Verified with work email" on Me, the public profile and the found-person view; other domains wait for an admin on /admin/companies. Migration 0033, export version 18. Off in production until the email sender exists. See `docs/plans/current-job-check-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
@@ -45,10 +46,11 @@ Waiting: Network name search (Network not built); the end of Milin's name-search
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0033**. `EXPORT_VERSION` lives in `src/lib/account/export.ts`. The latest FR is FR-46.
+Numbers: the next migration is **0034**. `EXPORT_VERSION` (18) lives in `src/lib/account/export.ts`. The latest FR is FR-47.
 
 ## Decisions log (newest first)
 
+- 2026-10-16: The current job is verified by a code to the work email; unknown domains go to an admin, only the domain is kept, freelance is Self-declared (Milin 2026-10-10; plan approved by the Project manager under his delegation). See `docs/plans/current-job-check-plan.md`.
 - 2026-10-15: Companies search people by name, name + role, name + role + company; a company never sees people whose current job is there (Milin; employer rule by the Project manager under delegation). See `dev/companies-find-me-plan.md`.
 - 2026-10-15: Companies see the target role of everyone findable, and Find people filters by experience, target role, city and verified profile, with an optional city for people (Milin, T44). "Verified" means at least one skill proved (Development; Milin can reverse). See `dev/companies-find-me-plan.md`.
 - 2026-10-15: The report tool may hide a reported message and suspend an account, both reversible and nothing deleted (Project manager under Milin's delegation; Milin can reverse it). See `docs/plans/reports-review-plan.md`.

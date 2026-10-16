@@ -38,6 +38,9 @@ export const ORG_ROLES = ["admin", "hiring", "interviewer"] as const;
 export const ORG_ROLE_LABELS: Record<(typeof ORG_ROLES)[number], string> = { admin: "Recruiter admin", hiring: "Hiring HR", interviewer: "Interviewer" };
 /** One code check serves both: joining a company, and later the verified current job (handoff 12d). */
 export const WORK_EMAIL_PURPOSES = ["org_member", "current_job"] as const;
+/** A work-email check of the current job (FR-47): matched the company, waiting for an admin, or refused by one. */
+export const JOB_EMAIL_CHECK_STATUSES = ["verified", "review", "refused"] as const;
+export type JobEmailCheckStatus = (typeof JOB_EMAIL_CHECK_STATUSES)[number];
 export const ORG_INVITE_KINDS = ["invite", "request"] as const;
 export const ORG_SIZES = ["1 to 10", "11 to 50", "51 to 200", "201 to 1,000", "More than 1,000"] as const;
 export const ORG_INDUSTRIES = ["Financial services and fintech", "IT services", "Cybersecurity", "Software product", "Education", "Other"] as const;

@@ -4,6 +4,7 @@ import { refresh } from "next/cache";
 import type { CredlyCheckResult } from "@/lib/proofs/result";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
+import { finishJobCheck, startJobCheck } from "@/lib/me/job-email-check";
 import { checkCertificateWithCredly } from "@/lib/proofs/credly-store";
 import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_EXPIRED_MESSAGE, CREDLY_HELD_MESSAGE, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
 
@@ -35,5 +36,34 @@ export async function checkCertificateOnCredly(proofId: unknown): Promise<Credly
   } catch (error) {
     logEvent("error", "certificate_check_failed", errorFields(error));
     return { status: "refused", message: "Something went wrong checking that. Please try again." };
+  }
+}
+
+/**
+ * "Verify with your work email" on the current job (FR-47): send a code, then confirm it. The store checks the
+ * address, keeps the code to this person and counts the limits. Nothing typed reaches a log.
+ */
+export async function sendJobCheckCode(workEmail: string): Promise<{ ok: true; testCode?: string } | { ok: false; error: string }> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: "Please sign in to verify your job." };
+  try {
+    return await startJobCheck(account.id, { workEmail });
+  } catch (error) {
+    logEvent("error", "job_check_send_failed", errorFields(error));
+    return { ok: false, error: "Something went wrong sending the code. Please try again." };
+  }
+}
+
+export async function confirmJobCheckCode(workEmail: string, code: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, error: "Please sign in to verify your job." };
+  try {
+    const out = await finishJobCheck(account.id, { workEmail, code });
+    if (!out.ok) return out;
+    refresh();
+    return { ok: true };
+  } catch (error) {
+    logEvent("error", "job_check_confirm_failed", errorFields(error));
+    return { ok: false, error: "Something went wrong checking the code. Please try again." };
   }
 }

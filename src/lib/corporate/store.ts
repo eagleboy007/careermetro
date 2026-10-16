@@ -17,7 +17,7 @@ import {
   signupDetails,
   signupFinish,
 } from "@/lib/schemas/corporate";
-import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, RECHECK_CLOSED_TEXT, SIGNUP_CLOSED_TEXT } from "@/lib/schemas/constants";
+import { DOMAIN_TAKEN_TEXT, ORG_ROLE_LABELS, RECHECK_CLOSED_TEXT, SIGNUP_CLOSED_TEXT, type WORK_EMAIL_PURPOSES } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { afterWrongTry, CODE_ERROR_TEXT, CODE_TTL_MS, codeMatches, codeState, hashCode, hashWorkEmail, newCode, workEmailReady } from "./codes";
 import { writeAudit } from "./audit-line";
@@ -37,6 +37,8 @@ import type { CodeDelivery, CorporateHomeView } from "./types";
 type Db = ReturnType<typeof getDb>;
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0];
 type Env = Record<string, string | undefined>;
+type WorkEmailPurpose = (typeof WORK_EMAIL_PURPOSES)[number];
+
 export type CorporateDeps = { db?: Db; now?: Date; env?: Env; delivery?: CodeDelivery };
 
 export type CorporateError =
@@ -163,11 +165,13 @@ const domainsLock = (tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hash
  * all ("closed"). One live code per person: an earlier unused one is spent. Limits: 3 an hour and 10 a day per
  * person, 20 a day per domain.
  */
-async function issueCode(
+export async function issueCode(
   userId: string,
   /** limitDomain: the company's own domain when joining one, so its subdomains share one daily count. */
   target: { email: string; domain: string; orgId: string | null; limitDomain?: string },
   deps: CorporateDeps,
+  /** "current_job": the check of a person's own current job (FR-47); the same limits and lock apply. */
+  purpose: WorkEmailPurpose = "org_member",
 ): Promise<Result<{ testCode?: string }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
@@ -187,7 +191,7 @@ async function issueCode(
     takeShared(LIMITS.workEmailCodePerDomainDay, target.limitDomain ?? target.domain, at),
   ]);
   if (allowed.includes(false)) {
-    logEvent("warn", "work_email_code_limited", { purpose: "org_member" });
+    logEvent("warn", "work_email_code_limited", { purpose });
     return fail("limit");
   }
   const id = randomUUID();
@@ -196,11 +200,11 @@ async function issueCode(
     await tx
       .update(workEmailCodes)
       .set({ email: null, codeHash: null })
-      .where(and(eq(workEmailCodes.userId, userId), eq(workEmailCodes.purpose, "org_member"), isNull(workEmailCodes.usedAt), isNotNull(workEmailCodes.codeHash)));
+      .where(and(eq(workEmailCodes.userId, userId), eq(workEmailCodes.purpose, purpose), isNull(workEmailCodes.usedAt), isNotNull(workEmailCodes.codeHash)));
     await tx.insert(workEmailCodes).values({
       id,
       userId,
-      purpose: "org_member",
+      purpose,
       orgId: target.orgId,
       email: target.email,
       codeHash: hashCode(id, userId, code, deps.env),
@@ -227,7 +231,14 @@ async function issueCode(
  * locks them out for 15 minutes and spends the code. A right one is spent at once. Either way, once a code is done
  * the address is set to null. Runs inside the caller's transaction and never throws for a refusal, so the counts commit.
  */
-async function useCode(userId: string, target: { email: string; orgId: string | null }, typed: string, tx: Tx, deps: CorporateDeps): Promise<CorporateError | null> {
+export async function useCode(
+  userId: string,
+  target: { email: string; orgId: string | null },
+  typed: string,
+  tx: Tx,
+  deps: CorporateDeps,
+  purpose: WorkEmailPurpose = "org_member",
+): Promise<CorporateError | null> {
   const now = deps.now ?? new Date();
   const [lock] = await tx
     .select({ id: workEmailCodes.id })
@@ -238,7 +249,7 @@ async function useCode(userId: string, target: { email: string; orgId: string | 
   const [row] = await tx
     .select()
     .from(workEmailCodes)
-    .where(and(eq(workEmailCodes.userId, userId), eq(workEmailCodes.purpose, "org_member")))
+    .where(and(eq(workEmailCodes.userId, userId), eq(workEmailCodes.purpose, purpose)))
     .orderBy(desc(workEmailCodes.createdAt))
     .limit(1)
     .for("update");

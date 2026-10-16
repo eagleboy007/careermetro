@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { CompanyReview } from "@/components/admin/company-review";
+import { JobCheckReview } from "@/components/admin/job-check-review";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { PageLoading } from "@/components/app/page-loading";
 import { companiesForReview } from "@/lib/admin/companies";
 import { currentAdmin } from "@/lib/admin/server";
-import { reviewCompanyAction } from "./actions";
+import { jobChecksForReview } from "@/lib/me/job-email-check";
+import { reviewCompanyAction, reviewJobCheckAction } from "./actions";
 
 export const metadata: Metadata = { title: "Company review · CareerMetro", robots: { index: false } };
 
@@ -19,10 +21,12 @@ async function Review() {
   await connection();
   const admin = await currentAdmin();
   if (!admin) notFound();
+  const [companies, checks] = await Promise.all([companiesForReview(), jobChecksForReview()]);
   return (
     <div className="flex flex-col gap-[18px]">
       <AdminNav current="companies" />
-      <CompanyReview companies={await companiesForReview()} review={reviewCompanyAction} />
+      <CompanyReview companies={companies} review={reviewCompanyAction} />
+      <JobCheckReview checks={checks} review={reviewJobCheckAction} />
     </div>
   );
 }

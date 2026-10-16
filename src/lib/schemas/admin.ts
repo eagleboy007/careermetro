@@ -60,6 +60,10 @@ export const HELD_REASON_TEXT: Record<ReviewHeldReason, string> = {
   badge_reused: "Its Credly badge is already verified on another account",
 };
 
+/** An admin's call on a work-email check whose domain didn't plainly match the company (FR-47). */
+export const JOB_CHECK_DECISIONS = ["verify", "refuse"] as const;
+export const jobEmailCheckReview = z.object({ id: z.uuid(), decision: z.enum(JOB_CHECK_DECISIONS) }).strict();
+
 export const PROOF_REVIEW_DECISIONS = ["accept", "reject"] as const;
 export type ProofReviewDecision = (typeof PROOF_REVIEW_DECISIONS)[number];
 
