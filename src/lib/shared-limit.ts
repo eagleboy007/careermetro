@@ -74,7 +74,7 @@ export const LIMITS = {
   companyMessagesPerFoundChatDay: { bucket: "company-message-found", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
-/** Rows this much older than their window are deleted by the writes below, now and then. */
+/** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */
 const KEEP_MS = 2 * 24 * HOUR;
 
 /** A keyed hash of the email or IP, so the table never holds either. The key is the same one as the client hash. */
@@ -86,12 +86,12 @@ const windowStart = (limit: SharedLimit, now: number) => new Date(Math.floor(now
  * Counts one hit for `key` and says whether it is still within the limit. One statement adds the hit and returns the
  * new count, so two servers can't both pass the last free hit. Windows are fixed, so a burst across a boundary can
  * reach twice the limit; fine for abuse limits. If the database can't be reached the request is let through and
- * logged: a broken limiter must not lock everyone out.
+ * logged: a broken limiter must not lock everyone out. Old windows are deleted by the daily cleanup, never here, so a
+ * hit can't wipe counts another request is still using (it made the daily-limit tests flaky, 2026-10-16).
  *
  * Inside a transaction, pass the transaction as `db`: the hit then uses the connection the transaction already holds
  * (a second pooled connection per send would deadlock the pool under load) and is undone if the transaction rolls
- * back. It runs in a savepoint, so a failed count can't abort the caller's transaction, and the occasional cleanup is
- * skipped, since an unawaited statement on a transaction's connection could outlive it.
+ * back. It runs in a savepoint, so a failed count can't abort the caller's transaction.
  */
 export async function takeShared(limit: SharedLimit, key: string, deps: { db?: Db | Tx; now?: number } = {}): Promise<boolean> {
   const now = deps.now ?? Date.now();
@@ -108,16 +108,20 @@ export async function takeShared(limit: SharedLimit, key: string, deps: { db?: D
         })
         .returning({ hits: rateLimits.hits });
     const [row] = inTransaction ? await db.transaction((savepoint) => count(savepoint)) : await count(db);
-    // Cleanup failing must not turn this answer into a yes, so it is neither awaited nor allowed to throw here.
-    if (!inTransaction && Math.random() < 0.01)
-      db.delete(rateLimits)
-        .where(lt(rateLimits.windowStart, new Date(now - KEEP_MS)))
-        .catch((error: unknown) => logEvent("error", "rate_limit_cleanup_failed", errorFields(error)));
     return row.hits <= limit.max;
   } catch (error) {
     logEvent("error", "rate_limit_unavailable", { bucket: limit.bucket, ...errorFields(error) });
     return true;
   }
+}
+
+/** Daily cleanup (api/cron/cleanup): deletes windows that started more than two days ago. Returns how many. */
+export async function clearOldRateLimits(db: Db = getDb(), now = new Date()): Promise<number> {
+  const gone = await db
+    .delete(rateLimits)
+    .where(lt(rateLimits.windowStart, new Date(now.getTime() - KEEP_MS)))
+    .returning({ bucket: rateLimits.bucket });
+  return gone.length;
 }
 
 /** Whether `key` has hits left in the current window, without counting one. Lets the request through on a database error. */
