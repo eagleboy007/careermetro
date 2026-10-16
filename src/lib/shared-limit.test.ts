@@ -1,9 +1,9 @@
-import { and, eq, like } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
-import { addressKey, allowsShared, takeShared, type SharedLimit } from "./shared-limit";
+import { addressKey, allowsShared, clearOldRateLimits, takeShared, type SharedLimit } from "./shared-limit";
 
 // Runs against a real Postgres with migrations applied. Each test uses its own bucket.
 const url = process.env.TEST_DATABASE_URL;
@@ -54,24 +54,26 @@ describe.skipIf(!db)("shared rate limits (database)", () => {
     errors.mockRestore();
   });
 
-  it("forgets windows older than two days", async () => {
+  it("the daily cleanup forgets windows older than two days, and a hit never deletes anything", async () => {
+    // A clock in 2001, so the cleanup touches no row another test file is counting on in parallel.
     const l = limit(1, 60_000);
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    await takeShared(l, "old", { db: db!, now: Date.now() - 3 * 24 * 3600_000 });
-    random.mockReturnValue(0);
-    await takeShared(l, "new", { db: db! });
-    random.mockRestore();
-    // The cleanup runs in the background; wait for it.
-    await vi.waitFor(async () => {
-      const rows = await db!.select().from(schema.rateLimits).where(and(eq(schema.rateLimits.bucket, l.bucket)));
-      expect(rows).toHaveLength(1);
-    });
+    const day = 24 * 3600_000;
+    const now = Date.UTC(2001, 0, 10);
+    const deletes = vi.spyOn(db!, "delete");
+    await takeShared(l, "old", { db: db!, now: now - 3 * day });
+    await takeShared(l, "new", { db: db!, now: now - day });
+    expect(deletes).not.toHaveBeenCalled();
+    deletes.mockRestore();
+    expect(await db!.select().from(schema.rateLimits).where(eq(schema.rateLimits.bucket, l.bucket))).toHaveLength(2);
+    expect(await clearOldRateLimits(db!, new Date(now))).toBeGreaterThanOrEqual(1);
+    const rows = await db!.select().from(schema.rateLimits).where(eq(schema.rateLimits.bucket, l.bucket));
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.windowStart.getTime()).toBeGreaterThan(now - 2 * day);
   });
 
   it("counts on a transaction it is given: a rolled-back hit uses up nothing, a committed one counts", async () => {
     const l = limit(1);
     const now = Date.now();
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
     const deletes = vi.spyOn(db!, "delete");
     try {
       for (let i = 0; i < 3; i++)
@@ -87,11 +89,10 @@ describe.skipIf(!db)("shared rate limits (database)", () => {
         // The caller's transaction goes on after the count: it ran in a savepoint on the same connection.
         expect(await tx.select({ hits: schema.rateLimits.hits }).from(schema.rateLimits).where(eq(schema.rateLimits.bucket, l.bucket))).toEqual([{ hits: 1 }]);
       });
-      // No background cleanup is started on a transaction's connection.
+      // Nothing is deleted on a transaction's connection.
       expect(deletes).not.toHaveBeenCalled();
       expect(await allowsShared(l, "k", { db: db!, now })).toBe(false);
     } finally {
-      random.mockRestore();
       deletes.mockRestore();
     }
   });
@@ -103,18 +104,6 @@ describe.skipIf(!db)("shared rate limits (database)", () => {
     const results = await Promise.all(Array.from({ length: 8 }, () => db!.transaction((tx) => takeShared(l, "k", { db: tx, now }))));
     expect(results).toEqual(Array(8).fill(true));
   }, 10_000);
-
-  it("still says no when the cleanup fails", async () => {
-    const l = limit(1, 60_000);
-    const failing = { ...db!, insert: db!.insert.bind(db!), delete: () => ({ where: () => Promise.reject(new Error("down")) }) } as unknown as typeof db;
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    try {
-      expect(await takeShared(l, "k", { db: failing! })).toBe(true);
-      expect(await takeShared(l, "k", { db: failing! })).toBe(false);
-    } finally {
-      random.mockRestore();
-    }
-  });
 });
 
 describe("addressKey", () => {

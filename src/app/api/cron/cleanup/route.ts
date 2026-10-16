@@ -8,6 +8,7 @@ import { clearOldPracticeAnswers } from "@/lib/practice/store";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
 import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
+import { clearOldRateLimits } from "@/lib/shared-limit";
 
 /**
  * Daily job (vercel.json): deletes anonymous resumes and their profiles after 24 hours (FR-2), and accounts deleted
@@ -17,7 +18,7 @@ import { hasBearer } from "@/lib/secret";
  * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
  * offered interview times that passed unbooked; reads already enforce every one of these cutoffs. And it deletes old
  * usernames whose 14-day redirect is over (account settings part 2), company profile views older than 30 days
- * (pending item 19), and practice answers older than 30 days (handoff 12h).
+ * (pending item 19), practice answers older than 30 days (handoff 12h), and rate-limit windows over two days old.
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
     oldLinks: clearExpiredUsernameRedirects().then((n) => ({ oldLinksCleared: n })),
     profileViews: clearOldProfileViews().then((n) => ({ profileViewsCleared: n })),
     practice: clearOldPracticeAnswers().then((n) => ({ practiceAnswersDeleted: n })),
+    rateLimits: clearOldRateLimits().then((n) => ({ rateLimitsCleared: n })),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -53,6 +55,7 @@ export async function GET(request: Request) {
     oldLinks: { oldLinksCleared: null },
     profileViews: { profileViewsCleared: null },
     practice: { practiceAnswersDeleted: null },
+    rateLimits: { rateLimitsCleared: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));
