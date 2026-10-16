@@ -44,9 +44,13 @@ describe.skipIf(!db)("report review (database)", () => {
     return u.id;
   }
   async function chat(kind: "direct" | "found", members: string[], orgId: string | null = null) {
-    const [c] = await db!.insert(schema.conversations).values({ kind, status: "open", orgId, startedBy: members[0] }).returning({ id: schema.conversations.id });
+    // One transaction: another test file's account purge removes chats with no members (removeEmptyChats).
+    const c = await db!.transaction(async (tx) => {
+      const [row] = await tx.insert(schema.conversations).values({ kind, status: "open", orgId, startedBy: members[0] }).returning({ id: schema.conversations.id });
+      await tx.insert(schema.conversationMembers).values(members.map((userId) => ({ conversationId: row.id, userId, role: "member" as const })));
+      return row;
+    });
     chatIds.push(c.id);
-    await db!.insert(schema.conversationMembers).values(members.map((userId) => ({ conversationId: c.id, userId, role: "member" as const })));
     return c.id;
   }
   async function file(reporterId: string, target: "message" | "person" | "chat", targetId: string, reason: (typeof schema.reports.$inferInsert)["reason"], minutes: number, note: string | null = null) {
