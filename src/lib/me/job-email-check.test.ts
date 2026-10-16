@@ -68,10 +68,13 @@ describe.skipIf(!db)("verified current job (database)", () => {
     const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: versions.length + 1, data: profile, confirmedByUser: true }).returning();
     await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis, matcherVersion: MATCHER_VERSION, createdAt: new Date(Date.now() + versions.length * 1000) });
   }
+  // Each send a minute after the last, so the newest code is plainly the latest one.
+  let minute = 0;
   async function verify(userId: string, workEmail: string) {
-    const sent = await startJobCheck(userId, { workEmail }, deps());
+    const at = deps({ now: new Date(clock.getTime() + ++minute * 60_000) });
+    const sent = await startJobCheck(userId, { workEmail }, at);
     if (!sent.ok || !sent.testCode) throw new Error(sent.ok ? "no code" : sent.error);
-    return finishJobCheck(userId, { workEmail, code: sent.testCode }, deps());
+    return finishJobCheck(userId, { workEmail, code: sent.testCode }, at);
   }
   const labels = async (userId: string) => (await meFor(userId, clock, db!))!.experience.map((e) => e.check ?? null);
 
@@ -115,7 +118,7 @@ describe.skipIf(!db)("verified current job (database)", () => {
     expect((await startJobCheck(none, { workEmail: "meera@garudasec.com" }, deps())).ok).toBe(false);
     const me = await person("off", profileAt("Garuda Sec"));
     expect(await startJobCheck(me, { workEmail: "meera@garudasec.com" }, deps({ delivery: "off" }))).toMatchObject({ ok: false, error: "Work-email checks open soon." });
-    expect(await startJobCheck(me, { workEmail: "meera@garudasec.com" }, deps({ env: {} }))).toMatchObject({ ok: false, error: "Work-email checks open soon." });
+    expect(await startJobCheck(me, { workEmail: "meera@garudasec.com" }, deps({ env: { NODE_ENV: "production" } }))).toMatchObject({ ok: false, error: "Work-email checks open soon." });
   });
 
   it("sends another domain to an admin, who verifies or refuses it", async () => {

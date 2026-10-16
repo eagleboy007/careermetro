@@ -9,7 +9,8 @@ const sql = url ? postgres(url, { max: 1, onnotice: () => {} }) : null;
  * Foreign keys that may go without an index. Skills, role profiles and organizations are small tables that are never
  * deleted (skill_aliases is only rewritten by the content seed, a few hundred rows). ai_calls rows are never deleted
  * today; a retention job would need these indexed first. messages.hidden_by and users.suspended_by hold the admin who
- * hid or suspended (FR-46): never queried by, and only an admin's own account going sets them null.
+ * hid or suspended (FR-46), and job_email_checks.reviewed_by the admin who reviewed a work-email check (FR-47): never
+ * queried by, and only an admin's own account going sets them null.
  */
 const unindexedOk = new Set([
   "gap_analyses.ai_call_id",
@@ -17,6 +18,7 @@ const unindexedOk = new Set([
   "jobs.role_profile_id",
   "gap_proofs.skill_id",
   "job_checks.ai_call_id",
+  "job_email_checks.reviewed_by",
   "messages.hidden_by",
   "path_steps.skill_id",
   "practice_answers.ai_call_id",
