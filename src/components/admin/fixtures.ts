@@ -1,3 +1,4 @@
+import type { JobCheckRowView } from "@/components/admin/job-check-review";
 import type { AdminCompanyView } from "@/lib/corporate/types";
 import type { HeldProofView, HiddenMessageView, ReportReviewView, SuspendedAccountView } from "@/lib/schemas/admin";
 
@@ -159,3 +160,9 @@ export const exampleInForce: { messages: HiddenMessageView[]; accounts: Suspende
     },
   ],
 };
+
+/** Work-email checks waiting for review on /admin/companies, for /design. Made-up companies on reserved example domains. */
+export const exampleJobChecks: JobCheckRowView[] = [
+  { id: "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b01", employer: "Konkan Co-operative Bank", domain: "kcbank.example", checkedAt: "2026-10-14T05:20:00.000Z" },
+  { id: "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b02", employer: "Western Ghats Logistics", domain: "wgl-group.example", checkedAt: "2026-10-15T09:45:00.000Z" },
+];

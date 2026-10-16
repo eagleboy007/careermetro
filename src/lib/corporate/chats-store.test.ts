@@ -398,9 +398,9 @@ describe.skipIf(!db)("company chats (database)", () => {
     const s = await setup("export");
     expect(await send(s.hr, s.applicationId, HELLO)).toMatchObject({ ok: true });
     await sendMessage(s.me, (await conversationOf(s.applicationId)).id, REPLY, at());
-    expect(EXPORT_VERSION).toBe(17);
+    expect(EXPORT_VERSION).toBe(18);
     const mine = await exportAccountData(s.me, db!, clock);
-    expect(mine!.exportVersion).toBe(17);
+    expect(mine!.exportVersion).toBe(18);
     const chat = mine!.inbox.chats.find((c) => c.kind === "application")!;
     expect(chat).toMatchObject({ company: "Example Labs", job: "SOC Analyst L1", side: "candidate" });
     expect(chat.yourMessages.map((m) => m.body)).toEqual([REPLY]);

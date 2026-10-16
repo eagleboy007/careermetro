@@ -7,6 +7,7 @@ import { exportInterviewer } from "@/lib/corporate/interviews-store";
 import { exportDiscovery } from "@/lib/corporate/find-store";
 import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
+import { exportJobChecks } from "@/lib/me/job-email-check";
 import { exportPractice } from "@/lib/practice/store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -14,7 +15,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 17;
+export const EXPORT_VERSION = 18;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -100,7 +101,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -151,6 +152,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportSettings(userId, db),
     exportDiscovery(userId, db),
     exportPractice(userId, db),
+    exportJobChecks(userId, db),
   ]);
 
   return {
@@ -201,5 +203,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Practice (handoff 12h): your answers from the last 30 days (older ones are deleted), newest first, each with its
     // question, the feedback in words (null when it wasn't available) and how sure you said you felt (1 Not yet to 4 Very).
     practiceAnswers: practiceRows,
+    // Verified current job (FR-47): each work-email check of a job, with the company, the job's start month, the email's
+    // domain (never the address), its state (verified, review: waiting for CareerMetro, or refused) and when.
+    jobEmailChecks: jobEmailCheckRows,
   };
 }

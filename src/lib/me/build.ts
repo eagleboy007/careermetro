@@ -1,6 +1,7 @@
 import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "@/lib/map/life-layout";
 import { indiaDate, profileCertifications, type ProofCertRow } from "./certs";
+import { experienceCheck, jobToCheck, type JobCheckRow } from "./job-check-rules";
 
 /** Goals shown one by one on the journey strip before the rest fold into "N more goals". */
 const GOAL_STOPS = 5;
@@ -19,6 +20,8 @@ export type MeInput = {
   now: Date;
   /** The person's accepted certificate proofs (src/lib/me/store.ts); none for views that don't read proof. */
   proofCerts?: ProofCertRow[];
+  /** The person's work-email checks of their jobs (FR-47); none for views that don't read them. */
+  jobChecks?: readonly JobCheckRow[];
 };
 
 /** Cut to the schema's limit at a word break. */
@@ -86,6 +89,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     .map((r, i) => ({ r, i, start: readYearMonth(r.start), end: readYearMonth(r.end) }))
     .sort((a, b) => (b.start?.t ?? -Infinity) - (a.start?.t ?? -Infinity));
   const spans: [number, number][] = [];
+  const checked = jobToCheck(profile);
   const experience = roles.map(({ r, i, start, end }) => {
     const current = !!start && !end;
     const until = end?.t ?? (start ? nowT : null);
@@ -98,6 +102,7 @@ export function meFromProfile(input: MeInput): MeProfile {
       dates,
       current,
       highlights: r.highlights.slice(0, 8).map((h) => cut(h, 300)),
+      check: experienceCheck(r, checked, input.jobChecks ?? []),
     };
   });
 

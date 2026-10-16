@@ -33,7 +33,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
@@ -830,6 +830,38 @@ export const workEmailCodes = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("work_email_codes_user").on(t.userId, t.createdAt), index("work_email_codes_expires").on(t.expiresAt).where(sql`${t.email} is not null`)],
+);
+
+/**
+ * The work-email check of a person's current job (FR-47, handoff 12d, dev/current-job-check-plan.md). One row per job,
+ * named by the employer (as on the confirmed profile, and its comparison key) and its start month, so a new company or
+ * start date on the profile is a new job with no check. Only the email's domain is kept, never the address. "review":
+ * the domain doesn't plainly match the company, so an admin looks first; only "verified" shows a badge.
+ */
+export const jobEmailChecks = pgTable(
+  "job_email_checks",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    employer: text("employer").notNull(),
+    employerKey: text("employer_key").notNull(),
+    /** "2024-06" or "2024" as on the profile; "" when the job has no start date. */
+    startMonth: text("start_month").notNull(),
+    domain: text("domain").notNull(),
+    status: text("status", { enum: JOB_EMAIL_CHECK_STATUSES }).notNull(),
+    checkedAt: timestamp("checked_at", { withTimezone: true }).notNull(),
+    reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("job_email_checks_job").on(t.userId, t.employerKey, t.startMonth),
+    index("job_email_checks_review").on(t.checkedAt).where(sql`${t.status} = 'review'`),
+    check("job_email_checks_status", sql`${t.status} in ('verified', 'review', 'refused')`),
+    check("job_email_checks_lengths", sql`char_length(${t.employer}) between 1 and 120 and char_length(${t.employerKey}) between 1 and 120 and char_length(${t.domain}) between 3 and 253`),
+    check("job_email_checks_start", sql`${t.startMonth} ~ '^([0-9]{4}(-[0-9]{2})?)?$'`),
+  ],
 );
 
 export const jobStatus = pgEnum("job_status", JOB_STATUSES);

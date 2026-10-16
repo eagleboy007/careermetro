@@ -644,6 +644,31 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
   await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
   if (await p.getByRole("heading", { name: "Practice confidence" }).count()) throw new Error("View as others shows Practice confidence");
 });
+// The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
+// Example Retail Pvt Ltd since 2022-06; a fresh subdomain keeps the per-domain cap out of the way of reruns.
+await step("current job: free mail is refused, a code to the work email verifies it, and others see the badge", async () => {
+  await p.goto(BASE + "/me");
+  await settled();
+  await p.getByText("Not verified", { exact: true }).first().waitFor({ timeout: 10000 });
+  await p.getByText("Verify with your work email").click();
+  await p.getByLabel("Work email").fill("priya.sharma@gmail.com");
+  await p.getByRole("button", { name: "Send code" }).click();
+  await p.getByRole("alert").getByText(/Personal addresses like Gmail/).waitFor({ timeout: 10000 });
+  await p.getByLabel("Work email").fill(`priya.sharma@mail${Date.now()}.exampleretail.test`);
+  await p.getByRole("button", { name: "Send code" }).click();
+  const box = p.locator("[data-test-code]");
+  await box.waitFor({ timeout: 10000 });
+  await p.getByLabel("Code", { exact: true }).fill(await box.getAttribute("data-test-code"));
+  await p.getByRole("button", { name: "Confirm" }).click();
+  await p.getByText(/^Verified with work email · \w{3} \d{4}$/).first().waitFor({ timeout: 15000 });
+  if (await p.getByText("Verify with your work email").count()) throw new Error("the form stays after the check passed");
+  await p.getByRole("button", { name: "View as others" }).click();
+  await p.getByText(/^Verified with work email · /).first().waitFor({ timeout: 5000 });
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const check = data.jobEmailChecks?.[0];
+  if (check?.status !== "verified" || JSON.stringify(data.jobEmailChecks).includes("priya.sharma@")) throw new Error("download lacks the check, or has the address");
+  await a11y("me-job-check");
+});
 // Nearby lines (dev/nearby-lines-plan.md). The walk's resume shares under half the key skills of every other role, so
 // Me shows the plain empty state with the closest role's real counts (pinned in src/lib/nearby/build.test.ts).
 await step("nearby lines: the walk's resume gets the plain empty state with the closest role's counts", async () => {
@@ -933,7 +958,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 17) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 18) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");

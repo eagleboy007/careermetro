@@ -59,6 +59,10 @@ const sections: LegalSection[] = [
           number is shared only if you choose to share it for an interview. It is stored encrypted and erased when the application closes.
         </li>
         <li>
+          <strong>Work email check:</strong> if you verify your current job, we send a code to your work email. We keep only the email&apos;s domain, the
+          company, the start month and the date it was checked, never the address. Profiles show only that the job is verified.
+        </li>
+        <li>
           <strong>Security records:</strong> one-way codes made from your network address to count limits (they can&apos;t be traced back or linked across
           days), and records of what admins and company members did, which never include message text.
         </li>

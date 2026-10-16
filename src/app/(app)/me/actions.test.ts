@@ -9,8 +9,11 @@ vi.mock("next/cache", () => ({ refresh: () => refresh() }));
 vi.mock("@/lib/auth/server", () => ({ currentAccount: () => account() }));
 vi.mock("@/lib/proofs/credly-store", () => ({ checkCertificateWithCredly: (...a: unknown[]) => check(...a) }));
 vi.mock("@/lib/log", () => ({ logEvent: (...a: unknown[]) => log(...a), errorFields: () => ({}) }));
+const startJob = vi.fn();
+const finishJob = vi.fn();
+vi.mock("@/lib/me/job-email-check", () => ({ startJobCheck: (...a: unknown[]) => startJob(...a), finishJobCheck: (...a: unknown[]) => finishJob(...a) }));
 
-const { checkCertificateOnCredly } = await import("./actions");
+const { checkCertificateOnCredly, confirmJobCheckCode, sendJobCheckCode } = await import("./actions");
 const id = "00000000-0000-4000-8000-0000000c0001";
 
 describe("checkCertificateOnCredly", () => {
@@ -55,5 +58,36 @@ describe("checkCertificateOnCredly", () => {
     check.mockRejectedValueOnce(new Error("boom"));
     expect((await checkCertificateOnCredly(id)).status).toBe("refused");
     expect(JSON.stringify(log.mock.calls)).not.toContain(id);
+  });
+});
+
+describe("work-email check of the current job (FR-47)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    account.mockResolvedValue({ id: "u1" });
+  });
+
+  it("sends nothing for a signed-out person", async () => {
+    account.mockResolvedValue(null);
+    expect((await sendJobCheckCode("meera@garudasec.com")).ok).toBe(false);
+    expect((await confirmJobCheckCode("meera@garudasec.com", "123456")).ok).toBe(false);
+    expect(startJob).not.toHaveBeenCalled();
+    expect(finishJob).not.toHaveBeenCalled();
+  });
+
+  it("checks for the signed-in person only, refreshes the profile after a right code, and logs nothing typed", async () => {
+    startJob.mockResolvedValueOnce({ ok: true, testCode: "123456" });
+    expect(await sendJobCheckCode("meera@garudasec.com")).toEqual({ ok: true, testCode: "123456" });
+    expect(startJob).toHaveBeenCalledWith("u1", { workEmail: "meera@garudasec.com" });
+    finishJob.mockResolvedValueOnce({ ok: false, error: "That code isn't right. Check the latest email and try again." });
+    expect((await confirmJobCheckCode("meera@garudasec.com", "000000")).ok).toBe(false);
+    expect(refresh).not.toHaveBeenCalled();
+    finishJob.mockResolvedValueOnce({ ok: true, status: "verified" });
+    expect(await confirmJobCheckCode("meera@garudasec.com", "123456")).toEqual({ ok: true });
+    expect(finishJob).toHaveBeenLastCalledWith("u1", { workEmail: "meera@garudasec.com", code: "123456" });
+    expect(refresh).toHaveBeenCalledOnce();
+    finishJob.mockRejectedValueOnce(new Error("down"));
+    expect((await confirmJobCheckCode("meera@garudasec.com", "123456")).ok).toBe(false);
+    expect(JSON.stringify(log.mock.calls)).not.toContain("garudasec");
   });
 });

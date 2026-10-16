@@ -106,7 +106,8 @@ import { ApplyPanel } from "@/components/departures/apply-panel";
 import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
-import { exampleHeldProofs, exampleInForce, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
+import { JobCheckReview } from "@/components/admin/job-check-review";
+import { exampleHeldProofs, exampleInForce, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies, exampleJobChecks } from "@/components/admin/fixtures";
 import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
@@ -588,6 +589,25 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <CompanyReview companies={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Current job checked by work email</h2>
+        <p className="text-sm text-muted">
+          FR-47: the profile above shows &quot;Verified with work email&quot; on the current job. Before a check, the owner sees Not verified and Verify
+          with your work email (example data, so nothing is sent). Below, /admin/companies lists checks whose domain didn&apos;t plainly match the
+          company: the company, the domain and the day, never the person.
+        </p>
+        <MeView
+          me={{ ...exampleMe, experience: exampleMe.experience.map((e, i) => (i === 0 ? { ...e, check: { state: "not_verified" as const, month: null } } : e)) }}
+          jobCheck={{ open: true }}
+        />
+        <div className="rounded-lg border border-line p-4">
+          <JobCheckReview checks={exampleJobChecks} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <JobCheckReview checks={[]} />
         </div>
       </section>
 

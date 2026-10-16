@@ -9,6 +9,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
+import { jobChecksFor } from "./job-email-check";
 import type { ProofCertRow } from "./certs";
 
 const skillNames = new Map(skills.map((s) => [s.id, s.name]));
@@ -50,10 +51,11 @@ export async function certificateProofsFor(userId: string, db: ReturnType<typeof
  * line. Everything is read through the owner, so it only ever shows the person their own data. Null without an account.
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
-  const [[user], analysis, proofCerts] = await Promise.all([
+  const [[user], analysis, proofCerts, jobChecks] = await Promise.all([
     db.select({ name: users.name, headline: users.headline, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
     certificateProofsFor(userId, db),
+    jobChecksFor([userId], db),
   ]);
   if (!user) return null;
   const [resume, [read], line] = analysis
@@ -79,5 +81,6 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
     resumeReadAt: resume ? (read?.createdAt ?? null) : null,
     now,
     proofCerts,
+    jobChecks: jobChecks.get(userId) ?? [],
   });
 }
