@@ -21,11 +21,12 @@ Last updated: 2026-10-15 (Find people name search, Development 3).
   - Verified current job by work email, FR-47 (C5, 2026-10-16): a code to the person's email at their current company sets "Verified with work email" on Me, the public profile and the found-person view; other domains wait for an admin on /admin/companies. Migration 0033, export version 18. Off in production until the email sender exists. See `docs/plans/current-job-check-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
+  - The app sends its own email (work-email codes) through Resend over HTTPS, `src/lib/email/send.ts`, once the key is in; an unsent code is spent and the person told to try again (launch readiness item 11, 2026-10-16).
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 424 free resource links (#129).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
-- **Switched off until keys arrive:** sign-in (preview uses a test user), company sign-up and join, find-people, phone sharing, the email sender, and photo and certificate upload.
+- **Switched off until keys arrive:** sign-in (preview uses a test user), company sign-up, join and re-check codes and the current-job check (need `RESEND_API_KEY` and `EMAIL_FROM`, `dev/email-sender-steps.md` step 6, plus `NAME_HASH_KEY`), find-people, phone sharing, and photo and certificate upload.
 
 ## In progress
 

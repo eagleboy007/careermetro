@@ -117,19 +117,28 @@ describe("work-email codes", () => {
   });
 });
 
-describe("code delivery until an email sender exists", () => {
-  it("sends nothing in production, even with the preview flag", () => {
-    expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", TODAY_PREVIEW: "1" })).toBe("off");
+describe("code delivery", () => {
+  const mail = { RESEND_API_KEY: "re_test", EMAIL_FROM: "CareerMetro <codes@careermetro.com>" };
+  it("sends nothing in production without the email sender, even with the preview flag", () => {
+    expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", NAME_HASH_KEY: "n", TODAY_PREVIEW: "1" })).toBe("off");
   });
-  it("shows the code on screen with the test sign-in, and locally", () => {
+  it("emails the code in production once the sender and the work-email key are set", () => {
+    expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", NAME_HASH_KEY: "n", ...mail })).toBe("email");
+    expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", ...mail })).toBe("off");
+    expect(codeDelivery({ VERCEL_ENV: "production", NODE_ENV: "production", NAME_HASH_KEY: "n", RESEND_API_KEY: "re_test", EMAIL_FROM: "not an address" })).toBe("off");
+  });
+  it("shows the code on screen with the test sign-in, and locally, sender or not", () => {
     expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", NAME_HASH_KEY: "n" })).toBe("test");
+    expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", NAME_HASH_KEY: "n", ...mail })).toBe("test");
     expect(codeDelivery({ NODE_ENV: "development" })).toBe("test");
   });
   it("is off on a production build without NAME_HASH_KEY, whatever CRON_SECRET is: work-email checks aren't set up yet", () => {
     expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", CRON_SECRET: "c" })).toBe("off");
   });
-  it("sends nothing on a preview that has real sign-in, or a production build run elsewhere", () => {
-    expect(codeDelivery({ VERCEL_ENV: "preview", NODE_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBe("off");
+  it("emails on a preview with real sign-in only when the sender is set; a production build run elsewhere likewise", () => {
+    const signIn = { VERCEL_ENV: "preview", NODE_ENV: "production", NAME_HASH_KEY: "n", NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" };
+    expect(codeDelivery(signIn)).toBe("off");
+    expect(codeDelivery({ ...signIn, ...mail })).toBe("email");
     expect(codeDelivery({ NODE_ENV: "production" })).toBe("off");
   });
 });

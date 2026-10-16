@@ -220,6 +220,37 @@ describe.skipIf(!db)("corporate store (database)", () => {
     expect(await codeRows(me)).toHaveLength(0);
   });
 
+  it("sends the code by email where the sender is set up, and spends it when the email doesn't go out", async () => {
+    const me = await person("mail");
+    const mail = { ...env, RESEND_API_KEY: "re_test", EMAIL_FROM: "CareerMetro <codes@example.test>" };
+    const sent = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      void url;
+      void init;
+      return new Response("{}", { status: 200 });
+    });
+    vi.stubGlobal("fetch", sent);
+    try {
+      const d = domain();
+      const ok = await startCompanySignup(me, details(d), deps({ env: mail, delivery: "email" }));
+      expect(ok).toMatchObject({ ok: true });
+      expect(ok).not.toHaveProperty("testCode");
+      const [url, init] = sent.mock.calls[0]!;
+      expect(String(url)).toBe("https://api.resend.com/emails");
+      expect(new Headers(init!.headers).get("authorization")).toBe("Bearer re_test");
+      const body = JSON.parse(String(init!.body));
+      expect(body).toMatchObject({ from: "CareerMetro <codes@example.test>", to: [`meera.iyer@${d}`] });
+      expect(body.text).toMatch(/Your code is \d{6}\. It works for 10 minutes\./);
+      // Resend refuses the next one: the person is told plainly, and that code can never be used.
+      sent.mockResolvedValueOnce(new Response("{}", { status: 500 }));
+      expect(await startCompanySignup(me, details(d), deps({ env: mail, delivery: "email" }))).toEqual({ ok: false, error: "not_sent" });
+      const rows = await codeRows(me);
+      expect(rows).toHaveLength(2);
+      expect(rows.every((r) => r.codeHash === null && r.email === null)).toBe(true);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("gives a role by work email: the colleague confirms it with a code, and the invite keeps no address", async () => {
     const admin = await person("inv-admin");
     const { domain: d } = await company(admin);

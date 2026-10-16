@@ -5,7 +5,7 @@ import { auditLogs, jobEmailChecks, users } from "@/db/schema";
 import { CODE_ERROR_TEXT, workEmailReady } from "@/lib/corporate/codes";
 import { codeDelivery } from "@/lib/corporate/delivery";
 import { checkWorkEmail, workEmailProblemText } from "@/lib/corporate/domains";
-import { issueCode, useCode, type CorporateDeps } from "@/lib/corporate/store";
+import { issueCode, NOT_SENT_TEXT, useCode, type CorporateDeps } from "@/lib/corporate/store";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { logEvent } from "@/lib/log";
 import { getResumeForOwner } from "@/lib/resume/store";
@@ -23,7 +23,7 @@ import { domainMatchesEmployer, jobToCheck, type JobCheckRow, type JobKey } from
 
 type Db = ReturnType<typeof getDb>;
 
-export type JobCheckError = "not_set_up" | "closed" | "no_job" | "invalid" | "limit" | "locked" | "wrong" | "expired" | "none";
+export type JobCheckError = "not_set_up" | "closed" | "no_job" | "invalid" | "limit" | "not_sent" | "locked" | "wrong" | "expired" | "none";
 
 export const JOB_CHECK_ERROR_TEXT: Record<JobCheckError, string> = {
   not_set_up: "Work-email checks open soon.",
@@ -31,6 +31,7 @@ export const JOB_CHECK_ERROR_TEXT: Record<JobCheckError, string> = {
   no_job: "Add your current job to your resume first. Freelance and self-employed work doesn't need a check.",
   invalid: "Check your work email. It looks incomplete.",
   limit: "You've asked for a lot of codes. Try again in an hour.",
+  not_sent: NOT_SENT_TEXT,
   ...CODE_ERROR_TEXT,
 };
 
@@ -38,7 +39,7 @@ export type JobCheckResult<T = object> = ({ ok: true } & T) | { ok: false; error
 
 const fail = (error: JobCheckError, message?: string) => ({ ok: false as const, error: message ?? JOB_CHECK_ERROR_TEXT[error] });
 
-/** Whether this deployment can send a code for the check: off in production until an email sender exists. */
+/** Whether this deployment can send a code for the check: off in production until the email sender is set up. */
 export const jobCheckOpen = (deps: CorporateDeps = {}): boolean => workEmailReady(deps.env ?? process.env) && (deps.delivery ?? codeDelivery(deps.env)) !== "off";
 
 /** The job a work email checks for this person now, from their current confirmed profile. */
@@ -59,7 +60,7 @@ export async function startJobCheck(userId: string, raw: unknown, deps: Corporat
   if (!email.ok) return fail("invalid", workEmailProblemText(email.problem));
   if (!(await checkedJob(userId, db))) return fail("no_job");
   const sent = await issueCode(userId, { email: parsed.data.workEmail, domain: email.domain, orgId: null }, deps, "current_job");
-  if (!sent.ok) return fail(sent.error === "closed" ? "closed" : sent.error === "locked" ? "locked" : "limit");
+  if (!sent.ok) return fail(sent.error === "closed" || sent.error === "locked" || sent.error === "not_sent" ? sent.error : "limit");
   return sent.testCode ? { ok: true, testCode: sent.testCode } : { ok: true };
 }
 

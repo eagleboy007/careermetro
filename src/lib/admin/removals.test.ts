@@ -62,9 +62,13 @@ describe.skipIf(!db)("report removal tools (database)", () => {
   async function reported(tag: string, target: "message" | "person" | "chat" = "message") {
     const reporter = await person(`${tag}-r`, "Asha", "Verma");
     const sender = await person(`${tag}-s`, "Ravi", "Kulkarni");
-    const [c] = await db!.insert(schema.conversations).values({ kind: "direct", status: "open", startedBy: sender }).returning({ id: schema.conversations.id });
+    // One transaction: another test file's account purge removes chats with no members (removeEmptyChats).
+    const c = await db!.transaction(async (tx) => {
+      const [row] = await tx.insert(schema.conversations).values({ kind: "direct", status: "open", startedBy: sender }).returning({ id: schema.conversations.id });
+      await tx.insert(schema.conversationMembers).values([reporter, sender].map((userId) => ({ conversationId: row.id, userId, role: "member" as const })));
+      return row;
+    });
     chatIds.push(c.id);
-    await db!.insert(schema.conversationMembers).values([reporter, sender].map((userId) => ({ conversationId: c.id, userId, role: "member" as const })));
     const [m] = await db!.insert(schema.messages).values({ conversationId: c.id, senderId: sender, body: OTP, createdAt: at }).returning({ id: schema.messages.id });
     const targetId = target === "message" ? m.id : target === "person" ? sender : c.id;
     const [r] = await db!.insert(schema.reports).values({ reporterId: reporter, target, targetId, reason: "money_or_otp", createdAt: at }).returning({ id: schema.reports.id });
@@ -183,9 +187,13 @@ describe.skipIf(!db)("report removal tools (database)", () => {
     const me = await admin();
     const reporter = await person("co-r", "Asha", "Verma");
     const [org] = await db!.insert(schema.organizations).values({ name: "Example Labs", emailDomain: `${run}.example.test` }).returning({ id: schema.organizations.id });
-    const [c] = await db!.insert(schema.conversations).values({ kind: "found", status: "open", orgId: org.id, startedBy: reporter }).returning({ id: schema.conversations.id });
+    // One transaction: another test file's account purge removes chats with no members (removeEmptyChats).
+    const c = await db!.transaction(async (tx) => {
+      const [row] = await tx.insert(schema.conversations).values({ kind: "found", status: "open", orgId: org.id, startedBy: reporter }).returning({ id: schema.conversations.id });
+      await tx.insert(schema.conversationMembers).values({ conversationId: row.id, userId: reporter, role: "member" });
+      return row;
+    });
     chatIds.push(c.id);
-    await db!.insert(schema.conversationMembers).values({ conversationId: c.id, userId: reporter, role: "member" });
     const [r] = await db!.insert(schema.reports).values({ reporterId: reporter, target: "chat", targetId: c.id, reason: "fake_or_spam", createdAt: at }).returning({ id: schema.reports.id });
     reportIds.push(r.id);
     expect((await rowOf(r.id))?.account).toBeNull();
