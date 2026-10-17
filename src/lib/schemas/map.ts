@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { MAX_CHOICE_GOALS } from "./constants";
 import { MAX_GAPS } from "./gap";
-import { goalChoice } from "./goals";
+import { goalChoice, notForMeOffer } from "./goals";
 import { nearbyLines } from "./nearby";
 
 /**
@@ -44,22 +44,8 @@ export const mapGoal = z.object({
   choice: goalChoice.nullable().optional(),
   /** "Not for me" (FR-48): the person skipped this goal. It stays a gap, gets no tasks, and the train passes it. */
   skipped: z.boolean().optional(),
-  /**
-   * What "Not for me" offers on a goal from a gap: `skip` a required skill (with how many of the role's job posts ask
-   * for it, when measured), or `swap` a "one of these" goal to another skill of its group. Null when nothing is offered:
-   * example data, a proved goal, or a "Your choice" goal, which has its own Remove.
-   */
-  notForMe: z
-    .discriminatedUnion("kind", [
-      z.object({ kind: z.literal("skip"), share: z.string().min(1).max(120).nullable() }),
-      z.object({
-        kind: z.literal("swap"),
-        current: z.string().min(1).max(80),
-        options: z.array(z.object({ skillId: z.string().min(1).max(80), name: z.string().min(1).max(80) })).min(1).max(8),
-      }),
-    ])
-    .nullable()
-    .optional(),
+  /** What "Not for me" offers on this goal (FR-48); null or absent when nothing is. */
+  notForMe: notForMeOffer.nullable().optional(),
 });
 
 export const mapLine = z.object({

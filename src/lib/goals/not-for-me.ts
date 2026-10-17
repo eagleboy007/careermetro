@@ -1,4 +1,6 @@
 import { roleProfiles, skills } from "@/content";
+import type { NotForMeOffer } from "@/lib/schemas";
+import { clip } from "@/lib/text";
 import { fillingSkills } from "./sync";
 
 /*
@@ -47,4 +49,24 @@ export function shareSentence(share: number | null): string | null {
 /** Whether a swap to `skillId` is allowed: a different skill of the goal's own group. */
 export function canSwapTo(goal: GoalLike, skillId: string, members: ReadonlyMap<string, string[]>): boolean {
   return goal.source === "gap" && Boolean(goal.groupId) && fillingSkills(goal, members).length > 1 && fillingSkills(goal, members).includes(skillId);
+}
+
+/**
+ * The offer as the Map and Today show it, for a goal from a gap that isn't proved or skipped; null otherwise. Names
+ * are skill names, never the person's words.
+ */
+export function offerFor(
+  goal: GoalLike & { status: string; proved: boolean },
+  roleSlug: string,
+  members: ReadonlyMap<string, string[]>,
+): NotForMeOffer | null {
+  if (goal.proved || goal.status === "skipped") return null;
+  const offer = notForMeFor(goal, roleSlug, members);
+  if (!offer) return null;
+  if (offer.kind === "skip") return { kind: "skip", share: shareSentence(offer.share) };
+  return {
+    kind: "swap",
+    current: clip(skillNames.get(offer.current) ?? offer.current, 80),
+    options: offer.options.slice(0, 8).map((o) => ({ skillId: o.skillId, name: clip(o.name, 80) })),
+  };
 }

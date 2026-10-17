@@ -4,7 +4,8 @@ import { ArrowRight, Check, ChevronRight, Lightbulb, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
-import { RemoveGoal } from "@/components/gaps/job-check-actions";
+import { RemoveGoal, smallButton } from "@/components/gaps/job-check-actions";
+import { changeGoal } from "@/components/map/not-for-me";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { Goal, GoalStatus, GoalsSummary } from "@/lib/schemas";
@@ -33,6 +34,22 @@ export function GoalsCard({
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const router = useRouter();
+  const [note, setNote] = useState("");
+  const [refreshing, startRefresh] = useTransition();
+  const heading = useRef<HTMLHeadingElement>(null);
+  const moveFocus = useRef(false);
+  // A skipped goal leaves the list once the page refreshes; focus moves to the card's heading, never to the page.
+  useEffect(() => {
+    if (refreshing || !moveFocus.current) return;
+    heading.current?.focus();
+    moveFocus.current = false;
+  }, [refreshing]);
+  const changed = (words: string) => {
+    moveFocus.current = true;
+    setNote(words);
+    startRefresh(() => router.refresh());
+  };
   const more = summary.moreCount === 1 ? "1 more goal" : `${summary.moreCount} more goals`;
   return (
     <section
@@ -40,7 +57,9 @@ export function GoalsCard({
       className="flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5"
     >
       <div className="flex flex-wrap items-center gap-2.5">
-        <h3 className="text-[1.08rem] font-semibold tracking-[-0.01em]">Your goals</h3>
+        <h3 ref={heading} tabIndex={-1} className="text-[1.08rem] font-semibold tracking-[-0.01em] focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+          Your goals
+        </h3>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[0.8rem]">
           <span className="font-mono text-[0.62rem] uppercase tracking-[0.06em] text-muted">Track</span>
           {summary.track}
@@ -57,7 +76,13 @@ export function GoalsCard({
       </div>
       <ul className="flex flex-col gap-1.5">
         {summary.goals.map((g) => (
-          <GoalRow key={g.id} goal={g} open={open === g.id} onToggle={() => setOpen(open === g.id ? null : g.id)} />
+          <GoalRow
+            key={g.id}
+            goal={g}
+            open={open === g.id}
+            onToggle={() => setOpen(open === g.id ? null : g.id)}
+            action={g.notForMe ? <NotForMeAction goal={g} demo={demo} busy={refreshing} onChanged={changed} /> : undefined}
+          />
         ))}
       </ul>
       {!firstDay && summary.moreCount > 0 && (
@@ -90,6 +115,9 @@ export function GoalsCard({
         </div>
       )}
       {(summary.choiceGoals?.length ?? 0) > 0 && <ChoiceGoals goals={summary.choiceGoals!} demo={demo} />}
+      <p role="status" aria-live="polite" className="sr-only">
+        {note}
+      </p>
       {!firstDay && summary.metThisMonth.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-[0.8rem] text-muted">
           <span>Goals met with proof this month:</span>
@@ -156,6 +184,71 @@ function ChoiceGoals({ goals, demo }: { goals: Goal[]; demo: boolean }) {
         {note}
       </p>
     </section>
+  );
+}
+
+/**
+ * "Not for me" on a goal from a gap (FR-48), in the goal's open row, as on the Map: skip a required goal anyway (it
+ * stays a gap and leaves this list; it is brought back from the Map), or learn another skill of a "one of these" group.
+ * Buttons stay focusable while saving (aria-disabled), so focus never drops to the page.
+ */
+function NotForMeAction({ goal, demo, busy, onChanged }: { goal: Goal; demo: boolean; busy: boolean; onChanged: (words: string) => void }) {
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const offer = goal.notForMe;
+  if (!offer) return null;
+  async function send(change: Parameters<typeof changeGoal>[1], done: string) {
+    if (sending || busy) return;
+    setError("");
+    setSending(true);
+    const failed = await changeGoal(goal.id, change, demo);
+    setSending(false);
+    if (failed) return setError(failed);
+    onChanged(done);
+  }
+  const button = `${smallButton} aria-disabled:opacity-60`;
+  return (
+    <div className="flex w-full flex-col gap-2 border-t border-line pt-2">
+      <span className="font-mono text-[0.68rem] uppercase tracking-[0.05em]">Not for me</span>
+      {offer.kind === "swap" ? (
+        <>
+          <p>The role asks for any one of these. Learning another fills this goal just the same, so your match doesn&apos;t change.</p>
+          <div className="flex flex-wrap gap-2">
+            {offer.options.map((o) => (
+              <button
+                key={o.skillId}
+                type="button"
+                aria-disabled={sending || busy}
+                onClick={() => send({ action: "swap", skillId: o.skillId }, `You're learning ${o.name} for this goal now.`)}
+                className={button}
+              >
+                Learn {o.name} instead
+              </button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          {offer.share && <p>{offer.share}</p>}
+          <p>If you skip it, it stays a gap, so roles that need it stay amber. You can bring it back from the Map.</p>
+          <div className="flex">
+            <button
+              type="button"
+              aria-disabled={sending || busy}
+              onClick={() => send({ action: "skip" }, `${goal.name} skipped. It stays a gap; bring it back from the Map.`)}
+              className={button}
+            >
+              {sending ? "Skipping…" : "Skip anyway"}
+            </button>
+          </div>
+        </>
+      )}
+      {error && (
+        <p role="alert" className="text-xs text-bad">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 

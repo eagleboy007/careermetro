@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { MAX_CHOICE_GOALS, USER_STATES } from "./constants";
-import { goalChoice } from "./goals";
+import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
 
 /**
@@ -188,6 +188,8 @@ export const goal = z.object({
   suggestion: z.object({ title: z.string().max(80), detail: z.string().max(200) }).nullable(),
   /** A "Your choice" goal the person added, with the company of the job check it came from. Null for gap goals. */
   choice: goalChoice.nullable().optional(),
+  /** What "Not for me" offers on this goal from a gap (FR-48); absent in example data and on "Your choice" goals. */
+  notForMe: notForMeOffer.nullable().optional(),
 });
 
 export const goalsSummary = z

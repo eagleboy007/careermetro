@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { skillGroupMembers } from "@/content";
-import { canSwapTo, notForMeFor, shareSentence, swappedSkill } from "./not-for-me";
+import { canSwapTo, notForMeFor, offerFor, shareSentence, swappedSkill } from "./not-for-me";
 
 const required = { source: "gap" as const, skillId: "sql", groupId: null };
 const cloud = { source: "gap" as const, skillId: "aws", groupId: "cloud" };
@@ -36,5 +36,14 @@ describe("Not for me (FR-48)", () => {
     // A goal that left its group (a new role needs the skill itself) learns its own skill again.
     expect(swappedSkill({ ...cloud, groupId: null, swappedTo: "gcp" }, skillGroupMembers)).toBeNull();
     expect(swappedSkill({ ...cloud, swappedTo: "sql" }, skillGroupMembers)).toBeNull();
+  });
+
+  it("offers words for the Map and Today only on goals still open", () => {
+    const open = { ...required, status: "active", proved: false };
+    expect(offerFor(open, "data-analyst", skillGroupMembers)).toEqual({ kind: "skip", share: "Asked for in 91% of the job posts we checked for this role." });
+    expect(offerFor({ ...cloud, status: "active", proved: false }, "cloud-engineer", skillGroupMembers)).toMatchObject({ kind: "swap", current: "AWS" });
+    expect(offerFor({ ...open, status: "skipped" }, "data-analyst", skillGroupMembers)).toBeNull();
+    expect(offerFor({ ...open, proved: true }, "data-analyst", skillGroupMembers)).toBeNull();
+    expect(offerFor({ ...open, source: "user" }, "data-analyst", skillGroupMembers)).toBeNull();
   });
 });

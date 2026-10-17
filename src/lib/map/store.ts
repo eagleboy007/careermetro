@@ -6,7 +6,7 @@ import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
 import { notConfirmedSkills, provedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
-import { notForMeFor, shareSentence, swappedSkill } from "@/lib/goals/not-for-me";
+import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { nearbyLinesFor } from "@/lib/nearby/build";
 import { nearbyOrNothing } from "@/lib/nearby/safe";
 import { goalName } from "@/lib/goals/name";
@@ -88,7 +88,6 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
     const proved = own?.proved ?? false;
     const swap = swapped(own);
     const skipped = own?.status === "skipped";
-    const offer = own && !proved && !skipped ? notForMeFor(own, result.roleSlug, skillGroupMembers) : null;
     return {
       goalId: own?.id ?? null,
       certificates: certificatesFor(own ? fillingSkills(own, skillGroupMembers) : [g.skillId]),
@@ -101,11 +100,7 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
       proved,
       ...(swap ? swapItems(swaps.get(swap) ?? []) : items(stepBySkill.get(g.skillId))),
       skipped,
-      notForMe: !offer
-        ? null
-        : offer.kind === "skip"
-          ? { kind: "skip" as const, share: shareSentence(offer.share) }
-          : { kind: "swap" as const, current: clip(choiceName(offer.current), 80), options: offer.options.slice(0, 8).map((o) => ({ skillId: o.skillId, name: clip(o.name, 80) })) },
+      notForMe: own ? offerFor(own, result.roleSlug, skillGroupMembers) : null,
     };
   });
   // "Your choice" goals, off the line: named by the skill, missing until proved, tagged with their job. They never

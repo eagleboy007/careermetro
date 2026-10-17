@@ -75,3 +75,18 @@ export type ProofStatus = z.infer<typeof proofStatus>;
 export type ProofEvidence = z.infer<typeof proofEvidence>;
 export type UserGoal = z.infer<typeof userGoal>;
 export type GoalChoice = z.infer<typeof goalChoice>;
+
+/**
+ * What "Not for me" offers on a goal from a gap (FR-48), as the Map and Today show it: `skip` a required skill (with how
+ * many of the role's job posts ask for it, when measured), or `swap` a "one of these" goal to another skill of its
+ * group. Absent when nothing is offered: example data, a proved goal, or a "Your choice" goal, which has its own Remove.
+ */
+export const notForMeOffer = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("skip"), share: z.string().min(1).max(120).nullable() }),
+  z.object({
+    kind: z.literal("swap"),
+    current: z.string().min(1).max(80),
+    options: z.array(z.object({ skillId: z.string().min(1).max(80), name: z.string().min(1).max(80) })).min(1).max(8),
+  }),
+]);
+export type NotForMeOffer = z.infer<typeof notForMeOffer>;

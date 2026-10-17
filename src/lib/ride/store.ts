@@ -3,7 +3,7 @@ import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays } from "@/db/schema";
 import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
-import { swappedSkill } from "@/lib/goals/not-for-me";
+import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { skillGroupMembers, skills } from "@/content";
@@ -97,6 +97,7 @@ export async function rideGoalsFor(
       practice: step?.proofTask ?? null,
       learnDone: Boolean(step?.doneAt),
       skipped: g.status === "skipped",
+      notForMe: choice ? null : offerFor(g, analysis.result.roleSlug, skillGroupMembers),
       proofSkills: fillingSkills(g, skillGroupMembers),
       renew: g.status === "renew",
       notConfirmed: !g.proved && fillingSkills(g, skillGroupMembers).some((id) => notConfirmed.has(id)),
