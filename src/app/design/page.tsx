@@ -46,6 +46,7 @@ import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
+import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
@@ -138,6 +139,9 @@ import {
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
 
 // Example data only: shows every component in a realistic state.
+/** A goal from a gap, not proved, for the "Not for me" examples. */
+const notForMeGoal = exampleMapLine.goals.find((g) => g.skillId === "power-bi")!;
+
 const exampleRoleOptions: RoleOption[] = [
   { slug: "data-analyst", title: "Data Analyst", experience: "Up to 3 years", topSkills: ["SQL", "Excel", "Power BI"] },
   { slug: "business-analyst", title: "Business Analyst", experience: "1 to 5 years", topSkills: ["Requirements gathering", "SQL", "Agile and Scrum"] },
@@ -608,6 +612,28 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <JobCheckReview checks={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Not for me</h2>
+        <p className="text-sm text-muted">
+          FR-48: at the foot of a goal&apos;s pitstops on the Map. A required goal can be skipped anyway (it stays a gap, and the train passes it); a
+          &quot;one of these&quot; goal can be swapped to another skill of its group; a skipped goal can be brought back. Example data, so nothing
+          changes.
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          <NotForMe demo goal={{ ...notForMeGoal, notForMe: { kind: "skip", share: "Asked for in 75% of the job posts we checked for this role." } }} />
+          <NotForMe
+            demo
+            goal={{
+              ...notForMeGoal,
+              skillId: "aws",
+              name: "AWS",
+              notForMe: { kind: "swap", current: "AWS", options: [{ skillId: "azure", name: "Microsoft Azure" }, { skillId: "gcp", name: "Google Cloud" }] },
+            }}
+          />
+          <NotForMe demo goal={{ ...notForMeGoal, skipped: true }} />
         </div>
       </section>
 

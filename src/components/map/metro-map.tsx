@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
 import { RemoveGoal } from "@/components/gaps/job-check-actions";
+import { NotForMe } from "./not-for-me";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
 import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
@@ -596,8 +597,11 @@ function Sheet({
   const pit = station as Pitstop;
   const goal = pit.goal;
   const goalWord = `${goal.name} goal`;
-  const kicker =
-    pit.state === "now" ? `You are here · ${goalWord}` : pit.state === "done" ? (pit.kind === "prove" ? "Goal met" : `Done · ${goalWord}`) : `Ahead · ${goalWord}`;
+  const kicker = goal.skipped
+    ? `Skipped · ${goalWord}`
+    : pit.state === "now"
+      ? `You are here · ${goalWord}`
+      : pit.state === "done" ? (pit.kind === "prove" ? "Goal met" : `Done · ${goalWord}`) : `Ahead · ${goalWord}`;
   const resources: Item[] = goal.resources.map((r) => ({ Icon: r.detail.includes("video") ? Play : BookOpen, title: r.title, detail: r.detail }));
 
   if (pit.kind === "learn") {
@@ -616,6 +620,7 @@ function Sheet({
           <p>Open your path to pick the free courses for this goal.</p>
         )}
         {pit.state === "now" ? <Cta href="/today">Go to today&apos;s ride</Cta> : links && <Cta href={links.path} ghost>Open your path</Cta>}
+        <NotForMe goal={goal} demo={!line.resumeId} />
       </Panel>
     );
   }
@@ -650,6 +655,7 @@ function Sheet({
           <List items={resources} />
         </>
       )}
+      <NotForMe goal={goal} demo={!line.resumeId} />
     </Panel>
   );
 }

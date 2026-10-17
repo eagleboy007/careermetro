@@ -20,6 +20,8 @@ export type RideGoal = {
   renew?: boolean;
   /** A certificate for it was rejected after review (FR-44). */
   notConfirmed?: boolean;
+  /** "Not for me": the person skipped it (FR-48). It stays a gap but gets no tasks, and the train passes it. */
+  skipped?: boolean;
   /**
    * Set on a "Your choice" goal, with the company of the job check it came from. Such goals are never on the ride:
    * they sit on their own spur and never move the train or arrival.
@@ -104,15 +106,19 @@ export function boardTask(title: string): RideTask {
   return { id: "all-proved", title, detail: "See the roles you can board now", minutes: 5, done: false, locked: true, signal: false, href: "/departures" };
 }
 
-export function arrivedRide(pitstops: number): Ride {
+export function arrivedRide(pitstops: number, skipped = 0): Ride {
+  // Skipped goals stay gaps (FR-48), so the words never claim every goal is proved.
+  const done = skipped ? "Every goal you kept is proved" : "Every goal on your line is proved";
   return rideSchema.parse({
     pitstop: pitstops + 1,
     pitstopCount: pitstops,
     goalName: "Practice",
-    title: "Every goal on your line is proved.",
+    title: `${done}.`,
     titleEmphasis: "",
-    summary: "Next on your line: Practice, then Match. You can pick roles to board now.",
-    tasks: [boardTask("Every goal on your line is proved")],
+    summary: skipped
+      ? `Next on your line: Practice, then Match. ${skipped === 1 ? "The goal you skipped is still a gap" : `The ${skipped} goals you skipped are still gaps`}, so some roles stay amber.`
+      : "Next on your line: Practice, then Match. You can pick roles to board now.",
+    tasks: [boardTask(done)],
     weekTasksDone: 1,
     weekTasksTotal: 1,
   });
@@ -120,7 +126,7 @@ export function arrivedRide(pitstops: number): Ride {
 
 /** The goal today's ride is on, and how to read each goal's tasks. Null once every goal is proved. */
 function position(input: RideInput) {
-  const open = input.goals.filter((g) => !g.proved);
+  const open = input.goals.filter((g) => !g.proved && !g.skipped);
   if (!open.length) return null;
   const doneEarlier = (g: RideGoal, id: string) => g.learnDone || input.doneBefore.has(id);
   const tasksFor = (g: RideGoal) => tasksOf(g, input.path);
@@ -140,7 +146,7 @@ function position(input: RideInput) {
  */
 export function buildRide(input: RideInput): Ride | null {
   const at = position(input);
-  if (!at) return input.goals.length ? arrivedRide(input.goals.length * 2) : null;
+  if (!at) return input.goals.length ? arrivedRide(input.goals.length * 2, input.goals.filter((g) => g.skipped && !g.proved).length) : null;
   const { current, unfinished, tasksFor, left } = at;
   const index = input.goals.indexOf(current);
   const pitstop = index * 2 + 1;
@@ -212,7 +218,7 @@ export const choiceEvidence = (company: string | null) =>
 export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[] }): GoalsSummary {
   const at = position(input);
   const gapBySkill = new Map(input.gaps.map((g) => [g.skillId, g]));
-  const open = input.goals.filter((g) => !g.proved);
+  const open = input.goals.filter((g) => !g.proved && !g.skipped);
   const shown = open.slice(0, SHOWN_GOALS);
   const more = open.slice(SHOWN_GOALS);
   const goals = shown.map((g): Goal => {

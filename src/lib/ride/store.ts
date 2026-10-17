@@ -2,7 +2,8 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays } from "@/db/schema";
-import { goalsOf, notConfirmedSkills, syncGoals } from "@/lib/goals/store";
+import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
+import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { skillGroupMembers, skills } from "@/content";
@@ -73,23 +74,29 @@ export async function rideGoalsFor(
   const gapBySkill = new Map(analysis.result.gaps.map((g) => [g.skillId, g]));
 
   const line = lineGoals(userGoals, new Set(gapBySkill.keys()));
+  // A goal swapped to another skill of its group ("Not for me", FR-48) learns that skill from the catalog.
+  const swaps = await resourcesForSkills([...new Set(line.gaps.flatMap((g) => swappedSkill(g, skillGroupMembers) ?? []))], db);
   // Learn tasks come from the path's step for the skill; a "Your choice" goal the path has no step for gets the
   // fallback tasks (build the path, or study on your own), like any goal the path left out.
   const rideGoal = (g: (typeof userGoals)[number], name: string, status: RideGoal["status"], choice: RideGoal["choice"]): RideGoal => {
-    const step = stepBySkill.get(g.skillId);
+    const swapped = swappedSkill(g, skillGroupMembers);
+    const step = swapped ? undefined : stepBySkill.get(g.skillId);
     return {
       goalId: g.id,
       skillId: g.skillId,
-      name,
+      name: swapped && !g.proved ? (skillNames.get(swapped) ?? name) : name,
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: g.status === "renew" ? "weak" : status,
       proved: g.proved,
-      resources: (step?.resourceIds ?? []).flatMap((id) => {
-        const r = byId.get(id);
-        return r ? [r] : [];
-      }),
+      resources: swapped
+        ? (swaps.get(swapped) ?? [])
+        : (step?.resourceIds ?? []).flatMap((id) => {
+            const r = byId.get(id);
+            return r ? [r] : [];
+          }),
       practice: step?.proofTask ?? null,
       learnDone: Boolean(step?.doneAt),
+      skipped: g.status === "skipped",
       proofSkills: fillingSkills(g, skillGroupMembers),
       renew: g.status === "renew",
       notConfirmed: !g.proved && fillingSkills(g, skillGroupMembers).some((id) => notConfirmed.has(id)),

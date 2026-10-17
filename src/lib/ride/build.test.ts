@@ -120,6 +120,15 @@ describe("buildRide", () => {
     expect(r!.tasks).toEqual([expect.objectContaining({ id: "all-proved", locked: true, href: "/departures" })]);
     expect(ride([])).toBeNull();
   });
+
+  it("passes a skipped goal (FR-48): no tasks for it, and arrival says it is still a gap", () => {
+    const r = ride([goal({ goalId: "sql", skipped: true }), goal({ goalId: "pbi" })])!;
+    expect(r).toMatchObject({ pitstop: 3, goalName: "PBI" });
+    const done = ride([goal({ goalId: "sql", skipped: true }), goal({ goalId: "pbi", proved: true })])!;
+    expect(done).toMatchObject({ goalName: "Practice", title: "Every goal you kept is proved." });
+    expect(done.summary).toContain("The goal you skipped is still a gap, so some roles stay amber.");
+    expect(rideSchema.safeParse(done).success).toBe(true);
+  });
 });
 
 describe("buildGoalsSummary", () => {

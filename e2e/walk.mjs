@@ -587,6 +587,23 @@ await step("loading frame shows the header at once", async () => {
   await p.locator("header").first().waitFor({ timeout: 3000 });
   await settled();
 });
+// Not for me (FR-48): the pitstop the person is at offers "Skip anyway" on a required goal. Skipped, it stays on the line
+// and focus moves to the section's heading; Bring back restores it.
+await step("not for me: skip the current goal on the Map, then bring it back", async () => {
+  await p.goto(BASE + "/map");
+  await settled();
+  const section = p.getByRole("region", { name: "Not for me" });
+  await section.waitFor({ timeout: 10000 });
+  await section.getByRole("button", { name: "Skip anyway" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Skipped", null, { timeout: 15000 });
+  const skipped = p.getByRole("region", { name: "Skipped" });
+  await skipped.getByText(/It stays a gap/).waitFor({ timeout: 5000 });
+  await shot("map-goal-skipped");
+  await a11y("map-goal-skipped");
+  await skipped.getByRole("button", { name: "Bring back" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
+  await p.getByRole("region", { name: "Not for me" }).getByRole("button", { name: "Skip anyway" }).waitFor({ timeout: 5000 });
+});
 for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);

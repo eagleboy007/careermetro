@@ -60,6 +60,8 @@ export const userGoal = z.object({
   position: z.number().int().min(1),
   /** The "one of these" group the goal stands for, if any: proof of any skill in it fills the goal. */
   groupId: z.string().nullable().default(null),
+  /** "Not for me" on a group goal: the other skill of the group the person chose to learn instead (FR-48). */
+  swappedTo: z.string().nullable().default(null),
   /** A proof for this skill was accepted. A goal met because a newer resume shows the skill is not proved. */
   proved: z.boolean(),
   /** The job check a "Your choice" goal was added from; null once that check is removed. */

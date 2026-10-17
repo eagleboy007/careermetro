@@ -7,11 +7,11 @@ Items Milin asked to fix later. Newest at the bottom.
 2. **Gaps per company, not only per role.** Gaps are compared only with our fixed role profiles. Milin wants gaps against the roles people actually apply for, since requirements differ by company. Example: not every company needs Python for a Cyber Security Analyst L1. Likely approach: let the user paste a job description (the `job_descriptions` table already exists) and match against the skills in it, with the role profile as the fallback.
 
 ## Carried over from reviews
-3. A database index on `gap_analyses.profile_id` (needs a migration).
-4. Record AI spend outside the gap transaction, so a failed insert still counts toward the budget.
-5. Tests for the rating route handler.
-6. An eval for the explain-gaps prompt.
-7. Gate `/api/health?check=parse` behind a secret (needs `CRON_SECRET` or a new secret in Vercel). Until then its calls count toward the daily upload budget.
+3. A database index on `gap_analyses.profile_id` (needs a migration). *Done: index `gap_analyses_profile` (profile_id, created_at) is in the schema.*
+4. Record AI spend outside the gap transaction, so a failed insert still counts toward the budget. *Done: the call is reserved in `ai_calls` before the model runs and settled after (src/lib/ai/reserve.ts).*
+5. Tests for the rating route handler. *Done: src/app/api/routes.test.ts covers the gap rating route.*
+6. An eval for the explain-gaps prompt. *Done 2026-10-17: `npm run eval:explain` (src/evals/explain.eval.ts), scoring tested without the API.*
+7. [Done, PR 98: the route answers 401 without the cron secret as a bearer token; smoke.yml sends it, routes.test covers it] Gate `/api/health?check=parse` behind a secret.
 8. `CRON_SECRET` in Vercel (Milin) for the daily cleanup job, and `ANTHROPIC_API_KEY` as a GitHub Actions secret for the parse eval.
 
 ## Future phases (Milin, 2026-10-08)
