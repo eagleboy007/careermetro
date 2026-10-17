@@ -49,3 +49,4 @@ Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surfa
 - `npm run db:generate` — create a migration after changing `src/db/schema.ts`
 - `npm run db:migrate` — apply migrations to `DATABASE_URL`
 - `npm run eval:parse` — run the parse prompt over `fixtures/evals` with the real API (needs `ANTHROPIC_API_KEY`, about $1)
+- `npm run eval:explain` — run the explain-gaps prompt over the matcher's gaps for `fixtures/evals` with the real API (needs `ANTHROPIC_API_KEY`, about $1; never in CI)
