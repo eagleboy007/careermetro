@@ -31,6 +31,16 @@ describe("explain-gaps eval scoring", () => {
       "Excel pivot tables daily",
     ]);
     expect(hoursNamed("About 40 hours, maybe a 1,200-hour stretch, or 3 hrs a week.")).toEqual([40, 1200, 3]);
+    // Both ends of a range, and decimals read whole (T70).
+    expect(hoursNamed("Plan on 40-60 hours, 40 to 60 hours or 1.5 hours a day.")).toEqual([40, 60, 40, 60, 1.5]);
+  });
+
+  it("counts a quote of the role title or of another gap as given, not invented (T61)", () => {
+    const { id, match } = withQuote;
+    const other = match.gaps.find((g) => g.requirement.split(/\s+/).length >= 3)!;
+    const out = worded(match, () => `The role asks for "${other.requirement}" and the title says "Senior Data Analyst Lead".`, `About ${match.readiness.estimatedHours} hours.`);
+    expect(scoreExplainCase(id, match, out, "Senior Data Analyst Lead").inventedQuotes).toEqual([]);
+    expect(scoreExplainCase(id, match, out).inventedQuotes).toEqual(Array(Math.min(SHOWN_GAPS, match.gaps.length)).fill("Senior Data Analyst Lead"));
   });
 
   it("passes words that quote only the resume and keep the matcher's hours", () => {
@@ -72,7 +82,7 @@ describe("explain-gaps eval run", () => {
     const client = { beta: { messages: { create } } } as unknown as ExplainClient;
     const report = await runExplainEval(inputs, (match, roleTitle) => explainGaps(match, roleTitle, { eval: "explain" }, client), { promptVersion: "explain-gaps/v1", model: "stand-in" });
     expect(create).toHaveBeenCalledTimes(inputs.length);
-    expect(report).toMatchObject({ modelRate: 1, inventedQuotes: 0, wrongHours: 0, exclamations: 0 });
+    expect(report).toMatchObject({ modelRate: 1, inventedQuotes: 0, wrongHours: 0, exclamations: 0, models: ["claude-opus-5-5"] });
     expect(report.costUsd).toBeGreaterThan(0);
     const md = formatExplainEval(report);
     expect(md).toContain("Model words used 100%");

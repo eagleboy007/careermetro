@@ -18,10 +18,12 @@ export type ExplainFn = (match: MatchResult, roleTitle: string) => Promise<Expla
 
 export type ExplainCaseResult = {
   id: string;
+  /** The models the calls report, so a fallback shows. */
+  models: string[];
   /** False when the page would have shown template sentences: the call failed or the answer broke the rules. */
   model: boolean;
   gaps: number;
-  /** Quoted phrases (three words or more) found nowhere in that gap's resume quote, skill name or role expectation. */
+  /** Quoted phrases (three words or more) found nowhere in what the model was given: the role title and every gap's resume quote, skill name and role expectation. */
   inventedQuotes: string[];
   /** Hours named in the readiness line that differ from the matcher's estimate. */
   wrongHours: number[];
@@ -34,7 +36,9 @@ export type ExplainCaseResult = {
 
 export type ExplainEvalReport = {
   promptVersion: string;
+  /** The model asked for; `models` lists the ones that answered, which differ after a server-side fallback. */
   model: string;
+  models: string[];
   cases: ExplainCaseResult[];
   modelRate: number;
   inventedQuotes: number;
@@ -59,24 +63,30 @@ export function quotedPhrases(text: string): string[] {
   return [...text.matchAll(/["“]([^"“”]+)["”]/g)].map((m) => m[1]!.trim()).filter((q) => words(q) >= 3);
 }
 
-/** Every number of hours a sentence names ("about 40 hours", "40-hour"). */
+const NUMBER = String.raw`\d[\d,]*(?:\.\d+)?`;
+const HOURS = new RegExp(String.raw`(?<![\d.,])(${NUMBER})(?:\s*(?:-|–|to)\s*(${NUMBER}))?\s*(?:-\s*)?(?:hours?|hrs?)\b`, "gi");
+
+/** Every number of hours a sentence names ("about 40 hours", "40-hour", both ends of "40-60 hours", "1.5 hours"). */
 export function hoursNamed(text: string): number[] {
-  return [...text.matchAll(/(\d[\d,]*)\s*(?:-\s*)?(?:hours?|hrs?)\b/gi)].map((m) => Number(m[1]!.replace(/,/g, "")));
+  const num = (n: string) => Number(n.replace(/,/g, ""));
+  return [...text.matchAll(HOURS)].flatMap((m) => (m[2] ? [num(m[1]!), num(m[2])] : [num(m[1]!)]));
 }
 
-/** Scores one case's explanations against the matcher's own analysis. Pure. */
-export function scoreExplainCase(id: string, match: MatchResult, out: ExplainOutcome): ExplainCaseResult {
+/**
+ * Scores one case's explanations against the matcher's own analysis. Pure. A quote counts as invented only when it is in
+ * none of what the model was given (T61): the role title, and every gap's resume quote, skill name and expectation.
+ */
+export function scoreExplainCase(id: string, match: MatchResult, out: ExplainOutcome, roleTitle = ""): ExplainCaseResult {
   const sum = (key: "costUsd" | "latencyMs") => out.calls.reduce((s, call) => s + call[key], 0);
   const shown = match.gaps.slice(0, SHOWN_GAPS);
   const byId = new Map(out.analysis.gaps.map((g) => [g.skillId, g]));
   const texts = shown.map((g) => byId.get(g.skillId)?.explanation ?? "");
   const readiness = out.analysis.readiness.explanation;
-  const inventedQuotes = shown.flatMap((g, i) => {
-    const source = plain([g.resumeQuote ?? "", g.skillName, g.requirement].join(" \n "));
-    return quotedPhrases(texts[i]!).filter((q) => !source.includes(plain(q)));
-  });
+  const source = plain([roleTitle, ...match.gaps.flatMap((g) => [g.resumeQuote ?? "", g.skillName, g.requirement])].join(" \n "));
+  const inventedQuotes = [...texts, readiness].flatMap((t) => quotedPhrases(t).filter((q) => !source.includes(plain(q))));
   return {
     id,
+    models: [...new Set(out.calls.map((c) => c.model))],
     model: out.source === "model",
     gaps: shown.length,
     inventedQuotes,
@@ -112,13 +122,14 @@ export async function runExplainEval(
       while (next < inputs.length) {
         const i = next++;
         const { id, match, roleTitle } = inputs[i]!;
-        results[i] = scoreExplainCase(id, match, await explain(match, roleTitle));
+        results[i] = scoreExplainCase(id, match, await explain(match, roleTitle), roleTitle);
       }
     }),
   );
   const total = (f: (r: ExplainCaseResult) => number) => results.reduce((s, r) => s + f(r), 0);
   return {
     ...meta,
+    models: [...new Set(results.flatMap((r) => r.models))].sort(),
     cases: results,
     modelRate: total((r) => (r.model ? 1 : 0)) / Math.max(1, results.length),
     inventedQuotes: total((r) => r.inventedQuotes.length),
@@ -138,7 +149,7 @@ export function formatExplainEval(r: ExplainEvalReport): string {
       `| ${c.id} | ${c.model ? "model" : "template"} | ${c.gaps} | ${c.inventedQuotes.length ? c.inventedQuotes.map((q) => `"${q}"`).join("; ") : "none"} | ${c.wrongHours.join(", ") || "none"} | ${c.tooLong} | ${c.exclamations} | $${c.costUsd.toFixed(3)} | ${(c.latencyMs / 1000).toFixed(1)}s |`,
   );
   return [
-    `## Explain-gaps eval: ${r.promptVersion} on ${r.model}`,
+    `## Explain-gaps eval: ${r.promptVersion} on ${r.model}${r.models.some((m) => m !== r.model) ? ` (answered by ${r.models.join(", ")})` : ""}`,
     "",
     `Model words used ${pct(r.modelRate)} · invented quotes ${r.inventedQuotes} · wrong hours ${r.wrongHours} · over 45 words ${r.tooLong} · exclamation marks ${r.exclamations} · cost $${r.costUsd.toFixed(2)}`,
     "",
