@@ -41,15 +41,18 @@ p.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.re
 // violations fail the walk; moderate and minor ones are printed so they can be fixed without blocking.
 const AXE = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 const a11yNotes = [];
-const a11y = async (name) => {
-  // A server action's refresh() can still be landing when the check starts, and for that moment the head has no <title>
-  // (seen once in CI on inbox-report, never locally). Wait for it; a page that never gets a title still fails below.
-  if (!(await p.evaluate(() => document.title))) {
-    const back = await p.waitForFunction(() => document.title !== "", null, { timeout: 5000 }).then(() => true, () => false);
+/**
+ * axe on any page. A server action's refresh() can still be landing when the check starts, and for that moment the head
+ * has no <title> (seen in CI on inbox-report and me-certifications-held, never locally), so every check first waits for
+ * the title; a page that never gets one still fails on document-title.
+ */
+const axeOn = async (q, name) => {
+  if (!(await q.evaluate(() => document.title))) {
+    const back = await q.waitForFunction(() => document.title !== "", null, { timeout: 5000 }).then(() => true, () => false);
     if (back) a11yNotes.push(`${name}: title was empty mid-refresh, then came back`);
   }
-  await p.addScriptTag({ content: AXE });
-  const result = await p.evaluate(() =>
+  await q.addScriptTag({ content: AXE });
+  const result = await q.evaluate(() =>
     axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
   );
   for (const v of result.violations) {
@@ -61,18 +64,9 @@ const a11y = async (name) => {
     else a11yNotes.push(line);
   }
 };
+const a11y = (name) => axeOn(p, name);
 /** The same check on another page (a second signed-in context). */
-const a11yOn = async (page, name) => {
-  await page.addScriptTag({ content: AXE });
-  const result = await page.evaluate(() =>
-    axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
-  );
-  for (const v of result.violations) {
-    const line = `${name}: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
-    if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
-    else a11yNotes.push(line);
-  }
-};
+const a11yOn = axeOn;
 let i = 0;
 const settled = () =>
   p
@@ -1402,15 +1396,7 @@ await step("corporate: set up a company, confirm the code, wait for verification
     if ((await q.locator("body").innerText()).includes(`meera.iyer@${domain}`)) throw new Error("work email shown on Corporate");
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate.png`, fullPage: true });
     // The same axe check as the other screens, on this page.
-    await q.addScriptTag({ content: AXE });
-    const result = await q.evaluate(() =>
-      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
-    );
-    for (const v of result.violations) {
-      const line = `corporate: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
-      if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
-      else a11yNotes.push(line);
-    }
+    await axeOn(q, "corporate");
     // Phone size in dark mode: no sideways scroll, and the same axe check.
     await q.setViewportSize({ width: 390, height: 844 });
     await q.emulateMedia({ colorScheme: "dark" });
@@ -1418,15 +1404,7 @@ await step("corporate: set up a company, confirm the code, wait for verification
     await q.getByText("Waiting for verification").first().waitFor({ timeout: 10000 });
     const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (overflow > 1) throw new Error("corporate: horizontal overflow " + overflow + "px");
-    await q.addScriptTag({ content: AXE });
-    const dark = await q.evaluate(() =>
-      axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
-    );
-    for (const v of dark.violations) {
-      const line = `corporate-phone-dark: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
-      if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
-      else a11yNotes.push(line);
-    }
+    await axeOn(q, "corporate-phone-dark");
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-phone-dark.png`, fullPage: true });
     if (process.env.DATABASE_URL) {
       const { default: postgres } = await import("postgres");
@@ -1445,17 +1423,6 @@ await step("corporate: set up a company, confirm the code, wait for verification
 // Company review (/admin/companies): signed out and a non-admin get the normal not-found page with a 404; the admin
 // (the documented local default, admin@careermetro.test, while ADMIN_EMAILS is unset) sees the company the Corporate
 // step set up, tries Suspend and cancels, verifies it, and it leaves the list with focus kept on the page.
-const axeOn = async (q, name) => {
-  await q.addScriptTag({ content: AXE });
-  const result = await q.evaluate(() =>
-    axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] }, resultTypes: ["violations"] }),
-  );
-  for (const v of result.violations) {
-    const line = `${name}: ${v.id} (${v.impact}) x${v.nodes.length}: ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`;
-    if (v.impact === "serious" || v.impact === "critical") problems.push(`a11y ${line}`);
-    else a11yNotes.push(line);
-  }
-};
 const signInAs = async (q, name, email) => {
   await q.goto(BASE + "/sign-in");
   await q.locator('input[name="name"]').fill(name);
