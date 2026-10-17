@@ -27,6 +27,26 @@ export function companyKey(name: string): string {
     .join(" ");
 }
 
+/** Words that many company names share, left out when deciding whether two names are one company. */
+const SHARED_WORDS = new Set(["india", "technologies", "technology", "solutions", "services", "software", "systems", "global", "group", "the", "and"]);
+
+/**
+ * Whether two company names plainly name the same company, leaning towards yes: one name's words appear together in
+ * the other ("Infosys" and "Infosys BPM", "Example Labs" and "Example Labs India"), or one is the other's initials
+ * ("TCS" and "Tata Consultancy Services"). Used to keep people out of their own employer's search, where a wrong yes
+ * only hides someone and a wrong no shows them to their employer.
+ */
+export function sameCompany(a: string, b: string): boolean {
+  const wordsA = companyKey(a).split(" ").filter(Boolean);
+  const wordsB = companyKey(b).split(" ").filter(Boolean);
+  const coreA = wordsA.filter((w) => !SHARED_WORDS.has(w)).join(" ");
+  const coreB = wordsB.filter((w) => !SHARED_WORDS.has(w)).join(" ");
+  if (coreA && coreB && (` ${coreA} `.includes(` ${coreB} `) || ` ${coreB} `.includes(` ${coreA} `))) return true;
+  const initials = (words: string[]) => (words.length >= 2 ? words.map((w) => w[0]).join("") : "");
+  const single = (words: string[]) => (words.length === 1 && words[0]!.length >= 2 ? words[0]! : "");
+  return (!!single(wordsA) && single(wordsA) === initials(wordsB)) || (!!single(wordsB) && single(wordsB) === initials(wordsA));
+}
+
 /**
  * The person's current jobs on the confirmed profile: the ones with no end date; with none open, the latest one
  * (Project manager, 2026-10-15: the latest job stands in for the current employer, which isn't stored separately).

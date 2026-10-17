@@ -612,8 +612,8 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Current job checked by work email</h2>
         <p className="text-sm text-muted">
           FR-47: the profile above shows &quot;Verified with work email&quot; on the current job. Before a check, the owner sees Not verified and Verify
-          with your work email (example data, so nothing is sent). Below, /admin/companies lists checks whose domain didn&apos;t plainly match the
-          company: the company, the domain and the day, never the person.
+          with your work email (example data, so nothing is sent). Below, /admin/companies lists checks whose domain isn&apos;t that of a company
+          CareerMetro verified under the employer&apos;s name: the company, the domain and the day, never the person.
         </p>
         <MeView
           me={{ ...exampleMe, experience: exampleMe.experience.map((e, i) => (i === 0 ? { ...e, check: { state: "not_verified" as const, month: null } } : e)) }}

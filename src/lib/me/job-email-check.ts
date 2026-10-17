@@ -1,7 +1,7 @@
 import "server-only";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, isNotNull, ne } from "drizzle-orm";
 import { getDb } from "@/db";
-import { auditLogs, jobEmailChecks, users } from "@/db/schema";
+import { auditLogs, jobEmailChecks, organizations, users } from "@/db/schema";
 import { CODE_ERROR_TEXT, workEmailReady } from "@/lib/corporate/codes";
 import { codeDelivery } from "@/lib/corporate/delivery";
 import { checkWorkEmail, workEmailProblemText } from "@/lib/corporate/domains";
@@ -11,13 +11,16 @@ import { logEvent } from "@/lib/log";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { jobEmailCheckReview } from "@/lib/schemas/admin";
 import { joinFinish, joinStart } from "@/lib/schemas/corporate";
-import { domainMatchesEmployer, jobToCheck, type JobCheckRow, type JobKey } from "./job-check-rules";
+import { currentJobs } from "@/lib/profile/employer";
+import type { Profile } from "@/lib/schemas";
+import { baseDomain, domainAndParents, jobKeyOf, jobToCheck, onVerifiedCompanyDomain, type JobCheckRow, type JobKey } from "./job-check-rules";
 
 /*
  * The work-email check of a person's current job (FR-47, handoff 12d, dev/current-job-check-plan.md). The person types
  * their email at the company on their current job, gets a 6-digit code there (the same codes, limits and lock as the
- * company work-email step: 3 an hour, 10 a day, 20 a day per domain), and a right code saves the check: "verified"
- * when the domain plainly belongs to the company, else "review" until an admin looks. Only the domain is kept; the
+ * company work-email step: 3 an hour, 10 a day, 20 a day per registered domain), and a right code saves the check:
+ * "verified" when the domain is that of a company CareerMetro verified under the employer's name, else "review" until
+ * an admin looks. Only the domain is kept; the
  * address leaves with the code. Nothing here logs an email, a domain or a company name.
  */
 
@@ -59,7 +62,8 @@ export async function startJobCheck(userId: string, raw: unknown, deps: Corporat
   const email = checkWorkEmail(parsed.data.workEmail);
   if (!email.ok) return fail("invalid", workEmailProblemText(email.problem));
   if (!(await checkedJob(userId, db))) return fail("no_job");
-  const sent = await issueCode(userId, { email: parsed.data.workEmail, domain: email.domain, orgId: null }, deps, "current_job");
+  // Subdomains of one company share its daily count (T66).
+  const sent = await issueCode(userId, { email: parsed.data.workEmail, domain: email.domain, orgId: null, limitDomain: baseDomain(email.domain) }, deps, "current_job");
   if (!sent.ok) return fail(sent.error === "closed" || sent.error === "locked" || sent.error === "not_sent" ? sent.error : "limit");
   return sent.testCode ? { ok: true, testCode: sent.testCode } : { ok: true };
 }
@@ -81,7 +85,7 @@ export async function finishJobCheck(userId: string, raw: unknown, deps: Corpora
   return db.transaction(async (tx) => {
     const refused = await useCode(userId, { email: parsed.data.workEmail, orgId: null }, parsed.data.code, tx, deps, "current_job");
     if (refused) return fail(refused === "wrong" || refused === "expired" || refused === "locked" ? refused : "none");
-    const status = domainMatchesEmployer(email.domain, job.employerKey) ? "verified" : "review";
+    const status = onVerifiedCompanyDomain(email.domain, job.employer, await verifiedCompaniesOn(email.domain, tx)) ? "verified" : "review";
     await tx
       .insert(jobEmailChecks)
       .values({ userId, ...job, domain: email.domain, status, checkedAt: now })
@@ -106,15 +110,36 @@ export async function jobChecksFor(userIds: string[], db: Pick<Db, "select"> = g
   return out;
 }
 
-/** The domains of a person's verified checks, for keeping them out of their own employer's searches. */
-export async function verifiedDomainsFor(userIds: string[], db: Pick<Db, "select"> = getDb()): Promise<Map<string, string[]>> {
-  const out = new Map<string, string[]>();
-  if (!userIds.length) return out;
+/**
+ * Companies CareerMetro verified (their domain proved by a code and checked by hand) whose email domain is this domain
+ * or a parent of it. Only these let a check pass without an admin (T53).
+ */
+async function verifiedCompaniesOn(domain: string, db: Pick<Db, "select">) {
   const rows = await db
-    .select({ userId: jobEmailChecks.userId, domain: jobEmailChecks.domain })
+    .select({ emailDomain: organizations.emailDomain, name: organizations.name, legalName: organizations.legalName })
+    .from(organizations)
+    .where(and(inArray(organizations.emailDomain, domainAndParents(domain)), eq(organizations.reviewStatus, "verified"), isNotNull(organizations.domainVerifiedAt)));
+  return rows.flatMap((r) => (r.emailDomain ? [{ emailDomain: r.emailDomain, names: [r.name, r.legalName] }] : []));
+}
+
+/**
+ * The work-email domains that tie each person to their current employer, for keeping them out of that employer's
+ * searches: a right code for the current job, whether verified or still with an admin (T55). A refused check doesn't
+ * count, and neither does a check of a job they have since left (T62).
+ */
+export async function staffDomainsFor(people: { id: string; profile: Profile }[], db: Pick<Db, "select"> = getDb()): Promise<Map<string, string[]>> {
+  const out = new Map<string, string[]>();
+  if (!people.length) return out;
+  const rows = await db
+    .select({ userId: jobEmailChecks.userId, domain: jobEmailChecks.domain, employerKey: jobEmailChecks.employerKey, startMonth: jobEmailChecks.startMonth })
     .from(jobEmailChecks)
-    .where(and(inArray(jobEmailChecks.userId, userIds), eq(jobEmailChecks.status, "verified")));
-  for (const r of rows) out.set(r.userId, [...(out.get(r.userId) ?? []), r.domain]);
+    .where(and(inArray(jobEmailChecks.userId, people.map((p) => p.id)), ne(jobEmailChecks.status, "refused")));
+  const current = new Map(people.map((p) => [p.id, currentJobs(p.profile).map(jobKeyOf)]));
+  for (const r of rows) {
+    const jobs = current.get(r.userId) ?? [];
+    if (!jobs.some((j) => j.employerKey === r.employerKey && j.startMonth === r.startMonth)) continue;
+    out.set(r.userId, [...(out.get(r.userId) ?? []), r.domain]);
+  }
   return out;
 }
 

@@ -56,3 +56,9 @@ Development 3, 2026-10-16. Milin approved the requirement (R1) and the 12d detai
 - A domain matches when its name is the company's words run together, the first word (3+ letters) or the initials (2+). A prefix match was dropped: info.com would have matched Infosys.
 - The applicant drawer shows the application's frozen snapshot, so it carries no badge; the found-person view and public profile do.
 - The e2e walk verifies the walk's own current job (Example Retail) with the on-screen test code.
+
+## Changed after Testing Run 4 (2026-10-17)
+
+- T53, T57: a name-only domain match is gone. A check passes without an admin only on the domain (or a subdomain) of a company CareerMetro verified, whose name or legal name names the employer. Everything else goes to review.
+- T54, T55, T62: Find people hides a person from a company whose name their current employer plainly names (containment or initials, `sameCompany`), or on whose domain they confirmed a code for their current job (verified or in review).
+- T56: more free-mail domains, and any registered domain of Gmail, Yahoo, Hotmail, Outlook, Rediffmail or Proton is free mail. T66: the per-domain daily limit counts the registered domain.

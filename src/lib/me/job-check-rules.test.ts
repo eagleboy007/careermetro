@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
-import { domainMatchesEmployer, domainName, experienceCheck, experienceCheckText, isSelfDeclared, jobKeyOf, jobToCheck, startMonthOf } from "./job-check-rules";
+import { baseDomain, domainAndParents, experienceCheck, experienceCheckText, isSelfDeclared, jobKeyOf, jobToCheck, onVerifiedCompanyDomain, startMonthOf } from "./job-check-rules";
 
 const role = (employer: string, start: string | null, end: string | null = null) => ({ title: "Analyst", employer, start, end, highlights: [] });
 const profile = (roles: ReturnType<typeof role>[]): Profile => ({ headline: null, totalYearsExperience: 3, roles, skills: [], education: [], certifications: [] });
@@ -35,15 +35,27 @@ describe("the work-email check of the current job (FR-47)", () => {
     expect(jobKeyOf(role("Example Labs Private Limited", "2024-06")).employerKey).toBe("example labs");
   });
 
-  it("matches a domain that plainly belongs to the company, and sends anything else to review", () => {
-    expect(domainName("mail.garudasec.co.in")).toBe("garudasec");
-    expect(domainName("example-labs.com")).toBe("examplelabs");
-    expect(domainMatchesEmployer("garudasec.com", "garuda sec")).toBe(true);
-    expect(domainMatchesEmployer("in.infosys.com", "infosys bpm")).toBe(true);
-    expect(domainMatchesEmployer("tcs.com", "tata consultancy services")).toBe(true);
-    expect(domainMatchesEmployer("example-labs.in", "example labs")).toBe(true);
-    expect(domainMatchesEmployer("info.com", "infosys")).toBe(false);
-    expect(domainMatchesEmployer("otherco.com", "garuda sec")).toBe(false);
+  it("passes a check without an admin only on the domain of a verified company under the employer's name (T53)", () => {
+    const garuda = [{ emailDomain: "garudasec.co.in", names: ["Garuda Sec", "Garuda Sec Private Limited"] }];
+    expect(onVerifiedCompanyDomain("garudasec.co.in", "Garuda Sec Pvt Ltd", garuda)).toBe(true);
+    expect(onVerifiedCompanyDomain("mail.garudasec.co.in", "Garuda Sec India", garuda)).toBe(true);
+    // A look-alike domain, a free-mail domain and the right domain under another employer all go to an admin.
+    expect(onVerifiedCompanyDomain("garudasec.xyz", "Garuda Sec", garuda)).toBe(false);
+    expect(onVerifiedCompanyDomain("garudasec.firm.in", "Garuda Sec", garuda)).toBe(false);
+    expect(onVerifiedCompanyDomain("yahoo.co.uk", "Yahoo", garuda)).toBe(false);
+    expect(onVerifiedCompanyDomain("notgarudasec.co.in", "Garuda Sec", garuda)).toBe(false);
+    expect(onVerifiedCompanyDomain("garudasec.co.in", "Konkan Bank", garuda)).toBe(false);
+    expect(onVerifiedCompanyDomain("garudasec.co.in", "Garuda Sec", [])).toBe(false);
+    // Initials or a first word alone never pass: bp.com isn't Bharat Petroleum's unless that company verified it.
+    expect(onVerifiedCompanyDomain("bp.com", "Bharat Petroleum", garuda)).toBe(false);
+  });
+
+  it("finds the registered domain and its parents, so subdomains share one daily code limit (T66)", () => {
+    expect(baseDomain("mail.garudasec.co.in")).toBe("garudasec.co.in");
+    expect(baseDomain("soc.in.infosys.com")).toBe("infosys.com");
+    expect(baseDomain("example.com")).toBe("example.com");
+    expect(domainAndParents("mail.garudasec.co.in")).toEqual(["mail.garudasec.co.in", "garudasec.co.in", "co.in"]);
+    expect(domainAndParents("example.com")).toEqual(["example.com"]);
   });
 
   it("labels the checked job, keeps a passed check after an end date, and says nothing about older jobs", () => {

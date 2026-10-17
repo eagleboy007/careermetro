@@ -26,7 +26,7 @@ import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { duration, meFromProfile } from "@/lib/me/build";
 import type { JobCheckRow } from "@/lib/me/job-check-rules";
-import { jobChecksFor, verifiedDomainsFor } from "@/lib/me/job-email-check";
+import { jobChecksFor, staffDomainsFor } from "@/lib/me/job-email-check";
 import { publicProfile as publicMe } from "@/lib/me/public";
 import {
   companyBlockInput,
@@ -274,12 +274,15 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
   const orgId = ctx.me.orgId;
   const { job } = ctx;
   const people = await findable(orgId, searcherId, job.id, db);
-  const staffDomains = await verifiedDomainsFor(people.map((p) => p.id), db);
   const current = await currentResumes(
     people.map((p) => p.id),
     db,
   );
   const withResume = people.filter((p) => current.has(p.id));
+  const staffDomains = await staffDomainsFor(
+    withResume.map((p) => ({ id: p.id, profile: current.get(p.id)!.profile })),
+    db,
+  );
   const proved = await provedByUser(
     withResume.map((p) => p.id),
     db,
@@ -337,7 +340,7 @@ function companyView(person: Person, profile: Profile, analysis: GapAnalysis, no
   return publicMe({ ...me, aim }, { ...person, showTargetRole: true, showGaps: false });
 }
 
-/** Whether any of a person's verified work-email domains is the company's own (FR-47): then they work there. */
+/** Whether any of a person's current-job work-email domains is the company's own (FR-47): then they work there. */
 const onCompanyDomain = (domains: string[] | undefined, companyDomain: string | null) => !!companyDomain && !!domains?.some((d) => isOnDomain(d, companyDomain));
 
 /**
@@ -349,8 +352,10 @@ async function resolve(ctx: JobContext, userId: string, ref: string, db: Db | Tx
   if (!target) return null;
   const [person] = await findable(ctx.me.orgId, userId, ctx.job.id, db, target);
   if (!person) return null;
-  const [current, staffDomains] = await Promise.all([currentResumes([person.id], db).then((m) => m.get(person.id)), verifiedDomainsFor([person.id], db)]);
-  return current && !worksAt(current.profile, ctx.companyNames) && !onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain) ? person : null;
+  const current = (await currentResumes([person.id], db)).get(person.id);
+  if (!current) return null;
+  const staffDomains = await staffDomainsFor([{ id: person.id, profile: current.profile }], db);
+  return !worksAt(current.profile, ctx.companyNames) && !onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain) ? person : null;
 }
 
 /**

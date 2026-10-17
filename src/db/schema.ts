@@ -836,7 +836,7 @@ export const workEmailCodes = pgTable(
  * The work-email check of a person's current job (FR-47, handoff 12d, dev/current-job-check-plan.md). One row per job,
  * named by the employer (as on the confirmed profile, and its comparison key) and its start month, so a new company or
  * start date on the profile is a new job with no check. Only the email's domain is kept, never the address. "review":
- * the domain doesn't plainly match the company, so an admin looks first; only "verified" shows a badge.
+ * the domain isn't that of a company CareerMetro verified under the employer's name, so an admin looks first; only "verified" shows a badge.
  */
 export const jobEmailChecks = pgTable(
   "job_email_checks",

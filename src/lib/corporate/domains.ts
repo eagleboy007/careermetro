@@ -43,7 +43,29 @@ export const FREE_MAIL_DOMAINS: readonly string[] = [
   "gmx.net",
   "gmx.de",
   "mail.com",
+  "yahoo.co.uk",
+  "hotmail.co.uk",
+  "outlook.co.in",
+  "mail.ru",
+  "indiatimes.com",
+  "tutanota.com",
+  "tuta.io",
+  "fastmail.com",
+  "duck.com",
 ];
+
+/** Providers whose personal mail runs on many country domains (yahoo.fr, hotmail.de): any registered domain of theirs. */
+const FREE_MAIL_NAMES = new Set(["gmail", "googlemail", "yahoo", "ymail", "hotmail", "outlook", "rediffmail", "protonmail"]);
+
+/** Second-level labels under a country code: "example.co.in" is example's, not "co"'s. */
+const SECOND_LEVEL = new Set(["co", "com", "net", "org", "ac", "edu", "gov", "gen", "firm", "ind", "res", "ltd", "plc"]);
+
+/** The registered domain: "mail.garudasec.co.in" is "garudasec.co.in". */
+export function baseDomain(domain: string): string {
+  const labels = domain.toLowerCase().split(".").filter(Boolean);
+  const keep = labels.length >= 3 && SECOND_LEVEL.has(labels.at(-2)!) ? 3 : 2;
+  return labels.slice(-keep).join(".");
+}
 
 const LABEL = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
@@ -72,7 +94,8 @@ export function emailDomain(email: string): string | null {
 export const isOnDomain = (domain: string, base: string): boolean => domain === base || domain.endsWith(`.${base}`);
 
 /** True for a personal mail domain, or a subdomain of one. */
-export const isFreeMail = (domain: string): boolean => FREE_MAIL_DOMAINS.some((f) => isOnDomain(domain, f));
+export const isFreeMail = (domain: string): boolean =>
+  FREE_MAIL_DOMAINS.some((f) => isOnDomain(domain, f)) || FREE_MAIL_NAMES.has(baseDomain(domain).split(".")[0]!);
 
 /**
  * The host of a company website typed with or without https://, or null when it isn't a plain https site. Plain http
