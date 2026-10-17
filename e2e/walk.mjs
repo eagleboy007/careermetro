@@ -604,6 +604,30 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
   await p.getByRole("region", { name: "Not for me" }).getByRole("button", { name: "Skip anyway" }).waitFor({ timeout: 5000 });
 });
+// The same on Today: skip from an open goal (it leaves the list, focus moves to the card's heading), then bring it back
+// from its pitstop on the Map.
+await step("not for me: skip a goal on Today, bring it back from the Map", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  const card = p.locator('section[aria-label="Your goals"]');
+  const row = card.locator("li").filter({ has: p.getByRole("button", { name: "Skip anyway" }) }).first();
+  const toggle = card.locator("ul > li > button[aria-expanded]").first();
+  const name = (await toggle.locator("b").innerText()).trim();
+  await toggle.click();
+  await row.getByRole("button", { name: "Skip anyway" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Your goals", null, { timeout: 15000 });
+  if (await card.locator("ul > li > button b").getByText(name, { exact: true }).count()) throw new Error("a skipped goal is still on Today");
+  await a11y("today-goal-skipped");
+  await p.goto(BASE + "/map");
+  await settled();
+  // The skipped goal's pitstop: the one whose sheet says Skipped.
+  const stations = p.locator('svg g[role="button"]:not([data-crossing])');
+  const skipped = p.getByRole("region", { name: "Skipped" });
+  for (let k = 0, n = await stations.count(); k < n && !(await skipped.count()); k++) await stations.nth(k).click();
+  await skipped.getByText(new RegExp(`^You skipped ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.`)).waitFor({ timeout: 5000 });
+  await skipped.getByRole("button", { name: "Bring back" }).click();
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
+});
 for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);

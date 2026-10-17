@@ -164,6 +164,16 @@ describe("buildGoalsSummary", () => {
     ]);
   });
 
+  it("carries each goal's Not for me offer, and leaves skipped goals out (FR-48)", () => {
+    const skip = { kind: "skip" as const, share: "Asked for in 91% of the job posts we checked for this role." };
+    const s = summary([goal({ goalId: "sql", notForMe: skip }), goal({ goalId: "pbi", skipped: true }), goal({ goalId: "x" })]);
+    expect(s.goals.map((g) => [g.name, g.notForMe])).toEqual([
+      ["SQL", skip],
+      ["X", null],
+    ]);
+    expect(s.moreCount).toBe(0);
+  });
+
   it("moves to the prove pitstop once learning is done, skips proved goals and counts the rest", () => {
     const goals = ["a", "b", "c", "d", "e"].map((id) => goal({ goalId: id }));
     goals[0].proved = true;

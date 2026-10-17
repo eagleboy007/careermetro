@@ -10,7 +10,7 @@ Last updated: 2026-10-17 (Not for me per goal, FR-48, Development 3).
   - Resume, Gaps, Path, Today, Map, Life line, Departures, Me and public profile, account settings 1–2, Inbox part 1, and resume download (PDF and Word). See `docs/REQUIREMENTS.md`.
   - 29 role profiles, "one of these" skill groups, certificate dates, and "Closest to your resume". See `docs/plans/`.
   - Pasted-job check (#109–#117). Nearby lines (#123). Market with example data (#125, #130). AI-ready resume check (#126).
-  - Not for me per goal, FR-48 (2026-10-17): skip a required goal (it stays a gap; the train passes it; Bring back restores it) or swap a "one of these" goal to another skill of its group, on the Map. No migration; export version 19. Tracks wait for role tracks. See `docs/plans/not-for-me-plan.md`.
+  - Not for me per goal, FR-48 (2026-10-17): skip a required goal (it stays a gap; the train passes it; Bring back restores it) or swap a "one of these" goal to another skill of its group, on the Map (#154) and in an open goal on Today. No migration; export version 19. Tracks wait for role tracks. See `docs/plans/not-for-me-plan.md`.
 - **Proof**
   - Certificate proof (#109, #110) and profile certifications with the Credly check (#132).
   - A Credly link fills a goal only after the check (#135, migration 0029).

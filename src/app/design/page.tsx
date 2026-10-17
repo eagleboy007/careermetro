@@ -121,7 +121,7 @@ import { TodayStatePreview, type TodayData } from "@/components/today/today-prev
 import { RideCard } from "@/components/today/ride-card";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
-import type { Gap, Profile } from "@/lib/schemas";
+import type { Gap, GoalsSummary, Profile } from "@/lib/schemas";
 import {
   exampleDepartures,
   exampleEvents,
@@ -139,6 +139,18 @@ import {
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
 
 // Example data only: shows every component in a realistic state.
+/** Today's goals with "Not for me" offers: a required goal to skip, a "one of these" goal to swap. */
+const notForMeToday: GoalsSummary = {
+  ...exampleGoals,
+  goals: exampleGoals.goals.map((g, i) =>
+    i === 0
+      ? { ...g, notForMe: { kind: "skip" as const, share: "Asked for in 75% of the job posts we checked for this role." } }
+      : i === 1
+        ? { ...g, notForMe: { kind: "swap" as const, current: g.name, options: [{ skillId: "tableau", name: "Tableau" }, { skillId: "looker", name: "Looker" }] } }
+        : g,
+  ),
+};
+
 /** A goal from a gap, not proved, for the "Not for me" examples. */
 const notForMeGoal = exampleMapLine.goals.find((g) => g.skillId === "power-bi")!;
 
@@ -634,6 +646,10 @@ export default function DesignPage() {
             }}
           />
           <NotForMe demo goal={{ ...notForMeGoal, skipped: true }} />
+        </div>
+        <p className="text-sm text-muted">On Today, in an open goal: the same choices. A skipped goal leaves the list and comes back from the Map.</p>
+        <div className="max-w-xl">
+          <GoalsCard summary={notForMeToday} mapHref="/map" demo />
         </div>
       </section>
 

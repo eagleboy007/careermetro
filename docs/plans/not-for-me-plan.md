@@ -2,7 +2,7 @@
 
 Status: approved by the Project manager under Milin's delegation, 2026-10-17. Built as FR-48.
 
-As built: goals are made only from required gaps, so no goal is "nice to have" yet and the nice-goal Remove has nothing to act on. "Not for me" sits at the foot of each pitstop on the Map; a skipped goal stays on the line (the train passes it) and shows "Bring back" there. Today passes skipped goals, with no tasks for them.
+As built: goals are made only from required gaps, so no goal is "nice to have" yet and the nice-goal Remove has nothing to act on. "Not for me" sits at the foot of each pitstop on the Map (#154) and in each open goal on Today; a skipped goal stays on the line (the train passes it) and shows "Bring back" there. Today leaves skipped goals out, with no tasks for them.
 
 ## What the person sees
 

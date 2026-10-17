@@ -1,4 +1,4 @@
-import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type Ride, type RideTask } from "@/lib/schemas";
+import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask } from "@/lib/schemas";
 import { certificatesFor } from "@/lib/proofs/eligible";
 import { clip } from "@/lib/text";
 
@@ -22,6 +22,8 @@ export type RideGoal = {
   notConfirmed?: boolean;
   /** "Not for me": the person skipped it (FR-48). It stays a gap but gets no tasks, and the train passes it. */
   skipped?: boolean;
+  /** What "Not for me" offers on it (FR-48), shown on Today's goal; null on "Your choice" goals. */
+  notForMe?: NotForMeOffer | null;
   /**
    * Set on a "Your choice" goal, with the company of the job check it came from. Such goals are never on the ride:
    * they sit on their own spur and never move the train or arrival.
@@ -255,6 +257,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
         },
       ],
       suggestion: null,
+      notForMe: g.notForMe ?? null,
     };
   });
   return goalsSummary.parse({
