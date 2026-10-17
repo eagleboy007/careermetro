@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-17 (Testing Run 4 done; e2e axe checks wait for the page title, Development 3).
+Last updated: 2026-10-17 (T72: run-together company names match only at the start, Development 3).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -18,7 +18,7 @@ Last updated: 2026-10-17 (Testing Run 4 done; e2e axe checks wait for the page t
 - **Admin:** report review `/admin/reports` with the IT Rules deadlines, FR-45 (`docs/plans/reports-review-plan.md`). Report notes are kept, as the privacy notice will say (launch-readiness item 8).
   - Removal tools, FR-46, #146 (Project manager's decision under Milin's delegation, 2026-10-15): hide a reported message and suspend an account, both reversible, with reason and audit line; migration 0031. See the plan's "Removal tools".
 - **Employer:** Corporate steps 1–7 (#113–#122), Express apply (#133), "Let companies find me" (#128; found chats count on the Corporate tab and Overview, and an unverified company counts none, #139), and the company-side and security fixes (#131, #134, #136). See `dev/corporate-plan.md`.
-  - T44 (Milin, 2026-10-15), #148: Find people shows each person's target role and city, and filters by experience, target role, city and verified profile, one or several together. People give an optional city in Settings (migration 0032, export version 17). Name search (name, name + role, name + role + current company) and a company never seeing its current staff (latest job on the profile), #149. Network name search waits for Network. A name of one letter plus punctuation ("a.") is refused like one letter (T63), and a one-word brand ("HCLTech", "InfosysBPM") is hidden from its company like the company search finds it (T71), 2026-10-17. See `dev/companies-find-me-plan.md`.
+  - T44 (Milin, 2026-10-15), #148: Find people shows each person's target role and city, and filters by experience, target role, city and verified profile, one or several together. People give an optional city in Settings (migration 0032, export version 17). Name search (name, name + role, name + role + current company) and a company never seeing its current staff (latest job on the profile), #149. Network name search waits for Network. A name of one letter plus punctuation ("a.") is refused like one letter (T63), and a one-word brand ("HCLTech", "InfosysBPM") is hidden from a company whose name it starts with (T71), but not from a name found inside it, so Coca-Cola staff show to Ola (T72, Project manager's option B), 2026-10-17. See `dev/companies-find-me-plan.md`.
   - Verified current job by work email, FR-47 (C5, 2026-10-16): a code to the person's email at their current company sets "Verified with work email" on Me, the public profile and the found-person view; other domains wait for an admin on /admin/companies. Migration 0033, export version 18. After Testing Run 4 (T53 to T57, T62, T66): only the domain of a company CareerMetro verified, under the employer's name, passes without an admin; Find people hides staff by name containment or initials and by any confirmed code for the current job. Off in production until the email sender exists. See `docs/plans/current-job-check-plan.md`.
 - **Platform**
   - RLS on every table (#112). Hardening H1–H12 except H7 (`dev/engineering-standards.md`).
