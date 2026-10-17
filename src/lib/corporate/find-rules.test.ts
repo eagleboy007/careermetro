@@ -119,6 +119,11 @@ describe("find rules (pending item 19)", () => {
     expect(worksAt(at("TCS"), ["Tata Consultancy Services"])).toBe(true);
     expect(worksAt(at("Tata Consultancy Services"), ["TCS Ltd"])).toBe(true);
     expect(worksAt(at("Wipro Technologies"), ["Wipro"])).toBe(true);
+    // A brand run together is hidden like the company search finds it (T71).
+    expect(worksAt(at("HCLTech"), ["HCL Technologies Limited"])).toBe(true);
+    expect(worksAt(at("InfosysBPM"), ["Infosys"])).toBe(true);
+    for (const [employer, company] of [["HCLTech", "HCL"], ["InfosysBPM", "Infosys"]] as const)
+      expect(passesText({ name: "", title: "", company }, { name: null, aim: null, profile: at(employer), experienceShown: true })).toBe(worksAt(at(employer), [company]));
     // Different companies that share a common word stay apart.
     expect(worksAt(at("Tata Steel"), ["Tata Consultancy Services"])).toBe(false);
     expect(worksAt(at("Global Services India"), ["Garuda Global"])).toBe(false);
