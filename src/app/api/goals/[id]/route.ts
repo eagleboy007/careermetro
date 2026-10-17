@@ -59,14 +59,16 @@ export async function PATCH(request: Request, { params }: RouteContext<"/api/goa
   }
   const parsed = change.safeParse(body);
   if (!parsed.success) return fail(400, CHANGE_REFUSED);
+  let result: Awaited<ReturnType<typeof changeGoal>>;
   try {
-    if (await changeGoal(owner.userId, id.data, parsed.data)) {
-      logEvent("info", "goal_changed", { route: "/api/goals/[id]", action: parsed.data.action });
-      return Response.json({ ok: true });
-    }
+    result = await changeGoal(owner.userId, id.data, parsed.data);
   } catch (error) {
     logEvent("error", "goal_change_failed", { route: "/api/goals/[id]", action: parsed.data.action, ...errorFields(error) });
     return fail(500, "Something went wrong changing this goal. Please try again.");
   }
-  return fail(409, CHANGE_REFUSED);
+  if (result === "ok") {
+    logEvent("info", "goal_changed", { route: "/api/goals/[id]", action: parsed.data.action });
+    return Response.json({ ok: true });
+  }
+  return result === "not_found" ? fail(404, CHANGE_REFUSED) : fail(409, CHANGE_REFUSED);
 }

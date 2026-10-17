@@ -72,7 +72,12 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
     title: clip(r.title, 160),
     detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120),
   });
-  const swapItems = (rs: { title: string; provider: string; kind: string; minutes: number }[]) => ({ learnDone: false, resources: rs.slice(0, 3).map(resourceItem), practice: null });
+  // A swapped goal keeps its learn stop's tick: it is the same goal and the same step on the path (T59).
+  const swapItems = (rs: { title: string; provider: string; kind: string; minutes: number }[], step: (typeof steps)[number] | undefined) => ({
+    learnDone: Boolean(step?.doneAt),
+    resources: rs.slice(0, 3).map(resourceItem),
+    practice: null,
+  });
   const items = (step: (typeof steps)[number] | undefined) => ({
     learnDone: Boolean(step?.doneAt),
     resources: (step?.resourceIds ?? [])
@@ -98,7 +103,7 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: own?.status === "renew" ? "weak" : g.status,
       proved,
-      ...(swap ? swapItems(swaps.get(swap) ?? []) : items(stepBySkill.get(g.skillId))),
+      ...(swap ? swapItems(swaps.get(swap) ?? [], stepBySkill.get(g.skillId)) : items(stepBySkill.get(g.skillId))),
       skipped,
       notForMe: own ? offerFor(own, result.roleSlug, skillGroupMembers) : null,
     };

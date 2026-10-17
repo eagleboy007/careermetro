@@ -185,7 +185,7 @@ export async function syncGoals(
 /** The person's goals in order, read only: for checks that must not write, such as a tick. */
 export async function goalsOf(
   userId: string,
-  db: Db = getDb(),
+  db: Db | Tx = getDb(),
   members: ReadonlyMap<string, string[]> = skillGroupMembers,
 ): Promise<UserGoal[]> {
   const [rows, proved] = await Promise.all([readGoals(db, userId), provedSkills(userId, db)]);
@@ -614,12 +614,15 @@ export async function removeChoiceGoal(userId: string, goalId: string, db: Db = 
 /** "Not for me" on a goal from a gap (FR-48): skip a required goal, swap a group goal, or bring a skipped one back. */
 export type GoalChange = { action: "skip" } | { action: "swap"; skillId: string } | { action: "restore" };
 
+/** "ok" when the goal is now as asked (asking twice is fine), "not_found" for no such goal of the person's, else "refused". */
+export type GoalChangeResult = "ok" | "not_found" | "refused";
+
 /**
  * Applies "Not for me" to one of the person's goals from gaps (docs/plans/not-for-me-plan.md). Skip sets aside a
  * required goal that isn't met: it stays a gap, so the match and readiness don't change, and goal sync never brings it
  * back. Swap points a "one of these" goal at another skill of its group (back to its own skill clears it); any skill of
- * the group still fills it. Restore brings a skipped goal back at the end of the order, with its proof. False for
- * anyone else's goal, a "Your choice" goal, or a change that doesn't fit the goal.
+ * the group still fills it. Restore brings a skipped goal back at the end of the order, with its proof. Not found for
+ * anyone else's goal or a "Your choice" goal; refused for a change that doesn't fit the goal (T68).
  */
 export async function changeGoal(
   userId: string,
@@ -627,42 +630,45 @@ export async function changeGoal(
   change: GoalChange,
   db: Db = getDb(),
   members: ReadonlyMap<string, string[]> = skillGroupMembers,
-): Promise<boolean> {
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(goalId)) return false;
+): Promise<GoalChangeResult> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(goalId)) return "not_found";
   return db.transaction(async (tx) => {
     await lockPerson(tx, userId);
     const [goal] = await tx
       .select(goalColumns)
       .from(userGoals)
       .where(and(eq(userGoals.id, goalId), eq(userGoals.userId, userId), eq(userGoals.source, "gap")));
-    if (!goal) return false;
+    if (!goal) return "not_found";
     const offer = notForMeFor({ ...goal, source: "gap" }, "", members);
     const where = eq(userGoals.id, goal.id);
     if (change.action === "skip") {
-      if (offer?.kind !== "skip" || (goal.status !== "active" && goal.status !== "renew")) return false;
+      if (offer?.kind !== "skip") return "refused";
+      if (goal.status === "skipped") return "ok";
+      if (goal.status !== "active" && goal.status !== "renew") return "refused";
       await tx.update(userGoals).set({ status: "skipped", skippedAt: new Date() }).where(where);
-      return true;
+      return "ok";
     }
     if (change.action === "swap") {
-      if (goal.status === "skipped" || !canSwapTo({ ...goal, source: "gap" }, change.skillId, members)) return false;
+      if (goal.status === "skipped" || !canSwapTo({ ...goal, source: "gap" }, change.skillId, members)) return "refused";
       await tx
         .update(userGoals)
         .set({ swappedTo: change.skillId === goal.skillId ? null : change.skillId })
         .where(where);
-      return true;
+      return "ok";
     }
-    if (goal.status !== "skipped") return false;
+    // Restore: a goal that isn't skipped is already back.
+    if (goal.status !== "skipped") return "ok";
     const [{ last }] = await tx
       .select({ last: sql<number>`coalesce(max(${userGoals.position}), 0)::int` })
       .from(userGoals)
       .where(eq(userGoals.userId, userId));
     // Active until the next sync, which marks it met if its skill is shown or proved.
     await tx.update(userGoals).set({ status: "active", skippedAt: null, metAt: null, position: last + 1 }).where(where);
-    return true;
+    return "ok";
   });
 }
 
-export type SwapResource = { id: string; title: string; provider: string; kind: string; minutes: number };
+export type SwapResource = { id: string; title: string; provider: string; kind: string; url: string; minutes: number };
 
 /**
  * Courses for skills a goal was swapped to, which the person's path has no step for: healthy free links first, then
@@ -672,7 +678,7 @@ export async function resourcesForSkills(skillIds: string[], db: Db | Tx = getDb
   const out = new Map<string, SwapResource[]>();
   if (!skillIds.length) return out;
   const rows = await db
-    .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, minutes: resources.minutes, free: resources.free, skillIds: resources.skillIds })
+    .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, url: resources.url, minutes: resources.minutes, free: resources.free, skillIds: resources.skillIds })
     .from(resources)
     .where(and(eq(resources.healthy, true), arrayOverlaps(resources.skillIds, skillIds)));
   for (const skillId of skillIds) {
@@ -680,7 +686,7 @@ export async function resourcesForSkills(skillIds: string[], db: Db | Tx = getDb
       .filter((r) => r.skillIds.includes(skillId) && r.title.trim())
       .sort((a, b) => Number(b.free) - Number(a.free) || a.minutes - b.minutes || a.id.localeCompare(b.id))
       .slice(0, 3)
-      .map(({ id, title, provider, kind, minutes }) => ({ id, title, provider, kind, minutes }));
+      .map(({ id, title, provider, kind, url, minutes }) => ({ id, title, provider, kind, url, minutes }));
     out.set(skillId, picked);
   }
   return out;

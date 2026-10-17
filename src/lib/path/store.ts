@@ -3,10 +3,12 @@ import { and, asc, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
 import { gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
-import { skills } from "@/content";
+import { skillGroupMembers, skills } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
+import { swappedSkill } from "@/lib/goals/not-for-me";
+import { goalsOf, resourcesForSkills } from "@/lib/goals/store";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { singleFlight } from "@/lib/single-flight";
 import type { GapStatus, PlannedPath, RoleProfile } from "@/lib/schemas";
@@ -121,7 +123,7 @@ async function buildForOwner(
   };
   const view = async (tx: Tx, pathId: string): Promise<PathForOwner> => ({
     ok: true,
-    path: await readPath(tx, pathId, weeklyHours, statusBySkill, gaps.analysis.gaps.length),
+    path: await readPath(tx, pathId, weeklyHours, statusBySkill, gaps.analysis.gaps.length, owner),
   });
 
   type Next = { done: PathForOwner } | { plan: PlannedPath; titles: ResourceTitles; reservedId: string | null };
@@ -192,8 +194,19 @@ async function readPath(
   weeklyHours: number,
   statusBySkill: ReadonlyMap<string, Exclude<GapStatus, "met">>,
   gapCount: number,
+  owner: Owner,
 ): Promise<PathView> {
   const steps = await tx.select().from(pathSteps).where(eq(pathSteps.pathId, pathId)).orderBy(asc(pathSteps.position));
+  // A goal swapped to another skill of its group ("Not for me", FR-48) learns that skill from the catalog here too,
+  // as on the Map and Today (T58). Only a signed-in person has goals.
+  const swapBySkill = new Map<string, string>();
+  if (owner.userId !== undefined) {
+    for (const g of await goalsOf(owner.userId, tx)) {
+      const swap = swappedSkill(g, skillGroupMembers);
+      if (swap) swapBySkill.set(g.skillId, swap);
+    }
+  }
+  const swaps = await resourcesForSkills([...new Set(swapBySkill.values())], tx);
   const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
   const rows = ids.length
     ? await tx
@@ -206,18 +219,20 @@ async function readPath(
   const view = steps.map((s) => {
     const week = Math.floor(hoursBefore / weeklyHours) + 1;
     hoursBefore += s.hours;
+    const swap = swapBySkill.get(s.skillId);
     return {
       id: s.id,
       position: s.position,
       skillId: s.skillId,
-      skillName: skillNames.get(s.skillId) ?? s.skillId,
+      skillName: skillNames.get(swap ?? s.skillId) ?? swap ?? s.skillId,
       status: statusBySkill.get(s.skillId) ?? "missing",
       hours: s.hours,
       week,
-      reason: s.reason,
-      proofTask: s.proofTask,
+      // The worded reason and proof task were written for the goal's own skill.
+      reason: swap ? `You chose ${skillNames.get(swap) ?? swap} instead. Any skill of the group fills this goal.` : s.reason,
+      proofTask: swap ? "" : s.proofTask,
       doneAt: s.doneAt ? s.doneAt.toISOString() : null,
-      resources: s.resourceIds.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])),
+      resources: swap ? (swaps.get(swap) ?? []) : s.resourceIds.flatMap((id) => (byId.has(id) ? [byId.get(id)!] : [])),
     };
   });
   return {

@@ -4,9 +4,10 @@ import { and, asc, count, desc, eq, gte, isNotNull, lt, or, sql } from "drizzle-
 import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
 import { aiCalls, practiceAnswers, userGoals } from "@/db/schema";
-import { practiceQuestions, skills } from "@/content";
+import { practiceQuestions, skillGroupMembers, skills } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, RESERVATION_MINUTES, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
+import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
 import {
@@ -122,7 +123,8 @@ export async function submitPracticeAnswer(
     const [goal] = await tx
       .select({ id: userGoals.id })
       .from(userGoals)
-      .where(and(eq(userGoals.userId, userId), eq(userGoals.skillId, question.skillId)))
+      // A goal swapped to this skill ("Not for me", FR-48) practises it too (T58).
+      .where(and(eq(userGoals.userId, userId), or(eq(userGoals.skillId, question.skillId), eq(userGoals.swappedTo, question.skillId))))
       .limit(1);
     if (!goal) return { ok: false, reason: "not_goal" };
     const used = await usedAnswers(tx, userId, now);
@@ -202,18 +204,20 @@ export async function practiceFor(userId: string, now = new Date(), db: Db = get
   const skillsOut: PracticeSkill[] = [];
   const noQuestions: string[] = [];
   for (const g of open) {
-    const name = skillNames.get(g.skillId) ?? g.skillId;
-    const questions = questionsBySkill.get(g.skillId);
+    // A swapped goal practises the skill it is on now (T58).
+    const skillId = swappedSkill(g, skillGroupMembers) ?? g.skillId;
+    const name = skillNames.get(skillId) ?? skillId;
+    const questions = questionsBySkill.get(skillId);
     if (!questions) {
       noQuestions.push(name);
       continue;
     }
     skillsOut.push({
-      skillId: g.skillId,
+      skillId,
       name,
       tag: g.status === "met" || g.proved ? "met" : g === current ? "current" : "ahead",
       questions: questions.map((q) => ({ id: q.id, question: q.question, lookFor: q.lookFor })),
-      ratings: ratings.get(g.skillId) ?? [],
+      ratings: ratings.get(skillId) ?? [],
     });
   }
   return practiceView.parse({ skills: skillsOut, left: Math.max(0, PRACTICE_LIMITS.answersPerDay - used), noQuestions });

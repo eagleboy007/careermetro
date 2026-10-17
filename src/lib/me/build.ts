@@ -58,9 +58,11 @@ export function journeyFor(line: MapLine | null, opts: { joinedAt: Date; resumeR
     return stops;
   }
   stops.push({ state: "done", name: "Resume read", detail: `${monthLabel(opts.resumeReadAt)} · ${plural(opts.gaps, "gap")}` });
-  const current = line.goals.findIndex((g) => !g.proved);
+  // A skipped goal ("Not for me", FR-48) is never the current stop, as on the Map and Today (T60).
+  const current = line.goals.findIndex((g) => !g.proved && !g.skipped);
   line.goals.slice(0, GOAL_STOPS).forEach((g, i) => {
     if (g.proved) stops.push({ state: "done", name: `Goal met · ${cut(g.name, 60)}`, detail: "Proved" });
+    else if (g.skipped) stops.push({ state: "future", name: `${cut(g.name, 70)} goal`, detail: "Skipped" });
     else if (i === current) {
       const learning = g.status === "missing" && !g.learnDone;
       stops.push({

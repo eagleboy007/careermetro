@@ -146,5 +146,9 @@ describe("layoutLine", () => {
     const l = layoutLine(exampleMapLine);
     const labels = l.stations.flatMap((s) => (s.kind === "end" ? [] : [pitstopLabel(s)]));
     expect(labels.slice(0, 5)).toEqual(["1 · PROVE ✓", "2 · PROVE ✓", "3 · PROVE ✓", "4 · LEARN", "5 · PROVE"]);
+    // A skipped goal's stops read as skipped, not as stops ahead (T67).
+    const first = exampleMapLine.goals.findIndex((g) => !g.proved);
+    const skipped = layoutLine({ ...exampleMapLine, goals: exampleMapLine.goals.map((g, i) => ({ ...g, skipped: i === first })) });
+    expect(skipped.stations.flatMap((s) => (s.kind === "end" ? [] : [pitstopLabel(s)])).slice(3, 5)).toEqual(["4 · SKIPPED", "5 · SKIPPED"]);
   });
 });
