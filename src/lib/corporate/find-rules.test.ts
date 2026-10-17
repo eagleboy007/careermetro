@@ -128,6 +128,12 @@ describe("find rules (pending item 19)", () => {
     expect(worksAt(at("Tata Steel"), ["Tata Consultancy Services"])).toBe(false);
     expect(worksAt(at("Global Services India"), ["Garuda Global"])).toBe(false);
     expect(worksAt(at("Infotech Systems"), ["Infosys"])).toBe(false);
+    // Run together only counts at the start of a one-word name (T72).
+    expect(worksAt(at("Coca-Cola India"), ["Ola"])).toBe(false);
+    expect(worksAt(at("CocaCola"), ["Ola Cabs"])).toBe(false);
+    expect(worksAt(at("Ola Cabs"), ["CocaCola"])).toBe(false);
+    expect(worksAt(at("HCL Tech"), ["HCLTech"])).toBe(true);
+    expect(worksAt(at("Airtel"), ["Air India"])).toBe(true);
   });
 
   it("search by name, name + role, and name + role + company, never by a part the person hid", () => {
