@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-17 (Testing Run 4 fixes: work-email badge and staff hiding, Development 3).
+Last updated: 2026-10-17 (Testing Run 4 done; e2e axe checks wait for the page title, Development 3).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -25,6 +25,7 @@ Last updated: 2026-10-17 (Testing Run 4 fixes: work-email badge and staff hiding
   - The app sends its own email (work-email codes) through Resend over HTTPS, `src/lib/email/send.ts`, once the key is in; an unsent code is spent and the person told to try again (launch readiness item 11, 2026-10-16).
   - Review carry-overs 3 to 6 (pending-items.md) are closed: the `gap_analyses` profile index, AI spend reserved before the call, and the rating route tests were already in; `npm run eval:explain` now checks the explain-gaps prompt (no invented quotes, the matcher's hours, no exclamation marks), with its scoring tested in CI without the API (2026-10-17). After Testing Run 4 (T61, T70): a quote counts as invented only when it is in nothing the model was given (role title, every gap); hour ranges and decimals are read; the report names the models that answered; over-long words fail the run; no key fails rather than skips.
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
+  - Every e2e axe check runs through one helper that first waits for the page title, because a server action's refresh can leave `<title>` empty for a moment; two of the three helpers skipped that wait, which flaked `me-certifications-held` on #158 (2026-10-17).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 424 free resource links (#129).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
