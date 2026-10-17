@@ -21,7 +21,7 @@ export async function reviewCompanyAction(orgId: string, decision: ReviewDecisio
   return result;
 }
 
-/** A work-email check of someone's current job whose domain didn't plainly match the company (FR-47). */
+/** A work-email check of someone's current job whose domain isn't a verified company's under the employer's name (FR-47). */
 export async function reviewJobCheckAction(id: string, decision: "verify" | "refuse"): Promise<JobCheckReviewResult> {
   const admin = await currentAdmin();
   if (!admin) return NOT_AVAILABLE;

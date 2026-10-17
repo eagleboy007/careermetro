@@ -1,7 +1,7 @@
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
@@ -47,8 +47,19 @@ describe.skipIf(!db)("verified current job (database)", () => {
     for (const level of ["log", "warn", "error"] as const) vi.spyOn(console, level).mockImplementation((line: unknown) => void lines.push(String(line)));
   });
   afterEach(() => vi.restoreAllMocks());
+  // Garuda Sec is a company CareerMetro verified, on garudasec.com: only its domain passes without an admin (T53).
+  let orgId: string | null = null;
+  beforeAll(async () => {
+    const [org] = await db!
+      .insert(schema.organizations)
+      .values({ name: "Garuda Sec", legalName: "Garuda Sec Private Limited", emailDomain: "garudasec.com", reviewStatus: "verified", domainVerifiedAt: clock })
+      .onConflictDoNothing()
+      .returning({ id: schema.organizations.id });
+    orgId = org?.id ?? null;
+  });
   afterAll(async () => {
     if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
+    if (orgId) await db!.delete(schema.organizations).where(eq(schema.organizations.id, orgId));
     await sqlClient!.end();
     const all = lines.join("\n");
     for (const secret of ["meera.iyer", "garudasec", "Garuda", run]) expect(all).not.toContain(secret);
@@ -119,6 +130,15 @@ describe.skipIf(!db)("verified current job (database)", () => {
     const me = await person("off", profileAt("Garuda Sec"));
     expect(await startJobCheck(me, { workEmail: "meera@garudasec.com" }, deps({ delivery: "off" }))).toMatchObject({ ok: false, error: "Work-email checks open soon." });
     expect(await startJobCheck(me, { workEmail: "meera@garudasec.com" }, deps({ env: { NODE_ENV: "production" } }))).toMatchObject({ ok: false, error: "Work-email checks open soon." });
+  });
+
+  it("sends a look-alike domain, or a domain no verified company owns, to an admin", async () => {
+    // The name alone is not enough: anyone can register garudasec.xyz (T53).
+    expect(await verify(await person("lookalike", profileAt("Garuda Sec")), "meera@garudasec.xyz")).toEqual({ ok: true, status: "review" });
+    // The verified company's domain under another employer's name is not enough either.
+    expect(await verify(await person("other", profileAt("Konkan Bank")), "meera@garudasec.com")).toEqual({ ok: true, status: "review" });
+    // A subdomain of the company's domain, under the employer as the person writes it, is.
+    expect(await verify(await person("unit", profileAt("Garuda Sec India")), "meera@soc.garudasec.com")).toEqual({ ok: true, status: "verified" });
   });
 
   it("sends another domain to an admin, who verifies or refuses it", async () => {

@@ -1,5 +1,6 @@
 import { monthLabel } from "@/lib/map/life-layout";
-import { companyKey, currentJobs } from "@/lib/profile/employer";
+import { baseDomain, isOnDomain } from "@/lib/corporate/domains";
+import { companyKey, currentJobs, sameCompany } from "@/lib/profile/employer";
 import type { Profile } from "@/lib/schemas";
 import type { JobEmailCheckStatus } from "@/lib/schemas/constants";
 
@@ -53,30 +54,24 @@ export function jobToCheck(profile: Profile | null): JobKey | null {
   return key.employerKey ? key : null;
 }
 
-/** Second-level labels under a country code: "example.co.in" is example's, not "co"'s. */
-const SECOND_LEVEL = new Set(["co", "com", "net", "org", "ac", "edu", "gov", "gen", "firm", "ind", "res", "ltd", "plc"]);
+export { baseDomain };
 
-/** The name part of a domain: "mail.garudasec.co.in" is "garudasec". */
-export function domainName(domain: string): string {
+/** The domain and every parent of it with two labels or more: "mail.example.co.in", "example.co.in", "co.in". */
+export function domainAndParents(domain: string): string[] {
   const labels = domain.toLowerCase().split(".").filter(Boolean);
-  if (labels.length < 2) return labels[0] ?? "";
-  let end = labels.length - 1;
-  if (end >= 2 && SECOND_LEVEL.has(labels[end - 1]!)) end -= 1;
-  return labels[end - 1]!.replace(/[^a-z0-9]/g, "");
+  return labels.slice(0, -1).map((_, i) => labels.slice(i).join("."));
 }
 
+/** A company on CareerMetro whose email domain was proved by its admin's code and checked by hand. */
+export type VerifiedCompany = { emailDomain: string; names: readonly (string | null)[] };
+
 /**
- * Whether an email domain plainly belongs to the employer: its name is the company's words run together
- * ("garudasec.com" for "Garuda Sec Pvt Ltd"), their first word ("infosys.com" for "Infosys BPM"), or their initials
- * ("tcs.com" for "Tata Consultancy Services"). Anything else is still accepted, but an admin looks before the badge shows.
+ * Whether a work email plainly belongs to the employer (T53): its domain is, or is under, the email domain of a company
+ * CareerMetro has verified, and that company's name or legal name names the employer. A look-alike domain
+ * (accenture.xyz), a free-mail domain and a name that only shares initials or a first word go to an admin instead.
  */
-export function domainMatchesEmployer(domain: string, employerKey: string): boolean {
-  const name = domainName(domain);
-  const words = employerKey.split(" ").filter(Boolean);
-  if (name.length < 2 || words.length === 0) return false;
-  const joined = words.join("");
-  const initials = words.length >= 2 ? words.map((w) => w[0]).join("") : "";
-  return name === joined || (words[0]!.length >= 3 && name === words[0]) || (initials.length >= 2 && name === initials);
+export function onVerifiedCompanyDomain(domain: string, employer: string, companies: readonly VerifiedCompany[]): boolean {
+  return companies.some((c) => isOnDomain(domain, c.emailDomain) && c.names.some((n) => !!n && sameCompany(employer, n)));
 }
 
 /**

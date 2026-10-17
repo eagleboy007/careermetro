@@ -45,6 +45,12 @@ describe("work-email domains", () => {
     expect(isFreeMail("gmail.com.example.in")).toBe(false);
   });
 
+  it("refuses personal mail on a provider's country domains too (T56)", () => {
+    for (const d of ["yahoo.co.uk", "yahoo.fr", "mail.yahoo.co.jp", "hotmail.co.uk", "hotmail.de", "outlook.co.in", "mail.ru", "indiatimes.com", "tutanota.com", "fastmail.com", "duck.com"])
+      expect(isFreeMail(d)).toBe(true);
+    expect(isFreeMail("outlookindia.com")).toBe(false);
+  });
+
   it("needs the company's domain or a subdomain of it", () => {
     expect(checkWorkEmail("a@example-labs.test", "example-labs.test").ok).toBe(true);
     expect(checkWorkEmail("a@mail.example-labs.test", "example-labs.test").ok).toBe(true);

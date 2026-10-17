@@ -1,6 +1,6 @@
 import { decimalYear, readYearMonth } from "@/lib/map/life-layout";
 import { worked } from "@/lib/me/build";
-import { companyKey, currentJobs, searchKey } from "@/lib/profile/employer";
+import { companyKey, currentJobs, sameCompany, searchKey } from "@/lib/profile/employer";
 import type { FindBand, Profile } from "@/lib/schemas";
 import type { JobMatchView, OrgReviewStatus, OrgRole } from "./types";
 
@@ -96,13 +96,14 @@ export function compareFound(a: { match: JobMatchView; ref: string }, b: { match
 export { companyKey, currentJobs, searchKey };
 
 /**
- * Whether the person works at the searching company now, by their current employer on the profile matching the
- * company's name or legal name. A company never sees them (Project manager under Milin's delegation, 2026-10-15,
- * keeping his 2026-10-09 rule that an employee's job search stays hidden from their employer).
+ * Whether the person works at the searching company now, by their current employer on the profile plainly naming the
+ * company's name or legal name (`sameCompany`: "Infosys BPM" and "TCS" count for Infosys and Tata Consultancy
+ * Services). A company never sees them (Project manager under Milin's delegation, 2026-10-15, keeping his 2026-10-09
+ * rule that an employee's job search stays hidden from their employer).
  */
 export function worksAt(profile: Profile, companyNames: readonly (string | null)[]): boolean {
-  const keys = new Set(companyNames.map((n) => (n ? companyKey(n) : "")).filter(Boolean));
-  return currentJobs(profile).some((r) => keys.has(companyKey(r.employer)));
+  const names = companyNames.filter((n): n is string => !!n);
+  return currentJobs(profile).some((r) => names.some((n) => sameCompany(r.employer, n)));
 }
 
 /** Every word typed is the start of a word in the name: "pri nai" finds Priya Nair. */

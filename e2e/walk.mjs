@@ -686,8 +686,9 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
   if (await p.getByRole("heading", { name: "Practice confidence" }).count()) throw new Error("View as others shows Practice confidence");
 });
 // The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
-// Example Retail Pvt Ltd since 2022-06; a fresh subdomain keeps the per-domain cap out of the way of reruns.
-await step("current job: free mail is refused, a code to the work email verifies it, and others see the badge", async () => {
+// Example Retail Pvt Ltd since 2022-06. No verified company owns exampleretail.test, so a right code goes to an admin
+// (T53): the owner sees it's being checked, everyone else sees Not verified.
+await step("current job: free mail is refused, a code to the work email waits for review, and others see Not verified", async () => {
   await p.goto(BASE + "/me");
   await settled();
   await p.getByText("Not verified", { exact: true }).first().waitFor({ timeout: 10000 });
@@ -701,13 +702,15 @@ await step("current job: free mail is refused, a code to the work email verifies
   await box.waitFor({ timeout: 10000 });
   await p.getByLabel("Code", { exact: true }).fill(await box.getAttribute("data-test-code"));
   await p.getByRole("button", { name: "Confirm" }).click();
-  await p.getByText(/^Verified with work email · \w{3} \d{4}$/).first().waitFor({ timeout: 15000 });
-  if (await p.getByText("Verify with your work email").count()) throw new Error("the form stays after the check passed");
+  await p.getByText("Work email received · we're checking the domain", { exact: true }).first().waitFor({ timeout: 15000 });
+  if (await p.getByText("Verify with your work email").count()) throw new Error("the form stays after the code was confirmed");
+  if (await p.getByText(/^Verified with work email/).count()) throw new Error("a domain no verified company owns got the badge");
   await p.getByRole("button", { name: "View as others" }).click();
-  await p.getByText(/^Verified with work email · /).first().waitFor({ timeout: 5000 });
+  await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
+  if (await p.getByText(/checking the domain|^Verified with work email/).count()) throw new Error("others see more than Not verified");
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const check = data.jobEmailChecks?.[0];
-  if (check?.status !== "verified" || JSON.stringify(data.jobEmailChecks).includes("priya.sharma@")) throw new Error("download lacks the check, or has the address");
+  if (check?.status !== "review" || JSON.stringify(data.jobEmailChecks).includes("priya.sharma@")) throw new Error("download lacks the check, or has the address");
   await a11y("me-job-check");
 });
 // Nearby lines (dev/nearby-lines-plan.md). The walk's resume shares under half the key skills of every other role, so
@@ -1510,7 +1513,8 @@ await step("company review: not found for others; the admin verifies the new com
     await row.waitFor();
     await row.getByText("Waiting for verification").waitFor();
     const body = await q.locator("body").innerText();
-    if (/@/.test(body)) throw new Error("an email address is shown on the review page");
+    // Work-email checks waiting for review show a bare "@domain" (FR-47), never an address with a name before the @.
+    if (/[A-Za-z0-9._%+-]@[A-Za-z0-9-]/.test(body)) throw new Error("an email address is shown on the review page");
     const verify = row.getByRole("button", { name: "Verify Example Labs" });
     const box = await verify.boundingBox();
     if (!box || box.height < 44) throw new Error(`Verify is ${box?.height}px tall, under 44px`);

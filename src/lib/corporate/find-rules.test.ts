@@ -112,6 +112,17 @@ describe("find rules (pending item 19)", () => {
     expect(worksAt(p([{ employer: "Example Labs", start: "2019", end: "2021" }, { employer: "Garuda", start: "2021", end: null }]), ["Example Labs"])).toBe(false);
     // A company name made only of legal-form words never matches anyone.
     expect(worksAt(p([{ employer: "Pvt Ltd", start: "2023", end: null }]), ["Private Limited"])).toBe(false);
+    // The employer as people write it: a unit, a country or the initials still hide them from the company (T54).
+    const at = (employer: string) => p([{ employer, start: "2023", end: null }]);
+    expect(worksAt(at("Infosys BPM"), ["Infosys Limited"])).toBe(true);
+    expect(worksAt(at("Example Labs India"), ["Example Labs"])).toBe(true);
+    expect(worksAt(at("TCS"), ["Tata Consultancy Services"])).toBe(true);
+    expect(worksAt(at("Tata Consultancy Services"), ["TCS Ltd"])).toBe(true);
+    expect(worksAt(at("Wipro Technologies"), ["Wipro"])).toBe(true);
+    // Different companies that share a common word stay apart.
+    expect(worksAt(at("Tata Steel"), ["Tata Consultancy Services"])).toBe(false);
+    expect(worksAt(at("Global Services India"), ["Garuda Global"])).toBe(false);
+    expect(worksAt(at("Infotech Systems"), ["Infosys"])).toBe(false);
   });
 
   it("search by name, name + role, and name + role + company, never by a part the person hid", () => {

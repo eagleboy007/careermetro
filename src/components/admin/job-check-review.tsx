@@ -6,9 +6,10 @@ import { formatDay } from "@/lib/corporate/format";
 
 /*
  * Work-email checks to review (FR-47, dev/current-job-check-plan.md), on /admin/companies: a person confirmed a code
- * at a domain that doesn't plainly belong to the company on their current job. The admin says whether it does. Only the
- * company as the person wrote it, the domain and the day: never the person, their address or their profile. Neutral
- * colours; results are announced in a polite live region. Without `review` (the /design page) the buttons are off.
+ * at a domain that isn't a verified company's under the employer on their current job. The admin says whether it
+ * belongs to that company. Only the company as the person wrote it, the domain and the day: never the person, their
+ * address or their profile. Neutral colours; results are announced in a polite live region. Without `review` (the
+ * /design page) the buttons are off.
  */
 
 export type JobCheckRowView = { id: string; employer: string; domain: string; checkedAt: Date | string };
