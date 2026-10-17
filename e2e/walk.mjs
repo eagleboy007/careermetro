@@ -597,7 +597,7 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
   await section.getByRole("button", { name: "Skip anyway" }).click();
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Skipped", null, { timeout: 15000 });
   const skipped = p.getByRole("region", { name: "Skipped" });
-  await skipped.getByText(/It stays a gap/).waitFor({ timeout: 5000 });
+  await skipped.getByText(/^You skipped .* It stays a gap/).waitFor({ timeout: 5000 });
   await shot("map-goal-skipped");
   await a11y("map-goal-skipped");
   await skipped.getByRole("button", { name: "Bring back" }).click();
@@ -975,7 +975,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 18) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 19) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
