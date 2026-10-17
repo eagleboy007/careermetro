@@ -1218,7 +1218,8 @@ export const auditLogs = pgTable(
 
 /**
  * Abuse limits shared by every server (H11): one row per limit, keyed hash and fixed window, counting hits. The key is
- * an HMAC of the email or IP, never the value itself. Rows older than two days are deleted by the code that writes them.
+ * an HMAC of the email or IP, never the value itself. Windows that started over two days ago are deleted by the daily
+ * cleanup (clearOldRateLimits, api/cron/cleanup).
  */
 export const rateLimits = pgTable(
   "rate_limits",

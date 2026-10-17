@@ -32,7 +32,8 @@ const SHARED_WORDS = new Set(["india", "technologies", "technology", "solutions"
 
 /**
  * Whether two company names plainly name the same company, leaning towards yes: one name's words appear together in
- * the other ("Infosys" and "Infosys BPM", "Example Labs" and "Example Labs India"), or one is the other's initials
+ * the other ("Infosys" and "Infosys BPM", "Example Labs" and "Example Labs India"), even run together ("HCLTech" and
+ * "HCL Technologies"), or one is the other's initials
  * ("TCS" and "Tata Consultancy Services"). Used to keep people out of their own employer's search, where a wrong yes
  * only hides someone and a wrong no shows them to their employer.
  */
@@ -42,6 +43,11 @@ export function sameCompany(a: string, b: string): boolean {
   const coreA = wordsA.filter((w) => !SHARED_WORDS.has(w)).join(" ");
   const coreB = wordsB.filter((w) => !SHARED_WORDS.has(w)).join(" ");
   if (coreA && coreB && (` ${coreA} `.includes(` ${coreB} `) || ` ${coreB} `.includes(` ${coreA} `))) return true;
+  // A brand run together ("HCLTech", "InfosysBPM"): the company search finds it by a plain part of the name, so the
+  // same part hides it (T71). Three letters or more, so "a" or "it" never hides anyone.
+  const runA = coreA.replace(/ /g, "");
+  const runB = coreB.replace(/ /g, "");
+  if ((runB.length >= 3 && runA.includes(runB)) || (runA.length >= 3 && runB.includes(runA))) return true;
   const initials = (words: string[]) => (words.length >= 2 ? words.map((w) => w[0]).join("") : "");
   const single = (words: string[]) => (words.length === 1 && words[0]!.length >= 2 ? words[0]! : "");
   return (!!single(wordsA) && single(wordsA) === initials(wordsB)) || (!!single(wordsB) && single(wordsB) === initials(wordsA));
