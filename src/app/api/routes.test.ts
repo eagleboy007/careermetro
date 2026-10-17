@@ -16,6 +16,7 @@ const m = vi.hoisted(() => ({
   renewExpired: vi.fn(async () => 0),
   reopenUnconfirmed: vi.fn(async () => 0),
   removeChoiceGoal: vi.fn(),
+  changeGoal: vi.fn(),
   clearCodes: vi.fn(async () => 0),
   endAccess: vi.fn(async () => ({ accessEnded: 0, readMarksCleared: 0 })),
   erasePhones: vi.fn(async () => 0),
@@ -50,7 +51,7 @@ vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResu
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/account/settings-store", () => ({ clearExpiredUsernameRedirects: m.clearOldLinks }));
-vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, reopenUnconfirmedGoals: m.reopenUnconfirmed, removeChoiceGoal: m.removeChoiceGoal }));
+vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, reopenUnconfirmedGoals: m.reopenUnconfirmed, removeChoiceGoal: m.removeChoiceGoal, changeGoal: m.changeGoal }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/corporate/find-store", () => ({ clearOldProfileViews: m.clearViews }));
 vi.mock("@/lib/practice/store", () => ({ clearOldPracticeAnswers: m.clearPractice }));
@@ -71,7 +72,7 @@ import { GET as health } from "@/app/api/health/route";
 import { PUT as rate } from "@/app/api/gaps/[id]/rating/route";
 import { POST as checkJob } from "@/app/api/job-checks/route";
 import { DELETE as removeCheck } from "@/app/api/job-checks/[id]/route";
-import { DELETE as removeGoalRoute } from "@/app/api/goals/[id]/route";
+import { DELETE as removeGoalRoute, PATCH as changeGoalRoute } from "@/app/api/goals/[id]/route";
 import { POST as addCheckGoal } from "@/app/api/job-checks/[id]/goals/route";
 import { POST as requestRole } from "@/app/api/role-requests/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
@@ -672,6 +673,45 @@ describe("remove from my goals", () => {
     expect((await del()).status).toBe(404);
     m.removeChoiceGoal.mockRejectedValueOnce(new Error("Failed query"));
     expect((await del()).status).toBe(500);
+  });
+});
+
+describe("not for me (FR-48)", () => {
+  const patch = (body: unknown, id = ID, origin: string | null = SITE) =>
+    changeGoalRoute(
+      new Request(`${SITE}/api/goals/${id}`, {
+        method: "PATCH",
+        headers: { ...(origin ? { origin } : {}), "content-type": "application/json" },
+        body: typeof body === "string" ? body : JSON.stringify(body),
+      }),
+      { params: Promise.resolve({ id }) } as never,
+    );
+
+  it("refuses another site, a bad id, anyone not signed in and a change that isn't one of the three, before changing anything", async () => {
+    m.account = { id: "user-1" };
+    expect((await patch({ action: "skip" }, ID, null)).status).toBe(403);
+    expect((await patch({ action: "skip" }, ID, "https://evil.example")).status).toBe(403);
+    expect((await patch({ action: "skip" }, "../../etc")).status).toBe(404);
+    expect((await patch("x".repeat(500))).status).toBe(413);
+    for (const bad of ["{", { action: "delete" }, { action: "swap" }, { action: "swap", skillId: "Not A Skill" }, { action: "skip", extra: 1 }]) {
+      expect((await patch(bad)).status).toBe(400);
+    }
+    m.account = null;
+    expect((await patch({ action: "skip" })).status).toBe(401);
+    expect(m.changeGoal).not.toHaveBeenCalled();
+  });
+
+  it("skips, swaps and restores the account's own goal; a change that doesn't fit the goal is refused", async () => {
+    m.account = { id: "user-1" };
+    m.changeGoal.mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    expect(await json(await patch({ action: "skip" }))).toEqual({ status: 200, body: { ok: true } });
+    expect(m.changeGoal).toHaveBeenLastCalledWith("user-1", ID, { action: "skip" });
+    expect((await patch({ action: "swap", skillId: "gcp" })).status).toBe(200);
+    expect(m.changeGoal).toHaveBeenLastCalledWith("user-1", ID, { action: "swap", skillId: "gcp" });
+    expect((await patch({ action: "restore" })).status).toBe(200);
+    expect((await patch({ action: "skip" })).status).toBe(409);
+    m.changeGoal.mockRejectedValueOnce(new Error("Failed query"));
+    expect((await patch({ action: "skip" })).status).toBe(500);
   });
 });
 

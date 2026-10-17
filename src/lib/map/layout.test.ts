@@ -103,6 +103,14 @@ describe("layoutLine", () => {
     expect(l.stations.find((s) => s.state === "now")?.id).toBe("practice");
   });
 
+  it("keeps a skipped goal on the line as a gap, and the train passes it (FR-48)", () => {
+    const l = layoutLine({ goals: [goal("a", "missing", { skipped: true }), goal("b", "weak")], otherLines: [] });
+    expect(l.stations.find((s) => s.state === "now")?.id).toBe("b-prove");
+    expect(l.stations.some((s) => s.id === "a-prove")).toBe(true);
+    const all = layoutLine({ goals: [goal("a", "weak", { skipped: true })], otherLines: [] });
+    expect(all.stations.find((s) => s.state === "now")?.id).toBe("practice");
+  });
+
   it("draws a line with no gaps straight to Practice", () => {
     const l = layoutLine({ goals: [], otherLines: [] });
     expect(l.stations.map((s) => s.id)).toEqual(["resume", "gaps", "practice", "match"]);

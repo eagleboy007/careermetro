@@ -80,8 +80,9 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
   const climbAt = new Set(Array.from({ length: climbs }, (_, i) => Math.round(((i + 1) * goalCount) / (climbs + 1))));
   const startY = TOP_Y + (CLIMB * (climbs + BAND)) / 2;
 
-  // The first pitstop that isn't done is where the person is. With every pitstop done, it is Practice.
-  const nowIndex = pitstops.findIndex((p) => p.state !== "done");
+  // The first pitstop that isn't done is where the person is. With every pitstop done, it is Practice. The train passes
+  // a skipped goal's pitstops (FR-48): it stays a gap, but it is no longer where the person is heading.
+  const nowIndex = pitstops.findIndex((p) => p.state !== "done" && !p.goal.skipped);
 
   const route: Point[] = [];
   const stationAt: number[] = [];

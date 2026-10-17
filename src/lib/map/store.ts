@@ -5,7 +5,8 @@ import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { getResumeForOwner } from "@/lib/resume/store";
 import type { LifeLine, MapGoal, MapLine } from "@/lib/schemas";
-import { notConfirmedSkills, provedSkills, syncGoals } from "@/lib/goals/store";
+import { notConfirmedSkills, provedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
+import { notForMeFor, shareSentence, swappedSkill } from "@/lib/goals/not-for-me";
 import { nearbyLinesFor } from "@/lib/nearby/build";
 import { nearbyOrNothing } from "@/lib/nearby/safe";
 import { goalName } from "@/lib/goals/name";
@@ -61,15 +62,23 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
 
   const goalBySkill = new Map(userGoals.map((g) => [g.skillId, g]));
+  // A goal swapped to another skill of its group ("Not for me", FR-48) learns that skill from the catalog.
+  const swapped = (own: (typeof userGoals)[number] | undefined) => (own ? swappedSkill(own, skillGroupMembers) : null);
+  const swaps = await resourcesForSkills([...new Set(result.gaps.flatMap((g) => swapped(goalBySkill.get(g.skillId)) ?? []))], db);
   const ordered = [...result.gaps].sort(
     (x, y) => (goalBySkill.get(x.skillId)?.position ?? Number.MAX_SAFE_INTEGER) - (goalBySkill.get(y.skillId)?.position ?? Number.MAX_SAFE_INTEGER),
   );
+  const resourceItem = (r: { title: string; provider: string; kind: string; minutes: number }) => ({
+    title: clip(r.title, 160),
+    detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120),
+  });
+  const swapItems = (rs: { title: string; provider: string; kind: string; minutes: number }[]) => ({ learnDone: false, resources: rs.slice(0, 3).map(resourceItem), practice: null });
   const items = (step: (typeof steps)[number] | undefined) => ({
     learnDone: Boolean(step?.doneAt),
     resources: (step?.resourceIds ?? [])
       .flatMap((id) => {
         const r = byId.get(id);
-        return r ? [{ title: clip(r.title, 160), detail: clip(`${r.provider} · ${r.kind} · ${hours(r.minutes)}`, 120) }] : [];
+        return r ? [resourceItem(r)] : [];
       })
       .slice(0, 3),
     practice: step?.proofTask.trim() ? clip(step.proofTask, 400) : null,
@@ -77,17 +86,26 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   const gapGoals: MapGoal[] = ordered.map((g) => {
     const own = goalBySkill.get(g.skillId);
     const proved = own?.proved ?? false;
+    const swap = swapped(own);
+    const skipped = own?.status === "skipped";
+    const offer = own && !proved && !skipped ? notForMeFor(own, result.roleSlug, skillGroupMembers) : null;
     return {
       goalId: own?.id ?? null,
       certificates: certificatesFor(own ? fillingSkills(own, skillGroupMembers) : [g.skillId]),
       renew: own?.status === "renew",
       notConfirmed: isNotConfirmed(own, g.skillId),
       skillId: g.skillId,
-      name: clip(goalName(g, proved, result.roleSlug), 80),
+      name: clip(swap && !proved ? choiceName(swap) : goalName(g, proved, result.roleSlug), 80),
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: own?.status === "renew" ? "weak" : g.status,
       proved,
-      ...items(stepBySkill.get(g.skillId)),
+      ...(swap ? swapItems(swaps.get(swap) ?? []) : items(stepBySkill.get(g.skillId))),
+      skipped,
+      notForMe: !offer
+        ? null
+        : offer.kind === "skip"
+          ? { kind: "skip" as const, share: shareSentence(offer.share) }
+          : { kind: "swap" as const, current: clip(choiceName(offer.current), 80), options: offer.options.slice(0, 8).map((o) => ({ skillId: o.skillId, name: clip(o.name, 80) })) },
     };
   });
   // "Your choice" goals, off the line: named by the skill, missing until proved, tagged with their job. They never

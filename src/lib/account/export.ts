@@ -15,7 +15,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 18;
+export const EXPORT_VERSION = 19;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -114,6 +114,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         jobCompany: jobChecks.company,
         metAt: userGoals.metAt,
         skippedAt: userGoals.skippedAt,
+        // "Not for me" on a "one of these" goal: the skill of the group the person chose to learn instead (FR-48).
+        swappedTo: userGoals.swappedTo,
         createdAt: userGoals.createdAt,
       })
       .from(userGoals)
