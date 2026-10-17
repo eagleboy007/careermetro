@@ -192,7 +192,8 @@ function cut(points: Point[], share: number): Point[] {
   return out;
 }
 
-/** "4 · LEARN" or "5 · PROVE", with a check once done (handoff section 7). */
+/** "4 · LEARN" or "5 · PROVE", with a check once done (handoff section 7). A skipped goal's stops say so (T67). */
 export function pitstopLabel(s: Extract<Station, { kind: PitstopKind }>): string {
+  if (s.goal.skipped && s.state !== "done") return `${s.n} · SKIPPED`;
   return `${s.n} · ${s.kind === "learn" ? "LEARN" : "PROVE"}${s.state === "done" ? " ✓" : ""}`;
 }

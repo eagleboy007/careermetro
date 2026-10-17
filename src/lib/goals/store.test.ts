@@ -250,17 +250,19 @@ describe.skipIf(!db)("goals (database)", () => {
     const goal = (skillId: string) => goals.find((g) => g.skillId === skillId)!.id;
 
     // A required goal can be skipped, a group goal can't; a group goal can be swapped, a required goal can't.
-    expect(await changeGoal(me, goal(b), { action: "skip" }, db!, members)).toBe(false);
-    expect(await changeGoal(me, goal(a), { action: "swap", skillId: b }, db!, members)).toBe(false);
-    expect(await changeGoal(me, goal(b), { action: "swap", skillId: e }, db!, members)).toBe(false);
-    expect(await changeGoal(me, goal(a), { action: "restore" }, db!, members)).toBe(false);
-    expect(await changeGoal(me, goal(a), { action: "skip" }, db!, members)).toBe(true);
-    expect(await changeGoal(me, goal(a), { action: "skip" }, db!, members)).toBe(false);
-    expect(await changeGoal(me, goal(b), { action: "swap", skillId: c }, db!, members)).toBe(true);
+    expect(await changeGoal(me, goal(b), { action: "skip" }, db!, members)).toBe("refused");
+    expect(await changeGoal(me, goal(a), { action: "swap", skillId: b }, db!, members)).toBe("refused");
+    expect(await changeGoal(me, goal(b), { action: "swap", skillId: e }, db!, members)).toBe("refused");
+    // Restoring a goal that isn't skipped, or skipping one twice, leaves it as asked (T68).
+    expect(await changeGoal(me, goal(a), { action: "restore" }, db!, members)).toBe("ok");
+    expect(await changeGoal(me, goal(a), { action: "skip" }, db!, members)).toBe("ok");
+    expect(await changeGoal(me, goal(a), { action: "skip" }, db!, members)).toBe("ok");
+    expect(await changeGoal(me, goal(a), { action: "swap", skillId: b }, db!, members)).toBe("refused");
+    expect(await changeGoal(me, goal(b), { action: "swap", skillId: c }, db!, members)).toBe("ok");
     // Nobody else can change them, and a bad id changes nothing.
     const other = await user("not-for-me-other");
-    expect(await changeGoal(other, goal(d), { action: "skip" }, db!, members)).toBe(false);
-    expect(await changeGoal(me, "not-a-uuid", { action: "skip" }, db!, members)).toBe(false);
+    expect(await changeGoal(other, goal(d), { action: "skip" }, db!, members)).toBe("not_found");
+    expect(await changeGoal(me, "not-a-uuid", { action: "skip" }, db!, members)).toBe("not_found");
 
     // Goal sync keeps the skip and the swap: a recompute never brings a skipped goal back.
     const synced = await syncGoals(me, await saved(me, result), db!, members);
@@ -274,11 +276,11 @@ describe.skipIf(!db)("goals (database)", () => {
     await setProofStatus(proof!, me, "accepted", "app", db!, members);
     expect((await goalsOf(me, db!, members)).find((g) => g.skillId === b)).toMatchObject({ proved: true, swappedTo: c });
     // Back to the group's own skill clears the swap.
-    expect(await changeGoal(me, goal(b), { action: "swap", skillId: b }, db!, members)).toBe(true);
+    expect(await changeGoal(me, goal(b), { action: "swap", skillId: b }, db!, members)).toBe("ok");
     expect((await goalsOf(me, db!, members)).find((g) => g.skillId === b)?.swappedTo).toBeNull();
 
     // Bring back: active again, at the end of the order.
-    expect(await changeGoal(me, goal(a), { action: "restore" }, db!, members)).toBe(true);
+    expect(await changeGoal(me, goal(a), { action: "restore" }, db!, members)).toBe("ok");
     const [row] = await db!
       .select({ status: schema.userGoals.status, position: schema.userGoals.position, skippedAt: schema.userGoals.skippedAt })
       .from(schema.userGoals)

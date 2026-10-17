@@ -703,13 +703,15 @@ describe("not for me (FR-48)", () => {
 
   it("skips, swaps and restores the account's own goal; a change that doesn't fit the goal is refused", async () => {
     m.account = { id: "user-1" };
-    m.changeGoal.mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    m.changeGoal.mockResolvedValueOnce("ok").mockResolvedValueOnce("ok").mockResolvedValueOnce("ok").mockResolvedValueOnce("refused").mockResolvedValueOnce("not_found");
     expect(await json(await patch({ action: "skip" }))).toEqual({ status: 200, body: { ok: true } });
     expect(m.changeGoal).toHaveBeenLastCalledWith("user-1", ID, { action: "skip" });
     expect((await patch({ action: "swap", skillId: "gcp" })).status).toBe(200);
     expect(m.changeGoal).toHaveBeenLastCalledWith("user-1", ID, { action: "swap", skillId: "gcp" });
     expect((await patch({ action: "restore" })).status).toBe(200);
     expect((await patch({ action: "skip" })).status).toBe(409);
+    // Someone else's goal, or none, is not found (T68).
+    expect((await patch({ action: "skip" })).status).toBe(404);
     m.changeGoal.mockRejectedValueOnce(new Error("Failed query"));
     expect((await patch({ action: "skip" })).status).toBe(500);
   });

@@ -74,6 +74,15 @@ describe("journeyFor", () => {
     expect(stops.at(-1)).toMatchObject({ name: "Match", state: "future" });
   });
 
+  it("passes a skipped goal: it says Skipped and the next open goal is now (T60)", () => {
+    const first = exampleMapLine.goals.findIndex((g) => !g.proved);
+    const line: MapLine = { ...exampleMapLine, goals: exampleMapLine.goals.map((g, i) => ({ ...g, skipped: i === first })) };
+    const stops = journeyFor(line, { joinedAt: new Date("2026-09-02"), resumeReadAt: new Date("2026-09-02"), gaps: 4 });
+    expect(stops[5]).toMatchObject({ state: "future", detail: "Skipped" });
+    expect(stops.filter((s) => s.state === "now")).toHaveLength(1);
+    expect(stops[6]).toMatchObject({ state: "now" });
+  });
+
   it("puts Match now once every goal is proved", () => {
     const line: MapLine = { ...exampleMapLine, goals: exampleMapLine.goals.slice(0, 2).map((g) => ({ ...g, proved: true })) };
     expect(journeyFor(line, { joinedAt: new Date(), resumeReadAt: new Date(), gaps: 0 }).at(-1)).toMatchObject({ name: "Match", state: "now" });

@@ -80,7 +80,9 @@ export async function rideGoalsFor(
   // fallback tasks (build the path, or study on your own), like any goal the path left out.
   const rideGoal = (g: (typeof userGoals)[number], name: string, status: RideGoal["status"], choice: RideGoal["choice"]): RideGoal => {
     const swapped = swappedSkill(g, skillGroupMembers);
-    const step = swapped ? undefined : stepBySkill.get(g.skillId);
+    // A swap keeps the goal's learn tick (T59); only the resources and the practice task follow the new skill.
+    const ownStep = stepBySkill.get(g.skillId);
+    const step = swapped ? undefined : ownStep;
     return {
       goalId: g.id,
       skillId: g.skillId,
@@ -95,7 +97,7 @@ export async function rideGoalsFor(
             return r ? [r] : [];
           }),
       practice: step?.proofTask ?? null,
-      learnDone: Boolean(step?.doneAt),
+      learnDone: Boolean(ownStep?.doneAt),
       skipped: g.status === "skipped",
       notForMe: choice ? null : offerFor(g, analysis.result.roleSlug, skillGroupMembers),
       proofSkills: fillingSkills(g, skillGroupMembers),
