@@ -1513,7 +1513,8 @@ await step("company review: not found for others; the admin verifies the new com
     await row.waitFor();
     await row.getByText("Waiting for verification").waitFor();
     const body = await q.locator("body").innerText();
-    if (/@/.test(body)) throw new Error("an email address is shown on the review page");
+    // Work-email checks waiting for review show a bare "@domain" (FR-47), never an address with a name before the @.
+    if (/[A-Za-z0-9._%+-]@[A-Za-z0-9-]/.test(body)) throw new Error("an email address is shown on the review page");
     const verify = row.getByRole("button", { name: "Verify Example Labs" });
     const box = await verify.boundingBox();
     if (!box || box.height < 44) throw new Error(`Verify is ${box?.height}px tall, under 44px`);
