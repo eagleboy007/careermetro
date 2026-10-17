@@ -46,7 +46,7 @@ describe("find people schemas (pending item 19)", () => {
       company: "Garuda",
     });
     expect(findSearchInput.safeParse({ jobId: JOB, name: "Priya", company: "Garuda" }).success).toBe(true);
-    for (const bad of [{ name: "P" }, { title: "SOC analyst" }, { company: "Garuda" }, { name: "x".repeat(81) }]) {
+    for (const bad of [{ name: "P" }, { name: "a." }, { name: "- -" }, { title: "SOC analyst" }, { company: "Garuda" }, { name: "x".repeat(81) }]) {
       expect(findSearchInput.safeParse({ jobId: JOB, ...bad }).success).toBe(false);
     }
   });

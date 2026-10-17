@@ -48,7 +48,8 @@ export const findSearchInput = z
     page: z.number().int().min(1).max(FIND_PAGES_MAX).default(1),
   })
   .superRefine((s, ctx) => {
-    if (s.name && s.name.length < 2) ctx.addIssue({ code: "custom", path: ["name"], message: "Type at least 2 letters of the name." });
+    // Letters and digits only, as the search reads it: "a." is one letter (T63).
+    if (s.name && s.name.normalize("NFKD").replace(/[^\p{L}\p{N}]/gu, "").length < 2) ctx.addIssue({ code: "custom", path: ["name"], message: "Type at least 2 letters of the name." });
     if (!s.name && (s.title || s.company)) ctx.addIssue({ code: "custom", path: ["name"], message: "Add a name to search by role or company." });
   });
 export type FindSearchInput = z.input<typeof findSearchInput>;
