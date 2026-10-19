@@ -46,7 +46,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
 
   it("saves username, headline, pay and settings together", async () => {
     const now = new Date();
-    const settings = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const, showGaps: true, rideReminder: "21:30" as const };
+    const settings = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const, showGaps: true, gapsVisibleTo: "profile" as const, rideReminder: "21:30" as const };
     const r = await saveAccountSettings(a, form({ username: `${run}-A`, headline: " Moving into SOC ", currentPay: "4.2", expectedPay: "6", settings }), now, db!);
     expect(r).toEqual({ ok: true });
     const s = await readAccountSettings(a, now, db!);
@@ -55,6 +55,15 @@ describe.skipIf(!db)("account settings store (database)", () => {
     expect(s?.pay).toEqual({ currentLakh: 4.2, expectedLakh: 6 });
     expect(s?.settings).toEqual(settings);
     expect(s?.usernameLockedUntil?.getTime()).toBe(now.getTime() + 30 * DAY);
+  });
+
+  it("saves Your gaps show to, with the old switch following it", async () => {
+    const g = await makeUser("gaps");
+    const now = new Date();
+    for (const [to, on] of [["nobody", false], ["profile", true], ["connections", false]] as const) {
+      expect((await saveAccountSettings(g, form({ settings: { ...DEFAULT_SETTINGS, showGaps: !on, gapsVisibleTo: to } }), now, db!)).ok).toBe(true);
+      expect(await settingsFor(g, db!)).toMatchObject({ gapsVisibleTo: to, showGaps: on });
+    }
   });
 
   it("saves an optional city from the list, keeps it when a save leaves it out, and clears it (T44)", async () => {
@@ -167,7 +176,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
   });
 
   it("puts settings, pay and old usernames in the download", async () => {
-    const settings = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const, showGaps: true, rideReminder: "21:30" as const };
+    const settings = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const, showGaps: true, gapsVisibleTo: "profile" as const, rideReminder: "21:30" as const };
     await saveAccountSettings(a, form({ username: `${run}-a2`, headline: "Moving into SOC", currentPay: "4.2", expectedPay: "6", settings }), new Date(), db!);
     const data = await exportAccountData(a, db!);
     expect(data?.account).toMatchObject({ username: `${run}-a2`, headline: "Moving into SOC" });

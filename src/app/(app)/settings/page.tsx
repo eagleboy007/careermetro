@@ -46,7 +46,6 @@ async function SettingsScreen() {
     usernameLockedUntil: saved?.usernameLockedUntil ? dateText(saved.usernameLockedUntil) : null,
     discovery,
     peopleCanFind: network.peopleCanFind,
-    gapsToConnections: network.gapsVisibleTo === "connections",
   };
   return <SettingsView data={data} discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }} findMe={setFindMe} />;
 }

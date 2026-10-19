@@ -9,7 +9,7 @@ import {
   USERNAME_MESSAGES,
   usernameProblem,
 } from "@/lib/account/username";
-import { PERSON_CITIES, PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
+import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
 export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
 /**
@@ -76,7 +76,13 @@ export const notificationPrefs = z.object({
  */
 export const companiesCanFind = z.boolean();
 
-export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, companiesCanFind, ...notificationPrefs.shape });
+/**
+ * "Your gaps show to" (handoff 12j). When it is sent it decides, and showGaps follows it (on only for "profile"); a save
+ * without it (an older page) keeps the old switch meaning.
+ */
+export const gapsVisibleTo = z.enum(GAPS_VISIBLE_TO);
+
+export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, gapsVisibleTo: gapsVisibleTo.optional(), companiesCanFind, ...notificationPrefs.shape });
 
 /**
  * No row in user_settings means these. Since migration 0034 every account made before it has a row, so no row means a
@@ -91,6 +97,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   showSkills: true,
   showGaps: false,
   showCertifications: true,
+  gapsVisibleTo: "connections",
   companiesCanFind: false,
   rideReminder: "19:30",
   emailCompanyMessages: true,

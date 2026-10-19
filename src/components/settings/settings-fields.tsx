@@ -2,7 +2,7 @@
 
 import { ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { PAY_MAX_LAKH, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS } from "@/lib/schemas/constants";
+import { GAPS_VISIBLE_TO, GAPS_VISIBLE_TO_LABELS, PAY_MAX_LAKH, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS } from "@/lib/schemas/constants";
 import type { ProfileVisibility, UserSettings } from "@/lib/schemas";
 import { FieldError, useSettingsDraft } from "./settings-draft";
 
@@ -73,13 +73,14 @@ const PARTS: { key: keyof UserSettings & `show${string}`; label: string; hint?: 
   { key: "showSkills", label: "Skills you have" },
   { key: "showCertifications", label: "Certifications" },
   { key: "showTargetRole", label: "The role you are aiming for", hint: "Off by default: it tells people you are looking. Companies you let find you see it either way." },
-  { key: "showGaps", label: "Your gaps", hint: "The skills you are still working on." },
 ];
 
 /** Who can open the profile, and what it shows (handoff 12c Privacy and section 11 "Who sees what"). */
-export function PrivacyFields({ gapsToConnections = false }: { gapsToConnections?: boolean }) {
-  const { draft, saved, setSetting, editable, errors } = useSettingsDraft();
+export function PrivacyFields() {
+  const { draft, setSetting, editable, errors } = useSettingsDraft();
   const s = draft.settings;
+  // A save from before the choice existed has none; the old switch then says which it is.
+  const gaps = s.gapsVisibleTo ?? (s.showGaps ? "profile" : "nobody");
   return (
     <>
       <fieldset className="flex min-w-0 flex-col gap-1.5" disabled={!editable}>
@@ -117,10 +118,33 @@ export function PrivacyFields({ gapsToConnections = false }: { gapsToConnections
             {p.label}
           </Switch>
         ))}
-        {/* New accounts share gaps with connections (ruling 4, 2026-10-19) until this switch is first changed and saved. */}
-        {gapsToConnections && !s.showGaps && !saved.settings.showGaps && (
-          <small className="text-[0.78rem] text-muted">Your Network connections can see your gaps. To hide them from connections too, turn With &ldquo;Your gaps&rdquo; off, your Network connections still see them. Turn it on and save, then off, to hide them from everyone.ldquo;Your gapsWith &ldquo;Your gaps&rdquo; off, your Network connections still see them. Turn it on and save, then off, to hide them from everyone.rdquo; on and save, then off and save.</small>
-        )}
+      </fieldset>
+      <fieldset className="flex min-w-0 flex-col gap-1.5" disabled={!editable}>
+        <legend className="mb-1.5 text-[0.82rem] font-semibold">Your gaps show to</legend>
+        <div className="inline-flex flex-wrap gap-0.5 self-start rounded-[22px] bg-surface-2 p-[3px]">
+          {GAPS_VISIBLE_TO.map((v) => (
+            <label key={v} className="relative">
+              <input
+                type="radio"
+                name="acc-gaps"
+                value={v}
+                checked={gaps === v}
+                onChange={() => {
+                  setSetting("gapsVisibleTo", v);
+                  setSetting("showGaps", v === "profile");
+                }}
+                aria-describedby="acc-gaps-note"
+                className="peer sr-only"
+              />
+              <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-checked:ring-1 peer-checked:ring-line-strong peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
+                {GAPS_VISIBLE_TO_LABELS[v]}
+              </span>
+            </label>
+          ))}
+        </div>
+        <small id="acc-gaps-note" className="text-[0.78rem] text-muted">
+          The skills you are still working on. Companies never see them.
+        </small>
       </fieldset>
       <fieldset className="flex min-w-0 flex-col" disabled={!editable}>
         <legend className="mb-1 text-[0.82rem] font-semibold">Companies</legend>

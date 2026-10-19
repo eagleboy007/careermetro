@@ -237,7 +237,7 @@ export function MeView({
             </div>
           )}
           {viewer && gapsShown && gapsNote && <Note>{gapsNote}</Note>}
-          {asOthers && !gapsShown && <Note>Your gaps are hidden from others unless you turn them on in Account settings.</Note>}
+          {asOthers && !gapsShown && <Note>Your gaps show only to the people you chose under &ldquo;Your gaps show to&rdquo; in Account settings.</Note>}
         </Section>
         )}
 

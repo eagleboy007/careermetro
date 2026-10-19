@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
-import type { Tx } from "@/db/lock";
+import { directChatLock, type Tx } from "@/db/lock";
 import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, profiles, resumes, userSettings, users } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
@@ -145,7 +145,9 @@ async function directChat(x: string, y: string, tx: Tx | Db) {
 async function connect(tx: Tx, request: { id: string; fromUser: string; toUser: string; how: ConnectionHow }, now: Date) {
   await tx.update(connectionRequests).set({ status: "accepted", decidedAt: now }).where(eq(connectionRequests.id, request.id));
   await tx.insert(connections).values({ ...pairOf(request.fromUser, request.toUser), how: request.how, createdAt: now }).onConflictDoNothing();
-  // Connections chat freely (handoff 12j): a message request waiting between them opens.
+  // Connections chat freely (handoff 12j): a message request waiting between them opens. Under the Inbox's lock too,
+  // so a first message sent at the same moment either lands before this (and opens) or sees the connection.
+  await directChatLock(request.fromUser, request.toUser, tx);
   const chat = await directChat(request.fromUser, request.toUser, tx);
   if (chat?.status === "request") await tx.update(conversations).set({ status: "open" }).where(eq(conversations.id, chat.id));
   logEvent("info", "connection_accepted");
@@ -245,8 +247,14 @@ export async function removeConnection(userId: string, otherId: string, db: Db =
     await pairLock(userId, otherId, tx);
     const rows = await tx.delete(connections).where(pairWhere(userId, otherId)).returning({ low: connections.userLow });
     if (!rows.length) return false;
+    // Under the Inbox's lock too, so a first message sent at the same moment can't open a chat after this looked.
+    await directChatLock(userId, otherId, tx);
     const chat = await directChat(userId, otherId, tx);
-    if (chat?.status === "open") await tx.update(conversations).set({ status: "request", startedBy: otherId }).where(eq(conversations.id, chat.id));
+    if (chat?.status === "open") {
+      await tx.update(conversations).set({ status: "request", startedBy: otherId }).where(eq(conversations.id, chat.id));
+      // The remover answers the request, so a chat they had hidden comes back for them to accept or delete.
+      await tx.update(conversationMembers).set({ hiddenAt: null }).where(and(eq(conversationMembers.conversationId, chat.id), eq(conversationMembers.userId, userId)));
+    }
     return true;
   });
   if (gone) logEvent("info", "connection_removed");
