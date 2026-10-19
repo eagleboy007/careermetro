@@ -1,0 +1,17 @@
+{
+  "id": "fresher-security-lab",
+  "note": "Synthetic. A fresher with a home lab and one internship.",
+  "answers": {
+    "role": { "roleSlug": "cyber-security-analyst", "stage": "graduated", "city": "Pune" },
+    "education": [{ "id": "e1", "degree": "B.Sc. Computer Science", "college": "Example College", "start": "2021", "end": "2024", "marks": "" }],
+    "projects": [
+      { "id": "p1", "name": "Home security lab", "did": "i setup wazuh on 3 home machines and made alert rules for failed logins, tested it with hydra", "link": "" }
+    ],
+    "worked": true,
+    "jobs": [
+      { "id": "j1", "kind": "internship", "company": "Example Infotech", "title": "IT support intern", "from": "2024-01", "to": "2024-06", "did": "closed about 20 tickets a week. reset passwords in active directory and set up laptops for new joiners" }
+    ],
+    "tools": ["Linux", "Active Directory"],
+    "noCertificates": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "vague-answers",
+  "note": "Synthetic. Short, vague answers: the model must not turn them into specific claims.",
+  "answers": {
+    "role": { "roleSlug": null, "stage": "studying", "city": "Kochi" },
+    "education": [{ "id": "e1", "degree": "B.Tech Mechanical", "college": "Example Institute of Technology", "start": "2022", "end": "2026", "marks": "" }],
+    "projects": [
+      { "id": "p1", "name": "College fest website", "did": "helped with the website", "link": "" },
+      { "id": "p2", "name": "Robot", "did": "built a line follower robot with friends", "link": "" }
+    ],
+    "worked": false,
+    "jobs": [],
+    "tools": ["Python"],
+    "noCertificates": true
+  }
+}

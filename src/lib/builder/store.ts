@@ -9,7 +9,7 @@ import { LIMITS as PARSE_LIMITS } from "@/lib/resume/ingest";
 import { nameHashes } from "@/lib/resume/name-match";
 import { builderAnswers, builderMissing, EMPTY_BUILDER_ANSWERS, type BuilderAnswers, type BuilderReword } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { buildProfile, checkedLines } from "./profile";
+import { buildProfile, checkedLines, type BuilderLines } from "./profile";
 import { rewordAnswers, type RewordClient } from "./reword";
 
 /*
@@ -68,19 +68,18 @@ async function mayReword(userId: string, db: Db, now: Date): Promise<boolean> {
 }
 
 export type BuildResult =
-  | { ok: true; resumeId: string; suggestions: BuilderReword["suggestions"]; plain: boolean }
+  | { ok: true; resumeId: string; lines: BuilderLines; suggestions: BuilderReword["suggestions"]; plain: boolean }
   | { ok: false; error: BuilderError };
 
 /**
- * "Check my gaps": turns the saved draft into a resume and a profile waiting for the confirm step, as an upload does.
+ * "Review": turns the saved draft into a resume and a profile waiting for the confirm step, as an upload does.
  * The first build makes the resume; each later one adds a profile version to the same resume. The model rewords the
  * free-text answers when the limits allow and it answers; otherwise, or for any line it can't support, the person's
  * own sentences are used (`plain`). Suggestions are returned for the review page and never enter the profile.
  */
-export async function buildResume(userId: string, truthful: boolean, deps: Deps = {}): Promise<BuildResult> {
+export async function buildResume(userId: string, deps: Deps = {}): Promise<BuildResult> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  if (!truthful) return fail("not_true");
   const [account] = await db.select({ name: users.name }).from(users).where(eq(users.id, userId));
   if (!account) return fail("no_account");
   const draft = await loadDraft(userId, db);
@@ -120,11 +119,21 @@ export async function buildResume(userId: string, truthful: boolean, deps: Deps 
     return made.id;
   });
   logEvent("info", "resume_built", { lines: Object.values(lines).flat().length, dropped, plain: !model });
-  return { ok: true, resumeId, suggestions: model?.suggestions ?? [], plain: !model };
+  return { ok: true, resumeId, lines, suggestions: model?.suggestions ?? [], plain: !model };
 }
 
 /** For Download your data: the draft as stored. */
 export async function exportDraft(userId: string, db: Pick<Db, "select"> = getDb()) {
   const [row] = await db.select({ answers: resumeDrafts.answers, updatedAt: resumeDrafts.updatedAt }).from(resumeDrafts).where(eq(resumeDrafts.userId, userId));
   return row ?? null;
+}
+
+/** "Check my gaps" from the review page: only with the tick, and only for the person's own built resume. */
+export async function readyForGaps(userId: string, resumeId: string, truthful: boolean, db: Pick<Db, "select"> = getDb()): Promise<{ ok: true } | { ok: false; error: BuilderError }> {
+  if (!truthful) return fail("not_true");
+  const [row] = await db
+    .select({ id: resumes.id })
+    .from(resumes)
+    .where(and(eq(resumes.id, resumeId), eq(resumes.userId, userId), eq(resumes.source, "builder")));
+  return row ? { ok: true } : fail("not_ready");
 }

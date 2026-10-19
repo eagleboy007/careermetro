@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, Upload } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,8 @@ const MAX_MB = 4;
 const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
 
 /** Upload a resume or paste it (FR-4). Consent is required before anything is sent (SEC-1). `demo` never uploads, for /design. */
-export function UploadForm({ demo = false }: { demo?: boolean }) {
+/** `builder` shows "No resume yet? Build one" (FR-36), only where the signed-in screens exist. */
+export function UploadForm({ demo = false, builder = false }: { demo?: boolean; builder?: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("file");
   const [fileName, setFileName] = useState<string | null>(null);
@@ -134,6 +136,14 @@ export function UploadForm({ demo = false }: { demo?: boolean }) {
           </span>
         )}
       </div>
+      {builder && !demo && (
+        <p className="text-sm text-muted">
+          No resume yet?{" "}
+          <Link href="/builder" className="font-medium text-ink underline underline-offset-2">
+            Build one in about 10 minutes
+          </Link>
+        </p>
+      )}
     </form>
   );
 }

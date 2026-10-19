@@ -61,6 +61,7 @@ import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { NetworkView } from "@/components/network/network-view";
+import { BuilderView } from "@/components/builder/builder-view";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -115,6 +116,8 @@ import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
+import { exampleBuilder } from "@/lib/builder/fixtures";
+import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
@@ -555,6 +558,16 @@ export default function DesignPage() {
           nothing sends.
         </p>
         <InboxView threads={exampleThreads} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Build your resume (signed in)</h2>
+        <p className="text-sm text-muted">
+          Seven sections one card at a time with the section list (numbered dots on phone) and a cobalt bar for sections done, then the review page:
+          each line opens the answer it came from, &ldquo;Skills we found&rdquo; with sources, and the required &ldquo;Everything here is true and
+          mine.&rdquo; tick. Example answers, so nothing saves.
+        </p>
+        <BuilderView data={{ ...exampleBuilder, roles: builderRoles, roleTools: builderRoleTools }} />
       </section>
 
       <section className="flex flex-col gap-4">

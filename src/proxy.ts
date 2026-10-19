@@ -6,9 +6,9 @@ import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/aut
 import { signedInPreviewEnabled } from "@/lib/preview";
 
 /** Signed-in screens and the sign-in flow. Add new signed-in routes here. */
-const SIGNED_IN_PREFIXES = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/corporate", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u", "/account", "/sign-in", "/sign-up", "/auth"];
+const SIGNED_IN_PREFIXES = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/corporate", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u", "/account", "/sign-in", "/sign-up", "/auth"];
 /** Screens that need someone signed in once sign-in is set up. */
-const NEEDS_SIGN_IN = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/corporate", "/me", "/settings", "/u", "/account/restore", "/account/suspended"];
+const NEEDS_SIGN_IN = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/corporate", "/me", "/settings", "/u", "/account/restore", "/account/suspended"];
 
 /** CareerMetro's own admin pages: anyone who isn't an admin gets the normal not-found page, with a 404. */
 const ADMIN_PREFIXES = ["/admin"];

@@ -7,7 +7,7 @@ import { exportAccountData } from "@/lib/account/export";
 import { confirmProfile, getResumeForOwner } from "@/lib/resume/store";
 import { builderAnswers, EMPTY_BUILDER_ANSWERS } from "@/lib/schemas";
 import type { RewordClient } from "./reword";
-import { BUILDER_MIME, buildResume, loadDraft, saveDraft } from "./store";
+import { BUILDER_MIME, buildResume, loadDraft, readyForGaps, saveDraft } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -65,13 +65,12 @@ describe.skipIf(!db)("builder store (database)", () => {
   it("builds a resume waiting for the confirm step, drops a made-up line and keeps suggestions out", async () => {
     const a = await person();
     await saveDraft(a, answers, { db: db!, now });
-    expect(await buildResume(a, false, { db: db!, now })).toEqual({ ok: false, error: "not_true" });
     const reply = {
       answers: [{ answerId: "p:p1", lines: ["Deployed Wazuh on 3 home machines", "Cut alert noise by 40% with Splunk"] }],
       suggestions: [{ kind: "tool", text: "Did you use Splunk here?", answerId: "p:p1" }],
     };
     const { client: c, create } = client(reply);
-    const built = await buildResume(a, true, { db: db!, now, client: c });
+    const built = await buildResume(a, { db: db!, now, client: c });
     if (!built.ok) throw new Error(built.error);
     expect(create).toHaveBeenCalledTimes(1);
     // The answers go to the model; the name, city and email never do.
@@ -79,6 +78,10 @@ describe.skipIf(!db)("builder store (database)", () => {
     expect(sent).not.toContain("Asha");
     expect(sent).not.toContain("Pune");
     expect(built.suggestions).toEqual(reply.suggestions);
+    // "Check my gaps" needs the tick, and only for the person's own built resume.
+    expect(await readyForGaps(a, built.resumeId, false, db!)).toEqual({ ok: false, error: "not_true" });
+    expect(await readyForGaps(a, built.resumeId, true, db!)).toEqual({ ok: true });
+    expect(await readyForGaps(await person(), built.resumeId, true, db!)).toEqual({ ok: false, error: "not_ready" });
 
     const review = await getResumeForOwner(built.resumeId, { userId: a }, db!);
     expect(review?.confirmed).toBe(false);
@@ -93,14 +96,14 @@ describe.skipIf(!db)("builder store (database)", () => {
 
     // The confirm step takes it like an upload, and the next build adds a version to the same resume.
     expect((await confirmProfile(built.resumeId, { userId: a }, review!.profile, db!)).ok).toBe(true);
-    const again = await buildResume(a, true, { db: db!, now, client: client(new Error("down")).client });
+    const again = await buildResume(a, { db: db!, now, client: client(new Error("down")).client });
     expect(again).toMatchObject({ ok: true, resumeId: built.resumeId, plain: true, suggestions: [] });
     expect((await getResumeForOwner(built.resumeId, { userId: a }, db!))?.profile.roles[0].highlights).toEqual(["Set up Wazuh on 3 home machines."]);
   });
 
   it("refuses a build with sections missing, and puts the draft in Download your data", async () => {
     const a = await person();
-    expect(await buildResume(a, true, { db: db!, now })).toEqual({ ok: false, error: "not_ready" });
+    expect(await buildResume(a, { db: db!, now })).toEqual({ ok: false, error: "not_ready" });
     await saveDraft(a, answers, { db: db!, now });
     const data = await exportAccountData(a, db!);
     expect(data?.builderDraft?.answers).toEqual(answers);
