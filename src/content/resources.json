@@ -4740,5 +4740,148 @@
     ],
     "minutes": 20,
     "free": true
+  },
+  {
+    "title": "Leadership and Team Effectiveness (IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107159",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "people-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Develop and support managers (re:Work)",
+    "url": "https://rework.withgoogle.com/en/guides/managers-develop-and-support-managers",
+    "provider": "Google re:Work",
+    "kind": "docs",
+    "skillIds": [
+      "people-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Decision-Making Under Uncertainty",
+    "url": "https://nptel.ac.in/courses/110106134/",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Understanding Design Thinking and People Centred Design (IIT Kanpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_hs08/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Soft Skills (IIT Roorkee)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_hs76/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "communication"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Soft Skill Development (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_hs10/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "communication"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Chapter 26: Stakeholder engagement (Government Project Delivery Teal Book)",
+    "url": "https://projectdelivery.gov.uk/teal-book/home/part-e-planning-and-control/chapter-26-stakeholder-engagement/",
+    "provider": "UK Government Project Delivery Function",
+    "kind": "docs",
+    "skillIds": [
+      "stakeholder-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Principle 5: Work with your stakeholders",
+    "url": "https://apply-the-service-standard.education.gov.uk/guides/product-management-principles/principle-5-work-with-your-stakeholders",
+    "provider": "UK Department for Education",
+    "kind": "docs",
+    "skillIds": [
+      "stakeholder-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Software Engineering at Google (free online book)",
+    "url": "https://abseil.io/resources/swe-book",
+    "provider": "Google (Abseil)",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Code-With Engineering Playbook",
+    "url": "https://microsoft.github.io/code-with-engineering-playbook/",
+    "provider": "Microsoft",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SC-200: Perform threat hunting in Microsoft Sentinel",
+    "url": "https://learn.microsoft.com/training/paths/sc-200-perform-threat-hunting-azure-sentinel",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "threat-detection"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Construct KQL statements for Microsoft Sentinel",
+    "url": "https://learn.microsoft.com/en-us/training/modules/construct-kusto-query-language-statements/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "threat-detection"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Foundations of user experience and design thinking",
+    "url": "https://learn.microsoft.com/en-us/training/modules/ux-design/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 45,
+    "free": true
   }
 ]
