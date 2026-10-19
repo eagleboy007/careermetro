@@ -156,7 +156,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportDiscovery(userId, db),
     exportPractice(userId, db),
     exportJobChecks(userId, db),
-    exportNetwork(userId, db),
+    exportNetwork(userId, db, now),
   ]);
 
   return {

@@ -167,7 +167,8 @@ export async function requestConnection(fromId: string, toId: string, how: unkno
     const [waiting] = await tx
       .select({ n: count() })
       .from(connectionRequests)
-      .where(and(eq(connectionRequests.fromUser, fromId), eq(connectionRequests.status, "pending"), gte(connectionRequests.createdAt, openSince(now))));
+            // Ignored ones count too: they still read Requested to the sender, so the limit can't tell them apart.
+      .where(and(eq(connectionRequests.fromUser, fromId), inArray(connectionRequests.status, ["pending", "ignored"]), gte(connectionRequests.createdAt, openSince(now))));
     if ((waiting?.n ?? 0) >= CONNECTION_PENDING_MAX) return fail("pending_max");
     if (!(await takeShared(LIMITS.networkRequestsPerUser, fromId, { db: tx, now: now.getTime() }))) return fail("limit");
     await expireStale(fromId, toId, tx, now);
@@ -202,11 +203,19 @@ export async function answerRequest(userId: string, fromId: string, answer: unkn
 export async function withdrawRequest(userId: string, toId: string, deps: Deps = {}): Promise<NetworkResult> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
-  // An ignored request reads Requested to its sender, so Withdraw ends that one too; the sender still isn't told.
+  // Whatever reads Requested to the sender (open, or ignored and not yet ended) can be withdrawn, so an ignore stays
+  // silent; the request still holds them until it would have ended (askAgainFrom).
   const gone = await db
     .update(connectionRequests)
     .set({ status: "withdrawn", decidedAt: now })
-    .where(and(eq(connectionRequests.fromUser, userId), eq(connectionRequests.toUser, toId), inArray(connectionRequests.status, ["pending", "ignored"])))
+    .where(
+      and(
+        eq(connectionRequests.fromUser, userId),
+        eq(connectionRequests.toUser, toId),
+        inArray(connectionRequests.status, ["pending", "ignored"]),
+        gte(connectionRequests.createdAt, openSince(now)),
+      ),
+    )
     .returning({ id: connectionRequests.id, status: connectionRequests.status });
   return gone.length ? { ok: true } : fail("not_found");
 }
@@ -446,12 +455,11 @@ export async function requestsWaiting(userId: string, deps: Deps = {}): Promise<
   return row?.n ?? 0;
 }
 
-/** The people a person may find by name (handoff 12j): their connections, people with a request open either way, and people who turned on "Let people find me". */
+/** The people a person may find by name (handoff 12j): their connections and people who turned on "Let people find me". */
 function findableBy(userId: string): SQL {
   return or(
     eq(userSettings.peopleCanFind, true),
     sql`exists (select 1 from ${connections} c where (c.user_low = ${userId} and c.user_high = ${users.id}) or (c.user_high = ${userId} and c.user_low = ${users.id}))`,
-    sql`exists (select 1 from ${connectionRequests} r where r.status = 'pending' and ((r.from_user = ${userId} and r.to_user = ${users.id}) or (r.to_user = ${userId} and r.from_user = ${users.id})))`,
   )!;
 }
 
@@ -539,8 +547,8 @@ export async function saveNetworkSettings(userId: string, raw: unknown, deps: De
   const { visibility, ...rest } = DEFAULT_SETTINGS;
   await db
     .insert(userSettings)
-    .values({ userId, profileVisibility: visibility, ...rest, ...input.data, updatedAt: now })
-    .onConflictDoUpdate({ target: userSettings.userId, set: { ...input.data, updatedAt: now } });
+    .values({ userId, profileVisibility: visibility, ...rest, ...input.data, showGaps: input.data.gapsVisibleTo === "profile", updatedAt: now })
+    .onConflictDoUpdate({ target: userSettings.userId, set: { ...input.data, showGaps: input.data.gapsVisibleTo === "profile", updatedAt: now } });
   return { ok: true };
 }
 
@@ -578,7 +586,8 @@ export async function exportNetwork(userId: string, db: Db = getDb(), now = new 
     connections: connected.map(named),
     requestsSent: sent.map((r) => {
       const hidden = r.status === "ignored";
-      const status = hidden ? (now < endsAt({ createdAt: r.sentAt }) ? "pending" : "expired") : r.status;
+      const ended = now >= endsAt({ createdAt: r.sentAt });
+      const status = hidden || r.status === "pending" ? (ended ? "expired" : "pending") : r.status;
       return named({ ...r, status, decidedAt: hidden ? null : r.decidedAt });
     }),
     requestsReceived: received.map(named),

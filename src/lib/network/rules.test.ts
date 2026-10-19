@@ -32,13 +32,15 @@ describe("network rules", () => {
     expect(connectionState(false, [sent({ status: "withdrawn" })], B, now)).toBe("none");
   });
 
-  it("makes the sender wait 30 days after an ignore or an expiry, not after a withdraw", () => {
-    expect(askAgainFrom([sent({ status: "ignored", createdAt: days(40), decidedAt: days(20) })], A, B, now)).toEqual(days(-10));
-    expect(askAgainFrom([sent({ status: "ignored", createdAt: days(70), decidedAt: days(60) })], A, B, now)).toBeNull();
-    // Expired: 30 days to end, then 30 more.
-    expect(askAgainFrom([sent({ createdAt: days(45) })], A, B, now)).toEqual(days(-15));
-    expect(askAgainFrom([sent({ status: "expired", createdAt: days(61) })], A, B, now)).toBeNull();
-    expect(askAgainFrom([sent({ status: "withdrawn", createdAt: days(1) })], A, B, now)).toBeNull();
+  it("holds the sender until their last request would have ended, whatever became of it", () => {
+    // Ignored on day 20 of a request sent 40 days ago: it ended 10 days ago, so they can ask now, as after an expiry.
+    expect(askAgainFrom([sent({ status: "ignored", createdAt: days(40), decidedAt: days(20) })], A, B, now)).toBeNull();
+    expect(askAgainFrom([sent({ status: "ignored", createdAt: days(10), decidedAt: days(5) })], A, B, now)).toEqual(days(-20));
+    expect(askAgainFrom([sent({ createdAt: days(31) })], A, B, now)).toBeNull();
+    expect(askAgainFrom([sent({ status: "expired", createdAt: days(45) })], A, B, now)).toBeNull();
+    // Withdraw then ask again can't be looped.
+    expect(askAgainFrom([sent({ status: "withdrawn", createdAt: days(1) })], A, B, now)).toEqual(days(-29));
+    expect(askAgainFrom([sent({ status: "accepted", createdAt: days(1) })], A, B, now)).toBeNull();
     // Only the same sender to the same person waits.
     expect(askAgainFrom([sent({ status: "ignored", decidedAt: days(1) })], B, A, now)).toBeNull();
   });

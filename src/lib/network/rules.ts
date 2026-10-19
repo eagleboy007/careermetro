@@ -30,17 +30,17 @@ export const senderSeesRequested = (row: Pick<RequestRow, "status" | "createdAt"
   (row.status === "pending" || row.status === "ignored") && now < endsAt(row);
 
 /**
- * After an ignore or an expiry the same sender can ask the same person again only CONNECTION_REQUEST_DAYS later
- * (handoff 12j): counted from the ignore, or from the day the request ended. Null when they can ask now.
+ * When the same sender can ask the same person again, or null when they can now (handoff 12j: "a request expires
+ * after 30 days, then it can be sent again"). Every request they sent holds them until it would have ended, whatever
+ * became of it: an ignore stays silent because it reads exactly like no answer, and Withdraw can't be looped to send
+ * a fresh request every day. An accepted one never holds them (a removed connection can be asked again).
  */
 export function askAgainFrom(rows: readonly RequestRow[], fromId: string, toId: string, now: Date): Date | null {
   let until: Date | null = null;
   for (const r of rows) {
-    if (r.fromUser !== fromId || r.toUser !== toId) continue;
-    const ended = r.status === "ignored" ? (r.decidedAt ?? r.createdAt) : r.status === "expired" || (r.status === "pending" && !requestOpen(r, now)) ? endsAt(r) : null;
-    if (!ended) continue;
-    const from = new Date(ended.getTime() + WINDOW);
-    if (from > now && (!until || from > until)) until = from;
+    if (r.fromUser !== fromId || r.toUser !== toId || r.status === "accepted") continue;
+    const ends = endsAt(r);
+    if (ends > now && (!until || ends > until)) until = ends;
   }
   return until;
 }

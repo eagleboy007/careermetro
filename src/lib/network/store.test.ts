@@ -141,18 +141,21 @@ describe.skipIf(!db)("network store (database)", () => {
     expect((await networkLists(b, deps())).requests).toEqual([]);
     // The sender's download doesn't say it was ignored.
     expect((await exportNetwork(a, db!, deps().now)).requestsSent).toMatchObject([{ status: "pending", decidedAt: null }]);
-    // It reads Requested until it would have ended; then, 30 days after the ignore, they can ask again.
+    // It reads Requested until it would have ended; then they can ask again, as after no answer.
+    expect(await ask(a, b, "other", deps(29))).toEqual(ok("requested"));
     expect(await connectionWith(a, b, deps(31))).toBe("none");
     expect(await ask(a, b, "other", deps(31))).toEqual(ok("requested"));
-    // Withdraw needs no wait.
+    // Withdraw is silent, but the withdrawn request still holds the sender until it would have ended.
     expect(await withdrawRequest(b, a, deps(31))).toEqual({ ok: false, error: "not_found" });
     expect(await withdrawRequest(a, b, deps(31))).toEqual({ ok: true });
     expect(await connectionWith(b, a, deps(31))).toBe("none");
-    expect(await ask(a, b, "other", deps(31))).toEqual(ok("requested"));
-    // Unanswered, it ends after 30 days; then the sender waits 30 more, and the receiver can ask at once.
-    expect(await answerRequest(b, a, "accept", deps(62))).toEqual({ ok: false, error: "not_found" });
-    expect(await ask(a, b, "other", deps(62))).toEqual({ ok: false, error: "wait" });
-    expect(await ask(b, a, "other", deps(62))).toEqual(ok("requested"));
+    expect(await ask(a, b, "other", deps(31))).toEqual({ ok: false, error: "wait" });
+    expect(await ask(a, b, "other", deps(62))).toEqual(ok("requested"));
+    // Unanswered, it ends after 30 days: the sender's download says expired, and either side can ask again.
+    expect(await answerRequest(b, a, "accept", deps(93))).toEqual({ ok: false, error: "not_found" });
+    expect((await exportNetwork(a, db!, deps(93).now)).requestsSent.at(-1)).toMatchObject({ status: "expired" });
+    expect(await withdrawRequest(a, b, deps(93))).toEqual({ ok: false, error: "not_found" });
+    expect(await ask(b, a, "other", deps(93))).toEqual(ok("requested"));
   });
 
   it("lets the person who ignored change their mind with Connect", async () => {
@@ -213,7 +216,7 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(CONNECTION_PENDING_MAX).toBe(100);
   });
 
-  it("finds connections, open requests and people who turned the switch on, best first, with filters", async () => {
+  it("finds connections and people who turned the switch on, best first, with filters", async () => {
     const me = await person("Asha", { met: ["sql", "python", "excel"], city: "Pune" });
     const friend = await person("Kiran", { met: [] });
     const asked = await person("Kunal");
@@ -232,15 +235,15 @@ describe.skipIf(!db)("network store (database)", () => {
 
     const all = await search(me, { q: tag }, deps());
     if (!all.ok) throw new Error(all.error);
-    // The friend first, then most skills in common; never the hidden person, a blocker or the searcher.
+    // The friend first, then most skills in common; never the hidden person, someone switched off who sent a
+    // request (it waits under Requests instead), a blocker or the searcher.
     const ids = all.people.map((p) => p.id);
     expect(ids.slice(0, 3)).toEqual([friend, close, far]);
-    expect(ids).toEqual(expect.arrayContaining([asked, named]));
-    for (const not of [me, hidden, blocker]) expect(ids).not.toContain(not);
+    expect(ids).toContain(named);
+    for (const not of [me, hidden, asked, blocker]) expect(ids).not.toContain(not);
     expect(all.people[0].state).toBe("connected");
     expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, city: "Pune", state: "none" });
     expect(all.people[2]).toMatchObject({ common: 1, aim: null });
-    expect(all.people.find((p) => p.id === asked)?.state).toBe("incoming");
     expect(all.people.length).toBeLessThanOrEqual(NETWORK_RESULTS_MAX);
 
     const byName = await search(me, { q: `kav ${tag.slice(0, 4)}` }, deps());
