@@ -466,6 +466,68 @@ Approved by Milin on 2026-10-15 (C11, "Approve both" on the design thread card).
 - Each card: role, "on your line" tag when it's on the destination line, weeks and path hours, cobalt bar of required skills met (progress), the open goals as chips, "Gaps for this role" and "N open jobs in Departures".
 - Empty state ("No roles to show yet") when there's no resume or nothing within 26 weeks, with "Add your resume" and "Browse departures".
 
+## 12j. Network (`/network`)
+
+Approved 2026-10-19 by the Project manager under Milin's delegation, with the rulings below (prototype v39, Network tab, Arjun's profile and Account settings > Privacy). Asked for by the Project manager so Development can build Network next. Posts and feeds (Junction) are left out until pending item 15 is decided.
+
+**Rulings (Project manager, under Milin's delegation, 2026-10-19):** (1) no Follow; (2) no note on requests; (3) keep "Only you" as it is and add "Your connections" as a new option, default for new users only, no rename and no loosening of anyone's saved choice; (4) gaps default to "Your connections" for new users only.
+
+**Fidelity pass against Development's plan (`dev/network-plan.md`), 2026-10-19:** Development builds from its plan; this section now follows it where they differed (Find people tab, 30 searches an hour, 100 requests waiting, 20 results, "On your line" later). The design extras marked *(C13)* were approved on 2026-10-19 by the Project manager under Milin's delegation. "On your line" stays Later. The three-way gaps choice applies to new users only, and no saved choice is ever loosened.
+
+**Connections**
+- A connection is two-way and needs the other person to accept. There is no Follow and no feed until Junction ships.
+- Connect from a Find people result or a profile. There is no free-text note, so a request can't carry spam or abuse. *(C13)* The sender picks how they know the person (On the same line, Worked together, Studied together, Met at an event, Other), shown to the receiver and on the connection row.
+- If two people ask each other, they are connected at once.
+- Limits: 20 new requests a day and up to 100 waiting on others at once; one open request per pair; a request expires after 30 days, then it can be sent again.
+- The person asked sees it under Requests on `/network`, with a count on the Requests tab and next to Network in the top nav and avatar menu. Nothing on Today. Accept, or Ignore (silent: the sender isn't told and their copy ends after 30 days).
+- The sender sees it under Sent as "Requested", with Withdraw.
+- Remove: from the connection's row menu or their profile menu, confirmed inline. The other person isn't told. What only connections get ends at once (gaps shared with connections, free chat; the old chat stays in Inbox, new messages need a message request). Either person can connect again.
+- Block ends any connection or request, hides both people from each other's search, lists and profiles, and stops messages between them. Unblock in Account settings. Report uses the same review queue as Inbox reports.
+
+**`/network` page**
+- Header, then a "Let people find me" bar (the same switch as in Settings), then tabs: Connections (count), Requests (count), Sent (count), Find people (the name search). On phone the last tab shows as "Find".
+- Connections: sort Recent or Name A to Z. Each row: avatar, name, verified tick, @handle, status, target role only if they show it, city, shared-skill count, connected date; Message; menu with View profile, Remove connection, Block, Report. *(C13)* how you know each other.
+- Requests rows show when it came. Sent rows show when it was sent and when it ends.
+- *(C13, Later)* "On your line": up to 3 people aiming at the same role who turned on "Let people find me" and aren't connected, ordered by shared skills, never by anything paid. Drawn with a Later tag.
+- Empty states: no connections (Find someone you know, Copy your profile link), no requests, nothing sent, no search results.
+- Phone: tabs fill the width, actions sit under each row, inline panels (connect, remove, block) open under the row. No pop-up dialogs.
+
+**Name search (T44 member search waits on this)**
+- At least 2 letters, or an @handle. Matches the start of the first name, last name or handle.
+- Shows only people who turned on "Let people find me", are signed up with a name and aren't suspended. Never people you blocked or who blocked you. *(C13)* Your own connections are always findable by you.
+- Up to 20 results, best first: your connections, then most skills in common, then name. No paging in v1.
+- Each result: the same row as above and the right button (Connect, Requested, Accept, Message). Never email, phone, employer history, gaps or pay. *(C13)* Optional filters Aiming for my role, my city, Verified, and a mutual-connection count.
+- 30 searches an hour per person; results are never exportable.
+- No result: "People who keep Let people find me off can't be found by name. Ask them for their profile link instead."
+
+**On a profile (`/u/[handle]`)**
+- Header button by state: Connect; Requested (Withdraw in the menu); Accept request and Ignore; or Message plus a quiet "Connected" with Remove in the menu.
+- "In common with you" shows shared skills and target role. *(C13)* "Mutual connections" there, listing only people you are both connected to. Nobody can browse anyone else's connections, and no connection count shows on other people's profiles.
+- A connection sees gaps the person shares with connections; the "Gaps and path" block says why.
+
+**Who can find whom, and privacy (Account settings > Privacy)**
+- "Who can open your profile": Everyone signed in / People on your line / Your connections / Only you. "Your connections" is new and is the default for new users only. "Only you" stays exactly as built (nobody, connections included), and nobody's saved choice changes (ruling 3, 2026-10-19).
+- Gaps: the plan keeps the existing "Show my gaps" switch, read as "Show my gaps to connections"; new users start with it on (ruling 4), existing users keep what they saved. Companies never see gaps. *(C13)* A three-way choice instead: Nobody / Your connections / Everyone who can open your profile, for new users only; existing users keep their saved choice, mapped without loosening it.
+- "Let people find me": off by default. Separate from "Let companies find me", which stays as built.
+- *(C13)* "Connection requests from": Anyone who can reach you (default) / Nobody.
+- "Allow message requests from people who aren't connections" stays.
+- A "Who sees what" table in Settings sums it up for anyone signed in versus your connections.
+
+| What | Anyone signed in | Your connections |
+|---|---|---|
+| Find you by name | Only with "Let people find me" | Always |
+| Open your profile | As set in "Who can open your profile" | Unless you picked "Only you" |
+| See your gaps | Only with "Everyone who can open your profile" | Unless "Nobody" |
+| Ask to connect | Unless "Nobody" | Already connected |
+| Message you | One message request, if allowed | Chat freely |
+| See who you are connected to | Never | Only the people you both know |
+
+**Data (Development's plan, migration 0034)**
+- `connections`: `user_a`, `user_b` (pair stored with `user_a < user_b`), `status` pending / accepted, `requested_by`, `ignored_at`, timestamps.
+- `user_settings.people_can_find` (default false). `profile_visibility` gains `connections`, the default for new users only; `only_me` is unchanged and no saved value is migrated.
+- Uses the existing `blocks`, `reports` and `rate_limits`.
+- *(C13)* would add `connections.how` and `user_settings.requests_from` (anyone / nobody), and turn the gaps switch into `gaps_visible_to` (nobody / connections / profile). Each needs approval before any migration.
+
 ## 13. Data model proposals (need Milin's approval before any migration)
 
 Current tables: organizations, users, consents, waitlist_entries, resumes, profiles, skills, skill_aliases, role_profiles, job_descriptions, ai_calls, gap_analyses, resources, resource_checks, paths, path_steps, audit_logs.

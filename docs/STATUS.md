@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-19 (Network plan, Development 3).
+Last updated: 2026-10-19 (Network part 1, Development 4).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -33,7 +33,8 @@ Last updated: 2026-10-19 (Network plan, Development 3).
 
 ## In progress
 
-- Network: connections, people search by name and the privacy switch, no posts. Plan `docs/plans/network-plan.md` (approved in advance by the Project manager, 2026-10-19); build in 3 PRs, part 1 (data and rules, migration 0034) next.
+- Network, FR-49 (handoff 12j): part 1, data and rules, is in this PR (migration 0034: connections, connection_requests, the Network choices in user_settings; existing choices kept, new-user defaults written by the app). Parts 2 (the `/network` page and the Settings switch) and 3 (profiles, Inbox, gaps) follow. Plan `docs/plans/network-plan.md`.
+- Then the resume builder (FR-36, `docs/plans/resume-builder-plan.md`) and Elite (C15, FR-50, `docs/plans/elite-plan.md`).
 
 ## Next up
 
@@ -50,7 +51,7 @@ Waiting: Network name search (Network not built); the end of Milin's name-search
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0034**. `EXPORT_VERSION` (19) lives in `src/lib/account/export.ts`. The latest FR is FR-48.
+Numbers: the next migration is **0035**. `EXPORT_VERSION` (20) lives in `src/lib/account/export.ts`. The latest FR is FR-49.
 
 ## Decisions log (newest first)
 

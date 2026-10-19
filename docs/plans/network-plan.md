@@ -55,10 +55,13 @@ Sources: handoff section 12 ("People appear as Name · status. Lists show only c
 
 ## Data model (migration 0034, RLS on, as every table)
 
-- `connections`: `user_a uuid`, `user_b uuid` (the pair always stored with `user_a < user_b`, check constraint), `status` (`pending` | `accepted`), `requested_by uuid`, `ignored_at` (set by the receiver; the sender is never shown it), `created_at`, `accepted_at`. Primary key (`user_a`, `user_b`). Index on `user_b`. Both users cascade on delete.
-- `user_settings.people_can_find boolean not null default false`.
-- `profile_visibility` enum gains `connections`.
-- Export (`EXPORT_VERSION` 20): your connections (their name and username as shown to you), requests you sent and got with dates, and the switch. Account delete removes all of it (cascade).
+Changed to the approved handoff 12j (Project manager's rulings, 2026-10-19) before part 1 was built:
+
+- `connections`: `user_low uuid`, `user_high uuid` (the pair always stored low first, check constraint), `how` (how they know each other: same line, worked together, studied together, met at an event, other), `created_at`. Primary key (`user_low`, `user_high`). Index on `user_high`. Both users cascade on delete.
+- `connection_requests`: `id`, `from_user`, `to_user`, `how`, `status` (`pending` | `accepted` | `ignored` | `withdrawn` | `expired`), `created_at`, `decided_at`. At most one pending request per pair (a unique partial index), indexes for each side. An ignored request still reads "Requested" to its sender until it would have ended (30 days); then they wait 30 days to ask again. Both users cascade.
+- `user_settings` gains `people_can_find boolean default false`, `gaps_visible_to` (`nobody` | `connections` | `profile`) and `requests_from` (`anyone` | `nobody`). Existing rows map "show gaps" without loosening it (on: `profile`, off: `nobody`), and the migration gives every existing user a settings row, so the new defaults (`connections` for profile and gaps) reach new users only (rulings 3 and 4).
+- `profile_visibility` enum gains `connections` (the column default stays `only_me`; the app writes the new-user default). A connection opens a profile under every choice but "Only you".
+- Export (`EXPORT_VERSION` 20): your connections (their name and username as shown to you, and how you know them), requests you sent and got with dates, and the Network choices. Account delete removes all of it (cascade).
 - Logs and audit lines carry event names and ids only: never a name, a username or a search.
 
 ## Build, in small PRs
