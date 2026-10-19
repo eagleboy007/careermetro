@@ -76,6 +76,9 @@ export const LIMITS = {
   networkRequestsPerUser: { bucket: "network-request", max: 20, windowMs: 24 * HOUR },
   /** Network searches by name one person runs an hour, so the list of people can't be read out by script. */
   networkSearchesPerUserHour: { bucket: "network-search", max: 30, windowMs: HOUR },
+  /** Build your resume (FR-36): draft saves an hour, and rewords a day, each per person. */
+  builderSavesPerUserHour: { bucket: "builder-save", max: 60, windowMs: HOUR },
+  builderRewordsPerUserDay: { bucket: "builder-reword", max: 5, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

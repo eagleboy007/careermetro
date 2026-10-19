@@ -35,7 +35,7 @@ import {
   INTERVIEW_STATUSES,
   CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
+import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -266,13 +266,33 @@ export const resumes = pgTable(
     createdAt: createdAt(),
     /** When the raw file must be removed (SEC-5). Null when no file was kept, the default: text is read in memory. */
     fileDeleteAfter: timestamp("file_delete_after", { withTimezone: true }),
+    /** "builder" for a resume made from answers at /builder (FR-36): no file, no storage key, its draft in resume_drafts. */
+    source: text("source", { enum: ["upload", "builder"] }).notNull().default("upload"),
   },
   (t) => [
+    check("resumes_source", sql`${t.source} in ('upload', 'builder')`),
     index("resumes_anonymous_session").on(t.anonymousSessionId),
     index("resumes_client_hash").on(t.clientHash, t.createdAt),
     index("resumes_user").on(t.userId),
     index("resumes_consent").on(t.consentId),
   ],
+);
+
+/**
+ * The answers of Build your resume (FR-36, docs/plans/resume-builder-plan.md), one draft a person, saved as they go.
+ * Resume text: never logged. `resumeId` is the resume last built from it. Goes with the account; in Download your data.
+ */
+export const resumeDrafts = pgTable(
+  "resume_drafts",
+  {
+    userId: uuid("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    answers: jsonb("answers").$type<BuilderAnswers>().notNull(),
+    resumeId: uuid("resume_id").references(() => resumes.id, { onDelete: "set null" }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("resume_drafts_resume").on(t.resumeId)],
 );
 
 /** Versioned: every user correction creates a new row. */
