@@ -105,7 +105,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     send: (p: NetworkRow) => run(() => actions!.connect(p.id, pick), () => move(p, "requested"), `Request sent to ${first(p)}. It shows under Sent until they answer.`),
     accept: (p: NetworkRow) => run(() => actions!.answer(p.id, "accept"), () => move(p, "connected"), `You and ${first(p)} are connected.`),
     ignore: (p: NetworkRow) => run(() => actions!.answer(p.id, "ignore"), () => move(p, "none"), `Request ignored. ${first(p)} isn't told.`),
-    withdraw: (p: NetworkRow) => run(() => actions!.withdraw(p.id), () => move(p, "none"), `Request to ${first(p)} withdrawn.`),
+    withdraw: (p: NetworkRow) => run(() => actions!.withdraw(p.id), () => move(p, "none"), `Request to ${first(p)} withdrawn. You can ask again 30 days after you sent it.`),
     remove: (p: NetworkRow) => run(() => actions!.remove(p.id), () => move(p, "none"), `${first(p)} removed from your connections.`),
     block: (p: NetworkRow) => run(() => actions!.block(p.id), () => drop(p), `${first(p)} is blocked.`),
   };
@@ -251,7 +251,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
 
           {tab === "find" ? (
             results === null ? (
-              <p className="text-[0.82rem] text-muted">Finds your connections, people with a request open with you, and people who turned on &ldquo;Let people find me&rdquo;. Never people you blocked or who blocked you.</p>
+              <p className="text-[0.82rem] text-muted">Finds your connections and people who turned on &ldquo;Let people find me&rdquo;. Never people you blocked or who blocked you.</p>
             ) : results.length ? (
               <PeopleList rows={results} tab="find" panel={panel} pick={pick} setPick={setPick} setPanel={setPanel} act={act} pending={pending} />
             ) : (
