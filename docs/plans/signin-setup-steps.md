@@ -34,6 +34,8 @@ In the careermetro project, **Settings > Environment Variables**, for Production
 - `NEXT_PUBLIC_SUPABASE_URL` = the Project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the anon / publishable key
 
-Both are safe in the browser by design. Then tell Claude "sign-in keys added" in the Development thread; Claude checks them on the preview before calling sign-in live.
+Both are safe in the browser by design. The site works with emailed codes alone at this point: "Continue with Google" stays hidden.
+
+Once steps 1 to 3 for Google are done, add one more, `GOOGLE_SIGNIN` = `1`, and redeploy; the Google button then shows. You can do the email part first and Google later. Then tell Claude "sign-in keys added" in the Development thread; Claude checks them on the preview before calling sign-in live.
 
 Note: Supabase's built-in email sender is limited to a few emails an hour. That is fine for the beta preview; before launch we add a proper sender (e.g. Resend or Amazon SES), which is a separate small step.

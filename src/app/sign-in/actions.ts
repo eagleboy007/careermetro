@@ -4,7 +4,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { afterSignIn } from "@/lib/auth/after-sign-in";
-import { safeNext } from "@/lib/auth/config";
+import { googleSignInEnabled, safeNext } from "@/lib/auth/config";
 import { googleSignInUrl, requestOrigin, sendEmailCode, verifyEmailCode } from "@/lib/auth/server";
 import { clientIp } from "@/lib/session";
 import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
@@ -16,9 +16,10 @@ const emailSchema = z.email().max(254);
 // Supabase codes are 6 digits by default and can be set up to 10.
 const codeSchema = z.string().regex(/^\d{6,10}$/);
 
-/** "Continue with Google": off to Google's consent page. */
+/** "Continue with Google": off to Google's consent page. Refused while Google isn't set up, even if the form is posted by hand. */
 export async function continueWithGoogle(formData: FormData): Promise<void> {
   const next = safeNext(String(formData.get("next") ?? ""));
+  if (!googleSignInEnabled()) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
   const url = await googleSignInUrl(await requestOrigin(), next);
   redirect(url ?? `/sign-in?error=google&next=${encodeURIComponent(next)}`);
 }

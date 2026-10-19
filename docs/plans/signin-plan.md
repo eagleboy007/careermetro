@@ -36,6 +36,11 @@ There is no foreign key to Supabase's own `auth.users` table, so our tables neve
 
 Goals, pitstops and proof tables (`user_goals`, `gap_proofs`, `ride_days`) are **not** in this change. They come in a later plan of their own (build steps 5 and 6).
 
+## Email-only until Google is set up (Decided by Development, 2026-10-19, approved in advance by the Project manager)
+- "Continue with Google" and the "or" line show only with `GOOGLE_SIGNIN=1` (a server setting, read per request), so the public site can go live with emailed codes while the Google client is still being made.
+- The Google action refuses when the setting is off, so a hand-posted form can't start a Google sign-in that isn't set up.
+- Risk checked: nothing else in the app depends on the button. The auth callback route is unchanged, so turning the setting on later needs no code change.
+
 ## Not in this step
 - "Download my data" and "Delete my account" with the 24-hour deletion job. These are the next PR after sign-in.
 - Phone OTP: SMS in India needs TRAI DLT registration first.

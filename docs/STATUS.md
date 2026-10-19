@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-19 (keys register in docs/secrets.md, Development 3).
+Last updated: 2026-10-19 (email-only sign-in switch, Development 3).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -29,7 +29,7 @@ Last updated: 2026-10-19 (keys register in docs/secrets.md, Development 3).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 424 free resource links (#129).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
-- **Switched off until keys arrive:** sign-in (preview uses a test user), company sign-up, join and re-check codes and the current-job check (need `RESEND_API_KEY` and `EMAIL_FROM`, `dev/email-sender-steps.md` step 6, plus `NAME_HASH_KEY`), find-people, phone sharing, and photo and certificate upload.
+- **Switched off until keys arrive:** sign-in (preview uses a test user; with the Supabase values it opens by emailed code, and "Continue with Google" shows only once `GOOGLE_SIGNIN=1` is added, 2026-10-19), company sign-up, join and re-check codes and the current-job check (need `RESEND_API_KEY` and `EMAIL_FROM`, `dev/email-sender-steps.md` step 6, plus `NAME_HASH_KEY`), find-people, phone sharing, and photo and certificate upload.
 
 ## In progress
 

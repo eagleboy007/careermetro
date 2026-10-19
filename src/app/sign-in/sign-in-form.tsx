@@ -7,26 +7,30 @@ import { continueWithGoogle, emailStep, type EmailStep } from "./actions";
 
 const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
 
-/** Google or an emailed code. `error` comes from a failed redirect back to this page. */
-export function SignInForm({ next, error }: { next: string; error: string | null }) {
+/** Google (when it is set up, GOOGLE_SIGNIN) or an emailed code. `error` comes from a failed redirect back to this page. */
+export function SignInForm({ next, error, google }: { next: string; error: string | null; google: boolean }) {
   const [state, action, pending] = useActionState<EmailStep, FormData>(emailStep, { stage: "email", email: "", error: null });
   const message = state.error ?? (state.stage === "email" ? error : null);
 
   return (
     <div className="flex flex-col gap-6">
-      <form action={continueWithGoogle}>
-        <input type="hidden" name="next" value={next} />
-        <Button type="submit" variant="ghost" className="w-full py-3">
-          <GoogleMark />
-          Continue with Google
-        </Button>
-      </form>
+      {google && (
+        <>
+          <form action={continueWithGoogle}>
+            <input type="hidden" name="next" value={next} />
+            <Button type="submit" variant="ghost" className="w-full py-3">
+              <GoogleMark />
+              Continue with Google
+            </Button>
+          </form>
 
-      <div className="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted" aria-hidden="true">
-        <span className="h-px flex-1 bg-line" />
-        or
-        <span className="h-px flex-1 bg-line" />
-      </div>
+          <div className="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted" aria-hidden="true">
+            <span className="h-px flex-1 bg-line" />
+            or
+            <span className="h-px flex-1 bg-line" />
+          </div>
+        </>
+      )}
 
       <form action={action} onSubmit={(e) => pending && e.preventDefault()} className="flex flex-col gap-4" noValidate>
         <input type="hidden" name="next" value={next} />
