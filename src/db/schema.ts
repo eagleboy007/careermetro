@@ -33,7 +33,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
@@ -196,6 +196,15 @@ export const userSettings = pgTable("user_settings", {
   showCertifications: boolean("show_certifications").notNull().default(true),
   /** "Let companies find me" (pending item 19): off until the person turns it on. Off takes them out of searches at once. */
   companiesCanFind: boolean("companies_can_find").notNull().default(false),
+  /** "Let people find me" (Network, FR-49, handoff 12j): off until the person turns it on. Off takes them out of name search at once. */
+  peopleCanFind: boolean("people_can_find").notNull().default(false),
+  /**
+   * "Your gaps show to" (handoff 12j): nobody, connections, or everyone who can open the profile. New rows default to
+   * connections (ruling 4, new users only); migration 0034 set existing rows from show_gaps (on: profile, off: nobody).
+   */
+  gapsVisibleTo: text("gaps_visible_to", { enum: GAPS_VISIBLE_TO }).notNull().default("connections"),
+  /** "Connection requests from" (handoff 12j): anyone who can reach the person, or nobody. */
+  requestsFrom: text("requests_from", { enum: REQUESTS_FROM }).notNull().default("anyone"),
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
@@ -711,6 +720,63 @@ export const blocks = pgTable(
     createdAt: createdAt(),
   },
   (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] }), index("blocks_blocked").on(t.blockedId), check("blocks_not_self", sql`${t.blockerId} <> ${t.blockedId}`)],
+);
+
+/**
+ * Network connections (FR-49, handoff 12j): one row per connected pair, stored with user_low < user_high so a pair has
+ * one row whoever asked. `how` is how the sender of the accepted request knows the other. Remove deletes the row, and
+ * so does a block either way; both accounts going delete it.
+ */
+export const connections = pgTable(
+  "connections",
+  {
+    userLow: uuid("user_low")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    userHigh: uuid("user_high")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    how: text("how", { enum: CONNECTION_HOWS }).notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userLow, t.userHigh] }),
+    index("connections_user_high").on(t.userHigh),
+    check("connections_pair_order", sql`${t.userLow} < ${t.userHigh}`),
+    check("connections_how", sql`${t.how} in ('same_line', 'worked_together', 'studied_together', 'event', 'other')`),
+  ],
+);
+
+/**
+ * Connection requests (handoff 12j). One open (pending) request per pair, either way. Ignore is silent: the sender's copy
+ * reads Requested until it ends after CONNECTION_REQUEST_DAYS. Rows are kept as the record of who asked whom, and go
+ * with either account.
+ */
+export const connectionRequests = pgTable(
+  "connection_requests",
+  {
+    id: id(),
+    fromUser: uuid("from_user")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    toUser: uuid("to_user")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    how: text("how", { enum: CONNECTION_HOWS }).notNull(),
+    status: text("status", { enum: CONNECTION_REQUEST_STATUSES }).notNull().default("pending"),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("connection_requests_open_pair")
+      .on(sql`least(${t.fromUser}, ${t.toUser})`, sql`greatest(${t.fromUser}, ${t.toUser})`)
+      .where(sql`${t.status} = 'pending'`),
+    index("connection_requests_to").on(t.toUser, t.status),
+    index("connection_requests_from").on(t.fromUser, t.status),
+    check("connection_requests_not_self", sql`${t.fromUser} <> ${t.toUser}`),
+    check("connection_requests_how", sql`${t.how} in ('same_line', 'worked_together', 'studied_together', 'event', 'other')`),
+    check("connection_requests_status", sql`${t.status} in ('pending', 'accepted', 'ignored', 'withdrawn', 'expired')`),
+  ],
 );
 
 /**

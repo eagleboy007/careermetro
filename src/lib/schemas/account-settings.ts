@@ -78,9 +78,13 @@ export const companiesCanFind = z.boolean();
 
 export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, companiesCanFind, ...notificationPrefs.shape });
 
-/** No row in user_settings means these (decided 2026-10-13): hidden until the person chooses; target role and gaps off. */
+/**
+ * No row in user_settings means these. Since migration 0034 every account made before it has a row, so no row means a
+ * new user, who starts with "Your connections" (handoff 12j ruling 3, new users only; it was "Only you" from
+ * 2026-10-13). Target role and gaps to everyone stay off.
+ */
 export const DEFAULT_SETTINGS: UserSettings = {
-  visibility: "only_me",
+  visibility: "connections",
   showTargetRole: false,
   showExperience: true,
   showEducation: true,

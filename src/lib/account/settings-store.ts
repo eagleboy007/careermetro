@@ -1,9 +1,10 @@
 import "server-only";
-import { and, eq, gt, isNull, lt, ne, sql } from "drizzle-orm";
+import { and, eq, gt, isNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { blocks, consents, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
 import { currentAnalysis } from "@/lib/gaps/current";
+import { areConnected } from "@/lib/network/store";
 import { DEFAULT_SETTINGS, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE, FIND_POLICY_VERSION, USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -162,7 +163,7 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
       // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
       // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
       // both see the switch off and record two consents, or both see it on and withdraw none.
-      const [was] = await tx.select({ on: userSettings.companiesCanFind }).from(userSettings).where(eq(userSettings.userId, userId)).for("update");
+      const [was] = await tx.select({ on: userSettings.companiesCanFind, showGaps: userSettings.showGaps }).from(userSettings).where(eq(userSettings.userId, userId)).for("update");
       const wasOn = was?.on ?? false;
       if (rest.companiesCanFind && !wasOn)
         await tx.insert(consents).values({ userId, purpose: FIND_CONSENT_PURPOSE, policyVersion: FIND_POLICY_VERSION, givenAt: now });
@@ -171,7 +172,10 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
           .update(consents)
           .set({ withdrawnAt: now })
           .where(and(eq(consents.userId, userId), eq(consents.purpose, FIND_CONSENT_PURPOSE), isNull(consents.withdrawnAt)));
-      const row = { profileVisibility: visibility, ...rest, updatedAt: now };
+      // Until Settings shows "Your gaps show to" (Network part 2), turning "Your gaps" on or off here sets it the old way:
+      // on is everyone who can open the profile, off is nobody. Left alone, it keeps its value (a new user's: connections).
+      const gapsChanged = rest.showGaps !== (was?.showGaps ?? DEFAULT_SETTINGS.showGaps);
+      const row = { profileVisibility: visibility, ...rest, ...(gapsChanged ? { gapsVisibleTo: rest.showGaps ? ("profile" as const) : ("nobody" as const) } : {}), updatedAt: now };
       await tx.insert(userSettings).values({ userId, ...row }).onConflictDoUpdate({ target: userSettings.userId, set: row });
       return { ok: true } as const;
     });
@@ -231,7 +235,8 @@ export async function clearExpiredUsernameRedirects(db: Db = getDb(), now = new 
 
 /**
  * Whether a signed-in viewer may see the owner's profile: always their own; never when the owner chose Only you or
- * blocked them; for People on your line, only when both aim at the same role.
+ * blocked them; for People on your line, only when both aim at the same role; for Your connections, only a connection
+ * (FR-49).
  */
 export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings">, viewerId: string, db: Db = getDb()): Promise<boolean> {
   if (owner.id === viewerId) return true;
@@ -239,10 +244,12 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
   const [blocked] = await db
     .select({ at: blocks.createdAt })
     .from(blocks)
-    .where(and(eq(blocks.blockerId, owner.id), eq(blocks.blockedId, viewerId)))
+    // Either way (handoff 12j): a block hides both people's profiles from each other.
+    .where(or(and(eq(blocks.blockerId, owner.id), eq(blocks.blockedId, viewerId)), and(eq(blocks.blockerId, viewerId), eq(blocks.blockedId, owner.id))))
     .limit(1);
   if (blocked) return false;
   if (owner.settings.visibility === "signed_in") return true;
+  if (owner.settings.visibility === "connections") return areConnected(owner.id, viewerId, db);
   const [theirs, mine] = await Promise.all([currentAnalysis(owner.id, db), currentAnalysis(viewerId, db)]);
   return !!theirs && !!mine && theirs.result.roleSlug === mine.result.roleSlug;
 }

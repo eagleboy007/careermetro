@@ -944,8 +944,8 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   const handle = `e2e-${Date.now().toString(36)}`;
   await p.goto(BASE + "/settings");
   await settled();
-  // Nothing is set yet: no link, the profile starts hidden.
-  if (!(await p.getByLabel("Only you").isChecked())) throw new Error("profile visibility does not start at Only you");
+  // Nothing is set yet: no link, and a new user's profile starts at Your connections (FR-49, rulings 3 and 4).
+  if (!(await p.getByLabel("Your connections", { exact: true }).isChecked())) throw new Error("profile visibility does not start at Your connections");
   const username = p.getByLabel("Username");
   await username.fill("admin");
   await p.getByText("That one is reserved. Try another.").waitFor({ timeout: 5000 });
@@ -996,7 +996,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 19) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 20) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");

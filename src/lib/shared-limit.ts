@@ -72,6 +72,10 @@ export const LIMITS = {
   findOpensPerCompanyDay: { bucket: "find-open-company", max: 300, windowMs: 24 * HOUR },
   /** Messages a company sends in one found chat a day, after the person accepted. Keyed by the chat's id. */
   companyMessagesPerFoundChatDay: { bucket: "company-message-found", max: 20, windowMs: 24 * HOUR },
+  /** New connection requests one person sends a day (Network, FR-49). */
+  networkRequestsPerUser: { bucket: "network-request", max: 20, windowMs: 24 * HOUR },
+  /** Network searches by name one person runs an hour, so the list of people can't be read out by script. */
+  networkSearchesPerUserHour: { bucket: "network-search", max: 30, windowMs: HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */
