@@ -334,8 +334,6 @@ export const NETWORK_RESULTS_MAX = 20;
 export const NETWORK_SCAN_MAX = 2000;
 /** The longest network search typed. */
 export const NETWORK_QUERY_MAX = 80;
-/** "On your line" suggestions shown at most (handoff 12j). */
-export const ON_YOUR_LINE_MAX = 3;
 
 /* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
 

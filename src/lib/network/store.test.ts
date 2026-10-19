@@ -20,7 +20,6 @@ import {
   mutualConnections,
   networkLists,
   networkSettingsFor,
-  onYourLine,
   removeConnection,
   requestConnection as ask,
   requestsWaiting,
@@ -258,7 +257,6 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(await search(me, { q: "a." }, deps())).toEqual({ ok: false, error: "invalid" });
 
     expect((await mutualConnections(me, close, db!)).map((p) => p.id)).toEqual([friend]);
-    expect(await onYourLine(me, deps())).toMatchObject([{ id: close }, { id: far }]);
 
     // Off takes the person out at once.
     await saveNetworkSettings(close, { peopleCanFind: false, gapsVisibleTo: "connections", requestsFrom: "anyone" }, deps());

@@ -13,7 +13,6 @@ import {
   CONNECTION_PENDING_MAX,
   DEFAULT_NETWORK_SETTINGS,
   NETWORK_RESULTS_MAX,
-  ON_YOUR_LINE_MAX,
   connectionAnswer,
   connectionHow,
   networkSearchInput,
@@ -456,7 +455,7 @@ function findableBy(userId: string): SQL {
   )!;
 }
 
-/** The viewer's own role and city, for the "Aiming for my role" and "My city" filters and "On your line". */
+/** The viewer's own role and city, for the "Aiming for my role" and "My city" filters. */
 async function viewerOf(userId: string, db: Db) {
   const [[me], analyses] = await Promise.all([db.select({ city: users.city }).from(users).where(eq(users.id, userId)), analysesOf([userId], db)]);
   return { city: me?.city ?? null, roleSlug: analyses.get(userId)?.roleSlug ?? null };
@@ -517,32 +516,6 @@ async function statesWith(userId: string, ids: string[], db: Db | Tx, now: Date)
     out.set(id, connectionState(mine.has(id), rows, userId, now));
   }
   return out;
-}
-
-/**
- * "On your line" (handoff 12j): up to ON_YOUR_LINE_MAX people aiming at the same role who turned on "Let people find
- * me" and aren't connected or asked either way, by most skills in common, never by anything paid.
- */
-export async function onYourLine(userId: string, deps: Deps = {}): Promise<NetworkPerson[]> {
-  const db = deps.db ?? getDb();
-  const now = deps.now ?? new Date();
-  const me = await viewerOf(userId, db);
-  if (!me.roleSlug) return [];
-  const scanned = await db
-    .select(personColumns)
-    .from(users)
-    .innerJoin(userSettings, eq(userSettings.userId, users.id))
-    .where(and(eq(userSettings.peopleCanFind, true), sql`${users.name} is not null and btrim(${users.name}) <> ''`, sql`${users.id} <> ${userId}`, shownTo(userId)))
-    .orderBy(desc(userSettings.updatedAt), asc(users.id))
-    .limit(NETWORK_SCAN_MAX);
-  const states = await statesWith(userId, scanned.map((p) => p.id), db, now);
-  const free = scanned.filter((p) => states.get(p.id) === "none");
-  const people = await asPeople(userId, free.map((p) => ({ ...p, state: "none" as const, how: null, at: null, endsAt: null })), db, now);
-  return people
-    .filter((e) => e.roleSlug === me.roleSlug)
-    .map(strip)
-    .sort((a, b) => b.common - a.common || b.mutual - a.mutual || a.name.localeCompare(b.name, "en"))
-    .slice(0, ON_YOUR_LINE_MAX);
 }
 
 /** The Network choices in Account settings > Privacy; a new user's defaults until they save some. */
