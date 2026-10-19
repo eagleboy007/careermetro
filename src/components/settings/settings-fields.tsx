@@ -63,6 +63,7 @@ export function PayFields() {
 const VISIBILITY_NOTES: Record<ProfileVisibility, string> = {
   signed_in: "Anyone signed in to CareerMetro can open your profile link. Companies you apply to always see what you send with that application.",
   line: "Only people aiming at the same role as you can open your profile link. Companies you apply to always see what you send with that application.",
+  connections: "Only people you are connected to on Network can open your profile link. Companies you apply to always see what you send with that application.",
   only_me: "Hidden from everyone: your link shows them a not-found page. Companies you apply to still see what you send with that application.",
 };
 

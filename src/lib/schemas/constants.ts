@@ -307,20 +307,35 @@ export const PROFILE_VISIBILITY_LABELS: Record<(typeof PROFILE_VISIBILITIES)[num
 /** When the ride reminder would go out, India time, once email is on (pending item 21). */
 export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as const;
 
-/* Network (FR-49, docs/plans/network-plan.md) ------------------------------------------------------------------------- */
+/* Network (FR-49, docs/plans/network-plan.md, handoff 12j) ---------------------------------------------------------- */
 
-/** A connection between two people: a request one of them sent, or accepted by the other. */
-export const CONNECTION_STATUSES = ["pending", "accepted"] as const;
-/** A request nobody answered lapses after this many days; then it can be sent again. */
+/** How the sender knows the person they ask to connect (handoff 12j): picked from these, never typed, so a request can't carry abuse. */
+export const CONNECTION_HOWS = ["same_line", "worked_together", "studied_together", "event", "other"] as const;
+export const CONNECTION_HOW_LABELS: Record<(typeof CONNECTION_HOWS)[number], string> = {
+  same_line: "On the same line",
+  worked_together: "Worked together",
+  studied_together: "Studied together",
+  event: "Met at an event",
+  other: "Other",
+};
+/** A connection request's state. "pending" past CONNECTION_REQUEST_DAYS reads as expired, and is marked so when the pair next asks. */
+export const CONNECTION_REQUEST_STATUSES = ["pending", "accepted", "ignored", "withdrawn", "expired"] as const;
+/** A request nobody answered ends after this many days. After an ignore or an expiry, the sender waits as long again to ask. */
 export const CONNECTION_REQUEST_DAYS = 30;
 /** Requests one person may have waiting on others at once. */
 export const CONNECTION_PENDING_MAX = 100;
+/** "Your gaps show to" (handoff 12j): nobody, connections, or everyone who can open the profile. */
+export const GAPS_VISIBLE_TO = ["nobody", "connections", "profile"] as const;
+/** "Connection requests from" (handoff 12j). */
+export const REQUESTS_FROM = ["anyone", "nobody"] as const;
 /** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
 export const NETWORK_RESULTS_MAX = 20;
-/** People a network search reads at most, newest switch first, as Find people does (FIND_SCAN_MAX). */
+/** People a network search reads at most, newest settings first, as Find people does (FIND_SCAN_MAX). */
 export const NETWORK_SCAN_MAX = 2000;
 /** The longest network search typed. */
 export const NETWORK_QUERY_MAX = 80;
+/** "On your line" suggestions shown at most (handoff 12j). */
+export const ON_YOUR_LINE_MAX = 3;
 
 /* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
 

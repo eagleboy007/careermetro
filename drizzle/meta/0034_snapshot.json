@@ -1115,126 +1115,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.connections": {
-      "name": "connections",
-      "schema": "",
-      "columns": {
-        "user_a": {
-          "name": "user_a",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_b": {
-          "name": "user_b",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "requested_by": {
-          "name": "requested_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ignored_at": {
-          "name": "ignored_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "accepted_at": {
-          "name": "accepted_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "connections_user_b": {
-          "name": "connections_user_b",
-          "columns": [
-            {
-              "expression": "user_b",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "connections_user_a_users_id_fk": {
-          "name": "connections_user_a_users_id_fk",
-          "tableFrom": "connections",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_a"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "connections_user_b_users_id_fk": {
-          "name": "connections_user_b_users_id_fk",
-          "tableFrom": "connections",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_b"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "connections_user_a_user_b_pk": {
-          "name": "connections_user_a_user_b_pk",
-          "columns": [
-            "user_a",
-            "user_b"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {
-        "connections_pair_order": {
-          "name": "connections_pair_order",
-          "value": "\"connections\".\"user_a\" < \"connections\".\"user_b\""
-        },
-        "connections_requested_by": {
-          "name": "connections_requested_by",
-          "value": "\"connections\".\"requested_by\" = \"connections\".\"user_a\" or \"connections\".\"requested_by\" = \"connections\".\"user_b\""
-        },
-        "connections_status": {
-          "name": "connections_status",
-          "value": "\"connections\".\"status\" in ('pending', 'accepted')"
-        }
-      },
-      "isRLSEnabled": false
-    },
     "public.consents": {
       "name": "consents",
       "schema": "",
@@ -5420,6 +5300,20 @@
           "notNull": true,
           "default": false
         },
+        "gaps_visible_to": {
+          "name": "gaps_visible_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'connections'"
+        },
+        "requests_from": {
+          "name": "requests_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'anyone'"
+        },
         "ride_reminder": {
           "name": "ride_reminder",
           "type": "ride_reminder",
@@ -5940,6 +5834,267 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.connections": {
+      "name": "connections",
+      "schema": "",
+      "columns": {
+        "user_low": {
+          "name": "user_low",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_high": {
+          "name": "user_high",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "how": {
+          "name": "how",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "connections_user_high": {
+          "name": "connections_user_high",
+          "columns": [
+            {
+              "expression": "user_high",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "connections_user_low_users_id_fk": {
+          "name": "connections_user_low_users_id_fk",
+          "tableFrom": "connections",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_low"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "connections_user_high_users_id_fk": {
+          "name": "connections_user_high_users_id_fk",
+          "tableFrom": "connections",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_high"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "connections_user_low_user_high_pk": {
+          "name": "connections_user_low_user_high_pk",
+          "columns": [
+            "user_low",
+            "user_high"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "connections_pair_order": {
+          "name": "connections_pair_order",
+          "value": "\"connections\".\"user_low\" < \"connections\".\"user_high\""
+        },
+        "connections_how": {
+          "name": "connections_how",
+          "value": "\"connections\".\"how\" in ('same_line', 'worked_together', 'studied_together', 'event', 'other')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.connection_requests": {
+      "name": "connection_requests",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "from_user": {
+          "name": "from_user",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "to_user": {
+          "name": "to_user",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "how": {
+          "name": "how",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "connection_requests_open_pair": {
+          "name": "connection_requests_open_pair",
+          "columns": [
+            {
+              "expression": "least(\"connection_requests\".\"from_user\", \"connection_requests\".\"to_user\")",
+              "isExpression": true,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "greatest(\"connection_requests\".\"from_user\", \"connection_requests\".\"to_user\")",
+              "isExpression": true,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"connection_requests\".\"status\" = 'pending'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "connection_requests_to": {
+          "name": "connection_requests_to",
+          "columns": [
+            {
+              "expression": "to_user",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "connection_requests_from": {
+          "name": "connection_requests_from",
+          "columns": [
+            {
+              "expression": "from_user",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "connection_requests_from_user_users_id_fk": {
+          "name": "connection_requests_from_user_users_id_fk",
+          "tableFrom": "connection_requests",
+          "tableTo": "users",
+          "columnsFrom": [
+            "from_user"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "connection_requests_to_user_users_id_fk": {
+          "name": "connection_requests_to_user_users_id_fk",
+          "tableFrom": "connection_requests",
+          "tableTo": "users",
+          "columnsFrom": [
+            "to_user"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "connection_requests_not_self": {
+          "name": "connection_requests_not_self",
+          "value": "\"connection_requests\".\"from_user\" <> \"connection_requests\".\"to_user\""
+        },
+        "connection_requests_how": {
+          "name": "connection_requests_how",
+          "value": "\"connection_requests\".\"how\" in ('same_line', 'worked_together', 'studied_together', 'event', 'other')"
+        },
+        "connection_requests_status": {
+          "name": "connection_requests_status",
+          "value": "\"connection_requests\".\"status\" in ('pending', 'accepted', 'ignored', 'withdrawn', 'expired')"
+        }
+      },
       "isRLSEnabled": false
     }
   },

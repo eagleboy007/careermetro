@@ -16,13 +16,16 @@ import {
   areConnected,
   blockPerson,
   connectionWith,
+  exportNetwork,
+  mutualConnections,
   networkLists,
-  peopleCanFindFor,
+  networkSettingsFor,
+  onYourLine,
   removeConnection,
-  requestConnection,
+  requestConnection as ask,
   requestsWaiting,
-  searchNetwork,
-  setPeopleCanFind,
+  saveNetworkSettings,
+  searchNetwork as search,
   withdrawRequest,
 } from "./store";
 
@@ -62,10 +65,10 @@ describe.skipIf(!db)("network store (database)", () => {
   const deps = (days = 0) => ({ db: db!, now: new Date(now.getTime() + days * DAY) });
   const lines: string[] = [];
 
-  async function person(first: string, opts: { met?: string[]; findable?: boolean; username?: string; showTargetRole?: boolean } = {}) {
+  async function person(first: string, opts: { met?: string[]; findable?: boolean; closed?: boolean; username?: string; showTargetRole?: boolean; city?: string } = {}) {
     const [u] = await db!
       .insert(schema.users)
-      .values({ email: `${run}-${n}@example.com`, authSubject: `${run}-${n++}`, name: `${first} ${tag}`, username: opts.username ?? null })
+      .values({ email: `${run}-${n}@example.com`, authSubject: `${run}-${n++}`, name: `${first} ${tag}`, username: opts.username ?? null, city: opts.city ?? null })
       .returning({ id: schema.users.id });
     userIds.push(u.id);
     if (opts.met) {
@@ -73,7 +76,8 @@ describe.skipIf(!db)("network store (database)", () => {
       const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
       await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis(opts.met), matcherVersion: MATCHER_VERSION });
     }
-    if (opts.findable) await setPeopleCanFind(u.id, true, deps());
+    if (opts.findable) await saveNetworkSettings(u.id, { peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: opts.closed ? "nobody" : "anyone" }, deps());
+    else if (opts.closed) await saveNetworkSettings(u.id, { peopleCanFind: false, gapsVisibleTo: "connections", requestsFrom: "nobody" }, deps());
     if (opts.showTargetRole) await db!.update(schema.userSettings).set({ showTargetRole: true }).where(inArray(schema.userSettings.userId, [u.id]));
     return u.id;
   }
@@ -85,82 +89,99 @@ describe.skipIf(!db)("network store (database)", () => {
   afterAll(async () => {
     if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
     await sqlClient!.end();
-    // Logs carry event names only: never a name, a username or what was typed.
+    // Logs carry event names only: never a name, a handle or what was typed.
     const all = lines.join("\n");
-    for (const secret of [tag, "Asha", "asha_", run]) expect(all).not.toContain(secret);
+    for (const secret of [tag, "Asha", "lata_", run]) expect(all).not.toContain(secret);
   });
 
-  it("sends a request, accepts it, and removes the connection from either side", async () => {
+  const ok = (state: string) => ({ ok: true, state });
+
+  it("sends a request with how you know them, accepts it, and removes the connection from either side", async () => {
     const a = await person("Asha");
     const b = await person("Vikram");
-    expect(await requestConnection(a, b, deps())).toEqual({ ok: true, state: "requested" });
-    // Asking again changes nothing and isn't counted twice.
-    expect(await requestConnection(a, b, deps())).toEqual({ ok: true, state: "requested" });
+    expect(await ask(a, b, "typed note", deps())).toEqual({ ok: false, error: "invalid" });
+    expect(await ask(a, b, "worked_together", deps())).toEqual(ok("requested"));
+    // Asking again changes nothing: one open request per pair.
+    expect(await ask(a, b, "other", deps())).toEqual(ok("requested"));
     expect(await connectionWith(a, b, deps())).toBe("requested");
     expect(await connectionWith(b, a, deps())).toBe("incoming");
     expect(await requestsWaiting(b, deps())).toBe(1);
-    expect((await networkLists(a, deps())).sent.map((p) => p.id)).toEqual([b]);
-    expect((await networkLists(b, deps())).requests.map((p) => p.name)).toEqual([`Asha ${tag}`]);
+    expect((await networkLists(a, deps())).sent).toMatchObject([{ id: b, how: "worked_together", state: "requested", endsAt: expect.any(Date) }]);
+    expect((await networkLists(b, deps())).requests).toMatchObject([{ name: `Asha ${tag}`, how: "worked_together" }]);
     // Only the receiver answers.
     expect(await answerRequest(a, b, "accept", deps())).toEqual({ ok: false, error: "not_found" });
     expect(await answerRequest(b, a, "maybe", deps())).toEqual({ ok: false, error: "invalid" });
-    expect(await answerRequest(b, a, "accept", deps())).toEqual({ ok: true, state: "connected" });
+    expect(await answerRequest(b, a, "accept", deps())).toEqual(ok("connected"));
     expect(await areConnected(a, b, db!)).toBe(true);
     expect(await requestsWaiting(b, deps())).toBe(0);
-    expect((await networkLists(a, deps())).connections.map((p) => p.id)).toEqual([b]);
+    expect((await networkLists(a, deps())).connections).toMatchObject([{ id: b, how: "worked_together", state: "connected" }]);
     expect(await removeConnection(b, a, db!)).toEqual({ ok: true });
     expect(await areConnected(a, b, db!)).toBe(false);
     expect(await removeConnection(a, b, db!)).toEqual({ ok: false, error: "not_found" });
+    // Either person can connect again.
+    expect(await ask(b, a, "same_line", deps())).toEqual(ok("requested"));
   });
 
   it("connects two people who ask each other", async () => {
     const a = await person("Asha");
     const b = await person("Bina");
-    await requestConnection(a, b, deps());
-    expect(await requestConnection(b, a, deps())).toEqual({ ok: true, state: "connected" });
-    expect(await connectionWith(a, b, deps())).toBe("connected");
+    await ask(a, b, "event", deps());
+    expect(await ask(b, a, "other", deps())).toEqual(ok("connected"));
+    expect((await networkLists(b, deps())).connections).toMatchObject([{ id: a, how: "event" }]);
   });
 
-  it("ignores silently, lets the sender withdraw, and lapses requests after 30 days", async () => {
+  it("ignores silently, lets the sender withdraw, ends requests after 30 days and makes the sender wait", async () => {
     const a = await person("Asha");
     const b = await person("Chitra");
-    await requestConnection(a, b, deps());
-    expect(await answerRequest(b, a, "ignore", deps())).toEqual({ ok: true, state: "none" });
+    await ask(a, b, "studied_together", deps());
+    expect(await answerRequest(b, a, "ignore", deps())).toEqual(ok("none"));
     // The sender still reads Requested; the receiver has nothing waiting.
     expect(await connectionWith(a, b, deps())).toBe("requested");
+    expect((await networkLists(a, deps())).sent.map((p) => p.id)).toEqual([b]);
     expect(await requestsWaiting(b, deps())).toBe(0);
     expect((await networkLists(b, deps())).requests).toEqual([]);
-    // The person who ignored it can still change their mind with Connect.
-    expect(await requestConnection(b, a, deps())).toEqual({ ok: true, state: "connected" });
-    await removeConnection(a, b, db!);
-
-    await requestConnection(a, b, deps());
-    expect(await withdrawRequest(b, a, db!)).toEqual({ ok: false, error: "not_found" });
-    expect(await withdrawRequest(a, b, db!)).toEqual({ ok: true });
-    expect(await connectionWith(b, a, deps())).toBe("none");
-
-    await requestConnection(a, b, deps());
+    // The sender's download doesn't say it was ignored.
+    expect((await exportNetwork(a, db!, deps().now)).requestsSent).toMatchObject([{ status: "pending", decidedAt: null }]);
+    // It reads Requested until it would have ended; then, 30 days after the ignore, they can ask again.
+    expect(await connectionWith(a, b, deps(31))).toBe("none");
+    expect(await ask(a, b, "other", deps(31))).toEqual(ok("requested"));
+    // Withdraw needs no wait.
+    expect(await withdrawRequest(b, a, deps(31))).toEqual({ ok: false, error: "not_found" });
+    expect(await withdrawRequest(a, b, deps(31))).toEqual({ ok: true });
     expect(await connectionWith(b, a, deps(31))).toBe("none");
-    expect(await answerRequest(b, a, "accept", deps(31))).toEqual({ ok: false, error: "not_found" });
-    // A lapsed request can be sent again, by either of them.
-    expect(await requestConnection(b, a, deps(31))).toEqual({ ok: true, state: "requested" });
-    expect(await connectionWith(a, b, deps(31))).toBe("incoming");
+    expect(await ask(a, b, "other", deps(31))).toEqual(ok("requested"));
+    // Unanswered, it ends after 30 days; then the sender waits 30 more, and the receiver can ask at once.
+    expect(await answerRequest(b, a, "accept", deps(62))).toEqual({ ok: false, error: "not_found" });
+    expect(await ask(a, b, "other", deps(62))).toEqual({ ok: false, error: "wait" });
+    expect(await ask(b, a, "other", deps(62))).toEqual(ok("requested"));
   });
 
-  it("refuses yourself, blocked, deleted and suspended people, and a block ends a connection", async () => {
+  it("lets the person who ignored change their mind with Connect", async () => {
+    const a = await person("Asha");
+    const b = await person("Diya");
+    await ask(a, b, "other", deps());
+    await answerRequest(b, a, "ignore", deps());
+    expect(await ask(b, a, "other", deps())).toEqual(ok("connected"));
+  });
+
+  it("refuses yourself, blocked, deleted, suspended and closed people, and a block ends a connection", async () => {
     const a = await person("Asha");
     const b = await person("Dev");
-    expect(await requestConnection(a, a, deps())).toEqual({ ok: false, error: "self" });
-    await requestConnection(a, b, deps());
+    expect(await ask(a, a, "other", deps())).toEqual({ ok: false, error: "self" });
+    await ask(a, b, "other", deps());
     await answerRequest(b, a, "accept", deps());
     expect(await blockPerson(b, a, deps())).toEqual({ ok: true });
     expect(await areConnected(a, b, db!)).toBe(false);
-    expect(await requestConnection(a, b, deps())).toEqual({ ok: false, error: "unavailable" });
-    expect(await requestConnection(b, a, deps())).toEqual({ ok: false, error: "unavailable" });
+    expect(await ask(a, b, "other", deps())).toEqual({ ok: false, error: "unavailable" });
+    expect(await ask(b, a, "other", deps())).toEqual({ ok: false, error: "unavailable" });
+    // A block hides profiles both ways.
+    const open = { ...DEFAULT_SETTINGS, visibility: "signed_in" as const };
+    expect(await canViewProfile({ id: a, settings: open }, b, db!)).toBe(false);
+    expect(await canViewProfile({ id: b, settings: open }, a, db!)).toBe(false);
 
     // Blocking from an Inbox chat ends the connection too.
     const c = await person("Esha");
-    await requestConnection(a, c, deps());
+    await ask(a, c, "other", deps());
     await answerRequest(c, a, "accept", deps());
     const chat = await startDirect(a, c, "Hello", { db: db! });
     if (!chat.ok) throw new Error(chat.error);
@@ -170,100 +191,120 @@ describe.skipIf(!db)("network store (database)", () => {
 
     const gone = await person("Farah");
     const held = await person("Gita");
-    await requestConnection(gone, a, deps());
-    await requestConnection(held, a, deps());
+    await ask(gone, a, "other", deps());
+    await ask(held, a, "other", deps());
     await db!.update(schema.users).set({ deletionRequestedAt: now }).where(inArray(schema.users.id, [gone]));
     await db!.update(schema.users).set({ suspendedAt: now, suspendedReason: "Test" }).where(inArray(schema.users.id, [held]));
-    expect(await requestConnection(a, gone, deps())).toEqual({ ok: false, error: "unavailable" });
-    expect(await requestConnection(a, held, deps())).toEqual({ ok: false, error: "unavailable" });
+    expect(await ask(a, gone, "other", deps())).toEqual({ ok: false, error: "unavailable" });
+    expect(await ask(a, held, "other", deps())).toEqual({ ok: false, error: "unavailable" });
     // Their requests stop showing at once.
     expect(await requestsWaiting(a, deps())).toBe(0);
     expect((await networkLists(a, deps())).requests).toEqual([]);
+
+    // "Connection requests from: Nobody".
+    const closed = await person("Ira", { closed: true });
+    expect(await ask(a, closed, "other", deps())).toEqual({ ok: false, error: "closed" });
   });
 
-  it("caps requests a day and requests waiting", async () => {
+  it("caps requests a day", async () => {
     const a = await person("Asha");
     const others = await Promise.all(Array.from({ length: LIMITS.networkRequestsPerUser.max + 1 }, (_, i) => person(`Hari${i}`)));
-    for (const o of others.slice(0, -1)) expect((await requestConnection(a, o, deps())).ok).toBe(true);
-    expect(await requestConnection(a, others.at(-1)!, deps())).toEqual({ ok: false, error: "limit" });
+    for (const o of others.slice(0, -1)) expect((await ask(a, o, "other", deps())).ok).toBe(true);
+    expect(await ask(a, others.at(-1)!, "other", deps())).toEqual({ ok: false, error: "limit" });
     expect(CONNECTION_PENDING_MAX).toBe(100);
   });
 
-  it("finds only people who turned the switch on, by name or exact username, best first", async () => {
-    const me = await person("Asha", { met: ["sql", "python", "excel"] });
-    const friend = await person("Kiran", { met: [], findable: true });
-    const close = await person("Kavya", { met: ["sql", "python"], findable: true, showTargetRole: true });
+  it("finds connections, open requests and people who turned the switch on, best first, with filters", async () => {
+    const me = await person("Asha", { met: ["sql", "python", "excel"], city: "Pune" });
+    const friend = await person("Kiran", { met: [] });
+    const asked = await person("Kunal");
+    const close = await person("Kavya", { met: ["sql", "python"], findable: true, showTargetRole: true, city: "Pune" });
     const far = await person("Karan", { met: ["sql"], findable: true });
     const hidden = await person("Kabir", { met: ["sql", "python", "excel"] });
     const blocker = await person("Kamal", { findable: true });
     const named = await person("Lata", { findable: true, username: `lata_${run}` });
-    await requestConnection(me, friend, deps());
+    await ask(me, friend, "worked_together", deps());
     await answerRequest(friend, me, "accept", deps());
+    await ask(asked, me, "other", deps());
     await blockPerson(blocker, me, deps());
+    // Kavya and Asha both know Kiran.
+    await ask(close, friend, "other", deps());
+    await answerRequest(friend, close, "accept", deps());
 
-    const all = await searchNetwork(me, tag, deps());
+    const all = await search(me, { q: tag }, deps());
     if (!all.ok) throw new Error(all.error);
     // The friend first, then most skills in common; never the hidden person, a blocker or the searcher.
     const ids = all.people.map((p) => p.id);
     expect(ids.slice(0, 3)).toEqual([friend, close, far]);
-    expect(ids).toContain(named);
+    expect(ids).toEqual(expect.arrayContaining([asked, named]));
     for (const not of [me, hidden, blocker]) expect(ids).not.toContain(not);
     expect(all.people[0].state).toBe("connected");
-    expect(all.people[1]).toMatchObject({ common: 2, aim: roleProfiles[0].title, state: "none" });
+    expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, city: "Pune", state: "none" });
     expect(all.people[2]).toMatchObject({ common: 1, aim: null });
+    expect(all.people.find((p) => p.id === asked)?.state).toBe("incoming");
     expect(all.people.length).toBeLessThanOrEqual(NETWORK_RESULTS_MAX);
 
-    const byName = await searchNetwork(me, `kav ${tag.slice(0, 4)}`, deps());
+    const byName = await search(me, { q: `kav ${tag.slice(0, 4)}` }, deps());
     expect(byName.ok && byName.people.map((p) => p.id)).toEqual([close]);
-    const byUsername = await searchNetwork(me, `@LATA_${run}`, deps());
-    expect(byUsername.ok && byUsername.people.map((p) => p.id)).toEqual([named]);
-    expect(await searchNetwork(me, "a.", deps())).toEqual({ ok: false, error: "invalid" });
+    const byHandle = await search(me, { q: `@LATA_${run.slice(0, 4)}` }, deps());
+    expect(byHandle.ok && byHandle.people.map((p) => p.id)).toContain(named);
+    const inMyCity = await search(me, { q: tag, sameCity: true }, deps());
+    expect(inMyCity.ok && inMyCity.people.map((p) => p.id)).toEqual([close]);
+    const onMyRole = await search(me, { q: tag, sameRole: true }, deps());
+    expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([friend, close, far]);
+    // Nobody here has proved a skill.
+    const verified = await search(me, { q: tag, verified: true }, deps());
+    expect(verified.ok && verified.people).toEqual([]);
+    expect(await search(me, { q: "a." }, deps())).toEqual({ ok: false, error: "invalid" });
+
+    expect((await mutualConnections(me, close, db!)).map((p) => p.id)).toEqual([friend]);
+    expect(await onYourLine(me, deps())).toMatchObject([{ id: close }, { id: far }]);
 
     // Off takes the person out at once.
-    await setPeopleCanFind(close, false, deps());
-    expect(await peopleCanFindFor(close, db!)).toBe(false);
-    const after = await searchNetwork(me, tag, deps());
+    await saveNetworkSettings(close, { peopleCanFind: false, gapsVisibleTo: "connections", requestsFrom: "anyone" }, deps());
+    expect((await networkSettingsFor(close, db!)).peopleCanFind).toBe(false);
+    const after = await search(me, { q: tag }, deps());
     expect(after.ok && after.people.map((p) => p.id)).not.toContain(close);
   });
 
   it("limits searches an hour", async () => {
     const me = await person("Asha");
-    for (let i = 0; i < LIMITS.networkSearchesPerUserHour.max; i++) expect((await searchNetwork(me, tag, deps())).ok).toBe(true);
-    expect(await searchNetwork(me, tag, deps())).toEqual({ ok: false, error: "limit" });
+    for (let i = 0; i < LIMITS.networkSearchesPerUserHour.max; i++) expect((await search(me, { q: tag }, deps())).ok).toBe(true);
+    expect(await search(me, { q: tag }, deps())).toEqual({ ok: false, error: "limit" });
   });
 
-  it("shows a Your connections profile to connections only", async () => {
+  it("shows a Your connections profile to connections only, and gives a new user the new defaults", async () => {
     const owner = await person("Asha");
     const friend = await person("Mira");
     const stranger = await person("Neel");
     const shown = { id: owner, settings: { ...DEFAULT_SETTINGS, visibility: "connections" as const } };
-    await requestConnection(owner, friend, deps());
+    await ask(owner, friend, "other", deps());
     expect(await canViewProfile(shown, friend, db!)).toBe(false);
     await answerRequest(friend, owner, "accept", deps());
     expect(await canViewProfile(shown, friend, db!)).toBe(true);
     expect(await canViewProfile(shown, stranger, db!)).toBe(false);
+    // Ruling 3 and 4: a first save of the Network choices keeps a new user's defaults for everything else.
+    await saveNetworkSettings(stranger, { peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: "anyone" }, deps());
+    const [row] = await db!.select().from(schema.userSettings).where(inArray(schema.userSettings.userId, [stranger]));
+    expect(row).toMatchObject({ profileVisibility: "connections", gapsVisibleTo: "connections", showGaps: false, peopleCanFind: true });
   });
 
-  it("puts connections, requests and the switch in Download your data, and deleting the account removes them", async () => {
+  it("puts connections, requests and the choices in Download your data, and deleting an account removes them", async () => {
     const a = await person("Asha", { findable: true, username: `asha_${run}` });
     const b = await person("Om");
     const c = await person("Pia");
-    await requestConnection(a, b, deps());
+    await ask(a, b, "same_line", deps());
     await answerRequest(b, a, "accept", deps());
-    await requestConnection(c, a, deps());
+    await ask(c, a, "event", deps());
     await answerRequest(a, c, "ignore", deps());
     const data = await exportAccountData(a, db!);
     expect(data!.exportVersion).toBe(20);
-    expect(data!.network.peopleCanFind).toBe(true);
-    expect(data!.network.connections).toMatchObject([{ name: `Om ${tag}`, username: null }]);
-    expect(data!.network.requestsReceived).toMatchObject([{ name: `Pia ${tag}` }]);
-    expect(data!.network.requestsReceived[0].ignoredAt).not.toBeNull();
-    // The sender's download never says their request was ignored.
-    const theirs = await exportAccountData(c, db!);
-    expect(theirs!.network.requestsSent).toEqual([{ name: `Asha ${tag}`, username: `asha_${run}`, sentAt: expect.any(Date) }]);
+    expect(data!.network).toMatchObject({ peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: "anyone" });
+    expect(data!.network.connections).toMatchObject([{ name: `Om ${tag}`, username: null, how: "same_line" }]);
+    expect(data!.network.requestsReceived).toMatchObject([{ name: `Pia ${tag}`, how: "event", status: "ignored" }]);
 
     await db!.delete(schema.users).where(inArray(schema.users.id, [a]));
     expect((await networkLists(b, deps())).connections).toEqual([]);
-    expect((await exportAccountData(c, db!))!.network.requestsSent).toEqual([]);
+    expect((await exportNetwork(c, db!)).requestsSent).toEqual([]);
   });
 });

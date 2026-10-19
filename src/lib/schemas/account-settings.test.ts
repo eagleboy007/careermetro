@@ -39,7 +39,7 @@ describe("account settings schemas", () => {
   });
 
   it("start hidden, with the target role and gaps off (decided 2026-10-13)", () => {
-    expect(DEFAULT_SETTINGS.visibility).toBe("only_me");
+    expect(DEFAULT_SETTINGS.visibility).toBe("connections");
     expect(DEFAULT_SETTINGS.showTargetRole).toBe(false);
     expect(DEFAULT_SETTINGS.showGaps).toBe(false);
     expect(userSettings.parse(DEFAULT_SETTINGS)).toEqual(DEFAULT_SETTINGS);

@@ -294,7 +294,7 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
     if (other) {
       await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
       // A block ends any Network connection or request between the two at once (FR-49).
-      await dropBetween(tx, userId, other.id);
+      await dropBetween(tx, userId, other.id, now);
     }
     await tx
       .update(conversationMembers)
@@ -351,7 +351,7 @@ export async function report(userId: string, input: ReportInput, deps: { db?: Db
     if (r.block && me.kind === "direct") {
       if (other) {
         await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
-        await dropBetween(tx, userId, other.id);
+        await dropBetween(tx, userId, other.id, now);
       }
       await tx
         .update(conversationMembers)
