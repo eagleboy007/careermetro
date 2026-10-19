@@ -86,7 +86,7 @@ export const messageConnection: NetworkActions["message"] = async (id, body) => 
   const text = messageBody.safeParse(body);
   if (!text.success) return text.error.issues[0]?.message ?? BAD;
   const s = await signedIn(id);
-  if ("error" in s) return s.error;
+  if (!s.account) return s.error;
   const sent = await startDirect(s.account.id, id, text.data);
   if (!sent.ok) return INBOX_ERROR_TEXT[sent.error];
   refresh();
