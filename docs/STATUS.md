@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-19 (email-only sign-in switch, Development 3).
+Last updated: 2026-10-19 (Network plan, Development 3).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -33,7 +33,7 @@ Last updated: 2026-10-19 (email-only sign-in switch, Development 3).
 
 ## In progress
 
-- Nothing.
+- Network: connections, people search by name and the privacy switch, no posts. Plan `docs/plans/network-plan.md` (approved in advance by the Project manager, 2026-10-19); build in 3 PRs, part 1 (data and rules, migration 0034) next.
 
 ## Next up
 
