@@ -1,6 +1,6 @@
 # Elite, free in the beta (plan)
 
-Date: 2026-10-19. C15, handoff section 12l, prototype v44. Milin approved the design himself in the design thread on 2026-10-19 at 23:08 UTC ("all elite and new screens are good ... pricing lets keep the same for now ... proceed"). The Project manager pre-approved this plan unless it finds a real risk. It touches the data model and the AI pipeline, so it follows CLAUDE.md's "plan first". Every choice below is **Decided by Development 2026-10-19** unless it quotes 12l. Requirement number: **FR-50**.
+Date: 2026-10-19. C15, handoff section 12l, prototype v44. Fidelity is checked against the frozen copy `/mnt/project-files/careermetro/prototype-v2/approved/careermetro-prototype-v2-v44-approved-2026-10-19.html` (Milin confirmed v44 as the approved baseline, 2026-10-19 23:09 UTC), not the live link. Milin approved the design himself in the design thread on 2026-10-19 at 23:08 UTC ("all elite and new screens are good ... pricing lets keep the same for now ... proceed"). The Project manager pre-approved this plan unless it finds a real risk. It touches the data model and the AI pipeline, so it follows CLAUDE.md's "plan first". Every choice below is **Decided by Development 2026-10-19** unless it quotes 12l. Requirement number: **FR-50**.
 
 ## What it is
 
@@ -10,12 +10,13 @@ Elite is a switch a person turns on, free until the beta ends. It unlocks mock i
 
 - Any payment, invoice or renewal. Turning Elite off, or the beta ending, returns the person to Free with everything they made kept.
 - An ID check for the verified tick (needs a provider and its own privacy review). The tick keeps today's routes only: an accepted proof, a verified current job (FR-47) or a Credly-matched badge.
-- The Arrivals practice round (12l lists it as Elite only; Arrivals' AI round isn't built, so it follows that).
+- Paid course content. Until licensing deals exist the Elite shelf holds free sources and own-written playbooks and drills only (CLAUDE.md: curated free sources); paid-course slots stay empty or marked "coming soon" (Project manager, 2026-10-19).
 
-## Risks found (need a decision before the shelf ships)
+## Risks found
 
-1. **The Elite shelf needs the Library.** `/library` (12a, C1) is still "proposed" and parked, and the nav marks it not built. This plan builds the shelf's data and gate, and shows the shelf on `/library` only once the Library is approved and built. Until then the Elite page lists the shelf as "coming with the Library". Nothing else waits on this.
-2. **Expert-checked shelf content and the people-checked mock question bank need content work.** The bank starts from the existing Practice bank (`src/content/practice-questions.json`, 95 questions, already people-checked) plus model-answer notes written by a person and reviewed like resources; nothing the model writes goes into the bank. Shelf items are curated like resources, still with no ads or affiliate links.
+1. **The Elite shelf needs the Library.** Settled: the Library (12a, C1) is in the approved v44 baseline, so the Project manager treats it as approved (2026-10-19). `/library` is built as its own PR inside this sequence, before the shelf.
+2. **The verified tick's ID check** needs a provider (money) and a privacy review: left out, logged by the Project manager for Milin.
+3. **Expert-checked shelf content and the people-checked mock question bank need content work.** The bank starts from the existing Practice bank (`src/content/practice-questions.json`, 95 questions, already people-checked) plus model-answer notes written by a person and reviewed like resources; nothing the model writes goes into the bank. Shelf items are curated like resources, still with no ads or affiliate links.
 
 ## 1. Screens (12l)
 
@@ -26,7 +27,9 @@ Elite is a switch a person turns on, free until the beta ends. It unlocks mock i
   - **Timed test:** 12 multiple-choice questions in 15 minutes, then every question with the right answer explained and the count of right answers (the only number shown).
   - **Question bank:** by role, filter by topic, each question opens "a strong answer covers" and "Practise this one". Free users see 5 open and the rest locked.
 - The Elite badge never ranks anyone in Network, Departures or company search. Practice never changes gaps.
-- Colours: ink for Elite everywhere; cobalt only for the mock's progress bar.
+- Colours: new tokens `elite`, `elite-soft` and `on-elite` (violet, light and dark) in `globals.css`, used only for Elite and shown on `/design`; cobalt only for the mock's progress bar.
+- Entry points: "Interview prep" and "Build your resume" in the avatar menu, prep from Departures, the Arrivals practice round (when Arrivals' AI round exists), and "Edit in builder" on your own profile for a built resume.
+- Library: a fifth tab, Elite.
 
 ## 2. Data model (migration 0036, RLS on every new table)
 
@@ -55,7 +58,8 @@ Elite is a switch a person turns on, free until the beta ends. It unlocks mock i
 1. Plan switch: migration 0036 (`user_plans` only), `/elite`, Settings Your plan, avatar mark and menu line, badge on profile, Practice cap for Free only, `/design`, FR-50.
 2. Mock bank content and `/mock` question bank and timed test (no model), `timed_tests`.
 3. Mock interview with the prompt, its budget and limits, `mock_sessions` and `mock_answers`, the eval set.
-4. Elite shelf, once the Library is approved and built.
+4. `/library` (12a) against the frozen v44 copy, with its four tabs.
+5. The Elite tab and shelf: structure, free and own-written playbooks and drills, paid slots marked "coming soon".
 
 Each PR copies the 12l lines it builds into `docs/design/post-login-handoff.md` and updates STATUS.
 
