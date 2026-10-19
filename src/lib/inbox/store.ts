@@ -9,6 +9,7 @@ import { chatClosed } from "@/lib/corporate/rules";
 import { askAnswered, dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
 import { SLOT_TIMES } from "@/lib/schemas/constants";
 import { logEvent } from "@/lib/log";
+import { dropBetween } from "@/lib/network/store";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { isHidden, shownBody } from "./hidden";
@@ -290,7 +291,11 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
     }
     if (!me || me.kind !== "direct") return fail("not_found");
     const [other] = await othersIn(userId, conversationId, tx);
-    if (other) await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
+    if (other) {
+      await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
+      // A block ends any Network connection or request between the two at once (FR-49).
+      await dropBetween(tx, userId, other.id);
+    }
     await tx
       .update(conversationMembers)
       .set({ hiddenAt: now })
@@ -344,7 +349,10 @@ export async function report(userId: string, input: ReportInput, deps: { db?: Db
     if (r.block && me.kind === "application") await closeApplicationChat(userId, r.conversationId, tx, now);
     if (r.block && me.kind === "found" && me.orgId) await blockCompanyIn(tx, userId, me.orgId, now);
     if (r.block && me.kind === "direct") {
-      if (other) await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
+      if (other) {
+        await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
+        await dropBetween(tx, userId, other.id);
+      }
       await tx
         .update(conversationMembers)
         .set({ hiddenAt: now })

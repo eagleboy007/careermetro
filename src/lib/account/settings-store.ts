@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { blocks, consents, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
 import { currentAnalysis } from "@/lib/gaps/current";
+import { areConnected } from "@/lib/network/store";
 import { DEFAULT_SETTINGS, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE, FIND_POLICY_VERSION, USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -231,7 +232,8 @@ export async function clearExpiredUsernameRedirects(db: Db = getDb(), now = new 
 
 /**
  * Whether a signed-in viewer may see the owner's profile: always their own; never when the owner chose Only you or
- * blocked them; for People on your line, only when both aim at the same role.
+ * blocked them; for People on your line, only when both aim at the same role; for Your connections, only a connection
+ * (FR-49).
  */
 export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings">, viewerId: string, db: Db = getDb()): Promise<boolean> {
   if (owner.id === viewerId) return true;
@@ -243,6 +245,7 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
     .limit(1);
   if (blocked) return false;
   if (owner.settings.visibility === "signed_in") return true;
+  if (owner.settings.visibility === "connections") return areConnected(owner.id, viewerId, db);
   const [theirs, mine] = await Promise.all([currentAnalysis(owner.id, db), currentAnalysis(viewerId, db)]);
   return !!theirs && !!mine && theirs.result.roleSlug === mine.result.roleSlug;
 }

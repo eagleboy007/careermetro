@@ -297,14 +297,30 @@ export const HEADLINE_MAX = 80;
 /** Pay is kept in lakh a year, two decimals. */
 export const PAY_MAX_LAKH = 999;
 /** Who can open the person's profile at /u/<username>. Nobody else can until they choose (decided 2026-10-13). */
-export const PROFILE_VISIBILITIES = ["signed_in", "line", "only_me"] as const;
+export const PROFILE_VISIBILITIES = ["signed_in", "line", "connections", "only_me"] as const;
 export const PROFILE_VISIBILITY_LABELS: Record<(typeof PROFILE_VISIBILITIES)[number], string> = {
   signed_in: "Everyone signed in",
   line: "People on your line",
+  connections: "Your connections",
   only_me: "Only you",
 };
 /** When the ride reminder would go out, India time, once email is on (pending item 21). */
 export const RIDE_REMINDERS = ["18:30", "19:30", "20:30", "21:30", "off"] as const;
+
+/* Network (FR-49, docs/plans/network-plan.md) ------------------------------------------------------------------------- */
+
+/** A connection between two people: a request one of them sent, or accepted by the other. */
+export const CONNECTION_STATUSES = ["pending", "accepted"] as const;
+/** A request nobody answered lapses after this many days; then it can be sent again. */
+export const CONNECTION_REQUEST_DAYS = 30;
+/** Requests one person may have waiting on others at once. */
+export const CONNECTION_PENDING_MAX = 100;
+/** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
+export const NETWORK_RESULTS_MAX = 20;
+/** People a network search reads at most, newest switch first, as Find people does (FIND_SCAN_MAX). */
+export const NETWORK_SCAN_MAX = 2000;
+/** The longest network search typed. */
+export const NETWORK_QUERY_MAX = 80;
 
 /* Let companies find me (pending item 19, dev/companies-find-me-plan.md) ------------------------------------------------ */
 

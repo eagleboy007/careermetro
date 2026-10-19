@@ -33,7 +33,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  CONNECTION_STATUSES, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
@@ -196,6 +196,8 @@ export const userSettings = pgTable("user_settings", {
   showCertifications: boolean("show_certifications").notNull().default(true),
   /** "Let companies find me" (pending item 19): off until the person turns it on. Off takes them out of searches at once. */
   companiesCanFind: boolean("companies_can_find").notNull().default(false),
+  /** "Let people find me by name" (Network, FR-49): off until the person turns it on. Off takes them out of Network search at once. */
+  peopleCanFind: boolean("people_can_find").notNull().default(false),
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
@@ -711,6 +713,37 @@ export const blocks = pgTable(
     createdAt: createdAt(),
   },
   (t) => [primaryKey({ columns: [t.blockerId, t.blockedId] }), index("blocks_blocked").on(t.blockedId), check("blocks_not_self", sql`${t.blockerId} <> ${t.blockedId}`)],
+);
+
+/**
+ * Network connections (FR-49, docs/plans/network-plan.md): one row per pair, stored with user_a < user_b so a pair has
+ * one row whoever asked. `pending` is a request from `requested_by` to the other; it lapses after
+ * CONNECTION_REQUEST_DAYS. `ignored_at` is the receiver's Ignore, which the sender is never shown. A block either way
+ * deletes the row. Both people's accounts going delete it.
+ */
+export const connections = pgTable(
+  "connections",
+  {
+    userA: uuid("user_a")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    userB: uuid("user_b")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: text("status", { enum: CONNECTION_STATUSES }).notNull(),
+    /** Who sent the request: user_a or user_b. Not a foreign key of its own; the check keeps it one of the pair. */
+    requestedBy: uuid("requested_by").notNull(),
+    ignoredAt: timestamp("ignored_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    acceptedAt: timestamp("accepted_at", { withTimezone: true }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userA, t.userB] }),
+    index("connections_user_b").on(t.userB),
+    check("connections_pair_order", sql`${t.userA} < ${t.userB}`),
+    check("connections_requested_by", sql`${t.requestedBy} = ${t.userA} or ${t.requestedBy} = ${t.userB}`),
+    check("connections_status", sql`${t.status} in ('pending', 'accepted')`),
+  ],
 );
 
 /**
