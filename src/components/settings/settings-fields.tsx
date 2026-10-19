@@ -77,8 +77,8 @@ const PARTS: { key: keyof UserSettings & `show${string}`; label: string; hint?: 
 ];
 
 /** Who can open the profile, and what it shows (handoff 12c Privacy and section 11 "Who sees what"). */
-export function PrivacyFields() {
-  const { draft, setSetting, editable, errors } = useSettingsDraft();
+export function PrivacyFields({ gapsToConnections = false }: { gapsToConnections?: boolean }) {
+  const { draft, saved, setSetting, editable, errors } = useSettingsDraft();
   const s = draft.settings;
   return (
     <>
@@ -117,6 +117,10 @@ export function PrivacyFields() {
             {p.label}
           </Switch>
         ))}
+        {/* New accounts share gaps with connections (ruling 4, 2026-10-19) until this switch is first changed and saved. */}
+        {gapsToConnections && !s.showGaps && !saved.settings.showGaps && (
+          <small className="text-[0.78rem] text-muted">Your Network connections can see your gaps. To hide them from connections too, turn With &ldquo;Your gaps&rdquo; off, your Network connections still see them. Turn it on and save, then off, to hide them from everyone.ldquo;Your gapsWith &ldquo;Your gaps&rdquo; off, your Network connections still see them. Turn it on and save, then off, to hide them from everyone.rdquo; on and save, then off and save.</small>
+        )}
       </fieldset>
       <fieldset className="flex min-w-0 flex-col" disabled={!editable}>
         <legend className="mb-1 text-[0.82rem] font-semibold">Companies</legend>

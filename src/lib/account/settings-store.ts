@@ -235,8 +235,7 @@ export async function clearExpiredUsernameRedirects(db: Db = getDb(), now = new 
 
 /**
  * Whether a signed-in viewer may see the owner's profile: always their own; never when the owner chose Only you or
- * blocked them; for People on your line, only when both aim at the same role; for Your connections, only a connection
- * (FR-49).
+ * blocked them; always a connection otherwise (FR-49); for People on your line, also anyone aiming at the same role.
  */
 export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings">, viewerId: string, db: Db = getDb()): Promise<boolean> {
   if (owner.id === viewerId) return true;
@@ -249,7 +248,9 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
     .limit(1);
   if (blocked) return false;
   if (owner.settings.visibility === "signed_in") return true;
-  if (owner.settings.visibility === "connections") return areConnected(owner.id, viewerId, db);
+  // A connection opens the profile under every choice but Only you (handoff 12j, "Who sees what").
+  if (await areConnected(owner.id, viewerId, db)) return true;
+  if (owner.settings.visibility === "connections") return false;
   const [theirs, mine] = await Promise.all([currentAnalysis(owner.id, db), currentAnalysis(viewerId, db)]);
   return !!theirs && !!mine && theirs.result.roleSlug === mine.result.roleSlug;
 }

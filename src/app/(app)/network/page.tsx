@@ -8,7 +8,7 @@ import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { networkLists, networkSettingsFor, ownUsername } from "@/lib/network/store";
 import { networkRow } from "@/lib/network/view";
-import { answerConnection, blockFromNetwork, connectTo, removeFromNetwork, searchPeopleByName, setFindMe, withdrawConnection } from "./actions";
+import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, searchPeopleByName, setFindMe, withdrawConnection } from "./actions";
 
 export const metadata: Metadata = { title: "Network · CareerMetro", robots: { index: false } };
 
@@ -38,6 +38,7 @@ async function Network() {
         block: blockFromNetwork,
         search: searchPeopleByName,
         findMe: setFindMe,
+        message: messageConnection,
       }}
     />
   );

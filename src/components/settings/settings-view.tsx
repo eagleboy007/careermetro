@@ -31,6 +31,8 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** True while gaps are shared with connections only (the default for new accounts). */
+  gapsToConnections: boolean;
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -120,7 +122,7 @@ export function SettingsView({
         </Section>
 
         <Section id="acc-privacy" title="Privacy">
-          <PrivacyFields />
+          <PrivacyFields gapsToConnections={data.gapsToConnections} />
           <FindMeSwitch initial={data.peopleCanFind} action={data.editable ? findMe : undefined} />
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>

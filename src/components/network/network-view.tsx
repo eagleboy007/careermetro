@@ -1,9 +1,10 @@
 "use client";
 
-import { BadgeCheck, Ban, Clock, Link2, Plus, Search, UserMinus, Users } from "lucide-react";
+import { BadgeCheck, Ban, Clock, Link2, MessageSquare, Plus, Search, UserMinus, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
+import { MessageBox } from "./message-box";
 import { CONNECTION_HOW_LABELS, CONNECTION_HOWS } from "@/lib/schemas/constants";
 import type { NetworkActions, NetworkData, NetworkRow, NetworkTab } from "@/lib/network/types";
 
@@ -22,7 +23,7 @@ const TABS: { key: NetworkTab; label: string; short?: string }[] = [
   { key: "find", label: "Find people", short: "Find" },
 ];
 
-type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" } | null;
+type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" | "message" } | null;
 
 const FAILED = "That didn't work. Please try again.";
 
@@ -124,6 +125,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     withdraw: (p: NetworkRow) => run(() => actions!.withdraw(p.id), () => move(p, "none"), `Request to ${first(p)} withdrawn. You can ask again 30 days after you sent it.`),
     remove: (p: NetworkRow) => run(() => actions!.remove(p.id), () => move(p, "none"), `${first(p)} removed from your connections.`),
     block: (p: NetworkRow) => run(() => actions!.block(p.id), () => drop(p), `${first(p)} is blocked.`),
+    message: (p: NetworkRow, body: string) => run(() => actions!.message(p.id, body), () => undefined, `Sent to ${first(p)}. The chat is in your Inbox.`),
   };
 
   const onTabKey = (e: KeyboardEvent<HTMLButtonElement>, key: NetworkTab) => {
@@ -303,7 +305,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
   );
 }
 
-type Act = Record<"connect" | "send" | "accept" | "ignore" | "withdraw" | "remove" | "block", (p: NetworkRow) => void>;
+type Act = Record<"connect" | "send" | "accept" | "ignore" | "withdraw" | "remove" | "block", (p: NetworkRow) => void> & { message: (p: NetworkRow, body: string) => void };
 
 function PeopleList(props: { rows: NetworkRow[]; tab: NetworkTab; panel: Panel; pick: How; setPick: (h: How) => void; setPanel: (p: Panel) => void; act: Act; pending: boolean }) {
   return (
@@ -375,10 +377,16 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
         </div>
         <div className="flex flex-wrap items-center gap-1.5 max-[759px]:basis-full">
           {p.state === "connected" ? (
-            <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} onClick={() => setPanel({ id: p.id, kind: "remove" })}>
-              <UserMinus {...ICON} />
-              Remove<span className="sr-only"> {p.name}</span>
-            </button>
+            <>
+              <button type="button" className={ghost} aria-disabled={busy} aria-expanded={open === "message"} onClick={() => setPanel({ id: p.id, kind: "message" })}>
+                <MessageSquare {...ICON} />
+                Message<span className="sr-only"> {p.name}</span>
+              </button>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} onClick={() => setPanel({ id: p.id, kind: "remove" })}>
+                <UserMinus {...ICON} />
+                Remove<span className="sr-only"> {p.name}</span>
+              </button>
+            </>
           ) : p.state === "incoming" ? (
             <>
               <button type="button" className={ink} aria-disabled={busy} onClick={() => act.accept(p)}>
@@ -450,6 +458,7 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
           busy={busy}
         />
       )}
+      {open === "message" && <MessageBox name={firstName} busy={busy} onSend={(body) => act.message(p, body)} onCancel={() => setPanel(null)} />}
       {open === "remove" && (
         <Confirm
           title={`Remove ${p.name} from your connections?`}
