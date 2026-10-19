@@ -593,3 +593,9 @@ export async function exportNetwork(userId: string, db: Db = getDb(), now = new 
     requestsReceived: received.map(named),
   };
 }
+
+/** The person's own handle, for "Copy your profile link" on an empty Connections tab. */
+export async function ownUsername(userId: string, db: Pick<Db, "select"> = getDb()): Promise<string | null> {
+  const [row] = await db.select({ username: users.username }).from(users).where(eq(users.id, userId));
+  return row?.username ?? null;
+}

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
 import { CompanyDiscovery } from "./company-discovery";
+import { FindMeSwitch } from "./find-me-switch";
 import { BasicsForm } from "./basics-form";
 import { DeleteAccount } from "./delete-account";
 import { PlanCard } from "./plan-card";
@@ -28,6 +29,8 @@ export type SettingsData = {
   usernameLockedUntil: string | null;
   /** Companies that viewed the profile in the last 30 days, and companies blocked (pending item 19). */
   discovery: DiscoveryView;
+  /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
+  peopleCanFind: boolean;
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -51,7 +54,15 @@ const ghostSm = "inline-flex items-center gap-1.5 rounded-full border border-lin
  * pay, privacy and stored-only notifications, saved together from one sticky bar. Photo, two-step verification and
  * signed-in devices wait on storage and the full sign-in.
  */
-export function SettingsView({ data, discoveryActions }: { data: SettingsData; discoveryActions?: DiscoveryActions }) {
+export function SettingsView({
+  data,
+  discoveryActions,
+  findMe,
+}: {
+  data: SettingsData;
+  discoveryActions?: DiscoveryActions;
+  findMe?: (on: boolean) => Promise<string | null>;
+}) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
       <SettingsNav sections={SETTINGS_SECTIONS} />
@@ -110,6 +121,7 @@ export function SettingsView({ data, discoveryActions }: { data: SettingsData; d
 
         <Section id="acc-privacy" title="Privacy">
           <PrivacyFields />
+          <FindMeSwitch initial={data.peopleCanFind} action={data.editable ? findMe : undefined} />
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>
 
