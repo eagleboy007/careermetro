@@ -622,7 +622,7 @@ await step("not for me: skip a goal on Today, bring it back from the Map", async
   await skipped.getByRole("button", { name: "Bring back" }).click();
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
 });
-for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/grievances", "/privacy", "/terms"]) {
+for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/network", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -1173,7 +1173,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();

@@ -60,6 +60,7 @@ import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
+import { NetworkView } from "@/components/network/network-view";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -113,6 +114,7 @@ import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
+import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
@@ -553,6 +555,16 @@ export default function DesignPage() {
           nothing sends.
         </p>
         <InboxView threads={exampleThreads} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Network (signed in)</h2>
+        <p className="text-sm text-muted">
+          The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
+          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline.
+          Example data, so nothing sends; Find people shows example results.
+        </p>
+        <NetworkView data={exampleNetwork} example={exampleSearch} />
       </section>
 
       <section className="flex flex-col gap-4">

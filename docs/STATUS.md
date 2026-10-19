@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-19 (Network part 1, Development 4).
+Last updated: 2026-10-19 (Network part 2, Development 4).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -33,7 +33,7 @@ Last updated: 2026-10-19 (Network part 1, Development 4).
 
 ## In progress
 
-- Network, FR-49 (handoff 12j): part 1, data and rules, is in this PR (migration 0034: connections, connection_requests, the Network choices in user_settings; existing choices kept, new-user defaults written by the app). Parts 2 (the `/network` page and the Settings switch) and 3 (profiles, Inbox, gaps) follow. Plan `docs/plans/network-plan.md`.
+- Network, FR-49 (handoff 12j): part 1, data and rules, is in (#165, migration 0034). Part 2, the `/network` page (Connections, Requests, Sent, Find people), the avatar-menu count and the Settings "Let people find me" switch, is in this PR; part 3 (profiles, Inbox, gaps) follows. Plan `docs/plans/network-plan.md`.
 - Then the resume builder (FR-36, `docs/plans/resume-builder-plan.md`) and Elite (C15, FR-50, `docs/plans/elite-plan.md`).
 
 ## Next up
@@ -47,7 +47,7 @@ Open, all waiting on someone else:
 
 Handover (2026-10-15 18:25 UTC): "Development 3" took over from Development 2 for T44.
 
-Waiting: Network name search (Network not built); the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
+Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 

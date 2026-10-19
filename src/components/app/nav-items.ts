@@ -11,7 +11,8 @@ export const NAV = {
   arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: true },
   timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: false },
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },
-  network: { key: "network", label: "Network", href: "/network", Icon: Users, built: false },
+  /** Connections and name search (FR-49, handoff 12j). In the avatar menu, with a count of requests waiting. */
+  network: { key: "network", label: "Network", href: "/network", Icon: Users, built: true },
   library: { key: "library", label: "Library", href: "/library", Icon: BookOpen, built: false },
   inbox: { key: "inbox", label: "Inbox", href: "/inbox", Icon: MessageSquare, built: true },
   /** The employer side (dev/corporate-plan.md): set up a company, or work in one a Recruiter admin added you to. */
