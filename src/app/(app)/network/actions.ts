@@ -24,39 +24,42 @@ const answer = (result: NetworkResult): string | null => {
   return null;
 };
 
-async function signedIn(id: string) {
-  if (!personId.safeParse(id).success) return { error: BAD } as const;
+type Account = NonNullable<Awaited<ReturnType<typeof currentAccount>>>;
+
+async function signedIn(id: string): Promise<{ account: Account; error: null } | { account: null; error: string }> {
+  if (!personId.safeParse(id).success) return { account: null, error: BAD };
   const account = await currentAccount();
-  return account ? ({ account } as const) : ({ error: SIGN_IN } as const);
+  return account ? { account, error: null } : { account: null, error: SIGN_IN };
 }
 
 /** Connect can connect at once (they had asked this person), so the screen shows the state the store reached. */
 export const connectTo: NetworkActions["connect"] = async (id, how) => {
   const s = await signedIn(id);
-  if ("error" in s) return { error: s.error };
+  if (!s.account) return { error: s.error };
   const r = await requestConnection(s.account.id, id, how);
-  const error = answer(r);
-  return error || !r.ok ? { error: error ?? BAD } : { state: r.state };
+  if (!r.ok) return { error: NETWORK_ERROR_TEXT[r.error] };
+  answer(r);
+  return { state: r.state };
 };
 
 export const answerConnection: NetworkActions["answer"] = async (id, reply) => {
   const s = await signedIn(id);
-  return "error" in s ? s.error : answer(await answerRequest(s.account.id, id, reply));
+  return s.account ? answer(await answerRequest(s.account.id, id, reply)) : s.error;
 };
 
 export const withdrawConnection: NetworkActions["withdraw"] = async (id) => {
   const s = await signedIn(id);
-  return "error" in s ? s.error : answer(await withdrawRequest(s.account.id, id));
+  return s.account ? answer(await withdrawRequest(s.account.id, id)) : s.error;
 };
 
 export const removeFromNetwork: NetworkActions["remove"] = async (id) => {
   const s = await signedIn(id);
-  return "error" in s ? s.error : answer(await removeConnection(s.account.id, id));
+  return s.account ? answer(await removeConnection(s.account.id, id)) : s.error;
 };
 
 export const blockFromNetwork: NetworkActions["block"] = async (id) => {
   const s = await signedIn(id);
-  return "error" in s ? s.error : answer(await blockPerson(s.account.id, id));
+  return s.account ? answer(await blockPerson(s.account.id, id)) : s.error;
 };
 
 export const searchPeopleByName: NetworkActions["search"] = async (q) => {
