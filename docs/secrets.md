@@ -22,6 +22,7 @@ Set each one for both **Production** and **Preview**, unless the table says othe
 | ADMIN_EMAILS | Who can open the admin pages (companies, proofs, reports) | Your sign-in email(s), comma-separated | Yes, any time. |
 | NEXT_PUBLIC_SUPABASE_URL | Real sign-in | Supabase > Project Settings > API | Only if you move to a new Supabase project. |
 | NEXT_PUBLIC_SUPABASE_ANON_KEY | Real sign-in. Public by design: use the anon or publishable key, **never** the service_role key. | Supabase > Project Settings > API | Yes. Supabase can roll it. |
+| GOOGLE_SIGNIN | `1` shows "Continue with Google" on the sign-in page. Without it, sign-in is by emailed code only. Not a secret. | Just the value `1`, once Google is set up in Supabase (section 2) | Yes, any time. Removing it hides the button. |
 | TODAY_PREVIEW | `1` opens the signed-in app and the privacy and terms pages in production (they are always open on previews) | Just the value `1` | Yes. Removing it closes the app again. |
 | RESEND_API_KEY | Sends the app's own emails: company sign-up, join and re-check codes, and the current-job check | resend.com > API keys | Yes. Make a new key, paste it, then delete the old one. |
 | EMAIL_FROM | The sender, e.g. `CareerMetro <no-reply@careermetro.com>` | Your verified domain in Resend | Yes. |

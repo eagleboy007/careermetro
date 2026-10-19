@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authConfig, hasAuthCookie, safeNext } from "./config";
+import { authConfig, googleSignInEnabled, hasAuthCookie, safeNext } from "./config";
 
 describe("auth config", () => {
   it("is off until both public settings exist", () => {
@@ -15,6 +15,13 @@ describe("auth config", () => {
     expect(authConfig({ NEXT_PUBLIC_SUPABASE_URL: "http://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBeNull();
     expect(authConfig({ NEXT_PUBLIC_SUPABASE_URL: "not a url", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).toBeNull();
     expect(authConfig({ NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321", NEXT_PUBLIC_SUPABASE_ANON_KEY: "k" })).not.toBeNull();
+  });
+
+  it("offers Google only when GOOGLE_SIGNIN is 1", () => {
+    expect(googleSignInEnabled({})).toBe(false);
+    for (const off of ["", "0", "true", "yes"]) expect(googleSignInEnabled({ GOOGLE_SIGNIN: off })).toBe(false);
+    expect(googleSignInEnabled({ GOOGLE_SIGNIN: "1" })).toBe(true);
+    expect(googleSignInEnabled({ GOOGLE_SIGNIN: " 1 " })).toBe(true);
   });
 
   it("spots the session cookie, including chunked ones", () => {

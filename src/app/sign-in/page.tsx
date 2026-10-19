@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SiteHeader } from "@/components/site/site-header";
-import { authConfig, safeNext } from "@/lib/auth/config";
+import { authConfig, googleSignInEnabled, safeNext } from "@/lib/auth/config";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { SignInForm } from "./sign-in-form";
 import { TestUserForm } from "./test-user-form";
@@ -23,7 +23,7 @@ async function SignIn({ searchParams }: PageProps<"/sign-in">) {
   if (!authConfig()) {
     return <p className="rounded-lg border border-line bg-surface p-5 text-sm">Sign-in isn&apos;t switched on yet. Please check back soon.</p>;
   }
-  return <SignInForm next={next} error={error} />;
+  return <SignInForm next={next} error={error} google={googleSignInEnabled()} />;
 }
 
 export default function SignInPage(props: PageProps<"/sign-in">) {

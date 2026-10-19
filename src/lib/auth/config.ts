@@ -14,6 +14,15 @@ export function authConfig(env: Record<string, string | undefined> = process.env
   return { url, anonKey };
 }
 
+/**
+ * Whether "Continue with Google" is offered: only with GOOGLE_SIGNIN=1, so the site can go live with emailed codes
+ * before the Google client exists (signin-plan.md, "Email-only until Google is set up"). Read on the server at request
+ * time, so turning it on needs no rebuild beyond Vercel's redeploy.
+ */
+export function googleSignInEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.GOOGLE_SIGNIN?.trim() === "1";
+}
+
 /** True when the request carries a Supabase session cookie, so anonymous visitors skip every auth call. */
 export function hasAuthCookie(names: string[]): boolean {
   return names.some((n) => n.startsWith("sb-") && n.includes("-auth-token"));
