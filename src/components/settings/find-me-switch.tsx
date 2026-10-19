@@ -16,7 +16,7 @@ export function FindMeSwitch({ initial, action }: { initial: boolean; action?: (
   const toggle = (next: boolean) => {
     if (!action) return;
     start(async () => {
-      const error = await action(next);
+      const error = await action(next).catch(() => "That didn't work. Please try again.");
       if (error) setMessage(error);
       else {
         setOn(next);

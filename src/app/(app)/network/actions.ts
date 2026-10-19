@@ -30,9 +30,13 @@ async function signedIn(id: string) {
   return account ? ({ account } as const) : ({ error: SIGN_IN } as const);
 }
 
+/** Connect can connect at once (they had asked this person), so the screen shows the state the store reached. */
 export const connectTo: NetworkActions["connect"] = async (id, how) => {
   const s = await signedIn(id);
-  return "error" in s ? s.error : answer(await requestConnection(s.account.id, id, how));
+  if ("error" in s) return { error: s.error };
+  const r = await requestConnection(s.account.id, id, how);
+  const error = answer(r);
+  return error || !r.ok ? { error: error ?? BAD } : { state: r.state };
 };
 
 export const answerConnection: NetworkActions["answer"] = async (id, reply) => {

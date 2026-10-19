@@ -15,14 +15,16 @@ const ghost =
   "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-[0.82rem] font-medium text-ink hover:bg-surface-2 aria-disabled:opacity-60";
 const quiet = "inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[0.82rem] font-medium text-muted hover:text-ink aria-disabled:opacity-60";
 
-const TABS: { key: NetworkTab; label: string }[] = [
+const TABS: { key: NetworkTab; label: string; short?: string }[] = [
   { key: "connections", label: "Connections" },
   { key: "requests", label: "Requests" },
   { key: "sent", label: "Sent" },
-  { key: "find", label: "Find people" },
+  { key: "find", label: "Find people", short: "Find" },
 ];
 
-type Panel = { id: string; kind: "pick" | "remove" | "block" } | null;
+type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" } | null;
+
+const FAILED = "That didn't work. Please try again.";
 
 /**
  * Network (FR-49, handoff 12j): the "Let people find me" bar, then tabs for Connections, Requests, Sent and Find
@@ -79,19 +81,20 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     setResults((r) => r?.filter((p) => p.id !== person.id) ?? null);
   };
 
-  const run = (work: () => Promise<string | null>, done: () => void, words: string) => {
+  const run = (work: () => Promise<string | null>, done: () => void, words: string | (() => string)) => {
     if (pending) return;
     if (!actions) {
       say("This is an example. Nothing is sent.");
       return;
     }
     start(async () => {
-      const error = await work();
+      // A dropped connection says so here instead of replacing the page with the error screen.
+      const error = await work().catch(() => FAILED);
       if (error) say(error);
       else {
         setPanel(null);
         done();
-        say(words);
+        say(typeof words === "string" ? words : words());
       }
     });
   };
@@ -102,7 +105,20 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
       setPick(p.how ?? "same_line");
       setPanel({ id: p.id, kind: "pick" });
     },
-    send: (p: NetworkRow) => run(() => actions!.connect(p.id, pick), () => move(p, "requested"), `Request sent to ${first(p)}. It shows under Sent until they answer.`),
+    // Connect connects at once when they had already asked, so the screen follows what the server says.
+    send: (p: NetworkRow) => {
+      let state: NetworkRow["state"] = "requested";
+      run(
+        async () => {
+          const r = await actions!.connect(p.id, pick);
+          if ("error" in r) return r.error;
+          state = r.state;
+          return null;
+        },
+        () => move(p, state),
+        () => (state === "connected" ? `You and ${first(p)} are connected.` : `Request sent to ${first(p)}. It shows under Sent until they answer.`),
+      );
+    },
     accept: (p: NetworkRow) => run(() => actions!.answer(p.id, "accept"), () => move(p, "connected"), `You and ${first(p)} are connected.`),
     ignore: (p: NetworkRow) => run(() => actions!.answer(p.id, "ignore"), () => move(p, "none"), `Request ignored. ${first(p)} isn't told.`),
     withdraw: (p: NetworkRow) => run(() => actions!.withdraw(p.id), () => move(p, "none"), `Request to ${first(p)} withdrawn. You can ask again 30 days after you sent it.`),
@@ -127,7 +143,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
       return;
     }
     start(async () => {
-      const r = await actions.search(q);
+      const r = await actions.search(q).catch(() => ({ error: FAILED }));
       if ("error" in r) {
         setResults(null);
         say(r.error);
@@ -144,7 +160,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
       return;
     }
     start(async () => {
-      const error = await actions.findMe(on);
+      const error = await actions.findMe(on).catch(() => FAILED);
       if (error) say(error);
       else {
         setFindMe(on);
@@ -198,7 +214,14 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
               className={`flex min-h-11 flex-1 items-center justify-center gap-1.5 whitespace-nowrap border-b-2 px-3 text-[0.86rem] min-[760px]:flex-none ${tab === t.key ? "border-ink font-semibold text-ink" : "border-transparent text-muted hover:text-ink"}`}
             >
               {t.key === "find" && <Search {...ICON} />}
-              {t.label}
+              {t.short ? (
+                <>
+                  <span className="hidden min-[760px]:inline">{t.label}</span>
+                  <span className="min-[760px]:hidden">{t.short}</span>
+                </>
+              ) : (
+                t.label
+              )}
               {count(t.key) !== null && (
                 <span className={`rounded-full px-1.5 font-mono text-[0.7rem] ${t.key === "requests" && count(t.key) ? "bg-ink text-bg" : "bg-surface-2 text-muted"}`}>{count(t.key)}</span>
               )}
@@ -366,10 +389,15 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
               </button>
             </>
           ) : p.state === "requested" ? (
-            <button type="button" className={ghost} aria-disabled={busy} onClick={() => act.withdraw(p)} aria-label={`Requested. Withdraw request to ${p.name}`}>
-              <Clock {...ICON} />
-              Requested
-            </button>
+            <>
+              <span className="inline-flex min-h-11 items-center gap-1.5 px-1 text-[0.82rem] font-medium text-muted">
+                <Clock {...ICON} />
+                Requested
+              </span>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "withdraw"} onClick={() => setPanel({ id: p.id, kind: "withdraw" })}>
+                Withdraw<span className="sr-only"> request to {p.name}</span>
+              </button>
+            </>
           ) : (
             <button type="button" className={ink} aria-disabled={busy} aria-expanded={open === "pick"} onClick={() => act.connect(p)}>
               <Plus {...ICON} />
@@ -411,6 +439,16 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
             </button>
           </div>
         </div>
+      )}
+      {open === "withdraw" && (
+        <Confirm
+          title={`Withdraw your request to ${p.name}?`}
+          body={`${firstName} isn't told. You can ask again 30 days after you sent it.`}
+          yes="Withdraw"
+          onYes={() => act.withdraw(p)}
+          onNo={() => setPanel(null)}
+          busy={busy}
+        />
       )}
       {open === "remove" && (
         <Confirm
@@ -470,7 +508,11 @@ function Empty({ tab, profileLink, onFind, onCopied }: { tab: NetworkTab; profil
             className={ghost}
             onClick={() => {
               const link = `${window.location.origin}${profileLink}`;
-              navigator.clipboard?.writeText(link).then(
+              if (!navigator.clipboard) {
+                onCopied(`Your profile link: ${link}`);
+                return;
+              }
+              navigator.clipboard.writeText(link).then(
                 () => onCopied("Your profile link is copied."),
                 () => onCopied(`Your profile link: ${link}`),
               );

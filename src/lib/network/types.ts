@@ -33,9 +33,9 @@ export type NetworkData = {
   profileLink: string | null;
 };
 
-/** Each returns the words to show on failure, or null when it worked. */
+/** Each returns the words to show on failure, or null when it worked. Connect returns how the two now stand. */
 export type NetworkActions = {
-  connect: (id: string, how: ConnectionHow) => Promise<string | null>;
+  connect: (id: string, how: ConnectionHow) => Promise<{ error: string } | { state: ConnectionState }>;
   answer: (id: string, answer: ConnectionAnswer) => Promise<string | null>;
   withdraw: (id: string) => Promise<string | null>;
   remove: (id: string) => Promise<string | null>;
