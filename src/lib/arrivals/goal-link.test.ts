@@ -33,6 +33,13 @@ describe("closed role to goal link", () => {
     expect(goalLinkFor({ required: ["siem", "aws-security"], oneOf: [] }, l, new Set(["linux"]))).toEqual({ name: "AWS security", pitstop: 5 });
   });
 
+  it("follows a goal swapped with Not for me to the skill it is on now", () => {
+    const l = [goal("linux", "Linux", "weak"), goal("siem", "Splunk", "missing", { learns: "splunk" })];
+    expect(goalLinkFor({ required: ["splunk"], oneOf: [] }, l, new Set())).toEqual({ name: "Splunk", pitstop: 3 });
+    // The job asked for the skill the person swapped away from: the goal is on another skill now, so no line.
+    expect(goalLinkFor({ required: ["siem"], oneOf: [] }, l, new Set())).toBeNull();
+  });
+
   it("reads a one-of group only when none of its skills is proved", () => {
     expect(goalLinkFor({ required: [], oneOf: [["siem", "splunk"]] }, line, new Set())).toEqual({ name: "SIEM", pitstop: 3 });
     expect(goalLinkFor({ required: [], oneOf: [["siem", "splunk"]] }, line, new Set(["splunk"]))).toBeNull();
@@ -48,6 +55,6 @@ describe("closed role to goal link", () => {
       new Set(),
     );
     expect(links).toEqual({ a: { name: "AWS security", pitstop: 5 } });
-    expect(goalLinkText(links.a)).toBe("AWS security is a goal on your line (Pitstop 5). Ask again once you prove it.");
+    expect(goalLinkText(links.a)).toBe("AWS security is a goal on your line (Pitstop 5). Prove it and roles like this one open up.");
   });
 });

@@ -33,6 +33,7 @@ describe("interview calendar file", () => {
     expect(lines[0]).toBe("BEGIN:VCALENDAR");
     expect(lines).toContain("VERSION:2.0");
     expect(lines).toContain("UID:interview-6f1c2a9e-0b1d-4c3e-9f00-1234567890ab@careermetro.app");
+    expect(lines).toContain("SEQUENCE:0");
     expect(lines).toContain("DTSTAMP:20261012T100000Z");
     expect(lines).toContain("DTSTART:20261014T053000Z");
     expect(lines).toContain("DTEND:20261014T061500Z");

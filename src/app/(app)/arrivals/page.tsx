@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
@@ -10,8 +11,10 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { closedGoalLinks } from "@/lib/arrivals/store";
+import type { GoalLink } from "@/lib/arrivals/goal-link";
 import { myApplications } from "@/lib/corporate/applications-store";
 import { liveInvitations } from "@/lib/job-search/rules";
+import { errorFields, logEvent } from "@/lib/log";
 import { jobSearchFor } from "@/lib/job-search/store";
 import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_JOB_SEARCH, type JobSearchView } from "@/lib/schemas";
@@ -106,7 +109,16 @@ async function Arrivals() {
   const [applications, search] = await Promise.all([myApplications(account.id, { now }), jobSearchFor(account.id)]);
   const today = indiaDay(now);
   const live = liveInvitations(applications, today);
-  const goalLinks = await closedGoalLinks(account.id, applications, now);
+  // The closed-role goal line is extra: if the line can't be read, Arrivals shows without it (error fields only).
+  let goalLinks: Record<string, GoalLink> = {};
+  if (search.on) {
+    try {
+      goalLinks = await closedGoalLinks(account.id, applications, now);
+    } catch (error) {
+      unstable_rethrow(error);
+      logEvent("error", "arrivals_goal_links_failed", errorFields(error));
+    }
+  }
   return (
     <SearchGate
       search={search}

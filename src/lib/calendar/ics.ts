@@ -2,7 +2,8 @@
  * A calendar file for one interview (v44 gap list item 46, "Add to calendar" on Arrivals): plain RFC 5545 text built in
  * code, no keys and no service. Times are UTC, lines end in CRLF and are folded at 75 octets, and text is escaped. It
  * holds the interview's round, the job title and the company only: never the person's name, email or phone. The UID
- * comes from the interview id, so a second download updates the same event instead of adding another.
+ * comes from the interview id, so it is the same on every download (calendars that match on UID can treat a second
+ * download as the same event).
  */
 
 const IST_OFFSET_MS = 5.5 * 3600_000;
@@ -72,6 +73,7 @@ export function interviewIcs(iv: InterviewIcs): string {
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:interview-${iv.interviewId.replace(/[^A-Za-z0-9-]/g, "")}@careermetro.app`,
+    "SEQUENCE:0",
     `DTSTAMP:${icsUtc(iv.now)}`,
     `DTSTART:${icsUtc(iv.startsAt)}`,
     `DTEND:${icsUtc(end)}`,
