@@ -262,6 +262,34 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(JSON.stringify(opened.person)).not.toContain("AWS");
   });
 
+  it("matches a city filter to Open to work in and shows the list on the found view, only for people in search (FR-55)", async () => {
+    const s = await setup("places");
+    const mover = await seeker("p-mover", { name: "Priya Nair" });
+    await seeker("p-stay", { name: "Arjun Mehta" });
+    await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, mover));
+    await db!.update(schema.userSettings).set({ openToWorkIn: ["Remote", "Kochi"] }).where(eq(schema.userSettings.userId, mover));
+
+    expect(names(await found(s.admin, s.jobId, { cities: ["Kochi"] }))).toEqual(["Priya Nair"]);
+    expect(names(await found(s.admin, s.jobId, { cities: ["Pune"] }))).toEqual(["Priya Nair"]);
+    expect(await found(s.admin, s.jobId, { cities: ["Mumbai"] })).toEqual([]);
+    const [card] = await found(s.admin, s.jobId, { cities: ["Kochi"] });
+    // The card is as before; the opened view carries the list and nothing else of the settings.
+    expect(card).not.toHaveProperty("openToWorkIn");
+    const opened = await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd());
+    if (!opened.ok) throw new Error(opened.error);
+    expect(opened.person.openToWorkIn).toEqual(["Remote", "Kochi"]);
+    expect(opened.person.city).toBe("Pune");
+    expect(Object.keys(opened.person).sort()).toEqual(["city", "job", "jobId", "match", "openToWorkIn", "profile", "ref", "request"]);
+
+    // Out of search, out of reach: with job search off, or with Let companies find me off, nobody is found by it.
+    expect((await setJobSearch(mover, false, { db: db!, now: clock })).ok).toBe(true);
+    expect(await found(s.admin, s.jobId, { cities: ["Kochi"] })).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await setJobSearch(mover, true, { db: db!, now: clock })).ok).toBe(true);
+    await setFind(mover, false);
+    expect(await found(s.admin, s.jobId, { cities: ["Kochi"] })).toEqual([]);
+  });
+
   it("finds people by name, name + role and name + role + company, and never the company's own current staff", async () => {
     const s = await setup("names");
     const priya = await seeker("n-priya", { name: "Priya Nair" });
@@ -582,8 +610,8 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
 
     const data = await exportAccountData(p, db!, clock);
-    expect(EXPORT_VERSION).toBe(30);
-    expect(data!.exportVersion).toBe(30);
+    expect(EXPORT_VERSION).toBe(31);
+    expect(data!.exportVersion).toBe(31);
     expect(data!.companyDiscovery.companiesCanFind).toBe(true);
     expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
     expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);

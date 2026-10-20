@@ -13,6 +13,7 @@ export const exampleSettings: SettingsData = {
     username: "priya-n",
     headline: "IT support moving into security operations",
     city: "Pune",
+    openToWorkIn: ["Remote", "Pune"],
     currentPay: "4.2",
     expectedPay: "6",
     settings: {
@@ -24,6 +25,7 @@ export const exampleSettings: SettingsData = {
       showGaps: false,
       showCertifications: true,
       requestsFrom: "anyone",
+      messageRequests: true,
       companiesCanFind: true,
       rideReminder: "19:30",
       emailCompanyMessages: true,

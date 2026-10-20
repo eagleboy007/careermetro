@@ -7,8 +7,9 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
+import { usuallyFreeFor } from "@/lib/account/availability-store";
 import { listThreads } from "@/lib/inbox/store";
-import { acceptInboxRequest, deleteInboxRequest, offerInboxTimes, readInboxChat, reportInInbox, sendInboxMessage } from "./actions";
+import { acceptInboxRequest, deleteInboxRequest, offerInboxTimes, readInboxChat, reportInInbox, saveUsuallyFreeAction, sendInboxMessage } from "./actions";
 
 export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { index: false } };
 
@@ -45,11 +46,21 @@ async function Inbox({ searchParams }: PageProps<"/inbox">) {
     );
   }
 
-  const threads = await listThreads(account.id);
+  // Usually free (FR-55) is read once for the page: the panel shows it and each "Ask for times" pre-ticks from it.
+  const [threads, usuallyFree] = await Promise.all([listThreads(account.id), usuallyFreeFor(account.id)]);
   return (
     <InboxView
       threads={threads}
-      actions={{ send: sendInboxMessage, accept: acceptInboxRequest, remove: deleteInboxRequest, report: reportInInbox, read: readInboxChat, offerTimes: offerInboxTimes }}
+      usuallyFree={usuallyFree}
+      actions={{
+        send: sendInboxMessage,
+        accept: acceptInboxRequest,
+        remove: deleteInboxRequest,
+        report: reportInInbox,
+        read: readInboxChat,
+        offerTimes: offerInboxTimes,
+        saveUsuallyFree: saveUsuallyFreeAction,
+      }}
       note={
         threads.length === 0 ? (
           <p className={noteClass}>

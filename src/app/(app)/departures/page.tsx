@@ -18,7 +18,7 @@ import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixt
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
 import { eliteOn } from "@/lib/elite/store";
 import { suggestedCanJoin } from "@/lib/job-search/rules";
-import { jobSearchFor } from "@/lib/job-search/store";
+import { jobSearchFor, openToWorkInFor } from "@/lib/job-search/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { prepForJobs } from "@/lib/mock/rules";
 import { indiaDay } from "@/lib/ride/days";
@@ -96,6 +96,18 @@ async function eliteFor(userId: string | null): Promise<boolean> {
   }
 }
 
+/** "Open to work in" from Settings (FR-55). If it can't be read, Departures opens on every city as before. */
+async function placesFor(userId: string | null): Promise<string[]> {
+  if (!userId) return [];
+  try {
+    return await openToWorkInFor(userId);
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "departures_places_failed", errorFields(error));
+    return [];
+  }
+}
+
 /** The feed's roles and the person's own lists. If they can't be read, Departures shows its other roles and says nothing is listed yet. */
 async function liveBoard(userId: string, roleSlug: string | null): Promise<DeparturesBoard> {
   try {
@@ -139,13 +151,14 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const analysis = account ? await currentAnalysis(account.id) : null;
   const read = await postedJobs(role?.slug);
   const posted = read ?? [];
-  const [board, fit, states, criteria, elite, search] = await Promise.all([
+  const [board, fit, states, criteria, elite, search, places] = await Promise.all([
     account ? liveBoard(account.id, role?.slug ?? null) : null,
     account && analysis ? fitFor(account.id) : null,
     postedStates(account?.id ?? null, posted),
     postedCriteria(account?.id ?? null, posted),
     eliteFor(account?.id ?? null),
     account ? jobSearchFor(account.id) : DEFAULT_JOB_SEARCH,
+    placesFor(account?.id ?? null),
   ]);
   const now = new Date();
   const jobs = board ? board.posts.map((p) => postView(p, fit === "failed" ? null : fit, now)) : exampleJobs;
@@ -199,6 +212,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
             resumeId={account ? (analysis?.resumeId ?? null) : hasResume ? "example" : null}
             demo={!account}
             prep={prep}
+            places={places}
             searchSwitch={<JobSearchSwitch />}
           />
         </div>

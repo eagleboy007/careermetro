@@ -1,16 +1,20 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
+import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
   GAPS_VISIBLE_TO,
   GAPS_VISIBLE_TO_LABELS,
+  OPEN_TO_WORK_MAX,
   PAY_MAX_LAKH,
+  PERSON_CITIES,
   PROFILE_VISIBILITIES,
   PROFILE_VISIBILITY_LABELS,
   REQUESTS_FROM,
   REQUESTS_FROM_LABELS,
   RIDE_REMINDERS,
+  WORK_PLACE_REMOTE,
 } from "@/lib/schemas/constants";
 import type { ProfileVisibility, UserSettings } from "@/lib/schemas";
 import { FieldError, useSettingsDraft } from "./settings-draft";
@@ -66,6 +70,114 @@ export function PayFields() {
         use it only to mark roles that pay below what you expect. Leave it empty if you prefer. Up to {PAY_MAX_LAKH} lakh.
       </PrivacyLine>
     </>
+  );
+}
+
+const FIELD =
+  "min-h-11 min-w-0 rounded-md border border-line-strong bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
+const CHIP =
+  "inline-flex min-h-11 items-center rounded-full border border-line px-3.5 text-[0.82rem] font-[550] text-muted aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-surface aria-disabled:cursor-not-allowed aria-disabled:opacity-60";
+
+/** Remote first, then the cities in the order picked: the order the server keeps. */
+const ordered = (places: string[]) => [...places.filter((p) => p === WORK_PLACE_REMOTE), ...places.filter((p) => p !== WORK_PLACE_REMOTE)];
+
+/**
+ * Current city and "Open to work in" (handoff 12c Pay and location, v44 gap item 36, FR-55), saved with the form.
+ * Current city moved here from Profile basics with the same rule: only companies that can find you see it. Open to work
+ * in is pressable chips, Remote first, then the cities picked from "Add a city"; up to OPEN_TO_WORK_MAX places.
+ */
+export function LocationFields({ idPrefix = "acc" }: { idPrefix?: string }) {
+  const { draft, set, editable, errors } = useSettingsDraft();
+  const picked = draft.openToWorkIn;
+  const full = picked.length >= OPEN_TO_WORK_MAX;
+  // Cities unpicked on this visit stay as chips, so a slip is one press to undo.
+  const [shown, setShown] = useState<string[]>(() => picked.filter((p) => p !== WORK_PLACE_REMOTE));
+  const cities = [...shown, ...picked.filter((p) => p !== WORK_PLACE_REMOTE && !shown.includes(p))];
+  const toggle = (place: string) => {
+    if (!editable) return;
+    if (picked.includes(place)) return set({ openToWorkIn: picked.filter((p) => p !== place) });
+    if (!full) set({ openToWorkIn: ordered([...picked, place]) });
+  };
+  const add = (city: string) => {
+    if (!city || full || picked.includes(city)) return;
+    setShown((s) => (s.includes(city) ? s : [...s, city]));
+    set({ openToWorkIn: ordered([...picked, city]) });
+  };
+  return (
+    <div className="grid gap-x-4 gap-y-3.5 min-[760px]:grid-cols-2">
+      <label className="flex min-w-0 flex-col gap-1.5">
+        <span className="text-[0.82rem] font-semibold">
+          Current city <em className="font-normal not-italic text-muted">optional</em>
+        </span>
+        <select
+          id={`${idPrefix}-city`}
+          value={draft.city}
+          onChange={(e) => set({ city: e.target.value })}
+          disabled={!editable}
+          aria-invalid={errors.city ? true : undefined}
+          aria-describedby={errors.city ? `${idPrefix}-city-error` : `${idPrefix}-city-hint`}
+          className={FIELD}
+        >
+          <option value="">Not given</option>
+          {PERSON_CITIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <FieldError id={`${idPrefix}-city-error`} message={errors.city} />
+        {!errors.city && (
+          <small id={`${idPrefix}-city-hint`} className="text-[0.78rem] text-muted">
+            Not on your profile. Only companies you let find you see it, and can search by it.
+          </small>
+        )}
+      </label>
+      <div role="group" aria-labelledby={`${idPrefix}-places-h`} aria-describedby={`${idPrefix}-places-hint`} className="flex min-w-0 flex-col gap-1.5">
+        <span id={`${idPrefix}-places-h`} className="text-[0.82rem] font-semibold">
+          Open to work in <em className="font-normal not-italic text-muted">optional</em>
+        </span>
+        <div className="flex flex-wrap gap-1.5" data-open-to-work-in>
+          {[WORK_PLACE_REMOTE, ...cities].map((place) => {
+            const on = picked.includes(place);
+            return (
+              <button
+                key={place}
+                type="button"
+                aria-pressed={on}
+                aria-disabled={!editable || (!on && full) || undefined}
+                onClick={() => toggle(place)}
+                className={CHIP}
+              >
+                {place}
+              </button>
+            );
+          })}
+        </div>
+        <select
+          id={`${idPrefix}-openToWorkIn`}
+          aria-label="Add a city"
+          value=""
+          onChange={(e) => add(e.target.value)}
+          // Not disabled when full (focus would drop to the page after picking the last place): it offers nothing then.
+          disabled={!editable}
+          aria-invalid={errors.openToWorkIn ? true : undefined}
+          aria-describedby={errors.openToWorkIn ? `${idPrefix}-openToWorkIn-error` : undefined}
+          className={`${FIELD} self-start`}
+        >
+          <option value="">{full ? `${OPEN_TO_WORK_MAX} places picked` : "Add a city"}</option>
+          {(full ? [] : PERSON_CITIES.filter((c) => !cities.includes(c))).map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <FieldError id={`${idPrefix}-openToWorkIn-error`} message={errors.openToWorkIn} />
+        <small id={`${idPrefix}-places-hint`} className="text-[0.78rem] text-muted">
+          Filters Departures. Companies see it on applications you send with Express apply, and in their search if you let companies find you. Up to{" "}
+          {OPEN_TO_WORK_MAX} places, Remote included.
+        </small>
+      </div>
+    </div>
   );
 }
 
@@ -196,13 +308,14 @@ export function PrivacyFields() {
           {REQUESTS_NOTES[requests]}
         </small>
       </fieldset>
+      <MessageRequestsSwitch />
       <fieldset className="flex min-w-0 flex-col" disabled={!editable}>
         <legend className="mb-1 text-[0.82rem] font-semibold">Companies</legend>
         <Switch
           checked={s.companiesCanFind}
           onChange={(on) => setSetting("companiesCanFind", on)}
           disabled={!editable}
-          hint="Verified companies can find you when they search from one of their open jobs. They see your target role, your city if you gave one, the parts of your profile switched on above and how your skills match that job (target role and match even when switched off above), never your goals or gaps. They can search by your name, role and current employer, and narrow a search by experience, target role, city and proved skills. Your current employer never finds you. Never your email, phone, pay, notice period or resume. They can only send you a message request, which you accept or delete. Off by default; turning it off takes you out of their searches at once."
+          hint="Verified companies can find you when they search from one of their open jobs. They see your target role, your city if you gave one, the places you are open to work in, the parts of your profile switched on above and how your skills match that job (target role and match even when switched off above), never your goals or gaps. They can search by your name, role and current employer, and narrow a search by experience, target role, city (yours or one you are open to work in) and proved skills. Your current employer never finds you. Never your email, phone, pay, notice period or resume. They can only send you a message request, which you accept or delete. Off by default; turning it off takes you out of their searches at once."
         >
           Let companies find me
         </Switch>
@@ -218,18 +331,35 @@ export function PrivacyFields() {
   );
 }
 
+/** "Allow message requests from people who aren't connections" (FR-55, gap list item 33), saved with the form. */
+export function MessageRequestsSwitch() {
+  const { draft, setSetting, editable } = useSettingsDraft();
+  return (
+    <div className="flex min-w-0 flex-col">
+      {/* startDirect refuses a non-connection's first message while this is off; connections are never affected. */}
+      <Switch
+        checked={draft.settings.messageRequests ?? true}
+        onChange={(on) => setSetting("messageRequests", on)}
+        disabled={!editable}
+        hint="Off: only your connections can start a chat with you. Requests you already have stay in your Inbox. Companies you applied to write in that application's chat, and companies you let find you send their own request, whatever you pick here."
+      >
+        Allow message requests from people who aren&apos;t connections
+      </Switch>
+    </div>
+  );
+}
+
 /**
  * "Who sees what" (prototype v44, gap list item 35): what anyone signed in and your connections can do, by the rules
- * the app enforces. Two rows differ from the prototype on purpose: there is no switch for message requests yet, so
- * anyone who can reach you may send one; and nobody is ever shown who you are connected to, only a count of the
- * people you both know on Network.
+ * the app enforces. Message you follows "Allow message requests" (FR-55). One row differs from the prototype on
+ * purpose: nobody is ever shown who you are connected to, only a count of the people you both know on Network.
  */
 const WHO_SEES_WHAT: { what: string; anyone: string; connections: string }[] = [
   { what: "Find you by name", anyone: "Only with “Let people find me”", connections: "Always" },
   { what: "Open your profile", anyone: "As set in “Who can open your profile”", connections: "Unless you picked “Only you”" },
   { what: "See your gaps", anyone: "Only with “Everyone who can open your profile”", connections: "Unless you pick “Nobody”, or your profile is set to “Only you”" },
   { what: "Ask to connect", anyone: "Unless you pick “Nobody”", connections: "Already connected" },
-  { what: "Message you", anyone: "One message request, which you accept or delete", connections: "Chat freely" },
+  { what: "Message you", anyone: "One message request, if you allow it", connections: "Chat freely" },
   { what: "See who you are connected to", anyone: "Never, only how many people you both know", connections: "Never, only how many people you both know" },
 ];
 

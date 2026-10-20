@@ -19,13 +19,14 @@ import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
 import { exportNotifications } from "@/lib/notifications/store";
 import { exportPractice } from "@/lib/practice/store";
+import { exportAvailability } from "./availability-store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
 
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 30;
+export const EXPORT_VERSION = 31;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -111,7 +112,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows, meEdits, notificationRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows, meEdits, notificationRows, availability] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -175,6 +176,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportLibrary(userId, db),
     exportMeEdits(userId, db),
     exportNotifications(userId, db),
+    exportAvailability(userId, db),
   ]);
 
   return {
@@ -209,11 +211,13 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Jobs this account posted for a company, with their Express apply criteria (it stays the company's when the account goes).
     jobsOwned,
     // Jobs this account applied to on CareerMetro: which companies have the application, the note sent with it (Express
-    // apply), and every step it took.
+    // apply), Open to work in as it was sent with it (from version 31), and every step it took.
     applications: applicationRows,
     // Interviews this account sat on for a company, and the feedback it wrote there (never the candidate's name).
     interviewer,
-    // Privacy and notification choices (the defaults, with savedAt null, until you save some).
+    // Privacy and notification choices (the defaults, with savedAt null, until you save some). From version 31 they
+    // include messageRequests (message requests from people who aren't connections) and openToWorkIn (Remote and the
+    // cities you are open to work in).
     settings: settings.settings,
     // Your current and expected pay, in lakh a year: only you ever see it.
     pay: settings.pay,
@@ -266,5 +270,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Notifications (docs/plans/notifications-plan.md): each one's kind, when it was made and read, and the company and
     // job for the ones about an application or interview. Other people's names are left out.
     notifications: notificationRows,
+    // Your availability (from version 31): the weekday hours you said you are usually free ("mon 17:00"). Only you see
+    // them; they only pre-tick times when a company asks for times.
+    availability,
   };
 }

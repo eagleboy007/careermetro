@@ -67,6 +67,9 @@ import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends }
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
+import { SettingsDraft } from "@/components/settings/settings-draft";
+import { LocationFields, MessageRequestsSwitch } from "@/components/settings/settings-fields";
+import { UsuallyFree } from "@/components/inbox/usually-free";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { NetworkView } from "@/components/network/network-view";
 import { ProfileConnect } from "@/components/network/profile-connect";
@@ -487,6 +490,12 @@ export default function DesignPage() {
           demo
         />
         <DeparturesView jobs={exampleLiveJobs.slice(1, 2)} updated="Updated 18 Oct" resumeId="example" demo />
+        <p className="text-sm text-muted">
+          &quot;Your places&quot; (FR-55): with places in Settings &gt; Pay and location, the City filter opens on Your places, the roles in those cities and
+          remote roles when Remote is picked; Any city still lists every role. Then places with no roles yet: the empty state links to Settings.
+        </p>
+        <DeparturesView jobs={exampleJobs} places={["Remote", "Bengaluru"]} resumeId="example" demo />
+        <DeparturesView jobs={exampleJobs.slice(0, 3)} places={["Kochi"]} resumeId="example" demo />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -679,6 +688,19 @@ export default function DesignPage() {
         <div className="max-w-[640px] rounded-lg border border-line p-4">
           <BlockedPeople people={[]} />
         </div>
+        <p className="text-sm text-muted">
+          Pay and location with no places picked yet (the example above has Remote and Pune), and &quot;Allow message requests from people who aren&apos;t
+          connections&quot; switched off (on above). Example data, so nothing saves.
+        </p>
+        <div className="flex max-w-[820px] flex-col gap-4 rounded-lg border border-line p-4">
+          <SettingsDraft
+            initial={{ ...exampleSettings.draft, city: "", openToWorkIn: [], settings: { ...exampleSettings.draft.settings, messageRequests: false } }}
+            editable={false}
+          >
+            <LocationFields idPrefix="design-acc" />
+            <MessageRequestsSwitch />
+          </SettingsDraft>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
@@ -688,6 +710,18 @@ export default function DesignPage() {
           nothing sends.
         </p>
         <InboxView threads={exampleThreads} />
+        <p className="text-sm text-muted">
+          Signed in, the availability panel has Usually free (FR-55): Monday to Friday by the picker&apos;s times, one row per day, with the summary worked out
+          in code; set, then not set. Private: it only pre-ticks open times when a company asks for times. Example data, so nothing saves.
+        </p>
+        <div className="grid gap-4 min-[760px]:grid-cols-2">
+          <div className="max-w-[300px] rounded-[20px] border border-line bg-surface p-4">
+            <UsuallyFree initial={["mon 17:00", "mon 18:00", "tue 17:00", "tue 18:00", "wed 17:00", "wed 18:00", "thu 17:00", "thu 18:00", "fri 17:00", "fri 18:00"]} />
+          </div>
+          <div className="max-w-[300px] rounded-[20px] border border-line bg-surface p-4">
+            <UsuallyFree initial={[]} />
+          </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

@@ -661,3 +661,24 @@ export const NOTIFICATION_KEEP_DAYS = 90;
 export const NOTIFICATION_READS_PER_DAY = 300;
 /** What the panel says with nothing to show. */
 export const NOTIFICATIONS_EMPTY = "Nothing new. Connection requests and updates on your applications show here.";
+
+/*
+ * Settings columns (docs/plans/settings-columns-plan.md, v44 gap items 31, 33 and 36, FR-55): message requests, Open to
+ * work in and Usually free. None of them is logged, sent to analytics or shown on a profile.
+ */
+
+/** The place a remote role names (src/lib/departures/feed-rules.mjs cityOf), offered first in Open to work in. */
+export const WORK_PLACE_REMOTE = "Remote";
+/** What Open to work in may hold: Remote, or one of the cities a person may give. */
+export const WORK_PLACES = [WORK_PLACE_REMOTE, ...PERSON_CITIES] as const;
+export type WorkPlace = (typeof WORK_PLACES)[number];
+/** At most this many places in Open to work in, Remote included. */
+export const OPEN_TO_WORK_MAX = 6;
+/** The weekdays Usually free offers: the days "Ask for times" can ask about (it offers weekdays only). */
+export const FREE_DAYS = ["mon", "tue", "wed", "thu", "fri"] as const;
+export type FreeDay = (typeof FREE_DAYS)[number];
+export const FREE_DAY_LABELS: Record<FreeDay, string> = { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri" };
+/** Every Usually free hour: five days by the eight picker times. */
+export const USUALLY_FREE_MAX = FREE_DAYS.length * SLOT_TIMES.length;
+/** Usually free saves one person makes a day, each try counted. */
+export const AVAILABILITY_SAVES_PER_DAY = 30;

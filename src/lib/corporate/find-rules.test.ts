@@ -70,6 +70,16 @@ describe("find rules (pending item 19)", () => {
     expect([analyst, provedSoc].map((p) => passesFilters({ roles: ["cyber-security-analyst"], cities: ["Pune"], verified: true }, p))).toEqual([false, true]);
   });
 
+  it("match a city filter to a city listed in Open to work in too (FR-55)", () => {
+    const none = { roles: [], cities: [], verified: false };
+    const mover = { roleSlug: "data-analyst", city: "Pune", openToWorkIn: ["Remote", "Kochi"], provedSkills: 0 };
+    const nowhere = { roleSlug: "data-analyst", city: null, openToWorkIn: [], provedSkills: 0 };
+    expect(passesFilters({ ...none, cities: ["Kochi"] }, mover)).toBe(true);
+    expect(passesFilters({ ...none, cities: ["Pune"] }, mover)).toBe(true);
+    expect(passesFilters({ ...none, cities: ["Mumbai"] }, mover)).toBe(false);
+    expect(passesFilters({ ...none, cities: ["Kochi"] }, nowhere)).toBe(false);
+  });
+
   it("list only people who have at least one required skill, proved or on the resume", () => {
     expect(matchesJob(match([line("not_on_resume"), line("on_resume", "nice")]))).toBe(false);
     expect(matchesJob(match([line("not_on_resume"), line("on_resume", "one_of")]))).toBe(true);

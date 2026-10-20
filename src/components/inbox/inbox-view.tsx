@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, ShieldAlert, ShieldCheck } from "lucide-react"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
+import { preTicks } from "@/lib/account/availability";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
   filterThreads,
@@ -20,6 +21,7 @@ import {
 import { ANTI_SCAM_LINE } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
+import { UsuallyFree } from "./usually-free";
 
 const ICON = { size: 14, strokeWidth: 1.75, "aria-hidden": true } as const;
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border px-[11px] py-1.5 text-[0.8rem] font-[550]";
@@ -53,7 +55,18 @@ const POLL_MS = 30_000;
  * the page refreshes from it. Without, it is the example: replies, offered times, accept and delete change this page and
  * nothing else. On a phone the list shows first and a chat opens full screen with a back arrow.
  */
-export function InboxView({ threads: initial, note, actions }: { threads: InboxThread[]; note?: ReactNode; actions?: InboxActions }) {
+export function InboxView({
+  threads: initial,
+  note,
+  actions,
+  usuallyFree = [],
+}: {
+  threads: InboxThread[];
+  note?: ReactNode;
+  actions?: InboxActions;
+  /** The person's "Usually free" hours (FR-55), "mon 17:00": the panel edits them and "Ask for times" pre-ticks from them. */
+  usuallyFree?: string[];
+}) {
   const router = useRouter();
   const [threads, setThreads] = useState<Thread[]>(initial);
   const [pending, startTransition] = useTransition();
@@ -64,6 +77,8 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   const [open, setOpen] = useState(false);
   const [picking, setPicking] = useState(false);
   const [picks, setPicks] = useState<string[]>([]);
+  // The picker opened with times ticked from Usually free, so it says where they came from.
+  const [preTicked, setPreTicked] = useState(false);
   const [calendarOn, setCalendarOn] = useState(true);
   const [draft, setDraft] = useState("");
   const [toast, setToast] = useState<string | null>(null);
@@ -423,9 +438,13 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                   message={m}
                   picking={picking}
                   picks={picks}
+                  preTicked={preTicked}
                   calendarOn={calendarOn}
                   onPick={() => {
-                    setPicks([]);
+                    // A real ask starts with the open times that fall in Usually free ticked (FR-55); nothing is sent yet.
+                    const ticked = m.ask ? preTicks(m.ask, usuallyFree) : [];
+                    setPicks(ticked);
+                    setPreTicked(ticked.length > 0);
                     setPicking(true);
                     focusNext('[aria-label="Pick times"] button:not([disabled])');
                   }}
@@ -501,7 +520,13 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
           <h2 className="text-base font-semibold">Your availability</h2>
           <p className="text-[0.8rem] text-muted">Companies never see your calendar. They see only the times you offer when they ask.</p>
           {actions ? (
-            <p className="text-[0.8rem] text-muted">Setting your usual free times and connecting a calendar come with job applications.</p>
+            <>
+              <UsuallyFree initial={usuallyFree} save={actions.saveUsuallyFree} />
+              <dl className="flex flex-col">
+                <Row k="Calendar" v="Not connected" />
+              </dl>
+              <p className="text-[0.8rem] text-muted">Connecting Google or Outlook comes later.</p>
+            </>
           ) : (
             <>
               <dl className="flex flex-col">
@@ -529,6 +554,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
             Your connections, and companies you applied to, about that application. Anyone else sends one message request; you accept or delete it. Report and
             Block are on every chat.
           </p>
+          {actions && <p className="text-[0.8rem] text-muted">You can turn off requests from people who aren&apos;t connections in Settings &gt; Privacy.</p>}
           <p className="text-[0.8rem] text-muted">
             Complaints go to our{" "}
             <Link href="/grievances" className="text-ink underline underline-offset-2">
@@ -580,6 +606,7 @@ function Message({
   message: m,
   picking,
   picks,
+  preTicked = false,
   calendarOn,
   onPick,
   onToggle,
@@ -591,6 +618,7 @@ function Message({
   message: InboxMessage;
   picking: boolean;
   picks: string[];
+  preTicked?: boolean;
   calendarOn: boolean;
   onPick: () => void;
   onToggle: (key: string) => void;
@@ -672,6 +700,7 @@ function Message({
               ))}
             </div>
             <small className="text-[0.76rem] text-muted">India time. Each slot is an hour. Striped times are too soon to offer.</small>
+            {preTicked && <small className="text-[0.76rem] text-muted">Ticked from your Usually free hours. Untick any that don&apos;t suit you; nothing is sent until you press Send.</small>}
             <div className="flex flex-wrap items-center gap-2">
               <button type="button" className={primary} disabled={picks.length === 0 || sending} onClick={onSendPicks}>
                 Send {picks.length} time{picks.length === 1 ? "" : "s"}

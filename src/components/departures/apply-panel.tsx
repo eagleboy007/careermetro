@@ -316,6 +316,16 @@ export function ApplyPreview({
                 ))}
               </select>
             </label>
+            {/* FR-55: Open to work in goes with the application as it is now; it is changed in Settings, not here. */}
+            {packet?.openToWorkIn && packet.openToWorkIn.length > 0 && (
+              <p className="text-[0.84rem] [overflow-wrap:anywhere]">
+                <span className="font-semibold">Open to work in:</span>
+                {` ${packet.openToWorkIn.join(", ")}. `}
+                <Link href="/settings#acc-pay" className="text-ink underline underline-offset-2">
+                  Change in Settings
+                </Link>
+              </p>
+            )}
             <label className="flex flex-col gap-1.5 text-[0.84rem] font-semibold">
               A note to {company} (optional)
               <span id={`${ids}-note-hint`} className="text-[0.78rem] font-normal text-muted">

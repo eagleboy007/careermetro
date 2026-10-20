@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (v44 mock interview follow-ups).
+Last updated: 2026-10-20 (v44 settings columns).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -51,6 +51,7 @@ Last updated: 2026-10-20 (v44 mock interview follow-ups).
 - v44 fixes, notifications in-app (gap list item 15, branch `v44-notify`, FR-54, `docs/plans/notifications-plan.md`): the bell in the top bar with "Notifications, N new" and an ink dot; the panel lists the newest 20 (60 days), marks the ones it showed read on opening and links each row; an interview set and since cancelled or declined (as closing an application does) no longer shows as set. Written in the event's transaction for connection requests and accepts, application moves and closings, and interviews set or cancelled by the company; ids only, sentences read live, blocked, suspended or deleting actors, withdrawn applications and blocked companies hidden, moves paused while job search is off. Migration 0043 (`notifications`), export version 29; the daily cleanup deletes read rows after 60 days and any after 90. Email waits on `RESEND_API_KEY` and is not built.
 - v44 fixes, mock interview follow-ups part 1 (gap list item 20, branch `v44-mock-followups`, `docs/plans/mock-followups-plan.md`): after a Next on an answer of 20 words or more, code may pick one follow-up from the bank (skip words, 2 a Quick round, 4 a Full one; never the model), with Skip follow-up; the feedback shows it with the reply or "Follow-up skipped.", and the bank tab lists them. The one end-of-round call moves to `prompts/mock-interview/v2` (follow-up replies in `<follow_up>` tags; `npm run eval:mock` has two follow-up cases). Migration 0044 (`mock_answers.follow_up_id`, `follow_up_answer`), export version 30.
   - Only the 10 about-you questions have follow-ups so far, all `followUpsReviewed: false`, so production asks none. Part 2 writes them for the other 85 open questions; someone who works in the role must check them first (Project manager to arrange).
+- v44 fixes, settings columns (gap list items 31, 33, 36, branch `v44-settings-cols`, FR-55, `docs/plans/settings-columns-plan.md`): Settings > Privacy "Allow message requests from people who aren't connections" (on by default; off, `startDirect` refuses a non-connection's first message); Settings > Pay becomes "Pay and location" with Current city and "Open to work in" (up to 6, Remote first), which opens Departures on "Your places", goes with Express apply applications and shows in company search while the person is in it; the Inbox's "Usually free" grid (weekdays by the picker times, 30 saves a day) pre-ticks "Ask for times". Migration 0045, export version 31. Calendar connection stays W5.
 - v44 fixes, Departures (gap list items 41 and 43, branch `v44-departures`, no migration): "Saw a role somewhere else?" checks a pasted post against the person's latest resume through `/api/job-checks` (as "My role isn't listed") and opens `/resume/[id]/job/[checkId]`, or links to `/start` with no resume; its line now says only the skills are kept, never the post (the prototype's "saved to your Departures" isn't true). The role detail's "Interview prep for this role" (Elite label) shows five bank questions, the bank's first Free one open and four Elite-only ones sent with no text (`rolePrepFor`, eliteOn on the server), "Practice a mock round" and a lock note reworded from the prototype's (the bank has no model answers); the MIS, trainer and freelance example roles say it is coming.
 
 ## Next up
@@ -69,7 +70,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0042**. `EXPORT_VERSION` (27) lives in `src/lib/account/export.ts`. The latest FR is FR-52 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0046**. `EXPORT_VERSION` (31) lives in `src/lib/account/export.ts`. The latest FR is FR-55 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

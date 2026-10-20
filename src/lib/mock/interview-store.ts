@@ -359,7 +359,7 @@ export async function endMockInterview(userId: string, raw: unknown, deps: Inter
 
 /**
  * For "Download your data": every session with its questions, times and summary, and the answers still kept (the
- * last 30 days) with the words on each and the follow-up asked after it with the reply (version 30).
+ * last 30 days) with the words on each and the follow-up asked after it with the reply (from version 30).
  */
 export async function exportMockSessions(userId: string, db: Pick<Db, "select"> = getDb(), bank: readonly MockQuestion[] = mockQuestions) {
   const byId = new Map(bank.map((q) => [q.id, q]));

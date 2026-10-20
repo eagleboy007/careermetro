@@ -13,7 +13,7 @@ import { DeleteAccount } from "./delete-account";
 import { PlanCard, type PlanActions } from "./plan-card";
 import { ProfileLinkFields } from "./profile-link-fields";
 import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
-import { NotificationFields, PayFields, PrivacyFields, WhoSeesWhat } from "./settings-fields";
+import { LocationFields, NotificationFields, PayFields, PrivacyFields, WhoSeesWhat } from "./settings-fields";
 import { SettingsNav } from "./settings-nav";
 
 export type SettingsData = {
@@ -47,7 +47,7 @@ export const SETTINGS_SECTIONS = [
   { id: "acc-plan", label: "Your plan" },
   { id: "acc-basics", label: "Profile basics" },
   { id: "acc-signin", label: "Email and sign-in" },
-  { id: "acc-pay", label: "Pay" },
+  { id: "acc-pay", label: "Pay and location" },
   { id: "acc-privacy", label: "Privacy" },
   { id: "acc-notif", label: "Notifications" },
   { id: "acc-company", label: "Company" },
@@ -130,8 +130,10 @@ export function SettingsView({
           </List>
         </Section>
 
-        <Section id="acc-pay" title="Pay" tag="private">
+        {/* Handoff 12c, v44 gap item 36: pay, Current city (moved here from Profile basics) and Open to work in. */}
+        <Section id="acc-pay" title="Pay and location" tag="pay is private">
           <PayFields />
+          <LocationFields />
           <div id="acc-job-search" className="scroll-mt-20">
             {jobSearch ?? <SettingsJobSearch view={{ on: true, noticeDays: 30, resignedOn: null }} today="2026-10-20" />}
           </div>

@@ -927,7 +927,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 30 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 31 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1251,7 +1251,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 30) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1325,6 +1325,103 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await q.goto(BASE + `/u/${handle}-nobody`);
   await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
   await other.close();
+});
+// Settings columns (docs/plans/settings-columns-plan.md, FR-55, v44 gap items 31, 33 and 36). In Settings the walk turns
+// off message requests and picks Pune and Remote under Pay and location; Departures then opens on "Your places" with
+// only those roles, and Any city lists the rest. In the Inbox it ticks Mon 17:00 and 18:00 as Usually free, and the
+// summary reads "Mon 17:00 to 19:00" after a reload. The download has all three. Then it puts everything back, so the
+// later Inbox and Departures steps see a person with nothing set.
+await step("settings columns: message requests off, Open to work in filters Departures, Usually free in the Inbox", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const roles = [
+    ["e2e-p1", "Places analyst Pune (e2e)", "Pune"],
+    ["e2e-p2", "Places analyst Remote (e2e)", "Remote"],
+    ["e2e-p3", "Places analyst Kochi (e2e)", "Kochi"],
+  ];
+  const settingsSave = async () => {
+    await p.getByRole("button", { name: "Save changes" }).click();
+    await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+  };
+  try {
+    for (const [id, title, city] of roles) {
+      await sql`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, required_skill_ids, nice_skill_ids, posted_at)
+        values ('greenhouse', 'e2e-places', ${id}, ${`https://example.com/jobs/${id}`}, ${title}, 'Example Labs', ${city}, '2 to 4 years', 'data-analyst',
+          '{sql,excel}'::text[], '{}'::text[], now())
+        on conflict (ats, board_token, external_id) do update set closed_at = null, last_seen_at = now()`;
+    }
+    await p.goto(BASE + "/settings");
+    await settled();
+    const requests = p.getByRole("checkbox", { name: /^Allow message requests from people who aren't connections/ });
+    if (!(await requests.isChecked())) throw new Error("message requests don't start on");
+    await requests.setChecked(false, { force: true });
+    await p.getByLabel("Add a city").selectOption("Pune");
+    const chips = p.locator("[data-open-to-work-in]");
+    await chips.getByRole("button", { name: "Remote", exact: true }).click();
+    if ((await chips.getByRole("button", { name: "Pune", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("Pune isn't picked");
+    await settingsSave();
+    await p.reload();
+    await settled();
+    if (await requests.isChecked()) throw new Error("message requests off did not save");
+    for (const place of ["Remote", "Pune"])
+      if ((await chips.getByRole("button", { name: place, exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error(`${place} did not save`);
+    await a11y("settings-columns");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await a11y("settings-columns-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+
+    await p.goto(BASE + "/departures");
+    await settled();
+    const city = p.getByRole("group", { name: "City" });
+    if ((await city.getByRole("button", { name: "Your places" }).getAttribute("aria-pressed")) !== "true") throw new Error("Departures doesn't open on Your places");
+    const role = (title) => p.getByRole("button", { name: `${title} at Example Labs`, exact: true });
+    await role(roles[0][1]).waitFor({ timeout: 10000 });
+    await role(roles[1][1]).waitFor();
+    if (await role(roles[2][1]).count()) throw new Error("Your places lists a role in another city");
+    await city.getByRole("button", { name: "Any city" }).click();
+    await role(roles[2][1]).waitFor({ timeout: 5000 });
+    await a11y("departures-your-places");
+
+    await p.goto(BASE + "/inbox");
+    await settled();
+    const panel = p.getByRole("complementary", { name: "Your availability" });
+    const summary = panel.locator("[data-usually-free-summary]");
+    if ((await summary.innerText()) !== "Not set") throw new Error("Usually free doesn't start Not set");
+    const hours = panel.getByRole("group", { name: "Usually free hours" });
+    for (const slot of ["Mon 17:00", "Mon 18:00"]) await hours.getByRole("button", { name: slot, exact: true }).click();
+    await panel.getByRole("button", { name: "Save", exact: true }).click();
+    await panel.getByText("Saved. Ask for times now pre-ticks these hours.").waitFor({ timeout: 15000 });
+    await p.reload();
+    await settled();
+    await p.waitForFunction(() => document.querySelector("[data-usually-free-summary]")?.textContent === "Mon 17:00 to 19:00", null, { timeout: 10000 });
+    await shot("inbox-usually-free");
+    await a11y("inbox-usually-free");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await a11y("inbox-usually-free-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+
+    const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
+    if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
+    if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
+    if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
+
+    // Put it all back for the later steps.
+    for (const slot of ["Mon 17:00", "Mon 18:00"]) await hours.getByRole("button", { name: slot, exact: true }).click();
+    await panel.getByRole("button", { name: "Save", exact: true }).click();
+    await panel.getByText("Saved. Ask for times now pre-ticks these hours.").waitFor({ timeout: 15000 });
+    await p.goto(BASE + "/settings");
+    await settled();
+    await requests.setChecked(true, { force: true });
+    for (const place of ["Remote", "Pune"]) await chips.getByRole("button", { name: place, exact: true }).click();
+    await settingsSave();
+  } finally {
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql`update job_posts set closed_at = now() where board_token = 'e2e-places'`;
+    await sql.end();
+  }
 });
 // Me editing (docs/plans/me-editing-plan.md, v44 gap item 23). On /me the walk adds a role, an education row, a story (seen
 // in its Board column, then in the List) and two interests; edits one of each; checks View as others (the story and the
@@ -1467,7 +1564,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 30) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -1844,7 +1941,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 30) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1942,7 +2039,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 30) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -2051,7 +2148,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 30) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
     const ups = round.answers.map((a) => a.followUp);

@@ -532,6 +532,8 @@ function PersonDrawer({
             Found from {person?.job ?? "your job"}
             {(person?.city ?? card?.city) && ` · ${person?.city ?? card?.city}`}
           </p>
+          {/* FR-55: only people in search have it (Let companies find me and job search on). */}
+          {!!person?.openToWorkIn.length && <p className="text-[0.78rem] text-muted [overflow-wrap:anywhere]">Open to work in {person.openToWorkIn.join(", ")}</p>}
         </div>
         <button type="button" data-close aria-label="Close" className={`${actionBtn} w-11 px-0`} onClick={() => close()}>
           <X {...ICON} />

@@ -59,16 +59,17 @@ export function inBands(bands: readonly FindBand[], years: number, experienceSho
 
 /**
  * Whether a person passes the other filters (T44): one of the chosen target roles, when any is chosen (companies see the
- * target role of everyone who lets them find them); one of the chosen cities, when any is chosen (people who gave no
- * city never match one); and a verified profile, when asked: at least one skill proved by CareerMetro proof (an exam, a
- * verified certificate or corroborated work), never a resume line alone.
+ * target role of everyone who lets them find them); one of the chosen cities, when any is chosen, as the city they gave
+ * or one they listed in "Open to work in" (FR-55; people who gave neither never match one); and a verified profile,
+ * when asked: at least one skill proved by CareerMetro proof (an exam, a verified certificate or corroborated work),
+ * never a resume line alone.
  */
 export function passesFilters(
   f: { roles: readonly string[]; cities: readonly string[]; verified: boolean },
-  p: { roleSlug: string; city: string | null; provedSkills: number },
+  p: { roleSlug: string; city: string | null; openToWorkIn?: readonly string[]; provedSkills: number },
 ): boolean {
   if (f.roles.length && !f.roles.includes(p.roleSlug)) return false;
-  if (f.cities.length && !(p.city && f.cities.includes(p.city))) return false;
+  if (f.cities.length && !((p.city && f.cities.includes(p.city)) || p.openToWorkIn?.some((c) => f.cities.includes(c)))) return false;
   return !f.verified || p.provedSkills > 0;
 }
 
