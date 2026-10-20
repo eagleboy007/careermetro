@@ -1,3 +1,9 @@
+/**
+ * What a screen says when a request or server action never reached CareerMetro (offline, or the connection dropped).
+ * Shown where the person is, so a typed message or a half-done step isn't lost to the error page.
+ */
+export const NO_CONNECTION = "We couldn't reach CareerMetro. Check your connection and try again.";
+
 /** What our API routes answer with. Other fields depend on the route. */
 export type ApiReply = { ok: boolean; error?: string; [key: string]: unknown };
 

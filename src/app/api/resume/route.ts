@@ -6,7 +6,8 @@ import { errorFields, logEvent } from "@/lib/log";
 // Reading a resume takes one model call of roughly 10 to 40 seconds; parseResume gives up after 100 seconds.
 export const maxDuration = 120;
 
-const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
+/** `code` lets the form offer the right next step, such as the builder once today's reading budget is spent ("busy"). */
+const fail = (status: number, error: string, code?: string) => Response.json({ ok: false, error, ...(code ? { code } : {}) }, { status });
 
 /** Upload a resume as a file or pasted text (FR-4). Responds with the id of the parsed, unconfirmed resume. */
 export async function POST(request: Request) {
@@ -44,6 +45,6 @@ export async function POST(request: Request) {
     logEvent("error", "resume_upload_failed", { route: "/api/resume", ms: Date.now() - startedAt, ...errorFields(error) });
     return fail(500, "Something went wrong reading your resume. Please try again.");
   }
-  if (!result.ok) return fail(result.status, result.message);
+  if (!result.ok) return fail(result.status, result.message, result.code);
   return Response.json({ ok: true, resumeId: result.resumeId });
 }

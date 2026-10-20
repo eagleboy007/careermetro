@@ -20,3 +20,19 @@ export function currentParseStep(elapsedMs: number): number {
   });
   return step;
 }
+
+/** After this long the reading counts as slow, and the form says it is still going. */
+export const SLOW_PARSE_MS = 40_000;
+/**
+ * The form stops waiting after this long. The route runs for at most 120 seconds (`maxDuration` of /api/resume), so
+ * by then the reply is not coming, such as when the connection dropped without an error.
+ */
+export const PARSE_GIVE_UP_MS = 130_000;
+/** What the form says under the steps, `elapsedMs` after the upload was sent. */
+export function parseWaitNote(elapsedMs: number): string {
+  return elapsedMs >= SLOW_PARSE_MS
+    ? "Still reading. A long resume can take up to two minutes, so please keep this page open."
+    : "This usually takes 10 to 30 seconds.";
+}
+/** Shown when the form stops waiting (PARSE_GIVE_UP_MS). */
+export const PARSE_GAVE_UP = "This took too long. Check your connection and try again, or paste the text instead.";

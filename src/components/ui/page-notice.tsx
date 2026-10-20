@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
 
+/** What an error page says instead of "Something went wrong" while the browser is offline (see use-online.ts). */
+export const OFFLINE_NOTICE = { title: "You're offline", text: "Check your connection, then try again." } as const;
+
 /**
  * A full-page message for when a page can't show: an error, or a link to nothing. Says what happened, that the
  * person's data is safe when it is, and gives a way forward. Server-safe, so error and not-found pages share it.

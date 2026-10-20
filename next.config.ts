@@ -12,7 +12,11 @@ const nextConfig: NextConfig = {
   // on-camera skill check is built, which will allow it for its own page. The microphone is allowed for CareerMetro's
   // own pages only, for the mock interview's spoken answers (/mock, components/mock/speech.ts; T78). No form-action rule: the
   // Google sign-in form is redirected off-site, which that rule would block before the page has loaded its script.
-  // HSTS covers this host only, so a subdomain served over plain HTTP is never locked out.
+  // HSTS includes subdomains: the app is served only on *.vercel.app hosts, whose subdomains are all Vercel's HTTPS, and
+  // careermetro.com (the public site, hosted apart) never gets this header. Revisit before serving the app on the apex
+  // careermetro.com. No preload: a vercel.app subdomain can't be preloaded. COOP same-origin: no page opens or is opened by
+  // a cross-origin window (Google sign-in is a full-page redirect, src/app/sign-in/actions.ts); a sign-in popup would
+  // need same-origin-allow-popups instead.
   async headers() {
     return [
       {
@@ -23,7 +27,8 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=()" },
-          { key: "Strict-Transport-Security", value: "max-age=63072000" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
         ],
       },
     ];

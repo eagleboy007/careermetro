@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PARSE_STEP_STARTS_MS, PARSE_STEPS, currentParseStep } from "./parse-steps";
+import { PARSE_GIVE_UP_MS, PARSE_STEP_STARTS_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "./parse-steps";
 
 describe("the steps shown while a resume is read", () => {
   it("name only what the upload itself does, never the role or the line", () => {
@@ -15,5 +15,14 @@ describe("the steps shown while a resume is read", () => {
     expect(currentParseStep(PARSE_STEP_STARTS_MS[2])).toBe(2);
     expect(currentParseStep(PARSE_STEP_STARTS_MS[3])).toBe(3);
     expect(currentParseStep(120_000)).toBe(3);
+  });
+
+  it("say a slow reading is still going, and stop waiting after the route's own limit", () => {
+    expect(parseWaitNote(0)).toBe("This usually takes 10 to 30 seconds.");
+    expect(parseWaitNote(SLOW_PARSE_MS - 1)).toBe("This usually takes 10 to 30 seconds.");
+    expect(parseWaitNote(SLOW_PARSE_MS)).toMatch(/^Still reading\./);
+    // /api/resume runs for at most 120 seconds, so the form never gives up on a reply that can still come.
+    expect(PARSE_GIVE_UP_MS).toBeGreaterThan(120_000);
+    expect(SLOW_PARSE_MS).toBeLessThan(PARSE_GIVE_UP_MS);
   });
 });

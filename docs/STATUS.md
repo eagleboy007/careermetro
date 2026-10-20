@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (refreshed through #206; resource batch 6, company-side staging check)
+Last updated: 2026-10-20 (#207 merged; security sweep, error and empty states)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -27,6 +27,7 @@ Last updated: 2026-10-20 (refreshed through #206; resource batch 6, company-side
   - Review carry-overs 3 to 6 (pending-items.md) are closed: the `gap_analyses` profile index, AI spend reserved before the call, and the rating route tests were already in; `npm run eval:explain` now checks the explain-gaps prompt (no invented quotes, the matcher's hours, no exclamation marks), with its scoring tested in CI without the API (2026-10-17). After Testing Run 4 (T61, T70): a quote counts as invented only when it is in nothing the model was given (role title, every gap); hour ranges and decimals are read; the report names the models that answered; over-long words fail the run; no key fails rather than skips.
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
   - Every e2e axe check runs through one helper that first waits for the page title, because a server action's refresh can leave `<title>` empty for a moment; two of the three helpers skipped that wait, which flaked `me-certifications-held` on #158 (2026-10-17).
+  - Error and empty states, checked against the v44 handoff (2026-10-20): a reading past 40 seconds says it is still going and the form stops waiting at 130; upload refusals offer "Paste text instead", and a spent reading budget offers the builder (signed out, the roles); error pages say "You're offline" when the browser is; Inbox, Express apply and Arrivals keep the screen and say the connection failed; empty Departures and the Network's Requests and Sent tabs each give a next step. All on `/design`.
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
   - The ATS openings feed runs monthly (#127). 456 free resource links (#129; batch 5 added 13, batch 6 added 19 to the 3-resource skills most roles require, 2026-10-20).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
@@ -50,10 +51,11 @@ Last updated: 2026-10-20 (refreshed through #206; resource batch 6, company-side
   - Testing Run 5 fixes T73 to T80, the refused-certificate job limited to goals the certificate could fill, and the market trends plan (proposed; D1 to D6 wait on Milin) (#204).
   - Testing Run 5 lows T81 to T93 and T95 (#205): rate limits on resume downloads and direct messages, Inbox block lock order, job-search-off note, Google callback flag, drafts only on preview/dev, real Elite limits, Library suggestion checks, future dates and list caps on Departures, no Network city filter. T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
   - End chat in accepted found chats, FR-52 (#206): ends only that chat, files no report, and the company can't write or ask again. Re-test 30: report-with-block takes the Network locks (T97), the work-email badge goes to the side the check was made on (T95, migration 0047 `job_email_checks.role_source`), the message limit is chosen under the lock (T98), and 31 link shorteners are refused (T99). `scripts/smoke/staging-screens.mjs` runs after the staging dry run: Network with no city shown, the bell, builder to Download, Library, a Mock round, Departures save and apply; both test accounts are deleted even after a failure.
+  - Resource batch 6, the company side of the staging screens check, re-test 31 (T100 to T103) and this page refreshed (#207).
 
 ## In progress
 
-- Resource batch 6 (least-covered skills, approved free sources only) and the company side of the staging screens check (Project manager, 2026-10-20). Re-test 31: a work-email check saved on the other side of the profile gives a row no badge, so company views no longer badge the resume row for a check made on an added row (T100); four more shorteners, and message requests off is read only under the lock, so people who just connected aren't refused (T102). Staging screens check: the no-city steps need the city to be set and also search the page data (T101), the clean-up runs in a finally and on a cancel (T102), and the find-me switch waits for its save (T103).
+- Security sweep (`docs/dev/security-sweep-2026-10-20.md`): Next 16.4.2 for three Next advisories npm audit missed (dependabot #161); CI now also checks runtime dependencies against GitHub's advisory database (`scripts/check-advisories.mjs`); headers add COOP same-origin and HSTS includeSubDomains; a script-src CSP is written up only (nonces would end prerendering). Error and empty states pass (above). Staging screens check: the admin test account defaults to `admin@careermetro.test` and is used only on previews (T104); city saves are confirmed and an empty payload read fails (T105); the clean-up fits its time (T106). Deleting each run's test company waits on Milin.
 
 ## Next up
 
