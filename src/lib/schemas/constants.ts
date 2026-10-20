@@ -326,12 +326,19 @@ export const CONNECTION_REQUEST_DAYS = 30;
 export const CONNECTION_PENDING_MAX = 100;
 /** "Your gaps show to" (handoff 12j): nobody, connections, or everyone who can open the profile. */
 export const GAPS_VISIBLE_TO = ["nobody", "connections", "profile"] as const;
+export const GAPS_VISIBLE_TO_LABELS: Record<(typeof GAPS_VISIBLE_TO)[number], string> = {
+  nobody: "Nobody else",
+  connections: "Your connections",
+  profile: "Everyone who can see your profile",
+};
 /** "Connection requests from" (handoff 12j). */
 export const REQUESTS_FROM = ["anyone", "nobody"] as const;
 /** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
 export const NETWORK_RESULTS_MAX = 20;
 /** People a network search reads at most, newest settings first, as Find people does (FIND_SCAN_MAX). */
 export const NETWORK_SCAN_MAX = 2000;
+/** The longest Inbox message. Here, not in schemas/inbox, so client components can read it without Zod. */
+export const MESSAGE_MAX_CHARS = 2000;
 /** The longest network search typed. */
 export const NETWORK_QUERY_MAX = 80;
 

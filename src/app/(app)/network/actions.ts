@@ -3,6 +3,8 @@
 import { refresh } from "next/cache";
 import { z } from "zod";
 import { currentAccount } from "@/lib/auth/server";
+import { INBOX_ERROR_TEXT, startDirect } from "@/lib/inbox/store";
+import { messageBody } from "@/lib/schemas/inbox";
 import { answerRequest, blockPerson, NETWORK_ERROR_TEXT, networkSettingsFor, removeConnection, requestConnection, saveNetworkSettings, searchNetwork, withdrawRequest, type NetworkResult } from "@/lib/network/store";
 import type { NetworkActions } from "@/lib/network/types";
 import { networkRow } from "@/lib/network/view";
@@ -77,4 +79,16 @@ export const setFindMe: NetworkActions["findMe"] = async (on) => {
   if (!account) return SIGN_IN;
   const saved = await networkSettingsFor(account.id);
   return answer(await saveNetworkSettings(account.id, { ...saved, peopleCanFind: on }));
+};
+
+/** Message from a connection's row or profile: between connections the chat opens at once (Inbox). */
+export const messageConnection: NetworkActions["message"] = async (id, body) => {
+  const text = messageBody.safeParse(body);
+  if (!text.success) return text.error.issues[0]?.message ?? BAD;
+  const s = await signedIn(id);
+  if (!s.account) return s.error;
+  const sent = await startDirect(s.account.id, id, text.data);
+  if (!sent.ok) return INBOX_ERROR_TEXT[sent.error];
+  refresh();
+  return null;
 };

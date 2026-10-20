@@ -1,6 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
+import { directChatLock } from "@/db/lock";
 import { applications, blocks, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { blockCompanyIn, companyBlocked } from "@/lib/corporate/company-blocks";
@@ -9,7 +10,7 @@ import { chatClosed } from "@/lib/corporate/rules";
 import { askAnswered, dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
 import { SLOT_TIMES } from "@/lib/schemas/constants";
 import { logEvent } from "@/lib/log";
-import { dropBetween } from "@/lib/network/store";
+import { areConnected, dropBetween } from "@/lib/network/store";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { isHidden, shownBody } from "./hidden";
@@ -67,6 +68,12 @@ async function reachable(userId: string, db: Db | Tx): Promise<boolean> {
   return !!row && !row.deleted;
 }
 
+/** A new chat also needs the person not suspended (FR-46), as Network shows them to nobody while suspended. */
+async function startable(userId: string, db: Db | Tx): Promise<boolean> {
+  const [row] = await db.select({ deleted: users.deletionRequestedAt, suspended: users.suspendedAt }).from(users).where(eq(users.id, userId));
+  return !!row && !row.deleted && !row.suspended;
+}
+
 /** The direct chat between two people, if there is one. */
 async function directBetween(a: string, b: string, db: Db | Tx) {
   const mine = db.select({ id: conversationMembers.conversationId }).from(conversationMembers).where(eq(conversationMembers.userId, a));
@@ -79,11 +86,11 @@ async function directBetween(a: string, b: string, db: Db | Tx) {
   return row ?? null;
 }
 
-const pairLock = (a: string, b: string, tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hashtext(${["inbox", ...[a, b].sort()].join("|")}))`);
+const pairLock = directChatLock;
 
 /**
- * Starts a direct chat. With someone who isn't a connection (everyone, until Network exists) it is a request: this one
- * message, then nothing more until they accept. A chat that already exists gets the message instead, under its rules.
+ * Starts a direct chat. With someone who isn't a connection it is a request: this one message, then nothing more until
+ * they accept. Between connections it is open at once. A chat that already exists gets the message instead, under its rules.
  */
 export async function startDirect(fromId: string, toId: string, body: string, deps: { db?: Db; now?: Date } = {}): Promise<InboxResult<{ conversationId: string }>> {
   const db = deps.db ?? getDb();
@@ -97,16 +104,19 @@ export async function startDirect(fromId: string, toId: string, body: string, de
     const sent = await sendMessage(fromId, existing.id, body, deps);
     return sent.ok ? { ok: true, conversationId: existing.id } : sent;
   }
+  // Connections chat freely (handoff 12j): their first message opens the chat, with no request and no request limit.
+  const linked = await areConnected(fromId, toId, db);
   // Counted before the write, outside the transaction: the limit is shared by every server and lives in the database.
-  if (!(await takeShared(LIMITS.inboxRequestsPerUser, fromId, { db, now: now.getTime() }))) return fail("limit");
+  if (!linked && !(await takeShared(LIMITS.inboxRequestsPerUser, fromId, { db, now: now.getTime() }))) return fail("limit");
   return db.transaction(async (tx) => {
     await pairLock(fromId, toId, tx);
-    // Checked again under the lock: a block or a deleted account may have come in since the first look.
-    if (!(await reachable(toId, tx)) || (await blockedBetween(fromId, toId, tx))) return fail("unavailable");
+    // Checked again under the lock: a block, a suspension or a deleted account may have come in since the first look.
+    if (!(await startable(toId, tx)) || (await blockedBetween(fromId, toId, tx))) return fail("unavailable");
     // Two first messages at once: the second one is refused, and told to accept the other's request or wait for theirs.
     const raced = await directBetween(fromId, toId, tx);
     if (raced) return fail(raced.status !== "request" ? "not_found" : raced.startedBy === fromId ? "waiting" : "accept_first");
-    const [conversation] = await tx.insert(conversations).values({ kind: "direct", status: "request", startedBy: fromId, createdAt: now, lastMessageAt: now }).returning({ id: conversations.id });
+    const status = linked && (await areConnected(fromId, toId, tx)) ? "open" : "request";
+    const [conversation] = await tx.insert(conversations).values({ kind: "direct", status, startedBy: fromId, createdAt: now, lastMessageAt: now }).returning({ id: conversations.id });
     await tx.insert(conversationMembers).values([
       { conversationId: conversation.id, userId: fromId, lastReadAt: now },
       { conversationId: conversation.id, userId: toId },

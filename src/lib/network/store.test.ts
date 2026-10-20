@@ -1,4 +1,4 @@
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -7,7 +7,7 @@ import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { canViewProfile } from "@/lib/account/settings-store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
-import { acceptRequest, blockInChat, startDirect } from "@/lib/inbox/store";
+import { acceptRequest, blockInChat, sendMessage, startDirect } from "@/lib/inbox/store";
 import { DEFAULT_SETTINGS, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { CONNECTION_PENDING_MAX, NETWORK_RESULTS_MAX } from "@/lib/schemas/network";
 import { LIMITS } from "@/lib/shared-limit";
@@ -17,6 +17,7 @@ import {
   blockPerson,
   connectionWith,
   exportNetwork,
+  inCommonWith,
   mutualConnections,
   networkLists,
   networkSettingsFor,
@@ -288,6 +289,61 @@ describe.skipIf(!db)("network store (database)", () => {
     await saveNetworkSettings(stranger, { peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: "anyone" }, deps());
     const [row] = await db!.select().from(schema.userSettings).where(inArray(schema.userSettings.userId, [stranger]));
     expect(row).toMatchObject({ profileVisibility: "connections", gapsVisibleTo: "connections", showGaps: false, peopleCanFind: true });
+  });
+
+  it("lets a connection open any profile but Only you, and shows what the two have in common", async () => {
+    const owner = await person("Ira", { met: ["sql", "linux"] });
+    const friend = await person("Jai", { met: ["linux"] });
+    // No analysis, so not on anyone's line.
+    const plain = await person("Kavi");
+    const stranger = await person("Leela");
+    await ask(owner, friend, "same_line", deps());
+    await answerRequest(friend, owner, "accept", deps());
+    await ask(plain, owner, "event", deps());
+    await answerRequest(owner, plain, "accept", deps());
+    // People on your line: a connection off the line still opens it; a stranger off the line doesn't.
+    const line = { id: owner, settings: { ...DEFAULT_SETTINGS, visibility: "line" as const } };
+    expect(await canViewProfile(line, plain, db!)).toBe(true);
+    expect(await canViewProfile(line, stranger, db!)).toBe(false);
+    const hidden = { id: owner, settings: { ...DEFAULT_SETTINGS, visibility: "only_me" as const } };
+    expect(await canViewProfile(hidden, plain, db!)).toBe(false);
+    // In common: skills only when the owner shows skills; the role only when they show it and both aim at it.
+    const parts = { showSkills: true, showTargetRole: true };
+    const both = await inCommonWith(friend, { id: owner, settings: parts }, db!);
+    expect(both.skills).toHaveLength(1);
+    expect(both.role).toBe(roleProfiles[0].title);
+    expect(await inCommonWith(friend, { id: owner, settings: { showSkills: false, showTargetRole: false } }, db!)).toEqual({ skills: [], role: null });
+    expect(await inCommonWith(owner, { id: owner, settings: parts }, db!)).toEqual({ skills: [], role: null });
+  });
+
+  it("opens Inbox chats between connections, and a removal turns the chat back into a request", async () => {
+    const a = await person("Lina");
+    const b = await person("Manu");
+    const status = async (id: string) => (await db!.select({ s: schema.conversations.status }).from(schema.conversations).where(eq(schema.conversations.id, id)))[0]?.s;
+
+    // A message request waiting between two people opens when they connect.
+    const asked = await startDirect(a, b, "Hello", { db: db! });
+    if (!asked.ok) throw new Error(asked.error);
+    expect(await status(asked.conversationId)).toBe("request");
+    await ask(b, a, "worked_together", deps());
+    await answerRequest(a, b, "accept", deps());
+    expect(await status(asked.conversationId)).toBe("open");
+    expect((await sendMessage(a, asked.conversationId, "Again", { db: db! })).ok).toBe(true);
+
+    // Removing ends free chat: the chat waits as a request to the person who removed.
+    expect((await removeConnection(a, b, db!)).ok).toBe(true);
+    expect(await status(asked.conversationId)).toBe("request");
+    expect(await sendMessage(b, asked.conversationId, "Still there?", { db: db! })).toEqual({ ok: false, error: "waiting" });
+    expect(await sendMessage(a, asked.conversationId, "Yes", { db: db! })).toEqual({ ok: false, error: "accept_first" });
+
+    // A first message between connections opens the chat straight away.
+    const c = await person("Nita");
+    await ask(a, c, "studied_together", deps());
+    await answerRequest(c, a, "accept", deps());
+    const direct = await startDirect(c, a, "Hi", { db: db! });
+    if (!direct.ok) throw new Error(direct.error);
+    expect(await status(direct.conversationId)).toBe("open");
+    expect((await sendMessage(a, direct.conversationId, "Hi back", { db: db! })).ok).toBe(true);
   });
 
   it("puts connections, requests and the choices in Download your data, and deleting an account removes them", async () => {

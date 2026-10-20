@@ -37,6 +37,7 @@ export function MeView({
   practice,
   onCheckCertificate,
   jobCheck,
+  gapsNote,
 }: {
   me: MeProfile;
   others?: MeProfile;
@@ -51,6 +52,8 @@ export function MeView({
    * (production until the email sender exists). Without it, example data shows the button switched off.
    */
   jobCheck?: { open: boolean; actions?: JoinActions };
+  /** On someone else's profile: why their gaps show to this viewer ("shared with connections", handoff 12j). */
+  gapsNote?: string;
 }) {
   const [asOthers, setAsOthers] = useState(false);
   const certsHeading = `${useId()}-certifications`;
@@ -233,7 +236,8 @@ export function MeView({
               {(own || gapsShown) && <SkillCol name="Missing" names={me.skills.missing} status="missing" />}
             </div>
           )}
-          {asOthers && !gapsShown && <Note>Your gaps are hidden from others unless you turn them on in Account settings.</Note>}
+          {viewer && gapsShown && gapsNote && <Note>{gapsNote}</Note>}
+          {asOthers && !gapsShown && <Note>Your gaps show only to the people you chose under &ldquo;Your gaps show to&rdquo; in Account settings.</Note>}
         </Section>
         )}
 

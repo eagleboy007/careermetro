@@ -23,3 +23,9 @@ export async function withKeyLock<T>(db: Db, key: string, timeoutMs: number, fn:
     throw error;
   }
 }
+
+/**
+ * The Inbox's lock on two people's direct chat. Network takes it too (after its own pair lock) whenever a connection
+ * starting or ending changes that chat, so a first message can't open a chat while the connection is being removed.
+ */
+export const directChatLock = (a: string, b: string, tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hashtext(${["inbox", ...[a, b].sort()].join("|")}))`);

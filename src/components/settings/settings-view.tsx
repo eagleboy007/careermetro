@@ -31,6 +31,7 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** True while gaps are shared with connections only (the default for new accounts). */
 };
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;

@@ -1,9 +1,9 @@
 import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
-import type { Tx } from "@/db/lock";
-import { blocks, connectionRequests, connections, gapAnalyses, gapProofs, profiles, resumes, userSettings, users } from "@/db/schema";
-import { roleProfiles } from "@/content";
+import { directChatLock, type Tx } from "@/db/lock";
+import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, profiles, resumes, userSettings, users } from "@/db/schema";
+import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
@@ -130,9 +130,26 @@ async function expireStale(x: string, y: string, tx: Tx, now: Date) {
     .where(and(requestsBetween(x, y), eq(connectionRequests.status, "pending"), lt(connectionRequests.createdAt, openSince(now))));
 }
 
+/** The direct Inbox chat between two people, if there is one (one per pair). */
+async function directChat(x: string, y: string, tx: Tx | Db) {
+  const mine = tx.select({ id: conversationMembers.conversationId }).from(conversationMembers).where(eq(conversationMembers.userId, x));
+  const [row] = await tx
+    .select({ id: conversations.id, status: conversations.status })
+    .from(conversations)
+    .innerJoin(conversationMembers, eq(conversationMembers.conversationId, conversations.id))
+    .where(and(eq(conversations.kind, "direct"), eq(conversationMembers.userId, y), inArray(conversations.id, mine)))
+    .limit(1);
+  return row ?? null;
+}
+
 async function connect(tx: Tx, request: { id: string; fromUser: string; toUser: string; how: ConnectionHow }, now: Date) {
   await tx.update(connectionRequests).set({ status: "accepted", decidedAt: now }).where(eq(connectionRequests.id, request.id));
   await tx.insert(connections).values({ ...pairOf(request.fromUser, request.toUser), how: request.how, createdAt: now }).onConflictDoNothing();
+  // Connections chat freely (handoff 12j): a message request waiting between them opens. Under the Inbox's lock too,
+  // so a first message sent at the same moment either lands before this (and opens) or sees the connection.
+  await directChatLock(request.fromUser, request.toUser, tx);
+  const chat = await directChat(request.fromUser, request.toUser, tx);
+  if (chat?.status === "request") await tx.update(conversations).set({ status: "open" }).where(eq(conversations.id, chat.id));
   logEvent("info", "connection_accepted");
 }
 
@@ -220,11 +237,28 @@ export async function withdrawRequest(userId: string, toId: string, deps: Deps =
   return gone.length ? { ok: true } : fail("not_found");
 }
 
-/** Remove a connection, from either side. The other person isn't told; either can connect again. */
+/**
+ * Remove a connection, from either side. The other person isn't told; either can connect again. Free chat ends with
+ * it (handoff 12j): their chat stays in the Inbox as a message request to the person who removed, so the other can't
+ * write again until it is accepted.
+ */
 export async function removeConnection(userId: string, otherId: string, db: Db = getDb()): Promise<NetworkResult> {
-  const gone = await db.delete(connections).where(pairWhere(userId, otherId)).returning({ low: connections.userLow });
-  if (gone.length) logEvent("info", "connection_removed");
-  return gone.length ? { ok: true } : fail("not_found");
+  const gone = await db.transaction(async (tx) => {
+    await pairLock(userId, otherId, tx);
+    const rows = await tx.delete(connections).where(pairWhere(userId, otherId)).returning({ low: connections.userLow });
+    if (!rows.length) return false;
+    // Under the Inbox's lock too, so a first message sent at the same moment can't open a chat after this looked.
+    await directChatLock(userId, otherId, tx);
+    const chat = await directChat(userId, otherId, tx);
+    if (chat?.status === "open") {
+      await tx.update(conversations).set({ status: "request", startedBy: otherId }).where(eq(conversations.id, chat.id));
+      // The remover answers the request, so a chat they had hidden comes back for them to accept or delete.
+      await tx.update(conversationMembers).set({ hiddenAt: null }).where(and(eq(conversationMembers.conversationId, chat.id), eq(conversationMembers.userId, userId)));
+    }
+    return true;
+  });
+  if (gone) logEvent("info", "connection_removed");
+  return gone ? { ok: true } : fail("not_found");
 }
 
 /** Any connection between two people goes, and any open request is withdrawn. Every block calls this, in its transaction. */
@@ -318,6 +352,30 @@ async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, {
     if (r.userId && parsed.success) out.set(r.userId, { roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds });
   }
   return out;
+}
+
+const skillNames = new Map(skills.map((x) => [x.id, x.name]));
+
+/**
+ * "In common with you" on a profile (handoff 12j): the skills both have, by name, when the owner shows skills, and the
+ * target role when both aim at it and the owner shows theirs. Nothing about the viewer is shown to the owner.
+ */
+export async function inCommonWith(
+  viewerId: string,
+  owner: { id: string; settings: { showSkills: boolean; showTargetRole: boolean } },
+  db: Db = getDb(),
+): Promise<{ skills: string[]; role: string | null }> {
+  if (viewerId === owner.id) return { skills: [], role: null };
+  const analyses = await analysesOf([viewerId, owner.id], db);
+  const mine = analyses.get(viewerId);
+  const theirs = analyses.get(owner.id);
+  if (!mine || !theirs) return { skills: [], role: null };
+  const met = new Set(mine.met);
+  const shared = owner.settings.showSkills ? [...new Set(theirs.met.filter((id) => met.has(id)))] : [];
+  return {
+    skills: shared.map((id) => skillNames.get(id) ?? id).sort((a, b) => a.localeCompare(b, "en")),
+    role: owner.settings.showTargetRole && mine.roleSlug === theirs.roleSlug ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
+  };
 }
 
 /** People with at least one current accepted proof: "Verified" (as Find people, T44). */

@@ -6,10 +6,14 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MeView } from "@/components/me/me-view";
+import { ProfileConnect } from "@/components/network/profile-connect";
 import { resolveProfile } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { publicProfile } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
+import { seesGaps } from "@/lib/network/rules";
+import { connectionWith, inCommonWith, networkSettingsFor } from "@/lib/network/store";
+import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, withdrawConnection } from "../../network/actions";
 
 // A generic title: the person's name stays out of tab titles, history sync and any analytics that read titles.
 export const metadata: Metadata = { title: "Profile · CareerMetro", robots: { index: false, follow: false } };
@@ -32,9 +36,18 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
   if (answer.kind === "not_found") notFound();
   if (answer.kind === "redirect") redirect(`/u/${answer.to}`);
   const { owner } = answer;
-  const me = await meFor(owner.id, now);
-  if (!me) notFound();
   const yours = owner.id === viewer.id;
+  const [me, state, network, inCommon] = await Promise.all([
+    meFor(owner.id, now),
+    connectionWith(viewer.id, owner.id, { now }),
+    networkSettingsFor(owner.id),
+    inCommonWith(viewer.id, owner),
+  ]);
+  if (!me) notFound();
+  // Gaps follow the owner's gaps choice (FR-49): a connection sees gaps shared with connections. The owner's own view
+  // here is "as others see it", so it never counts as a connection.
+  const connected = !yours && state === "connected";
+  const showGaps = seesGaps(network.gapsVisibleTo, { self: false, connected });
   return (
     <div className="flex flex-col gap-4">
       {yours && (
@@ -49,7 +62,20 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
           </Link>
         </p>
       )}
-      <MeView me={publicProfile(me, owner.settings)} mode="public" />
+      {!yours && (
+        <ProfileConnect
+          personId={owner.id}
+          name={me.name}
+          initial={state}
+          inCommon={inCommon}
+          actions={{ connect: connectTo, answer: answerConnection, withdraw: withdrawConnection, remove: removeFromNetwork, block: blockFromNetwork, message: messageConnection }}
+        />
+      )}
+      <MeView
+        me={publicProfile(me, { ...owner.settings, showGaps })}
+        mode="public"
+        gapsNote={connected && network.gapsVisibleTo === "connections" ? "Gaps shown because you are connected. They share them with connections only." : undefined}
+      />
     </div>
   );
 }

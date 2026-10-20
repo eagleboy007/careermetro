@@ -42,4 +42,6 @@ export type NetworkActions = {
   block: (id: string) => Promise<string | null>;
   search: (q: string) => Promise<{ people: NetworkRow[] } | { error: string }>;
   findMe: (on: boolean) => Promise<string | null>;
+  /** Sends a message; between connections the Inbox chat opens at once. */
+  message: (id: string, body: string) => Promise<string | null>;
 };

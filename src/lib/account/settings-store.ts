@@ -41,6 +41,7 @@ const settingsColumns = {
   showSkills: userSettings.showSkills,
   showGaps: userSettings.showGaps,
   showCertifications: userSettings.showCertifications,
+  gapsVisibleTo: userSettings.gapsVisibleTo,
   companiesCanFind: userSettings.companiesCanFind,
   rideReminder: userSettings.rideReminder,
   emailCompanyMessages: userSettings.emailCompanyMessages,
@@ -159,7 +160,7 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         await tx.insert(userPay).values({ userId, ...pay }).onConflictDoUpdate({ target: userPay.userId, set: pay });
       }
 
-      const { visibility, ...rest } = input.settings;
+      const { visibility, gapsVisibleTo: gapsTo, ...rest } = input.settings;
       // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
       // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
       // both see the switch off and record two consents, or both see it on and withdraw none.
@@ -172,10 +173,15 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
           .update(consents)
           .set({ withdrawnAt: now })
           .where(and(eq(consents.userId, userId), eq(consents.purpose, FIND_CONSENT_PURPOSE), isNull(consents.withdrawnAt)));
-      // Until Settings shows "Your gaps show to" (Network part 2), turning "Your gaps" on or off here sets it the old way:
-      // on is everyone who can open the profile, off is nobody. Left alone, it keeps its value (a new user's: connections).
+      // "Your gaps show to" decides, and the old show_gaps switch follows it (on only for everyone). A save without it
+      // (a page from before this choice) reads the switch the old way: on is everyone, off is nobody, unchanged keeps it.
       const gapsChanged = rest.showGaps !== (was?.showGaps ?? DEFAULT_SETTINGS.showGaps);
-      const row = { profileVisibility: visibility, ...rest, ...(gapsChanged ? { gapsVisibleTo: rest.showGaps ? ("profile" as const) : ("nobody" as const) } : {}), updatedAt: now };
+      const gaps = gapsTo
+        ? { gapsVisibleTo: gapsTo, showGaps: gapsTo === "profile" }
+        : gapsChanged
+          ? { gapsVisibleTo: rest.showGaps ? ("profile" as const) : ("nobody" as const) }
+          : {};
+      const row = { profileVisibility: visibility, ...rest, ...gaps, updatedAt: now };
       await tx.insert(userSettings).values({ userId, ...row }).onConflictDoUpdate({ target: userSettings.userId, set: row });
       return { ok: true } as const;
     });
@@ -235,8 +241,7 @@ export async function clearExpiredUsernameRedirects(db: Db = getDb(), now = new 
 
 /**
  * Whether a signed-in viewer may see the owner's profile: always their own; never when the owner chose Only you or
- * blocked them; for People on your line, only when both aim at the same role; for Your connections, only a connection
- * (FR-49).
+ * blocked them; always a connection otherwise (FR-49); for People on your line, also anyone aiming at the same role.
  */
 export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings">, viewerId: string, db: Db = getDb()): Promise<boolean> {
   if (owner.id === viewerId) return true;
@@ -249,7 +254,9 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
     .limit(1);
   if (blocked) return false;
   if (owner.settings.visibility === "signed_in") return true;
-  if (owner.settings.visibility === "connections") return areConnected(owner.id, viewerId, db);
+  // A connection opens the profile under every choice but Only you (handoff 12j, "Who sees what").
+  if (await areConnected(owner.id, viewerId, db)) return true;
+  if (owner.settings.visibility === "connections") return false;
   const [theirs, mine] = await Promise.all([currentAnalysis(owner.id, db), currentAnalysis(viewerId, db)]);
   return !!theirs && !!mine && theirs.result.roleSlug === mine.result.roleSlug;
 }
