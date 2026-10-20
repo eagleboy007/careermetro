@@ -2,7 +2,8 @@
 # Vercel's "Ignored Build Step" (vercel.json ignoreCommand): exit 0 skips the build, anything else builds.
 # To stay inside Vercel's daily deployment cap, only production (main) and staging build: work is checked locally
 # before it is pushed, and staging shows it online after the merge (docs/staging.md). Of those, builds whose changes
-# since the branch's last deployment touch only docs, Markdown, eval fixtures or workflows are skipped too.
+# since the branch's last deployment touch only docs, Markdown, eval fixtures, e2e or smoke scripts or workflows
+# are skipped too. vercel.json's git.deploymentEnabled stops the usual working branches from creating a deployment at all.
 set -u
 if [ "${VERCEL_ENV:-}" = "preview" ] && [ "${VERCEL_GIT_COMMIT_REF:-}" != "staging" ]; then
   # A pull request or other branch: no preview build.
@@ -18,4 +19,4 @@ elif [ "${VERCEL_GIT_COMMIT_REF:-}" = "staging" ]; then
 else
   base="HEAD^"
 fi
-git diff --quiet "$base" HEAD -- . ':(exclude)docs' ':(exclude,glob)*.md' ':(exclude)fixtures/evals' ':(exclude).github'
+git diff --quiet "$base" HEAD -- . ':(exclude)docs' ':(exclude,glob)*.md' ':(exclude)fixtures/evals' ':(exclude)e2e' ':(exclude)scripts/smoke' ':(exclude).github'

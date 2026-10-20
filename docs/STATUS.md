@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (staging dry run: export check).
+Last updated: 2026-10-20 (staging dry run: export check; fewer Vercel deployments)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -49,7 +49,8 @@ Last updated: 2026-10-20 (staging dry run: export check).
 
 ## In progress
 
-- Staging dry run, first run (2026-10-20): every step passed except 6.1, where the browser download of the data file timed out behind Deployment Protection; 6.1 now fetches `/api/account/export` with the page's cookies and headers and checks the link's target (the click itself stays covered by the e2e walk's `smoke 6`).
+- Staging dry run, first run (2026-10-20): every step passed except 6.1, where the browser download of the data file timed out behind Deployment Protection; 6.1 now fetches `/api/account/export` with the page's cookies and headers and checks the link's target (the click itself stays covered by the e2e walk's `smoke 6`). The second run from the fix branch passed every step.
+- Fewer Vercel deployments: `git.deploymentEnabled` in vercel.json turns off deployments for claude/, feature/, fix/, dependabot/ and data/ branches; staging.yml skips moving staging when a merge only touches docs, eval fixtures, e2e or smoke scripts or workflows; vercel-ignore.sh skips the same list.
 
 ## Next up
 
