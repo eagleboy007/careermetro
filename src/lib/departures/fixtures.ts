@@ -2,7 +2,8 @@ import { jobPost, type JobPost, type JobPostInput } from "@/lib/schemas";
 
 /*
  * Synthetic Departures for the design page and the preview: Priya's Data Analyst line (goals in order: SQL window
- * functions, Power BI, Python with pandas, Data storytelling). Companies are made up.
+ * functions, Power BI, Python with pandas, Data storytelling). Companies are made up. The analyst roles name the Data
+ * Analyst bank for their interview prep; the MIS, trainer and freelance roles have no bank role yet.
  */
 const job = (j: JobPostInput): JobPost => jobPost.parse(j);
 
@@ -22,6 +23,7 @@ export const exampleJobs: JobPost[] = [
   job({
     id: "j2",
     role: "Junior data analyst",
+    roleSlug: "data-analyst",
     company: "Kavach Retail Labs",
     city: "Pune",
     experience: "0 to 3 years",
@@ -37,6 +39,7 @@ export const exampleJobs: JobPost[] = [
   job({
     id: "j3",
     role: "Reporting analyst",
+    roleSlug: "data-analyst",
     company: "Indus Health Systems",
     city: "Remote",
     experience: "1 to 3 years",
@@ -52,6 +55,7 @@ export const exampleJobs: JobPost[] = [
   job({
     id: "j4",
     role: "Data analyst",
+    roleSlug: "data-analyst",
     company: "Nimbus Retail Tech",
     city: "Bengaluru",
     experience: "2 to 4 years",
@@ -68,6 +72,7 @@ export const exampleJobs: JobPost[] = [
   job({
     id: "j5",
     role: "Data analyst, supply chain",
+    roleSlug: "data-analyst",
     company: "Garuda Logistics",
     city: "Hyderabad",
     experience: "2 to 5 years",
@@ -126,6 +131,7 @@ export const exampleJobs: JobPost[] = [
   job({
     id: "j9",
     role: "Weekend data analyst",
+    roleSlug: "data-analyst",
     company: "Kavach Retail Labs",
     city: "Pune",
     workType: "Part time",

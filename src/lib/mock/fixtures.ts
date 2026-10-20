@@ -1,7 +1,7 @@
 import { mockQuestions, roleProfiles } from "@/content";
-import type { MockPageView, MockSessionResult, MockSessionView, TimedTestReview, TimedTestView } from "@/lib/schemas";
+import type { MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
 import { pickInterviewQuestions, resultOf, sessionViewOf } from "./interview";
-import { bankViewFor, choicePool, mockRoles, pickTestQuestions, reviewOf, roleFor, scorePicks, testViewOf } from "./rules";
+import { bankViewFor, choicePool, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf } from "./rules";
 
 /*
  * Example data for /mock with no sign-in, and for /design: the real bank for a role, a running test and its review.
@@ -11,6 +11,10 @@ import { bankViewFor, choicePool, mockRoles, pickTestQuestions, reviewOf, roleFo
 const byId = new Map(mockQuestions.map((q) => [q.id, q]));
 const STARTED = new Date("2026-10-20T05:30:00Z");
 const EXAMPLE_ID = "00000000-0000-4000-8000-000000000012";
+
+/** Interview prep for example Departures roles (for /design), Free or Elite, from the real bank. */
+export const exampleDeparturesPrep = (jobs: readonly { id: string; roleSlug: string | null }[], elite: boolean): Record<string, RolePrepView | null> =>
+  prepForJobs(jobs, mockQuestions, roleProfiles, elite);
 
 /** /mock with example data: the bank for the role asked for (Data Analyst by default), Free or Elite, with a running test or round. */
 export function exampleMockPage(askedRole: string | null, elite: boolean, test: TimedTestView | null = null, interview: MockSessionView | null = null): MockPageView {

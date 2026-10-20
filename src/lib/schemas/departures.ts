@@ -31,6 +31,8 @@ export const jobPost = z.object({
   destination: z.boolean().default(false),
   /** One plain sentence on how far away it is. */
   why: z.string().max(240),
+  /** The library role the post is for, for its interview prep (FR-50). Null when the bank has no such role yet. */
+  roleSlug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).max(80).nullable().default(null),
   /** The posting on the company's own site. Null in example data. Express apply is only for jobs posted on CareerMetro. */
   applyUrl: z.url({ protocol: /^https$/ }).nullable().default(null),
 });

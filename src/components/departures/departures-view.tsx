@@ -1,12 +1,14 @@
 "use client";
 
-import { ArrowRight, Bookmark, Clock, ExternalLink, Search, ShieldCheck, Target } from "lucide-react";
+import { ArrowRight, Bookmark, CircleHelp, Clock, ExternalLink, FileUp, Lock, Play, Search, ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
+import { JobPostingForm } from "@/components/gaps/job-posting-form";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
-import type { JobPost } from "@/lib/schemas";
+import type { JobPost, RolePrepView } from "@/lib/schemas";
 import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
@@ -19,7 +21,10 @@ const primary = `${btn} bg-accent text-on-accent hover:opacity-90`;
 /**
  * Departures (handoff section 8): roles with readiness in words, search and filters, the person's Saved and Applied
  * lists, and a detail panel for the role they pick. `hasResume` false hides fit until there is a resume; `noFit`
- * hides it with its own reason (a signed-in person, while the roles are still examples).
+ * hides it with its own reason (a signed-in person, while the roles are still examples). `resumeId` is the person's
+ * latest resume, which "Saw a role somewhere else?" checks a pasted post against; null links to the upload instead.
+ * `prep` is each role's interview prep, locked on the server; a role with none says it is coming. `demo` skips the
+ * network call of the paste box (for /design).
  */
 export function DeparturesView({
   jobs,
@@ -27,12 +32,18 @@ export function DeparturesView({
   initialSaved = [],
   initialApplied = [],
   noFit = null,
+  resumeId = null,
+  prep = {},
+  demo = false,
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
   noFit?: string | null;
   initialSaved?: string[];
   initialApplied?: [string, number][];
+  resumeId?: string | null;
+  prep?: Record<string, RolePrepView | null>;
+  demo?: boolean;
 }) {
   const [filters, setFilters] = useState<DepartureFilters>(NO_FILTERS);
   const [saved, setSaved] = useState(() => new Set(initialSaved));
@@ -140,7 +151,7 @@ export function DeparturesView({
           </p>
         )}
 
-        {fit && <PasteBox />}
+        <PasteBox resumeId={resumeId} demo={demo} />
         <p role="status" className="sr-only">
           {said}
         </p>
@@ -158,6 +169,7 @@ export function DeparturesView({
             fit={fit}
             noFit={noFit ?? (hasResume ? null : NO_RESUME)}
             stage={applied.get(job.id) ?? 0}
+            prep={prep[job.id] ?? null}
             onStage={(s) => {
               setStage(job.id, s);
               setSaid(s === 0 ? "No longer marked as applied." : s === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[s - 1]}.`);
@@ -283,12 +295,14 @@ function JobDetail({
   fit,
   noFit,
   stage,
+  prep,
   onStage,
 }: {
   job: JobPost;
   fit: boolean;
   noFit: string | null;
   stage: number;
+  prep: RolePrepView | null;
   onStage: (stage: number) => void;
 }) {
   const site = "Apply on company site";
@@ -416,7 +430,7 @@ function JobDetail({
         </>
       )}
 
-      {fit && <Soon>Interview prep for this role</Soon>}
+      {prep ? <RolePrep prep={prep} /> : <Soon>Interview prep for this role</Soon>}
       <Note Icon={Clock}>
         Posted {job.posted}
         {job.applyUrl ? " on the company's public job board." : "."}
@@ -425,27 +439,91 @@ function JobDetail({
   );
 }
 
-function PasteBox() {
+const ELITE_LOCK_NOTE = "One question free. The full bank, what a strong answer covers, and mock rounds come with Elite.";
+
+/**
+ * "Interview prep for this role" (handoff 12l, prototype v44): five of the role's bank questions. On Free only the
+ * first is open; the other four are ones the bank opens only on Elite, and the server sends no text for them, so they
+ * show as blurred lines. Elite violet marks Elite
+ * only.
+ */
+function RolePrep({ prep }: { prep: RolePrepView }) {
+  const headingId = useId();
+  const locked = prep.questions.some((q) => !q.open);
   return (
-    <section aria-label="Paste a job post" className="mt-1.5 flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface p-[18px]">
+    <section aria-labelledby={headingId} className="flex flex-col gap-2.5 rounded-[16px] border border-line p-3.5">
+      <div className="flex items-center gap-2">
+        <CircleHelp size={16} {...ICON} className="shrink-0 text-muted" />
+        <h4 id={headingId} className="text-[0.92rem] font-semibold">
+          Interview prep for this role
+        </h4>
+        <span className="rounded-full bg-elite-soft px-[7px] py-0.5 font-mono text-[0.64rem] font-medium uppercase tracking-[0.06em] text-elite">Elite</span>
+      </div>
+      <ol className="flex list-decimal flex-col gap-2 pl-[18px] text-[0.84rem]">
+        {prep.questions.map((q) =>
+          q.open ? (
+            <li key={q.id} data-prep-question="open">
+              {q.question}
+            </li>
+          ) : (
+            <li key={q.id} data-prep-question="locked" aria-hidden="true" className="text-muted">
+              <span className="block h-3.5 w-full rounded-sm bg-surface-2 blur-[2px]" />
+            </li>
+          ),
+        )}
+      </ol>
+      <Link
+        href={`/mock?role=${encodeURIComponent(prep.roleSlug)}`}
+        className={`${btn} self-start border border-line-strong px-[11px] py-1.5 text-[0.8rem] text-ink hover:bg-surface-2`}
+      >
+        <Play size={16} {...ICON} />
+        Practice a mock round
+      </Link>
+      {locked && <Note Icon={Lock}>{ELITE_LOCK_NOTE}</Note>}
+    </section>
+  );
+}
+
+/**
+ * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
+ * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
+ * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
+ * (the signed-out example and /design) checks the fields and saves nothing.
+ */
+function PasteBox({ resumeId, demo }: { resumeId: string | null; demo: boolean }) {
+  const router = useRouter();
+  const [opening, startOpening] = useTransition();
+  return (
+    <section aria-label="Paste a job post" className="mt-1.5 flex flex-col gap-2.5">
       <div className="flex flex-wrap items-baseline gap-2.5">
         <h3 className="text-[1.05rem] font-semibold">Saw a role somewhere else?</h3>
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">paste the job post</span>
       </div>
-      <textarea
-        rows={3}
-        disabled
-        aria-label="Job post"
-        placeholder="Paste the full job description here. We compare it with your resume and show the gaps for this one role."
-        className="w-full resize-y rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink disabled:cursor-not-allowed"
-      />
-      <div className="flex flex-wrap items-center gap-2.5">
-        <button type="button" disabled className={`${primary} cursor-not-allowed px-[11px] py-1.5 text-[0.8rem] opacity-60`}>
-          <Target size={17} {...ICON} />
-          Check my gaps · soon
-        </button>
-        <span className="text-[0.78rem] text-muted">The post is saved to your Departures; it is never shared.</span>
-      </div>
+      {resumeId ? (
+        <>
+          <p className="text-[0.84rem] text-muted">
+            Paste the full job description. We compare it with your resume and show the gaps for this one role. We keep the skills it asks for, never the
+            post itself, and nothing is shared.
+          </p>
+          <JobPostingForm
+            resumeId={resumeId}
+            roleSlug={null}
+            submitLabel="Check my gaps"
+            busy={opening}
+            demo={demo}
+            doneMessage={() => (demo ? "This is an example, so nothing was checked or saved. Signed in, your gaps for this job open here." : "Checked. Opening your gaps for this job…")}
+            onSaved={({ id }) => startOpening(() => router.push(`/resume/${resumeId}/job/${id}`))}
+          />
+        </>
+      ) : (
+        <div className="flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface p-[18px]">
+          <p className="text-[0.88rem] text-muted">Upload your resume first. Then paste a job post here to see the gaps for that one role.</p>
+          <Link href="/start" className={`${primary} self-start px-[11px] py-1.5 text-[0.8rem]`}>
+            <FileUp size={17} {...ICON} />
+            Upload your resume
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
