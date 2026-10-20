@@ -6,7 +6,8 @@ Development 4, 2026-10-20. Source: handoff section 6 "Job search switch and noti
 
 - **One switch, "Looking for a job"**, shown in three places: the Departures header, the Arrivals header, and Me's "Who sees what" rail. Turning it on shows the toast "Job search is on. Departures and Arrivals are back." Turning it off shows "Job search is off. Your rides and map keep going."
 - **When search is off**:
-  - Departures and Arrivals each show the prototype card: "Job search is off. Departures and Arrivals are paused: no job alerts, no Express apply, and companies can't find you. Your daily rides and your map keep going." with a Turn on job search button.
+  - Departures and Arrivals each show the prototype card, without "no job alerts" (there are none yet): "Job search is off. Departures and Arrivals are paused: no Express apply, and companies can't find you. Your daily rides and your map keep going." with a Turn on job search button.
+  - Arrivals still lists every live interview invitation (waiting for an answer, or accepted and not yet past) with Respond and Withdraw, so an invitation is never missed (review, 2026-10-20).
   - Today hides the Departures board and shows the "Job search is off" card in its place.
   - Express apply is refused on the server.
   - The person is left out of company search (find-store), even if "Let companies find me" is on.
@@ -47,7 +48,7 @@ Never logged, never in analytics, never on a profile or sent to a company. Downl
 ## Not in this PR
 
 - "Show my pitstop on the map" (from the Me rail in the prototype) needs rider counts. It stays a disabled switch labelled "Soon".
-- Job alerts don't exist yet (there is no email sender), so "no job alerts" is only copy for now.
+- Job alerts don't exist yet (there is no email sender), so the off card leaves "no job alerts" out until they do.
 - "Search stays open after an offer is accepted, until the joining date" waits for offers, which don't exist yet.
 
 ## Tests

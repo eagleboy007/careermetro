@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import type { MyApplicationView, MyInterviewView } from "@/lib/corporate/types";
 import { CAN_JOIN } from "@/lib/schemas/constants";
-import { addDays, canJoinFrom, daysBetween, jobSearchStatus, jobSearchToast, noticeCountdown, noticeDayText } from "./rules";
+import { addDays, canJoinFrom, daysBetween, jobSearchStatus, jobSearchToast, liveInvitations, noticeCountdown, noticeDayText } from "./rules";
 
 describe("job search rules", () => {
   it("counts calendar days across months and years", () => {
@@ -42,5 +43,20 @@ describe("job search rules", () => {
     expect(jobSearchStatus(false, null)).toBeNull();
     expect(jobSearchToast(true)).toBe("Job search is on. Departures and Arrivals are back.");
     expect(jobSearchToast(false)).toBe("Job search is off. Your rides and map keep going.");
+  });
+
+  it("keeps only applications with an interview to answer or still to come while search is off", () => {
+    const iv = (status: MyInterviewView["status"], day: string, canRespond = false) =>
+      ({ id: `${status}-${day}`, round: "team", day, when: "", range: "", minutes: 30, status, canRespond, phoneShared: false }) as MyInterviewView;
+    const app = (id: string, interviews: MyInterviewView[], withdrawn = false) => ({ id, withdrawn, interviews }) as unknown as MyApplicationView;
+    const apps = [
+      app("ask", [iv("proposed", "2026-10-25", true)]),
+      app("stale-ask", [iv("proposed", "2026-10-25", false)]),
+      app("today", [iv("accepted", "2026-10-20")]),
+      app("past", [iv("accepted", "2026-10-19"), iv("done", "2026-10-10")]),
+      app("gone", [iv("proposed", "2026-10-25", true)], true),
+      app("none", []),
+    ];
+    expect(liveInvitations(apps, "2026-10-20").map((a) => a.id)).toEqual(["ask", "today"]);
   });
 });

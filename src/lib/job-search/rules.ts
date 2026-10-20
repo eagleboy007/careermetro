@@ -1,3 +1,4 @@
+import type { MyApplicationView } from "@/lib/corporate/types";
 import { CAN_JOIN, type NoticeDays } from "@/lib/schemas/constants";
 
 /*
@@ -66,3 +67,12 @@ export function suggestedCanJoin(view: { noticeDays: NoticeDays | null; resigned
   if (!view.noticeDays || !view.resignedOn) return null;
   return canJoinFrom(noticeCountdown(view.resignedOn, view.noticeDays, today).joinFrom, today);
 }
+
+/**
+ * The applications Arrivals keeps while job search is off, so an invitation is never missed: not withdrawn, with an
+ * interview still waiting for the person's answer, or accepted and not yet past (today in India counts).
+ */
+export const liveInvitations = (applications: MyApplicationView[], today: string): MyApplicationView[] =>
+  applications.filter(
+    (a) => !a.withdrawn && a.interviews.some((i) => (i.status === "proposed" && i.canRespond) || (i.status === "accepted" && i.day >= today)),
+  );
