@@ -6,7 +6,7 @@ This page holds no key values. Keys live only in Vercel, Supabase, GitHub and th
 
 **Where to look when a step fails**
 - **Vercel logs:** Vercel > careermetro > Logs, filter Production, level Error, the last 15 minutes. App lines are JSON with an `event` name, such as `resume_upload_failed` or `health_secrets_missing`. They never hold names, emails or resume text.
-- **Supabase auth logs:** Supabase > the production project (Mumbai) > Authentication > Logs. Sign-in code problems show here, not in Vercel: the app doesn't log why Supabase refused a code.
+- **Supabase auth logs:** Supabase > the production project (Mumbai) > Authentication > Logs. Sign-in code problems show here in full. Vercel logs show `auth_email_code_send_refused` or `auth_email_code_verify_refused` with Supabase's error code and status only (no email, no code).
 - **Supabase tables:** Supabase > Table Editor, read only. Look at row counts and timestamps only. Never copy rows out.
 - **Health:** `https://careermetro.vercel.app/api/health`, which needs no secret.
 
@@ -63,7 +63,7 @@ Use an inbox you can open now, never a real candidate's. Name the account **Priy
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
 | 2.1 | Open `https://careermetro.vercel.app/sign-in` | "Sign in", an Email field and **Email me a code**. "Continue with Google" shows only if `GOOGLE_SIGNIN=1` | 404: `TODAY_PREVIEW=1` is missing. "Sign-in isn't switched on yet.": the two `NEXT_PUBLIC_SUPABASE_*` settings are missing, or were added without a redeploy |
-| 2.2 | Type the email and press **Email me a code** | "We sent a code to <email>. It works for 1 hour." and a Code field | "We couldn't send a code just now": Supabase refused it (Supabase auth logs: rate limit, SMTP error). "Too many tries": the app's limit (5 codes an hour for one email, 20 an hour from one network) |
+| 2.2 | Type the email and press **Email me a code** | "We sent a code to <email>. It works for 1 hour." and a Code field | "We couldn't send a code just now": Supabase refused it (Vercel log `auth_email_code_send_refused` gives its code; Supabase auth logs: rate limit, SMTP error). "Too many tries": the app's limit (5 codes an hour for one email, 20 an hour from one network) |
 | 2.3 | Open the inbox | Within a minute, from CareerMetro `no-reply@careermetro.com`, an email with a 6-digit code | Nothing after 2 minutes: check spam, then Supabase auth logs and Resend > Emails. A link but no code: the template lacks `{{ .Token }}`. Sender `noreply@mail.app.supabase.io`: Supabase SMTP isn't pointed at Resend yet |
 | 2.4 | Type the code and press **Sign in** | A new address goes to "Create your account" ("Signed in as <email>. One last step."). A returning one goes straight to Today | "That code didn't work": an older code was used, or it expired. Press **Send a new code** and use only the newest email |
 | 2.5 | Enter the name **Priya Sharma**, tick "I am 18 or older and agree to the terms and privacy policy.", continue | Today in the No resume state: the role chips and the "Drop your resume here" box | Vercel logs for an error at that minute. The `users` table should have one new row |
