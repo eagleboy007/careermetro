@@ -102,10 +102,10 @@ export async function departuresBoard(
       .orderBy(desc(jobSaves.updatedAt), asc(jobSaves.jobPostId))
       .limit(ownMax);
   type OwnRow = Awaited<ReturnType<typeof ownOf>>[number];
-  const ownRows = async (id: string): Promise<OwnRow[]> => {
+  // Each list on its own, so a saved row past the Applied cap (or the other way) doesn't slip into the other list.
+  const ownRows = async (id: string): Promise<{ saved: OwnRow[]; applied: OwnRow[] }> => {
     const [saved, applied] = await Promise.all([ownOf(id, "saved"), ownOf(id, "applied")]);
-    const seen = new Set(saved.map((r) => r.id));
-    return [...saved, ...applied.filter((r) => !seen.has(r.id))];
+    return { saved, applied };
   };
   const [open, own, updatedAt] = await Promise.all([
     db
@@ -114,15 +114,20 @@ export async function departuresBoard(
       .where(and(isNull(jobPosts.closedAt), ofRole))
       .orderBy(desc(sql`coalesce(${jobPosts.postedAt}, ${jobPosts.firstSeenAt})`), asc(jobPosts.id))
       .limit(limit),
-    userId ? ownRows(userId) : Promise.resolve<OwnRow[]>([]),
+    userId ? ownRows(userId) : Promise.resolve({ saved: [] as OwnRow[], applied: [] as OwnRow[] }),
     lastFeedRun(db),
   ]);
   const ids = new Set(open.map((p) => p.id));
-  const posts: StoredPost[] = [...open, ...own.filter((r) => !ids.has(r.id))];
+  const posts: StoredPost[] = [...open];
+  for (const r of [...own.saved, ...own.applied]) {
+    if (ids.has(r.id)) continue;
+    ids.add(r.id);
+    posts.push(r);
+  }
   return {
     posts,
-    saved: own.filter((r) => r.savedAt !== null).map((r) => r.id),
-    applied: own.filter((r) => r.stage !== null).map((r) => [r.id, r.stage!] as [string, number]),
+    saved: own.saved.map((r) => r.id),
+    applied: own.applied.map((r) => [r.id, r.stage!] as [string, number]),
     updatedAt,
   };
 }
