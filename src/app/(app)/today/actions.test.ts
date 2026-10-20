@@ -7,6 +7,7 @@ const refresh = vi.fn();
 const log = vi.fn();
 const credly = vi.fn();
 const answer = vi.fn();
+const track = vi.fn();
 vi.mock("server-only", () => ({}));
 vi.mock("next/cache", () => ({ refresh: () => refresh() }));
 vi.mock("@/lib/auth/server", () => ({ currentAccount: () => account() }));
@@ -14,10 +15,14 @@ vi.mock("@/lib/goals/store", () => ({ submitCertificate: (...a: unknown[]) => su
 vi.mock("@/lib/shared-limit", () => ({ LIMITS: { certificateTriesPerUser: {}, signalAnswersPerUserDay: {} }, takeShared: () => take() }));
 vi.mock("@/lib/account/store", () => ({ setWeeklyHours: vi.fn() }));
 vi.mock("@/lib/ride/store", () => ({ tickTask: vi.fn(), answerSignal: (...a: unknown[]) => answer(...a) }));
+vi.mock("@/lib/tracks/store", () => ({
+  setTrack: (...a: unknown[]) => track(...a),
+  TRACK_MESSAGES: { invalid: "That didn't work. Please refresh the page and try again.", limit: "That's as many track changes as we allow in a day. Try again tomorrow." },
+}));
 vi.mock("@/lib/proofs/credly-store", () => ({ checkCertificateWithCredly: (...a: unknown[]) => credly(...a) }));
 vi.mock("@/lib/log", () => ({ logEvent: (...a: unknown[]) => log(...a), errorFields: () => ({}) }));
 
-const { addCertificate, answerSignalCheck } = await import("./actions");
+const { addCertificate, answerSignalCheck, chooseTrack } = await import("./actions");
 
 const good = {
   goalId: "7d1c2f9e-3a4b-4c5d-8e6f-0a1b2c3d4e5f",
@@ -143,5 +148,37 @@ describe("answerSignalCheck", () => {
     expect(await answerSignalCheck("sql-mc-1", "Z")).toEqual({ ok: false, reason: "invalid" });
     expect(refresh).toHaveBeenCalledTimes(1);
     expect(log).not.toHaveBeenCalled();
+  });
+});
+
+describe("chooseTrack", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    account.mockResolvedValue({ id: "u1" });
+  });
+
+  it("asks a signed-out person to sign in, and saves nothing", async () => {
+    account.mockResolvedValue(null);
+    expect(await chooseTrack("bi-reporting")).toBe("Please sign in again.");
+    expect(track).not.toHaveBeenCalled();
+  });
+
+  it("saves the person's own track and refreshes the page", async () => {
+    track.mockResolvedValue({ ok: true, trackId: "bi-reporting" });
+    expect(await chooseTrack("bi-reporting")).toBeNull();
+    expect(track).toHaveBeenCalledWith("u1", "bi-reporting");
+    expect(refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("says why when the store refuses, and refreshes nothing", async () => {
+    track.mockResolvedValue({ ok: false, error: "limit" });
+    expect(await chooseTrack(null)).toMatch(/as many track changes/);
+    expect(refresh).not.toHaveBeenCalled();
+  });
+
+  it("logs a failure by event name only", async () => {
+    track.mockRejectedValue(new Error("db down"));
+    expect(await chooseTrack("bi-reporting")).toBe("That didn't work. Please try again.");
+    expect(log).toHaveBeenCalledWith("error", "track_change_failed", {});
   });
 });

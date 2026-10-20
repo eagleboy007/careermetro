@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, ChevronRight, Lightbulb, Plus } from "lucide-react";
+import { ArrowRight, Check, Lightbulb, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
@@ -9,6 +9,7 @@ import { changeGoal } from "@/components/map/not-for-me";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { Goal, GoalStatus, GoalsSummary } from "@/lib/schemas";
+import { TrackChip, TrackPanel, type ChooseTrack } from "./track-picker";
 
 const LAMP: Record<GoalStatus, { index: number; className: string; glow: string; word: string }> = {
   missing: { index: 0, className: "bg-bad", glow: "shadow-[0_0_6px_var(--color-bad)]", word: "Missing" },
@@ -18,19 +19,23 @@ const LAMP: Record<GoalStatus, { index: number; className: string; glow: string;
 
 /**
  * Your goals: one goal per gap, with red, amber or green lamps. Tapping a goal shows its evidence and its pitstops.
- * On the first day only the goals show, as in the prototype.
+ * On the first day only the goals show, as in the prototype. The Track chip opens the Track picker when the role
+ * offers tracks here (docs/plans/tracks-plan.md); otherwise it is plain text.
  */
 export function GoalsCard({
   summary,
   mapHref,
   firstDay = false,
   demo = false,
+  onChooseTrack,
 }: {
   summary: GoalsSummary;
   mapHref?: string;
   firstDay?: boolean;
-  /** Example data (for /design): removing a goal saves nothing. */
+  /** Example data (for /design): removing a goal or switching track saves nothing. */
   demo?: boolean;
+  /** Saves a track picked on the Track picker. */
+  onChooseTrack?: ChooseTrack;
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
@@ -50,6 +55,23 @@ export function GoalsCard({
     setNote(words);
     startRefresh(() => router.refresh());
   };
+  const picker = summary.picker ?? null;
+  const [trackOpen, setTrackOpen] = useState(false);
+  // Each opening is a fresh panel, so a closed one forgets its preview.
+  const [trackOpenings, setTrackOpenings] = useState(0);
+  const chip = useRef<HTMLButtonElement>(null);
+  const trackPanelId = useId();
+  const closeTrack = () => {
+    setTrackOpen(false);
+    chip.current?.focus();
+  };
+  // A switch closes the picker with focus on the chip. The server action's refresh() brings the new goals, as for the
+  // other Today actions; the chip stays put meanwhile.
+  const switched = (name: string) => {
+    closeTrack();
+    setOpen(null);
+    setNote(`Track changed to ${name}. Your goals were worked out again from your resume.`);
+  };
   const more = summary.moreCount === 1 ? "1 more goal" : `${summary.moreCount} more goals`;
   return (
     <section
@@ -60,11 +82,18 @@ export function GoalsCard({
         <h3 ref={heading} tabIndex={-1} className="text-[1.08rem] font-semibold tracking-[-0.01em] focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           Your goals
         </h3>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[0.8rem]">
-          <span className="font-mono text-[0.62rem] uppercase tracking-[0.06em] text-muted">Track</span>
-          {summary.track}
-          <ChevronRight size={14} strokeWidth={1.75} aria-hidden="true" />
-        </span>
+        <TrackChip
+          name={summary.track}
+          picker={picker}
+          open={trackOpen}
+          panelId={trackPanelId}
+          onToggle={() => {
+            if (!trackOpen) setTrackOpenings((n) => n + 1);
+            setTrackOpen(!trackOpen);
+          }}
+          onEscape={closeTrack}
+          chipRef={chip}
+        />
         {mapHref ? (
           <Link href={mapHref} className="ml-auto inline-flex items-center gap-1 text-[0.82rem] font-semibold text-muted hover:text-ink">
             Open map
@@ -74,6 +103,9 @@ export function GoalsCard({
           <span className="ml-auto text-[0.82rem] font-semibold text-muted">Map · soon</span>
         )}
       </div>
+      {picker && (
+        <TrackPanel key={trackOpenings} id={trackPanelId} open={trackOpen} picker={picker} demo={demo} onChoose={onChooseTrack} onClose={closeTrack} onSwitched={switched} />
+      )}
       <ul className="flex flex-col gap-1.5">
         {summary.goals.map((g) => (
           <GoalRow

@@ -38,6 +38,7 @@ import { PageNotice } from "@/components/ui/page-notice";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
+import { TrackPanel } from "@/components/today/track-picker";
 import { AppShell } from "@/components/app/app-shell";
 import { NotificationsBell } from "@/components/app/notifications-bell";
 import { exampleNotifications } from "@/lib/notifications/fixtures";
@@ -157,11 +158,13 @@ import {
   exampleFirstTally,
   exampleFirstTasks,
   exampleGoals,
+  exampleGoalsWithTracks,
   exampleName,
   exampleOnYourLine,
   exampleRide,
   exampleSignalCheck,
   exampleRole as exampleTargetRole,
+  exampleTrackPicker,
   exampleWeek,
 } from "@/lib/today/fixtures";
 
@@ -474,6 +477,16 @@ export default function DesignPage() {
         <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>
         <div className="max-w-xl">
           <GoalsCard summary={exampleChoiceGoals} mapHref="/map" demo />
+        </div>
+        <p className="text-sm text-muted">
+          Your goals with the Track picker (docs/plans/tracks-plan.md): the chip opens it; each track shows its goals, and picking one previews it with Switch track. Draft tracks, local and preview only until reviewed; in production the chip stays plain text.
+        </p>
+        <div className="max-w-xl">
+          <GoalsCard summary={exampleGoalsWithTracks} mapHref="/map" demo />
+        </div>
+        <p className="text-sm text-muted">The Track panel on its own, open.</p>
+        <div className="max-w-xl">
+          <TrackPanel id="design-track-panel" open picker={exampleTrackPicker} demo />
         </div>
         <p className="text-sm text-muted">Add a certificate: opens from the prove pitstop. Only certificates that prove the goal are listed.</p>
         <div className="max-w-xl">

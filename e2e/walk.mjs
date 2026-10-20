@@ -651,6 +651,69 @@ await step("not for me: skip a goal on Today, bring it back from the Map", async
   await skipped.getByRole("button", { name: "Bring back" }).click();
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
 });
+// Tracks (docs/plans/tracks-plan.md, local and preview only until reviewed): the Track chip opens the picker, Cancel
+// puts focus back on the option, Switch track works the goals out again and keeps the choice after a reload, and
+// Escape closes it with focus on the chip. The track the person had is put back in `finally`, so later steps see the
+// same line.
+await step("tracks: the Track chip opens the picker and switching works the goals out again", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  const card = p.locator('section[aria-label="Your goals"]');
+  const chip = card.getByRole("button", { name: /^Track / });
+  const panel = card.locator("div[id]").filter({ hasText: "What kind of work do you want there?" });
+  const optionName = (o) => o.locator("b").innerText().then((t) => t.trim());
+  const choose = async (name) => {
+    if (!(await panel.isVisible())) await chip.click();
+    const option = panel.getByRole("button").filter({ has: p.locator("b").getByText(name, { exact: true }) });
+    if ((await option.getAttribute("aria-pressed")) === "true") return;
+    await option.click();
+    await panel.getByRole("button", { name: "Switch track" }).click();
+    await card.getByRole("button", { name: `Track ${name}`, exact: true }).waitFor({ timeout: 15000 });
+  };
+  await chip.click();
+  await panel.getByText("What kind of work do you want there? Your goals come from the track you pick.", { exact: false }).waitFor({ timeout: 5000 });
+  const original = await optionName(panel.getByRole("button", { pressed: true }));
+  const other = panel.getByRole("button", { pressed: false }).first();
+  const target = await optionName(other);
+  try {
+    if (!/ goals?(, \d+ met)?$/.test((await other.locator("small").innerText()).trim())) throw new Error("no goal count on a track");
+    await a11y("today-tracks-open");
+    // Picking previews the track and moves focus to Switch track; Cancel puts it back on the option.
+    await other.click();
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Switch track", null, { timeout: 5000 });
+    await panel.getByText(/Your goals become |Your resume and proof already cover/).waitFor({ timeout: 5000 });
+    await panel.getByRole("button", { name: "Cancel" }).click();
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-pressed") === "false" && document.activeElement?.textContent?.includes(n), target, { timeout: 5000 });
+    if (await panel.getByRole("button", { name: "Switch track" }).count()) throw new Error("preview still open after Cancel");
+    // Switch: the chip names the track, focus stays on it, and the choice is kept after a reload.
+    await choose(target);
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-label") === `Track ${n}`, target, { timeout: 15000 });
+    await settled();
+    await p.reload();
+    await settled();
+    await card.getByRole("button", { name: `Track ${target}`, exact: true }).waitFor({ timeout: 10000 });
+    await shot("today-tracks-switched");
+    await a11y("today-tracks-switched");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await chip.click();
+    await a11y("today-tracks-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+    // Escape closes the picker and puts focus on the chip.
+    if (!(await panel.isVisible())) await chip.click();
+    await panel.getByRole("button").first().focus();
+    await p.keyboard.press("Escape");
+    await panel.waitFor({ state: "hidden", timeout: 5000 });
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-label") === `Track ${n}`, target, { timeout: 5000 });
+  } finally {
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/today");
+    await settled();
+    await choose(original);
+    await settled();
+  }
+});
 for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/network", "/library", "/builder", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);

@@ -15,19 +15,22 @@ import { certificatesFor } from "@/lib/proofs/eligible";
 import { choiceName, lineGoals } from "@/lib/ride/store";
 import { skillGroupMembers } from "@/content";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
+import { trackRank } from "@/lib/tracks/apply";
+import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { lifeFromProfile } from "./life";
 import { otherLines } from "./other-lines";
 
 export { otherLines };
 
 /**
- * The signed-in person's line, from their current gap analysis, their goals and newest path. One goal per gap, in
- * the order of the person's goals, which stays put across new resumes. The person's "Your choice" goals come apart in
+ * The signed-in person's line, from their current gap analysis as their track sees it (docs/plans/tracks-plan.md),
+ * their goals and newest path. One goal per gap, in the track's order and then the order of the person's goals, which
+ * stays put across new resumes. The person's "Your choice" goals come apart in
  * `choiceGoals`: never gaps, never on the line, never moving the train. A goal is proved only by accepted proof. Null
  * before there is a current analysis (the No resume map).
  */
 export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = getDb(), now = new Date()): Promise<MapLine | null> {
-  const analysis = await currentAnalysis(userId, db);
+  const analysis = await trackedCurrentAnalysis(userId, db);
   if (!analysis) return null;
   const { result } = analysis;
   const userGoals = await syncGoals(userId, analysis, db);
@@ -67,8 +70,11 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   // A goal swapped to another skill of its group ("Not for me", FR-48) learns that skill from the catalog.
   const swapped = (own: (typeof userGoals)[number] | undefined) => (own ? swappedSkill(own, skillGroupMembers) : null);
   const swaps = await resourcesForSkills([...new Set(result.gaps.flatMap((g) => swapped(goalBySkill.get(g.skillId)) ?? []))], db);
+  const rank = trackRank(analysis.track);
   const ordered = [...result.gaps].sort(
-    (x, y) => (goalBySkill.get(x.skillId)?.position ?? Number.MAX_SAFE_INTEGER) - (goalBySkill.get(y.skillId)?.position ?? Number.MAX_SAFE_INTEGER),
+    (x, y) =>
+      rank(x.skillId) - rank(y.skillId) ||
+      (goalBySkill.get(x.skillId)?.position ?? Number.MAX_SAFE_INTEGER) - (goalBySkill.get(y.skillId)?.position ?? Number.MAX_SAFE_INTEGER),
   );
   const resourceItem = (r: { title: string; provider: string; kind: string; minutes: number }) => ({
     title: clip(r.title, 160),
@@ -137,7 +143,8 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
     resumeId: analysis.resumeId,
-    skillsFound: result.metSkillIds.length,
+    // What the resume shows against the whole role, as on the Gaps page; the track changes the line, not the reading.
+    skillsFound: analysis.base.metSkillIds.length,
     goals: gapGoals,
     choiceGoals,
     // Other lines cross at the line's gaps: Nearby lines first, as interchanges.

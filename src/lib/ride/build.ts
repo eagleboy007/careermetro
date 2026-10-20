@@ -1,4 +1,4 @@
-import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask } from "@/lib/schemas";
+import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask, type TrackPicker } from "@/lib/schemas";
 import { certificatesFor } from "@/lib/proofs/eligible";
 import { RIDE_PART_MINUTES, RIDE_SPLIT_OVER_MINUTES } from "@/lib/schemas/constants";
 import { clip } from "@/lib/text";
@@ -338,9 +338,10 @@ export const choiceEvidence = (company: string | null) =>
 /**
  * Your goals on Today, from the person's own line: the next goals not proved, each with its learn and prove pitstops
  * numbered as on the ride, the gap's explanation and the resume line it quotes. The goal the ride is on shows where
- * the person is. Tracks and suggested goals come later, so the track is the role.
+ * the person is. `role` is the chip's words: the person's track, or the role with none. `picker` is the Track picker,
+ * when the role offers tracks (docs/plans/tracks-plan.md). Suggested goals come later.
  */
-export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[] }): GoalsSummary {
+export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[]; picker?: TrackPicker | null }): GoalsSummary {
   const at = position(input);
   const gapBySkill = new Map(input.gaps.map((g) => [g.skillId, g]));
   const open = input.goals.filter((g) => !g.proved && !g.skipped);
@@ -391,6 +392,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
     moreNames: more.length <= 5 ? more.map((g) => clip(g.name, 80)) : [],
     suggestedGoal: null,
     metThisMonth: [],
+    ...(input.picker ? { picker: input.picker } : {}),
   });
 }
 

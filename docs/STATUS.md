@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (feed board cap raised).
+Last updated: 2026-10-20 (v44 tracks).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -54,6 +54,9 @@ Last updated: 2026-10-20 (feed board cap raised).
   - Only the 10 about-you questions have follow-ups so far, all `followUpsReviewed: false`, so production asks none. Part 2 writes them for the other 85 open questions; someone who works in the role must check them first (Project manager to arrange).
 - v44 fixes, settings columns (gap list items 31, 33, 36, branch `v44-settings-cols`, FR-55, `docs/plans/settings-columns-plan.md`): Settings > Privacy "Allow message requests from people who aren't connections" (on by default; off, `startDirect` refuses a non-connection's first message); Settings > Pay becomes "Pay and location" with Current city and "Open to work in" (up to 6, Remote first), which opens Departures on "Your places", goes with Express apply applications and shows in company search while the person is in it; the Inbox's "Usually free" grid (weekdays by the picker times, 30 saves a day) pre-ticks "Ask for times". Migration 0045, export version 31. Calendar connection stays W5.
 - v44 fixes, Departures (gap list items 41 and 43, branch `v44-departures`, no migration): "Saw a role somewhere else?" checks a pasted post against the person's latest resume through `/api/job-checks` (as "My role isn't listed") and opens `/resume/[id]/job/[checkId]`, or links to `/start` with no resume; its line now says only the skills are kept, never the post (the prototype's "saved to your Departures" isn't true). The role detail's "Interview prep for this role" (Elite label) shows five bank questions, the bank's first Free one open and four Elite-only ones sent with no text (`rolePrepFor`, eliteOn on the server), "Practice a mock round" and a lock note reworded from the prototype's (the bank has no model answers); the MIS, trainer and freelance example roles say it is coming.
+
+- v44 fixes, tracks (gap list item 11, branch `v44-tracks`, FR-56, `docs/plans/tracks-plan.md`, no migration): draft role tracks for 30 roles (`src/content/role-tracks.json`, all `reviewed: false`; review draft `dev/role-tracks-draft.md` in the project files), checked against the role profiles and the taxonomy at import. The Track chip on Your goals opens the picker; Switch track saves `trackId` on the person's current analysis and the person's line follows it (Today, the Map and Me's journey strip; Gaps, Match and Departures keep the whole role), worked out in code from the stored analysis.
+  - Production offers only reviewed tracks, so the chip stays plain text there until someone who works in each role checks the draft (Project manager to arrange).
 
 ## Next up
 

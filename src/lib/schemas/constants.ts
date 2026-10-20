@@ -682,3 +682,8 @@ export const FREE_DAY_LABELS: Record<FreeDay, string> = { mon: "Mon", tue: "Tue"
 export const USUALLY_FREE_MAX = FREE_DAYS.length * SLOT_TIMES.length;
 /** Usually free saves one person makes a day, each try counted. */
 export const AVAILABILITY_SAVES_PER_DAY = 30;
+
+/** Tracks a role can have on the Track picker (v44 gap list item 11, docs/plans/tracks-plan.md), not counting the whole role. */
+export const MAX_TRACKS_PER_ROLE = 5;
+/** Track switches one person makes a day, each try counted. */
+export const TRACK_CHANGES_PER_DAY = 20;

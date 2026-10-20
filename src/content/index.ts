@@ -7,6 +7,8 @@ import {
   proofTask,
   resource,
   roleProfile,
+  roleTrackProblems,
+  roleTracksFile,
   skillGroups,
   skill,
   type Certification,
@@ -16,6 +18,7 @@ import {
   type ProofTask,
   type Resource,
   type RoleProfile,
+  type RoleTracks,
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
@@ -24,6 +27,7 @@ import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
 import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
+import roleTracksJson from "./role-tracks.json";
 import skillsJson from "./skills.json";
 import androidDeveloper from "./roles/android-developer.json";
 import appsecEngineer from "./roles/appsec-engineer.json";
@@ -146,3 +150,16 @@ export const skillIdByTerm: ReadonlyMap<string, string> = new Map(
 export const skillGroupMembers: ReadonlyMap<string, string[]> = new Map(
   roleProfiles.flatMap((r) => skillGroups(r).map((g) => [g.id, g.skillIds] as const)),
 );
+
+/**
+ * Role tracks (v44 gap list item 11, docs/plans/tracks-plan.md): up to five kinds of work per role, each an edit of
+ * the role's own skill list. Hand-written by Development and `reviewed: false` until someone who works in the role
+ * checks them; production offers only reviewed ones (src/lib/tracks/apply.ts). Checked against the role profiles and
+ * the taxonomy at import, so a bad edit fails tests and the build. Never written by the model.
+ */
+export const roleTracks: RoleTracks[] = (() => {
+  const file = roleTracksFile.parse(roleTracksJson);
+  const problems = roleTrackProblems(file, roleProfiles, new Set(skills.map((s) => s.id)));
+  if (problems.length) throw new Error(`src/content/role-tracks.json: ${problems.join("; ")}`);
+  return file.roles;
+})();
