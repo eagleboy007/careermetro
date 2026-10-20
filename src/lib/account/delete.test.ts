@@ -68,6 +68,7 @@ describe.skipIf(!db)("account settings: names, download and delete (database)", 
     const data = await exportAccountData(id, db!);
     expect(data?.account.email).toMatch(/@example\.com$/);
     expect(data?.resumes).toHaveLength(1);
+    expect(data?.resumes[0].sample).toBe(false);
     expect(data?.resumes[0].profiles[0]).toMatchObject({ version: 1, confirmedByUser: true, data: { headline: "Analyst" } });
     expect(data?.rideDays).toEqual([{ day: "2026-10-01", tasks: ["t1"] }]);
     expect(data?.consents).toEqual([expect.objectContaining({ purpose: "upload" })]);

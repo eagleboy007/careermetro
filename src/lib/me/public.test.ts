@@ -53,6 +53,9 @@ describe("the public profile", () => {
     expect(out.stats.some((s) => s.label === "skills found")).toBe(false);
     expect(out.certifications.length).toBeLessThanOrEqual(me.certifications.filter((c) => !c.fromResume).length);
     expect(out.resumeSample).toBe(false);
+    // The sample's target role is not the person's aim (T112).
+    expect(me.aim).not.toBeNull();
+    expect(out.aim).toBeNull();
     expect(Object.keys(out).sort()).toEqual([...PUBLIC_KEYS].sort());
   });
 

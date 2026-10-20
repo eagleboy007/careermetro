@@ -5,7 +5,9 @@ import postgres from "postgres";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { roleProfiles } from "@/content";
 import * as schema from "@/db/schema";
-import type { Profile } from "@/lib/schemas";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
+import { profile as profileSchema, type Profile } from "@/lib/schemas";
+import sampleParsed from "../../../fixtures/sample-resume/priya-sharma.parsed.json";
 import { SHOWN_GAPS } from "./analysis";
 import type { ExplainClient } from "./explain";
 import { MATCHER_VERSION } from "./match";
@@ -73,6 +75,26 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const again = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     expect(again).toMatchObject({ ok: true, analysisId: first.analysisId });
     expect(create).toHaveBeenCalledTimes(1);
+  });
+
+  it("never calls the model or spends the budget for the sample resume's gaps, with checked-in words or the template (T113)", async () => {
+    const session = `gaps-sample-${Date.now()}-${n++}`;
+    const [resume] = await db!.insert(schema.resumes).values({ anonymousSessionId: session, mimeType: SAMPLE_MIME, sizeBytes: 10, status: "parsed" }).returning();
+    created.push(resume.id);
+    const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profileSchema.parse(sampleParsed), confirmedByUser: true }).returning();
+    const { client, create } = explainClient();
+    const analyst = roleProfiles.find((r) => r.slug === "data-analyst")!;
+    for (const r of [analyst, role]) {
+      const got = await getGapsForOwner(resume.id, { sessionId: session }, r, { db: db!, client, now: new Date("2026-10-20T00:00:00Z") });
+      if (!got.ok) throw new Error(got.reason);
+      expect(got.analysis.gaps.length).toBeGreaterThan(0);
+      expect(got.analysis.gaps.every((g) => !g.explanation.startsWith("Explained "))).toBe(true);
+      const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, got.analysisId));
+      expect(row.aiCallId).toBeNull();
+    }
+    expect(create).not.toHaveBeenCalled();
+    const calls = await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'profileId' = ${p.id}`);
+    expect(calls).toEqual([]);
   });
 
   it("links the analysis to the call that answered, after a retry", async () => {

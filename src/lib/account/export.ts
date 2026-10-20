@@ -19,6 +19,7 @@ import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
 import { exportNotifications } from "@/lib/notifications/store";
 import { exportPractice } from "@/lib/practice/store";
+import { isSampleResume } from "@/lib/resume/sample-mime";
 import { exportAvailability } from "./availability-store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -26,7 +27,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 31;
+export const EXPORT_VERSION = 32;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -186,8 +187,10 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     account,
     consents: consentRows,
     // Nested as the app uses them: resume, its profile versions, each version's gap analyses and their paths.
+    // sample: true (from version 32) marks the made-up sample resume ("Try a sample resume"), so it never reads as the person's (T114).
     resumes: resumeRows.map((r) => ({
       ...r,
+      sample: isSampleResume(r.mimeType),
       profiles: profileRows
         .filter((p) => p.resumeId === r.id)
         .map((p) => ({

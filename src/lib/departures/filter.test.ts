@@ -113,6 +113,20 @@ describe("an empty Departures list", () => {
     expect(departuresEmpty({ ...NO_FILTERS, tab: "applied" }, { ...counts, applied: 1 }).text).toBe("Nothing applied matches these filters.");
   });
 
+  it("offers Clear filters as well as every city when a search or type filter is on with your places (T110)", () => {
+    const places = { places: ["Pune"] };
+    expect(departuresEmpty({ ...NO_FILTERS, yourPlaces: true }, { ...counts, ...places })).toEqual({ kind: "places", text: "No roles in your places yet." });
+    for (const f of [{ query: "sql" }, { workType: "Part time" as const }, { boardingOnly: true }, { city: "Pune" }]) {
+      expect(departuresEmpty({ ...NO_FILTERS, yourPlaces: true, ...f }, { ...counts, ...places })).toEqual({
+        kind: "places",
+        text: "No roles in your places match these filters.",
+        clear: true,
+      });
+    }
+    // A blank search is no filter.
+    expect(departuresEmpty({ ...NO_FILTERS, yourPlaces: true, query: "  " }, { ...counts, ...places }).clear).toBeUndefined();
+  });
+
   it("never blames the filters when no role is open at all", () => {
     expect(kind({ yourPlaces: true, city: "Pune" }, { open: 0, places: ["Pune"] })).toBe("no_roles");
   });

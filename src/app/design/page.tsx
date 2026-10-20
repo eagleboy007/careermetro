@@ -38,7 +38,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { OFFLINE_NOTICE, PageNotice } from "@/components/ui/page-notice";
 import { ChoiceTag } from "@/components/ui/choice-tag";
-import { SampleResumeNote, SampleTag } from "@/components/ui/sample-tag";
+import { SampleLineNote, SampleResumeNote, SampleTag } from "@/components/ui/sample-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
 import { TrackPanel } from "@/components/today/track-picker";
@@ -518,6 +518,8 @@ export default function DesignPage() {
         <MetroMap line={exampleMapLine} life={exampleLifeLineUndatedInterests} initialMode="life" />
         <MetroMap line={exampleMapLine} life={exampleLifeLineNoInterests} initialMode="life" />
         <MetroMap line={null} />
+        <p className="text-sm text-muted">From the sample resume: the Sample tag sits beside the title on both lines.</p>
+        <MetroMap line={exampleMapLine} life={exampleLifeLine} sample />
         <p className="text-sm text-muted">With &quot;Your choice&quot; goals: off the line, listed under the key, each with its tag and Remove from my goals.</p>
         <MetroMap line={exampleChoiceMapLine} />
       </section>
@@ -1495,6 +1497,8 @@ export default function DesignPage() {
           <div className="flex items-center gap-2 text-sm">
             Sample resume <SampleTag />
           </div>
+          <p className="text-sm text-muted">On Today while the sample is the current resume; the Map&rsquo;s header (Role line and Life line) carries the tag too.</p>
+          <SampleLineNote />
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">

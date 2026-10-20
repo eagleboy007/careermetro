@@ -90,7 +90,8 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
   const out: MeProfile = {
     name: me.name,
     headline: me.headline,
-    aim: parts.showTargetRole ? me.aim : null,
+    // The sample's role is the sample's, not this person's aim (T112).
+    aim: parts.showTargetRole && !sample ? me.aim : null,
     stats: me.stats
       .filter((s) => !s.private && ((parts.showSkills && !sample) || s.label !== "skills found"))
       .map((s) => ({ value: s.value, label: s.label, private: false })),

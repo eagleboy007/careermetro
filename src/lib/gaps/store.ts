@@ -11,6 +11,7 @@ import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { EXPLAIN_MODEL, explainGaps, type ExplainClient } from "./explain";
+import { sampleExplanations } from "./sample-explanations";
 import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
 
 type Db = ReturnType<typeof getDb>;
@@ -117,7 +118,7 @@ async function analyse(
   const db = deps.db ?? getDb();
   const lockKey = `cm-gaps:${ownerKey(owner)}`;
 
-  type Next = { done: GapsForOwner } | { profileId: string; roleRowId: string | null; match: MatchResult; reservedId: string | null };
+  type Next = { done: GapsForOwner } | { profileId: string; roleRowId: string | null; match: MatchResult; reservedId: string | null; sample: boolean };
   const first = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx): Promise<Next> => {
     const resume = await getResumeForOwner(resumeId, owner, tx);
     if (!resume) return { done: { ok: false, reason: "not_found" } };
@@ -132,9 +133,10 @@ async function analyse(
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
     if (stored) return { done: stored };
-    // A role the person fully meets needs no words from the model, so it uses none of their explanations.
-    const reservedId = match.gaps.length > 0 ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
-    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId };
+    // A role the person fully meets needs no words from the model, so it uses none of their explanations. Nor does the
+    // sample resume (T113): it gets checked-in words or the template, never the model or the shared budget.
+    const reservedId = match.gaps.length > 0 && !resume.sample ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
+    return { profileId: resume.profileId, roleRowId: roleRow?.id ?? null, match, reservedId, sample: resume.sample };
   });
   if (first === "busy") return { ok: false, reason: "busy" };
   if ("done" in first) return first.done;
@@ -145,7 +147,7 @@ async function analyse(
     ? await runReserved(db, first.reservedId, () =>
         explainGaps(match, role.title, { profileId, roleSlug: role.slug }, deps.client),
       )
-    : { analysis: buildGapAnalysis(match, null), calls: [], callId: null };
+    : { analysis: buildGapAnalysis(match, first.sample ? sampleExplanations(match) : null), calls: [], callId: null };
   const callId = explained.callId;
 
   const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {

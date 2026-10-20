@@ -670,7 +670,7 @@ function EmptyList({
             </Link>
           </>
         )}
-        {empty.kind === "filtered" && (
+        {(empty.kind === "filtered" || empty.clear) && (
           <button type="button" className={quiet} onClick={onClear}>
             Clear filters
           </button>

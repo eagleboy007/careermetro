@@ -91,13 +91,13 @@ describe.skipIf(!db)("usually free store (database)", () => {
     expect((await saveUsuallyFree(me, ["fri 18:00"], { db: db!, now: new Date(now.getTime() + 25 * 3600_000) })).ok).toBe(true);
   });
 
-  it("is in Download your data (version 31), and goes with the account", async () => {
+  it("is in Download your data (version 32), and goes with the account", async () => {
     const me = await person();
     const never = await person();
     await saveUsuallyFree(me, ["mon 17:00", "mon 18:00"], { db: db!, now });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(31);
-    expect(data.exportVersion).toBe(31);
+    expect(EXPORT_VERSION).toBe(32);
+    expect(data.exportVersion).toBe(32);
     expect(data.availability).toEqual({ usuallyFree: ["mon 17:00", "mon 18:00"] });
     expect(await exportAvailability(never, db!)).toEqual({ usuallyFree: [] });
     await db!.delete(schema.users).where(eq(schema.users.id, me));

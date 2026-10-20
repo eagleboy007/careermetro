@@ -3,6 +3,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
+import { MATCHER_VERSION } from "@/lib/gaps/match";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import { DEFAULT_SETTINGS, settingsInput, type SettingsInput } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "./export";
@@ -237,6 +239,26 @@ describe.skipIf(!db)("account settings store (database)", () => {
     expect(await canViewProfile(open, b, db!)).toBe(true);
     // People on your line: neither has a target role here, so no.
     expect(await canViewProfile({ id: c, settings: { ...DEFAULT_SETTINGS, visibility: "line" } }, b, db!)).toBe(false);
+  });
+
+  it("never opens a profile on the line through the sample resume's target role (T112)", async () => {
+    /** A confirmed resume aiming at Data Analyst, the person's own or the sample. */
+    const aiming = async (userId: string, mimeType: string) => {
+      const [resume] = await db!.insert(schema.resumes).values({ userId, mimeType, sizeBytes: 1, status: "parsed" }).returning();
+      const [p] = await db!
+        .insert(schema.profiles)
+        .values({ resumeId: resume.id, version: 1, data: { headline: null, totalYearsExperience: null, roles: [], skills: [], education: [], certifications: [] }, confirmedByUser: true })
+        .returning();
+      const result = { roleSlug: "data-analyst", gaps: [], metSkillIds: [], niceToHave: [], readiness: { headline: "h", explanation: "e", estimatedHours: 1 } };
+      await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result, matcherVersion: MATCHER_VERSION });
+    };
+    const [own, other, tryer] = await Promise.all([makeUser("line-own"), makeUser("line-other"), makeUser("line-sample")]);
+    await Promise.all([aiming(own, "text/plain"), aiming(other, "text/plain"), aiming(tryer, SAMPLE_MIME)]);
+    const line = (id: string) => ({ id, settings: { ...DEFAULT_SETTINGS, visibility: "line" as const } });
+    expect(await canViewProfile(line(own), other, db!)).toBe(true);
+    // The sample's role aims at nothing, whichever side tries it.
+    expect(await canViewProfile(line(tryer), own, db!)).toBe(false);
+    expect(await canViewProfile(line(own), tryer, db!)).toBe(false);
   });
 
   it("hides the profile of an account waiting to be deleted", async () => {

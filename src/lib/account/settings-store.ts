@@ -5,6 +5,7 @@ import type { Tx } from "@/db/lock";
 import { blocks, consents, userPay, userSettings, usernameRedirects, users } from "@/db/schema";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { areConnected } from "@/lib/network/store";
+import { isSampleResumeId } from "@/lib/resume/sample";
 import { DEFAULT_SETTINGS, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE, FIND_POLICY_VERSION, USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -277,8 +278,15 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
   // A connection opens the profile under every choice but Only you (handoff 12j, "Who sees what").
   if (await areConnected(owner.id, viewerId, db)) return true;
   if (owner.settings.visibility === "connections") return false;
-  const [theirs, mine] = await Promise.all([currentAnalysis(owner.id, db), currentAnalysis(viewerId, db)]);
+  // A current sample resume aims at nothing, as on Network (T112): it never opens a profile, for either side.
+  const [theirs, mine] = await Promise.all([ownAnalysis(owner.id, db), ownAnalysis(viewerId, db)]);
   return !!theirs && !!mine && theirs.result.roleSlug === mine.result.roleSlug;
+}
+
+/** The person's current analysis, or null when it is of the sample resume, which is a made-up person's. */
+async function ownAnalysis(userId: string, db: Db) {
+  const analysis = await currentAnalysis(userId, db);
+  return analysis && !(await isSampleResumeId(analysis.resumeId, db)) ? analysis : null;
 }
 
 /** For "Download your data": the settings, pay and old usernames, as stored. */

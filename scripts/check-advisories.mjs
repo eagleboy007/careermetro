@@ -6,7 +6,9 @@
 // GET /advisories in batches of BATCH as `affects=name@version,…`, once with type=reviewed and once with
 // type=unreviewed (new advisories arrive unreviewed first), following the Link header's rel="next" pages. Each
 // advisory is matched back to the installed copies it names in `vulnerabilities[].package.name` and whose version is
-// in its `vulnerable_version_range`. A 5xx, 403 or 429 is retried twice (after 2 s, then 5 s) before the run fails.
+// in its `vulnerable_version_range`. A 5xx, 403 or 429 is retried twice (after 2 s, then 5 s). A request that still
+// fails is a warning (::warning:: in CI), not a failure (T109): only a high or critical advisory found turns the run red,
+// so a GitHub outage or rate limit doesn't fail every PR.
 // CI runs it with GITHUB_TOKEN; without a token GitHub allows 60 requests an hour, enough for a run by hand.
 import { readFileSync } from "node:fs";
 
@@ -106,7 +108,7 @@ for (let i = 0; i < specs.length; i += BATCH) {
     try {
       advisories = await advisoriesFor(batch, type);
     } catch (error) {
-      console.log(`FAIL ${type} advisories for packages ${i + 1} to ${i + batch.length}: ${error.message}`);
+      console.log(`${process.env.GITHUB_ACTIONS ? "::warning title=Advisory check::" : "warning "}${type} advisories for packages ${i + 1} to ${i + batch.length} could not be read: ${error.message}`);
       failed++;
       continue;
     }
@@ -134,6 +136,6 @@ for (const { a, name, version, fixed } of hits.sort((x, y) => x.name.localeCompa
 }
 
 console.log(`Checked ${specs.length} installed runtime package version(s)`);
-if (failed) console.log(`${failed} request(s) failed, so some packages could not be checked`);
+if (failed) console.log(`${process.env.GITHUB_ACTIONS ? "::warning title=Advisory check::" : "warning: "}${failed} request(s) failed, so some packages could not be checked; this does not fail the run`);
 console.log(blocking ? `${blocking} high or critical advisory(ies) affect the installed versions` : "No high or critical advisories affect the installed versions");
-process.exit(blocking || failed ? 1 : 0);
+process.exit(blocking ? 1 : 0);

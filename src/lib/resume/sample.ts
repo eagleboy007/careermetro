@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { profiles, resumes } from "@/db/schema";
+import { gapAnalyses, profiles, resumes } from "@/db/schema";
 import { ownerKey, ownsResume, type Owner } from "@/lib/owner";
 import { profile as profileSchema, type Profile } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -22,6 +22,9 @@ export function sampleProfile(): Profile {
   return profileSchema.parse(parsed);
 }
 
+/** T114: the person's own resume, once its gaps were seen, is never quietly replaced by the sample. */
+export const HAS_OWN_RESUME: IngestResult = { ok: false, status: 409, code: "has_resume", message: "You already have your own resume." };
+
 const RATE_LIMITED: IngestResult = {
   ok: false,
   status: 429,
@@ -37,10 +40,14 @@ const RATE_LIMITED: IngestResult = {
  * (SAMPLE_MIME), like the builder's, so every screen that shows the resume can label it "Sample". It carries no name
  * hashes: the sample isn't anyone's, so it never fails the name check when an anonymous visitor signs up. An owner
  * who already has a sample gets that one back, so trying it again never piles up rows. Their own resume takes over
- * once they check it and see its gaps, like any newer upload.
+ * once they check it and see its gaps, like any newer upload; from then on the sample is refused (HAS_OWN_RESUME).
  */
 export async function createSampleResume(input: { owner: Owner; clientHash: string }, deps: { db?: Db } = {}): Promise<IngestResult> {
   const db = deps.db ?? getDb();
+  // Someone whose own resume already has gaps never gets the sample (T114): picking a role on it would make the
+  // made-up person current again and quietly take them out of Find people and Express apply. Checked first, so a
+  // refused try uses none of the limits.
+  if (await hasOwnAnalysis(input.owner, db)) return HAS_OWN_RESUME;
   // Its own limits, so trying the sample never uses up a real upload (LIMITS.perOwnerPerDay in ingest.ts). The address
   // first: a script making new anonymous sessions is stopped there.
   if (!(await takeShared(LIMITS.sampleResumesPerIp, input.clientHash, { db }))) return RATE_LIMITED;
@@ -73,6 +80,18 @@ export async function createSampleResume(input: { owner: Owner; clientHash: stri
     return resume.id;
   });
   return { ok: true, resumeId };
+}
+
+/** Whether the owner has a resume of their own (not the sample) with a gap analysis. */
+async function hasOwnAnalysis(owner: Owner, db: Pick<Db, "select">): Promise<boolean> {
+  const [row] = await db
+    .select({ id: gapAnalyses.id })
+    .from(gapAnalyses)
+    .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+    .where(and(ownsResume(owner), sql`${resumes.mimeType} is distinct from ${SAMPLE_MIME}`))
+    .limit(1);
+  return !!row;
 }
 
 /**

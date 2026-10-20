@@ -49,7 +49,7 @@ export type IngestInput = {
 
 export type IngestResult =
   | { ok: true; resumeId: string }
-  | { ok: false; status: 400 | 413 | 422 | 429 | 503; code: string; message: string };
+  | { ok: false; status: 400 | 409 | 413 | 422 | 429 | 503; code: string; message: string };
 
 type Db = ReturnType<typeof getDb>;
 

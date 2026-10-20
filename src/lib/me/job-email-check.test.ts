@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { finishJobCheck, jobChecksFor, jobChecksForReview, reviewJobCheck, startJobCheck } from "./job-email-check";
 import { meFor } from "./store";
@@ -72,9 +73,9 @@ describe.skipIf(!db)("verified current job (database)", () => {
     return u.id;
   }
   /** A new confirmed profile (and its analysis) for the person's resume, as after editing the resume. */
-  async function newVersion(userId: string, profile: Profile) {
+  async function newVersion(userId: string, profile: Profile, mimeType = "text/plain") {
     let [resume] = await db!.select().from(schema.resumes).where(eq(schema.resumes.userId, userId));
-    resume ??= (await db!.insert(schema.resumes).values({ userId, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning())[0];
+    resume ??= (await db!.insert(schema.resumes).values({ userId, mimeType, sizeBytes: 1, status: "parsed" }).returning())[0];
     const versions = await db!.select().from(schema.profiles).where(eq(schema.profiles.resumeId, resume.id));
     const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: versions.length + 1, data: profile, confirmedByUser: true }).returning();
     await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis, matcherVersion: MATCHER_VERSION, createdAt: new Date(Date.now() + versions.length * 1000) });
@@ -122,6 +123,19 @@ describe.skipIf(!db)("verified current job (database)", () => {
     const [row] = await db!.select().from(schema.jobEmailChecks).where(eq(schema.jobEmailChecks.userId, me));
     expect(row).toMatchObject({ employer: "Garuda Sec", startMonth: "2025-02", roleSource: "added" });
     expect((await jobChecksFor([me], db!)).get(me)).toEqual([expect.objectContaining({ source: "added" })]);
+  });
+
+  it("never checks the sample resume's made-up job, only a role added on Me (T111)", async () => {
+    const me = await person("sample", null);
+    await newVersion(me, profileAt("Garuda Sec"), SAMPLE_MIME);
+    expect(await startJobCheck(me, { workEmail: "meera.iyer@garudasec.com" }, deps())).toMatchObject({ ok: false, error: expect.stringContaining("Add your current job") });
+    expect(await labels(me)).toEqual([null, null]);
+    expect((await jobChecksFor([me], db!)).get(me)).toBeUndefined();
+    // A role added on Me is checked, though the sample's role started later.
+    await db!.insert(schema.meRoles).values({ userId: me, title: "SOC lead", employer: "Garuda Sec", startMonth: "2023-02", endMonth: null, isCurrent: true });
+    expect((await verify(me, "meera.iyer@garudasec.com")).ok).toBe(true);
+    const [row] = await db!.select().from(schema.jobEmailChecks).where(eq(schema.jobEmailChecks.userId, me));
+    expect(row).toMatchObject({ startMonth: "2023-02", roleSource: "added" });
   });
 
   it("counts code sends: 3 an hour per person", async () => {

@@ -13,6 +13,16 @@ export function SampleTag() {
   );
 }
 
+/** Today's note while the sample resume is the current one (T114): the ride and goals are the sample's. */
+export function SampleLineNote() {
+  return (
+    <p className="flex flex-wrap items-center gap-2 rounded-md border border-line bg-surface px-3.5 py-2 text-[0.8rem] text-muted">
+      <SampleTag />
+      Your line comes from the sample resume. Upload your own to see your own gaps.
+    </p>
+  );
+}
+
 /** The confirm step's note on the sample resume: what it is, and how to swap in your own. */
 export function SampleResumeNote() {
   return (
