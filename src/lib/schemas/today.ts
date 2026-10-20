@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MAX_CHOICE_GOALS, USER_STATES } from "./constants";
+import { trackPicker } from "./role-track";
 import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
 
@@ -234,6 +235,11 @@ export const goalsSummary = z
     /** A goal the role's job posts ask for that is not on the line yet. Added with one tap. */
     suggestedGoal: z.object({ name: z.string().min(1).max(80), reason: z.string().min(1).max(200) }).nullable().default(null),
     metThisMonth: z.array(z.string().max(80)).max(10),
+    /**
+     * The Track picker behind the Track chip (docs/plans/tracks-plan.md). Absent when the role offers no tracks on this
+     * deployment (production, until the tracks are reviewed): the chip is then plain text.
+     */
+    picker: trackPicker.nullable().optional(),
   })
   .refine((g) => g.moreNames.length <= g.moreCount, {
     message: "more names than goals left",

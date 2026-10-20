@@ -74,6 +74,7 @@ export function TodayView({
   onAddCertificate,
   onHours,
   onAnswerSignal,
+  onChooseTrack,
   departuresHref,
   mapHref,
 }: {
@@ -87,6 +88,8 @@ export function TodayView({
   onHours?: (hours: number) => void | Promise<boolean>;
   /** Checks a live signal check answer on the server, which ticks the ride's signal task, or says why it didn't. */
   onAnswerSignal?: (questionId: string, key: string) => Promise<SignalAnswerResult>;
+  /** Saves a track picked on Your goals' Track picker (null for the whole role), or says why it didn't. */
+  onChooseTrack?: (trackId: string | null) => Promise<string | null>;
   /** Where "All departures" goes; without it the link is marked "soon". */
   departuresHref?: string;
   /** Where Your goals' map links go; without it they are marked "soon". */
@@ -165,7 +168,7 @@ export function TodayView({
             {shown && (
               <SignalCheckCard check={shown} answered={a.answered} pickedKey={a.key} reveal={a.reveal} error={a.error} onAnswer={answerSignal} />
             )}
-            <GoalsCard summary={data.goals} mapHref={mapHref} firstDay={state === "first"} />
+            <GoalsCard summary={data.goals} mapHref={mapHref} firstDay={state === "first"} onChooseTrack={onChooseTrack} />
           </>
         )}
       </div>

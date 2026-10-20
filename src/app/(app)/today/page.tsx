@@ -18,7 +18,7 @@ import { greetingAt } from "@/lib/today/board";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
 import { todayStateFor } from "@/lib/today/state";
 import { switchJobSearch } from "../settings/job-search-actions";
-import { addCertificate, answerSignalCheck, saveWeeklyHours, tickRideTask } from "./actions";
+import { addCertificate, answerSignalCheck, chooseTrack, saveWeeklyHours, tickRideTask } from "./actions";
 import {
   exampleDepartures,
   exampleEvents,
@@ -146,6 +146,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
           onAddCertificate={addCertificate}
           onHours={saveWeeklyHours}
           onAnswerSignal={answerSignalCheck}
+          onChooseTrack={chooseTrack}
         />
       </JobSearchProvider>
     </div>

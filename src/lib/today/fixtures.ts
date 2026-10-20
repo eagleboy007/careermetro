@@ -1,4 +1,4 @@
-import type { Departure, EventTeaser, GoalsSummary, OnYourLine, Ride, RideTask, RideWeek, SignalCheck, Streak, UserState } from "@/lib/schemas";
+import type { Departure, EventTeaser, GoalsSummary, OnYourLine, Ride, RideTask, RideWeek, SignalCheck, Streak, TrackPicker, UserState } from "@/lib/schemas";
 
 // Synthetic example data for the design page and the Today preview. Every person, company and number is made up.
 
@@ -182,3 +182,22 @@ export const exampleSignalCheck: SignalCheck = {
   explanation: "A window function ranks rows within each month and keeps every row. GROUP BY would collapse them into one row per group.",
   from: "From your SQL window functions goal · warms you up for Pitstop 5",
 };
+
+/**
+ * The Track picker on Your goals (docs/plans/tracks-plan.md), for /design: a Data Analyst on BI and reporting, with the
+ * draft tracks' names and made-up counts.
+ */
+export const exampleTrackPicker: TrackPicker = {
+  role: "Data Analyst",
+  current: "bi-reporting",
+  options: [
+    { id: null, name: "Data Analyst", blurb: "Every skill the role profile asks for", goals: 7, met: 3, firstGoals: ["Python", "Statistics", "Data cleaning"], moreGoals: 1 },
+    { id: "bi-reporting", name: "BI and reporting", blurb: "Dashboards, Power BI", goals: 8, met: 3, firstGoals: ["Power BI", "Statistics", "Data cleaning"], moreGoals: 2 },
+    { id: "product-analytics", name: "Product analytics", blurb: "Funnels, A/B tests, SQL", goals: 8, met: 2, firstGoals: ["A/B testing", "Statistics", "Python"], moreGoals: 3 },
+    { id: "marketing-analytics", name: "Marketing analytics", blurb: "Campaigns, tests, Excel", goals: 9, met: 3, firstGoals: ["A/B testing", "Python", "Statistics"], moreGoals: 3 },
+    { id: "analytics-engineering", name: "Analytics engineering", blurb: "dbt, warehouses, models", goals: 9, met: 2, firstGoals: ["dbt", "Python", "Statistics"], moreGoals: 4 },
+  ],
+};
+
+/** Your goals with the Track picker behind the chip. */
+export const exampleGoalsWithTracks: GoalsSummary = { ...exampleGoals, picker: exampleTrackPicker };

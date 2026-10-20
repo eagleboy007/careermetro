@@ -20,6 +20,7 @@ import {
   RESOURCE_REPORTS_PER_DAY,
   SUGGESTIONS_PER_DAY,
   TIMED_TESTS_PER_DAY,
+  TRACK_CHANGES_PER_DAY,
 } from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
@@ -128,6 +129,8 @@ export const LIMITS = {
   availabilityPerUserDay: { bucket: "availability-save", max: AVAILABILITY_SAVES_PER_DAY, windowMs: 24 * HOUR },
   /** Today's signal check answers (docs/plans/today-live-plan.md), each try counted; one question a day, so this is generous. */
   signalAnswersPerUserDay: { bucket: "signal-answer", max: 100, windowMs: 24 * HOUR },
+  /** Track switches on Your goals (docs/plans/tracks-plan.md), each try counted. */
+  trackChangesPerUserDay: { bucket: "track-change", max: TRACK_CHANGES_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

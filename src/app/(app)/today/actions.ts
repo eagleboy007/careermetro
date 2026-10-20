@@ -19,6 +19,7 @@ import type { CertificateResult } from "@/lib/proofs/result";
 import { answerSignal, tickTask } from "@/lib/ride/store";
 import { certificateSubmission, type CredlyCheckOutcome, type SignalAnswerResult } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { setTrack, TRACK_MESSAGES } from "@/lib/tracks/store";
 
 /** The first field that is wrong, in the person's words. */
 const FIELD_MESSAGES: Record<string, string> = {
@@ -128,4 +129,25 @@ export async function saveWeeklyHours(hours: number): Promise<boolean> {
   const account = await currentAccount();
   if (!account) return false;
   return setWeeklyHours(account.id, hours);
+}
+
+/**
+ * "Switch track" on Your goals (docs/plans/tracks-plan.md): a track id of the person's goal role, or null for the whole
+ * role. The store checks the choice against the tracks this deployment offers, counts the try against the day's
+ * limit and writes only the person's own analysis. Answers null once saved, else the words to show. Nothing is logged
+ * but a failure's event name.
+ */
+export async function chooseTrack(trackId: unknown): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return "Please sign in again.";
+  try {
+    const result = await setTrack(account.id, trackId);
+    if (!result.ok) return TRACK_MESSAGES[result.error];
+  } catch (error) {
+    logEvent("error", "track_change_failed", errorFields(error));
+    return "That didn't work. Please try again.";
+  }
+  // Today's ride, Your goals and the Map are worked out again from the new track.
+  refresh();
+  return null;
 }

@@ -2,13 +2,14 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, rideDays, userResources } from "@/db/schema";
-import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
+import { goalsOf, notConfirmedSkills, provedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
 import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
 import { mockQuestions, skillGroupMembers, skills } from "@/content";
-import type { GapAnalysis, GoalsSummary, MockQuestion, Ride, RideWeek, SignalAnswer, SignalLive, Streak } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/gaps/current";
+import type { GapAnalysis, GoalsSummary, MockQuestion, RoleProfile, RoleTrack, Ride, RideWeek, SignalAnswer, SignalLive, Streak } from "@/lib/schemas";
+import { orderForTrack, trackPickerFor } from "@/lib/tracks/apply";
+import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
 import { isSignalKey, pickSignal, signalAnswerOf, signalLiveOf } from "@/lib/today/signal";
 import { attachAdded, buildGoalsSummary, buildRide, signalGoals, signalTaskId, type RideGoal, type RidePath, type RideResource } from "./build";
@@ -34,18 +35,22 @@ export function lineGoals<G extends { skillId: string; source: "gap" | "user"; s
 /** A "Your choice" goal's name: the skill's own name. */
 export const choiceName = (skillId: string) => skillNames.get(skillId) ?? skillId;
 
+/** The person's track of their goal role, for the Track picker (docs/plans/tracks-plan.md). */
+export type LineTrack = { base: GapAnalysis; role: RoleProfile | null; current: RoleTrack | null; tracks: RoleTrack[] };
+
 /**
- * The person's line as ride goals: their goals for the current analysis's gaps, in goal order, each with the courses
- * and practice task of the newest path's step for that skill. `chosen` holds their "Your choice" goals the same way;
- * they are kept apart because they never move the train, the ride or arrival. Null before there is a current
- * analysis. `sync: false` only reads the goals, for a tick, which must not write them.
+ * The person's line as ride goals: their goals for the current analysis's gaps, as their track sees them
+ * (docs/plans/tracks-plan.md), in the track's order and then goal order, each with the courses and practice task of the
+ * newest path's step for that skill. `chosen` holds their "Your choice" goals the same way; they are kept apart because
+ * they never move the train, the ride or arrival. Null before there is a current analysis. `sync: false` only reads
+ * the goals, for a tick, which must not write them.
  */
 export async function rideGoalsFor(
   userId: string,
   db: Db = getDb(),
   { sync = true }: { sync?: boolean } = {},
-): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath } | null> {
-  const analysis = await currentAnalysis(userId, db);
+): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath; track: LineTrack } | null> {
+  const analysis = await trackedCurrentAnalysis(userId, db);
   if (!analysis) return null;
   const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
   const notConfirmed = await notConfirmedSkills(userId, db);
@@ -111,14 +116,20 @@ export async function rideGoalsFor(
       choice,
     };
   };
-  const goals = line.gaps.map((g) => {
+  const goals = orderForTrack(line.gaps, analysis.track).map((g) => {
     const gap = gapBySkill.get(g.skillId)!;
     const status = gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak";
     return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
   });
   const chosen = line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null }));
   attachAdded(goals, await addedResources(userId, db));
-  return { result: analysis.result, goals, chosen, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
+  return {
+    result: analysis.result,
+    goals,
+    chosen,
+    path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) },
+    track: { base: analysis.base, role: analysis.role, current: analysis.track, tracks: analysis.tracks },
+  };
 }
 
 /**
@@ -211,7 +222,13 @@ export async function todayRideFor(
   };
   const ride = buildRide(input);
   if (!ride) return null;
-  const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps, chosen: line.chosen });
+  // The Track picker, when the role offers tracks here (none in production until they are reviewed).
+  const { track } = line;
+  const picker =
+    track.role && track.tracks.length
+      ? trackPickerFor({ base: track.base, role: track.role, tracks: track.tracks, current: track.current?.id ?? null, provedSkillIds: new Set(await provedSkills(userId, db)) })
+      : null;
+  const goals = buildGoalsSummary({ ...input, role: track.current?.name ?? (role || line.result.roleSlug), gaps: line.result.gaps, chosen: line.chosen, picker });
   const asked = signalGoals(input);
   const pick = pickSignal(bank, asked, userId, today, allowUnreviewed);
   const done = input.doneToday.has(signalTaskId(today));
