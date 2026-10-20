@@ -13,14 +13,25 @@ const TONE = { now: "bg-board-good text-board", soon: "bg-warn-soft text-warn", 
 
 /**
  * Departures: roles the user is heading toward, ordered by gaps left, on a split-flap board (always dark).
- * `locked` covers it with a reason when there is no resume yet.
+ * `locked` covers it with a reason when there is no resume yet. With no rows it says why the board is empty.
  */
-export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Departure[]; locked?: boolean; allHref?: string }) {
+export function DeparturesBoard({
+  rows,
+  locked = false,
+  allHref,
+  label = "Departures: roles you are heading toward",
+}: {
+  rows: Departure[];
+  locked?: boolean;
+  allHref?: string;
+  /** The board's region name; /design gives each example its own. */
+  label?: string;
+}) {
   const [open, setOpen] = useState<string | null>(null);
   const boardId = useId();
   return (
     <section
-      aria-label="Departures: roles you are heading toward"
+      aria-label={label}
       data-board=""
       className="shadow-raised relative flex min-w-0 flex-col gap-2.5 rounded-[20px] bg-board px-[18px] pb-3.5 pt-[18px] text-board-ink"
     >
@@ -38,7 +49,12 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
           ))}
         <Clock />
       </div>
-      <ul className={locked ? "pointer-events-none opacity-45 blur-[3px]" : undefined} aria-hidden={locked || undefined}>
+      {!locked && rows.length === 0 && (
+        <p className="border-t border-board-line py-2.5 text-[0.8rem] text-board-dim">
+          No roles to show yet. They appear here once open posts from the job-board feeds can be read against your resume.
+        </p>
+      )}
+      <ul className={locked ? "pointer-events-none opacity-45 blur-[3px]" : undefined} aria-hidden={locked || undefined} hidden={!locked && rows.length === 0}>
         {rows.map((r, i) => {
           const isOpen = open === r.id;
           return (
@@ -76,7 +92,7 @@ export function DeparturesBoard({ rows, locked = false, allHref }: { rows: Depar
         </div>
       )}
       <p className="border-t border-board-line pt-1.5 text-[0.72rem] text-board-dim">
-        From public job-board feeds and job posts you paste. Tap a row to see what stands between you and it.
+        From public company job-board feeds.{rows.length > 0 && " Tap a row to see what stands between you and it."}
       </p>
     </section>
   );

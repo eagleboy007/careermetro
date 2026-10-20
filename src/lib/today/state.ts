@@ -5,7 +5,7 @@ import { resumes } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { currentAnalysis, type Db } from "@/lib/gaps/current";
 import { boardTask } from "@/lib/ride/build";
-import { todayRideFor } from "@/lib/ride/store";
+import { todayRideFor, type TodaySignal } from "@/lib/ride/store";
 import { clip } from "@/lib/text";
 import type { FirstTally, GoalsSummary, Ride, RideTask, RideWeek, Streak } from "@/lib/schemas";
 
@@ -24,6 +24,9 @@ export type TodayState =
       firstTasks: RideTask[];
       /** Null when the line has no goals. */
       goals: GoalsSummary | null;
+      signal: TodaySignal | null;
+      /** The goal today's ride is on, for "On your line". Null when there is none. */
+      current: { skillId: string; name: string } | null;
     }
   | {
       state: "returning";
@@ -33,6 +36,8 @@ export type TodayState =
       goals: GoalsSummary;
       week: RideWeek;
       streak: Streak;
+      signal: TodaySignal | null;
+      current: { skillId: string; name: string } | null;
     };
 
 /**
@@ -59,7 +64,17 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
   const role = { slug: result.roleSlug, title: roleProfiles.find((r) => r.slug === result.roleSlug)?.title ?? result.roleSlug };
   const today = await todayRideFor(userId, now, db, role.title);
   if (today && (today.streak.days > 0 || today.ride.pitstop > today.ride.pitstopCount)) {
-    return { state: "returning", resumeId: analysis.resumeId, role, ride: today.ride, goals: today.goals, week: today.week, streak: today.streak };
+    return {
+      state: "returning",
+      resumeId: analysis.resumeId,
+      role,
+      ride: today.ride,
+      goals: today.goals,
+      week: today.week,
+      streak: today.streak,
+      signal: today.signal,
+      current: today.current,
+    };
   }
   const gaps = result.gaps.length;
   return {
@@ -71,6 +86,8 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
     // No goals at all: the resume already shows every required skill.
     firstTasks: today?.ride.tasks ?? [boardTask("Your resume shows every core skill this role requires")],
     goals: today?.goals ?? null,
+    signal: today?.signal ?? null,
+    current: today?.current ?? null,
   };
 }
 

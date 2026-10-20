@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { departure, eventTeaser, goalsSummary, onYourLine, ride, rideWeek, signalCheck, streak } from "@/lib/schemas";
+import { departure, eventTeaser, goalsSummary, onYourLine, ride, rideWeek, signalCheck, signalLive, streak } from "@/lib/schemas";
 import { departureTone, departureWhen, greetingAt, streakLabel } from "./board";
 import { exampleDepartures, exampleEvents, exampleGoals, exampleOnYourLine, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
 
@@ -130,6 +130,18 @@ describe("signal check schema", () => {
   it("needs an explanation and a source", () => {
     expect(signalCheck.safeParse({ ...exampleSignalCheck, explanation: "" }).success).toBe(false);
     expect(signalCheck.safeParse({ ...exampleSignalCheck, from: "" }).success).toBe(false);
+  });
+});
+
+describe("live signal check schema", () => {
+  const { correctKey, explanation, ...shown } = exampleSignalCheck;
+  it("sends the question without its answer, or with it once answered", () => {
+    expect(signalLive.safeParse({ id: "sql-mc-1", shown, answer: null }).success).toBe(true);
+    expect(signalLive.safeParse({ id: "sql-mc-1", shown, answer: { correctKey, explanation } }).success).toBe(true);
+    expect(signalLive.safeParse({ id: "", shown, answer: null }).success).toBe(false);
+    expect(signalLive.safeParse({ id: "sql-mc-1", shown: { ...shown, options: [shown.options[1], shown.options[0]] }, answer: null }).success).toBe(false);
+    // The answer never rides along in what is shown.
+    expect(Object.keys(signalLive.parse({ id: "sql-mc-1", shown: exampleSignalCheck, answer: null }).shown)).not.toContain("correctKey");
   });
 });
 

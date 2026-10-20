@@ -598,6 +598,35 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
   await p.getByRole("region", { name: "Not for me" }).getByRole("button", { name: "Skip anyway" }).waitFor({ timeout: 5000 });
 });
+// Today's live cards (v44 gap items 8 to 10): no example data for a signed-in person. The signal check, when the bank
+// has a question for today's goal or the next, is checked on the server and ticks the ride's signal task (a ride day);
+// the board shows live rows or says why it has none; On your line shows only with three people who can be counted.
+await step("today: live signal check, board and On your line, no example data", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByText("Everything here is your own except the Timetable, which is example data until we build it.", { exact: true }).waitFor({ timeout: 10000 });
+  const board = p.locator("[data-board]");
+  await board.waitFor({ timeout: 10000 });
+  if ((await board.innerText()).toUpperCase().includes("MIS EXECUTIVE")) throw new Error("Today shows the example board");
+  if (await p.getByText(/Arjun Mehta met the/).count()) throw new Error("Today shows the example tip");
+  const signal = p.getByRole("region", { name: "Signal check", exact: true });
+  if (!(await signal.count())) {
+    console.log("     no question in the bank for this goal or the next; card hidden");
+    return;
+  }
+  if (await signal.getByText(/sales next to its rank/).count()) throw new Error("Today shows the example question");
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/today")),
+    signal.getByRole("group", { name: "Answers" }).getByRole("button").first().click(),
+  ]);
+  await signal.getByRole("status").getByText(/^(Right\.|Not quite: it's [A-D]\.)/).waitFor({ timeout: 10000 });
+  await p
+    .locator("header")
+    .getByText(/1-day streak/)
+    .waitFor({ timeout: 10000 });
+  await shot("today-signal-answered");
+  await a11y("today-signal-answered");
+});
 // The same on Today: skip from an open goal (it leaves the list, focus moves to the card's heading), then bring it back
 // from its pitstop on the Map.
 await step("not for me: skip a goal on Today, bring it back from the Map", async () => {
