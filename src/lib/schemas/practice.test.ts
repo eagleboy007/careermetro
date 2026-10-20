@@ -72,6 +72,11 @@ describe("practice view and trend", () => {
     expect(practiceView.safeParse({ skills: [], left: 11, noQuestions: [] }).success).toBe(false);
   });
 
+  it("has no daily count on Elite (FR-50): left is null", () => {
+    expect(practiceView.parse({ skills: [skill], left: null, noQuestions: [] }).left).toBeNull();
+    expect(practiceView.safeParse({ skills: [skill], left: -1, noQuestions: [] }).success).toBe(false);
+  });
+
   it("has a trend only for a rated skill", () => {
     expect(practiceTrend.safeParse({ skillId: "python", name: "Python", ratings: [] }).success).toBe(false);
     expect(practiceTrend.parse({ skillId: "python", name: "Python", ratings: [2, 3] }).ratings).toEqual([2, 3]);

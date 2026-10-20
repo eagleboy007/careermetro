@@ -3,15 +3,18 @@ import { confidenceWord, sessionsText } from "./confidence-spark";
 import { canSend, leftText, listText, trendSummary } from "./practice-view";
 
 describe("Practice wording", () => {
-  it("counts the answers left today out of 10", () => {
-    expect(leftText(7)).toBe("7 of 10");
-    expect(leftText(0)).toBe("0 of 10");
+  it("counts the answers left today out of 10, and none on Elite", () => {
+    expect(leftText(7)).toBe("7 of 10 answers left today");
+    expect(leftText(0)).toBe("0 of 10 answers left today");
+    expect(leftText(null)).toBe("No daily cap with Elite");
   });
 
   it("lets feedback be asked for only with 5 words and an answer left", () => {
     expect(canSend(4, 10)).toBe(false);
     expect(canSend(5, 10)).toBe(true);
     expect(canSend(50, 0)).toBe(false);
+    expect(canSend(5, null)).toBe(true);
+    expect(canSend(4, null)).toBe(false);
   });
 
   it("names the four ratings and the sessions, never as a score", () => {

@@ -400,7 +400,7 @@ describe.skipIf(!db)("company chats (database)", () => {
     await sendMessage(s.me, (await conversationOf(s.applicationId)).id, REPLY, at());
     expect(EXPORT_VERSION).toBe(21);
     const mine = await exportAccountData(s.me, db!, clock);
-    expect(mine!.exportVersion).toBe(21);
+    expect(mine!.exportVersion).toBe(22);
     const chat = mine!.inbox.chats.find((c) => c.kind === "application")!;
     expect(chat).toMatchObject({ company: "Example Labs", job: "SOC Analyst L1", side: "candidate" });
     expect(chat.yourMessages.map((m) => m.body)).toEqual([REPLY]);

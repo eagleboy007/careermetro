@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 import { skills } from "@/content";
 import * as schema from "@/db/schema";
 import { exportAccountData, EXPORT_VERSION } from "@/lib/account/export";
+import { setElite } from "@/lib/elite/store";
 import type { FeedbackClient } from "./feedback";
 import { clearOldPracticeAnswers, practiceFor, practiceTrendsFor, PRACTICE_MESSAGES, ratePracticeAnswer, startOfIndiaDay, submitPracticeAnswer } from "./store";
 
@@ -118,6 +119,22 @@ describe.skipIf(!db)("practice store (database)", () => {
     expect((await practiceFor(me, new Date("2026-10-15T18:31:00Z"), db!)).left).toBe(10);
   });
 
+  it("has no daily cap of 10 on Elite (FR-50), and the cap is back once Elite is off", async () => {
+    const me = await person("elite", [{ skillId: "python" }]);
+    const today = startOfIndiaDay(clock);
+    await db!.insert(schema.practiceAnswers).values(
+      Array.from({ length: 10 }, (_, i) => ({ userId: me, skillId: "python", questionId: "python-1", answer: "an earlier answer", feedback: good, createdAt: new Date(today.getTime() + i * 60_000) })),
+    );
+    expect((await setElite(me, true, { db: db! })).ok).toBe(true);
+    expect((await practiceFor(me, clock, db!)).left).toBeNull();
+    const { client: c, create } = client(JSON.stringify(good));
+    expect(await submitPracticeAnswer(me, { questionId: "python-2", answer: ANSWER }, { db: db!, client: c, now: clock })).toMatchObject({ ok: true, feedback: good, left: null });
+    expect(create).toHaveBeenCalledTimes(1);
+    expect((await setElite(me, false, { db: db! })).ok).toBe(true);
+    expect((await practiceFor(me, clock, db!)).left).toBe(0);
+    expect(await submitPracticeAnswer(me, { questionId: "python-3", answer: ANSWER }, { db: db!, client: c, now: clock })).toEqual({ ok: false, message: PRACTICE_MESSAGES.limit, left: 0 });
+  });
+
   it("rates only the person's own answers, and builds the picker and the trend from those ratings", async () => {
     const me = await person("rate", [{ skillId: "sql", status: "met" }, { skillId: "python" }, { skillId: "tableau" }, { skillId: "docker" }]);
     const other = await person("rate-other", [{ skillId: "python" }]);
@@ -151,7 +168,7 @@ describe.skipIf(!db)("practice store (database)", () => {
     await submitPracticeAnswer(me, { questionId: "python-4", answer: ANSWER }, { db: db!, client: c, now: clock });
     const data = await exportAccountData(me, db!);
     expect(EXPORT_VERSION).toBe(21);
-    expect(data!.exportVersion).toBe(21);
+    expect(data!.exportVersion).toBe(22);
     expect(data!.practiceAnswers).toEqual([expect.objectContaining({ skill: "python", questionId: "python-4", answer: ANSWER, feedback: good, question: expect.stringMatching(/\?$/) })]);
 
     expect(await clearOldPracticeAnswers(db!, new Date(clock.getTime() + 29 * DAY))).toBeGreaterThanOrEqual(0);
