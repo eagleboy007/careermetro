@@ -1868,6 +1868,8 @@ await step("notifications: a connection request rings the bell, opening it clear
       await qa.emulateMedia({ colorScheme: scheme });
       // Reload so every colour is drawn in this scheme from the start, as on the other dark checks.
       await qa.reload();
+      // Wait for hydration, so the click opens the panel.
+      await qa.waitForLoadState("networkidle");
       await bell.waitFor({ timeout: 10000 });
       await bell.click();
       await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).waitFor({ timeout: 10000 });
@@ -4079,7 +4081,8 @@ const focusedHas = (q, attr, value) =>
   q.waitForFunction(([a, v]) => document.activeElement?.getAttribute(a) === v, [attr, value], { timeout: 5000 });
 const fitsPhone = async (q, what) => {
   const over = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  if (over > 0) throw new Error(`${what} scrolls sideways at 390px (${over}px)`);
+  // 1px of slack for sub-pixel rounding, as "phone + dark today" allows.
+  if (over > 1) throw new Error(`${what} scrolls sideways at 390px (${over}px)`);
 };
 await step("hardening: Today with no resume, the role chips and the drop zone by keyboard, light, dark and phone", async () => {
   const fresh = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
@@ -4397,6 +4400,7 @@ await step("hardening: job search by keyboard on Departures, the notice card in 
     await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
     await p.reload();
     await settled();
+    await p.waitForLoadState("networkidle");
     await off.waitFor({ timeout: 10000 });
     await a11y("hardening-departures-search-off-dark");
     await p.setViewportSize({ width: 390, height: 844 });
@@ -4408,9 +4412,16 @@ await step("hardening: job search by keyboard on Departures, the notice card in 
     await off.waitFor({ state: "detached", timeout: 10000 });
   } finally {
     // Whatever failed above, the walk's person ends with job search on.
-    if (await off.count().catch(() => 0)) {
-      await sw.click({ force: true }).catch(() => {});
-      await off.waitFor({ state: "detached", timeout: 10000 }).catch(() => {});
+    try {
+      await p.goto(BASE + "/departures");
+      await settled();
+      await p.waitForLoadState("networkidle");
+      if (await off.count()) {
+        await sw.click({ force: true });
+        await off.waitFor({ state: "detached", timeout: 10000 });
+      }
+    } catch {
+      // Best effort: the step has already failed and said why.
     }
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
