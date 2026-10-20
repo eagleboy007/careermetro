@@ -15,7 +15,7 @@ import { currentJobs } from "@/lib/profile/employer";
 import type { Profile } from "@/lib/schemas";
 import { addedAsResumeRole } from "./build";
 import { addedRolesOf } from "./edit-store";
-import { baseDomain, domainAndParents, jobKeyOf, jobToCheck, onVerifiedCompanyDomain, type JobCheckRow, type JobKey } from "./job-check-rules";
+import { baseDomain, domainAndParents, jobKeyOf, jobToCheck, onVerifiedCompanyDomain, type JobCheckRow, type JobCheckSource, type JobKey } from "./job-check-rules";
 
 /*
  * The work-email check of a person's current job (FR-47, handoff 12d, dev/current-job-check-plan.md). The person types
@@ -51,10 +51,22 @@ export const jobCheckOpen = (deps: CorporateDeps = {}): boolean => workEmailRead
  * The job a work email checks for this person now, from their current confirmed profile and the roles they added on Me
  * (docs/plans/me-editing-plan.md choice 7): an added current role is checked as a resume one is.
  */
-async function checkedJob(userId: string, db: Db): Promise<JobKey | null> {
+async function checkedJob(userId: string, db: Db): Promise<(JobKey & { source: JobCheckSource }) | null> {
   const [analysis, added] = await Promise.all([currentAnalysis(userId, db), addedRolesOf(userId, db)]);
   const resume = analysis ? await getResumeForOwner(analysis.resumeId, { userId }, db) : null;
-  return jobToCheck({ roles: [...(resume?.profile?.roles ?? []), ...added.map(addedAsResumeRole)] });
+  const rows = [
+    ...(resume?.profile?.roles ?? []).map((r) => ({ r, source: "resume" as const })),
+    ...added.map((a) => ({ r: addedAsResumeRole(a), source: "added" as const })),
+  ];
+  const roles = rows.map((x) => x.r);
+  const job = jobToCheck({ roles });
+  if (!job) return null;
+  // Which row the check is made on (T95): the first current row with this job's key, as jobToCheck takes the first of
+  // equal start months, so a resume role and an added role written the same way go to the resume role.
+  const open = new Set(currentJobs({ roles }));
+  const same = (k: JobKey) => k.employerKey === job.employerKey && k.startMonth === job.startMonth && k.employer === job.employer;
+  const source = rows.find((x) => open.has(x.r) && same(jobKeyOf(x.r)))?.source ?? "resume";
+  return { ...job, source };
 }
 
 /** "Send code": checks the address (free mail is refused) and sends a code to it. */
@@ -90,12 +102,13 @@ export async function finishJobCheck(userId: string, raw: unknown, deps: Corpora
     const refused = await useCode(userId, { email: parsed.data.workEmail, orgId: null }, parsed.data.code, tx, deps, "current_job");
     if (refused) return fail(refused === "wrong" || refused === "expired" || refused === "locked" ? refused : "none");
     const status = onVerifiedCompanyDomain(email.domain, job.employer, await verifiedCompaniesOn(email.domain, tx)) ? "verified" : "review";
+    const { source, ...key } = job;
     await tx
       .insert(jobEmailChecks)
-      .values({ userId, ...job, domain: email.domain, status, checkedAt: now })
+      .values({ userId, ...key, roleSource: source, domain: email.domain, status, checkedAt: now })
       .onConflictDoUpdate({
         target: [jobEmailChecks.userId, jobEmailChecks.employerKey, jobEmailChecks.startMonth],
-        set: { employer: job.employer, domain: email.domain, status, checkedAt: now, reviewedBy: null, reviewedAt: null },
+        set: { employer: job.employer, roleSource: source, domain: email.domain, status, checkedAt: now, reviewedBy: null, reviewedAt: null },
       });
     logEvent("info", "job_email_checked", { status });
     return { ok: true as const, status };
@@ -114,6 +127,7 @@ export async function jobChecksFor(userIds: string[], db: Pick<Db, "select"> = g
       status: jobEmailChecks.status,
       checkedAt: jobEmailChecks.checkedAt,
       employer: jobEmailChecks.employer,
+      source: jobEmailChecks.roleSource,
     })
     .from(jobEmailChecks)
     .where(inArray(jobEmailChecks.userId, userIds));

@@ -2,7 +2,7 @@ import { monthLabel } from "@/lib/map/life-layout";
 import { baseDomain, isOnDomain } from "@/lib/corporate/domains";
 import { companyKey, currentJobs, sameCompany } from "@/lib/profile/employer";
 import type { Profile } from "@/lib/schemas";
-import type { JobEmailCheckStatus } from "@/lib/schemas/constants";
+import type { JOB_CHECK_SOURCES, JobEmailCheckStatus } from "@/lib/schemas/constants";
 
 /*
  * The rules of the work-email check of the current job (FR-47, handoff 12d, dev/current-job-check-plan.md) as plain
@@ -15,11 +15,15 @@ type Role = Profile["roles"][number];
 /** A job as the check knows it: the employer as written, its comparison key, and the start month ("" without one). */
 export type JobKey = { employer: string; employerKey: string; startMonth: string };
 
+/** The side of the profile a check was made on: a resume role or a role added on Me (T95). */
+export type JobCheckSource = (typeof JOB_CHECK_SOURCES)[number];
+
 /**
- * A saved check, as read for a profile. `employer` is the company as written on the job the check was made on, which
- * tells a resume role and an added role with the same badge key apart (T95); never shown.
+ * A saved check, as read for a profile. `employer` is the company as written on the job the check was made on, and
+ * `source` the side that job was on (null on checks saved before it was kept); both tell a resume role and an added
+ * role with the same badge key apart (T95). Never shown.
  */
-export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date; employer?: string };
+export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date; employer?: string; source?: JobCheckSource | null };
 
 /** What a job on the profile says about its check. Older jobs say nothing (null). */
 export type ExperienceCheck = {

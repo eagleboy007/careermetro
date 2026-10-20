@@ -34,7 +34,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, MOCK_FOCUSES, MOCK_LENGTHS, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_CHECK_SOURCES, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, MOCK_FOCUSES, MOCK_LENGTHS, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, MockSessionFeedback, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
@@ -977,6 +977,8 @@ export const jobEmailChecks = pgTable(
     startMonth: text("start_month").notNull(),
     domain: text("domain").notNull(),
     status: text("status", { enum: JOB_EMAIL_CHECK_STATUSES }).notNull(),
+    /** The side of the profile the check was made on (T95): "resume" or "added"; null on checks saved before 0047. */
+    roleSource: text("role_source", { enum: JOB_CHECK_SOURCES }),
     checkedAt: timestamp("checked_at", { withTimezone: true }).notNull(),
     reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
@@ -987,6 +989,7 @@ export const jobEmailChecks = pgTable(
     check("job_email_checks_status", sql`${t.status} in ('verified', 'review', 'refused')`),
     check("job_email_checks_lengths", sql`char_length(${t.employer}) between 1 and 120 and char_length(${t.employerKey}) between 1 and 120 and char_length(${t.domain}) between 3 and 253`),
     check("job_email_checks_start", sql`${t.startMonth} ~ '^([0-9]{4}(-[0-9]{2})?)?$'`),
+    check("job_email_checks_role_source", sql`${t.roleSource} is null or ${t.roleSource} in ('resume', 'added')`),
   ],
 );
 

@@ -146,10 +146,11 @@ export function meFromProfile(input: MeInput): MeProfile {
     return k.employerKey ? `${k.employerKey}|${k.startMonth}` : null;
   };
   // T95: an added role can share the badge key (company key and start month) with a resume role uploaded after it was
-  // added. One check, one badge. The company as written on the check settles it when only one side has it. Otherwise
-  // (no check yet, or both sides write it the same) the badge goes to the side that is still current, the one jobToCheck
-  // picks, and to the resume role when both are current or both ended. The other row shows no check at all, only
-  // "Self-declared" where that applies.
+  // added. One check, one badge, on the row the check was made on: the side the check saved settles it. A check saved
+  // before the side was kept falls back to the company as written on it, when only one side has it. Otherwise (no check
+  // yet, or an old check both sides write the same) the badge goes to the side that is still current, the one
+  // jobToCheck picks, and to the resume role when both are current or both ended. The other row shows no check at all,
+  // only "Self-declared" where that applies.
   const ownerOf = new Map<string, "resume" | "added">();
   for (const { r, own } of roles) {
     const k = keyOf(r);
@@ -157,7 +158,12 @@ export function meFromProfile(input: MeInput): MeProfile {
     const clash = roles.filter((x) => x.own && keyOf(x.r) === k);
     if (!clash.length) continue;
     const resumeRows = roles.filter((x) => !x.own && keyOf(x.r) === k);
-    const written = checks.find((c) => `${c.employerKey}|${c.startMonth}` === k)?.employer;
+    const saved = checks.find((c) => `${c.employerKey}|${c.startMonth}` === k);
+    if (saved?.source) {
+      ownerOf.set(k, saved.source);
+      continue;
+    }
+    const written = saved?.employer;
     const onResume = written !== undefined && resumeRows.some((x) => jobKeyOf(x.r).employer === written);
     const onAdded = written !== undefined && clash.some((x) => jobKeyOf(x.r).employer === written);
     if (onResume !== onAdded) {

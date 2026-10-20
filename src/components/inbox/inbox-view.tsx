@@ -3,10 +3,11 @@
 import { ArrowLeft, CalendarDays, ShieldAlert, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
 import { preTicks } from "@/lib/account/availability";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
+  END_FOUND_CHAT_CONFIRM,
   filterThreads,
   FOUND_JOB_SEARCH_OFF_LINE,
   INBOX_FILTERS,
@@ -73,6 +74,9 @@ export function InboxView({
   const [pending, startTransition] = useTransition();
   // Which button opened the Report panel, so Cancel can put focus back on it.
   const [reporting, setReporting] = useState<{ block: boolean; from: "header" | "footer" } | null>(null);
+  // End chat's inline confirm on an accepted found chat (FR-52) is open.
+  const [ending, setEnding] = useState(false);
+  const endId = useId();
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [currentId, setCurrentId] = useState(initial[0]?.id ?? null);
   const [open, setOpen] = useState(false);
@@ -144,6 +148,7 @@ export function InboxView({
     setCurrentId(id);
     setPicking(false);
     setReporting(null);
+    setEnding(false);
     setOpen(true);
     // Opening a chat reads it; a request stays unread until it is accepted or deleted.
     const opened = threads.find((t) => t.id === id);
@@ -296,9 +301,28 @@ export function InboxView({
   };
 
   const startReport = (block: boolean, from: "header" | "footer") => {
+    setEnding(false);
     setReporting({ block, from });
     focusNext("[data-report-panel] input");
   };
+
+  /** End chat (FR-52): closes only this found chat, for both sides. No report is filed and the company isn't blocked. */
+  const endChat = () => {
+    if (!current || pending) return;
+    const finish = () => {
+      update(current.id, (t) => ({ ...t, state: "closed" }));
+      setEnding(false);
+      say(`Chat ended. ${current.name} can't message you here again.`);
+      focusNext("[data-report]");
+    };
+    if (actions?.end) {
+      const end = actions.end;
+      act(() => end(current.id), finish);
+    } else finish();
+  };
+
+  // End chat shows on an accepted found chat that is still open (or paused while the company is reviewed).
+  const canEnd = !!current?.found && current.kind === "application" && (!current.state || current.state === "paused") && (!actions || !!actions.end);
 
   return (
     <div ref={rootRef} className="flex min-w-0 flex-col gap-4">
@@ -390,6 +414,21 @@ export function InboxView({
                   See on Arrivals
                 </Link>
               )}
+              {canEnd && (
+                <button
+                  type="button"
+                  data-end
+                  onClick={() => {
+                    setReporting(null);
+                    setEnding((v) => !v);
+                  }}
+                  aria-expanded={ending}
+                  aria-controls={ending ? endId : undefined}
+                  className={`${quiet} min-h-11`}
+                >
+                  End chat
+                </button>
+              )}
               {current.state !== "left" && (
                 <button
                   type="button"
@@ -403,6 +442,29 @@ export function InboxView({
                 </button>
               )}
             </div>
+
+            {ending && canEnd && (
+              <div id={endId} role="group" aria-labelledby={`${endId}-q`} className="mx-4 mt-3 flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 p-3">
+                <p id={`${endId}-q`} className="text-[0.84rem]">
+                  {END_FOUND_CHAT_CONFIRM}
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button type="button" autoFocus aria-disabled={pending || undefined} onClick={endChat} className={`${ghost} aria-disabled:cursor-not-allowed aria-disabled:opacity-60`}>
+                    End chat
+                  </button>
+                  <button
+                    type="button"
+                    className={quiet}
+                    onClick={() => {
+                      setEnding(false);
+                      focusNext("[data-end]");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
 
             {reporting && (
               <ReportPanel

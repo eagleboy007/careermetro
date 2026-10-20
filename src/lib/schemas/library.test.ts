@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanSuggestedUrl, linkKey } from "@/lib/library/links";
+import { cleanSuggestedUrl, linkKey, SHORTENERS } from "@/lib/library/links";
 import {
   brokenLinkRow,
   libraryActionInput,
@@ -75,8 +75,16 @@ describe("Library marks, reports and suggestions: input", () => {
       expect(cleanSuggestedUrl(url), url).toBeNull();
       expect(suggestionInput.safeParse({ url, skillId: null }).success, url).toBe(false);
     }
-    // A name that only ends like a shortener is a site of its own.
+    // Every listed shortener, and a name under one (T99).
+    for (const host of SHORTENERS) {
+      expect(cleanSuggestedUrl(`https://${host}/abc`), host).toBeNull();
+      expect(cleanSuggestedUrl(`https://www.${host}/abc`), host).toBeNull();
+    }
+    for (const url of ["https://rb.gy/abc", "https://tiny.cc/abc", "https://lnkd.in/abc", "https://amzn.to/abc", "https://forms.gle/abc"]) expect(cleanSuggestedUrl(url), url).toBeNull();
+    // A name that only ends like a shortener is a site of its own, and youtu.be only opens YouTube.
     expect(cleanSuggestedUrl("https://habit.ly/x")?.host).toBe("habit.ly");
+    expect(cleanSuggestedUrl("https://days.id/x")?.host).toBe("days.id");
+    expect(cleanSuggestedUrl("https://youtu.be/dQw4w9WgXcQ")?.host).toBe("youtu.be");
     // The skill is a taxonomy id or null for Other; nothing else rides along.
     expect(suggestionInput.safeParse({ url: "https://learn.example.org/", skillId: "SQL basics" }).success).toBe(false);
     expect(suggestionInput.safeParse({ url: "https://learn.example.org/", skillId: null, note: "great course" }).success).toBe(false);

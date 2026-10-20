@@ -330,6 +330,13 @@
       "when": 1792489200000,
       "tag": "0046_job_posts_open_newest",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1792492800000,
+      "tag": "0047_job_check_role_source",
+      "breakpoints": true
     }
   ]
 }

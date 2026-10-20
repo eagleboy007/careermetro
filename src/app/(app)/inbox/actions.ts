@@ -2,7 +2,7 @@
 
 import { refresh } from "next/cache";
 import { currentAccount } from "@/lib/auth/server";
-import { acceptRequest, deleteRequest, INBOX_ERROR_TEXT, markRead, report, sendMessage, type InboxResult } from "@/lib/inbox/store";
+import { acceptRequest, deleteRequest, endFoundChat, INBOX_ERROR_TEXT, markRead, report, sendMessage, type InboxResult } from "@/lib/inbox/store";
 import { conversationInput, reportInput, sendMessageInput } from "@/lib/schemas/inbox";
 import type { InboxActions } from "@/lib/inbox/types";
 import { INTERVIEW_ERROR_TEXT, offerTimes } from "@/lib/corporate/interviews-store";
@@ -46,6 +46,14 @@ export const deleteInboxRequest: InboxActions["remove"] = async (conversationId)
   const account = await currentAccount();
   if (!account) return SIGN_IN;
   return answer(await deleteRequest(account.id, input.data.conversationId));
+};
+
+export const endInboxChat: NonNullable<InboxActions["end"]> = async (conversationId) => {
+  const input = conversationInput.safeParse({ conversationId });
+  if (!input.success) return BAD;
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  return answer(await endFoundChat(account.id, input.data.conversationId));
 };
 
 export const reportInInbox: InboxActions["report"] = async (raw) => {

@@ -127,6 +127,8 @@ export const WORK_EMAIL_PURPOSES = ["org_member", "current_job"] as const;
 /** A work-email check of the current job (FR-47): matched the company, waiting for an admin, or refused by one. */
 export const JOB_EMAIL_CHECK_STATUSES = ["verified", "review", "refused"] as const;
 export type JobEmailCheckStatus = (typeof JOB_EMAIL_CHECK_STATUSES)[number];
+/** The side of the profile a work-email check was made on (T95): a resume role or a role added on Me. */
+export const JOB_CHECK_SOURCES = ["resume", "added"] as const;
 export const ORG_INVITE_KINDS = ["invite", "request"] as const;
 export const ORG_SIZES = ["1 to 10", "11 to 50", "51 to 200", "201 to 1,000", "More than 1,000"] as const;
 export const ORG_INDUSTRIES = ["Financial services and fintech", "IT services", "Cybersecurity", "Software product", "Education", "Other"] as const;

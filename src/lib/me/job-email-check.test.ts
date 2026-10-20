@@ -95,7 +95,7 @@ describe.skipIf(!db)("verified current job (database)", () => {
     expect(await verify(me, "meera.iyer@garudasec.com")).toEqual({ ok: true, status: "verified" });
     expect(await labels(me)).toEqual([{ state: "verified", month: "Oct 2026" }, null]);
     const [row] = await db!.select().from(schema.jobEmailChecks).where(eq(schema.jobEmailChecks.userId, me));
-    expect(row).toMatchObject({ employer: "Garuda Sec Pvt Ltd", employerKey: "garuda sec", startMonth: "2024-06", domain: "garudasec.com", status: "verified" });
+    expect(row).toMatchObject({ employer: "Garuda Sec Pvt Ltd", employerKey: "garuda sec", startMonth: "2024-06", domain: "garudasec.com", status: "verified", roleSource: "resume" });
     expect(JSON.stringify(row)).not.toContain("meera.iyer");
     const codes = await db!.select().from(schema.workEmailCodes).where(eq(schema.workEmailCodes.userId, me));
     expect(codes.every((c) => c.email === null && c.purpose === "current_job")).toBe(true);
@@ -113,6 +113,15 @@ describe.skipIf(!db)("verified current job (database)", () => {
     expect(await finishJobCheck(me, { workEmail: "meera@garudasec.com", code: "000000" }, deps())).toMatchObject({ ok: false, error: expect.stringContaining("Too many") });
     expect(await finishJobCheck(me, { workEmail: "meera@garudasec.com", code: sent.testCode! }, deps())).toMatchObject({ ok: false });
     expect((await jobChecksFor([me], db!)).get(me)).toBeUndefined();
+  });
+
+  it("saves the side of the profile the check was made on, for the badge (T95)", async () => {
+    const me = await person("added", null);
+    await db!.insert(schema.meRoles).values({ userId: me, title: "SOC lead", employer: "Garuda Sec", startMonth: "2025-02", endMonth: null, isCurrent: true });
+    expect((await verify(me, "meera.iyer@garudasec.com")).ok).toBe(true);
+    const [row] = await db!.select().from(schema.jobEmailChecks).where(eq(schema.jobEmailChecks.userId, me));
+    expect(row).toMatchObject({ employer: "Garuda Sec", startMonth: "2025-02", roleSource: "added" });
+    expect((await jobChecksFor([me], db!)).get(me)).toEqual([expect.objectContaining({ source: "added" })]);
   });
 
   it("counts code sends: 3 an hour per person", async () => {

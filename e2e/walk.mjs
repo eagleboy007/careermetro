@@ -3879,6 +3879,11 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await a11yOn(fp, "inbox-found-request");
     await fp.getByRole("button", { name: "Accept" }).click();
     await thread.getByRole("textbox", { name: "Message" }).waitFor({ timeout: 10000 });
+    // End chat is on the accepted chat, behind an inline confirm (opened and cancelled here; the store tests end one).
+    await thread.getByRole("button", { name: "End chat", exact: true }).click();
+    await thread.getByText("End this chat? The company can't message you here again.", { exact: true }).waitFor();
+    await thread.getByRole("button", { name: "Cancel", exact: true }).click();
+    await thread.getByRole("button", { name: "End chat", exact: true }).waitFor();
     // The company's profile view shows in Settings.
     await fp.goto(BASE + "/settings");
     await fp.locator("[data-company-discovery]").getByText("Example Labs").first().waitFor({ timeout: 10000 });

@@ -11,7 +11,7 @@ import { exampleThreads } from "@/lib/inbox/fixtures";
 import { usuallyFreeFor } from "@/lib/account/availability-store";
 import { listThreads } from "@/lib/inbox/store";
 import { errorFields, logEvent } from "@/lib/log";
-import { acceptInboxRequest, deleteInboxRequest, offerInboxTimes, readInboxChat, reportInInbox, saveUsuallyFreeAction, sendInboxMessage } from "./actions";
+import { acceptInboxRequest, deleteInboxRequest, endInboxChat, offerInboxTimes, readInboxChat, reportInInbox, saveUsuallyFreeAction, sendInboxMessage } from "./actions";
 
 export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { index: false } };
 
@@ -60,6 +60,7 @@ async function Inbox({ searchParams }: PageProps<"/inbox">) {
         remove: deleteInboxRequest,
         report: reportInInbox,
         read: readInboxChat,
+        end: endInboxChat,
         offerTimes: offerInboxTimes,
         saveUsuallyFree: saveUsuallyFreeAction,
       }}

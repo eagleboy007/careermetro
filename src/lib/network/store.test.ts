@@ -8,7 +8,7 @@ import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { canViewProfile } from "@/lib/account/settings-store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
-import { acceptRequest, blockInChat, sendMessage, startDirect } from "@/lib/inbox/store";
+import { acceptRequest, blockInChat, report, sendMessage, startDirect } from "@/lib/inbox/store";
 import { DEFAULT_SETTINGS, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { CONNECTION_PENDING_MAX, NETWORK_RESULTS_MAX } from "@/lib/schemas/network";
 import { LIMITS } from "@/lib/shared-limit";
@@ -279,6 +279,39 @@ describe.skipIf(!db)("network store (database)", () => {
     await expect(holder).resolves.toBeUndefined();
     expect((await blocking).ok).toBe(true);
     expect(await areConnected(a, c, db!)).toBe(false);
+  });
+
+  it("Report with block in a direct chat takes the pair lock before the chat row, so a remove can't deadlock with it and an accept can't keep the connection (T97)", async () => {
+    const a = await person("Asha");
+    const c = await person("Esha");
+    await ask(a, c, "other", deps());
+    await answerRequest(c, a, "accept", deps());
+    const chat = await startDirect(a, c, "Hello", { db: db! });
+    if (!chat.ok) throw new Error(chat.error);
+    const id = chat.conversationId;
+    // Another transaction takes the pair's lock and then updates the chat row, as removeConnection and connect do.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = db!.transaction(async (tx) => {
+      await networkPairLock(a, c, tx);
+      locked();
+      await gate;
+      await tx.update(schema.conversations).set({ lastMessageAt: new Date() }).where(eq(schema.conversations.id, id));
+    });
+    await held;
+    let done = false;
+    const reporting = report(c, { conversationId: id, target: "chat", reason: "other", block: true }, { db: db! }).then((r) => ((done = true), r));
+    // The report waits on the pair lock while the holder has it, without holding the chat row.
+    await new Promise((r) => setTimeout(r, 300));
+    expect(done).toBe(false);
+    release();
+    // Neither fails with a deadlock (40P01), and the connection doesn't survive the block.
+    await expect(holder).resolves.toBeUndefined();
+    expect((await reporting).ok).toBe(true);
+    expect(await areConnected(a, c, db!)).toBe(false);
+    expect(await blockedPeople(c, db!)).toEqual([expect.objectContaining({ id: a })]);
   });
 
   it("lists the people you blocked, newest first, and Unblock lifts only your own block (gap list item 34)", async () => {

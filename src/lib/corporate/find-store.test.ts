@@ -9,7 +9,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { saveAccountSettings } from "@/lib/account/settings-store";
 import { setJobSearch } from "@/lib/job-search/store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
-import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
+import { acceptRequest, blockInChat, deleteRequest, endFoundChat, listThreads, sendMessage } from "@/lib/inbox/store";
 import { FOUND_JOB_SEARCH_OFF_LINE, HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
@@ -237,15 +237,52 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     const [chat] = await listThreads(p, fd());
     expect(chat).toMatchObject({ id: sent.conversationId, kind: "application", found: true, jobSearchOff: true });
     expect(chat.state).toBeUndefined();
-    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open. To stop it, use Block or report.");
+    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open until you choose End chat.");
     // Both sides still write; no new request can arrive while search is off.
     expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Still keen to talk?" }, fd())).ok).toBe(true);
     expect((await sendMessage(p, sent.conversationId, "Yes, this week works", fd())).ok).toBe(true);
     expect(await found(s.admin, s.jobId)).toEqual([]);
-    // The person ends it themselves: the chat closes for good.
-    expect(await blockInChat(p, sent.conversationId, fd())).toEqual({ ok: true });
+    // The person ends it themselves with End chat: the chat closes for good and stays in their Inbox as closed.
+    expect(await endFoundChat(p, sent.conversationId, fd())).toEqual({ ok: true });
     expect(await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Hello?" }, fd())).toMatchObject({ ok: false });
-    expect(await listThreads(p, fd())).toEqual([]);
+    const [ended] = await listThreads(p, fd());
+    expect(ended).toMatchObject({ id: sent.conversationId, found: true, state: "closed" });
+    expect(ended.jobSearchOff).toBeUndefined();
+  });
+
+  it("ends an accepted found chat with End chat: no report, no company block, closed for both sides (FR-52)", async () => {
+    const s = await setup("end-chat");
+    const p = await seeker("end-chat", { name: "Priya Nair" });
+    const stranger = await seeker("end-chat-x", { name: "Arjun Mehta" });
+    const [card] = (await found(s.admin, s.jobId)).filter((c) => c.name === "Priya Nair");
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    const id = sent.conversationId;
+    // A request is answered with Delete, not End chat; the company side and anyone else can't end it.
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await acceptRequest(p, id, fd())).toEqual({ ok: true });
+    expect(await endFoundChat(s.admin, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await endFoundChat(stranger, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await sendFoundMessage(s.admin, { conversationId: id, body: "Still keen?" }, fd())).ok).toBe(true);
+
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: true });
+    // Twice (another tab) is fine.
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: true });
+    // No report is filed and the company is not blocked.
+    expect(await db!.select().from(schema.reports).where(eq(schema.reports.reporterId, p))).toEqual([]);
+    expect(await db!.select().from(schema.companyBlocks).where(eq(schema.companyBlocks.userId, p))).toEqual([]);
+    // Closed for both sides: the company can't send, ask again or reopen it, and neither can the person.
+    expect(await sendFoundMessage(s.admin, { conversationId: id, body: "Hello?" }, fd())).toEqual({ ok: false, error: "not_found" });
+    const theirs = await companyFoundChat(s.admin, id, fd());
+    expect(theirs.ok && theirs.chat.state).toBe("closed");
+    expect(await sendMessage(p, id, "One more thing", fd())).toEqual({ ok: false, error: "closed" });
+    const again = (await found(s.admin, s.jobId)).find((c) => c.name === "Priya Nair")!;
+    expect(again.request.state).toBe("closed");
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: again.ref, body: HELLO }, fd())).toMatchObject({ ok: false });
+    // It stays in the person's Inbox as a closed chat, with its messages.
+    const [mine] = await listThreads(p, fd());
+    expect(mine).toMatchObject({ id, found: true, state: "closed" });
+    expect(mine.messages.some((m) => m.text === "Still keen?")).toBe(true);
   });
 
   it("shows the target role of everyone found and filters by target roles and verified profiles, alone or together (T44)", async () => {

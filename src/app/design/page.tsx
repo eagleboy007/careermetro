@@ -1176,8 +1176,10 @@ export default function DesignPage() {
           <CompanyDiscovery data={exampleSettings.discovery} />
         </div>
         <InboxView threads={exampleFoundThreads} />
-        {/* An accepted found chat while the person's job search is off (FR-52): it goes on, with one line saying so. */}
+        {/* An accepted found chat while the person's job search is off (FR-52): it goes on, with one line saying so, and End chat. */}
         <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, jobSearchOff: true }))} />
+        {/* The same chat after End chat (FR-52): closed for both sides, with no report and no company block. End chat above opens its confirm. */}
+        <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, state: "closed" as const }))} />
         <div className="max-w-[720px]">
           <CompanyChat chat={exampleFoundChat} company="Example Labs" />
         </div>
