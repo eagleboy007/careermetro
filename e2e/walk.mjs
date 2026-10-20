@@ -882,6 +882,37 @@ await step("library: goal cards, the details panel, search and filters, Finished
 // opens the post in a new tab and asks "Did you apply?", and Yes starts the tracker. After a reload both lists still
 // have the role. Once the role closes on its board it leaves All and stays in Saved with "Closed on the company's
 // board". The other post stays open and unapplied, so the Express apply step later still finds Apply on company site.
+await step("hardening: the Library's broken-link menu opens with Enter and closes with Escape", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/library");
+    await settled();
+    const main = p.locator("main").first();
+    await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    const toggle = panel.getByRole("button", { name: "Link broken or out of date?" });
+    if (!(await toggle.count())) {
+      const rows = main.locator("li button[aria-controls]");
+      if (!(await rows.count())) throw new Error("the Library lists nothing to open");
+      await rows.first().click();
+      await toggle.waitFor({ timeout: 5000 });
+    }
+    await toggle.focus();
+    await p.keyboard.press("Enter");
+    const reasons = panel.getByRole("group", { name: /^Report / });
+    await reasons.waitFor({ timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.closest('[role="group"]')?.getAttribute("aria-label")?.startsWith("Report ") === true, null, { timeout: 5000 });
+    await p.keyboard.press("Escape");
+    await reasons.waitFor({ state: "detached", timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Link broken or out of date?", null, { timeout: 5000 });
+    if ((await toggle.getAttribute("aria-expanded")) !== "false") throw new Error("the menu button still says it is open");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+  }
+});
 await step("departures: live roles, Updated, save, apply on the company site, Saved and Applied after a reload, a closed role", async () => {
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
   const { default: postgres } = await import("postgres");
@@ -4192,7 +4223,7 @@ await step("hardening: Report and Connect on a profile by keyboard, Cancel gives
 
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
-    const you = p.getByRole("region", { name: `You and ${NAME}` });
+    const you = p.getByRole("region", { name: `You and ${NAME}`, exact: true });
     const open = async () => {
       await p.goto(BASE + `/u/${handle}`);
       await you.waitFor({ timeout: 10000 });
@@ -4342,37 +4373,6 @@ await step("hardening: the avatar menu by keyboard, Escape gives focus back, lig
   } finally {
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
-  }
-});
-await step("hardening: the Library's broken-link menu opens with Enter and closes with Escape", async () => {
-  try {
-    await p.setViewportSize({ width: 1280, height: 900 });
-    await p.emulateMedia({ colorScheme: "light" });
-    await p.goto(BASE + "/library");
-    await settled();
-    const main = p.locator("main").first();
-    await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
-    await p.waitForLoadState("networkidle");
-    const panel = p.getByRole("complementary", { name: "Resource details" });
-    const toggle = panel.getByRole("button", { name: "Link broken or out of date?" });
-    if (!(await toggle.count())) {
-      const rows = main.locator("li button[aria-controls]");
-      if (!(await rows.count())) throw new Error("the Library lists nothing to open");
-      await rows.first().click();
-      await toggle.waitFor({ timeout: 5000 });
-    }
-    await toggle.focus();
-    await p.keyboard.press("Enter");
-    const reasons = panel.getByRole("group", { name: /^Report / });
-    await reasons.waitFor({ timeout: 5000 });
-    await p.keyboard.press("Tab");
-    await p.waitForFunction(() => document.activeElement?.closest('[role="group"]')?.getAttribute("aria-label")?.startsWith("Report ") === true, null, { timeout: 5000 });
-    await p.keyboard.press("Escape");
-    await reasons.waitFor({ state: "detached", timeout: 5000 });
-    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Link broken or out of date?", null, { timeout: 5000 });
-    if ((await toggle.getAttribute("aria-expanded")) !== "false") throw new Error("the menu button still says it is open");
-  } finally {
-    await p.setViewportSize({ width: 1280, height: 900 });
   }
 });
 await step("hardening: job search by keyboard on Departures, the notice card in dark at phone width", async () => {

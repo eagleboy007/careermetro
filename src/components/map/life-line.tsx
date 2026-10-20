@@ -121,7 +121,10 @@ function LifeMark({ s, selected, onSelect }: { s: LifeStation; selected: boolean
   const date = group ? s.years : s.moment.date;
   const dx = s.anchor === "start" ? -8 : s.anchor === "end" ? 8 : 0;
   const text = "[paint-order:stroke] stroke-surface [stroke-width:4px] [stroke-linejoin:round]";
+  // The words sit beside the button, hidden from assistive tech: its name says them in one order, "name, date",
+  // whichever side of the line they are drawn on, so the drawn text never contradicts the name.
   return (
+    <>
     <g
       tabIndex={0}
       role="button"
@@ -151,6 +154,8 @@ function LifeMark({ s, selected, onSelect }: { s: LifeStation; selected: boolean
         className={`fill-surface ${row === "journey" ? "stroke-accent" : "stroke-ink"}`}
         strokeWidth={row === "journey" ? 4.5 : 3.5}
       />
+    </g>
+    <g aria-hidden="true" className="cursor-pointer" onClick={() => onSelect(s.id)}>
       {group && (
         <text x={s.x} y={s.y + 5} textAnchor="middle" className="fill-ink font-mono text-[13px] font-medium">
           {s.items.length}
@@ -176,6 +181,7 @@ function LifeMark({ s, selected, onSelect }: { s: LifeStation; selected: boolean
         </>
       )}
     </g>
+    </>
   );
 }
 
