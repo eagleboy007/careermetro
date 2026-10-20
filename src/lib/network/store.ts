@@ -695,34 +695,35 @@ const provedSql = (now: Date): SQL =>
 const aimsAtSql = (roleSlug: string): SQL =>
   sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select ga.result->>'roleSlug' from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
 
-/** The viewer's own role and city, for the "Aiming for my role" and "My city" filters. */
+/** The viewer's own target role, for the "Aiming for my role" filter. */
 async function viewerOf(userId: string, db: Db) {
-  const [[me], analyses] = await Promise.all([db.select({ city: users.city }).from(users).where(eq(users.id, userId)), analysesOf([userId], db)]);
-  return { city: me?.city ?? null, roleSlug: analyses.get(userId)?.roleSlug ?? null };
+  const analyses = await analysesOf([userId], db);
+  return { roleSlug: analyses.get(userId)?.roleSlug ?? null };
 }
 
-/** The person's own target role (its title) and city, to label Find people's filters; a filter they can't use isn't offered. */
-export async function networkFiltersFor(userId: string, db: Db = getDb()): Promise<{ role: string | null; city: string | null }> {
+/** The person's own target role (its title), to label Find people's filter; a filter they can't use isn't offered. */
+export async function networkFiltersFor(userId: string, db: Db = getDb()): Promise<{ role: string | null }> {
   const me = await viewerOf(userId, db);
-  return { role: me.roleSlug ? (roleTitles.get(me.roleSlug) ?? null) : null, city: me.city };
+  return { role: me.roleSlug ? (roleTitles.get(me.roleSlug) ?? null) : null };
 }
 
 /**
  * Name search (handoff 12j): the start of a first name, last name or handle, over the people `findableBy` allows, never
  * the searcher or anyone with a block either way. Optional filters: aiming for my role (only people who show their
- * target role, so the filter never reveals a hidden one), my city (matched here; nobody's city is sent back, T74),
- * verified. The match and the filters run in SQL, which returns one page of NETWORK_RESULTS_MAX (connections first, then
- * by name), and only that page is worked out and put in Network's order (T77). Counts against the hourly search limit.
+ * target role, so the filter never reveals a hidden one) and verified. There is no city filter for members (T93): with a
+ * name it would tell the searcher whether that person lives in their city, and only companies see a member's city. The
+ * match and the filters run in SQL, which returns one page of NETWORK_RESULTS_MAX (connections first, then by name),
+ * and only that page is worked out and put in Network's order (T77). Counts against the hourly search limit.
  */
 export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {}): Promise<NetworkResult<{ people: NetworkPerson[] }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const input = networkSearchInput.safeParse(raw);
   if (!input.success) return fail("invalid");
-  const { q, sameRole, sameCity, verified } = input.data;
+  const { q, sameRole, verified } = input.data;
   if (!(await takeShared(LIMITS.networkSearchesPerUserHour, userId, { db, now: now.getTime() }))) return fail("limit");
   const me = await viewerOf(userId, db);
-  if ((sameRole && !me.roleSlug) || (sameCity && !me.city)) return { ok: true, people: [] };
+  if (sameRole && !me.roleSlug) return { ok: true, people: [] };
   const match = matchesQuery(q);
   if (!match) return { ok: true, people: [] };
   const page = await db
@@ -736,7 +737,6 @@ export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {
         sql`${users.id} <> ${userId}`,
         shownTo(userId),
         match,
-        sameCity ? eq(users.city, me.city!) : undefined,
         sameRole ? aimsAtSql(me.roleSlug!) : undefined,
         verified ? provedSql(now) : undefined,
       ),

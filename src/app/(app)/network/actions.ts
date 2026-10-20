@@ -93,7 +93,7 @@ export const searchPeopleByName: NetworkActions["search"] = async (q, filters) =
   const account = await currentAccount();
   if (!account) return { error: SIGN_IN };
   const on = (v: unknown) => v === true;
-  const r = await searchNetwork(account.id, { q, sameRole: on(filters?.sameRole), sameCity: on(filters?.sameCity), verified: on(filters?.verified) });
+  const r = await searchNetwork(account.id, { q, sameRole: on(filters?.sameRole), verified: on(filters?.verified) });
   if (!r.ok) return { error: r.error === "invalid" ? NETWORK_QUERY_MESSAGE : NETWORK_ERROR_TEXT[r.error] };
   return { people: r.people.map((p) => networkRow(p, "find")) };
 };

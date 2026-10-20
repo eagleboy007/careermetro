@@ -1,4 +1,4 @@
-import type { ExampleNetworkRow, NetworkData, NetworkRow, ProfileInCommon } from "./types";
+import type { NetworkData, NetworkRow, ProfileInCommon } from "./types";
 
 /* Example Network for /design and the preview without accounts (handoff 12j, prototype v39). Every person is made up. */
 
@@ -26,13 +26,12 @@ export const exampleNetwork: NetworkData = {
   peopleCanFind: false,
   profileLink: null,
   myRole: "Cyber Security Analyst",
-  myCity: "Pune",
 };
 
-/** What an example name search finds. Nobody's city is on a row; `inMyCity` stands in for the server's "In <city>" match. */
-export const exampleSearch: ExampleNetworkRow[] = [
+/** What an example name search finds. Nobody's city is on a row. */
+export const exampleSearch: NetworkRow[] = [
   row({ id: "ex-am", name: "Arjun Mehta", username: "arjun-m", aim: "Cyber Security Analyst", verified: true, common: 6, mutual: 2, state: "none" }),
-  { ...row({ id: "ex-ak", name: "Aditi Kulkarni", username: "aditi-k", aim: "Cloud Engineer", common: 2, mutual: 2, state: "none" }), inMyCity: true },
+  row({ id: "ex-ak", name: "Aditi Kulkarni", username: "aditi-k", aim: "Cloud Engineer", common: 2, mutual: 2, state: "none" }),
 ];
 
 /** Example "In common with you" for a profile on /design: two people on the same line, connected through one friend. */

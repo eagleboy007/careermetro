@@ -107,7 +107,14 @@ export async function jobChecksFor(userIds: string[], db: Pick<Db, "select"> = g
   const out = new Map<string, JobCheckRow[]>();
   if (!userIds.length) return out;
   const rows = await db
-    .select({ userId: jobEmailChecks.userId, employerKey: jobEmailChecks.employerKey, startMonth: jobEmailChecks.startMonth, status: jobEmailChecks.status, checkedAt: jobEmailChecks.checkedAt })
+    .select({
+      userId: jobEmailChecks.userId,
+      employerKey: jobEmailChecks.employerKey,
+      startMonth: jobEmailChecks.startMonth,
+      status: jobEmailChecks.status,
+      checkedAt: jobEmailChecks.checkedAt,
+      employer: jobEmailChecks.employer,
+    })
     .from(jobEmailChecks)
     .where(inArray(jobEmailChecks.userId, userIds));
   for (const { userId, ...row } of rows) out.set(userId, [...(out.get(userId) ?? []), row]);

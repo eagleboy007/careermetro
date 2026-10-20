@@ -30,7 +30,6 @@ async function Network() {
         peopleCanFind: settings.peopleCanFind,
         profileLink: username ? `/u/${username}` : null,
         myRole: filters.role,
-        myCity: filters.city,
       }}
       actions={{
         connect: connectTo,

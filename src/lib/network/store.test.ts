@@ -328,7 +328,7 @@ describe.skipIf(!db)("network store (database)", () => {
     for (const not of [me, hidden, asked, blocker]) expect(ids).not.toContain(not);
     expect(all.people[0].state).toBe("connected");
     expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, state: "none" });
-    // A city is for companies only (T74): never on a member's row, though "In <city>" filters by it on the server.
+    // A city is for companies only (T74): never on a member's row, and no filter matches on it (T93).
     for (const p of all.people) expect(p).not.toHaveProperty("city");
     expect(JSON.stringify(all)).not.toContain("Pune");
     expect(all.people[2]).toMatchObject({ common: 1, aim: null });
@@ -338,13 +338,14 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(byName.ok && byName.people.map((p) => p.id)).toEqual([close]);
     const byHandle = await search(me, { q: `@LATA_${run.slice(0, 4)}` }, deps());
     expect(byHandle.ok && byHandle.people.map((p) => p.id)).toContain(named);
-    const inMyCity = await search(me, { q: tag, sameCity: true }, deps());
-    expect(inMyCity.ok && inMyCity.people.map((p) => p.id)).toEqual([close]);
+    // A sameCity flag sent anyway is ignored (T93): the same people as without it, so it can't tell who lives in my city.
+    const withCity = await search(me, { q: tag, sameCity: true }, deps());
+    expect(withCity.ok && withCity.people.map((p) => p.id)).toEqual(ids);
     // Only people who show their target role: the filter never reveals one that is hidden (Kiran and Karan hide theirs).
     const onMyRole = await search(me, { q: tag, sameRole: true }, deps());
     expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([close]);
-    expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title, city: "Pune" });
-    expect(await networkFiltersFor(asked, db!)).toEqual({ role: null, city: null });
+    expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title });
+    expect(await networkFiltersFor(asked, db!)).toEqual({ role: null });
     // Nobody here has proved a skill yet; then Karan has one.
     const verified = await search(me, { q: tag, verified: true }, deps());
     expect(verified.ok && verified.people).toEqual([]);

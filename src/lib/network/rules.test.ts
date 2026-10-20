@@ -116,7 +116,9 @@ describe("network rules", () => {
     expect(networkQuery.safeParse("@a").success).toBe(false);
     expect(networkQuery.parse("  pri   nai ")).toBe("pri nai");
     expect(networkQuery.safeParse("x".repeat(81)).success).toBe(false);
-    expect(networkSearchInput.parse({ q: "asha" })).toEqual({ q: "asha", sameRole: false, sameCity: false, verified: false });
+    expect(networkSearchInput.parse({ q: "asha" })).toEqual({ q: "asha", sameRole: false, verified: false });
+    // No city filter for members (T93): a stray sameCity is dropped, never applied.
+    expect(networkSearchInput.parse({ q: "asha", sameCity: true })).toEqual({ q: "asha", sameRole: false, verified: false });
   });
 
   describe("Gaps and path", () => {

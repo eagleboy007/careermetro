@@ -500,7 +500,7 @@ Approved 2026-10-19 by the Project manager under Milin's delegation, with the ru
 - At least 2 letters, or an @handle. Matches the start of the first name, last name or handle.
 - Shows only people who turned on "Let people find me", are signed up with a name and aren't suspended. Never people you blocked or who blocked you. *(C13)* Your own connections are always findable by you.
 - Up to 20 results, best first: your connections, then most skills in common, then name. No paging in v1.
-- Each result: the same row as above and the right button (Connect, Requested, Accept, Message). Never email, phone, employer history, gaps or pay. *(C13)* Optional filters Aiming for my role, my city, Verified, and a mutual-connection count.
+- Each result: the same row as above and the right button (Connect, Requested, Accept, Message). Never email, phone, employer history, gaps or pay. *(C13)* Optional filters Aiming for my role and Verified, and a mutual-connection count. No city filter: only companies see a member's city (T93, 2026-10-20).
 - 30 searches an hour per person; results are never exportable.
 - No result: "People who keep Let people find me off can't be found by name. Ask them for their profile link instead."
 

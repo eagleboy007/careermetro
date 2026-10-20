@@ -32,16 +32,12 @@ export type NetworkData = {
   peopleCanFind: boolean;
   /** The person's own profile path ("/u/<handle>"), for "Copy your profile link"; null without a username. */
   profileLink: string | null;
-  /** The person's own target role (its title) and city, for Find people's "Aiming for my role" and "In <city>" filters; null when they have none. */
+  /** The person's own target role (its title), for Find people's "Aiming for my role" filter; null when they have none. */
   myRole: string | null;
-  myCity: string | null;
 };
 
-/** An example search row (/design and the preview without accounts): whether the made-up person is in my city, so the example "In <city>" filter works without a city on the row. */
-export type ExampleNetworkRow = NetworkRow & { inMyCity?: boolean };
-
-/** Find people's optional filters (C13): aiming for my role, in my city, verified. All off by default. */
-export type NetworkFilters = { sameRole: boolean; sameCity: boolean; verified: boolean };
+/** Find people's optional filters (C13): aiming for my role, verified. All off by default. No city filter: only companies see a member's city (T93). */
+export type NetworkFilters = { sameRole: boolean; verified: boolean };
 
 /** Each returns the words to show on failure, or null when it worked. Connect returns how the two now stand. */
 export type NetworkActions = {

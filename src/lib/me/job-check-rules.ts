@@ -15,8 +15,11 @@ type Role = Profile["roles"][number];
 /** A job as the check knows it: the employer as written, its comparison key, and the start month ("" without one). */
 export type JobKey = { employer: string; employerKey: string; startMonth: string };
 
-/** A saved check, as read for a profile. */
-export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date };
+/**
+ * A saved check, as read for a profile. `employer` is the company as written on the job the check was made on, which
+ * tells a resume role and an added role with the same badge key apart (T95); never shown.
+ */
+export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date; employer?: string };
 
 /** What a job on the profile says about its check. Older jobs say nothing (null). */
 export type ExperienceCheck = {

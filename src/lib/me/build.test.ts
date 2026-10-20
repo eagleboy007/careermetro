@@ -227,6 +227,34 @@ describe("what the person added on Me", () => {
     expect(verified.experience[0].check).toEqual({ state: "verified", month: "Oct 2026" });
   });
 
+  it("badges only the job the check was made on when an added role and a resume role share company and start month (T95)", () => {
+    // "CTO, Acme, 2024-01" was added first; then a resume with Analyst at Acme from 2024-01 came, and its check passed.
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z") };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    const both = meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [{ ...passed, employer: "Acme" }] }));
+    expect(badges(both)).toEqual([
+      ["Analyst", "verified"],
+      ["CTO", null],
+    ]);
+    // An older check row without the company as written goes to the resume role too.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [passed] })))).toEqual(badges(both));
+    // Not yet verified: only one "Not verified" label, on the resume role.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }) })))).toEqual([
+      ["Analyst", "not_verified"],
+      ["CTO", null],
+    ]);
+    // The check was made on the added role itself (written "Acme Pvt Ltd", before the resume came): it keeps the badge.
+    const own = meFromProfile(
+      input({ profile: resume, added: added({ roles: [{ ...cto, employer: "Acme Pvt Ltd" }] }), jobChecks: [{ ...passed, employer: "Acme Pvt Ltd" }] }),
+    );
+    expect(badges(own)).toEqual([
+      ["Analyst", null],
+      ["CTO", "verified"],
+    ]);
+    expect(meProfile.safeParse(both).success && meProfile.safeParse(own).success).toBe(true);
+  });
+
   it("puts added education after the resume's, with its row id", () => {
     const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
     expect(me.education).toEqual([
