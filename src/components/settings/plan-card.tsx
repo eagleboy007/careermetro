@@ -39,13 +39,14 @@ export function PlanCard({ plan, actions }: { plan: PlanView; actions?: PlanActi
 
   const toggleBadge = (next: boolean) => {
     if (!actions || pending) return;
+    // The switch moves at once and goes back if the save fails.
+    setBadge(next);
     start(async () => {
       const error = await actions.switchBadge(next).catch(() => FAILED);
-      if (error) setMessage(error);
-      else {
-        setBadge(next);
-        setMessage(next ? "Your Elite badge shows next to your name." : "Your Elite badge is hidden.");
-      }
+      if (error) {
+        setBadge(!next);
+        setMessage(error);
+      } else setMessage(next ? "Your Elite badge shows next to your name." : "Your Elite badge is hidden.");
     });
   };
   const turnOff = () => {

@@ -28,13 +28,14 @@ export function MePlanCard({ plan, onBadge }: { plan: PlanView; onBadge?: (shown
       setShown(next);
       return;
     }
+    // The switch moves at once and goes back if the save fails.
+    setShown(next);
     start(async () => {
       const error = await onBadge(next).catch(() => "That didn't work. Please try again.");
-      if (error) setMessage(error);
-      else {
-        setShown(next);
-        setMessage(next ? "Your Elite badge shows next to your name." : "Your Elite badge is hidden.");
-      }
+      if (error) {
+        setShown(!next);
+        setMessage(error);
+      } else setMessage(next ? "Your Elite badge shows next to your name." : "Your Elite badge is hidden.");
     });
   };
 
