@@ -41,7 +41,7 @@ export function UsuallyFree({ initial, save }: { initial: string[]; save?: (slot
     const slots = sortFree(picked);
     start(async () => {
       const error = await save(slots);
-      say(error ?? "Saved. Ask for times now pre-ticks these hours.");
+      say(error ?? (slots.length ? "Saved. Ask for times now pre-ticks these hours." : "Saved."));
     });
   };
 

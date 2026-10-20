@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { InboxView } from "@/components/inbox/inbox-view";
@@ -9,6 +10,7 @@ import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
 import { usuallyFreeFor } from "@/lib/account/availability-store";
 import { listThreads } from "@/lib/inbox/store";
+import { errorFields, logEvent } from "@/lib/log";
 import { acceptInboxRequest, deleteInboxRequest, offerInboxTimes, readInboxChat, reportInInbox, saveUsuallyFreeAction, sendInboxMessage } from "./actions";
 
 export const metadata: Metadata = { title: "Inbox · CareerMetro", robots: { index: false } };
@@ -47,7 +49,7 @@ async function Inbox({ searchParams }: PageProps<"/inbox">) {
   }
 
   // Usually free (FR-55) is read once for the page: the panel shows it and each "Ask for times" pre-ticks from it.
-  const [threads, usuallyFree] = await Promise.all([listThreads(account.id), usuallyFreeFor(account.id)]);
+  const [threads, usuallyFree] = await Promise.all([listThreads(account.id), usuallyFreeOrNone(account.id)]);
   return (
     <InboxView
       threads={threads}
@@ -81,4 +83,15 @@ export default function InboxPage(props: PageProps<"/inbox">) {
       <Inbox {...props} />
     </Suspense>
   );
+}
+
+// A failed read of Usually free leaves the panel empty instead of taking the whole Inbox down.
+async function usuallyFreeOrNone(userId: string): Promise<string[]> {
+  try {
+    return await usuallyFreeFor(userId);
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "inbox_usually_free_failed", errorFields(error));
+    return [];
+  }
 }

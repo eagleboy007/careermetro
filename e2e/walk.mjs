@@ -1411,7 +1411,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     // Put it all back for the later steps.
     for (const slot of ["Mon 17:00", "Mon 18:00"]) await hours.getByRole("button", { name: slot, exact: true }).click();
     await panel.getByRole("button", { name: "Save", exact: true }).click();
-    await panel.getByText("Saved. Ask for times now pre-ticks these hours.").waitFor({ timeout: 15000 });
+    await panel.getByText("Saved.", { exact: true }).waitFor({ timeout: 15000 });
     await p.goto(BASE + "/settings");
     await settled();
     await requests.setChecked(true, { force: true });
@@ -1419,6 +1419,9 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await settingsSave();
   } finally {
     await p.emulateMedia({ colorScheme: "light" });
+    // Also reset in SQL, so a failure partway never leaves later steps with a changed person.
+    await sql`update user_settings set message_requests = true, open_to_work_in = '{}', usually_free = '{}'
+      where user_id = (select id from users where email like ${testEmail + "%"} order by created_at desc limit 1)`;
     await sql`update job_posts set closed_at = now() where board_token = 'e2e-places'`;
     await sql.end();
   }
