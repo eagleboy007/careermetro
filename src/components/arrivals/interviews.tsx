@@ -9,6 +9,7 @@ import { interviewIcs } from "@/lib/calendar/ics";
 import { dayParts, nextDays } from "@/lib/corporate/slots";
 import type { ArrivalsActions, MyApplicationView, MyInterviewView } from "@/lib/corporate/types";
 import { INTERVIEW_ROUND_LABELS, INTERVIEW_STATUS_LABELS } from "@/lib/schemas/constants";
+import { actionFailed } from "@/lib/api-reply";
 
 /*
  * Interviews on Arrivals (handoff section 9; dev/corporate-plan.md build step 6): "Next up" for the nearest interview,
@@ -113,7 +114,7 @@ export function ApplicationInterviews({ app, actions, onDone }: { app: MyApplica
             onClick={() =>
               start(async () => {
                 if (!actions) return onDone({ error: true, text: "Example applications. Nothing changes here." });
-                const problem = await actions.stopSharing(app.id);
+                const problem = await actions.stopSharing(app.id).catch(actionFailed);
                 onDone(problem ? { error: true, text: problem } : { error: false, text: `Your phone is no longer shared with ${app.company}.` });
               })
             }
@@ -145,7 +146,9 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
   const answer = (kind: "accept" | "decline") =>
     start(async () => {
       if (!respond) return onDone({ error: true, text: "Example applications. Nothing changes here." });
-      const problem = await respond({ interviewId: iv.id, answer: kind, sharePhone: kind === "accept" && share, phone: kind === "accept" && share ? phone : "" });
+      const problem = await respond({ interviewId: iv.id, answer: kind, sharePhone: kind === "accept" && share, phone: kind === "accept" && share ? phone : "" }).catch(
+        actionFailed,
+      );
       if (problem) return onDone({ error: true, text: problem });
       setAccepting(false);
       onDone({ error: false, text: kind === "accept" ? `Accepted: ${iv.when}, ${app.company}.` : `Declined: ${iv.when}, ${app.company}.` });

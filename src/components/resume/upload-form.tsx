@@ -6,11 +6,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
-import { PARSE_STEPS, currentParseStep } from "@/lib/resume/parse-steps";
+import { PARSE_GAVE_UP, PARSE_GIVE_UP_FILE_MS, PARSE_GIVE_UP_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "@/lib/resume/parse-steps";
 import { TARGET_ROLE_CHIPS, saveTargetRole } from "@/lib/target-role";
 
 type Mode = "file" | "text";
-type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string };
+/** `signedIn` comes with a refusal from /api/resume: /builder needs an account, so a signed-out visitor is sent to the roles instead. */
+type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string; code?: string; signedIn?: boolean };
+
+/** Refusals where pasting the text is the way on, so the error offers "Paste text instead" (codes from src/lib/resume). */
+const PASTE_HELPS = new Set(["too_large", "too_many_pages", "too_slow", "unreadable", "unsupported_type", "too_little_text", "unparsed", "timeout"]);
+/** Today's reading budget is spent ("busy" from src/lib/resume/ingest.ts): the builder works without it, on the person's own words. */
+const BUDGET_SPENT = "busy";
 
 const MAX_MB = 4;
 const field = "rounded-sm border border-line-strong bg-surface px-3 py-2.5 text-ink";
@@ -22,23 +28,44 @@ const MORE = "more";
 /** Upload a resume or paste it (FR-4). Consent is required before anything is sent (SEC-1). `demo` never uploads, for /design. */
 /** `builder` shows "No resume yet? Build one" (FR-36), only where the signed-in screens exist. `rolePick` shows the */
 /** target role chips (Today, No resume): the picked role is carried to the role step in this tab (src/lib/target-role.ts). */
-export function UploadForm({ demo = false, builder = false, rolePick = false }: { demo?: boolean; builder?: boolean; rolePick?: boolean }) {
+/** `example` opens /design on a slow reading or on a refusal, with its message, code and whether the visitor is signed in. */
+export function UploadForm({
+  demo = false,
+  builder = false,
+  rolePick = false,
+  example,
+}: {
+  demo?: boolean;
+  builder?: boolean;
+  rolePick?: boolean;
+  example?: "slow" | { message: string; code?: string; signedIn?: boolean };
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("file");
   const [fileName, setFileName] = useState<string | null>(null);
-  const [state, setState] = useState<State>({ kind: "idle" });
+  const [state, setState] = useState<State>(() =>
+    example === "slow" ? { kind: "reading" } : example ? { kind: "error", ...example } : { kind: "idle" },
+  );
   const [role, setRole] = useState<string | null>(null);
   const [step, setStep] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
   const fileInput = useRef<HTMLInputElement>(null);
   const reading = state.kind === "reading";
+  const slowExample = example === "slow";
+  // /builder sends a signed-out visitor to sign in, so the spent-budget refusal offers it only to someone signed in
+  // (the route says so on the refusal; /design's example sets it).
+  const offerBuilder = builder && state.kind === "error" && state.signedIn === true;
 
   // The steps move on a timer while the one request runs (src/lib/resume/parse-steps.ts).
   useEffect(() => {
     if (!reading) return;
-    const start = Date.now();
-    const timer = setInterval(() => setStep(currentParseStep(Date.now() - start)), 500);
+    const start = Date.now() - (slowExample ? SLOW_PARSE_MS : 0);
+    const timer = setInterval(() => {
+      setStep(currentParseStep(Date.now() - start));
+      setElapsed(Date.now() - start);
+    }, 500);
     return () => clearInterval(timer);
-  }, [reading]);
+  }, [reading, slowExample]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,30 +77,42 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
     }
     const file = form.get("file");
     if (mode === "file" && file instanceof File && file.size > MAX_MB * 1024 * 1024) {
-      setState({ kind: "error", message: `This file is larger than ${MAX_MB} MB. Please upload a smaller file.` });
+      setState({ kind: "error", message: `This file is larger than ${MAX_MB} MB. Please upload a smaller file.`, code: "too_large" });
       return;
     }
     if (mode === "file") form.delete("text");
     else form.delete("file");
 
     setStep(0);
+    setElapsed(0);
     setState({ kind: "reading" });
     if (demo) return;
     // A pick from an earlier, unfinished visit to Today never carries into an upload from elsewhere.
     saveTargetRole(rolePick && role !== MORE ? role : null);
+    // A reply that never comes (a connection dropped without an error) ends the wait instead of spinning for ever.
+    const giveUp = new AbortController();
+    // A file has to arrive before the route's own limit starts, and fetch can't say when it has, so it gets longer.
+    const timer = setTimeout(() => giveUp.abort(), mode === "file" ? PARSE_GIVE_UP_FILE_MS : PARSE_GIVE_UP_MS);
     try {
-      const res = await fetch("/api/resume", { method: "POST", body: form });
-      const data = await readApiReply(res);
+      const res = await fetch("/api/resume", { method: "POST", body: form, signal: giveUp.signal });
+      const data = await readApiReply(res, giveUp.signal);
       if (data.ok && typeof data.resumeId === "string") {
         router.push(`/resume/${data.resumeId}`);
         return;
       }
-      setState({ kind: "error", message: data.error ?? "Something went wrong. Please try again." });
+      const code =
+        typeof data.code === "string" ? data.code : res.status === 413 ? "too_large" : res.status === 504 ? "timeout" : undefined;
+      setState({ kind: "error", message: data.error ?? "Something went wrong. Please try again.", code, signedIn: data.signedIn === true });
     } catch {
-      setState({ kind: "error", message: "We couldn't reach the server. Check your connection and try again." });
+      setState(
+        giveUp.signal.aborted
+          ? { kind: "error", message: PARSE_GAVE_UP, code: "timeout" }
+          : { kind: "error", message: "We couldn't reach the server. Check your connection and try again." },
+      );
+    } finally {
+      clearTimeout(timer);
     }
   }
-
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
@@ -174,7 +213,7 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
               </li>
             ))}
           </ol>
-          <p className="text-sm text-muted">This usually takes 10 to 30 seconds.</p>
+          <p className="text-sm text-muted">{parseWaitNote(elapsed)}</p>
         </div>
       )}
 
@@ -188,9 +227,20 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
       </label>
 
       {state.kind === "error" && (
-        <p role="alert" className="text-sm text-bad">
-          {state.message}
-        </p>
+        <div className="flex flex-col items-start gap-2">
+          <p role="alert" className="text-sm text-bad">
+            {state.message}
+          </p>
+          {state.code === BUDGET_SPENT ? (
+            <Link href={offerBuilder ? "/builder" : "/roles"} className="text-sm font-medium text-ink underline underline-offset-2">
+              {offerBuilder ? "Build your resume from a few answers instead" : "Browse the roles we cover meanwhile"}
+            </Link>
+          ) : state.code && PASTE_HELPS.has(state.code) && mode === "file" ? (
+            <Button type="button" variant="ghost" onClick={() => setMode("text")}>
+              Paste text instead
+            </Button>
+          ) : null}
+        </div>
       )}
 
       <div className="flex flex-wrap items-center gap-3">

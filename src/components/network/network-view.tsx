@@ -603,38 +603,59 @@ function Confirm({ title, body, yes, onYes, onNo, busy }: { title: string; body:
 }
 
 function Empty({ tab, profileLink, onFind, onCopied }: { tab: NetworkTab; profileLink: string | null; onFind: () => void; onCopied: (text: string) => void }) {
-  if (tab === "requests") return <EmptyBox title="No requests waiting">When someone asks to connect, it shows here and as a count next to Network. Requests you ignore end quietly; the sender isn&rsquo;t told.</EmptyBox>;
-  if (tab === "sent") return <EmptyBox title="No requests sent">Requests you send wait here until they are accepted, withdrawn, or 30 days pass.</EmptyBox>;
+  const find = (
+    <button type="button" className={ink} onClick={onFind}>
+      <Search {...ICON} />
+      Find someone you know
+    </button>
+  );
+  const copy = profileLink ? <CopyProfileLink profileLink={profileLink} onCopied={onCopied} /> : null;
+  if (tab === "requests")
+    return (
+      <EmptyBox title="No requests waiting">
+        When someone asks to connect, it shows here and as a count next to Network. Requests you ignore end quietly; the sender isn&rsquo;t told.
+        <span className="mt-2 flex flex-wrap gap-1.5">{copy ?? find}</span>
+      </EmptyBox>
+    );
+  if (tab === "sent")
+    return (
+      <EmptyBox title="No requests sent">
+        Requests you send wait here until they are accepted, withdrawn, or 30 days pass.
+        <span className="mt-2 flex flex-wrap gap-1.5">{find}</span>
+      </EmptyBox>
+    );
   return (
     <EmptyBox title="No connections yet">
       Find people you already know by name. Connections can see your gaps if you share them with connections.
       <span className="mt-2 flex flex-wrap gap-1.5">
-        <button type="button" className={ink} onClick={onFind}>
-          <Search {...ICON} />
-          Find someone you know
-        </button>
-        {profileLink && (
-          <button
-            type="button"
-            className={ghost}
-            onClick={() => {
-              const link = `${window.location.origin}${profileLink}`;
-              if (!navigator.clipboard) {
-                onCopied(`Your profile link: ${link}`);
-                return;
-              }
-              navigator.clipboard.writeText(link).then(
-                () => onCopied("Your profile link is copied."),
-                () => onCopied(`Your profile link: ${link}`),
-              );
-            }}
-          >
-            <Link2 {...ICON} />
-            Copy your profile link
-          </button>
-        )}
+        {find}
+        {copy}
       </span>
     </EmptyBox>
+  );
+}
+
+/** Copies the person's own profile link, or shows it where the browser can't copy. */
+function CopyProfileLink({ profileLink, onCopied }: { profileLink: string; onCopied: (text: string) => void }) {
+  return (
+    <button
+      type="button"
+      className={ghost}
+      onClick={() => {
+        const link = `${window.location.origin}${profileLink}`;
+        if (!navigator.clipboard) {
+          onCopied(`Your profile link: ${link}`);
+          return;
+        }
+        navigator.clipboard.writeText(link).then(
+          () => onCopied("Your profile link is copied."),
+          () => onCopied(`Your profile link: ${link}`),
+        );
+      }}
+    >
+      <Link2 {...ICON} />
+      Copy your profile link
+    </button>
   );
 }
 

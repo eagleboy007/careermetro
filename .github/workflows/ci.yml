@@ -32,6 +32,11 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm audit --omit=dev --audit-level=high
+      # GitHub's advisory database lists new advisories before npm audit's does (Next 16.4.0's, 2026-10).
+      - name: Check runtime dependencies against GitHub's advisories
+        run: node scripts/check-advisories.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   # Walks the whole app in a real browser against a production build, signed-in screens included (e2e/README.md).
   e2e:

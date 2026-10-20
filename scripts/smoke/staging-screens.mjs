@@ -6,11 +6,12 @@
 // to connect. No member's city may reach the other's screen or the page's data (Network rows, Sent, the profile, the
 // bell).
 //
-// With SMOKE_ADMIN_EMAIL (optional; a test-user address the deployment treats as an admin, docs/secrets.md) the rest
-// of the company side runs too, in a third browser: B sets up a company with the test-mode code, the admin verifies
-// it, B posts a job, A opens Gaps for the built resume and sends it with Express apply, B moves A to Offer and A sees
-// it under Offers on Arrivals; A reports the job and B reports a Library link, and the admin acknowledges and
-// dismisses both (Reports, Library review). Without it those steps print "skipped: ...".
+// With SMOKE_ADMIN_EMAIL (a test-user address the deployment treats as an admin; the workflow sets admin@careermetro.test) the rest
+// of the company side runs too, on a careermetro-*.vercel.app preview only (never production, careermetro.vercel.app),
+// in a third browser: B sets up a company with the test-mode code, the admin verifies it, B posts a job, A opens Gaps
+// for the built resume and sends it with Express apply, B moves A to Offer and A sees it under Offers on Arrivals; A
+// reports the job and B reports a Library link, and the admin acknowledges and dismisses both (Reports, Library
+// review). Without it, or on any other host, those steps print "skipped: ...".
 //
 //   BASE=https://careermetro-git-staging-career-metro.vercel.app BYPASS=... node scripts/smoke/staging-screens.mjs
 //
@@ -18,7 +19,7 @@
 // x-vercel-protection-bypass header to that site only, and only when it is a careermetro-*.vercel.app host. The header and
 // the test emails (the admin's too) are never printed. One line per step, ok or FAIL; the exit code is 1 on any
 // failure. The clean-up runs after any failed step or crash, and when the script's own deadline (SMOKE_DEADLINE_MIN,
-// default 20) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
+// default 18) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
 // test accounts are deleted, as prod-smoke.md section 8 says. On SIGINT or SIGTERM (a cancel) it starts too, but
 // GitHub gives a cancelled job only about 10 seconds, so it may not finish then. The company itself can't be deleted in
 // the app, and a fresh account can't take over an old one without that company's admin, so each admin run leaves one:
@@ -79,10 +80,21 @@ for (const u of [A, B]) u.handle = `smoke-${letters(10)}`;
  * admin is a test user whose address Preview's ADMIN_EMAILS lists, or admin@careermetro.test while it is unset
  * (src/lib/admin/access.ts). Never deleted: it is the same account every run.
  */
-const ADMIN_EMAIL = (process.env.SMOKE_ADMIN_EMAIL || "").trim();
+const ADMIN_EMAIL_SET = (process.env.SMOKE_ADMIN_EMAIL || "").trim();
+// On staging that address signs anyone in as the admin, so it is only typed into the project's own preview hosts (the
+// bypass's, above), and never into production, whatever BASE says.
+const PROD_HOST = "careermetro.vercel.app";
+const HOST = new URL(BASE).host;
+const ADMIN_HOST_OK = HOST !== PROD_HOST && BYPASS_HOST.test(HOST);
+const ADMIN_EMAIL = ADMIN_HOST_OK ? ADMIN_EMAIL_SET : "";
 const ADMIN = ADMIN_EMAIL ? { tag: "admin", first: "Smoke", last: "Admin", name: "Smoke Admin", email: ADMIN_EMAIL, ctx: null, page: null, signedUp: false } : null;
-const ADMIN_DOMAIN = ADMIN_EMAIL.split("@")[1] ?? "";
-const NO_ADMIN = "skipped: SMOKE_ADMIN_EMAIL is not set, so there is no admin test account";
+const ADMIN_DOMAIN = ADMIN_EMAIL_SET.split("@")[1] ?? "";
+const NO_ADMIN = !ADMIN_EMAIL_SET
+  ? "skipped: SMOKE_ADMIN_EMAIL is not set, so there is no admin test account"
+  : HOST === PROD_HOST
+    ? `skipped: SMOKE_ADMIN_EMAIL is never used on production (${PROD_HOST})`
+    : `skipped: SMOKE_ADMIN_EMAIL is only used on careermetro-*.vercel.app previews, not ${HOST}, and never on production (${PROD_HOST})`;
+if (ADMIN_EMAIL_SET && !ADMIN) console.log(`note: ${NO_ADMIN.replace(/^skipped: /, "")}`);
 /** The company B sets up and the job it posts: unique names, so every check finds this run's rows only. */
 const CO = { name: `Smoke Labs ${cap(letters(6))}`, domain: `smoke${Date.now()}${letters(4)}.example-labs.test` };
 const JOB = { title: `Smoke Data Analyst ${cap(letters(6))}`, posted: false, closed: false };
@@ -95,7 +107,7 @@ const left = { applied: false, withdrawn: false, jobReport: false, jobReportDone
 /** Never lets the bypass value or a test email reach the log, whatever an error message carries. */
 const redact = (s) => {
   let out = String(s);
-  for (const secret of [BYPASS, A.email, A.email.toLowerCase(), B.email, B.email.toLowerCase(), ADMIN_EMAIL, ADMIN_EMAIL.toLowerCase()]) if (secret) out = out.split(secret).join("[hidden]");
+  for (const secret of [BYPASS, A.email, A.email.toLowerCase(), B.email, B.email.toLowerCase(), ADMIN_EMAIL_SET, ADMIN_EMAIL_SET.toLowerCase()]) if (secret) out = out.split(secret).join("[hidden]");
   return out;
 };
 
@@ -169,6 +181,12 @@ const path = (p) => {
     return "?";
   }
 };
+/** With SMOKE_SHOTS, a screenshot of a failed step. The email field and any line with a test address (the admin's domain too) are masked. */
+const shoot = async (p, name) => {
+  if (!SHOTS) return;
+  const mask = [p.locator('input[type="email"], input[name="email"]'), ...[EMAIL_DOMAIN, ADMIN_DOMAIN].filter(Boolean).map((d) => p.getByText(d, { exact: false }))];
+  await p.screenshot({ path: `${SHOTS}/screens-${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
+};
 /**
  * One line per step, on one user's page (its path is printed and, on a failure, its screenshot kept). A failed
  * `critical` step skips everything after it; `needs` names earlier steps this one can't run without. A step may return
@@ -198,21 +216,24 @@ const step = async (name, u, fn, { critical = false, needs = [], cleanup = false
     failedSteps.add(name);
     console.log("FAIL", name, "@", path(p), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging screens::${redact(name)}`);
-    if (SHOTS) {
-      // The email field and any line with a test address (the admin's domain too) are masked.
-      const mask = [p.locator('input[type="email"], input[name="email"]'), ...[EMAIL_DOMAIN, ADMIN_DOMAIN].filter(Boolean).map((d) => p.getByText(d, { exact: false }))];
-      await p.screenshot({ path: `${SHOTS}/screens-${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
-    }
+    // A clean-up part that ran out of time took its screenshot before its page was closed (cleanStep).
+    if (!p.isClosed()) await shoot(p, name);
     if (critical) blockedBy = name;
     return false;
   }
 };
+/**
+ * The clean-up's cap on any one wait (0 before it starts): its parts must fit in a few minutes after the deadline, inside
+ * the workflow step's timeout.
+ */
+let cleanupMs = 0;
+const upTo = (ms) => (cleanupMs ? Math.min(ms, cleanupMs) : ms);
 // The same wait as the walk and the dry run.
 const settled = (p) =>
   p
     .getByText(/Comparing your resume|Building your path|Loading…/)
     .first()
-    .waitFor({ state: "detached", timeout: 90000 })
+    .waitFor({ state: "detached", timeout: upTo(90000) })
     .catch(() => {});
 const open = async (p, route) => {
   await p.goto(BASE + route);
@@ -220,7 +241,7 @@ const open = async (p, route) => {
   await settled(p);
 };
 /** A toast or status line with these words (the Library and Departures toasts are role=status). */
-const toast = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: 15000 });
+const toast = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: upTo(15000) });
 /** "Continue as test user" with this user's name and email; returns the path it lands on. */
 const testSignIn = async (u) => {
   const p = u.page;
@@ -232,7 +253,7 @@ const testSignIn = async (u) => {
   await p.getByRole("textbox", { name: "Name", exact: true }).fill(u.name);
   await p.getByRole("textbox", { name: "Email", exact: true }).fill(u.email);
   await button.click();
-  await p.waitForURL((url) => !url.pathname.startsWith("/sign-in"), { timeout: 30000 });
+  await p.waitForURL((url) => !url.pathname.startsWith("/sign-in"), { timeout: upTo(30000) });
   await p.waitForLoadState("networkidle");
   return path(p);
 };
@@ -270,13 +291,14 @@ const noCityOnRows = async (p, min = 1) => {
 const payloadDuring = async (u, fn) => {
   const bodies = [];
   const reads = [];
+  let unread = 0;
   const onResponse = (res) => {
     let origin = "";
     try {
       origin = new URL(res.url()).origin;
     } catch {}
     if (origin !== ORIGIN || !/html|x-component|json|text\/plain/.test(res.headers()["content-type"] ?? "")) return;
-    reads.push(res.text().then((t) => bodies.push(t), () => {}));
+    reads.push(res.text().then((t) => bodies.push(t), () => unread++));
   };
   u.ctx.on("response", onResponse);
   try {
@@ -285,6 +307,8 @@ const payloadDuring = async (u, fn) => {
     u.ctx.off("response", onResponse);
   }
   await Promise.all(reads);
+  // A run whose bodies all failed to read would check only the HTML, and pass on data it never saw.
+  if (!bodies.length) throw new Error(`read no page, RSC or fetch body (${unread} failed to read), so the data can't be checked`);
   bodies.push(await u.page.content().catch(() => ""));
   return bodies.join("\n");
 };
@@ -310,7 +334,7 @@ const clickUntil = async (p, box, words, want = true) => {
 const row = (p, u) => p.locator("main li[data-person]").filter({ hasText: u.name });
 const bell = (p) => p.locator("header button[data-bell]");
 /** The words a server action announces in a status line. */
-const said = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: 15000 });
+const said = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: upTo(15000) });
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** A step that needs the admin test account prints why it didn't run, the way an empty board does. */
 const AS_ADMIN = ADMIN ?? A;
@@ -321,9 +345,9 @@ const reportRow = (p) => p.locator("article", { hasText: JOB.title });
 /** Library review's row for B's link, dismissed. */
 const dismissLink = async (p) => {
   await open(p, "/admin/library");
-  await p.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+  await p.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: upTo(15000) });
   const link = p.locator("article").filter({ has: p.getByRole("heading", { name: libTitle, exact: true, level: 3 }) });
-  await link.waitFor({ timeout: 15000 });
+  await link.waitFor({ timeout: upTo(15000) });
   // Dismiss closes every open report on the link. On staging and previews they are all synthetic (earlier runs' among
   // them), so it is pressed whatever the count, and reports never pile up.
   await link.getByText(/Link is broken · \d+/).first().waitFor();
@@ -350,12 +374,46 @@ const deleteAccount = async (u) => {
   await p.getByRole("button", { name: "Delete", exact: true }).click();
   await p.getByLabel("Type DELETE to confirm", { exact: true }).fill("DELETE");
   await p.getByRole("button", { name: "Delete my account", exact: true }).click();
-  await p.waitForURL(/\/account\/deleted/, { timeout: 30000 });
+  await p.waitForURL(/\/account\/deleted/, { timeout: upTo(30000) });
   u.deleted = true;
   await p.goto(BASE + "/today");
-  await p.waitForURL(/\/sign-in/, { timeout: 30000 });
+  await p.waitForURL(/\/sign-in/, { timeout: upTo(30000) });
 };
 
+/**
+ * The clean-up's budget: 15 seconds for any one action or wait, 40 for a whole part. A part runs at most once (one that
+ * failed is not tried again), so its six parts (four company ones, two accounts) end within 4 minutes, inside the 7
+ * between the deadline and the workflow step's timeout, with time left for the step in flight at the deadline (capped
+ * there the same way).
+ */
+const CLEAN_ACTION_MS = 15000;
+const CLEAN_PART_MS = 40000;
+const capPage = (pg) => {
+  pg.setDefaultTimeout(CLEAN_ACTION_MS);
+  pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
+};
+/**
+ * One clean-up part as a step. Past CLEAN_PART_MS it fails: its screenshot is taken, then the user's page is closed
+ * (stopping whatever it was waiting for) and replaced with a fresh one for the next part.
+ */
+const cleanStep = async (name, u, fn) => {
+  if (failedSteps.has(name)) return;
+  await step(name, u, (p) => {
+    let timer;
+    const limit = new Promise((_, reject) => {
+      timer = setTimeout(async () => {
+        await shoot(p, name);
+        u.page = await u.ctx.newPage().catch(() => u.page);
+        if (u.page !== p) {
+          capPage(u.page);
+          await p.close().catch(() => {});
+        }
+        reject(new Error(`clean-up part took over ${CLEAN_PART_MS / 1000} seconds`));
+      }, CLEAN_PART_MS);
+    });
+    return Promise.race([fn(p), limit]).finally(() => clearTimeout(timer));
+  }, { cleanup: true });
+};
 /**
  * Undoes what the run made, whatever failed before it, so a preview never keeps a half-checked account or a live test
  * job: A's application, B's job, any report still open, then both accounts. Each part runs only when its thing exists.
@@ -365,49 +423,53 @@ let cleaning = null;
 const cleanUp = () =>
   (cleaning ??= (async () => {
     blockedBy = "";
-    // After a signal, a step that didn't finish may still hold the old pages: each user gets a fresh one.
-    if (freshPages) for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) u.page = await u.ctx.newPage().catch(() => u.page);
+    cleanupMs = CLEAN_ACTION_MS;
+    for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) {
+      // After a signal, a step that didn't finish may still hold the old pages: each user gets a fresh one.
+      if (freshPages) u.page = await u.ctx.newPage().catch(() => u.page);
+      capPage(u.page);
+    }
     await undoCompany();
-    // Once more, for anything a step still running at a signal made meanwhile (a part already done is not repeated; one
-    // that failed is tried again).
+    // Once more, for anything a step still running at a signal made meanwhile. A part already done is not repeated, and
+    // nor is one that failed: cleanStep skips it.
     await undoCompany();
     for (const u of [B, A]) {
-      if (u.signedUp && !u.deleted) await step(`8 delete test user ${u.tag.toUpperCase()}: /account/deleted, then signed out`, u, () => deleteAccount(u), { cleanup: true });
+      if (u.signedUp && !u.deleted) await cleanStep(`8 delete test user ${u.tag.toUpperCase()}: /account/deleted, then signed out`, u, () => deleteAccount(u));
     }
   })());
 /** The company side's part of the clean-up: A's application, B's job, the reports still open. */
 const undoCompany = async () => {
   if (left.applied && !left.withdrawn && A.signedUp && !A.deleted) {
-    await step("clean-up 1 A withdraws the application on Arrivals", A, async (p) => {
+    await cleanStep("clean-up 1 A withdraws the application on Arrivals", A, async (p) => {
       await open(p, "/arrivals");
       await p.getByRole("button", { name: `Withdraw ${JOB.title} at ${CO.name}`, exact: true }).click();
       await p.getByRole("button", { name: "Withdraw application", exact: true }).click();
       await said(p, `Withdrawn: ${JOB.title} at ${CO.name}.`);
       left.withdrawn = true;
-    }, { cleanup: true });
+    });
   }
   if (JOB.posted && !JOB.closed && B.signedUp && !B.deleted) {
     // Closed, not paused: deleting B's account leaves a verified company's open job live otherwise.
-    await step("clean-up 2 B closes the job: Close, Close job, so it leaves Departures for good", B, async (p) => {
+    await cleanStep("clean-up 2 B closes the job: Close, Close job, so it leaves Departures for good", B, async (p) => {
       await open(p, "/corporate");
       await p.getByRole("button", { name: `Close ${JOB.title}`, exact: true }).click();
       await p.getByRole("button", { name: "Close job", exact: true }).click();
       await said(p, "Closed. It stays here for your records.");
       JOB.closed = true;
-    }, { cleanup: true });
+    });
   }
   if (ADMIN && left.jobReport && !left.jobReportDone) {
-    await step("clean-up 3 the admin dismisses the job report still open", ADMIN, async (p) => {
+    await cleanStep("clean-up 3 the admin dismisses the job report still open", ADMIN, async (p) => {
       await open(p, "/admin/reports");
       await reportRow(p).getByRole("button", { name: /^Dismiss: / }).click();
       await said(p, "Dismissed. It leaves the list.");
       left.jobReportDone = true;
-    }, { cleanup: true });
+    });
   }
   if (ADMIN && left.linkReport && !left.linkReportDone) {
-    await step("clean-up 4 the admin dismisses B's link report still open", ADMIN, async (p) => {
+    await cleanStep("clean-up 4 the admin dismisses B's link report still open", ADMIN, async (p) => {
       await dismissLink(p);
-    }, { cleanup: true });
+    });
   }
 };
 
@@ -425,14 +487,17 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
     process.exit(1);
   });
 }
-// The script's own deadline, a few minutes inside the workflow step's timeout: once it passes, the step running
-// finishes, the rest are skipped and the clean-up runs with time to spare.
-const DEADLINE_MIN = Number(process.env.SMOKE_DEADLINE_MIN) || 20;
+// The script's own deadline, 7 minutes inside the workflow step's timeout: once it passes, the step running finishes
+// under the clean-up's caps (set on every open page here), the rest are skipped and the clean-up runs with time to spare.
+const DEADLINE_MIN = Number(process.env.SMOKE_DEADLINE_MIN) || 18;
 setTimeout(() => {
   if (interrupted) return;
   failed++;
   interrupted = true;
   console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and cleaning up`);
+  // The step in flight gets the clean-up's caps too: its next waits end within CLEAN_ACTION_MS.
+  cleanupMs = CLEAN_ACTION_MS;
+  for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) if (u.page && !u.page.isClosed()) capPage(u.page);
 }, DEADLINE_MIN * 60_000).unref();
 
 try {
@@ -457,6 +522,11 @@ try {
       await p.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
       await p.getByRole("button", { name: "Save changes", exact: true }).click();
       await p.getByText("Settings saved.", { exact: true }).waitFor({ state: "attached", timeout: 15000 });
+      // "Saved" is the page's word; a reload shows what the server kept.
+      await open(p, "/settings");
+      const city = await p.getByRole("combobox", { name: /^Current city/ }).inputValue();
+      if (city !== u.city) throw new Error(`after a reload Current city is "${city}", not ${u.city}: the city wasn't saved`);
+      if ((await p.getByLabel("Username").inputValue()) !== u.handle) throw new Error("after a reload the username isn't the one saved");
     });
   }
 

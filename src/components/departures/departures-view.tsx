@@ -7,7 +7,18 @@ import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactN
 import { JobPostingForm } from "@/components/gaps/job-posting-form";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
-import { citiesOf, DEPARTURES_LEDE, filterDepartures, initials, readiness, startFilters, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
+import {
+  citiesOf,
+  DEPARTURES_LEDE,
+  departuresEmpty,
+  filterDepartures,
+  initials,
+  NO_FILTERS,
+  readiness,
+  startFilters,
+  type DepartureFilters,
+  type DepartureTab,
+} from "@/lib/departures/filter";
 import type { JobPost, RolePrepView } from "@/lib/schemas";
 import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
@@ -25,7 +36,8 @@ export type DepartureActions = {
 };
 
 const FAILED = "That didn't work. Please try again.";
-const EMPTY_SAVED = "Nothing saved yet. Tap the bookmark on anything you want to come back to.";
+/** The empty list's next step: quieter than Apply, with the control edge of a button. */
+const quiet = `${btn} border border-line-strong text-ink hover:bg-surface-2`;
 const CLOSED = "Closed on the company's board";
 
 /**
@@ -83,6 +95,8 @@ export function DeparturesView({
     timer.current = setTimeout(() => setToast(null), 3200);
   };
   const detailId = useId();
+  // The paste box's id, for the empty list's "Paste a job post" link: one per instance, as /design shows several.
+  const pasteId = useId();
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
@@ -221,26 +235,16 @@ export function DeparturesView({
             ))}
           </ul>
         ) : (
-          <p className="rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
-            {filters.tab === "all" && filters.yourPlaces && places.length > 0 && jobs.some((j) => !j.closed) ? (
-              <>
-                No roles in your places yet. Try Any city, or{" "}
-                <Link href="/settings#acc-pay" className="text-ink underline underline-offset-2">
-                  add places in Settings
-                </Link>
-                .
-              </>
-            ) : filters.tab === "all"
-              ? jobs.some((j) => !j.closed)
-                ? "No roles match. Try another city or type, or clear the search."
-                : "No roles from company job boards yet. They arrive with the next daily update."
-              : filters.tab === "saved" && saved.size === 0
-                ? EMPTY_SAVED
-                : `Nothing ${filters.tab} matches yet.`}
-          </p>
+          <EmptyList
+            empty={departuresEmpty(filters, { open: openCount, places, saved: saved.size, applied: applied.size })}
+            pasteId={pasteId}
+            onClear={() => set({ ...NO_FILTERS, tab: filters.tab })}
+            onEveryCity={() => set({ yourPlaces: false, city: null })}
+            onAll={() => set({ tab: "all" })}
+          />
         )}
 
-        <PasteBox resumeId={resumeId} demo={demo} />
+        <PasteBox id={pasteId} resumeId={resumeId} demo={demo} />
         <p
           role="status"
           className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[700px]:rounded-full min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
@@ -636,16 +640,67 @@ function RolePrep({ prep }: { prep: RolePrepView }) {
 }
 
 /**
+ * Why the list is empty, with one next step (src/lib/departures/filter.ts, departuresEmpty). "Show every city" drops
+ * only the city filter, keeping the tab, search and type; `pasteId` is the paste box's id.
+ */
+function EmptyList({
+  empty,
+  pasteId,
+  onClear,
+  onEveryCity,
+  onAll,
+}: {
+  empty: ReturnType<typeof departuresEmpty>;
+  pasteId: string;
+  onClear: () => void;
+  onEveryCity: () => void;
+  onAll: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
+      <p>{empty.text}</p>
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        {empty.kind === "places" && (
+          <>
+            <button type="button" className={quiet} onClick={onEveryCity}>
+              Show every city
+            </button>
+            <Link href="/settings#acc-pay" className="text-ink underline underline-offset-2">
+              Add places in Settings
+            </Link>
+          </>
+        )}
+        {empty.kind === "filtered" && (
+          <button type="button" className={quiet} onClick={onClear}>
+            Clear filters
+          </button>
+        )}
+        {empty.kind === "no_roles" && (
+          <a href={`#${pasteId}`} className={quiet}>
+            Paste a job post
+          </a>
+        )}
+        {(empty.kind === "no_saved" || empty.kind === "no_applied") && (
+          <button type="button" className={quiet} onClick={onAll}>
+            See all roles
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
  * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
  * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
  * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
  * (the signed-out example and /design) checks the fields and saves nothing.
  */
-function PasteBox({ resumeId, demo }: { resumeId: string | null; demo: boolean }) {
+function PasteBox({ id, resumeId, demo }: { id: string; resumeId: string | null; demo: boolean }) {
   const router = useRouter();
   const [opening, startOpening] = useTransition();
   return (
-    <section aria-label="Paste a job post" className="mt-1.5 flex flex-col gap-2.5">
+    <section id={id} aria-label="Paste a job post" className="mt-1.5 flex scroll-mt-20 flex-col gap-2.5">
       <div className="flex flex-wrap items-baseline gap-2.5">
         <h3 className="text-[1.05rem] font-semibold">Saw a role somewhere else?</h3>
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">paste the job post</span>

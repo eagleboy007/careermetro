@@ -36,7 +36,7 @@ import { RoleSkillList } from "@/components/roles/role-skill-list";
 import { SiteHeader } from "@/components/site/site-header";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
-import { PageNotice } from "@/components/ui/page-notice";
+import { OFFLINE_NOTICE, PageNotice } from "@/components/ui/page-notice";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
@@ -405,10 +405,18 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Page notice</h2>
-        <p className="text-sm text-muted">Error and not-found pages. Says what happened and gives a way forward.</p>
+        <p className="text-sm text-muted">Error and not-found pages. Says what happened and gives a way forward. Then an error page while the browser is offline.</p>
         <div className="rounded-lg border border-line bg-surface">
           <PageNotice title="We can't find that page" text="The link may be old, or the page may belong to someone else.">
             <ButtonLink href="/">Go to the home page</ButtonLink>
+          </PageNotice>
+        </div>
+        <div className="rounded-lg border border-line bg-surface">
+          <PageNotice title={OFFLINE_NOTICE.title} text={`${OFFLINE_NOTICE.text} Your goals and progress are safe.`}>
+            <Button type="button">Try again</Button>
+            <ButtonLink href="/today" variant="ghost">
+              Go to Today
+            </ButtonLink>
           </PageNotice>
         </div>
       </section>
@@ -539,6 +547,11 @@ export default function DesignPage() {
         </p>
         <DeparturesView jobs={exampleJobs} places={["Remote", "Bengaluru"]} resumeId="example" demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} places={["Kochi"]} resumeId="example" demo />
+        <p className="text-sm text-muted">
+          No open roles at all: the empty list points to the paste box. Filters that hide every role offer Clear filters, and an empty Saved or Applied
+          tab offers See all roles.
+        </p>
+        <DeparturesView jobs={[]} updated="Updated 07:00" resumeId="example" demo />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -852,6 +865,11 @@ export default function DesignPage() {
           example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />
+        <p className="text-sm text-muted">
+          Empty Network: no connections (Find someone you know, Copy your profile link), and on the Requests and Sent tabs a next step each (Copy your
+          profile link, Find someone you know).
+        </p>
+        <NetworkView data={{ ...exampleNetwork, connections: [], requests: [], sent: [], profileLink: "/u/arjun-m" }} example={exampleSearch} />
         <h3 className="text-lg font-semibold">On a profile: connect, shared counts and In common with you</h3>
         <p className="text-sm text-muted">
           The strip of shared counts, then interests both list, skills, &ldquo;Gaps and path&rdquo; (only when the viewer may see the owner&rsquo;s gaps
@@ -1451,6 +1469,11 @@ export default function DesignPage() {
           <LocalTestNotice demo />
           <UploadForm demo />
           <p className="text-sm text-muted">Press Read my resume with the box ticked to see the four reading steps (they never upload here).</p>
+          <h3 className="text-lg font-semibold">Upload states</h3>
+          <p className="text-sm text-muted">A slow reading (after 40 seconds), a file we can&rsquo;t read, and today&rsquo;s reading budget spent, signed in.</p>
+          <UploadForm demo example="slow" />
+          <UploadForm demo example={{ message: "Please upload a PDF or Word (.docx) file, or paste your resume as text.", code: "unsupported_type" }} />
+          <UploadForm demo builder example={{ message: "We've reached today's capacity for the beta. Please try again tomorrow.", code: "busy", signedIn: true }} />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>

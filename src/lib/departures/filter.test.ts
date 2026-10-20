@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { jobPost } from "@/lib/schemas";
 import { exampleApplied, exampleJobs, exampleSaved } from "./fixtures";
-import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, startFilters } from "./filter";
+import { citiesOf, departuresEmpty, EMPTY_SAVED, filterDepartures, initials, NO_FILTERS, readiness, startFilters } from "./filter";
 
 const saved = new Set(exampleSaved);
 const applied = new Map(exampleApplied);
@@ -94,5 +94,26 @@ describe("citiesOf and initials", () => {
     expect(initials("Sahyadri Fintech")).toBe("SF");
     expect(initials("Garuda")).toBe("G");
     expect(initials("  ")).toBe("?");
+  });
+});
+
+describe("an empty Departures list", () => {
+  const counts = { open: 4, places: [] as string[], saved: 0, applied: 0 };
+  const kind = (f: Partial<typeof NO_FILTERS>, c: Partial<typeof counts> = {}) => departuresEmpty({ ...NO_FILTERS, ...f }, { ...counts, ...c }).kind;
+
+  it("says why, with a next step for each reason", () => {
+    expect(kind({}, { open: 0 })).toBe("no_roles");
+    expect(departuresEmpty(NO_FILTERS, { ...counts, open: 0 }).text).toMatch(/paste a job post below/);
+    expect(kind({ yourPlaces: true }, { places: ["Pune"] })).toBe("places");
+    expect(kind({ city: "Pune" })).toBe("filtered");
+    expect(kind({ tab: "saved" })).toBe("no_saved");
+    expect(departuresEmpty({ ...NO_FILTERS, tab: "saved" }, counts).text).toBe(EMPTY_SAVED);
+    expect(kind({ tab: "applied" })).toBe("no_applied");
+    expect(kind({ tab: "saved", query: "zzz" }, { saved: 2 })).toBe("filtered");
+    expect(departuresEmpty({ ...NO_FILTERS, tab: "applied" }, { ...counts, applied: 1 }).text).toBe("Nothing applied matches these filters.");
+  });
+
+  it("never blames the filters when no role is open at all", () => {
+    expect(kind({ yourPlaces: true, city: "Pune" }, { open: 0, places: ["Pune"] })).toBe("no_roles");
   });
 });

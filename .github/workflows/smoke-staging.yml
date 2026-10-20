@@ -7,10 +7,10 @@ name: Smoke dry run (staging)
 # in two browsers (scripts/smoke/staging-screens.mjs): Network search, request and accept with no city on any row, the
 # notification bell, the resume builder through to Download, Library Save and "I finished this", a mock interview
 # started and ended at once, Departures save and applied ("skipped: no posts" on an empty board), and Arrivals. With the
-# optional SMOKE_ADMIN_EMAIL secret (an admin test account, docs/secrets.md) the company side too: a company set up and
+# SMOKE_ADMIN_EMAIL admin test account (admin@careermetro.test unless that secret overrides it, set below) the company side too: a company set up and
 # verified, a job posted, Express apply, Offer on Arrivals, and a job report and a Library link report reviewed on the
 # admin pages; without it those steps say "skipped". The job is closed, the reports dismissed and both accounts
-# deleted at the end, after a failure too, or when the script's own 20-minute deadline passes (a cancel gives it only
+# deleted at the end, after a failure too, or when the script's own 18-minute deadline passes (a cancel gives it only
 # about 10 seconds, so a cancelled run may leave its accounts behind). One line per step in the log; any failed step turns the run red.
 # The upload, the gaps and the builder's review call the real Claude API on that deployment, so a run spends a few
 # cents of its budget (the mock round ends unanswered, so it asks for no feedback).
@@ -28,7 +28,7 @@ permissions:
 jobs:
   dry-run:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -55,9 +55,11 @@ jobs:
         env:
           BASE: ${{ inputs.url }}
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-          SMOKE_DEADLINE_MIN: "20"
+          SMOKE_DEADLINE_MIN: "18"
           # Optional: the admin test account for the company side and the admin pages; never printed.
-          SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
+          # A fake .test address, not a secret: Preview treats it as an admin while ADMIN_EMAILS is unset. A
+          # SMOKE_ADMIN_EMAIL repository secret overrides it, for a preview whose ADMIN_EMAILS names another one.
+          SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || 'admin@careermetro.test' }}
           SMOKE_SHOTS: smoke-results
         run: node scripts/smoke/staging-screens.mjs
       - name: Keep screenshots of failed steps

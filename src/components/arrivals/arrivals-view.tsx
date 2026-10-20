@@ -12,6 +12,7 @@ import { canWithdraw, withdrawConfirmText } from "@/lib/corporate/rules";
 import type { ArrivalsActions, MyApplicationView, WithdrawAction } from "@/lib/corporate/types";
 import { APPLICATION_STAGE_LABELS, CAN_JOIN_LABELS } from "@/lib/schemas/constants";
 import { ApplicationInterviews, NextUp } from "./interviews";
+import { actionFailed } from "@/lib/api-reply";
 
 /*
  * Arrivals (handoff section 9; dev/corporate-plan.md build step 4): the person's applications on CareerMetro, each with
@@ -200,7 +201,7 @@ function ApplicationCard({
                       setConfirming(false);
                       return;
                     }
-                    const problem = await withdraw(app.id);
+                    const problem = await withdraw(app.id).catch(actionFailed);
                     onDone(problem ? { error: true, text: problem } : { error: false, text: `Withdrawn: ${app.title} at ${app.company}.` });
                   })
                 }
