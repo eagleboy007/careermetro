@@ -27,7 +27,7 @@ Development, 2026-10-20. Source: handoff 12l (Elite part 3: "asks follow-ups lik
 - **Export v30** adds `followUp: {question, answer}` to each answer in `exportMockSessions`.
 - **Deleting an account**: no change. The cascade from users to `mock_sessions` to `mock_answers` already covers it.
 - **Content (`src/content/mock-bank.json`)**: each open question gains `followUps: [{id, text (≤ 200), skipIf: string[] (≤ 8 words or phrases)}]` (0 to 2 of them) and `followUpsReviewed: boolean`.
-  - Development writes them in PR 2 for the 95 open questions, using the prototype's style. Each one names the next step a team would expect.
+  - Development writes them in PR 2 for the other 85 open questions, using the prototype's style. Each one names the next step a team would expect.
   - They are marked `followUpsReviewed: false`, so production asks none until someone who works in the role checks them, as with the timed test. Local and preview builds use all of them.
 
 ## Server checks and limits

@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (goal sync skip).
+Last updated: 2026-10-20 (mock follow-ups part 2).
 
 ## Built and live (https://careermetro.vercel.app)
 

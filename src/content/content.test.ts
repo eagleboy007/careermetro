@@ -5,6 +5,7 @@ import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
 import { mentions } from "@/lib/mock/interview";
+import mockBankRaw from "./mock-bank.json";
 import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
 import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
@@ -274,14 +275,20 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
   });
 
   it("keeps skip words trimmed, different from each other and out of their own question, so a follow-up can be asked", () => {
+    // The schema trims skip words as it parses, so the file as written is checked for that.
+    const raw = (mockBankRaw.questions as { followUps?: { id: string; skipIf: string[] }[] }[]).flatMap((q) => q.followUps ?? []);
+    expect(raw.length).toBeGreaterThan(0);
+    for (const f of raw) {
+      for (const w of f.skipIf) {
+        expect([f.id, w]).toEqual([f.id, w.trim()]);
+        expect([f.id, w, w.length >= 2 && w.length <= 40]).toEqual([f.id, w, true]);
+      }
+    }
     for (const q of mockQuestions) {
       for (const f of followUpsOf(q, true)) {
         const words = f.skipIf.map((w) => w.toLowerCase());
         expect([f.id, new Set(words).size]).toEqual([f.id, words.length]);
         for (const w of f.skipIf) {
-          expect([f.id, w]).toEqual([f.id, w.trim()]);
-          expect(w.length).toBeGreaterThanOrEqual(2);
-          expect(w.length).toBeLessThanOrEqual(40);
           // A skip word the question itself uses would be in nearly every answer, so the follow-up would never be asked.
           expect([f.id, w, mentions(q.question, w)]).toEqual([f.id, w, false]);
         }
@@ -290,7 +297,7 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
   });
 
   it("asks nothing about pay, family or other personal matters", () => {
-    const personal = /\b(salary|salaries|ctc|caste|religion|married|marriage|pregnan\w*|children|husband|wife|age|gender|family|wedding)\b/i;
+    const personal = /\b(salary|salaries|pay|ctc|expected ctc|current ctc|notice period|caste|religion|married|marriage|pregnan\w*|children|husband|wife|father|age|gender|family|wedding|native place|relocat\w*)\b/i;
     for (const q of mockQuestions) for (const f of followUpsOf(q, true)) expect([f.id, personal.test(f.text)]).toEqual([f.id, false]);
   });
 

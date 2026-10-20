@@ -273,7 +273,7 @@
       "followUps": [
         {
           "id": "python-1-fu-1",
-          "text": "Give one case from your own code where you used a tuple as a dictionary key, and why a list would not work there.",
+          "text": "Give a case where a tuple works as a dictionary key and a list would not.",
           "skipIf": [
             "dict key",
             "dictionary key",
@@ -379,17 +379,20 @@
           "skipIf": [
             "backoff",
             "back off",
-            "retry",
-            "retries"
+            "exponential backoff",
+            "wait between",
+            "between retries"
           ]
         },
         {
           "id": "python-3-fu-2",
           "text": "What would you write to the log when the call finally fails, and what would you leave out?",
           "skipIf": [
-            "logging",
-            "logger",
-            "log the error"
+            "log the error",
+            "log the status",
+            "request id",
+            "no secrets in the log",
+            "without the token"
           ]
         }
       ],
@@ -622,9 +625,10 @@
           "id": "sql-3-fu-1",
           "text": "Give one query that uses both: only this year's orders, then only regions with more than 100 of them.",
           "skipIf": [
-            "both clauses",
-            "for example",
-            "for instance"
+            "both where and having",
+            "where first and having",
+            "where then having",
+            "having count"
           ]
         },
         {
@@ -632,8 +636,8 @@
           "text": "Which of the two can use an index on the filtered column, and why does that matter on a big table?",
           "skipIf": [
             "index",
-            "faster",
-            "performance"
+            "indexes",
+            "indexed"
           ]
         }
       ],
@@ -798,19 +802,21 @@
           "text": "How do you check that the merged file still works before you commit it?",
           "skipIf": [
             "run the tests",
-            "test",
-            "tests",
-            "build"
+            "ran the tests",
+            "run the build",
+            "run it locally",
+            "test it locally"
           ]
         },
         {
           "id": "git-2-fu-2",
           "text": "When would you ask the teammate who wrote the other side before choosing?",
           "skipIf": [
-            "ask",
-            "talk to",
-            "teammate",
-            "colleague"
+            "ask the author",
+            "talk to the author",
+            "ask the teammate",
+            "ask whoever wrote",
+            "check with the author"
           ]
         }
       ],
@@ -850,10 +856,11 @@
           "id": "git-3-fu-2",
           "text": "How would you stop the same mistake happening next time?",
           "skipIf": [
-            ".gitignore",
-            "gitignore",
             "pre-commit",
-            "secret scanning"
+            "secret scanning",
+            "gitleaks",
+            "git-secrets",
+            "push protection"
           ]
         }
       ],
@@ -893,9 +900,10 @@
           "text": "What did a pull request need before it could be merged in your team?",
           "skipIf": [
             "approval",
-            "approve",
-            "review",
-            "reviewer"
+            "approvals",
+            "code review",
+            "passing checks",
+            "ci checks"
           ]
         }
       ],
@@ -927,8 +935,9 @@
           "skipIf": [
             "stash pop",
             "stash apply",
-            "pop",
-            "apply"
+            "stash list",
+            "conflict",
+            "conflicts"
           ]
         },
         {
@@ -1121,25 +1130,24 @@
       "followUps": [
         {
           "id": "rest-apis-5-fu-1",
-          "text": "Say how you would stop one user reading another user's records by changing an ID in the URL.",
+          "text": "How would the API reject a token that has expired or been revoked?",
           "skipIf": [
-            "idor",
-            "object level",
-            "ownership",
-            "owner",
-            "authorisation check",
-            "authorization check"
+            "expiry",
+            "expired",
+            "expires",
+            "revoked",
+            "revocation"
           ]
         },
         {
           "id": "rest-apis-5-fu-2",
-          "text": "How would you protect a login or OTP endpoint from being hit thousands of times?",
+          "text": "What would you log for each request so misuse can be traced later, without logging passwords or tokens?",
           "skipIf": [
-            "rate limit",
-            "rate limiting",
-            "rate-limit",
-            "throttle",
-            "throttling"
+            "audit log",
+            "audit logs",
+            "request id",
+            "access log",
+            "access logs"
           ]
         }
       ],
@@ -1372,11 +1380,11 @@
           "id": "aws-1-fu-2",
           "text": "How would cost guide your choice for a small app with very little traffic?",
           "skipIf": [
-            "cost",
             "cheaper",
             "pay per",
             "pricing",
-            "free tier"
+            "free tier",
+            "per request"
           ]
         }
       ],
@@ -1407,21 +1415,22 @@
           "id": "aws-2-fu-1",
           "text": "Say what the role's policy would allow: which actions, on which bucket.",
           "skipIf": [
-            "least privilege",
             "getobject",
             "putobject",
             "only that bucket",
-            "specific bucket"
+            "specific bucket",
+            "bucket arn"
           ]
         },
         {
           "id": "aws-2-fu-2",
           "text": "Why is keeping access keys on the server a risk, even on a private instance?",
           "skipIf": [
-            "access keys",
-            "access key",
-            "hard-coded",
-            "hardcoded"
+            "leak",
+            "leaked",
+            "stolen",
+            "never expire",
+            "temporary credentials"
           ]
         }
       ],
@@ -1539,19 +1548,22 @@
           "id": "aws-5-fu-1",
           "text": "Say what you would do the morning a budget alert says spend is double last month's.",
           "skipIf": [
-            "cost explorer",
             "spike",
-            "investigate",
-            "alert"
+            "by service",
+            "which service",
+            "anomaly detection",
+            "cost anomaly"
           ]
         },
         {
           "id": "aws-5-fu-2",
           "text": "How would tags help you tell which team or project is spending the money?",
           "skipIf": [
-            "tag",
-            "tags",
-            "tagging"
+            "cost allocation tags",
+            "by team",
+            "per team",
+            "per project",
+            "which team"
           ]
         }
       ],
@@ -1579,7 +1591,8 @@
           "id": "linux-1-fu-1",
           "text": "The top process is your own app. Say what you would check next before restarting it.",
           "skipIf": [
-            "logs",
+            "application logs",
+            "app logs",
             "log file",
             "memory leak",
             "journalctl"
@@ -1619,12 +1632,12 @@
       "followUps": [
         {
           "id": "linux-2-fu-1",
-          "text": "Which of the two would you give a shell script, and which a config file that holds a password?",
+          "text": "What permissions would you give a shell script, and what a config file that holds a password?",
           "skipIf": [
-            "script",
             "600",
             "640",
-            "config file"
+            "700",
+            "750"
           ]
         },
         {
@@ -1703,9 +1716,11 @@
           "id": "linux-4-fu-1",
           "text": "How would you count only today's ERROR lines?",
           "skipIf": [
-            "today",
-            "date",
-            "awk"
+            "today's date",
+            "grep the date",
+            "filter by date",
+            "awk",
+            "date stamp"
           ]
         },
         {
@@ -1743,9 +1758,11 @@
           "id": "linux-5-fu-1",
           "text": "The service keeps failing after a restart. Say what you would read, and what you would look for.",
           "skipIf": [
-            "journalctl",
-            "logs",
-            "log"
+            "exit code",
+            "error message",
+            "config error",
+            "port already in use",
+            "permission denied"
           ]
         },
         {
@@ -2303,21 +2320,22 @@
           "id": "system-design-4-fu-1",
           "text": "The SMS provider goes down during a festive sale. Say what your system does.",
           "skipIf": [
-            "failover",
             "second provider",
             "backup provider",
-            "fallback"
+            "another provider",
+            "switch provider",
+            "switch to another"
           ]
         },
         {
           "id": "system-design-4-fu-2",
           "text": "How would you stop one person asking for fifty OTPs in a minute?",
           "skipIf": [
-            "rate limit",
-            "rate limits",
-            "rate limiting",
-            "throttle",
-            "cooldown"
+            "per phone number",
+            "per number",
+            "per user",
+            "cooldown",
+            "resend after"
           ]
         }
       ],
@@ -2345,18 +2363,22 @@
           "id": "system-design-5-fu-1",
           "text": "How does the load balancer know a server is unhealthy, and what does it do then?",
           "skipIf": [
-            "health check",
-            "health checks",
-            "healthcheck"
+            "failed checks",
+            "takes it out",
+            "removes it from",
+            "stops sending",
+            "marks it unhealthy"
           ]
         },
         {
           "id": "system-design-5-fu-2",
           "text": "With one load balancer, isn't that a new single point of failure? How is that handled?",
           "skipIf": [
-            "single point of failure",
             "managed load balancer",
-            "redundant"
+            "redundant",
+            "pair of load balancers",
+            "active-passive",
+            "standby"
           ]
         }
       ],
@@ -2430,12 +2452,13 @@
         },
         {
           "id": "terraform-2-fu-2",
-          "text": "How were plans reviewed in your team before anyone ran apply?",
+          "text": "How would a team review plans before anyone runs apply?",
           "skipIf": [
             "pull request",
-            "review",
-            "reviewed",
-            "pipeline"
+            "merge request",
+            "atlantis",
+            "manual approval",
+            "approval step"
           ]
         }
       ],
@@ -2634,7 +2657,8 @@
             "cache",
             "caching",
             "layer cache",
-            "order"
+            "copy package",
+            "dependencies first"
           ]
         }
       ],
@@ -3103,11 +3127,12 @@
           "id": "application-security-4-fu-1",
           "text": "Why is a fast hash such as SHA-256 a poor choice for passwords?",
           "skipIf": [
-            "fast",
-            "slow",
             "brute force",
             "brute-force",
-            "gpu"
+            "gpu",
+            "gpus",
+            "billions of guesses",
+            "too fast"
           ]
         },
         {
@@ -3153,10 +3178,11 @@
           "id": "application-security-5-fu-2",
           "text": "Where in the code should the authorisation check live so it can't be skipped?",
           "skipIf": [
-            "server",
             "server-side",
-            "backend",
-            "middleware"
+            "on the server",
+            "middleware",
+            "every request",
+            "each request"
           ]
         }
       ],
@@ -3180,20 +3206,21 @@
           "id": "statistics-1-fu-1",
           "text": "One customer placed a ₹5 lakh bulk order this month. Say how that changes what you tell your manager.",
           "skipIf": [
-            "outlier",
-            "outliers",
             "bulk order",
             "one big order",
-            "median"
+            "one large order",
+            "remove it",
+            "without it"
           ]
         },
         {
           "id": "statistics-1-fu-2",
           "text": "How many orders would you want to see before trusting the change?",
           "skipIf": [
-            "sample size",
             "number of orders",
-            "how many orders"
+            "how many orders",
+            "orders this month",
+            "few orders"
           ]
         }
       ],
@@ -3265,7 +3292,11 @@
           "id": "statistics-3-fu-2",
           "text": "Would you ever show both, and how would you label them for a reader who isn't technical?",
           "skipIf": [
-            "both"
+            "show both",
+            "median and mean",
+            "mean and median",
+            "median and average",
+            "average and median"
           ]
         }
       ],
@@ -3287,21 +3318,24 @@
       "followUps": [
         {
           "id": "statistics-4-fu-1",
-          "text": "Say roughly how many visitors each campaign would need before you trust a gap of 0.3 points.",
+          "text": "What would you need to know to work out how many visitors each campaign needs?",
           "skipIf": [
-            "sample size",
-            "visitors",
-            "how many"
+            "statistical power",
+            "baseline rate",
+            "baseline conversion",
+            "minimum detectable effect",
+            "effect size"
           ]
         },
         {
           "id": "statistics-4-fu-2",
           "text": "If the gap is real, how would you decide whether it is worth moving budget to the better campaign?",
           "skipIf": [
-            "worth",
-            "cost",
-            "practical",
-            "revenue"
+            "cost per conversion",
+            "cost per lead",
+            "extra revenue",
+            "revenue per",
+            "return on ad spend"
           ]
         }
       ],
@@ -3363,23 +3397,22 @@
           "id": "data-cleaning-1-fu-1",
           "text": "Two rows have the same name and city but different phone numbers. Are they duplicates? How do you decide?",
           "skipIf": [
-            "same customer",
             "customer id",
-            "key",
-            "rule",
-            "define a duplicate"
+            "same email",
+            "match on",
+            "matching on",
+            "phone and email"
           ]
         },
         {
           "id": "data-cleaning-1-fu-2",
           "text": "Say how you would record what you changed so someone else can check it later.",
           "skipIf": [
-            "log",
-            "record",
             "change log",
             "changelog",
-            "notes",
-            "document"
+            "before and after",
+            "original file",
+            "copy of the original"
           ]
         }
       ],
@@ -3413,9 +3446,9 @@
           "skipIf": [
             "flag",
             "flagged",
-            "fail",
             "separate sheet",
-            "check by hand"
+            "check by hand",
+            "fix by hand"
           ]
         }
       ],
@@ -3470,22 +3503,24 @@
       "followUps": [
         {
           "id": "data-cleaning-4-fu-1",
-          "text": "Next month a new spelling, \"Bengaluru Urban\", turns up. Say how your process catches it.",
+          "text": "Next month a new spelling, \"B'lore\", turns up. Say how your process catches it.",
           "skipIf": [
-            "new variants",
-            "new spellings",
             "unmatched",
-            "check"
+            "not in the mapping",
+            "not in the list",
+            "flag new",
+            "new spelling"
           ]
         },
         {
           "id": "data-cleaning-4-fu-2",
           "text": "Where would you keep the mapping so the next analyst can reuse it?",
           "skipIf": [
-            "mapping table",
-            "lookup table",
-            "shared",
-            "master list"
+            "shared drive",
+            "shared folder",
+            "lookup sheet",
+            "master list",
+            "version control"
           ]
         }
       ],
@@ -3507,10 +3542,11 @@
           "id": "data-cleaning-5-fu-1",
           "text": "The row count dropped by 200 after cleaning. Say how you would explain that to your manager.",
           "skipIf": [
-            "explain",
-            "reason",
-            "reasons",
-            "dropped"
+            "duplicates removed",
+            "rows removed",
+            "removed duplicates",
+            "because of duplicates",
+            "blank rows removed"
           ]
         },
         {
@@ -3669,9 +3705,10 @@
           "id": "data-visualization-4-fu-2",
           "text": "If you made it again, what would you change about the chart?",
           "skipIf": [
-            "again",
-            "differently",
-            "next time"
+            "next time",
+            "if i made it again",
+            "would change the chart",
+            "i would change"
           ]
         }
       ],
@@ -3696,18 +3733,22 @@
           "id": "data-visualization-5-fu-1",
           "text": "When is it fine for a y-axis not to start at zero?",
           "skipIf": [
-            "zero",
-            "start at 0",
-            "baseline"
+            "don't start at zero",
+            "doesn't need to start",
+            "doesn't have to start",
+            "does not need to start",
+            "narrow range"
           ]
         },
         {
           "id": "data-visualization-5-fu-2",
           "text": "Say how you would get someone to check your chart before it goes to senior managers.",
           "skipIf": [
-            "review",
-            "peer",
-            "colleague"
+            "peer review",
+            "second pair of eyes",
+            "ask a colleague",
+            "colleague to check",
+            "someone to check"
           ]
         }
       ],
@@ -3846,12 +3887,12 @@
       "followUps": [
         {
           "id": "excel-4-fu-1",
-          "text": "Say which manual step in your current report you would remove first, and how.",
+          "text": "Say which manual step in the report you would remove first, and how.",
           "skipIf": [
-            "copy-paste",
-            "copy paste",
-            "power query",
-            "macro"
+            "macro",
+            "macros",
+            "vba",
+            "refresh all"
           ]
         },
         {
@@ -3889,19 +3930,20 @@
           "skipIf": [
             "cross-check",
             "cross check",
-            "source",
             "tally",
-            "reconcile"
+            "reconcile",
+            "against the source"
           ]
         },
         {
           "id": "excel-5-fu-2",
           "text": "What would you write in the email with the file so your manager reads it correctly?",
           "skipIf": [
-            "email",
-            "summary",
-            "note",
-            "notes"
+            "in the email",
+            "what the file shows",
+            "which tab",
+            "key numbers",
+            "one-line summary"
           ]
         }
       ],
