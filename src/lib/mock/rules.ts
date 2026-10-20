@@ -30,8 +30,13 @@ export function roleFor(roles: readonly Role[], asked: string | null | undefined
   return roles.find((r) => r.slug === asked) ?? roles.find((r) => r.slug === target) ?? roles.find((r) => r.slug === DEFAULT_MOCK_ROLE) ?? roles[0];
 }
 
-/** Unreviewed multiple-choice questions and follow-ups are used on local and preview deployments only, never in production. */
-export const unreviewedAllowed = (env: Record<string, string | undefined> = process.env): boolean => env.VERCEL_ENV !== "production";
+/**
+ * Unreviewed multiple-choice questions and follow-ups are used on preview and development deployments and in local
+ * `npm run dev` and tests only, never in production (T86). An unset VERCEL_ENV counts only with NODE_ENV development
+ * or test, so a production build run anywhere else (`next start` with no VERCEL_ENV) shows checked content only.
+ */
+export const unreviewedAllowed = (env: Record<string, string | undefined> = process.env): boolean =>
+  env.VERCEL_ENV === "preview" || env.VERCEL_ENV === "development" || (!env.VERCEL_ENV && (env.NODE_ENV === "development" || env.NODE_ENV === "test"));
 
 /** Skills whose questions are about the person rather than a tool: they fit every role, so "About you" uses them all. */
 export const ABOUT_SKILLS: ReadonlySet<string> = new Set(["communication", "stakeholder-management"]);

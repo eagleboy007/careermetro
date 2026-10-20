@@ -8,6 +8,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { eliteShelfFor, libraryFor } from "@/lib/library/store";
 import { errorFields, logEvent } from "@/lib/log";
+import { unreviewedAllowed } from "@/lib/mock/rules";
 import type { EliteShelfView, LibraryView as View } from "@/lib/schemas";
 import { LIBRARY_TABS } from "@/lib/schemas/constants";
 import { libraryMarkAction, reportResourceAction, suggestResourceAction } from "./actions";
@@ -32,7 +33,7 @@ async function LibraryScreen({ searchParams }: PageProps<"/library">) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Your own goals appear here once you add your resume.</Banner>
-        <LibraryView view={state === "no_resume" ? exampleLibraryNoResume : exampleLibrary} shelf={exampleEliteShelf(false)} tab={tab} />
+        <LibraryView view={state === "no_resume" ? exampleLibraryNoResume : exampleLibrary} shelf={exampleEliteShelf(false, unreviewedAllowed())} tab={tab} />
       </div>
     );
   }

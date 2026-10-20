@@ -251,6 +251,10 @@ describe.skipIf(!db)("Library marks, reports and suggestions (database)", () => 
 
   it("takes suggestions: cleaned, never a catalog link, five a day and thirty waiting", async () => {
     const me = await user("suggest");
+    await db!.insert(schema.userGoals).values([
+      { userId: me, skillId: "sql", position: 1 },
+      { userId: me, skillId: "excel", position: 2, status: "skipped" },
+    ]);
     const at = day(7);
     const link = `${linkPrefix}suggested/sql-course`;
     expect(await suggestResource(me, { url: `${link}?utm_source=newsletter`, skillId: "sql" }, { db: db!, now: at })).toEqual({ ok: true });
@@ -267,6 +271,9 @@ describe.skipIf(!db)("Library marks, reports and suggestions (database)", () => 
     });
     expect(await suggestResource(me, { url: "http://example.org/x", skillId: null }, { db: db!, now: at })).toEqual({ ok: false, error: "bad_link" });
     expect(await suggestResource(me, { url: `${link}-2`, skillId: "not-a-skill-we-have" }, { db: db!, now: at })).toEqual({ ok: false, error: "invalid" });
+    // A real skill that isn't one of the person's open goals (FR-51, T88): one they skipped, or one they never had.
+    expect(await suggestResource(me, { url: `${link}-2`, skillId: "excel" }, { db: db!, now: at })).toEqual({ ok: false, error: "invalid" });
+    expect(await suggestResource(me, { url: `${link}-2`, skillId: "python" }, { db: db!, now: at })).toEqual({ ok: false, error: "invalid" });
     // Five tries a day, whatever came of them; a link or skill refused before the try isn't counted.
     expect((await suggestResource(me, { url: `${link}-3`, skillId: null }, { db: db!, now: at })).ok).toBe(true);
     expect((await suggestResource(me, { url: `${link}-4`, skillId: null }, { db: db!, now: at })).ok).toBe(true);

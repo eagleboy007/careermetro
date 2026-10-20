@@ -39,7 +39,7 @@ describe("Library marks, reports and suggestions: input", () => {
     expect(suggestionInput.parse({ url: "https://www.youtube.com/watch?v=abc123", skillId: null }).url.host).toBe("www.youtube.com");
   });
 
-  it("refuses http, user info, ports, IP addresses, localhost, intranet names, hosts over 253 characters and anything that isn't a link", () => {
+  it("refuses http, user info, ports, IP addresses, localhost, intranet names, link shorteners, hosts over 253 characters and anything that isn't a link", () => {
     for (const url of [
       "http://learn.example.org/",
       "https://me:secret@learn.example.org/",
@@ -59,10 +59,24 @@ describe("Library marks, reports and suggestions: input", () => {
       "",
       `https://learn.example.org/${"a".repeat(500)}`,
       `https://${"a".repeat(60)}.${"b".repeat(60)}.${"c".repeat(60)}.${"d".repeat(60)}.example.org/`,
+      // Link shorteners hide the real site (T88).
+      "https://bit.ly/3abcXYZ",
+      "https://www.bit.ly/3abcXYZ",
+      "https://TinyURL.com/y6abc",
+      "https://t.co/abc123",
+      "https://goo.gl/abc",
+      "https://ow.ly/abc",
+      "https://is.gd/abc",
+      "https://buff.ly/abc",
+      "https://rebrand.ly/abc",
+      "https://cutt.ly/abc",
+      "https://shorturl.at/abc",
     ]) {
       expect(cleanSuggestedUrl(url), url).toBeNull();
       expect(suggestionInput.safeParse({ url, skillId: null }).success, url).toBe(false);
     }
+    // A name that only ends like a shortener is a site of its own.
+    expect(cleanSuggestedUrl("https://habit.ly/x")?.host).toBe("habit.ly");
     // The skill is a taxonomy id or null for Other; nothing else rides along.
     expect(suggestionInput.safeParse({ url: "https://learn.example.org/", skillId: "SQL basics" }).success).toBe(false);
     expect(suggestionInput.safeParse({ url: "https://learn.example.org/", skillId: null, note: "great course" }).success).toBe(false);

@@ -297,6 +297,23 @@ export function cityOf(/** @type {string} */ location, /** @type {boolean} */ re
   return placesOf(location).find((p) => p.city)?.city ?? "India";
 }
 
+/** How far ahead of the fetch a posted time may be and still count, as clock skew: it is then the fetch time. */
+export const FUTURE_SKEW_MS = 10 * 60 * 1000;
+
+/**
+ * A board's posted time as the feed keeps it (T90): a time more than a few minutes after the fetch is wrong, so it
+ * is null (unknown) and can't sort to the top of Departures and Today or always survive the caps; one a few minutes
+ * ahead is clock skew and becomes the fetch time. Null rather than the fetch time, because a post that stays dated
+ * ahead would otherwise be "posted now" again on every run.
+ * @param {Date | null} postedAt
+ * @param {Date} now the fetch time
+ * @returns {Date | null}
+ */
+export function postedAtOf(postedAt, now) {
+  if (!postedAt || postedAt.getTime() <= now.getTime()) return postedAt;
+  return postedAt.getTime() - now.getTime() <= FUTURE_SKEW_MS ? new Date(now.getTime()) : null;
+}
+
 /**
  * The job_posts row for one posting, or null when the rules leave it out: not in India (a remote post must say
  * India), not an https link, or a title too short to show. Not yet checked by `jobPostRow`; the feed does that.
@@ -304,8 +321,9 @@ export function cityOf(/** @type {string} */ location, /** @type {boolean} */ re
  * @param {{ token: string; company: string }} board
  * @param {RawPost} post
  * @param {SkillMatcher[]} matchers
+ * @param {Date} [now] the fetch time, for a posted time dated ahead of it (postedAtOf)
  */
-export function postRow(ats, board, post, matchers) {
+export function postRow(ats, board, post, matchers, now = new Date()) {
   if (!INDIA.test(post.location) && !placesOf(post.location).length) return null;
   if (!/^https:\/\/[^\s"<>]+$/.test(post.url ?? "") || post.url.length > 500) return null;
   const title = post.title.length > 160 ? `${post.title.slice(0, 159).trimEnd()}…` : post.title;
@@ -325,7 +343,7 @@ export function postRow(ats, board, post, matchers) {
     roleSlug: classify(title, text),
     requiredSkillIds: skills.required,
     niceSkillIds: skills.nice,
-    postedAt: post.postedAt,
+    postedAt: postedAtOf(post.postedAt, now),
   };
 }
 

@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
-import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, htmlLines, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
+import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
 // The daily Departures feed (docs/plans/departures-live-plan.md) against saved, synthetic answers of each public
@@ -141,6 +141,23 @@ describe("feed rules", () => {
     expect(at("London, United Kingdom")).toBeNull();
     expect(at("Pune", false, "http://jobs.example.com/1")).toBeNull();
     expect(at("Pune", false, "javascript:alert(1)")).toBeNull();
+  });
+
+  it("never keeps a posted time dated after the fetch (T90)", () => {
+    const now = new Date(Date.UTC(2026, 9, 20, 6));
+    const post = (postedAt: Date | null) =>
+      postRow("lever", { token: "examplecart", company: "Examplecart" }, { externalId: "1", title: "Data Analyst", url: "https://jobs.example.com/1", location: "Pune", remote: false, workType: "full_time", postedAt, lines: ["SQL"] }, matchers, now)?.postedAt;
+    const earlier = new Date(Date.UTC(2026, 9, 19));
+    expect(post(earlier)).toEqual(earlier);
+    expect(post(null)).toBeNull();
+    expect(post(now)).toEqual(now);
+    expect(post(new Date(now.getTime() + FUTURE_SKEW_MS))).toEqual(now);
+    expect(post(new Date(now.getTime() + FUTURE_SKEW_MS + 1))).toBeNull();
+    expect(post(new Date(Date.UTC(2027, 0, 1)))).toBeNull();
+    expect(postedAtOf(new Date(Date.UTC(2030, 0, 1)), now)).toBeNull();
+    // So a far-future post can't take a cap's place from a real one.
+    const row = (externalId: string, postedAt: Date | null) => ({ ats: "lever", boardToken: "a", externalId, postedAt: postedAtOf(postedAt, now) });
+    expect(capPosts([row("future", new Date(Date.UTC(2027, 0, 1))), row("real", earlier)], 1, 10).map((r) => r.externalId)).toEqual(["real"]);
   });
 
   it("caps posts per board and in all, keeping the newest", () => {

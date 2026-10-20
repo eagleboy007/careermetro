@@ -2,6 +2,7 @@ import { ArrowRight, Award, BadgeCheck, Check, Play } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PlanView } from "@/lib/schemas";
+import { MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 import { EliteBadge } from "./elite-badge";
 import { TurnOnElite } from "./turn-on-elite";
 
@@ -9,7 +10,7 @@ const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
 const CARD = "flex min-w-0 flex-col gap-4 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5";
 const LABEL = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
 
-/** What stays free and what Elite adds (handoff 12l, prototype v44). `true` is a tick with its words. */
+/** What stays free and what Elite adds (handoff 12l, prototype v44). `true` is a tick with its words. Daily caps read the server's own constants (T87). */
 type Cell = { tick?: boolean; text: string; none?: boolean };
 const ROWS: { feature: string; free: Cell; elite: Cell }[] = [
   { feature: "Gaps with evidence, your path and daily rides", free: { tick: true, text: "Always" }, elite: { tick: true, text: "Always" } },
@@ -17,8 +18,8 @@ const ROWS: { feature: string; free: Cell; elite: Cell }[] = [
   { feature: "Verified tick for your identity and certificates", free: { tick: true, text: "Always" }, elite: { tick: true, text: "Same rules" } },
   { feature: "Practice: written questions on your goals", free: { text: "10 answers a day" }, elite: { text: "No daily cap" } },
   { feature: "Question bank for your role, with model answers", free: { text: "5 questions" }, elite: { text: "The full bank" } },
-  { feature: "Mock interviews with an AI interviewer, feedback on each answer", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Unlimited" } },
-  { feature: "Timed tests with a review of every question", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Unlimited" } },
+  { feature: "Mock interviews with an AI interviewer, feedback on each answer", free: { none: true, text: "Not included" }, elite: { tick: true, text: `${MOCK_SESSIONS_PER_DAY} a day` } },
+  { feature: "Timed tests with a review of every question", free: { none: true, text: "Not included" }, elite: { tick: true, text: `${TIMED_TESTS_PER_DAY} a day` } },
   { feature: "Practice round for an AI first interview (Arrivals)", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Per company" } },
   { feature: "Elite shelf in the Library: expert-checked playbooks and drills", free: { none: true, text: "Not included" }, elite: { tick: true, text: "All" } },
   { feature: "Elite badge on your profile", free: { none: true, text: "Not included" }, elite: { tick: true, text: "You choose to show it" } },

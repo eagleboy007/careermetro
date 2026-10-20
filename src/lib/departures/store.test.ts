@@ -7,7 +7,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { clearStageInput, departureExport, saveInput, stageInput } from "@/lib/schemas";
 import { DEPARTURE_CHANGES_PER_DAY } from "@/lib/schemas/constants";
 import { LIMITS } from "@/lib/shared-limit";
-import { clearOldDepartures, clearStage, DEPARTURE_MESSAGES, departuresBoard, exportDepartures, fitContextFor, lastFeedRun, saveRole, setStage } from "./store";
+import { clearOldDepartures, clearStage, DEPARTURE_MESSAGES, departuresBoard, exportDepartures, fitContextFor, lastFeedRun, OWN_LIST_MAX, saveRole, setStage } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -136,6 +136,38 @@ describe.skipIf(!db)("departures store (database)", () => {
     expect(await rowOf(me, p)).toMatchObject({ stage: null, appliedAt: null });
     await saveRole(me, { postId: p, saved: false }, { db: db!, now });
     expect(await rowOf(me, p)).toBeUndefined();
+  });
+
+  it("caps Saved and Applied per person: the page loads the newest of each, and a save or application past the cap is refused (T91)", async () => {
+    expect(OWN_LIST_MAX).toBe(200);
+    expect(DEPARTURE_MESSAGES.saved_full).toMatch(/200 saved roles/);
+    expect(DEPARTURE_MESSAGES.applied_full).toMatch(/200 applications/);
+    const me = await person();
+    const [a, b, c, d] = [await post(), await post(), await post(), await post()];
+    const at = (k: number) => ({ db: db!, now: new Date(now.getTime() + k * 1000), listMax: 2 });
+    expect(await saveRole(me, { postId: a, saved: true }, at(1))).toEqual({ ok: true });
+    expect(await saveRole(me, { postId: b, saved: true }, at(2))).toEqual({ ok: true });
+    expect(await saveRole(me, { postId: c, saved: true }, at(3))).toEqual({ ok: false, error: "saved_full" });
+    // Saving one already saved, and taking one off, still work at the cap; then there is room again.
+    expect(await saveRole(me, { postId: a, saved: true }, at(4))).toEqual({ ok: true });
+    expect(await saveRole(me, { postId: a, saved: false }, at(5))).toEqual({ ok: true });
+    expect(await saveRole(me, { postId: c, saved: true }, at(6))).toEqual({ ok: true });
+    expect(await setStage(me, { postId: a, stage: 1 }, at(7))).toEqual({ ok: true });
+    expect(await setStage(me, { postId: b, stage: 1 }, at(8))).toEqual({ ok: true });
+    expect(await setStage(me, { postId: d, stage: 1 }, at(9))).toEqual({ ok: false, error: "applied_full" });
+    // A stage already set still moves at the cap.
+    expect(await setStage(me, { postId: a, stage: 2 }, at(10))).toEqual({ ok: true });
+    // The page reads at most ownMax of each list, newest change first, and their posts come with them.
+    const board = await departuresBoard(me, { db: db!, ownMax: 1 });
+    expect(board.saved).toEqual([b]);
+    expect(board.applied).toEqual([[a, 2]]);
+    expect(board.posts.map((p) => p.id)).toEqual(expect.arrayContaining([a, b]));
+    const all = await departuresBoard(me, { db: db! });
+    expect(all.saved).toEqual([b, c]);
+    expect(all.applied).toEqual([
+      [a, 2],
+      [b, 1],
+    ]);
   });
 
   it("allows stage 1 to 4 only and never a row with neither a save nor a stage, in the table itself", async () => {

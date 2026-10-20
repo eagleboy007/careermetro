@@ -86,10 +86,16 @@ describe("which role /mock opens on", () => {
     expect(mockRoles(bank.filter((q) => q.id !== "sql-mc-8" && q.id !== "sql-mc-7"), roles, false)[1].hasTest).toBe(false);
   });
 
-  it("uses unreviewed questions everywhere but production", () => {
+  it("uses unreviewed questions on preview, development, local dev and tests only (T86)", () => {
     expect(unreviewedAllowed({ VERCEL_ENV: "production" })).toBe(false);
-    expect(unreviewedAllowed({ VERCEL_ENV: "preview" })).toBe(true);
-    expect(unreviewedAllowed({})).toBe(true);
+    expect(unreviewedAllowed({ VERCEL_ENV: "production", NODE_ENV: "development" })).toBe(false);
+    expect(unreviewedAllowed({ VERCEL_ENV: "preview", NODE_ENV: "production" })).toBe(true);
+    expect(unreviewedAllowed({ VERCEL_ENV: "development" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "development" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "test" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "production" })).toBe(false);
+    expect(unreviewedAllowed({ VERCEL_ENV: "other", NODE_ENV: "development" })).toBe(false);
+    expect(unreviewedAllowed({})).toBe(false);
   });
 });
 
