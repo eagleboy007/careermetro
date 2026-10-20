@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
-import { directChatLock, type Tx } from "@/db/lock";
+import { directChatLock, networkPairLock, type Tx } from "@/db/lock";
 import {
   blocks,
   connectionRequests,
@@ -120,7 +120,7 @@ const pairWhere = (x: string, y: string) => {
 const requestsBetween = (x: string, y: string) =>
   or(and(eq(connectionRequests.fromUser, x), eq(connectionRequests.toUser, y)), and(eq(connectionRequests.fromUser, y), eq(connectionRequests.toUser, x)));
 
-const pairLock = (x: string, y: string, tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hashtext(${["network", ...[x, y].sort()].join("|")}))`);
+const pairLock = networkPairLock;
 
 const requestColumns = {
   id: connectionRequests.id,
@@ -326,12 +326,16 @@ export async function blockPerson(userId: string, otherId: string, deps: Deps = 
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   if (userId === otherId) return fail("self");
-  await db.transaction(async (tx) => {
+  const blocked = await db.transaction(async (tx) => {
     await pairLock(userId, otherId, tx);
+    // An id that names nobody is refused here, not left to the foreign key (Testing Run 5, T84).
+    const [other] = await tx.select({ id: users.id }).from(users).where(eq(users.id, otherId));
+    if (!other) return false;
     await tx.insert(blocks).values({ blockerId: userId, blockedId: otherId, createdAt: now }).onConflictDoNothing();
     await dropBetween(tx, userId, otherId, now);
+    return true;
   });
-  return { ok: true };
+  return blocked ? { ok: true } : fail("not_found");
 }
 
 /** A person this person blocked, for Settings > Privacy: name and when, never anything else. */

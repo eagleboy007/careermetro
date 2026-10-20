@@ -10,6 +10,7 @@ import { saveAccountSettings } from "@/lib/account/settings-store";
 import { setJobSearch } from "@/lib/job-search/store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
+import { FOUND_JOB_SEARCH_OFF_LINE } from "@/lib/inbox/types";
 import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
@@ -222,6 +223,30 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
     expect((await setJobSearch(paused, true, { db: db!, now: clock })).ok).toBe(true);
     expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+  });
+
+  it("keeps an accepted found chat going while job search is off, with a line saying so, and the person can still end it (T82)", async () => {
+    const s = await setup("search-off-chat");
+    const p = await seeker("search-off-chat", { name: "Priya Nair" });
+    const [card] = await found(s.admin, s.jobId);
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect((await listThreads(p, fd()))[0].jobSearchOff).toBeUndefined();
+
+    expect((await setJobSearch(p, false, { db: db!, now: clock })).ok).toBe(true);
+    const [chat] = await listThreads(p, fd());
+    expect(chat).toMatchObject({ id: sent.conversationId, kind: "application", found: true, jobSearchOff: true });
+    expect(chat.state).toBeUndefined();
+    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open until you end it.");
+    // Both sides still write; no new request can arrive while search is off.
+    expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Still keen to talk?" }, fd())).ok).toBe(true);
+    expect((await sendMessage(p, sent.conversationId, "Yes, this week works", fd())).ok).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    // The person ends it themselves: the chat closes for good.
+    expect(await blockInChat(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect(await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Hello?" }, fd())).toMatchObject({ ok: false });
+    expect(await listThreads(p, fd())).toEqual([]);
   });
 
   it("shows the target role of everyone found and filters by target roles and verified profiles, alone or together (T44)", async () => {

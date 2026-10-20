@@ -7,6 +7,7 @@ import { renderResumePdf, UnprintableTextError } from "@/lib/resume/export/pdf";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { resumeFormat } from "@/lib/schemas";
 import { readOwner } from "@/lib/session";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 
 const CONTENT_TYPES = {
   pdf: "application/pdf",
@@ -28,6 +29,11 @@ export async function GET(request: Request, { params }: RouteContext<"/api/resum
   const owner = await readOwner();
   if (!owner) return fail(404, "We couldn't find this resume. It may have expired.");
   const { id } = await params;
+  // Each try counts toward the owner's hourly downloads (Testing Run 5, T81): every file is a fresh render.
+  const ownerKey = owner.userId ? `user:${owner.userId}` : `session:${owner.sessionId}`;
+  if (!(await takeShared(LIMITS.resumeExportsPerOwnerHour, ownerKey))) {
+    return fail(429, "You've downloaded your resume many times in the last hour. Please try again in a little while.");
+  }
   try {
     const resume = await getResumeForOwner(id, owner);
     if (!resume) return fail(404, "We couldn't find this resume. It may have expired.");

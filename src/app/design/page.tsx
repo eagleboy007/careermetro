@@ -1176,6 +1176,8 @@ export default function DesignPage() {
           <CompanyDiscovery data={exampleSettings.discovery} />
         </div>
         <InboxView threads={exampleFoundThreads} />
+        {/* An accepted found chat while the person's job search is off (FR-52): it goes on, with one line saying so. */}
+        <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, jobSearchOff: true }))} />
         <div className="max-w-[720px]">
           <CompanyChat chat={exampleFoundChat} company="Example Labs" />
         </div>

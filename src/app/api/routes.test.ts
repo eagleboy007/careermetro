@@ -38,6 +38,7 @@ const m = vi.hoisted(() => ({
   addJobCheckGoal: vi.fn(),
   deleteJobCheck: vi.fn(),
   countRoleRequest: vi.fn(async () => "counted"),
+  takeShared: vi.fn<(limit: { bucket: string; windowMs: number }, key: string) => Promise<boolean>>(async () => true),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -63,7 +64,7 @@ vi.mock("@/lib/mock/interview-store", () => ({ clearOldMockAnswers: m.clearMockA
 vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures }));
 vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
-vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits }));
+vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
@@ -220,6 +221,17 @@ describe("resume download", () => {
     m.getResumeForOwner.mockResolvedValueOnce(null);
     expect((await get("pdf")).status).toBe(404);
     expect(m.getResumeForOwner).toHaveBeenCalledWith(ID, { sessionId: SESSION });
+  });
+
+  it("limits downloads per owner per hour, before rendering anything (Testing Run 5, T81)", async () => {
+    m.takeShared.mockResolvedValueOnce(false);
+    const res = await get("pdf");
+    expect(res.status).toBe(429);
+    expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+    expect(m.getResumeForOwner).not.toHaveBeenCalled();
+    const [limit, key] = m.takeShared.mock.calls.at(-1)!;
+    expect(limit).toMatchObject({ bucket: "resume-export", windowMs: 3_600_000 });
+    expect(key).toBe(`session:${SESSION}`);
   });
 
   it("waits until the profile is confirmed", async () => {
@@ -462,6 +474,22 @@ describe("sign-out", () => {
 });
 
 describe("Google return", () => {
+  beforeEach(() => vi.stubEnv("GOOGLE_SIGNIN", "1"));
+
+  it("refuses with the normal sign-in error while Google sign-in is off, without using the code (T92)", async () => {
+    for (const off of [undefined, "", "0"]) {
+      vi.stubEnv("GOOGLE_SIGNIN", off);
+      const res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=/map`));
+      const to = new URL(res.headers.get("location")!);
+      expect(to.origin).toBe(SITE);
+      expect(to.pathname).toBe("/sign-in");
+      expect(to.searchParams.get("error")).toBe("link");
+      expect(to.searchParams.get("next")).toBe("/map");
+    }
+    expect(m.completeGoogleRedirect).not.toHaveBeenCalled();
+    expect(m.afterSignIn).not.toHaveBeenCalled();
+  });
+
   it("never sends people to another site, and goes back to sign-in on a bad code", async () => {
     m.completeGoogleRedirect.mockResolvedValueOnce({ ok: false, reason: "rejected" });
     let res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=https://evil.example`));

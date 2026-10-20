@@ -8,6 +8,7 @@ import { preTicks } from "@/lib/account/availability";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
   filterThreads,
+  FOUND_JOB_SEARCH_OFF_LINE,
   INBOX_FILTERS,
   initialsOf,
   lastMessage,
@@ -492,22 +493,25 @@ export function InboxView({
                           : "This chat is closed."}
                 </p>
               ) : (
-                <div className="flex items-end gap-2">
-                  <textarea
-                    ref={draftRef}
-                    data-draft
-                    rows={1}
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    maxLength={2000}
-                    placeholder="Write a message"
-                    aria-label="Message"
-                    className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
-                  />
-                  <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
-                    Send
-                  </button>
-                </div>
+                <>
+                  {current.found && current.jobSearchOff && <p className="text-[0.82rem] text-muted">{FOUND_JOB_SEARCH_OFF_LINE}</p>}
+                  <div className="flex items-end gap-2">
+                    <textarea
+                      ref={draftRef}
+                      data-draft
+                      rows={1}
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      maxLength={2000}
+                      placeholder="Write a message"
+                      aria-label="Message"
+                      className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+                    />
+                    <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
+                      Send
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           </section>

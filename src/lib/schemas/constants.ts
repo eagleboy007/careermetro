@@ -685,3 +685,8 @@ export const AVAILABILITY_SAVES_PER_DAY = 30;
 export const MAX_TRACKS_PER_ROLE = 5;
 /** Track switches one person makes a day, each try counted. */
 export const TRACK_CHANGES_PER_DAY = 20;
+
+/** Resume downloads (PDF or Word) one owner makes an hour, each try counted, so renders can't be looped (Testing Run 5, T81). */
+export const RESUME_EXPORTS_PER_HOUR = 30;
+/** Messages one person sends in open direct chats a day, across every chat (Testing Run 5, T85). */
+export const DIRECT_MESSAGES_PER_DAY = 300;

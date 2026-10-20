@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { roleProfiles, skills } from "@/content";
+import { networkPairLock } from "@/db/lock";
 import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { canViewProfile } from "@/lib/account/settings-store";
@@ -215,6 +216,39 @@ describe.skipIf(!db)("network store (database)", () => {
     // "Connection requests from: Nobody".
     const closed = await person("Ira", { closed: true });
     expect(await ask(a, closed, "other", deps())).toEqual({ ok: false, error: "closed" });
+  });
+
+  it("refuses to block an id that names nobody, without touching the foreign key (Testing Run 5, T84)", async () => {
+    const a = await person("Asha");
+    expect(await blockPerson(a, "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69", deps())).toEqual({ ok: false, error: "not_found" });
+    expect(await blockedPeople(a, db!)).toEqual([]);
+  });
+
+  it("a block from the Inbox waits for Network's pair lock, so an accept at the same moment can't keep the connection (T83)", async () => {
+    const a = await person("Asha");
+    const c = await person("Esha");
+    await ask(a, c, "other", deps());
+    await answerRequest(c, a, "accept", deps());
+    const chat = await startDirect(a, c, "Hello", { db: db! });
+    if (!chat.ok) throw new Error(chat.error);
+    // Another transaction holds the pair's lock, as an accept would.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const holder = db!.transaction(async (tx) => {
+      await networkPairLock(a, c, tx);
+      locked();
+      await new Promise<void>((r) => (release = r));
+    });
+    await held;
+    let done = false;
+    const blocking = blockInChat(c, chat.conversationId, { db: db! }).then((r) => ((done = true), r));
+    await new Promise((r) => setTimeout(r, 300));
+    expect(done).toBe(false);
+    release();
+    await holder;
+    expect((await blocking).ok).toBe(true);
+    expect(await areConnected(a, c, db!)).toBe(false);
   });
 
   it("lists the people you blocked, newest first, and Unblock lifts only your own block (gap list item 34)", async () => {
