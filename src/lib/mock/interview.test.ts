@@ -205,7 +205,8 @@ describe("follow-ups (docs/plans/mock-followups-plan.md)", () => {
     const draft: MockQuestion = { ...q, followUpsReviewed: false };
     expect(pickFollowUp(draft, long, round)).toBeNull();
     expect(pickFollowUp(draft, long, { ...round, allowUnreviewed: true })?.id).toBe("siem-1-fu-1");
-    const plain = mockQuestions.find((x) => x.kind === "open" && !x.followUps?.length)!;
+    // Every bank question has follow-ups now, so a question without them is made here.
+    const plain: MockQuestion = { ...q, id: "siem-2", followUps: [] };
     expect(pickFollowUp(plain, long, { ...round, allowUnreviewed: true })).toBeNull();
   });
 

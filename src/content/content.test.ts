@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
+import { mentions } from "@/lib/mock/interview";
 import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
 import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
@@ -256,6 +257,41 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
         expect(f.skipIf.length).toBeLessThanOrEqual(8);
       }
     }
+  });
+
+  it("gives every open question one or two follow-ups, numbered in order, each its own text", () => {
+    const open = mockQuestions.filter((q) => q.kind === "open");
+    expect(open).toHaveLength(95);
+    for (const q of open) {
+      const ups = followUpsOf(q, true);
+      expect([q.id, ups.length >= 1 && ups.length <= 2]).toEqual([q.id, true]);
+      expect(ups.map((f) => f.id)).toEqual(ups.map((_, i) => `${q.id}-fu-${i + 1}`));
+    }
+    const texts = open.flatMap((q) => followUpsOf(q, true).map((f) => f.text.toLowerCase()));
+    expect(texts.length).toBeGreaterThanOrEqual(open.length);
+    expect(new Set(texts).size).toBe(texts.length);
+    expect(texts.some((t) => open.some((q) => q.question.toLowerCase() === t))).toBe(false);
+  });
+
+  it("keeps skip words trimmed, different from each other and out of their own question, so a follow-up can be asked", () => {
+    for (const q of mockQuestions) {
+      for (const f of followUpsOf(q, true)) {
+        const words = f.skipIf.map((w) => w.toLowerCase());
+        expect([f.id, new Set(words).size]).toEqual([f.id, words.length]);
+        for (const w of f.skipIf) {
+          expect([f.id, w]).toEqual([f.id, w.trim()]);
+          expect(w.length).toBeGreaterThanOrEqual(2);
+          expect(w.length).toBeLessThanOrEqual(40);
+          // A skip word the question itself uses would be in nearly every answer, so the follow-up would never be asked.
+          expect([f.id, w, mentions(q.question, w)]).toEqual([f.id, w, false]);
+        }
+      }
+    }
+  });
+
+  it("asks nothing about pay, family or other personal matters", () => {
+    const personal = /\b(salary|salaries|ctc|caste|religion|married|marriage|pregnan\w*|children|husband|wife|age|gender|family|wedding)\b/i;
+    for (const q of mockQuestions) for (const f of followUpsOf(q, true)) expect([f.id, personal.test(f.text)]).toEqual([f.id, false]);
   });
 
   it("asks no follow-up in production until someone who works in the role has reviewed it", () => {

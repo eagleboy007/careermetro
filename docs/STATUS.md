@@ -43,10 +43,12 @@ Last updated: 2026-10-20 (goal sync skip).
   - Launch readiness (#197, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md`, the scripted production check to run right after Milin's redeploy; RLS and FK indexes confirmed on 0039 to 0045 and `rls.test` refuses policies and grants; Account settings saves capped at 100 a day and Unblock at 50. Supabase's Confirm signup template also needs `{{ .Token }}`.
   - Performance pass (#198, migration 0046 `job_posts_open_newest`, `docs/plans/perf-pass.md`): Today, Map and Departures read the analysis once and run independent reads in parallel; the goal sync on every view is what's left.
   - Refused sign-in codes logged (#199): `auth_email_code_send_refused` and `auth_email_code_verify_refused` with Supabase's error code and status only, never the email or the code.
+  - Goal sync skip (#200, no migration, `docs/plans/goal-sync-skip-plan.md`): a view first plans the sync from one read-only snapshot with no lock and writes nothing when nothing would change; otherwise the locked path runs as before.
 
 ## In progress
 
-- Goal sync skip (branch `v44-goalsync`, `docs/plans/goal-sync-skip-plan.md`): a Today or Map view first works out the sync's plan from one read-only snapshot with no lock, and skips the write transaction when it would add, change or link nothing. Nothing is stored, so no migration and no export change; the clock, content, track and proof changes are all re-read every view. DB tests in `src/lib/goals/store.test.ts`; not yet run (no node_modules here).
+- Mock follow-ups part 2 (branch `v44-followups2`, no migration, no prompt change): 170 follow-ups for the other 85 open bank questions, so all 95 have one or two (188 in all), every one `followUpsReviewed: false`, so production still asks none.
+  - The expert review draft, grouped by skill with a role index, is `dev/mock-followups-draft.md` in the project files (pending-items 27). Content tests now check that every open question has follow-ups, unique texts, and skip words that are not in their own question.
 
 ## Next up
 

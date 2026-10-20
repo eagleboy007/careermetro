@@ -114,3 +114,4 @@ Built on branch `v44-mock-followups` (migration 0044, export version 30, `prompt
 10. **A reply sent for a position with no follow-up** is refused as `invalid`. Someone else's session is `not_found`, as for answers.
 11. **In the download**, `followUp` is null when none was asked. Its `question` is null if the follow-up has since left the bank.
 12. **The bank tab** lists them under "Follow-ups the interviewer may ask", below "A strong answer covers". A locked question sends none.
+13. **Part 2** (branch `v44-followups2`): one or two follow-ups for the other 85 open questions, in part 1's shape and style, all `followUpsReviewed: false`. The schema's cap of two a question stays. A skip word may not appear in its own question, since nearly every answer would then say it and the follow-up would never be asked. The review draft is `dev/mock-followups-draft.md` in the project files. Prompt v2 and `npm run eval:mock` are unchanged.
