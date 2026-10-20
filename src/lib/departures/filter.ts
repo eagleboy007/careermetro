@@ -1,5 +1,9 @@
 import type { JobPost, WorkType } from "@/lib/schemas";
 
+/** What the Departures header says under the title (prototype v44), also on the paused page while job search is off. */
+export const DEPARTURES_LEDE =
+  "Roles from public company job boards and posts you paste. Apply on the company's site, or with Express apply where the company takes it.";
+
 export type DepartureTab = "all" | "saved" | "applied";
 
 export type DepartureFilters = {
@@ -28,11 +32,13 @@ export function readiness(job: Pick<JobPost, "gaps" | "destination">): string {
 
 /**
  * The roles a filter shows, in the order given (the server lists newest first). Search matches role, company, city
- * and skills, every word, ignoring case. Saved and Applied are the person's own lists.
+ * and skills, every word, ignoring case. Saved and Applied are the person's own lists. A role that left its company's
+ * board drops off All and stays in Saved and Applied.
  */
 export function filterDepartures(jobs: JobPost[], f: DepartureFilters, saved: ReadonlySet<string>, applied: ReadonlyMap<string, number>): JobPost[] {
   const words = f.query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return jobs.filter((j) => {
+    if (f.tab === "all" && j.closed) return false;
     if (f.tab === "saved" && !saved.has(j.id)) return false;
     if (f.tab === "applied" && !applied.has(j.id)) return false;
     if (f.city && j.city !== f.city) return false;
@@ -46,10 +52,10 @@ export function filterDepartures(jobs: JobPost[], f: DepartureFilters, saved: Re
   });
 }
 
-/** Cities to filter by, most roles first, with Remote last. */
+/** Cities to filter by, most roles first, with Remote last. Closed roles don't add a city. */
 export function citiesOf(jobs: JobPost[]): string[] {
   const count = new Map<string, number>();
-  for (const j of jobs) count.set(j.city, (count.get(j.city) ?? 0) + 1);
+  for (const j of jobs) if (!j.closed) count.set(j.city, (count.get(j.city) ?? 0) + 1);
   return [...count.entries()]
     .sort(([a, x], [b, y]) => Number(a === "Remote") - Number(b === "Remote") || y - x || a.localeCompare(b))
     .map(([c]) => c);

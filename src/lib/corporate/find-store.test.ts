@@ -582,8 +582,8 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
 
     const data = await exportAccountData(p, db!, clock);
-    expect(EXPORT_VERSION).toBe(25);
-    expect(data!.exportVersion).toBe(25);
+    expect(EXPORT_VERSION).toBe(26);
+    expect(data!.exportVersion).toBe(26);
     expect(data!.companyDiscovery.companiesCanFind).toBe(true);
     expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
     expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);

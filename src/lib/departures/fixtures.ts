@@ -151,3 +151,60 @@ export const exampleApplied: [string, number][] = [
   ["j1", 3],
   ["j6", 2],
 ];
+
+/*
+ * Live Departures as a signed-in person sees them (docs/plans/departures-live-plan.md), for /design: a feed role with
+ * its link and fit, one that closed on its company's board (still in Saved and Applied, no Apply), and one whose post
+ * names too few skills we know. Made-up companies; the links go nowhere real.
+ */
+export const exampleLiveJobs: JobPost[] = [
+  job({
+    id: "l1",
+    role: "Junior data analyst",
+    roleSlug: "data-analyst",
+    company: "Example Labs",
+    city: "Pune",
+    experience: "2 to 4 years",
+    posted: "today",
+    gaps: [{ status: "missing", name: "Statistics" }],
+    have: ["SQL", "Excel"],
+    goalsBefore: 1,
+    destination: true,
+    why: "The role your line is built for. It is a goal on your line.",
+    applyUrl: "https://jobs.example.com/example-labs/l1",
+  }),
+  job({
+    id: "l2",
+    role: "Reporting analyst",
+    roleSlug: "data-analyst",
+    company: "Examplecart",
+    city: "Remote",
+    experience: "",
+    posted: "12 days ago",
+    gaps: [
+      { status: "missing", name: "Statistics" },
+      { status: "weak", name: "Power BI" },
+    ],
+    have: ["SQL", "Excel"],
+    goalsBefore: 2,
+    why: "One of them is a goal on your line. You can still apply now.",
+    applyUrl: "https://jobs.example.com/examplecart/l2",
+    closed: true,
+  }),
+  job({
+    id: "l3",
+    role: "Office coordinator",
+    company: "Example Works",
+    city: "Bengaluru",
+    experience: "",
+    posted: "3 days ago",
+    gaps: [],
+    have: [],
+    goalsBefore: 0,
+    why: "",
+    applyUrl: "https://jobs.example.com/example-works/l3",
+    fitNote: "Fit not shown: the post names too few skills we know.",
+  }),
+];
+export const exampleLiveSaved = ["l2"];
+export const exampleLiveApplied: [string, number][] = [["l2", 2]];

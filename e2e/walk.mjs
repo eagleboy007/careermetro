@@ -728,6 +728,82 @@ await step("library: goal cards, the details panel, search and filters, Finished
   if (await shelf.locator("[data-shelf-card] a, [data-shelf-card] details").count()) throw new Error("a locked shelf card opens");
   await a11y("library-elite-free");
 });
+// Live Departures (docs/plans/departures-live-plan.md): a feed run and two posts seeded as the daily feed writes them.
+// The header says Updated with the time; the walk's resume shows its fit; Save says "Saved."; Apply on company site
+// opens the post in a new tab and asks "Did you apply?", and Yes starts the tracker. After a reload both lists still
+// have the role. Once the role closes on its board it leaves All and stays in Saved with "Closed on the company's
+// board". The other post stays open and unapplied, so the Express apply step later still finds Apply on company site.
+await step("departures: live roles, Updated, save, apply on the company site, Saved and Applied after a reload, a closed role", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const ROLE = "Junior data analyst (e2e)";
+  try {
+    await sql`insert into job_feed_runs (started_at, finished_at, boards_ok, posts_open) values (now(), now(), 1, 2)`;
+    for (const [id, title, city] of [
+      ["e2e-1", ROLE, "Pune"],
+      ["e2e-2", "Reporting analyst (e2e)", "Remote"],
+    ]) {
+      await sql`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, required_skill_ids, nice_skill_ids, posted_at)
+        values ('greenhouse', 'e2e-example', ${id}, ${`https://example.com/jobs/${id}`}, ${title}, 'Example Labs', ${city}, '2 to 4 years', 'data-analyst',
+          '{sql,excel,statistics}'::text[], '{tableau}'::text[], now())
+        on conflict (ats, board_token, external_id) do update set closed_at = null, last_seen_at = now()`;
+    }
+    await sql`delete from job_saves where job_post_id in (select id from job_posts where board_token = 'e2e-example')`;
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/departures");
+    await settled();
+    await p.locator("[data-departures-clock]").getByText(/^Updated \d\d:\d\d · \d+ roles?$/).waitFor({ timeout: 10000 });
+    if (await p.getByText(/Example roles for now/).count()) throw new Error("the example-data note still shows signed in");
+    const row = p.getByRole("listitem").filter({ has: p.getByRole("button", { name: `${ROLE} at Example Labs` }) });
+    await row.getByRole("button", { name: `${ROLE} at Example Labs` }).click();
+    const detail = p.getByRole("complementary", { name: "Role details" });
+    await detail.getByRole("heading", { name: ROLE }).waitFor({ timeout: 10000 });
+    // Fit from the walk's resume, by the plain-code matcher: the post asks for SQL and Excel, which the resume shows.
+    await detail.getByText(/^You have · [1-9]/).waitFor();
+    await row.getByRole("button", { name: `Save ${ROLE}` }).click();
+    await p.getByText("Saved.", { exact: true }).waitFor({ timeout: 10000 });
+    const popup = p.waitForEvent("popup");
+    await detail.getByRole("link", { name: "Apply on company site: Example Labs (opens in a new tab)" }).click();
+    await (await popup).close();
+    const ask = detail.getByRole("group", { name: "Did you apply?" });
+    await ask.getByRole("button", { name: "Yes, I applied" }).click();
+    await p.getByText("Marked as applied to Example Labs.", { exact: true }).waitFor({ timeout: 10000 });
+    await detail.getByRole("heading", { name: "Your application" }).waitFor();
+    await shot("departures-live");
+    await a11y("departures-live");
+    const [saved] = await sql`select s.stage, s.saved_at from job_saves s join job_posts j on j.id = s.job_post_id where j.external_id = 'e2e-1' and j.board_token = 'e2e-example'`;
+    if (saved?.stage !== 1 || !saved.saved_at) throw new Error("the save and Applied were not kept");
+
+    await p.reload();
+    await settled();
+    const tabs = p.getByRole("group", { name: "Show" });
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.waitFor({ timeout: 10000 });
+    await tabs.getByRole("button", { name: /^Applied/ }).click();
+    await row.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+
+    // The role leaves its board: off All, still in Saved with no Apply.
+    await sql`update job_posts set closed_at = now() where board_token = 'e2e-example' and external_id = 'e2e-1'`;
+    await p.reload();
+    await settled();
+    await p.getByRole("button", { name: "Reporting analyst (e2e) at Example Labs" }).waitFor({ timeout: 10000 });
+    if (await row.count()) throw new Error("a closed role still shows on All");
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await a11y("departures-live-closed-phone-dark");
+    await shot("departures-live-closed-phone-dark");
+    await tabs.getByRole("button", { name: /^All/ }).click();
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
 // Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
 // shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
 // Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.
@@ -794,7 +870,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 25 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 26 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1118,7 +1194,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1469,7 +1545,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1567,7 +1643,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -1650,7 +1726,7 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
 
@@ -2477,7 +2553,7 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     const [sent] = await sql`select a.note from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
     if (sent?.note !== EXPRESS_NOTE) throw new Error("the note was not saved with the application");
 
-    // Every other job keeps the external link: the example roles show "Apply on company site", never Express apply.
+    // Every other job keeps the external link: the roles from company job boards show "Apply on company site", never Express apply.
     await p.getByRole("button", { name: /^Apply on company site/ }).or(p.getByRole("link", { name: /^Apply on company site/ })).first().waitFor();
     if (await p.getByText("Express apply · soon").count()) throw new Error("an external role still offers Express apply");
 

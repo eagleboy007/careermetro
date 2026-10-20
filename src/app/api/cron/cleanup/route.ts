@@ -3,6 +3,7 @@ import { clearExpiredUsernameRedirects } from "@/lib/account/settings-store";
 import { clearPastOfferedTimes, endCompanyAccess, eraseClosedPhones } from "@/lib/corporate/cleanup";
 import { clearOldProfileViews } from "@/lib/corporate/find-store";
 import { clearExpiredCodes } from "@/lib/corporate/store";
+import { clearOldDepartures } from "@/lib/departures/store";
 import { renewExpiredGoals, reopenUnconfirmedGoals } from "@/lib/goals/store";
 import { clearOldMockAnswers } from "@/lib/mock/interview-store";
 import { clearOldPracticeAnswers } from "@/lib/practice/store";
@@ -19,7 +20,9 @@ import { clearOldRateLimits } from "@/lib/shared-limit";
  * 180-day company access end, erases phones shared for interviews once their application has closed, and deletes
  * offered interview times that passed unbooked; reads already enforce every one of these cutoffs. And it deletes old
  * usernames whose 14-day redirect is over (account settings part 2), company profile views older than 30 days
- * (pending item 19), practice answers and mock interview answers older than 30 days (handoff 12h, 12l), and rate-limit windows over two days old.
+ * (pending item 19), practice answers and mock interview answers older than 30 days (handoff 12h, 12l), rate-limit windows over two days old,
+ * and Departures posts closed more than 180 days ago with their saves, and feed runs over 90 days old
+ * (docs/plans/departures-live-plan.md).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -45,6 +48,7 @@ export async function GET(request: Request) {
     // Mock interview answers after 30 days; the sessions keep their dates and summary (FR-50).
     mockAnswers: clearOldMockAnswers().then((n) => ({ mockAnswersDeleted: n })),
     rateLimits: clearOldRateLimits().then((n) => ({ rateLimitsCleared: n })),
+    departures: clearOldDepartures(),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -60,6 +64,7 @@ export async function GET(request: Request) {
     practice: { practiceAnswersDeleted: null },
     mockAnswers: { mockAnswersDeleted: null },
     rateLimits: { rateLimitsCleared: null },
+    departures: { closedPostsDeleted: null, feedRunsDeleted: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

@@ -251,7 +251,7 @@ describe.skipIf(!db)("Express apply (database)", () => {
     const r = await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at());
     if (!r.ok) throw new Error(r.error);
     const data = await exportAccountData(me, db!, clock);
-    expect(data!.exportVersion).toBe(25);
+    expect(data!.exportVersion).toBe(26);
     expect(data!.applications[0]).toMatchObject({ note: NOTE });
     const adminData = await exportAccountData(admin, db!, clock);
     expect(adminData!.jobsOwned.find((j) => j.title === "SOC Analyst L1")?.criteria).toEqual(criteria);

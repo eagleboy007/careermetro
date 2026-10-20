@@ -394,8 +394,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     if (!r.ok) throw new Error(r.error);
     await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at(1));
     const data = await exportAccountData(me, db!, clock);
-    expect(EXPORT_VERSION).toBe(25);
-    expect(data!.exportVersion).toBe(25);
+    expect(EXPORT_VERSION).toBe(26);
+    expect(data!.exportVersion).toBe(26);
     expect(data!.applications).toHaveLength(1);
     expect(data!.applications[0]).toMatchObject({ company: "Example Labs", job: "SOC Analyst L1", stage: "not_this_time", canJoin: "Within 30 days" });
     expect(data!.applications[0].events.map((e) => [e.kind, e.stage, e.note])).toEqual([

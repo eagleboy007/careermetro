@@ -27,7 +27,6 @@ const unindexedOk = new Set([
   "paths.ai_call_id",
   "profiles.ai_call_id",
     "skill_aliases.skill_id",
-  "user_goals.skill_id",
   "user_goals.swapped_to",
   "users.organization_id",
   "users.suspended_by",
