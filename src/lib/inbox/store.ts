@@ -308,6 +308,21 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
+    // A direct chat takes Network's pair lock, then the chat's, before it locks the chat row, in the same order as
+    // Network's connect and remove (which update this row under those locks), so the two can't deadlock. The kind and
+    // the other person are read unlocked first, then checked again under the row lock.
+    const [peek] = await tx
+      .select({ kind: conversations.kind })
+      .from(conversationMembers)
+      .innerJoin(conversations, eq(conversations.id, conversationMembers.conversationId))
+      .where(and(eq(conversationMembers.conversationId, conversationId), eq(conversationMembers.userId, userId)));
+    const [peekOther] = peek?.kind === "direct" ? await othersIn(userId, conversationId, tx) : [];
+    if (peekOther) {
+      // Network's pair lock first, as Network's own block takes it, then the chat's: an accept at the same moment
+      // can't leave the connection in place (Testing Run 5, T83).
+      await networkPairLock(userId, peekOther.id, tx);
+      await directChatLock(userId, peekOther.id, tx);
+    }
     const me = await membership(userId, conversationId, tx);
     if (me?.kind === "application" && me.role === "member") {
       await closeApplicationChat(userId, conversationId, tx, now);
@@ -320,11 +335,9 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
     }
     if (!me || me.kind !== "direct") return fail("not_found");
     const [other] = await othersIn(userId, conversationId, tx);
+    // Never block someone the locks weren't taken for (a member who joined after the peek, which a direct chat can't have).
+    if (other && other.id !== peekOther?.id) return fail("not_found");
     if (other) {
-      // Network's pair lock first, as Network's own block takes it, then the chat's: an accept at the same moment
-      // can't leave the connection in place (Testing Run 5, T83).
-      await networkPairLock(userId, other.id, tx);
-      await directChatLock(userId, other.id, tx);
       await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
       // A block ends any Network connection or request between the two at once (FR-49).
       await dropBetween(tx, userId, other.id, now);

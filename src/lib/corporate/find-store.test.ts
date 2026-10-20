@@ -10,8 +10,7 @@ import { saveAccountSettings } from "@/lib/account/settings-store";
 import { setJobSearch } from "@/lib/job-search/store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
-import { FOUND_JOB_SEARCH_OFF_LINE } from "@/lib/inbox/types";
-import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
+import { FOUND_JOB_SEARCH_OFF_LINE, HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -238,7 +237,7 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     const [chat] = await listThreads(p, fd());
     expect(chat).toMatchObject({ id: sent.conversationId, kind: "application", found: true, jobSearchOff: true });
     expect(chat.state).toBeUndefined();
-    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open until you end it.");
+    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open. To stop it, use Block or report.");
     // Both sides still write; no new request can arrive while search is off.
     expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Still keen to talk?" }, fd())).ok).toBe(true);
     expect((await sendMessage(p, sent.conversationId, "Yes, this week works", fd())).ok).toBe(true);

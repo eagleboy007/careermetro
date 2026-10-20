@@ -373,6 +373,28 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     expect((await posts()).filter((p) => p.closed_at !== null).map((p) => p.external_id)).toEqual(["4004"]);
   });
 
+  it("replaces a stored posted_at that is still in the future, and keeps a sane one the board stopped sending (T90)", async () => {
+    const runAt = new Date("2026-10-20T12:00:00Z");
+    const write = async (greenhouse: unknown) => {
+      const { rows, results } = await collect(mine, matchers, { fetchImpl: answers(greenhouse, fixture("lever")), now: runAt });
+      const written = await writeRun(sql!, { boards: mine, rows, results, startedAt: runAt, now: runAt, closeUnlisted: false });
+      runIds.push(written.runId);
+    };
+    await write(fixture("greenhouse"));
+    const token = `${run}g`;
+    await sql!`update job_posts set posted_at = '2099-01-01T00:00:00Z' where board_token = ${token} and external_id = '4001'`;
+    await sql!`update job_posts set posted_at = '2026-10-17T09:00:00Z' where board_token = ${token} and external_id = '4003'`;
+    // The board now sends no date for either.
+    const gh = fixture("greenhouse") as { jobs: Record<string, unknown>[] };
+    const undated = { jobs: gh.jobs.map((j) => (j.id === 4001 || j.id === 4003 ? { ...j, first_published: undefined, updated_at: undefined } : j)) };
+    await write(undated);
+    const dated = new Map(
+      (await sql!`select external_id, posted_at from job_posts where board_token = ${token} and external_id in ('4001', '4003')`).map((r) => [r.external_id, r.posted_at]),
+    );
+    expect(dated.get("4001")).toBeNull();
+    expect((dated.get("4003") as Date).toISOString()).toBe("2026-10-17T09:00:00.000Z");
+  });
+
   it("refuses a row the table's checks don't allow", async () => {
     await expect(
       sql!`insert into job_posts (ats, board_token, external_id, url, title, company, city) values ('lever', ${`${run}x`}, '1', 'http://example.com', 'Data Analyst', 'Example', 'Pune')`,

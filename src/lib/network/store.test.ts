@@ -220,7 +220,7 @@ describe.skipIf(!db)("network store (database)", () => {
 
   it("refuses to block an id that names nobody, without touching the foreign key (Testing Run 5, T84)", async () => {
     const a = await person("Asha");
-    expect(await blockPerson(a, "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69", deps())).toEqual({ ok: false, error: "not_found" });
+    expect(await blockPerson(a, "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69", deps())).toEqual({ ok: false, error: "gone" });
     expect(await blockedPeople(a, db!)).toEqual([]);
   });
 
@@ -247,6 +247,36 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(done).toBe(false);
     release();
     await holder;
+    expect((await blocking).ok).toBe(true);
+    expect(await areConnected(a, c, db!)).toBe(false);
+  });
+
+  it("a block from the Inbox takes the pair lock before the chat row, so a remove that updates the chat can't deadlock with it", async () => {
+    const a = await person("Asha");
+    const c = await person("Esha");
+    await ask(a, c, "other", deps());
+    await answerRequest(c, a, "accept", deps());
+    const chat = await startDirect(a, c, "Hello", { db: db! });
+    if (!chat.ok) throw new Error(chat.error);
+    const id = chat.conversationId;
+    // Another transaction takes the pair's lock and then updates the chat row, as removeConnection and connect do.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = db!.transaction(async (tx) => {
+      await networkPairLock(a, c, tx);
+      locked();
+      await gate;
+      await tx.update(schema.conversations).set({ lastMessageAt: new Date() }).where(eq(schema.conversations.id, id));
+    });
+    await held;
+    const blocking = blockInChat(c, id, { db: db! });
+    // Let the block reach its locks while the holder still has the pair lock, then let the holder touch the chat row.
+    await new Promise((r) => setTimeout(r, 300));
+    release();
+    // Neither fails with a deadlock (40P01): the block waits on the pair lock and never holds the row first.
+    await expect(holder).resolves.toBeUndefined();
     expect((await blocking).ok).toBe(true);
     expect(await areConnected(a, c, db!)).toBe(false);
   });

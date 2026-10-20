@@ -255,6 +255,25 @@ describe("what the person added on Me", () => {
     expect(meProfile.safeParse(both).success && meProfile.safeParse(own).success).toBe(true);
   });
 
+  it("gives the shared badge to the current role, the one the check is for, when the company doesn't settle it (T95)", () => {
+    // The resume's Analyst at Acme from 2024-01 has ended; the added CTO role at Acme from 2024-01 is current.
+    const ended = profile({ roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: "2025-06", highlights: [] }] });
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z") };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    // No check yet: "Not verified" sits on the current CTO role, not the ended one.
+    expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }) })))).toEqual([
+      ["Analyst", null],
+      ["CTO", "not_verified"],
+    ]);
+    // A check written "Acme", as both rows write it, and an older row with no company as written: the CTO role too.
+    for (const check of [{ ...passed, employer: "Acme" }, passed])
+      expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }), jobChecks: [check] })))).toEqual([
+        ["Analyst", null],
+        ["CTO", "verified"],
+      ]);
+  });
+
   it("puts added education after the resume's, with its row id", () => {
     const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
     expect(me.education).toEqual([

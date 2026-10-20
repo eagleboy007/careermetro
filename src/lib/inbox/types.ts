@@ -10,7 +10,7 @@ export const HIDDEN_MESSAGE_TEXT = "This message was hidden by CareerMetro after
  * The line an accepted found chat shows the person while their job search is off (FR-52, Testing Run 5 T82): the chat
  * goes on, no new company requests arrive, and they can end it themselves with Block or report.
  */
-export const FOUND_JOB_SEARCH_OFF_LINE = "Job search is off. This chat stays open until you end it.";
+export const FOUND_JOB_SEARCH_OFF_LINE = "Job search is off. This chat stays open. To stop it, use Block or report.";
 
 export type InboxKind = "application" | "person" | "request";
 export type InboxFilter = "all" | InboxKind;

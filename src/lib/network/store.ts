@@ -69,7 +69,7 @@ import type { InterestsInCommon, PathTogether } from "./types";
 type Db = ReturnType<typeof getDb>;
 type Deps = { db?: Db; now?: Date };
 
-export type NetworkError = "self" | "self_report" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
+export type NetworkError = "self" | "self_report" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "gone" | "invalid";
 
 /** What each refusal tells the person. "unavailable" is deliberately vague: a block is never revealed. */
 export const NETWORK_ERROR_TEXT: Record<NetworkError, string> = {
@@ -81,6 +81,7 @@ export const NETWORK_ERROR_TEXT: Record<NetworkError, string> = {
   limit: "You've reached the limit for this for now. Try again later.",
   pending_max: `You have ${CONNECTION_PENDING_MAX} requests waiting. Withdraw some, or wait for answers, to send more.`,
   not_found: "That request isn't there any more.",
+  gone: "That person isn't there any more.",
   invalid: "Check the details and try again.",
 };
 
@@ -335,7 +336,7 @@ export async function blockPerson(userId: string, otherId: string, deps: Deps = 
     await dropBetween(tx, userId, otherId, now);
     return true;
   });
-  return blocked ? { ok: true } : fail("not_found");
+  return blocked ? { ok: true } : fail("gone");
 }
 
 /** A person this person blocked, for Settings > Privacy: name and when, never anything else. */

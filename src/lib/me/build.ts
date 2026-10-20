@@ -146,18 +146,27 @@ export function meFromProfile(input: MeInput): MeProfile {
     return k.employerKey ? `${k.employerKey}|${k.startMonth}` : null;
   };
   // T95: an added role can share the badge key (company key and start month) with a resume role uploaded after it was
-  // added. One check, one badge: it goes to the resume role, unless the check was made on the added role itself (the
-  // company as written on the check is the added role's and no resume role's with that key). The other row shows no
-  // check at all, only "Self-declared" where that applies.
+  // added. One check, one badge. The company as written on the check settles it when only one side has it. Otherwise
+  // (no check yet, or both sides write it the same) the badge goes to the side that is still current, the one jobToCheck
+  // picks, and to the resume role when both are current or both ended. The other row shows no check at all, only
+  // "Self-declared" where that applies.
   const ownerOf = new Map<string, "resume" | "added">();
   for (const { r, own } of roles) {
     const k = keyOf(r);
     if (!k || own) continue;
     const clash = roles.filter((x) => x.own && keyOf(x.r) === k);
     if (!clash.length) continue;
+    const resumeRows = roles.filter((x) => !x.own && keyOf(x.r) === k);
     const written = checks.find((c) => `${c.employerKey}|${c.startMonth}` === k)?.employer;
-    const onResume = roles.some((x) => !x.own && keyOf(x.r) === k && jobKeyOf(x.r).employer === written);
-    ownerOf.set(k, !onResume && clash.some((x) => jobKeyOf(x.r).employer === written) ? "added" : "resume");
+    const onResume = written !== undefined && resumeRows.some((x) => jobKeyOf(x.r).employer === written);
+    const onAdded = written !== undefined && clash.some((x) => jobKeyOf(x.r).employer === written);
+    if (onResume !== onAdded) {
+      ownerOf.set(k, onAdded ? "added" : "resume");
+      continue;
+    }
+    const resumeCurrent = resumeRows.some((x) => !x.r.end);
+    const addedCurrent = clash.some((x) => !x.r.end);
+    ownerOf.set(k, addedCurrent && !resumeCurrent ? "added" : "resume");
   }
   const checkOf = (r: Profile["roles"][number], added: boolean) => {
     const k = keyOf(r);
