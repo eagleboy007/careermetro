@@ -115,6 +115,7 @@ const sections: LegalSection[] = [
           except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.
         </li>
         <li>Company profile views: 30 days.</li>
+        <li>Notifications in the app: 60 days after you read them, and never more than 90 days.</li>
         <li>What a company can see of an application: up to 180 days after the application closes.</li>
         <li>A phone number shared for an interview: erased when the application closes.</li>
         <li>Reports and their notes: kept as a record of the complaint, without your name once your account is deleted.</li>

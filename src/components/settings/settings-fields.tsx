@@ -324,6 +324,8 @@ export function NotificationFields() {
           Weekly summary email
         </Switch>
       </div>
+      {/* docs/plans/notifications-plan.md: the bell in the top bar, in-app only until the email sender exists. */}
+      <p className="text-[0.8rem] text-muted">In the app you see connection requests and updates on your applications. Email for these comes later.</p>
     </>
   );
 }

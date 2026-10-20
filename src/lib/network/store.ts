@@ -23,6 +23,7 @@ import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
+import { forgetBetween, forgetRequests, notify } from "@/lib/notifications/store";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
 import { NETWORK_SCAN_MAX } from "@/lib/schemas/constants";
 import {
@@ -186,6 +187,8 @@ async function connect(tx: Tx, request: { id: string; fromUser: string; toUser: 
   await directChatLock(request.fromUser, request.toUser, tx);
   const chat = await directChat(request.fromUser, request.toUser, tx);
   if (chat?.status === "request") await tx.update(conversations).set({ status: "open" }).where(eq(conversations.id, chat.id));
+  // The person who asked is told, in the bell (docs/plans/notifications-plan.md).
+  await notify(tx, { kind: "connection_accepted", userId: request.fromUser, actorId: request.toUser, connectionRequestId: request.id }, now);
   logEvent("info", "connection_accepted");
 }
 
@@ -225,7 +228,8 @@ export async function requestConnection(fromId: string, toId: string, how: unkno
     if ((waiting?.n ?? 0) >= CONNECTION_PENDING_MAX) return fail("pending_max");
     if (!(await takeShared(LIMITS.networkRequestsPerUser, fromId, { db: tx, now: now.getTime() }))) return fail("limit");
     await expireStale(fromId, toId, tx, now);
-    await tx.insert(connectionRequests).values({ fromUser: fromId, toUser: toId, how: picked.data, createdAt: now });
+    const [made] = await tx.insert(connectionRequests).values({ fromUser: fromId, toUser: toId, how: picked.data, createdAt: now }).returning({ id: connectionRequests.id });
+    await notify(tx, { kind: "connection_request", userId: toId, actorId: fromId, connectionRequestId: made!.id }, now);
     logEvent("info", "connection_requested");
     return { ok: true as const, state: "requested" as const };
   });
@@ -258,18 +262,23 @@ export async function withdrawRequest(userId: string, toId: string, deps: Deps =
   const now = deps.now ?? new Date();
   // Whatever reads Requested to the sender (open, or ignored and not yet ended) can be withdrawn, so an ignore stays
   // silent; the request still holds them until it would have ended (askAgainFrom).
-  const gone = await db
-    .update(connectionRequests)
-    .set({ status: "withdrawn", decidedAt: now })
-    .where(
-      and(
-        eq(connectionRequests.fromUser, userId),
-        eq(connectionRequests.toUser, toId),
-        inArray(connectionRequests.status, ["pending", "ignored"]),
-        gte(connectionRequests.createdAt, openSince(now)),
-      ),
-    )
-    .returning({ id: connectionRequests.id, status: connectionRequests.status });
+  // The request's notification goes with it, in the same transaction.
+  const gone = await db.transaction(async (tx) => {
+    const rows = await tx
+      .update(connectionRequests)
+      .set({ status: "withdrawn", decidedAt: now })
+      .where(
+        and(
+          eq(connectionRequests.fromUser, userId),
+          eq(connectionRequests.toUser, toId),
+          inArray(connectionRequests.status, ["pending", "ignored"]),
+          gte(connectionRequests.createdAt, openSince(now)),
+        ),
+      )
+      .returning({ id: connectionRequests.id, status: connectionRequests.status });
+    await forgetRequests(tx, rows.map((r) => r.id));
+    return rows;
+  });
   return gone.length ? { ok: true } : fail("not_found");
 }
 
@@ -283,6 +292,8 @@ export async function removeConnection(userId: string, otherId: string, db: Db =
     await pairLock(userId, otherId, tx);
     const rows = await tx.delete(connections).where(pairWhere(userId, otherId)).returning({ low: connections.userLow });
     if (!rows.length) return false;
+    // Their notifications to each other go too (docs/plans/notifications-plan.md).
+    await forgetBetween(tx, userId, otherId);
     // Under the Inbox's lock too, so a first message sent at the same moment can't open a chat after this looked.
     await directChatLock(userId, otherId, tx);
     const chat = await directChat(userId, otherId, tx);
@@ -297,9 +308,13 @@ export async function removeConnection(userId: string, otherId: string, db: Db =
   return gone ? { ok: true } : fail("not_found");
 }
 
-/** Any connection between two people goes, and any open request is withdrawn. Every block calls this, in its transaction. */
+/**
+ * Any connection between two people goes, any open request is withdrawn, and their notifications to each other are
+ * deleted. Every block calls this, in its transaction.
+ */
 export async function dropBetween(tx: Tx | Db, x: string, y: string, now = new Date()): Promise<void> {
   await tx.delete(connections).where(pairWhere(x, y));
+  await forgetBetween(tx, x, y);
   await tx
     .update(connectionRequests)
     .set({ status: "withdrawn", decidedAt: now })

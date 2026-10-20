@@ -17,6 +17,7 @@ import { exportMeEdits } from "@/lib/me/edit-store";
 import { exportMockSessions } from "@/lib/mock/interview-store";
 import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
+import { exportNotifications } from "@/lib/notifications/store";
 import { exportPractice } from "@/lib/practice/store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -24,7 +25,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 28;
+export const EXPORT_VERSION = 29;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -110,7 +111,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows, meEdits] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows, meEdits, notificationRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -173,6 +174,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportDepartures(userId, db),
     exportLibrary(userId, db),
     exportMeEdits(userId, db),
+    exportNotifications(userId, db),
   ]);
 
   return {
@@ -260,5 +262,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     meEducation: meEdits.meEducation,
     stories: meEdits.stories,
     interests: meEdits.interests,
+    // Notifications (docs/plans/notifications-plan.md): each one's kind, when it was made and read, and the company and
+    // job for the ones about an application or interview. Other people's names are left out.
+    notifications: notificationRows,
   };
 }

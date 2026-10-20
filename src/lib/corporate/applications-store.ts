@@ -10,6 +10,7 @@ import { currentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
+import { notify } from "@/lib/notifications/store";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
 import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
@@ -663,6 +664,8 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
     await event(tx, app.id, "moved", to, userId, now, closing ? (paused ? PAUSED_NOT_THIS_TIME_NOTE : note) : null);
     // Who moved it, and to which lane; never the note.
     await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: `moved_${to}`, target: { application: app.id } }, now);
+    // The candidate's bell (docs/plans/notifications-plan.md): ids only; the sentence is read live from the application.
+    await notify(tx, { kind: closing ? "application_closed" : "application_moved", userId: app.userId, actorId: userId, applicationId: app.id }, now);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.
     if (closing) {
       // One audit line per interview it cancelled, from the member who closed it (build step 7).
