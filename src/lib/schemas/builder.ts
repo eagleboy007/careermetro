@@ -1,57 +1,33 @@
 import { z } from "zod";
+import { BUILDER_JOB_KINDS, BUILDER_LINES_MAX, BUILDER_ROWS_MAX, BUILDER_STAGES, BUILDER_TEXT_MAX, BUILDER_TOOLS_MAX } from "./constants";
+import { normalLink, YEAR_TEXT } from "@/lib/builder/rules";
+export { BUILDER_SECTIONS, BUILDER_SECTION_LABELS, BUILDER_STAGES, BUILDER_STAGE_LABELS, BUILDER_JOB_KINDS, BUILDER_JOB_KIND_LABELS, BUILDER_ROWS_MAX, BUILDER_TEXT_MAX, BUILDER_TOOLS_MAX, BUILDER_LINES_MAX, type BuilderSection } from "./constants";
+export { builderIssues, builderMissing, normalLink, type BuilderIssues } from "@/lib/builder/rules";
 
 /*
  * Build your resume (FR-36, handoff 12k, docs/plans/resume-builder-plan.md). The answers are resume text: they are never
- * logged, put in analytics, audit lines or URLs. Drafts save as the person goes, so every field accepts an empty value
- * and `builderMissing` says what a build still needs.
+ * logged, put in analytics, audit lines or URLs. Drafts save as the person goes, so every field accepts an empty or
+ * half-typed value (a year still being typed, an email not finished) and `builderMissing` says what a build still
+ * needs; the screens show those on Review. Only what could never be right (a bad month, a link off its site) is refused.
  */
-
-export const BUILDER_SECTIONS = ["role", "education", "projects", "jobs", "tools", "certificates", "links"] as const;
-export type BuilderSection = (typeof BUILDER_SECTIONS)[number];
-export const BUILDER_SECTION_LABELS: Record<BuilderSection, string> = {
-  role: "Role",
-  education: "Education",
-  projects: "Projects",
-  jobs: "Internships and jobs",
-  tools: "Tools",
-  certificates: "Certificates",
-  links: "Links",
-};
-
-export const BUILDER_STAGES = ["studying", "graduated", "working", "break"] as const;
-export const BUILDER_STAGE_LABELS: Record<(typeof BUILDER_STAGES)[number], string> = {
-  studying: "Studying",
-  graduated: "Just graduated",
-  working: "Working",
-  break: "On a break",
-};
-export const BUILDER_JOB_KINDS = ["internship", "job", "freelance", "volunteer"] as const;
-export const BUILDER_JOB_KIND_LABELS: Record<(typeof BUILDER_JOB_KINDS)[number], string> = {
-  internship: "Internship",
-  job: "Job",
-  freelance: "Freelance",
-  volunteer: "Volunteer",
-};
-
-/** Caps from the plan, section 4. */
-export const BUILDER_ROWS_MAX = 20;
-export const BUILDER_TEXT_MAX = 600;
-export const BUILDER_TOOLS_MAX = 30;
-/** The model returns at most this many resume lines for one free-text answer. */
-export const BUILDER_LINES_MAX = 4;
 
 const short = (max: number) => z.string().trim().max(max, { error: `Keep it under ${max} characters.` });
 const rowId = z.string().regex(/^[a-z0-9]{1,12}$/);
-const year = z.string().regex(/^(19[5-9]\d|20\d\d)$/, { error: "Use a year like 2024." });
+/** Up to four digits while it is typed; `builderIssues` asks for a whole year before a build. */
+const year = z.string().trim().regex(/^\d{0,4}$/, { error: YEAR_TEXT }).default("");
 const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, { error: "Pick a month." });
 const optional = <T extends z.ZodType>(s: T) => z.union([s, z.literal("")]).default("");
 
-/** A typed link: https only, and on the right site when the field names one. */
+/**
+ * A typed link: https only, and on the right site when the field names one. A link typed without https://
+ * ("github.com/priya") gets it, and an http:// link is upgraded, as `normalLink` does on the screen too.
+ */
 const httpsLink = (host?: RegExp) =>
   z
     .string()
     .trim()
     .max(300)
+    .transform(normalLink)
     .refine((v) => {
       if (!v) return true;
       try {
@@ -68,8 +44,8 @@ export const builderEducation = z.object({
   id: rowId,
   degree: short(120),
   college: short(160),
-  start: optional(year),
-  end: optional(year),
+  start: year,
+  end: year,
   marks: short(40).default(""),
 });
 
@@ -121,7 +97,8 @@ export const builderAnswers = z.object({
       github: httpsLink(/^(www\.)?github\.com$/).default(""),
       portfolio: httpsLink().default(""),
       linkedin: httpsLink(/^([a-z]{2,3}\.)?linkedin\.com$/).default(""),
-      email: z.union([z.email({ error: "Check the email." }).max(200), z.literal("")]).default(""),
+      /** Kept as typed; `builderIssues` checks it before a build. */
+      email: short(200).default(""),
     })
     .default({ github: "", portfolio: "", linkedin: "", email: "" }),
 });
@@ -130,23 +107,6 @@ export const EMPTY_BUILDER_ANSWERS: BuilderAnswers = builderAnswers.parse({});
 
 /** A free-text answer's id, as the reword prompt and the review page name it: "p:<row>" (project) or "j:<row>" (job). */
 export const answerId = z.string().regex(/^[pj]:[a-z0-9]{1,12}$/);
-
-/**
- * What each section still needs before "Check my gaps", in the person's words. Empty means ready. Optional fields
- * (marks, links, city, a project link) never block.
- */
-export function builderMissing(a: BuilderAnswers): Partial<Record<BuilderSection, string>> {
-  const out: Partial<Record<BuilderSection, string>> = {};
-  if (!a.role.stage) out.role = "Pick where you are now.";
-  if (!a.education.length || a.education.some((e) => !e.degree || !e.college)) out.education = "Add your degree and college.";
-  if (a.projects.some((p) => !p.name || !p.did)) out.projects = "Give each project a name and say what you did.";
-  if (a.worked === null) out.jobs = "Add a job or internship, or pick \"I haven't worked yet\".";
-  else if (a.worked && (!a.jobs.length || a.jobs.some((j) => !j.title || !j.from || !j.to || !j.did || (!j.company && (j.kind === "job" || j.kind === "internship")))))
-    out.jobs = "Give each one a company, a title, the months and what you did.";
-  if (!a.tools.length) out.tools = "Pick at least one tool.";
-  if (!a.noCertificates && a.certificates.some((c) => !c.name)) out.certificates = "Name each certificate, or pick \"None yet\".";
-  return out;
-}
 
 /** The reword model's reply (prompts/build-resume/v1.md). Checked line by line before anything is kept. */
 export const builderReword = z.object({

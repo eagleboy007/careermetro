@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BUILDER_TEXT_MAX, BUILDER_TOOLS_MAX, EMPTY_BUILDER_ANSWERS, builderAnswers, builderMissing, builderReword } from "./builder";
+import { BUILDER_TEXT_MAX, BUILDER_TOOLS_MAX, EMPTY_BUILDER_ANSWERS, builderAnswers, builderIssues, builderMissing, builderReword, normalLink } from "./builder";
 
 // Every answer here is made up.
 const ready = builderAnswers.parse({
@@ -32,18 +32,32 @@ describe("builder answers", () => {
   });
 
   it("takes https links only, and GitHub and LinkedIn only on their sites", () => {
-    const links = (l: object) => builderAnswers.safeParse({ links: { github: "", portfolio: "", linkedin: "", email: "", ...l } }).success;
-    expect(links({ github: "https://github.com/example" })).toBe(true);
-    expect(links({ github: "https://gitlab.com/example" })).toBe(false);
-    expect(links({ portfolio: "http://example.com" })).toBe(false);
-    expect(links({ portfolio: "javascript:alert(1)" })).toBe(false);
-    expect(links({ linkedin: "https://in.linkedin.com/in/example" })).toBe(true);
-    expect(links({ email: "not an email" })).toBe(false);
+    const links = (l: object) => builderAnswers.safeParse({ links: { github: "", portfolio: "", linkedin: "", email: "", ...l } });
+    expect(links({ github: "https://github.com/example" }).success).toBe(true);
+    expect(links({ github: "https://gitlab.com/example" }).success).toBe(false);
+    expect(links({ portfolio: "javascript:alert(1)" }).success).toBe(false);
+    expect(links({ linkedin: "https://in.linkedin.com/in/example" }).success).toBe(true);
+    // Typed without https://, or as http://: stored as https.
+    expect(links({ github: "github.com/example", portfolio: "http://example.com/work" }).data?.links).toMatchObject({ github: "https://github.com/example", portfolio: "https://example.com/work" });
+    expect(normalLink(" www.example.in ")).toBe("https://www.example.in");
+    expect(normalLink("HTTPS://example.com")).toBe("https://example.com");
+    expect(normalLink("mailto:a@example.com")).toBe("mailto:a@example.com");
+    expect(normalLink("priya")).toBe("priya");
+    expect(links({ portfolio: "priya" }).success).toBe(false);
   });
 
-  it("refuses bad months, years and row ids", () => {
+  it("saves a half-typed year or email, and asks for whole ones only before a build", () => {
+    const halfway = builderAnswers.safeParse({ ...ready, education: [{ ...ready.education[0], end: "20" }], links: { email: "priya@exam" } });
+    expect(halfway.success).toBe(true);
+    if (!halfway.success) return;
+    expect(builderIssues(halfway.data)).toEqual({ "education.0.end": "Use a year like 2024.", "links.email": "Check the email." });
+    expect(builderMissing(halfway.data)).toMatchObject({ education: expect.stringContaining("year"), links: "Check the email." });
+    expect(builderIssues({ ...halfway.data, education: ready.education, links: { ...halfway.data.links, email: "priya@example.com" } })).toEqual({});
+    expect(builderAnswers.safeParse({ education: [{ ...ready.education[0], end: "2O24" }] }).success).toBe(false);
+  });
+
+  it("refuses bad months and row ids", () => {
     expect(builderAnswers.safeParse({ jobs: [{ ...ready.jobs[0], from: "2024-13" }] }).success).toBe(false);
-    expect(builderAnswers.safeParse({ education: [{ ...ready.education[0], end: "24" }] }).success).toBe(false);
     expect(builderAnswers.safeParse({ projects: [{ ...ready.projects[0], id: "../x" }] }).success).toBe(false);
   });
 });

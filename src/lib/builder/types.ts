@@ -1,4 +1,5 @@
 import type { BuilderAnswers, BuilderReword } from "@/lib/schemas";
+import type { BuilderIssues } from "./rules";
 import type { BuilderLines } from "./profile";
 
 /** What /builder's screens are given (FR-36, handoff 12k). */
@@ -13,8 +14,12 @@ export type BuilderData = {
 
 export type BuilderReview = { resumeId: string; lines: BuilderLines; suggestions: BuilderReword["suggestions"]; plain: boolean };
 
+/** A save or review that didn't go through: the words to show, and the fields to mark by path ("education.0.start"). */
+export type BuilderFailure = { error: string; issues?: BuilderIssues };
+
 export type BuilderActions = {
-  save: (answers: BuilderAnswers) => Promise<string | null>;
-  review: (answers: BuilderAnswers) => Promise<BuilderReview | { error: string }>;
+  /** Null once saved. */
+  save: (answers: BuilderAnswers) => Promise<BuilderFailure | null>;
+  review: (answers: BuilderAnswers) => Promise<BuilderReview | BuilderFailure>;
   gaps: (resumeId: string, truthful: boolean) => Promise<string | null>;
 };

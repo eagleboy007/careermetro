@@ -110,7 +110,32 @@ export function builderText(a: BuilderAnswers, lines: BuilderLines): string {
   return out.join("\n").trim();
 }
 
-/** The built profile, through the same AI-5 check as an upload. */
+/** The person's own sentences for every free-text answer, with no model line in them. */
+export const ownAnswerLines = (a: BuilderAnswers): BuilderLines => Object.fromEntries(Object.entries(freeAnswers(a)).map(([id, text]) => [id, ownLines(text)]));
+
+/**
+ * The built profile, through the same AI-5 check as an upload. The check reads only the person's own answers, never
+ * the model's lines, so it can catch anything the model added. A reworded highlight is never printed in the answers
+ * word for word, so highlights are set aside for the check, then put back on the roles it keeps, each passing
+ * `lineSupported` once more against everything the person wrote.
+ */
 export function buildProfile(a: BuilderAnswers, lines: BuilderLines, now: Date) {
-  return verifyProfile(profileFromAnswers(a, lines, now), builderText(a, lines));
+  const built = profileFromAnswers(a, lines, now);
+  const own = builderText(a, ownAnswerLines(a));
+  const bare = { ...built, roles: built.roles.map((r) => ({ ...r, highlights: [] })) };
+  const { profile, report } = verifyProfile(bare, own);
+  const ownWords = Object.values(freeAnswers(a)).join("\n");
+  // Highlights by role, in order: a role kept by the check takes the next highlights listed under its title and employer.
+  const queue = new Map<string, string[][]>();
+  for (const r of built.roles) {
+    const key = `${r.title}\n${r.employer}`;
+    queue.set(key, [...(queue.get(key) ?? []), r.highlights]);
+  }
+  const roles = profile.roles.map((r) => {
+    const highlights = queue.get(`${r.title}\n${r.employer}`)?.shift() ?? [];
+    const kept = highlights.filter((h) => lineSupported(h, ownWords, a.tools));
+    report.droppedQuotes += highlights.length - kept.length;
+    return { ...r, highlights: kept };
+  });
+  return { profile: { ...profile, roles }, report };
 }

@@ -440,3 +440,39 @@ export const PRACTICE_KEEP_DAYS = 30;
 export const PRACTICE_CONFIDENCE_WORDS = ["Not yet", "A little", "Fairly", "Very"] as const;
 /** The longest reason an admin may give for hiding a message or suspending an account (FR-46). */
 export const REMOVAL_REASON_MAX = 500;
+
+/* Build your resume (FR-36, handoff 12k): the sections, choices and caps the builder's screens need. */
+
+export const BUILDER_SECTIONS = ["role", "education", "projects", "jobs", "tools", "certificates", "links"] as const;
+export type BuilderSection = (typeof BUILDER_SECTIONS)[number];
+export const BUILDER_SECTION_LABELS: Record<BuilderSection, string> = {
+  role: "Role",
+  education: "Education",
+  projects: "Projects",
+  jobs: "Internships and jobs",
+  tools: "Tools",
+  certificates: "Certificates",
+  links: "Links",
+};
+
+export const BUILDER_STAGES = ["studying", "graduated", "working", "break"] as const;
+export const BUILDER_STAGE_LABELS: Record<(typeof BUILDER_STAGES)[number], string> = {
+  studying: "Studying",
+  graduated: "Just graduated",
+  working: "Working",
+  break: "On a break",
+};
+export const BUILDER_JOB_KINDS = ["internship", "job", "freelance", "volunteer"] as const;
+export const BUILDER_JOB_KIND_LABELS: Record<(typeof BUILDER_JOB_KINDS)[number], string> = {
+  internship: "Internship",
+  job: "Job",
+  freelance: "Freelance",
+  volunteer: "Volunteer",
+};
+
+/** Caps from the plan, section 4. */
+export const BUILDER_ROWS_MAX = 20;
+export const BUILDER_TEXT_MAX = 600;
+export const BUILDER_TOOLS_MAX = 30;
+/** The model returns at most this many resume lines for one free-text answer. */
+export const BUILDER_LINES_MAX = 4;

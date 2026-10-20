@@ -76,8 +76,15 @@ export const LIMITS = {
   networkRequestsPerUser: { bucket: "network-request", max: 20, windowMs: 24 * HOUR },
   /** Network searches by name one person runs an hour, so the list of people can't be read out by script. */
   networkSearchesPerUserHour: { bucket: "network-search", max: 30, windowMs: HOUR },
-  /** Build your resume (FR-36): draft saves an hour, and rewords a day, each per person. */
-  builderSavesPerUserHour: { bucket: "builder-save", max: 60, windowMs: HOUR },
+  /**
+   * Build your resume (FR-36): draft saves an hour per person. The screen saves only when the answers changed, at most
+   * once every two seconds while typing, and on each Next; seven sections of about 30 fields, each changed and maybe
+   * corrected, come to well under 200 in a sitting, while a script still gets only about 3 writes a minute.
+   */
+  builderSavesPerUserHour: { bucket: "builder-save", max: 200, windowMs: HOUR },
+  /** Reviews ("Review my resume", "Update my resume") an hour per person: each saves and builds, and may reword. */
+  builderBuildsPerUserHour: { bucket: "builder-build", max: 30, windowMs: HOUR },
+  /** Rewords a day per person; they also count toward the parse budget. */
   builderRewordsPerUserDay: { bucket: "builder-reword", max: 5, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
