@@ -821,8 +821,8 @@ export default function DesignPage() {
           question&apos;s follow-ups to study; a feedback item with the follow-up and its reply, and one with &quot;Follow-up skipped.&quot;
         </p>
         <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
-        <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />
-        <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />
+        {exampleTimedTest && <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />}
+        {exampleTimedReview && <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />}
         <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
         <MockView view={exampleMockPage("data-analyst", false)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
