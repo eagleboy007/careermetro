@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Network part 3, Development 4).
+Last updated: 2026-10-20 (Guided resume builder, Development 4).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -34,7 +34,7 @@ Last updated: 2026-10-20 (Network part 3, Development 4).
 ## In progress
 
 - Network, FR-49 (handoff 12j): part 1, data and rules, is in (#165, migration 0034). Part 2, the `/network` page (Connections, Requests, Sent, Find people), the avatar-menu count and the Settings "Let people find me" switch, is in (#166). Part 3 is in this PR: Connect and "In common with you" on `/u/[handle]`, chats between connections open at once (Remove turns the chat back into a request), and Settings' "Your gaps show to" (Nobody else, Your connections, Everyone who can see your profile) replaces the "Your gaps" switch. Network is then done; what follows is in the plan's "Not in this plan". Plan `docs/plans/network-plan.md`.
-- Then the resume builder (FR-36, `docs/plans/resume-builder-plan.md`) and Elite (C15, FR-50, `docs/plans/elite-plan.md`).
+- Build your resume, FR-36 (handoff 12k), is built on branch `resume-builder` (migration 0035, export version 21), with the review fixes: the line check reads ambiguous names (React, Express) and number words against the answer, the AI-5 backstop reads only the person's words, rebuilds reuse the waiting version under the cap and a per-person lock, the reword's cost is reserved (H4), and saves coalesce and never block Next. The review page points to the confirm page for the download. Plan `docs/plans/resume-builder-plan.md`. Then Elite (C15, FR-50, `docs/plans/elite-plan.md`).
 
 ## Next up
 
@@ -51,7 +51,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Waiting on design: the Elite version (pending items 10 and 20). Only "Your plan" (proto v33) is drawn, and there is no billing in beta. Nothing gets built until the design thread has the screens approved.
 
-Numbers: the next migration is **0035**. `EXPORT_VERSION` (20) lives in `src/lib/account/export.ts`. The latest FR is FR-49.
+Numbers: the next migration is **0036**. `EXPORT_VERSION` (21) lives in `src/lib/account/export.ts`. The latest FR is FR-49 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

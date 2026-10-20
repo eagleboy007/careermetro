@@ -1184,6 +1184,90 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// Build your resume (FR-36, handoff 12k). A fresh person answers the seven sections; one click on Next moves on each
+// time, though leaving a field starts a save. "Review my resume" goes to the stand-in model (e2e/mock-ai.mjs buildReply),
+// which returns the answer's own words plus "Improved results by 99% across 400 systems": the line check must drop
+// that one, so the review shows the person's line and never the made-up one. axe passes in light and dark and at
+// phone width, with no sideways scroll.
+await step("builder: seven sections, one click each, and Review drops the model's made-up line", async () => {
+  const ctxB = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxB.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await q.goto(BASE + "/builder");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Builder Rider");
+    await q.locator('input[name="email"]').fill(`builder-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today|builder)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/(today|builder)/, { timeout: 15000 });
+    }
+    if (!new URL(q.url()).pathname.startsWith("/builder")) await q.goto(BASE + "/builder");
+    const section = (name) => q.getByRole("heading", { name, level: 2, exact: true });
+    const next = async (name) => {
+      await q.getByRole("button", { name: "Next", exact: true }).click();
+      await section(name).waitFor({ timeout: 5000 });
+    };
+    await section("Role").waitFor({ timeout: 15000 });
+    await q.getByLabel("Target role").selectOption("data-analyst");
+    await q.getByText("Just graduated", { exact: true }).click();
+    await next("Education");
+    await q.getByRole("button", { name: "Add degree" }).click();
+    await q.getByLabel("Degree", { exact: true }).fill("B.Com.");
+    await q.getByLabel("College", { exact: true }).fill("Example College, Indore");
+    await q.getByLabel("Start year").fill("2021");
+    // Leaving the field mid-way starts a save in the background; Next still works on the first click.
+    await q.getByLabel("End year").fill("2024");
+    await next("Projects");
+    await q.getByRole("button", { name: "Add project" }).click();
+    await q.getByLabel("Project name").fill("Shop sales dashboard");
+    await q.getByLabel("What did you build or do?").fill("Built a sales dashboard in Excel for 3 shops.");
+    await next("Internships and jobs");
+    await q.getByRole("checkbox", { name: /haven.t worked yet/ }).check();
+    await next("Tools");
+    const tools = q.getByRole("list", { name: "Tools" });
+    if (!(await tools.getByRole("button", { pressed: true }).count())) {
+      await q.getByLabel("Add your own").fill("Excel");
+      await q.getByRole("button", { name: "Add", exact: true }).click();
+    }
+    await tools.getByRole("button", { pressed: true }).first().waitFor({ timeout: 5000 });
+    await next("Certificates");
+    await q.getByRole("checkbox", { name: "None yet" }).check();
+    await next("Links");
+    await q.getByLabel("GitHub").fill("github.com/builder-rider");
+    await q.getByRole("button", { name: "Review my resume" }).click();
+    await q.getByRole("heading", { name: "Your resume", level: 1 }).waitFor({ timeout: 60000 });
+    const preview = q.getByRole("article", { name: "Resume preview" });
+    await preview.getByRole("button", { name: "Built a sales dashboard in Excel for 3 shops." }).waitFor({ timeout: 5000 });
+    await preview.getByText("github.com/builder-rider", { exact: false }).waitFor();
+    if (await q.getByText("Improved results by 99% across 400 systems", { exact: false }).count()) throw new Error("the review shows the model's made-up line");
+    // The model did answer (its suggestion is listed, not added), so the made-up line was dropped by the check.
+    await q.getByRole("heading", { name: "Suggested, not added" }).waitFor();
+    // Tapping a line shows the answer it came from.
+    await preview.getByRole("button", { name: "Built a sales dashboard in Excel for 3 shops." }).click();
+    await preview.getByText(/^Your answer:/).waitFor();
+    await axeOn(q, "builder-review");
+    await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-builder-review.png`, fullPage: true });
+    // Phone width, light then dark, on the same review (it lives on the page, so no reload).
+    await q.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["light", "dark"]) {
+      await q.emulateMedia({ colorScheme: scheme });
+      if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`the review scrolls sideways at 390px (${scheme})`);
+      await axeOn(q, `builder-review-phone-${scheme}`);
+    }
+    // Back to the answers: the sections in dark mode at phone width pass too.
+    await q.getByRole("button", { name: "Edit answers" }).click();
+    await section("Role").waitFor({ timeout: 5000 });
+    if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("the builder scrolls sideways at 390px (dark)");
+    await axeOn(q, "builder-phone-dark");
+  } finally {
+    await ctxB.close();
+  }
+});
 // Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted
 // certificates go into the database (adding one runs through the Today form, covered by its own tests): a Credly badge
 // in her name, a Credly badge for another certificate, a Microsoft Learn link and an expired one. On /me she checks the
