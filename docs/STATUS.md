@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (performance pass).
+Last updated: 2026-10-20 (refused sign-in codes logged).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -41,10 +41,11 @@ Last updated: 2026-10-20 (performance pass).
   - Today live cards: Signal check, Departures board, On your line (#193; the Signal check is hidden in production until its questions are reviewed). Tracks, FR-56 (#195; draft tracks `reviewed: false`, the chip stays plain text in production).
   - Hardening (#196, `docs/plans/hardening-pass.md`): `hardening:` e2e steps for #175 to #193 (keyboard, axe light and dark after a reload, 390 px fit) and focus fixes; Life line marks read what they draw.
   - Launch readiness (#197, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md`, the scripted production check to run right after Milin's redeploy; RLS and FK indexes confirmed on 0039 to 0045 and `rls.test` refuses policies and grants; Account settings saves capped at 100 a day and Unblock at 50. Supabase's Confirm signup template also needs `{{ .Token }}`.
+  - Performance pass (#198, migration 0046 `job_posts_open_newest`, `docs/plans/perf-pass.md`): Today, Map and Departures read the analysis once and run independent reads in parallel; the goal sync on every view is what's left.
 
 ## In progress
 
-- Performance pass, Today, Map and Departures (branch `v44-perf`, `docs/plans/perf-pass.md`): the current analysis is read once per page and handed on, the ride's and the Map's independent reads run beside the goal sync, Today's board posts start reading beside the ride, Departures starts every read at once, and the job search switch and Elite are read once per request (`src/lib/request-reads.ts`). About 4 to 5 fewer database round trips in turn on Today and the Map. Migration 0046 adds `job_posts_open_newest` for the newest-300 open posts read. No client bundle change was needed; what was left (the goal sync on every view, the pool of 5) is in the plan.
+- Refused sign-in codes are logged (no migration): `auth_email_code_send_refused` and `auth_email_code_verify_refused` carry Supabase's error code and status only, never the email or the code (`src/lib/auth/refusal.ts`), so a wrong SMTP or template setting shows in Vercel logs; `docs/launch/prod-smoke.md` names them.
 
 ## Next up
 
