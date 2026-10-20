@@ -36,15 +36,18 @@ function roleFilter(value: string | string[] | undefined): { slug: string; title
   return role ? { slug: role.slug, title: role.title } : null;
 }
 
-/** Open jobs from verified companies, for one role when given. If they can't be read, Departures still shows its other roles. */
-async function postedJobs(roleSlug?: string): Promise<PostedJobView[]> {
-  if (!process.env.DATABASE_URL) return [];
+/**
+ * Open jobs from verified companies, for one role when given. Null when they can't be read, so the page claims nothing
+ * about them; Departures still shows its other roles.
+ */
+async function postedJobs(roleSlug?: string): Promise<PostedJobView[] | null> {
+  if (!process.env.DATABASE_URL) return null;
   try {
     return await liveJobs({ roleSlug });
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_posted_jobs_failed", errorFields(error));
-    return [];
+    return null;
   }
 }
 
@@ -101,7 +104,8 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const analysis = account ? await currentAnalysis(account.id) : null;
   const hasResume = account ? analysis !== null : state !== "no_resume";
   const noFit = account && hasResume ? "Your fit for each role shows here once real roles come from company job boards." : null;
-  const posted = await postedJobs(role?.slug);
+  const read = await postedJobs(role?.slug);
+  const posted = read ?? [];
   const [states, criteria, elite, search] = await Promise.all([
     postedStates(account?.id ?? null, posted),
     postedCriteria(account?.id ?? null, posted),
@@ -116,7 +120,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
     <JobSearchProvider initialOn={search.on} action={account ? switchJobSearch : undefined}>
       <JobSearchGate paused={<JobSearchPaused title="Departures" lede={LEDE} />}>
         <div className="flex flex-col gap-4">
-          {role && (
+          {role && read && (
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
               <span>
                 {posted.length ? "Posted jobs for " : "No posted jobs for "}

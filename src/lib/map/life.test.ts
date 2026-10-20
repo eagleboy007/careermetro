@@ -124,7 +124,7 @@ describe("lifeFromProfile", () => {
     expect(line.undated).toEqual([{ row: "certificates", name: "Google Data Analytics" }]);
     expect(line.links).toEqual([
       { from: "cert-0", to: "work-0", text: "PL-300 Power BI Data Analyst fed the Power BI you used as MIS Executive" },
-      { from: "cert-0", to: "joined", text: "Counts toward Power BI for Data Analyst" },
+      { from: "cert-0", to: "joined", text: "PL-300 Power BI Data Analyst counts toward Power BI for Data Analyst" },
       // The internship ran on after the degree but never named statistics, so the degree feeds the next job.
       { from: "edu-0", to: "work-0", text: "B.Sc. Statistics fed the Statistics you used as MIS Executive" },
     ]);
@@ -137,6 +137,21 @@ describe("lifeFromProfile", () => {
     // A job that ended before the certificate is never fed by it.
     const ended = profile({ ...p, roles: [{ ...p.roles[0], end: "2024-12" }] });
     expect(lifeFromProfile(ended, opts).links.some((l) => l.from === "cert-0")).toBe(false);
+  });
+
+  it("ends an older role with no end date when the next one starts, and keeps only the latest running", () => {
+    const cert = [{ name: "PL-300 Power BI Data Analyst", earned: "2025-03", expires: "2027-03" }];
+    const older = { title: "Associate", employer: "Acme", start: "2022-01", end: null, highlights: ["Built Power BI dashboards"] };
+    const newer = { title: "Coordinator", employer: "Konkan Bank", start: "2024-06", end: null, highlights: ["Filed branch paperwork"] };
+    // The older role ended when the newer one began in 2024, before the certificate, so nothing it did was fed by it.
+    expect(lifeFromProfile(profile({ roles: [older, newer], certifications: cert }), opts).links.some((l) => l.from === "cert-0")).toBe(false);
+    // The latest role with no end still runs to now, so the certificate feeds it.
+    const latest = { ...newer, highlights: ["Built Power BI dashboards"] };
+    expect(lifeFromProfile(profile({ roles: [older, latest], certifications: cert }), opts).links).toContainEqual({
+      from: "cert-0",
+      to: "work-1",
+      text: "PL-300 Power BI Data Analyst fed the Power BI you used as Coordinator",
+    });
   });
 
   it("stays inside the schema for a very long resume", () => {

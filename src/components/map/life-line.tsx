@@ -253,7 +253,7 @@ export function LifeSheet({
         {fed.length > 0 && (
           <div className="flex items-start gap-1.5 text-[0.76rem] text-muted">
             <Route size={14} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />
-            <span>{fed.map((l) => l.text).join(". ")}.</span>
+            <span>{fed.map((l) => (/[.…]$/.test(l.text) ? l.text : `${l.text}.`)).join(" ")}</span>
           </div>
         )}
         <Soon>Add a moment</Soon>

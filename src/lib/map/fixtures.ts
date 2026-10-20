@@ -62,7 +62,7 @@ export const exampleLifeLine: LifeLine = {
   undated: [],
   // In the shape lifeLinks draws them: a moment that names a skill, to the job that used it.
   links: [
-    { from: "e2", to: "w1", text: "Final-year Excel project fed the Excel you used as MIS Intern" },
+    { from: "e2", to: "w1", text: "Graduated fed the Excel you used as MIS Intern" },
     { from: "c1", to: "w2", text: "Google Data Analytics fed the SQL you used as MIS Executive" },
   ],
   moments: [

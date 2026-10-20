@@ -166,10 +166,12 @@ export function lifeLinks(
 ): LifeLine["links"] {
   const placed = new Set(moments.map((m) => m.id));
   const nowT = decimalYear(opts.now);
-  const jobs = profile.roles
-    .map((r, i) => ({ id: `work-${i}`, title: r.title, start: yearOf(r.start), end: yearOf(r.end) ?? nowT, skills: skillsNamedIn([r.title, ...r.highlights].join("\n")) }))
+  const dated = profile.roles
+    .map((r, i) => ({ id: `work-${i}`, title: r.title, start: yearOf(r.start), end: yearOf(r.end), skills: skillsNamedIn([r.title, ...r.highlights].join("\n")) }))
     .filter((j) => placed.has(j.id) && j.start !== null)
     .sort((a, b) => a.start! - b.start!);
+  // A role with no end runs until the next one starts; only the latest runs on to now.
+  const jobs = dated.map((j, k) => ({ ...j, end: j.end ?? (k < dated.length - 1 ? dated[k + 1].start! : nowT) }));
   const firstShared = (from: Iterable<string>, to: ReadonlySet<string>) => {
     const ids = new Set(from);
     return taxonomy.find((s) => ids.has(s.id) && to.has(s.id))?.id;
@@ -200,7 +202,7 @@ export function lifeLinks(
     const expired = until !== null && until.t + (/^\d{4}$/.test(c.expires!) ? 1 : 1 / 12) <= nowT;
     const counted = expired ? undefined : firstShared(known.flatMap((k) => k.proves), met);
     if (counted && placed.has("joined")) {
-      links.push({ from: id, to: "joined", text: clipText(`Counts toward ${skillName.get(counted)} for ${opts.destination}`) });
+      links.push({ from: id, to: "joined", text: clipText(`${c.name.trim()} counts toward ${skillName.get(counted)} for ${opts.destination}`) });
     }
   });
   profile.education.forEach((e, i) => {
