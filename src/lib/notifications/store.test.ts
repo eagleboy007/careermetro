@@ -132,7 +132,8 @@ describe.skipIf(!db)("notifications (database)", () => {
     const a = await person("Neha");
     const b = await person("Suresh");
     const d = await person("Zoya");
-    await requestConnection(b, a, "same_line", deps());
+    // Suresh asks a little earlier, so the newest-first order never rests on a tie.
+    await requestConnection(b, a, "same_line", deps(-0.001));
     await requestConnection(d, a, "event", deps());
     // While Zoya is suspended her request is hidden, so opening the panel leaves it unread.
     await db!.update(schema.users).set({ suspendedAt: now }).where(eq(schema.users.id, d));
