@@ -1,5 +1,5 @@
 {
-  "note": "Interview prep bank (FR-50, handoff 12l). Open questions are the Practice bank's (src/content/practice-questions.json), with \"a strong answer covers\" taken from its lookFor; never written by the model. Choice questions are for the timed test, hand-written by Development on 2026-10-20 and not yet checked by someone who works in the role: reviewed is false until they are, and production shows only reviewed ones. Follow-ups on open questions (docs/plans/mock-followups-plan.md) are Development's own too, written for the about-you questions first: followUpsReviewed is false until someone who works in the role checks them, and production asks only reviewed ones.",
+  "note": "Interview prep bank (FR-50, handoff 12l). Open questions are the Practice bank's (src/content/practice-questions.json), with \"a strong answer covers\" taken from its lookFor; never written by the model. Choice questions are for the timed test, hand-written by Development on 2026-10-20 and not yet checked by someone who works in the role: reviewed is false until they are, and production shows only reviewed ones. Follow-ups on open questions (docs/plans/mock-followups-plan.md) are Development's own too, one or two for every open question: followUpsReviewed is false until someone who works in the role checks them, and production asks only reviewed ones.",
   "questions": [
     {
       "id": "communication-1",
@@ -269,7 +269,28 @@
       "topic": "Python",
       "question": "What is the difference between a list and a tuple in Python, and when would you use each?",
       "strongCovers": "Mutability, tuples as fixed records or dict keys, and a sensible example.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "python-1-fu-1",
+          "text": "Give a case where a tuple works as a dictionary key and a list would not.",
+          "skipIf": [
+            "dict key",
+            "dictionary key",
+            "hashable"
+          ]
+        },
+        {
+          "id": "python-1-fu-2",
+          "text": "If a function gets a list and changes it, what does the code that called it see afterwards?",
+          "skipIf": [
+            "same object",
+            "copy of the list",
+            "caller"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "python-2",
@@ -298,7 +319,30 @@
       "topic": "Python",
       "question": "How would you read a large CSV file in Python without loading it all into memory?",
       "strongCovers": "Iterating line by line or with csv.reader, generators, or chunked reading in pandas.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "python-2-fu-1",
+          "text": "Say how you would add up one column across the whole file while reading it in pieces.",
+          "skipIf": [
+            "sum",
+            "total",
+            "add up",
+            "running total"
+          ]
+        },
+        {
+          "id": "python-2-fu-2",
+          "text": "What would you do with rows that fail to parse halfway through the file?",
+          "skipIf": [
+            "bad rows",
+            "malformed",
+            "fail to parse",
+            "on_bad_lines"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "python-3",
@@ -327,7 +371,32 @@
       "topic": "Python",
       "question": "Explain how exceptions work in Python and how you would handle a failed API call.",
       "strongCovers": "try/except with specific exceptions, retries or logging, and not swallowing errors silently.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "python-3-fu-1",
+          "text": "How many times would you retry the call, and how long would you wait between tries?",
+          "skipIf": [
+            "backoff",
+            "back off",
+            "exponential backoff",
+            "wait between",
+            "between retries"
+          ]
+        },
+        {
+          "id": "python-3-fu-2",
+          "text": "What would you write to the log when the call finally fails, and what would you leave out?",
+          "skipIf": [
+            "log the error",
+            "log the status",
+            "request id",
+            "no secrets in the log",
+            "without the token"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "python-4",
@@ -356,7 +425,29 @@
       "topic": "Python",
       "question": "What is a virtual environment and why do you use one?",
       "strongCovers": "Isolating project dependencies and pinning versions in requirements.txt or similar.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "python-4-fu-1",
+          "text": "Say how a teammate would set up the same package versions on their laptop from your project.",
+          "skipIf": [
+            "requirements.txt",
+            "pip freeze",
+            "lock file",
+            "poetry",
+            "pipenv"
+          ]
+        },
+        {
+          "id": "python-4-fu-2",
+          "text": "What would you do if two packages need different versions of the same library?",
+          "skipIf": [
+            "conflict",
+            "conflicting"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "python-5",
@@ -385,7 +476,31 @@
       "topic": "Python",
       "question": "Write a function that returns the count of each word in a sentence.",
       "strongCovers": "A dict or collections.Counter, handling case and punctuation, and clean readable code.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "python-5-fu-1",
+          "text": "How would your function treat \"Data\" and \"data,\" with a comma: as one word or two?",
+          "skipIf": [
+            "lower()",
+            "lowercase",
+            "lower case",
+            "punctuation",
+            "casefold"
+          ]
+        },
+        {
+          "id": "python-5-fu-2",
+          "text": "Say how you would return only the three most common words.",
+          "skipIf": [
+            "most_common",
+            "most common",
+            "top three",
+            "top 3"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-1",
@@ -409,7 +524,29 @@
       "topic": "SQL",
       "question": "What is the difference between INNER JOIN and LEFT JOIN?",
       "strongCovers": "Unmatched rows kept on the left side with NULLs, explained with a small example.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "sql-1-fu-1",
+          "text": "With a customers table and an orders table, which join finds customers who have never ordered, and how do you pick them out?",
+          "skipIf": [
+            "is null",
+            "never ordered",
+            "no orders"
+          ]
+        },
+        {
+          "id": "sql-1-fu-2",
+          "text": "What happens to your row count when one customer has three orders?",
+          "skipIf": [
+            "row count",
+            "duplicate rows",
+            "multiplies",
+            "more rows"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-2",
@@ -433,7 +570,32 @@
       "topic": "SQL",
       "question": "How would you find duplicate email addresses in a customers table?",
       "strongCovers": "GROUP BY with HAVING COUNT(*) > 1, and how to see the full duplicate rows.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "sql-2-fu-1",
+          "text": "Would the same email typed with capital letters or a trailing space count as a duplicate in your query?",
+          "skipIf": [
+            "lower",
+            "upper",
+            "trim",
+            "capital letters",
+            "case-insensitive"
+          ]
+        },
+        {
+          "id": "sql-2-fu-2",
+          "text": "Once you have found the duplicates, how would you decide which row to keep?",
+          "skipIf": [
+            "keep the latest",
+            "most recent",
+            "row_number",
+            "keep the first",
+            "oldest"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-3",
@@ -457,7 +619,29 @@
       "topic": "SQL",
       "question": "What is the difference between WHERE and HAVING?",
       "strongCovers": "WHERE filters rows before grouping, HAVING filters groups after aggregation.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "sql-3-fu-1",
+          "text": "Give one query that uses both: only this year's orders, then only regions with more than 100 of them.",
+          "skipIf": [
+            "both where and having",
+            "where first and having",
+            "where then having",
+            "having count"
+          ]
+        },
+        {
+          "id": "sql-3-fu-2",
+          "text": "Which of the two can use an index on the filtered column, and why does that matter on a big table?",
+          "skipIf": [
+            "index",
+            "indexes",
+            "indexed"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-4",
@@ -481,7 +665,29 @@
       "topic": "SQL",
       "question": "Write a query to get the second highest salary from an employees table.",
       "strongCovers": "A correct approach using ORDER BY with OFFSET, a subquery or a window function, and handling ties.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "sql-4-fu-1",
+          "text": "What does your query return if two people tie for first place?",
+          "skipIf": [
+            "tie",
+            "ties",
+            "dense_rank",
+            "distinct"
+          ]
+        },
+        {
+          "id": "sql-4-fu-2",
+          "text": "How would you change it to get the second highest in each department?",
+          "skipIf": [
+            "partition by",
+            "each department",
+            "per department"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-5",
@@ -505,7 +711,28 @@
       "topic": "SQL",
       "question": "What is an index and when can it slow things down?",
       "strongCovers": "Faster reads on filtered columns, slower writes and extra storage, and not indexing everything.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "sql-5-fu-1",
+          "text": "Say how you would check whether a slow query actually uses the index.",
+          "skipIf": [
+            "explain",
+            "query plan",
+            "execution plan"
+          ]
+        },
+        {
+          "id": "sql-5-fu-2",
+          "text": "A payments table gets thousands of inserts a minute. Which columns would you index there, and which not?",
+          "skipIf": [
+            "write-heavy",
+            "inserts",
+            "many writes"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "git-1",
@@ -525,7 +752,30 @@
       "topic": "Git",
       "question": "What is the difference between git merge and git rebase?",
       "strongCovers": "Merge keeps history with a merge commit, rebase rewrites it linearly, and not rebasing shared branches.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "git-1-fu-1",
+          "text": "Say why you would not rebase a branch your teammates have already pulled.",
+          "skipIf": [
+            "shared branch",
+            "shared branches",
+            "force push",
+            "force-push",
+            "rewrites history",
+            "rewrite history"
+          ]
+        },
+        {
+          "id": "git-1-fu-2",
+          "text": "Which do you use to bring main into your feature branch before a pull request, and why?",
+          "skipIf": [
+            "pull request",
+            "before merging"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "git-2",
@@ -545,7 +795,32 @@
       "topic": "Git",
       "question": "How do you resolve a merge conflict?",
       "strongCovers": "Reading both sides, editing the file, testing, then adding and committing the result.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "git-2-fu-1",
+          "text": "How do you check that the merged file still works before you commit it?",
+          "skipIf": [
+            "run the tests",
+            "ran the tests",
+            "run the build",
+            "run it locally",
+            "test it locally"
+          ]
+        },
+        {
+          "id": "git-2-fu-2",
+          "text": "When would you ask the teammate who wrote the other side before choosing?",
+          "skipIf": [
+            "ask the author",
+            "talk to the author",
+            "ask the teammate",
+            "ask whoever wrote",
+            "check with the author"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "git-3",
@@ -565,7 +840,31 @@
       "topic": "Git",
       "question": "What would you do if you committed a file containing a password by mistake?",
       "strongCovers": "Rotate the secret first, then remove it from history, and add the file to .gitignore.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "git-3-fu-1",
+          "text": "If the commit is already pushed, what do you do first, before cleaning the history?",
+          "skipIf": [
+            "rotate",
+            "revoke",
+            "change the password",
+            "reset the password"
+          ]
+        },
+        {
+          "id": "git-3-fu-2",
+          "text": "How would you stop the same mistake happening next time?",
+          "skipIf": [
+            "pre-commit",
+            "secret scanning",
+            "gitleaks",
+            "git-secrets",
+            "push protection"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "git-4",
@@ -585,7 +884,30 @@
       "topic": "Git",
       "question": "Describe the branching workflow you have used in a team.",
       "strongCovers": "Feature branches, pull requests with review, and how releases or hotfixes were handled.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "git-4-fu-1",
+          "text": "Say how an urgent fix reached production in that workflow while a release was half done.",
+          "skipIf": [
+            "hotfix",
+            "hot fix",
+            "urgent fix"
+          ]
+        },
+        {
+          "id": "git-4-fu-2",
+          "text": "What did a pull request need before it could be merged in your team?",
+          "skipIf": [
+            "approval",
+            "approvals",
+            "code review",
+            "passing checks",
+            "ci checks"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "git-5",
@@ -605,7 +927,29 @@
       "topic": "Git",
       "question": "What does git stash do and when would you use it?",
       "strongCovers": "Saving uncommitted work temporarily to switch tasks, then applying it back.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "git-5-fu-1",
+          "text": "Say how you get the stashed work back, and what happens if it clashes with your new changes.",
+          "skipIf": [
+            "stash pop",
+            "stash apply",
+            "stash list",
+            "conflict",
+            "conflicts"
+          ]
+        },
+        {
+          "id": "git-5-fu-2",
+          "text": "When would you make a quick commit on your branch instead of stashing?",
+          "skipIf": [
+            "commit instead",
+            "wip commit"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "rest-apis-1",
@@ -623,7 +967,27 @@
       "topic": "REST APIs",
       "question": "What are the common HTTP methods and when do you use each?",
       "strongCovers": "GET, POST, PUT, PATCH and DELETE matched to read, create, replace, update and delete, with idempotency.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "rest-apis-1-fu-1",
+          "text": "Which of these methods are idempotent, and why does that matter when a mobile app retries on a poor network?",
+          "skipIf": [
+            "idempotent",
+            "idempotency"
+          ]
+        },
+        {
+          "id": "rest-apis-1-fu-2",
+          "text": "When would you use PATCH rather than PUT to update a user's profile?",
+          "skipIf": [
+            "partial update",
+            "partially",
+            "only the changed fields"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "rest-apis-2",
@@ -641,7 +1005,26 @@
       "topic": "REST APIs",
       "question": "What do the status codes 200, 201, 400, 401, 403, 404 and 500 mean?",
       "strongCovers": "Correct meanings, especially the difference between 401 and 403.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "rest-apis-2-fu-1",
+          "text": "Give one request that should get 401 and one that should get 403.",
+          "skipIf": [
+            "not logged in",
+            "no token",
+            "logged in but",
+            "forbidden",
+            "unauthenticated"
+          ]
+        },
+        {
+          "id": "rest-apis-2-fu-2",
+          "text": "Your API returns 200 with an error message inside the body. What problem does that cause for the app calling it?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "rest-apis-3",
@@ -659,7 +1042,29 @@
       "topic": "REST APIs",
       "question": "How would you design the endpoints for a simple to-do list API?",
       "strongCovers": "Resource-based URLs, correct methods, status codes and a sensible request and response shape.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "rest-apis-3-fu-1",
+          "text": "What should the API return when someone asks for a to-do item that belongs to another user?",
+          "skipIf": [
+            "another user",
+            "other user",
+            "owner",
+            "ownership"
+          ]
+        },
+        {
+          "id": "rest-apis-3-fu-2",
+          "text": "How would you let the app fetch only the items not done yet?",
+          "skipIf": [
+            "query parameter",
+            "query param",
+            "filter"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "rest-apis-4",
@@ -677,7 +1082,33 @@
       "topic": "REST APIs",
       "question": "How do you handle pagination in an API that returns thousands of records?",
       "strongCovers": "Limit and offset or cursor-based pagination, and the trade-offs between them.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "rest-apis-4-fu-1",
+          "text": "Say what goes wrong with offset paging when new records are added while someone scrolls.",
+          "skipIf": [
+            "cursor",
+            "keyset",
+            "duplicates",
+            "skipped",
+            "missed"
+          ]
+        },
+        {
+          "id": "rest-apis-4-fu-2",
+          "text": "What would your response include so the app knows there is a next page?",
+          "skipIf": [
+            "next page",
+            "has_more",
+            "hasMore",
+            "next cursor",
+            "next link",
+            "total count"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "rest-apis-5",
@@ -695,7 +1126,32 @@
       "topic": "REST APIs",
       "question": "How would you secure a REST API?",
       "strongCovers": "HTTPS, authentication such as tokens, authorisation checks, input validation and rate limiting.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "rest-apis-5-fu-1",
+          "text": "How would the API reject a token that has expired or been revoked?",
+          "skipIf": [
+            "expiry",
+            "expired",
+            "expires",
+            "revoked",
+            "revocation"
+          ]
+        },
+        {
+          "id": "rest-apis-5-fu-2",
+          "text": "What would you log for each request so misuse can be traced later, without logging passwords or tokens?",
+          "skipIf": [
+            "audit log",
+            "audit logs",
+            "request id",
+            "access log",
+            "access logs"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "stakeholder-management-1",
@@ -908,7 +1364,31 @@
       "topic": "AWS",
       "question": "What is the difference between EC2, Lambda and ECS, and when would you choose each?",
       "strongCovers": "Servers versus functions versus containers, matched to workload, cost and control.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "aws-1-fu-1",
+          "text": "A job runs for 40 minutes every night. Which would you pick, and why not Lambda?",
+          "skipIf": [
+            "15 minutes",
+            "fifteen minutes",
+            "timeout",
+            "time limit"
+          ]
+        },
+        {
+          "id": "aws-1-fu-2",
+          "text": "How would cost guide your choice for a small app with very little traffic?",
+          "skipIf": [
+            "cheaper",
+            "pay per",
+            "pricing",
+            "free tier",
+            "per request"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "aws-2",
@@ -929,7 +1409,32 @@
       "topic": "AWS",
       "question": "How would you give an EC2 instance access to an S3 bucket securely?",
       "strongCovers": "An IAM role on the instance with least privilege, not access keys stored on the server.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "aws-2-fu-1",
+          "text": "Say what the role's policy would allow: which actions, on which bucket.",
+          "skipIf": [
+            "getobject",
+            "putobject",
+            "only that bucket",
+            "specific bucket",
+            "bucket arn"
+          ]
+        },
+        {
+          "id": "aws-2-fu-2",
+          "text": "Why is keeping access keys on the server a risk, even on a private instance?",
+          "skipIf": [
+            "leak",
+            "leaked",
+            "stolen",
+            "never expire",
+            "temporary credentials"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "aws-3",
@@ -950,7 +1455,27 @@
       "topic": "AWS",
       "question": "What is a VPC and what are public and private subnets?",
       "strongCovers": "Network isolation, internet gateway for public subnets, NAT for private subnets reaching out.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "aws-3-fu-1",
+          "text": "Where would you put the database, and how would the app servers reach it?",
+          "skipIf": [
+            "database in a private",
+            "database in the private",
+            "security group"
+          ]
+        },
+        {
+          "id": "aws-3-fu-2",
+          "text": "How does a server in a private subnet download updates from the internet?",
+          "skipIf": [
+            "nat",
+            "nat gateway"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "aws-4",
@@ -971,7 +1496,32 @@
       "topic": "AWS",
       "question": "How would you make a web application on AWS highly available?",
       "strongCovers": "Multiple availability zones, a load balancer, auto scaling and a managed database with failover.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "aws-4-fu-1",
+          "text": "What happens to your users if one availability zone goes down, and how would you know it works?",
+          "skipIf": [
+            "zone goes down",
+            "az fails",
+            "zone fails",
+            "failover test",
+            "tested"
+          ]
+        },
+        {
+          "id": "aws-4-fu-2",
+          "text": "Where would you keep user sessions so any server behind the load balancer can serve a user?",
+          "skipIf": [
+            "session",
+            "sessions",
+            "stateless",
+            "elasticache",
+            "redis"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "aws-5",
@@ -992,7 +1542,32 @@
       "topic": "AWS",
       "question": "How do you keep an eye on AWS costs?",
       "strongCovers": "Budgets and alerts, Cost Explorer, tagging, right-sizing and stopping unused resources.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "aws-5-fu-1",
+          "text": "Say what you would do the morning a budget alert says spend is double last month's.",
+          "skipIf": [
+            "spike",
+            "by service",
+            "which service",
+            "anomaly detection",
+            "cost anomaly"
+          ]
+        },
+        {
+          "id": "aws-5-fu-2",
+          "text": "How would tags help you tell which team or project is spending the money?",
+          "skipIf": [
+            "cost allocation tags",
+            "by team",
+            "per team",
+            "per project",
+            "which team"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "linux-1",
@@ -1010,7 +1585,32 @@
       "topic": "Linux",
       "question": "How do you check which process is using the most CPU or memory on a Linux server?",
       "strongCovers": "top or htop, ps with sorting, and what to do next.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "linux-1-fu-1",
+          "text": "The top process is your own app. Say what you would check next before restarting it.",
+          "skipIf": [
+            "application logs",
+            "app logs",
+            "log file",
+            "memory leak",
+            "journalctl"
+          ]
+        },
+        {
+          "id": "linux-1-fu-2",
+          "text": "How would you tell a short spike from a load that has stayed high for hours?",
+          "skipIf": [
+            "load average",
+            "uptime",
+            "over time",
+            "monitoring",
+            "graph"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "linux-2",
@@ -1028,7 +1628,27 @@
       "topic": "Linux",
       "question": "What do file permissions like 755 and 644 mean?",
       "strongCovers": "Owner, group and others with read, write and execute, and when to use each.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "linux-2-fu-1",
+          "text": "What permissions would you give a shell script, and what a config file that holds a password?",
+          "skipIf": [
+            "600",
+            "640",
+            "700",
+            "750"
+          ]
+        },
+        {
+          "id": "linux-2-fu-2",
+          "text": "Say why 777 is a bad idea on a shared server.",
+          "skipIf": [
+            "777"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "linux-3",
@@ -1046,7 +1666,33 @@
       "topic": "Linux",
       "question": "How would you find what is using the space when a server's disk is full?",
       "strongCovers": "df to find the filesystem, du to find large folders, and checking logs before deleting.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "linux-3-fu-1",
+          "text": "The biggest file is a log that is still being written. Say what you do with it instead of deleting it.",
+          "skipIf": [
+            "truncate",
+            "logrotate",
+            "rotate",
+            "compress",
+            "still open"
+          ]
+        },
+        {
+          "id": "linux-3-fu-2",
+          "text": "df shows the disk full but du can't find the files. What could be holding the space?",
+          "skipIf": [
+            "deleted files",
+            "lsof",
+            "open file",
+            "still held",
+            "inode",
+            "inodes"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "linux-4",
@@ -1064,7 +1710,31 @@
       "topic": "Linux",
       "question": "How would you find all lines containing ERROR in a log file and count them?",
       "strongCovers": "grep with -c or a pipe to wc -l, and tail -f for live logs.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "linux-4-fu-1",
+          "text": "How would you count only today's ERROR lines?",
+          "skipIf": [
+            "today's date",
+            "grep the date",
+            "filter by date",
+            "awk",
+            "date stamp"
+          ]
+        },
+        {
+          "id": "linux-4-fu-2",
+          "text": "How would you see which error message appears most often?",
+          "skipIf": [
+            "sort",
+            "uniq",
+            "most often",
+            "most common"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "linux-5",
@@ -1082,7 +1752,31 @@
       "topic": "Linux",
       "question": "How do you check whether a service is running and restart it?",
       "strongCovers": "systemctl status and restart, and journalctl to read why it failed.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "linux-5-fu-1",
+          "text": "The service keeps failing after a restart. Say what you would read, and what you would look for.",
+          "skipIf": [
+            "exit code",
+            "error message",
+            "config error",
+            "port already in use",
+            "permission denied"
+          ]
+        },
+        {
+          "id": "linux-5-fu-2",
+          "text": "How would you make sure the service starts again after the server reboots?",
+          "skipIf": [
+            "enable",
+            "on boot",
+            "at boot",
+            "reboot"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "azure-1",
@@ -1100,7 +1794,26 @@
       "topic": "Azure",
       "question": "What is the difference between a resource group and a subscription in Azure?",
       "strongCovers": "Subscription as the billing and access boundary, resource groups as logical containers inside it.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "azure-1-fu-1",
+          "text": "Say how you would group the resources for a test and a production setup of one app.",
+          "skipIf": [
+            "per environment",
+            "test and production",
+            "dev and prod",
+            "separate resource groups",
+            "separate subscriptions"
+          ]
+        },
+        {
+          "id": "azure-1-fu-2",
+          "text": "What happens to the resources inside when you delete a resource group?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "azure-2",
@@ -1118,7 +1831,28 @@
       "topic": "Azure",
       "question": "How would you give an application access to Azure resources without storing a password?",
       "strongCovers": "A managed identity with role-based access, and Key Vault for any secrets.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "azure-2-fu-1",
+          "text": "Say the difference between a system-assigned and a user-assigned managed identity, and when you would pick each.",
+          "skipIf": [
+            "system-assigned",
+            "user-assigned",
+            "system assigned",
+            "user assigned"
+          ]
+        },
+        {
+          "id": "azure-2-fu-2",
+          "text": "Where would the app keep a third-party API key, such as one for an SMS provider?",
+          "skipIf": [
+            "key vault",
+            "keyvault"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "azure-3",
@@ -1136,7 +1870,29 @@
       "topic": "Azure",
       "question": "What is the difference between Azure VMs, App Service and Azure Functions?",
       "strongCovers": "Infrastructure versus managed web hosting versus serverless, with a fitting use case for each.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "azure-3-fu-1",
+          "text": "A small company wants a website plus a job that resizes uploaded photos. Which would you use for each?",
+          "skipIf": [
+            "website",
+            "web app",
+            "resize",
+            "resizing"
+          ]
+        },
+        {
+          "id": "azure-3-fu-2",
+          "text": "When would cold starts on Azure Functions be a problem for users?",
+          "skipIf": [
+            "cold start",
+            "cold starts",
+            "premium plan"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "azure-4",
@@ -1154,7 +1910,30 @@
       "topic": "Azure",
       "question": "What is Microsoft Entra ID used for?",
       "strongCovers": "Identity and access management, users and groups, single sign-on and conditional access.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "azure-4-fu-1",
+          "text": "Give an example of a conditional access rule you would set for staff signing in from outside the office.",
+          "skipIf": [
+            "conditional access",
+            "mfa",
+            "multi-factor",
+            "location"
+          ]
+        },
+        {
+          "id": "azure-4-fu-2",
+          "text": "How does single sign-on help when someone leaves the company?",
+          "skipIf": [
+            "leaves",
+            "leaver",
+            "offboarding",
+            "disable the account"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "azure-5",
@@ -1172,7 +1951,29 @@
       "topic": "Azure",
       "question": "How would you control who can do what in an Azure subscription?",
       "strongCovers": "Azure RBAC with built-in roles at the right scope and least privilege.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "azure-5-fu-1",
+          "text": "At which scope would you give a developer access to only their team's resources?",
+          "skipIf": [
+            "resource group",
+            "scope"
+          ]
+        },
+        {
+          "id": "azure-5-fu-2",
+          "text": "How would you check who has Owner rights on the subscription, and how often?",
+          "skipIf": [
+            "access review",
+            "access reviews",
+            "audit",
+            "pim",
+            "privileged identity"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "gcp-1",
@@ -1189,7 +1990,25 @@
       "topic": "Google Cloud",
       "question": "What is the difference between Compute Engine, App Engine, Cloud Run and GKE?",
       "strongCovers": "VMs, managed apps, serverless containers and managed Kubernetes, with when to use each.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "gcp-1-fu-1",
+          "text": "An API with uneven traffic that drops to nothing at night: which would you pick, and why?",
+          "skipIf": [
+            "scale to zero",
+            "scales to zero",
+            "scale down to zero",
+            "pay per request"
+          ]
+        },
+        {
+          "id": "gcp-1-fu-2",
+          "text": "When is GKE worth the extra work over Cloud Run?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "gcp-2",
@@ -1206,7 +2025,30 @@
       "topic": "Google Cloud",
       "question": "How do service accounts work in Google Cloud?",
       "strongCovers": "Identities for workloads, granted IAM roles with least privilege, and avoiding downloaded keys.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "gcp-2-fu-1",
+          "text": "Why would you avoid downloading a key file for a service account, and what would you use instead?",
+          "skipIf": [
+            "key file",
+            "json key",
+            "downloaded key",
+            "workload identity"
+          ]
+        },
+        {
+          "id": "gcp-2-fu-2",
+          "text": "Say which roles you would give a service account that only reads from one bucket.",
+          "skipIf": [
+            "least privilege",
+            "object viewer",
+            "objectviewer",
+            "read-only"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "gcp-3",
@@ -1223,7 +2065,31 @@
       "topic": "Google Cloud",
       "question": "How is a Google Cloud project used to organise resources?",
       "strongCovers": "Projects as the unit for billing, APIs and access, grouped under folders and an organisation.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "gcp-3-fu-1",
+          "text": "Say how you would split projects for test and production, and why.",
+          "skipIf": [
+            "per environment",
+            "test and production",
+            "dev and prod",
+            "separate projects"
+          ]
+        },
+        {
+          "id": "gcp-3-fu-2",
+          "text": "How would you see the bill for each project or team?",
+          "skipIf": [
+            "billing export",
+            "labels",
+            "label",
+            "billing account",
+            "budget"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "gcp-4",
@@ -1240,7 +2106,31 @@
       "topic": "Google Cloud",
       "question": "What is BigQuery and how is it billed?",
       "strongCovers": "Serverless data warehouse, paying for storage and data scanned, and using partitions to cut cost.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "gcp-4-fu-1",
+          "text": "A query scans 2 TB every time someone opens a dashboard. Say how you would cut that.",
+          "skipIf": [
+            "partition",
+            "partitioned",
+            "partitions",
+            "cluster",
+            "clustering"
+          ]
+        },
+        {
+          "id": "gcp-4-fu-2",
+          "text": "Why does SELECT * cost more in BigQuery than naming the columns?",
+          "skipIf": [
+            "select *",
+            "columnar",
+            "columns scanned",
+            "column-based"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "gcp-5",
@@ -1257,7 +2147,31 @@
       "topic": "Google Cloud",
       "question": "How would you store files that the public can download from Google Cloud?",
       "strongCovers": "Cloud Storage buckets with careful access settings or signed URLs, not making everything public.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "gcp-5-fu-1",
+          "text": "If only paying customers should download a file, how would you give them a link that stops working later?",
+          "skipIf": [
+            "signed url",
+            "signed urls",
+            "expire",
+            "expiry",
+            "expires"
+          ]
+        },
+        {
+          "id": "gcp-5-fu-2",
+          "text": "How would you serve the files quickly to users across India?",
+          "skipIf": [
+            "cdn",
+            "cloud cdn",
+            "cache",
+            "caching"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "system-design-1",
@@ -1275,7 +2189,29 @@
       "topic": "System design",
       "question": "How would you design a URL shortener?",
       "strongCovers": "Generating short keys, a data store, handling redirects at scale and caching popular links.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "system-design-1-fu-1",
+          "text": "Two people shorten different links at the same moment. Say how you make sure they never get the same short code.",
+          "skipIf": [
+            "collision",
+            "collisions",
+            "unique",
+            "counter",
+            "base62"
+          ]
+        },
+        {
+          "id": "system-design-1-fu-2",
+          "text": "Would you use a 301 or a 302 redirect, and what does that change for counting clicks?",
+          "skipIf": [
+            "301",
+            "302"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "system-design-2",
@@ -1293,7 +2229,30 @@
       "topic": "System design",
       "question": "What is the difference between horizontal and vertical scaling?",
       "strongCovers": "Adding machines versus bigger machines, with limits and trade-offs of each.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "system-design-2-fu-1",
+          "text": "Your app's database is on one big server that is nearly maxed out. Say what you would do first.",
+          "skipIf": [
+            "read replica",
+            "read replicas",
+            "replica",
+            "sharding",
+            "shard"
+          ]
+        },
+        {
+          "id": "system-design-2-fu-2",
+          "text": "What has to change in an app before you can put more servers behind it?",
+          "skipIf": [
+            "stateless",
+            "session",
+            "sessions"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "system-design-3",
@@ -1311,7 +2270,33 @@
       "topic": "System design",
       "question": "When would you add a cache to a system and what problems can it cause?",
       "strongCovers": "Faster reads for hot data, plus stale data, invalidation and cache misses.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "system-design-3-fu-1",
+          "text": "A product's price changes but users still see the old price. Say how you would stop that.",
+          "skipIf": [
+            "invalidate",
+            "invalidation",
+            "ttl",
+            "expire",
+            "expiry",
+            "evict"
+          ]
+        },
+        {
+          "id": "system-design-3-fu-2",
+          "text": "What happens to the database when the cache restarts empty in the middle of a festive sale?",
+          "skipIf": [
+            "stampede",
+            "thundering herd",
+            "cold cache",
+            "warm up",
+            "warm the cache"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "system-design-4",
@@ -1329,7 +2314,32 @@
       "topic": "System design",
       "question": "How would you design a system to send OTP messages to millions of users?",
       "strongCovers": "A queue, retries, rate limits, provider failover and expiry of the codes.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "system-design-4-fu-1",
+          "text": "The SMS provider goes down during a festive sale. Say what your system does.",
+          "skipIf": [
+            "second provider",
+            "backup provider",
+            "another provider",
+            "switch provider",
+            "switch to another"
+          ]
+        },
+        {
+          "id": "system-design-4-fu-2",
+          "text": "How would you stop one person asking for fifty OTPs in a minute?",
+          "skipIf": [
+            "per phone number",
+            "per number",
+            "per user",
+            "cooldown",
+            "resend after"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "system-design-5",
@@ -1347,7 +2357,32 @@
       "topic": "System design",
       "question": "What is a load balancer and why is it needed?",
       "strongCovers": "Spreading traffic across servers, health checks and removing a single point of failure.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "system-design-5-fu-1",
+          "text": "How does the load balancer know a server is unhealthy, and what does it do then?",
+          "skipIf": [
+            "failed checks",
+            "takes it out",
+            "removes it from",
+            "stops sending",
+            "marks it unhealthy"
+          ]
+        },
+        {
+          "id": "system-design-5-fu-2",
+          "text": "With one load balancer, isn't that a new single point of failure? How is that handled?",
+          "skipIf": [
+            "managed load balancer",
+            "redundant",
+            "pair of load balancers",
+            "active-passive",
+            "standby"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "terraform-1",
@@ -1363,7 +2398,30 @@
       "topic": "Infrastructure as code",
       "question": "What is Terraform state and why does it matter?",
       "strongCovers": "State maps code to real resources, kept in a remote backend with locking, never edited by hand.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "terraform-1-fu-1",
+          "text": "Two engineers run apply at the same time. Say what stops them breaking the state.",
+          "skipIf": [
+            "lock",
+            "locking",
+            "dynamodb",
+            "state lock"
+          ]
+        },
+        {
+          "id": "terraform-1-fu-2",
+          "text": "Why should the state file not go into Git?",
+          "skipIf": [
+            "secrets",
+            "sensitive",
+            "plain text",
+            "plaintext"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "terraform-2",
@@ -1379,7 +2437,32 @@
       "topic": "Infrastructure as code",
       "question": "What is the difference between terraform plan and terraform apply?",
       "strongCovers": "Plan previews changes and apply makes them, with plans reviewed before applying.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "terraform-2-fu-1",
+          "text": "The plan shows a database will be destroyed and created again. Say what you would do before applying.",
+          "skipIf": [
+            "destroy",
+            "destroyed",
+            "replace",
+            "forces replacement",
+            "prevent_destroy"
+          ]
+        },
+        {
+          "id": "terraform-2-fu-2",
+          "text": "How would a team review plans before anyone runs apply?",
+          "skipIf": [
+            "pull request",
+            "merge request",
+            "atlantis",
+            "manual approval",
+            "approval step"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "terraform-3",
@@ -1395,7 +2478,31 @@
       "topic": "Infrastructure as code",
       "question": "How do you reuse Terraform code across environments?",
       "strongCovers": "Modules with variables, and separate state per environment.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "terraform-3-fu-1",
+          "text": "Say how you would keep a module change from reaching production before it is tested in staging.",
+          "skipIf": [
+            "version",
+            "versions",
+            "pin",
+            "tag",
+            "staging first"
+          ]
+        },
+        {
+          "id": "terraform-3-fu-2",
+          "text": "Where would the different values for test and production live?",
+          "skipIf": [
+            "tfvars",
+            "workspaces",
+            "workspace",
+            "variables per environment"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "terraform-4",
@@ -1411,7 +2518,30 @@
       "topic": "Infrastructure as code",
       "question": "How do you keep secrets out of Terraform code?",
       "strongCovers": "Variables from a secrets manager or environment, marking them sensitive, and not committing tfvars with secrets.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "terraform-4-fu-1",
+          "text": "Even when a variable is marked sensitive, where can the secret still show up?",
+          "skipIf": [
+            "state file",
+            "state",
+            "plan output"
+          ]
+        },
+        {
+          "id": "terraform-4-fu-2",
+          "text": "Say how the pipeline would pass the database password to Terraform.",
+          "skipIf": [
+            "environment variable",
+            "env var",
+            "tf_var",
+            "secrets manager",
+            "vault"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "terraform-5",
@@ -1427,7 +2557,32 @@
       "topic": "Infrastructure as code",
       "question": "How does Terraform handle a resource that someone changed manually in the console?",
       "strongCovers": "Drift shows in the next plan, and the fix is to update code or re-apply rather than leave it.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "terraform-5-fu-1",
+          "text": "Say how you would find out who made the manual change and why.",
+          "skipIf": [
+            "cloudtrail",
+            "activity log",
+            "audit log",
+            "audit logs",
+            "who changed"
+          ]
+        },
+        {
+          "id": "terraform-5-fu-2",
+          "text": "How would you stop people changing these resources by hand in future?",
+          "skipIf": [
+            "read-only",
+            "permissions",
+            "restrict",
+            "policy",
+            "only through the pipeline"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "docker-1",
@@ -1444,7 +2599,29 @@
       "topic": "Docker",
       "question": "What is the difference between a Docker image and a container?",
       "strongCovers": "Image as the read-only template, container as a running instance of it.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "docker-1-fu-1",
+          "text": "If you change a file inside a running container, what happens to the image?",
+          "skipIf": [
+            "read-only",
+            "doesn't change the image",
+            "image stays",
+            "layer"
+          ]
+        },
+        {
+          "id": "docker-1-fu-2",
+          "text": "How would you run two containers from the same image with different settings?",
+          "skipIf": [
+            "environment variable",
+            "environment variables",
+            "env"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "docker-2",
@@ -1461,7 +2638,31 @@
       "topic": "Docker",
       "question": "How would you make a Docker image smaller?",
       "strongCovers": "Slim base images, multi-stage builds, fewer layers and a .dockerignore file.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "docker-2-fu-1",
+          "text": "Say what a multi-stage build leaves out of the final image for a Java or Node app.",
+          "skipIf": [
+            "multi-stage",
+            "multistage",
+            "build stage",
+            "build tools"
+          ]
+        },
+        {
+          "id": "docker-2-fu-2",
+          "text": "How does the order of lines in a Dockerfile change how long a rebuild takes?",
+          "skipIf": [
+            "cache",
+            "caching",
+            "layer cache",
+            "copy package",
+            "dependencies first"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "docker-3",
@@ -1478,7 +2679,31 @@
       "topic": "Docker",
       "question": "How do containers talk to each other in Docker Compose?",
       "strongCovers": "A shared network where services reach each other by service name.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "docker-3-fu-1",
+          "text": "Your app container starts before the database is ready and fails. What would you do?",
+          "skipIf": [
+            "depends_on",
+            "healthcheck",
+            "health check",
+            "wait-for",
+            "retry"
+          ]
+        },
+        {
+          "id": "docker-3-fu-2",
+          "text": "How would you stop the database port being open to the outside?",
+          "skipIf": [
+            "ports",
+            "expose",
+            "internal network",
+            "not publish"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "docker-4",
@@ -1495,7 +2720,29 @@
       "topic": "Docker",
       "question": "How do you keep data when a container is removed?",
       "strongCovers": "Volumes or bind mounts, not writing important data inside the container layer.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "docker-4-fu-1",
+          "text": "When would you pick a named volume over a bind mount?",
+          "skipIf": [
+            "named volume",
+            "bind mount"
+          ]
+        },
+        {
+          "id": "docker-4-fu-2",
+          "text": "Say how you would back up the data in a database volume.",
+          "skipIf": [
+            "backup",
+            "back up",
+            "pg_dump",
+            "mysqldump",
+            "snapshot"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "docker-5",
@@ -1512,7 +2759,31 @@
       "topic": "Docker",
       "question": "How would you debug a container that exits right after starting?",
       "strongCovers": "docker logs, checking the command and entrypoint, and running it interactively.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "docker-5-fu-1",
+          "text": "The logs are empty. Say what you would try next.",
+          "skipIf": [
+            "interactive",
+            "-it",
+            "bash",
+            "entrypoint",
+            "override"
+          ]
+        },
+        {
+          "id": "docker-5-fu-2",
+          "text": "How would you check whether the container was killed for using too much memory?",
+          "skipIf": [
+            "oom",
+            "out of memory",
+            "oomkilled",
+            "137"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "ci-cd-1",
@@ -1531,7 +2802,29 @@
       "topic": "CI/CD",
       "question": "What is the difference between continuous integration, continuous delivery and continuous deployment?",
       "strongCovers": "Automatic build and test, ready-to-release builds, and automatic release to production.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "ci-cd-1-fu-1",
+          "text": "Which of the three would you choose for a banking app, and why?",
+          "skipIf": [
+            "bank",
+            "banking",
+            "regulated",
+            "approval"
+          ]
+        },
+        {
+          "id": "ci-cd-1-fu-2",
+          "text": "What has to be true about your tests before continuous deployment is safe?",
+          "skipIf": [
+            "coverage",
+            "reliable tests",
+            "flaky"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "ci-cd-2",
@@ -1550,7 +2843,31 @@
       "topic": "CI/CD",
       "question": "What stages would you put in a pipeline for a web application?",
       "strongCovers": "Build, unit tests, linting or security scans, packaging, deploy to staging, then production.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "ci-cd-2-fu-1",
+          "text": "Which stage would you run first to give developers the quickest answer, and why?",
+          "skipIf": [
+            "fast feedback",
+            "fastest",
+            "quick checks",
+            "fail fast"
+          ]
+        },
+        {
+          "id": "ci-cd-2-fu-2",
+          "text": "Who or what decides that a build goes from staging to production?",
+          "skipIf": [
+            "manual approval",
+            "approval",
+            "approve",
+            "smoke test",
+            "smoke tests"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "ci-cd-3",
@@ -1569,7 +2886,29 @@
       "topic": "CI/CD",
       "question": "How do you store secrets used by a CI/CD pipeline?",
       "strongCovers": "The CI tool's secret store or a vault, never in the repository or logs.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "ci-cd-3-fu-1",
+          "text": "How would you stop a secret being printed in the build logs?",
+          "skipIf": [
+            "masked",
+            "masking",
+            "mask",
+            "redact"
+          ]
+        },
+        {
+          "id": "ci-cd-3-fu-2",
+          "text": "Say what you would do if a pipeline secret leaked.",
+          "skipIf": [
+            "rotate",
+            "rotation",
+            "revoke"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "ci-cd-4",
@@ -1588,7 +2927,29 @@
       "topic": "CI/CD",
       "question": "How should a pipeline help you recover when a deployment breaks production?",
       "strongCovers": "Quick rollback to the last good version, and smaller, frequent releases to limit risk.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "ci-cd-4-fu-1",
+          "text": "Say how you would decide between rolling back and pushing a fix forward.",
+          "skipIf": [
+            "fix forward",
+            "roll forward",
+            "forward fix"
+          ]
+        },
+        {
+          "id": "ci-cd-4-fu-2",
+          "text": "What about a database change that can't simply be rolled back?",
+          "skipIf": [
+            "migration",
+            "migrations",
+            "backward compatible",
+            "backwards compatible"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "ci-cd-5",
@@ -1607,7 +2968,29 @@
       "topic": "CI/CD",
       "question": "How would you stop broken code from being merged to the main branch?",
       "strongCovers": "Required checks and reviews on pull requests, with branch protection rules.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "ci-cd-5-fu-1",
+          "text": "Say what you would do when a check fails only sometimes and the team starts ignoring it.",
+          "skipIf": [
+            "flaky",
+            "flakey",
+            "intermittent"
+          ]
+        },
+        {
+          "id": "ci-cd-5-fu-2",
+          "text": "Who should be able to merge without the checks passing, if anyone?",
+          "skipIf": [
+            "admin",
+            "admins",
+            "bypass",
+            "emergency"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "application-security-1",
@@ -1622,7 +3005,32 @@
       "topic": "Application security",
       "question": "What is SQL injection and how do you prevent it?",
       "strongCovers": "Untrusted input changing a query, prevented with parameterised queries and input validation.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "application-security-1-fu-1",
+          "text": "Parameterised queries can't hold a column name. Say how you would handle a sort column the user picks.",
+          "skipIf": [
+            "allow list",
+            "allowlist",
+            "whitelist",
+            "allowed columns"
+          ]
+        },
+        {
+          "id": "application-security-1-fu-2",
+          "text": "How would you look for SQL injection in a codebase you have just joined?",
+          "skipIf": [
+            "code review",
+            "sast",
+            "static analysis",
+            "grep",
+            "scanner",
+            "sqlmap"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "application-security-2",
@@ -1637,7 +3045,30 @@
       "topic": "Application security",
       "question": "What is cross-site scripting and how do you prevent it?",
       "strongCovers": "Injected scripts in pages, prevented by output encoding, input checks and a content security policy.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "application-security-2-fu-1",
+          "text": "Say how stored XSS differs from reflected XSS, with an example of each.",
+          "skipIf": [
+            "stored",
+            "reflected",
+            "dom-based",
+            "dom based"
+          ]
+        },
+        {
+          "id": "application-security-2-fu-2",
+          "text": "What would your content security policy allow, and what would it block?",
+          "skipIf": [
+            "script-src",
+            "inline scripts",
+            "unsafe-inline",
+            "nonce"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "application-security-3",
@@ -1652,7 +3083,30 @@
       "topic": "Application security",
       "question": "Name a few items from the OWASP Top 10 and explain one in detail.",
       "strongCovers": "Correct items such as broken access control, with a clear real-world example and fix.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "application-security-3-fu-1",
+          "text": "Say how you would test for the one you explained in an app you are given access to.",
+          "skipIf": [
+            "burp",
+            "zap",
+            "i would test",
+            "to test it",
+            "test for it"
+          ]
+        },
+        {
+          "id": "application-security-3-fu-2",
+          "text": "Which fix would you ask the team to do first, and how would you explain the risk to a product manager?",
+          "skipIf": [
+            "product manager",
+            "business impact",
+            "risk to the business"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "application-security-4",
@@ -1667,7 +3121,33 @@
       "topic": "Application security",
       "question": "How should passwords be stored in a database?",
       "strongCovers": "Salted hashes with a slow algorithm such as bcrypt or Argon2, never plain text or simple hashes.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "application-security-4-fu-1",
+          "text": "Why is a fast hash such as SHA-256 a poor choice for passwords?",
+          "skipIf": [
+            "brute force",
+            "brute-force",
+            "gpu",
+            "gpus",
+            "billions of guesses",
+            "too fast"
+          ]
+        },
+        {
+          "id": "application-security-4-fu-2",
+          "text": "Say what you would do with old MD5 hashes when moving users to bcrypt.",
+          "skipIf": [
+            "migrate",
+            "migration",
+            "rehash",
+            "on next login",
+            "on login"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "application-security-5",
@@ -1682,7 +3162,31 @@
       "topic": "Application security",
       "question": "What is the difference between authentication and authorisation?",
       "strongCovers": "Who you are versus what you can do, with an example of each failing.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "application-security-5-fu-1",
+          "text": "Give an example from a shopping app where authentication works but authorisation fails.",
+          "skipIf": [
+            "another user's",
+            "other user's",
+            "someone else's",
+            "idor"
+          ]
+        },
+        {
+          "id": "application-security-5-fu-2",
+          "text": "Where in the code should the authorisation check live so it can't be skipped?",
+          "skipIf": [
+            "server-side",
+            "on the server",
+            "middleware",
+            "every request",
+            "each request"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "statistics-1",
@@ -1696,7 +3200,31 @@
       "topic": "Statistics",
       "question": "Your manager says average order value went up this month. What would you check before agreeing?",
       "strongCovers": "Looking at the median and the spread, outliers and sample size, not just the mean.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "statistics-1-fu-1",
+          "text": "One customer placed a ₹5 lakh bulk order this month. Say how that changes what you tell your manager.",
+          "skipIf": [
+            "bulk order",
+            "one big order",
+            "one large order",
+            "remove it",
+            "without it"
+          ]
+        },
+        {
+          "id": "statistics-1-fu-2",
+          "text": "How many orders would you want to see before trusting the change?",
+          "skipIf": [
+            "number of orders",
+            "how many orders",
+            "orders this month",
+            "few orders"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "statistics-2",
@@ -1710,7 +3238,30 @@
       "topic": "Statistics",
       "question": "How would you explain a p-value to a sales manager with no statistics background?",
       "strongCovers": "Plain words about how surprising the result would be by chance, without overclaiming.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "statistics-2-fu-1",
+          "text": "The manager asks, \"So there is a 95% chance the new offer works?\" What do you say?",
+          "skipIf": [
+            "not the probability",
+            "doesn't mean",
+            "does not mean",
+            "not the chance"
+          ]
+        },
+        {
+          "id": "statistics-2-fu-2",
+          "text": "When would you tell them a significant result is still too small to matter?",
+          "skipIf": [
+            "practical",
+            "practically",
+            "effect size",
+            "too small"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "statistics-3",
@@ -1724,7 +3275,32 @@
       "topic": "Statistics",
       "question": "When would you report the median instead of the average?",
       "strongCovers": "Skewed data such as salaries or order values, with a concrete example.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "statistics-3-fu-1",
+          "text": "Give an example from your own work or studies where the average told the wrong story.",
+          "skipIf": [
+            "in my project",
+            "in my internship",
+            "at my last job",
+            "in my last job",
+            "in college"
+          ]
+        },
+        {
+          "id": "statistics-3-fu-2",
+          "text": "Would you ever show both, and how would you label them for a reader who isn't technical?",
+          "skipIf": [
+            "show both",
+            "median and mean",
+            "mean and median",
+            "median and average",
+            "average and median"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "statistics-4",
@@ -1738,7 +3314,32 @@
       "topic": "Statistics",
       "question": "Two campaigns had conversion rates of 3.1% and 3.4%. How would you decide if the difference is real?",
       "strongCovers": "Sample sizes, a significance test or confidence interval, and practical importance.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "statistics-4-fu-1",
+          "text": "What would you need to know to work out how many visitors each campaign needs?",
+          "skipIf": [
+            "statistical power",
+            "baseline rate",
+            "baseline conversion",
+            "minimum detectable effect",
+            "effect size"
+          ]
+        },
+        {
+          "id": "statistics-4-fu-2",
+          "text": "If the gap is real, how would you decide whether it is worth moving budget to the better campaign?",
+          "skipIf": [
+            "cost per conversion",
+            "cost per lead",
+            "extra revenue",
+            "revenue per",
+            "return on ad spend"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "statistics-5",
@@ -1752,7 +3353,33 @@
       "topic": "Statistics",
       "question": "What is the difference between correlation and causation, with an example from business data?",
       "strongCovers": "A realistic example and what extra evidence would be needed to claim cause.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "statistics-5-fu-1",
+          "text": "Say what third factor could explain your example instead.",
+          "skipIf": [
+            "confounder",
+            "confounding",
+            "third factor",
+            "third variable",
+            "season"
+          ]
+        },
+        {
+          "id": "statistics-5-fu-2",
+          "text": "How would you test whether one actually causes the other?",
+          "skipIf": [
+            "a/b test",
+            "ab test",
+            "experiment",
+            "randomised",
+            "randomized",
+            "control group"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-cleaning-1",
@@ -1764,7 +3391,32 @@
       "topic": "Data cleaning",
       "question": "You receive a customer file with duplicate rows and missing phone numbers. How do you clean it?",
       "strongCovers": "A clear order of steps: define a duplicate, decide how to treat blanks, and keep a record of changes.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-cleaning-1-fu-1",
+          "text": "Two rows have the same name and city but different phone numbers. Are they duplicates? How do you decide?",
+          "skipIf": [
+            "customer id",
+            "same email",
+            "match on",
+            "matching on",
+            "phone and email"
+          ]
+        },
+        {
+          "id": "data-cleaning-1-fu-2",
+          "text": "Say how you would record what you changed so someone else can check it later.",
+          "skipIf": [
+            "change log",
+            "changelog",
+            "before and after",
+            "original file",
+            "copy of the original"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-cleaning-2",
@@ -1776,7 +3428,31 @@
       "topic": "Data cleaning",
       "question": "Dates in a sheet come in three different formats. How would you fix them?",
       "strongCovers": "Detecting each format, converting to one standard, and checking rows that fail.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-cleaning-2-fu-1",
+          "text": "How would you tell whether 03/04/2025 means 3 April or 4 March?",
+          "skipIf": [
+            "dd/mm",
+            "mm/dd",
+            "day first",
+            "ambiguous"
+          ]
+        },
+        {
+          "id": "data-cleaning-2-fu-2",
+          "text": "What would you do with the rows that still fail to convert?",
+          "skipIf": [
+            "flag",
+            "flagged",
+            "separate sheet",
+            "check by hand",
+            "fix by hand"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-cleaning-3",
@@ -1788,7 +3464,30 @@
       "topic": "Data cleaning",
       "question": "How do you decide whether to drop, fill or flag missing values?",
       "strongCovers": "Reasoning from how much is missing, why it is missing and what the analysis needs.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-cleaning-3-fu-1",
+          "text": "Delivery time is missing far more often for one city than the others. Say what you would do.",
+          "skipIf": [
+            "not at random",
+            "pattern",
+            "why it is missing",
+            "one city",
+            "bias"
+          ]
+        },
+        {
+          "id": "data-cleaning-3-fu-2",
+          "text": "How would you tell the reader of your report what you did with the missing values?",
+          "skipIf": [
+            "footnote",
+            "note",
+            "tell the reader"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-cleaning-4",
@@ -1800,7 +3499,32 @@
       "topic": "Data cleaning",
       "question": "City names are spelt differently across rows, such as Bengaluru and Bangalore. What would you do?",
       "strongCovers": "A mapping table or rules, applied consistently, and a check for new variants.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-cleaning-4-fu-1",
+          "text": "Next month a new spelling, \"B'lore\", turns up. Say how your process catches it.",
+          "skipIf": [
+            "unmatched",
+            "not in the mapping",
+            "not in the list",
+            "flag new",
+            "new spelling"
+          ]
+        },
+        {
+          "id": "data-cleaning-4-fu-2",
+          "text": "Where would you keep the mapping so the next analyst can reuse it?",
+          "skipIf": [
+            "shared drive",
+            "shared folder",
+            "lookup sheet",
+            "master list",
+            "version control"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-cleaning-5",
@@ -1812,7 +3536,31 @@
       "topic": "Data cleaning",
       "question": "How do you check that your cleaning didn't change the totals you report?",
       "strongCovers": "Row counts and key totals compared before and after, with reasons for any difference.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-cleaning-5-fu-1",
+          "text": "The row count dropped by 200 after cleaning. Say how you would explain that to your manager.",
+          "skipIf": [
+            "duplicates removed",
+            "rows removed",
+            "removed duplicates",
+            "because of duplicates",
+            "blank rows removed"
+          ]
+        },
+        {
+          "id": "data-cleaning-5-fu-2",
+          "text": "Which totals would you compare for a sales file, and against what?",
+          "skipIf": [
+            "revenue",
+            "sales total",
+            "total sales",
+            "source system"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-visualization-1",
@@ -1827,7 +3575,30 @@
       "topic": "Data visualization",
       "question": "A manager wants to see monthly sales by region. Which chart would you use, and why?",
       "strongCovers": "Picking a chart for the question, such as lines over time, and keeping it readable.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-visualization-1-fu-1",
+          "text": "There are 12 regions. Say how you would keep the chart readable.",
+          "skipIf": [
+            "small multiples",
+            "top five",
+            "top 5",
+            "highlight",
+            "group"
+          ]
+        },
+        {
+          "id": "data-visualization-1-fu-2",
+          "text": "How would you show whether each region met its target?",
+          "skipIf": [
+            "target",
+            "targets",
+            "reference line"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-visualization-2",
@@ -1842,7 +3613,30 @@
       "topic": "Data visualization",
       "question": "When is a pie chart a poor choice?",
       "strongCovers": "Many categories or close values, and a better alternative such as a sorted bar chart.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-visualization-2-fu-1",
+          "text": "A manager insists on a pie chart for 10 product categories. What would you do?",
+          "skipIf": [
+            "insist",
+            "show both",
+            "both versions",
+            "convince"
+          ]
+        },
+        {
+          "id": "data-visualization-2-fu-2",
+          "text": "When, if ever, is a pie chart the right choice?",
+          "skipIf": [
+            "two or three",
+            "2 or 3",
+            "part of a whole",
+            "share of"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-visualization-3",
@@ -1857,7 +3651,30 @@
       "topic": "Data visualization",
       "question": "How would you design a dashboard for a store manager who has two minutes each morning?",
       "strongCovers": "The few numbers that matter first, clear labels, and detail only on demand.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-visualization-3-fu-1",
+          "text": "Say which three numbers you would put at the top, and why those.",
+          "skipIf": [
+            "three numbers",
+            "3 numbers",
+            "top three",
+            "yesterday's sales"
+          ]
+        },
+        {
+          "id": "data-visualization-3-fu-2",
+          "text": "How would the manager see at a glance that something needs attention today?",
+          "skipIf": [
+            "colour",
+            "color",
+            "alert",
+            "highlight"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-visualization-4",
@@ -1872,7 +3689,30 @@
       "topic": "Data visualization",
       "question": "Tell me about a chart you made that changed someone's decision.",
       "strongCovers": "A specific situation, the choice of chart, and the decision it led to.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-visualization-4-fu-1",
+          "text": "What did the person decide to do differently after seeing it?",
+          "skipIf": [
+            "decided",
+            "they chose",
+            "went ahead",
+            "approved"
+          ]
+        },
+        {
+          "id": "data-visualization-4-fu-2",
+          "text": "If you made it again, what would you change about the chart?",
+          "skipIf": [
+            "next time",
+            "if i made it again",
+            "would change the chart",
+            "i would change"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "data-visualization-5",
@@ -1887,7 +3727,32 @@
       "topic": "Data visualization",
       "question": "How do you avoid a chart that misleads?",
       "strongCovers": "Honest axes, consistent scales, clear labels and context such as targets or last year.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-visualization-5-fu-1",
+          "text": "When is it fine for a y-axis not to start at zero?",
+          "skipIf": [
+            "don't start at zero",
+            "doesn't need to start",
+            "doesn't have to start",
+            "does not need to start",
+            "narrow range"
+          ]
+        },
+        {
+          "id": "data-visualization-5-fu-2",
+          "text": "Say how you would get someone to check your chart before it goes to senior managers.",
+          "skipIf": [
+            "peer review",
+            "second pair of eyes",
+            "ask a colleague",
+            "colleague to check",
+            "someone to check"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "excel-1",
@@ -1902,7 +3767,32 @@
       "topic": "Excel",
       "question": "How would you combine two sheets that share a customer ID?",
       "strongCovers": "XLOOKUP or INDEX-MATCH, handling IDs that don't match, and checking the result.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "excel-1-fu-1",
+          "text": "Some IDs are in only one sheet. Say how you would find and report them.",
+          "skipIf": [
+            "if_not_found",
+            "iferror",
+            "not found",
+            "missing ids",
+            "unmatched",
+            "#n/a"
+          ]
+        },
+        {
+          "id": "excel-1-fu-2",
+          "text": "How would you check that the combined sheet has the right number of rows?",
+          "skipIf": [
+            "row count",
+            "count rows",
+            "countif",
+            "same number of rows"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "excel-2",
@@ -1917,7 +3807,30 @@
       "topic": "Excel",
       "question": "Walk me through building a pivot table to show sales by month and product.",
       "strongCovers": "Clean source data, the right rows, columns and values, and grouping dates.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "excel-2-fu-1",
+          "text": "Say what you would fix in the source data before making the pivot.",
+          "skipIf": [
+            "blank rows",
+            "clean",
+            "text dates",
+            "merged cells"
+          ]
+        },
+        {
+          "id": "excel-2-fu-2",
+          "text": "Next month new rows are added. How does the pivot pick them up?",
+          "skipIf": [
+            "refresh",
+            "dynamic range",
+            "format as table",
+            "excel table"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "excel-3",
@@ -1932,7 +3845,30 @@
       "topic": "Excel",
       "question": "A formula returns #N/A for some rows. How do you find out why?",
       "strongCovers": "Checking for extra spaces, data types and missing keys before hiding errors.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "excel-3-fu-1",
+          "text": "The ID looks the same in both sheets but still gives #N/A. What would you check?",
+          "skipIf": [
+            "spaces",
+            "trim",
+            "stored as text",
+            "data type"
+          ]
+        },
+        {
+          "id": "excel-3-fu-2",
+          "text": "Why might wrapping the formula in IFERROR hide a real problem?",
+          "skipIf": [
+            "iferror",
+            "hide",
+            "hides",
+            "masks"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "excel-4",
@@ -1947,7 +3883,31 @@
       "topic": "Excel",
       "question": "How would you make a monthly report in Excel quicker to update next time?",
       "strongCovers": "Tables, named ranges or Power Query, and fewer manual copy-paste steps.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "excel-4-fu-1",
+          "text": "Say which manual step in the report you would remove first, and how.",
+          "skipIf": [
+            "macro",
+            "macros",
+            "vba",
+            "refresh all"
+          ]
+        },
+        {
+          "id": "excel-4-fu-2",
+          "text": "How would a teammate update the report without having to ask you?",
+          "skipIf": [
+            "instructions",
+            "notes",
+            "document",
+            "handover",
+            "readme"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "excel-5",
@@ -1962,7 +3922,32 @@
       "topic": "Excel",
       "question": "What checks do you do before sending a spreadsheet to your manager?",
       "strongCovers": "Totals cross-checked, formulas not broken, clear labels and no hidden mistakes.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "excel-5-fu-1",
+          "text": "Say how you would cross-check a total against the source before sending.",
+          "skipIf": [
+            "cross-check",
+            "cross check",
+            "tally",
+            "reconcile",
+            "against the source"
+          ]
+        },
+        {
+          "id": "excel-5-fu-2",
+          "text": "What would you write in the email with the file so your manager reads it correctly?",
+          "skipIf": [
+            "in the email",
+            "what the file shows",
+            "which tab",
+            "key numbers",
+            "one-line summary"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "sql-mc-1",

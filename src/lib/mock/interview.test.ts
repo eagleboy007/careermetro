@@ -192,6 +192,10 @@ describe("follow-ups (docs/plans/mock-followups-plan.md)", () => {
     expect(mentions("the login page", "log")).toBe(false);
     expect(mentions("cost (in ₹) matters", "(in ₹)")).toBe(true);
     expect(mentions("anything", " ")).toBe(false);
+    // A phone keyboard's curly apostrophe matches a straight one, either way round.
+    expect(mentions("Next time I’d ask the author first.", "I'd ask")).toBe(true);
+    expect(mentions("the plan doesn't need to start at zero", "doesn’t need to start")).toBe(true);
+    expect(mentions("‘B’lore’ turns up", "B'lore")).toBe(true);
   });
 
   it("asks at most 2 in a Quick round and 4 in a Full one", () => {
@@ -205,7 +209,9 @@ describe("follow-ups (docs/plans/mock-followups-plan.md)", () => {
     const draft: MockQuestion = { ...q, followUpsReviewed: false };
     expect(pickFollowUp(draft, long, round)).toBeNull();
     expect(pickFollowUp(draft, long, { ...round, allowUnreviewed: true })?.id).toBe("siem-1-fu-1");
-    const plain = mockQuestions.find((x) => x.kind === "open" && !x.followUps?.length)!;
+    // Every open bank question has follow-ups now, so a question without them is made here.
+    const plain: Extract<MockQuestion, { kind: "open" }> = { ...q, id: "siem-2" };
+    delete plain.followUps;
     expect(pickFollowUp(plain, long, { ...round, allowUnreviewed: true })).toBeNull();
   });
 

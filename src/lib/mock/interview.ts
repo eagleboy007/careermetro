@@ -107,11 +107,14 @@ export function pickInterviewQuestions(
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+/** Curly apostrophes, as phone keyboards type them, read as straight ones: "I’d" is "I'd". */
+const straightQuotes = (s: string) => s.replace(/[\u2018\u2019]/g, "'");
+
 /** True when the answer has the word or phrase, in any case, as whole words: "log" is in "a log file", not in "login". */
 export function mentions(answer: string, phrase: string): boolean {
-  const words = phrase.trim().split(/\s+/).filter(Boolean).map(escapeRe);
+  const words = straightQuotes(phrase).trim().split(/\s+/).filter(Boolean).map(escapeRe);
   if (!words.length) return false;
-  return new RegExp(`(?<![\\p{L}\\p{N}])${words.join("\\s+")}(?![\\p{L}\\p{N}])`, "iu").test(answer);
+  return new RegExp(`(?<![\\p{L}\\p{N}])${words.join("\\s+")}(?![\\p{L}\\p{N}])`, "iu").test(straightQuotes(answer));
 }
 
 /**
