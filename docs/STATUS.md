@@ -40,11 +40,10 @@ Last updated: 2026-10-20 (performance pass).
   - In-app notifications, FR-54 (#190, 0043; no email). Mock follow-ups part 1 (#191, 0044; follow-ups `followUpsReviewed: false`, so production asks none). Settings columns, FR-55 (#192, 0045, export version 31).
   - Today live cards: Signal check, Departures board, On your line (#193; the Signal check is hidden in production until its questions are reviewed). Tracks, FR-56 (#195; draft tracks `reviewed: false`, the chip stays plain text in production).
   - Hardening (#196, `docs/plans/hardening-pass.md`): `hardening:` e2e steps for #175 to #193 (keyboard, axe light and dark after a reload, 390 px fit) and focus fixes; Life line marks read what they draw.
+  - Launch readiness (#197, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md`, the scripted production check to run right after Milin's redeploy; RLS and FK indexes confirmed on 0039 to 0045 and `rls.test` refuses policies and grants; Account settings saves capped at 100 a day and Unblock at 50. Supabase's Confirm signup template also needs `{{ .Token }}`.
 
 ## In progress
 
-- v44 launch-readiness pass (branch `v44-launch-check`, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md` is the scripted check to run on https://careermetro.vercel.app right after Milin's redeploy, with the pre-flight settings list. The audit found RLS with no policies and FK indexes on every table from 0039 to 0045; `rls.test` now also refuses policies and grants to the API roles, and names the v44 tables.
-  - The audit of actions changed since #175 found two writes without a limit. They now have one: Account settings saves (100 a day; each "Let companies find me" on wrote a consent row) and Unblock (50 a day). Supabase's Confirm signup template also needs `{{ .Token }}`.
 - Performance pass, Today, Map and Departures (branch `v44-perf`, `docs/plans/perf-pass.md`): the current analysis is read once per page and handed on, the ride's and the Map's independent reads run beside the goal sync, Today's board posts start reading beside the ride, Departures starts every read at once, and the job search switch and Elite are read once per request (`src/lib/request-reads.ts`). About 4 to 5 fewer database round trips in turn on Today and the Map. Migration 0046 adds `job_posts_open_newest` for the newest-300 open posts read. No client bundle change was needed; what was left (the goal sync on every view, the pool of 5) is in the plan.
 
 ## Next up
