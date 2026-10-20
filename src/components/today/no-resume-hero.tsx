@@ -44,7 +44,7 @@ export function NoResumeHero({ name, upload, unfinishedHref }: { name: string; u
         </h2>
         <p className="max-w-[54ch] text-[0.95rem] text-muted">
           Upload it and in under a minute you see which skills you already have for the role, which are missing, and a goal for each
-          gap.
+          gap, with pitstops to fill it.
         </p>
         {unfinishedHref && (
           <Link href={unfinishedHref} className="inline-flex items-center gap-1 text-[0.9rem] font-semibold underline-offset-2 hover:underline">

@@ -2,8 +2,9 @@
 
 import { ArrowRight, FileText, Search } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveStandInTitle } from "@/lib/stand-in-title";
+import { clearTargetRole, peekTargetRole } from "@/lib/target-role";
 
 export type RoleOption = { slug: string; title: string; experience: string; topSkills: string[] };
 export type SuggestedRole = { slug: string; title: string; experience: string; met: number; total: number; shown: string[]; fits: boolean };
@@ -23,22 +24,39 @@ const listWords = (words: string[]) => (words.length < 2 ? words.join("") : `${w
  * role (role_requests, nothing about the person): Enter in a search that finds nothing, and a click on "My role isn't
  * listed" while the search finds nothing (otherwise the stand-in posting counts its title once saved). Typing alone
  * never counts. The typed text goes to the next page through sessionStorage,
- * never the address (role-suggest-plan.md part B).
+ * never the address (role-suggest-plan.md part B). A target role picked on Today before the upload (src/lib/target-role.ts)
+ * shows first, as "Your target role", until any role is opened; `picked` sets it directly (for /design).
  */
 export function RolePicker({
   resumeId,
   roles,
   suggestions,
   standIns = [],
+  picked = "",
   demo = false,
 }: {
   resumeId: string;
   roles: RoleOption[];
   suggestions?: SuggestedRole[];
   standIns?: StandInLink[];
+  picked?: string;
   demo?: boolean;
 }) {
   const [query, setQuery] = useState("");
+  // Storage exists only in the browser, so the carried role is read after mount, on the next frame.
+  const [carried, setCarried] = useState("");
+  useEffect(() => {
+    if (demo) return;
+    const slug = peekTargetRole();
+    if (!slug) return;
+    const frame = requestAnimationFrame(() => setCarried(slug));
+    return () => cancelAnimationFrame(frame);
+  }, [demo]);
+  const target = roles.find((r) => r.slug === (carried || picked));
+  // Once a role or a posting is chosen, the pick has done its job.
+  const forget = () => {
+    if (!demo) clearTargetRole();
+  };
   const q = query.trim().toLowerCase();
   const shown = q ? roles.filter((r) => [r.title, ...r.topSkills].some((t) => t.toLowerCase().includes(q))) : roles;
   const typed = q.replace(/\s+/g, " ");
@@ -58,6 +76,29 @@ export function RolePicker({
 
   return (
     <div className="flex flex-col gap-4">
+      {target && (
+        <section aria-labelledby="target-role" className="flex flex-col gap-3">
+          <div className="flex flex-col gap-0.5">
+            <h2 id="target-role" className="text-xl font-semibold">
+              Your target role
+            </h2>
+            <p className="text-sm text-muted">You picked it before the upload. See your gaps for it, or pick another role below.</p>
+          </div>
+          <Link
+            href={href(target.slug)}
+            prefetch={false}
+            onClick={forget}
+            className="group flex flex-col gap-2 rounded-lg border border-ink bg-surface p-4 transition-colors"
+          >
+            <span className="flex items-start justify-between gap-3">
+              <span className="font-semibold leading-snug">{target.title}</span>
+              <ArrowRight size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-ink" aria-hidden="true" />
+            </span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted">{target.experience}</span>
+            {target.topSkills.length > 0 && <span className="text-sm text-muted">Most asked: {target.topSkills.join(", ")}</span>}
+          </Link>
+        </section>
+      )}
       {suggestions && (
         <section aria-labelledby="suggested-roles" className="flex flex-col gap-3">
           <div className="flex flex-col gap-0.5">
@@ -77,6 +118,7 @@ export function RolePicker({
                   <Link
                     href={href(r.slug)}
                     prefetch={false}
+                    onClick={forget}
                     className="group flex flex-1 flex-col gap-2 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-ink"
                   >
                     <span className="flex items-start justify-between gap-3">
@@ -106,6 +148,7 @@ export function RolePicker({
                 <Link
                   href={demo ? "#" : `/resume/${resumeId}/job/${c.id}`}
                   prefetch={false}
+                  onClick={forget}
                   className="group flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-ink"
                 >
                   <span className="min-w-0 break-words">
@@ -146,6 +189,7 @@ export function RolePicker({
                 href={href(r.slug)}
                 // The Gaps page may call the model, so it only loads when chosen.
                 prefetch={false}
+                onClick={forget}
                 className="group flex flex-1 flex-col gap-2 rounded-lg border border-line bg-surface p-4 transition-colors hover:border-ink"
               >
                 <span className="flex items-start justify-between gap-3">
@@ -164,6 +208,7 @@ export function RolePicker({
         prefetch={false}
         onClick={() => {
           if (demo) return;
+          forget();
           saveStandInTitle(query);
           // Only a search that found nothing; otherwise the stand-in check counts its title once it is saved.
           if (shown.length === 0) countMissing(typed);
