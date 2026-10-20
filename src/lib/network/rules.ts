@@ -1,5 +1,7 @@
-import { nameMatches } from "@/lib/corporate/find-rules";
+import { nameMatches, searchKey } from "@/lib/corporate/find-rules";
+import { nowPitstop, pitstopsFor } from "@/lib/map/layout";
 import { CONNECTION_REQUEST_DAYS, type ConnectionState, type GapsVisibleTo } from "@/lib/schemas/network";
+import type { LineStep, PathTogether } from "./types";
 
 /* The Network's pure rules (FR-49, handoff 12j). The store reads and writes; these decide. */
 
@@ -60,6 +62,16 @@ export function connectionState(connected: boolean, rows: readonly RequestRow[],
 export const handleOf = (query: string) => query.replace(/^@/, "").toLowerCase();
 
 /**
+ * What the database matches for a search (T77): the handle the start of a username must be (none when the query has a
+ * space), and the name words each of which must start a word of the name's searchKey (none after an "@"). The same
+ * rule as networkMatches, which checks the page again.
+ */
+export function networkQueryParts(query: string): { handle: string | null; words: string[] } {
+  const handle = handleOf(query);
+  return { handle: handle && !handle.includes(" ") ? handle : null, words: query.startsWith("@") ? [] : searchKey(query).split(" ").filter(Boolean) };
+}
+
+/**
  * Whether a person is found by what was typed (handoff 12j): the start of their first name, last name or handle. An
  * "@" means a handle only. Several words must each start a word of the name.
  */
@@ -74,6 +86,25 @@ export function skillsInCommon(mine: readonly string[], theirs: readonly string[
   if (!theyShowSkills) return 0;
   const set = new Set(mine);
   return new Set(theirs.filter((s) => set.has(s))).size;
+}
+
+/**
+ * "Interests" in common on a profile (handoff 12j, gap list 27; docs/plans/me-editing-plan.md): the owner's interests
+ * the viewer also lists, matched by key and named as the owner wrote them, how many the viewer lists, and the owner's
+ * others. Interests show on any profile that can be opened, so nothing here is hidden from the viewer. Null when either
+ * lists none, so the profile says nothing about it.
+ */
+export function interestsInCommon(
+  mine: readonly { name: string; key: string }[],
+  theirs: readonly { name: string; key: string }[],
+): { shared: string[]; yours: number; theirOthers: string[] } | null {
+  if (!mine.length || !theirs.length) return null;
+  const keys = new Set(mine.map((m) => m.key));
+  return {
+    shared: theirs.filter((t) => keys.has(t.key)).map((t) => t.name),
+    yours: mine.length,
+    theirOthers: theirs.filter((t) => !keys.has(t.key)).map((t) => t.name),
+  };
 }
 
 /** People both are connected to, never counting either of them. */
@@ -99,4 +130,61 @@ export function seesGaps(to: GapsVisibleTo, viewer: { self: boolean; connected: 
   if (viewer.self) return true;
   if (to === "profile") return true;
   return to === "connections" && viewer.connected;
+}
+
+/** A goal as a line reads it: its skill, its place, whether it is proved or skipped, and a "Not for me" swap. */
+export type LineGoalRow = { skillId: string; position: number; proved: boolean; status: string; swappedTo: string | null };
+/** A gap of the person's current analysis, as their line reads it. */
+export type LineGap = { skillId: string; status: "missing" | "weak" | "outdated" };
+/**
+ * One goal of a person's line: the gap's skill, the skill they learn for it, its status as the Map draws it (a goal
+ * waiting for a renewed certificate is weak), whether its learn pitstop is done, and whether it is proved or skipped.
+ */
+export type LineStop = { skillId: string; learns: string; status: LineGap["status"]; learnDone: boolean; proved: boolean; skipped: boolean };
+
+/**
+ * A person's line: their current gaps in the order of their goals, as on the Map (a gap with no goal yet goes last).
+ * Only gaps are on it: "Your choice" goals sit off the line on the Map and aren't numbered. `learned` holds the skills
+ * whose step on their newest path is ticked done.
+ */
+export function lineOrder(gaps: readonly LineGap[], goals: readonly LineGoalRow[], learned: ReadonlySet<string> = new Set()): LineStop[] {
+  const bySkill = new Map(goals.map((g) => [g.skillId, g]));
+  const at = (id: string) => bySkill.get(id)?.position ?? Number.MAX_SAFE_INTEGER;
+  return [...new Map(gaps.map((g) => [g.skillId, g])).values()]
+    .sort((a, b) => at(a.skillId) - at(b.skillId))
+    .map(({ skillId, status }): LineStop => {
+      const g = bySkill.get(skillId);
+      const proved = g?.proved ?? false;
+      return {
+        skillId,
+        learns: (!proved && g?.swappedTo) || skillId,
+        status: g?.status === "renew" ? "weak" : status,
+        learnDone: learned.has(skillId),
+        proved,
+        skipped: g?.status === "skipped",
+      };
+    });
+}
+
+/**
+ * Where a line's person is, numbered as the Map numbers its pitstops (a missing skill has learn then prove, a weak or
+ * outdated one prove only): the first pitstop not done, passing skipped goals. Null when every pitstop is done.
+ */
+export function currentStep(line: readonly LineStop[], name: (skillId: string) => string): LineStep | null {
+  const stops = pitstopsFor(line);
+  const i = nowPitstop(stops);
+  return i === -1 ? null : { step: i + 1, name: name(stops[i].goal.learns) };
+}
+
+/**
+ * "Gaps and path" for two people on the same role's line (handoff 12j): the gaps both still have, each one's current
+ * pitstop (numbered as on the Map), and how many pitstops apart they are. The caller has already decided the viewer
+ * may see the owner's gaps.
+ */
+export function pathTogether(mine: readonly LineStop[], theirs: readonly LineStop[], name: (skillId: string) => string, sharedWith: PathTogether["sharedWith"]): PathTogether {
+  const open = new Set(theirs.filter((g) => !g.proved).map((g) => g.skillId));
+  const gaps = [...new Set(mine.filter((g) => !g.proved && open.has(g.skillId)).map((g) => name(g.skillId)))].sort((a, b) => a.localeCompare(b, "en"));
+  const you = currentStep(mine, name);
+  const them = currentStep(theirs, name);
+  return { gaps, you, them, apart: you && them ? Math.abs(you.step - them.step) : null, sharedWith };
 }

@@ -38,7 +38,7 @@ describe("lifeFromProfile", () => {
     expect(line.moments.find((m) => m.id === "work-0")?.detail).toBe("Since Jun 2024. Current role.");
     expect(line.moments.find((m) => m.id === "journey-start")).toMatchObject({ date: "2023", t: 2023.45 });
     expect(line.moments.find((m) => m.id === "joined")).toMatchObject({ name: "Joined CareerMetro", date: "Sep 2026" });
-    // Certificates on a resume have no dates, so they wait to be placed.
+    // A certificate with no date waits to be placed.
     expect(line.undated).toEqual([{ row: "certificates", name: "Google Data Analytics" }]);
   });
 
@@ -106,6 +106,54 @@ describe("lifeFromProfile", () => {
     expect(layoutLife(line).years.length).toBeLessThan(10);
   });
 
+  it("places dated certificates and links where one fed another, in plain code", () => {
+    const p = profile({
+      roles: [
+        { title: "MIS Executive", employer: "Konkan Bank", start: "2024-06", end: null, highlights: ["Built weekly Power BI dashboards for branch sales", "Ran statistical analysis of loan defaults"] },
+        { title: "Intern", employer: "Ghats Logistics", start: "2024-01", end: "2024-05", highlights: ["Prepared Excel reports"] },
+      ],
+      education: [{ qualification: "B.Sc. Statistics", institution: "Pune University", year: "2023" }],
+      certifications: [
+        { name: "PL-300 Power BI Data Analyst", earned: "2025-03", expires: "2027-03" },
+        { name: "Google Data Analytics", earned: null, expires: null },
+      ],
+    });
+    const line = lifeFromProfile(p, { ...opts, metSkillIds: ["power-bi"] });
+    expect(lifeLine.safeParse(line).success).toBe(true);
+    expect(line.moments.find((m) => m.id === "cert-0")).toMatchObject({ row: "certificates", date: "Mar 2025", name: "PL-300 Power BI Data Analyst" });
+    expect(line.undated).toEqual([{ row: "certificates", name: "Google Data Analytics" }]);
+    expect(line.links).toEqual([
+      { from: "cert-0", to: "work-0", text: "PL-300 Power BI Data Analyst fed the Power BI you used as MIS Executive" },
+      { from: "cert-0", to: "joined", text: "PL-300 Power BI Data Analyst counts toward Power BI for Data Analyst" },
+      // The internship ran on after the degree but never named statistics, so the degree feeds the next job.
+      { from: "edu-0", to: "work-0", text: "B.Sc. Statistics fed the Statistics you used as MIS Executive" },
+    ]);
+    // The same profile draws the same links.
+    expect(lifeFromProfile(p, { ...opts, metSkillIds: ["power-bi"] }).links).toEqual(line.links);
+    // Without the skill met, or once the certificate has expired, it counts toward nothing.
+    expect(lifeFromProfile(p, opts).links.some((l) => l.to === "joined")).toBe(false);
+    const expired = profile({ ...p, certifications: [{ name: "PL-300 Power BI Data Analyst", earned: "2023-03", expires: "2025-03" }] });
+    expect(lifeFromProfile(expired, { ...opts, metSkillIds: ["power-bi"] }).links.some((l) => l.to === "joined")).toBe(false);
+    // A job that ended before the certificate is never fed by it.
+    const ended = profile({ ...p, roles: [{ ...p.roles[0], end: "2024-12" }] });
+    expect(lifeFromProfile(ended, opts).links.some((l) => l.from === "cert-0")).toBe(false);
+  });
+
+  it("ends an older role with no end date when the next one starts, and keeps only the latest running", () => {
+    const cert = [{ name: "PL-300 Power BI Data Analyst", earned: "2025-03", expires: "2027-03" }];
+    const older = { title: "Associate", employer: "Acme", start: "2022-01", end: null, highlights: ["Built Power BI dashboards"] };
+    const newer = { title: "Coordinator", employer: "Konkan Bank", start: "2024-06", end: null, highlights: ["Filed branch paperwork"] };
+    // The older role ended when the newer one began in 2024, before the certificate, so nothing it did was fed by it.
+    expect(lifeFromProfile(profile({ roles: [older, newer], certifications: cert }), opts).links.some((l) => l.from === "cert-0")).toBe(false);
+    // The latest role with no end still runs to now, so the certificate feeds it.
+    const latest = { ...newer, highlights: ["Built Power BI dashboards"] };
+    expect(lifeFromProfile(profile({ roles: [older, latest], certifications: cert }), opts).links).toContainEqual({
+      from: "cert-0",
+      to: "work-1",
+      text: "PL-300 Power BI Data Analyst fed the Power BI you used as Coordinator",
+    });
+  });
+
   it("stays inside the schema for a very long resume", () => {
     const roles = Array.from({ length: 150 }, (_, i) => ({ title: `Role ${i}`, employer: "Acme", start: `${1960 + Math.floor(i / 3)}-01`, end: null, highlights: [] }));
     const education = Array.from({ length: 40 }, (_, i) => ({ qualification: `Course ${i}`, institution: "X", year: String(1960 + i) }));
@@ -117,6 +165,7 @@ const long: LifeLine = {
   now: 2026.77,
   destination: "Head of Security",
   undated: [],
+  links: [],
   moments: [
     { id: "s", row: "journey", t: 2011.55, date: "Jul 2011", name: "Journey started", heading: "h", detail: "", verified: false },
     ...[2011.6, 2013.5, 2015.3, 2018.2, 2021.3, 2024.2].map((t, i) => ({ id: `w${i}`, row: "work" as const, t, date: String(Math.floor(t)), name: `Role ${i}`, heading: "h", detail: "", verified: false })),
@@ -159,6 +208,21 @@ describe("layoutLife", () => {
     expect(work.map((s) => s.above)).toEqual([true, false]);
     const interests = l.stations.filter((s) => s.y === 430);
     expect(interests.map((s) => s.above)).toEqual([true, true, true]);
+  });
+
+  it("draws a link only when both ends are drawn on their own", () => {
+    const l = layoutLife(exampleLifeLine);
+    expect(l.links.map((k) => [k.from, k.to])).toEqual([
+      ["e2", "w1"],
+      ["c1", "w2"],
+    ]);
+    const e2 = l.stations.find((s) => s.id === "e2")!;
+    expect(l.links[0].d.startsWith(`M${e2.x} ${e2.y} C`)).toBe(true);
+    // In the whole career the older roles are grouped, so a link to one of them is not drawn; in the last 5 years the
+    // journey's start is hidden, so neither is drawn.
+    const withLink = { ...long, links: [{ from: "s", to: "w0", text: "t" }, { from: "s", to: "w5", text: "t" }] };
+    expect(layoutLife(withLink, "all").links.map((k) => k.to)).toEqual(["w5"]);
+    expect(layoutLife(withLink, "recent").links).toEqual([]);
   });
 
   it("runs the journey on, dotted, to the destination", () => {

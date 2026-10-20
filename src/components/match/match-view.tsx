@@ -26,6 +26,9 @@ export function jobsText(jobs: number | null): string {
   return `${jobs} open ${jobs === 1 ? "job" : "jobs"} in Departures`;
 }
 
+/** Where that link goes: the role's own open jobs on Departures when it has some, else all of Departures. */
+export const jobsHref = (slug: string, jobs: number | null) => (jobs ? `/departures?role=${encodeURIComponent(slug)}` : "/departures");
+
 /**
  * Match (handoff 12i, prototype v37): Ready now, then Within N weeks at the hours a week picked here (3, 6 or 10,
  * starting from the person's own). With no list (no resume yet), or nothing within 26 weeks at these hours, the empty
@@ -186,7 +189,7 @@ export function MatchCard({ role: r, weeks, gapsHref }: { role: MatchRole; weeks
           <span className="sr-only">: {r.title}</span>
           <ArrowRight size={15} {...ICON} />
         </Link>
-        <Link href="/departures" className={LINK}>
+        <Link href={jobsHref(r.slug, r.jobs)} className={LINK}>
           {jobsText(r.jobs)}
           <span className="sr-only">: {r.title}</span>
           <ArrowRight size={15} {...ICON} />

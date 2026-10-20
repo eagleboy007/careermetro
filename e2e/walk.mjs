@@ -598,6 +598,35 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
   await p.getByRole("region", { name: "Not for me" }).getByRole("button", { name: "Skip anyway" }).waitFor({ timeout: 5000 });
 });
+// Today's live cards (v44 gap items 8 to 10): no example data for a signed-in person. The signal check, when the bank
+// has a question for today's goal or the next, is checked on the server and ticks the ride's signal task (a ride day);
+// the board shows live rows or says why it has none; On your line shows only with three people who can be counted.
+await step("today: live signal check, board and On your line, no example data", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByText("Everything here is your own except the Timetable, which is example data until we build it.", { exact: true }).waitFor({ timeout: 10000 });
+  const board = p.locator("[data-board]");
+  await board.waitFor({ timeout: 10000 });
+  if ((await board.innerText()).toUpperCase().includes("MIS EXECUTIVE")) throw new Error("Today shows the example board");
+  if (await p.getByText(/Arjun Mehta met the/).count()) throw new Error("Today shows the example tip");
+  const signal = p.getByRole("region", { name: "Signal check", exact: true });
+  if (!(await signal.count())) {
+    console.log("     no question in the bank for this goal or the next; card hidden");
+    return;
+  }
+  if (await signal.getByText(/sales next to its rank/).count()) throw new Error("Today shows the example question");
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/today")),
+    signal.getByRole("group", { name: "Answers" }).getByRole("button").first().click(),
+  ]);
+  await signal.getByRole("status").getByText(/^(Right\.|Not quite: it's [A-D]\.)/).waitFor({ timeout: 10000 });
+  await p
+    .locator("header")
+    .getByText(/1-day streak/)
+    .waitFor({ timeout: 10000 });
+  await shot("today-signal-answered");
+  await a11y("today-signal-answered");
+});
 // The same on Today: skip from an open goal (it leaves the list, focus moves to the card's heading), then bring it back
 // from its pitstop on the Map.
 await step("not for me: skip a goal on Today, bring it back from the Map", async () => {
@@ -621,6 +650,69 @@ await step("not for me: skip a goal on Today, bring it back from the Map", async
   await skipped.getByText(new RegExp(`^You skipped ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.`)).waitFor({ timeout: 5000 });
   await skipped.getByRole("button", { name: "Bring back" }).click();
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
+});
+// Tracks (docs/plans/tracks-plan.md, local and preview only until reviewed): the Track chip opens the picker, Cancel
+// puts focus back on the option, Switch track works the goals out again and keeps the choice after a reload, and
+// Escape closes it with focus on the chip. The track the person had is put back in `finally`, so later steps see the
+// same line.
+await step("tracks: the Track chip opens the picker and switching works the goals out again", async () => {
+  await p.goto(BASE + "/today");
+  await settled();
+  const card = p.locator('section[aria-label="Your goals"]');
+  const chip = card.getByRole("button", { name: /^Track / });
+  const panel = card.locator("div[id]").filter({ hasText: "What kind of work do you want there?" });
+  const optionName = (o) => o.locator("b").innerText().then((t) => t.trim());
+  const choose = async (name) => {
+    if (!(await panel.isVisible())) await chip.click();
+    const option = panel.getByRole("button").filter({ has: p.locator("b").getByText(name, { exact: true }) });
+    if ((await option.getAttribute("aria-pressed")) === "true") return;
+    await option.click();
+    await panel.getByRole("button", { name: "Switch track" }).click();
+    await card.getByRole("button", { name: `Track ${name}`, exact: true }).waitFor({ timeout: 15000 });
+  };
+  await chip.click();
+  await panel.getByText("What kind of work do you want there? Your goals come from the track you pick.", { exact: false }).waitFor({ timeout: 5000 });
+  const original = await optionName(panel.getByRole("button", { pressed: true }));
+  const other = panel.getByRole("button", { pressed: false }).first();
+  const target = await optionName(other);
+  try {
+    if (!/ goals?(, \d+ met)?$/.test((await other.locator("small").innerText()).trim())) throw new Error("no goal count on a track");
+    await a11y("today-tracks-open");
+    // Picking previews the track and moves focus to Switch track; Cancel puts it back on the option.
+    await other.click();
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Switch track", null, { timeout: 5000 });
+    await panel.getByText(/Your goals become |Your resume and proof already cover/).waitFor({ timeout: 5000 });
+    await panel.getByRole("button", { name: "Cancel" }).click();
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-pressed") === "false" && document.activeElement?.textContent?.includes(n), target, { timeout: 5000 });
+    if (await panel.getByRole("button", { name: "Switch track" }).count()) throw new Error("preview still open after Cancel");
+    // Switch: the chip names the track, focus stays on it, and the choice is kept after a reload.
+    await choose(target);
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-label") === `Track ${n}`, target, { timeout: 15000 });
+    await settled();
+    await p.reload();
+    await settled();
+    await card.getByRole("button", { name: `Track ${target}`, exact: true }).waitFor({ timeout: 10000 });
+    await shot("today-tracks-switched");
+    await a11y("today-tracks-switched");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await chip.click();
+    await a11y("today-tracks-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+    // Escape closes the picker and puts focus on the chip.
+    if (!(await panel.isVisible())) await chip.click();
+    await panel.getByRole("button").first().focus();
+    await p.keyboard.press("Escape");
+    await panel.waitFor({ state: "hidden", timeout: 5000 });
+    await p.waitForFunction((n) => document.activeElement?.getAttribute("aria-label") === `Track ${n}`, target, { timeout: 5000 });
+  } finally {
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/today");
+    await settled();
+    await choose(original);
+    await settled();
+  }
 });
 for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/network", "/library", "/builder", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
@@ -681,7 +773,14 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
 });
 // Library (FR-51, handoff 12a). Signed in, with the walk's goals: one card per open goal with Learn or Brush up and
 // Prove; a resource opens in the details panel with its source link in a new tab and no referrer; a search for nothing
-// says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. axe passes on each tab.
+// says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. The Elite tab is locked on
+// Free: Turn on Elite opens /elite and no card links out (Elite part 5). axe passes on each tab.
+// Library part 2 (docs/plans/library-part-2-plan.md): from the details panel the walk saves a resource, ticks "I
+// finished this", adds one for a goal to its rides (On your rides) and takes it off again, and reports a
+// broken link; an empty suggestion moves focus back to the box, and a link is sent for review. Saved lists the saved
+// one until its bookmark is pressed again. The reported link is hidden by the admin in the Library review step below.
+let libraryReported = null;
+const suggestedLink = `https://learn.example.org/e2e-walk-${Date.now()}`;
 await step("library: goal cards, the details panel, search and filters, Finished and Saved", async () => {
   await p.goto(BASE + "/library");
   await settled();
@@ -700,6 +799,53 @@ await step("library: goal cards, the details panel, search and filters, Finished
     if ((await source.getAttribute("target")) !== "_blank" || !(await source.getAttribute("rel"))?.includes("noreferrer")) throw new Error("the source link doesn't open in a new tab without a referrer");
     if (!(await source.getAttribute("href"))?.startsWith("https://")) throw new Error("the source link isn't https");
   }
+  const panel = p.getByRole("complementary", { name: "Resource details" });
+  const toast = (text) => p.getByRole("status").filter({ hasText: text }).waitFor({ timeout: 10000 });
+  const savedTitle = (await rows.first().innerText()).trim();
+  await rows.first().click();
+  await panel.getByRole("heading", { name: savedTitle, exact: true, level: 3 }).waitFor({ timeout: 5000 });
+  await panel.getByRole("button", { name: `Save ${savedTitle}`, exact: true }).click();
+  await toast("Saved to your Library.");
+  await panel.getByRole("button", { name: `Save ${savedTitle}`, exact: true, pressed: true }).waitFor({ timeout: 5000 });
+  // "I finished this" is the person's own tick, and says what proves the goal next.
+  const tick = panel.getByRole("checkbox", { name: "I finished this" });
+  await tick.check();
+  await toast("Marked finished.");
+  await tick.uncheck();
+  await toast(/^(No longer marked finished|Unticked)\./);
+  // Report a broken link: a small menu of fixed reasons, no note.
+  await panel.getByRole("button", { name: "Link broken or out of date?" }).click();
+  await panel.getByRole("group", { name: `Report ${savedTitle}` }).getByRole("button", { name: "Link is broken", exact: true }).click();
+  await toast("Thanks. A reviewer will check this link.");
+  libraryReported = savedTitle;
+  // Add to my rides, on a resource of a goal that isn't on today's ride; then take it off again.
+  let added = false;
+  for (let k = 0, n = Math.min(await rows.count(), 24); k < n && !added; k++) {
+    const name = (await rows.nth(k).innerText()).trim();
+    await rows.nth(k).click();
+    await panel.getByRole("heading", { name, exact: true, level: 3 }).waitFor({ timeout: 5000 });
+    const add = panel.getByRole("button", { name: "Add to my rides", exact: true });
+    if (!(await add.count())) continue;
+    await add.click();
+    await toast(/^Added/);
+    await panel.getByRole("button", { name: "On your rides", exact: true }).waitFor({ timeout: 5000 });
+    await panel.getByRole("button", { name: "Take it off my rides", exact: true }).click();
+    await toast("Taken off your rides.");
+    await panel.getByRole("button", { name: "Add to my rides", exact: true }).waitFor({ timeout: 5000 });
+    added = true;
+  }
+  if (!added) throw new Error("no resource in the Library offers Add to my rides");
+  // Suggest a free resource: an empty link moves focus back to the box, then a link goes for review.
+  const suggest = p.getByRole("region", { name: "Suggest a free resource" });
+  const box = suggest.getByRole("textbox", { name: "Link to a free resource" });
+  await suggest.getByRole("button", { name: "Send for review" }).click();
+  await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "Link to a free resource", null, { timeout: 5000 });
+  await box.fill(suggestedLink);
+  await suggest.getByRole("button", { name: "Other", exact: true }).click();
+  await suggest.getByRole("button", { name: "Send for review" }).click();
+  await toast("Thanks. A reviewer will check it before it goes in the Library.");
+  if (await box.inputValue()) throw new Error("the suggest box kept the sent link");
+  await a11y("library-part-2");
   const search = p.getByRole("searchbox", { name: "Search the Library" });
   await search.fill("zzqx nothing like this");
   await main.getByText("Nothing matches. Try another word or clear a filter.").waitFor({ timeout: 5000 });
@@ -713,11 +859,209 @@ await step("library: goal cards, the details panel, search and filters, Finished
   await show.getByRole("button", { name: /^Finished/ }).click();
   await main.getByText(/^Nothing finished yet\.|^Ready to prove /).or(main.getByRole("region", { name: "Finished" })).first().waitFor({ timeout: 5000 });
   await a11y("library-finished");
-  await show.getByRole("button", { name: "Saved" }).click();
-  await main.getByText(/^Saving isn.t on yet\./).waitFor({ timeout: 5000 });
+  await show.getByRole("button", { name: /^Saved/ }).click();
+  const savedList = main.getByRole("region", { name: "Saved", exact: true });
+  await savedList.getByRole("button", { name: savedTitle, exact: true }).waitFor({ timeout: 5000 });
+  await savedList.getByRole("button", { name: `Save ${savedTitle}`, exact: true }).click();
+  await toast("Removed from saved.");
+  await main.getByText("Nothing saved yet. Tap the bookmark on anything you want to come back to.").waitFor({ timeout: 5000 });
   await show.getByRole("button", { name: "Your interests" }).click();
   await main.getByText("From the interests on your profile.", { exact: false }).waitFor({ timeout: 5000 });
   await a11y("library-interests");
+  await show.getByRole("button", { name: "Elite", exact: true }).click();
+  const shelf = main.getByRole("region", { name: "Elite shelf", exact: true });
+  const unlock = shelf.getByRole("link", { name: "Turn on Elite", exact: true });
+  await unlock.waitFor({ timeout: 5000 });
+  if ((await unlock.getAttribute("href")) !== "/elite") throw new Error("the shelf's Turn on Elite doesn't open /elite");
+  if (!(await shelf.locator('[data-shelf-card="slot"]').count())) throw new Error("no Coming soon slot for paid courses");
+  if (await shelf.locator("[data-shelf-card] a, [data-shelf-card] details").count()) throw new Error("a locked shelf card opens");
+  await a11y("library-elite-free");
+});
+// Live Departures (docs/plans/departures-live-plan.md): a feed run and two posts seeded as the daily feed writes them.
+// The header says Updated with the time; the walk's resume shows its fit; Save says "Saved."; Apply on company site
+// opens the post in a new tab and asks "Did you apply?", and Yes starts the tracker. After a reload both lists still
+// have the role. Once the role closes on its board it leaves All and stays in Saved with "Closed on the company's
+// board". The other post stays open and unapplied, so the Express apply step later still finds Apply on company site.
+await step("hardening: the Library's broken-link menu opens with Enter and closes with Escape", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/library");
+    await settled();
+    const main = p.locator("main").first();
+    await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    const toggle = panel.getByRole("button", { name: "Link broken or out of date?" });
+    if (!(await toggle.count())) {
+      const rows = main.locator("li button[aria-controls]");
+      if (!(await rows.count())) throw new Error("the Library lists nothing to open");
+      await rows.first().click();
+      await toggle.waitFor({ timeout: 5000 });
+    }
+    await toggle.focus();
+    await p.keyboard.press("Enter");
+    const reasons = panel.getByRole("group", { name: /^Report / });
+    await reasons.waitFor({ timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.closest('[role="group"]')?.getAttribute("aria-label")?.startsWith("Report ") === true, null, { timeout: 5000 });
+    await p.keyboard.press("Escape");
+    await reasons.waitFor({ state: "detached", timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Link broken or out of date?", null, { timeout: 5000 });
+    if ((await toggle.getAttribute("aria-expanded")) !== "false") throw new Error("the menu button still says it is open");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+  }
+});
+await step("departures: live roles, Updated, save, apply on the company site, Saved and Applied after a reload, a closed role", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const ROLE = "Junior data analyst (e2e)";
+  try {
+    await sql`insert into job_feed_runs (started_at, finished_at, boards_ok, posts_open) values (now(), now(), 1, 2)`;
+    for (const [id, title, city] of [
+      ["e2e-1", ROLE, "Pune"],
+      ["e2e-2", "Reporting analyst (e2e)", "Remote"],
+    ]) {
+      await sql`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, required_skill_ids, nice_skill_ids, posted_at)
+        values ('greenhouse', 'e2e-example', ${id}, ${`https://example.com/jobs/${id}`}, ${title}, 'Example Labs', ${city}, '2 to 4 years', 'data-analyst',
+          '{sql,excel,statistics}'::text[], '{tableau}'::text[], now())
+        on conflict (ats, board_token, external_id) do update set closed_at = null, last_seen_at = now()`;
+    }
+    await sql`delete from job_saves where job_post_id in (select id from job_posts where board_token = 'e2e-example')`;
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/departures");
+    await settled();
+    await p.locator("[data-departures-clock]").getByText(/^Updated \d\d:\d\d · \d+ roles?$/).waitFor({ timeout: 10000 });
+    if (await p.getByText(/Example roles for now/).count()) throw new Error("the example-data note still shows signed in");
+    const row = p.getByRole("listitem").filter({ has: p.getByRole("button", { name: `${ROLE} at Example Labs` }) });
+    await row.getByRole("button", { name: `${ROLE} at Example Labs` }).click();
+    const detail = p.getByRole("complementary", { name: "Role details" });
+    await detail.getByRole("heading", { name: ROLE }).waitFor({ timeout: 10000 });
+    // Fit from the walk's resume, by the plain-code matcher: the post asks for SQL and Excel, which the resume shows.
+    await detail.getByText(/^You have · [1-9]/).waitFor();
+    await row.getByRole("button", { name: `Save ${ROLE}` }).click();
+    await p.getByText("Saved.", { exact: true }).waitFor({ timeout: 10000 });
+    const popup = p.waitForEvent("popup");
+    await detail.getByRole("link", { name: "Apply on company site: Example Labs (opens in a new tab)" }).click();
+    await (await popup).close();
+    const ask = detail.getByRole("group", { name: "Did you apply?" });
+    await ask.getByRole("button", { name: "Yes, I applied" }).click();
+    await p.getByText("Marked as applied to Example Labs.", { exact: true }).waitFor({ timeout: 10000 });
+    await detail.getByRole("heading", { name: "Your application" }).waitFor();
+    await shot("departures-live");
+    await a11y("departures-live");
+    const [saved] = await sql`select s.stage, s.saved_at from job_saves s join job_posts j on j.id = s.job_post_id where j.external_id = 'e2e-1' and j.board_token = 'e2e-example'`;
+    if (saved?.stage !== 1 || !saved.saved_at) throw new Error("the save and Applied were not kept");
+
+    await p.reload();
+    await settled();
+    const tabs = p.getByRole("group", { name: "Show" });
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.waitFor({ timeout: 10000 });
+    await tabs.getByRole("button", { name: /^Applied/ }).click();
+    await row.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+
+    // The role leaves its board: off All, still in Saved with no Apply.
+    await sql`update job_posts set closed_at = now() where board_token = 'e2e-example' and external_id = 'e2e-1'`;
+    await p.reload();
+    await settled();
+    await p.getByRole("button", { name: "Reporting analyst (e2e) at Example Labs" }).waitFor({ timeout: 10000 });
+    if (await row.count()) throw new Error("a closed role still shows on All");
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks; the reload goes back to All.
+    await p.reload();
+    await settled();
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("Departures scrolls sideways at 390px (dark)");
+    await a11y("departures-live-closed-phone-dark");
+    await shot("departures-live-closed-phone-dark");
+    await tabs.getByRole("button", { name: /^All/ }).click();
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
+// Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
+// shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
+// Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.
+// Then the private notice card on Arrivals: 60 days, I have resigned 10 days ago, Start countdown shows 50 days left and
+// the last working day, the download has it, and Stop the countdown clears the date (so later applying isn't prefilled).
+await step("job search: off pauses Departures, Arrivals and Today's board, back on, then the notice countdown", async () => {
+  await p.goto(BASE + "/departures");
+  await settled();
+  const sw = p.getByRole("checkbox", { name: "Looking for a job", exact: true });
+  await sw.waitFor({ state: "attached", timeout: 10000 });
+  if (!(await sw.isChecked())) throw new Error("job search starts off");
+  // A click, not uncheck(): the switch pressed goes away with the page it was on, and the paused page's switch takes focus.
+  await sw.click({ force: true });
+  const off = p.getByRole("region", { name: "Job search is off" });
+  await off.getByText(/Departures and Arrivals are paused: no Express apply, and companies can.t find you/).waitFor({ timeout: 10000 });
+  await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
+  await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+  if (await p.getByRole("searchbox", { name: "Search roles" }).count()) throw new Error("Departures lists roles with job search off");
+  await shot("departures-search-off");
+  await a11y("departures-search-off");
+  await p.reload();
+  await settled();
+  await off.waitFor({ timeout: 10000 });
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByRole("region", { name: "Job search is off" }).getByText(/Your ride keeps going/).waitFor({ timeout: 10000 });
+  if (await p.locator("[data-board]").count()) throw new Error("Today shows the Departures board with job search off");
+  await a11y("today-search-off");
+  await p.goto(BASE + "/me");
+  await settled();
+  await p.getByText("Working at Example Retail Pvt Ltd", { exact: true }).waitFor({ timeout: 10000 });
+  await p.goto(BASE + "/arrivals");
+  await settled();
+  const paused = p.getByRole("region", { name: "Job search is off" });
+  await paused.waitFor({ timeout: 10000 });
+  if (await p.getByRole("region", { name: "Notice period" }).count()) throw new Error("Arrivals shows the notice card with job search off");
+  await paused.getByRole("button", { name: "Turn on job search" }).click();
+  await p.getByText("Job search is on. Departures and Arrivals are back.", { exact: true }).waitFor({ timeout: 10000 });
+  await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+
+  const notice = p.getByRole("region", { name: "Notice period" });
+  await notice.getByText("only you see this", { exact: true }).waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "60 days" }).click();
+  await notice.getByRole("button", { name: "60 days", pressed: true }).waitFor();
+  // The days save at once; while that runs the card's buttons are aria-disabled and ignore presses.
+  const ready = (name) => notice.locator("button:not([aria-disabled])", { hasText: name });
+  await ready("I have resigned").waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "I have resigned" }).click();
+  await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "date", null, { timeout: 5000 });
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  const resigned = new Date(Date.parse(`${today}T00:00:00Z`) - 10 * 86_400_000).toISOString().slice(0, 10);
+  await notice.getByLabel("When did you hand in your resignation?").fill(resigned);
+  await ready("Start countdown").waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "Start countdown" }).click();
+  await notice.getByText("days left", { exact: true }).waitFor({ timeout: 10000 });
+  await notice.getByText("50", { exact: true }).waitFor();
+  await notice.getByText(/^Last working day: /).waitFor();
+  await notice.getByText(/^Free to join from /).waitFor();
+  await notice.getByRole("progressbar", { name: "Notice period served" }).waitFor();
+  await shot("arrivals-notice-countdown");
+  await a11y("arrivals-notice-countdown");
+  await p.reload();
+  await settled();
+  await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const js = data.jobSearch;
+  if (data.exportVersion !== 31 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  await ready("Change").waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "Change", exact: true }).click();
+  await ready("Stop the countdown").waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "Stop the countdown" }).click();
+  await notice.getByRole("button", { name: "I have resigned" }).waitFor({ timeout: 10000 });
 });
 // The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
 // Example Retail Pvt Ltd since 2022-06. No verified company owns exampleretail.test, so a right code goes to an admin
@@ -1036,7 +1380,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1097,7 +1441,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   await p.goto(BASE + "/settings");
   await settled();
-  await p.getByLabel("Only you").check({ force: true });
+  await p.getByLabel("Only you", { exact: true }).check({ force: true });
   await p.getByRole("button", { name: "Save changes" }).click();
   await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
   await q.goto(BASE + `/u/${handle}`);
@@ -1110,6 +1454,271 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await q.goto(BASE + `/u/${handle}-nobody`);
   await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
   await other.close();
+});
+// Settings columns (docs/plans/settings-columns-plan.md, FR-55, v44 gap items 31, 33 and 36). In Settings the walk turns
+// off message requests and picks Pune and Remote under Pay and location; Departures then opens on "Your places" with
+// only those roles, and Any city lists the rest. In the Inbox it ticks Mon 17:00 and 18:00 as Usually free, and the
+// summary reads "Mon 17:00 to 19:00" after a reload. The download has all three. Then it puts everything back, so the
+// later Inbox and Departures steps see a person with nothing set.
+await step("settings columns: message requests off, Open to work in filters Departures, Usually free in the Inbox", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const roles = [
+    ["e2e-p1", "Places analyst Pune (e2e)", "Pune"],
+    ["e2e-p2", "Places analyst Remote (e2e)", "Remote"],
+    ["e2e-p3", "Places analyst Kochi (e2e)", "Kochi"],
+  ];
+  const settingsSave = async () => {
+    await p.getByRole("button", { name: "Save changes" }).click();
+    await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+  };
+  try {
+    for (const [id, title, city] of roles) {
+      await sql`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, required_skill_ids, nice_skill_ids, posted_at)
+        values ('greenhouse', 'e2e-places', ${id}, ${`https://example.com/jobs/${id}`}, ${title}, 'Example Labs', ${city}, '2 to 4 years', 'data-analyst',
+          '{sql,excel}'::text[], '{}'::text[], now())
+        on conflict (ats, board_token, external_id) do update set closed_at = null, last_seen_at = now()`;
+    }
+    await p.goto(BASE + "/settings");
+    await settled();
+    const requests = p.getByRole("checkbox", { name: /^Allow message requests from people who aren't connections/ });
+    if (!(await requests.isChecked())) throw new Error("message requests don't start on");
+    await requests.setChecked(false, { force: true });
+    await p.getByLabel("Add a city").selectOption("Pune");
+    const chips = p.locator("[data-open-to-work-in]");
+    await chips.getByRole("button", { name: "Remote", exact: true }).click();
+    if ((await chips.getByRole("button", { name: "Pune", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("Pune isn't picked");
+    await settingsSave();
+    await p.reload();
+    await settled();
+    if (await requests.isChecked()) throw new Error("message requests off did not save");
+    for (const place of ["Remote", "Pune"])
+      if ((await chips.getByRole("button", { name: place, exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error(`${place} did not save`);
+    await a11y("settings-columns");
+    await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks.
+    await p.reload();
+    await settled();
+    await a11y("settings-columns-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+
+    await p.goto(BASE + "/departures");
+    await settled();
+    const city = p.getByRole("group", { name: "City" });
+    if ((await city.getByRole("button", { name: "Your places" }).getAttribute("aria-pressed")) !== "true") throw new Error("Departures doesn't open on Your places");
+    const role = (title) => p.getByRole("button", { name: `${title} at Example Labs`, exact: true });
+    await role(roles[0][1]).waitFor({ timeout: 10000 });
+    await role(roles[1][1]).waitFor();
+    if (await role(roles[2][1]).count()) throw new Error("Your places lists a role in another city");
+    await city.getByRole("button", { name: "Any city" }).click();
+    await role(roles[2][1]).waitFor({ timeout: 5000 });
+    await a11y("departures-your-places");
+
+    await p.goto(BASE + "/inbox");
+    await settled();
+    const panel = p.getByRole("complementary", { name: "Your availability" });
+    const summary = panel.locator("[data-usually-free-summary]");
+    if ((await summary.innerText()) !== "Not set") throw new Error("Usually free doesn't start Not set");
+    const hours = panel.getByRole("group", { name: "Usually free hours" });
+    for (const slot of ["Mon 17:00", "Mon 18:00"]) await hours.getByRole("button", { name: slot, exact: true }).click();
+    await panel.getByRole("button", { name: "Save", exact: true }).click();
+    await panel.getByText("Saved. Ask for times now pre-ticks these hours.").waitFor({ timeout: 15000 });
+    await p.reload();
+    await settled();
+    await p.waitForFunction(() => document.querySelector("[data-usually-free-summary]")?.textContent === "Mon 17:00 to 19:00", null, { timeout: 10000 });
+    await shot("inbox-usually-free");
+    await a11y("inbox-usually-free");
+    await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks.
+    await p.reload();
+    await settled();
+    await a11y("inbox-usually-free-dark");
+    await p.emulateMedia({ colorScheme: "light" });
+
+    const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
+    if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
+    if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
+    if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
+
+    // Put it all back for the later steps.
+    for (const slot of ["Mon 17:00", "Mon 18:00"]) await hours.getByRole("button", { name: slot, exact: true }).click();
+    await panel.getByRole("button", { name: "Save", exact: true }).click();
+    await panel.getByText("Saved.", { exact: true }).waitFor({ timeout: 15000 });
+    await p.goto(BASE + "/settings");
+    await settled();
+    await requests.setChecked(true, { force: true });
+    for (const place of ["Remote", "Pune"]) await chips.getByRole("button", { name: place, exact: true }).click();
+    await settingsSave();
+  } finally {
+    await p.emulateMedia({ colorScheme: "light" });
+    // Also reset in SQL, so a failure partway never leaves later steps with a changed person.
+    await sql`update user_settings set message_requests = true, open_to_work_in = '{}', usually_free = '{}'
+      where user_id = (select id from users where email like ${testEmail + "%"} order by created_at desc limit 1)`;
+    await sql`update job_posts set closed_at = now() where board_token = 'e2e-places'`;
+    await sql.end();
+  }
+});
+// Me editing (docs/plans/me-editing-plan.md, v44 gap item 23). On /me the walk adds a role, an education row, a story (seen
+// in its Board column, then in the List) and two interests; edits one of each; checks View as others (the story and the
+// interests show, no Edit, Delete or remove); then deletes one of each. Each Save says "Saved." and Cancel puts focus
+// back on the control that opened the form. axe passes in light and dark, and /me fits a phone.
+await step("me editing: add, edit and delete a role, education, a story and interests; View as others shows them", async () => {
+  await p.goto(BASE + "/me");
+  await settled();
+  const main = p.locator("main").first();
+  await main.getByText("Write your first story: a time at work, college, an internship or volunteering. Keep each part short.").waitFor({ timeout: 10000 });
+  // The job search rail's "Show my pitstop on the map · soon" is a separate item (job-search plan) and stays.
+  if (await main.getByText(/· soon/).filter({ hasNotText: "Show my pitstop on the map" }).count()) throw new Error("Me still says soon");
+  // The toast stays in the page at opacity 0 until it clears, so wait for it to go before the next save can look for it.
+  const saved = async () => {
+    const toast = p.getByText("Saved.", { exact: true }).first();
+    await toast.waitFor({ timeout: 15000 });
+    await toast.waitFor({ state: "detached", timeout: 10000 });
+  };
+  // A story title is in its card's summary, and again (screen-reader only) in its Edit and Delete buttons.
+  const card = (scope) => scope.locator("summary").getByText(title, { exact: true });
+  const focused = (name) => p.waitForFunction((n) => document.activeElement?.textContent?.trim() === n, name, { timeout: 5000 });
+
+  // Cancel puts focus back on "+ Add role".
+  await main.getByRole("button", { name: "+ Add role" }).click();
+  await main.getByLabel("Job title", { exact: true }).waitFor();
+  await main.getByRole("button", { name: "Cancel", exact: true }).click();
+  await focused("+ Add role");
+  // A role: refused without a start, then saved.
+  await main.getByRole("button", { name: "+ Add role" }).click();
+  await main.getByLabel("Job title", { exact: true }).fill("Volunteer data lead");
+  await main.getByLabel("Company", { exact: true }).fill("Pune Reads Library Trust");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await main.getByText("Pick a month and year.").first().waitFor({ timeout: 10000 });
+  await main.getByLabel("Started, month").selectOption("06");
+  await main.getByLabel("Started, year").selectOption("2023");
+  await main.getByLabel("Ended, month").selectOption("12");
+  await main.getByLabel("Ended, year").selectOption("2023");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Edit Volunteer data lead" }).waitFor({ timeout: 15000 });
+  await main.getByText("Jun 2023 to Dec 2023", { exact: false }).waitFor();
+
+  // Education.
+  const education = main.getByRole("region", { name: "Education" });
+  await education.getByRole("button", { name: "+ Add", exact: true }).click();
+  await education.getByLabel("Qualification", { exact: true }).fill("Data Analytics with Python");
+  await education.getByLabel("Institution", { exact: true }).fill("NPTEL");
+  await education.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).waitFor({ timeout: 15000 });
+
+  // A story, refused with no box, then saved; it shows in its Board column, then in the List.
+  const title = "Cut missed phishing alerts";
+  await main.getByRole("button", { name: "+ Add story" }).click();
+  await main.getByLabel("Title", { exact: true }).fill(title);
+  await main.getByLabel("Where and when", { exact: true }).fill("Konkan Co-operative Bank · 2025");
+  await main.getByLabel("Situation", { exact: true }).fill("Phishing alerts piled up and the team missed some.");
+  await main.getByLabel("Task", { exact: true }).fill("I owned the morning triage of the alert queue.");
+  await main.getByLabel("Action", { exact: true }).fill("I sorted the alerts by sender domain and wrote a short checklist for the team to follow.");
+  await main.getByLabel("Result", { exact: true }).fill("Missed alerts fell from 9 a week to 1.");
+  await main.getByText("38 of 400").waitFor();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await main.getByText("Pick at least one box.").waitFor({ timeout: 10000 });
+  await main.getByRole("button", { name: "Problem solving", exact: true }).click();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  const column = main.getByRole("region", { name: "Problem solving" });
+  await card(column).waitFor({ timeout: 15000 });
+  await main.getByText("1 story · 5 boxes empty").waitFor();
+  await main.getByRole("button", { name: "List", exact: true }).click();
+  await main.getByRole("button", { name: "List", pressed: true }).waitFor();
+  await card(column).click();
+  // The SMART check: one box and no goal, so R is missing and its hint shows; never a score.
+  await column.getByLabel("SMART check: S, M, A, T met").waitFor();
+  await column.getByText("Link it to a goal, or pick another box it answers.").waitFor();
+
+  // Two interests; the same one again is refused.
+  await main.getByLabel("Add an interest").fill("Photography");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Remove Photography" }).waitFor({ timeout: 15000 });
+  await main.getByLabel("Add an interest").fill("Cricket stats");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ timeout: 15000 });
+  await main.getByLabel("Add an interest").fill(" photography ");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await main.getByText("That one is already on your list.").waitFor({ timeout: 10000 });
+  await main.getByLabel("Add an interest").fill("");
+
+  // Edit one of each.
+  await main.getByRole("button", { name: "Edit Volunteer data lead" }).click();
+  await main.getByLabel("Job title", { exact: true }).fill("Volunteer data analyst");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Edit Volunteer data analyst" }).waitFor({ timeout: 15000 });
+  await focused("Edit Volunteer data analyst");
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).click();
+  await education.getByLabel("Year", { exact: true }).fill("2025");
+  await education.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await education.getByText("NPTEL · 2025").waitFor({ timeout: 15000 });
+  if (!(await column.getByRole("button", { name: `Edit ${title}` }).isVisible())) await card(column).click();
+  await column.getByRole("button", { name: `Edit ${title}` }).click();
+  await main.getByLabel("Result", { exact: true }).fill("Missed alerts fell from 9 a week to 1 in six weeks.");
+  await main.getByRole("button", { name: "Learning", exact: true }).click();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await card(main.getByRole("region", { name: "Learning" })).waitFor({ timeout: 15000 });
+  await shot("me-editing");
+  await a11y("me-editing");
+
+  // View as others: the role, the course, the story and the interests, and no editing.
+  await main.getByRole("button", { name: "View as others" }).click();
+  await main.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
+  for (const text of ["Volunteer data analyst", "Data Analytics with Python", "Photography", "Cricket stats"]) await main.getByText(text, { exact: true }).first().waitFor();
+  await card(main.getByRole("region", { name: "Problem solving" })).waitFor();
+  for (const name of [/^Edit /, /^Delete /, /^Remove /, "+ Add role", "+ Add story"]) if (await main.getByRole("button", { name }).count()) throw new Error(`View as others offers ${name}`);
+  if (await main.getByText("Added by you").count()) throw new Error("View as others shows Added by you");
+  await main.getByRole("button", { name: "Back to editing" }).click();
+
+  // Delete one of each: Keep first, then Delete.
+  const storyColumn = main.getByRole("region", { name: "Problem solving" });
+  if (!(await storyColumn.getByRole("button", { name: `Delete ${title}` }).isVisible())) await card(storyColumn).click();
+  await storyColumn.getByRole("button", { name: `Delete ${title}` }).click();
+  await main.getByRole("group", { name: "Delete this story?" }).waitFor();
+  await main.getByRole("button", { name: "Keep", exact: true }).click();
+  await focused(`Delete ${title}`);
+  await storyColumn.getByRole("button", { name: `Delete ${title}` }).click();
+  await main.getByRole("group", { name: "Delete this story?" }).getByRole("button", { name: "Delete", exact: true }).click();
+  await main.getByText("Write your first story", { exact: false }).waitFor({ timeout: 15000 });
+  await main.getByRole("button", { name: "Delete Volunteer data analyst" }).click();
+  await main.getByRole("group", { name: "Delete this role?" }).getByRole("button", { name: "Delete", exact: true }).click();
+  await main.getByRole("button", { name: "Edit Volunteer data analyst" }).waitFor({ state: "detached", timeout: 15000 });
+  await education.getByRole("button", { name: "Delete Data Analytics with Python" }).click();
+  await main.getByRole("group", { name: "Delete this?", exact: true }).getByRole("button", { name: "Delete", exact: true }).click();
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).waitFor({ state: "detached", timeout: 15000 });
+  await main.getByRole("button", { name: "Remove Cricket stats" }).click();
+  await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ state: "detached", timeout: 15000 });
+
+  // The download has what is left: one interest.
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
+  if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
+
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("me-editing-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload();
+  await settled();
+  await p.locator("main").first().getByRole("button", { name: "+ Add story" }).click();
+  await a11y("me-editing-phone");
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  await shot("me-editing-phone");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  if (overflow) throw new Error("/me scrolls sideways at 360px with the story form open");
 });
 await step("delete account, then restore it by signing in again", async () => {
   await p.goto(BASE + "/settings");
@@ -1224,6 +1833,94 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await fresh.close();
   }
 });
+// Notifications in the app (docs/plans/notifications-plan.md, v44 gap item 15). Person B asks person A to connect from
+// A's profile; A's bell reads "Notifications, 1 new" with its dot. Opening it shows the sentence and clears the dot,
+// Esc puts focus back on the bell, and the row opens Network on Requests. axe passes with the panel open at phone width,
+// light and dark, with no sideways scroll.
+await step("notifications: a connection request rings the bell, opening it clears the dot, the row opens Requests", async () => {
+  const ctxA = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const ctxR = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const qa = await ctxA.newPage();
+  const qr = await ctxR.newPage();
+  for (const q of [qa, qr]) {
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  }
+  const signUp = async (q, name, email) => {
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill(name);
+    await q.locator('input[name="email"]').fill(email);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/today/, { timeout: 15000 });
+    }
+  };
+  try {
+    const handle = `bell-${Date.now().toString(36)}`;
+    await signUp(qa, "Asha Bellamy", `bell-a-${testEmail}`);
+    await signUp(qr, "Ravi Bellamy", `bell-r-${testEmail}`);
+    // A new account has nothing new: the bell reads "Notifications", with no dot.
+    const bell = qa.locator("header button[data-bell]");
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error(`a new account's bell reads ${await bell.getAttribute("aria-label")}`);
+    // A opens their profile to everyone signed in, so B can find the Connect button there.
+    await qa.goto(BASE + "/settings");
+    await qa.getByLabel("Username").fill(handle);
+    await qa.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+    await qa.getByLabel("Everyone signed in").check({ force: true });
+    await qa.getByRole("button", { name: "Save changes" }).click();
+    await qa.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+    await qr.goto(BASE + `/u/${handle}`);
+    await qr.getByRole("heading", { level: 1, name: "Asha Bellamy" }).waitFor({ timeout: 10000 });
+    await qr.getByRole("button", { name: "Connect", exact: true }).click();
+    await qr.getByRole("button", { name: "Send request", exact: true }).click();
+    await qr.getByText("Request sent to Asha.").waitFor({ timeout: 10000 });
+    // B gets nothing for their own request.
+    if ((await qr.locator("header button[data-bell]").getAttribute("aria-label")) !== "Notifications") throw new Error("the sender's own bell rang");
+
+    await qa.goto(BASE + "/today");
+    await bell.waitFor();
+    if ((await bell.getAttribute("aria-label")) !== "Notifications, 1 new") throw new Error(`the bell reads ${await bell.getAttribute("aria-label")}`);
+    if (!(await qa.locator("header [data-bell-dot]").count())) throw new Error("no dot on the bell");
+    await bell.click();
+    const row = qa.getByRole("link", { name: "New: Ravi Bellamy asked to connect.", exact: false });
+    await row.waitFor({ timeout: 10000 });
+    if (await qa.locator("header [data-bell-dot]").count()) throw new Error("the dot stayed after opening");
+    await axeOn(qa, "notifications-panel");
+    await qa.keyboard.press("Escape");
+    await qa.waitForFunction(() => document.activeElement?.hasAttribute("data-bell"), null, { timeout: 5000 });
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error("the bell still reads new after opening");
+    // Phone width, light then dark: the panel fills the screen under the top bar, with no sideways scroll.
+    await qa.setViewportSize({ width: 360, height: 780 });
+    for (const scheme of ["light", "dark"]) {
+      await qa.emulateMedia({ colorScheme: scheme });
+      // Reload so every colour is drawn in this scheme from the start, as on the other dark checks.
+      await qa.reload();
+      // Wait for hydration, so the click opens the panel.
+      await qa.waitForLoadState("networkidle");
+      await bell.waitFor({ timeout: 10000 });
+      await bell.click();
+      await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).waitFor({ timeout: 10000 });
+      if (await qa.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`the panel scrolls sideways at 360px (${scheme})`);
+      await axeOn(qa, `notifications-panel-phone-${scheme}`);
+      await qa.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-notifications-phone-${scheme}.png` });
+      await qa.keyboard.press("Escape");
+    }
+    await qa.setViewportSize({ width: 1280, height: 900 });
+    await qa.emulateMedia({ colorScheme: "light" });
+    // The row opens Network, on Requests.
+    await bell.click();
+    await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).click();
+    await qa.waitForURL(/\/network\?tab=requests/, { timeout: 15000 });
+    await qa.getByRole("tab", { name: /^Requests/, selected: true }).waitFor({ timeout: 10000 });
+  } finally {
+    await ctxA.close();
+    await ctxR.close();
+  }
+});
 // Build your resume (FR-36, handoff 12k). A fresh person answers the seven sections; one click on Next moves on each
 // time, though leaving a field starts a save. "Review my resume" goes to the stand-in model (e2e/mock-ai.mjs buildReply),
 // which returns the answer's own words plus "Improved results by 99% across 400 systems": the line check must drop
@@ -1304,6 +2001,18 @@ await step("builder: seven sections, one click each, and Review drops the model'
     await section("Role").waitFor({ timeout: 5000 });
     if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("the builder scrolls sideways at 390px (dark)");
     await axeOn(q, "builder-phone-dark");
+    // "Download PDF or DOCX" on the review goes through the confirm step (the file is made only from a confirmed
+    // profile, FR-20); the download appears as soon as "Looks right" saves.
+    for (const name of ["Education", "Projects", "Internships and jobs", "Tools", "Certificates", "Links"]) await next(name);
+    await q.getByRole("button", { name: "Review my resume" }).click();
+    await q.getByRole("heading", { name: "Your resume", level: 1 }).waitFor({ timeout: 60000 });
+    await q.getByRole("checkbox", { name: "Everything here is true and mine." }).check();
+    await q.getByRole("button", { name: "Download PDF or DOCX" }).click();
+    await q.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 15000 });
+    await q.getByRole("button", { name: "Looks right", exact: true }).click();
+    await q.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 15000 });
+    const pdf = await q.request.get(BASE + (await q.getByRole("link", { name: "PDF", exact: true }).getAttribute("href")));
+    if (pdf.status() !== 200 || !(await pdf.body()).subarray(0, 5).toString("latin1").startsWith("%PDF-")) throw new Error(`the built resume's PDF download gave ${pdf.status()}`);
   } finally {
     await ctxB.close();
   }
@@ -1375,7 +2084,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1460,19 +2169,35 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await mode.getByRole("button", { name: "Question bank", exact: true }).click();
     await openItems.first().waitFor();
     if (await lockedItems.count()) throw new Error("bank questions stay locked with Elite on");
+
+    // The Library's Elite tab opens with Elite (part 5): no locked panel, our playbooks and drills open, and paid
+    // courses stay Coming soon slots with no link.
+    await q.goto(BASE + "/library?tab=elite");
+    const shelf = main.getByRole("region", { name: "Elite shelf", exact: true });
+    await shelf.waitFor({ timeout: 15000 });
+    if (await shelf.getByRole("link", { name: "Turn on Elite", exact: true }).count()) throw new Error("the shelf stays locked with Elite on");
+    if (await shelf.locator('[data-shelf-card="slot"] a').count()) throw new Error("a paid-course slot links somewhere");
+    const drills = shelf.locator('[data-shelf-card="own"]').filter({ hasText: "Drill set" }).first();
+    await drills.locator("summary").first().click();
+    await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
+    await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
   }
 });
 // The mock interview (FR-50 part 3, handoff 12l). A fresh person on Free sees the Mock interview tab locked; with Elite
-// on, /mock opens on it: they set up a Quick round for Data Analyst, answer the first two questions (each saved on
-// Next), skip the rest with "End and get feedback", and get the stand-in model's feedback in words: a summary, then
-// What worked and Add next time on each answer, and "Open it in the bank" on each skipped one. No score. The download
-// has the round with its answers. axe passes on the set-up, the running round and the feedback.
-await step("mock interview: a quick round, answered, ended, with feedback in words", async () => {
+// on, /mock opens on it: they set up a Full round for Data Analyst (a Mix opens with two about-you questions, whose
+// follow-ups wait for review, so this local build asks them: docs/plans/mock-followups-plan.md). A long first answer
+// gets a follow-up from the bank, "Follow-up · topic" with a fresh box, the count still "Question 1 of 8"; they answer
+// it. The second long answer gets one too, and Skip follow-up moves on; a short third answer gets none. They end with
+// "End and get feedback" and get the stand-in model's feedback in words: a summary, then What worked and Add next time
+// on each answer, the follow-up and its reply under the first, "Follow-up skipped." under the second, and "Open it in
+// the bank" on each skipped question. No score. The download has the round with its answers and follow-ups. axe
+// passes on the set-up, the running round, the follow-up and the feedback.
+await step("mock interview: a full round with follow-ups, answered, ended, with feedback in words", async () => {
   const ctxI = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   const q = await ctxI.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
@@ -1503,40 +2228,62 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     if ((await mode.getByRole("button", { name: "Mock interview", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("Elite doesn't open on the mock interview");
     const setup = main.getByRole("region", { name: "Set up your mock interview" });
     await setup.waitFor();
-    await setup.getByText("The interviewer is an AI and it can be wrong.", { exact: false }).waitFor();
+    await setup.getByText("It asks follow-ups like a person would, and it can be wrong.", { exact: false }).waitFor();
     if ((await setup.getByLabel("Role").inputValue()) !== "data-analyst") throw new Error("the role isn't the one asked for");
     // The choices are radios inside their labels; press the label, as a person would.
-    await setup.getByText("Quick round", { exact: true }).click();
+    await setup.getByText("Full round", { exact: true }).click();
     await setup.getByText("Mix", { exact: true }).click();
-    if (!(await setup.getByRole("radio", { name: /Quick round/ }).isChecked())) throw new Error("Quick round isn't picked");
+    if (!(await setup.getByRole("radio", { name: /Full round/ }).isChecked())) throw new Error("Full round isn't picked");
     await axeOn(q, "mock-interview-setup");
     await setup.getByRole("button", { name: "Start mock interview", exact: true }).click();
 
     const timer = main.getByRole("timer");
     await timer.waitFor({ timeout: 15000 });
-    if (!/^(10:00|9:\d\d)$/.test((await timer.innerText()).trim())) throw new Error(`the timer reads ${await timer.innerText()}`);
-    await main.getByText(/^Question 1 of 4 · /).waitFor();
+    if (!/^(20:00|19:\d\d)$/.test((await timer.innerText()).trim())) throw new Error(`the timer reads ${await timer.innerText()}`);
+    await main.getByText(/^Question 1 of 8 · /).waitFor();
     await main.getByText("AI interviewer", { exact: true }).waitFor();
     await axeOn(q, "mock-interview-running");
     const box = main.getByRole("textbox", { name: "Your answer" });
     const saved = () => q.waitForResponse((r) => r.request().method() === "POST" && new URL(r.url()).pathname === "/mock");
-    await box.fill("I studied commerce and made weekly sales reports in Excel for two years; now I want to analyse data full time.");
+    const followLabel = main.getByText(/^Follow-up · /);
+    // 27 and 29 words, with none of the about-you follow-ups' skip words; the third has 17, under the 20 a follow-up needs.
+    await box.fill("I studied commerce and made weekly sales reports in Excel for two years; now I want to analyse data full time and grow with a good team.");
     if (!(await box.inputValue()).startsWith("I studied commerce")) throw new Error("the answer box didn't keep the text");
     await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
-    await main.getByText(/^Question 2 of 4 · /).waitFor();
+    await followLabel.waitFor({ timeout: 15000 });
+    await main.getByText(/^Question 1 of 8 · /).waitFor();
+    if ((await box.inputValue()) !== "") throw new Error("the follow-up opens with text in the box");
+    if (!(await main.getByRole("button", { name: "Skip follow-up", exact: true }).isVisible())) throw new Error("no Skip follow-up");
+    await axeOn(q, "mock-interview-follow-up");
+    await box.fill("I would start with the weekly sales report, since I already know where its numbers come from and what the team reads in it.");
+    await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
+    await main.getByText(/^Question 2 of 8 · /).waitFor();
+    if (await followLabel.count()) throw new Error("the follow-up stays after Next");
     if ((await box.inputValue()) !== "") throw new Error("question 2 opens with text in the box");
+    await box.fill("In my last job I worked with the sales and finance teams every week, and I kept a shared sheet so both teams saw the same numbers and dates.");
+    await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
+    await followLabel.waitFor({ timeout: 15000 });
+    await main.getByText(/^Question 2 of 8 · /).waitFor();
+    await main.getByRole("button", { name: "Skip follow-up", exact: true }).click();
+    await main.getByText(/^Question 3 of 8 · /).waitFor();
     await box.fill("I would check the duplicates and the blanks first, then the odd values, before any chart.");
     await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
-    await main.getByText(/^Question 3 of 4 · /).waitFor();
+    await main.getByText(/^Question 4 of 8 · /).waitFor();
+    if (await followLabel.count()) throw new Error("a short answer got a follow-up");
     await main.getByRole("button", { name: "End and get feedback", exact: true }).click();
 
     await main.getByRole("heading", { name: "Feedback on your round", exact: true }).waitFor({ timeout: 30000 });
     await main.getByText("You answer in plain words and start in the right place.", { exact: false }).waitFor();
-    await main.getByText(/2 of 4 answered/).waitFor();
-    if ((await main.locator('[data-feedback-item="answered"]').count()) !== 2) throw new Error("the feedback doesn't show both answers");
-    if ((await main.locator('[data-feedback-item="skipped"]').count()) !== 2) throw new Error("the feedback doesn't show the two skipped");
-    if ((await main.getByText("What worked", { exact: true }).count()) !== 2) throw new Error("What worked isn't on each answer");
-    if ((await main.getByText("Add next time", { exact: true }).count()) !== 2) throw new Error("Add next time isn't on each answer");
+    await main.getByText(/3 of 8 answered/).waitFor();
+    if ((await main.locator('[data-feedback-item="answered"]').count()) !== 3) throw new Error("the feedback doesn't show the three answers");
+    if ((await main.locator('[data-feedback-item="skipped"]').count()) !== 5) throw new Error("the feedback doesn't show the five skipped");
+    if ((await main.getByText("What worked", { exact: true }).count()) !== 3) throw new Error("What worked isn't on each answer");
+    if ((await main.getByText("Add next time", { exact: true }).count()) !== 3) throw new Error("Add next time isn't on each answer");
+    if ((await main.locator('[data-follow-up="answered"]').count()) !== 1) throw new Error("the answered follow-up isn't in the feedback");
+    if ((await main.locator('[data-follow-up="skipped"]').count()) !== 1) throw new Error("the skipped follow-up isn't in the feedback");
+    await main.locator('[data-follow-up="answered"]').getByText("I would start with the weekly sales report", { exact: false }).waitFor();
+    await main.locator('[data-follow-up="skipped"]').getByText("Follow-up skipped.", { exact: true }).waitFor();
+    if (await main.locator('[data-follow-up="skipped"]').getByRole("link").count()) throw new Error("a skipped follow-up has a link");
     const bankLink = main.getByRole("link", { name: "Open it in the bank", exact: true }).first();
     if ((await bankLink.getAttribute("href")) !== "/mock?tab=bank&role=data-analyst") throw new Error("a skipped question doesn't link to the bank");
     const words = (await main.locator("[data-feedback-item]").allInnerTexts()).join("\n");
@@ -1544,9 +2291,11 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 31) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
-    if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
+    if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
+    const ups = round.answers.map((a) => a.followUp);
+    if (!ups[0]?.question || !ups[0]?.answer?.startsWith("I would start") || !ups[1]?.question || ups[1].answer !== null || ups[2] !== null) throw new Error("the download's follow-ups are wrong");
 
     // A skipped question opens the bank for the role.
     await bankLink.click();
@@ -2149,6 +2898,80 @@ await step("reports: the admin hides the reported message, and the other side se
     await sql.end();
   }
 });
+// Library review (/admin/library, docs/plans/library-part-2-plan.md): not found when signed out; the admin sees the
+// link the walk reported and the link it suggested, hides the reported link (one audit line), and the walk's Library no
+// longer shows it; Show again brings it back. The suggestion is declined as off topic. axe passes, phone size in dark.
+await step("library review: the admin hides the reported link, and the Library no longer shows it", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to read the audit lines");
+  if (!libraryReported) throw new Error("the Library step reported no link");
+  const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    const res = await (await out.newPage()).goto(BASE + "/admin/library");
+    if (res?.status() !== 404) throw new Error(`signed out: /admin/library answered ${res?.status()}, not 404`);
+  } finally {
+    await out.close();
+  }
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await adm.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  let hiddenId = null;
+  try {
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.goto(BASE + "/admin/library");
+    await q.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+    const row = q.locator("article").filter({ has: q.getByRole("heading", { name: libraryReported, exact: true, level: 3 }) });
+    await row.waitFor({ timeout: 10000 });
+    await row.getByText(/Link is broken · \d+/).waitFor();
+    const suggestion = q.locator("article").filter({ hasText: suggestedLink });
+    const link = suggestion.getByRole("link", { name: new RegExp(suggestedLink.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
+    if ((await link.getAttribute("target")) !== "_blank" || !(await link.getAttribute("rel"))?.includes("noreferrer")) throw new Error("a suggested link doesn't open in a new tab without a referrer");
+    await axeOn(q, "admin-library");
+    await row.getByRole("button", { name: `Hide link: ${libraryReported}`, exact: true }).click();
+    await q.getByRole("status").filter({ hasText: "Hidden. It has left the Library, paths and rides." }).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: `Show again: ${libraryReported}`, exact: true }).waitFor({ timeout: 10000 });
+    [{ id: hiddenId }] = await sql`select id from resources where title = ${libraryReported} and hidden_at is not null`;
+    const audit = await sql`select action from audit_logs where target = ${`resource:${hiddenId}`} and action = 'resource_hidden'`;
+    if (!audit.length) throw new Error("no audit line for Hide link");
+    // The walk's own Library no longer has it, in search or anywhere else.
+    await p.goto(BASE + "/library");
+    await settled();
+    await p.getByRole("searchbox", { name: "Search the Library" }).fill(libraryReported);
+    // The search says how many it shows; none of them is the hidden link.
+    await p.getByRole("status").filter({ hasText: /^\d+ resources? shown$/ }).waitFor({ timeout: 10000 });
+    if (await p.locator("main").first().getByRole("button", { name: libraryReported, exact: true }).count()) throw new Error("the hidden link still shows in the Library");
+    // The suggestion is declined with its reason.
+    await suggestion.getByLabel(/^Why decline /).selectOption("off_topic");
+    await suggestion.getByRole("button", { name: /^Decline: / }).click();
+    await q.getByRole("status").filter({ hasText: "Declined." }).waitFor({ timeout: 10000 });
+    await suggestion.waitFor({ state: "detached", timeout: 10000 });
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("admin-library: horizontal overflow " + overflow + "px");
+    await axeOn(q, "admin-library-phone-dark");
+    // Phone size in dark on the person's Library too.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.goto(BASE + "/library");
+    await settled();
+    await a11y("library-phone-dark");
+  } finally {
+    // Show it again, so later steps and runs have the whole catalog.
+    if (hiddenId) await sql`update resources set hidden_at = null where id = ${hiddenId}`;
+    await sql`delete from resource_reports where user_id in (select id from users where email = ${testEmail})`;
+    await sql`delete from resource_suggestions where url = ${suggestedLink}`;
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await adm.close();
+    await sql.end();
+  }
+});
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
 let proofSkill = "";
@@ -2371,7 +3194,7 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     const [sent] = await sql`select a.note from applications a join jobs j on j.id = a.job_id where j.title = ${title}`;
     if (sent?.note !== EXPRESS_NOTE) throw new Error("the note was not saved with the application");
 
-    // Every other job keeps the external link: the example roles show "Apply on company site", never Express apply.
+    // Every other job keeps the external link: the roles from company job boards show "Apply on company site", never Express apply.
     await p.getByRole("button", { name: /^Apply on company site/ }).or(p.getByRole("link", { name: /^Apply on company site/ })).first().waitFor();
     if (await p.getByText("Express apply · soon").count()) throw new Error("an external role still offers Express apply");
 
@@ -2468,6 +3291,14 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await p.locator("section", { has: p.getByRole("heading", { name: "Not this time", exact: true }) }).getByRole("heading", { name: title }).waitFor();
     await mine.getByText(NOTE).waitFor();
     await mine.getByText("Example Labs moved you to Shortlisted").waitFor();
+    // The bell says so too (docs/plans/notifications-plan.md): the move and the closing make one row, the closing line.
+    const bell = p.locator("header button[data-bell]");
+    if ((await bell.getAttribute("aria-label")) !== "Notifications, 1 new") throw new Error(`the bell reads ${await bell.getAttribute("aria-label")}`);
+    await bell.click();
+    await p.getByRole("link", { name: `New: Example Labs closed your application for ${title}. Their note is on Arrivals.`, exact: false }).waitFor({ timeout: 10000 });
+    await p.keyboard.press("Escape");
+    await p.waitForFunction(() => document.activeElement?.hasAttribute("data-bell"), null, { timeout: 5000 });
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error("the bell still reads new after opening");
     await shot("arrivals");
     await a11y("arrivals");
     await p.setViewportSize({ width: 390, height: 844 });
@@ -3048,6 +3879,11 @@ await step("let companies find me: opt in, a recruiter finds and messages them, 
     await a11yOn(fp, "inbox-found-request");
     await fp.getByRole("button", { name: "Accept" }).click();
     await thread.getByRole("textbox", { name: "Message" }).waitFor({ timeout: 10000 });
+    // End chat is on the accepted chat, behind an inline confirm (opened and cancelled here; the store tests end one).
+    await thread.getByRole("button", { name: "End chat", exact: true }).click();
+    await thread.getByText("End this chat? The company can't message you here again.", { exact: true }).waitFor();
+    await thread.getByRole("button", { name: "Cancel", exact: true }).click();
+    await thread.getByRole("button", { name: "End chat", exact: true }).waitFor();
     // The company's profile view shows in Settings.
     await fp.goto(BASE + "/settings");
     await fp.locator("[data-company-discovery]").getByText("Example Labs").first().waitFor({ timeout: 10000 });
@@ -3273,6 +4109,379 @@ await step("screening check: confirm a missing keyword, and it stays a weak gap"
   const card = p.locator("article").filter({ hasText: name }).first();
   await card.getByText("Weak evidence").waitFor({ timeout: 10000 });
   await shot("screening-confirmed");
+});
+// Hardening pass over the screens of #175 to #193 (docs/plans/hardening-pass.md): keyboard paths, axe in light and in
+// dark (each dark check reloads first), and no sideways scroll at 390px, where the steps above don't already check
+// them. Each step puts back what it changes. Kept together here, after the walk's own steps.
+const focusedHas = (q, attr, value) =>
+  q.waitForFunction(([a, v]) => document.activeElement?.getAttribute(a) === v, [attr, value], { timeout: 5000 });
+const fitsPhone = async (q, what) => {
+  const over = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  // 1px of slack for sub-pixel rounding, as "phone + dark today" allows.
+  if (over > 1) throw new Error(`${what} scrolls sideways at 390px (${over}px)`);
+};
+await step("hardening: Today with no resume, the role chips and the drop zone by keyboard, light, dark and phone", async () => {
+  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await fresh.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await signInAs(q, "Nisha Rao", `nores-${testEmail}`);
+    await q.goto(BASE + "/today");
+    const chips = q.getByRole("group", { name: "Target role", exact: true });
+    await chips.waitFor({ timeout: 15000 });
+    await q.waitForLoadState("networkidle");
+    // Space presses a chip; Tab goes on to the next one; Enter presses that one instead.
+    await chips.getByRole("button", { name: "Cyber Security Analyst", exact: true }).focus();
+    await q.keyboard.press("Space");
+    await chips.getByRole("button", { name: "Cyber Security Analyst", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Tab");
+    await q.waitForFunction(() => document.activeElement?.textContent?.trim() === "Data Analyst", null, { timeout: 5000 });
+    await q.keyboard.press("Enter");
+    await chips.getByRole("button", { name: "Data Analyst", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+    if ((await chips.getByRole("button", { pressed: true }).count()) !== 1) throw new Error("more than one target role is pressed");
+    // Paste text and back by keyboard, then Tab reaches the file box, which shows where focus is.
+    const how = q.getByRole("group", { name: "How to add your resume" });
+    await how.getByRole("button", { name: "Paste text", exact: true }).focus();
+    await q.keyboard.press("Enter");
+    await q.getByRole("textbox", { name: "Your resume" }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Shift+Tab");
+    await q.keyboard.press("Space");
+    await q.getByRole("textbox", { name: "Your resume" }).waitFor({ state: "detached", timeout: 5000 });
+    await q.getByText("Drop your resume here", { exact: true }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Tab");
+    await q.keyboard.press("Tab");
+    if ((await q.evaluate(() => document.activeElement?.getAttribute("type"))) !== "file") throw new Error("Tab doesn't reach the file box after the two buttons");
+    const ring = await q.evaluate(() => getComputedStyle(document.activeElement.closest("label")).outlineStyle);
+    if (ring === "none") throw new Error("the drop zone shows no focus ring");
+    await axeOn(q, "hardening-today-no-resume");
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await chips.waitFor({ timeout: 15000 });
+    await axeOn(q, "hardening-today-no-resume-dark");
+    await q.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["dark", "light"]) {
+      await q.emulateMedia({ colorScheme: scheme });
+      await q.reload();
+      await chips.waitFor({ timeout: 15000 });
+      await fitsPhone(q, `Today with no resume (${scheme})`);
+    }
+    await axeOn(q, "hardening-today-no-resume-phone");
+  } finally {
+    await fresh.close();
+  }
+});
+await step("hardening: the Life line by keyboard, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const openLife = async () => {
+      await p.goto(BASE + "/map");
+      await settled();
+      const life = p.getByRole("group", { name: "Which map" }).getByRole("button", { name: "Life line", exact: true });
+      await life.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+      await life.focus();
+      await p.keyboard.press("Enter");
+      await p.getByRole("group", { name: "Which map" }).getByRole("button", { name: "Life line", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+      await p.getByRole("group", { name: "Time range" }).waitFor({ timeout: 10000 });
+      await p.locator('main svg g[role="button"]').first().waitFor({ timeout: 10000 });
+    };
+    await openLife();
+    // A moment opens with Enter, and its panel replaces "Your big moments".
+    const details = p.getByRole("complementary", { name: "Moment details" });
+    await details.getByRole("heading", { name: "Your big moments", level: 3 }).waitFor({ timeout: 10000 });
+    const station = p.locator('main svg g[role="button"]').first();
+    await station.focus();
+    await p.keyboard.press("Enter");
+    await p.locator('main svg g[role="button"][aria-pressed="true"]').waitFor({ timeout: 5000 });
+    await details.getByRole("heading", { name: "Your big moments", level: 3 }).waitFor({ state: "detached", timeout: 5000 });
+    await a11y("hardening-life-line");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await openLife();
+    await a11y("hardening-life-line-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await openLife();
+    await fitsPhone(p, "the Life line (dark)");
+    await a11y("hardening-life-line-phone-dark");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Report and Connect on a profile by keyboard, Cancel gives focus back, light, dark and phone", async () => {
+  const other = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const r = await other.newPage();
+  r.on("pageerror", (e) => problems.push(`pageerror@${r.url()}: ${e.message.slice(0, 200)}`));
+  r.on("response", (res) => res.status() >= 500 && problems.push(`${res.status()} ${res.request().method()} ${res.url()}`));
+  const NAME = "Kiran Joshi";
+  const handle = `kiran-${Date.now().toString(36)}`;
+  try {
+    await signInAs(r, NAME, `report-${testEmail}`);
+    // Kiran opens their profile to everyone signed in, so the walk's person can open it.
+    await r.goto(BASE + "/settings");
+    await r.getByLabel("Username").fill(handle);
+    await r.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+    await r.getByLabel("Everyone signed in").check({ force: true });
+    await r.getByRole("button", { name: "Save changes" }).click();
+    await r.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const you = p.getByRole("region", { name: `You and ${NAME}`, exact: true });
+    const open = async () => {
+      await p.goto(BASE + `/u/${handle}`);
+      await you.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+    };
+    await open();
+    // Report: Enter opens the form with focus on its first reason; Tab reaches Send report then Cancel; Cancel puts
+    // focus back on Report. Nothing is sent.
+    const report = you.getByRole("button", { name: "Report", exact: true });
+    const form = you.getByRole("form", { name: `Report ${NAME}` });
+    const openReport = async () => {
+      await report.focus();
+      await p.keyboard.press("Enter");
+      await form.waitFor({ timeout: 5000 });
+      await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "radio", null, { timeout: 5000 });
+    };
+    const cancelReport = async () => {
+      await form.getByRole("button", { name: "Cancel", exact: true }).focus();
+      await p.keyboard.press("Enter");
+      await form.waitFor({ state: "detached", timeout: 5000 });
+      await focusedHas(p, "data-opens", "report");
+    };
+    await openReport();
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.tagName === "TEXTAREA", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Send report", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Cancel", null, { timeout: 5000 });
+    await a11y("hardening-profile-report");
+    await cancelReport();
+    // Connect: the how-you-know pick opens inline; Cancel puts focus back on Connect, and no request goes.
+    await you.getByRole("button", { name: "Connect", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    const pick = you.getByRole("group", { name: `How you know ${NAME}` });
+    await pick.waitFor({ timeout: 5000 });
+    await pick.getByRole("button", { name: "Cancel", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    await pick.waitFor({ state: "detached", timeout: 5000 });
+    await focusedHas(p, "data-opens", "pick");
+    if (await you.getByText("Requested", { exact: true }).count()) throw new Error("Cancel sent a connection request");
+
+    await p.emulateMedia({ colorScheme: "dark" });
+    await open();
+    await openReport();
+    await a11y("hardening-profile-report-dark");
+    await cancelReport();
+    await p.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["dark", "light"]) {
+      await p.emulateMedia({ colorScheme: scheme });
+      await open();
+      await openReport();
+      await fitsPhone(p, `a profile with Report open (${scheme})`);
+      await cancelReport();
+    }
+  } finally {
+    await other.close();
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Network's tabs and Find people by keyboard, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/network");
+    await settled();
+    const tabs = p.getByRole("tablist", { name: "Your network" });
+    await tabs.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    // Arrow keys move along the tabs, and only the selected tab is in the Tab order.
+    await tabs.getByRole("tab", { selected: true }).focus();
+    const find = tabs.getByRole("tab", { name: /^Find/ });
+    for (let k = 0; k < 4 && (await find.getAttribute("aria-selected")) !== "true"; k++) await p.keyboard.press("ArrowRight");
+    if ((await find.getAttribute("aria-selected")) !== "true") throw new Error("ArrowRight never reached Find people");
+    if ((await p.evaluate(() => document.activeElement?.getAttribute("role"))) !== "tab") throw new Error("focus left the tabs on ArrowRight");
+    // Tab goes from the tab to the search box, which shows where focus is, then Search, then the first filter.
+    await p.keyboard.press("Tab");
+    if ((await p.evaluate(() => document.activeElement?.getAttribute("type"))) !== "search") throw new Error("Tab from Find people doesn't reach the search box");
+    const ring = await p.evaluate(() => getComputedStyle(document.activeElement.closest("label")).outlineStyle);
+    if (ring === "none") throw new Error("the search box shows no focus ring");
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Search", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await focusedHas(p, "aria-pressed", "false");
+    // Before a search a filter only waits for one: Space turns it on and off, and nothing is sent.
+    await p.keyboard.press("Space");
+    await focusedHas(p, "aria-pressed", "true");
+    await p.keyboard.press("Space");
+    await focusedHas(p, "aria-pressed", "false");
+    await a11y("hardening-network-find");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await tabs.waitFor({ timeout: 10000 });
+    await a11y("hardening-network-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.reload();
+    await settled();
+    await tabs.waitFor({ timeout: 10000 });
+    await fitsPhone(p, "Network (dark)");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: the avatar menu by keyboard, Escape gives focus back, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const avatar = p.getByRole("button", { name: /, open menu/ });
+    const profile = p.locator("header").getByRole("link", { name: "Your profile", exact: true });
+    const openMenu = async () => {
+      await p.goto(BASE + "/me");
+      await settled();
+      await avatar.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+      await avatar.focus();
+      await p.keyboard.press("Enter");
+      await profile.waitFor({ timeout: 5000 });
+      if ((await avatar.getAttribute("aria-expanded")) !== "true") throw new Error("the avatar button doesn't say the menu is open");
+    };
+    const escape = async () => {
+      await p.keyboard.press("Escape");
+      await profile.waitFor({ state: "hidden", timeout: 5000 });
+      await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label")?.includes(", open menu") === true, null, { timeout: 5000 });
+    };
+    await openMenu();
+    // Tab goes into the menu, at its first link.
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Your profile", null, { timeout: 5000 });
+    await a11y("hardening-avatar-menu");
+    await escape();
+    await p.emulateMedia({ colorScheme: "dark" });
+    await openMenu();
+    await a11y("hardening-avatar-menu-dark");
+    await escape();
+    // On a phone, Network and Library are in the menu, and the open menu fits.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await openMenu();
+    const menu = p.locator("header");
+    await menu.getByRole("link", { name: /^Network/ }).waitFor({ timeout: 5000 });
+    await menu.getByRole("link", { name: /^Library/ }).waitFor({ timeout: 5000 });
+    await fitsPhone(p, "the open avatar menu (dark)");
+    await a11y("hardening-avatar-menu-phone-dark");
+    await escape();
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: job search by keyboard on Departures, the notice card in dark at phone width", async () => {
+  const sw = p.getByRole("checkbox", { name: "Looking for a job", exact: true });
+  const off = p.getByRole("region", { name: "Job search is off" });
+  try {
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.goto(BASE + "/arrivals");
+    await settled();
+    await p.getByRole("region", { name: "Notice period" }).waitFor({ timeout: 10000 });
+    await fitsPhone(p, "Arrivals with the notice card (dark)");
+    await a11y("hardening-arrivals-notice-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.goto(BASE + "/departures");
+    await settled();
+    await sw.waitFor({ state: "attached", timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    if (!(await sw.isChecked())) throw new Error("job search is off before this step");
+    // Space on the switch turns job search off; the paused page's switch has focus.
+    await sw.focus();
+    await p.keyboard.press("Space");
+    await off.waitFor({ timeout: 10000 });
+    await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+    await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
+    await p.reload();
+    await settled();
+    await p.waitForLoadState("networkidle");
+    await off.waitFor({ timeout: 10000 });
+    await a11y("hardening-departures-search-off-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await fitsPhone(p, "Departures with job search off (dark)");
+    // Space again turns it back on.
+    await sw.focus();
+    await p.keyboard.press("Space");
+    await p.getByText("Job search is on. Departures and Arrivals are back.", { exact: true }).waitFor({ timeout: 10000 });
+    await off.waitFor({ state: "detached", timeout: 10000 });
+  } finally {
+    // Whatever failed above, the walk's person ends with job search on.
+    try {
+      await p.goto(BASE + "/departures");
+      await settled();
+      await p.waitForLoadState("networkidle");
+      if (await off.count()) {
+        await sw.click({ force: true });
+        await off.waitFor({ state: "detached", timeout: 10000 });
+      }
+    } catch {
+      // Best effort: the step has already failed and said why.
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Settings, Match, Interview prep, Elite and the Inbox in dark at phone width", async () => {
+  try {
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    for (const path of ["/settings", "/match", "/mock", "/elite", "/inbox"]) {
+      await p.goto(BASE + path);
+      await settled();
+      await p.locator("main").first().waitFor({ timeout: 10000 });
+      await fitsPhone(p, `${path} (dark)`);
+      await a11y(`hardening${path.replace("/", "-")}-phone-dark`);
+    }
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+// docs/launch/prod-smoke.md 6.1 to 6.3: the Download link in Account settings saves careermetro-data-<date>.json; Sign out
+// in the avatar menu lands on the home page signed out, and /today then asks to sign in; signing in again goes straight to
+// Today with no name step.
+await step("smoke 6: the settings Download link, Sign out from the menu, and back in straight to Today", async () => {
+  const ctxS = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxS.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  const email = `signout-${testEmail}`;
+  try {
+    await signInAs(q, "Sana Iyer", email);
+    await q.goto(BASE + "/settings");
+    await q.waitForLoadState("networkidle");
+    const link = q.getByRole("region", { name: "Your data", exact: true }).getByRole("link", { name: "Download", exact: true });
+    const [download] = await Promise.all([q.waitForEvent("download"), link.click()]);
+    if (!/^careermetro-data-\d{4}-\d{2}-\d{2}\.json$/.test(download.suggestedFilename())) throw new Error(`download named ${download.suggestedFilename()}`);
+    if (!JSON.parse(readFileSync(await download.path(), "utf8")).account) throw new Error("the downloaded file has no account");
+    await q.goto(BASE + "/today");
+    await q.waitForLoadState("networkidle");
+    await q.getByRole("button", { name: /open menu$/ }).click();
+    await q.getByRole("button", { name: "Sign out", exact: true }).click();
+    await q.waitForURL((u) => u.pathname === "/", { timeout: 15000 });
+    await q.waitForLoadState("networkidle");
+    await q.getByRole("link", { name: "Sign in", exact: true }).first().waitFor({ timeout: 15000 });
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/, { timeout: 15000 });
+    await q.locator('input[name="name"]').fill("Sana Iyer");
+    await q.locator('input[name="email"]').fill(email);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: 15000 });
+    if (new URL(q.url()).pathname !== "/today") throw new Error(`signing in again went to ${new URL(q.url()).pathname}, not straight to Today`);
+  } finally {
+    await ctxS.close();
+  }
 });
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));

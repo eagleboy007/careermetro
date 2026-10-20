@@ -3,35 +3,45 @@ import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
-import { LibraryView } from "@/components/library/library-view";
+import { LibraryView, type LibraryActions } from "@/components/library/library-view";
 import { currentAccount } from "@/lib/auth/server";
-import { exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
-import { libraryFor } from "@/lib/library/store";
+import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
+import { eliteShelfFor, libraryFor } from "@/lib/library/store";
 import { errorFields, logEvent } from "@/lib/log";
-import type { LibraryView as View } from "@/lib/schemas";
+import { unreviewedAllowed } from "@/lib/mock/rules";
+import type { EliteShelfView, LibraryView as View } from "@/lib/schemas";
+import { LIBRARY_TABS } from "@/lib/schemas/constants";
+import { libraryMarkAction, reportResourceAction, suggestResourceAction } from "./actions";
 
 export const metadata: Metadata = { title: "Library · CareerMetro", robots: { index: false } };
 
+/** Save, finish, ride, report and suggest, kept on the server (docs/plans/library-part-2-plan.md). */
+const LIBRARY_ACTIONS: LibraryActions = { mark: libraryMarkAction, report: reportResourceAction, suggest: suggestResourceAction };
+
 /**
  * The Library (FR-51, handoff 12a). Signed in only: the signed-in layout and the proxy send everyone else away, and
- * with no sign-in on this deployment the page shows example data. Read only: free links to the source sites, grouped by
- * the person's own goals, read by their user id.
+ * with no sign-in on this deployment the page shows example data, where the marks change on the screen only. Free links
+ * to the source sites, grouped by the person's own goals, read by their user id; Save, "I finished this", Add to my
+ * rides, Report a broken link and Suggest a free resource write through the actions. `?tab=elite` opens the Elite shelf (Elite part 5), which eliteOn opens.
  */
 async function LibraryScreen({ searchParams }: PageProps<"/library">) {
-  const state = (await searchParams).state;
+  const { state, tab: askedTab } = await searchParams;
+  const tab = LIBRARY_TABS.find((t) => t === askedTab) ?? "goals";
   await connection();
   const account = await currentAccount();
   if (!account) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Your own goals appear here once you add your resume.</Banner>
-        <LibraryView view={state === "no_resume" ? exampleLibraryNoResume : exampleLibrary} />
+        <LibraryView view={state === "no_resume" ? exampleLibraryNoResume : exampleLibrary} shelf={exampleEliteShelf(false, unreviewedAllowed())} tab={tab} />
       </div>
     );
   }
   let view: View;
+  let shelf: EliteShelfView;
   try {
     view = await libraryFor(account.id);
+    shelf = await eliteShelfFor(account.id, view);
   } catch (error) {
     unstable_rethrow(error);
     // Database and schema errors can carry values; errorFields keeps only the name and code.
@@ -42,7 +52,7 @@ async function LibraryScreen({ searchParams }: PageProps<"/library">) {
       </p>
     );
   }
-  return <LibraryView view={view} />;
+  return <LibraryView view={view} shelf={shelf} tab={tab} actions={LIBRARY_ACTIONS} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

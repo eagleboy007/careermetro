@@ -1,6 +1,10 @@
-import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask } from "@/lib/schemas";
+import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask, type TrackPicker } from "@/lib/schemas";
 import { certificatesFor } from "@/lib/proofs/eligible";
+import { RIDE_PART_MINUTES, RIDE_SPLIT_OVER_MINUTES } from "@/lib/schemas/constants";
 import { clip } from "@/lib/text";
+
+/** A catalog resource as a ride task is made from it. */
+export type RideResource = { id: string; title: string; provider: string; kind: string; minutes: number };
 
 /** One goal on the person's line, in order, with what its learn pitstop is made of. */
 export type RideGoal = {
@@ -9,8 +13,15 @@ export type RideGoal = {
   name: string;
   status: "missing" | "weak" | "outdated";
   proved: boolean;
+  /** The skill it learns: its own, or the one "Not for me" swapped it to (FR-48). Its own when left out. */
+  learnSkillId?: string;
   /** Free courses from the path, at most two are used. */
-  resources: { id: string; title: string; provider: string; kind: string; minutes: number }[];
+  resources: RideResource[];
+  /**
+   * What the person added with Add to my rides in the Library (docs/plans/library-part-2-plan.md), oldest first: these
+   * come first among the goal's tasks, one daily part at a time. Only on an open goal whose skill they teach.
+   */
+  added?: RideResource[];
   practice: string | null;
   /** The step was marked done on the Path page, which counts as every task ticked. */
   learnDone: boolean;
@@ -39,14 +50,51 @@ export const MAX_COURSES = 2;
 /** One sitting of a course: a ride is about 50 minutes an evening, so a long course is worked through over days. */
 const SITTING_MINUTES = 25;
 
+/** Tasks a ride shows at once (the ride schema's limit). */
+const MAX_TASKS = 3;
+
 const hoursLabel = (minutes: number) => (minutes < 60 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`);
+
+/** How many daily parts an added resource takes: one up to an hour, else about 25 minutes each. */
+export const rideParts = (minutes: number) => (minutes > RIDE_SPLIT_OVER_MINUTES ? Math.ceil(minutes / RIDE_PART_MINUTES) : 1);
+
+/** The ride task id of part `part` (1-based) of an added resource. Not tied to a goal, so it survives a new resume. */
+export const addedTaskId = (resourceId: string, part: number) => `res:${resourceId}:${part}`;
+
+/** The resource and part of an added task's id, or null for any other task. */
+export function parseAddedTask(taskId: string): { resourceId: string; part: number } | null {
+  const m = /^res:([0-9a-zA-Z-]{1,60}):(\d{1,3})$/.exec(taskId);
+  return m ? { resourceId: m[1], part: Number(m[2]) } : null;
+}
+
+/**
+ * The task for an added resource: its first part not ticked on an earlier day, so a long course moves on one part a
+ * day and today's tick can still be taken back. None once every part was ticked.
+ */
+function addedTask(r: RideResource, doneBefore: ReadonlySet<string>): Omit<RideTask, "done"> | null {
+  const parts = rideParts(r.minutes);
+  let part = 1;
+  while (part <= parts && doneBefore.has(addedTaskId(r.id, part))) part++;
+  if (part > parts) return null;
+  const minutes = parts > 1 ? Math.min(RIDE_PART_MINUTES, r.minutes - RIDE_PART_MINUTES * (part - 1)) : r.minutes;
+  return {
+    id: addedTaskId(r.id, part),
+    title: clip(r.title, 120),
+    detail: clip(`${r.provider} · ${r.kind}${parts > 1 ? ` · Part ${part} of ${parts}` : ""}`, 120),
+    minutes: Math.min(240, Math.max(1, minutes)),
+    locked: false,
+    signal: false,
+    href: null,
+  };
+}
 
 /**
  * The tasks of a goal's learn pitstop. Ids stay the same from day to day, so a tick is remembered. Before the person
  * has a path, a goal's one task is to build it: it links to the Path page and can't be ticked by hand, because the
  * courses arrive with the path. A goal the path left out gets one self-study task.
  */
-function tasksOf(g: RideGoal, path: RidePath): Omit<RideTask, "done">[] {
+function tasksOf(g: RideGoal, path: RidePath, doneBefore: ReadonlySet<string> = new Set()): Omit<RideTask, "done">[] {
+  const added = (g.added ?? []).flatMap((r) => addedTask(r, doneBefore) ?? []);
   const tasks: Omit<RideTask, "done">[] = g.resources.slice(0, MAX_COURSES).map((r) => ({
     id: `${g.goalId}:r:${r.id}`,
     title: clip(r.title, 120),
@@ -67,7 +115,7 @@ function tasksOf(g: RideGoal, path: RidePath): Omit<RideTask, "done">[] {
       href: null,
     });
   }
-  if (tasks.length) return tasks;
+  if (tasks.length || added.length) return [...added, ...tasks];
   if (!path.built) {
     return [
       {
@@ -92,6 +140,23 @@ function tasksOf(g: RideGoal, path: RidePath): Omit<RideTask, "done">[] {
       href: null,
     },
   ];
+}
+
+/** The first open goal of the line whose learn skill a resource teaches, or null. */
+export const goalForAdded = (goals: RideGoal[], skillIds: readonly string[]) =>
+  goals.find((g) => !g.choice && !g.proved && !g.skipped && skillIds.includes(g.learnSkillId ?? g.skillId)) ?? null;
+
+/**
+ * Puts each added resource on the first open goal of the line whose skill it teaches (the goal's own skill, or the one
+ * "Not for me" swapped it to). One the goal's path already lists among its ride courses stays where it is, so it never
+ * shows twice. One that teaches no open goal waits: it joins a ride once a goal for its skill is on the line.
+ */
+export function attachAdded(goals: RideGoal[], added: (RideResource & { skillIds: string[] })[]): void {
+  for (const r of added) {
+    const goal = goalForAdded(goals, r.skillIds);
+    if (!goal || goal.resources.slice(0, MAX_COURSES).some((c) => c.id === r.id)) continue;
+    goal.added = [...(goal.added ?? []), { id: r.id, title: r.title, provider: r.provider, kind: r.kind, minutes: r.minutes }];
+  }
 }
 
 export type RideInput = {
@@ -131,12 +196,68 @@ export function arrivedRide(pitstops: number, skipped = 0): Ride {
 function position(input: RideInput) {
   const open = input.goals.filter((g) => !g.proved && !g.skipped);
   if (!open.length) return null;
-  const doneEarlier = (g: RideGoal, id: string) => g.learnDone || input.doneBefore.has(id);
-  const tasksFor = (g: RideGoal) => tasksOf(g, input.path);
+  // The Path's done tick covers the path's tasks, not what the person added since (Add to my rides).
+  const doneEarlier = (g: RideGoal, id: string) => (g.learnDone && !parseAddedTask(id)) || input.doneBefore.has(id);
+  const tasksFor = (g: RideGoal) => tasksOf(g, input.path, input.doneBefore);
   const left = (g: RideGoal) => tasksFor(g).filter((t) => !doneEarlier(g, t.id));
   // Today's ticks keep a goal current until tomorrow, so they can still be taken back.
   const unfinished = open.find((g) => left(g).length > 0);
   return { current: unfinished ?? open[0], unfinished, tasksFor, left };
+}
+
+/** A goal the signal check may ask about, with the prove pitstop its question warms the person up for. */
+export type SignalGoal = {
+  goalId: string;
+  /** The goal's own skill (the gap), as user_goals stores it. */
+  skillId: string;
+  /** The skill it learns: its own, or the one "Not for me" swapped it to. Questions are picked for this one. */
+  learnSkillId: string;
+  name: string;
+  status: "missing" | "weak";
+  provePitstop: number;
+};
+
+/**
+ * The goals the signal check may ask about (handoff section 5): today's ride goal, then the open goal after it, in line
+ * order. Empty once every goal is proved or skipped.
+ */
+export function signalGoals(input: RideInput): SignalGoal[] {
+  const at = position(input);
+  if (!at) return [];
+  const open = input.goals.filter((g) => !g.proved && !g.skipped);
+  const from = open.indexOf(at.current);
+  return open.slice(from, from + 2).map((g) => ({
+    goalId: g.goalId,
+    skillId: g.skillId,
+    learnSkillId: g.learnSkillId ?? g.skillId,
+    name: clip(g.name, 80),
+    status: g.status === "missing" ? "missing" : "weak",
+    provePitstop: input.goals.indexOf(g) * 2 + 2,
+  }));
+}
+
+/** The signal check task's id: one a day, so yesterday's answer never counts for today. */
+export const signalTaskId = (day: string) => `signal:${day}`;
+
+/**
+ * The day's tasks with the signal check task last (locked: it ticks itself when the question is answered). A ride
+ * shows three tasks, so the signal task takes the third place. Unchanged on a ride with nothing left to learn.
+ */
+export function withSignalTask(tasks: RideTask[], day: string, done: boolean): RideTask[] {
+  if (tasks.some((t) => t.id === "all-proved")) return tasks;
+  const task: RideTask = { id: signalTaskId(day), title: "Answer today's signal check", detail: "One question, just below", minutes: 2, done, locked: true, signal: true, href: null };
+  return [...tasks.filter((t) => !t.signal).slice(0, MAX_TASKS - 1), task];
+}
+
+/**
+ * The ride with the day's signal task (`withSignalTask`). The week's count leaves out a learn task the signal task
+ * pushed off today's list, so the ring counts only learn tasks the person can see or has done.
+ */
+export function rideWithSignal(ride: Ride, day: string, done: boolean): Ride {
+  const tasks = withSignalTask(ride.tasks, day, done);
+  const kept = new Set(tasks.map((t) => t.id));
+  const hidden = ride.tasks.filter((t) => !t.signal && !t.done && !kept.has(t.id)).length;
+  return { ...ride, tasks, weekTasksTotal: Math.max(1, ride.weekTasksDone, ride.weekTasksTotal - hidden) };
 }
 
 /**
@@ -157,9 +278,10 @@ export function buildRide(input: RideInput): Ride | null {
 
   const today = left(current);
   // Every task done: show them done and fixed, waiting for proof. An earlier day's tick can't be taken back.
-  const tasks: RideTask[] = today.length
-    ? today.map((t) => ({ ...t, done: input.doneToday.has(t.id) }))
-    : tasksFor(current).map((t) => ({ ...t, done: true, locked: true }));
+  // Added resources come first; a ride shows three tasks, and the rest follow once those are done.
+  const tasks: RideTask[] = (
+    today.length ? today.map((t) => ({ ...t, done: input.doneToday.has(t.id) })) : tasksFor(current).map((t) => ({ ...t, done: true, locked: true }))
+  ).slice(0, MAX_TASKS);
   // This week's share of the pitstop: tasks of this goal ticked this week, out of those plus the ones still open.
   const weekDone = tasksFor(current).filter((t) => input.doneThisWeek.has(t.id)).length;
   const emphasis = `your ${name} goal.`;
@@ -216,9 +338,10 @@ export const choiceEvidence = (company: string | null) =>
 /**
  * Your goals on Today, from the person's own line: the next goals not proved, each with its learn and prove pitstops
  * numbered as on the ride, the gap's explanation and the resume line it quotes. The goal the ride is on shows where
- * the person is. Tracks and suggested goals come later, so the track is the role.
+ * the person is. `role` is the chip's words: the person's track, or the role with none. `picker` is the Track picker,
+ * when the role offers tracks (docs/plans/tracks-plan.md). Suggested goals come later.
  */
-export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[] }): GoalsSummary {
+export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]; chosen?: RideGoal[]; picker?: TrackPicker | null }): GoalsSummary {
   const at = position(input);
   const gapBySkill = new Map(input.gaps.map((g) => [g.skillId, g]));
   const open = input.goals.filter((g) => !g.proved && !g.skipped);
@@ -269,6 +392,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
     moreNames: more.length <= 5 ? more.map((g) => clip(g.name, 80)) : [],
     suggestedGoal: null,
     metThisMonth: [],
+    ...(input.picker ? { picker: input.picker } : {}),
   });
 }
 
@@ -278,7 +402,7 @@ export function buildGoalsSummary(input: RideInput & { role: string; gaps: Gap[]
  * task was ticked on an earlier day; proof meets it.
  */
 function choiceGoal(g: RideGoal, input: RideInput): Goal {
-  const tasks = tasksOf(g, input.path);
+  const tasks = tasksOf(g, input.path, input.doneBefore);
   const learnDone = g.learnDone || g.proved || tasks.every((t) => input.doneBefore.has(t.id));
   const firstCourse = g.resources[0]?.title;
   return {

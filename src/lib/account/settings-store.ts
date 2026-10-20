@@ -20,6 +20,9 @@ type Db = ReturnType<typeof getDb>;
 
 const DAY = 24 * 3600_000;
 
+/** Shown beside the privacy choices when the day's settings saves are used up (LIMITS.settingsSavesPerUserDay). */
+export const SETTINGS_LIMIT_MESSAGE = "You've saved your settings many times today. Please try again tomorrow.";
+
 export type Pay = { currentLakh: number | null; expectedLakh: number | null };
 
 export type AccountSettings = {
@@ -29,6 +32,8 @@ export type AccountSettings = {
   headline: string | null;
   /** One of PERSON_CITIES, or null (T44). */
   city: string | null;
+  /** "Open to work in" (FR-55): Remote first, then the cities in the order picked. */
+  openToWorkIn: string[];
   settings: UserSettings;
   pay: Pay;
 };
@@ -42,6 +47,7 @@ const settingsColumns = {
   showGaps: userSettings.showGaps,
   showCertifications: userSettings.showCertifications,
   gapsVisibleTo: userSettings.gapsVisibleTo,
+  messageRequests: userSettings.messageRequests,
   companiesCanFind: userSettings.companiesCanFind,
   rideReminder: userSettings.rideReminder,
   emailCompanyMessages: userSettings.emailCompanyMessages,
@@ -62,10 +68,11 @@ const lockedUntil = (changedAt: Date | null, now: Date): Date | null => {
 
 /** Everything the settings page shows for part 2. Pay is read here for its owner only. */
 export async function readAccountSettings(userId: string, now: Date, db: Db = getDb()): Promise<AccountSettings | null> {
-  const [[user], settings, [pay]] = await Promise.all([
+  const [[user], settings, [pay], [places]] = await Promise.all([
     db.select({ username: users.username, changedAt: users.usernameChangedAt, headline: users.headline, city: users.city }).from(users).where(eq(users.id, userId)).limit(1),
     settingsFor(userId, db),
     db.select({ currentLakh: userPay.currentLakh, expectedLakh: userPay.expectedLakh }).from(userPay).where(eq(userPay.userId, userId)).limit(1),
+    db.select({ list: userSettings.openToWorkIn }).from(userSettings).where(eq(userSettings.userId, userId)).limit(1),
   ]);
   if (!user) return null;
   return {
@@ -73,6 +80,7 @@ export async function readAccountSettings(userId: string, now: Date, db: Db = ge
     usernameLockedUntil: user.username ? lockedUntil(user.changedAt, now) : null,
     headline: user.headline,
     city: user.city,
+    openToWorkIn: places?.list ?? [],
     settings,
     pay: pay ?? { currentLakh: null, expectedLakh: null },
   };
@@ -129,6 +137,9 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         .where(eq(users.id, userId))
         .for("update");
       if (!me || me.deletionRequestedAt) return fail({ settings: "Please sign in again to save changes." });
+      // Counted under the row lock above, so the try and the save share one transaction.
+      if (!(await takeShared(LIMITS.settingsSavesPerUserDay, userId, { db: tx, now: now.getTime() })))
+        return fail({ settings: SETTINGS_LIMIT_MESSAGE });
 
       const changes: Partial<typeof users.$inferInsert> = { headline: input.headline };
       if (input.city !== undefined) changes.city = input.city;
@@ -160,7 +171,7 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         await tx.insert(userPay).values({ userId, ...pay }).onConflictDoUpdate({ target: userPay.userId, set: pay });
       }
 
-      const { visibility, gapsVisibleTo: gapsTo, ...rest } = input.settings;
+      const { visibility, gapsVisibleTo: gapsTo, requestsFrom, ...rest } = input.settings;
       // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
       // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
       // both see the switch off and record two consents, or both see it on and withdraw none.
@@ -181,7 +192,16 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         : gapsChanged
           ? { gapsVisibleTo: rest.showGaps ? ("profile" as const) : ("nobody" as const) }
           : {};
-      const row = { profileVisibility: visibility, ...rest, ...gaps, updatedAt: now };
+      // "Connection requests from" (gap list item 32) and "Open to work in" (FR-55): saved when sent; a save without
+      // them (an older page) keeps what is stored. Message requests ride in `rest` the same way: left out, it stays.
+      const row = {
+        profileVisibility: visibility,
+        ...rest,
+        ...gaps,
+        ...(requestsFrom ? { requestsFrom } : {}),
+        ...(input.openToWorkIn ? { openToWorkIn: input.openToWorkIn } : {}),
+        updatedAt: now,
+      };
       await tx.insert(userSettings).values({ userId, ...row }).onConflictDoUpdate({ target: userSettings.userId, set: row });
       return { ok: true } as const;
     });
@@ -264,13 +284,13 @@ export async function canViewProfile(owner: Pick<ProfileOwner, "id" | "settings"
 /** For "Download your data": the settings, pay and old usernames, as stored. */
 export async function exportSettings(userId: string, db: Db = getDb()) {
   const [settings, [pay], oldUsernames] = await Promise.all([
-    db.select({ ...settingsColumns, updatedAt: userSettings.updatedAt }).from(userSettings).where(eq(userSettings.userId, userId)),
+    db.select({ ...settingsColumns, openToWorkIn: userSettings.openToWorkIn, updatedAt: userSettings.updatedAt }).from(userSettings).where(eq(userSettings.userId, userId)),
     db.select({ currentLakh: userPay.currentLakh, expectedLakh: userPay.expectedLakh, updatedAt: userPay.updatedAt }).from(userPay).where(eq(userPay.userId, userId)),
     db.select({ username: usernameRedirects.username, redirectsUntil: usernameRedirects.expiresAt }).from(usernameRedirects).where(eq(usernameRedirects.userId, userId)),
   ]);
   return {
     // No saved choices yet means the defaults apply; the download says which.
-    settings: settings[0] ?? { ...DEFAULT_SETTINGS, savedAt: null },
+    settings: settings[0] ?? { ...DEFAULT_SETTINGS, openToWorkIn: [], savedAt: null },
     pay: pay ?? null,
     oldUsernames,
   };

@@ -1,0 +1,70 @@
+name: Smoke dry run (staging)
+
+# The browser part of docs/launch/prod-smoke.md (sections 3 to 6 and the account deletion in 8), run by hand against
+# staging or another preview that offers "Continue as test user": sign up as a fresh test user, upload the synthetic
+# resume, Gaps and Path, Today, Map, download the data, sign out and in again, then delete the account
+# (scripts/smoke/staging-dry-run.mjs). Then, even if that failed, the screens it doesn't reach, with two fresh test users
+# in two browsers (scripts/smoke/staging-screens.mjs): Network search, request and accept with no city on any row, the
+# notification bell, the resume builder through to Download, Library Save and "I finished this", a mock interview
+# started and ended at once, Departures save and applied ("skipped: no posts" on an empty board), and Arrivals. With the
+# optional SMOKE_ADMIN_EMAIL secret (an admin test account, docs/secrets.md) the company side too: a company set up and
+# verified, a job posted, Express apply, Offer on Arrivals, and a job report and a Library link report reviewed on the
+# admin pages; without it those steps say "skipped". The job is closed, the reports dismissed and both accounts
+# deleted at the end, after a failure too, or when the script's own 20-minute deadline passes (a cancel gives it only
+# about 10 seconds, so a cancelled run may leave its accounts behind). One line per step in the log; any failed step turns the run red.
+# The upload, the gaps and the builder's review call the real Claude API on that deployment, so a run spends a few
+# cents of its budget (the mock round ends unanswered, so it asks for no feedback).
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Preview to check; it must offer Continue as test user"
+        required: true
+        default: "https://careermetro-git-staging-career-metro.vercel.app"
+
+permissions:
+  contents: read
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the browser
+        # Not a project dependency: only the e2e job and this one need it.
+        run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+      - name: Walk prod-smoke.md on the preview
+        env:
+          # Passed through env, never pasted into the script line, so the input can't run as shell.
+          BASE: ${{ inputs.url }}
+          # Sent only to that site, as x-vercel-protection-bypass; never printed.
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          SMOKE_SHOTS: smoke-results
+        run: node scripts/smoke/staging-dry-run.mjs
+      - name: Walk the other signed-in screens on the preview
+        # Runs even when the dry run failed, so one broken screen doesn't hide the rest.
+        if: success() || failure()
+        # The script stops itself at SMOKE_DEADLINE_MIN and cleans up well before this.
+        timeout-minutes: 25
+        env:
+          BASE: ${{ inputs.url }}
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          SMOKE_DEADLINE_MIN: "20"
+          # Optional: the admin test account for the company side and the admin pages; never printed.
+          SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
+          SMOKE_SHOTS: smoke-results
+        run: node scripts/smoke/staging-screens.mjs
+      - name: Keep screenshots of failed steps
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: smoke-staging-results
+          path: smoke-results/
+          if-no-files-found: ignore
+          retention-days: 3

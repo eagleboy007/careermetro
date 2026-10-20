@@ -16,9 +16,10 @@ import {
   CREDLY_REFUSAL_MESSAGES,
 } from "@/lib/proofs/messages";
 import type { CertificateResult } from "@/lib/proofs/result";
-import { tickTask } from "@/lib/ride/store";
-import { certificateSubmission, type CredlyCheckOutcome } from "@/lib/schemas";
+import { answerSignal, tickTask } from "@/lib/ride/store";
+import { certificateSubmission, type CredlyCheckOutcome, type SignalAnswerResult } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { setTrack, TRACK_MESSAGES } from "@/lib/tracks/store";
 
 /** The first field that is wrong, in the person's words. */
 const FIELD_MESSAGES: Record<string, string> = {
@@ -104,10 +105,49 @@ export async function tickRideTask(taskId: string, on: boolean): Promise<boolean
   return saved;
 }
 
+/**
+ * Answers today's signal check for the signed-in person: checked on the server against the day's question, it ticks
+ * the ride's signal task and returns the right answer and why. A question that changed since the page loaded is
+ * "stale"; tries are limited to 100 a day. Neither the question nor the answer is logged.
+ */
+export async function answerSignalCheck(questionId: string, key: string): Promise<SignalAnswerResult> {
+  if (typeof questionId !== "string" || typeof key !== "string") return { ok: false, reason: "invalid" };
+  const account = await currentAccount();
+  if (!account) return { ok: false, reason: "invalid" };
+  if (!(await takeShared(LIMITS.signalAnswersPerUserDay, account.id))) return { ok: false, reason: "limit" };
+  const answer = await answerSignal(account.id, questionId, key, new Date());
+  if (answer === "stale") return { ok: false, reason: "stale" };
+  if (!answer) return { ok: false, reason: "invalid" };
+  // The ride's task and the header's streak read ride days too.
+  refresh();
+  return { ok: true, answer };
+}
+
 /** Saves the hours a week the signed-in person picked on Today. The Path page opens at these hours. */
 export async function saveWeeklyHours(hours: number): Promise<boolean> {
   if (typeof hours !== "number") return false;
   const account = await currentAccount();
   if (!account) return false;
   return setWeeklyHours(account.id, hours);
+}
+
+/**
+ * "Switch track" on Your goals (docs/plans/tracks-plan.md): a track id of the person's goal role, or null for the whole
+ * role. The store checks the choice against the tracks this deployment offers, counts the try against the day's
+ * limit and writes only the person's own analysis. Answers null once saved, else the words to show. Nothing is logged
+ * but a failure's event name.
+ */
+export async function chooseTrack(trackId: unknown): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return "Please sign in again.";
+  try {
+    const result = await setTrack(account.id, trackId);
+    if (!result.ok) return TRACK_MESSAGES[result.error];
+  } catch (error) {
+    logEvent("error", "track_change_failed", errorFields(error));
+    return "That didn't work. Please try again.";
+  }
+  // Today's ride, Your goals and the Map are worked out again from the new track.
+  refresh();
+  return null;
 }

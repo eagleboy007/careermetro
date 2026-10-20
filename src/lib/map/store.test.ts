@@ -11,6 +11,7 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import { lifeLine, mapLine, type Profile } from "@/lib/schemas";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { addProof, setProofStatus } from "@/lib/goals/store";
 import { lifeLineFor, mapLineFor, otherLines } from "./store";
 
@@ -116,6 +117,14 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(life).toMatchObject({ destination: role.title });
     expect(life!.moments.some((m) => m.id === "joined")).toBe(true);
     expect(await lifeLineFor(await user("nolife"), new Date(), db!)).toBeNull();
+    // A page that already read the analysis hands it on (docs/plans/perf-pass.md): the same lines, and none for null.
+    const read = await currentAnalysis(userId, db!);
+    const at = new Date("2026-10-10T12:00:00Z");
+    expect(read).not.toBeNull();
+    expect(await mapLineFor(userId, db!, at, read)).toEqual(await mapLineFor(userId, db!, at));
+    expect(await lifeLineFor(userId, at, db!, read)).toEqual(await lifeLineFor(userId, at, db!));
+    expect(await mapLineFor(userId, db!, at, null)).toBeNull();
+    expect(await lifeLineFor(userId, at, db!, null)).toBeNull();
 
     // Accepted proof, and only accepted proof, marks the goal proved.
     const proof = await addProof(userId, first.skillId, { type: "skill_check", checkId: "c1" }, db!);

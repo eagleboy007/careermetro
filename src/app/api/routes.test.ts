@@ -26,6 +26,9 @@ const m = vi.hoisted(() => ({
   clearPractice: vi.fn(async () => 0),
   clearMockAnswers: vi.fn(async () => 0),
   clearLimits: vi.fn(async () => 0),
+  clearDepartures: vi.fn(async () => ({ closedPostsDeleted: 0, feedRunsDeleted: 0 })),
+  clearLibrary: vi.fn(async () => ({ resourceReportsDeleted: 0, resourceSuggestionsDeleted: 0 })),
+  clearNotifications: vi.fn(async () => 0),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -35,6 +38,7 @@ const m = vi.hoisted(() => ({
   addJobCheckGoal: vi.fn(),
   deleteJobCheck: vi.fn(),
   countRoleRequest: vi.fn(async () => "counted"),
+  takeShared: vi.fn<(limit: { bucket: string; windowMs: number }, key: string) => Promise<boolean>>(async () => true),
   getDb: vi.fn(() => {
     throw new Error("database must not be touched");
   }),
@@ -57,7 +61,10 @@ vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/corporate/find-store", () => ({ clearOldProfileViews: m.clearViews }));
 vi.mock("@/lib/practice/store", () => ({ clearOldPracticeAnswers: m.clearPractice }));
 vi.mock("@/lib/mock/interview-store", () => ({ clearOldMockAnswers: m.clearMockAnswers }));
-vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits }));
+vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures }));
+vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
+vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
+vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
 vi.mock("@/lib/jobs/store", () => ({ createJobCheck: m.createJobCheck, addJobCheckGoal: m.addJobCheckGoal, deleteJobCheck: m.deleteJobCheck, JOB_CHECK_LIMITS: { perOwnerPerDay: 5 } }));
@@ -216,6 +223,17 @@ describe("resume download", () => {
     expect(m.getResumeForOwner).toHaveBeenCalledWith(ID, { sessionId: SESSION });
   });
 
+  it("limits downloads per owner per hour, before rendering anything (Testing Run 5, T81)", async () => {
+    m.takeShared.mockResolvedValueOnce(false);
+    const res = await get("pdf");
+    expect(res.status).toBe(429);
+    expect(res.headers.get("content-type")).toBe("text/plain; charset=utf-8");
+    expect(m.getResumeForOwner).not.toHaveBeenCalled();
+    const [limit, key] = m.takeShared.mock.calls.at(-1)!;
+    expect(limit).toMatchObject({ bucket: "resume-export", windowMs: 3_600_000 });
+    expect(key).toBe(`session:${SESSION}`);
+  });
+
   it("waits until the profile is confirmed", async () => {
     m.getResumeForOwner.mockResolvedValueOnce(resume(false));
     expect((await get("pdf")).status).toBe(409);
@@ -336,13 +354,16 @@ describe("daily cleanup", () => {
     m.clearPractice.mockResolvedValueOnce(8);
     m.clearMockAnswers.mockResolvedValueOnce(5);
     m.clearLimits.mockResolvedValueOnce(9);
+    m.clearDepartures.mockResolvedValueOnce({ closedPostsDeleted: 4, feedRunsDeleted: 2 });
+    m.clearLibrary.mockResolvedValueOnce({ resourceReportsDeleted: 3, resourceSuggestionsDeleted: 1 });
+    m.clearNotifications.mockResolvedValueOnce(4);
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.
@@ -453,6 +474,22 @@ describe("sign-out", () => {
 });
 
 describe("Google return", () => {
+  beforeEach(() => vi.stubEnv("GOOGLE_SIGNIN", "1"));
+
+  it("refuses with the normal sign-in error while Google sign-in is off, without using the code (T92)", async () => {
+    for (const off of [undefined, "", "0"]) {
+      vi.stubEnv("GOOGLE_SIGNIN", off);
+      const res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=/map`));
+      const to = new URL(res.headers.get("location")!);
+      expect(to.origin).toBe(SITE);
+      expect(to.pathname).toBe("/sign-in");
+      expect(to.searchParams.get("error")).toBe("link");
+      expect(to.searchParams.get("next")).toBe("/map");
+    }
+    expect(m.completeGoogleRedirect).not.toHaveBeenCalled();
+    expect(m.afterSignIn).not.toHaveBeenCalled();
+  });
+
   it("never sends people to another site, and goes back to sign-in on a bad code", async () => {
     m.completeGoogleRedirect.mockResolvedValueOnce({ ok: false, reason: "rejected" });
     let res = await authCallback(new Request(`${SITE}/auth/callback?code=x&next=https://evil.example`));

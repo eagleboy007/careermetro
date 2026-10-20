@@ -4884,5 +4884,214 @@
     ],
     "minutes": 45,
     "free": true
+  },
+  {
+    "title": "Git tutorials",
+    "url": "https://www.atlassian.com/git/tutorials",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "git"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Overview of Amazon Web Services",
+    "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "aws"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Web API design best practices",
+    "url": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "rest-apis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "HTTP",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+    "provider": "MDN Web Docs",
+    "kind": "docs",
+    "skillIds": [
+      "rest-apis"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "The Linux Commands Handbook",
+    "url": "https://www.freecodecamp.org/news/the-linux-commands-handbook/",
+    "provider": "freeCodeCamp",
+    "kind": "docs",
+    "skillIds": [
+      "linux"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Cloud design patterns",
+    "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "system-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Terraform language documentation",
+    "url": "https://developer.hashicorp.com/terraform/language",
+    "provider": "HashiCorp",
+    "kind": "docs",
+    "skillIds": [
+      "terraform"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Get started with pytest",
+    "url": "https://docs.pytest.org/en/stable/getting-started.html",
+    "provider": "pytest",
+    "kind": "docs",
+    "skillIds": [
+      "unit-testing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Effective Go",
+    "url": "https://go.dev/doc/effective_go",
+    "provider": "Go",
+    "kind": "docs",
+    "skillIds": [
+      "go"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Incident response overview",
+    "url": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "security-incident-response"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Best practices for designing and architecting with DynamoDB",
+    "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "nosql"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Machine Learning for Beginners",
+    "url": "https://github.com/microsoft/ML-For-Beginners",
+    "provider": "Microsoft",
+    "kind": "course",
+    "skillIds": [
+      "machine-learning"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Application Security Verification Standard (ASVS)",
+    "url": "https://owasp.org/www-project-application-security-verification-standard/",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "application-security"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "What is IAM?",
+    "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "identity-access-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Dynamic scripting with JavaScript",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting",
+    "provider": "MDN Web Docs",
+    "kind": "course",
+    "skillIds": [
+      "javascript"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "What is Agile?",
+    "url": "https://learn.microsoft.com/en-us/devops/plan/what-is-agile",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "agile-scrum"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is Microsoft Sentinel?",
+    "url": "https://learn.microsoft.com/en-us/azure/sentinel/overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "siem"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Risk Management Framework",
+    "url": "https://csrc.nist.gov/Projects/risk-management",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "risk-assessment"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn CSS",
+    "url": "https://web.dev/learn/css",
+    "provider": "web.dev",
+    "kind": "course",
+    "skillIds": [
+      "html-css"
+    ],
+    "minutes": 600,
+    "free": true
   }
 ]

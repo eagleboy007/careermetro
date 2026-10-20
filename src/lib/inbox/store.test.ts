@@ -2,12 +2,13 @@ import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
+import { directChatLock } from "@/db/lock";
 import * as schema from "@/db/schema";
 import { reportDeadlines } from "@/lib/schemas/inbox";
-import { LIMITS } from "@/lib/shared-limit";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "@/lib/account/export";
 import { purgeDeletedAccounts } from "@/lib/account/delete";
-import { acceptRequest, blockInChat, deleteRequest, formatAt, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
+import { acceptRequest, blockInChat, deleteRequest, endFoundChat, formatAt, INBOX_ERROR_TEXT, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests.
 const url = process.env.TEST_DATABASE_URL;
@@ -83,6 +84,12 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect(await sendMessage(stranger, id, "   ", deps())).toEqual({ ok: false, error: "invalid" });
   });
 
+  it("keeps End chat to found chats: a direct chat is never closed by it (FR-52)", async () => {
+    const { a, b, id } = await openChat();
+    expect(await endFoundChat(a, id, deps())).toEqual({ ok: false, error: "not_found" });
+    expect((await sendMessage(b, id, "Still here", deps())).ok).toBe(true);
+  });
+
   it("lets an interviewer read but not send", async () => {
     const { id } = await openChat();
     const interviewer = await person("Rohan Desai");
@@ -156,6 +163,136 @@ describe.skipIf(!db)("inbox store (database)", () => {
       .onConflictDoNothing();
     for (let i = 0; i < LIMITS.inboxRequestsPerUser.max; i++) expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
     expect(await startDirect(a, await person(), "Hi", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+  });
+
+  it("limits messages in open direct chats per sender per day (Testing Run 5, T85)", async () => {
+    const { a, b, id } = await openChat();
+    const now = new Date();
+    expect((await sendMessage(a, id, "First", { db: db!, now })).ok).toBe(true);
+    // The rest of the day's messages used up elsewhere, all at once.
+    const left = LIMITS.directMessagesPerUserDay.max - 1;
+    await Promise.all(Array.from({ length: left }, () => takeShared(LIMITS.directMessagesPerUserDay, a, { db: db!, now: now.getTime() })));
+    expect(await sendMessage(a, id, "One more", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+    expect(await startDirect(a, b, "Through the other door", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+    // The limit is the sender's own: the other person still replies.
+    expect((await sendMessage(b, id, "Reply", { db: db!, now })).ok).toBe(true);
+  });
+
+  it("picks the limit under the lock, so a connection removed just before sends a request, not a direct message (T98)", async () => {
+    const a = await person("Asha Rao");
+    const b = await person("Vikram Singh");
+    await db!.insert(schema.connections).values({ userLow: a < b ? a : b, userHigh: a < b ? b : a, how: "other" });
+    const now = new Date();
+    // The day's direct messages used up: only the request limit has room.
+    await Promise.all(Array.from({ length: LIMITS.directMessagesPerUserDay.max }, () => takeShared(LIMITS.directMessagesPerUserDay, a, { db: db!, now: now.getTime() })));
+    // Another transaction holds the chat's lock and removes the connection, as removeConnection does.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = db!.transaction(async (tx) => {
+      await directChatLock(a, b, tx);
+      await tx.delete(schema.connections).where(inArray(schema.connections.userLow, [a, b]));
+      locked();
+      await gate;
+    });
+    await held;
+    // The delete isn't committed yet; the send waits on the lock and then sees the chat as a request.
+    const sending = startDirect(a, b, "Hi Vikram", { db: db!, now });
+    await new Promise((r) => setTimeout(r, 300));
+    release();
+    await holder;
+    const sent = await sending;
+    expect(sent.ok).toBe(true);
+    const [mine] = await listThreads(a, deps());
+    expect(mine).toMatchObject({ kind: "person", state: "waiting" });
+  });
+
+  describe("message requests switch (FR-55, gap list item 33)", () => {
+    const setRequests = (userId: string, on: boolean) =>
+      db!.insert(schema.userSettings).values({ userId, messageRequests: on }).onConflictDoUpdate({ target: schema.userSettings.userId, set: { messageRequests: on } });
+    const connect = (x: string, y: string) => db!.insert(schema.connections).values({ userLow: x < y ? x : y, userHigh: x < y ? y : x, how: "other" });
+
+    it("refuses a non-connection's first message with the block's words, without using a request", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      const now = new Date();
+      // 19 of the day's 20 requests to others, then refused tries to Vikram: the 20th still goes, so none was counted.
+      for (let i = 0; i < LIMITS.inboxRequestsPerUser.max - 1; i++) expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
+      for (let i = 0; i < 3; i++) expect(await startDirect(a, b, "Hi Vikram", { db: db!, now })).toEqual({ ok: false, error: "unavailable" });
+      expect(INBOX_ERROR_TEXT.unavailable).toBe("You can't message this person.");
+      expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
+      expect(await listThreads(b, deps())).toEqual([]);
+    });
+
+    it("lets a connection still open a chat", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      await connect(a, b);
+      const started = await startDirect(a, b, "Hi Vikram", deps());
+      expect(started.ok).toBe(true);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ kind: "person" });
+    });
+
+    it("keeps a request already sent readable and acceptable after the switch goes off", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      const started = await startDirect(a, b, "Hi Vikram", deps());
+      if (!started.ok) throw new Error(started.error);
+      await setRequests(b, false);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ id: started.conversationId, kind: "request" });
+      // The sender's second try is the chat's own rule, not the switch.
+      expect(await startDirect(a, b, "Again", deps())).toEqual({ ok: false, error: "waiting" });
+      expect((await acceptRequest(b, started.conversationId, deps())).ok).toBe(true);
+      expect((await sendMessage(a, started.conversationId, "Thanks", deps())).ok).toBe(true);
+    });
+
+    it("refuses when the switch goes off between the first look and the lock", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      type Run = Parameters<NonNullable<typeof db>["transaction"]>[0];
+      // The switch is still on at the first look; it goes off just before the transaction takes the pair lock.
+      const racing = new Proxy(db!, {
+        get(target, key) {
+          if (key === "transaction")
+            return async (run: Run) => {
+              await setRequests(b, false);
+              return target.transaction(run);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+      expect(await startDirect(a, b, "Hi Vikram", { db: racing })).toEqual({ ok: false, error: "unavailable" });
+      expect(await listThreads(b, deps())).toEqual([]);
+    });
+
+    it("opens the chat for two people who connected just before the lock, with requests off (T102)", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      type Run = Parameters<NonNullable<typeof db>["transaction"]>[0];
+      // They connect just before the transaction takes the pair lock; the switch must not refuse them.
+      const racing = new Proxy(db!, {
+        get(target, key) {
+          if (key === "transaction")
+            return async (run: Run) => {
+              await target.insert(schema.connections).values({ userLow: a < b ? a : b, userHigh: a < b ? b : a, how: "other" });
+              return target.transaction(run);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+      const sent = await startDirect(a, b, "Hi Vikram", { db: racing });
+      expect(sent.ok).toBe(true);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ kind: "person" });
+    });
   });
 
   it("files reports by target, logs no text, and can block too", async () => {

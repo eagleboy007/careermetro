@@ -35,5 +35,11 @@ export const gapAnalysis = z.object({
     explanation: z.string().min(1),
     estimatedHours: z.number().int().nonnegative(),
   }),
+  /**
+   * The person's track of this role (docs/plans/tracks-plan.md), saved from the Track picker on Your goals: a track id
+   * from src/content/role-tracks.json, or null for the whole role. Absent until the person picks one. The matcher
+   * never sets it; the analysis's gaps stay the whole role's.
+   */
+  trackId: z.string().regex(/^[a-z0-9-]+$/).max(60).nullable().optional(),
 });
 export type GapAnalysis = z.infer<typeof gapAnalysis>;

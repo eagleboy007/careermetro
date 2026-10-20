@@ -9,7 +9,21 @@ import {
   USERNAME_MESSAGES,
   usernameProblem,
 } from "@/lib/account/username";
-import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
+import { sortFree } from "@/lib/account/availability";
+import {
+  FREE_DAYS,
+  GAPS_VISIBLE_TO,
+  OPEN_TO_WORK_MAX,
+  PERSON_CITIES,
+  PROFILE_VISIBILITIES,
+  REQUESTS_FROM,
+  RIDE_REMINDERS,
+  SLOT_TIMES,
+  USUALLY_FREE_MAX,
+  WORK_PLACE_REMOTE,
+  WORK_PLACES,
+} from "./constants";
+export { NOTICE_DAYS, type NoticeDays } from "./constants";
 export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
 /**
@@ -82,7 +96,25 @@ export const companiesCanFind = z.boolean();
  */
 const gapsChoice = z.enum(GAPS_VISIBLE_TO);
 
-export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, gapsVisibleTo: gapsChoice.optional(), companiesCanFind, ...notificationPrefs.shape });
+/**
+ * "Connection requests from" (handoff 12j, gap list item 32): anyone who can reach the person, or nobody. Read from
+ * Network's settings (networkSettingsFor) for the form; a save without it (an older page) keeps what is stored.
+ */
+const requestsChoice = z.enum(REQUESTS_FROM);
+
+export const userSettings = z.object({
+  visibility: profileVisibility,
+  ...publicParts.shape,
+  gapsVisibleTo: gapsChoice.optional(),
+  requestsFrom: requestsChoice.optional(),
+  /**
+   * "Allow message requests from people who aren't connections" (gap list item 33, FR-55): on by default. Off, only
+   * connections can start a chat; requests already there stay. A save without it (an older page) keeps what is stored.
+   */
+  messageRequests: z.boolean().optional(),
+  companiesCanFind,
+  ...notificationPrefs.shape,
+});
 
 /**
  * No row in user_settings means these. Since migration 0034 every account made before it has a row, so no row means a
@@ -98,6 +130,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   showGaps: false,
   showCertifications: true,
   gapsVisibleTo: "connections",
+  messageRequests: true,
   companiesCanFind: false,
   rideReminder: "19:30",
   emailCompanyMessages: true,
@@ -110,23 +143,89 @@ export const DEFAULT_SETTINGS: UserSettings = {
  */
 export const personCity = z.union([z.literal("").transform(() => null), z.enum(PERSON_CITIES)]);
 
+/**
+ * "Open to work in" (gap list item 36, FR-55): Remote or cities from PERSON_CITIES, each once, at most OPEN_TO_WORK_MAX.
+ * Kept in order, Remote first, then the order the person picked. It filters Departures and goes with Express apply
+ * applications; companies that can find the person see it too.
+ */
+export const openToWorkIn = z
+  .array(z.enum(WORK_PLACES))
+  .max(OPEN_TO_WORK_MAX)
+  .refine((places) => new Set(places).size === places.length)
+  .transform((places) => [...places.filter((p) => p === WORK_PLACE_REMOTE), ...places.filter((p) => p !== WORK_PLACE_REMOTE)]);
+
+const FREE_SLOT = new RegExp(`^(${FREE_DAYS.join("|")}) (${SLOT_TIMES.join("|")})$`);
+
+/**
+ * "Usually free" (gap list item 31, FR-55): weekday hours as "mon 17:00", each once, at most every hour of the grid.
+ * Saved apart from the form, from the Inbox. Kept Monday first, then by time.
+ */
+export const usuallyFreeInput = z
+  .array(z.string().regex(FREE_SLOT))
+  .max(USUALLY_FREE_MAX)
+  .refine((slots) => new Set(slots).size === slots.length)
+  .transform(sortFree);
+
 /** One save of the settings form. A blank username means "keep what I have" (it can't be cleared once set). */
 export const settingsInput = z.object({
   username: z.union([z.literal("").transform(() => null), username]),
   headline,
   city: personCity.optional(),
+  /** Left out of a save (an older page), it stays as it was. */
+  openToWorkIn: openToWorkIn.optional(),
   currentPay: payInput,
   expectedPay: payInput,
   settings: userSettings,
 });
+
+/*
+ * Job search switch and notice period (handoff 6, docs/plans/job-search-plan.md). Saved at once, apart from the settings
+ * form, from Departures, Arrivals, Me and Settings. Never logged, never on a profile, never sent to a company.
+ */
+
+/** "Looking for a job": on or off. */
+export const jobSearchInput = z.boolean();
+
+/** A calendar date, YYYY-MM-DD, that exists. */
+const calendarDay = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine((d) => {
+    const t = new Date(`${d}T00:00:00Z`);
+    return !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d && d >= "2000-01-01";
+  });
+
+export const noticeDays = z.union([z.literal(15), z.literal(30), z.literal(60), z.literal(90)]);
+
+/**
+ * The notice period card: the days (null clears them) and the resignation date (null stops the countdown). A date needs
+ * the days. The server also refuses a date later than today in India, which this schema can't know.
+ */
+export const noticeInput = z
+  .strictObject({ days: noticeDays.nullable(), resignedOn: calendarDay.nullable() })
+  .refine((v) => v.resignedOn === null || v.days !== null, { message: "Pick your notice period first.", path: ["days"] });
+
+/** What the screens get: the switch (no row is on) and the notice period as saved. */
+export const jobSearchView = z.strictObject({
+  on: z.boolean(),
+  noticeDays: noticeDays.nullable(),
+  resignedOn: calendarDay.nullable(),
+});
+
+/** Everyone starts with job search on and no notice period. */
+export const DEFAULT_JOB_SEARCH: JobSearchView = { on: true, noticeDays: null, resignedOn: null };
+
+export type NoticeInput = z.infer<typeof noticeInput>;
+export type JobSearchView = z.infer<typeof jobSearchView>;
 
 export type ProfileVisibility = z.infer<typeof profileVisibility>;
 export type PublicParts = z.infer<typeof publicParts>;
 export type NotificationPrefs = z.infer<typeof notificationPrefs>;
 export type UserSettings = z.infer<typeof userSettings>;
 export type SettingsInput = z.infer<typeof settingsInput>;
+export type UsuallyFreeInput = z.infer<typeof usuallyFreeInput>;
 /** The fields a save can fail on, for the message next to each. */
-export type SettingsField = "username" | "headline" | "city" | "currentPay" | "expectedPay" | "settings";
+export type SettingsField = "username" | "headline" | "city" | "openToWorkIn" | "currentPay" | "expectedPay" | "settings";
 
 /** The first message for each field that failed, keyed by its top-level name. */
 export function settingsErrors(error: z.ZodError): Partial<Record<SettingsField, string>> {
@@ -134,7 +233,13 @@ export function settingsErrors(error: z.ZodError): Partial<Record<SettingsField,
   for (const issue of error.issues) {
     const field = (issue.path[0] ?? "settings") as SettingsField;
     out[field] ??=
-      field === "settings" ? "Something in these settings isn't one of the choices. Reload the page and try again." : field === "city" ? "Pick a city from the list." : issue.message;
+      field === "settings"
+        ? "Something in these settings isn't one of the choices. Reload the page and try again."
+        : field === "city"
+          ? "Pick a city from the list."
+          : field === "openToWorkIn"
+            ? `Pick up to ${OPEN_TO_WORK_MAX} places from the list, each once.`
+            : issue.message;
   }
   return out;
 }

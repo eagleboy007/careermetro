@@ -94,7 +94,8 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const { session, resumeId } = await seed();
     const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client: explainClient().client });
     if (!first.ok) throw new Error(first.reason);
-    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS) };
+    // With a saved track, which the rebuild keeps (docs/plans/tracks-plan.md).
+    const five = { ...first.analysis, gaps: first.analysis.gaps.slice(0, SHOWN_GAPS), trackId: "example-track" };
     await db!.update(schema.gapAnalyses).set({ result: five, userRating: 4 }).where(eq(schema.gapAnalyses.id, first.analysisId));
 
     const { client, create } = explainClient();
@@ -106,6 +107,8 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(again.analysis.gaps.length).toBe(first.analysis.gaps.length);
     const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, first.analysisId));
     expect((row.result as { gaps: unknown[] }).gaps).toHaveLength(first.analysis.gaps.length);
+    expect(row.result.trackId).toBe("example-track");
+    expect(again.analysis.trackId).toBe("example-track");
   });
 
   it("leaves a stored analysis alone when the date has changed the match since", async () => {

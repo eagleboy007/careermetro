@@ -30,7 +30,7 @@ describe("the public profile", () => {
     expect(out.skills.missing).toEqual([]);
     expect(out.skills.have).toEqual(me.skills.have);
     expect(out.experience.map((e) => e.title)).toEqual(me.experience.map((e) => e.title));
-    expect(out.education).toEqual(me.education);
+    expect(out.education).toEqual(me.education.map((e) => ({ qualification: e.qualification, institution: e.institution, year: e.year })));
     expect(out.certifications.map((c) => c.name)).toEqual(me.certifications.filter((c) => !c.expired && c.status !== "pending").map((c) => c.name).slice(0, 5));
   });
 
@@ -137,5 +137,37 @@ describe("certifications on the public profile (pending item 13)", () => {
     const out = publicProfile({ ...me, certifications: [cert({ expired: "Sep 2026" }), cert({ name: "Current" })] }, all).certifications;
     expect(out.map((c) => c.name)).toEqual(["Current"]);
     expect(publicProfile(me, { ...all, showCertifications: false }).certifications).toEqual([]);
+  });
+});
+
+// Me editing (docs/plans/me-editing-plan.md): what the person added follows the switches they already have.
+describe("added roles, education, stories and interests on the public profile", () => {
+  it("shows added roles and education under their switches, with no row ids", () => {
+    expect(me.experience.some((e) => e.added)).toBe(true);
+    expect(me.education.some((e) => e.added)).toBe(true);
+    const out = publicProfile(me, all);
+    expect(out.experience.map((e) => e.title)).toEqual(me.experience.map((e) => e.title));
+    expect(out.education.map((e) => e.qualification)).toEqual(me.education.map((e) => e.qualification));
+    const text = JSON.stringify(out);
+    for (const e of me.experience) if (e.added) expect(text).not.toContain(e.added.id);
+    for (const e of me.education) if (e.added) expect(text).not.toContain(e.added.id);
+    expect(out.experience.every((e) => !("added" in e)) && out.education.every((e) => !("added" in e))).toBe(true);
+    const off = publicProfile(me, { ...all, showExperience: false, showEducation: false });
+    expect([off.experience, off.education]).toEqual([[], []]);
+  });
+
+  it("shows stories only with Experience on, without the owner's SMART check, hint or goal", () => {
+    const withGoal = { ...me, stories: me.stories.map((s) => ({ ...s, goalId: "00000000-0000-4000-8000-0000000b0001" })) };
+    const out = publicProfile(withGoal, all);
+    expect(out.stories.map((s) => s.title)).toEqual(me.stories.map((s) => s.title));
+    expect(out.stories.every((s) => s.smart.length === 0 && s.hint === null && s.goalId === undefined)).toBe(true);
+    expect(out.stories.map((s) => s.id)).toEqual(me.stories.map((_, i) => `story-${i}`));
+    expect(JSON.stringify(out)).not.toContain("0000000b0001");
+    expect(publicProfile(withGoal, { ...all, showExperience: false }).stories).toEqual([]);
+  });
+
+  it("shows interests on any profile that can be opened, whatever the switches", () => {
+    expect(publicProfile(me, none).interests).toEqual(me.interests);
+    expect(publicProfile(me, all).interests).toEqual(me.interests);
   });
 });

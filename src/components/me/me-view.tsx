@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { JoinForm } from "@/components/corporate/join-form";
 import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
+import { ConfirmDelete, EducationForm, InterestsEditor, RoleForm, rowLink, StoryForm, useToast, type MeEditActions } from "@/components/me/me-editors";
 import { EliteBadge } from "@/components/elite/elite-badge";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
@@ -28,7 +29,9 @@ export type WhoSees = { visibility: string; link: string | null; shown: string[]
  * Your profile (handoff section 11): the person's own profile with edit controls, and "View as others", which shows
  * exactly what /u/<username> shows: `others` is the public profile the server worked out (src/lib/me/public.ts), so
  * nothing hidden is even in the page. With `mode="public"` it is someone else's profile at /u/<username>, read only.
- * Parts that need their own tables are marked "soon".
+ * On the person's own view, "+ Add role", Education's "+ Add", "+ Add story" and Interests open inline forms
+ * (docs/plans/me-editing-plan.md); rows they added carry "Added by you" with Edit and Delete. Resume rows are never
+ * edited here: Replace and Edit in builder are on the Resume card.
  */
 export function MeView({
   me: mine,
@@ -41,6 +44,10 @@ export function MeView({
   gapsNote,
   eliteBadge = false,
   planCard,
+  status = null,
+  searchSwitches = null,
+  edits,
+  storyGoals = [],
 }: {
   me: MeProfile;
   others?: MeProfile;
@@ -61,6 +68,14 @@ export function MeView({
   eliteBadge?: boolean;
   /** "Your plan" (FR-50): on the person's own profile only, never in View as others or to anyone else. */
   planCard?: ReactNode;
+  /** The job search status line (src/components/job-search): on the person's own view only, never to others. */
+  status?: ReactNode;
+  /** "Looking for a job" and the other "Who sees what" switches, on the person's own view only. */
+  searchSwitches?: ReactNode;
+  /** Me editing's server actions (src/app/(app)/me/actions.ts); without them the forms open and Save only closes them. */
+  edits?: MeEditActions;
+  /** "From a goal" on the story form: the person's own goals. */
+  storyGoals?: { id: string; name: string }[];
 }) {
   const [asOthers, setAsOthers] = useState(false);
   const certsHeading = `${useId()}-certifications`;
@@ -77,6 +92,48 @@ export function MeView({
     pending.current = true;
     setAsOthers(next);
   };
+  // Me editing: one form or delete question open at a time. Closing it puts focus back on the control that opened it
+  // (or, after a delete, the section's add control), in an effect keyed on a counter so focus never drops to the page.
+  const [editing, setEditing] = useState<Editing>(null);
+  const [toast, say] = useToast();
+  const openers = useRef(new Map<string, HTMLElement>());
+  const [focusAsk, setFocusAsk] = useState<{ key: string; n: number } | null>(null);
+  useEffect(() => {
+    if (focusAsk) openers.current.get(focusAsk.key)?.focus();
+  }, [focusAsk]);
+  const opener = (key: string) => (el: HTMLElement | null) => {
+    if (el) openers.current.set(key, el);
+    else openers.current.delete(key);
+  };
+  const close = (key: string, saved?: string) => {
+    setEditing(null);
+    setFocusAsk((f) => ({ key, n: (f?.n ?? 0) + 1 }));
+    if (saved) say(saved);
+  };
+  const isOpen = (kind: EditKind, id: string | null, mode: "edit" | "delete" = "edit", box?: string) =>
+    editing?.kind === kind && editing.id === id && editing.mode === mode && editing.box === box;
+  const addControl = (kind: EditKind, text: string) => (
+    <button
+      ref={opener(`${kind}:add`)}
+      type="button"
+      aria-expanded={isOpen(kind, null)}
+      className="inline-flex min-h-11 items-center text-[0.82rem] font-[550] text-muted hover:text-ink"
+      onClick={() => setEditing({ kind, id: null, mode: "edit" })}
+    >
+      {text}
+    </button>
+  );
+  const rowControls = (kind: EditKind, id: string, name: string) => (
+    <span className="flex flex-wrap items-center gap-x-3">
+      <span className="font-mono text-[0.64rem] uppercase tracking-[0.06em] text-muted">Added by you</span>
+      <button ref={opener(`${kind}:edit:${id}`)} type="button" className={rowLink} onClick={() => setEditing({ kind, id, mode: "edit" })}>
+        Edit<span className="sr-only"> {name}</span>
+      </button>
+      <button ref={opener(`${kind}:delete:${id}`)} type="button" className={rowLink} onClick={() => setEditing({ kind, id, mode: "delete" })}>
+        Delete<span className="sr-only"> {name}</span>
+      </button>
+    </span>
+  );
   const viewer = mode === "public";
   const own = !asOthers && !viewer;
   // What is on screen: everything for the owner; the public profile otherwise.
@@ -110,7 +167,7 @@ export function MeView({
               {eliteBadge && <EliteBadge className="ml-2.5" />}
             </h1>
             {me.headline && <p className="text-[0.95rem]">{me.headline}</p>}
-            {!viewer && <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>}
+            {own && status}
             {/* The target role says the person is looking, so others see it only when they turn it on in Account settings. */}
             {(own || me.aim) && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
           </div>
@@ -121,7 +178,11 @@ export function MeView({
                 View as others
               </button>
             )}
-            {own && <span className={quiet}>Change status · soon</span>}
+            {own && (
+              <Link href="/settings#acc-job-search" className={quiet}>
+                Change status
+              </Link>
+            )}
             {own && (
               <Link href="/settings" className={quiet}>
                 Account settings
@@ -154,8 +215,15 @@ export function MeView({
           first={!own}
           title="Experience"
           note={me.experienceTotal ? `${me.experienceTotal} · ${fromResume}` : fromResume}
-          action={own && <Soonish>+ Add role</Soonish>}
+          action={own && addControl("role", "+ Add role")}
         >
+          {own && isOpen("role", null) && (
+            <RoleForm
+              onSave={edits && ((input) => edits.saveRole(null, input))}
+              onDone={() => close("role:add", "Saved.")}
+              onCancel={() => close("role:add")}
+            />
+          )}
           {me.experience.length ? (
             <ul className="flex flex-col">
               {me.experience.map((e, i) => (
@@ -178,6 +246,23 @@ export function MeView({
                     </span>
                     {e.check && <JobCheckBadge check={e.check} own={own} />}
                     {own && e.check?.state === "not_verified" && <VerifyJob employer={e.employer} jobCheck={jobCheck} />}
+                    {own && e.added && rowControls("role", e.added.id, e.title)}
+                    {own && e.added && isOpen("role", e.added.id) && (
+                      <RoleForm
+                        role={e}
+                        onSave={edits && ((input) => edits.saveRole(e.added!.id, input))}
+                        onDone={() => close(`role:edit:${e.added!.id}`, "Saved.")}
+                        onCancel={() => close(`role:edit:${e.added!.id}`)}
+                      />
+                    )}
+                    {own && e.added && isOpen("role", e.added.id, "delete") && (
+                      <ConfirmDelete
+                        question="Delete this role?"
+                        onDelete={edits && (() => edits.deleteRole(e.added!.id))}
+                        onDeleted={() => close("role:add", "Deleted.")}
+                        onKeep={() => close(`role:delete:${e.added!.id}`)}
+                      />
+                    )}
                     {own && e.highlights.length > 0 && (
                       <ul className="mt-0.5 flex list-disc flex-col gap-[3px] pl-[18px] text-[0.86rem]">
                         {e.highlights.map((h, j) => (
@@ -190,7 +275,7 @@ export function MeView({
               ))}
             </ul>
           ) : (
-            <Empty Icon={FileText}>Your roles fill in from your resume.</Empty>
+            <Empty Icon={FileText}>Your roles fill in from your resume, or add them by hand.</Empty>
           )}
           {asOthers && me.experience.length > 0 && mine.experience.some((e) => e.highlights.length) && (
             <Note>Lines from your resume stay private. Your stories show what you did.</Note>
@@ -199,40 +284,108 @@ export function MeView({
         )}
 
         {(!viewer || me.stories.length > 0) && (
-        <Section title={viewer ? "Stories" : "Your stories"} note={me.stories.length ? storyCount(me.stories) : "none yet"} action={own && <Soonish>+ Add story</Soonish>}>
+        <Section title={viewer ? "Stories" : "Your stories"} note={me.stories.length ? storyCount(me.stories) : "none yet"} action={own && addControl("story", "+ Add story")}>
           <p className="text-[0.86rem] text-muted">
             Every piece of work you have done, as a short Situation, Task, Action, Result story, sorted into what interviewers ask about. Recruiters
             see it when they open your profile.
           </p>
+          {own && editing?.kind === "story" && editing.mode === "edit" && (
+            <StoryForm
+              key={editing.id ?? "new"}
+              story={editing.id ? me.stories.find((x) => x.id === editing.id) : undefined}
+              goals={storyGoals}
+              onSave={edits && ((input) => edits.saveStory(editing.id, input))}
+              onDone={() => close(editing.id ? `story:edit:${editing.id}:${editing.box}` : "story:add", "Saved.")}
+              onCancel={() => close(editing.id ? `story:edit:${editing.id}:${editing.box}` : "story:add")}
+            />
+          )}
           {me.stories.length ? (
-            <Stories stories={me.stories} />
+            <Stories
+              stories={me.stories}
+              own={own}
+              controls={
+                own
+                  ? (st, box) => (
+                      <>
+                        <span className="mt-2 flex flex-wrap items-center gap-x-3 border-t border-dashed border-line pt-1">
+                          <button
+                            ref={opener(`story:edit:${st.id}:${box}`)}
+                            type="button"
+                            className={rowLink}
+                            onClick={() => setEditing({ kind: "story", id: st.id, mode: "edit", box })}
+                          >
+                            Edit<span className="sr-only"> {st.title}</span>
+                          </button>
+                          <button
+                            ref={opener(`story:delete:${st.id}:${box}`)}
+                            type="button"
+                            className={rowLink}
+                            onClick={() => setEditing({ kind: "story", id: st.id, mode: "delete", box })}
+                          >
+                            Delete<span className="sr-only"> {st.title}</span>
+                          </button>
+                        </span>
+                        {isOpen("story", st.id, "delete", box) && (
+                          <ConfirmDelete
+                            question="Delete this story?"
+                            onDelete={edits && (() => edits.deleteStory(st.id))}
+                            onDeleted={() => close("story:add", "Deleted.")}
+                            onKeep={() => close(`story:delete:${st.id}:${box}`)}
+                          />
+                        )}
+                      </>
+                    )
+                  : undefined
+              }
+            />
           ) : (
-            <Empty Icon={PenLine}>
-              Your stories will be drafted from your resume, college projects, internships and goals you prove, and you edit them before they are
-              saved · soon.
-            </Empty>
+            <Empty Icon={PenLine}>Write your first story: a time at work, college, an internship or volunteering. Keep each part short.</Empty>
           )}
         </Section>
         )}
 
         {(!viewer || me.education.length > 0) && (
-        <Section title="Education" note={fromResume} action={own && <Soonish>+ Add</Soonish>}>
+        <Section title="Education" note={fromResume} action={own && addControl("education", "+ Add")}>
+          {own && isOpen("education", null) && (
+            <EducationForm
+              onSave={edits && ((input) => edits.saveEducation(null, input))}
+              onDone={() => close("education:add", "Saved.")}
+              onCancel={() => close("education:add")}
+            />
+          )}
           {me.education.length ? (
             <ul className="flex flex-col gap-3">
               {me.education.map((e, i) => (
-                <li key={i} className="grid grid-cols-[44px_minmax(0,1fr)] gap-3.5">
+                <li key={e.added?.id ?? `resume-${i}`} className="grid grid-cols-[44px_minmax(0,1fr)] gap-3.5">
                   <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-[12px] bg-surface-2 text-muted">
                     <BookOpen size={20} {...ICON} />
                   </span>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex min-w-0 flex-col gap-1">
                     <b className="text-[0.96rem] font-semibold">{e.qualification}</b>
                     <span className="text-[0.8rem] text-muted">{[e.institution, e.year].filter(Boolean).join(" · ")}</span>
+                    {own && e.added && rowControls("education", e.added.id, e.qualification)}
+                    {own && e.added && isOpen("education", e.added.id) && (
+                      <EducationForm
+                        item={e}
+                        onSave={edits && ((input) => edits.saveEducation(e.added!.id, input))}
+                        onDone={() => close(`education:edit:${e.added!.id}`, "Saved.")}
+                        onCancel={() => close(`education:edit:${e.added!.id}`)}
+                      />
+                    )}
+                    {own && e.added && isOpen("education", e.added.id, "delete") && (
+                      <ConfirmDelete
+                        question="Delete this?"
+                        onDelete={edits && (() => edits.deleteEducation(e.added!.id))}
+                        onDeleted={() => close("education:add", "Deleted.")}
+                        onKeep={() => close(`education:delete:${e.added!.id}`)}
+                      />
+                    )}
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <Empty Icon={BookOpen}>Degrees and courses fill in from your resume.</Empty>
+            <Empty Icon={BookOpen}>Degrees and courses fill in from your resume, or add them by hand.</Empty>
           )}
         </Section>
         )}
@@ -262,14 +415,18 @@ export function MeView({
 
         {(!viewer || me.interests.length > 0) && (
         <Section title="Interests" note="anything, not only work">
-          <div className="flex flex-wrap gap-1.5">
-            {me.interests.map((t) => (
-              <span key={t} className="rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem]">
-                {t}
-              </span>
-            ))}
-            {own && <span className="rounded-full border border-dashed border-muted px-2.5 py-1 text-[0.78rem] text-muted">+ Add · soon</span>}
-          </div>
+          {own ? (
+            <InterestsEditor interests={me.interests} onAdd={edits?.addInterest} onRemove={edits?.removeInterest} say={say} />
+          ) : (
+            <ul className="flex flex-wrap gap-1.5" aria-label="Interests">
+              {me.interests.map((t) => (
+                <li key={t} className="rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem]">
+                  {t}
+                </li>
+              ))}
+            </ul>
+          )}
+          {asOthers && me.interests.length === 0 && <Note>Interests you add show on your profile to everyone who can open it.</Note>}
         </Section>
         )}
 
@@ -333,7 +490,14 @@ export function MeView({
                     <small className="block text-[0.72rem] text-muted">Read {me.resumeReadOn} · only you see it</small>
                   </span>
                 </div>
-                <span className="text-[0.8rem] text-muted">Replace and Edit in builder · soon</span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Link href="/start" className={`${btn} border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] text-ink hover:bg-surface-2`}>
+                    Replace
+                  </Link>
+                  <Link href="/builder" className={`${btn} px-[11px] py-1.5 text-[0.8rem] text-muted hover:text-ink`}>
+                    Edit in builder
+                  </Link>
+                </div>
               </>
             ) : (
               <Link href="/today" className={`${btn} self-start bg-accent px-[11px] py-1.5 text-[0.8rem] text-on-accent`}>
@@ -357,6 +521,7 @@ export function MeView({
         {own && (
           <section>
             <RailHead name="Who sees what" />
+            {searchSwitches}
             {whoSees ? (
               <>
                 <p className="text-[0.84rem]">
@@ -384,9 +549,17 @@ export function MeView({
           </p>
         </section>
       </aside>
+      {toast}
     </div>
   );
 }
+
+type EditKind = "role" | "education" | "story";
+/**
+ * The one Me form or delete question open: a role, education row or story by id, or a new one (`id` null). A story
+ * shows in each of its boxes, so `box` says which card's Edit or Delete was pressed.
+ */
+type Editing = { kind: EditKind; id: string | null; mode: "edit" | "delete"; box?: string } | null;
 
 const storyCount = (stories: Story[]) => {
   const empty = STORY_BOXES.filter((b) => !stories.some((s) => s.boxes.includes(b))).length;
@@ -424,8 +597,6 @@ const More = ({ href, children }: { href: string; children: ReactNode }) => (
     <ArrowRight size={15} {...ICON} />
   </Link>
 );
-
-const Soonish = ({ children }: { children: ReactNode }) => <span className="text-[0.82rem] font-[550] text-muted">{children} · soon</span>;
 
 /** With an `id`, the heading can take focus from code (tabIndex -1), e.g. when the item that had it goes away. */
 const RailHead = ({ name, note, id }: { name: string; note?: string; id?: string }) => (
@@ -495,7 +666,7 @@ function SkillCol({ name, names, status }: { name: string; names: string[]; stat
 
 function Smart({ letters }: { letters: Story["smart"] }) {
   return (
-    <span className="inline-flex gap-0.5" aria-label={`SMART check: ${letters.join(", ") || "none"} met`}>
+    <span role="img" className="inline-flex gap-0.5" aria-label={`SMART check: ${letters.join(", ") || "none"} met`}>
       {SMART.map((ch) => (
         <i
           key={ch}
@@ -515,7 +686,11 @@ const EMPTY_BOX: Partial<Record<(typeof STORY_BOXES)[number], string>> = {
   Ownership: "took charge without being asked",
 };
 
-function Stories({ stories }: { stories: Story[] }) {
+/**
+ * The Board and List layouts of saved stories by box. `own` shows the SMART check and its hint, which are the
+ * person's own coaching; `controls` adds Edit and Delete to each card.
+ */
+function Stories({ stories, own, controls }: { stories: Story[]; own: boolean; controls?: (s: Story, box: string) => ReactNode }) {
   const [view, setView] = useState<"board" | "list">("board");
   return (
     <>
@@ -540,7 +715,7 @@ function Stories({ stories }: { stories: Story[] }) {
                 <span className="font-mono text-[0.7rem] text-muted">{inBox.length}</span>
               </div>
               {inBox.length ? (
-                inBox.map((s) => <StoryCard key={s.id} s={s} />)
+                inBox.map((s) => <StoryCard key={s.id} s={s} own={own} controls={controls && (() => controls(s, box))} />)
               ) : (
                 <p className="rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[0.8rem] text-muted">
                   No story yet. Think of a time you {EMPTY_BOX[box] ?? "did this"}.
@@ -591,21 +766,21 @@ function VerifyJob({ employer, jobCheck }: { employer: string; jobCheck?: { open
   );
 }
 
-function StoryCard({ s }: { s: Story }) {
+function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: () => ReactNode }) {
   return (
     <details className="group rounded-[12px] border border-line bg-surface px-3 py-2.5">
       <summary className="flex cursor-pointer list-none flex-col gap-1 [&::-webkit-details-marker]:hidden">
         <b className="text-[0.86rem] font-semibold leading-[1.3]">{s.title}</b>
         <small className="text-[0.74rem] text-muted">{s.where}</small>
         <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
-          <Smart letters={s.smart} />
+          {own && <Smart letters={s.smart} />}
           {s.confirmed && (
             <span className="inline-flex items-center gap-1 text-[0.7rem] text-muted">
               <BadgeCheck size={13} {...ICON} />
               Confirmed
             </span>
           )}
-          {s.fromGoal && <span className="text-[0.7rem] text-muted">From your goal</span>}
+          {s.fromGoal && <span className="text-[0.7rem] text-muted">{own ? "From your goal" : "From a goal"}</span>}
         </span>
       </summary>
       <dl className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] gap-x-2.5 gap-y-1 text-[0.8rem] [&>dt]:font-mono [&>dt]:text-[0.66rem] [&>dt]:uppercase [&>dt]:tracking-[0.05em] [&>dt]:text-muted">
@@ -618,7 +793,8 @@ function StoryCard({ s }: { s: Story }) {
         <dt>Result</dt>
         <dd>{s.result}</dd>
       </dl>
-      {s.hint && <p className="mt-2 border-t border-dashed border-line pt-1.5 text-[0.76rem] text-muted">{s.hint}</p>}
+      {own && s.hint && <p className="mt-2 border-t border-dashed border-line pt-1.5 text-[0.76rem] text-muted">{s.hint}</p>}
+      {controls?.()}
     </details>
   );
 }

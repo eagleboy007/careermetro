@@ -1,14 +1,30 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
-import { directChatLock, type Tx } from "@/db/lock";
-import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, profiles, resumes, userSettings, users } from "@/db/schema";
+import { directChatLock, networkPairLock, type Tx } from "@/db/lock";
+import {
+  blocks,
+  connectionRequests,
+  connections,
+  conversationMembers,
+  conversations,
+  gapAnalyses,
+  gapProofs,
+  pathSteps,
+  paths,
+  profiles,
+  reports,
+  resumes,
+  userInterests,
+  userSettings,
+  users,
+} from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
-import { indiaToday } from "@/lib/goals/store";
+import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
+import { forgetBetween, forgetRequests, notify } from "@/lib/notifications/store";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
-import { NETWORK_SCAN_MAX } from "@/lib/schemas/constants";
 import {
   CONNECTION_PENDING_MAX,
   DEFAULT_NETWORK_SETTINGS,
@@ -17,12 +33,32 @@ import {
   connectionHow,
   networkSearchInput,
   networkSettings,
+  personReportInput,
   type ConnectionHow,
   type ConnectionState,
   type NetworkSettings,
 } from "@/lib/schemas/network";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { askAgainFrom, byNetworkRank, connectionState, endsAt, mutualOf, networkMatches, openSince, pairOf, requestOpen, senderSeesRequested, skillsInCommon, type RequestRow } from "./rules";
+import {
+  askAgainFrom,
+  byNetworkRank,
+  connectionState,
+  endsAt,
+  interestsInCommon,
+  lineOrder,
+  mutualOf,
+  networkMatches,
+  networkQueryParts,
+  openSince,
+  pairOf,
+  pathTogether,
+  requestOpen,
+  senderSeesRequested,
+  skillsInCommon,
+  type LineGap,
+  type RequestRow,
+} from "./rules";
+import type { InterestsInCommon, PathTogether } from "./types";
 
 /*
  * Network part 1 (FR-49, handoff 12j, docs/plans/network-plan.md): requests, connections, name search and the Network
@@ -33,17 +69,19 @@ import { askAgainFrom, byNetworkRank, connectionState, endsAt, mutualOf, network
 type Db = ReturnType<typeof getDb>;
 type Deps = { db?: Db; now?: Date };
 
-export type NetworkError = "self" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
+export type NetworkError = "self" | "self_report" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "gone" | "invalid";
 
 /** What each refusal tells the person. "unavailable" is deliberately vague: a block is never revealed. */
 export const NETWORK_ERROR_TEXT: Record<NetworkError, string> = {
   self: "You can't connect with yourself.",
+  self_report: "You can't report yourself.",
   unavailable: "You can't connect with this person.",
   closed: "This person isn't taking connection requests.",
   wait: "You asked this person recently. You can ask again later.",
   limit: "You've reached the limit for this for now. Try again later.",
   pending_max: `You have ${CONNECTION_PENDING_MAX} requests waiting. Withdraw some, or wait for answers, to send more.`,
   not_found: "That request isn't there any more.",
+  gone: "That person isn't there any more.",
   invalid: "Check the details and try again.",
 };
 
@@ -51,8 +89,9 @@ export type NetworkResult<T = object> = ({ ok: true } & T) | { ok: false; error:
 const fail = (error: NetworkError) => ({ ok: false as const, error });
 
 /**
- * A person as Network lists them (handoff 12j): name, handle, target role only if they show it, city, verified, a count
- * of skills in common and of mutual connections. Never email, phone, employer history, gaps or pay.
+ * A person as Network lists them (handoff 12j): name, handle, target role only if they show it, verified, a count
+ * of skills in common and of mutual connections. Never email, phone, city (only companies see it, FR-41/FR-55, T74),
+ * employer history, gaps or pay.
  */
 export type NetworkPerson = {
   id: string;
@@ -60,7 +99,6 @@ export type NetworkPerson = {
   /** For the /u/<handle> link; null when they have none. */
   username: string | null;
   aim: string | null;
-  city: string | null;
   /** At least one proved skill (as Find people's "Verified"). */
   verified: boolean;
   common: number;
@@ -83,7 +121,7 @@ const pairWhere = (x: string, y: string) => {
 const requestsBetween = (x: string, y: string) =>
   or(and(eq(connectionRequests.fromUser, x), eq(connectionRequests.toUser, y)), and(eq(connectionRequests.fromUser, y), eq(connectionRequests.toUser, x)));
 
-const pairLock = (x: string, y: string, tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hashtext(${["network", ...[x, y].sort()].join("|")}))`);
+const pairLock = networkPairLock;
 
 const requestColumns = {
   id: connectionRequests.id,
@@ -150,6 +188,8 @@ async function connect(tx: Tx, request: { id: string; fromUser: string; toUser: 
   await directChatLock(request.fromUser, request.toUser, tx);
   const chat = await directChat(request.fromUser, request.toUser, tx);
   if (chat?.status === "request") await tx.update(conversations).set({ status: "open" }).where(eq(conversations.id, chat.id));
+  // The person who asked is told, in the bell (docs/plans/notifications-plan.md).
+  await notify(tx, { kind: "connection_accepted", userId: request.fromUser, actorId: request.toUser, connectionRequestId: request.id }, now);
   logEvent("info", "connection_accepted");
 }
 
@@ -189,7 +229,8 @@ export async function requestConnection(fromId: string, toId: string, how: unkno
     if ((waiting?.n ?? 0) >= CONNECTION_PENDING_MAX) return fail("pending_max");
     if (!(await takeShared(LIMITS.networkRequestsPerUser, fromId, { db: tx, now: now.getTime() }))) return fail("limit");
     await expireStale(fromId, toId, tx, now);
-    await tx.insert(connectionRequests).values({ fromUser: fromId, toUser: toId, how: picked.data, createdAt: now });
+    const [made] = await tx.insert(connectionRequests).values({ fromUser: fromId, toUser: toId, how: picked.data, createdAt: now }).returning({ id: connectionRequests.id });
+    await notify(tx, { kind: "connection_request", userId: toId, actorId: fromId, connectionRequestId: made!.id }, now);
     logEvent("info", "connection_requested");
     return { ok: true as const, state: "requested" as const };
   });
@@ -222,18 +263,23 @@ export async function withdrawRequest(userId: string, toId: string, deps: Deps =
   const now = deps.now ?? new Date();
   // Whatever reads Requested to the sender (open, or ignored and not yet ended) can be withdrawn, so an ignore stays
   // silent; the request still holds them until it would have ended (askAgainFrom).
-  const gone = await db
-    .update(connectionRequests)
-    .set({ status: "withdrawn", decidedAt: now })
-    .where(
-      and(
-        eq(connectionRequests.fromUser, userId),
-        eq(connectionRequests.toUser, toId),
-        inArray(connectionRequests.status, ["pending", "ignored"]),
-        gte(connectionRequests.createdAt, openSince(now)),
-      ),
-    )
-    .returning({ id: connectionRequests.id, status: connectionRequests.status });
+  // The request's notification goes with it, in the same transaction.
+  const gone = await db.transaction(async (tx) => {
+    const rows = await tx
+      .update(connectionRequests)
+      .set({ status: "withdrawn", decidedAt: now })
+      .where(
+        and(
+          eq(connectionRequests.fromUser, userId),
+          eq(connectionRequests.toUser, toId),
+          inArray(connectionRequests.status, ["pending", "ignored"]),
+          gte(connectionRequests.createdAt, openSince(now)),
+        ),
+      )
+      .returning({ id: connectionRequests.id, status: connectionRequests.status });
+    await forgetRequests(tx, rows.map((r) => r.id));
+    return rows;
+  });
   return gone.length ? { ok: true } : fail("not_found");
 }
 
@@ -247,6 +293,8 @@ export async function removeConnection(userId: string, otherId: string, db: Db =
     await pairLock(userId, otherId, tx);
     const rows = await tx.delete(connections).where(pairWhere(userId, otherId)).returning({ low: connections.userLow });
     if (!rows.length) return false;
+    // Their notifications to each other go too (docs/plans/notifications-plan.md).
+    await forgetBetween(tx, userId, otherId);
     // Under the Inbox's lock too, so a first message sent at the same moment can't open a chat after this looked.
     await directChatLock(userId, otherId, tx);
     const chat = await directChat(userId, otherId, tx);
@@ -261,9 +309,13 @@ export async function removeConnection(userId: string, otherId: string, db: Db =
   return gone ? { ok: true } : fail("not_found");
 }
 
-/** Any connection between two people goes, and any open request is withdrawn. Every block calls this, in its transaction. */
+/**
+ * Any connection between two people goes, any open request is withdrawn, and their notifications to each other are
+ * deleted. Every block calls this, in its transaction.
+ */
 export async function dropBetween(tx: Tx | Db, x: string, y: string, now = new Date()): Promise<void> {
   await tx.delete(connections).where(pairWhere(x, y));
+  await forgetBetween(tx, x, y);
   await tx
     .update(connectionRequests)
     .set({ status: "withdrawn", decidedAt: now })
@@ -275,11 +327,54 @@ export async function blockPerson(userId: string, otherId: string, deps: Deps = 
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   if (userId === otherId) return fail("self");
-  await db.transaction(async (tx) => {
+  const blocked = await db.transaction(async (tx) => {
     await pairLock(userId, otherId, tx);
+    // An id that names nobody is refused here, not left to the foreign key (Testing Run 5, T84).
+    const [other] = await tx.select({ id: users.id }).from(users).where(eq(users.id, otherId));
+    if (!other) return false;
     await tx.insert(blocks).values({ blockerId: userId, blockedId: otherId, createdAt: now }).onConflictDoNothing();
     await dropBetween(tx, userId, otherId, now);
+    return true;
   });
+  return blocked ? { ok: true } : fail("gone");
+}
+
+/** A person this person blocked, for Settings > Privacy: name and when, never anything else. */
+export type BlockedPerson = { id: string; name: string; since: Date };
+
+/**
+ * The people this person blocked (from Network or the Inbox), newest first, for "Blocked people" in Settings > Privacy.
+ * Only blocks they made: never who blocked them. Deleted and suspended accounts are left out, as everywhere else.
+ */
+export async function blockedPeople(userId: string, db: Pick<Db, "select"> = getDb()): Promise<BlockedPerson[]> {
+  const rows = await db
+    .select({ id: users.id, name: users.name, since: blocks.createdAt })
+    .from(blocks)
+    .innerJoin(users, eq(users.id, blocks.blockedId))
+    .where(and(eq(blocks.blockerId, userId), isNull(users.deletionRequestedAt), isNull(users.suspendedAt)))
+    .orderBy(desc(blocks.createdAt), asc(users.id));
+  return rows.map((r) => ({ id: r.id, name: displayName(r.name), since: r.since }));
+}
+
+/**
+ * Unblock from Settings > Privacy: only a block this person made. Nothing comes back with it: a connection or request
+ * the block ended stays ended, and chats it hid stay hidden until a new message arrives. The other person isn't told.
+ */
+export async function unblockPerson(userId: string, otherId: string, db: Db = getDb(), now: Date = new Date()): Promise<NetworkResult> {
+  if (userId === otherId) return fail("self");
+  // Each try counts toward the day's unblocks (launch-readiness pass), in the same transaction as the delete.
+  const outcome = await db.transaction(async (tx): Promise<"limit" | "gone" | "none"> => {
+    if (!(await takeShared(LIMITS.unblocksPerUserDay, userId, { db: tx, now: now.getTime() }))) return "limit";
+    await pairLock(userId, otherId, tx);
+    const rows = await tx
+      .delete(blocks)
+      .where(and(eq(blocks.blockerId, userId), eq(blocks.blockedId, otherId)))
+      .returning({ at: blocks.createdAt });
+    return rows.length ? "gone" : "none";
+  });
+  if (outcome === "limit") return fail("limit");
+  if (outcome === "none") return fail("not_found");
+  logEvent("info", "person_unblocked");
   return { ok: true };
 }
 
@@ -336,12 +431,13 @@ export async function mutualConnections(viewerId: string, otherId: string, db: D
   return rows.map((r) => ({ ...r, name: displayName(r.name) }));
 }
 
-/** Each person's met skills and target role, from their current analysis, as on their own Gaps page. */
-async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, { roleSlug: string; met: string[] }>> {
-  const out = new Map<string, { roleSlug: string; met: string[] }>();
+/** Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. */
+type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[] };
+async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, AnalysisOf>> {
+  const out = new Map<string, AnalysisOf>();
   if (!userIds.length) return out;
   const rows = await db
-    .selectDistinctOn([resumes.userId], { userId: resumes.userId, result: gapAnalyses.result })
+    .selectDistinctOn([resumes.userId], { userId: resumes.userId, id: gapAnalyses.id, result: gapAnalyses.result })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
@@ -349,7 +445,30 @@ async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, {
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
     const parsed = gapAnalysis.safeParse(r.result);
-    if (r.userId && parsed.success) out.set(r.userId, { roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds });
+    if (r.userId && parsed.success)
+      out.set(r.userId, { id: r.id, roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })) });
+  }
+  return out;
+}
+
+/** For each analysis, the skills whose step on its newest path is ticked done: the Map's learn pitstops that are done. */
+async function learnedOf(analysisIds: string[], db: Db | Tx): Promise<Map<string, Set<string>>> {
+  const out = new Map<string, Set<string>>();
+  if (!analysisIds.length) return out;
+  const newest = await db
+    .selectDistinctOn([paths.gapAnalysisId], { id: paths.id, analysisId: paths.gapAnalysisId })
+    .from(paths)
+    .where(inArray(paths.gapAnalysisId, analysisIds))
+    .orderBy(paths.gapAnalysisId, desc(paths.createdAt));
+  if (!newest.length) return out;
+  const analysisOf = new Map(newest.map((p) => [p.id, p.analysisId]));
+  const done = await db
+    .select({ pathId: pathSteps.pathId, skillId: pathSteps.skillId })
+    .from(pathSteps)
+    .where(and(inArray(pathSteps.pathId, [...analysisOf.keys()]), isNotNull(pathSteps.doneAt)));
+  for (const s of done) {
+    const id = analysisOf.get(s.pathId)!;
+    out.set(id, (out.get(id) ?? new Set<string>()).add(s.skillId));
   }
   return out;
 }
@@ -378,6 +497,39 @@ export async function inCommonWith(
   };
 }
 
+/**
+ * "Gaps and path" on a profile (handoff 12j, gap list 27): the gaps both still have and each one's current goal, when
+ * both aim at the same role. Only call it when the viewer may see the owner's gaps (seesGaps) and the owner shows their
+ * target role; `sharedWith` says why they may. Reads goals without writing them. Null on your own profile.
+ */
+export async function pathTogetherWith(viewerId: string, ownerId: string, sharedWith: PathTogether["sharedWith"], db: Db = getDb()): Promise<PathTogether | null> {
+  if (viewerId === ownerId) return null;
+  const [analyses, mine, theirs] = await Promise.all([analysesOf([viewerId, ownerId], db), goalsOf(viewerId, db), goalsOf(ownerId, db)]);
+  const a = analyses.get(viewerId);
+  const b = analyses.get(ownerId);
+  if (!a || !b || a.roleSlug !== b.roleSlug) return null;
+  const learned = await learnedOf([a.id, b.id], db);
+  return pathTogether(lineOrder(a.gaps, mine, learned.get(a.id)), lineOrder(b.gaps, theirs, learned.get(b.id)), (id) => skillNames.get(id) ?? id, sharedWith);
+}
+
+/**
+ * "Interests" in common on a profile (gap list 27, docs/plans/me-editing-plan.md): the owner's interests the viewer
+ * also lists. Interests show on any profile the viewer can open, so only call it once the page has decided they may
+ * open it. Null on your own profile or when either lists none.
+ */
+export async function interestsInCommonWith(viewerId: string, ownerId: string, db: Pick<Db, "select"> = getDb()): Promise<InterestsInCommon | null> {
+  if (viewerId === ownerId) return null;
+  const rows = await db
+    .select({ userId: userInterests.userId, name: userInterests.name, key: userInterests.nameKey })
+    .from(userInterests)
+    .where(inArray(userInterests.userId, [viewerId, ownerId]))
+    .orderBy(asc(userInterests.createdAt), asc(userInterests.nameKey));
+  return interestsInCommon(
+    rows.filter((r) => r.userId === viewerId),
+    rows.filter((r) => r.userId === ownerId),
+  );
+}
+
 /** People with at least one current accepted proof: "Verified" (as Find people, T44). */
 async function verifiedOf(userIds: string[], db: Db | Tx, now: Date): Promise<Set<string>> {
   if (!userIds.length) return new Set();
@@ -392,7 +544,6 @@ type Candidate = {
   id: string;
   name: string | null;
   username: string | null;
-  city: string | null;
   showTargetRole: boolean | null;
   showSkills: boolean | null;
   state: ConnectionState;
@@ -419,7 +570,6 @@ async function asPeople(userId: string, people: Candidate[], db: Db | Tx, now: D
       name: displayName(p.name),
       username: p.username,
       aim: (p.showTargetRole ?? DEFAULT_SETTINGS.showTargetRole) && theirs ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
-      city: p.city,
       verified: verified.has(p.id),
       common: skillsInCommon(mine, theirs?.met ?? [], p.showSkills ?? DEFAULT_SETTINGS.showSkills),
       mutual: mutualOf(myConnections, sets.get(p.id)!).filter((m) => shown.has(m)).length,
@@ -447,7 +597,6 @@ const personColumns = {
   id: users.id,
   name: users.name,
   username: users.username,
-  city: users.city,
   showTargetRole: userSettings.showTargetRole,
   showSkills: userSettings.showSkills,
 };
@@ -513,51 +662,128 @@ export async function requestsWaiting(userId: string, deps: Deps = {}): Promise<
   return row?.n ?? 0;
 }
 
+/** Whether `users` is connected to `userId` (by the connections key and connections_user_high). */
+const connectedTo = (userId: string): SQL =>
+  sql`exists (select 1 from ${connections} c where (c.user_low = ${userId} and c.user_high = ${users.id}) or (c.user_high = ${userId} and c.user_low = ${users.id}))`;
+
 /** The people a person may find by name (handoff 12j): their connections and people who turned on "Let people find me". */
 function findableBy(userId: string): SQL {
-  return or(
-    eq(userSettings.peopleCanFind, true),
-    sql`exists (select 1 from ${connections} c where (c.user_low = ${userId} and c.user_high = ${users.id}) or (c.user_high = ${userId} and c.user_low = ${users.id}))`,
-  )!;
+  return or(eq(userSettings.peopleCanFind, true), connectedTo(userId))!;
 }
 
-/** The viewer's own role and city, for the "Aiming for my role" and "My city" filters. */
+/**
+ * The name as searchKey reads it, with a space in front: NFKD, accents dropped, lowercase, anything but a-z and 0-9 one
+ * space. So " <word>" in it is the start of a word of the name, as networkMatches checks.
+ */
+const nameKey = sql`' ' || btrim(regexp_replace(lower(regexp_replace(normalize(${users.name}, NFKD), ${"[\u0300-\u036f]"}, '', 'g')), '[^a-z0-9]+', ' ', 'g'))`;
+
+/** The typed search as SQL over `users` (T77): the start of the handle, or every word starting a word of the name. */
+function matchesQuery(q: string): SQL | null {
+  const { handle, words } = networkQueryParts(q);
+  const byHandle = handle ? sql`starts_with(lower(${users.username}), ${handle})` : undefined;
+  const byName = words.length ? and(...words.map((w) => sql`position(${` ${w}`} in ${nameKey}) > 0`)) : undefined;
+  return or(byHandle, byName) ?? null;
+}
+
+/** At least one current accepted proof, in SQL over `users`: the same rule as verifiedOf. */
+const provedSql = (now: Date): SQL =>
+  sql`exists (select 1 from ${gapProofs} gp where gp.user_id = ${users.id} and gp.status = 'accepted' and (gp.expires_on is null or gp.expires_on >= ${indiaToday(now)}))`;
+
+/**
+ * Shows their target role and it is `roleSlug`, in SQL over `users` (joined to user_settings): the role of their newest
+ * analysis on each resume's newest profile, as analysesOf reads it. The page is checked again after it is read.
+ */
+const aimsAtSql = (roleSlug: string): SQL =>
+  sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select ga.result->>'roleSlug' from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
+
+/** The viewer's own target role, for the "Aiming for my role" filter. */
 async function viewerOf(userId: string, db: Db) {
-  const [[me], analyses] = await Promise.all([db.select({ city: users.city }).from(users).where(eq(users.id, userId)), analysesOf([userId], db)]);
-  return { city: me?.city ?? null, roleSlug: analyses.get(userId)?.roleSlug ?? null };
+  const analyses = await analysesOf([userId], db);
+  return { roleSlug: analyses.get(userId)?.roleSlug ?? null };
+}
+
+/** The person's own target role (its title), to label Find people's filter; a filter they can't use isn't offered. */
+export async function networkFiltersFor(userId: string, db: Db = getDb()): Promise<{ role: string | null }> {
+  const me = await viewerOf(userId, db);
+  return { role: me.roleSlug ? (roleTitles.get(me.roleSlug) ?? null) : null };
 }
 
 /**
  * Name search (handoff 12j): the start of a first name, last name or handle, over the people `findableBy` allows, never
- * the searcher or anyone with a block either way. Optional filters: aiming for my role, my city, verified. At most
- * NETWORK_SCAN_MAX are read (most recently saved settings first, as Find people does) and NETWORK_RESULTS_MAX shown.
- * Counts against the hourly search limit.
+ * the searcher or anyone with a block either way. Optional filters: aiming for my role (only people who show their
+ * target role, so the filter never reveals a hidden one) and verified. There is no city filter for members (T93): with a
+ * name it would tell the searcher whether that person lives in their city, and only companies see a member's city. The
+ * match and the filters run in SQL, which returns one page of NETWORK_RESULTS_MAX (connections first, then by name),
+ * and only that page is worked out and put in Network's order (T77). Counts against the hourly search limit.
  */
 export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {}): Promise<NetworkResult<{ people: NetworkPerson[] }>> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const input = networkSearchInput.safeParse(raw);
   if (!input.success) return fail("invalid");
-  const { q, sameRole, sameCity, verified } = input.data;
+  const { q, sameRole, verified } = input.data;
   if (!(await takeShared(LIMITS.networkSearchesPerUserHour, userId, { db, now: now.getTime() }))) return fail("limit");
   const me = await viewerOf(userId, db);
-  if ((sameRole && !me.roleSlug) || (sameCity && !me.city)) return { ok: true, people: [] };
-  const scanned = await db
+  if (sameRole && !me.roleSlug) return { ok: true, people: [] };
+  const match = matchesQuery(q);
+  if (!match) return { ok: true, people: [] };
+  const page = await db
     .select(personColumns)
     .from(users)
     .leftJoin(userSettings, eq(userSettings.userId, users.id))
-    .where(and(findableBy(userId), sql`${users.name} is not null and btrim(${users.name}) <> ''`, sql`${users.id} <> ${userId}`, shownTo(userId), sameCity ? eq(users.city, me.city!) : undefined))
-    .orderBy(desc(userSettings.updatedAt), asc(users.id))
-    .limit(NETWORK_SCAN_MAX);
-  if (scanned.length >= NETWORK_SCAN_MAX) logEvent("warn", "network_scan_capped", { scanned: scanned.length });
-  const found = scanned.filter((p) => networkMatches(q, p));
+    .where(
+      and(
+        findableBy(userId),
+        sql`${users.name} is not null and btrim(${users.name}) <> ''`,
+        sql`${users.id} <> ${userId}`,
+        shownTo(userId),
+        match,
+        sameRole ? aimsAtSql(me.roleSlug!) : undefined,
+        verified ? provedSql(now) : undefined,
+      ),
+    )
+    .orderBy(desc(connectedTo(userId)), asc(sql`lower(${users.name})`), asc(users.id))
+    // A few spare rows, so the checks below and the ranking still fill a page of the best.
+    .limit(NETWORK_RESULTS_MAX * 2);
+  const found = page.filter((p) => networkMatches(q, p));
   const states = await statesWith(userId, found.map((p) => p.id), db, now);
   const people = (await asPeople(userId, found.map((p) => ({ ...p, state: states.get(p.id) ?? "none", how: null, at: null, endsAt: null })), db, now))
-    .filter((e) => (!sameRole || e.roleSlug === me.roleSlug) && (!verified || e.person.verified))
+    .filter((e) => (!sameRole || (e.person.aim !== null && e.roleSlug === me.roleSlug)) && (!verified || e.person.verified))
     .map(strip)
     .sort(byNetworkRank)
     .slice(0, NETWORK_RESULTS_MAX);
   return { ok: true, people };
+}
+
+/**
+ * Report from Network (a row or a profile, handoff 12j) into the same review queue and deadlines as Inbox reports
+ * (FR-45). The person reported isn't told, nor who reported. One open report per reporter and person: asking again is
+ * the same report. Counts against the daily report limit. Logged by reason only.
+ */
+export async function reportPerson(userId: string, raw: unknown, deps: Deps = {}): Promise<NetworkResult> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const input = personReportInput.safeParse(raw);
+  if (!input.success) return fail("invalid");
+  const r = input.data;
+  if (r.personId === userId) return fail("self_report");
+  const out = await db.transaction(async (tx): Promise<NetworkResult> => {
+    // One reporter and person at a time, so two quick reports can't both find no open one and insert twice.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`network-report:${userId}|${r.personId}`}))`);
+    const [target] = await tx.select({ id: users.id }).from(users).where(eq(users.id, r.personId));
+    if (!target) return fail("invalid");
+    const [already] = await tx
+      .select({ id: reports.id })
+      .from(reports)
+      .where(and(eq(reports.reporterId, userId), eq(reports.target, "person"), eq(reports.targetId, r.personId), eq(reports.status, "open")))
+      .limit(1);
+    if (already) return { ok: true };
+    if (!(await takeShared(LIMITS.inboxReportsPerUser, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    await tx.insert(reports).values({ reporterId: userId, target: "person", targetId: r.personId, reason: r.reason, note: r.note || null, createdAt: now });
+    return { ok: true };
+  });
+  if (out.ok) logEvent("info", "network_report", { reason: r.reason, status: "open" });
+  return out;
 }
 
 /** How the person stands with each of these people. */

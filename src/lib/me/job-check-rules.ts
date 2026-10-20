@@ -2,7 +2,7 @@ import { monthLabel } from "@/lib/map/life-layout";
 import { baseDomain, isOnDomain } from "@/lib/corporate/domains";
 import { companyKey, currentJobs, sameCompany } from "@/lib/profile/employer";
 import type { Profile } from "@/lib/schemas";
-import type { JobEmailCheckStatus } from "@/lib/schemas/constants";
+import type { JOB_CHECK_SOURCES, JobEmailCheckStatus } from "@/lib/schemas/constants";
 
 /*
  * The rules of the work-email check of the current job (FR-47, handoff 12d, dev/current-job-check-plan.md) as plain
@@ -15,8 +15,15 @@ type Role = Profile["roles"][number];
 /** A job as the check knows it: the employer as written, its comparison key, and the start month ("" without one). */
 export type JobKey = { employer: string; employerKey: string; startMonth: string };
 
-/** A saved check, as read for a profile. */
-export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date };
+/** The side of the profile a check was made on: a resume role or a role added on Me (T95). */
+export type JobCheckSource = (typeof JOB_CHECK_SOURCES)[number];
+
+/**
+ * A saved check, as read for a profile. `employer` is the company as written on the job the check was made on, and
+ * `source` the side that job was on (null on checks saved before it was kept); both tell a resume role and an added
+ * role with the same badge key apart (T95). Never shown.
+ */
+export type JobCheckRow = { employerKey: string; startMonth: string; status: JobEmailCheckStatus; checkedAt: Date; employer?: string; source?: JobCheckSource | null };
 
 /** What a job on the profile says about its check. Older jobs say nothing (null). */
 export type ExperienceCheck = {
@@ -43,10 +50,11 @@ export const jobKeyOf = (role: Pick<Role, "employer" | "start">): JobKey => ({
 });
 
 /**
- * The job a work email checks: the current job on the confirmed profile (the open one that started last, else the
- * latest), unless it is self-declared or has no company name to compare. Older jobs are never checked.
+ * The job a work email checks: the current job on the confirmed profile and the roles added on Me (the open one that
+ * started last, else the latest), unless it is self-declared or has no company name to compare. Older jobs are never
+ * checked.
  */
-export function jobToCheck(profile: Profile | null): JobKey | null {
+export function jobToCheck(profile: Pick<Profile, "roles"> | null): JobKey | null {
   if (!profile) return null;
   const [job] = [...currentJobs(profile)].sort((a, b) => startMonthOf(b.start).localeCompare(startMonthOf(a.start)));
   if (!job || isSelfDeclared(job.employer)) return null;
@@ -76,11 +84,20 @@ export function onVerifiedCompanyDomain(domain: string, employer: string, compan
 
 /**
  * The label for one job on the profile. Only the job a work email checks gets one, plus any job whose own check
- * passed (it keeps "Verified while there" once it has an end date). Self-declared current work says so.
+ * passed (it keeps "Verified while there" once it has an end date). Self-declared current work says so. With `side`,
+ * a check saved on the other side of the profile gives this row nothing.
  */
-export function experienceCheck(role: Pick<Role, "employer" | "start" | "end">, check: JobKey | null, rows: readonly JobCheckRow[]): ExperienceCheck | null {
+export function experienceCheck(
+  role: Pick<Role, "employer" | "start" | "end">,
+  check: JobKey | null,
+  rows: readonly JobCheckRow[],
+  side?: JobCheckSource,
+): ExperienceCheck | null {
   const key = jobKeyOf(role);
   const row = rows.find((r) => r.employerKey === key.employerKey && r.startMonth === key.startMonth);
+  // T100: a check saved on the other side of the profile (a hand-added row, say) is that row's, even where only this
+  // row is shown, as in every company view. Older rows with no side keep the key-only rule.
+  if (side && row?.source && row.source !== side) return experienceCheck(role, null, []);
   if (row?.status === "verified") return { state: role.end ? "verified_while_there" : "verified", month: monthLabel(row.checkedAt) };
   const isChecked = !!check && check.employerKey === key.employerKey && check.startMonth === key.startMonth;
   if (!isChecked) return !role.end && isSelfDeclared(role.employer) ? { state: "self_declared", month: null } : null;

@@ -23,12 +23,20 @@ export const JOB_TITLE_MAX = 120;
 
 /* Library (FR-51, handoff 12a) --------------------------------------------------------------------------------------- */
 
-export const LIBRARY_TABS = ["goals", "interests", "saved", "finished"] as const;
+export const LIBRARY_TABS = ["goals", "interests", "saved", "finished", "elite"] as const;
 export const LIBRARY_TAB_LABELS: Record<(typeof LIBRARY_TABS)[number], string> = {
   goals: "For your goals",
   interests: "Your interests",
   saved: "Saved",
   finished: "Finished",
+  elite: "Elite",
+};
+/** The Elite shelf's groups (handoff 12l, Elite part 5), in the order the shelf shows them. */
+export const ELITE_SHELF_GROUPS = ["course", "playbook", "drill"] as const;
+export const ELITE_SHELF_GROUP_LABELS: Record<(typeof ELITE_SHELF_GROUPS)[number], string> = {
+  course: "Paid courses",
+  playbook: "Playbooks and walkthroughs",
+  drill: "Drills and labs",
 };
 /** The catalog's resource kinds (FR-17), the Library's type filter. */
 export const LIBRARY_KINDS = ["course", "video", "docs", "practice"] as const;
@@ -37,6 +45,67 @@ export const LIBRARY_KIND_LABELS: Record<(typeof LIBRARY_KINDS)[number], string>
 export const LIBRARY_LANGUAGES = ["English", "Hindi"] as const;
 /** The length filter: under 1 hour, under 5 hours (prototype v44). */
 export const LIBRARY_LENGTHS = [60, 300] as const;
+
+/* Library part 2 (docs/plans/library-part-2-plan.md): the person's own Saved, finished and on-ride marks, reports
+ * of a broken link and suggested free resources. */
+
+/** The three marks a person sets on a resource (user_resources): the bookmark, "I finished this" and Add to my rides. */
+export const LIBRARY_MARKS = ["saved", "finished", "onRide"] as const;
+/** Save, finish and ride changes one person makes a day, each try counted. */
+export const LIBRARY_CHANGES_PER_DAY = 300;
+/** Items one person can have on their rides at once. */
+export const ON_RIDE_MAX = 5;
+/** Items longer than this are split into daily parts on the ride. */
+export const RIDE_SPLIT_OVER_MINUTES = 60;
+/** One daily part of a long item. */
+export const RIDE_PART_MINUTES = 25;
+/** Why someone reports a link (resource_reports.reason). There is no note, so nothing typed is kept. */
+export const RESOURCE_REPORT_REASONS = ["broken", "not_free", "outdated", "other"] as const;
+export const RESOURCE_REPORT_REASON_LABELS: Record<(typeof RESOURCE_REPORT_REASONS)[number], string> = {
+  broken: "Link is broken",
+  not_free: "Not free any more",
+  outdated: "Out of date",
+  other: "Something else",
+};
+export const RESOURCE_REPORT_STATUSES = ["open", "hidden", "dismissed"] as const;
+/** Reports one person files a day. */
+export const RESOURCE_REPORTS_PER_DAY = 10;
+export const SUGGESTION_STATUSES = ["open", "accepted", "duplicate", "declined"] as const;
+export const SUGGESTION_DECLINE_REASONS = ["not_free", "paywall", "affiliate", "off_topic", "other"] as const;
+export const SUGGESTION_DECLINE_LABELS: Record<(typeof SUGGESTION_DECLINE_REASONS)[number], string> = {
+  not_free: "Not free",
+  paywall: "Paid wall",
+  affiliate: "Affiliate",
+  off_topic: "Off topic",
+  other: "Other",
+};
+/** Suggestions one person sends a day, and how many can wait for a reviewer at once. */
+export const SUGGESTIONS_PER_DAY = 5;
+export const SUGGESTIONS_OPEN_MAX = 30;
+/** The longest link a suggestion keeps. */
+export const SUGGESTION_URL_MAX = 500;
+
+/* Me editing (docs/plans/me-editing-plan.md, v44 gap item 23): roles and education added by hand, stories and interests. */
+
+/** Rows one person can keep: added roles, added education, stories and interests. */
+export const ME_ROLES_MAX = 20;
+export const ME_EDUCATION_MAX = 12;
+export const STORIES_MAX = 50;
+export const INTERESTS_MAX = 30;
+/** Adds, edits and deletes on Me one person makes a day, each try counted. */
+export const ME_EDITS_PER_DAY = 100;
+export const ME_ROLE_TEXT_MAX = 120;
+export const ME_EDUCATION_TEXT_MAX = 160;
+export const ME_EDUCATION_YEAR_MAX = 40;
+export const STORY_TITLE_MAX = 120;
+export const STORY_WHERE_MAX = 120;
+/** Each of Situation, Task, Action and Result. */
+export const STORY_PART_MAX = 400;
+export const INTEREST_MAX = 40;
+/** Where a story came from. Only "user" is written in v1; the others are kept for drafting later (plan choice 1). */
+export const STORY_SOURCES = ["user", "resume", "goal", "college"] as const;
+/** What Me shows when text others read carries contact details or a link (plan choice 8). */
+export const ME_CONTACT_TEXT = "Leave out email addresses, phone numbers and links.";
 
 /* Corporate (dev/corporate-plan.md, handoff 12e and 12f) ------------------------------------------------------------ */
 
@@ -58,6 +127,8 @@ export const WORK_EMAIL_PURPOSES = ["org_member", "current_job"] as const;
 /** A work-email check of the current job (FR-47): matched the company, waiting for an admin, or refused by one. */
 export const JOB_EMAIL_CHECK_STATUSES = ["verified", "review", "refused"] as const;
 export type JobEmailCheckStatus = (typeof JOB_EMAIL_CHECK_STATUSES)[number];
+/** The side of the profile a work-email check was made on (T95): a resume role or a role added on Me. */
+export const JOB_CHECK_SOURCES = ["resume", "added"] as const;
 export const ORG_INVITE_KINDS = ["invite", "request"] as const;
 export const ORG_SIZES = ["1 to 10", "11 to 50", "51 to 200", "201 to 1,000", "More than 1,000"] as const;
 export const ORG_INDUSTRIES = ["Financial services and fintech", "IT services", "Cybersecurity", "Software product", "Education", "Other"] as const;
@@ -344,18 +415,22 @@ export const CONNECTION_PENDING_MAX = 100;
 /** "Your gaps show to" (handoff 12j): nobody, connections, or everyone who can open the profile. */
 export const GAPS_VISIBLE_TO = ["nobody", "connections", "profile"] as const;
 export const GAPS_VISIBLE_TO_LABELS: Record<(typeof GAPS_VISIBLE_TO)[number], string> = {
-  nobody: "Nobody else",
+  nobody: "Nobody",
   connections: "Your connections",
-  profile: "Everyone who can see your profile",
+  profile: "Everyone who can open your profile",
 };
 /** "Connection requests from" (handoff 12j). */
 export const REQUESTS_FROM = ["anyone", "nobody"] as const;
-/** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
+export const REQUESTS_FROM_LABELS: Record<(typeof REQUESTS_FROM)[number], string> = {
+  anyone: "Anyone who can reach you",
+  nobody: "Nobody",
+};
+/** People a network search shows: connections first, then by name, ranked best first within that. A longer name narrows it; there is no paging in v1. */
 export const NETWORK_RESULTS_MAX = 20;
-/** People a network search reads at most, newest settings first, as Find people does (FIND_SCAN_MAX). */
-export const NETWORK_SCAN_MAX = 2000;
 /** The longest Inbox message. Here, not in schemas/inbox, so client components can read it without Zod. */
 export const MESSAGE_MAX_CHARS = 2000;
+/** The longest note on a report (Inbox or Network). Here, so the report form can read it without Zod. */
+export const REPORT_NOTE_MAX_CHARS = 500;
 /** The longest network search typed. */
 export const NETWORK_QUERY_MAX = 80;
 
@@ -512,6 +587,9 @@ export const TIMED_TEST_QUESTIONS = 12;
 export const TIMED_TEST_MINUTES = 15;
 /** Timed tests one person can start a day (each start counts), so the bank can't be read out by script. */
 export const TIMED_TESTS_PER_DAY = 10;
+/** "Interview prep for this role" on a Departures role: this many bank questions, this many of them open on Free. */
+export const ROLE_PREP_QUESTIONS = 5;
+export const ROLE_PREP_FREE_OPEN = 1;
 /** The tabs of /mock, in order. */
 export const MOCK_TABS = ["interview", "test", "bank"] as const;
 
@@ -532,3 +610,85 @@ export const MOCK_SESSIONS_PER_DAY = 5;
 export const MOCK_FEEDBACK_PER_DAY = 5;
 /** What the feedback screen says: feedback in words, nothing answered, not today (budget or limit), or not just now. */
 export const MOCK_FEEDBACK_STATES = ["ready", "none_answered", "unavailable_today", "unavailable"] as const;
+/*
+ * Mock interview follow-ups (docs/plans/mock-followups-plan.md): from the bank, picked by code, never by the model. At
+ * most one per question, only after an answer of 20 words or more, and at most 2 a Quick round and 4 a Full one.
+ */
+export const MOCK_FOLLOW_UP_MIN_WORDS = 20;
+export const MOCK_FOLLOW_UPS_PER_ROUND = { quick: 2, full: 4 } as const;
+/** A bank question has at most this many follow-ups; the first whose skip words are not in the answer is asked. */
+export const MOCK_FOLLOW_UPS_PER_QUESTION = 2;
+export const MOCK_FOLLOW_UP_MAX_CHARS = 200;
+/** Words or phrases that mean the answer already covers a follow-up's point. */
+export const MOCK_FOLLOW_UP_SKIP_WORDS = 8;
+/** Whether a role's rounds can ask follow-ups: none, ones still waiting for review (never in production), or checked ones. */
+export const MOCK_FOLLOW_UP_STATES = ["none", "draft", "checked"] as const;
+
+/*
+ * Job search switch and notice period (handoff 6, docs/plans/job-search-plan.md). Off pauses Departures and Arrivals:
+ * no Express apply, out of company search, no Today board. The notice period is private: never on a profile, never sent
+ * to a company (companies see only Can join).
+ */
+export const NOTICE_DAYS = [15, 30, 60, 90] as const;
+export type NoticeDays = (typeof NOTICE_DAYS)[number];
+/** Switch and notice changes one person makes a day, each try counted. */
+export const JOB_SEARCH_CHANGES_PER_DAY = 20;
+/** Save and stage changes on Departures one person makes a day (docs/plans/departures-live-plan.md). */
+export const DEPARTURE_CHANGES_PER_DAY = 200;
+/** What Express apply says while job search is off. */
+export const JOB_SEARCH_OFF_MESSAGE = "Turn on job search to apply.";
+
+/*
+ * Notifications, in-app (docs/plans/notifications-plan.md, v44 gap item 15). A row per event holds ids only; the
+ * sentence is built from the live rows when the panel opens. Chat messages stay on the Inbox badge.
+ */
+export const NOTIFICATION_KINDS = [
+  "connection_request",
+  "connection_accepted",
+  "application_moved",
+  "application_closed",
+  "interview_scheduled",
+  "interview_cancelled",
+] as const;
+export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
+/** The panel lists at most this many, from the last NOTIFICATION_SHOWN_DAYS days. */
+export const NOTIFICATIONS_SHOWN = 20;
+export const NOTIFICATION_SHOWN_DAYS = 60;
+/** The daily cleanup deletes a read notification this many days after it was read, and any after NOTIFICATION_KEEP_DAYS. */
+export const NOTIFICATION_READ_KEEP_DAYS = 60;
+export const NOTIFICATION_KEEP_DAYS = 90;
+/** Panel opens (each marks all as read) one person makes a day, each try counted. */
+export const NOTIFICATION_READS_PER_DAY = 300;
+/** What the panel says with nothing to show. */
+export const NOTIFICATIONS_EMPTY = "Nothing new. Connection requests and updates on your applications show here.";
+
+/*
+ * Settings columns (docs/plans/settings-columns-plan.md, v44 gap items 31, 33 and 36, FR-55): message requests, Open to
+ * work in and Usually free. None of them is logged, sent to analytics or shown on a profile.
+ */
+
+/** The place a remote role names (src/lib/departures/feed-rules.mjs cityOf), offered first in Open to work in. */
+export const WORK_PLACE_REMOTE = "Remote";
+/** What Open to work in may hold: Remote, or one of the cities a person may give. */
+export const WORK_PLACES = [WORK_PLACE_REMOTE, ...PERSON_CITIES] as const;
+export type WorkPlace = (typeof WORK_PLACES)[number];
+/** At most this many places in Open to work in, Remote included. */
+export const OPEN_TO_WORK_MAX = 6;
+/** The weekdays Usually free offers: the days "Ask for times" can ask about (it offers weekdays only). */
+export const FREE_DAYS = ["mon", "tue", "wed", "thu", "fri"] as const;
+export type FreeDay = (typeof FREE_DAYS)[number];
+export const FREE_DAY_LABELS: Record<FreeDay, string> = { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri" };
+/** Every Usually free hour: five days by the eight picker times. */
+export const USUALLY_FREE_MAX = FREE_DAYS.length * SLOT_TIMES.length;
+/** Usually free saves one person makes a day, each try counted. */
+export const AVAILABILITY_SAVES_PER_DAY = 30;
+
+/** Tracks a role can have on the Track picker (v44 gap list item 11, docs/plans/tracks-plan.md), not counting the whole role. */
+export const MAX_TRACKS_PER_ROLE = 5;
+/** Track switches one person makes a day, each try counted. */
+export const TRACK_CHANGES_PER_DAY = 20;
+
+/** Resume downloads (PDF or Word) one owner makes an hour, each try counted, so renders can't be looped (Testing Run 5, T81). */
+export const RESUME_EXPORTS_PER_HOUR = 30;
+/** Messages one person sends in open direct chats a day, across every chat (Testing Run 5, T85). */
+export const DIRECT_MESSAGES_PER_DAY = 300;

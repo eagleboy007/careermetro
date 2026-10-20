@@ -19,6 +19,7 @@ import {
 import { displayName } from "@/lib/account/name";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
+import { notify } from "@/lib/notifications/store";
 import { indiaDay } from "@/lib/ride/days";
 import { applicationIdInput, askTimesInput, feedbackInput, interviewIdInput, offerTimesInput, respondInput, scheduleInput } from "@/lib/schemas/corporate";
 import { SLOT_MINUTES, SLOT_TIMES } from "@/lib/schemas/constants";
@@ -377,6 +378,7 @@ export async function scheduleInterview(userId: string, raw: unknown, deps: Inte
       .returning({ id: interviews.id });
     await tx.insert(interviewInterviewers).values(people.map((p) => ({ interviewId: made.id, userId: p })));
     await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: "interview_booked", target: { application: app.id } }, now);
+    await notify(tx, { kind: "interview_scheduled", userId: app.userId, actorId: userId, interviewId: made.id }, now);
     return { ok: true, interviewId: made.id };
   });
   logEvent("info", result.ok ? "interview_booked" : "interview_book_refused", result.ok ? { interviewers: input.interviewers.length } : { reason: result.error });
@@ -408,6 +410,7 @@ export async function cancelInterview(userId: string, raw: unknown, deps: Interv
     // still needs it (Testing T42, T47).
     await erasePhoneUnlessNeeded(tx, ref.applicationId, iv.id, now);
     await writeAudit(tx, { orgId: found.app.orgId, actor: { memberId: found.access.me.memberId }, action: "interview_cancelled", target: { application: ref.applicationId } }, now);
+    await notify(tx, { kind: "interview_cancelled", userId: found.app.userId, actorId: userId, interviewId: iv.id }, now);
     return { ok: true };
   });
   logEvent("info", result.ok ? "interview_cancelled" : "interview_cancel_refused", result.ok ? {} : { reason: result.error });

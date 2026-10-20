@@ -1,8 +1,10 @@
 "use client";
 
-import { MapPin, Undo2 } from "lucide-react";
+import { MapPin, Route, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { goalLinkText, type GoalLink } from "@/lib/arrivals/goal-link";
+import { arrivalsGroups, waitingLine } from "@/lib/arrivals/groups";
 import { actionBtn } from "@/components/corporate/jobs-panel";
 import { ICON } from "@/components/corporate/parts";
 import { formatDay } from "@/lib/corporate/format";
@@ -16,7 +18,9 @@ import { ApplicationInterviews, NextUp } from "./interviews";
  * every step the company took. Moving forward is progress, so those stages wear cobalt. Not this time keeps the
  * company's note. Who at the company moved it is never shown. Interviews (step 6) add Next up, the 10-day strip and
  * Accept or Decline on each application; `today` is the India date from the server. Without `withdraw` and `actions`
- * (the /design page and the example) nothing changes.
+ * (the /design page and the example) nothing changes. `goalLinks` holds, for a closed application, the goal on the
+ * person's line its job asked for (src/lib/arrivals/goal-link.ts). `invitationsOnly` is the paused view (job search
+ * off), which lists only live invitations, so it has no Offers place and no waiting count.
  */
 
 const MOVING = new Set(["shortlisted", "ai", "team", "offer"]);
@@ -27,12 +31,16 @@ export function ArrivalsView({
   withdraw,
   actions,
   note,
+  goalLinks = {},
+  invitationsOnly = false,
 }: {
   applications: MyApplicationView[];
   today: string;
   withdraw?: WithdrawAction;
   actions?: Omit<ArrivalsActions, "withdraw">;
   note?: React.ReactNode;
+  goalLinks?: Record<string, GoalLink>;
+  invitationsOnly?: boolean;
 }) {
   const [message, setMessage] = useState<{ error: boolean; text: string } | null>(null);
   const messageRef = useRef<HTMLParagraphElement>(null);
@@ -40,12 +48,8 @@ export function ArrivalsView({
     if (message) messageRef.current?.focus();
   }, [message]);
 
-  const groups = [
-    { key: "moving", title: "Moving forward", hint: "Shortlisted, interviews and offers", items: applications.filter((a) => !a.withdrawn && MOVING.has(a.stage)) },
-    { key: "waiting", title: "Waiting to hear", hint: "Sent, not reviewed yet", items: applications.filter((a) => !a.withdrawn && a.stage === "applied") },
-    { key: "closed", title: "Not this time", hint: "With the company's note", items: applications.filter((a) => !a.withdrawn && a.stage === "not_this_time") },
-    { key: "withdrawn", title: "Withdrawn", hint: "You took these back", items: applications.filter((a) => a.withdrawn) },
-  ].filter((g) => g.items.length);
+  const groups = arrivalsGroups(applications, { showEmptyOffers: !invitationsOnly });
+  const waiting = invitationsOnly ? null : waitingLine(applications);
 
   return (
     <div className="mx-auto flex w-full max-w-[920px] flex-col gap-[18px]">
@@ -53,6 +57,7 @@ export function ArrivalsView({
         <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">Arrivals</span>
         <h1 className="mt-1 text-[clamp(1.6rem,3.5vw,2.2rem)] font-semibold leading-[1.1]">Your applications</h1>
         <p className="mt-1.5 max-w-[620px] text-[0.95rem] text-muted">Jobs you applied to on CareerMetro, and every step each company took. Companies never see your goals, path or other applications.</p>
+        {waiting && <p className="mt-1.5 font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{waiting}</p>}
       </div>
       {note}
       {message && (
@@ -78,13 +83,17 @@ export function ArrivalsView({
               </h2>
               <span className="text-[0.84rem] text-muted">{g.hint}</span>
             </div>
-            <ul className="flex flex-col gap-3">
-              {g.items.map((a) => (
-                <li key={a.id}>
-                  <ApplicationCard app={a} withdraw={withdraw} actions={actions} onDone={setMessage} />
-                </li>
-              ))}
-            </ul>
+            {g.items.length ? (
+              <ul className="flex flex-col gap-3">
+                {g.items.map((a) => (
+                  <li key={a.id}>
+                    <ApplicationCard app={a} withdraw={withdraw} actions={actions} onDone={setMessage} goalLink={goalLinks[a.id]} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="rounded-lg border border-dashed border-line px-4 py-3 text-[0.86rem] text-muted">{g.empty}</p>
+            )}
           </section>
         ))
       )}
@@ -97,11 +106,13 @@ function ApplicationCard({
   withdraw,
   actions,
   onDone,
+  goalLink,
 }: {
   app: MyApplicationView;
   withdraw?: WithdrawAction;
   actions?: Omit<ArrivalsActions, "withdraw">;
   onDone: (m: { error: boolean; text: string }) => void;
+  goalLink?: GoalLink;
 }) {
   const [confirming, setConfirming] = useState(false);
   const [pending, start] = useTransition();
@@ -149,6 +160,12 @@ function ApplicationCard({
           <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">Note from {app.company}</span>
           <p className="mt-1 [overflow-wrap:anywhere]">{closedNote}</p>
         </div>
+      )}
+      {goalLink && app.stage === "not_this_time" && !app.withdrawn && (
+        <p className="flex items-start gap-2 text-[0.86rem]">
+          <Route {...ICON} className="mt-0.5 shrink-0 text-muted" />
+          <span className="[overflow-wrap:anywhere]">{goalLinkText(goalLink)}</span>
+        </p>
       )}
       <ApplicationInterviews app={app} actions={actions} onDone={onDone} />
       <ol aria-label="Steps" className="flex flex-col gap-1.5">

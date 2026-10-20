@@ -4,7 +4,10 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
-import { certifications, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { mentions } from "@/lib/mock/interview";
+import mockBankRaw from "./mock-bank.json";
+import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
+import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -237,5 +240,104 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
     }
     // The right answer isn't always in the same place.
     expect(new Set(choice.map((q) => q.kind === "choice" && q.answer)).size).toBe(4);
+  });
+
+  it("gives follow-ups unique ids under their question, skip words on the first of two, and short questions", () => {
+    const open = mockQuestions.flatMap((q) => (q.kind === "open" && q.followUps?.length ? [q] : []));
+    expect(open.length).toBeGreaterThan(0);
+    const ids = open.flatMap((q) => q.followUps!.map((f) => f.id));
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const q of open) {
+      expect(q.followUps!.length).toBeLessThanOrEqual(2);
+      if (q.followUps!.length === 2) expect([q.id, q.followUps![0].skipIf.length > 0]).toEqual([q.id, true]);
+      expect(typeof q.followUpsReviewed).toBe("boolean");
+      for (const f of q.followUps!) {
+        expect(f.id.startsWith(`${q.id}-fu-`)).toBe(true);
+        expect(f.text.length).toBeLessThanOrEqual(200);
+        expect(f.text).toMatch(/[.?]$/);
+        expect(f.skipIf.length).toBeLessThanOrEqual(8);
+      }
+    }
+  });
+
+  it("gives every open question one or two follow-ups, numbered in order, each its own text", () => {
+    const open = mockQuestions.filter((q) => q.kind === "open");
+    expect(open).toHaveLength(95);
+    for (const q of open) {
+      const ups = followUpsOf(q, true);
+      expect([q.id, ups.length >= 1 && ups.length <= 2]).toEqual([q.id, true]);
+      expect(ups.map((f) => f.id)).toEqual(ups.map((_, i) => `${q.id}-fu-${i + 1}`));
+    }
+    const texts = open.flatMap((q) => followUpsOf(q, true).map((f) => f.text.toLowerCase()));
+    expect(texts.length).toBeGreaterThanOrEqual(open.length);
+    expect(new Set(texts).size).toBe(texts.length);
+    expect(texts.some((t) => open.some((q) => q.question.toLowerCase() === t))).toBe(false);
+  });
+
+  it("keeps skip words trimmed, different from each other and out of their own question, so a follow-up can be asked", () => {
+    // The schema trims skip words as it parses, so the file as written is checked for that.
+    const raw = (mockBankRaw.questions as { followUps?: { id: string; skipIf: string[] }[] }[]).flatMap((q) => q.followUps ?? []);
+    expect(raw.length).toBeGreaterThan(0);
+    for (const f of raw) {
+      for (const w of f.skipIf) {
+        expect([f.id, w]).toEqual([f.id, w.trim()]);
+        expect([f.id, w, w.length >= 2 && w.length <= 40]).toEqual([f.id, w, true]);
+      }
+    }
+    for (const q of mockQuestions) {
+      for (const f of followUpsOf(q, true)) {
+        const words = f.skipIf.map((w) => w.toLowerCase());
+        expect([f.id, new Set(words).size]).toEqual([f.id, words.length]);
+        for (const w of f.skipIf) {
+          // A skip word the question itself uses would be in nearly every answer, so the follow-up would never be asked.
+          expect([f.id, w, mentions(q.question, w)]).toEqual([f.id, w, false]);
+        }
+      }
+    }
+  });
+
+  it("asks nothing about pay, family or other personal matters", () => {
+    const personal = /\b(salary|salaries|pay|ctc|expected ctc|current ctc|notice period|caste|religion|married|marriage|pregnan\w*|children|husband|wife|father|age|gender|family|wedding|native place|relocat\w*)\b/i;
+    for (const q of mockQuestions) for (const f of followUpsOf(q, true)) expect([f.id, personal.test(f.text)]).toEqual([f.id, false]);
+  });
+
+  it("asks no follow-up in production until someone who works in the role has reviewed it", () => {
+    const unreviewed = mockQuestions.filter((q) => q.kind === "open" && q.followUps?.length && !q.followUpsReviewed);
+    for (const q of unreviewed) expect([q.id, followUpsOf(q, false)]).toEqual([q.id, []]);
+    if (unreviewed.length && !mockQuestions.some((q) => q.kind === "open" && q.followUpsReviewed && q.followUps?.length)) {
+      expect(mockRoles(mockQuestions, roleProfiles, false).every((r) => r.followUps === "none")).toBe(true);
+      for (const r of roleProfiles) {
+        const items = bankViewFor(mockQuestions, r, true, false).items;
+        expect(items.flatMap((i) => (i.open ? (i.followUps ?? []) : []))).toEqual([]);
+      }
+    }
+  });
+});
+
+describe("Elite shelf (FR-50 part 5, handoff 12l)", () => {
+  const byUrl = new Map(resources.map((r) => [r.url, r]));
+  const known = new Set(skills.map((s) => s.id));
+
+  it("names free sources only by a URL of the free catalog", () => {
+    const free = eliteShelfEntries.filter((e) => e.type === "free");
+    expect(free.length).toBeGreaterThan(0);
+    expect(free.filter((e) => !byUrl.get(e.url)?.free).map((e) => e.url)).toEqual([]);
+  });
+
+  it("files paid courses only as Coming soon slots, and nothing else under them", () => {
+    expect(eliteShelfEntries.filter((e) => (e.type === "slot") !== (e.group === "course")).map((e) => e.id)).toEqual([]);
+  });
+
+  it("has no price, link, maker or offer in anything it wrote itself", () => {
+    const own = eliteShelfEntries.flatMap((e) =>
+      e.type === "slot" ? [e.label, e.summary] : e.type === "own" ? [e.title, e.summary, ...e.parts.flatMap((p) => [p.text, p.answer ?? ""])] : [e.why],
+    );
+    expect(own.filter((t) => /₹|\brs\.?\s?\d|\binr\b|https?:|www\.|affiliate|coupon|discount|% off|\bbuy\b/i.test(t))).toEqual([]);
+  });
+
+  it("ties every playbook and drill to known skills", () => {
+    const own = eliteShelfEntries.filter((e) => e.type === "own");
+    expect(own.length).toBeGreaterThan(0);
+    for (const e of own) if (e.type === "own") expect([e.id, e.skillIds.filter((id) => !known.has(id))]).toEqual([e.id, []]);
   });
 });

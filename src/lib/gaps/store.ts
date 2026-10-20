@@ -78,7 +78,10 @@ async function storedAnalysis(
   const storedResult = stored ? gapAnalysis.safeParse(stored.result) : null;
   const current = stored?.matcherVersion === MATCHER_VERSION;
   if (!stored || !storedResult?.success || !(current || sameReading(storedResult.data, match))) return null;
-  const analysis = withEveryGap(storedResult.data, match);
+  const rebuilt = withEveryGap(storedResult.data, match);
+  // The person's track (docs/plans/tracks-plan.md) stays with the analysis when an old cut is rebuilt.
+  const kept = storedResult.data.trackId;
+  const analysis = rebuilt === storedResult.data || kept === undefined ? rebuilt : { ...rebuilt, trackId: kept };
   // Kept under the same id, so the rating and the goals made from it carry over.
   if (analysis !== storedResult.data || !current) {
     await tx.update(gapAnalyses).set({ result: analysis, matcherVersion: MATCHER_VERSION }).where(eq(gapAnalyses.id, stored.id));

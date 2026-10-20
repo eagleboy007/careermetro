@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MAX_CHOICE_GOALS, USER_STATES } from "./constants";
+import { trackPicker } from "./role-track";
 import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
 
@@ -135,34 +136,57 @@ export const departure = z.object({
   note: z.string().max(200),
 });
 
-/** One question a day from the Practice bank, for the current or next goal's skill. No score is shown. */
-export const signalCheck = z
-  .object({
-    skillName: z.string().min(1).max(80),
-    status: goalStatus.exclude(["met"]),
-    question: z.string().min(10).max(400),
-    options: z
-      .array(
-        z.object({
-          key: z.enum(["A", "B", "C", "D"]),
-          label: z.string().min(1).max(120),
-          detail: z.string().max(60).optional(),
-        }),
-      )
-      .min(2)
-      .max(4),
-    correctKey: z.enum(["A", "B", "C", "D"]),
-    explanation: z.string().min(1).max(400),
-    from: z.string().min(1).max(120),
-  })
+const signalKey = z.enum(["A", "B", "C", "D"]);
+
+/** What the card shows of a question before it is answered. */
+const signalShown = z.object({
+  skillName: z.string().min(1).max(80),
+  status: goalStatus.exclude(["met"]),
+  question: z.string().min(10).max(400),
+  options: z
+    .array(
+      z.object({
+        key: signalKey,
+        label: z.string().min(1).max(120),
+        detail: z.string().max(60).optional(),
+      }),
+    )
+    .min(2)
+    .max(4),
+  from: z.string().min(1).max(120),
+});
+
+const keyedInOrder = (c: { options: { key: string }[] }) => c.options.every((o, i) => o.key === "ABCD"[i]);
+
+/** The right answer and why, sent to a live card only once the person has answered (checked on the server). */
+export const signalAnswer = z.object({
+  correctKey: signalKey,
+  explanation: z.string().min(1).max(400),
+});
+
+/** One question a day from the Practice bank, for the current or next goal's skill. No score is shown. Example data. */
+export const signalCheck = signalShown
+  .extend(signalAnswer.shape)
   .refine((c) => c.options.some((o) => o.key === c.correctKey), {
     message: "the right answer must be one of the options",
     path: ["correctKey"],
   })
-  .refine((c) => c.options.every((o, i) => o.key === "ABCD"[i]), {
+  .refine(keyedInOrder, {
     message: "options are keyed A, B, C, D in order",
     path: ["options"],
   });
+
+/**
+ * A live signal check for a signed-in person (docs/plans/departures-live-plan.md): the bank question's id and what the
+ * card shows, without the answer, which stays on the server until the person answers. `answer` is set when it was
+ * answered earlier today.
+ */
+export const signalLive = z.object({
+  /** The bank question's id (mock-bank.json). */
+  id: z.string().min(1).max(80),
+  shown: signalShown.refine(keyedInOrder, { message: "options are keyed A, B, C, D in order", path: ["options"] }),
+  answer: signalAnswer.nullable(),
+});
 
 export const goalPitstop = z.object({
   number: z.number().int().min(1),
@@ -211,6 +235,11 @@ export const goalsSummary = z
     /** A goal the role's job posts ask for that is not on the line yet. Added with one tap. */
     suggestedGoal: z.object({ name: z.string().min(1).max(80), reason: z.string().min(1).max(200) }).nullable().default(null),
     metThisMonth: z.array(z.string().max(80)).max(10),
+    /**
+     * The Track picker behind the Track chip (docs/plans/tracks-plan.md). Absent when the role offers no tracks on this
+     * deployment (production, until the tracks are reviewed): the chip is then plain text.
+     */
+    picker: trackPicker.nullable().optional(),
   })
   .refine((g) => g.moreNames.length <= g.moreCount, {
     message: "more names than goals left",
@@ -245,6 +274,14 @@ export type Streak = z.infer<typeof streak>;
 export type Departure = z.infer<typeof departure>;
 export type Goal = z.infer<typeof goal>;
 export type SignalCheck = z.infer<typeof signalCheck>;
+export type SignalShown = z.infer<typeof signalShown>;
+export type SignalAnswer = z.infer<typeof signalAnswer>;
+export type SignalLive = z.infer<typeof signalLive>;
+/**
+ * What answering a live signal check gives back: the right answer and why, or why not. "stale": the day's question
+ * changed since the page loaded (a new day, or a goal proved or skipped); "limit": too many tries today.
+ */
+export type SignalAnswerResult = { ok: true; answer: SignalAnswer } | { ok: false; reason: "stale" | "limit" | "invalid" };
 export type GoalsSummary = z.infer<typeof goalsSummary>;
 export type ProvePitstop = z.infer<typeof provePitstop>;
 export type EventTeaser = z.infer<typeof eventTeaser>;

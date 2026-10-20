@@ -8,6 +8,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { toCsv as csv } from "../../src/lib/market/csv.mjs";
 import { MARKET_POSTING_COLUMNS, marketPostings } from "./market.mjs";
+import { classify, escape, hasSkill, INDIA, norm, plain, ROLE_TITLES, skillMatchersFor } from "../../src/lib/departures/feed-rules.mjs";
 
 const root = new URL("../../", import.meta.url).pathname;
 const outDir = process.argv[2] ?? join(root, "data/jd-snapshot");
@@ -15,64 +16,13 @@ const boards = JSON.parse(readFileSync(join(root, "scripts/jd-mining/boards.json
 const skills = JSON.parse(readFileSync(join(root, "src/content/skills.json"), "utf8"));
 const certifications = JSON.parse(readFileSync(join(root, "src/content/certifications.json"), "utf8"));
 
-const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executive|recruit(er|ing)|partner manager)\b/i;
-const SENIOR = /\b(director|head of|vice president|vp|principal|staff|chief|intern|internship)\b/i;
-// Order matters: the first matching role wins.
-const ROLE_TITLES = {
-  "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit)\b/i,
-  "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|incident respon|penetration|pen ?tester|appsec|application security|detection engineer|offensive security|red team|blue team)\b/i,
-  "database-architect": /\b(database (architect|administrator|engineer|reliability)|dba|data architect|data modeler)\b/i,
-  "data-analyst": /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i,
-  "business-analyst": /\bbusiness (systems )?analyst\b/i,
-  "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
-  "frontend-developer": /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b/i,
-  "full-stack-developer": /\bfull[- ]?stack\b/i,
-  "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist)\b/i,
-  "product-manager": /\b(product manager|product owner|associate product manager)\b/i,
-  "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b/i,
-  "devops-engineer": /\b(devops|site reliability|sre|cloud engineer|platform engineer|infrastructure engineer|cloud ops)\b/i,
-  "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i,
-};
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive"]);
-const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
-
-const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
-
-function classify(title, text) {
-  if (SENIOR.test(title) || NOT_IN_SCOPE.test(title)) return null;
-  for (const [slug, re] of Object.entries(ROLE_TITLES)) {
-    if (!re.test(title)) continue;
-    if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
-    if (slug === "qa-automation-engineer" && NOT_SOFTWARE.test(title)) continue;
-    if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text)) continue;
-    return slug;
-  }
-  return null;
-}
-
-const decode = (s) =>
-  s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
-const plain = (html) => decode(decode(html ?? "")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-const norm = (s) => s.toLowerCase().replace(/\s+/g, " ").trim();
-const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-// One matcher per skill over its name and aliases, case-insensitive. Names that are also plain English
-// words ("excel at", "go to") are matched case-sensitively.
-const CASE_SENSITIVE_NAMES = new Set(["excel", "go"]);
-const skillMatchers = skills.map((s) => {
-  const aliases = [...new Set(s.aliases.map(norm))].filter((t) => t.length > 1);
-  const bound = (body, flags) => new RegExp(`(?<![A-Za-z0-9])(${body})(?![A-Za-z0-9])`, flags);
-  return {
-    id: s.id,
-    name: bound(escape(s.name), CASE_SENSITIVE_NAMES.has(s.id) ? "" : "i"),
-    aliases: aliases.length ? bound(aliases.map(escape).join("|"), "i") : null,
-  };
-});
+// The live role from the title, the India test and the taxonomy matchers are shared with the daily Departures feed
+// (src/lib/departures/feed-rules.mjs, docs/plans/departures-live-plan.md).
+const skillMatchers = skillMatchersFor(skills);
 const certMatchers = certifications.map((c) => ({
   id: c.id,
   re: new RegExp(`(?<![A-Za-z0-9])(${[c.name, ...c.aliases].map((t) => escape(norm(t))).join("|")})(?![A-Za-z0-9])`, "i"),
 }));
-const hasSkill = (m, text) => m.name.test(text) || (m.aliases?.test(text) ?? false);
 const knownTerms = new Set(skills.flatMap((s) => [s.id, s.name, ...s.aliases].map(norm)));
 
 async function getJson(url) {

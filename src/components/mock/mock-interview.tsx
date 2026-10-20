@@ -7,6 +7,9 @@ import { MOCK_FEEDBACK_TEXT } from "@/lib/mock/interview";
 import { countWords } from "@/lib/practice/words";
 import type {
   MockFocus,
+  MockFollowUpAnswerResult,
+  MockFollowUpAsked,
+  MockFollowUpState,
   MockInterviewAnswerResult,
   MockInterviewEndResult,
   MockInterviewStartResult,
@@ -15,7 +18,7 @@ import type {
   MockSessionResult,
   MockSessionView,
 } from "@/lib/schemas";
-import { MOCK_ANSWER_MAX_CHARS, MOCK_FOCUSES, MOCK_LENGTH_MINUTES, MOCK_LENGTH_QUESTIONS, MOCK_LENGTHS } from "@/lib/schemas/constants";
+import { MOCK_ANSWER_MAX_CHARS, MOCK_FOCUSES, MOCK_FOLLOW_UP_MIN_WORDS, MOCK_LENGTH_MINUTES, MOCK_LENGTH_QUESTIONS, MOCK_LENGTHS } from "@/lib/schemas/constants";
 import { listen, localLanguage, onDeviceRecognition, withSpoken } from "./speech";
 import { clockText } from "./timed-test";
 
@@ -32,6 +35,19 @@ const LENGTH_CHOICE = `flex min-h-11 min-w-[170px] cursor-pointer flex-col items
 const LENGTH_TEXT: Record<MockLength, string> = { quick: "Quick round", full: "Full round" };
 const FOCUS_TEXT: Record<MockFocus, string> = { mix: "Mix", gaps: "Your gaps", technical: "Technical", about: "About you" };
 const FAILED = "That didn't work. Please try again.";
+const NOT_SAVED = "That answer didn't save. It goes with the round when you end it.";
+
+/**
+ * The set-up note on who asks what. A role whose rounds can ask follow-ups says so; the prototype's line, which says
+ * the bank was checked by people who work in the role, shows only once its follow-ups are checked.
+ */
+export const SETUP_NOTE: Record<MockFollowUpState, string> = {
+  none: "The interviewer is an AI and it can be wrong. The questions come from CareerMetro's question bank, not from AI. We keep the text of your answers 30 days.",
+  draft:
+    "The interviewer is an AI. It asks follow-ups like a person would, and it can be wrong. The questions and follow-ups come from CareerMetro's question bank, not from AI. We keep the text of your answers 30 days.",
+  checked:
+    "The interviewer is an AI. It asks follow-ups like a person would, and it can be wrong. Questions come from a bank checked by people who work in the role. We keep the text of your answers 30 days.",
+};
 
 /** "10 min · 4 questions" under each length. */
 export const lengthNote = (length: MockLength) => `${MOCK_LENGTH_MINUTES[length]} min · ${MOCK_LENGTH_QUESTIONS[length]} questions`;
@@ -43,6 +59,17 @@ export const shortAnswer = (answer: string) => (answer.length > 220 ? `${answer.
 export function unsaved(drafts: readonly string[], saved: readonly string[]): { position: number; answer: string }[] {
   return drafts.flatMap((d, i) => (d.trim() !== (saved[i] ?? "") ? [{ position: i + 1, answer: d.trim() }] : []));
 }
+/**
+ * Follow-up replies to send with "End and get feedback": those not yet saved, and the open follow-up's draft (an empty
+ * draft is a skip). One per position, the open draft last so it wins.
+ */
+export function unsavedFollowUps(pending: ReadonlyMap<number, string>, open: { position: number } | null, draft: string): { position: number; answer: string }[] {
+  const all = new Map(pending);
+  if (open && draft.trim()) all.set(open.position, draft.trim());
+  return [...all].map(([position, answer]) => ({ position, answer }));
+}
+/** Whether "Next" waits for the server, which may ask a follow-up: only for a changed answer of 20 words or more. */
+export const mayFollowUp = (text: string, saved: string): boolean => text !== saved && countWords(text) >= MOCK_FOLLOW_UP_MIN_WORDS;
 
 const noSubscribe = () => () => {};
 
@@ -54,7 +81,9 @@ type Phase = { kind: "setup" } | { kind: "running"; session: MockSessionView } |
  * "What worked" and "Add next time"; skipped questions link to the bank. No score anywhere. The interviewer is an AI
  * and can be wrong; it never writes the questions. Answers are typed, or spoken where the browser can turn speech to
  * text on the device (the audio never leaves it). Each answer is saved on Next; the server refuses answers once the
- * round has ended. Cobalt is only the progress bar. Without actions (example data) nothing is saved.
+ * round has ended. After a long answer the server may ask one follow-up from the bank (picked by code): it opens in
+ * the interviewer's row with a fresh answer box and "Skip follow-up"; the progress bar and the question count stay,
+ * and the clock keeps running. Cobalt is only the progress bar. Without actions (example data) nothing is saved.
  */
 export function MockInterview({
   elite,
@@ -62,8 +91,10 @@ export function MockInterview({
   roleSlug,
   initial,
   initialResult,
+  initialFollowUp,
   onStart,
   onAnswer,
+  onFollowUp,
   onEnd,
 }: {
   elite: boolean;
@@ -72,9 +103,12 @@ export function MockInterview({
   initial: MockSessionView | null;
   /** For /design: open on a feedback screen. */
   initialResult?: MockSessionResult;
+  /** For /design: the running round opens on this follow-up. */
+  initialFollowUp?: MockFollowUpAsked | null;
   onStart?: (roleSlug: string, length: MockLength, focus: MockFocus) => Promise<MockInterviewStartResult>;
   onAnswer?: (sessionId: string, position: number, answer: string) => Promise<MockInterviewAnswerResult>;
-  onEnd?: (sessionId: string, answers: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
+  onFollowUp?: (sessionId: string, position: number, answer: string) => Promise<MockFollowUpAnswerResult>;
+  onEnd?: (sessionId: string, answers: { position: number; answer: string }[], followUps: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
 }) {
   const id = useId();
   const [phase, setPhase] = useState<Phase>(initialResult ? { kind: "result", result: initialResult } : initial ? { kind: "running", session: initial } : { kind: "setup" });
@@ -82,7 +116,7 @@ export function MockInterview({
   const [length, setLength] = useState<MockLength>("quick");
   const [focus, setFocus] = useState<MockFocus>("mix");
   const [speaking, setSpeaking] = useState(false);
-  const [at, setAt] = useState(() => (initial ? Math.max(0, initial.answers.findIndex((a) => a === "")) : 0));
+  const [at, setAt] = useState(() => (initial && initialFollowUp ? initialFollowUp.position - 1 : initial ? Math.max(0, initial.answers.findIndex((a) => a === "")) : 0));
   const [drafts, setDrafts] = useState<string[]>(initial?.answers ?? []);
   const saved = useRef<string[]>(initial?.answers ?? []);
   const [left, setLeft] = useState(initial?.secondsLeft ?? 0);
@@ -100,6 +134,25 @@ export function MockInterview({
     draftsRef.current = nextDrafts;
     setDrafts(nextDrafts);
   };
+  // The open follow-up and its draft, with refs for the clock running out; replies not yet saved go with the end.
+  const [follow, setFollow] = useState<MockFollowUpAsked | null>(initial ? (initialFollowUp ?? null) : null);
+  const followRef = useRef<MockFollowUpAsked | null>(initial ? (initialFollowUp ?? null) : null);
+  const [followDraft, setFollowDraft] = useState("");
+  const followDraftRef = useRef("");
+  const pendingFollowUps = useRef(new Map<number, string>());
+  const changeFollowDraft = (change: (draft: string) => string) => {
+    const nextDraft = change(followDraftRef.current);
+    followDraftRef.current = nextDraft;
+    setFollowDraft(nextDraft);
+  };
+  const openFollowUp = (f: MockFollowUpAsked | null) => {
+    followRef.current = f;
+    setFollow(f);
+    followDraftRef.current = "";
+    setFollowDraft("");
+  };
+  // Set once the feedback is in, so a late save or the clock can't end the round twice.
+  const finished = useRef(false);
 
   // Speaking is offered only where the browser recognises speech on the device.
   const canSpeak = useSyncExternalStore(
@@ -130,7 +183,7 @@ export function MockInterview({
   };
 
   const end = useCallback(async () => {
-    if (!sessionId || ending.current) return;
+    if (!sessionId || ending.current || finished.current) return;
     if (!onEnd) {
       setMessage("Example data: sign in to get feedback.");
       return;
@@ -140,13 +193,18 @@ export function MockInterview({
     ending.current = true;
     setBusy(true);
     setMessage("Getting your feedback. This can take half a minute.");
-    const out = await onEnd(sessionId, unsaved(draftsRef.current, saved.current)).catch((): MockInterviewEndResult => ({ ok: false, message: FAILED }));
+    const followUps = unsavedFollowUps(pendingFollowUps.current, followRef.current, followDraftRef.current);
+    const out = await onEnd(sessionId, unsaved(draftsRef.current, saved.current), followUps).catch((): MockInterviewEndResult => ({ ok: false, message: FAILED }));
     ending.current = false;
     setBusy(false);
     if (!out.ok) {
       setMessage(out.message);
       return;
     }
+    finished.current = true;
+    pendingFollowUps.current.clear();
+    followRef.current = null;
+    setFollow(null);
     setMessage(null);
     deadline.current = null;
     setPhase({ kind: "result", result: out.result });
@@ -188,6 +246,9 @@ export function MockInterview({
     setMessage(null);
     deadline.current = null;
     timedOut.current = false;
+    finished.current = false;
+    pendingFollowUps.current.clear();
+    openFollowUp(null);
     saved.current = out.session.answers;
     draftsRef.current = out.session.answers;
     setDrafts(out.session.answers);
@@ -242,6 +303,17 @@ export function MockInterview({
               {q.answer ? (
                 <>
                   <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted">{shortAnswer(q.answer)}</blockquote>
+                  {q.followUp && (
+                    <div data-follow-up={q.followUp.answer ? "answered" : "skipped"} className="flex flex-col gap-1.5">
+                      <span className={LABEL}>Follow-up</span>
+                      <b className="text-[0.9rem] font-[550]">{q.followUp.question}</b>
+                      {q.followUp.answer ? (
+                        <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted">{shortAnswer(q.followUp.answer)}</blockquote>
+                      ) : (
+                        <p className="text-[0.86rem] text-muted">Follow-up skipped.</p>
+                      )}
+                    </div>
+                  )}
                   {q.whatWorked && q.addNextTime && (
                     <dl className="grid gap-x-3.5 gap-y-2 text-[0.9rem] sm:grid-cols-[120px_minmax(0,1fr)]">
                       <dt className={`${LABEL} pt-[3px]`}>What worked</dt>
@@ -347,15 +419,15 @@ export function MockInterview({
               </label>
             </div>
             <small className="text-[0.76rem] text-muted">
-              Speaking uses your browser&apos;s own speech-to-text on this device. The audio never leaves your device and is never sent or kept; you can edit the
-              text before you move on.
+              Speaking needs your microphone. We keep the text of your answers 30 days and never the audio. After that only the round&apos;s short
+              feedback summary stays, and it can mention what you said. Your browser turns speech into text on this device, and you can edit the text
+              before you move on.
             </small>
           </fieldset>
         )}
         <p className="flex gap-2 rounded-md bg-surface-2 px-3 py-2.5 text-[0.8rem] text-muted">
           <Info size={15} {...ICON} className="mt-px shrink-0" />
-          The interviewer is an AI and it can be wrong. The questions come from CareerMetro&apos;s question bank, not from AI. We keep the text of your answers
-          30 days.
+          {SETUP_NOTE[roles.find((r) => r.slug === role)?.followUps ?? "none"]}
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" onClick={start} aria-disabled={busy || undefined} className={INK}>
@@ -377,17 +449,34 @@ export function MockInterview({
   const answered = drafts.filter((d) => d.trim()).length;
   const last = at >= total - 1;
   const low = left <= 60;
-  const words = countWords(draft);
+  const words = countWords(follow ? followDraft : draft);
 
   const setDraft = (value: string) => changeDrafts((all) => session.questions.map((_, i) => (i === at ? value : (all[i] ?? ""))));
 
-  const save = (position: number, text: string) => {
-    if (!onAnswer || text === (saved.current[position - 1] ?? "")) return;
-    void onAnswer(session.id, position, text)
-      .catch((): MockInterviewAnswerResult => ({ ok: false, message: "That answer didn't save. It goes with the round when you end it.", over: false }))
+  const save = (position: number, text: string): Promise<MockInterviewAnswerResult | null> => {
+    if (!onAnswer || text === (saved.current[position - 1] ?? "")) return Promise.resolve(null);
+    return onAnswer(session.id, position, text)
+      .catch((): MockInterviewAnswerResult => ({ ok: false, message: NOT_SAVED, over: false }))
       .then((out) => {
         if (out.ok) {
           saved.current = session.questions.map((_, i) => (i === position - 1 ? text : (saved.current[i] ?? "")));
+          return out;
+        }
+        setMessage(out.message);
+        if (out.over) void end();
+        return out;
+      });
+  };
+
+  // A reply waits in pendingFollowUps until the server has it, so a failed save still goes with the end.
+  const saveFollowUp = (position: number, text: string) => {
+    if (!onFollowUp) return;
+    pendingFollowUps.current.set(position, text);
+    void onFollowUp(session.id, position, text)
+      .catch((): MockFollowUpAnswerResult => ({ ok: false, message: NOT_SAVED, over: false }))
+      .then((out) => {
+        if (out.ok) {
+          if (pendingFollowUps.current.get(position) === text) pendingFollowUps.current.delete(position);
           return;
         }
         setMessage(out.message);
@@ -395,18 +484,61 @@ export function MockInterview({
       });
   };
 
-  const next = () => {
-    if (busy) return;
-    halt();
-    setListening(false);
-    save(at + 1, draft.trim());
+  // On to the next question, or the end after the last. `keepMessage` keeps a save error on screen.
+  const advance = (keepMessage = false) => {
     if (last) {
       void end();
       return;
     }
     setAt(at + 1);
-    setMessage(null);
+    if (!keepMessage) setMessage(null);
     moveFocus("question");
+  };
+
+  const next = async () => {
+    if (busy) return;
+    halt();
+    setListening(false);
+    if (follow) {
+      const reply = followDraft.trim();
+      if (reply) saveFollowUp(follow.position, reply);
+      openFollowUp(null);
+      advance();
+      return;
+    }
+    const position = at + 1;
+    const text = draft.trim();
+    if (!onAnswer || !mayFollowUp(text, saved.current[position - 1] ?? "")) {
+      void save(position, text);
+      advance();
+      return;
+    }
+    // A long answer waits for the server, which may ask one follow-up before the next question.
+    setBusy(true);
+    const out = await save(position, text);
+    setBusy(false);
+    if (out && !out.ok && out.over) return;
+    if (out?.ok && out.followUp && !finished.current) {
+      openFollowUp(out.followUp);
+      setMessage(null);
+      moveFocus("question");
+      return;
+    }
+    advance(out?.ok === false);
+  };
+
+  const skipFollowUp = () => {
+    if (busy) return;
+    halt();
+    setListening(false);
+    if (last) {
+      // The round ends from here, so the button stays (and keeps focus) until the feedback is in; a skip sends nothing.
+      changeFollowDraft(() => "");
+      void end();
+      return;
+    }
+    openFollowUp(null);
+    advance();
   };
 
   const toggleSpeech = async () => {
@@ -422,13 +554,17 @@ export function MockInterview({
       return;
     }
     const position = at;
+    const intoFollowUp = followRef.current !== null;
     setMessage(null);
     setListening(true);
     try {
       stopListening.current = listen(
         C,
         lang,
-        (text) => changeDrafts((all) => session.questions.map((_, i) => (i === position ? withSpoken(all[i] ?? "", text, MOCK_ANSWER_MAX_CHARS) : (all[i] ?? "")))),
+        (text) =>
+          intoFollowUp
+            ? changeFollowDraft((d) => withSpoken(d, text, MOCK_ANSWER_MAX_CHARS))
+            : changeDrafts((all) => session.questions.map((_, i) => (i === position ? withSpoken(all[i] ?? "", text, MOCK_ANSWER_MAX_CHARS) : (all[i] ?? "")))),
         (error) => {
           stopListening.current = null;
           setListening(false);
@@ -464,9 +600,9 @@ export function MockInterview({
           <MessageSquareText size={17} strokeWidth={1.75} />
         </span>
         <div className="min-w-0">
-          <span className={LABEL}>AI interviewer</span>
+          <span className={LABEL}>{follow ? `Follow-up · ${follow.topic}` : "AI interviewer"}</span>
           <h3 id={`${id}-q`} ref={questionHeading} tabIndex={-1} className="mt-0.5 font-display text-[1.25rem] font-semibold leading-snug tracking-[-0.01em] focus-visible:outline-2 focus-visible:outline-accent">
-            {q.question}
+            {follow ? follow.text : q.question}
           </h3>
         </div>
       </div>
@@ -476,16 +612,21 @@ export function MockInterview({
       <textarea
         id={`${id}-a`}
         rows={6}
-        value={draft}
+        value={follow ? followDraft : draft}
         maxLength={MOCK_ANSWER_MAX_CHARS}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={(e) => (follow ? changeFollowDraft(() => e.target.value) : setDraft(e.target.value))}
         placeholder="Answer the way you would out loud. Short is fine."
         className="w-full rounded-md border border-line-strong bg-surface px-3.5 py-3 text-[0.95rem] leading-relaxed text-ink placeholder:text-muted"
       />
       <div className="flex flex-wrap items-center gap-2.5">
-        <button type="button" onClick={next} aria-disabled={busy || undefined} className={INK}>
+        <button type="button" onClick={() => void next()} aria-disabled={busy || undefined} className={INK}>
           {last ? "Finish" : "Next question"}
         </button>
+        {follow && (
+          <button type="button" onClick={skipFollowUp} aria-disabled={busy || undefined} className={GHOST}>
+            Skip follow-up
+          </button>
+        )}
         <button type="button" onClick={() => void end()} aria-disabled={busy || undefined} className={GHOST}>
           End and get feedback
         </button>

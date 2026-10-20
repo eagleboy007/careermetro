@@ -1,26 +1,33 @@
 import { z } from "zod";
 import {
   certification,
+  eliteShelfFile,
   mockBankFile,
   practiceQuestion,
   proofTask,
   resource,
   roleProfile,
+  roleTrackProblems,
+  roleTracksFile,
   skillGroups,
   skill,
   type Certification,
+  type ShelfEntry,
   type MockQuestion,
   type PracticeQuestion,
   type ProofTask,
   type Resource,
   type RoleProfile,
+  type RoleTracks,
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import eliteShelfJson from "./elite-shelf.json";
 import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
 import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
+import roleTracksJson from "./role-tracks.json";
 import skillsJson from "./skills.json";
 import androidDeveloper from "./roles/android-developer.json";
 import appsecEngineer from "./roles/appsec-engineer.json";
@@ -83,6 +90,13 @@ export const practiceQuestions: PracticeQuestion[] = z.array(practiceQuestion).p
  */
 export const mockQuestions: MockQuestion[] = mockBankFile.parse(mockBankJson).questions;
 
+/**
+ * The Elite shelf (Library's Elite tab, FR-50 part 5, handoff 12l): free catalog sources by URL, playbooks and drills
+ * hand-written by Development (`reviewed: false` until someone who works in the role checks them; production shows
+ * only reviewed ones, src/lib/library/shelf.ts) and paid-course slots marked Coming soon. Never written by the model.
+ */
+export const eliteShelfEntries: ShelfEntry[] = eliteShelfFile.parse(eliteShelfJson).entries;
+
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
@@ -136,3 +150,16 @@ export const skillIdByTerm: ReadonlyMap<string, string> = new Map(
 export const skillGroupMembers: ReadonlyMap<string, string[]> = new Map(
   roleProfiles.flatMap((r) => skillGroups(r).map((g) => [g.id, g.skillIds] as const)),
 );
+
+/**
+ * Role tracks (v44 gap list item 11, docs/plans/tracks-plan.md): up to five kinds of work per role, each an edit of
+ * the role's own skill list. Hand-written by Development and `reviewed: false` until someone who works in the role
+ * checks them; production offers only reviewed ones (src/lib/tracks/apply.ts). Checked against the role profiles and
+ * the taxonomy at import, so a bad edit fails tests and the build. Never written by the model.
+ */
+export const roleTracks: RoleTracks[] = (() => {
+  const file = roleTracksFile.parse(roleTracksJson);
+  const problems = roleTrackProblems(file, roleProfiles, new Set(skills.map((s) => s.id)));
+  if (problems.length) throw new Error(`src/content/role-tracks.json: ${problems.join("; ")}`);
+  return file.roles;
+})();

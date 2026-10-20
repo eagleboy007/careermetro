@@ -1,5 +1,17 @@
-import type { MockBankItem, MockBankView, MockChoiceQuestion, MockQuestion, MockRole, TimedTestError, TimedTestReview, TimedTestView } from "@/lib/schemas";
-import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, TIMED_TEST_MINUTES, TIMED_TEST_QUESTIONS, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import type {
+  MockBankItem,
+  MockBankView,
+  MockChoiceQuestion,
+  MockFollowUp,
+  MockFollowUpState,
+  MockQuestion,
+  MockRole,
+  RolePrepView,
+  TimedTestError,
+  TimedTestReview,
+  TimedTestView,
+} from "@/lib/schemas";
+import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, ROLE_PREP_FREE_OPEN, ROLE_PREP_QUESTIONS, TIMED_TEST_MINUTES, TIMED_TEST_QUESTIONS, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 
 /*
  * Interview prep rules (`/mock`, FR-50 part 2, handoff 12l), kept apart from the database so they can be tested on
@@ -18,8 +30,36 @@ export function roleFor(roles: readonly Role[], asked: string | null | undefined
   return roles.find((r) => r.slug === asked) ?? roles.find((r) => r.slug === target) ?? roles.find((r) => r.slug === DEFAULT_MOCK_ROLE) ?? roles[0];
 }
 
-/** Unreviewed multiple-choice questions are used on local and preview deployments only, never in production. */
-export const unreviewedAllowed = (env: Record<string, string | undefined> = process.env): boolean => env.VERCEL_ENV !== "production";
+/**
+ * Unreviewed multiple-choice questions and follow-ups are used on preview and development deployments and in local
+ * `npm run dev` and tests only, never in production (T86). An unset VERCEL_ENV counts only with NODE_ENV development
+ * or test, so a production build run anywhere else (`next start` with no VERCEL_ENV) shows checked content only.
+ */
+export const unreviewedAllowed = (env: Record<string, string | undefined> = process.env): boolean =>
+  env.VERCEL_ENV === "preview" || env.VERCEL_ENV === "development" || (!env.VERCEL_ENV && (env.NODE_ENV === "development" || env.NODE_ENV === "test"));
+
+/** Skills whose questions are about the person rather than a tool: they fit every role, so "About you" uses them all. */
+export const ABOUT_SKILLS: ReadonlySet<string> = new Set(["communication", "stakeholder-management"]);
+
+/**
+ * The follow-ups a mock interview may ask after this question: its own, once someone who works in the role has
+ * reviewed them, or on local and preview deployments before that. None for a multiple-choice question.
+ */
+export function followUpsOf(q: BankQuestion, allowUnreviewed: boolean): MockFollowUp[] {
+  if (q.kind !== "open" || !q.followUps?.length) return [];
+  return q.followUpsReviewed || allowUnreviewed ? q.followUps : [];
+}
+
+/**
+ * Whether a role's mock interview can ask follow-ups, over the questions a round for it can ask (its own open questions
+ * and the about-you ones): "checked" when every follow-up it can ask has been reviewed, "draft" when some still wait
+ * for review (local and preview only), "none" when there are none to ask.
+ */
+export function followUpStateFor(bank: readonly BankQuestion[], role: Role, allowUnreviewed: boolean): MockFollowUpState {
+  const asked = bank.filter((q) => q.kind === "open" && (q.roleSlugs.includes(role.slug) || ABOUT_SKILLS.has(q.skillId)) && followUpsOf(q, allowUnreviewed).length > 0);
+  if (!asked.length) return "none";
+  return asked.every((q) => q.kind === "open" && q.followUpsReviewed) ? "checked" : "draft";
+}
 
 /** The role's questions in the order of its skills (required first, as the role profile lists them), then bank order. */
 function forRole<Q extends BankQuestion>(questions: readonly Q[], role: Role): Q[] {
@@ -37,9 +77,14 @@ export function choicePool(bank: readonly BankQuestion[], role: Role, allowUnrev
   return forRole(choice, role);
 }
 
-/** Roles for the picker, each saying whether it has enough questions for a test. */
+/** Roles for the picker, each saying whether it has enough questions for a test and whether its rounds ask follow-ups. */
 export function mockRoles(bank: readonly BankQuestion[], roles: readonly Role[], allowUnreviewed: boolean): MockRole[] {
-  return roles.map((r) => ({ slug: r.slug, title: r.title, hasTest: choicePool(bank, r, allowUnreviewed).length >= TIMED_TEST_QUESTIONS }));
+  return roles.map((r) => ({
+    slug: r.slug,
+    title: r.title,
+    hasTest: choicePool(bank, r, allowUnreviewed).length >= TIMED_TEST_QUESTIONS,
+    followUps: followUpStateFor(bank, r, allowUnreviewed),
+  }));
 }
 
 /**
@@ -63,8 +108,48 @@ export function freeOpenIds(open: readonly BankQuestion[]): Set<string> {
   return new Set(ids);
 }
 
-/** The question bank tab for a role: every open question, 5 of them open on Free and all on Elite. */
-export function bankViewFor(bank: readonly BankQuestion[], role: Role, elite: boolean): MockBankView {
+/**
+ * "Interview prep for this role" on a Departures role (handoff 12l): five of the role's open questions. The first is
+ * the first the bank opens on Free; the other four are ones the bank opens only on Elite, in role order, so the lock
+ * here locks what Elite adds. On Free only the first is open; a locked question keeps its id and nothing else. Null
+ * when the role has too few Elite-only questions, so the screen says it is coming.
+ */
+export function rolePrepFor(bank: readonly BankQuestion[], role: Role, elite: boolean): RolePrepView | null {
+  const open = forRole(
+    bank.filter((q) => q.kind === "open"),
+    role,
+  );
+  const free = freeOpenIds(open);
+  const first = open.find((q) => free.has(q.id));
+  const eliteOnly = open.filter((q) => !free.has(q.id)).slice(0, ROLE_PREP_QUESTIONS - 1);
+  if (!first || eliteOnly.length < ROLE_PREP_QUESTIONS - 1) return null;
+  return {
+    roleSlug: role.slug,
+    elite,
+    questions: [first, ...eliteOnly].map((q, i) => (elite || i < ROLE_PREP_FREE_OPEN ? { open: true, id: q.id, question: q.question } : { open: false, id: q.id })),
+  };
+}
+
+/** Each Departures job's interview prep, by job id: null for a job with no library role, or one the bank can't fill. */
+export function prepForJobs(
+  jobs: readonly { id: string; roleSlug: string | null }[],
+  bank: readonly BankQuestion[],
+  roles: readonly Role[],
+  elite: boolean,
+): Record<string, RolePrepView | null> {
+  return Object.fromEntries(
+    jobs.map((j) => {
+      const role = j.roleSlug ? roles.find((r) => r.slug === j.roleSlug) : undefined;
+      return [j.id, role ? rolePrepFor(bank, role, elite) : null];
+    }),
+  );
+}
+
+/**
+ * The question bank tab for a role: every open question, 5 of them open on Free and all on Elite. An open question
+ * lists the follow-ups a mock interview may ask after it, to study; a locked one sends none.
+ */
+export function bankViewFor(bank: readonly BankQuestion[], role: Role, elite: boolean, allowUnreviewed = false): MockBankView {
   const open = forRole(
     bank.filter((q) => q.kind === "open"),
     role,
@@ -72,7 +157,15 @@ export function bankViewFor(bank: readonly BankQuestion[], role: Role, elite: bo
   const free = freeOpenIds(open);
   const items = open.map((q): MockBankItem =>
     (elite || free.has(q.id)) && q.kind === "open"
-      ? { open: true, id: q.id, topic: q.topic, question: q.question, strongCovers: q.strongCovers, practiceHref: `/practice?q=${encodeURIComponent(q.id)}` }
+      ? {
+          open: true,
+          id: q.id,
+          topic: q.topic,
+          question: q.question,
+          strongCovers: q.strongCovers,
+          followUps: followUpsOf(q, allowUnreviewed).map((f) => f.text),
+          practiceHref: `/practice?q=${encodeURIComponent(q.id)}`,
+        }
       : { open: false, id: q.id, topic: q.topic, question: q.question },
   );
   return { topics: [...new Set(open.map((q) => q.topic))], items };

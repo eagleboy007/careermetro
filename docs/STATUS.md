@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Elite part 3, the mock interview).
+Last updated: 2026-10-20 (refreshed through #206; resource batch 6, company-side staging check)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -10,6 +10,7 @@ Last updated: 2026-10-20 (Elite part 3, the mock interview).
   - Resume, Gaps, Path, Today, Map, Life line, Departures, Me and public profile, account settings 1–2, Inbox part 1, and resume download (PDF and Word). See `docs/REQUIREMENTS.md`.
   - 29 role profiles, "one of these" skill groups, certificate dates, and "Closest to your resume". See `docs/plans/`.
   - Pasted-job check (#109–#117). Nearby lines (#123). Market with example data (#125, #130). AI-ready resume check (#126).
+  - v44 fixes, Today No resume (gap list items 1 to 4, no migration): target role chips above the upload box, carried to the role step in sessionStorage and shown first there (FR-8); the four reading steps while a resume uploads; the drop zone's "Drop your resume here" copy and Choose file; the full subline. "Try a sample resume" is left out: it needs new server code that sends a fixture through the parser.
   - Not for me per goal, FR-48 (2026-10-17): skip a required goal (it stays a gap; the train passes it; Bring back restores it) or swap a "one of these" goal to another skill of its group, on the Map (#154) and in an open goal on Today (#155). After Testing Run 4 (T58 to T60, T67, T68), a swapped goal learns its new skill on Path and Practice too, keeps its learn tick, and Me and the Map's stop labels pass skipped goals; asking twice is fine, and someone else's goal is 404. No migration; export version 19. Tracks wait for role tracks. See `docs/plans/not-for-me-plan.md`.
 - **Proof**
   - Certificate proof (#109, #110) and profile certifications with the Credly check (#132).
@@ -27,16 +28,32 @@ Last updated: 2026-10-20 (Elite part 3, the mock interview).
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
   - Every e2e axe check runs through one helper that first waits for the page title, because a server action's refresh can leave `<title>` empty for a moment; two of the three helpers skipped that wait, which flaked `me-certifications-held` on #158 (2026-10-17).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
-  - The ATS openings feed runs monthly (#127). 437 free resource links (#129; batch 5 added 13, 2026-10-20).
+  - The ATS openings feed runs monthly (#127). 456 free resource links (#129; batch 5 added 13, batch 6 added 19 to the 3-resource skills most roles require, 2026-10-20).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
 - **Switched off until keys arrive:** sign-in (preview uses a test user; with the Supabase values it opens by emailed code, and "Continue with Google" shows only once `GOOGLE_SIGNIN=1` is added, 2026-10-19), company sign-up, join and re-check codes and the current-job check (need `RESEND_API_KEY` and `EMAIL_FROM`, `dev/email-sender-steps.md` step 6, plus `NAME_HASH_KEY`), find-people, phone sharing, and photo and certificate upload.
+- **Merged since the last refresh (2026-10-20), facts in each plan file**
+  - Network, FR-49, parts 1 to 3 (#165 to #167, migration 0034, `docs/plans/network-plan.md`). Guided resume builder, FR-36 (#169, migration 0035; Download PDF or DOCX through the confirm step, #179; `docs/plans/resume-builder-plan.md`).
+  - Elite, FR-50: the plan switch (#170, 0036), the question bank and timed test (#171, 0037), the mock interview (#173, 0038) and the Library's Elite shelf (#174). Own-written questions and shelf items are `reviewed: false`, so production hides them until checked (Project manager to arrange).
+  - Library, FR-51: part 1 (#172) and part 2, Save, finished, rides, reports, suggestions and `/admin/library` (#185, 0041, `docs/plans/library-part-2-plan.md`).
+  - v44 gap list (`docs/plans/v44-gap-list.md`): Today No resume (#175), links instead of "soon" (#176), Settings privacy and Blocked people (#177), Departures paste box and role interview prep (#178), job search switch and notice period, FR-52 (#180, 0039), Life line links and Match's open jobs (#181), Network Report, filters and In common (#182), Arrivals calendar file, Offers and Language (#183), Me editing, FR-53 (#188, 0042).
+  - Live Departures, FR-25: the daily public ATS feed (#184, 0040), dead boards dropped (#186), the board check workflow (#187), 147 boards (#189), and caps of 300 boards and 10,000 open posts (#194). `docs/plans/departures-live-plan.md`.
+  - In-app notifications, FR-54 (#190, 0043; no email). Mock follow-ups part 1 (#191, 0044; follow-ups `followUpsReviewed: false`, so production asks none). Settings columns, FR-55 (#192, 0045, export version 31).
+  - Today live cards: Signal check, Departures board, On your line (#193; the Signal check is hidden in production until its questions are reviewed). Tracks, FR-56 (#195; draft tracks `reviewed: false`, the chip stays plain text in production).
+  - Hardening (#196, `docs/plans/hardening-pass.md`): `hardening:` e2e steps for #175 to #193 (keyboard, axe light and dark after a reload, 390 px fit) and focus fixes; Life line marks read what they draw.
+  - Launch readiness (#197, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md`, the scripted production check to run right after Milin's redeploy; RLS and FK indexes confirmed on 0039 to 0045 and `rls.test` refuses policies and grants; Account settings saves capped at 100 a day and Unblock at 50. Supabase's Confirm signup template also needs `{{ .Token }}`.
+  - Performance pass (#198, migration 0046 `job_posts_open_newest`, `docs/plans/perf-pass.md`): Today, Map and Departures read the analysis once and run independent reads in parallel; the goal sync on every view is what's left.
+  - Refused sign-in codes logged (#199): `auth_email_code_send_refused` and `auth_email_code_verify_refused` with Supabase's error code and status only, never the email or the code.
+  - Goal sync skip (#200, no migration, `docs/plans/goal-sync-skip-plan.md`): a view first plans the sync from one read-only snapshot with no lock and writes nothing when nothing would change; otherwise the locked path runs as before.
+  - Mock follow-ups part 2 (#201, no migration): all 95 open bank questions have two follow-ups (188), all `followUpsReviewed: false`, so production asks none until the expert review (`dev/mock-followups-draft.md`, pending item 27).
+  - Staging dry run of prod-smoke (#202): `scripts/smoke/staging-dry-run.mjs` and the manual Smoke dry run (staging) workflow; prod-smoke.md's steps now match the app; the e2e walk's `smoke 6` covers Download, Sign out and signing in again.
+  - Staging dry run export check and fewer Vercel deployments (#203): 6.1 fetches the export with the page's cookies, and a full run passed; working branches make no Vercel deployment, and docs-only merges don't move staging.
+  - Testing Run 5 fixes T73 to T80, the refused-certificate job limited to goals the certificate could fill, and the market trends plan (proposed; D1 to D6 wait on Milin) (#204).
+  - Testing Run 5 lows T81 to T93 and T95 (#205): rate limits on resume downloads and direct messages, Inbox block lock order, job-search-off note, Google callback flag, drafts only on preview/dev, real Elite limits, Library suggestion checks, future dates and list caps on Departures, no Network city filter. T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
+  - End chat in accepted found chats, FR-52 (#206): ends only that chat, files no report, and the company can't write or ask again. Re-test 30: report-with-block takes the Network locks (T97), the work-email badge goes to the side the check was made on (T95, migration 0047 `job_email_checks.role_source`), the message limit is chosen under the lock (T98), and 31 link shorteners are refused (T99). `scripts/smoke/staging-screens.mjs` runs after the staging dry run: Network with no city shown, the bell, builder to Download, Library, a Mock round, Departures save and apply; both test accounts are deleted even after a failure.
 
 ## In progress
 
-- Network, FR-49 (handoff 12j): part 1, data and rules, is in (#165, migration 0034). Part 2, the `/network` page (Connections, Requests, Sent, Find people), the avatar-menu count and the Settings "Let people find me" switch, is in (#166). Part 3 is in this PR: Connect and "In common with you" on `/u/[handle]`, chats between connections open at once (Remove turns the chat back into a request), and Settings' "Your gaps show to" (Nobody else, Your connections, Everyone who can see your profile) replaces the "Your gaps" switch. Network is then done; what follows is in the plan's "Not in this plan". Plan `docs/plans/network-plan.md`.
-- Build your resume, FR-36 (handoff 12k), is built on branch `resume-builder` (migration 0035, export version 21), with the review fixes: the line check reads ambiguous names (React, Express) and number words against the answer, the AI-5 backstop reads only the person's words, rebuilds reuse the waiting version under the cap and a per-person lock, the reword's cost is reserved (H4), and saves coalesce and never block Next. The review page points to the confirm page for the download. Plan `docs/plans/resume-builder-plan.md`.
-- Elite, FR-50 (handoff 12l, C15): part 1, the plan switch, merged (#170; migration 0036 `user_plans`, export version 22): `/elite`, Settings > Your plan with Turn off, the avatar mark and "Elite · beta" menu line, the profile plan card and opt-in badge, Practice's cap for Free only, and the violet `elite` tokens. Part 2 merged (#171; migration 0037 `timed_tests`, export version 23): `/mock` with the question bank (the Practice bank's 95 questions, 5 open on Free) and the timed test (12 multiple-choice in 15 minutes, picked, timed and scored on the server, 10 starts a day), and the Interview prep entry points. Its 48 multiple-choice questions (12 skills, 4 each) are Development's own and marked `reviewed: false`, so production shows no timed test until someone who works in each role checks them (Project manager to arrange). Part 3 merged (migration 0038 `mock_sessions` and `mock_answers`, export version 24): the Mock interview tab (Quick 4 in 10 minutes or Full 8 in 20, focus Mix, Your gaps, Technical or About you, bank questions picked by code, typed answers or on-device speech-to-text only), one `prompts/mock-interview/v1` call at the end for a summary and What worked / Add next time per answer, never a score, within `MOCK_DAILY_BUDGET_USD` (default $3) and 5 rounds and 5 feedbacks a person a day; `npm run eval:mock` over `fixtures/evals/mock`. Part 5 (Elite shelf) follows `docs/plans/elite-plan.md`.
-- Library, FR-51 (handoff 12a, Elite plan item 4): merged (#172): `/library` in the avatar menu, read only, with For your goals (cards in map order, Learn or Brush up and Prove, On your ride), Your interests, Saved and Finished, search, type, length and Hindi filters, and the details panel. No migration: Finished is the person's own ride and Path ticks. Saved, "I finished this", Add to my rides, Report a broken link and Suggest a free resource need `user_resources`, `resource_reports` and `resource_suggestions` (a migration, not yet asked for).
+- Resource batch 6 (least-covered skills, approved free sources only) and the company side of the staging screens check (Project manager, 2026-10-20). Re-test 31: a work-email check saved on the other side of the profile gives a row no badge, so company views no longer badge the resume row for a check made on an added row (T100); four more shorteners, and message requests off is read only under the lock, so people who just connected aren't refused (T102). Staging screens check: the no-city steps need the city to be set and also search the page data (T101), the clean-up runs in a finally and on a cancel (T102), and the find-me switch waits for its save (T103).
 
 ## Next up
 
@@ -46,15 +63,17 @@ Open, all waiting on someone else:
 1. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It needs Milin's details.
 2. Launch readiness (c) 6, full alerts: needs a log drain on Milin's Vercel account. The 6-hourly smoke check runs meanwhile.
 3. The 95 practice questions are self-checked only; an expert review is still owed (Data research).
-4. The 48 timed-test questions in `src/content/mock-bank.json` (Elite part 2) need checking by people who work in the roles; until then `reviewed` stays false and production shows no timed test.
+4. The 48 timed-test questions in `src/content/mock-bank.json` (Elite part 2) need checking by people who work in the roles; until then `reviewed` stays false and production shows no timed test. The same goes for the Elite shelf's 2 playbooks and 2 drill sets in `src/content/elite-shelf.json` (part 5).
 
-Handover (2026-10-15 18:25 UTC): "Development 3" took over from Development 2 for T44.
+Handover (2026-10-19 21:53 UTC): "Development 4" took over from Development 3 and starts from this page.
+
+Also waiting on Milin: T89's feed database role, item 45 (AI first interview, not to be built until he answers), and D1 to D6 of `docs/plans/market-trends-plan.md`.
 
 Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0039**. `EXPORT_VERSION` (24) lives in `src/lib/account/export.ts`. The latest FR is FR-51 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0048**. `EXPORT_VERSION` (31) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 
@@ -79,7 +98,6 @@ Numbers: the next migration is **0039**. `EXPORT_VERSION` (24) lives in `src/lib
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
 - **Milin, decisions:** the cut-off end of his name-search message; the employer-hiding rule (Project manager's call, reversible); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
 - **Project manager:** deleting merged remote branches, which the permission check blocks for Development.
-- `reopenUnconfirmedGoals` (daily cleanup) re-checks every rejected or held certificate each day. That is fine at beta scale, but limit it to recent rows when there are many.
 - `/mnt/project-files` sometimes gives I/O errors. When it does, write to `docs/` and copy across later.
 - Thread containers can't reach `registry.npmjs.org`, so CI is the npm check.
 - CI logs are readable only through the GitHub MCP `get_job_logs` with `return_content`.
@@ -88,4 +106,4 @@ Numbers: the next migration is **0039**. `EXPORT_VERSION` (24) lives in `src/lib
 - Worktrees are locked; remove them with `git worktree remove -f -f`.
 - `.claude/` is in git's local exclude file; use `git add -f`.
 - Next 16 differs from the Next you know; read `node_modules/next/dist/docs/` first.
-- Vercel Hobby allows 100 deploys a day, and every PR push deploys. Push once per PR.
+- Vercel Hobby allows 100 deploys a day. Working branches (`claude/`, `feature/`, `fix/`, `dependabot/`, `data/`) make no deployment (#203), so only merges to main and the staging move count; push once per PR anyway.

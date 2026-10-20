@@ -30,6 +30,12 @@ export const lifeLine = z.object({
   moments: z.array(lifeMoment).max(120),
   /** Lines from the resume with no date, so they can't be placed yet. */
   undated: z.array(z.object({ row: lifeRow, name: z.string().min(1).max(160) })).max(60),
+  /**
+   * Where one moment fed another, drawn as a dotted link: worked out in plain code from the profile (a certificate or
+   * qualification naming a skill a later job used, a certificate counting toward the destination). `text` is the
+   * sentence in both moments' panels.
+   */
+  links: z.array(z.object({ from: z.string().min(1).max(80), to: z.string().min(1).max(80), text: z.string().min(1).max(200) })).max(40).default([]),
 });
 
 export type LifeRow = z.infer<typeof lifeRow>;

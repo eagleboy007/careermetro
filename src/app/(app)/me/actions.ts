@@ -4,6 +4,18 @@ import { refresh } from "next/cache";
 import type { CredlyCheckResult } from "@/lib/proofs/result";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
+import {
+  addInterest,
+  deleteMeEducation,
+  deleteMeRole,
+  deleteStory,
+  ME_EDIT_MESSAGES,
+  removeInterest,
+  saveMeEducation,
+  saveMeRole,
+  saveStory,
+  type MeEditResult,
+} from "@/lib/me/edit-store";
 import { finishJobCheck, startJobCheck } from "@/lib/me/job-email-check";
 import { checkCertificateWithCredly } from "@/lib/proofs/credly-store";
 import { CERTIFICATE_REFUSAL_MESSAGES, CREDLY_EXPIRED_MESSAGE, CREDLY_HELD_MESSAGE, CREDLY_NOTE_MESSAGES, CREDLY_REFUSAL_MESSAGES } from "@/lib/proofs/messages";
@@ -66,4 +78,64 @@ export async function confirmJobCheckCode(workEmail: string, code: string): Prom
     logEvent("error", "job_check_confirm_failed", errorFields(error));
     return { ok: false, error: "Something went wrong checking the code. Please try again." };
   }
+}
+
+/*
+ * Me editing (docs/plans/me-editing-plan.md): add, edit and delete roles, education and stories, and add or remove
+ * interests. Each checks the account itself; the store checks the input with Zod, matches the row to this account and
+ * counts the daily limit. Nothing typed reaches a log: event names and error codes only.
+ */
+
+/** null when it worked, or the words to show, with the field they belong to when there is one. */
+export type MeEditActionResult = { error: string | null; field?: string };
+
+async function edit(name: string, work: (userId: string) => Promise<MeEditResult>): Promise<MeEditActionResult> {
+  const account = await currentAccount();
+  if (!account) return { error: "Please sign in again." };
+  try {
+    const out = await work(account.id);
+    if (!out.ok) return { error: out.message ?? ME_EDIT_MESSAGES[out.error], field: out.field };
+    refresh();
+    return { error: null };
+  } catch (error) {
+    logEvent("error", name, errorFields(error));
+    return { error: "That didn't work. Please try again." };
+  }
+}
+
+/** "+ Add role" with `id` null, or Edit on a role the person added. */
+export async function saveMeRoleAction(id: string | null, input: unknown): Promise<MeEditActionResult> {
+  return edit("me_role_save_failed", (userId) => saveMeRole(userId, id, input));
+}
+
+export async function deleteMeRoleAction(id: string): Promise<MeEditActionResult> {
+  return edit("me_role_delete_failed", (userId) => deleteMeRole(userId, id));
+}
+
+/** "+ Add" under Education with `id` null, or Edit on one the person added. */
+export async function saveMeEducationAction(id: string | null, input: unknown): Promise<MeEditActionResult> {
+  return edit("me_education_save_failed", (userId) => saveMeEducation(userId, id, input));
+}
+
+export async function deleteMeEducationAction(id: string): Promise<MeEditActionResult> {
+  return edit("me_education_delete_failed", (userId) => deleteMeEducation(userId, id));
+}
+
+/** "+ Add story" with `id` null, or Edit on a story. */
+export async function saveStoryAction(id: string | null, input: unknown): Promise<MeEditActionResult> {
+  return edit("story_save_failed", (userId) => saveStory(userId, id, input));
+}
+
+export async function deleteStoryAction(id: string): Promise<MeEditActionResult> {
+  return edit("story_delete_failed", (userId) => deleteStory(userId, id));
+}
+
+/** Interests' Add. */
+export async function addInterestAction(name: string): Promise<MeEditActionResult> {
+  return edit("interest_add_failed", (userId) => addInterest(userId, { name }));
+}
+
+/** An interest chip's remove ×. */
+export async function removeInterestAction(name: string): Promise<MeEditActionResult> {
+  return edit("interest_remove_failed", (userId) => removeInterest(userId, { name }));
 }

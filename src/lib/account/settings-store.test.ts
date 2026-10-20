@@ -4,8 +4,19 @@ import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { DEFAULT_SETTINGS, settingsInput, type SettingsInput } from "@/lib/schemas";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "./export";
-import { canViewProfile, checkUsername, clearExpiredUsernameRedirects, findProfile, readAccountSettings, resolveProfile, saveAccountSettings, settingsFor } from "./settings-store";
+import {
+  canViewProfile,
+  checkUsername,
+  clearExpiredUsernameRedirects,
+  findProfile,
+  readAccountSettings,
+  resolveProfile,
+  saveAccountSettings,
+  SETTINGS_LIMIT_MESSAGE,
+  settingsFor,
+} from "./settings-store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests. Every user here is this run's own.
 const url = process.env.TEST_DATABASE_URL;
@@ -41,7 +52,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
 
   it("starts with the defaults and no pay", async () => {
     const s = await readAccountSettings(a, new Date(), db!);
-    expect(s).toEqual({ username: null, usernameLockedUntil: null, headline: null, city: null, settings: DEFAULT_SETTINGS, pay: { currentLakh: null, expectedLakh: null } });
+    expect(s).toEqual({ username: null, usernameLockedUntil: null, headline: null, city: null, openToWorkIn: [], settings: DEFAULT_SETTINGS, pay: { currentLakh: null, expectedLakh: null } });
   });
 
   it("saves username, headline, pay and settings together", async () => {
@@ -64,6 +75,68 @@ describe.skipIf(!db)("account settings store (database)", () => {
       expect((await saveAccountSettings(g, form({ settings: { ...DEFAULT_SETTINGS, showGaps: !on, gapsVisibleTo: to } }), now, db!)).ok).toBe(true);
       expect(await settingsFor(g, db!)).toMatchObject({ gapsVisibleTo: to, showGaps: on });
     }
+  });
+
+  it("saves Connection requests from, and keeps it when a save leaves it out", async () => {
+    const r = await makeUser("requests");
+    const now = new Date();
+    const stored = async () => (await db!.select({ to: schema.userSettings.requestsFrom }).from(schema.userSettings).where(eq(schema.userSettings.userId, r)))[0]?.to;
+    expect(await saveAccountSettings(r, form({ settings: { ...DEFAULT_SETTINGS, requestsFrom: "nobody" } }), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("nobody");
+    expect(await saveAccountSettings(r, form(), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("nobody");
+    expect(await saveAccountSettings(r, form({ settings: { ...DEFAULT_SETTINGS, requestsFrom: "anyone" } }), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("anyone");
+  });
+
+  it("saves the message requests switch, and keeps it when an older page leaves it out (FR-55)", async () => {
+    const m = await makeUser("msgreq");
+    const now = new Date();
+    expect((await settingsFor(m, db!)).messageRequests).toBe(true);
+    expect(await saveAccountSettings(m, form({ settings: { ...DEFAULT_SETTINGS, messageRequests: false } }), now, db!)).toEqual({ ok: true });
+    expect((await settingsFor(m, db!)).messageRequests).toBe(false);
+    const older: Partial<typeof DEFAULT_SETTINGS> = { ...DEFAULT_SETTINGS };
+    delete older.messageRequests;
+    expect(await saveAccountSettings(m, form({ settings: older }), now, db!)).toEqual({ ok: true });
+    expect((await settingsFor(m, db!)).messageRequests).toBe(false);
+    expect(await saveAccountSettings(m, form({ settings: { ...DEFAULT_SETTINGS, messageRequests: true } }), now, db!)).toEqual({ ok: true });
+    expect((await settingsFor(m, db!)).messageRequests).toBe(true);
+  });
+
+  it("saves Open to work in with the form, Remote first, keeps it when a save leaves it out, and clears it (FR-55)", async () => {
+    const o = await makeUser("places");
+    const now = new Date();
+    expect(await saveAccountSettings(o, form({ openToWorkIn: ["Pune", "Remote"] }), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(o, now, db!))?.openToWorkIn).toEqual(["Remote", "Pune"]);
+    expect(await saveAccountSettings(o, form(), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(o, now, db!))?.openToWorkIn).toEqual(["Remote", "Pune"]);
+    expect((await exportAccountData(o, db!))?.settings).toMatchObject({ openToWorkIn: ["Remote", "Pune"], messageRequests: true });
+    expect(await saveAccountSettings(o, form({ openToWorkIn: [] }), now, db!)).toEqual({ ok: true });
+    expect((await readAccountSettings(o, now, db!))?.openToWorkIn).toEqual([]);
+    // The database keeps the cap even if a writer skipped the schema.
+    await expect(
+      db!.update(schema.userSettings).set({ openToWorkIn: ["Remote", "Pune", "Kochi", "Mumbai", "Chennai", "Noida", "Indore"] }).where(eq(schema.userSettings.userId, o)),
+    ).rejects.toThrow();
+  });
+
+  it("caps settings saves a day, each try counted, and a refused save changes nothing (launch-readiness pass)", async () => {
+    const l = await makeUser("limit");
+    // The real clock, as the daily cleanup in other test files deletes rate-limit windows by it.
+    const now = new Date();
+    const consentsOf = async () => (await db!.select({ id: schema.consents.id }).from(schema.consents).where(eq(schema.consents.userId, l))).length;
+    // Fill the day's count directly, then the last allowed save is a real one.
+    for (let i = 0; i < LIMITS.settingsSavesPerUserDay.max - 1; i++) await takeShared(LIMITS.settingsSavesPerUserDay, l, { db: db!, now: now.getTime() });
+    expect(await saveAccountSettings(l, form({ settings: { ...DEFAULT_SETTINGS, companiesCanFind: false } }), now, db!)).toEqual({ ok: true });
+    const before = await consentsOf();
+    // That save left "Let companies find me" off; the next, turning it on, is refused and records no consent.
+    expect(await saveAccountSettings(l, form({ headline: "Refused", settings: { ...DEFAULT_SETTINGS, companiesCanFind: true } }), now, db!)).toEqual({
+      ok: false,
+      errors: { settings: SETTINGS_LIMIT_MESSAGE },
+    });
+    expect(await consentsOf()).toBe(before);
+    expect((await settingsFor(l, db!)).companiesCanFind).toBe(false);
+    expect((await readAccountSettings(l, now, db!))?.headline).toBeNull();
+    expect(SETTINGS_LIMIT_MESSAGE).toMatch(/try again tomorrow/);
   });
 
   it("saves an optional city from the list, keeps it when a save leaves it out, and clears it (T44)", async () => {
@@ -186,7 +259,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
     const e = await makeUser("e");
     const fresh = await exportAccountData(e, db!);
     expect(fresh?.pay).toBeNull();
-    expect(fresh?.settings).toEqual({ ...DEFAULT_SETTINGS, savedAt: null });
+    expect(fresh?.settings).toEqual({ ...DEFAULT_SETTINGS, openToWorkIn: [], savedAt: null });
     expect(await settingsFor(e, db!)).toEqual(DEFAULT_SETTINGS);
   });
 

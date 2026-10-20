@@ -19,23 +19,50 @@ const MIN_RETRY_MS = 8_000;
 
 export type MockFeedbackClient = Pick<Anthropic, "beta">;
 
-/** One answered question as the model gets it: the bank's words, and the person's answer. */
-export type MockFeedbackItem = { position: number; topic: string; question: string; strongCovers: string; answer: string };
+/**
+ * One answered question as the model gets it: the bank's words and the person's answer, and the follow-up asked after
+ * it with the reply, when the person answered one (prompts/mock-interview/v2).
+ */
+export type MockFeedbackItem = {
+  position: number;
+  topic: string;
+  question: string;
+  strongCovers: string;
+  answer: string;
+  followUp?: { question: string; answer: string } | null;
+};
 export type MockFeedbackInput = { roleTitle: string; items: MockFeedbackItem[] };
 /** `feedback` is what the page shows; `parsed` is the model's output before the score check, for the eval. */
 export type MockFeedbackResult = { feedback: MockInterviewFeedback | null; parsed: MockInterviewFeedback | null; calls: AiCallRecord[] };
 
+/** The person's text with any tag that could close a block early neutralised, as in Practice. */
+const asText = (s: string) => s.replace(/<(?=\s*\/?\s*(answer|follow_up|mock_interview)\b)/gi, "&lt;");
+
 /**
  * The questions as data and the answers as the person's text, for the model. The bank's own words go in as JSON with
- * every "<" escaped; in each answer, a tag that could close a block early is neutralised, as in Practice.
+ * every "<" escaped, with the follow-up asked at a position when the person replied to it; each reply follows its
+ * answer in <follow_up position="N"> tags.
  */
 export function wrapMockInterview({ roleTitle, items }: MockFeedbackInput): string {
   const data = JSON.stringify(
-    { role: roleTitle, questions: items.map((i) => ({ position: i.position, topic: i.topic, question: i.question, aStrongAnswerCovers: i.strongCovers })) },
+    {
+      role: roleTitle,
+      questions: items.map((i) => ({
+        position: i.position,
+        topic: i.topic,
+        question: i.question,
+        aStrongAnswerCovers: i.strongCovers,
+        ...(i.followUp ? { followUpAsked: i.followUp.question } : {}),
+      })),
+    },
     null,
     2,
   ).replace(/</g, "\\u003c");
-  const answers = items.map((i) => `<answer position="${i.position}">\n${i.answer.replace(/<(?=\s*\/?\s*(answer|mock_interview)\b)/gi, "&lt;")}\n</answer>`);
+  const answers = items.map(
+    (i) =>
+      `<answer position="${i.position}">\n${asText(i.answer)}\n</answer>` +
+      (i.followUp ? `\n<follow_up position="${i.position}">\n${asText(i.followUp.answer)}\n</follow_up>` : ""),
+  );
   return `<mock_interview>\n${data}\n${answers.join("\n")}\n</mock_interview>`;
 }
 

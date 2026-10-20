@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { meProfile, type MapLine, type Profile } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
-import { duration, journeyFor, meFromProfile, worked, type MeInput } from "./build";
+import { companyKey } from "@/lib/profile/employer";
+import { duration, journeyFor, meFromProfile, NO_ADDITIONS, worked, type MeAdditions, type MeInput } from "./build";
 import { exampleMe } from "./fixtures";
 
 const profile = (p: Partial<Profile>): Profile => ({
@@ -165,7 +166,7 @@ describe("meFromProfile", () => {
     expect(me.stats.filter((s) => !s.private).map((s) => s.label)).toEqual(["skills found"]);
   });
 
-  it("has nothing to say about stories, interests or proof yet", () => {
+  it("has no stories, interests or proof before the person adds any", () => {
     const me = meFromProfile(input({}));
     expect([me.stories, me.interests, me.proofs]).toEqual([[], [], []]);
     expect(me.resumeReadOn).toBeNull();
@@ -184,5 +185,146 @@ describe("meFromProfile", () => {
     expect(meProfile.safeParse(exampleMe).success).toBe(true);
     expect(exampleMe.nearby?.lines.length).toBeGreaterThan(0);
     expect(exampleMe.stories.some((s) => s.fromGoal)).toBe(true);
+  });
+});
+
+// Me editing (docs/plans/me-editing-plan.md). Every name and company here is made up.
+describe("what the person added on Me", () => {
+  const ids = { role: "00000000-0000-4000-8000-0000000a0101", edu: "00000000-0000-4000-8000-0000000a0102", story: "00000000-0000-4000-8000-0000000a0103", goal: "00000000-0000-4000-8000-0000000a0104" };
+  const added = (p: Partial<MeAdditions>): MeAdditions => ({ ...NO_ADDITIONS, ...p });
+  const resume = profile({
+    roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: null, highlights: ["Built the weekly report"] }],
+    education: [{ qualification: "B.Com", institution: "Example University", year: "2021" }],
+  });
+
+  it("merges added roles with resume roles by start date, and counts overlapping spans once", () => {
+    const me = meFromProfile(
+      input({
+        profile: resume,
+        added: added({ roles: [{ id: ids.role, title: "Volunteer data lead", employer: "Pune Reads", startMonth: "2023-06", endMonth: "2024-06", isCurrent: false }] }),
+      }),
+    );
+    expect(meProfile.safeParse(me).success).toBe(true);
+    expect(me.experience.map((e) => [e.title, e.added?.id ?? null])).toEqual([
+      ["Analyst", null],
+      ["Volunteer data lead", ids.role],
+    ]);
+    expect(me.experience[1]).toMatchObject({ dates: "Jun 2023 to Jun 2024 · 1 year", current: false, highlights: [], added: { startMonth: "2023-06", endMonth: "2024-06" } });
+    // Jun 2023 to now (10 Oct 2026), with Jan to Jun 2024 counted once.
+    expect(me.experienceTotal).toBe("3 years 4 months");
+  });
+
+  it("gives an added current role the work-email check, as a resume one (FR-47)", () => {
+    const role = { id: ids.role, title: "SOC analyst", employer: "Garuda Security", startMonth: "2025-02", endMonth: null, isCurrent: true };
+    const open = meFromProfile(input({ added: added({ roles: [role] }) }));
+    expect(open.experience[0]).toMatchObject({ current: true, dates: expect.stringMatching(/^Feb 2025 to now/), check: { state: "not_verified", month: null } });
+    const verified = meFromProfile(
+      input({
+        added: added({ roles: [role] }),
+        jobChecks: [{ employerKey: companyKey("Garuda Security"), startMonth: "2025-02", status: "verified", checkedAt: new Date("2026-10-01T00:00:00Z") }],
+      }),
+    );
+    expect(verified.experience[0].check).toEqual({ state: "verified", month: "Oct 2026" });
+  });
+
+  it("badges only the job the check was made on when an added role and a resume role share company and start month (T95)", () => {
+    // "CTO, Acme, 2024-01" was added first; then a resume with Analyst at Acme from 2024-01 came, and its check passed.
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z") };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    const both = meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [{ ...passed, employer: "Acme" }] }));
+    expect(badges(both)).toEqual([
+      ["Analyst", "verified"],
+      ["CTO", null],
+    ]);
+    // An older check row without the company as written goes to the resume role too.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [passed] })))).toEqual(badges(both));
+    // Not yet verified: only one "Not verified" label, on the resume role.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }) })))).toEqual([
+      ["Analyst", "not_verified"],
+      ["CTO", null],
+    ]);
+    // The check was made on the added role itself (written "Acme Pvt Ltd", before the resume came): it keeps the badge.
+    const own = meFromProfile(
+      input({ profile: resume, added: added({ roles: [{ ...cto, employer: "Acme Pvt Ltd" }] }), jobChecks: [{ ...passed, employer: "Acme Pvt Ltd" }] }),
+    );
+    expect(badges(own)).toEqual([
+      ["Analyst", null],
+      ["CTO", "verified"],
+    ]);
+    expect(meProfile.safeParse(both).success && meProfile.safeParse(own).success).toBe(true);
+  });
+
+  it("gives the shared badge to the current role, the one the check is for, when the company doesn't settle it (T95)", () => {
+    // The resume's Analyst at Acme from 2024-01 has ended; the added CTO role at Acme from 2024-01 is current.
+    const ended = profile({ roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: "2025-06", highlights: [] }] });
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z") };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    // No check yet: "Not verified" sits on the current CTO role, not the ended one.
+    expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }) })))).toEqual([
+      ["Analyst", null],
+      ["CTO", "not_verified"],
+    ]);
+    // A check written "Acme", as both rows write it, and an older row with no company as written: the CTO role too.
+    for (const check of [{ ...passed, employer: "Acme" }, passed])
+      expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }), jobChecks: [check] })))).toEqual([
+        ["Analyst", null],
+        ["CTO", "verified"],
+      ]);
+  });
+
+  it("gives the shared badge to the row the check was made on, whichever is current now (T95)", () => {
+    // The check passed on the resume's Analyst at Acme from 2024-01 while it was current; it has ended since, and an
+    // added CTO role at Acme from 2024-01 is current. Both write the company the same.
+    const ended = profile({ roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: "2025-06", highlights: [] }] });
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2025-03-01T00:00:00Z"), employer: "Acme" };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }), jobChecks: [{ ...passed, source: "resume" }] })))).toEqual([
+      ["Analyst", "verified_while_there"],
+      ["CTO", null],
+    ]);
+    // Made on the added row: it stays there, even with the resume role current and written the same.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [{ ...passed, source: "added" }] })))).toEqual([
+      ["Analyst", null],
+      ["CTO", "verified"],
+    ]);
+  });
+
+  it("gives a check made on an added row no badge on a resume row with the same key, where the added row isn't shown (T100)", () => {
+    // Companies never get added rows; the check passed on the hand-added CTO role at Acme from 2024-01.
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z"), employer: "Acme" };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    expect(badges(meFromProfile(input({ profile: resume, jobChecks: [{ ...passed, source: "added" }] })))).toEqual([["Analyst", null]]);
+    // Made on the resume row, or an older row with no side: the resume row keeps it.
+    for (const check of [{ ...passed, source: "resume" as const }, passed]) expect(badges(meFromProfile(input({ profile: resume, jobChecks: [check] })))).toEqual([["Analyst", "verified"]]);
+  });
+
+  it("puts added education after the resume's, with its row id", () => {
+    const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
+    expect(me.education).toEqual([
+      { qualification: "B.Com", institution: "Example University", year: "2021" },
+      { qualification: "Data Analytics with Python", institution: "NPTEL", year: "", added: { id: ids.edu } },
+    ]);
+  });
+
+  it("shows stories with their SMART check, worked out here, and interests as typed", () => {
+    const story = {
+      id: ids.story,
+      title: "Cut missed alerts",
+      where: "Konkan Co-operative Bank · 2025",
+      situation: "Alerts piled up.",
+      task: "I owned triage.",
+      action: "Sorted alerts by sender.",
+      result: "Missed alerts fell a lot.",
+      boxes: ["Ownership" as const],
+      goalId: ids.goal,
+      confirmed: true,
+    };
+    const me = meFromProfile(input({ added: added({ stories: [story], interests: ["Chess", "Public speaking"] }) }));
+    expect(meProfile.safeParse(me).success).toBe(true);
+    expect(me.stories[0]).toMatchObject({ id: ids.story, smart: ["A", "R", "T"], hint: expect.stringMatching(/12 words/), confirmed: true, fromGoal: true, goalId: ids.goal });
+    expect(me.interests).toEqual(["Chess", "Public speaking"]);
   });
 });

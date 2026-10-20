@@ -31,8 +31,8 @@ export const NAV = {
   builder: { key: "builder", label: "Build your resume", href: "/builder", Icon: FileText, built: true },
 } satisfies Record<NavKey, NavItem>;
 
-/** Desktop top bar. */
-export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", "junction", "market"] as const).map((k) => NAV[k]);
+/** Desktop top bar, in the prototype's order. Network, Library and Market are in the avatar menu too. */
+export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", "junction", "network", "library", "market"] as const).map((k) => NAV[k]);
 /** Phone tab bar; Network, Library, Market and Timetable move to the avatar menu. */
 export const TAB_NAV = (["today", "map", "departures", "arrivals", "junction"] as const).map((k) => NAV[k]);
 export const MENU_NAV = (["inbox", "corporate", "library", "practice", "mock", "builder", "match", "market", "network", "timetable"] as const).map((k): NavItem => NAV[k]);

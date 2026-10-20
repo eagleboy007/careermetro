@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { designGalleryEnabled } from "@/lib/preview";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
@@ -38,7 +40,10 @@ import { PageNotice } from "@/components/ui/page-notice";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
+import { TrackPanel } from "@/components/today/track-picker";
 import { AppShell } from "@/components/app/app-shell";
+import { NotificationsBell } from "@/components/app/notifications-bell";
+import { exampleNotifications } from "@/lib/notifications/fixtures";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { CertificateForm } from "@/components/proof/certificate-form";
@@ -48,28 +53,36 @@ import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
+import { DEPARTURES_LEDE } from "@/lib/departures/filter";
+import { JobSearchOffToday, JobSearchPaused, JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
+import { NoticeCard } from "@/components/job-search/notice-card";
+import { MeEditGallery } from "@/components/me/me-editors";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
 import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
-import { LibraryView } from "@/components/library/library-view";
-import { exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
+import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
+import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
+import { SettingsDraft } from "@/components/settings/settings-draft";
+import { LocationFields, MessageRequestsSwitch } from "@/components/settings/settings-fields";
+import { UsuallyFree } from "@/components/inbox/usually-free";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { NetworkView } from "@/components/network/network-view";
+import { ProfileConnect } from "@/components/network/profile-connect";
 import { BuilderView } from "@/components/builder/builder-view";
 import { EliteBadge } from "@/components/elite/elite-badge";
 import { EliteView } from "@/components/elite/elite-view";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { PlanCard } from "@/components/settings/plan-card";
 import { MockView } from "@/components/mock/mock-view";
-import { exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
+import { exampleDeparturesPrep, exampleMockFollowUp, exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -103,6 +116,7 @@ import { CompanyInterviews, Scheduler } from "@/components/corporate/interviews-
 import { ArrivalsView } from "@/components/arrivals/arrivals-view";
 import { JobBoard } from "@/components/corporate/job-board";
 import { FindPeople } from "@/components/corporate/find-people";
+import { BlockedPeople } from "@/components/settings/blocked-people";
 import { CompanyDiscovery } from "@/components/settings/company-discovery";
 import { MatchDots, MatchList } from "@/components/corporate/match-parts";
 import { JobForm } from "@/components/corporate/job-form";
@@ -118,20 +132,25 @@ import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
 import { JobCheckReview } from "@/components/admin/job-check-review";
-import { exampleHeldProofs, exampleInForce, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies, exampleJobChecks } from "@/components/admin/fixtures";
+import { BrokenLinkCard, LibraryReview, SuggestionCard } from "@/components/admin/library-review";
+import { exampleHeldProofs, exampleInForce, exampleJobChecks, exampleLibraryQueue, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
 import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
-import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
+import { exampleInCommon, exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { exampleBuilder } from "@/lib/builder/fixtures";
 import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
-import { exampleMe } from "@/lib/me/fixtures";
+import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
+import { DeparturesBoard } from "@/components/today/departures-board";
+import { OnYourLineCard } from "@/components/today/rail-cards";
+import { SignalCheckCard } from "@/components/today/signal-check";
+import { boardRows } from "@/lib/today/live-board";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, GoalsSummary, Profile } from "@/lib/schemas";
@@ -141,15 +160,20 @@ import {
   exampleFirstTally,
   exampleFirstTasks,
   exampleGoals,
+  exampleGoalsWithTracks,
   exampleName,
   exampleOnYourLine,
   exampleRide,
   exampleSignalCheck,
   exampleRole as exampleTargetRole,
+  exampleTrackPicker,
   exampleWeek,
 } from "@/lib/today/fixtures";
 
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
+
+/** Today's live board from the example live posts, grouped the way a signed-in person's board is (static data). */
+const exampleLiveBoard = boardRows(exampleLiveJobs, (slug) => (slug === "data-analyst" ? "Data Analyst" : null));
 
 // Example data only: shows every component in a realistic state.
 /** Today's goals with "Not for me" offers: a required goal to skip, a "one of these" goal to swap. */
@@ -364,7 +388,9 @@ const exampleToday: TodayData = {
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
+// Example data includes content still waiting for review, so production never serves this page (T73).
 export default function DesignPage() {
+  if (!designGalleryEnabled()) notFound();
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-4 py-10">
       <header className="flex items-center justify-between border-b border-line pb-5">
@@ -430,12 +456,41 @@ export default function DesignPage() {
           <StreakChip days={11} todayCounted={false} />
           <StreakChip days={12} todayCounted />
         </div>
-        <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
+        <TodayStatePreview data={exampleToday} upload={<UploadForm demo rolePick />} />
+        <p className="text-sm text-muted">
+          Live cards for a signed-in person: the signal check is checked on the server (waiting for the answer, and after a try that didn&apos;t go
+          through); the board is grouped by role and city from live posts, or says why it is empty; On your line on the first day has no tip until
+          Junction, and is hidden below three people.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SignalCheckCard check={exampleSignalCheck} answered pickedKey="B" reveal={null} label="Signal check, waiting for the answer" />
+          <SignalCheckCard
+            check={exampleSignalCheck}
+            answered={false}
+            pickedKey={null}
+            reveal={null}
+            error="That didn't go through. Please try again."
+            label="Signal check, after a failed try"
+          />
+          <DeparturesBoard rows={exampleLiveBoard} allHref="/departures" label="Departures, live rows" />
+          <DeparturesBoard rows={[]} allHref="/departures" label="Departures, no rows yet" />
+          <OnYourLineCard line={{ ...exampleOnYourLine, tip: null }} firstDay label="On your line, first day" />
+        </div>
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
         <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>
         <div className="max-w-xl">
           <GoalsCard summary={exampleChoiceGoals} mapHref="/map" demo />
+        </div>
+        <p className="text-sm text-muted">
+          Your goals with the Track picker (docs/plans/tracks-plan.md): the chip opens it; each track shows its goals, and picking one previews it with Switch track. Draft tracks, local and preview only until reviewed; in production the chip stays plain text.
+        </p>
+        <div className="max-w-xl">
+          <GoalsCard summary={exampleGoalsWithTracks} mapHref="/map" demo />
+        </div>
+        <p className="text-sm text-muted">The Track panel on its own, open.</p>
+        <div className="max-w-xl">
+          <TrackPanel id="design-track-panel" open picker={exampleTrackPicker} demo />
         </div>
         <p className="text-sm text-muted">Add a certificate: opens from the prove pitstop. Only certificates that prove the goal are listed.</p>
         <div className="max-w-xl">
@@ -454,20 +509,96 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Departures (signed in)</h2>
-        <p className="text-sm text-muted">Roles with readiness in words, filters, Saved and Applied, and the detail panel. Below it, the page before a resume.</p>
-        <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} />
-        <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} />
+        <p className="text-sm text-muted">
+          Roles with readiness in words, filters, Saved and Applied, the detail panel with Interview prep for this role (on Free: one question open, the
+          rest locked; the MIS, trainer and freelance roles say it is coming), and the paste box checking a post against the resume. Then the same on Elite,
+          and the page before a resume, whose paste box links to the upload.
+        </p>
+        <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, false)} demo />
+        <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
+        <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
+        <p className="text-sm text-muted">
+          Live roles from public company job boards (docs/plans/departures-live-plan.md): &quot;Updated 19:42&quot; in the header, Apply on company site
+          opening the post in a new tab and then asking &quot;Did you apply?&quot;, a role that closed on its company&apos;s board (off All, still in Saved and
+          Applied with its tracker, no Apply), and a post that names too few skills we know (no fit). Then the board before the first feed run, and Saved
+          with nothing saved.
+        </p>
+        <DeparturesView
+          jobs={exampleLiveJobs}
+          initialSaved={exampleLiveSaved}
+          initialApplied={exampleLiveApplied}
+          updated="Updated 19:42"
+          resumeId="example"
+          prep={exampleDeparturesPrep(exampleLiveJobs, false)}
+          demo
+        />
+        <DeparturesView jobs={exampleLiveJobs.slice(1, 2)} updated="Updated 18 Oct" resumeId="example" demo />
+        <p className="text-sm text-muted">
+          &quot;Your places&quot; (FR-55): with places in Settings &gt; Pay and location, the City filter opens on Your places, the roles in those cities and
+          remote roles when Remote is picked; Any city still lists every role. Then places with no roles yet: the empty state links to Settings.
+        </p>
+        <DeparturesView jobs={exampleJobs} places={["Remote", "Bengaluru"]} resumeId="example" demo />
+        <DeparturesView jobs={exampleJobs.slice(0, 3)} places={["Kochi"]} resumeId="example" demo />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Job search and notice period (signed in)</h2>
+        <p className="text-sm text-muted">
+          &quot;Looking for a job&quot; off: Departures (and Arrivals, the same card) show the header and the off card only, and Today shows its card in the
+          board&apos;s place. Turn on works here, nothing saves. Then the status line on Me, on and off, and Me&apos;s switches.
+        </p>
+        <JobSearchProvider initialOn={false}>
+          <JobSearchPaused title="Departures" lede={DEPARTURES_LEDE} />
+          <div className="max-w-md">
+            <JobSearchOffToday />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <JobSearchStatus employer="Konkan Co-operative Bank" />
+          </div>
+        </JobSearchProvider>
+        <JobSearchProvider initialOn>
+          <div className="flex max-w-xs flex-col gap-3">
+            <JobSearchStatus employer="Konkan Co-operative Bank" />
+            <MeSearchSwitches />
+          </div>
+        </JobSearchProvider>
+        <p className="text-sm text-muted">
+          The notice period card, private: no days yet, 30 days picked (I have resigned asks for the date, then Start countdown), and a countdown
+          from 1 Oct with 60 days, seen on 20 Oct (cobalt, since it is progress). Example data, so nothing saves.
+        </p>
+        <div className="grid max-w-3xl gap-4">
+          <NoticeCard initial={{ days: null, resignedOn: null }} today="2026-10-20" />
+          <NoticeCard initial={{ days: 30, resignedOn: null }} today="2026-10-20" />
+          <NoticeCard initial={{ days: 60, resignedOn: "2026-10-01" }} today="2026-10-20" />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
-        <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
+        <p className="text-sm text-muted">
+          The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check (a full one, &ldquo;Month-end
+          reports&rdquo;, and a partial one with its hint, &ldquo;A branch report&rdquo;), and a role and a course marked &ldquo;Added by you&rdquo; with
+          Edit and Delete. Example data, so nothing saves.
+        </p>
         <MeView
           me={exampleMe}
           others={publicProfile(exampleMe, DEFAULT_SETTINGS)}
           whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }}
           practice={exampleTrends}
           planCard={<MePlanCard plan={{ elite: false, badgeShown: false, since: null }} />}
+          storyGoals={exampleStoryGoals}
+        />
+        <h3 className="text-lg font-semibold">Me editing: the forms</h3>
+        <p className="text-sm text-muted">
+          docs/plans/me-editing-plan.md: &ldquo;+ Add role&rdquo; and Edit on an added role, Education&apos;s &ldquo;+ Add&rdquo;, &ldquo;+ Add
+          story&rdquo; and Edit (each part up to 400 characters with a live count, at least one box, an optional goal), the delete question, and the
+          interests chips with remove and Add. Each opens inline on the page. Text others read refuses email addresses, phone numbers and links.
+        </p>
+        <MeEditGallery
+          role={exampleMe.experience.find((e) => e.added) ?? exampleMe.experience[0]}
+          education={exampleMe.education.find((e) => e.added) ?? exampleMe.education[0]}
+          story={exampleMe.stories[2]}
+          goals={exampleStoryGoals}
         />
       </section>
 
@@ -556,19 +687,62 @@ export default function DesignPage() {
           ticks. Search, type, length and Hindi filters, the details panel with Open on the source site, How the Library is picked, and the Your
           interests, Saved and Finished tabs. Real catalog links with made-up goals. Below it, the Library with no resume.
         </p>
-        <LibraryView view={exampleLibrary} />
-        <LibraryView view={exampleLibraryNoResume} />
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(false)} />
+        <LibraryView view={exampleLibraryNoResume} shelf={exampleEliteShelf(false)} />
+        <p className="text-sm text-muted">
+          Handoff 12l, Elite part 5: the fifth tab, Elite, holds the Elite shelf. On Free (lock on the tab), every card says what it is and Opens with
+          Elite, with the locked panel&apos;s Turn on Elite (violet) to /elite; no link or step is sent. With Elite: paid courses as Coming soon slots (no
+          maker, price or link until a licensing deal), playbooks and drills we wrote (Not yet checked until someone in the role checks them;
+          production shows only checked ones) and free sources from the catalog, the person&apos;s goals first.
+        </p>
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(false)} tab="elite" />
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(true)} tab="elite" />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Library part 2: Save, I finished this, rides, reports and suggestions</h2>
+        <p className="text-sm text-muted">
+          docs/plans/library-part-2-plan.md: the bookmark on every row and in the details panel (pressed when saved), the Saved tab newest first with
+          its count, &quot;I finished this&quot; (the person&apos;s own tick; it never fills a gap), Add to my rides, which reads On your rides
+          once added, with Take it off my rides, and Link broken or out of date? Below, the Saved tab with an item added to the rides, then the report
+          menu open, and the suggest panel with goal chips, with no goals (Other only) and with a pasted link. Toasts say what changed. Example data.
+        </p>
+        <LibraryView view={{ ...exampleLibrary, added: ["r3"], ticked: ["r10"] }} shelf={exampleEliteShelf(false)} tab="saved" initialSelected="r3" />
+        <div className="grid gap-4 min-[760px]:grid-cols-3">
+          <div className="rounded-lg border border-line p-4">
+            <ReportLink title="DAX reference" initialOpen />
+          </div>
+          <SuggestPanel id="design-suggest-goals" goals={exampleLibrary.goals} />
+          <SuggestPanel id="design-suggest-other" goals={[]} initialUrl="https://www.kaggle.com/learn/pandas" />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
         <p className="text-sm text-muted">
-          Section list, Your plan (You&apos;re on Free with See Elite; nothing can be bought), name, username with its availability check and
-          headline, the locked email, how the person signs in, private pay, privacy (who can see the profile and what it shows, switches in ink),
-          notifications stored for when email is on, download and delete with its DELETE check. Example data, so nothing saves.
+          Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
+          availability check and headline, the locked email, how the person signs in, private pay, privacy (who can open the profile and what it
+          shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications stored for
+          when email is on (with Language: English, Hindi coming later), download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked.
         </p>
         <div className="rounded-lg border border-line px-4 pt-6">
           <SettingsView data={exampleSettings} />
+        </div>
+        <div className="max-w-[640px] rounded-lg border border-line p-4">
+          <BlockedPeople people={[]} />
+        </div>
+        <p className="text-sm text-muted">
+          Pay and location with no places picked yet (the example above has Remote and Pune), and &quot;Allow message requests from people who aren&apos;t
+          connections&quot; switched off (on above). Example data, so nothing saves.
+        </p>
+        <div className="flex max-w-[820px] flex-col gap-4 rounded-lg border border-line p-4">
+          <SettingsDraft
+            initial={{ ...exampleSettings.draft, city: "", openToWorkIn: [], settings: { ...exampleSettings.draft.settings, messageRequests: false } }}
+            editable={false}
+          >
+            <LocationFields idPrefix="design-acc" />
+            <MessageRequestsSwitch />
+          </SettingsDraft>
         </div>
       </section>
 
@@ -579,6 +753,18 @@ export default function DesignPage() {
           nothing sends.
         </p>
         <InboxView threads={exampleThreads} />
+        <p className="text-sm text-muted">
+          Signed in, the availability panel has Usually free (FR-55): Monday to Friday by the picker&apos;s times, one row per day, with the summary worked out
+          in code; set, then not set. Private: it only pre-ticks open times when a company asks for times. Example data, so nothing saves.
+        </p>
+        <div className="grid gap-4 min-[760px]:grid-cols-2">
+          <div className="max-w-[300px] rounded-[20px] border border-line bg-surface p-4">
+            <UsuallyFree initial={["mon 17:00", "mon 18:00", "tue 17:00", "tue 18:00", "wed 17:00", "wed 18:00", "thu 17:00", "thu 18:00", "fri 17:00", "fri 18:00"]} />
+          </div>
+          <div className="max-w-[300px] rounded-[20px] border border-line bg-surface p-4">
+            <UsuallyFree initial={[]} />
+          </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
@@ -599,7 +785,7 @@ export default function DesignPage() {
           badge next to a name, the plan card on your own profile (Free, and Elite with the badge switch), and Account settings, Your plan, both ways.
           Violet is for Elite only. Example data, so nothing changes.
         </p>
-        <EliteView plan={{ elite: false, badgeShown: false, since: null }} />
+        <EliteView plan={{ elite: false, badgeShown: false, since: null }} roleTitle="Cyber Security Analyst" />
         <EliteView plan={{ elite: true, badgeShown: true, since: "19 Oct 2026" }} idPrefix="design-elite-on" />
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface p-4">
           <span className="text-[1.2rem] font-semibold">
@@ -630,20 +816,29 @@ export default function DesignPage() {
           Full, focus, the AI note; Speaking shows only where the browser turns speech to text on the device); a quick round running with the
           countdown and the cobalt progress bar; the feedback in words with What worked and Add next time, a skipped question linking to the bank;
           and the screen when feedback isn&apos;t available today. No score anywhere. Example data from the real bank for Data Analyst, so nothing
-          saves.
+          saves. Follow-ups (docs/plans/mock-followups-plan.md): the set-up note says the interviewer asks them; the round running on a follow-up
+          from the bank (&quot;Follow-up · topic&quot;, Skip follow-up, the count and progress bar unchanged); the Elite bank listing each open
+          question&apos;s follow-ups to study; a feedback item with the follow-up and its reply, and one with &quot;Follow-up skipped.&quot;
         </p>
         <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
-        <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />
-        <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />
+        {exampleTimedTest && <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />}
+        {exampleTimedReview && <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />}
         <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
         <MockView view={exampleMockPage("data-analyst", false)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true, null, exampleMockSession)} tab="interview" />
+        <MockView view={exampleMockPage("data-analyst", true, null, exampleMockSession)} tab="interview" initialInterviewFollowUp={exampleMockFollowUp} />
+        <MockView view={exampleMockPage("data-analyst", true)} tab="bank" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" initialInterviewResult={exampleMockResult} />
         <MockView
           view={exampleMockPage("data-analyst", true)}
           tab="interview"
-          initialInterviewResult={{ ...exampleMockResult, feedback: "unavailable_today", summary: null, items: exampleMockResult.items.map((i) => ({ ...i, whatWorked: null, addNextTime: null })) }}
+          initialInterviewResult={{
+            ...exampleMockResult,
+            feedback: "unavailable_today",
+            summary: null,
+            items: exampleMockResult.items.map((i) => ({ ...i, whatWorked: null, addNextTime: null, followUp: i.followUp ? { ...i.followUp, answer: null } : null })),
+          }}
         />
       </section>
 
@@ -651,10 +846,20 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Network (signed in)</h2>
         <p className="text-sm text-muted">
           The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
-          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline.
-          Example data, so nothing sends; Find people shows example results.
+          target role only when shown, skills in common and the date (never a city: only companies see it); Connect opens the how-you-know pick inline, Remove and Block confirm inline,
+          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role and Verified (matched on the
+          server; no city filter, since only companies see a member&rsquo;s city). Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
+          example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />
+        <h3 className="text-lg font-semibold">On a profile: connect, shared counts and In common with you</h3>
+        <p className="text-sm text-muted">
+          The strip of shared counts, then interests both list, skills, &ldquo;Gaps and path&rdquo; (only when the viewer may see the owner&rsquo;s gaps
+          and both aim at the role the owner shows) and mutual connections (only people both know). Then with nothing in common: no gaps shown and no
+          mutual connections.
+        </p>
+        <ProfileConnect personId="ex-am" name="Arjun Mehta" initial="connected" inCommon={exampleInCommon} />
+        <ProfileConnect personId="ex-ak" name="Aditi Kulkarni" initial="none" inCommon={{ skills: [], role: null, path: null, mutual: [] }} />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -773,6 +978,27 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Library review (admins only)</h2>
+        <p className="text-sm text-muted">
+          /admin/library: Broken links, one row per link with open reports (counts by reason, first report, the link check&apos;s last result) and
+          links already hidden, with Hide link, Show again and Dismiss reports; Suggestions with the link (opened by the admin in a new tab, no
+          referrer), the host, the goal chip and the date, with Accept, Already in the Library and Decline with its reason. No reporter or suggester
+          is shown. Example data, so the buttons do nothing.
+        </p>
+        {/* Their own ids, so the rows below don't repeat the whole page's. */}
+        <BrokenLinkCard row={{ ...exampleLibraryQueue.broken[0]!, id: "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d" }} pending={false} />
+        <BrokenLinkCard row={{ ...exampleLibraryQueue.broken[1]!, id: "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e" }} pending={false} />
+        <SuggestionCard row={{ ...exampleLibraryQueue.suggestions[0]!, id: "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f" }} pending={false} />
+        <p className="text-sm text-muted">The whole page, and the page with nothing waiting.</p>
+        <div className="rounded-lg border border-line p-4">
+          <LibraryReview queue={exampleLibraryQueue} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <LibraryReview queue={{ broken: [], suggestions: [] }} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Reports (admins only)</h2>
         <p className="text-sm text-muted">
           /admin/reports: open reports from chats and job pages, oldest first. The reason, what was reported with the message or job title, who reported
@@ -836,7 +1062,9 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Applications and the board (signed in)</h2>
         <p className="text-sm text-muted">
           Build step 4: Express apply (its preview and consent) on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
-          words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals. Example data, so nothing saves or moves.
+          words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals: Moving forward, Offers (empty: where offers will
+          land), Waiting to hear with the &quot;more applied&quot; count, Not this time with the line to the goal on the person&apos;s line, and Add to calendar on
+          an accepted interview (a calendar file download). Then Arrivals with no applications. Example data, so nothing saves or moves.
         </p>
         <div className="rounded-lg border border-line p-4">
           <PostedJobs
@@ -870,7 +1098,7 @@ export default function DesignPage() {
           <JobBoard board={{ ...exampleBoard, canMove: false, assignedOnly: true, cards: [], withdrawn: 0 }} />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <ArrivalsView applications={exampleApplications} today="2026-10-12" />
+          <ArrivalsView applications={exampleApplications} today="2026-10-12" goalLinks={{ a5: { name: "SIEM", pitstop: 3 } }} />
         </div>
         <div className="rounded-lg border border-line p-4">
           <ArrivalsView applications={[]} today="2026-10-12" />
@@ -948,6 +1176,10 @@ export default function DesignPage() {
           <CompanyDiscovery data={exampleSettings.discovery} />
         </div>
         <InboxView threads={exampleFoundThreads} />
+        {/* An accepted found chat while the person's job search is off (FR-52): it goes on, with one line saying so, and End chat. */}
+        <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, jobSearchOff: true }))} />
+        {/* The same chat after End chat (FR-52): closed for both sides, with no report and no company block. End chat above opens its confirm. */}
+        <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, state: "closed" as const }))} />
         <div className="max-w-[720px]">
           <CompanyChat chat={exampleFoundChat} company="Example Labs" />
         </div>
@@ -1023,11 +1255,13 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
         <p className="text-sm text-muted">
-          Top bar on desktop, tab bar under 760 px, avatar menu (Admin shows only for admins). Sections not built yet show as Soon. The second frame
+          Top bar on desktop, tab bar under 760 px, avatar menu with the @handle under the name (Admin shows only for admins). Sections not built yet show as Soon. The
+          first frame has the Arrivals count, which hides with no resume and on the first day, and the notifications bell with its dot; Network and Library leave the top bar under
+          1240 px and Market under 1000 px, as all three are in the menu. The second frame
           has Elite on: the violet award mark on the avatar, and &ldquo;Elite · beta&rdquo; and &ldquo;Elite is on&rdquo; in its menu.
         </p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true }}>
+          <AppShell embedded user={{ name: "Priya Nair", handle: "priya-n", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true, arrivalsCount: 3, notificationsNew: 2 }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>
@@ -1035,6 +1269,26 @@ export default function DesignPage() {
           <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 0, elite: true }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
+        </div>
+        <h3 className="text-lg font-semibold">Notifications bell</h3>
+        <p className="text-sm text-muted">
+          Between the streak and the Inbox (docs/plans/notifications-plan.md). With something new its label is &ldquo;Notifications, 2 new&rdquo; and a small
+          ink dot shows (never cobalt, which means progress); with nothing new, no dot. Opening it marks everything read and the dot clears; rows that were
+          new stay bold until it closes. Under 760 px the panel fills the screen under the top bar. Below: the bell with and without the dot (open either for
+          the examples), the panel with each kind, and the empty panel.
+        </p>
+        <div className="flex flex-wrap items-center gap-6">
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <NotificationsBell count={2} />2 new
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <NotificationsBell count={0} />
+            Nothing new
+          </div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <NotificationsBell count={0} startItems={exampleNotifications} />
+          <NotificationsBell count={0} startItems={[]} />
         </div>
         <p className="text-sm text-muted">While a screen loads: the frame with an empty avatar and quiet blocks, never a blank page.</p>
         <div className="h-96 overflow-hidden rounded-lg border border-line">
@@ -1104,6 +1358,8 @@ export default function DesignPage() {
             standIns={[{ id: "example-stand-in", title: "Supply Chain Analyst", company: "Example Freight Pvt Ltd" }]}
             demo
           />
+          <p className="text-sm text-muted">With a target role picked on Today before the upload: it shows first.</p>
+          <RolePicker resumeId="example" roles={exampleRoleOptions} picked="data-analyst" demo />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Covered skills and rating</h2>
@@ -1194,6 +1450,7 @@ export default function DesignPage() {
           <p className="text-sm text-muted">Local test notice: shown only while the stand-in Claude API is in use, never on production.</p>
           <LocalTestNotice demo />
           <UploadForm demo />
+          <p className="text-sm text-muted">Press Read my resume with the box ticked to see the four reading steps (they never upload here).</p>
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>

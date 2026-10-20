@@ -7,9 +7,10 @@ import * as schema from "@/db/schema";
 import { purgeDeletedAccounts, requestDeletion } from "@/lib/account/delete";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { saveAccountSettings } from "@/lib/account/settings-store";
+import { setJobSearch } from "@/lib/job-search/store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
-import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
-import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
+import { acceptRequest, blockInChat, deleteRequest, endFoundChat, listThreads, sendMessage } from "@/lib/inbox/store";
+import { FOUND_JOB_SEARCH_OFF_LINE, HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -209,6 +210,81 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(hidden.experience).toBeNull();
   });
 
+  it("leaves out people with job search off, even with Let companies find me on, and finds them again once it is back on", async () => {
+    const s = await setup("search-off");
+    const paused = await seeker("search-off", { name: "Priya Nair" });
+    const [card] = await found(s.admin, s.jobId);
+    expect(card?.name).toBe("Priya Nair");
+    expect((await setJobSearch(paused, false, { db: db!, now: clock })).ok).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    // An old ref opens nobody and takes no request while search is off.
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await setJobSearch(paused, true, { db: db!, now: clock })).ok).toBe(true);
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
+  });
+
+  it("keeps an accepted found chat going while job search is off, with a line saying so, and the person can still end it (T82)", async () => {
+    const s = await setup("search-off-chat");
+    const p = await seeker("search-off-chat", { name: "Priya Nair" });
+    const [card] = await found(s.admin, s.jobId);
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    expect(await acceptRequest(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect((await listThreads(p, fd()))[0].jobSearchOff).toBeUndefined();
+
+    expect((await setJobSearch(p, false, { db: db!, now: clock })).ok).toBe(true);
+    const [chat] = await listThreads(p, fd());
+    expect(chat).toMatchObject({ id: sent.conversationId, kind: "application", found: true, jobSearchOff: true });
+    expect(chat.state).toBeUndefined();
+    expect(FOUND_JOB_SEARCH_OFF_LINE).toBe("Job search is off. This chat stays open until you choose End chat.");
+    // Both sides still write; no new request can arrive while search is off.
+    expect((await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Still keen to talk?" }, fd())).ok).toBe(true);
+    expect((await sendMessage(p, sent.conversationId, "Yes, this week works", fd())).ok).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    // The person ends it themselves with End chat: the chat closes for good and stays in their Inbox as closed.
+    expect(await endFoundChat(p, sent.conversationId, fd())).toEqual({ ok: true });
+    expect(await sendFoundMessage(s.admin, { conversationId: sent.conversationId, body: "Hello?" }, fd())).toMatchObject({ ok: false });
+    const [ended] = await listThreads(p, fd());
+    expect(ended).toMatchObject({ id: sent.conversationId, found: true, state: "closed" });
+    expect(ended.jobSearchOff).toBeUndefined();
+  });
+
+  it("ends an accepted found chat with End chat: no report, no company block, closed for both sides (FR-52)", async () => {
+    const s = await setup("end-chat");
+    const p = await seeker("end-chat", { name: "Priya Nair" });
+    const stranger = await seeker("end-chat-x", { name: "Arjun Mehta" });
+    const [card] = (await found(s.admin, s.jobId)).filter((c) => c.name === "Priya Nair");
+    const sent = await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd());
+    if (!sent.ok) throw new Error(sent.error);
+    const id = sent.conversationId;
+    // A request is answered with Delete, not End chat; the company side and anyone else can't end it.
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await acceptRequest(p, id, fd())).toEqual({ ok: true });
+    expect(await endFoundChat(s.admin, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await endFoundChat(stranger, id, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await sendFoundMessage(s.admin, { conversationId: id, body: "Still keen?" }, fd())).ok).toBe(true);
+
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: true });
+    // Twice (another tab) is fine.
+    expect(await endFoundChat(p, id, fd())).toEqual({ ok: true });
+    // No report is filed and the company is not blocked.
+    expect(await db!.select().from(schema.reports).where(eq(schema.reports.reporterId, p))).toEqual([]);
+    expect(await db!.select().from(schema.companyBlocks).where(eq(schema.companyBlocks.userId, p))).toEqual([]);
+    // Closed for both sides: the company can't send, ask again or reopen it, and neither can the person.
+    expect(await sendFoundMessage(s.admin, { conversationId: id, body: "Hello?" }, fd())).toEqual({ ok: false, error: "not_found" });
+    const theirs = await companyFoundChat(s.admin, id, fd());
+    expect(theirs.ok && theirs.chat.state).toBe("closed");
+    expect(await sendMessage(p, id, "One more thing", fd())).toEqual({ ok: false, error: "closed" });
+    const again = (await found(s.admin, s.jobId)).find((c) => c.name === "Priya Nair")!;
+    expect(again.request.state).toBe("closed");
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: again.ref, body: HELLO }, fd())).toMatchObject({ ok: false });
+    // It stays in the person's Inbox as a closed chat, with its messages.
+    const [mine] = await listThreads(p, fd());
+    expect(mine).toMatchObject({ id, found: true, state: "closed" });
+    expect(mine.messages.some((m) => m.text === "Still keen?")).toBe(true);
+  });
+
   it("shows the target role of everyone found and filters by target roles and verified profiles, alone or together (T44)", async () => {
     const s = await setup("filters");
     const soc = await seeker("f-soc", { name: "Priya Nair" });
@@ -247,6 +323,34 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(JSON.stringify(opened.person)).not.toContain("AWS");
   });
 
+  it("matches a city filter to Open to work in and shows the list on the found view, only for people in search (FR-55)", async () => {
+    const s = await setup("places");
+    const mover = await seeker("p-mover", { name: "Priya Nair" });
+    await seeker("p-stay", { name: "Arjun Mehta" });
+    await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, mover));
+    await db!.update(schema.userSettings).set({ openToWorkIn: ["Remote", "Kochi"] }).where(eq(schema.userSettings.userId, mover));
+
+    expect(names(await found(s.admin, s.jobId, { cities: ["Kochi"] }))).toEqual(["Priya Nair"]);
+    expect(names(await found(s.admin, s.jobId, { cities: ["Pune"] }))).toEqual(["Priya Nair"]);
+    expect(await found(s.admin, s.jobId, { cities: ["Mumbai"] })).toEqual([]);
+    const [card] = await found(s.admin, s.jobId, { cities: ["Kochi"] });
+    // The card is as before; the opened view carries the list and nothing else of the settings.
+    expect(card).not.toHaveProperty("openToWorkIn");
+    const opened = await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd());
+    if (!opened.ok) throw new Error(opened.error);
+    expect(opened.person.openToWorkIn).toEqual(["Remote", "Kochi"]);
+    expect(opened.person.city).toBe("Pune");
+    expect(Object.keys(opened.person).sort()).toEqual(["city", "job", "jobId", "match", "openToWorkIn", "profile", "ref", "request"]);
+
+    // Out of search, out of reach: with job search off, or with Let companies find me off, nobody is found by it.
+    expect((await setJobSearch(mover, false, { db: db!, now: clock })).ok).toBe(true);
+    expect(await found(s.admin, s.jobId, { cities: ["Kochi"] })).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await setJobSearch(mover, true, { db: db!, now: clock })).ok).toBe(true);
+    await setFind(mover, false);
+    expect(await found(s.admin, s.jobId, { cities: ["Kochi"] })).toEqual([]);
+  });
+
   it("finds people by name, name + role and name + role + company, and never the company's own current staff", async () => {
     const s = await setup("names");
     const priya = await seeker("n-priya", { name: "Priya Nair" });
@@ -280,6 +384,40 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await found(s.admin, s.jobId, { name: "priya sharma" })).toEqual([]);
     expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
     expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+  });
+
+  it("never shows the company someone whose only current job there was added on Me, by name or by a work-email check (T75)", async () => {
+    const s = await setup("added");
+    // Both left Konkan on their resumes; their current job is one they added on Me.
+    const named = await seeker("a-named", { name: "Priya Sharma" });
+    const checked = await seeker("a-checked", { name: "Priya Nair" });
+    const other = await seeker("a-other", { name: "Kavya Reddy" });
+    const ended = profileWith(["Python", "Linux"]);
+    ended.roles = ended.roles.map((r) => ({ ...r, end: "2025-12" }));
+    for (const id of [named, checked, other]) {
+      const [resume] = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.userId, id));
+      await db!.update(schema.profiles).set({ data: ended }).where(eq(schema.profiles.resumeId, resume.id));
+    }
+    const cards = await found(s.admin, s.jobId);
+    expect(names(cards)).toEqual(["Kavya Reddy", "Priya Nair", "Priya Sharma"]);
+    const refOf = (name: string) => cards.find((c) => c.name === name)!.ref;
+    const added = (userId: string, employer: string) =>
+      db!.insert(schema.meRoles).values({ userId, title: "SOC analyst", employer, startMonth: "2026-01", endMonth: null, isCurrent: true, createdAt: clock, updatedAt: clock });
+    // "Example Labs, I work here now", added on Me.
+    await added(named, "Example Labs Pvt. Ltd.");
+    // A name that doesn't plainly say Example Labs, but a work-email code at its domain checked that job.
+    await added(checked, "Nimbus Cyber Unit");
+    await db!.insert(schema.jobEmailChecks).values({ userId: checked, employer: "Nimbus Cyber Unit", employerKey: "nimbus cyber unit", startMonth: "2026-01", domain: s.domain, status: "review", checkedAt: clock });
+    // A current job somewhere else changes nothing.
+    await added(other, "Garuda Security");
+
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Kavya Reddy"]);
+    expect(await found(s.admin, s.jobId, { name: "priya" })).toEqual([]);
+    for (const name of ["Priya Sharma", "Priya Nair"]) {
+      expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: refOf(name) }, fd())).toEqual({ ok: false, error: "not_found" });
+      expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: refOf(name), body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+    }
+    expect((await openFoundPerson(s.admin, { jobId: s.jobId, ref: refOf("Kavya Reddy") }, fd())).ok).toBe(true);
   });
 
   it("lets only Recruiter admins and Hiring HR on the job of a verified company search", async () => {
@@ -567,8 +705,8 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
 
     const data = await exportAccountData(p, db!, clock);
-    expect(EXPORT_VERSION).toBe(24);
-    expect(data!.exportVersion).toBe(24);
+    expect(EXPORT_VERSION).toBe(31);
+    expect(data!.exportVersion).toBe(31);
     expect(data!.companyDiscovery.companiesCanFind).toBe(true);
     expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
     expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);

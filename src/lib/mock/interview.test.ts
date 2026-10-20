@@ -1,13 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mockQuestions, roleProfiles } from "@/content";
+import { mockPageView, mockSessionResult, type MockQuestion } from "@/lib/schemas";
+import { exampleMockFollowUp, exampleMockPage, exampleMockResult } from "./fixtures";
 import {
   ABOUT_SKILLS,
   ANSWER_GRACE_MS,
   bankHrefFor,
   feedbackProblems,
   feedbackShowable,
+  followUpText,
   matchFeedback,
+  mentions,
   MOCK_FEEDBACK_TEXT,
+  pickFollowUp,
   pickInterviewQuestions,
   resultOf,
   sessionClosed,
@@ -148,5 +153,106 @@ describe("feedback checks", () => {
     expect(matchFeedback(f, [1])).toBeNull();
     expect(matchFeedback(f, [1, 2, 3])).toBeNull();
     expect(matchFeedback({ ...f, questions: [f.questions[1], f.questions[1]] }, [1, 3])).toBeNull();
+  });
+});
+
+describe("follow-ups (docs/plans/mock-followups-plan.md)", () => {
+  const q: Extract<MockQuestion, { kind: "open" }> = {
+    id: "siem-1",
+    kind: "open",
+    roleSlugs: ["soc-analyst-l2"],
+    skillId: "siem",
+    topic: "SIEM",
+    question: "Walk me through how you would triage a burst of failed logins on one server.",
+    strongCovers: "The source, the time window and when to escalate.",
+    level: "L1",
+    followUps: [
+      { id: "siem-1-fu-1", text: "Before blocking anything, say how you would tell a known scanner from a user who forgot a password.", skipIf: ["scanner", "forgot a password"] },
+      { id: "siem-1-fu-2", text: "Say what would make you escalate to L2.", skipIf: ["escalate"] },
+    ],
+    followUpsReviewed: true,
+  };
+  const long = "First I would look at the source of the failed logins and the time window, then check whether one account or many were tried from the same address.";
+  const round = { used: 0, length: "quick" as const, allowUnreviewed: false };
+
+  it("asks the first follow-up after an answer of 20 words or more, and none after a shorter one", () => {
+    expect(pickFollowUp(q, long, round)?.id).toBe("siem-1-fu-1");
+    const nineteen = Array.from({ length: 19 }, () => "word").join(" ");
+    expect(pickFollowUp(q, nineteen, round)).toBeNull();
+    expect(pickFollowUp(q, `${nineteen} more`, round)?.id).toBe("siem-1-fu-1");
+    // The same answer always gets the same follow-up.
+    expect(pickFollowUp(q, long, round)).toEqual(pickFollowUp(q, long, round));
+  });
+
+  it("skips a follow-up the answer already covers, matching whole words in any case", () => {
+    expect(pickFollowUp(q, `${long} A known SCANNER is easy to spot.`, round)?.id).toBe("siem-1-fu-2");
+    expect(pickFollowUp(q, `${long} Maybe the user forgot  a password, or a scanner, and I would escalate.`, round)).toBeNull();
+    expect(mentions("Scanners everywhere", "scanner")).toBe(false);
+    expect(mentions("a log file", "log")).toBe(true);
+    expect(mentions("the login page", "log")).toBe(false);
+    expect(mentions("cost (in ₹) matters", "(in ₹)")).toBe(true);
+    expect(mentions("anything", " ")).toBe(false);
+    // A phone keyboard's curly apostrophe matches a straight one, either way round.
+    expect(mentions("Next time I’d ask the author first.", "I'd ask")).toBe(true);
+    expect(mentions("the plan doesn't need to start at zero", "doesn’t need to start")).toBe(true);
+    expect(mentions("‘B’lore’ turns up", "B'lore")).toBe(true);
+  });
+
+  it("asks at most 2 in a Quick round and 4 in a Full one", () => {
+    expect(pickFollowUp(q, long, { ...round, used: 1 })).not.toBeNull();
+    expect(pickFollowUp(q, long, { ...round, used: 2 })).toBeNull();
+    expect(pickFollowUp(q, long, { ...round, length: "full", used: 3 })).not.toBeNull();
+    expect(pickFollowUp(q, long, { ...round, length: "full", used: 4 })).toBeNull();
+  });
+
+  it("asks unreviewed follow-ups only where allowed, and none for a question without them", () => {
+    const draft: MockQuestion = { ...q, followUpsReviewed: false };
+    expect(pickFollowUp(draft, long, round)).toBeNull();
+    expect(pickFollowUp(draft, long, { ...round, allowUnreviewed: true })?.id).toBe("siem-1-fu-1");
+    // Every open bank question has follow-ups now, so a question without them is made here.
+    const plain: Extract<MockQuestion, { kind: "open" }> = { ...q, id: "siem-2" };
+    delete plain.followUps;
+    expect(pickFollowUp(plain, long, { ...round, allowUnreviewed: true })).toBeNull();
+  });
+
+  it("shows the follow-up asked and its reply under the answer, and none when none was asked", () => {
+    expect(followUpText(q, "siem-1-fu-2")).toBe("Say what would make you escalate to L2.");
+    expect(followUpText(q, "gone")).toBeNull();
+    expect(followUpText(q, null)).toBeNull();
+    const startedAt = new Date("2026-10-20T05:30:00Z");
+    const row = { id: SEED, roleSlug: "soc-analyst-l2", length: "quick" as const, focus: "mix" as const, questionIds: ["siem-1", "siem-1"], startedAt, endedAt: null };
+    const bank = new Map([["siem-1", q]]);
+    const result = resultOf(
+      row,
+      [
+        { position: 1, answer: long, whatWorked: null, addNextTime: null, followUpId: "siem-1-fu-1", followUpAnswer: "A scanner hits many accounts." },
+        { position: 2, answer: long, whatWorked: null, addNextTime: null, followUpId: "siem-1-fu-1", followUpAnswer: null },
+      ],
+      bank,
+      "SOC Analyst L2",
+      "unavailable",
+      null,
+    );
+    expect(result.items[0].followUp).toEqual({ question: q.followUps![0].text, answer: "A scanner hits many accounts." });
+    expect(result.items[1].followUp).toMatchObject({ answer: null });
+    expect(result.answered).toBe(2);
+    expect(resultOf(row, [{ position: 1, answer: long, whatWorked: null, addNextTime: null }], bank, "SOC Analyst L2", "unavailable", null).items[0].followUp).toBeNull();
+  });
+
+  it("gives /design a follow-up from the real bank, a feedback item with its reply, and a set-up note that says so", () => {
+    expect(exampleMockFollowUp).toMatchObject({ position: 1 });
+    expect(mockSessionResult.parse(exampleMockResult).items[0].followUp).toEqual({ question: exampleMockFollowUp!.text, answer: expect.any(String) });
+    const page = mockPageView.parse(exampleMockPage("data-analyst", true));
+    expect(page.role.followUps).toBe("draft");
+    expect(mockPageView.parse(exampleMockPage("data-analyst", false, null, null, false)).role.followUps).toBe("none");
+  });
+
+  it("asks no unreviewed follow-ups by default on a production deployment (T73)", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    try {
+      expect(mockPageView.parse(exampleMockPage("data-analyst", true)).role.followUps).toBe("none");
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });

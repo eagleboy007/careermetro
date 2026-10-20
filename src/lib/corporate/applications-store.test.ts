@@ -8,7 +8,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { applyStates, applyToJob, jobBoard, moveApplication, myApplications, openCandidate, withdrawApplication } from "./applications-store";
+import { applyStates, applyToJob, arrivalsCount, jobBoard, moveApplication, myApplications, openCandidate, withdrawApplication } from "./applications-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { saveJob } from "./jobs-store";
 import { activeMembership, corporateHome, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
@@ -185,6 +185,29 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     expect(await apply(me, over.jobId)).toMatchObject({ ok: false, error: "limit" });
   });
 
+  it("copies Open to work in onto the application when it is sent, and a later change in Settings leaves it as sent (FR-55)", async () => {
+    const { admin, jobId } = await openJob("places");
+    const me = await candidate("places-cand");
+    await db!.insert(schema.userSettings).values({ userId: me, openToWorkIn: ["Remote", "Pune"] });
+    const r = await apply(me, jobId);
+    if (!r.ok) throw new Error(r.error);
+    const [row] = await db!.select({ places: schema.applications.openToWorkIn }).from(schema.applications).where(eq(schema.applications.id, r.applicationId));
+    expect(row.places).toEqual(["Remote", "Pune"]);
+    await db!.update(schema.userSettings).set({ openToWorkIn: ["Kochi"] }).where(eq(schema.userSettings.userId, me));
+    const opened = await openCandidate(admin, { applicationId: r.applicationId }, at());
+    if (!opened.ok) throw new Error(opened.error);
+    expect(opened.candidate.openToWorkIn).toEqual(["Remote", "Pune"]);
+    const data = await exportAccountData(me, db!, clock);
+    expect(data!.applications[0]).toMatchObject({ openToWorkIn: ["Remote", "Pune"] });
+    expect(data!.settings).toMatchObject({ openToWorkIn: ["Kochi"] });
+    // Someone who never set it sends an empty list.
+    const other = await candidate("places-none");
+    const r2 = await apply(other, jobId);
+    if (!r2.ok) throw new Error(r2.error);
+    const [row2] = await db!.select({ places: schema.applications.openToWorkIn }).from(schema.applications).where(eq(schema.applications.id, r2.applicationId));
+    expect(row2.places).toEqual([]);
+  });
+
   it("shows the job team a board with the public profile and Match to this job, never email, phone, resume lines or goals", async () => {
     const { admin, jobId } = await openJob("board");
     const me = await candidate("board-cand");
@@ -239,6 +262,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     ]);
     const mine = await myApplications(me, { db: db! });
     expect(mine).toHaveLength(1);
+    // Not this time stays on Arrivals, so it counts on the top bar.
+    expect(await arrivalsCount(me, db!)).toBe(1);
     expect(mine[0]).toMatchObject({ title: "SOC Analyst L1", company: "Example Labs", stage: "not_this_time", withdrawn: false });
     expect(mine[0].events.at(-1)).toEqual({ kind: "moved", stage: "not_this_time", on: "2026-10-15", note: NOTE });
     expect(JSON.stringify(mine)).not.toContain("Meera");
@@ -345,6 +370,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     expect(await jobBoard(admin, jobId, at(3))).toMatchObject({ ok: true, board: { cards: [], withdrawn: 1 } });
     const mine = await myApplications(me, { db: db! });
     expect(mine[0]).toMatchObject({ stage: "not_this_time", withdrawn: true });
+    // A withdrawn application no longer counts on the top bar.
+    expect(await arrivalsCount(me, db!)).toBe(0);
     expect(mine[0].events.map((e) => e.kind)).toEqual(["applied", "moved", "withdrawn"]);
   });
 
@@ -390,8 +417,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     if (!r.ok) throw new Error(r.error);
     await moveApplication(admin, { applicationId: r.applicationId, to: "not_this_time", note: NOTE }, at(1));
     const data = await exportAccountData(me, db!, clock);
-    expect(EXPORT_VERSION).toBe(24);
-    expect(data!.exportVersion).toBe(24);
+    expect(EXPORT_VERSION).toBe(31);
+    expect(data!.exportVersion).toBe(31);
     expect(data!.applications).toHaveLength(1);
     expect(data!.applications[0]).toMatchObject({ company: "Example Labs", job: "SOC Analyst L1", stage: "not_this_time", canJoin: "Within 30 days" });
     expect(data!.applications[0].events.map((e) => [e.kind, e.stage, e.note])).toEqual([

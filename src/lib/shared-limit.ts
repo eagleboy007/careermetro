@@ -7,7 +7,23 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
-import { ELITE_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import {
+  AVAILABILITY_SAVES_PER_DAY,
+  DEPARTURE_CHANGES_PER_DAY,
+  DIRECT_MESSAGES_PER_DAY,
+  ELITE_CHANGES_PER_DAY,
+  JOB_SEARCH_CHANGES_PER_DAY,
+  LIBRARY_CHANGES_PER_DAY,
+  ME_EDITS_PER_DAY,
+  MOCK_FEEDBACK_PER_DAY,
+  MOCK_SESSIONS_PER_DAY,
+  NOTIFICATION_READS_PER_DAY,
+  RESOURCE_REPORTS_PER_DAY,
+  RESUME_EXPORTS_PER_HOUR,
+  SUGGESTIONS_PER_DAY,
+  TIMED_TESTS_PER_DAY,
+  TRACK_CHANGES_PER_DAY,
+} from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -54,6 +70,10 @@ export const LIMITS = {
   companyMessagesPerCompanyDay: { bucket: "company-message", max: 200, windowMs: 24 * HOUR },
   /** Messages a company sends in one application chat a day, so one candidate can't be flooded. Keyed by the application's id. */
   companyMessagesPerApplicationDay: { bucket: "company-message-application", max: 20, windowMs: 24 * HOUR },
+  /** Messages one person sends in open direct chats a day, across every chat; a request has its own limit above. */
+  directMessagesPerUserDay: { bucket: "direct-message-user", max: DIRECT_MESSAGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Resume downloads an hour per owner (signed in or not), each try counted: every one renders a PDF or Word file. */
+  resumeExportsPerOwnerHour: { bucket: "resume-export", max: RESUME_EXPORTS_PER_HOUR, windowMs: HOUR },
   /** Messages one person sends in their application chats a day, across every company. */
   applicationMessagesPerUserDay: { bucket: "application-message-user", max: 50, windowMs: 24 * HOUR },
   /** "Is this username free?" checks one person makes, so the list of usernames can't be read out by script. */
@@ -97,6 +117,34 @@ export const LIMITS = {
   mockSessionsPerUserDay: { bucket: "mock-session", max: MOCK_SESSIONS_PER_DAY, windowMs: 24 * HOUR },
   /** Mock interview sessions one person gets feedback on a day: each is one model call, inside its own daily budget. */
   mockFeedbackPerUserDay: { bucket: "mock-feedback", max: MOCK_FEEDBACK_PER_DAY, windowMs: 24 * HOUR },
+  /** "Looking for a job" and the notice period (docs/plans/job-search-plan.md): changes a day per person, each try counted. */
+  jobSearchChangesPerUserDay: { bucket: "job-search-change", max: JOB_SEARCH_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Saves and stage changes on Departures (docs/plans/departures-live-plan.md), each try counted. */
+  departureChangesPerUserDay: { bucket: "departure-change", max: DEPARTURE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Save, "I finished this" and Add to my rides in the Library (docs/plans/library-part-2-plan.md), each try counted. */
+  libraryChangesPerUserDay: { bucket: "library-change", max: LIBRARY_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** "Report a broken link" tries one person makes a day. */
+  resourceReportsPerUserDay: { bucket: "resource-report", max: RESOURCE_REPORTS_PER_DAY, windowMs: 24 * HOUR },
+  /** "Suggest a free resource" tries one person makes a day. */
+  resourceSuggestionsPerUserDay: { bucket: "resource-suggestion", max: SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
+  /** Adds, edits and deletes on Me (docs/plans/me-editing-plan.md): roles, education, stories and interests, each try counted. */
+  meEditsPerUserDay: { bucket: "me-edit", max: ME_EDITS_PER_DAY, windowMs: 24 * HOUR },
+  /** Opening the notifications panel, which marks every row read (docs/plans/notifications-plan.md), each try counted. */
+  notificationReadsPerUserDay: { bucket: "notification-read", max: NOTIFICATION_READS_PER_DAY, windowMs: 24 * HOUR },
+  /** "Usually free" saves from the Inbox (docs/plans/settings-columns-plan.md), each try counted. */
+  availabilityPerUserDay: { bucket: "availability-save", max: AVAILABILITY_SAVES_PER_DAY, windowMs: 24 * HOUR },
+  /** Today's signal check answers (docs/plans/today-live-plan.md), each try counted; one question a day, so this is generous. */
+  signalAnswersPerUserDay: { bucket: "signal-answer", max: 100, windowMs: 24 * HOUR },
+  /** Track switches on Your goals (docs/plans/tracks-plan.md), each try counted. */
+  trackChangesPerUserDay: { bucket: "track-change", max: TRACK_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /**
+   * Account settings saves a day per person, each try counted (launch-readiness pass, docs/plans/launch-readiness-pass.md).
+   * One Save sends the whole form, so 100 is far more than anyone needs, while a script can't turn "Let companies find
+   * me" on and off without end, each on writing a consent row.
+   */
+  settingsSavesPerUserDay: { bucket: "settings-save", max: 100, windowMs: 24 * HOUR },
+  /** Unblocks from Settings > Privacy a day per person, each try counted, so a block and unblock loop can't be scripted. */
+  unblocksPerUserDay: { bucket: "unblock", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

@@ -26,6 +26,7 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
+import { NOTIFICATION_KINDS, RESOURCE_REPORT_REASONS, RESOURCE_REPORT_STATUSES, SUGGESTION_DECLINE_REASONS, SUGGESTION_STATUSES } from "../lib/schemas/constants";
 import {
   APPLICATION_EVENT_KINDS,
   APPLICATION_STAGES,
@@ -33,7 +34,7 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, MOCK_FOCUSES, MOCK_LENGTHS, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_CHECK_SOURCES, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, MOCK_FOCUSES, MOCK_LENGTHS, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
 import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, MockSessionFeedback, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
@@ -208,8 +209,40 @@ export const userSettings = pgTable("user_settings", {
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
+  /**
+   * "Looking for a job" (handoff 6, docs/plans/job-search-plan.md, migration 0039). Off pauses Departures and Arrivals:
+   * no Express apply, out of company search, no Today board. Rides, streak and the map keep going.
+   */
+  jobSearch: boolean("job_search").notNull().default(true),
+  /** The notice period in days (15, 30, 60 or 90), private: never on a profile or sent to a company. */
+  noticeDays: smallint("notice_days"),
+  /** The India date the person resigned, which starts the countdown. Never later than today; needs notice_days. */
+  resignedOn: date("resigned_on"),
+  /**
+   * "Allow message requests from people who aren't connections" (FR-55, migration 0045): on by default. Off, a first
+   * message from someone who isn't a connection is refused like a block; requests already there stay.
+   */
+  messageRequests: boolean("message_requests").notNull().default(true),
+  /**
+   * "Open to work in" (FR-55): Remote or PERSON_CITIES, at most 6, Remote first. Filters the person's Departures, is
+   * copied onto each Express apply application, and companies that can find them see it. Never on a profile.
+   */
+  openToWorkIn: text("open_to_work_in").array().notNull().default(sql`'{}'::text[]`),
+  /**
+   * "Usually free" (FR-55): weekday picker hours as "mon 17:00", at most 40. Private: it never leaves the person's own
+   * pages and only pre-ticks open times when a company asks for times.
+   */
+  usuallyFree: text("usually_free").array().notNull().default(sql`'{}'::text[]`),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+},
+  (t) => [
+    check("user_settings_notice_days", sql`${t.noticeDays} is null or ${t.noticeDays} in (15, 30, 60, 90)`),
+    check("user_settings_resigned_needs_days", sql`${t.resignedOn} is null or ${t.noticeDays} is not null`),
+    check("user_settings_open_to_work_in_max", sql`cardinality(${t.openToWorkIn}) <= 6`),
+    // Each entry a weekday and a picker time (FREE_DAYS by SLOT_TIMES), checked again by usuallyFreeInput.
+    check("user_settings_usually_free_slots", sql`cardinality(${t.usuallyFree}) <= 40 and ${t.usuallyFree} <@ array['mon 10:00', 'mon 11:00', 'mon 12:00', 'mon 14:00', 'mon 15:00', 'mon 16:00', 'mon 17:00', 'mon 18:00', 'tue 10:00', 'tue 11:00', 'tue 12:00', 'tue 14:00', 'tue 15:00', 'tue 16:00', 'tue 17:00', 'tue 18:00', 'wed 10:00', 'wed 11:00', 'wed 12:00', 'wed 14:00', 'wed 15:00', 'wed 16:00', 'wed 17:00', 'wed 18:00', 'thu 10:00', 'thu 11:00', 'thu 12:00', 'thu 14:00', 'thu 15:00', 'thu 16:00', 'thu 17:00', 'thu 18:00', 'fri 10:00', 'fri 11:00', 'fri 12:00', 'fri 14:00', 'fri 15:00', 'fri 16:00', 'fri 17:00', 'fri 18:00']::text[]`),
+  ],
+);
 
 /** What the user agreed to and when (DPDP Act, SEC-1). */
 export const consents = pgTable("consents", {
@@ -454,6 +487,11 @@ export const resources = pgTable("resources", {
   healthy: boolean("healthy").notNull().default(true),
   lastCheckedAt: timestamp("last_checked_at", { withTimezone: true }),
   createdAt: createdAt(),
+  /**
+   * Hidden by an admin from /admin/library (docs/plans/library-part-2-plan.md): it leaves the Library, paths and rides
+   * at once. Apart from `healthy`, which the daily link check writes, so the check can't bring a hidden link back.
+   */
+  hiddenAt: timestamp("hidden_at", { withTimezone: true }),
 });
 
 export const resourceChecks = pgTable("resource_checks", {
@@ -549,6 +587,8 @@ export const userGoals = pgTable(
     uniqueIndex("user_goals_skill").on(t.userId, t.skillId),
     index("user_goals_gap_analysis").on(t.gapAnalysisId),
     index("user_goals_job_check").on(t.jobCheckId),
+    // "On your line right now" counts other people with an active goal on a skill (docs/plans/departures-live-plan.md).
+    index("user_goals_skill_status").on(t.skillId, t.status),
   ],
 );
 
@@ -937,6 +977,8 @@ export const jobEmailChecks = pgTable(
     startMonth: text("start_month").notNull(),
     domain: text("domain").notNull(),
     status: text("status", { enum: JOB_EMAIL_CHECK_STATUSES }).notNull(),
+    /** The side of the profile the check was made on (T95): "resume" or "added"; null on checks saved before 0047. */
+    roleSource: text("role_source", { enum: JOB_CHECK_SOURCES }),
     checkedAt: timestamp("checked_at", { withTimezone: true }).notNull(),
     reviewedBy: uuid("reviewed_by").references(() => users.id, { onDelete: "set null" }),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
@@ -947,6 +989,7 @@ export const jobEmailChecks = pgTable(
     check("job_email_checks_status", sql`${t.status} in ('verified', 'review', 'refused')`),
     check("job_email_checks_lengths", sql`char_length(${t.employer}) between 1 and 120 and char_length(${t.employerKey}) between 1 and 120 and char_length(${t.domain}) between 3 and 253`),
     check("job_email_checks_start", sql`${t.startMonth} ~ '^([0-9]{4}(-[0-9]{2})?)?$'`),
+    check("job_email_checks_role_source", sql`${t.roleSource} is null or ${t.roleSource} in ('resume', 'added')`),
   ],
 );
 
@@ -1053,6 +1096,11 @@ export const applications = pgTable(
      * (checked by `applicationNote`, the only writer). Shown to the job team in the drawer; deleted with the application.
      */
     note: text("note"),
+    /**
+     * "Open to work in" as it was when the person sent this application with Express apply (FR-55, migration 0045). A
+     * later change in Settings doesn't rewrite it. The job team sees it in the drawer next to Can join.
+     */
+    openToWorkIn: text("open_to_work_in").array().notNull().default(sql`'{}'::text[]`),
     withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
     /** Set by Not this time or withdrawing; cleared when the company opens it again. */
     closedAt: timestamp("closed_at", { withTimezone: true }),
@@ -1067,6 +1115,7 @@ export const applications = pgTable(
     index("applications_user").on(t.userId, t.createdAt),
     index("applications_consent").on(t.consentId),
     index("applications_resume").on(t.resumeId),
+    check("applications_open_to_work_in_max", sql`cardinality(${t.openToWorkIn}) <= 6`),
   ],
 );
 
@@ -1355,6 +1404,8 @@ export const mockSessions = pgTable(
  * One answer in a mock interview, by the question's position (1 to 8). The text is the person's own (typed, or spoken
  * and turned to text on their device; audio is never sent or kept), 1 to 4,000 characters, kept 30 days and never
  * logged. `what_worked` and `add_next_time` are the model's words, null until feedback. A skipped question has no row.
+ * `follow_up_id` is the bank follow-up asked after this answer (picked by code, migration 0044) and `follow_up_answer`
+ * the person's reply, 1 to 4,000 characters, only with a follow-up id; both go with the row after 30 days.
  */
 export const mockAnswers = pgTable(
   "mock_answers",
@@ -1366,11 +1417,379 @@ export const mockAnswers = pgTable(
     answer: text("answer").notNull(),
     whatWorked: text("what_worked"),
     addNextTime: text("add_next_time"),
+    followUpId: text("follow_up_id"),
+    followUpAnswer: text("follow_up_answer"),
   },
   (t) => [
     primaryKey({ columns: [t.sessionId, t.position] }),
     check("mock_answers_answer_length", sql`char_length(${t.answer}) between 1 and 4000`),
     check("mock_answers_position", sql`${t.position} between 1 and 8`),
+    check("mock_answers_follow_up_length", sql`char_length(${t.followUpAnswer}) between 1 and 4000`),
+    check("mock_answers_follow_up_needs_id", sql`${t.followUpAnswer} is null or ${t.followUpId} is not null`),
+  ],
+);
+
+/* Live Departures (docs/plans/departures-live-plan.md, migration 0040) --------------------------------------- */
+
+/**
+ * Roles from the reviewed public job boards (src/content/job-boards.json; the Greenhouse, Lever, Ashby and
+ * SmartRecruiters public APIs only), written once a day by scripts/departures/fetch-feeds.mjs. No post text: the
+ * title, company, place, work type, the experience the post states, the live role read from the title and the skill
+ * ids the taxonomy finds by code. Belongs to no one. A post the feed no longer sees gets `closed_at`; closed posts are
+ * deleted with their saves 180 days later (clearOldDepartures, the daily cleanup).
+ */
+export const jobPosts = pgTable(
+  "job_posts",
+  {
+    id: id(),
+    ats: text("ats", { enum: ["greenhouse", "lever", "ashby", "smartrecruiters"] }).notNull(),
+    boardToken: text("board_token").notNull(),
+    externalId: text("external_id").notNull(),
+    /** The post on the company's own board; https only. */
+    url: text("url").notNull(),
+    title: text("title").notNull(),
+    company: text("company").notNull(),
+    /** A city in India, "Remote" or "India". */
+    city: text("city").notNull(),
+    workType: jobWorkType("work_type").notNull().default("full_time"),
+    /** "2 to 4 years", when the post states years. */
+    experienceNote: text("experience_note"),
+    /** The live role the title reads as; null when none matches. */
+    roleSlug: text("role_slug"),
+    requiredSkillIds: text("required_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    niceSkillIds: text("nice_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    postedAt: timestamp("posted_at", { withTimezone: true }),
+    firstSeenAt: timestamp("first_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("job_posts_external").on(t.ats, t.boardToken, t.externalId),
+    index("job_posts_closed_role").on(t.closedAt, t.roleSlug),
+    index("job_posts_open_role_city").on(t.roleSlug, t.city).where(sql`${t.closedAt} is null`),
+    // Departures and the Today board read the newest 300 open posts of up to 10,000 by this expression (0046): read
+    // backwards, the index gives them in order without sorting every open post.
+    index("job_posts_open_newest").on(sql`coalesce(${t.postedAt}, ${t.firstSeenAt})`).where(sql`${t.closedAt} is null`),
+    check("job_posts_ats", sql`${t.ats} in ('greenhouse', 'lever', 'ashby', 'smartrecruiters')`),
+    check("job_posts_url_https", sql`${t.url} like 'https://%'`),
+    check("job_posts_title_length", sql`char_length(${t.title}) between 2 and 160`),
+    check("job_posts_company_length", sql`char_length(${t.company}) between 1 and 80`),
+    check("job_posts_city_length", sql`char_length(${t.city}) between 1 and 60`),
+    check("job_posts_experience_length", sql`${t.experienceNote} is null or char_length(${t.experienceNote}) <= 40`),
+  ],
+);
+
+/**
+ * The person's own Saved and Applied lists on Departures: `saved_at` for the bookmark, `stage` 1 to 4 (Applied, Heard
+ * back, Interview, Offer) for the tracker. Owner only; a row with neither is deleted, not kept. Goes with the account
+ * and with its post (on delete cascade); in Download your data.
+ */
+export const jobSaves = pgTable(
+  "job_saves",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    jobPostId: uuid("job_post_id")
+      .notNull()
+      .references(() => jobPosts.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at", { withTimezone: true }),
+    stage: smallint("stage"),
+    appliedAt: timestamp("applied_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.jobPostId] }),
+    index("job_saves_job_post").on(t.jobPostId),
+    check("job_saves_stage", sql`${t.stage} is null or ${t.stage} between 1 and 4`),
+    check("job_saves_not_empty", sql`${t.savedAt} is not null or ${t.stage} is not null`),
+  ],
+);
+
+/** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */
+export const jobFeedRuns = pgTable(
+  "job_feed_runs",
+  {
+    id: id(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    boardsOk: integer("boards_ok").notNull().default(0),
+    boardsFailed: integer("boards_failed").notNull().default(0),
+    postsOpen: integer("posts_open").notNull().default(0),
+    postsClosed: integer("posts_closed").notNull().default(0),
+  },
+  (t) => [index("job_feed_runs_finished").on(t.finishedAt)],
+);
+
+/* Library part 2 (docs/plans/library-part-2-plan.md) -------------------------------------------------------- */
+
+/**
+ * The person's own marks on a catalog resource: the bookmark (`saved_at`), "I finished this" (`finished_at`, the box
+ * only; ride and Path ticks stay in their own tables) and Add to my rides (`on_ride_at`). Owner only; a row with none
+ * of the three is deleted, not kept. Goes with the account and with the resource (on delete cascade).
+ */
+export const userResources = pgTable(
+  "user_resources",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    resourceId: uuid("resource_id")
+      .notNull()
+      .references(() => resources.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    onRideAt: timestamp("on_ride_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.resourceId] }),
+    index("user_resources_resource").on(t.resourceId),
+    check("user_resources_not_empty", sql`${t.savedAt} is not null or ${t.finishedAt} is not null or ${t.onRideAt} is not null`),
+  ],
+);
+
+/**
+ * "Report a broken link": a fixed reason and no note, so nothing typed is kept. One open report per person and
+ * resource. An admin hides the link or dismisses the reports from /admin/library. Outlives the reporter's account
+ * (user set to null): it holds no personal data. Decided reports go 180 days after the decision (the daily cleanup).
+ */
+export const resourceReports = pgTable(
+  "resource_reports",
+  {
+    id: id(),
+    resourceId: uuid("resource_id")
+      .notNull()
+      .references(() => resources.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    reason: text("reason", { enum: RESOURCE_REPORT_REASONS }).notNull(),
+    status: text("status", { enum: RESOURCE_REPORT_STATUSES }).notNull().default("open"),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    /** The admin who decided. Never queried by, so not indexed (as messages.hidden_by). */
+    decidedBy: uuid("decided_by").references(() => users.id, { onDelete: "set null" }),
+  },
+  (t) => [
+    uniqueIndex("resource_reports_open_once").on(t.resourceId, t.userId).where(sql`${t.status} = 'open'`),
+    index("resource_reports_status_created").on(t.status, t.createdAt),
+    index("resource_reports_resource").on(t.resourceId),
+    index("resource_reports_user").on(t.userId),
+    check("resource_reports_reason", sql`${t.reason} in ('broken', 'not_free', 'outdated', 'other')`),
+    check("resource_reports_status", sql`${t.status} in ('open', 'hidden', 'dismissed')`),
+    check("resource_reports_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
+  ],
+);
+
+/**
+ * "Suggest a free resource": an https link (tracking and affiliate parameters stripped, never fetched by the server),
+ * its host and the goal's skill it is for (null is Other). A reviewer decides on /admin/library; an accepted link
+ * reaches the catalog only by a pull request to src/content/resources.json. Outlives the account (user set to null).
+ * Decided suggestions go 180 days after the decision (the daily cleanup).
+ */
+export const resourceSuggestions = pgTable(
+  "resource_suggestions",
+  {
+    id: id(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    url: text("url").notNull(),
+    host: text("host").notNull(),
+    skillId: text("skill_id").references(() => skills.id, { onDelete: "set null" }),
+    status: text("status", { enum: SUGGESTION_STATUSES }).notNull().default("open"),
+    declineReason: text("decline_reason", { enum: SUGGESTION_DECLINE_REASONS }),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    /** The admin who decided. Never queried by, so not indexed. */
+    decidedBy: uuid("decided_by").references(() => users.id, { onDelete: "set null" }),
+  },
+  (t) => [
+    uniqueIndex("resource_suggestions_user_url").on(t.userId, t.url),
+    index("resource_suggestions_status_created").on(t.status, t.createdAt),
+    index("resource_suggestions_skill").on(t.skillId),
+    check("resource_suggestions_url", sql`${t.url} like 'https://%' and char_length(${t.url}) <= 500`),
+    check("resource_suggestions_host_length", sql`char_length(${t.host}) between 1 and 253`),
+    check("resource_suggestions_status", sql`${t.status} in ('open', 'accepted', 'duplicate', 'declined')`),
+    check("resource_suggestions_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
+    check(
+      "resource_suggestions_decline_reason",
+      sql`(${t.status} = 'declined') = (${t.declineReason} is not null) and (${t.declineReason} is null or ${t.declineReason} in ('not_free', 'paywall', 'affiliate', 'off_topic', 'other'))`,
+    ),
+  ],
+);
+
+/* Me editing (docs/plans/me-editing-plan.md, migration 0042) -------------------------------------------------
+ * What a person adds on Me by hand: roles, education, stories and interests. All owner only, kept until the person
+ * deletes them or the account goes (on delete cascade). The matcher, gaps and company Match never read these: they read
+ * the confirmed resume profile only (plan choice 2). */
+
+/** "+ Add role": a job the person added by hand. At most one current row each (the partial unique index). */
+export const meRoles = pgTable(
+  "me_roles",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    employer: text("employer").notNull(),
+    /** "2024-06". */
+    startMonth: text("start_month").notNull(),
+    /** "2025-03", or null while current. */
+    endMonth: text("end_month"),
+    isCurrent: boolean("is_current").notNull().default(false),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("me_roles_user_start").on(t.userId, t.startMonth),
+    uniqueIndex("me_roles_one_current").on(t.userId).where(sql`${t.isCurrent}`),
+    check("me_roles_title_length", sql`char_length(${t.title}) between 1 and 120`),
+    check("me_roles_employer_length", sql`char_length(${t.employer}) between 1 and 120`),
+    check("me_roles_start_month", sql`${t.startMonth} ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'`),
+    check("me_roles_end_month", sql`${t.endMonth} is null or ${t.endMonth} ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'`),
+    check("me_roles_end_after_start", sql`${t.endMonth} is null or ${t.endMonth} >= ${t.startMonth}`),
+    check("me_roles_current_open", sql`${t.isCurrent} = (${t.endMonth} is null)`),
+  ],
+);
+
+/** "+ Add" under Education: a qualification the person added by hand. */
+export const meEducation = pgTable(
+  "me_education",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    qualification: text("qualification").notNull(),
+    institution: text("institution").notNull(),
+    /** Free text, such as "2024" or "2021 to 2024". */
+    year: text("year"),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("me_education_user").on(t.userId),
+    check("me_education_qualification_length", sql`char_length(${t.qualification}) between 1 and 160`),
+    check("me_education_institution_length", sql`char_length(${t.institution}) between 1 and 160`),
+    check("me_education_year_length", sql`${t.year} is null or char_length(${t.year}) between 1 and 40`),
+  ],
+);
+
+/**
+ * "Your stories": a Situation, Task, Action, Result story, hand-written in v1 (plan choice 1). The linked goal is set
+ * to null when that goal goes. Its SMART check is worked out when shown and never stored.
+ */
+export const stories = pgTable(
+  "stories",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    whereText: text("where_text").notNull().default(""),
+    situation: text("situation").notNull().default(""),
+    task: text("task").notNull().default(""),
+    action: text("action").notNull().default(""),
+    result: text("result").notNull().default(""),
+    goalId: uuid("goal_id").references(() => userGoals.id, { onDelete: "set null" }),
+    /** "user" only in v1; "resume", "goal" and "college" are kept for drafting later. */
+    source: text("source").notNull().default("user"),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("stories_user_updated").on(t.userId, t.updatedAt),
+    index("stories_goal").on(t.goalId),
+    check("stories_title_length", sql`char_length(${t.title}) between 1 and 120`),
+    check("stories_where_length", sql`char_length(${t.whereText}) <= 120`),
+    check(
+      "stories_parts_length",
+      sql`char_length(${t.situation}) <= 400 and char_length(${t.task}) <= 400 and char_length(${t.action}) <= 400 and char_length(${t.result}) <= 400`,
+    ),
+    check("stories_source", sql`${t.source} in ('user', 'resume', 'goal', 'college')`),
+  ],
+);
+
+/** The boxes a story answers (STORY_BOXES), at least one per story (checked in the store). */
+export const storyBoxes = pgTable(
+  "story_boxes",
+  {
+    storyId: uuid("story_id")
+      .notNull()
+      .references(() => stories.id, { onDelete: "cascade" }),
+    box: text("box").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.storyId, t.box] }),
+    check("story_boxes_box", sql`${t.box} in ('Ownership', 'Problem solving', 'Delivering results', 'Learning', 'Working with others', 'Speaking up')`),
+  ],
+);
+
+/** Interests, free text per person (plan choice 5), one per normalised key. */
+export const userInterests = pgTable(
+  "user_interests",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    /** Lowercase, trimmed, single spaces (src/lib/me/text.ts interestKey). */
+    nameKey: text("name_key").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.nameKey] }),
+    check("user_interests_name_length", sql`char_length(${t.name}) between 1 and 40`),
+    check("user_interests_key_length", sql`char_length(${t.nameKey}) between 1 and 40`),
+  ],
+);
+
+/* Notifications, in-app (docs/plans/notifications-plan.md, migration 0043) ---------------------------------------------- */
+
+/**
+ * One row per event the bell shows: a connection request to the person, their request accepted, a company moving or
+ * closing their application, and an interview set or cancelled. Ids only, never text: the sentence is built from the
+ * live rows when the panel opens, so a hidden, suspended, deleted or blocked source drops out on its own. Written in the
+ * event's own transaction (src/lib/notifications/store.ts notify). One unread row per kind and source (the partial
+ * unique index), so a card dragged through lanes makes one. `emailed_at` is kept for the email part (waiting on
+ * RESEND_API_KEY). The daily cleanup deletes read rows 60 days after reading and any row after 90 days.
+ */
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: NOTIFICATION_KINDS }).notNull(),
+    /** Who did it. Their account going sets it null, and the row is then not shown. */
+    actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+    connectionRequestId: uuid("connection_request_id").references(() => connectionRequests.id, { onDelete: "cascade" }),
+    applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }),
+    interviewId: uuid("interview_id").references(() => interviews.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    /** Unused until the email part. */
+    emailedAt: timestamp("emailed_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("notifications_user_created").on(t.userId, t.createdAt.desc()),
+    index("notifications_user_unread").on(t.userId).where(sql`${t.readAt} is null`),
+    index("notifications_actor").on(t.actorId),
+    index("notifications_connection_request").on(t.connectionRequestId),
+    index("notifications_application").on(t.applicationId),
+    index("notifications_interview").on(t.interviewId),
+    uniqueIndex("notifications_one_unread")
+      .on(t.userId, t.kind, sql`coalesce(${t.applicationId}, ${t.connectionRequestId}, ${t.interviewId})`)
+      .where(sql`${t.readAt} is null`),
+    check(
+      "notifications_kind",
+      sql`${t.kind} in ('connection_request', 'connection_accepted', 'application_moved', 'application_closed', 'interview_scheduled', 'interview_cancelled')`,
+    ),
+    check(
+      "notifications_refs",
+      sql`(${t.kind} in ('connection_request', 'connection_accepted') and ${t.connectionRequestId} is not null and ${t.applicationId} is null and ${t.interviewId} is null) or (${t.kind} in ('application_moved', 'application_closed') and ${t.applicationId} is not null and ${t.connectionRequestId} is null and ${t.interviewId} is null) or (${t.kind} in ('interview_scheduled', 'interview_cancelled') and ${t.interviewId} is not null and ${t.connectionRequestId} is null and ${t.applicationId} is null)`,
+    ),
   ],
 );
 

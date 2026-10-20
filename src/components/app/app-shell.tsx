@@ -6,10 +6,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { StreakChip } from "@/components/today/streak-chip";
 import { Logo } from "@/components/ui/logo";
+import type { OpenNotifications } from "@/lib/notifications/types";
+import { NotificationsBell } from "./notifications-bell";
 import { ADMIN_LINK, MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
 
 export type ShellUser = {
   name: string;
+  /** The profile link's username, shown as @handle under the name in the menu; null until the person picks one. */
+  handle?: string | null;
   initials: string;
   streakDays: number;
   todayCounted: boolean;
@@ -26,6 +30,13 @@ export type ShellUser = {
   isAdmin?: boolean;
   /** Elite is on (FR-50): the award mark on the avatar and "Elite · beta" in the menu. */
   elite?: boolean;
+  /**
+   * Applications on Arrivals, for the count on Arrivals in the top bar. The server sends 0 with no resume and on the
+   * first day, as the prototype hides it then.
+   */
+  arrivalsCount?: number;
+  /** Unread notifications the person may see (docs/plans/notifications-plan.md): the dot on the bell. */
+  notificationsNew?: number;
 };
 
 /**
@@ -33,23 +44,36 @@ export type ShellUser = {
  * menu. Sections that are not built yet show as "Soon" and are not links. With no user yet (the account is still
  * loading) the frame shows with an empty avatar, so a screen never opens blank.
  */
-export function AppShell({ user, children, embedded = false }: { user: ShellUser | null; children: ReactNode; embedded?: boolean }) {
+export function AppShell({
+  user,
+  children,
+  embedded = false,
+  openNotifications,
+}: {
+  user: ShellUser | null;
+  children: ReactNode;
+  embedded?: boolean;
+  /** The server action that opens the bell's panel; without it (example data, /design) the panel shows examples. */
+  openNotifications?: OpenNotifications;
+}) {
   const path = usePathname();
   const active = (item: NavItem) => path === item.href || path.startsWith(`${item.href}/`);
   return (
     <div className={`flex flex-col ${embedded ? "relative min-h-full" : "min-h-full"}`}>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1240px] items-center gap-4 px-4 py-3">
+          {/* The wordmark (about 150 px with the mark) gives way under 420 px: at 390 px it, a streak, the bell, Inbox and avatar need about 400 px. */}
           <Link href="/today" aria-label="CareerMetro, Today">
-            <Logo wordmarkClassName="max-[359px]:hidden" />
+            <Logo wordmarkClassName="max-[419px]:hidden" />
           </Link>
           <nav aria-label="Main" className="hidden flex-1 items-center gap-1 text-sm min-[760px]:flex">
             {TOP_NAV.map((item) => (
-              <TopLink key={item.key} item={item} active={active(item)} />
+              <TopLink key={item.key} item={item} active={active(item)} count={item.key === "arrivals" ? (user?.arrivalsCount ?? 0) : 0} />
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2.5">
             {user?.showStreak && <StreakChip days={user.streakDays} todayCounted={user.todayCounted} />}
+            {user && <NotificationsBell count={user.notificationsNew ?? 0} open={openNotifications} />}
             <InboxLink unread={user?.inboxUnread ?? 0} active={path === "/inbox" || path.startsWith("/inbox/")} />
             {user ? <AvatarMenu user={user} /> : <span aria-hidden="true" className="size-9 rounded-full bg-surface-2" />}
           </div>
@@ -94,7 +118,10 @@ function InboxLink({ unread, active }: { unread: number; active: boolean }) {
   );
 }
 
-function TopLink({ item, active }: { item: NavItem; active: boolean }) {
+/** In the avatar menu too, so the top bar keeps these only where there is room for them. */
+const ROOMY: Partial<Record<NavItem["key"], string>> = { market: "max-[999px]:hidden", network: "max-[1239px]:hidden", library: "max-[1239px]:hidden" };
+
+function TopLink({ item, active, count }: { item: NavItem; active: boolean; count: number }) {
   if (!item.built) {
     return (
       // A link that isn't built yet: disabled controls are exempt from the contrast minimum, and screen readers say so.
@@ -108,10 +135,16 @@ function TopLink({ item, active }: { item: NavItem; active: boolean }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      // Market is in the avatar menu too, so the top bar keeps it only where there is room for it.
-      className={`rounded-full px-3 py-1.5 font-medium ${active ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"} ${item.key === "market" ? "max-[999px]:hidden" : ""}`}
+      className={`inline-flex items-center rounded-full px-3 py-1.5 font-medium ${active ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"} ${ROOMY[item.key] ?? ""}`}
     >
       {item.label}
+      {count > 0 && (
+        <span data-nav-count="" className="ml-[5px] rounded-full bg-ink px-1.5 py-px font-mono text-[0.66rem] text-surface">
+          <span className="sr-only">, </span>
+          {count}
+          <span className="sr-only"> {count === 1 ? "application" : "applications"}</span>
+        </span>
+      )}
     </Link>
   );
 }
@@ -202,7 +235,10 @@ function AvatarMenu({ user }: { user: ShellUser }) {
         className="shadow-raised absolute right-0 top-[calc(100%+8px)] z-30 flex w-56 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5"
       >
         <div className="flex flex-col items-start gap-1.5 px-2.5 pb-1.5 pt-1">
-          <p className="text-sm font-semibold">{user.name}</p>
+          <p className="flex flex-col text-sm font-semibold">
+            {user.name}
+            {user.handle && <small className="text-[0.76rem] font-normal text-muted">@{user.handle}</small>}
+          </p>
           <span
             className={`rounded-full px-2 py-0.5 font-mono text-[0.62rem] uppercase tracking-[0.06em] ${user.elite ? "bg-elite text-on-elite" : "bg-surface-2 text-muted"}`}
           >

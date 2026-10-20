@@ -6,6 +6,15 @@ import type { ReportReason } from "@/lib/schemas/inbox";
  */
 export const HIDDEN_MESSAGE_TEXT = "This message was hidden by CareerMetro after a report.";
 
+/**
+ * The line an accepted found chat shows the person while their job search is off (FR-52, Testing Run 5 T82): the chat
+ * goes on, no new company requests arrive, and they can end it themselves with End chat.
+ */
+export const FOUND_JOB_SEARCH_OFF_LINE = "Job search is off. This chat stays open until you choose End chat.";
+
+/** End chat's inline confirm on an accepted found chat (FR-52): no report, no block, only this chat closes. */
+export const END_FOUND_CHAT_CONFIRM = "End this chat? The company can't message you here again.";
+
 export type InboxKind = "application" | "person" | "request";
 export type InboxFilter = "all" | InboxKind;
 
@@ -52,6 +61,8 @@ export type InboxThread = {
    * until accepted, then as a company chat (`application` kind) that isn't about an application.
    */
   found?: boolean;
+  /** An accepted found chat while the person's job search is off (FR-52): it shows FOUND_JOB_SEARCH_OFF_LINE. */
+  jobSearchOff?: boolean;
   /** Application chats: the company is verified now. The badge shows only then; the anti-scam line always. */
   verified?: boolean;
   /** People and requests: the status they set (Working at X, Studying and so on). */
@@ -107,6 +118,10 @@ export type InboxActions = {
   remove: (conversationId: string) => Promise<string | null>;
   report: (input: { conversationId: string; target: "person" | "chat"; reason: ReportReason; note?: string; block: boolean }) => Promise<string | null>;
   read: (conversationId: string) => Promise<void>;
+  /** End chat on an accepted found chat (FR-52): closes only this chat, with no report and no block. */
+  end?: (conversationId: string) => Promise<string | null>;
   /** Answers "Ask for times" with the picked slot keys (corporate build step 6). */
   offerTimes?: (messageId: string, slots: string[]) => Promise<string | null>;
+  /** Saves "Usually free" (FR-55), the whole grid at once: "mon 17:00" entries. */
+  saveUsuallyFree?: (slots: string[]) => Promise<string | null>;
 };

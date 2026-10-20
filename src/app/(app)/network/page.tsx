@@ -6,9 +6,9 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
-import { networkLists, networkSettingsFor, ownUsername } from "@/lib/network/store";
+import { networkFiltersFor, networkLists, networkSettingsFor, ownUsername } from "@/lib/network/store";
 import { networkRow } from "@/lib/network/view";
-import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, searchPeopleByName, setFindMe, withdrawConnection } from "./actions";
+import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, reportFromNetwork, searchPeopleByName, setFindMe, withdrawConnection } from "./actions";
 
 export const metadata: Metadata = { title: "Network · CareerMetro", robots: { index: false } };
 
@@ -20,7 +20,7 @@ async function Network() {
   const account = accounts ? await currentAccount() : null;
   if (!account) return <NetworkView data={exampleNetwork} example={exampleSearch} note={<p className={noteClass}>Example people. Nothing you do here is sent or saved.</p>} />;
 
-  const [lists, settings, username] = await Promise.all([networkLists(account.id), networkSettingsFor(account.id), ownUsername(account.id)]);
+  const [lists, settings, username, filters] = await Promise.all([networkLists(account.id), networkSettingsFor(account.id), ownUsername(account.id), networkFiltersFor(account.id)]);
   return (
     <NetworkView
       data={{
@@ -29,6 +29,7 @@ async function Network() {
         sent: lists.sent.map((p) => networkRow(p, "sent")),
         peopleCanFind: settings.peopleCanFind,
         profileLink: username ? `/u/${username}` : null,
+        myRole: filters.role,
       }}
       actions={{
         connect: connectTo,
@@ -39,6 +40,7 @@ async function Network() {
         search: searchPeopleByName,
         findMe: setFindMe,
         message: messageConnection,
+        report: reportFromNetwork,
       }}
     />
   );

@@ -1,19 +1,23 @@
 import { describe, expect, it } from "vitest";
-import type { MockChoiceQuestion, MockQuestion } from "@/lib/schemas";
+import { rolePrepView, type MockChoiceQuestion, type MockQuestion } from "@/lib/schemas";
 import {
   bankViewFor,
   choicePool,
   deadlineOf,
   emptyPicks,
   endOf,
+  followUpsOf,
+  followUpStateFor,
   freeOpenIds,
   hash32,
   isOver,
   mockRoles,
   NO_PICK,
   pickTestQuestions,
+  prepForJobs,
   reviewOf,
   roleFor,
+  rolePrepFor,
   scorePicks,
   testViewOf,
   TIMED_TEST_MESSAGES,
@@ -74,18 +78,24 @@ describe("which role /mock opens on", () => {
 
   it("says which roles have enough questions for a test, counting unreviewed ones only where allowed", () => {
     expect(mockRoles(bank, roles, false)).toEqual([
-      { slug: "tech-writer", title: "Technical Writer", hasTest: false },
-      { slug: "data-analyst", title: "Data Analyst", hasTest: true },
+      { slug: "tech-writer", title: "Technical Writer", hasTest: false, followUps: "none" },
+      { slug: "data-analyst", title: "Data Analyst", hasTest: true, followUps: "none" },
     ]);
     expect(choicePool(bank, analyst, false)).toHaveLength(13);
     expect(choicePool(bank, analyst, true)).toHaveLength(14);
     expect(mockRoles(bank.filter((q) => q.id !== "sql-mc-8" && q.id !== "sql-mc-7"), roles, false)[1].hasTest).toBe(false);
   });
 
-  it("uses unreviewed questions everywhere but production", () => {
+  it("uses unreviewed questions on preview, development, local dev and tests only (T86)", () => {
     expect(unreviewedAllowed({ VERCEL_ENV: "production" })).toBe(false);
-    expect(unreviewedAllowed({ VERCEL_ENV: "preview" })).toBe(true);
-    expect(unreviewedAllowed({})).toBe(true);
+    expect(unreviewedAllowed({ VERCEL_ENV: "production", NODE_ENV: "development" })).toBe(false);
+    expect(unreviewedAllowed({ VERCEL_ENV: "preview", NODE_ENV: "production" })).toBe(true);
+    expect(unreviewedAllowed({ VERCEL_ENV: "development" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "development" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "test" })).toBe(true);
+    expect(unreviewedAllowed({ NODE_ENV: "production" })).toBe(false);
+    expect(unreviewedAllowed({ VERCEL_ENV: "other", NODE_ENV: "development" })).toBe(false);
+    expect(unreviewedAllowed({})).toBe(false);
   });
 });
 
@@ -100,7 +110,15 @@ describe("the question bank", () => {
   it("opens everything on Elite, with a link into Practice for each question", () => {
     const view = bankViewFor(bank, analyst, true);
     expect(view.items.every((q) => q.open)).toBe(true);
-    expect(view.items[0]).toEqual({ open: true, id: "sql-1", topic: "SQL", question: "Open question 1 on sql", strongCovers: "What a strong answer to 1 covers", practiceHref: "/practice?q=sql-1" });
+    expect(view.items[0]).toEqual({
+      open: true,
+      id: "sql-1",
+      topic: "SQL",
+      question: "Open question 1 on sql",
+      strongCovers: "What a strong answer to 1 covers",
+      followUps: [],
+      practiceHref: "/practice?q=sql-1",
+    });
   });
 
   it("opens 5 on Free, one of each topic first, and sends nothing of the locked ones' notes", () => {
@@ -117,6 +135,108 @@ describe("the question bank", () => {
 
   it("opens all of a role with 5 or fewer questions on Free", () => {
     expect(bankViewFor(bank, writer, false).items.every((q) => q.open)).toBe(true);
+  });
+});
+
+describe("follow-ups in the bank (docs/plans/mock-followups-plan.md)", () => {
+  const withFollowUps = (q: MockQuestion, reviewed: boolean): MockQuestion =>
+    q.kind === "open"
+      ? {
+          ...q,
+          followUps: [
+            { id: `${q.id}-fu-1`, text: `Follow-up one on ${q.id}?`, skipIf: ["example"] },
+            { id: `${q.id}-fu-2`, text: `Follow-up two on ${q.id}?`, skipIf: [] },
+          ],
+          followUpsReviewed: reviewed,
+        }
+      : q;
+  const draft = bank.map((q) => (q.id === "sql-1" ? withFollowUps(q, false) : q));
+  const checked = bank.map((q) => (q.id === "sql-1" ? withFollowUps(q, true) : q));
+
+  it("asks reviewed follow-ups anywhere and unreviewed ones only where allowed, never for a choice question", () => {
+    const q = draft.find((x) => x.id === "sql-1")!;
+    expect(followUpsOf(q, true).map((f) => f.id)).toEqual(["sql-1-fu-1", "sql-1-fu-2"]);
+    expect(followUpsOf(q, false)).toEqual([]);
+    expect(followUpsOf(checked.find((x) => x.id === "sql-1")!, false)).toHaveLength(2);
+    expect(followUpsOf(bank.find((x) => x.kind === "choice")!, true)).toEqual([]);
+  });
+
+  it("says whether a role's rounds can ask follow-ups: none, waiting for review, or checked", () => {
+    expect(followUpStateFor(bank, analyst, true)).toBe("none");
+    expect(followUpStateFor(draft, analyst, true)).toBe("draft");
+    expect(followUpStateFor(draft, analyst, false)).toBe("none");
+    expect(followUpStateFor(checked, analyst, false)).toBe("checked");
+    // The writer's rounds never ask sql-1; an about-you question's follow-ups count for every role.
+    expect(followUpStateFor(checked, writer, true)).toBe("none");
+    const about = bank.map((q) => (q.id === "communication-1" ? withFollowUps(q, true) : q));
+    expect(followUpStateFor(about, { slug: "devops", title: "DevOps", skills: [] }, false)).toBe("checked");
+    expect(followUpStateFor([...checked.filter((q) => q.id !== "sql-2"), withFollowUps(bank.find((q) => q.id === "sql-2")!, false)], analyst, true)).toBe("draft");
+  });
+
+  it("lists an open question's follow-ups in the bank to study, and none for a locked one", () => {
+    expect(bankViewFor(checked, analyst, true).items[0]).toMatchObject({ open: true, followUps: ["Follow-up one on sql-1?", "Follow-up two on sql-1?"] });
+    expect(bankViewFor(draft, analyst, true, false).items[0]).toMatchObject({ followUps: [] });
+    expect(bankViewFor(draft, analyst, true, true).items[0]).toMatchObject({ followUps: ["Follow-up one on sql-1?", "Follow-up two on sql-1?"] });
+    const lockedBank = checked.map((q) => (q.id === "communication-2" ? withFollowUps(q, true) : q));
+    const locked = bankViewFor(lockedBank, analyst, false).items.find((i) => i.id === "communication-2")!;
+    expect(locked.open).toBe(false);
+    expect(JSON.stringify(locked)).not.toContain("Follow-up");
+  });
+});
+
+describe("interview prep for a Departures role", () => {
+  // Two more questions, so the analyst has four the bank opens only on Elite: sql-4, excel-2, excel-3, communication-2.
+  const prepBank = [...bank, openQ("sql", 4, "SQL"), openQ("excel", 3, "Excel")];
+
+  it("is the bank's first Free question, then four it opens only on Elite, all open on Elite", () => {
+    const prep = rolePrepFor(prepBank, analyst, true)!;
+    expect(rolePrepView.safeParse(prep).success).toBe(true);
+    expect(prep.questions.map((q) => q.id)).toEqual(["sql-1", "sql-4", "excel-2", "excel-3", "communication-2"]);
+    expect(prep.questions.every((q) => q.open)).toBe(true);
+    expect(prep.questions[0]).toEqual({ open: true, id: "sql-1", question: "Open question 1 on sql" });
+  });
+
+  it("locks only questions the bank never opens on Free", () => {
+    const free = new Set(bankViewFor(prepBank, analyst, false).items.filter((q) => q.open).map((q) => q.id));
+    const locked = rolePrepFor(prepBank, analyst, false)!.questions.filter((q) => !q.open);
+    expect(locked).toHaveLength(4);
+    expect(locked.some((q) => free.has(q.id))).toBe(false);
+  });
+
+  it("opens only the first on Free and sends no text of the locked four", () => {
+    const prep = rolePrepFor(prepBank, analyst, false)!;
+    expect(rolePrepView.safeParse(prep).success).toBe(true);
+    expect(prep.elite).toBe(false);
+    expect(prep.questions.map((q) => q.open)).toEqual([true, false, false, false, false]);
+    const locked = prep.questions.slice(1);
+    expect(locked).toEqual([{ open: false, id: "sql-4" }, { open: false, id: "excel-2" }, { open: false, id: "excel-3" }, { open: false, id: "communication-2" }]);
+    expect(JSON.stringify(locked)).not.toContain("question");
+    // The schema refuses a locked question that carries its text.
+    expect(rolePrepView.safeParse({ ...prep, questions: prep.questions.map((q) => ({ ...q, question: "Leaked question text" })) }).success).toBe(false);
+  });
+
+  it("is null for a role with fewer than four Elite-only questions, so the screen says it is coming", () => {
+    // The plain bank leaves the analyst only two (excel-2, communication-2); the writer has none.
+    expect(rolePrepFor(bank, analyst, true)).toBeNull();
+    expect(rolePrepFor(bank, writer, true)).toBeNull();
+  });
+
+  it("maps each job to its role's prep, and a job with no bank role to null", () => {
+    const prep = prepForJobs(
+      [
+        { id: "j1", roleSlug: "data-analyst" },
+        { id: "j2", roleSlug: null },
+        { id: "j3", roleSlug: "no-such-role" },
+        { id: "j4", roleSlug: "tech-writer" },
+      ],
+      prepBank,
+      roles,
+      false,
+    );
+    expect(prep.j1?.questions[0].open).toBe(true);
+    expect(prep.j2).toBeNull();
+    expect(prep.j3).toBeNull();
+    expect(prep.j4).toBeNull();
   });
 });
 

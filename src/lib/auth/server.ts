@@ -6,6 +6,8 @@ import { cache } from "react";
 import { findAccount, type Account, type Identity } from "@/lib/account/store";
 import { isAdmin } from "@/lib/admin/access";
 import { identityFromClaims } from "./claims";
+import { logEvent } from "@/lib/log";
+import { refusalFields } from "./refusal";
 import { signedInPreviewEnabled } from "@/lib/preview";
 import { authConfig, hasAuthCookie } from "./config";
 import { TEST_USER_COOKIE, testUserIdentity } from "./test-user";
@@ -96,7 +98,10 @@ export async function sendEmailCode(email: string): Promise<AuthStep> {
   const supabase = await client();
   if (!supabase) return { ok: false, reason: "not_configured" };
   const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-  return error ? { ok: false, reason: "rejected" } : { ok: true };
+  if (!error) return { ok: true };
+  // The code and status only, never the email: a refused send is how a wrong SMTP or template setting shows.
+  logEvent("warn", "auth_email_code_send_refused", refusalFields(error));
+  return { ok: false, reason: "rejected" };
 }
 
 /** Checks the emailed code and, when right, sets the session cookies. */
@@ -104,7 +109,9 @@ export async function verifyEmailCode(email: string, code: string): Promise<Auth
   const supabase = await client();
   if (!supabase) return { ok: false, reason: "not_configured" };
   const { error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
-  return error ? { ok: false, reason: "rejected" } : { ok: true };
+  if (!error) return { ok: true };
+  logEvent("warn", "auth_email_code_verify_refused", refusalFields(error));
+  return { ok: false, reason: "rejected" };
 }
 
 /**

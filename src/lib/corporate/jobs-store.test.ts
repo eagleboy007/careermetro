@@ -107,6 +107,9 @@ describe.skipIf(!db)("corporate jobs store (database)", () => {
     expect(await audits(saved.jobId)).toEqual(["job_opened"]);
     const live = (await liveJobs({ db: db! })).find((j) => j.id === saved.jobId);
     expect(live).toMatchObject({ title: "SOC Analyst L1", company: "Example Labs", city: "Pune", workType: "full_time" });
+    // Match's "N open jobs" opens Departures for that role only.
+    expect((await liveJobs({ db: db!, roleSlug: SLUG })).some((j) => j.id === saved.jobId)).toBe(true);
+    expect((await liveJobs({ db: db!, roleSlug: "data-analyst" })).some((j) => j.id === saved.jobId)).toBe(false);
     expect(live!.required.length).toBe(req.required.length);
     const text = JSON.stringify(live);
     expect(text).not.toContain(d);

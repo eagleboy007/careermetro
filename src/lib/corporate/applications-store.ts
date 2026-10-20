@@ -10,9 +10,11 @@ import { currentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
+import { notify } from "@/lib/notifications/store";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
-import { CAN_JOIN_LABELS } from "@/lib/schemas/constants";
+import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
+import { jobSearchOn, openToWorkInFor } from "@/lib/job-search/store";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { criteriaStatus } from "./criteria";
 import { applicationPacketFor, jobMatch, publicProfile } from "./match";
@@ -64,6 +66,7 @@ export type ApplicationError =
   | "not_found"
   | "blocked_company"
   | "paused"
+  | "search_off"
   | MoveRefusal;
 
 export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
@@ -77,6 +80,7 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_found: "That application isn't available any more.",
   blocked_company: "You've blocked this company. Unblock it in Settings, under Privacy, to apply to its jobs.",
   paused: "Your company's candidates are paused while we review it.",
+  search_off: JOB_SEARCH_OFF_MESSAGE,
   same_stage: "They're already in that lane.",
   ai_off: "The L1 AI interview is off for this job.",
   withdrawn: "That application isn't available any more.",
@@ -187,6 +191,8 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .innerJoin(organizations, eq(organizations.id, jobs.orgId))
         .where(eq(jobs.id, input.jobId))
         .for("share");
+      // Job search off pauses Express apply (handoff 6): refused before anything is written or counted.
+      if (!(await jobSearchOn(userId, tx))) return fail("search_off");
       if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
       const [already] = await tx.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
       if (already) return fail("already");
@@ -204,9 +210,12 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .insert(consents)
         .values({ userId, purpose: APPLICATION_CONSENT_PURPOSE, policyVersion: APPLICATION_POLICY_VERSION, givenAt: now })
         .returning({ id: consents.id });
+      // "Open to work in" as it is now (FR-55), so the company sees what was sent with this application; a later change
+      // in Settings doesn't rewrite it.
+      const openToWorkIn = await openToWorkInFor(userId, tx);
       const [app] = await tx
         .insert(applications)
-        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, note: input.note || null, createdAt: now })
+        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, note: input.note || null, openToWorkIn, createdAt: now })
         .returning({ id: applications.id });
       await event(tx, app.id, "applied", "applied", userId, now);
       // The application's chat with the company, in the person's Inbox from now on (build step 5).
@@ -241,6 +250,7 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
     .where(eq(jobs.id, parsed.data.jobId));
+  if (!(await jobSearchOn(userId, db))) return fail("search_off");
   if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
   const [already] = await db.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
   if (already) return fail("already");
@@ -248,11 +258,12 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
   if (await companyBlocked(userId, job.orgId, db)) return fail("blocked_company");
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return fail("no_resume");
-  const [[me], profileOf, proved, certificates] = await Promise.all([
+  const [[me], profileOf, proved, certificates, openToWorkIn] = await Promise.all([
     db.select({ name: users.name }).from(users).where(eq(users.id, userId)),
     latestProfiles([analysis.resumeId], db),
     provedByUser([userId], db, now),
     certificatesByUser([userId], db, now),
+    openToWorkInFor(userId, db),
   ]);
   const packet = applicationPacketFor(
     {
@@ -266,7 +277,8 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
     now,
   );
   logEvent("info", "application_previewed");
-  return { ok: true, packet: { company: job.company, jobTitle: job.title, ...packet } };
+  // Open to work in goes with the application as it is when sent (FR-55), so the preview shows it next to Can join.
+  return { ok: true, packet: { company: job.company, jobTitle: job.title, ...packet, openToWorkIn } };
 }
 
 /** Withdraw an application: it closes, its consent is withdrawn, and the company sees only that one was withdrawn. */
@@ -337,6 +349,28 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
     phoneShared: r.phoneShared !== null,
     ...(blockedOrgs.has(r.orgId) ? { companyBlocked: true } : {}),
   }));
+}
+
+/**
+ * What each of the person's closed (Not this time, not withdrawn) applications' jobs asked for: required skills and
+ * "one of these" groups, for the line linking a closed role to a goal on Arrivals (v44 gap list item 47).
+ */
+export async function closedJobRequirements(userId: string, db: Db = getDb()): Promise<{ applicationId: string; requirements: { required: string[]; oneOf: string[][] } }[]> {
+  const rows = await db
+    .select({ applicationId: applications.id, requirements: jobs.requirements })
+    .from(applications)
+    .innerJoin(jobs, eq(jobs.id, applications.jobId))
+    .where(and(eq(applications.userId, userId), eq(applications.stage, "not_this_time"), isNull(applications.withdrawnAt)));
+  return rows.map((r) => ({ applicationId: r.applicationId, requirements: { required: r.requirements.required, oneOf: r.requirements.oneOf } }));
+}
+
+/** How many of the person's applications are on Arrivals and not withdrawn: the count on Arrivals in the top bar. */
+export async function arrivalsCount(userId: string, db: Db = getDb()): Promise<number> {
+  const [row] = await db
+    .select({ n: count() })
+    .from(applications)
+    .where(and(eq(applications.userId, userId), isNull(applications.withdrawnAt)));
+  return row?.n ?? 0;
 }
 
 /** Whether the person can apply to each of these posted jobs on Departures, or already has. */
@@ -510,6 +544,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
       requirements: jobs.requirements,
       criteria: jobs.criteria,
       note: applications.note,
+      openToWorkIn: applications.openToWorkIn,
       jobTitle: jobs.title,
       orgId: applications.orgId,
       orgStatus: organizations.reviewStatus,
@@ -592,6 +627,8 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
       match: packet.match,
       criteria: packet.criteria,
       note: app.note,
+      // Open to work in as sent with the application (FR-55): for the job team; Interviewers see the drawer as before.
+      ...(access.canMove ? { openToWorkIn: app.openToWorkIn } : {}),
       events: events.get(app.id) ?? [],
       interviews: {
         interviews: booked.get(app.id) ?? [],
@@ -635,6 +672,8 @@ export async function moveApplication(userId: string, raw: unknown, deps: Applic
     await event(tx, app.id, "moved", to, userId, now, closing ? (paused ? PAUSED_NOT_THIS_TIME_NOTE : note) : null);
     // Who moved it, and to which lane; never the note.
     await writeAudit(tx, { orgId: app.orgId, actor: { memberId: access.me.memberId }, action: `moved_${to}`, target: { application: app.id } }, now);
+    // The candidate's bell (docs/plans/notifications-plan.md): ids only; the sentence is read live from the application.
+    await notify(tx, { kind: closing ? "application_closed" : "application_moved", userId: app.userId, actorId: userId, applicationId: app.id }, now);
     // Not this time cancels the interviews still ahead, so the candidate isn't left with one for a closed application.
     if (closing) {
       // One audit line per interview it cancelled, from the member who closed it (build step 7).
@@ -660,6 +699,7 @@ export async function exportApplications(userId: string, db: Db = getDb(), env: 
       stage: applications.stage,
       canJoin: applications.canJoin,
       note: applications.note,
+      openToWorkIn: applications.openToWorkIn,
       createdAt: applications.createdAt,
       withdrawnAt: applications.withdrawnAt,
       closedAt: applications.closedAt,

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useId, useState } from "react";
 import type {
   MockFocus,
+  MockFollowUpAnswerResult,
+  MockFollowUpAsked,
   MockInterviewAnswerResult,
   MockInterviewEndResult,
   MockInterviewStartResult,
@@ -41,8 +43,10 @@ export function MockView({
   initialReview,
   onInterviewStart,
   onInterviewAnswer,
+  onInterviewFollowUp,
   onInterviewEnd,
   initialInterviewResult,
+  initialInterviewFollowUp,
 }: {
   view: MockPageView;
   tab: MockTab;
@@ -53,9 +57,12 @@ export function MockView({
   initialReview?: TimedTestReview;
   onInterviewStart?: (roleSlug: string, length: MockLength, focus: MockFocus) => Promise<MockInterviewStartResult>;
   onInterviewAnswer?: (sessionId: string, position: number, answer: string) => Promise<MockInterviewAnswerResult>;
-  onInterviewEnd?: (sessionId: string, answers: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
+  onInterviewFollowUp?: (sessionId: string, position: number, answer: string) => Promise<MockFollowUpAnswerResult>;
+  onInterviewEnd?: (sessionId: string, answers: { position: number; answer: string }[], followUps: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
   /** For /design: the mock interview tab opens on this feedback. */
   initialInterviewResult?: MockSessionResult;
+  /** For /design: the running round opens on this follow-up. */
+  initialInterviewFollowUp?: MockFollowUpAsked | null;
 }) {
   const id = useId();
   const [tab, setTab] = useState<MockTab>(firstTab);
@@ -134,8 +141,10 @@ export function MockView({
           roleSlug={view.interview?.roleSlug ?? view.role.slug}
           initial={view.interview}
           initialResult={initialInterviewResult}
+          initialFollowUp={initialInterviewFollowUp}
           onStart={onInterviewStart}
           onAnswer={onInterviewAnswer}
+          onFollowUp={onInterviewFollowUp}
           onEnd={onInterviewEnd}
         />
       </div>

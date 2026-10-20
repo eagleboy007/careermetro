@@ -1,7 +1,8 @@
-import { ArrowRight, Award, BadgeCheck, Check } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Check, Play } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PlanView } from "@/lib/schemas";
+import { MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 import { EliteBadge } from "./elite-badge";
 import { TurnOnElite } from "./turn-on-elite";
 
@@ -9,7 +10,7 @@ const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
 const CARD = "flex min-w-0 flex-col gap-4 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5";
 const LABEL = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
 
-/** What stays free and what Elite adds (handoff 12l, prototype v44). `true` is a tick with its words. */
+/** What stays free and what Elite adds (handoff 12l, prototype v44). `true` is a tick with its words. Daily caps read the server's own constants (T87). */
 type Cell = { tick?: boolean; text: string; none?: boolean };
 const ROWS: { feature: string; free: Cell; elite: Cell }[] = [
   { feature: "Gaps with evidence, your path and daily rides", free: { tick: true, text: "Always" }, elite: { tick: true, text: "Always" } },
@@ -17,8 +18,8 @@ const ROWS: { feature: string; free: Cell; elite: Cell }[] = [
   { feature: "Verified tick for your identity and certificates", free: { tick: true, text: "Always" }, elite: { tick: true, text: "Same rules" } },
   { feature: "Practice: written questions on your goals", free: { text: "10 answers a day" }, elite: { text: "No daily cap" } },
   { feature: "Question bank for your role, with model answers", free: { text: "5 questions" }, elite: { text: "The full bank" } },
-  { feature: "Mock interviews with an AI interviewer, feedback on each answer", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Unlimited" } },
-  { feature: "Timed tests with a review of every question", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Unlimited" } },
+  { feature: "Mock interviews with an AI interviewer, feedback on each answer", free: { none: true, text: "Not included" }, elite: { tick: true, text: `${MOCK_SESSIONS_PER_DAY} a day` } },
+  { feature: "Timed tests with a review of every question", free: { none: true, text: "Not included" }, elite: { tick: true, text: `${TIMED_TESTS_PER_DAY} a day` } },
   { feature: "Practice round for an AI first interview (Arrivals)", free: { none: true, text: "Not included" }, elite: { tick: true, text: "Per company" } },
   { feature: "Elite shelf in the Library: expert-checked playbooks and drills", free: { none: true, text: "Not included" }, elite: { tick: true, text: "All" } },
   { feature: "Elite badge on your profile", free: { none: true, text: "Not included" }, elite: { tick: true, text: "You choose to show it" } },
@@ -38,10 +39,13 @@ const PRICES = [
  */
 export function EliteView({
   plan,
+  roleTitle = null,
   onSwitch,
   idPrefix = "elite",
 }: {
   plan: PlanView;
+  /** The person's target role, under the Free and Elite heading; none before the first gap check. */
+  roleTitle?: string | null;
   onSwitch?: (on: boolean) => Promise<string | null>;
   /** Ids for the headings, so two copies on /design don't clash. */
   idPrefix?: string;
@@ -61,22 +65,32 @@ export function EliteView({
           Everything that gets you ready stays free: your gaps, your path, daily rides, the Library and Departures. Elite adds mock interviews, timed
           tests, the full question bank for your role and an expert-checked shelf in the Library.
         </p>
-        <div className="mb-2.5 mt-[18px]">
+        <div className="mb-2.5 mt-[18px] flex flex-wrap items-start gap-2.5">
           <TurnOnElite on={plan.elite} action={onSwitch} />
+          <Link
+            href="/mock"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line-strong bg-surface px-5 text-[0.9rem] font-[550] text-ink hover:bg-surface-2"
+          >
+            <Play size={17} {...ICON} />
+            See a mock interview
+          </Link>
         </div>
         <p className="max-w-[62ch] text-[0.8rem] text-muted">
           {plan.elite
             ? `Elite is on since ${plan.since}. You have everything in Elite until the beta ends. We tell you at least 30 days before, and nothing is charged unless you choose a plan.`
             : "No card needed. Nothing is charged during the beta, and nothing renews on its own after it."}{" "}
-          With Elite, Practice has no daily cap and Interview prep opens mock interviews, timed tests and the full question bank; the Elite shelf
-          opens once it is built.
+          With Elite, Practice has no daily cap, Interview prep opens mock interviews, timed tests and the full question bank, and the Library
+          opens its Elite shelf.
         </p>
       </section>
 
       <section aria-labelledby={id("compare-h")} className={CARD}>
-        <h2 id={id("compare-h")} className="text-[1.1rem] font-semibold">
-          Free and Elite
-        </h2>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 id={id("compare-h")} className="mr-auto text-[1.1rem] font-semibold">
+            Free and Elite
+          </h2>
+          {roleTitle && <span className={LABEL}>for {roleTitle}</span>}
+        </div>
         <table aria-labelledby={id("compare-h")} className="w-full border-collapse text-[0.86rem]">
           <thead>
             <tr>

@@ -538,3 +538,11 @@ export function metSkillIds(match: Pick<MatchResult, "met">): string[] {
 export function taxonomyId(name: string): string | undefined {
   return skillIdByTerm.get(normalizeSkillTerm(name));
 }
+
+/**
+ * The taxonomy skills a short text names by a term safe in free text ("Data analysis with SQL" names SQL), for links
+ * between moments on the Life line. Ambiguous and very short terms are left out, as in sentences.
+ */
+export function skillsNamedIn(text: string): Set<string> {
+  return readTerms(text, safeTermTokens).skillIds;
+}

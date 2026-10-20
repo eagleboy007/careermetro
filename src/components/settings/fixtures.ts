@@ -13,6 +13,7 @@ export const exampleSettings: SettingsData = {
     username: "priya-n",
     headline: "IT support moving into security operations",
     city: "Pune",
+    openToWorkIn: ["Remote", "Pune"],
     currentPay: "4.2",
     expectedPay: "6",
     settings: {
@@ -23,6 +24,8 @@ export const exampleSettings: SettingsData = {
       showSkills: true,
       showGaps: false,
       showCertifications: true,
+      requestsFrom: "anyone",
+      messageRequests: true,
       companiesCanFind: true,
       rideReminder: "19:30",
       emailCompanyMessages: true,
@@ -31,6 +34,7 @@ export const exampleSettings: SettingsData = {
   },
   usernameLockedUntil: null,
   peopleCanFind: false,
+  blockedPeople: [{ id: "00000000-0000-4000-8000-0000000000b1", name: "Example Person", since: "8 Oct 2026" }],
   plan: { elite: false, badgeShown: false, since: null },
   discovery: {
     views: [

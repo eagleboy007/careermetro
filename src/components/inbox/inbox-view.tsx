@@ -3,10 +3,13 @@
 import { ArrowLeft, CalendarDays, ShieldAlert, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, useSyncExternalStore, useTransition, type ReactNode } from "react";
+import { preTicks } from "@/lib/account/availability";
 import { exampleAvailability, exampleSlots } from "@/lib/inbox/fixtures";
 import {
+  END_FOUND_CHAT_CONFIRM,
   filterThreads,
+  FOUND_JOB_SEARCH_OFF_LINE,
   INBOX_FILTERS,
   initialsOf,
   lastMessage,
@@ -20,6 +23,7 @@ import {
 import { ANTI_SCAM_LINE } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
+import { UsuallyFree } from "./usually-free";
 
 const ICON = { size: 14, strokeWidth: 1.75, "aria-hidden": true } as const;
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border px-[11px] py-1.5 text-[0.8rem] font-[550]";
@@ -53,17 +57,33 @@ const POLL_MS = 30_000;
  * the page refreshes from it. Without, it is the example: replies, offered times, accept and delete change this page and
  * nothing else. On a phone the list shows first and a chat opens full screen with a back arrow.
  */
-export function InboxView({ threads: initial, note, actions }: { threads: InboxThread[]; note?: ReactNode; actions?: InboxActions }) {
+export function InboxView({
+  threads: initial,
+  note,
+  actions,
+  usuallyFree = [],
+}: {
+  threads: InboxThread[];
+  note?: ReactNode;
+  actions?: InboxActions;
+  /** The person's "Usually free" hours (FR-55), "mon 17:00": the panel edits them and "Ask for times" pre-ticks from them. */
+  usuallyFree?: string[];
+}) {
   const router = useRouter();
   const [threads, setThreads] = useState<Thread[]>(initial);
   const [pending, startTransition] = useTransition();
   // Which button opened the Report panel, so Cancel can put focus back on it.
   const [reporting, setReporting] = useState<{ block: boolean; from: "header" | "footer" } | null>(null);
+  // End chat's inline confirm on an accepted found chat (FR-52) is open.
+  const [ending, setEnding] = useState(false);
+  const endId = useId();
   const [filter, setFilter] = useState<InboxFilter>("all");
   const [currentId, setCurrentId] = useState(initial[0]?.id ?? null);
   const [open, setOpen] = useState(false);
   const [picking, setPicking] = useState(false);
   const [picks, setPicks] = useState<string[]>([]);
+  // The picker opened with times ticked from Usually free, so it says where they came from.
+  const [preTicked, setPreTicked] = useState(false);
   const [calendarOn, setCalendarOn] = useState(true);
   const [draft, setDraft] = useState("");
   const [toast, setToast] = useState<string | null>(null);
@@ -128,6 +148,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
     setCurrentId(id);
     setPicking(false);
     setReporting(null);
+    setEnding(false);
     setOpen(true);
     // Opening a chat reads it; a request stays unread until it is accepted or deleted.
     const opened = threads.find((t) => t.id === id);
@@ -280,9 +301,28 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
   };
 
   const startReport = (block: boolean, from: "header" | "footer") => {
+    setEnding(false);
     setReporting({ block, from });
     focusNext("[data-report-panel] input");
   };
+
+  /** End chat (FR-52): closes only this found chat, for both sides. No report is filed and the company isn't blocked. */
+  const endChat = () => {
+    if (!current || pending) return;
+    const finish = () => {
+      update(current.id, (t) => ({ ...t, state: "closed" }));
+      setEnding(false);
+      say(`Chat ended. ${current.name} can't message you here again.`);
+      focusNext("[data-report]");
+    };
+    if (actions?.end) {
+      const end = actions.end;
+      act(() => end(current.id), finish);
+    } else finish();
+  };
+
+  // End chat shows on an accepted found chat that is still open (or paused while the company is reviewed).
+  const canEnd = !!current?.found && current.kind === "application" && (!current.state || current.state === "paused") && (!actions || !!actions.end);
 
   return (
     <div ref={rootRef} className="flex min-w-0 flex-col gap-4">
@@ -374,6 +414,21 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                   See on Arrivals
                 </Link>
               )}
+              {canEnd && (
+                <button
+                  type="button"
+                  data-end
+                  onClick={() => {
+                    setReporting(null);
+                    setEnding((v) => !v);
+                  }}
+                  aria-expanded={ending}
+                  aria-controls={ending ? endId : undefined}
+                  className={`${quiet} min-h-11`}
+                >
+                  End chat
+                </button>
+              )}
               {current.state !== "left" && (
                 <button
                   type="button"
@@ -387,6 +442,29 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                 </button>
               )}
             </div>
+
+            {ending && canEnd && (
+              <div id={endId} role="group" aria-labelledby={`${endId}-q`} className="mx-4 mt-3 flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 p-3">
+                <p id={`${endId}-q`} className="text-[0.84rem]">
+                  {END_FOUND_CHAT_CONFIRM}
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button type="button" autoFocus aria-disabled={pending || undefined} onClick={endChat} className={`${ghost} aria-disabled:cursor-not-allowed aria-disabled:opacity-60`}>
+                    End chat
+                  </button>
+                  <button
+                    type="button"
+                    className={quiet}
+                    onClick={() => {
+                      setEnding(false);
+                      focusNext("[data-end]");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
 
             {reporting && (
               <ReportPanel
@@ -423,9 +501,13 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                   message={m}
                   picking={picking}
                   picks={picks}
+                  preTicked={preTicked}
                   calendarOn={calendarOn}
                   onPick={() => {
-                    setPicks([]);
+                    // A real ask starts with the open times that fall in Usually free ticked (FR-55); nothing is sent yet.
+                    const ticked = m.ask ? preTicks(m.ask, usuallyFree) : [];
+                    setPicks(ticked);
+                    setPreTicked(ticked.length > 0);
                     setPicking(true);
                     focusNext('[aria-label="Pick times"] button:not([disabled])');
                   }}
@@ -473,22 +555,25 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
                           : "This chat is closed."}
                 </p>
               ) : (
-                <div className="flex items-end gap-2">
-                  <textarea
-                    ref={draftRef}
-                    data-draft
-                    rows={1}
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    maxLength={2000}
-                    placeholder="Write a message"
-                    aria-label="Message"
-                    className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
-                  />
-                  <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
-                    Send
-                  </button>
-                </div>
+                <>
+                  {current.found && current.jobSearchOff && <p className="text-[0.82rem] text-muted">{FOUND_JOB_SEARCH_OFF_LINE}</p>}
+                  <div className="flex items-end gap-2">
+                    <textarea
+                      ref={draftRef}
+                      data-draft
+                      rows={1}
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      maxLength={2000}
+                      placeholder="Write a message"
+                      aria-label="Message"
+                      className="min-h-[42px] flex-1 resize-none rounded-[12px] border border-line-strong bg-bg px-3 py-2.5 text-[0.88rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent"
+                    />
+                    <button type="button" onClick={send} disabled={pending} className={`${primary} px-[15px] py-[9px] text-[0.86rem]`}>
+                      Send
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           </section>
@@ -501,7 +586,13 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
           <h2 className="text-base font-semibold">Your availability</h2>
           <p className="text-[0.8rem] text-muted">Companies never see your calendar. They see only the times you offer when they ask.</p>
           {actions ? (
-            <p className="text-[0.8rem] text-muted">Setting your usual free times and connecting a calendar come with job applications.</p>
+            <>
+              <UsuallyFree initial={usuallyFree} save={actions.saveUsuallyFree} />
+              <dl className="flex flex-col">
+                <Row k="Calendar" v="Not connected" />
+              </dl>
+              <p className="text-[0.8rem] text-muted">Connecting Google or Outlook comes later.</p>
+            </>
           ) : (
             <>
               <dl className="flex flex-col">
@@ -529,6 +620,7 @@ export function InboxView({ threads: initial, note, actions }: { threads: InboxT
             Your connections, and companies you applied to, about that application. Anyone else sends one message request; you accept or delete it. Report and
             Block are on every chat.
           </p>
+          {actions && <p className="text-[0.8rem] text-muted">You can turn off requests from people who aren&apos;t connections in Settings &gt; Privacy.</p>}
           <p className="text-[0.8rem] text-muted">
             Complaints go to our{" "}
             <Link href="/grievances" className="text-ink underline underline-offset-2">
@@ -580,6 +672,7 @@ function Message({
   message: m,
   picking,
   picks,
+  preTicked = false,
   calendarOn,
   onPick,
   onToggle,
@@ -591,6 +684,7 @@ function Message({
   message: InboxMessage;
   picking: boolean;
   picks: string[];
+  preTicked?: boolean;
   calendarOn: boolean;
   onPick: () => void;
   onToggle: (key: string) => void;
@@ -672,6 +766,7 @@ function Message({
               ))}
             </div>
             <small className="text-[0.76rem] text-muted">India time. Each slot is an hour. Striped times are too soon to offer.</small>
+            {preTicked && <small className="text-[0.76rem] text-muted">Ticked from your Usually free hours. Untick any that don&apos;t suit you; nothing is sent until you press Send.</small>}
             <div className="flex flex-wrap items-center gap-2">
               <button type="button" className={primary} disabled={picks.length === 0 || sending} onClick={onSendPicks}>
                 Send {picks.length} time{picks.length === 1 ? "" : "s"}

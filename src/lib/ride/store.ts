@@ -1,15 +1,19 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { paths, pathSteps, resources, rideDays } from "@/db/schema";
-import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
+import { paths, pathSteps, resources, rideDays, userResources } from "@/db/schema";
+import { goalsOf, notConfirmedSkills, provedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
 import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
-import { skillGroupMembers, skills } from "@/content";
-import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/gaps/current";
-import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
+import { mockQuestions, skillGroupMembers, skills } from "@/content";
+import type { GapAnalysis, GoalsSummary, MockQuestion, RoleProfile, RoleTrack, Ride, RideWeek, SignalAnswer, SignalLive, Streak } from "@/lib/schemas";
+import { orderForTrack, trackPickerFor } from "@/lib/tracks/apply";
+import type { CurrentAnalysis } from "@/lib/gaps/current";
+import { trackedCurrentAnalysis } from "@/lib/tracks/store";
+import { unreviewedAllowed } from "@/lib/mock/rules";
+import { isSignalKey, pickSignal, signalAnswerOf, signalLiveOf } from "@/lib/today/signal";
+import { attachAdded, buildGoalsSummary, buildRide, signalGoals, signalTaskId, type RideGoal, type RidePath, type RideResource } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
@@ -32,44 +36,68 @@ export function lineGoals<G extends { skillId: string; source: "gap" | "user"; s
 /** A "Your choice" goal's name: the skill's own name. */
 export const choiceName = (skillId: string) => skillNames.get(skillId) ?? skillId;
 
+/** The person's track of their goal role, for the Track picker (docs/plans/tracks-plan.md). */
+export type LineTrack = {
+  base: GapAnalysis;
+  role: RoleProfile | null;
+  current: RoleTrack | null;
+  tracks: RoleTrack[];
+  /** Every goal of the person: where it sits and whether it was skipped, so the picker's preview reads like the card. */
+  goals: { skillId: string; position: number; skipped: boolean }[];
+};
+
 /**
- * The person's line as ride goals: their goals for the current analysis's gaps, in goal order, each with the courses
- * and practice task of the newest path's step for that skill. `chosen` holds their "Your choice" goals the same way;
- * they are kept apart because they never move the train, the ride or arrival. Null before there is a current
- * analysis. `sync: false` only reads the goals, for a tick, which must not write them.
+ * The person's line as ride goals: their goals for the current analysis's gaps, as their track sees them
+ * (docs/plans/tracks-plan.md), in the track's order and then goal order, each with the courses and practice task of the
+ * newest path's step for that skill. `chosen` holds their "Your choice" goals the same way; they are kept apart because
+ * they never move the train, the ride or arrival. Null before there is a current analysis. `sync: false` only reads
+ * the goals, for a tick, which must not write them. `analysis` is `currentAnalysis` already read in this request (null
+ * for none), so Today doesn't read it again; left out, it is read here.
  */
 export async function rideGoalsFor(
   userId: string,
   db: Db = getDb(),
-  { sync = true }: { sync?: boolean } = {},
-): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath } | null> {
-  const analysis = await currentAnalysis(userId, db);
+  { sync = true, analysis: read }: { sync?: boolean; analysis?: CurrentAnalysis | null } = {},
+): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath; track: LineTrack } | null> {
+  const analysis = await trackedCurrentAnalysis(userId, db, undefined, read);
   if (!analysis) return null;
-  const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
-  const notConfirmed = await notConfirmedSkills(userId, db);
-  const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
-  const steps = path
-    ? await db
-        .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
-        .from(pathSteps)
-        .where(eq(pathSteps.pathId, path.id))
-        .orderBy(asc(pathSteps.position))
-    : [];
-  const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
-  const rows = ids.length
-    ? await db
-        .select({
-          id: resources.id,
-          title: resources.title,
-          provider: resources.provider,
-          kind: resources.kind,
-          minutes: resources.minutes,
-          healthy: resources.healthy,
-        })
-        .from(resources)
-        .where(inArray(resources.id, ids))
-    : [];
-  const byId = new Map(rows.filter((r) => r.healthy && r.title.trim()).map((r) => [r.id, r]));
+  // The goals, the held certificates, the newest path with its steps and courses, and the added resources don't depend
+  // on each other, so they are read together rather than one after another (docs/plans/perf-pass.md). Syncing writes
+  // only goals and the steps' goal links, which none of the other reads use.
+  const pathAndSteps = async () => {
+    const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
+    const steps = path
+      ? await db
+          .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
+          .from(pathSteps)
+          .where(eq(pathSteps.pathId, path.id))
+          .orderBy(asc(pathSteps.position))
+      : [];
+    const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
+    const rows = ids.length
+      ? await db
+          .select({
+            id: resources.id,
+            title: resources.title,
+            provider: resources.provider,
+            kind: resources.kind,
+            minutes: resources.minutes,
+            healthy: resources.healthy,
+            hiddenAt: resources.hiddenAt,
+          })
+          .from(resources)
+          .where(inArray(resources.id, ids))
+      : [];
+    return { path, steps, rows };
+  };
+  const [userGoals, notConfirmed, { path, steps, rows }, added] = await Promise.all([
+    sync ? syncGoals(userId, analysis, db) : goalsOf(userId, db),
+    notConfirmedSkills(userId, db),
+    pathAndSteps(),
+    addedResources(userId, db),
+  ]);
+  // A link an admin hid (/admin/library) leaves the ride at once, like a broken one.
+  const byId = new Map(rows.filter((r) => r.healthy && !r.hiddenAt && r.title.trim()).map((r) => [r.id, r]));
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
   const gapBySkill = new Map(analysis.result.gaps.map((g) => [g.skillId, g]));
 
@@ -86,6 +114,7 @@ export async function rideGoalsFor(
     return {
       goalId: g.id,
       skillId: g.skillId,
+      learnSkillId: swapped ?? g.skillId,
       name: swapped && !g.proved ? (skillNames.get(swapped) ?? name) : name,
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: g.status === "renew" ? "weak" : status,
@@ -106,13 +135,48 @@ export async function rideGoalsFor(
       choice,
     };
   };
-  const goals = line.gaps.map((g) => {
+  const goals = orderForTrack(line.gaps, analysis.track).map((g) => {
     const gap = gapBySkill.get(g.skillId)!;
     const status = gap.status === "missing" ? "missing" : gap.status === "outdated" ? "outdated" : "weak";
     return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
   });
   const chosen = line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null }));
-  return { result: analysis.result, goals, chosen, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
+  attachAdded(goals, added);
+  return {
+    result: analysis.result,
+    goals,
+    chosen,
+    path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) },
+    track: {
+      base: analysis.base,
+      role: analysis.role,
+      current: analysis.track,
+      tracks: analysis.tracks,
+      goals: userGoals.map((g) => ({ skillId: g.skillId, position: g.position, skipped: g.status === "skipped" })),
+    },
+  };
+}
+
+/**
+ * What the person added with Add to my rides (docs/plans/library-part-2-plan.md) and hasn't ticked as finished,
+ * oldest first: healthy, free links an admin hasn't hidden only.
+ */
+async function addedResources(userId: string, db: Pick<Db, "select">): Promise<(RideResource & { skillIds: string[] })[]> {
+  return db
+    .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, minutes: resources.minutes, skillIds: resources.skillIds })
+    .from(userResources)
+    .innerJoin(resources, eq(resources.id, userResources.resourceId))
+    .where(
+      and(
+        eq(userResources.userId, userId),
+        isNotNull(userResources.onRideAt),
+        isNull(userResources.finishedAt),
+        eq(resources.healthy, true),
+        eq(resources.free, true),
+        isNull(resources.hiddenAt),
+      ),
+    )
+    .orderBy(asc(userResources.onRideAt), asc(resources.id));
 }
 
 const rode = sql`cardinality(${rideDays.taskIds}) > 0`;
@@ -145,15 +209,35 @@ async function doneBefore(userId: string, today: string, db: Pick<Db, "selectDis
   return new Set(rows.map((r) => r.id));
 }
 
-/** Today's ride with the person's own ticks, their week and streak. Null before there are goals to ride. */
+/** Today's signal check (handoff section 5): the question as the card shows it, and the day it is for. */
+export type TodaySignal = { live: SignalLive; day: string; done: boolean };
+
+/** Where the signal check's questions come from: the Practice bank, reviewed questions only in production. */
+export type SignalSource = { bank?: readonly MockQuestion[]; allowUnreviewed?: boolean };
+
+/**
+ * Today's ride with the person's own ticks, their week and streak. Null before there are goals to ride. Also the day's
+ * signal check (null when the bank has no question for today's goal or the next) and the goal today's ride is on, for
+ * "On your line". The ride's tasks don't include the signal task: Today adds it (`withSignalTask`) when there is one.
+ * `analysis` is `currentAnalysis` already read in this request; left out, it is read here.
+ */
 export async function todayRideFor(
   userId: string,
   now: Date,
   db: Db = getDb(),
   role = "",
-): Promise<{ ride: Ride; goals: GoalsSummary; week: RideWeek; streak: Streak; roleSlug: string } | null> {
+  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed(), analysis }: SignalSource & { analysis?: CurrentAnalysis | null } = {},
+): Promise<{
+  ride: Ride;
+  goals: GoalsSummary;
+  week: RideWeek;
+  streak: Streak;
+  roleSlug: string;
+  signal: TodaySignal | null;
+  current: { skillId: string; name: string } | null;
+} | null> {
   const today = indiaDay(now);
-  const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
+  const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db, { analysis }), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
   if (!line) return null;
   const input = {
     goals: line.goals,
@@ -164,8 +248,67 @@ export async function todayRideFor(
   };
   const ride = buildRide(input);
   if (!ride) return null;
-  const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps, chosen: line.chosen });
-  return { ride, goals, week: stats.week, streak: stats.streak, roleSlug: line.result.roleSlug };
+  // The Track picker, when the role offers tracks here (none in production until they are reviewed).
+  const { track } = line;
+  const picker =
+    track.role && track.tracks.length
+      ? trackPickerFor({ base: track.base, role: track.role, tracks: track.tracks, current: track.current?.id ?? null, provedSkillIds: new Set(await provedSkills(userId, db)), goals: track.goals })
+      : null;
+  const goals = buildGoalsSummary({ ...input, role: track.current?.name ?? (role || line.result.roleSlug), gaps: line.result.gaps, chosen: line.chosen, picker });
+  const asked = signalGoals(input);
+  const pick = pickSignal(bank, asked, userId, today, allowUnreviewed);
+  const done = input.doneToday.has(signalTaskId(today));
+  return {
+    ride,
+    goals,
+    week: stats.week,
+    streak: stats.streak,
+    roleSlug: line.result.roleSlug,
+    signal: pick ? { live: signalLiveOf(pick, done), day: today, done } : null,
+    current: asked[0] ? { skillId: asked[0].skillId, name: asked[0].name } : null,
+  };
+}
+
+/**
+ * Answers today's signal check (handoff section 5): the question is picked again here, and the answer is checked
+ * against it. A stale page (a new day, or a goal proved or skipped since) gets "stale", with nothing ticked; a key that
+ * isn't an option, or someone with no line, gets null. Any answer ticks the day's signal task, once; the pick and the
+ * key are never stored or logged. Returns the right answer and why. No score.
+ */
+export async function answerSignal(
+  userId: string,
+  questionId: unknown,
+  key: unknown,
+  now: Date,
+  db: Db = getDb(),
+  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed() }: SignalSource = {},
+): Promise<SignalAnswer | "stale" | null> {
+  if (typeof questionId !== "string" || questionId.length > 80) return null;
+  const line = await rideGoalsFor(userId, db, { sync: false });
+  if (!line) return null;
+  const day = indiaDay(now);
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-ride:${userId}`}))`);
+    const [row] = await tx
+      .select({ taskIds: rideDays.taskIds })
+      .from(rideDays)
+      .where(and(eq(rideDays.userId, userId), eq(rideDays.day, day)));
+    const ticked = row?.taskIds ?? [];
+    const input = { goals: line.goals, path: line.path, doneBefore: await doneBefore(userId, day, tx), doneToday: new Set<string>(ticked), doneThisWeek: new Set<string>() };
+    // Every goal proved or skipped: signalGoals is empty, so there is no question, as on the page.
+    const pick = pickSignal(bank, signalGoals(input), userId, day, allowUnreviewed);
+    if (!pick || pick.question.id !== questionId) return "stale";
+    if (!isSignalKey(pick.question, key)) return null;
+    const id = signalTaskId(day);
+    if (!ticked.includes(id)) {
+      const taskIds = toggled(ticked, id, true);
+      await tx
+        .insert(rideDays)
+        .values({ userId, day, taskIds, updatedAt: now })
+        .onConflictDoUpdate({ target: [rideDays.userId, rideDays.day], set: { taskIds, updatedAt: now } });
+    }
+    return signalAnswerOf(pick.question);
+  });
 }
 
 /**

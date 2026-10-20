@@ -1,6 +1,6 @@
 import { PostedJobCard } from "@/components/corporate/job-parts";
 import { JobReport } from "@/components/corporate/job-report";
-import type { ApplyAction, ApplyPreviewAction, ApplyState, CriteriaView, JobReportAction, PostedJobView } from "@/lib/corporate/types";
+import type { ApplyAction, ApplyPreviewAction, ApplyState, CanJoin, CriteriaView, JobReportAction, PostedJobView } from "@/lib/corporate/types";
 import { ApplyPanel } from "./apply-panel";
 
 /**
@@ -17,6 +17,7 @@ export function PostedJobs({
   preview,
   states,
   criteria,
+  canJoin,
 }: {
   jobs: PostedJobView[];
   report?: JobReportAction;
@@ -26,6 +27,8 @@ export function PostedJobs({
   states?: Record<string, ApplyState>;
   /** Per job id, the job's criteria against the person's proofs; a job missing here shows its criteria by name. */
   criteria?: Record<string, CriteriaView>;
+  /** Can join to prefill on applying, from the person's notice countdown while one runs; they can still change it. */
+  canJoin?: CanJoin | null;
 }) {
   if (!jobs.length) return null;
   return (
@@ -44,7 +47,7 @@ export function PostedJobs({
             <PostedJobCard
               job={j}
               criteria={criteria?.[j.id]}
-              apply={states ? <ApplyPanel jobId={j.id} company={j.company} title={j.title} state={states[j.id] ?? { kind: "signed_out" }} action={apply} preview={preview} /> : undefined}
+              apply={states ? <ApplyPanel jobId={j.id} company={j.company} title={j.title} state={states[j.id] ?? { kind: "signed_out" }} action={apply} preview={preview} initialCanJoin={canJoin ?? undefined} /> : undefined}
               report={<JobReport jobId={j.id} title={j.title} action={report} />}
             />
           </li>

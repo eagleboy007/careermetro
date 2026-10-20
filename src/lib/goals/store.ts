@@ -10,6 +10,7 @@ import {
   type CertificateSubmission,
   type Gap,
   type GapAnalysis,
+  type GoalState,
   type UserGoal,
   type ProofEvidence,
   type ProofStatus,
@@ -20,7 +21,7 @@ import { credlyBadgeId } from "@/lib/proofs/credly";
 import { checkCertificate } from "@/lib/proofs/rules";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { canSwapTo, notForMeFor } from "./not-for-me";
-import { fillingSkills, planGoalSync } from "./sync";
+import { fillingSkills, planGoalSync, type ExistingGoal } from "./sync";
 import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
@@ -74,7 +75,7 @@ type GoalRow = {
   id: string;
   skillId: string;
   source: "gap" | "user";
-  status: string;
+  status: GoalState;
   position: number;
   groupId: string | null;
   swappedTo: string | null;
@@ -104,27 +105,80 @@ function withProved(rows: GoalRow[], proved: string[], members: ReadonlyMap<stri
   });
 }
 
+type SyncAnalysis = { id: string; result: GapAnalysis };
+
+/** Whether the analysis is one of the person's own: only that may make their goals or link path steps to them. */
+async function ownAnalysis(db: Db | Tx, userId: string, analysisId: string): Promise<boolean> {
+  const [own] = await db
+    .select({ id: gapAnalyses.id })
+    .from(gapAnalyses)
+    .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
+    .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
+    .where(and(eq(gapAnalyses.id, analysisId), eq(resumes.userId, userId)));
+  return !!own;
+}
+
+/** Path steps for this analysis that don't point at a goal yet. */
+function unlinkedSteps(db: Db | Tx, analysisId: string): Promise<{ id: string; skillId: string }[]> {
+  return db
+    .select({ id: pathSteps.id, skillId: pathSteps.skillId })
+    .from(pathSteps)
+    .innerJoin(paths, eq(paths.id, pathSteps.pathId))
+    .where(and(eq(paths.gapAnalysisId, analysisId), isNull(pathSteps.goalId)));
+}
+
+/** The goal changes ./sync.ts plans for these rows. */
+function planFor(analysis: SyncAnalysis, existing: ExistingGoal[], proved: string[], expired: string[], members: ReadonlyMap<string, string[]>) {
+  const gaps: Gap[] = analysis.result.gaps.filter((g) => knownSkill.has(g.skillId));
+  return planGoalSync({ existing, gaps, metSkillIds: analysis.result.metSkillIds, provedSkillIds: proved, expiredSkillIds: expired, implies, members });
+}
+
+/**
+ * The sync's answer when it would write nothing, read from one read-only snapshot with no lock
+ * (docs/plans/goal-sync-skip-plan.md): no goal to add or change and no path step to link. Undefined when it would
+ * write. The test is the sync's own plan over the rows as they are now, so nothing cached can fall behind a writer, a
+ * deploy or the clock; one snapshot means goals and proof are never read from either side of a proof change. Whether
+ * the plan is empty doesn't depend on the order of the goals: any goal a group's gap could take is a move.
+ */
+async function unchangedGoals(userId: string, analysis: SyncAnalysis, db: Db, members: ReadonlyMap<string, string[]>): Promise<UserGoal[] | undefined> {
+  return db.transaction(
+    async (tx) => {
+      const [own, rows, proved, expired, unlinked] = await Promise.all([
+        ownAnalysis(tx, userId, analysis.id),
+        readGoals(tx, userId),
+        provedSkills(userId, tx),
+        expiredSkills(userId, tx),
+        unlinkedSteps(tx, analysis.id),
+      ]);
+      if (!own) return [];
+      const plan = planFor(analysis, rows, proved, expired, members);
+      if (plan.insert.length || plan.update.length) return undefined;
+      const goalSkills = new Set(rows.map((r) => r.skillId));
+      if (unlinked.some((s) => goalSkills.has(s.skillId))) return undefined;
+      return withProved(rows, proved, members);
+    },
+    { isolationLevel: "repeatable read", accessMode: "read only" },
+  );
+}
+
 /**
  * Brings the person's goals in line with their current gap analysis (rules in ./sync.ts), links the analysis's path
- * steps to the goals, and returns every goal in order. Safe to run on every visit: it writes only what changed, and
+ * steps to the goals, and returns every goal in order. Safe to run on every visit: a visit with nothing to change
+ * reads once and writes nothing (`unchangedGoals`); otherwise it writes only what changed, under the person's lock, and
  * two visits at once make the same goals once.
  */
 export async function syncGoals(
   userId: string,
-  analysis: { id: string; result: GapAnalysis },
+  analysis: SyncAnalysis,
   db: Db = getDb(),
   members: ReadonlyMap<string, string[]> = skillGroupMembers,
 ): Promise<UserGoal[]> {
+  const unchanged = await unchangedGoals(userId, analysis, db, members);
+  if (unchanged) return unchanged;
   return db.transaction(async (tx) => {
     await lockPerson(tx, userId);
-    // Only the person's own analysis may make their goals or link path steps to them.
-    const [own] = await tx
-      .select({ id: gapAnalyses.id })
-      .from(gapAnalyses)
-      .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
-      .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(eq(gapAnalyses.id, analysis.id), eq(resumes.userId, userId)));
-    if (!own) return [];
+    // Read again under the lock: another visit or a proof check may have changed things since.
+    if (!(await ownAnalysis(tx, userId, analysis.id))) return [];
     const [existing, proved, expired] = await Promise.all([
       tx
         .select(goalColumns)
@@ -133,8 +187,7 @@ export async function syncGoals(
       provedSkills(userId, tx),
       expiredSkills(userId, tx),
     ]);
-    const gaps: Gap[] = analysis.result.gaps.filter((g) => knownSkill.has(g.skillId));
-    const plan = planGoalSync({ existing, gaps, metSkillIds: analysis.result.metSkillIds, provedSkillIds: proved, expiredSkillIds: expired, implies, members });
+    const plan = planFor(analysis, existing, proved, expired, members);
 
     if (plan.insert.length) {
       const now = new Date();
@@ -167,11 +220,7 @@ export async function syncGoals(
     const rows = await readGoals(tx, userId);
 
     // Path steps for this analysis that don't point at a goal yet get the goal for their skill.
-    const unlinked = await tx
-      .select({ id: pathSteps.id, skillId: pathSteps.skillId })
-      .from(pathSteps)
-      .innerJoin(paths, eq(paths.id, pathSteps.pathId))
-      .where(and(eq(paths.gapAnalysisId, analysis.id), isNull(pathSteps.goalId)));
+    const unlinked = await unlinkedSteps(tx, analysis.id);
     const goalBySkill = new Map(rows.map((r) => [r.skillId, r.id]));
     for (const [skillId, goalId] of goalBySkill) {
       const ids = unlinked.filter((s) => s.skillId === skillId).map((s) => s.id);
@@ -570,10 +619,19 @@ export async function reopenUnconfirmedGoals(
   /** Only these people (tests share one database). */
   only?: string[],
 ): Promise<number> {
-  const stale = await db
-    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId })
+  // Only met goals the certificate could fill (its skill's goal, or a group goal), so a person's other met goals don't
+  // bring every refused certificate of theirs back each day.
+  const rows = await db
+    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId, goalSkillId: userGoals.skillId, groupId: userGoals.groupId })
     .from(gapProofs)
-    .innerJoin(userGoals, and(eq(userGoals.userId, gapProofs.userId), eq(userGoals.status, "met")))
+    .innerJoin(
+      userGoals,
+      and(
+        eq(userGoals.userId, gapProofs.userId),
+        eq(userGoals.status, "met"),
+        or(eq(userGoals.skillId, gapProofs.skillId), isNotNull(userGoals.groupId)),
+      ),
+    )
     .where(
       and(
         eq(gapProofs.type, "certification"),
@@ -581,8 +639,13 @@ export async function reopenUnconfirmedGoals(
         only ? inArray(gapProofs.userId, only) : undefined,
       ),
     );
+  const stale = new Map<string, { userId: string; skillId: string }>();
+  for (const r of rows) {
+    if (r.goalSkillId !== r.skillId && !(r.groupId && members.get(r.groupId)?.includes(r.skillId))) continue;
+    stale.set(`${r.userId}:${r.skillId}`, { userId: r.userId, skillId: r.skillId });
+  }
   const people = new Set<string>();
-  for (const s of stale) {
+  for (const s of stale.values()) {
     await db.transaction(async (tx) => {
       await lockPerson(tx, s.userId);
       await refreshGoals(tx, s.userId, s.skillId, members);
@@ -680,7 +743,7 @@ export async function resourcesForSkills(skillIds: string[], db: Db | Tx = getDb
   const rows = await db
     .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, url: resources.url, minutes: resources.minutes, free: resources.free, skillIds: resources.skillIds })
     .from(resources)
-    .where(and(eq(resources.healthy, true), arrayOverlaps(resources.skillIds, skillIds)));
+    .where(and(eq(resources.healthy, true), isNull(resources.hiddenAt), arrayOverlaps(resources.skillIds, skillIds)));
   for (const skillId of skillIds) {
     const picked = rows
       .filter((r) => r.skillIds.includes(skillId) && r.title.trim())

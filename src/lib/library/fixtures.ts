@@ -1,4 +1,7 @@
-import type { LibraryItem, LibraryView } from "@/lib/schemas";
+import { eliteShelfEntries, resources } from "@/content";
+import { unreviewedAllowed } from "@/lib/mock/rules";
+import type { EliteShelfView, LibraryItem, LibraryView } from "@/lib/schemas";
+import { buildEliteShelf } from "./shelf";
 
 /*
  * Example Library for the design page and the preview (no sign-in): a Data Analyst with three open goals. The links
@@ -65,7 +68,27 @@ export const exampleLibrary: LibraryView = {
   items,
   onRide: ["r1", "r2"],
   finished: ["r5", "r6"],
+  saved: ["r10", "r3"],
+  ticked: [],
+  added: [],
+  rideCourses: [],
 };
 
 /** The same person with no resume: no goals, the catalog for search. */
-export const exampleLibraryNoResume: LibraryView = { role: null, pathHref: null, goals: [], items, onRide: [], finished: [] };
+export const exampleLibraryNoResume: LibraryView = { role: null, pathHref: null, goals: [], items, onRide: [], finished: [], saved: [], ticked: [], added: [], rideCourses: [] };
+
+/** The catalog's skills by URL, which the shelf reads to put the cards for a person's goals first. */
+export const shelfSkillIdsByUrl: ReadonlyMap<string, readonly string[]> = new Map(resources.map((r) => [r.url, r.skillIds]));
+
+/**
+ * The real Elite shelf for the example person, Free (locked) or Elite. Its free sources are taken from the catalog file
+ * as the healthy table would list them; the goals are the example's. Unchecked playbooks and drills show only where
+ * `unreviewedAllowed()` allows them (local and preview), never in production.
+ */
+export function exampleEliteShelf(elite: boolean, allowUnreviewed = unreviewedAllowed()): EliteShelfView {
+  const urls = new Set(eliteShelfEntries.flatMap((e) => (e.type === "free" ? [e.url] : [])));
+  const shelfItems: LibraryItem[] = resources
+    .filter((r) => urls.has(r.url))
+    .map((r, i) => ({ id: `shelf-${i + 1}`, title: r.title, provider: r.provider, kind: r.kind, minutes: r.minutes, url: r.url, language: r.language ?? "English", skills: [r.skillIds[0]] }));
+  return buildEliteShelf({ elite, entries: eliteShelfEntries, items: shelfItems, skillIdsByUrl: shelfSkillIdsByUrl, goals: exampleLibrary.goals, allowUnreviewed });
+}

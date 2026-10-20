@@ -1,9 +1,11 @@
 "use client";
 
-import { CalendarClock, Phone, PhoneOff } from "lucide-react";
+import { CalendarClock, CalendarPlus, Phone, PhoneOff, Play } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { actionBtn, inkBtn } from "@/components/corporate/jobs-panel";
 import { fieldClass, hintClass, ICON } from "@/components/corporate/parts";
+import { interviewIcs } from "@/lib/calendar/ics";
 import { dayParts, nextDays } from "@/lib/corporate/slots";
 import type { ArrivalsActions, MyApplicationView, MyInterviewView } from "@/lib/corporate/types";
 import { INTERVIEW_ROUND_LABELS, INTERVIEW_STATUS_LABELS } from "@/lib/schemas/constants";
@@ -160,6 +162,8 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
         </span>
         <span className={`ml-auto text-[0.8rem] ${live ? "text-ink" : "text-muted"}`}>{iv.status === "proposed" && iv.canRespond ? "Waiting for your answer" : INTERVIEW_STATUS_LABELS[iv.status]}</span>
       </div>
+      {live && <PracticeRound />}
+      {iv.status === "accepted" && <AddToCalendar app={app} iv={iv} />}
       {iv.canRespond && !accepting && (
         <div className="flex flex-wrap gap-2">
           <button ref={acceptRef} type="button" className={inkBtn} disabled={pending} onClick={() => setAccepting(true)} aria-label={`Accept the interview on ${iv.when}`}>
@@ -204,5 +208,53 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
         </form>
       )}
     </div>
+  );
+}
+
+/** The practice round before an interview (handoff 12l, C15): Interview prep's mock interview, which is Elite. */
+export function PracticeRound() {
+  return (
+    <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.8rem] text-muted">
+      <Link href="/mock" className="inline-flex min-h-11 items-center gap-1.5 font-[550] text-ink hover:text-muted">
+        <Play {...ICON} size={14} />
+        <span className="underline underline-offset-2">Practice round</span>
+        <span className="rounded-full bg-elite px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.06em] text-on-elite">Elite</span>
+      </Link>
+      <span>A mock interview with an AI interviewer, on your role&apos;s questions.</span>
+    </p>
+  );
+}
+
+/**
+ * "Add to calendar" on an accepted interview (v44 gap list item 46): a calendar file made here in the browser, with the
+ * round, job title and company only, and a reminder the evening before. The app can't put it in a calendar itself, so
+ * the line says it is a download.
+ */
+export function AddToCalendar({ app, iv }: { app: Pick<MyApplicationView, "title" | "company">; iv: Pick<MyInterviewView, "id" | "round" | "startsAt" | "minutes" | "when"> }) {
+  const download = () => {
+    const ics = interviewIcs({
+      interviewId: iv.id,
+      startsAt: new Date(iv.startsAt),
+      minutes: iv.minutes,
+      summary: `${INTERVIEW_ROUND_LABELS[iv.round]} interview for ${app.title} at ${app.company}`,
+      now: new Date(),
+    });
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "careermetro-interview.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  return (
+    <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.8rem] text-muted">
+      <button type="button" className={actionBtn} onClick={download} aria-label={`Add to calendar: the interview on ${iv.when}`}>
+        <CalendarPlus {...ICON} />
+        Add to calendar
+      </button>
+      <span>Download a calendar file with a reminder the evening before.</span>
+    </p>
   );
 }

@@ -2,10 +2,12 @@
 
 import { refresh } from "next/cache";
 import { currentAccount } from "@/lib/auth/server";
-import { acceptRequest, deleteRequest, INBOX_ERROR_TEXT, markRead, report, sendMessage, type InboxResult } from "@/lib/inbox/store";
+import { acceptRequest, deleteRequest, endFoundChat, INBOX_ERROR_TEXT, markRead, report, sendMessage, type InboxResult } from "@/lib/inbox/store";
 import { conversationInput, reportInput, sendMessageInput } from "@/lib/schemas/inbox";
 import type { InboxActions } from "@/lib/inbox/types";
 import { INTERVIEW_ERROR_TEXT, offerTimes } from "@/lib/corporate/interviews-store";
+import { AVAILABILITY_MESSAGES, saveUsuallyFree } from "@/lib/account/availability-store";
+import { errorFields, logEvent } from "@/lib/log";
 
 /*
  * The Inbox's server actions. Each checks who is signed in and validates its input; the store checks membership and the
@@ -46,6 +48,14 @@ export const deleteInboxRequest: InboxActions["remove"] = async (conversationId)
   return answer(await deleteRequest(account.id, input.data.conversationId));
 };
 
+export const endInboxChat: NonNullable<InboxActions["end"]> = async (conversationId) => {
+  const input = conversationInput.safeParse({ conversationId });
+  if (!input.success) return BAD;
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  return answer(await endFoundChat(account.id, input.data.conversationId));
+};
+
 export const reportInInbox: InboxActions["report"] = async (raw) => {
   const input = reportInput.safeParse(raw);
   if (!input.success) return BAD;
@@ -60,6 +70,24 @@ export const readInboxChat: InboxActions["read"] = async (conversationId) => {
   if (!account || !input.success) return;
   await markRead(account.id, input.data.conversationId);
   refresh();
+};
+
+/**
+ * Saves "Usually free" (FR-55) for the signed-in person's own row: the whole grid at once. Private; nothing of it is
+ * logged. Returns the words to show, or null when it saved.
+ */
+export const saveUsuallyFreeAction: NonNullable<InboxActions["saveUsuallyFree"]> = async (slots) => {
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  try {
+    const r = await saveUsuallyFree(account.id, slots);
+    if (!r.ok) return AVAILABILITY_MESSAGES[r.error];
+  } catch (error) {
+    logEvent("error", "usually_free_save_failed", errorFields(error));
+    return BAD;
+  }
+  refresh();
+  return null;
 };
 
 /** Answers "Ask for times" with the times picked (build step 6). Only those times reach the company. */

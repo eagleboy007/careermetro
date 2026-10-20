@@ -9,18 +9,24 @@ import { exportCorporate } from "@/lib/corporate/store";
 import { exportInbox } from "@/lib/inbox/store";
 import { exportJobChecks } from "@/lib/me/job-email-check";
 import { exportDraft } from "@/lib/builder/store";
+import { exportDepartures } from "@/lib/departures/store";
 import { exportPlan } from "@/lib/elite/store";
+import { exportJobSearch } from "@/lib/job-search/store";
+import { exportLibrary } from "@/lib/library/store";
+import { exportMeEdits } from "@/lib/me/edit-store";
 import { exportMockSessions } from "@/lib/mock/interview-store";
 import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
+import { exportNotifications } from "@/lib/notifications/store";
 import { exportPractice } from "@/lib/practice/store";
+import { exportAvailability } from "./availability-store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
 
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 24;
+export const EXPORT_VERSION = 31;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -106,7 +112,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows, meEdits, notificationRows, availability] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -165,6 +171,12 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportPlan(userId, db),
     exportTimedTests(userId, db),
     exportMockSessions(userId, db),
+    exportJobSearch(userId, db),
+    exportDepartures(userId, db),
+    exportLibrary(userId, db),
+    exportMeEdits(userId, db),
+    exportNotifications(userId, db),
+    exportAvailability(userId, db),
   ]);
 
   return {
@@ -199,11 +211,13 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Jobs this account posted for a company, with their Express apply criteria (it stays the company's when the account goes).
     jobsOwned,
     // Jobs this account applied to on CareerMetro: which companies have the application, the note sent with it (Express
-    // apply), and every step it took.
+    // apply), Open to work in as it was sent with it (from version 31), and every step it took.
     applications: applicationRows,
     // Interviews this account sat on for a company, and the feedback it wrote there (never the candidate's name).
     interviewer,
-    // Privacy and notification choices (the defaults, with savedAt null, until you save some).
+    // Privacy and notification choices (the defaults, with savedAt null, until you save some). From version 31 they
+    // include messageRequests (message requests from people who aren't connections) and openToWorkIn (Remote and the
+    // cities you are open to work in).
     settings: settings.settings,
     // Your current and expected pay, in lakh a year: only you ever see it.
     pay: settings.pay,
@@ -231,7 +245,33 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     timedTests: timedTestRows,
     // Mock interviews (FR-50): the role, length, focus, the bank question ids, when it started and ended, and the
     // summary in words; with each answer still kept (answers go after 30 days) and what worked and what to add next
-    // time. The questions come from the bank, never from AI; no score.
+    // time, and from version 30 the follow-up asked after it (followUp: the question and your reply, null when
+    // skipped; null when none was asked). The questions and follow-ups come from the bank, never from AI; no score.
     mockSessions: mockSessionRows,
+    // Job search (handoff 6): whether "Looking for a job" is on, your notice period in days and the day you resigned
+    // (null when not given). Only you ever see these; companies you apply to see only Can join.
+    jobSearch,
+    // Departures (docs/plans/departures-live-plan.md): the roles from company job boards you saved or marked as applied,
+    // with the post's title, company, place and link, when you saved it, how far it went (Applied, Heard back,
+    // Interview or Offer) and when you applied, and whether it has closed on the company's board.
+    departures: departureRows,
+    // Library (docs/plans/library-part-2-plan.md): the resources you saved, ticked "I finished this" on and added to your
+    // rides, each with its title, link and when; the links you reported, with the reason you picked and what a reviewer
+    // decided (there is no note); and the links you suggested, with what a reviewer decided.
+    library: libraryRows.library,
+    resourceReports: libraryRows.resourceReports,
+    resourceSuggestions: libraryRows.resourceSuggestions,
+    // Me editing (docs/plans/me-editing-plan.md): the roles and education you added by hand, your stories with the boxes
+    // you sorted them into and the skill of the goal each is linked to, and your interests.
+    meRoles: meEdits.meRoles,
+    meEducation: meEdits.meEducation,
+    stories: meEdits.stories,
+    interests: meEdits.interests,
+    // Notifications (docs/plans/notifications-plan.md): each one's kind, when it was made and read, and the company and
+    // job for the ones about an application or interview. Other people's names are left out.
+    notifications: notificationRows,
+    // Your availability (from version 31): the weekday hours you said you are usually free ("mon 17:00"). Only you see
+    // them; they only pre-tick times when a company asks for times.
+    availability,
   };
 }

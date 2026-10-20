@@ -1,12 +1,14 @@
 "use client";
 
-import { BadgeCheck, Ban, Clock, Link2, MessageSquare, Plus, Search, UserMinus, Users } from "lucide-react";
+import { BadgeCheck, Ban, CalendarDays, Clock, Flag, Link2, MessageSquare, Plus, Route, Search, UserMinus, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
 import { MessageBox } from "./message-box";
+import { ReportPerson } from "./report-person";
 import { CONNECTION_HOW_LABELS, CONNECTION_HOWS } from "@/lib/schemas/constants";
-import type { NetworkActions, NetworkData, NetworkRow, NetworkTab } from "@/lib/network/types";
+import type { ReportReason } from "@/lib/schemas/inbox";
+import type { NetworkActions, NetworkData, NetworkFilters, NetworkRow, NetworkTab } from "@/lib/network/types";
 
 type How = (typeof CONNECTION_HOWS)[number];
 
@@ -23,14 +25,22 @@ const TABS: { key: NetworkTab; label: string; short?: string }[] = [
   { key: "find", label: "Find people", short: "Find" },
 ];
 
-type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" | "message" } | null;
+type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" | "message" | "report" } | null;
+
+const NO_FILTERS: NetworkFilters = { sameRole: false, verified: false };
+
+/** The example search narrowed as the server narrows a real one (/design and the preview without accounts). */
+const exampleFiltered = (rows: NetworkRow[], f: NetworkFilters, data: NetworkData): NetworkRow[] =>
+  rows.filter((p) => (!f.sameRole || (p.aim !== null && p.aim === data.myRole)) && (!f.verified || p.verified));
 
 const FAILED = "That didn't work. Please try again.";
 
 /**
  * Network (FR-49, handoff 12j): the "Let people find me" bar, then tabs for Connections, Requests, Sent and Find
- * people. Connect opens an inline "How do you know them?" pick, and Remove and Block confirm inline under the row; there
- * are no pop-ups. Without actions (example data, /design) nothing is sent and the buttons only show what they do.
+ * people (with the optional filters Aiming for my role and Verified, applied on the server; no city filter, since only companies see a member's city, T93). Connect opens
+ * an inline "How do you know them?" pick, and Remove, Block and Report open inline under the row; there are no pop-ups.
+ * Then "On your line" (Later) and the Mentors teaser (after the beta). Without actions (example data, /design) nothing
+ * is sent and the buttons only show what they do.
  */
 export function NetworkView({ data, actions, note, example }: { data: NetworkData; actions?: NetworkActions; note?: ReactNode; example?: NetworkRow[] }) {
   const ids = useId();
@@ -38,6 +48,9 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
   const [lists, setLists] = useState({ connections: data.connections, requests: data.requests, sent: data.sent });
   const [results, setResults] = useState<NetworkRow[] | null>(null);
   const [query, setQuery] = useState("");
+  // The query and filters of the last search, so a filter turned on or off searches the same name again.
+  const [searched, setSearched] = useState<string | null>(null);
+  const [filters, setFilters] = useState<NetworkFilters>(NO_FILTERS);
   const [findMe, setFindMe] = useState(data.peopleCanFind);
   const [panel, setPanel] = useState<Panel>(null);
   const [pick, setPick] = useState<How>("same_line");
@@ -126,6 +139,8 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     remove: (p: NetworkRow) => run(() => actions!.remove(p.id), () => move(p, "none"), `${first(p)} removed from your connections.`),
     block: (p: NetworkRow) => run(() => actions!.block(p.id), () => drop(p), `${first(p)} is blocked.`),
     message: (p: NetworkRow, body: string) => run(() => actions!.message(p.id, body), () => undefined, `Sent to ${first(p)}. The chat is in your Inbox.`),
+    report: (p: NetworkRow, reason: ReportReason, note: string) =>
+      run(() => actions!.report(p.id, reason, note), () => undefined, `Report sent. Our team reviews it; ${first(p)} isn't told who reported.`),
   };
 
   const onTabKey = (e: KeyboardEvent<HTMLButtonElement>, key: NetworkTab) => {
@@ -138,14 +153,16 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     tabRefs.current[next]?.focus();
   };
 
-  const search = (q: string) => {
+  const search = (q: string, f: NetworkFilters = filters) => {
     if (pending) return;
     if (!actions) {
-      setResults(example ?? []);
+      setSearched(q);
+      setResults(exampleFiltered(example ?? [], f, data));
       return;
     }
     start(async () => {
-      const r = await actions.search(q).catch(() => ({ error: FAILED }));
+      const r = await actions.search(q, f).catch(() => ({ error: FAILED }));
+      setSearched(q);
       if ("error" in r) {
         setResults(null);
         say(r.error);
@@ -170,6 +187,19 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
       }
     });
   };
+
+  /** A filter turned on or off searches the last name again, on the server; before any search it only waits for one. */
+  const toggleFilter = (key: keyof NetworkFilters) => {
+    if (pending) return;
+    const next = { ...filters, [key]: !filters[key] };
+    setFilters(next);
+    if (searched !== null) search(searched, next);
+  };
+  const filtered = filters.sameRole || filters.verified;
+  const filterButtons: { key: keyof NetworkFilters; label: string; icon: ReactNode }[] = [
+    ...(data.myRole ? [{ key: "sameRole" as const, label: "Aiming for my role", icon: <Route {...ICON} size={14} /> }] : []),
+    { key: "verified", label: "Verified", icon: <BadgeCheck {...ICON} size={14} /> },
+  ];
 
   const shown = tab === "connections" ? (sort === "az" ? [...lists.connections].sort((a, b) => a.name.localeCompare(b.name, "en")) : lists.connections) : tab === "find" ? [] : lists[tab];
   const count = (key: NetworkTab) => (key === "find" ? null : lists[key].length);
@@ -241,7 +271,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
                 search(query);
               }}
             >
-              <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5">
+              <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5 focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
                 <Search {...ICON} />
                 <span className="sr-only">Find people by name or @handle</span>
                 <input
@@ -259,6 +289,21 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
               <button type="submit" className={ink} aria-disabled={pending || undefined}>
                 Search
               </button>
+              <div role="group" aria-label="Narrow the results" className="flex basis-full flex-wrap gap-1.5">
+                {filterButtons.map((f) => (
+                  <button
+                    key={f.key}
+                    type="button"
+                    aria-pressed={filters[f.key]}
+                    aria-disabled={pending || undefined}
+                    onClick={() => toggleFilter(f.key)}
+                    className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-[0.8rem] font-[550] ${filters[f.key] ? "border-ink bg-ink text-bg" : "border-line-strong bg-surface text-ink"}`}
+                  >
+                    {f.icon}
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </form>
           ) : (
             tab === "connections" &&
@@ -279,6 +324,8 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
               <p className="text-[0.82rem] text-muted">Finds your connections and people who turned on &ldquo;Let people find me&rdquo;. Never people you blocked or who blocked you.</p>
             ) : results.length ? (
               <PeopleList rows={results} tab="find" panel={panel} pick={pick} setPick={setPick} setPanel={setPanel} act={act} pending={pending} />
+            ) : filtered ? (
+              <p className="text-[0.86rem] text-muted">No one found with these filters. Turn one off to see more.</p>
             ) : (
               <p className="text-[0.86rem] text-muted">People who keep &ldquo;Let people find me&rdquo; off can&rsquo;t be found by name. Ask them for their profile link instead.</p>
             )
@@ -301,11 +348,52 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
       <p ref={statusRef} tabIndex={-1} role="status" className="text-[0.84rem] text-muted outline-none empty:hidden">
         {message}
       </p>
+
+      <section aria-labelledby={`${ids}-line`} className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-baseline gap-2.5">
+          <h2 id={`${ids}-line`} className="flex items-center gap-2 text-[1.1rem] font-semibold">
+            On your line
+            <Tag>Later</Tag>
+          </h2>
+          {data.myRole && <span className="font-mono text-[0.72rem] text-muted">{data.myRole}</span>}
+        </div>
+        <p className="text-[0.82rem] text-muted">
+          Proposed for after v1: people aiming at the same role who turned on &ldquo;Let people find me&rdquo;, ordered by skills you share, never by anything paid.
+        </p>
+      </section>
+
+      <section aria-labelledby={`${ids}-mentors`} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-[14px] border border-dashed border-line px-5 py-4">
+        <div>
+          <h2 id={`${ids}-mentors`} className="flex flex-wrap items-center gap-2 text-[1.05rem] font-semibold">
+            <CalendarDays {...ICON} />
+            Mentors
+            <Tag>After the beta</Tag>
+          </h2>
+          <p className="mt-1 max-w-[60ch] text-[0.86rem] text-muted">
+            Book an hour with someone who already does the job: role prep, your interview questions, a look at your resume. Mentors come after the beta.
+          </p>
+        </div>
+        <span aria-hidden="true" className="flex">
+          {["VR", "PK", "AS"].map((i, n) => (
+            <span key={i} className={`grid size-9 place-items-center rounded-full border-2 border-bg bg-surface-2 font-mono text-[0.68rem] font-medium ${n ? "-ml-2" : ""}`}>
+              {i}
+            </span>
+          ))}
+        </span>
+      </section>
     </div>
   );
 }
 
-type Act = Record<"connect" | "send" | "accept" | "ignore" | "withdraw" | "remove" | "block", (p: NetworkRow) => void> & { message: (p: NetworkRow, body: string) => void };
+/** A small mono tag on a heading for what isn't built yet ("Later", "After the beta"). */
+function Tag({ children }: { children: ReactNode }) {
+  return <span className="rounded-full bg-surface-2 px-[7px] py-px font-mono text-[0.64rem] font-normal uppercase tracking-[0.05em] text-muted">{children}</span>;
+}
+
+type Act = Record<"connect" | "send" | "accept" | "ignore" | "withdraw" | "remove" | "block", (p: NetworkRow) => void> & {
+  message: (p: NetworkRow, body: string) => void;
+  report: (p: NetworkRow, reason: ReportReason, note: string) => void;
+};
 
 function PeopleList(props: { rows: NetworkRow[]; tab: NetworkTab; panel: Panel; pick: How; setPick: (h: How) => void; setPanel: (p: Panel) => void; act: Act; pending: boolean }) {
   return (
@@ -321,6 +409,16 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
   const open = panel?.id === p.id ? panel.kind : null;
   const busy = pending || undefined;
   const firstName = p.name.split(" ")[0];
+  // Cancel closes the panel and puts focus back on the button that opened it, never on the page (WCAG 2.4.3).
+  const buttons = useRef<HTMLDivElement>(null);
+  const [back, setBack] = useState<{ kind: NonNullable<Panel>["kind"]; n: number } | null>(null);
+  useEffect(() => {
+    if (back) buttons.current?.querySelector<HTMLButtonElement>(`[data-opens="${back.kind}"]`)?.focus();
+  }, [back]);
+  const cancel = () => {
+    if (open) setBack((b) => ({ kind: open, n: (b?.n ?? 0) + 1 }));
+    setPanel(null);
+  };
   const initials = p.name
     .split(" ")
     .slice(0, 2)
@@ -352,7 +450,6 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
           </p>
           <p className="flex flex-wrap gap-x-2 text-[0.8rem] text-muted">
             {p.aim && <span>Aiming for {p.aim}</span>}
-            {p.city && <span>{p.city}</span>}
             <span>
               {p.common} shared skill{p.common === 1 ? "" : "s"}
             </span>
@@ -375,14 +472,14 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
             </p>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 max-[759px]:basis-full">
+        <div ref={buttons} className="flex flex-wrap items-center gap-1.5 max-[759px]:basis-full">
           {p.state === "connected" ? (
             <>
-              <button type="button" className={ghost} aria-disabled={busy} aria-expanded={open === "message"} onClick={() => setPanel({ id: p.id, kind: "message" })}>
+              <button type="button" className={ghost} aria-disabled={busy} aria-expanded={open === "message"} data-opens="message" onClick={() => setPanel({ id: p.id, kind: "message" })}>
                 <MessageSquare {...ICON} />
                 Message<span className="sr-only"> {p.name}</span>
               </button>
-              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} onClick={() => setPanel({ id: p.id, kind: "remove" })}>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} data-opens="remove" onClick={() => setPanel({ id: p.id, kind: "remove" })}>
                 <UserMinus {...ICON} />
                 Remove<span className="sr-only"> {p.name}</span>
               </button>
@@ -402,19 +499,23 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
                 <Clock {...ICON} />
                 Requested
               </span>
-              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "withdraw"} onClick={() => setPanel({ id: p.id, kind: "withdraw" })}>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "withdraw"} data-opens="withdraw" onClick={() => setPanel({ id: p.id, kind: "withdraw" })}>
                 Withdraw<span className="sr-only"> request to {p.name}</span>
               </button>
             </>
           ) : (
-            <button type="button" className={ink} aria-disabled={busy} aria-expanded={open === "pick"} onClick={() => act.connect(p)}>
+            <button type="button" className={ink} aria-disabled={busy} aria-expanded={open === "pick"} data-opens="pick" onClick={() => act.connect(p)}>
               <Plus {...ICON} />
               Connect<span className="sr-only"> with {p.name}</span>
             </button>
           )}
-          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "block"} onClick={() => setPanel({ id: p.id, kind: "block" })}>
+          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "block"} data-opens="block" onClick={() => setPanel({ id: p.id, kind: "block" })}>
             <Ban {...ICON} />
             Block<span className="sr-only"> {p.name}</span>
+          </button>
+          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "report"} data-opens="report" onClick={() => setPanel({ id: p.id, kind: "report" })}>
+            <Flag {...ICON} />
+            Report<span className="sr-only"> {p.name}</span>
           </button>
         </div>
       </div>
@@ -442,7 +543,7 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
             <button type="button" className={ink} aria-disabled={busy} onClick={() => act.send(p)}>
               Send request
             </button>
-            <button type="button" className={quiet} onClick={() => setPanel(null)}>
+            <button type="button" className={quiet} onClick={cancel}>
               Cancel
             </button>
           </div>
@@ -454,28 +555,29 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
           body={`${firstName} isn't told. You can ask again 30 days after you sent it.`}
           yes="Withdraw"
           onYes={() => act.withdraw(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}
-      {open === "message" && <MessageBox name={firstName} busy={busy} onSend={(body) => act.message(p, body)} onCancel={() => setPanel(null)} />}
+      {open === "message" && <MessageBox name={firstName} busy={busy} onSend={(body) => act.message(p, body)} onCancel={cancel} />}
       {open === "remove" && (
         <Confirm
           title={`Remove ${p.name} from your connections?`}
           body={`${firstName} isn't told. What only connections see ends for both of you. Either of you can connect again later.`}
           yes="Remove"
           onYes={() => act.remove(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}
+      {open === "report" && <ReportPerson name={p.name} busy={busy} onSend={(reason, note) => act.report(p, reason, note)} onCancel={cancel} />}
       {open === "block" && (
         <Confirm
           title={`Block ${p.name}?`}
           body="You disappear from each other's search, lists and profiles, any connection or request between you ends, and neither of you can message the other. They aren't told."
           yes="Block"
           onYes={() => act.block(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}

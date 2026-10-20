@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
 import type { PlanView } from "@/lib/schemas";
+import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
+import { BlockedPeople, type BlockedPersonLine } from "./blocked-people";
 import { CompanyDiscovery } from "./company-discovery";
 import { FindMeSwitch } from "./find-me-switch";
 import { BasicsForm } from "./basics-form";
@@ -11,7 +13,7 @@ import { DeleteAccount } from "./delete-account";
 import { PlanCard, type PlanActions } from "./plan-card";
 import { ProfileLinkFields } from "./profile-link-fields";
 import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
-import { NotificationFields, PayFields, PrivacyFields } from "./settings-fields";
+import { LocationFields, NotificationFields, PayFields, PrivacyFields, WhoSeesWhat } from "./settings-fields";
 import { SettingsNav } from "./settings-nav";
 
 export type SettingsData = {
@@ -32,6 +34,8 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** People this person blocked on Network or in the Inbox, newest first (gap list item 34). */
+  blockedPeople: BlockedPersonLine[];
   /** Elite, free in the beta (FR-50): saved apart from the draft, at once. */
   plan: PlanView;
   /** True while gaps are shared with connections only (the default for new accounts). */
@@ -43,7 +47,7 @@ export const SETTINGS_SECTIONS = [
   { id: "acc-plan", label: "Your plan" },
   { id: "acc-basics", label: "Profile basics" },
   { id: "acc-signin", label: "Email and sign-in" },
-  { id: "acc-pay", label: "Pay" },
+  { id: "acc-pay", label: "Pay and location" },
   { id: "acc-privacy", label: "Privacy" },
   { id: "acc-notif", label: "Notifications" },
   { id: "acc-company", label: "Company" },
@@ -62,12 +66,17 @@ export function SettingsView({
   data,
   discoveryActions,
   findMe,
+  unblockPerson,
   planActions,
+  jobSearch,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
   findMe?: (on: boolean) => Promise<string | null>;
+  unblockPerson?: (id: string) => Promise<string | null>;
   planActions?: PlanActions;
+  /** "Looking for a job" and the notice period (SettingsJobSearch); example data without it. */
+  jobSearch?: ReactNode;
 }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
@@ -121,13 +130,20 @@ export function SettingsView({
           </List>
         </Section>
 
-        <Section id="acc-pay" title="Pay" tag="private">
+        {/* Handoff 12c, v44 gap item 36: pay, Current city (moved here from Profile basics) and Open to work in. */}
+        <Section id="acc-pay" title="Pay and location" tag="pay is private">
           <PayFields />
+          <LocationFields />
+          <div id="acc-job-search" className="scroll-mt-20">
+            {jobSearch ?? <SettingsJobSearch view={{ on: true, noticeDays: 30, resignedOn: null }} today="2026-10-20" />}
+          </div>
         </Section>
 
         <Section id="acc-privacy" title="Privacy">
           <PrivacyFields />
           <FindMeSwitch initial={data.peopleCanFind} action={data.editable ? findMe : undefined} />
+          <WhoSeesWhat />
+          <BlockedPeople people={data.blockedPeople} unblock={data.editable ? unblockPerson : undefined} />
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>
 

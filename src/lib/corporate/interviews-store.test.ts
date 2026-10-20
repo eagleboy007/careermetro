@@ -8,6 +8,7 @@ import { purgeDeletedAccounts } from "@/lib/account/delete";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { listThreads } from "@/lib/inbox/store";
+import { newCount, notificationsFor } from "@/lib/notifications/store";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { applyToJob, exportApplications, jobBoard, moveApplication, myApplications, openCandidate, PAUSED_NOT_THIS_TIME_NOTE, withdrawApplication } from "./applications-store";
 import { companyChat, companyMessages, sendCompanyMessage } from "./chats-store";
@@ -261,7 +262,7 @@ describe.skipIf(!db)("interviews (database)", () => {
     // Arrivals shows it to answer; never who booked it.
     const [app] = await myApplications(s.me, at());
     expect(app.interviews).toEqual([
-      { id: one.interviewId, round: "team", day: "2026-10-14", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false },
+      { id: one.interviewId, round: "team", day: "2026-10-14", startsAt: "2026-10-14T05:30:00.000Z", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false },
     ]);
     expect(await respondToInterview(s.hr, { interviewId: one.interviewId, answer: "accept", sharePhone: false }, at())).toMatchObject({ ok: false, error: "not_found" });
 
@@ -341,7 +342,7 @@ describe.skipIf(!db)("interviews (database)", () => {
     expect(JSON.stringify(await myApplications(s.me, at(2)))).not.toContain("debrief");
     const theirs = await exportAccountData(s.me, db!, clock);
     expect(theirs!.exportVersion).toBe(EXPORT_VERSION);
-    expect(EXPORT_VERSION).toBe(24);
+    expect(EXPORT_VERSION).toBe(31);
     expect(JSON.stringify(theirs)).not.toContain("debrief");
     // The interviewer's download has the interviews they were on and their own feedback, never the candidate's name.
     const hers = await exportInterviewer(s.iv, db!);
@@ -704,5 +705,69 @@ describe.skipIf(!db)("interviews (database)", () => {
     expect(await saveJob(s.admin, { ...job, hiring: [s.hrMember], interviewers: [s.ivMember] }, at())).toMatchObject({ ok: false, error: "not_colleague" });
     const after = await jobForm(s.admin, s.jobId, at());
     expect(after.ok && after.data.colleagues.map((c) => c.name)).toEqual(["Rahul Menon"]);
+  });
+
+  /* Notifications (docs/plans/notifications-plan.md) ---------------------------------------------------------------- */
+
+  it("tells the candidate in the bell when the company moves, books, cancels and closes, one row per application, and never the company", async () => {
+    const s = await setup("notify");
+    const t = (minutes: number) => at(minutes / 1440);
+    const texts = async (minutes: number) => (await notificationsFor(s.me, t(minutes))).map((x) => x.text);
+    // setup moved the application to Shortlisted.
+    expect(await texts(1)).toEqual(["Example Labs moved your application for SOC Analyst L1 to Shortlisted."]);
+    expect((await notificationsFor(s.me, t(1)))[0]).toMatchObject({ kind: "application_moved", href: "/arrivals", isNew: true });
+    // The company's people get nothing for their own moves.
+    for (const member of [s.hr, s.admin, s.iv]) expect(await notificationsFor(member, t(1))).toEqual([]);
+
+    // A second move before reading replaces the first: one row per application.
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "team", note: "" }, t(1))).toEqual({ ok: true });
+    expect(await texts(1)).toEqual(["Example Labs moved your application for SOC Analyst L1 to Level 2 team."]);
+
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const booked = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, t(2));
+    if (!booked.ok) throw new Error(booked.error);
+    expect(await texts(2)).toEqual([
+      "Example Labs set an interview for SOC Analyst L1: Wed 14 Oct, 11:00 IST.",
+      "Example Labs moved your application for SOC Analyst L1 to Level 2 team.",
+    ]);
+    // Cancelled before it was read, the cancellation takes the booking's place.
+    expect(await cancelInterview(s.hr, { interviewId: booked.interviewId }, t(3))).toEqual({ ok: true });
+    expect(await texts(3)).toEqual(["Example Labs cancelled the interview for SOC Analyst L1.", "Example Labs moved your application for SOC Analyst L1 to Level 2 team."]);
+    expect(await newCount(s.me, t(3))).toBe(2);
+
+    // Job search off pauses moves, as Arrivals is paused; interviews still show.
+    await db!.insert(schema.userSettings).values({ userId: s.me, jobSearch: false }).onConflictDoUpdate({ target: schema.userSettings.userId, set: { jobSearch: false } });
+    expect(await texts(3)).toEqual(["Example Labs cancelled the interview for SOC Analyst L1."]);
+    expect(await newCount(s.me, t(3))).toBe(1);
+    await db!.update(schema.userSettings).set({ jobSearch: true }).where(eq(schema.userSettings.userId, s.me));
+    // A company the person blocked shows nothing in the bell.
+    await db!.insert(schema.companyBlocks).values({ userId: s.me, orgId: s.orgId });
+    expect(await texts(3)).toEqual([]);
+    expect(await newCount(s.me, t(3))).toBe(0);
+    await db!.delete(schema.companyBlocks).where(and(eq(schema.companyBlocks.userId, s.me), eq(schema.companyBlocks.orgId, s.orgId)));
+
+    // Not this time replaces the move with the closing line.
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "not_this_time", note: "We went with someone closer to Pune this time." }, t(4))).toEqual({ ok: true });
+    expect(await texts(4)).toEqual([
+      "Example Labs closed your application for SOC Analyst L1. Their note is on Arrivals.",
+      "Example Labs cancelled the interview for SOC Analyst L1.",
+    ]);
+    // Withdrawn, nothing about the application shows.
+    expect(await withdrawApplication(s.me, { applicationId: s.applicationId }, t(5))).toEqual({ ok: true });
+    expect(await texts(5)).toEqual([]);
+    expect(await newCount(s.me, t(5))).toBe(0);
+  });
+
+  it("drops the interview line when closing the application cancels the interview", async () => {
+    const s = await setup("notify-close");
+    const t = (minutes: number) => at(minutes / 1440);
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const booked = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, t(1));
+    if (!booked.ok) throw new Error(booked.error);
+    expect((await notificationsFor(s.me, t(1))).map((x) => x.kind)).toEqual(["interview_scheduled", "application_moved"]);
+    // Not this time cancels the interview ahead with no line of its own; the "set" line must not stay behind.
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "not_this_time", note: "We went with someone closer to Pune this time." }, t(2))).toEqual({ ok: true });
+    expect((await notificationsFor(s.me, t(2))).map((x) => x.text)).toEqual(["Example Labs closed your application for SOC Analyst L1. Their note is on Arrivals."]);
+    expect(await newCount(s.me, t(2))).toBe(1);
   });
 });

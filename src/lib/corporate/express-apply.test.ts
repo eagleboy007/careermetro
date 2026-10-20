@@ -8,7 +8,8 @@ import { purgeDeletedAccounts, requestDeletion } from "@/lib/account/delete";
 import { exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
-import { applyPreview, applyToJob, criteriaStates, openCandidate, withdrawApplication } from "./applications-store";
+import { setJobSearch } from "@/lib/job-search/store";
+import { APPLICATION_ERROR_TEXT, applyPreview, applyToJob, criteriaStates, openCandidate, withdrawApplication } from "./applications-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { jobForm, liveJobs, saveJob } from "./jobs-store";
 import { finishCompanySignup, startCompanySignup, type CorporateDeps } from "./store";
@@ -149,6 +150,8 @@ describe.skipIf(!db)("Express apply (database)", () => {
     if (!preview.ok) return;
     const { packet } = preview;
     expect(packet).toMatchObject({ company: "Example Labs", jobTitle: "SOC Analyst L1" });
+    // Nothing set in Settings: Open to work in is empty, and the preview leaves the line out (FR-55).
+    expect(packet.openToWorkIn).toEqual([]);
     expect(packet.criteria.lines.map((l) => [l.kind, l.met])).toEqual([
       ["skill", true],
       ["certificate", false],
@@ -204,6 +207,19 @@ describe.skipIf(!db)("Express apply (database)", () => {
     expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: true });
   });
 
+  it("refuses the preview and the send while job search is off, and allows both once it is back on", async () => {
+    const { jobId } = await openJob("search-off");
+    const me = await candidate("search-off-cand");
+    expect((await setJobSearch(me, false, { db: db!, now: clock })).ok).toBe(true);
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: false, error: "search_off" });
+    expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: false, error: "search_off" });
+    expect(APPLICATION_ERROR_TEXT.search_off).toBe("Turn on job search to apply.");
+    expect(await db!.select({ id: schema.applications.id }).from(schema.applications).where(eq(schema.applications.jobId, jobId))).toEqual([]);
+    expect((await setJobSearch(me, true, { db: db!, now: clock })).ok).toBe(true);
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: true });
+    expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: true });
+  });
+
   it("refuses a note with an email address or a phone number, and sends nothing", async () => {
     const { jobId } = await openJob("note");
     const me = await candidate("note-cand");
@@ -237,7 +253,7 @@ describe.skipIf(!db)("Express apply (database)", () => {
     const r = await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at());
     if (!r.ok) throw new Error(r.error);
     const data = await exportAccountData(me, db!, clock);
-    expect(data!.exportVersion).toBe(24);
+    expect(data!.exportVersion).toBe(31);
     expect(data!.applications[0]).toMatchObject({ note: NOTE });
     const adminData = await exportAccountData(admin, db!, clock);
     expect(adminData!.jobsOwned.find((j) => j.title === "SOC Analyst L1")?.criteria).toEqual(criteria);

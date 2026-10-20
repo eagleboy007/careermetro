@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { withKeyLock, type Tx } from "@/db/lock";
 import { gapAnalyses, paths, pathSteps, profiles, resources, resumes } from "@/db/schema";
@@ -133,7 +133,7 @@ async function buildForOwner(
     const catalog = await tx
       .select({ id: resources.id, skillIds: resources.skillIds, minutes: resources.minutes, free: resources.free, healthy: resources.healthy, title: resources.title, provider: resources.provider })
       .from(resources)
-      .where(eq(resources.healthy, true));
+      .where(and(eq(resources.healthy, true), isNull(resources.hiddenAt)));
     const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
     const titles: ResourceTitles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
     return { plan, titles, reservedId: await reserveWording(tx, owner, gaps.analysisId, weeklyHours) };
@@ -212,7 +212,8 @@ async function readPath(
     ? await tx
         .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, url: resources.url, minutes: resources.minutes })
         .from(resources)
-        .where(inArray(resources.id, ids))
+        // A link an admin hid (/admin/library) leaves the path at once.
+        .where(and(inArray(resources.id, ids), isNull(resources.hiddenAt)))
     : [];
   const byId = new Map(rows.map((r) => [r.id, r]));
   let hoursBefore = 0;

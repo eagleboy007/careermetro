@@ -1,6 +1,26 @@
 import { describe, expect, it } from "vitest";
 import { networkQuery, networkSearchInput } from "@/lib/schemas/network";
-import { askAgainFrom, byNetworkRank, connectionState, handleOf, mutualOf, networkMatches, pairOf, requestOpen, seesGaps, senderSeesRequested, skillsInCommon, type RequestRow } from "./rules";
+import {
+  askAgainFrom,
+  byNetworkRank,
+  connectionState,
+  currentStep,
+  handleOf,
+  interestsInCommon,
+  lineOrder,
+  mutualOf,
+  networkMatches,
+  networkQueryParts,
+  pairOf,
+  pathTogether,
+  requestOpen,
+  seesGaps,
+  senderSeesRequested,
+  skillsInCommon,
+  type LineGap,
+  type LineGoalRow,
+  type RequestRow,
+} from "./rules";
 
 const now = new Date("2026-10-20T10:00:00Z");
 const days = (n: number) => new Date(now.getTime() - n * 24 * 3600_000);
@@ -56,6 +76,16 @@ describe("network rules", () => {
     expect(handleOf("@Asha_R")).toBe("asha_r");
   });
 
+  it("splits a search into the handle and name words the database matches (T77)", () => {
+    expect(networkQueryParts("Pri  Naïr")).toEqual({ handle: null, words: ["pri", "nair"] });
+    expect(networkQueryParts("priya")).toEqual({ handle: "priya", words: ["priya"] });
+    // "@" means a handle only; a typed space can't start a handle.
+    expect(networkQueryParts("@Priya_N")).toEqual({ handle: "priya_n", words: [] });
+    expect(networkQueryParts("a.b")).toEqual({ handle: "a.b", words: ["a", "b"] });
+    // Letters searchKey drops leave no words, so only the handle can match.
+    expect(networkQueryParts("राम")).toEqual({ handle: "राम", words: [] });
+  });
+
   it("counts shared skills only when the other person shows skills, and mutual connections", () => {
     expect(skillsInCommon(["sql", "python", "excel"], ["python", "sql", "sql", "tableau"], true)).toBe(2);
     expect(skillsInCommon(["sql"], ["sql"], false)).toBe(0);
@@ -86,6 +116,55 @@ describe("network rules", () => {
     expect(networkQuery.safeParse("@a").success).toBe(false);
     expect(networkQuery.parse("  pri   nai ")).toBe("pri nai");
     expect(networkQuery.safeParse("x".repeat(81)).success).toBe(false);
-    expect(networkSearchInput.parse({ q: "asha" })).toEqual({ q: "asha", sameRole: false, sameCity: false, verified: false });
+    expect(networkSearchInput.parse({ q: "asha" })).toEqual({ q: "asha", sameRole: false, verified: false });
+    // No city filter for members (T93): a stray sameCity is dropped, never applied.
+    expect(networkSearchInput.parse({ q: "asha", sameCity: true })).toEqual({ q: "asha", sameRole: false, verified: false });
+  });
+
+  describe("Gaps and path", () => {
+    const goal = (skillId: string, position: number, over: Partial<LineGoalRow> = {}): LineGoalRow => ({ skillId, position, proved: false, status: "active", swappedTo: null, ...over });
+    const gaps = (...ids: string[]): LineGap[] => ids.map((skillId) => ({ skillId, status: "missing" }));
+    const name = (id: string) => id.toUpperCase();
+
+    it("orders a line by the person's goals, as on the Map, and numbers the current pitstop as the Map does", () => {
+      const line = lineOrder(gaps("c", "a", "b", "d"), [goal("a", 1, { proved: true }), goal("b", 2, { status: "skipped" }), goal("c", 3, { swappedTo: "x" })]);
+      expect(line.map((g) => g.skillId)).toEqual(["a", "b", "c", "d"]);
+      // Proved and skipped goals are passed (two pitstops each: learn and prove); a swapped goal learns its other skill.
+      expect(currentStep(line, name)).toEqual({ step: 5, name: "X" });
+      expect(currentStep(lineOrder(gaps("a"), [goal("a", 1, { proved: true })]), name)).toBeNull();
+    });
+
+    it("gives a weak gap, or one waiting for a renewed certificate, a prove pitstop only, and passes a done learn pitstop", () => {
+      const weak: LineGap[] = [{ skillId: "a", status: "weak" }, ...gaps("b", "c")];
+      expect(currentStep(lineOrder(weak, [goal("a", 1, { proved: true }), goal("b", 2), goal("c", 3)]), name)).toEqual({ step: 2, name: "B" });
+      expect(lineOrder(gaps("a"), [goal("a", 1, { status: "renew" })])[0].status).toBe("weak");
+      // Learning ticked done on the path: the person is at the prove pitstop.
+      expect(currentStep(lineOrder(gaps("a", "b"), [goal("a", 1), goal("b", 2)], new Set(["a"])), name)).toEqual({ step: 2, name: "A" });
+    });
+
+    it("shares only gaps both still have, and counts the pitstops between the two current steps", () => {
+      const mine = lineOrder(gaps("a", "b", "c"), [goal("a", 1), goal("b", 2), goal("c", 3)]);
+      const theirs = lineOrder(gaps("a", "b", "c", "d"), [goal("a", 1, { proved: true }), goal("b", 2, { proved: true }), goal("c", 3), goal("d", 4)]);
+      expect(pathTogether(mine, theirs, name, "connections")).toEqual({ gaps: ["C"], you: { step: 1, name: "A" }, them: { step: 5, name: "C" }, apart: 4, sharedWith: "connections" });
+      const done = lineOrder(gaps("a"), [goal("a", 1, { proved: true })]);
+      expect(pathTogether(done, theirs, name, "profile")).toMatchObject({ gaps: [], you: null, apart: null, sharedWith: "profile" });
+    });
+  });
+});
+
+describe("interestsInCommon", () => {
+  const i = (name: string) => ({ name, key: name.toLowerCase() });
+  it("names the owner's interests the viewer also lists, as the owner wrote them, and their others", () => {
+    expect(interestsInCommon([i("ai"), i("Public speaking"), i("Design"), i("Marketing")], [i("AI"), i("Chess"), i("public speaking"), i("Cricket analytics")])).toEqual({
+      shared: ["AI", "public speaking"],
+      yours: 4,
+      theirOthers: ["Chess", "Cricket analytics"],
+    });
+  });
+
+  it("says nothing when either lists none", () => {
+    expect(interestsInCommon([], [i("Chess")])).toBeNull();
+    expect(interestsInCommon([i("Chess")], [])).toBeNull();
+    expect(interestsInCommon([i("Chess")], [i("Go")])).toEqual({ shared: [], yours: 1, theirOthers: ["Go"] });
   });
 });

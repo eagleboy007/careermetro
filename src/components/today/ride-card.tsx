@@ -38,8 +38,9 @@ export function RideCard({
 }) {
   const [ticked, setTicked] = useState(() => new Set(ride.tasks.filter((t) => t.done && !t.locked).map((t) => t.id)));
   const done = new Set([...ticked, ...ride.tasks.filter((t) => t.locked && (t.done || (t.signal && signalAnswered))).map((t) => t.id)]);
-  const added = ride.tasks.filter((t) => done.has(t.id) && !t.done).length;
-  const removed = ride.tasks.filter((t) => !done.has(t.id) && t.done).length;
+  // The week's ring counts learn tasks only: the signal check ticks the ride day, not the week's prep.
+  const added = ride.tasks.filter((t) => !t.signal && done.has(t.id) && !t.done).length;
+  const removed = ride.tasks.filter((t) => !t.signal && !done.has(t.id) && t.done).length;
   const weekDone = Math.max(0, Math.min(ride.weekTasksTotal, ride.weekTasksDone + added - removed));
   const share = weekDone / ride.weekTasksTotal;
   const rodeToday = done.size > 0;

@@ -1,0 +1,1933 @@
+{
+  "reviewed": false,
+  "note": "Draft by Development (2026-10-20), not reviewed by anyone who works in these roles. Each track only reorders, adds (from the role's nice-to-have skills) or drops (from its required skills) skills of its own role profile. Production offers only reviewed tracks.",
+  "roles": [
+    {
+      "roleSlug": "android-developer",
+      "tracks": [
+        {
+          "id": "kotlin-apps",
+          "name": "Kotlin apps",
+          "blurb": "Modern Android, tests",
+          "description": "Building new Android apps in Kotlin, with unit tests.",
+          "add": [
+            "unit-testing"
+          ],
+          "drop": [],
+          "first": [
+            "kotlin",
+            "android"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "release",
+          "name": "Publishing and release",
+          "blurb": "Play Store, releases",
+          "description": "Shipping and updating apps on the Play Store.",
+          "add": [
+            "mobile-release"
+          ],
+          "drop": [],
+          "first": [
+            "mobile-release"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "java-codebases",
+          "name": "Java codebases",
+          "blurb": "Older apps, Java",
+          "description": "Working on established Android apps still written in Java.",
+          "add": [
+            "java"
+          ],
+          "drop": [],
+          "first": [
+            "java",
+            "android"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "appsec-engineer",
+      "tracks": [
+        {
+          "id": "code-review",
+          "name": "Secure code review",
+          "blurb": "Read code, find flaws",
+          "description": "Reviewing code changes for security flaws before they ship.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "secure-code-review",
+            "application-security"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "security-testing",
+          "name": "Security testing",
+          "blurb": "Test apps like an attacker",
+          "description": "Testing web apps and APIs for weaknesses.",
+          "add": [
+            "penetration-testing"
+          ],
+          "drop": [],
+          "first": [
+            "penetration-testing",
+            "application-security"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "devsecops",
+          "name": "DevSecOps pipelines",
+          "blurb": "Security checks in CI",
+          "description": "Putting security checks into build and release pipelines.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "devsecops"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "design-reviews",
+          "name": "Design reviews",
+          "blurb": "Threat models, early",
+          "description": "Finding risks in a design before code is written.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "threat-modeling"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "business-analyst",
+      "tracks": [
+        {
+          "id": "it-ba",
+          "name": "IT business analysis",
+          "blurb": "Requirements, UAT",
+          "description": "Turning business needs into requirements and testing what gets built.",
+          "add": [
+            "wireframing"
+          ],
+          "drop": [],
+          "first": [
+            "requirements-gathering",
+            "uat"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "process",
+          "name": "Process and operations",
+          "blurb": "Map and fix processes",
+          "description": "Mapping how work flows today and how it could work better.",
+          "add": [
+            "excel"
+          ],
+          "drop": [
+            "prd-writing"
+          ],
+          "first": [
+            "process-mapping"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "data-ba",
+          "name": "Data-minded analysis",
+          "blurb": "SQL, charts, Excel",
+          "description": "Answering business questions with data as well as requirements.",
+          "add": [
+            "data-visualization",
+            "excel"
+          ],
+          "drop": [],
+          "first": [
+            "sql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "bfsi",
+          "name": "Banking and finance",
+          "blurb": "BFSI domain",
+          "description": "Business analysis inside banks, insurers and fintech teams.",
+          "add": [
+            "domain-bfsi"
+          ],
+          "drop": [],
+          "first": [
+            "domain-bfsi"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "crm",
+          "name": "CRM and sales systems",
+          "blurb": "CRM rollouts",
+          "description": "Working on the systems sales and support teams use.",
+          "add": [
+            "crm-tools"
+          ],
+          "drop": [],
+          "first": [
+            "crm-tools"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "cloud-engineer",
+      "tracks": [
+        {
+          "id": "infra-as-code",
+          "name": "Infrastructure as code",
+          "blurb": "Terraform, scripts",
+          "description": "Building cloud setups from code instead of by hand.",
+          "add": [
+            "python"
+          ],
+          "drop": [],
+          "first": [
+            "terraform",
+            "scripting-bash"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "containers",
+          "name": "Containers",
+          "blurb": "Docker, Kubernetes",
+          "description": "Running applications in containers on the cloud.",
+          "add": [
+            "kubernetes"
+          ],
+          "drop": [],
+          "first": [
+            "docker",
+            "kubernetes"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud-ops",
+          "name": "Cloud operations and cost",
+          "blurb": "Monitoring, spend",
+          "description": "Keeping cloud systems healthy and their bills in check.",
+          "add": [
+            "cloud-cost"
+          ],
+          "drop": [],
+          "first": [
+            "monitoring",
+            "cloud-cost"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "networking",
+          "name": "Networking and access",
+          "blurb": "Networks, IAM",
+          "description": "Designing cloud networks and who can reach what.",
+          "add": [],
+          "drop": [
+            "docker"
+          ],
+          "first": [
+            "cloud-networking",
+            "identity-access-management"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "cloud-security-engineer",
+      "tracks": [
+        {
+          "id": "posture",
+          "name": "Posture and compliance",
+          "blurb": "Find misconfigurations",
+          "description": "Finding and fixing risky cloud settings across accounts.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "cloud-security-posture",
+            "cloud-security"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "identity",
+          "name": "Identity and access",
+          "blurb": "IAM, least privilege",
+          "description": "Deciding who and what can do what in the cloud.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "identity-access-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "devsecops",
+          "name": "DevSecOps",
+          "blurb": "Secure infrastructure code",
+          "description": "Checking infrastructure code and pipelines before they deploy.",
+          "add": [
+            "devsecops",
+            "python"
+          ],
+          "drop": [],
+          "first": [
+            "terraform",
+            "devsecops"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "containers",
+          "name": "Container security",
+          "blurb": "Kubernetes, workloads",
+          "description": "Securing containers and Kubernetes clusters.",
+          "add": [
+            "kubernetes"
+          ],
+          "drop": [],
+          "first": [
+            "kubernetes"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "detection",
+          "name": "Cloud detection and response",
+          "blurb": "Alerts, incidents",
+          "description": "Spotting and handling attacks on cloud accounts.",
+          "add": [
+            "security-incident-response"
+          ],
+          "drop": [],
+          "first": [
+            "security-incident-response"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "cross-platform-mobile-developer",
+      "tracks": [
+        {
+          "id": "android-depth",
+          "name": "Cross-platform with Android",
+          "blurb": "Native Android too",
+          "description": "Cross-platform apps, plus native Android work when needed.",
+          "add": [
+            "android"
+          ],
+          "drop": [],
+          "first": [
+            "android"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "ios-depth",
+          "name": "Cross-platform with iOS",
+          "blurb": "Native iOS too",
+          "description": "Cross-platform apps, plus native iOS work when needed.",
+          "add": [
+            "swift-ios"
+          ],
+          "drop": [],
+          "first": [
+            "swift-ios"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "cyber-security-analyst",
+      "tracks": [
+        {
+          "id": "soc",
+          "name": "SOC and detection",
+          "blurb": "Watch alerts, find attacks",
+          "description": "Watching alerts, finding attacks and handling incidents.",
+          "add": [
+            "endpoint-security"
+          ],
+          "drop": [
+            "application-security"
+          ],
+          "first": [
+            "siem",
+            "threat-detection",
+            "security-incident-response"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "grc",
+          "name": "GRC and compliance",
+          "blurb": "Standards, controls, access",
+          "description": "Checking that security controls meet standards and policies.",
+          "add": [
+            "compliance-frameworks",
+            "identity-access-management"
+          ],
+          "drop": [
+            "siem",
+            "threat-detection",
+            "application-security"
+          ],
+          "first": [
+            "compliance-frameworks"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "data-protection",
+          "name": "Data protection",
+          "blurb": "Encryption, endpoints",
+          "description": "Keeping data safe on devices and in storage.",
+          "add": [
+            "cryptography-basics",
+            "compliance-frameworks",
+            "endpoint-security"
+          ],
+          "drop": [
+            "application-security",
+            "siem"
+          ],
+          "first": [
+            "cryptography-basics"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "appsec",
+          "name": "Application security",
+          "blurb": "Secure code, testing",
+          "description": "Finding and fixing weaknesses in applications.",
+          "add": [
+            "penetration-testing",
+            "cryptography-basics"
+          ],
+          "drop": [
+            "siem"
+          ],
+          "first": [
+            "application-security",
+            "vulnerability-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud",
+          "name": "Cloud security",
+          "blurb": "Cloud controls, IAM",
+          "description": "Securing cloud accounts and who can reach them.",
+          "add": [
+            "cloud-security",
+            "identity-access-management"
+          ],
+          "drop": [],
+          "first": [
+            "aws",
+            "cloud-security",
+            "identity-access-management"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "data-analyst",
+      "tracks": [
+        {
+          "id": "bi-reporting",
+          "name": "BI and reporting",
+          "blurb": "Dashboards, Power BI",
+          "description": "Building the dashboards and reports a business runs on.",
+          "add": [
+            "power-bi",
+            "excel-pivot-lookup"
+          ],
+          "drop": [
+            "python"
+          ],
+          "first": [
+            "sql",
+            "power-bi",
+            "data-visualization"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "product-analytics",
+          "name": "Product analytics",
+          "blurb": "Funnels, A/B tests, SQL",
+          "description": "Measuring how people use a product and testing changes.",
+          "add": [
+            "ab-testing",
+            "sql-window-functions"
+          ],
+          "drop": [
+            "excel"
+          ],
+          "first": [
+            "sql",
+            "ab-testing",
+            "statistics"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "marketing-analytics",
+          "name": "Marketing analytics",
+          "blurb": "Campaigns, tests, Excel",
+          "description": "Measuring campaigns and channels for a marketing team.",
+          "add": [
+            "ab-testing",
+            "looker"
+          ],
+          "drop": [],
+          "first": [
+            "excel",
+            "ab-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "analytics-engineering",
+          "name": "Analytics engineering",
+          "blurb": "dbt, warehouses, models",
+          "description": "Building the clean tables other analysts query.",
+          "add": [
+            "dbt",
+            "cloud-data-warehouse",
+            "etl"
+          ],
+          "drop": [
+            "excel"
+          ],
+          "first": [
+            "sql",
+            "dbt"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "data-engineer",
+      "tracks": [
+        {
+          "id": "batch",
+          "name": "Batch pipelines",
+          "blurb": "ETL, Spark, scheduling",
+          "description": "Moving and transforming data on a schedule.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "etl",
+            "spark",
+            "data-orchestration"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "streaming",
+          "name": "Streaming data",
+          "blurb": "Real-time pipelines",
+          "description": "Handling data as it arrives, not once a day.",
+          "add": [
+            "streaming-data"
+          ],
+          "drop": [],
+          "first": [
+            "streaming-data",
+            "spark"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "analytics-engineering",
+          "name": "Analytics engineering",
+          "blurb": "dbt, models, warehouses",
+          "description": "Modelling warehouse data for analysts and reports.",
+          "add": [
+            "dbt"
+          ],
+          "drop": [
+            "spark"
+          ],
+          "first": [
+            "sql",
+            "dbt",
+            "data-modeling"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "platform",
+          "name": "Data platform and governance",
+          "blurb": "Catalogues, access, quality",
+          "description": "Running the warehouse and the rules around its data.",
+          "add": [
+            "data-governance"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-data-warehouse",
+            "data-governance"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "data-scientist",
+      "tracks": [
+        {
+          "id": "experimentation",
+          "name": "Experimentation",
+          "blurb": "A/B tests, metrics",
+          "description": "Designing and reading experiments for product decisions.",
+          "add": [
+            "data-visualization"
+          ],
+          "drop": [],
+          "first": [
+            "ab-testing",
+            "statistics",
+            "sql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "predictive",
+          "name": "Predictive models",
+          "blurb": "Classic machine learning",
+          "description": "Building and checking models that predict outcomes.",
+          "add": [
+            "pandas"
+          ],
+          "drop": [],
+          "first": [
+            "machine-learning",
+            "feature-engineering",
+            "model-evaluation"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "nlp-genai",
+          "name": "NLP and GenAI",
+          "blurb": "Text models, LLM apps",
+          "description": "Working with text data and language models.",
+          "add": [
+            "nlp",
+            "llm-apps",
+            "deep-learning"
+          ],
+          "drop": [
+            "ab-testing"
+          ],
+          "first": [
+            "nlp",
+            "llm-apps"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "at-scale",
+          "name": "Data science at scale",
+          "blurb": "Spark, warehouses",
+          "description": "Modelling on data too big for one machine.",
+          "add": [
+            "spark",
+            "cloud-data-warehouse"
+          ],
+          "drop": [],
+          "first": [
+            "spark",
+            "sql"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "database-architect",
+      "tracks": [
+        {
+          "id": "transactional",
+          "name": "Transactional databases",
+          "blurb": "Tuning, high availability",
+          "description": "Keeping busy production databases fast and always up.",
+          "add": [
+            "oracle-database"
+          ],
+          "drop": [],
+          "first": [
+            "query-optimization",
+            "high-availability-dr"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud",
+          "name": "Cloud databases",
+          "blurb": "Managed databases, IaC",
+          "description": "Designing and running databases on a cloud platform.",
+          "add": [
+            "aws",
+            "terraform"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-databases"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "analytics",
+          "name": "Analytics and warehouses",
+          "blurb": "Models, ETL, warehouses",
+          "description": "Designing data models for reporting and analytics.",
+          "add": [
+            "cloud-data-warehouse",
+            "etl"
+          ],
+          "drop": [],
+          "first": [
+            "data-modeling"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "governance",
+          "name": "Security and governance",
+          "blurb": "Access, audit, rules",
+          "description": "Protecting data and controlling who can use it.",
+          "add": [
+            "data-governance"
+          ],
+          "drop": [],
+          "first": [
+            "database-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "devops-engineer",
+      "tracks": [
+        {
+          "id": "build-release",
+          "name": "Build and release",
+          "blurb": "CI/CD, GitOps",
+          "description": "Making builds, tests and releases run on their own.",
+          "add": [
+            "gitops"
+          ],
+          "drop": [],
+          "first": [
+            "ci-cd",
+            "git",
+            "docker"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "kubernetes-platform",
+          "name": "Kubernetes platform",
+          "blurb": "Clusters, GitOps",
+          "description": "Running the Kubernetes platform other teams deploy to.",
+          "add": [
+            "gitops",
+            "go"
+          ],
+          "drop": [],
+          "first": [
+            "kubernetes"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud-infra",
+          "name": "Cloud infrastructure",
+          "blurb": "AWS, Terraform, networks",
+          "description": "Building and changing cloud infrastructure from code.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "aws",
+            "terraform",
+            "networking-basics"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "devsecops",
+          "name": "DevSecOps",
+          "blurb": "Security in pipelines",
+          "description": "Building security checks into delivery.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-security",
+            "ci-cd"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "digital-marketing-executive",
+      "tracks": [
+        {
+          "id": "seo",
+          "name": "SEO",
+          "blurb": "Search rankings, content",
+          "description": "Growing traffic from search engines.",
+          "add": [],
+          "drop": [
+            "sem-google-ads"
+          ],
+          "first": [
+            "seo",
+            "web-analytics",
+            "content-marketing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "performance",
+          "name": "Performance marketing",
+          "blurb": "Paid ads, testing",
+          "description": "Running paid campaigns against a target cost.",
+          "add": [
+            "excel"
+          ],
+          "drop": [],
+          "first": [
+            "performance-marketing",
+            "sem-google-ads",
+            "ab-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "content-social",
+          "name": "Content and social",
+          "blurb": "Posts, stories, community",
+          "description": "Making content and running social channels.",
+          "add": [],
+          "drop": [
+            "sem-google-ads"
+          ],
+          "first": [
+            "content-marketing",
+            "social-media-marketing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "email-crm",
+          "name": "Email and CRM",
+          "blurb": "Lifecycle, newsletters",
+          "description": "Keeping customers coming back by email and CRM.",
+          "add": [
+            "email-marketing",
+            "crm-tools"
+          ],
+          "drop": [],
+          "first": [
+            "email-marketing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "analytics",
+          "name": "Marketing analytics",
+          "blurb": "Reports, SQL, charts",
+          "description": "Measuring what each channel brings in.",
+          "add": [
+            "data-visualization",
+            "excel",
+            "sql"
+          ],
+          "drop": [],
+          "first": [
+            "web-analytics"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "engineering-manager",
+      "tracks": [
+        {
+          "id": "people-delivery",
+          "name": "People and delivery",
+          "blurb": "Teams, planning",
+          "description": "Growing a team and getting work shipped.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "people-management",
+            "agile-scrum"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "technical",
+          "name": "Technical leadership",
+          "blurb": "Architecture, standards",
+          "description": "Leading the technical direction of a team.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "technical-leadership",
+            "system-design"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "product-minded",
+          "name": "Product-minded",
+          "blurb": "Roadmaps, metrics",
+          "description": "Working closely with product on what to build.",
+          "add": [
+            "product-metrics"
+          ],
+          "drop": [],
+          "first": [
+            "roadmapping",
+            "product-metrics"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "frontend-developer",
+      "tracks": [
+        {
+          "id": "product-ui",
+          "name": "Product UI",
+          "blurb": "React apps, state, APIs",
+          "description": "Building the screens of a web product in React.",
+          "add": [
+            "unit-testing"
+          ],
+          "drop": [],
+          "first": [
+            "react",
+            "state-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "nextjs",
+          "name": "Web apps with Next.js",
+          "blurb": "Next.js, performance",
+          "description": "Building fast websites and apps with Next.js.",
+          "add": [
+            "nextjs",
+            "web-performance"
+          ],
+          "drop": [],
+          "first": [
+            "react",
+            "nextjs"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "design-systems",
+          "name": "Design systems and accessibility",
+          "blurb": "Components, a11y",
+          "description": "Building shared components everyone can use.",
+          "add": [
+            "accessibility",
+            "figma"
+          ],
+          "drop": [],
+          "first": [
+            "html-css",
+            "accessibility"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "frontend-quality",
+          "name": "Frontend testing",
+          "blurb": "Unit and end-to-end tests",
+          "description": "Keeping a web app working with automated tests.",
+          "add": [
+            "unit-testing",
+            "playwright-cypress",
+            "ci-cd"
+          ],
+          "drop": [],
+          "first": [
+            "unit-testing"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "full-stack-developer",
+      "tracks": [
+        {
+          "id": "mern-product",
+          "name": "MERN product work",
+          "blurb": "React, Node, MongoDB",
+          "description": "Building features end to end on a MERN stack.",
+          "add": [
+            "unit-testing"
+          ],
+          "drop": [],
+          "first": [
+            "react",
+            "nodejs",
+            "nosql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "backend-leaning",
+          "name": "Backend-leaning",
+          "blurb": "APIs, databases, design",
+          "description": "Full stack work with more time on the server side.",
+          "add": [
+            "system-design",
+            "docker"
+          ],
+          "drop": [],
+          "first": [
+            "nodejs",
+            "rest-apis",
+            "sql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "nextjs",
+          "name": "Next.js apps",
+          "blurb": "React on the server",
+          "description": "Building full stack apps with Next.js.",
+          "add": [
+            "nextjs"
+          ],
+          "drop": [],
+          "first": [
+            "react",
+            "nextjs"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud-deploy",
+          "name": "Ship to the cloud",
+          "blurb": "Docker, CI, AWS",
+          "description": "Building apps and running them on the cloud.",
+          "add": [
+            "docker",
+            "ci-cd",
+            "aws"
+          ],
+          "drop": [],
+          "first": [
+            "docker"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "ai-features",
+          "name": "AI features",
+          "blurb": "LLM apps on the web",
+          "description": "Adding language-model features to web apps.",
+          "add": [
+            "llm-apps",
+            "python"
+          ],
+          "drop": [],
+          "first": [
+            "llm-apps"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "grc-manager",
+      "tracks": [
+        {
+          "id": "audit",
+          "name": "Audits and certification",
+          "blurb": "Standards, audits",
+          "description": "Getting and keeping security certifications.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "security-audits",
+            "compliance-frameworks"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "risk",
+          "name": "Risk and vendors",
+          "blurb": "Risk registers, vendors",
+          "description": "Running risk assessments for the business and its suppliers.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "risk-assessment",
+            "third-party-risk"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "privacy",
+          "name": "Privacy and data protection",
+          "blurb": "Personal data, privacy law",
+          "description": "Running privacy alongside security compliance.",
+          "add": [
+            "data-privacy"
+          ],
+          "drop": [],
+          "first": [
+            "data-privacy"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "resilience",
+          "name": "Business continuity",
+          "blurb": "Continuity, recovery",
+          "description": "Planning how the business keeps running through an outage.",
+          "add": [
+            "business-continuity"
+          ],
+          "drop": [],
+          "first": [
+            "business-continuity"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud",
+          "name": "Cloud compliance",
+          "blurb": "Controls in the cloud",
+          "description": "Applying standards and controls to cloud systems.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "information-security-analyst",
+      "tracks": [
+        {
+          "id": "compliance",
+          "name": "Compliance and audits",
+          "blurb": "Standards, evidence",
+          "description": "Preparing controls and evidence for audits.",
+          "add": [
+            "excel"
+          ],
+          "drop": [],
+          "first": [
+            "compliance-frameworks",
+            "security-audits"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "risk",
+          "name": "Risk assessment",
+          "blurb": "Risk registers",
+          "description": "Finding, rating and tracking security risks.",
+          "add": [
+            "excel"
+          ],
+          "drop": [],
+          "first": [
+            "risk-assessment"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "awareness",
+          "name": "Policy and awareness",
+          "blurb": "Policies, training",
+          "description": "Writing security policies and helping people follow them.",
+          "add": [
+            "security-awareness"
+          ],
+          "drop": [],
+          "first": [
+            "security-policies",
+            "security-awareness"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "access",
+          "name": "Access governance",
+          "blurb": "Access reviews, data",
+          "description": "Checking who has access to what, and why.",
+          "add": [
+            "data-governance"
+          ],
+          "drop": [],
+          "first": [
+            "identity-access-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud",
+          "name": "Cloud GRC",
+          "blurb": "Cloud controls",
+          "description": "Applying security standards to cloud systems.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "java-backend-developer",
+      "tracks": [
+        {
+          "id": "services",
+          "name": "APIs and services",
+          "blurb": "Spring Boot, REST, SQL",
+          "description": "Building the APIs a product's apps call.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "spring-boot",
+            "rest-apis",
+            "sql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "microservices",
+          "name": "Microservices",
+          "blurb": "Services, queues",
+          "description": "Building many small services that talk to each other.",
+          "add": [
+            "microservices",
+            "messaging-queues",
+            "docker"
+          ],
+          "drop": [],
+          "first": [
+            "microservices"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud-native",
+          "name": "Cloud-native Java",
+          "blurb": "Docker, Kubernetes, AWS",
+          "description": "Building Java services that run on the cloud.",
+          "add": [
+            "docker",
+            "kubernetes",
+            "aws",
+            "ci-cd"
+          ],
+          "drop": [],
+          "first": [
+            "docker"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "ml-engineer",
+      "tracks": [
+        {
+          "id": "mlops",
+          "name": "MLOps",
+          "blurb": "Serving, pipelines",
+          "description": "Getting models into production and keeping them there.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "mlops",
+            "model-serving",
+            "docker"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "genai",
+          "name": "GenAI and LLM apps",
+          "blurb": "LLMs, vector search",
+          "description": "Building products on language models.",
+          "add": [
+            "llm-apps",
+            "vector-search"
+          ],
+          "drop": [],
+          "first": [
+            "llm-apps"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "deep-learning",
+          "name": "Deep learning",
+          "blurb": "PyTorch, neural nets",
+          "description": "Training neural networks.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "deep-learning",
+            "pytorch"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "ml-systems",
+          "name": "ML system design",
+          "blurb": "End-to-end ML systems",
+          "description": "Designing whole machine learning systems.",
+          "add": [
+            "ml-system-design"
+          ],
+          "drop": [],
+          "first": [
+            "ml-system-design"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "penetration-tester",
+      "tracks": [
+        {
+          "id": "web-api",
+          "name": "Web and API testing",
+          "blurb": "Apps, APIs",
+          "description": "Testing web apps and APIs for weaknesses.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "application-security",
+            "penetration-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "network",
+          "name": "Network and infrastructure",
+          "blurb": "Networks, servers",
+          "description": "Testing networks and servers from inside and out.",
+          "add": [],
+          "drop": [
+            "application-security"
+          ],
+          "first": [
+            "networking-basics",
+            "linux"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud",
+          "name": "Cloud testing",
+          "blurb": "Cloud accounts",
+          "description": "Testing cloud accounts and services.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "privacy-analyst",
+      "tracks": [
+        {
+          "id": "programme",
+          "name": "Privacy programme",
+          "blurb": "Notices, records, policy",
+          "description": "Running a company's privacy programme day to day.",
+          "add": [
+            "security-policies"
+          ],
+          "drop": [],
+          "first": [
+            "privacy-program-management",
+            "data-privacy"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "vendors",
+          "name": "Vendor and contract privacy",
+          "blurb": "Suppliers, contracts",
+          "description": "Checking how suppliers handle personal data.",
+          "add": [
+            "compliance-frameworks"
+          ],
+          "drop": [],
+          "first": [
+            "third-party-risk"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "breach",
+          "name": "Breach response",
+          "blurb": "Incidents, notification",
+          "description": "Handling personal data breaches when they happen.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "data-breach-response"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "product-manager",
+      "tracks": [
+        {
+          "id": "growth",
+          "name": "Growth",
+          "blurb": "Metrics, experiments",
+          "description": "Moving a product's numbers with tests.",
+          "add": [
+            "ab-testing",
+            "sql"
+          ],
+          "drop": [],
+          "first": [
+            "product-metrics",
+            "ab-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "ai-product",
+          "name": "AI products",
+          "blurb": "LLM features, ML",
+          "description": "Managing products built on AI.",
+          "add": [
+            "llm-apps",
+            "machine-learning"
+          ],
+          "drop": [],
+          "first": [
+            "llm-apps"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "discovery-ux",
+          "name": "Discovery and UX",
+          "blurb": "Research, wireframes",
+          "description": "Finding what users need before building it.",
+          "add": [
+            "ux-research",
+            "wireframing"
+          ],
+          "drop": [],
+          "first": [
+            "product-discovery",
+            "ux-research"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "delivery",
+          "name": "Delivery",
+          "blurb": "Specs, sprints, roadmaps",
+          "description": "Turning plans into shipped work.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "agile-scrum",
+            "prd-writing",
+            "roadmapping"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "qa-automation-engineer",
+      "tracks": [
+        {
+          "id": "ui-automation",
+          "name": "UI automation",
+          "blurb": "Selenium, Playwright",
+          "description": "Automating tests of what users click.",
+          "add": [
+            "playwright-cypress"
+          ],
+          "drop": [],
+          "first": [
+            "selenium"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "api",
+          "name": "API testing",
+          "blurb": "APIs, data checks",
+          "description": "Testing services and the data behind them.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "api-testing",
+            "python",
+            "sql"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "performance",
+          "name": "Performance testing",
+          "blurb": "Load, speed",
+          "description": "Checking how systems hold up under load.",
+          "add": [
+            "performance-testing",
+            "linux"
+          ],
+          "drop": [],
+          "first": [
+            "performance-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "pipelines",
+          "name": "Tests in CI",
+          "blurb": "Pipelines, unit tests",
+          "description": "Running tests on every change.",
+          "add": [
+            "ci-cd",
+            "unit-testing"
+          ],
+          "drop": [],
+          "first": [
+            "ci-cd"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "java-automation",
+          "name": "Java automation",
+          "blurb": "Java, Selenium",
+          "description": "Writing test automation in Java.",
+          "add": [
+            "java"
+          ],
+          "drop": [
+            "python"
+          ],
+          "first": [
+            "java",
+            "selenium"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "senior-backend-engineer",
+      "tracks": [
+        {
+          "id": "distributed",
+          "name": "Distributed systems",
+          "blurb": "Design, services, queues",
+          "description": "Designing systems that span many services.",
+          "add": [
+            "nosql"
+          ],
+          "drop": [],
+          "first": [
+            "system-design",
+            "microservices",
+            "messaging-queues"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "platform",
+          "name": "Platform and reliability",
+          "blurb": "Observability, delivery",
+          "description": "Building the platform other engineers ship on.",
+          "add": [
+            "kubernetes"
+          ],
+          "drop": [],
+          "first": [
+            "observability",
+            "docker",
+            "ci-cd"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "data-heavy",
+          "name": "Data-heavy backends",
+          "blurb": "SQL, tuning, NoSQL",
+          "description": "Backends where the database is the hard part.",
+          "add": [
+            "nosql"
+          ],
+          "drop": [],
+          "first": [
+            "sql",
+            "query-optimization"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "secure",
+          "name": "Secure backends",
+          "blurb": "Application security",
+          "description": "Backends that handle money or personal data.",
+          "add": [
+            "application-security"
+          ],
+          "drop": [],
+          "first": [
+            "application-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "senior-data-scientist",
+      "tracks": [
+        {
+          "id": "experimentation",
+          "name": "Experimentation",
+          "blurb": "A/B tests, statistics",
+          "description": "Leading experiments and how they are read.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "ab-testing",
+            "statistics"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "production-models",
+          "name": "Models in production",
+          "blurb": "MLOps, evaluation",
+          "description": "Taking models from notebooks to production.",
+          "add": [
+            "mlops"
+          ],
+          "drop": [],
+          "first": [
+            "machine-learning",
+            "mlops"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "genai",
+          "name": "GenAI",
+          "blurb": "LLMs, deep learning",
+          "description": "Leading work on language models.",
+          "add": [
+            "llm-apps",
+            "deep-learning"
+          ],
+          "drop": [],
+          "first": [
+            "llm-apps"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "site-reliability-engineer",
+      "tracks": [
+        {
+          "id": "observability",
+          "name": "Observability",
+          "blurb": "Metrics, logs, SLOs",
+          "description": "Knowing how systems behave and when they break.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "observability",
+            "sre-practices"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "incidents",
+          "name": "Incident response",
+          "blurb": "On-call, postmortems",
+          "description": "Leading the response when production breaks.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "incident-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "resilience",
+          "name": "Resilience and recovery",
+          "blurb": "Failover, disaster recovery",
+          "description": "Making systems survive failures.",
+          "add": [
+            "high-availability-dr"
+          ],
+          "drop": [],
+          "first": [
+            "high-availability-dr"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "networking",
+          "name": "Networking",
+          "blurb": "Cloud networks",
+          "description": "Running the networks services depend on.",
+          "add": [
+            "cloud-networking"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-networking"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "soc-analyst-l2",
+      "tracks": [
+        {
+          "id": "incident-response",
+          "name": "Incident response",
+          "blurb": "Contain, investigate",
+          "description": "Leading the response once an alert is real.",
+          "add": [
+            "digital-forensics"
+          ],
+          "drop": [],
+          "first": [
+            "security-incident-response"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "threat-hunting",
+          "name": "Threat hunting",
+          "blurb": "Hunt, analyse malware",
+          "description": "Looking for attackers the alerts missed.",
+          "add": [
+            "malware-analysis",
+            "python"
+          ],
+          "drop": [],
+          "first": [
+            "threat-detection",
+            "threat-intelligence"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "automation",
+          "name": "SOC automation",
+          "blurb": "SOAR, scripts",
+          "description": "Automating the SOC's routine work.",
+          "add": [
+            "soar",
+            "python"
+          ],
+          "drop": [],
+          "first": [
+            "soar"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "cloud-detection",
+          "name": "Cloud detection",
+          "blurb": "Cloud alerts",
+          "description": "Detecting attacks on cloud accounts.",
+          "add": [
+            "cloud-security"
+          ],
+          "drop": [],
+          "first": [
+            "cloud-security"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "soc-lead",
+      "tracks": [
+        {
+          "id": "team",
+          "name": "Running the team",
+          "blurb": "People, stakeholders",
+          "description": "Leading SOC analysts and reporting to the business.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "people-management",
+            "stakeholder-management"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "operations",
+          "name": "SOC operations",
+          "blurb": "Incidents, SIEM, SOAR",
+          "description": "Running the SOC's daily detection and response.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "security-incident-response",
+            "siem",
+            "soar"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "risk",
+          "name": "Risk and compliance",
+          "blurb": "Risk, standards",
+          "description": "Linking SOC work to risk and compliance.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "risk-assessment",
+            "compliance-frameworks"
+          ],
+          "reviewed": false
+        }
+      ]
+    },
+    {
+      "roleSlug": "ui-ux-designer",
+      "tracks": [
+        {
+          "id": "research",
+          "name": "UX research",
+          "blurb": "Interviews, usability tests",
+          "description": "Learning what users need and testing designs with them.",
+          "add": [],
+          "drop": [],
+          "first": [
+            "ux-research",
+            "usability-testing"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "product-ui",
+          "name": "Product UI and design systems",
+          "blurb": "Figma, components",
+          "description": "Designing screens and the system behind them.",
+          "add": [
+            "design-systems"
+          ],
+          "drop": [],
+          "first": [
+            "figma",
+            "design-systems"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "accessibility",
+          "name": "Accessible design",
+          "blurb": "Designs everyone can use",
+          "description": "Designing for people with disabilities from the start.",
+          "add": [
+            "accessibility"
+          ],
+          "drop": [],
+          "first": [
+            "accessibility"
+          ],
+          "reviewed": false
+        },
+        {
+          "id": "design-code",
+          "name": "Design with code",
+          "blurb": "HTML, CSS, prototypes",
+          "description": "Designing and prototyping in the browser.",
+          "add": [
+            "html-css"
+          ],
+          "drop": [],
+          "first": [
+            "html-css",
+            "prototyping"
+          ],
+          "reviewed": false
+        }
+      ]
+    }
+  ]
+}

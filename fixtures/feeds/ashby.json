@@ -1,0 +1,38 @@
+{
+  "jobs": [
+    {
+      "id": "9f1e0000-aaaa-4bbb-8ccc-000000000001",
+      "title": "Full Stack Engineer",
+      "jobUrl": "https://jobs.ashbyhq.com/examplepay/9f1e0000-aaaa-4bbb-8ccc-000000000001",
+      "location": "Gurugram, Haryana, India",
+      "secondaryLocations": [
+        {
+          "location": "Noida"
+        }
+      ],
+      "employmentType": "FullTime",
+      "isRemote": false,
+      "isListed": true,
+      "publishedAt": "2026-10-19T04:30:00.000+00:00",
+      "descriptionHtml": "<h2>What you'll do</h2><p>Build payment screens in React with Node.js services.</p><h2>Must have</h2><ul><li>TypeScript and React</li><li>5+ years of professional experience</li></ul><h2>Preferred</h2><ul><li>Kubernetes</li></ul>"
+    },
+    {
+      "id": "9f1e0000-aaaa-4bbb-8ccc-000000000002",
+      "title": "Contract Product Analyst",
+      "jobUrl": "https://jobs.ashbyhq.com/examplepay/9f1e0000-aaaa-4bbb-8ccc-000000000002",
+      "location": "Remote",
+      "isRemote": true,
+      "employmentType": "Contract",
+      "descriptionPlain": "SQL and Excel for a remote team in India."
+    },
+    {
+      "id": "9f1e0000-aaaa-4bbb-8ccc-000000000003",
+      "title": "Data Analyst",
+      "jobUrl": "https://jobs.ashbyhq.com/examplepay/9f1e0000-aaaa-4bbb-8ccc-000000000003",
+      "location": "Remote",
+      "isRemote": true,
+      "employmentType": "FullTime",
+      "descriptionPlain": "SQL anywhere in the world."
+    }
+  ]
+}

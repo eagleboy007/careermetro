@@ -10,7 +10,8 @@ const sql = url ? postgres(url, { max: 1, onnotice: () => {} }) : null;
  * deleted (skill_aliases is only rewritten by the content seed, a few hundred rows). ai_calls rows are never deleted
  * today; a retention job would need these indexed first. messages.hidden_by and users.suspended_by hold the admin who
  * hid or suspended (FR-46), and job_email_checks.reviewed_by the admin who reviewed a work-email check (FR-47): never
- * queried by, and only an admin's own account going sets them null.
+ * queried by, and only an admin's own account going sets them null. resource_reports.decided_by and
+ * resource_suggestions.decided_by hold the admin who decided on /admin/library (docs/plans/library-part-2-plan.md), the same way.
  */
 const unindexedOk = new Set([
   "gap_analyses.ai_call_id",
@@ -24,10 +25,11 @@ const unindexedOk = new Set([
   "path_steps.skill_id",
   "practice_answers.ai_call_id",
   "practice_answers.skill_id",
+  "resource_reports.decided_by",
+  "resource_suggestions.decided_by",
   "paths.ai_call_id",
   "profiles.ai_call_id",
     "skill_aliases.skill_id",
-  "user_goals.skill_id",
   "user_goals.swapped_to",
   "users.organization_id",
   "users.suspended_by",

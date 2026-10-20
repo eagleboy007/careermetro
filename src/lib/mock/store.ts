@@ -90,9 +90,9 @@ export async function mockPageFor(userId: string, askedRole: string | null, deps
     elite,
     role: roles.find((r) => r.slug === role.slug)!,
     roles,
-    bank: bankViewFor(c.bank, role, elite),
+    bank: bankViewFor(c.bank, role, elite, c.allowUnreviewed),
     test: elite ? await runningTest(userId, c, db, now) : null,
-    interview: elite ? await runningInterview(userId, { db, now, bank: c.bank, roles: c.roles }) : null,
+    interview: elite ? await runningInterview(userId, { db, now, bank: c.bank, roles: c.roles, allowUnreviewed: c.allowUnreviewed }) : null,
   };
 }
 

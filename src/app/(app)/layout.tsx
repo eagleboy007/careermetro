@@ -12,10 +12,15 @@ import { currentIdentity, signedInAccount, suspendedFor } from "@/lib/auth/serve
 import { isAdmin } from "@/lib/admin/access";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
+import { exampleApplications } from "@/components/corporate/fixtures";
+import { arrivalsCount } from "@/lib/corporate/applications-store";
 import { corporateUnread } from "@/lib/corporate/overview";
 import { unreadChats } from "@/lib/inbox/store";
 import { requestsWaiting } from "@/lib/network/store";
-import { eliteOn } from "@/lib/elite/store";
+import { newCount } from "@/lib/notifications/store";
+import { exampleNewCount } from "@/lib/notifications/fixtures";
+import { openNotificationsAction } from "./notifications/actions";
+import { eliteOnRequest, jobSearchForRequest } from "@/lib/request-reads";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -58,7 +63,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     // Suspended after a report (FR-46): the notice instead of any signed-in page. Admins are never blocked.
     if (suspendedFor(account, await currentIdentity())) redirect(SUSPENDED_PATH);
-    const [, streak, inboxUnread, companyUnread, networkRequests, elite] = await Promise.all([
+    const [, streak, inboxUnread, companyUnread, networkRequests, elite, arrivals, searching, notificationsNew] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
       extra("inbox_unread", unreadChats(account.id), 0),
@@ -66,12 +71,21 @@ async function Shell({ children }: { children: React.ReactNode }) {
       extra("corporate_unread", corporateUnread(account.id), 0),
       extra("network_requests", requestsWaiting(account.id), 0),
       // Elite (FR-50): the award mark on the avatar and "Elite · beta" in the menu.
-      extra("plan", eliteOn(account.id), false),
+      extra("plan", eliteOnRequest(account.id), false),
+      extra("arrivals_count", arrivalsCount(account.id), 0),
+      // Job search off (handoff 6) hides the Arrivals count; if it can't be read, the count shows as before.
+      // Read once per request with the page's own read of the switch (src/lib/request-reads.ts).
+      extra("job_search", jobSearchForRequest(account.id).then((s) => s.on), true),
+      // The bell's dot (docs/plans/notifications-plan.md): read with each page, next to the Inbox count; no polling.
+      extra("notifications_new", newCount(account.id), 0),
     ]);
     const name = displayName(account.name);
-    // The streak shows once the person has ridden a day.
+    // The streak shows once the person has ridden a day. So does the Arrivals count: like the prototype it hides with
+    // no resume and on the first day, and a streak is how Today tells a returning person from those two (todayStateFor).
+    // It also hides while job search is off.
     user = {
       name,
+      handle: account.username,
       initials: initials(name),
       streakDays: streak.days,
       todayCounted: streak.todayCounted,
@@ -81,10 +95,28 @@ async function Shell({ children }: { children: React.ReactNode }) {
       corporateUnread: companyUnread,
       networkRequests,
       elite,
+      arrivalsCount: streak.days > 0 && searching ? arrivals : 0,
       isAdmin: isAdmin(await currentIdentity()),
+      notificationsNew,
     };
+    return (
+      <AppShell user={user} openNotifications={openNotificationsAction}>
+        {children}
+      </AppShell>
+    );
   } else {
-    user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: unreadCount(exampleThreads) };
+    user = {
+      name: `${exampleName} Nair`,
+      handle: "priya-n",
+      initials: "PN",
+      streakDays: exampleStreak.days,
+      todayCounted: false,
+      showStreak: true,
+      canSignOut: false,
+      inboxUnread: unreadCount(exampleThreads),
+      arrivalsCount: exampleApplications.filter((a) => !a.withdrawn).length,
+      notificationsNew: exampleNewCount,
+    };
   }
   return <AppShell user={user}>{children}</AppShell>;
 }

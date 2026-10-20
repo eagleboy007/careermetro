@@ -46,6 +46,8 @@ export type LifeLayout = {
   /** The journey runs on, dotted, to the destination. */
   ahead: { from: number; to: number } | null;
   stations: LifeStation[];
+  /** Dotted "where one fed another" links, only when both ends are drawn on their own (not hidden or grouped). */
+  links: { from: string; to: string; text: string; d: string }[];
   /** Rows whose moments are all older than the window shown. */
   earlierRows: LifeRow[];
   hidden: { count: number; fromYear: number; toYear: number } | null;
@@ -143,6 +145,15 @@ export function layoutLife(line: LifeLine, zoom: LifeZoom = defaultZoom(line)): 
     });
   }
 
+  const own = new Map(stations.flatMap((st) => (st.kind === "moment" ? [[st.id, st] as const] : [])));
+  const links = line.links.flatMap((l) => {
+    const a = own.get(l.from);
+    const b = own.get(l.to);
+    if (!a || !b) return [];
+    const mid = (a.y + b.y) / 2;
+    return [{ ...l, d: `M${a.x} ${a.y} C${a.x} ${mid} ${b.x} ${mid} ${b.x} ${b.y}` }];
+  });
+
   const journey = tracks.find((t) => t.row === "journey");
   return {
     zoom,
@@ -153,6 +164,7 @@ export function layoutLife(line: LifeLine, zoom: LifeZoom = defaultZoom(line)): 
     tracks,
     ahead: journey ? { from: journey.to, to: at(end) } : null,
     stations,
+    links,
     earlierRows: LIFE_ROWS.filter((row) => hiddenMoments.some((m) => m.row === row) && !visible.some((m) => m.row === row)),
     hidden: hiddenMoments.length
       ? { count: hiddenMoments.length, fromYear: Math.floor(Math.min(...hiddenMoments.map((m) => m.t))), toYear: Math.floor(from) }
