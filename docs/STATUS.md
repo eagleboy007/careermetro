@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (refused sign-in codes logged).
+Last updated: 2026-10-20 (goal sync skip).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -42,10 +42,11 @@ Last updated: 2026-10-20 (refused sign-in codes logged).
   - Hardening (#196, `docs/plans/hardening-pass.md`): `hardening:` e2e steps for #175 to #193 (keyboard, axe light and dark after a reload, 390 px fit) and focus fixes; Life line marks read what they draw.
   - Launch readiness (#197, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md`, the scripted production check to run right after Milin's redeploy; RLS and FK indexes confirmed on 0039 to 0045 and `rls.test` refuses policies and grants; Account settings saves capped at 100 a day and Unblock at 50. Supabase's Confirm signup template also needs `{{ .Token }}`.
   - Performance pass (#198, migration 0046 `job_posts_open_newest`, `docs/plans/perf-pass.md`): Today, Map and Departures read the analysis once and run independent reads in parallel; the goal sync on every view is what's left.
+  - Refused sign-in codes logged (#199): `auth_email_code_send_refused` and `auth_email_code_verify_refused` with Supabase's error code and status only, never the email or the code.
 
 ## In progress
 
-- Refused sign-in codes are logged (no migration): `auth_email_code_send_refused` and `auth_email_code_verify_refused` carry Supabase's error code and status only, never the email or the code (`src/lib/auth/refusal.ts`), so a wrong SMTP or template setting shows in Vercel logs; `docs/launch/prod-smoke.md` names them.
+- Goal sync skip (branch `v44-goalsync`, `docs/plans/goal-sync-skip-plan.md`): a Today or Map view first works out the sync's plan from one read-only snapshot with no lock, and skips the write transaction when it would add, change or link nothing. Nothing is stored, so no migration and no export change; the clock, content, track and proof changes are all re-read every view. DB tests in `src/lib/goals/store.test.ts`; not yet run (no node_modules here).
 
 ## Next up
 

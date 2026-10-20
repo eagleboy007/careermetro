@@ -331,9 +331,12 @@ describe.skipIf(!db)("goals (database)", () => {
         await gate;
       });
       await held;
+      let timer: ReturnType<typeof setTimeout> | undefined;
       try {
-        return await Promise.race([view(), new Promise<"blocked">((r) => setTimeout(() => r("blocked"), 2000))]);
+        // A real lock wait never ends, so a generous limit doesn't weaken the test on a cold database.
+        return await Promise.race([view(), new Promise<"blocked">((r) => (timer = setTimeout(() => r("blocked"), 5000)))]);
       } finally {
+        clearTimeout(timer);
         release();
         await holder;
       }
@@ -443,11 +446,12 @@ describe.skipIf(!db)("goals (database)", () => {
     it("still syncs when the clock passes a proof's expiry date, with no row changed", async () => {
       const me = await user("skip-clock");
       const ga = await saved(me, analysis([a, b]));
-      await acceptedProof(me, a, indiaToday());
-      await expectQuiet(me, () => syncGoals(me, ga, db!));
-      expect((await goalsOf(me, db!)).find((g) => g.skillId === a)).toMatchObject({ status: "met", proved: true });
-      vi.useFakeTimers({ toFake: ["Date"] });
+      // A fixed midday in India, so the test can't cross midnight between the proof and the first sync.
+      vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-10-20T06:30:00Z") });
       try {
+        await acceptedProof(me, a, indiaToday());
+        await expectQuiet(me, () => syncGoals(me, ga, db!));
+        expect((await goalsOf(me, db!)).find((g) => g.skillId === a)).toMatchObject({ status: "met", proved: true });
         vi.setSystemTime(new Date(Date.now() + 86_400_000));
         expect((await syncGoals(me, ga, db!)).find((g) => g.skillId === a)).toMatchObject({ status: "renew", proved: false });
         await expectQuiet(me, () => syncGoals(me, ga, db!));

@@ -2,7 +2,7 @@
 
 The biggest win left by `docs/plans/perf-pass.md`. `syncGoals` (`src/lib/goals/store.ts`) runs a write transaction
 with the person's advisory lock on every Today and Map view, about 7 round trips one after another, even when it then
-writes nothing. No migration, no export change, no new column.
+writes nothing. Me, Arrivals and Market (through `mapLineFor`), the Library (through `rideGoalsFor`) and sign-in (`syncCurrentGoals`) sync the same way, so they gain too; a view that does write, such as the first sync after sign-in, pays the read-only check's few round trips on top. No migration, no export change, no new column.
 
 ## What syncGoals reads and writes
 
