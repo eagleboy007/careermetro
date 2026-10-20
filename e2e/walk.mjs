@@ -1335,7 +1335,8 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await settled();
   const main = p.locator("main").first();
   await main.getByText("Write your first story: a time at work, college, an internship or volunteering. Keep each part short.").waitFor({ timeout: 10000 });
-  if (await main.getByText(/· soon/).count()) throw new Error("Me still says soon");
+  // The job search rail's "Show my pitstop on the map · soon" is a separate item (job-search plan) and stays.
+  if (await main.getByText(/· soon/).filter({ hasNotText: "Show my pitstop on the map" }).count()) throw new Error("Me still says soon");
   // The toast stays in the page at opacity 0 until it clears, so wait for it to go before the next save can look for it.
   const saved = async () => {
     const toast = p.getByText("Saved.", { exact: true }).first();
