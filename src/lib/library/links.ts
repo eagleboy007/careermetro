@@ -12,7 +12,7 @@ const TRACKING = /^(utm_.*|ref|aff.*|tag|fbclid|gclid)$/i;
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
 /**
- * Link shorteners hide where a link goes, so an admin can't see the real site before opening it (T88, T99). The common
+ * Link shorteners hide where a link goes, so an admin can't see the real site before opening it (T88, T99, T102). The common
  * public ones; youtu.be is left out on purpose, as it only ever opens YouTube.
  */
 export const SHORTENERS: readonly string[] = [
@@ -47,6 +47,10 @@ export const SHORTENERS: readonly string[] = [
   "po.st",
   "mcaf.ee",
   "su.pr",
+  "j.mp",
+  "bitly.com",
+  "aka.ms",
+  "page.link",
 ];
 
 /** True for a known link shortener, or a name under one (www.bit.ly). */

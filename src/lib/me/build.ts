@@ -177,7 +177,8 @@ export function meFromProfile(input: MeInput): MeProfile {
   const checkOf = (r: Profile["roles"][number], added: boolean) => {
     const k = keyOf(r);
     const owner = k ? ownerOf.get(k) : undefined;
-    return owner && owner !== (added ? "added" : "resume") ? experienceCheck(r, null, []) : experienceCheck(r, checked, checks);
+    const side = added ? "added" : "resume";
+    return owner && owner !== side ? experienceCheck(r, null, []) : experienceCheck(r, checked, checks, side);
   };
   const experience = roles.map(({ r, id, own, start, end }) => {
     const current = !!start && !end;

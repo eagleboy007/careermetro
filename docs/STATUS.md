@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (End chat, staging screens check, re-test 30 fixes)
+Last updated: 2026-10-20 (refreshed through #206; resource batch 6, company-side staging check)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -28,7 +28,7 @@ Last updated: 2026-10-20 (End chat, staging screens check, re-test 30 fixes)
   - Rate-limit windows over two days old are deleted by the daily cleanup, not by a random hit, which had made the daily-limit tests flaky when test files ran in parallel (2026-10-16).
   - Every e2e axe check runs through one helper that first waits for the page title, because a server action's refresh can leave `<title>` empty for a moment; two of the three helpers skipped that wait, which flaked `me-certifications-held` on #158 (2026-10-17).
   - WCAG 2.2 AA and phone-speed pass on every screen, with the `line-strong` token for control edges (#138). See `docs/dev/a11y-audit-2026-10-13.md`.
-  - The ATS openings feed runs monthly (#127). 437 free resource links (#129; batch 5 added 13, 2026-10-20).
+  - The ATS openings feed runs monthly (#127). 456 free resource links (#129; batch 5 added 13, batch 6 added 19 to the 3-resource skills most roles require, 2026-10-20).
 - **Launch:** draft `/privacy` and `/terms` behind the preview gate until the legal adviser approves them. The launch-day checklist with rollback is `docs/dev/launch-day.md`.
 - **Switched off until keys arrive:** sign-in (preview uses a test user; with the Supabase values it opens by emailed code, and "Continue with Google" shows only once `GOOGLE_SIGNIN=1` is added, 2026-10-19), company sign-up, join and re-check codes and the current-job check (need `RESEND_API_KEY` and `EMAIL_FROM`, `dev/email-sender-steps.md` step 6, plus `NAME_HASH_KEY`), find-people, phone sharing, and photo and certificate upload.
 - **Merged since the last refresh (2026-10-20), facts in each plan file**
@@ -49,10 +49,11 @@ Last updated: 2026-10-20 (End chat, staging screens check, re-test 30 fixes)
   - Staging dry run export check and fewer Vercel deployments (#203): 6.1 fetches the export with the page's cookies, and a full run passed; working branches make no Vercel deployment, and docs-only merges don't move staging.
   - Testing Run 5 fixes T73 to T80, the refused-certificate job limited to goals the certificate could fill, and the market trends plan (proposed; D1 to D6 wait on Milin) (#204).
   - Testing Run 5 lows T81 to T93 and T95 (#205): rate limits on resume downloads and direct messages, Inbox block lock order, job-search-off note, Google callback flag, drafts only on preview/dev, real Elite limits, Library suggestion checks, future dates and list caps on Departures, no Network city filter. T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
+  - End chat in accepted found chats, FR-52 (#206): ends only that chat, files no report, and the company can't write or ask again. Re-test 30: report-with-block takes the Network locks (T97), the work-email badge goes to the side the check was made on (T95, migration 0047 `job_email_checks.role_source`), the message limit is chosen under the lock (T98), and 31 link shorteners are refused (T99). `scripts/smoke/staging-screens.mjs` runs after the staging dry run: Network with no city shown, the bell, builder to Download, Library, a Mock round, Departures save and apply; both test accounts are deleted even after a failure.
 
 ## In progress
 
-- End chat on accepted found chats (FR-52, PM 2026-10-20): ends only that chat, files no report. Staging screens check (`scripts/smoke/staging-screens.mjs`, run after the dry run by the same workflow): Network request and accept with no city shown, the bell, the builder to Download, Library Save and I finished this, a Mock round, Departures save and apply. Re-test 30: report-with-block takes the Network locks (T97); the work-email badge goes to the row the check was made on (T95, migration 0047 `job_email_checks.role_source`); the message limit is chosen under the lock (T98); more link shorteners refused (T99).
+- Resource batch 6 (least-covered skills, approved free sources only) and the company side of the staging screens check (Project manager, 2026-10-20). Re-test 31: a work-email check saved on the other side of the profile gives a row no badge, so company views no longer badge the resume row for a check made on an added row (T100); four more shorteners, and message requests off is read only under the lock, so people who just connected aren't refused (T102). Staging screens check: the no-city steps need the city to be set and also search the page data (T101), the clean-up runs in a finally and on a cancel (T102), and the find-me switch waits for its save (T103).
 
 ## Next up
 
@@ -64,13 +65,15 @@ Open, all waiting on someone else:
 3. The 95 practice questions are self-checked only; an expert review is still owed (Data research).
 4. The 48 timed-test questions in `src/content/mock-bank.json` (Elite part 2) need checking by people who work in the roles; until then `reviewed` stays false and production shows no timed test. The same goes for the Elite shelf's 2 playbooks and 2 drill sets in `src/content/elite-shelf.json` (part 5).
 
-Handover (2026-10-15 18:25 UTC): "Development 3" took over from Development 2 for T44.
+Handover (2026-10-19 21:53 UTC): "Development 4" took over from Development 3 and starts from this page.
+
+Also waiting on Milin: T89's feed database role, item 45 (AI first interview, not to be built until he answers), and D1 to D6 of `docs/plans/market-trends-plan.md`.
 
 Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0046**. `EXPORT_VERSION` (31) lives in `src/lib/account/export.ts`. The latest FR is FR-55 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0048**. `EXPORT_VERSION` (31) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

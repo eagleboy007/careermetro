@@ -117,9 +117,8 @@ export async function startDirect(fromId: string, toId: string, body: string, de
     return sent.ok ? { ok: true, conversationId: existing.id } : sent;
   }
   // Connections chat freely (handoff 12j): their first message opens the chat, with no request and no request limit.
-  const linked = await areConnected(fromId, toId, db);
-  // Message requests off (FR-55): refused before the request limit is taken, so a refused try doesn't use one up.
-  if (!linked && !(await takesRequests(toId, db))) return fail("unavailable");
+  // Whether they are connected, and so whether message requests off (FR-55) refuses, is read only under the lock below,
+  // so someone who connected a moment ago is never refused by a stale first look (T102). Both come before the limit.
   return db.transaction(async (tx) => {
     await pairLock(fromId, toId, tx);
     // Checked again under the lock: a block, a suspension or a deleted account may have come in since the first look.
@@ -127,10 +126,10 @@ export async function startDirect(fromId: string, toId: string, body: string, de
     // Two first messages at once: the second one is refused, and told to accept the other's request or wait for theirs.
     const raced = await directBetween(fromId, toId, tx);
     if (raced) return fail(raced.status !== "request" ? "not_found" : raced.startedBy === fromId ? "waiting" : "accept_first");
-    // Read again under the lock, which Network's connect and remove also take: a connection removed or made since the
-    // first look decides the chat's kind, and so which limit it is charged to (Testing Run 5, T98).
+    // Read under the lock, which Network's connect and remove also take: the connection as it is now decides the chat's
+    // kind, and so which limit it is charged to (Testing Run 5, T98).
     const status = (await areConnected(fromId, toId, tx)) ? "open" : "request";
-    // Checked again under the lock: the switch may have gone off since the first look.
+    // Message requests off (FR-55): refused before the limit is taken, so a refused try doesn't use one up.
     if (status === "request" && !(await takesRequests(toId, tx))) return fail("unavailable");
     // A request counts toward the day's requests; between connections the first message opens the chat, so it counts
     // toward the day's direct messages instead. Taken in the transaction, so a refusal above uses neither up.

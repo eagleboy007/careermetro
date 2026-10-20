@@ -84,11 +84,20 @@ export function onVerifiedCompanyDomain(domain: string, employer: string, compan
 
 /**
  * The label for one job on the profile. Only the job a work email checks gets one, plus any job whose own check
- * passed (it keeps "Verified while there" once it has an end date). Self-declared current work says so.
+ * passed (it keeps "Verified while there" once it has an end date). Self-declared current work says so. With `side`,
+ * a check saved on the other side of the profile gives this row nothing.
  */
-export function experienceCheck(role: Pick<Role, "employer" | "start" | "end">, check: JobKey | null, rows: readonly JobCheckRow[]): ExperienceCheck | null {
+export function experienceCheck(
+  role: Pick<Role, "employer" | "start" | "end">,
+  check: JobKey | null,
+  rows: readonly JobCheckRow[],
+  side?: JobCheckSource,
+): ExperienceCheck | null {
   const key = jobKeyOf(role);
   const row = rows.find((r) => r.employerKey === key.employerKey && r.startMonth === key.startMonth);
+  // T100: a check saved on the other side of the profile (a hand-added row, say) is that row's, even where only this
+  // row is shown, as in every company view. Older rows with no side keep the key-only rule.
+  if (side && row?.source && row.source !== side) return experienceCheck(role, null, []);
   if (row?.status === "verified") return { state: role.end ? "verified_while_there" : "verified", month: monthLabel(row.checkedAt) };
   const isChecked = !!check && check.employerKey === key.employerKey && check.startMonth === key.startMonth;
   if (!isChecked) return !role.end && isSelfDeclared(role.employer) ? { state: "self_declared", month: null } : null;
