@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { FieldError } from "@/components/ui/field-error";
 import type { MeExperience, MeEducationItem, Story, StoryBox } from "@/lib/schemas";
@@ -159,6 +159,10 @@ function TextField({
   );
 }
 
+const noSubscribe = () => () => {};
+const thisYear = () => new Date().getFullYear();
+const noYear = () => null;
+
 /** A month and a year as two selects, sent as "2024-06"; "" until both are picked. */
 function MonthField({
   name,
@@ -177,9 +181,9 @@ function MonthField({
 }) {
   const id = useId();
   const [year, month] = value ? value.split("-") : ["", ""];
-  // The form opens only after a press, so the year is read in the browser, never on the server.
-  const [now] = useState(() => new Date().getFullYear());
-  const years = Array.from({ length: now - 1969 }, (_, i) => String(now - i));
+  // The year is read only in the browser; while prerendering (/design) the list holds just the picked year.
+  const now = useSyncExternalStore(noSubscribe, thisYear, noYear);
+  const years = now ? Array.from({ length: now - 1969 }, (_, i) => String(now - i)) : year ? [year] : [];
   // Half picked is sent as it is ("2024-"), and the server answers "Pick a month and year."
   const set = (y: string, m: string) => onChange(y || m ? `${y}-${m}` : "");
   const mine = error?.field === name ? error.text : undefined;
