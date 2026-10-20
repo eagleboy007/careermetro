@@ -20,8 +20,7 @@ import { requestsWaiting } from "@/lib/network/store";
 import { newCount } from "@/lib/notifications/store";
 import { exampleNewCount } from "@/lib/notifications/fixtures";
 import { openNotificationsAction } from "./notifications/actions";
-import { eliteOn } from "@/lib/elite/store";
-import { jobSearchOn } from "@/lib/job-search/store";
+import { eliteOnRequest, jobSearchForRequest } from "@/lib/request-reads";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -72,10 +71,11 @@ async function Shell({ children }: { children: React.ReactNode }) {
       extra("corporate_unread", corporateUnread(account.id), 0),
       extra("network_requests", requestsWaiting(account.id), 0),
       // Elite (FR-50): the award mark on the avatar and "Elite · beta" in the menu.
-      extra("plan", eliteOn(account.id), false),
+      extra("plan", eliteOnRequest(account.id), false),
       extra("arrivals_count", arrivalsCount(account.id), 0),
       // Job search off (handoff 6) hides the Arrivals count; if it can't be read, the count shows as before.
-      extra("job_search", jobSearchOn(account.id), true),
+      // Read once per request with the page's own read of the switch (src/lib/request-reads.ts).
+      extra("job_search", jobSearchForRequest(account.id).then((s) => s.on), true),
       // The bell's dot (docs/plans/notifications-plan.md): read with each page, next to the Inbox count; no polling.
       extra("notifications_new", newCount(account.id), 0),
     ]);

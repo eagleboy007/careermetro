@@ -3,7 +3,7 @@ import { and, asc, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm"
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobFeedRuns, jobPosts, jobSaves } from "@/db/schema";
-import { currentAnalysis } from "@/lib/gaps/current";
+import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { goalsOf, provedSkills } from "@/lib/goals/store";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { clearStageInput, saveInput, stageInput, type DepartureExport } from "@/lib/schemas";
@@ -113,9 +113,10 @@ export async function departuresBoard(
 /**
  * What fit is read against: the latest confirmed profile of the resume the person's current analysis came from, the
  * line's target role, the skills of their open goals and their current proof. Null with no confirmed resume.
+ * `read` is `currentAnalysis` already read in this request (null for none); left out, it is read here.
  */
-export async function fitContextFor(userId: string, db: Db = getDb()): Promise<FitContext | null> {
-  const analysis = await currentAnalysis(userId, db);
+export async function fitContextFor(userId: string, db: Db = getDb(), read?: CurrentAnalysis | null): Promise<FitContext | null> {
+  const analysis = read === undefined ? await currentAnalysis(userId, db) : read;
   if (!analysis) return null;
   const [resume, goals, proved] = await Promise.all([getResumeForOwner(analysis.resumeId, { userId }, db), goalsOf(userId, db), provedSkills(userId, db)]);
   if (!resume?.confirmed) return null;

@@ -3,7 +3,7 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { resumes } from "@/db/schema";
 import { roleProfiles } from "@/content";
-import { currentAnalysis, type Db } from "@/lib/gaps/current";
+import { currentAnalysis, type CurrentAnalysis, type Db } from "@/lib/gaps/current";
 import { boardTask } from "@/lib/ride/build";
 import { todayRideFor, type TodaySignal } from "@/lib/ride/store";
 import { clip } from "@/lib/text";
@@ -48,8 +48,14 @@ export type TodayState =
  * Returning: the person has ridden at least one day (ticked a task), or has proved every goal. First's tasks are
  * the first ride's tasks, so a tick there carries over.
  */
-export async function todayStateFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<TodayState> {
-  const analysis = await currentAnalysis(userId, db);
+export async function todayStateFor(
+  userId: string,
+  now: Date,
+  db: ReturnType<typeof getDb> = getDb(),
+  /** `currentAnalysis` already read in this request (null for none), so it is read once; left out, it is read here. */
+  read?: CurrentAnalysis | null,
+): Promise<TodayState> {
+  const analysis = read === undefined ? await currentAnalysis(userId, db) : read;
   if (!analysis) {
     const [unfinished] = await db
       .select({ id: resumes.id })
@@ -62,7 +68,7 @@ export async function todayStateFor(userId: string, now: Date, db: ReturnType<ty
 
   const result = analysis.result;
   const role = { slug: result.roleSlug, title: roleProfiles.find((r) => r.slug === result.roleSlug)?.title ?? result.roleSlug };
-  const today = await todayRideFor(userId, now, db, role.title);
+  const today = await todayRideFor(userId, now, db, role.title, { analysis });
   if (today && (today.streak.days > 0 || today.ride.pitstop > today.ride.pitstopCount)) {
     return {
       state: "returning",

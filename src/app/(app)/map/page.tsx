@@ -5,6 +5,7 @@ import { PageLoading } from "@/components/app/page-loading";
 import { MetroMap } from "@/components/map/metro-map";
 import { addCertificate } from "../today/actions";
 import { currentAccount } from "@/lib/auth/server";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { lifeLineFor, mapLineFor } from "@/lib/map/store";
 
@@ -24,7 +25,9 @@ async function MapScreen({ searchParams }: PageProps<"/map">) {
     );
   }
   // Signed in: the line comes from the person's own gaps and path; a certificate added on a prove pitstop meets its goal.
-  const [line, life] = await Promise.all([mapLineFor(account.id), lifeLineFor(account.id, new Date())]);
+  // The current analysis is read once and handed to both lines (docs/plans/perf-pass.md).
+  const analysis = await currentAnalysis(account.id);
+  const [line, life] = await Promise.all([mapLineFor(account.id, undefined, undefined, analysis), lifeLineFor(account.id, new Date(), undefined, analysis)]);
   return (
     <div className="flex flex-col gap-4">
       {line && <Banner>Your line comes from your gaps and your path, and your Life line from your resume. Other people on it appear once profiles can be found.</Banner>}

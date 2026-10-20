@@ -1464,6 +1464,9 @@ export const jobPosts = pgTable(
     uniqueIndex("job_posts_external").on(t.ats, t.boardToken, t.externalId),
     index("job_posts_closed_role").on(t.closedAt, t.roleSlug),
     index("job_posts_open_role_city").on(t.roleSlug, t.city).where(sql`${t.closedAt} is null`),
+    // Departures and the Today board read the newest 300 open posts of up to 10,000 by this expression (0046): read
+    // backwards, the index gives them in order without sorting every open post.
+    index("job_posts_open_newest").on(sql`coalesce(${t.postedAt}, ${t.firstSeenAt})`).where(sql`${t.closedAt} is null`),
     check("job_posts_ats", sql`${t.ats} in ('greenhouse', 'lever', 'ashby', 'smartrecruiters')`),
     check("job_posts_url_https", sql`${t.url} like 'https://%'`),
     check("job_posts_title_length", sql`char_length(${t.title}) between 2 and 160`),

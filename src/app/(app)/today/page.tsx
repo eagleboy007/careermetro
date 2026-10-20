@@ -11,12 +11,13 @@ import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
 import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { USER_STATES, type Departure, type OnYourLine, type UserState } from "@/lib/schemas";
-import { jobSearchOn } from "@/lib/job-search/store";
+import { jobSearchForRequest } from "@/lib/request-reads";
 import { errorFields, logEvent } from "@/lib/log";
 import { rideWithSignal, withSignalTask } from "@/lib/ride/build";
 import { greetingAt } from "@/lib/today/board";
+import { departuresBoard } from "@/lib/departures/store";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
-import { todayStateFor } from "@/lib/today/state";
+import { currentAnalysis, todayStateFor } from "@/lib/today/state";
 import { switchJobSearch } from "../settings/job-search-actions";
 import { addCertificate, answerSignalCheck, chooseTrack, saveWeeklyHours, tickRideTask } from "./actions";
 import {
@@ -75,15 +76,24 @@ async function Today({ searchParams }: PageProps<"/today">) {
   }
   // Signed in: the server picks the state from the person's own resume and gaps.
   const now = new Date();
-  const [found, searching] = await Promise.all([todayStateFor(account.id, now), jobSearchOn(account.id)]);
+  // The current analysis is read once here and handed to the ride and the board (docs/plans/perf-pass.md).
+  const [analysis, searching] = await Promise.all([currentAnalysis(account.id), jobSearchForRequest(account.id).then((s) => s.on)]);
   const name = firstName(account.name);
+  // The board's open posts need nothing of the person's, so their read starts now, beside the ride; fit is read after
+  // the ride, which syncs the goals fit reads. Job search off, or No resume, reads none. The no-op catch only keeps a
+  // failed read from counting as unhandled while the ride runs: the board below still sees the failure.
+  const openPosts = analysis && searching ? departuresBoard(null) : null;
+  if (openPosts) openPosts.catch(() => {});
+  const found = await todayStateFor(account.id, now, undefined, analysis);
   // The live cards never fail the page: a card that can't be read is left out (the board shows it has no rows).
   const [board, line]: [Departure[], OnYourLine | null] =
     found.state === "no_resume"
       ? [[], null]
       : await Promise.all([
           // Job search off sends no board rows; the card says how to turn it on (handoff 6).
-          searching ? todayBoardFor(account.id, now).catch(failed<Departure[]>("today_board_failed", [])) : Promise.resolve<Departure[]>([]),
+          openPosts
+            ? todayBoardFor(account.id, now, undefined, { analysis, posts: openPosts }).catch(failed<Departure[]>("today_board_failed", []))
+            : Promise.resolve<Departure[]>([]),
           found.current
             ? onYourLineFor(account.id, found.current, { firstDay: found.state === "first", now }).catch(failed<OnYourLine | null>("today_line_failed", null))
             : Promise.resolve(null),

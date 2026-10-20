@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (launch readiness; refreshed for #165 to #196).
+Last updated: 2026-10-20 (performance pass).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -45,6 +45,7 @@ Last updated: 2026-10-20 (launch readiness; refreshed for #165 to #196).
 
 - v44 launch-readiness pass (branch `v44-launch-check`, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md` is the scripted check to run on https://careermetro.vercel.app right after Milin's redeploy, with the pre-flight settings list. The audit found RLS with no policies and FK indexes on every table from 0039 to 0045; `rls.test` now also refuses policies and grants to the API roles, and names the v44 tables.
   - The audit of actions changed since #175 found two writes without a limit. They now have one: Account settings saves (100 a day; each "Let companies find me" on wrote a consent row) and Unblock (50 a day). Supabase's Confirm signup template also needs `{{ .Token }}`.
+- Performance pass, Today, Map and Departures (branch `v44-perf`, `docs/plans/perf-pass.md`): the current analysis is read once per page and handed on, the ride's and the Map's independent reads run beside the goal sync, Today's board posts start reading beside the ride, Departures starts every read at once, and the job search switch and Elite are read once per request (`src/lib/request-reads.ts`). About 4 to 5 fewer database round trips in turn on Today and the Map. Migration 0046 adds `job_posts_open_newest` for the newest-300 open posts read. No client bundle change was needed; what was left (the goal sync on every view, the pool of 5) is in the plan.
 
 ## Next up
 
