@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   certification,
+  eliteShelfFile,
   mockBankFile,
   practiceQuestion,
   proofTask,
@@ -9,6 +10,7 @@ import {
   skillGroups,
   skill,
   type Certification,
+  type ShelfEntry,
   type MockQuestion,
   type PracticeQuestion,
   type ProofTask,
@@ -17,6 +19,7 @@ import {
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import eliteShelfJson from "./elite-shelf.json";
 import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
 import proofTasksJson from "./proof-tasks.json";
@@ -82,6 +85,13 @@ export const practiceQuestions: PracticeQuestion[] = z.array(practiceQuestion).p
  * uses only reviewed ones (src/lib/mock/rules.ts). Never written by the model.
  */
 export const mockQuestions: MockQuestion[] = mockBankFile.parse(mockBankJson).questions;
+
+/**
+ * The Elite shelf (Library's Elite tab, FR-50 part 5, handoff 12l): free catalog sources by URL, playbooks and drills
+ * hand-written by Development (`reviewed: false` until someone who works in the role checks them; production shows
+ * only reviewed ones, src/lib/library/shelf.ts) and paid-course slots marked Coming soon. Never written by the model.
+ */
+export const eliteShelfEntries: ShelfEntry[] = eliteShelfFile.parse(eliteShelfJson).entries;
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z

@@ -1,0 +1,224 @@
+{
+  "note": "Elite shelf (FR-50 part 5, handoff 12l). Until licensing deals exist it holds free sources from src/content/resources.json (named by URL, never copied), playbooks and drills written by Development on 2026-10-20, and paid-course slots marked Coming soon with no maker, price or link. Never written by the model; no ads or affiliate links. Own-written items are not yet checked by someone who works in the role: reviewed is false until they are, and production shows only reviewed ones.",
+  "entries": [
+    {
+      "type": "slot",
+      "id": "course-slot-video",
+      "group": "course",
+      "label": "Video course with labs",
+      "summary": "A full video course with hands-on labs for one of your goals. It comes once we have an agreement with the course maker, and it will be included with Elite, never sold here."
+    },
+    {
+      "type": "slot",
+      "id": "course-slot-exam",
+      "group": "course",
+      "label": "Exam-prep pack",
+      "summary": "Timed practice exams with every answer explained. A certificate exam's own fee stays separate and is paid to the exam body."
+    },
+    {
+      "type": "slot",
+      "id": "course-slot-hindi",
+      "group": "course",
+      "label": "Course in Hindi",
+      "summary": "A course taught in Hindi for one of the common goals. Like the others, it comes once an agreement with its maker is in place."
+    },
+    {
+      "type": "own",
+      "id": "playbook-tell-me-about-yourself",
+      "group": "playbook",
+      "title": "Tell me about yourself, in two minutes",
+      "minutes": 10,
+      "skillIds": [
+        "communication"
+      ],
+      "summary": "The question most interviews open with: a simple order for the answer, and what to leave out.",
+      "parts": [
+        {
+          "text": "Start with now: what you do today (your role, or your course and year) and the one thing you do best in it, in one or two sentences."
+        },
+        {
+          "text": "Then the past: one or two experiences that led here, each with a result you can name, such as a report you built, a process you sped up or a project you shipped."
+        },
+        {
+          "text": "Then next: the role you are applying for and why this team. Read the job description first and use its words where they are true for you."
+        },
+        {
+          "text": "Keep it near two minutes, about 250 to 300 spoken words. Say it out loud a few times, but don't learn it word for word."
+        },
+        {
+          "text": "Leave out your date of birth, family details and salary. The question is about your work, and those come up later, if at all."
+        }
+      ],
+      "reviewed": false
+    },
+    {
+      "type": "own",
+      "id": "playbook-star-answers",
+      "group": "playbook",
+      "title": "Answering \"Tell me about a time when…\" with STAR",
+      "minutes": 15,
+      "skillIds": [
+        "communication"
+      ],
+      "summary": "Situation, Task, Action, Result: a way to give a story answer that stays short and ends with what changed.",
+      "parts": [
+        {
+          "text": "Situation: one or two sentences of background, enough for a stranger to follow. Where you were, and what was going on."
+        },
+        {
+          "text": "Task: what you had to do, or the problem you owned. Keep it to your part, not the whole team's."
+        },
+        {
+          "text": "Action: most of the answer. The steps you took yourself, in order. Say \"I\", not \"we\", for the parts you did."
+        },
+        {
+          "text": "Result: what changed, with a number if you have one (time saved, errors fixed, users reached), and what you would do differently next time."
+        },
+        {
+          "text": "Keep three or four stories ready that you can bend to many questions: a deadline, a mistake you fixed, a disagreement, something you learned fast."
+        }
+      ],
+      "reviewed": false
+    },
+    {
+      "type": "free",
+      "id": "nist-incident-response",
+      "group": "playbook",
+      "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "why": "The incident response guidance many security teams build their own playbooks on."
+    },
+    {
+      "type": "free",
+      "id": "pagerduty-incident-response",
+      "group": "playbook",
+      "url": "https://response.pagerduty.com/",
+      "why": "A company's own incident response process, published in full: roles, calls and what happens after."
+    },
+    {
+      "type": "free",
+      "id": "sre-postmortem-culture",
+      "group": "playbook",
+      "url": "https://sre.google/sre-book/postmortem-culture/",
+      "why": "How teams write a blameless postmortem after something breaks."
+    },
+    {
+      "type": "own",
+      "id": "drill-sql-orders",
+      "group": "drill",
+      "title": "SQL drills on one orders table",
+      "minutes": 30,
+      "skillIds": [
+        "sql"
+      ],
+      "summary": "Six queries on a table orders(order_id, customer_id, order_date, amount, status), each with the answer explained.",
+      "parts": [
+        {
+          "text": "Count the orders whose status is 'delivered'.",
+          "answer": "SELECT COUNT(*) FROM orders WHERE status = 'delivered'; WHERE keeps only the matching rows before they are counted."
+        },
+        {
+          "text": "Show each customer's total amount, biggest first.",
+          "answer": "SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id ORDER BY total DESC; Every column in the list is either grouped or inside an aggregate."
+        },
+        {
+          "text": "List the customers with more than 3 orders.",
+          "answer": "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(*) > 3; WHERE filters rows before grouping, HAVING filters the groups after it."
+        },
+        {
+          "text": "Show each customer's first order date.",
+          "answer": "SELECT customer_id, MIN(order_date) AS first_order FROM orders GROUP BY customer_id; MIN works on dates as well as numbers."
+        },
+        {
+          "text": "Find the orders with no amount recorded.",
+          "answer": "SELECT * FROM orders WHERE amount IS NULL; amount = NULL is never true, so it returns nothing. Use IS NULL."
+        },
+        {
+          "text": "Number each customer's orders from newest to oldest.",
+          "answer": "SELECT order_id, customer_id, order_date, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC) AS n FROM orders; PARTITION BY restarts the count for each customer, and unlike GROUP BY it keeps every row."
+        }
+      ],
+      "reviewed": false
+    },
+    {
+      "type": "own",
+      "id": "drill-windows-event-ids",
+      "group": "drill",
+      "title": "Windows sign-in and process events",
+      "minutes": 20,
+      "skillIds": [
+        "siem",
+        "threat-detection"
+      ],
+      "summary": "Six Windows Security log events a SOC analyst reads every day, and what each one can point to.",
+      "parts": [
+        {
+          "text": "Which event ID records a failed sign-in?",
+          "answer": "4625. Many of them for one account from one source in a few minutes usually means someone is guessing passwords."
+        },
+        {
+          "text": "Which event ID records a successful sign-in, and what tells you how the person signed in?",
+          "answer": "4624. Its logon type does: 2 is at the keyboard, 3 is over the network, 10 is Remote Desktop."
+        },
+        {
+          "text": "A 4625 burst is followed by a 4624 for the same account from the same address. What do you check first?",
+          "answer": "Whether the guessing worked: what that session did next (processes started, files touched) and whether the sign-in was expected for that user and place."
+        },
+        {
+          "text": "Which event ID records a new process, and what must be on for it to appear?",
+          "answer": "4688. Process creation auditing has to be turned on; to see the full command line, the command-line setting must be on too."
+        },
+        {
+          "text": "Which event ID records a new user account being created?",
+          "answer": "4720. An account made outside the normal joining process, or late at night, is worth a look."
+        },
+        {
+          "text": "The Security log shows event 1102. Why does it matter?",
+          "answer": "1102 means the audit log was cleared. Attackers clear logs to hide what they did, so it usually calls for escalation."
+        }
+      ],
+      "reviewed": false
+    },
+    {
+      "type": "free",
+      "id": "splunk-bots-v3",
+      "group": "drill",
+      "url": "https://github.com/splunk/botsv3",
+      "why": "A large sample of security logs with an attack in it, to practise searches on."
+    },
+    {
+      "type": "free",
+      "id": "elastic-siem-start",
+      "group": "drill",
+      "url": "https://www.elastic.co/docs/solutions/security/get-started/get-started-detect-with-siem",
+      "why": "Set up detections and work an alert in a free SIEM."
+    },
+    {
+      "type": "free",
+      "id": "sqlbolt",
+      "group": "drill",
+      "url": "https://sqlbolt.com/",
+      "why": "Short SQL lessons with exercises that run in the browser."
+    },
+    {
+      "type": "free",
+      "id": "overthewire-bandit",
+      "group": "drill",
+      "url": "https://overthewire.org/wargames/bandit/",
+      "why": "Linux command-line levels, each a small puzzle to solve."
+    },
+    {
+      "type": "free",
+      "id": "portswigger-academy",
+      "group": "drill",
+      "url": "https://portswigger.net/web-security",
+      "why": "Browser labs for web security flaws, from beginner to expert."
+    },
+    {
+      "type": "free",
+      "id": "learn-git-branching",
+      "group": "drill",
+      "url": "https://learngitbranching.js.org/",
+      "why": "Git branching drawn as you type, level by level, in the browser."
+    }
+  ]
+}

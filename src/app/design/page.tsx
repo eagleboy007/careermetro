@@ -55,7 +55,7 @@ import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
 import { LibraryView } from "@/components/library/library-view";
-import { exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
+import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
@@ -556,8 +556,16 @@ export default function DesignPage() {
           ticks. Search, type, length and Hindi filters, the details panel with Open on the source site, How the Library is picked, and the Your
           interests, Saved and Finished tabs. Real catalog links with made-up goals. Below it, the Library with no resume.
         </p>
-        <LibraryView view={exampleLibrary} />
-        <LibraryView view={exampleLibraryNoResume} />
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(false)} />
+        <LibraryView view={exampleLibraryNoResume} shelf={exampleEliteShelf(false)} />
+        <p className="text-sm text-muted">
+          Handoff 12l, Elite part 5: the fifth tab, Elite, holds the Elite shelf. On Free (lock on the tab), every card says what it is and Opens with
+          Elite, with the locked panel&apos;s Turn on Elite (violet) to /elite; no link or step is sent. With Elite: paid courses as Coming soon slots (no
+          maker, price or link until a licensing deal), playbooks and drills we wrote (Not yet checked until someone in the role checks them;
+          production shows only checked ones) and free sources from the catalog, the person&apos;s goals first.
+        </p>
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(false)} tab="elite" />
+        <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(true)} tab="elite" />
       </section>
 
       <section className="flex flex-col gap-4">
