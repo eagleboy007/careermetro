@@ -51,6 +51,7 @@ Last updated: 2026-10-20 (known limits: refused-certificate job)
 ## In progress
 
 - Known limits: the daily job for refused or held certificates now looks only at met goals the certificate could fill (its skill's goal or a group goal with it), not every met goal the person has.
+- Market trends, role switches and state-wise jobs and pay (pending item 24): plan only, proposed and not approved, in `docs/plans/market-trends-plan.md` (dev/ copy); decisions D1 to D6 wait on Milin.
 
 ## Next up
 
