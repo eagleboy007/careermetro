@@ -134,7 +134,7 @@ export function JobSearchOffCard() {
     <section aria-label="Job search is off" className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-line p-5 text-[0.9rem] text-muted min-[600px]:flex-row min-[600px]:items-center">
       <Route {...ICON} className="shrink-0 text-muted" />
       <p className="min-w-0 flex-1">
-        <b className="font-semibold text-ink">Job search is off.</b> Departures and Arrivals are paused: no job alerts, no Express apply, and companies can&apos;t
+        <b className="font-semibold text-ink">Job search is off.</b> Departures and Arrivals are paused: no Express apply, and companies can&apos;t
         find you. Your daily rides and your map keep going.
       </p>
       <TurnOn>Turn on job search</TurnOn>

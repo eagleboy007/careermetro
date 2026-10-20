@@ -54,7 +54,10 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
     setFocus((f) => ({ to, n: (f?.n ?? 0) + 1 }));
   };
 
-  const save = (value: NoticeValue, done: () => void, said: string | null = null) => {
+  // While a save runs every button reads as unavailable (aria-disabled keeps focus) and the status line says
+  // "Saving…", so a press is never dropped without a word; the handlers ignore presses until it is done.
+  const busy = pending || undefined;
+  const save = (value: NoticeValue, done: () => void, said: string | null = null, failed: () => void = () => {}) => {
     if (pending) return;
     if (!action) {
       setSaved(value);
@@ -63,7 +66,10 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
     }
     start(async () => {
       const error = await action(value).catch(() => FAILED);
-      if (error) return setMessage(error);
+      if (error) {
+        failed();
+        return setMessage(error);
+      }
       setSaved(value);
       setMessage(said);
       done();
@@ -71,11 +77,17 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
   };
 
   const pickDays = (d: NoticeDays) => {
+    if (pending) return;
     setDays(d);
-    // Before resigning the days are saved at once; while the date is being changed they go with Start countdown.
-    if (step === "days") save({ days: d, resignedOn: null }, () => {});
+    // Before resigning the days are saved at once (and go back if the save fails); while the date is being changed
+    // they go with Start countdown.
+    if (step === "days") save({ days: d, resignedOn: null }, () => {}, null, () => setDays(saved.days));
+  };
+  const go = (next: Step, to: Focus) => () => {
+    if (!pending) moveTo(next, to);
   };
   const startCountdown = () => {
+    if (pending) return;
     if (!days) return setMessage("Pick your notice period first.");
     if (!date) return setMessage("Pick the day you handed in your resignation.");
     if (date > today) return setMessage("Pick the day you handed in your resignation. It can't be later than today.");
@@ -90,8 +102,9 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
           key={d}
           type="button"
           aria-pressed={d === days}
+          aria-disabled={busy}
           onClick={() => pickDays(d)}
-          className="rounded-full border border-line px-3 py-1 text-[0.8rem] font-medium text-muted aria-pressed:border-transparent aria-pressed:bg-ink aria-pressed:text-bg"
+          className="rounded-full border border-line px-3 py-1 text-[0.8rem] font-medium text-muted aria-disabled:opacity-60 aria-pressed:border-transparent aria-pressed:bg-ink aria-pressed:text-bg"
         >
           {d} days
         </button>
@@ -111,7 +124,7 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
             <span className={label}>
               resigned {noticeDayText(saved.resignedOn!)} · {saved.days} days
             </span>
-            <button ref={changeRef} type="button" className={`${quietSm} ml-auto`} onClick={() => moveTo("date", "date")}>
+            <button ref={changeRef} type="button" className={`${quietSm} ml-auto`} aria-disabled={busy} onClick={go("date", "date")}>
               Change
             </button>
           </>
@@ -162,8 +175,8 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
           </div>
           {step === "days" ? (
             <div className={row}>
-              <span className="min-w-[200px] flex-1">Already resigned? Start a countdown to your last working day, so companies know when you can join.</span>
-              <button ref={resignRef} type="button" className={ghostSm} onClick={() => moveTo("date", "date")}>
+              <span className="min-w-[200px] flex-1">Already resigned? Start a countdown to your last working day, and Can join is filled in for you when you apply.</span>
+              <button ref={resignRef} type="button" className={ghostSm} aria-disabled={busy} onClick={go("date", "date")}>
                 I have resigned
               </button>
             </div>
@@ -187,15 +200,15 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
                 }}
                 className="rounded-[10px] border border-line-strong bg-surface-2 px-2.5 py-1.5 text-ink"
               />
-              <button type="button" className={primarySm} aria-disabled={pending || undefined} onClick={startCountdown}>
+              <button type="button" className={primarySm} aria-disabled={busy} onClick={startCountdown}>
                 Start countdown
               </button>
               {saved.resignedOn ? (
-                <button type="button" className={quietSm} aria-disabled={pending || undefined} onClick={stopCountdown}>
+                <button type="button" className={quietSm} aria-disabled={busy} onClick={stopCountdown}>
                   Stop the countdown
                 </button>
               ) : (
-                <button type="button" className={quietSm} onClick={() => moveTo("days", "resign")}>
+                <button type="button" className={quietSm} aria-disabled={busy} onClick={go("days", "resign")}>
                   Cancel
                 </button>
               )}
@@ -205,7 +218,7 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
       )}
 
       <p role="status" className="text-[0.8rem] text-muted empty:hidden">
-        {message}
+        {pending ? "Saving…" : message}
       </p>
     </section>
   );

@@ -742,7 +742,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   // A click, not uncheck(): the switch pressed goes away with the page it was on, and the paused page's switch takes focus.
   await sw.click({ force: true });
   const off = p.getByRole("region", { name: "Job search is off" });
-  await off.getByText(/Departures and Arrivals are paused: no job alerts, no Express apply/).waitFor({ timeout: 10000 });
+  await off.getByText(/Departures and Arrivals are paused: no Express apply, and companies can.t find you/).waitFor({ timeout: 10000 });
   await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
   await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
   if (await p.getByRole("searchbox", { name: "Search roles" }).count()) throw new Error("Departures lists roles with job search off");
@@ -772,11 +772,15 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText("only you see this", { exact: true }).waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "60 days" }).click();
   await notice.getByRole("button", { name: "60 days", pressed: true }).waitFor();
+  // The days save at once; while that runs the card's buttons are aria-disabled and ignore presses.
+  const ready = (name) => notice.locator("button:not([aria-disabled])", { hasText: name });
+  await ready("I have resigned").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "I have resigned" }).click();
   await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "date", null, { timeout: 5000 });
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
   const resigned = new Date(Date.parse(`${today}T00:00:00Z`) - 10 * 86_400_000).toISOString().slice(0, 10);
   await notice.getByLabel("When did you hand in your resignation?").fill(resigned);
+  await ready("Start countdown").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Start countdown" }).click();
   await notice.getByText("days left", { exact: true }).waitFor({ timeout: 10000 });
   await notice.getByText("50", { exact: true }).waitFor();
@@ -791,7 +795,9 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
   if (data.exportVersion !== 25 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
+  await ready("Stop the countdown").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Stop the countdown" }).click();
   await notice.getByRole("button", { name: "I have resigned" }).waitFor({ timeout: 10000 });
 });

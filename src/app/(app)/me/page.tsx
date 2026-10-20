@@ -64,7 +64,11 @@ async function MeScreen() {
       logEvent("error", "elite_plan_failed", errorFields(error));
       return FREE;
     }),
-    jobSearchOn(account.id),
+    // The status line and the switch are side parts too: if job search can't be read, it shows as on.
+    jobSearchOn(account.id).catch((error: unknown) => {
+      logEvent("error", "job_search_read_failed", errorFields(error));
+      return true;
+    }),
   ]);
   const settings = saved?.settings ?? DEFAULT_SETTINGS;
   const hidden = settings.visibility === "only_me" || !saved?.username;

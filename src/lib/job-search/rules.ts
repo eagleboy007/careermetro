@@ -33,8 +33,9 @@ export function noticeCountdown(resignedOn: string, days: NoticeDays, today: str
 }
 
 /**
- * Can join, prefilled on applying while a countdown runs: the nearest choice that is not earlier than "Free to join
- * from". Immediately once that day has come; then within 30 days, 30 to 60 and 60 to 90. The person can still change it.
+ * Can join, prefilled on applying while a countdown runs: the nearest choice not earlier than "Free to join from", or
+ * 90, the latest choice. Immediately once that day has come; then within 30 days, 30 to 60 and 60 to 90. The person can
+ * still change it.
  */
 export function canJoinFrom(joinFrom: string, today: string): (typeof CAN_JOIN)[number] {
   const wait = daysBetween(today, joinFrom);
