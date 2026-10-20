@@ -20,6 +20,7 @@ Written by Development, 2026-10-15 (launch-readiness (c) 5). Use this on the day
 - Sign in with a new Google account and with an email code. Upload the synthetic resume from `/fixtures`, see Gaps, set a goal, open Inbox, then delete the test account.
 - Open `/admin/companies`, `/admin/proofs` and `/admin/reports` as the admin, and check that a non-admin gets 404.
 - In Vercel Cron Jobs, run `/api/cron/cleanup` once. The log shows 200.
+- Then run the full production smoke check in `docs/launch/prod-smoke.md`.
 
 ## Rollback
 - **App broken:** in Vercel, open Deployments, click the ⋯ on the last good deploy, then **Promote to Production** (Redeploy previous). This takes about a minute and changes no data.

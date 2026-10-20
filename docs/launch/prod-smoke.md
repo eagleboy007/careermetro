@@ -91,7 +91,7 @@ The file is `fixtures/resumes/priya-sharma.pdf` in the repo (an invented person;
 |---|---|---|---|
 | 5.1 | Open `/today` | "Your goals" with this resume's own goals (never the example "SQL window functions"), and today's ride | Example data instead: the goals sync failed (Vercel `goals_sync_failed`), or the resume isn't on this account |
 | 5.2 | Under "Hours a week", press **8 h**, then reload | 8 h stays pressed | Vercel logs |
-| 5.3 | Tick the first ride task | The top bar shows "1-day streak" | Vercel logs. Untick it afterwards if you like |
+| 5.3 | Tick the first ride task | The streak chip in the top bar shows 1 ("1-day streak" on screens 400px or wider) | Vercel logs. Untick it afterwards if you like |
 | 5.4 | Open `/map` | The line with the same goals as stops | Vercel logs |
 
 ## 6. Settings: download, then sign out (2 minutes)

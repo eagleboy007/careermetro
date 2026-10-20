@@ -4,7 +4,7 @@ import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { DEFAULT_SETTINGS, settingsInput, type SettingsInput } from "@/lib/schemas";
-import { LIMITS } from "@/lib/shared-limit";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "./export";
 import {
   canViewProfile,
@@ -124,11 +124,11 @@ describe.skipIf(!db)("account settings store (database)", () => {
     // The real clock, as the daily cleanup in other test files deletes rate-limit windows by it.
     const now = new Date();
     const consentsOf = async () => (await db!.select({ id: schema.consents.id }).from(schema.consents).where(eq(schema.consents.userId, l))).length;
-    for (let i = 0; i < LIMITS.settingsSavesPerUserDay.max; i++) {
-      expect(await saveAccountSettings(l, form({ settings: { ...DEFAULT_SETTINGS, companiesCanFind: i % 2 === 0 } }), now, db!)).toEqual({ ok: true });
-    }
+    // Fill the day's count directly, then the last allowed save is a real one.
+    for (let i = 0; i < LIMITS.settingsSavesPerUserDay.max - 1; i++) await takeShared(LIMITS.settingsSavesPerUserDay, l, { db: db!, now: now.getTime() });
+    expect(await saveAccountSettings(l, form({ settings: { ...DEFAULT_SETTINGS, companiesCanFind: false } }), now, db!)).toEqual({ ok: true });
     const before = await consentsOf();
-    // The last save turned "Let companies find me" off; the next, on again, is refused and records no consent.
+    // That save left "Let companies find me" off; the next, turning it on, is refused and records no consent.
     expect(await saveAccountSettings(l, form({ headline: "Refused", settings: { ...DEFAULT_SETTINGS, companiesCanFind: true } }), now, db!)).toEqual({
       ok: false,
       errors: { settings: SETTINGS_LIMIT_MESSAGE },
