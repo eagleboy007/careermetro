@@ -4,8 +4,19 @@ import postgres from "postgres";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { DEFAULT_SETTINGS, settingsInput, type SettingsInput } from "@/lib/schemas";
+import { LIMITS } from "@/lib/shared-limit";
 import { exportAccountData } from "./export";
-import { canViewProfile, checkUsername, clearExpiredUsernameRedirects, findProfile, readAccountSettings, resolveProfile, saveAccountSettings, settingsFor } from "./settings-store";
+import {
+  canViewProfile,
+  checkUsername,
+  clearExpiredUsernameRedirects,
+  findProfile,
+  readAccountSettings,
+  resolveProfile,
+  saveAccountSettings,
+  SETTINGS_LIMIT_MESSAGE,
+  settingsFor,
+} from "./settings-store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests. Every user here is this run's own.
 const url = process.env.TEST_DATABASE_URL;
@@ -106,6 +117,26 @@ describe.skipIf(!db)("account settings store (database)", () => {
     await expect(
       db!.update(schema.userSettings).set({ openToWorkIn: ["Remote", "Pune", "Kochi", "Mumbai", "Chennai", "Noida", "Indore"] }).where(eq(schema.userSettings.userId, o)),
     ).rejects.toThrow();
+  });
+
+  it("caps settings saves a day, each try counted, and a refused save changes nothing (launch-readiness pass)", async () => {
+    const l = await makeUser("limit");
+    // The real clock, as the daily cleanup in other test files deletes rate-limit windows by it.
+    const now = new Date();
+    const consentsOf = async () => (await db!.select({ id: schema.consents.id }).from(schema.consents).where(eq(schema.consents.userId, l))).length;
+    for (let i = 0; i < LIMITS.settingsSavesPerUserDay.max; i++) {
+      expect(await saveAccountSettings(l, form({ settings: { ...DEFAULT_SETTINGS, companiesCanFind: i % 2 === 0 } }), now, db!)).toEqual({ ok: true });
+    }
+    const before = await consentsOf();
+    // The last save turned "Let companies find me" off; the next, on again, is refused and records no consent.
+    expect(await saveAccountSettings(l, form({ headline: "Refused", settings: { ...DEFAULT_SETTINGS, companiesCanFind: true } }), now, db!)).toEqual({
+      ok: false,
+      errors: { settings: SETTINGS_LIMIT_MESSAGE },
+    });
+    expect(await consentsOf()).toBe(before);
+    expect((await settingsFor(l, db!)).companiesCanFind).toBe(false);
+    expect((await readAccountSettings(l, now, db!))?.headline).toBeNull();
+    expect(SETTINGS_LIMIT_MESSAGE).toMatch(/try again tomorrow/);
   });
 
   it("saves an optional city from the list, keeps it when a save leaves it out, and clears it (T44)", async () => {

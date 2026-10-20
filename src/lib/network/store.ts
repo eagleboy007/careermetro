@@ -355,16 +355,20 @@ export async function blockedPeople(userId: string, db: Pick<Db, "select"> = get
  * Unblock from Settings > Privacy: only a block this person made. Nothing comes back with it: a connection or request
  * the block ended stays ended, and chats it hid stay hidden until a new message arrives. The other person isn't told.
  */
-export async function unblockPerson(userId: string, otherId: string, db: Db = getDb()): Promise<NetworkResult> {
+export async function unblockPerson(userId: string, otherId: string, db: Db = getDb(), now: Date = new Date()): Promise<NetworkResult> {
   if (userId === otherId) return fail("self");
-  const gone = await db.transaction(async (tx) => {
+  // Each try counts toward the day's unblocks (launch-readiness pass), in the same transaction as the delete.
+  const outcome = await db.transaction(async (tx): Promise<"limit" | "gone" | "none"> => {
+    if (!(await takeShared(LIMITS.unblocksPerUserDay, userId, { db: tx, now: now.getTime() }))) return "limit";
     await pairLock(userId, otherId, tx);
-    return tx
+    const rows = await tx
       .delete(blocks)
       .where(and(eq(blocks.blockerId, userId), eq(blocks.blockedId, otherId)))
       .returning({ at: blocks.createdAt });
+    return rows.length ? "gone" : "none";
   });
-  if (!gone.length) return fail("not_found");
+  if (outcome === "limit") return fail("limit");
+  if (outcome === "none") return fail("not_found");
   logEvent("info", "person_unblocked");
   return { ok: true };
 }

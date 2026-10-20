@@ -247,6 +247,18 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(await unblockPerson(a, c, db!)).toEqual({ ok: false, error: "not_found" });
   });
 
+  it("caps unblocks a day, each try counted, and a refused one leaves the block in place (launch-readiness pass)", async () => {
+    const a = await person("Asha");
+    const b = await person("Gita");
+    await blockPerson(a, b, deps());
+    const stranger = await person("Hema");
+    for (let i = 0; i < LIMITS.unblocksPerUserDay.max; i++) expect(await unblockPerson(a, stranger, db!, now)).toEqual({ ok: false, error: "not_found" });
+    expect(await unblockPerson(a, b, db!, now)).toEqual({ ok: false, error: "limit" });
+    expect((await blockedPeople(a, db!)).map((p) => p.id)).toEqual([b]);
+    // Someone else's count is their own.
+    expect(await unblockPerson(b, a, db!, now)).toEqual({ ok: false, error: "not_found" });
+  });
+
   it("caps requests a day", async () => {
     const a = await person("Asha");
     const others = await Promise.all(Array.from({ length: LIMITS.networkRequestsPerUser.max + 1 }, (_, i) => person(`Hari${i}`)));

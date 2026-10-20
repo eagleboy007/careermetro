@@ -58,6 +58,8 @@ Last updated: 2026-10-20 (v44 tracks).
 
 - v44 fixes, tracks (gap list item 11, branch `v44-tracks`, FR-56, `docs/plans/tracks-plan.md`, no migration): draft role tracks for 30 roles (`src/content/role-tracks.json`, all `reviewed: false`; review draft `dev/role-tracks-draft.md` in the project files), checked against the role profiles and the taxonomy at import. The Track chip on Your goals opens the picker; Switch track saves `trackId` on the person's current analysis and the person's line follows it (Today, the Map and Me's journey strip; Gaps, Match and Departures keep the whole role), worked out in code from the stored analysis.
   - Production offers only reviewed tracks, so the chip stays plain text there until someone who works in each role checks the draft (Project manager to arrange).
+- v44 launch-readiness pass (branch `v44-launch-check`, no migration, `docs/plans/launch-readiness-pass.md`): `docs/launch/prod-smoke.md` is the scripted check to run on https://careermetro.vercel.app right after Milin's redeploy, with the pre-flight settings list. The audit found RLS with no policies and FK indexes on every table from 0039 to 0045; `rls.test` now also refuses policies and grants to the API roles, and names the v44 tables.
+  - The audit of actions changed since #175 found two writes without a limit. They now have one: Account settings saves (100 a day; each "Let companies find me" on wrote a consent row) and Unblock (50 a day). Supabase's Confirm signup template also needs `{{ .Token }}`.
 
 ## Next up
 

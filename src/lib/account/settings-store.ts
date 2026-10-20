@@ -20,6 +20,9 @@ type Db = ReturnType<typeof getDb>;
 
 const DAY = 24 * 3600_000;
 
+/** Shown beside the privacy choices when the day's settings saves are used up (LIMITS.settingsSavesPerUserDay). */
+export const SETTINGS_LIMIT_MESSAGE = "You've saved your settings many times today. Please try again tomorrow.";
+
 export type Pay = { currentLakh: number | null; expectedLakh: number | null };
 
 export type AccountSettings = {
@@ -134,6 +137,9 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         .where(eq(users.id, userId))
         .for("update");
       if (!me || me.deletionRequestedAt) return fail({ settings: "Please sign in again to save changes." });
+      // Counted under the row lock above, so the try and the save share one transaction.
+      if (!(await takeShared(LIMITS.settingsSavesPerUserDay, userId, { db: tx, now: now.getTime() })))
+        return fail({ settings: SETTINGS_LIMIT_MESSAGE });
 
       const changes: Partial<typeof users.$inferInsert> = { headline: input.headline };
       if (input.city !== undefined) changes.city = input.city;
