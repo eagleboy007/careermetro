@@ -231,6 +231,7 @@ export async function myInterviewsOf(applicationIds: string[], db: Db | Tx, now:
       id: r.id,
       round: r.round,
       day: indiaDay(r.startsAt),
+      startsAt: r.startsAt.toISOString(),
       when: slotLabel(r.startsAt),
       range: timeRange(r.startsAt, r.minutes),
       minutes: r.minutes,

@@ -517,6 +517,8 @@ export type MyInterviewView = {
   round: InterviewRound;
   /** India date, for the 10-day strip and Next up. */
   day: string;
+  /** When it starts, as an ISO time (UTC), for the calendar file. */
+  startsAt: string;
   when: string;
   range: string;
   minutes: number;

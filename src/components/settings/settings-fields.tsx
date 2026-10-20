@@ -302,6 +302,20 @@ export function NotificationFields() {
         </select>
         <small className="text-[0.78rem] text-muted">One email on days you haven&apos;t ridden, India time.</small>
       </label>
+      {/* v44 gap list item 38: English is the only language, so nothing is stored. */}
+      <label className="flex max-w-[320px] flex-col gap-1.5">
+        <span className="text-[0.82rem] font-semibold">Language</span>
+        <select
+          defaultValue="en"
+          disabled={!editable}
+          className="min-h-11 rounded-md border border-line-strong bg-bg px-3 text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70"
+        >
+          <option value="en">English</option>
+          <option value="hi" disabled>
+            Hindi (coming later)
+          </option>
+        </select>
+      </label>
       <div className="flex flex-col">
         <Switch checked={s.emailCompanyMessages} onChange={(on) => setSetting("emailCompanyMessages", on)} disabled={!editable}>
           Messages from companies, by email too

@@ -9,6 +9,7 @@ import { NoticeCard } from "@/components/job-search/notice-card";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
+import { closedGoalLinks } from "@/lib/arrivals/store";
 import { myApplications } from "@/lib/corporate/applications-store";
 import { liveInvitations } from "@/lib/job-search/rules";
 import { jobSearchFor } from "@/lib/job-search/store";
@@ -94,7 +95,7 @@ async function Arrivals() {
         note={<p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">Example applications. Nothing you do here is saved.</p>}
         invitations={(pausedNote) => {
           const live = liveInvitations(exampleApplications, EXAMPLE_TODAY);
-          return live.length ? <ArrivalsView applications={live} today={EXAMPLE_TODAY} note={pausedNote} /> : null;
+          return live.length ? <ArrivalsView applications={live} today={EXAMPLE_TODAY} note={pausedNote} invitationsOnly /> : null;
         }}
       >
         {(top) => <ArrivalsView applications={exampleApplications} today={EXAMPLE_TODAY} note={top} />}
@@ -105,6 +106,7 @@ async function Arrivals() {
   const [applications, search] = await Promise.all([myApplications(account.id, { now }), jobSearchFor(account.id)]);
   const today = indiaDay(now);
   const live = liveInvitations(applications, today);
+  const goalLinks = await closedGoalLinks(account.id, applications, now);
   return (
     <SearchGate
       search={search}
@@ -112,7 +114,14 @@ async function Arrivals() {
       signedIn
       invitations={(pausedNote) =>
         live.length ? (
-          <ArrivalsView applications={live} today={today} withdraw={withdrawAction} actions={{ respond: respondAction, stopSharing: stopSharingAction }} note={pausedNote} />
+          <ArrivalsView
+            applications={live}
+            today={today}
+            withdraw={withdrawAction}
+            actions={{ respond: respondAction, stopSharing: stopSharingAction }}
+            note={pausedNote}
+            invitationsOnly
+          />
         ) : null
       }
     >
@@ -123,6 +132,7 @@ async function Arrivals() {
           withdraw={withdrawAction}
           actions={{ respond: respondAction, stopSharing: stopSharingAction }}
           note={top}
+          goalLinks={goalLinks}
         />
       )}
     </SearchGate>

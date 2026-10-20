@@ -615,7 +615,7 @@ export default function DesignPage() {
           Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
           availability check and headline, the locked email, how the person signs in, private pay, privacy (who can open the profile and what it
           shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications stored for
-          when email is on, download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked.
+          when email is on (with Language: English, Hindi coming later), download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked.
         </p>
         <div className="rounded-lg border border-line px-4 pt-6">
           <SettingsView data={exampleSettings} />
@@ -898,7 +898,9 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Applications and the board (signed in)</h2>
         <p className="text-sm text-muted">
           Build step 4: Express apply (its preview and consent) on Departures (one card per state: can apply, applied, no resume, signed out), Match to this job in
-          words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals. Example data, so nothing saves or moves.
+          words, a job&apos;s six-lane board with the candidate drawer (open a card), and Arrivals: Moving forward, Offers (empty: where offers will
+          land), Waiting to hear with the &quot;more applied&quot; count, Not this time with the line to the goal on the person&apos;s line, and Add to calendar on
+          an accepted interview (a calendar file download). Then Arrivals with no applications. Example data, so nothing saves or moves.
         </p>
         <div className="rounded-lg border border-line p-4">
           <PostedJobs
@@ -932,7 +934,7 @@ export default function DesignPage() {
           <JobBoard board={{ ...exampleBoard, canMove: false, assignedOnly: true, cards: [], withdrawn: 0 }} />
         </div>
         <div className="rounded-lg border border-line p-4">
-          <ArrivalsView applications={exampleApplications} today="2026-10-12" />
+          <ArrivalsView applications={exampleApplications} today="2026-10-12" goalLinks={{ a5: { name: "SIEM", pitstop: 3 } }} />
         </div>
         <div className="rounded-lg border border-line p-4">
           <ArrivalsView applications={[]} today="2026-10-12" />
