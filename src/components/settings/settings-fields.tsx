@@ -227,7 +227,7 @@ export function PrivacyFields() {
 const WHO_SEES_WHAT: { what: string; anyone: string; connections: string }[] = [
   { what: "Find you by name", anyone: "Only with “Let people find me”", connections: "Always" },
   { what: "Open your profile", anyone: "As set in “Who can open your profile”", connections: "Unless you picked “Only you”" },
-  { what: "See your gaps", anyone: "Only with “Everyone who can open your profile”", connections: "Unless you pick “Nobody”" },
+  { what: "See your gaps", anyone: "Only with “Everyone who can open your profile”", connections: "Unless you pick “Nobody”, or your profile is set to “Only you”" },
   { what: "Ask to connect", anyone: "Unless you pick “Nobody”", connections: "Already connected" },
   { what: "Message you", anyone: "One message request, which you accept or delete", connections: "Chat freely" },
   { what: "See who you are connected to", anyone: "Never, only how many people you both know", connections: "Never, only how many people you both know" },
