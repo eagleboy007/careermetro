@@ -10,6 +10,7 @@ import { extractResumeText, ResumeError, type ResumeType } from "./extract";
 import { maskPii } from "./mask";
 import { checkName, NAME_MISMATCH_MESSAGE, NAME_NEEDED_MESSAGE, nameHashes } from "./name-match";
 import { PARSE_DEADLINE_MS, parseResume, type ParseClient } from "./parse";
+import { SAMPLE_MIME } from "./sample-mime";
 import { detectHeadings } from "./sections";
 import type { ResumeScreening } from "@/lib/schemas";
 
@@ -67,10 +68,12 @@ const BUSY: IngestResult = {
 
 async function checkLimits(tx: Db | Tx, owner: Owner, hash: string): Promise<IngestResult | null> {
   const recent = new Date(Date.now() - IN_FLIGHT_MINUTES * 60 * 1000);
-  // Uploads still being parsed are rows already, so they count toward the per-owner and per-client limits.
+  // Uploads still being parsed are rows already, so they count toward the per-owner and per-client limits. The sample
+  // resume has limits of its own (src/lib/resume/sample.ts), so trying it never uses up an upload.
+  const notSample = ne(resumes.mimeType, SAMPLE_MIME);
   const [[byOwnerCount], [byClient], [spent], [inFlight]] = await Promise.all([
-    tx.select({ n: count() }).from(resumes).where(and(uploadedBy(owner), gte(resumes.createdAt, dayAgo()))),
-    tx.select({ n: count() }).from(resumes).where(and(eq(resumes.clientHash, hash), gte(resumes.createdAt, startOfUtcDay()))),
+    tx.select({ n: count() }).from(resumes).where(and(uploadedBy(owner), gte(resumes.createdAt, dayAgo()), notSample)),
+    tx.select({ n: count() }).from(resumes).where(and(eq(resumes.clientHash, hash), gte(resumes.createdAt, startOfUtcDay()), notSample)),
     // Health pings are left out, so a flood of /api/health requests can't pause uploads.
     tx.select({ usd: sum(aiCalls.costUsd) }).from(aiCalls).where(and(gte(aiCalls.createdAt, startOfUtcDay()), ne(aiCalls.purpose, HEALTH_PURPOSE))),
     tx.select({ n: count() }).from(resumes).where(and(eq(resumes.status, "parsing"), gte(resumes.createdAt, recent))),

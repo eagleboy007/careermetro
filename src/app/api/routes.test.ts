@@ -11,6 +11,7 @@ const m = vi.hoisted(() => ({
   confirmProfile: vi.fn(),
   getResumeForOwner: vi.fn(),
   ingestResume: vi.fn(),
+  createSampleResume: vi.fn(),
   deleteExpired: vi.fn(),
   purgeDeleted: vi.fn(),
   renewExpired: vi.fn(async () => 0),
@@ -54,6 +55,7 @@ vi.mock("@/lib/gaps/store", () => ({ rateAnalysis: m.rateAnalysis }));
 vi.mock("@/lib/path/store", () => ({ markStepDone: m.markStepDone }));
 vi.mock("@/lib/resume/store", () => ({ confirmProfile: m.confirmProfile, getResumeForOwner: m.getResumeForOwner }));
 vi.mock("@/lib/resume/ingest", () => ({ ingestResume: m.ingestResume, deleteExpiredAnonymousResumes: m.deleteExpired }));
+vi.mock("@/lib/resume/sample", () => ({ createSampleResume: m.createSampleResume }));
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/account/settings-store", () => ({ clearExpiredUsernameRedirects: m.clearOldLinks }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, reopenUnconfirmedGoals: m.reopenUnconfirmed, removeChoiceGoal: m.removeChoiceGoal, changeGoal: m.changeGoal }));
@@ -88,6 +90,7 @@ import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
 import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
 import { POST as upload } from "@/app/api/resume/route";
+import { POST as trySample } from "@/app/api/resume/sample/route";
 import { OPTIONS as waitlistPreflight, POST as waitlist } from "@/app/api/waitlist/route";
 import { SESSION_COOKIE } from "@/lib/session";
 
@@ -239,6 +242,14 @@ describe("resume download", () => {
     expect((await get("pdf")).status).toBe(409);
   });
 
+  it("never makes a file of the sample resume, which would put someone else's work under the person's name", async () => {
+    m.account = { id: "user-1", name: "Asha Rao" };
+    m.getResumeForOwner.mockResolvedValueOnce({ ...resume(true), sample: true });
+    const res = await get("docx");
+    expect(res.status).toBe(409);
+    expect(await res.text()).toMatch(/sample/i);
+  });
+
   it("sends a PDF by default, never cached, with a plain file name for someone not signed in", async () => {
     m.getResumeForOwner.mockResolvedValueOnce(resume(true));
     const res = await get();
@@ -329,6 +340,34 @@ describe("resume upload", () => {
     m.ingestResume.mockResolvedValueOnce({ ok: true, resumeId: ID });
     await upload(post(form({ consent: "yes", text: "My resume" })));
     expect(m.ingestResume.mock.calls[0][0].owner.sessionId).toBe(m.jar!.values.get(SESSION_COOKIE));
+  });
+});
+
+describe("try a sample resume", () => {
+  const post = (origin: string | null = SITE, headers: Record<string, string> = {}) =>
+    new Request(SITE + "/api/resume/sample", { method: "POST", headers: { ...(origin ? { origin } : {}), ...headers } });
+
+  it("needs our own site, and makes nothing for another one", async () => {
+    for (const origin of [null, "https://evil.example"]) expect((await trySample(post(origin))).status).toBe(403);
+    expect(m.createSampleResume).not.toHaveBeenCalled();
+  });
+
+  it("makes the sample for the owner with a hashed client, never parses, and passes on the limit", async () => {
+    m.createSampleResume.mockResolvedValueOnce({ ok: true, resumeId: ID });
+    expect(await json(await trySample(post(SITE, { "x-forwarded-for": "203.0.113.7" })))).toEqual({ status: 200, body: { ok: true, resumeId: ID } });
+    const input = m.createSampleResume.mock.calls[0][0];
+    expect(input.owner).toEqual({ sessionId: SESSION });
+    expect(input.clientHash).not.toContain("203.0.113.7");
+    expect(m.parseResume).not.toHaveBeenCalled();
+    expect(m.ingestResume).not.toHaveBeenCalled();
+
+    m.createSampleResume.mockResolvedValueOnce({ ok: false, status: 429, code: "rate_limited", message: "Too many." });
+    expect(await json(await trySample(post()))).toEqual({ status: 429, body: { ok: false, error: "Too many." } });
+
+    m.createSampleResume.mockRejectedValueOnce(new Error("Failed query"));
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect((await trySample(post())).status).toBe(500);
+    errors.mockRestore();
   });
 });
 

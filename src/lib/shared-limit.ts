@@ -41,6 +41,12 @@ export const LIMITS = {
   waitlistPerIp: { bucket: "waitlist", max: 10, windowMs: HOUR },
   /** Files that couldn't be read, per network address per day (T18). Generous: a college network shares one address. */
   failedReadsPerIp: { bucket: "failed-read", max: 30, windowMs: 24 * HOUR },
+  /**
+   * "Try a sample resume" (v44 gap item 3) per owner (signed in or not) and per network address a day, each try counted.
+   * No model call, so only enough to stop a script filling the resumes table; separate from the upload limits.
+   */
+  sampleResumesPerOwner: { bucket: "sample-resume", max: 10, windowMs: 24 * HOUR },
+  sampleResumesPerIp: { bucket: "sample-resume-ip", max: 60, windowMs: 24 * HOUR },
   /** New message requests one person sends to people who aren't connections (dev/inbox-plan.md). */
   inboxRequestsPerUser: { bucket: "inbox-request", max: 20, windowMs: 24 * HOUR },
   /** Reports one person files: each starts IT Rules deadlines, so the grievance queue can't be flooded. */

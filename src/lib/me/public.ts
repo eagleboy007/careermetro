@@ -66,6 +66,7 @@ export const PUBLIC_KEYS = [
   "proofs",
   "certifications",
   "resumeReadOn",
+  "resumeSample",
   // Nearby lines are only ever the person's own: always null here.
   "nearby",
   "changeRoleHref",
@@ -84,17 +85,21 @@ const othersSee = (c: MeProfile["experience"][number]["check"]) => (c?.state ===
  * period aren't in a profile at all. Each part is copied field by field, so nothing rides along unseen.
  */
 export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
+  // The sample resume is a made-up person's: nothing read from it ever shows to others as this person's.
+  const sample = me.resumeSample;
   const out: MeProfile = {
     name: me.name,
     headline: me.headline,
     aim: parts.showTargetRole ? me.aim : null,
     stats: me.stats
-      .filter((s) => !s.private && (parts.showSkills || s.label !== "skills found"))
+      .filter((s) => !s.private && ((parts.showSkills && !sample) || s.label !== "skills found"))
       .map((s) => ({ value: s.value, label: s.label, private: false })),
     journey: [],
     journeyLabel: "",
     experience: parts.showExperience
-      ? me.experience.map((e, i) => ({
+      ? me.experience
+          .filter((e) => !sample || e.added)
+          .map((e, i) => ({
           // An added role's id holds its row id, which is the owner's for Edit: others get a plain one.
           id: e.added ? `added-${i}` : e.id,
           title: e.title,
@@ -105,12 +110,14 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
           check: othersSee(e.check),
         }))
       : [],
-    experienceTotal: parts.showExperience ? me.experienceTotal : null,
-    education: parts.showEducation ? me.education.map((e) => ({ qualification: e.qualification, institution: e.institution, year: e.year })) : [],
+    experienceTotal: parts.showExperience && !sample ? me.experienceTotal : null,
+    education: parts.showEducation
+      ? me.education.filter((e) => !sample || e.added).map((e) => ({ qualification: e.qualification, institution: e.institution, year: e.year }))
+      : [],
     skills: {
-      have: parts.showSkills ? [...me.skills.have] : [],
-      weak: parts.showGaps ? [...me.skills.weak] : [],
-      missing: parts.showGaps ? [...me.skills.missing] : [],
+      have: parts.showSkills && !sample ? [...me.skills.have] : [],
+      weak: parts.showGaps && !sample ? [...me.skills.weak] : [],
+      missing: parts.showGaps && !sample ? [...me.skills.missing] : [],
     },
     interests: [...me.interests],
     stories: parts.showExperience
@@ -130,8 +137,9 @@ export function publicProfile(me: MeProfile, parts: PublicParts): MeProfile {
         }))
       : [],
     proofs: [],
-    certifications: parts.showCertifications ? publicCertifications(me.certifications) : [],
+    certifications: parts.showCertifications ? publicCertifications(me.certifications.filter((c) => !sample || !c.fromResume)) : [],
     resumeReadOn: null,
+    resumeSample: false,
     nearby: null,
     changeRoleHref: null,
   };

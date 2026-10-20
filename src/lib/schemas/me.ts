@@ -131,6 +131,8 @@ export const meProfile = z.object({
   certifications: z.array(meCertification).max(30),
   /** When the resume was read, or null with no resume. */
   resumeReadOn: z.string().max(40).nullable(),
+  /** The resume is the sample ("Try a sample resume"), so Me labels it "Sample". Only the person sees it. */
+  resumeSample: z.boolean().default(false),
   /** Nearby lines from the target role (dev/nearby-lines-plan.md). Only the person sees them. Null before there are gaps. */
   nearby: nearbyLines.nullable().default(null),
   /** The existing role picker, for switching target role. Null without a resume. */

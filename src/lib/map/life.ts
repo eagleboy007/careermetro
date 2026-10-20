@@ -6,9 +6,10 @@ import { decimalYear, monthLabel, readYearMonth } from "./life-layout";
 /**
  * The Life line from a confirmed profile, in plain code. Work roles become moments by their start date, education by
  * its year, certificates by the month they were earned, and the journey starts when the first education ends (or at
- * the first job). A certificate with no date waits in `undated` until the person adds one. Interests come with the
- * profile page (build step 9). Anything that can't be placed sensibly (no date, a year before 1950, a date still
- * ahead) waits in `undated` too. Dotted links between moments come from `lifeLinks`.
+ * the first job). A certificate with no date waits in `undated` until the person adds one. Interests come from Me
+ * (src/lib/me/edit-store.ts), which keeps no dates for them: they go in as one undated row at the end of `undated`
+ * (see `interestsRow`). Anything that can't be placed sensibly (no date, a year before 1950, a date still ahead) waits
+ * in `undated` too. Dotted links between moments come from `lifeLinks`.
  */
 const EARLIEST = 1950;
 /** Caps that keep a very long resume inside the schema's 120 moments. */
@@ -16,6 +17,38 @@ const MAX_EDUCATION = 20;
 const MAX_ROLES = 80;
 const MAX_CERTIFICATES = 16;
 const MAX_LINKS = 12;
+/** The schema's caps on `undated`: 60 rows of up to 160 characters. */
+const MAX_UNDATED = 60;
+const UNDATED_NAME = 160;
+const INTEREST_SEPARATOR = " · ";
+
+/**
+ * The person's interests as one undated Life line row, "Data · Cricket stats · Public speaking", in the order they
+ * were added. Blank and repeated ones (ignoring case) are left out. What doesn't fit in the row's 160 characters is
+ * counted at the end ("+3"), never cut mid-word. Null with no interests.
+ */
+export function interestsRow(interests: readonly string[]): LifeLine["undated"][number] | null {
+  const seen = new Set<string>();
+  const names = interests
+    .map((i) => i.replace(/\s+/g, " ").trim())
+    .filter((i) => {
+      const key = i.toLowerCase();
+      if (!i || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  if (!names.length) return null;
+  const all = names.join(INTEREST_SEPARATOR);
+  if (all.length <= UNDATED_NAME) return { row: "interests", name: all };
+  // Too long for one row: as many as fit, then how many more. The first one always shows, clipped if it alone is too long.
+  const more = (n: number) => `${INTEREST_SEPARATOR}+${n}`;
+  let shown = 1;
+  while (shown < names.length && names.slice(0, shown + 1).join(INTEREST_SEPARATOR).length + more(names.length - shown - 1).length <= UNDATED_NAME) shown++;
+  const tail = more(names.length - shown);
+  let head = names.slice(0, shown).join(INTEREST_SEPARATOR);
+  if (head.length + tail.length > UNDATED_NAME) head = `${head.slice(0, UNDATED_NAME - tail.length - 1).trimEnd()}…`;
+  return { row: "interests", name: `${head}${tail}` };
+}
 
 /** "2019-2023", "2019 – 2023" or "2023" → 2023, the year it ended. Null for "2019 – Present" or no year. */
 function educationYear(value: string | null): ReturnType<typeof readYearMonth> {
@@ -25,7 +58,15 @@ function educationYear(value: string | null): ReturnType<typeof readYearMonth> {
 
 export function lifeFromProfile(
   profile: Profile,
-  opts: { joinedAt: Date; now: Date; destination: string; /** The current analysis's met skills, for "counts toward". */ metSkillIds?: readonly string[] },
+  opts: {
+    joinedAt: Date;
+    now: Date;
+    destination: string;
+    /** The current analysis's met skills, for "counts toward". */
+    metSkillIds?: readonly string[];
+    /** The interests the person added on Me, oldest first. */
+    interests?: readonly string[];
+  },
 ): LifeLine {
   const now = decimalYear(opts.now);
   const moments: LifeMoment[] = [];
@@ -139,8 +180,17 @@ export function lifeFromProfile(
     destination: opts.destination,
     moments: moments.map(clipMoment),
     links: lifeLinks(profile, moments, { now: opts.now, destination: opts.destination, metSkillIds: opts.metSkillIds ?? [] }),
-    undated: undated.filter((u) => u.name.trim()).slice(0, 60).map((u) => ({ ...u, name: u.name.slice(0, 160) })),
+    undated: undatedRows(undated, interestsRow(opts.interests ?? [])),
   });
+}
+
+/** The resume's undated lines, then the interests row last, within the schema's caps; the interests row always fits. */
+function undatedRows(fromResume: LifeLine["undated"], interests: LifeLine["undated"][number] | null): LifeLine["undated"] {
+  const rows = fromResume
+    .filter((u) => u.name.trim())
+    .slice(0, interests ? MAX_UNDATED - 1 : MAX_UNDATED)
+    .map((u) => ({ ...u, name: u.name.slice(0, UNDATED_NAME) }));
+  return interests ? [...rows, interests] : rows;
 }
 
 const clipMoment = (m: LifeMoment): LifeMoment => ({ ...m, name: m.name.slice(0, 80), heading: m.heading.slice(0, 160), detail: m.detail.slice(0, 400) });

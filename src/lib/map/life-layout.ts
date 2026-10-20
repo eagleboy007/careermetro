@@ -51,7 +51,22 @@ export type LifeLayout = {
   /** Rows whose moments are all older than the window shown. */
   earlierRows: LifeRow[];
   hidden: { count: number; fromYear: number; toYear: number } | null;
+  /**
+   * The person's interests from Me, which have no dates: drawn as one row along Interests when that row has no dated
+   * moments, cut to fit the map (the panel shows them all). Null with none.
+   */
+  undatedInterests: string | null;
 };
+
+/** About this many characters fit along the Interests row. */
+const INTERESTS_ON_MAP = 96;
+
+/** The interests row for the map: whole interests only, with "…" when some don't fit. */
+function interestsOnMap(name: string): string {
+  if (name.length <= INTERESTS_ON_MAP) return name;
+  const cut = name.slice(0, INTERESTS_ON_MAP).lastIndexOf(" · ");
+  return `${cut > 0 ? name.slice(0, cut) : name.slice(0, INTERESTS_ON_MAP - 1).trimEnd()} …`;
+}
 
 /** "Last 5 years" for careers over 7 years, else the whole career. */
 export function defaultZoom(line: LifeLine): LifeZoom {
@@ -169,7 +184,14 @@ export function layoutLife(line: LifeLine, zoom: LifeZoom = defaultZoom(line)): 
     hidden: hiddenMoments.length
       ? { count: hiddenMoments.length, fromYear: Math.floor(Math.min(...hiddenMoments.map((m) => m.t))), toYear: Math.floor(from) }
       : null,
+    undatedInterests: interestsLine(line),
   };
+}
+
+/** The undated interests row's text for the map, or null. */
+function interestsLine(line: LifeLine): string | null {
+  const row = line.undated.find((u) => u.row === "interests");
+  return row ? interestsOnMap(row.name) : null;
 }
 
 const anchorAt = (x: number): "start" | "middle" | "end" => (x < X0 + 60 ? "start" : x > X1 - 40 ? "end" : "middle");

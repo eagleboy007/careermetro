@@ -41,6 +41,21 @@ describe("the public profile", () => {
     expect(out.skills.weak).toEqual(me.skills.weak);
   });
 
+  it("shows nothing read from the sample resume as the person's, only what they added on Me", () => {
+    const sample = { ...me, resumeSample: true };
+    expect(me.experience.some((e) => e.added) && me.experience.some((e) => !e.added)).toBe(true);
+    const out = publicProfile(sample, all);
+    expect(out.experience).toHaveLength(me.experience.filter((e) => e.added).length);
+    expect(out.experience.map((e) => e.title)).toEqual(me.experience.filter((e) => e.added).map((e) => e.title));
+    expect(out.education.map((e) => e.qualification)).toEqual(me.education.filter((e) => e.added).map((e) => e.qualification));
+    expect(out.experienceTotal).toBeNull();
+    expect(out.skills).toEqual({ have: [], weak: [], missing: [] });
+    expect(out.stats.some((s) => s.label === "skills found")).toBe(false);
+    expect(out.certifications.length).toBeLessThanOrEqual(me.certifications.filter((c) => !c.fromResume).length);
+    expect(out.resumeSample).toBe(false);
+    expect(Object.keys(out).sort()).toEqual([...PUBLIC_KEYS].sort());
+  });
+
   it("is built from the allowed keys only, so a field added to the person's own profile never rides along", () => {
     const allowed = [...PUBLIC_KEYS].sort();
     expect(Object.keys(publicProfile(me, all)).sort()).toEqual(allowed);

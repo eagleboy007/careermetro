@@ -6,11 +6,12 @@ import { displayName } from "@/lib/account/name";
 import { writeAudit } from "./audit-line";
 import { assignedApplications, assignedSubquery, cancelUpcoming, companyInterviewsOf, myInterviewsOf, offeredState, phoneAudience } from "./interview-reads";
 import { decryptPhone } from "./phone";
-import { currentAnalysis } from "@/lib/gaps/current";
+import { currentAnalysis as anyCurrentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { notify } from "@/lib/notifications/store";
+import { isSampleResumeId } from "@/lib/resume/sample";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
 import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
@@ -101,6 +102,15 @@ const companyMaySee = (app: { closedAt: Date | null; companyAccessEndsAt: Date |
   (!app.companyAccessEndsAt || app.companyAccessEndsAt > now) && (!app.closedAt || now.getTime() - app.closedAt.getTime() < COMPANY_ACCESS_DAYS * DAY);
 
 /* Reading helpers ------------------------------------------------------------------------------------------------- */
+
+/**
+ * The person's current analysis for applying, or null. The sample resume ("Try a sample resume") is a made-up person's,
+ * so it counts as no resume here: it is never sent to a company as theirs.
+ */
+async function currentAnalysis(userId: string, db: Parameters<typeof anyCurrentAnalysis>[1]) {
+  const analysis = await anyCurrentAnalysis(userId, db);
+  return analysis && !(await isSampleResumeId(analysis.resumeId, db)) ? analysis : null;
+}
 
 /** The latest saved profile of each resume. */
 async function latestProfiles(resumeIds: string[], db: Db | Tx): Promise<Map<string, Profile>> {

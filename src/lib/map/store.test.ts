@@ -116,6 +116,13 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect(lifeLine.safeParse(life).success).toBe(true);
     expect(life).toMatchObject({ destination: role.title });
     expect(life!.moments.some((m) => m.id === "joined")).toBe(true);
+    // Interests added on Me join as one undated row at the end, oldest first.
+    expect(life!.undated.some((u) => u.row === "interests")).toBe(false);
+    await db!.insert(schema.userInterests).values([
+      { userId, name: "Cricket stats", nameKey: "cricket stats", createdAt: new Date("2026-10-01T00:00:00Z") },
+      { userId, name: "Marathi theatre", nameKey: "marathi theatre", createdAt: new Date("2026-10-02T00:00:00Z") },
+    ]);
+    expect((await lifeLineFor(userId, new Date(), db!))!.undated.at(-1)).toEqual({ row: "interests", name: "Cricket stats · Marathi theatre" });
     expect(await lifeLineFor(await user("nolife"), new Date(), db!)).toBeNull();
     // A page that already read the analysis hands it on (docs/plans/perf-pass.md): the same lines, and none for null.
     const read = await currentAnalysis(userId, db!);

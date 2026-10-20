@@ -18,6 +18,7 @@ import type { CurrentAnalysis } from "@/lib/gaps/current";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { trackRank } from "@/lib/tracks/apply";
 import { trackedCurrentAnalysis } from "@/lib/tracks/store";
+import { interestsOf } from "@/lib/me/edit-store";
 import { lifeFromProfile } from "./life";
 import { otherLines } from "./other-lines";
 
@@ -174,16 +175,17 @@ export async function mapLineFor(
 const hours = (minutes: number) => (minutes < 60 ? `${minutes} min` : `${Math.round(minutes / 30) / 2} h`);
 
 /**
- * The signed-in person's Life line, from the latest saved profile of the resume behind their current gaps and the day
- * they joined. Null before there is a current analysis, like the role line. `read` is `currentAnalysis` already read
+ * The signed-in person's Life line, from the latest saved profile of the resume behind their current gaps, the day
+ * they joined and the interests they added on Me. Null before there is a current analysis, like the role line. `read` is `currentAnalysis` already read
  * in this request (null for none); left out, it is read here.
  */
 export async function lifeLineFor(userId: string, now: Date, db: Db = getDb(), read?: CurrentAnalysis | null): Promise<LifeLine | null> {
   const analysis = read === undefined ? await currentAnalysis(userId, db) : read;
   if (!analysis) return null;
-  const [resume, [user]] = await Promise.all([
+  const [resume, [user], interests] = await Promise.all([
     getResumeForOwner(analysis.resumeId, { userId }, db),
     db.select({ createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
+    interestsOf(userId, db),
   ]);
   if (!resume || !user) return null;
   const role = roleProfiles.find((r) => r.slug === analysis.result.roleSlug);
@@ -192,5 +194,6 @@ export async function lifeLineFor(userId: string, now: Date, db: Db = getDb(), r
     now,
     destination: role?.title ?? analysis.result.roleSlug,
     metSkillIds: analysis.result.metSkillIds,
+    interests,
   });
 }

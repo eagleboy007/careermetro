@@ -38,6 +38,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { OFFLINE_NOTICE, PageNotice } from "@/components/ui/page-notice";
 import { ChoiceTag } from "@/components/ui/choice-tag";
+import { SampleResumeNote, SampleTag } from "@/components/ui/sample-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
 import { TrackPanel } from "@/components/today/track-picker";
@@ -50,7 +51,7 @@ import { CertificateForm } from "@/components/proof/certificate-form";
 import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
-import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
+import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { DEPARTURES_LEDE } from "@/lib/departures/filter";
@@ -464,7 +465,7 @@ export default function DesignPage() {
           <StreakChip days={11} todayCounted={false} />
           <StreakChip days={12} todayCounted />
         </div>
-        <TodayStatePreview data={exampleToday} upload={<UploadForm demo rolePick />} />
+        <TodayStatePreview data={exampleToday} upload={<UploadForm demo rolePick sample />} />
         <p className="text-sm text-muted">
           Live cards for a signed-in person: the signal check is checked on the server (waiting for the answer, and after a try that didn&apos;t go
           through); the board is grouped by role and city from live posts, or says why it is empty; On your line on the first day has no tip until
@@ -510,6 +511,12 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Map (signed in)</h2>
         <p className="text-sm text-muted">The line drawn from the gaps and the path, and the Life line. Tap a pitstop or moment for its panel. Below it, the map before a resume.</p>
         <MetroMap line={exampleMapLine} life={exampleLifeLine} />
+        <p className="text-sm text-muted">
+          Life line, Interests row: interests added on Me have no dates, so they run as one undated row and the panel lists them with a link to edit them.
+          With none yet, the row links to the profile to add them.
+        </p>
+        <MetroMap line={exampleMapLine} life={exampleLifeLineUndatedInterests} initialMode="life" />
+        <MetroMap line={exampleMapLine} life={exampleLifeLineNoInterests} initialMode="life" />
         <MetroMap line={null} />
         <p className="text-sm text-muted">With &quot;Your choice&quot; goals: off the line, listed under the key, each with its tag and Remove from my goals.</p>
         <MetroMap line={exampleChoiceMapLine} />
@@ -1480,6 +1487,14 @@ export default function DesignPage() {
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
           <p className="text-sm text-muted">Shown above the check once the resume is confirmed.</p>
           <ResumeDownload resumeId="example" named={false} demo />
+          <p className="text-sm text-muted">
+            The sample resume (&ldquo;Try a sample resume&rdquo; on Today): this note tops the check, and the tag also marks the Resume card on Me
+            (&ldquo;Sample resume&rdquo;).
+          </p>
+          <SampleResumeNote />
+          <div className="flex items-center gap-2 text-sm">
+            Sample resume <SampleTag />
+          </div>
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">

@@ -8,6 +8,7 @@ import { ResumeDownload } from "@/components/resume/resume-download";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
+import { SampleResumeNote } from "@/components/ui/sample-tag";
 import { resumeName } from "@/lib/account/name";
 import { currentAccount } from "@/lib/auth/server";
 import { getResumeForOwner } from "@/lib/resume/store";
@@ -26,6 +27,7 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
   const named = Boolean(resumeName(owner?.userId ? await currentAccount() : null));
   return (
     <div className="flex flex-col gap-6">
+      {resume.sample && <SampleResumeNote />}
       {resume.confirmed && (
         <p className="rounded-lg border border-line bg-surface p-4 text-sm">
           You&apos;ve already confirmed this resume.{" "}
@@ -35,9 +37,10 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
           or change anything below and confirm again.
         </p>
       )}
-      {resume.confirmed && <ResumeDownload resumeId={resume.resumeId} named={named} />}
+      {resume.confirmed && !resume.sample && <ResumeDownload resumeId={resume.resumeId} named={named} />}
       {/* Not confirmed yet: the download appears as soon as "Looks right" saves (FR-20; the builder's review sends people here for it). */}
-      <ProfileEditor resumeId={resume.resumeId} initial={resume.profile} download={resume.confirmed ? undefined : { named }} />
+      {/* The sample has none: a file of it would put a made-up person's work under the person's name. */}
+      <ProfileEditor resumeId={resume.resumeId} initial={resume.profile} download={resume.confirmed || resume.sample ? undefined : { named }} />
     </div>
   );
 }

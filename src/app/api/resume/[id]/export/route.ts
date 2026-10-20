@@ -38,6 +38,8 @@ export async function GET(request: Request, { params }: RouteContext<"/api/resum
     const resume = await getResumeForOwner(id, owner);
     if (!resume) return fail(404, "We couldn't find this resume. It may have expired.");
     if (!resume.confirmed) return fail(409, "Confirm your resume first, then download it.");
+    // The sample is a made-up person's work: a file of it under the person's name would be a resume that isn't theirs.
+    if (resume.sample) return fail(409, "The sample resume can't be downloaded. Upload your own resume to download it.");
 
     const doc = buildResumeDocument(resume.profile, resumeName(owner.userId ? await currentAccount() : null));
     const bytes = format.data === "pdf" ? await renderResumePdf(doc) : await renderResumeDocx(doc);

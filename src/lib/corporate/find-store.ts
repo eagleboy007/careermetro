@@ -1,6 +1,7 @@
 import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNull, lt, ne, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import {
   applications,
   blocks,
@@ -204,7 +205,14 @@ async function currentResumes(userIds: string[], db: Db | Tx): Promise<Map<strin
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`))
+    .where(
+      and(
+        inArray(resumes.userId, userIds),
+        // The sample resume is a made-up person's: a company never finds someone by it.
+        ne(resumes.mimeType, SAMPLE_MIME),
+        sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`,
+      ),
+    )
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
     const parsed = gapAnalysis.safeParse(r.result);

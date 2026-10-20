@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { lifeLine, type LifeLine, type Profile } from "@/lib/schemas";
-import { exampleLifeLine } from "./fixtures";
-import { lifeFromProfile } from "./life";
+import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests } from "./fixtures";
+import { interestsRow, lifeFromProfile } from "./life";
 import { defaultZoom, layoutLife, readYearMonth } from "./life-layout";
 
 const profile = (p: Partial<Profile>): Profile => ({ headline: null, totalYearsExperience: null, roles: [], skills: [], education: [], certifications: [], ...p });
@@ -158,6 +158,58 @@ describe("lifeFromProfile", () => {
     const roles = Array.from({ length: 150 }, (_, i) => ({ title: `Role ${i}`, employer: "Acme", start: `${1960 + Math.floor(i / 3)}-01`, end: null, highlights: [] }));
     const education = Array.from({ length: 40 }, (_, i) => ({ qualification: `Course ${i}`, institution: "X", year: String(1960 + i) }));
     expect(() => lifeFromProfile(profile({ roles, education }), opts)).not.toThrow();
+  });
+});
+
+describe("interests on the Life line", () => {
+  it("go in as one undated row at the end, after the resume's undated lines, in the order they were added", () => {
+    const line = lifeFromProfile(profile({ certifications: [{ name: "Google Data Analytics", earned: null, expires: null }] }), {
+      ...opts,
+      interests: ["Data", "Cricket stats", "Public speaking"],
+    });
+    expect(lifeLine.safeParse(line).success).toBe(true);
+    expect(line.undated).toEqual([
+      { row: "certificates", name: "Google Data Analytics" },
+      { row: "interests", name: "Data · Cricket stats · Public speaking" },
+    ]);
+    // Undated, so never a moment on the map and never a link.
+    expect(line.moments.some((m) => m.row === "interests")).toBe(false);
+  });
+
+  it("add no row when there are none, or only blank ones", () => {
+    expect(lifeFromProfile(profile({}), opts).undated).toEqual([]);
+    expect(lifeFromProfile(profile({}), { ...opts, interests: [] }).undated).toEqual([]);
+    expect(lifeFromProfile(profile({}), { ...opts, interests: ["  ", ""] }).undated).toEqual([]);
+  });
+
+  it("leave out repeats and spare spaces, and count what doesn't fit instead of cutting a word", () => {
+    expect(interestsRow([" Data ", "data", "Cricket   stats"])).toEqual({ row: "interests", name: "Data · Cricket stats" });
+    const many = Array.from({ length: 30 }, (_, i) => `Interest number ${i + 1}`);
+    const row = interestsRow(many)!;
+    expect(row.name.length).toBeLessThanOrEqual(160);
+    const shown = row.name.split(" · ");
+    const more = Number(shown.pop()!.replace("+", ""));
+    expect(shown.every((s, i) => s === many[i])).toBe(true);
+    expect(shown.length + more).toBe(30);
+  });
+
+  it("always keep their row when the resume fills the undated list", () => {
+    const roles = Array.from({ length: 70 }, (_, i) => ({ title: `Role ${i}`, employer: "Acme", start: null, end: null, highlights: [] }));
+    const line = lifeFromProfile(profile({ roles }), { ...opts, interests: ["Running"] });
+    expect(lifeLine.safeParse(line).success).toBe(true);
+    expect(line.undated).toHaveLength(60);
+    expect(line.undated.at(-1)).toEqual({ row: "interests", name: "Running" });
+  });
+
+  it("run along the Interests row on the map when it has no dated moments, cut to whole interests", () => {
+    expect(layoutLife(exampleLifeLineUndatedInterests).undatedInterests).toBe("Data · Cricket stats · Public speaking · Marathi theatre");
+    expect(layoutLife(exampleLifeLineNoInterests).undatedInterests).toBeNull();
+    expect(layoutLife(exampleLifeLine).undatedInterests).toBeNull();
+    const long = { ...exampleLifeLineNoInterests, undated: [interestsRow(Array.from({ length: 12 }, (_, i) => `Hobby ${i + 1} outdoors`))!] };
+    const text = layoutLife(long).undatedInterests!;
+    expect(text.length).toBeLessThanOrEqual(98);
+    expect(text.endsWith(" …")).toBe(true);
+    expect(text.slice(0, -2).split(" · ").every((s) => /^Hobby \d+ outdoors$/.test(s))).toBe(true);
   });
 });
 

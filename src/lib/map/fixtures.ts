@@ -78,3 +78,16 @@ export const exampleLifeLine: LifeLine = {
     moment({ id: "i3", row: "interests", t: 2025.9, date: "Nov 2025", name: "AI for everyone", heading: "AI for everyone (free course)", detail: "Prompting and AI basics." }),
   ],
 };
+
+/**
+ * The Life line as a profile builds it: interests from Me have no dates, so they run as one undated row along
+ * Interests (lifeFromProfile's `interestsRow`).
+ */
+export const exampleLifeLineUndatedInterests: LifeLine = {
+  ...exampleLifeLine,
+  moments: exampleLifeLine.moments.filter((m) => m.row !== "interests"),
+  undated: [{ row: "interests", name: "Data · Cricket stats · Public speaking · Marathi theatre" }],
+};
+
+/** The same, before any interests are added on Me: the row asks for them. */
+export const exampleLifeLineNoInterests: LifeLine = { ...exampleLifeLineUndatedInterests, undated: [] };
