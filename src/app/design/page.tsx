@@ -65,6 +65,7 @@ import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { NetworkView } from "@/components/network/network-view";
+import { ProfileConnect } from "@/components/network/profile-connect";
 import { BuilderView } from "@/components/builder/builder-view";
 import { EliteBadge } from "@/components/elite/elite-badge";
 import { EliteView } from "@/components/elite/elite-view";
@@ -126,7 +127,7 @@ import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
-import { exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
+import { exampleInCommon, exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { exampleBuilder } from "@/lib/builder/fixtures";
 import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe } from "@/lib/me/fixtures";
@@ -703,10 +704,19 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Network (signed in)</h2>
         <p className="text-sm text-muted">
           The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
-          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline.
-          Example data, so nothing sends; Find people shows example results.
+          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline,
+          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; and
+          Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
+          example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />
+        <h3 className="text-lg font-semibold">On a profile: connect, shared counts and In common with you</h3>
+        <p className="text-sm text-muted">
+          The strip of shared counts, then skills, &ldquo;Gaps and path&rdquo; (only when the viewer may see the owner&rsquo;s gaps and both aim at the
+          role the owner shows) and mutual connections (only people both know). Then with nothing in common: no gaps shown and no mutual connections.
+        </p>
+        <ProfileConnect personId="ex-am" name="Arjun Mehta" initial="connected" inCommon={exampleInCommon} />
+        <ProfileConnect personId="ex-ak" name="Aditi Kulkarni" initial="none" inCommon={{ skills: [], role: null, path: null, mutual: [] }} />
       </section>
 
       <section className="flex flex-col gap-4">

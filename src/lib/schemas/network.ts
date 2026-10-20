@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CONNECTION_HOWS, GAPS_VISIBLE_TO, NETWORK_QUERY_MAX, REQUESTS_FROM } from "./constants";
+import { REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
 
 /*
  * Network (FR-49, handoff 12j, docs/plans/network-plan.md): two-way connections, requests and name search. What a
@@ -55,3 +56,14 @@ export const networkSettings = z.object({ peopleCanFind: z.boolean(), gapsVisibl
 export type NetworkSettings = z.infer<typeof networkSettings>;
 /** A new user's Network choices: not findable, gaps to connections (ruling 4), requests from anyone. */
 export const DEFAULT_NETWORK_SETTINGS: NetworkSettings = { peopleCanFind: false, gapsVisibleTo: "connections", requestsFrom: "anyone" };
+
+/**
+ * Report a person from Network (a row or their profile, handoff 12j): a reason and an optional note, into the same
+ * review queue as Inbox reports (FR-45). The person reported isn't told who reported.
+ */
+export const personReportInput = z.object({
+  personId: z.uuid(),
+  reason: z.enum(REPORT_REASONS),
+  note: z.string().trim().max(REPORT_NOTE_MAX_CHARS).optional(),
+});
+export type PersonReportInput = z.input<typeof personReportInput>;

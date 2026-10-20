@@ -13,8 +13,8 @@ import { eliteBadgeFor } from "@/lib/elite/store";
 import { publicProfile } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
 import { seesGaps } from "@/lib/network/rules";
-import { connectionWith, inCommonWith, networkSettingsFor } from "@/lib/network/store";
-import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, withdrawConnection } from "../../network/actions";
+import { connectionWith, inCommonWith, mutualConnections, networkSettingsFor, pathTogetherWith } from "@/lib/network/store";
+import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, reportFromNetwork, withdrawConnection } from "../../network/actions";
 
 // A generic title: the person's name stays out of tab titles, history sync and any analytics that read titles.
 export const metadata: Metadata = { title: "Profile · CareerMetro", robots: { index: false, follow: false } };
@@ -38,19 +38,24 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
   if (answer.kind === "redirect") redirect(`/u/${answer.to}`);
   const { owner } = answer;
   const yours = owner.id === viewer.id;
-  const [me, state, network, inCommon, eliteBadge] = await Promise.all([
+  const [me, state, network, inCommon, eliteBadge, mutual] = await Promise.all([
     meFor(owner.id, now),
     connectionWith(viewer.id, owner.id, { now }),
     networkSettingsFor(owner.id),
     inCommonWith(viewer.id, owner),
     // The Elite badge (FR-50) shows only while Elite is on and its owner turned it on. It ranks nothing.
     eliteBadgeFor(owner.id),
+    // Only people both are connected to, never anyone either can't see (FR-49).
+    yours ? Promise.resolve([]) : mutualConnections(viewer.id, owner.id),
   ]);
   if (!me) notFound();
   // Gaps follow the owner's gaps choice (FR-49): a connection sees gaps shared with connections. The owner's own view
   // here is "as others see it", so it never counts as a connection.
   const connected = !yours && state === "connected";
   const showGaps = seesGaps(network.gapsVisibleTo, { self: false, connected });
+  // "Gaps and path" only when the viewer may see the owner's gaps and both aim at the role the owner shows, so it never
+  // reveals a gap or a target role the owner hides.
+  const path = !yours && showGaps && inCommon.role ? await pathTogetherWith(viewer.id, owner.id, network.gapsVisibleTo === "profile" ? "profile" : "connections") : null;
   return (
     <div className="flex flex-col gap-4">
       {yours && (
@@ -70,8 +75,16 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
           personId={owner.id}
           name={me.name}
           initial={state}
-          inCommon={inCommon}
-          actions={{ connect: connectTo, answer: answerConnection, withdraw: withdrawConnection, remove: removeFromNetwork, block: blockFromNetwork, message: messageConnection }}
+          inCommon={{ skills: owner.settings.showSkills ? inCommon.skills : null, role: inCommon.role, path, mutual }}
+          actions={{
+            connect: connectTo,
+            answer: answerConnection,
+            withdraw: withdrawConnection,
+            remove: removeFromNetwork,
+            block: blockFromNetwork,
+            message: messageConnection,
+            report: reportFromNetwork,
+          }}
         />
       )}
       <MeView

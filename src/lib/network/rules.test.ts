@@ -1,6 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { networkQuery, networkSearchInput } from "@/lib/schemas/network";
-import { askAgainFrom, byNetworkRank, connectionState, handleOf, mutualOf, networkMatches, pairOf, requestOpen, seesGaps, senderSeesRequested, skillsInCommon, type RequestRow } from "./rules";
+import {
+  askAgainFrom,
+  byNetworkRank,
+  connectionState,
+  currentStep,
+  handleOf,
+  lineOrder,
+  mutualOf,
+  networkMatches,
+  pairOf,
+  pathTogether,
+  requestOpen,
+  seesGaps,
+  senderSeesRequested,
+  skillsInCommon,
+  type LineGoalRow,
+  type RequestRow,
+} from "./rules";
 
 const now = new Date("2026-10-20T10:00:00Z");
 const days = (n: number) => new Date(now.getTime() - n * 24 * 3600_000);
@@ -87,5 +104,26 @@ describe("network rules", () => {
     expect(networkQuery.parse("  pri   nai ")).toBe("pri nai");
     expect(networkQuery.safeParse("x".repeat(81)).success).toBe(false);
     expect(networkSearchInput.parse({ q: "asha" })).toEqual({ q: "asha", sameRole: false, sameCity: false, verified: false });
+  });
+
+  describe("Gaps and path", () => {
+    const goal = (skillId: string, position: number, over: Partial<LineGoalRow> = {}): LineGoalRow => ({ skillId, position, proved: false, status: "active", swappedTo: null, ...over });
+    const name = (id: string) => id.toUpperCase();
+
+    it("orders a line by the person's goals, as on the Map, and finds the current goal", () => {
+      const line = lineOrder(["c", "a", "b", "d"], [goal("a", 1, { proved: true }), goal("b", 2, { status: "skipped" }), goal("c", 3, { swappedTo: "x" })]);
+      expect(line.map((g) => g.skillId)).toEqual(["a", "b", "c", "d"]);
+      // Proved and skipped goals are passed; a swapped goal learns its other skill.
+      expect(currentStep(line, name)).toEqual({ step: 3, name: "X" });
+      expect(currentStep(lineOrder(["a"], [goal("a", 1, { proved: true })]), name)).toBeNull();
+    });
+
+    it("shares only gaps both still have, and counts the goals between the two current steps", () => {
+      const mine = lineOrder(["a", "b", "c"], [goal("a", 1), goal("b", 2), goal("c", 3)]);
+      const theirs = lineOrder(["a", "b", "c", "d"], [goal("a", 1, { proved: true }), goal("b", 2, { proved: true }), goal("c", 3), goal("d", 4)]);
+      expect(pathTogether(mine, theirs, name, "connections")).toEqual({ gaps: ["C"], you: { step: 1, name: "A" }, them: { step: 3, name: "C" }, apart: 2, sharedWith: "connections" });
+      const done = lineOrder(["a"], [goal("a", 1, { proved: true })]);
+      expect(pathTogether(done, theirs, name, "profile")).toMatchObject({ gaps: [], you: null, apart: null, sharedWith: "profile" });
+    });
   });
 });
