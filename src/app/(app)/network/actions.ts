@@ -5,7 +5,7 @@ import { z } from "zod";
 import { currentAccount } from "@/lib/auth/server";
 import { INBOX_ERROR_TEXT, startDirect } from "@/lib/inbox/store";
 import { messageBody } from "@/lib/schemas/inbox";
-import { answerRequest, blockPerson, NETWORK_ERROR_TEXT, networkSettingsFor, removeConnection, requestConnection, saveNetworkSettings, searchNetwork, withdrawRequest, type NetworkResult } from "@/lib/network/store";
+import { answerRequest, blockPerson, NETWORK_ERROR_TEXT, networkSettingsFor, removeConnection, requestConnection, saveNetworkSettings, searchNetwork, unblockPerson, withdrawRequest, type NetworkResult } from "@/lib/network/store";
 import type { NetworkActions } from "@/lib/network/types";
 import { networkRow } from "@/lib/network/view";
 import { NETWORK_QUERY_MESSAGE } from "@/lib/schemas/network";
@@ -63,6 +63,17 @@ export const blockFromNetwork: NetworkActions["block"] = async (id) => {
   const s = await signedIn(id);
   return s.account ? answer(await blockPerson(s.account.id, id)) : s.error;
 };
+
+/**
+ * Unblock from Settings > Privacy ("Blocked people"). A block already gone (lifted in another tab) reads as done, so
+ * the list just catches up.
+ */
+export async function unblockFromNetwork(id: string): Promise<string | null> {
+  const s = await signedIn(id);
+  if (!s.account) return s.error;
+  const r = await unblockPerson(s.account.id, id);
+  return answer(r.ok || r.error === "not_found" ? { ok: true } : r);
+}
 
 export const searchPeopleByName: NetworkActions["search"] = async (q) => {
   const account = await currentAccount();

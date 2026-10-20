@@ -9,7 +9,7 @@ import {
   USERNAME_MESSAGES,
   usernameProblem,
 } from "@/lib/account/username";
-import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, RIDE_REMINDERS } from "./constants";
+import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS } from "./constants";
 export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
 /**
@@ -82,7 +82,20 @@ export const companiesCanFind = z.boolean();
  */
 const gapsChoice = z.enum(GAPS_VISIBLE_TO);
 
-export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, gapsVisibleTo: gapsChoice.optional(), companiesCanFind, ...notificationPrefs.shape });
+/**
+ * "Connection requests from" (handoff 12j, gap list item 32): anyone who can reach the person, or nobody. Read from
+ * Network's settings (networkSettingsFor) for the form; a save without it (an older page) keeps what is stored.
+ */
+const requestsChoice = z.enum(REQUESTS_FROM);
+
+export const userSettings = z.object({
+  visibility: profileVisibility,
+  ...publicParts.shape,
+  gapsVisibleTo: gapsChoice.optional(),
+  requestsFrom: requestsChoice.optional(),
+  companiesCanFind,
+  ...notificationPrefs.shape,
+});
 
 /**
  * No row in user_settings means these. Since migration 0034 every account made before it has a row, so no row means a

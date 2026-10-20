@@ -52,6 +52,12 @@ describe("account settings schemas", () => {
     delete without.companiesCanFind;
     expect(userSettings.safeParse(without).success).toBe(false);
   });
+  it("take Connection requests from as Anyone or Nobody, or leave it out (gap list item 32)", () => {
+    expect(userSettings.parse({ ...DEFAULT_SETTINGS, requestsFrom: "nobody" }).requestsFrom).toBe("nobody");
+    expect(userSettings.parse({ ...DEFAULT_SETTINGS, requestsFrom: "anyone" }).requestsFrom).toBe("anyone");
+    expect(userSettings.parse(DEFAULT_SETTINGS).requestsFrom).toBeUndefined();
+    expect(userSettings.safeParse({ ...DEFAULT_SETTINGS, requestsFrom: "connections" }).success).toBe(false);
+  });
   it("take an optional city from the list only (T44)", () => {
     expect(settingsInput.parse({ ...base, city: "Pune" }).city).toBe("Pune");
     expect(settingsInput.parse({ ...base, city: "" }).city).toBeNull();

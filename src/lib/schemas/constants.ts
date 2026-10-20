@@ -352,12 +352,16 @@ export const CONNECTION_PENDING_MAX = 100;
 /** "Your gaps show to" (handoff 12j): nobody, connections, or everyone who can open the profile. */
 export const GAPS_VISIBLE_TO = ["nobody", "connections", "profile"] as const;
 export const GAPS_VISIBLE_TO_LABELS: Record<(typeof GAPS_VISIBLE_TO)[number], string> = {
-  nobody: "Nobody else",
+  nobody: "Nobody",
   connections: "Your connections",
-  profile: "Everyone who can see your profile",
+  profile: "Everyone who can open your profile",
 };
 /** "Connection requests from" (handoff 12j). */
 export const REQUESTS_FROM = ["anyone", "nobody"] as const;
+export const REQUESTS_FROM_LABELS: Record<(typeof REQUESTS_FROM)[number], string> = {
+  anyone: "Anyone who can reach you",
+  nobody: "Nobody",
+};
 /** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
 export const NETWORK_RESULTS_MAX = 20;
 /** People a network search reads at most, newest settings first, as Find people does (FIND_SCAN_MAX). */

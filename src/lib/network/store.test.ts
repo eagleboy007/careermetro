@@ -15,6 +15,7 @@ import {
   answerRequest,
   areConnected,
   blockPerson,
+  blockedPeople,
   connectionWith,
   exportNetwork,
   inCommonWith,
@@ -26,6 +27,7 @@ import {
   requestsWaiting,
   saveNetworkSettings,
   searchNetwork as search,
+  unblockPerson,
   withdrawRequest,
 } from "./store";
 
@@ -207,6 +209,36 @@ describe.skipIf(!db)("network store (database)", () => {
     // "Connection requests from: Nobody".
     const closed = await person("Ira", { closed: true });
     expect(await ask(a, closed, "other", deps())).toEqual({ ok: false, error: "closed" });
+  });
+
+  it("lists the people you blocked, newest first, and Unblock lifts only your own block (gap list item 34)", async () => {
+    const a = await person("Asha");
+    const b = await person("Dev");
+    const c = await person("Esha");
+    const gone = await person("Farah");
+    await ask(a, b, "other", deps());
+    await answerRequest(b, a, "accept", deps());
+    await blockPerson(a, b, deps());
+    await blockPerson(a, c, deps(1));
+    await blockPerson(a, gone, deps(2));
+    await blockPerson(c, a, deps());
+    await db!.update(schema.users).set({ deletionRequestedAt: now }).where(inArray(schema.users.id, [gone]));
+    // Newest first; a deleted account is left out; a block on you never shows.
+    expect((await blockedPeople(a, db!)).map((p) => p.id)).toEqual([c, b]);
+    expect((await blockedPeople(a, db!))[1]).toMatchObject({ name: `Dev ${tag}` });
+    expect((await blockedPeople(b, db!)).length).toBe(0);
+    expect(await unblockPerson(a, a, db!)).toEqual({ ok: false, error: "self" });
+    // Only the blocker can lift a block.
+    expect(await unblockPerson(b, a, db!)).toEqual({ ok: false, error: "not_found" });
+    expect(await unblockPerson(a, b, db!)).toEqual({ ok: true });
+    expect((await blockedPeople(a, db!)).map((p) => p.id)).toEqual([c]);
+    // The connection the block ended stays ended, and either can ask again.
+    expect(await areConnected(a, b, db!)).toBe(false);
+    expect(await ask(b, a, "other", deps())).toEqual(ok("requested"));
+    // Lifting your block leaves theirs: c blocked a too.
+    expect(await unblockPerson(a, c, db!)).toEqual({ ok: true });
+    expect(await ask(a, c, "other", deps())).toEqual({ ok: false, error: "unavailable" });
+    expect(await unblockPerson(a, c, db!)).toEqual({ ok: false, error: "not_found" });
   });
 
   it("caps requests a day", async () => {

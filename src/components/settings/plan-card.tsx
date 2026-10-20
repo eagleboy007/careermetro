@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, Eye, X } from "lucide-react";
+import { Award, Check, Eye, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +8,21 @@ import type { PlanView } from "@/lib/schemas";
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
 const FAILED = "That didn't work. Please try again.";
+
+/**
+ * What Elite adds, for Free (prototype v44, gap list item 39), each something built today. Prototype lines not built yet
+ * are left out: the practice round before a company's AI interview on Arrivals (companies have no AI interview yet)
+ * and interview prep per role from Express apply ("soon" on Departures). The prototype's prices and payment are C4,
+ * not in the beta.
+ */
+export const ELITE_ADDS = [
+  "AI mock interviews for your target role, with written feedback",
+  "The full question bank for your role, with what a strong answer covers",
+  "Timed mock tests with a review of every question",
+  "No daily cap on Practice",
+  "Elite shelf in the Library",
+  "Elite badge on your profile",
+] as const;
 
 export type PlanActions = {
   /** "Turn off" here (false); /elite turns it on. */
@@ -109,6 +124,21 @@ export function PlanCard({ plan, actions }: { plan: PlanView; actions?: PlanActi
               }
             />
           </ul>
+          <div className="flex flex-col gap-2 rounded-[14px] border border-line p-3.5">
+            <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-elite-soft px-2.5 py-0.5 text-[0.78rem] font-semibold text-elite">
+              <Award size={14} strokeWidth={1.75} aria-hidden="true" />
+              Elite
+            </span>
+            <ul aria-label="What Elite adds" className="flex flex-col gap-1.5 text-[0.86rem]">
+              {ELITE_ADDS.map((line) => (
+                <li key={line} className="flex items-start gap-2">
+                  <Check size={15} strokeWidth={1.75} aria-hidden="true" className="mt-0.5 shrink-0 text-elite" />
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="text-[0.78rem] text-muted">Mentor sessions are separate from Elite. They aren&apos;t open yet.</p>
         </>
       )}
       <p ref={status} tabIndex={-1} role="status" className="text-[0.78rem] text-muted outline-none">

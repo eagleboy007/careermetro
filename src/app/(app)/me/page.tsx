@@ -56,7 +56,7 @@ async function MeScreen() {
     <div className="flex flex-col gap-4">
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         {hidden
-          ? "Only you can see this page. Pick a username and who can see your profile in Account settings."
+          ? "Only you can see this page. Pick a username and who can open your profile in Account settings."
           : "Your stories, interests and status come next."}
       </p>
       {me && (
