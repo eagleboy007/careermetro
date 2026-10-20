@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { answeredText, lengthNote, shortAnswer, unsaved } from "./mock-interview";
+import { answeredText, lengthNote, mayFollowUp, SETUP_NOTE, shortAnswer, unsaved, unsavedFollowUps } from "./mock-interview";
 import { finalText, listen, localLanguage, onDeviceRecognition, withSpoken, type RecognitionCtor, type SpeechEvent } from "./speech";
 
 // The mock interview screen's words and the on-device speech helper (FR-50 part 3). No score anywhere.
@@ -22,6 +22,32 @@ describe("mock interview screen", () => {
     ]);
     expect(unsaved(["", "x"], ["was", "x"])).toEqual([{ position: 1, answer: "" }]);
     expect(unsaved([], [])).toEqual([]);
+  });
+
+  it("waits for the server on Next only for a changed answer of 20 words or more, which may get a follow-up", () => {
+    const twenty = Array.from({ length: 20 }, (_, i) => `w${i}`).join(" ");
+    expect(mayFollowUp(twenty, "")).toBe(true);
+    expect(mayFollowUp(twenty, twenty)).toBe(false);
+    expect(mayFollowUp("Too short to follow up.", "")).toBe(false);
+  });
+
+  it("sends with End the follow-up replies not saved yet and the open draft, never an empty draft", () => {
+    const pending = new Map([[1, "First reply"]]);
+    expect(unsavedFollowUps(pending, { position: 3 }, "  Open draft  ")).toEqual([
+      { position: 1, answer: "First reply" },
+      { position: 3, answer: "Open draft" },
+    ]);
+    expect(unsavedFollowUps(pending, { position: 3 }, "   ")).toEqual([{ position: 1, answer: "First reply" }]);
+    expect(unsavedFollowUps(new Map([[2, "Old"]]), { position: 2 }, "New")).toEqual([{ position: 2, answer: "New" }]);
+    expect(unsavedFollowUps(new Map(), null, "ignored")).toEqual([]);
+  });
+
+  it("says follow-ups are asked only for a role whose rounds ask them, and that the bank was checked only once it is", () => {
+    expect(SETUP_NOTE.none).not.toMatch(/follow-up/);
+    expect(SETUP_NOTE.draft).toMatch(/It asks follow-ups like a person would, and it can be wrong\./);
+    expect(SETUP_NOTE.draft).not.toMatch(/checked/);
+    expect(SETUP_NOTE.checked).toContain("Questions come from a bank checked by people who work in the role.");
+    for (const note of Object.values(SETUP_NOTE)) expect(note).toContain("We keep the text of your answers 30 days.");
   });
 });
 

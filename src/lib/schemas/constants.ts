@@ -610,6 +610,19 @@ export const MOCK_SESSIONS_PER_DAY = 5;
 export const MOCK_FEEDBACK_PER_DAY = 5;
 /** What the feedback screen says: feedback in words, nothing answered, not today (budget or limit), or not just now. */
 export const MOCK_FEEDBACK_STATES = ["ready", "none_answered", "unavailable_today", "unavailable"] as const;
+/*
+ * Mock interview follow-ups (docs/plans/mock-followups-plan.md): from the bank, picked by code, never by the model. At
+ * most one per question, only after an answer of 20 words or more, and at most 2 a Quick round and 4 a Full one.
+ */
+export const MOCK_FOLLOW_UP_MIN_WORDS = 20;
+export const MOCK_FOLLOW_UPS_PER_ROUND = { quick: 2, full: 4 } as const;
+/** A bank question has at most this many follow-ups; the first whose skip words are not in the answer is asked. */
+export const MOCK_FOLLOW_UPS_PER_QUESTION = 2;
+export const MOCK_FOLLOW_UP_MAX_CHARS = 200;
+/** Words or phrases that mean the answer already covers a follow-up's point. */
+export const MOCK_FOLLOW_UP_SKIP_WORDS = 8;
+/** Whether a role's rounds can ask follow-ups: none, ones still waiting for review (never in production), or checked ones. */
+export const MOCK_FOLLOW_UP_STATES = ["none", "draft", "checked"] as const;
 
 /*
  * Job search switch and notice period (handoff 6, docs/plans/job-search-plan.md). Off pauses Departures and Arrivals:

@@ -2,25 +2,36 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { mockQuestions, roleProfiles } from "@/content";
-import { feedbackProblems } from "@/lib/mock/interview";
+import { feedbackProblems, followUpText } from "@/lib/mock/interview";
 import { MOCK_ANSWER_MAX_CHARS, MOCK_MAX_QUESTIONS, type MockInterviewFeedback } from "@/lib/schemas";
 
 /*
  * The mock-interview eval (FR-50 part 3): synthetic answers in fixtures/evals/mock, sent as one round each to the real
  * prompt by `npm run eval:mock` (never in CI). Scoring is pure and tested in CI without the API: the model must answer
  * every case, with feedback for each answered position, and never a number it wasn't given, a score word or shape,
- * anything saying ready or not ready, a part over its word cap, or an exclamation mark.
+ * anything saying ready or not ready, a part over its word cap, or an exclamation mark. Cases may reply to a bank
+ * follow-up after an answer (prompts/mock-interview/v2): one that covers its point and one that dodges it.
  */
 
 /** One answered question as the model gets it (the shape of MockFeedbackItem in src/lib/mock/interview-feedback.ts). */
-export type MockEvalItem = { position: number; topic: string; question: string; strongCovers: string; answer: string };
+export type MockEvalItem = { position: number; topic: string; question: string; strongCovers: string; answer: string; followUp?: { question: string; answer: string } | null };
 export type MockCase = { id: string; roleTitle: string; items: MockEvalItem[] };
 
 const caseFile = z.strictObject({
   id: z.string().regex(/^[a-z0-9-]+$/),
   note: z.string().min(1),
   roleSlug: z.string().min(1),
-  answers: z.array(z.strictObject({ questionId: z.string().min(1), answer: z.string().max(MOCK_ANSWER_MAX_CHARS) })).min(1).max(MOCK_MAX_QUESTIONS),
+  answers: z
+    .array(
+      z.strictObject({
+        questionId: z.string().min(1),
+        answer: z.string().max(MOCK_ANSWER_MAX_CHARS),
+        /** The bank follow-up asked after the answer, by its id, and the reply. */
+        followUp: z.strictObject({ id: z.string().min(1), answer: z.string().min(1).max(MOCK_ANSWER_MAX_CHARS) }).optional(),
+      }),
+    )
+    .min(1)
+    .max(MOCK_MAX_QUESTIONS),
 });
 
 const byId = new Map(mockQuestions.map((q) => [q.id, q]));
@@ -37,14 +48,18 @@ export function loadMockCases(dir = path.join(process.cwd(), "fixtures/evals/moc
       const items = raw.answers.flatMap((a, i) => {
         const q = byId.get(a.questionId);
         if (q?.kind !== "open") throw new Error(`${f}: ${a.questionId} is not an open bank question`);
-        return a.answer.trim() ? [{ position: i + 1, topic: q.topic, question: q.question, strongCovers: q.strongCovers, answer: a.answer.trim() }] : [];
+        const asked = a.followUp ? followUpText(q, a.followUp.id) : null;
+        if (a.followUp && !asked) throw new Error(`${f}: ${a.followUp.id} is not a follow-up of ${a.questionId}`);
+        const followUp = asked && a.followUp ? { question: asked, answer: a.followUp.answer.trim() } : null;
+        return a.answer.trim() ? [{ position: i + 1, topic: q.topic, question: q.question, strongCovers: q.strongCovers, answer: a.answer.trim(), followUp }] : [];
       });
       return { id: raw.id, roleTitle: role.title, items };
     });
 }
 
 /** Everything the model was given, so a number it repeats from there doesn't count as made up. */
-export const givenText = (c: MockCase): string => [c.roleTitle, ...c.items.flatMap((i) => [i.topic, i.question, i.strongCovers, i.answer])].join("\n");
+export const givenText = (c: MockCase): string =>
+  [c.roleTitle, ...c.items.flatMap((i) => [i.topic, i.question, i.strongCovers, i.answer, ...(i.followUp ? [i.followUp.question, i.followUp.answer] : [])])].join("\n");
 
 export type MockCaseScore = {
   id: string;

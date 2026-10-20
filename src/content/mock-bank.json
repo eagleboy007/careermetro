@@ -1,5 +1,5 @@
 {
-  "note": "Interview prep bank (FR-50, handoff 12l). Open questions are the Practice bank's (src/content/practice-questions.json), with \"a strong answer covers\" taken from its lookFor; never written by the model. Choice questions are for the timed test, hand-written by Development on 2026-10-20 and not yet checked by someone who works in the role: reviewed is false until they are, and production shows only reviewed ones.",
+  "note": "Interview prep bank (FR-50, handoff 12l). Open questions are the Practice bank's (src/content/practice-questions.json), with \"a strong answer covers\" taken from its lookFor; never written by the model. Choice questions are for the timed test, hand-written by Development on 2026-10-20 and not yet checked by someone who works in the role: reviewed is false until they are, and production shows only reviewed ones. Follow-ups on open questions (docs/plans/mock-followups-plan.md) are Development's own too, written for the about-you questions first: followUpsReviewed is false until someone who works in the role checks them, and production asks only reviewed ones.",
   "questions": [
     {
       "id": "communication-1",
@@ -27,7 +27,25 @@
       "topic": "Communication",
       "question": "Tell me about yourself and why you are applying for this role.",
       "strongCovers": "A clear two-minute story from education to current work to this role, without reading out the resume.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "communication-1-fu-1",
+          "text": "Say which one thing from your studies or work you would use in this role in your first month.",
+          "skipIf": [
+            "first month",
+            "first week",
+            "first 30 days",
+            "from day one"
+          ]
+        },
+        {
+          "id": "communication-1-fu-2",
+          "text": "Name one part of this role you still need to learn, and how you are learning it now.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "communication-2",
@@ -55,7 +73,29 @@
       "topic": "Communication",
       "question": "Describe a time you had to explain a technical issue to someone without a technical background.",
       "strongCovers": "Plain words, checking the listener understood, and an outcome rather than jargon.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "communication-2-fu-1",
+          "text": "How did you check that they had understood, rather than only nodding along?",
+          "skipIf": [
+            "understood",
+            "understand",
+            "in their own words",
+            "repeat",
+            "checked"
+          ]
+        },
+        {
+          "id": "communication-2-fu-2",
+          "text": "What did they decide or do differently once they understood?",
+          "skipIf": [
+            "decided",
+            "decision"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "communication-3",
@@ -83,7 +123,30 @@
       "topic": "Communication",
       "question": "How would you write a status update to your manager when a task is going to miss its deadline?",
       "strongCovers": "Early warning, the reason, the new date and what help is needed, kept short.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "communication-3-fu-1",
+          "text": "Say when you would send it: the day you see the risk, or the day before the deadline, and why.",
+          "skipIf": [
+            "early",
+            "as soon as",
+            "right away",
+            "immediately",
+            "the day I"
+          ]
+        },
+        {
+          "id": "communication-3-fu-2",
+          "text": "What would you ask your manager for in that update, if anything?",
+          "skipIf": [
+            "help",
+            "ask for",
+            "support"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "communication-4",
@@ -111,7 +174,20 @@
       "topic": "Communication",
       "question": "Tell me about a disagreement with a teammate and how you handled it.",
       "strongCovers": "Listening, staying on facts, and a resolution that kept the working relationship.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "communication-4-fu-1",
+          "text": "Looking back, what would you do differently the next time you disagree with someone on your team?",
+          "skipIf": [
+            "next time",
+            "differently",
+            "learned",
+            "learnt"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "communication-5",
@@ -139,7 +215,32 @@
       "topic": "Communication",
       "question": "How do you make sure you have understood a task correctly before starting it?",
       "strongCovers": "Asking clarifying questions, restating the ask and confirming the expected output.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "communication-5-fu-1",
+          "text": "Say what you would do if the person who gave the task is busy and you can't reach them.",
+          "skipIf": [
+            "busy",
+            "not available",
+            "unavailable",
+            "can't reach",
+            "cannot reach"
+          ]
+        },
+        {
+          "id": "communication-5-fu-2",
+          "text": "How would you write down what you agreed, so nobody remembers it differently later?",
+          "skipIf": [
+            "email",
+            "in writing",
+            "write it down",
+            "wrote it down",
+            "notes"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "python-1",
@@ -612,7 +713,31 @@
       "topic": "Working with stakeholders",
       "question": "How do you handle a stakeholder who keeps changing requirements mid-sprint?",
       "strongCovers": "Making the impact visible, a change process, and agreeing priorities rather than silently absorbing work.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "stakeholder-management-1-fu-1",
+          "text": "Say what you would do if the stakeholder insists the change can't wait for the next sprint.",
+          "skipIf": [
+            "insists",
+            "can't wait",
+            "cannot wait",
+            "urgent",
+            "escalate"
+          ]
+        },
+        {
+          "id": "stakeholder-management-1-fu-2",
+          "text": "How would you stop the same thing happening again next sprint?",
+          "skipIf": [
+            "next sprint",
+            "going forward",
+            "in future",
+            "in the future"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "stakeholder-management-2",
@@ -630,7 +755,28 @@
       "topic": "Working with stakeholders",
       "question": "Tell me about a time you had to say no to a senior stakeholder.",
       "strongCovers": "A respectful no backed by data, with an alternative offered.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "stakeholder-management-2-fu-1",
+          "text": "What did you offer them instead of a plain no?",
+          "skipIf": [
+            "instead",
+            "alternative",
+            "offered",
+            "option"
+          ]
+        },
+        {
+          "id": "stakeholder-management-2-fu-2",
+          "text": "How did the working relationship go after that?",
+          "skipIf": [
+            "relationship",
+            "trust"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "stakeholder-management-3",
@@ -648,7 +794,20 @@
       "topic": "Working with stakeholders",
       "question": "How do you keep business and technical teams aligned on a project?",
       "strongCovers": "Regular updates, shared written scope, and one owner for decisions.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "stakeholder-management-3-fu-1",
+          "text": "Say what you would do when the two teams read the same written scope in different ways.",
+          "skipIf": [
+            "different ways",
+            "misunderstood",
+            "misunderstanding",
+            "read it differently"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "stakeholder-management-4",
@@ -666,7 +825,30 @@
       "topic": "Working with stakeholders",
       "question": "How do you decide when two stakeholders want conflicting things?",
       "strongCovers": "Linking each ask to business goals, involving the decision owner and documenting the choice.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "stakeholder-management-4-fu-1",
+          "text": "Say who makes the final call when the two can't agree, and how you would bring it to them.",
+          "skipIf": [
+            "final call",
+            "decision owner",
+            "escalate",
+            "sponsor",
+            "decides"
+          ]
+        },
+        {
+          "id": "stakeholder-management-4-fu-2",
+          "text": "How would you tell the stakeholder whose ask lost?",
+          "skipIf": [
+            "told them",
+            "explain to",
+            "explained to"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "stakeholder-management-5",
@@ -684,7 +866,28 @@
       "topic": "Working with stakeholders",
       "question": "How do you communicate a delay to a client?",
       "strongCovers": "Telling them early and honestly, with the cause, the new plan and what is being done to recover.",
-      "level": "L1"
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "stakeholder-management-5-fu-1",
+          "text": "Say what you would do if the client is angry and asks who is to blame.",
+          "skipIf": [
+            "angry",
+            "upset",
+            "blame"
+          ]
+        },
+        {
+          "id": "stakeholder-management-5-fu-2",
+          "text": "What would you send them in writing after the call?",
+          "skipIf": [
+            "email",
+            "in writing",
+            "written"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
     },
     {
       "id": "aws-1",

@@ -1377,6 +1377,8 @@ export const mockSessions = pgTable(
  * One answer in a mock interview, by the question's position (1 to 8). The text is the person's own (typed, or spoken
  * and turned to text on their device; audio is never sent or kept), 1 to 4,000 characters, kept 30 days and never
  * logged. `what_worked` and `add_next_time` are the model's words, null until feedback. A skipped question has no row.
+ * `follow_up_id` is the bank follow-up asked after this answer (picked by code, migration 0044) and `follow_up_answer`
+ * the person's reply, 1 to 4,000 characters, only with a follow-up id; both go with the row after 30 days.
  */
 export const mockAnswers = pgTable(
   "mock_answers",
@@ -1388,11 +1390,15 @@ export const mockAnswers = pgTable(
     answer: text("answer").notNull(),
     whatWorked: text("what_worked"),
     addNextTime: text("add_next_time"),
+    followUpId: text("follow_up_id"),
+    followUpAnswer: text("follow_up_answer"),
   },
   (t) => [
     primaryKey({ columns: [t.sessionId, t.position] }),
     check("mock_answers_answer_length", sql`char_length(${t.answer}) between 1 and 4000`),
     check("mock_answers_position", sql`${t.position} between 1 and 8`),
+    check("mock_answers_follow_up_length", sql`char_length(${t.followUpAnswer}) between 1 and 4000`),
+    check("mock_answers_follow_up_needs_id", sql`${t.followUpAnswer} is null or ${t.followUpId} is not null`),
   ],
 );
 

@@ -132,7 +132,8 @@ describe.skipIf(!db)("notifications (database)", () => {
     const a = await person("Neha");
     const b = await person("Suresh");
     const d = await person("Zoya");
-    await requestConnection(b, a, "same_line", deps());
+    // Suresh asks a little earlier, so the newest-first order never rests on a tie.
+    await requestConnection(b, a, "same_line", deps(-0.001));
     await requestConnection(d, a, "event", deps());
     // While Zoya is suspended her request is hidden, so opening the panel leaves it unread.
     await db!.update(schema.users).set({ suspendedAt: now }).where(eq(schema.users.id, d));
@@ -223,13 +224,13 @@ describe.skipIf(!db)("notifications (database)", () => {
     expect(left).toHaveLength(2);
   });
 
-  it("exports kind and dates with no other person's name (version 29), and the account's deletion takes its rows", async () => {
+  it("exports kind and dates with no other person's name (version 30), and the account's deletion takes its rows", async () => {
     const a = await person("Uma");
     const b = await person("Yusuf");
     await requestConnection(b, a, "same_line", deps());
     const data = await exportAccountData(a, db! as never);
-    expect(EXPORT_VERSION).toBe(29);
-    expect(data!.exportVersion).toBe(29);
+    expect(EXPORT_VERSION).toBe(30);
+    expect(data!.exportVersion).toBe(30);
     expect(data!.notifications.map((x) => notificationExport.parse(x))).toEqual([{ kind: "connection_request", created_at: now.toISOString(), read_at: null }]);
     expect(JSON.stringify(data!.notifications)).not.toContain(tag);
 

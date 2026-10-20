@@ -6,6 +6,8 @@ import {
   deadlineOf,
   emptyPicks,
   endOf,
+  followUpsOf,
+  followUpStateFor,
   freeOpenIds,
   hash32,
   isOver,
@@ -76,8 +78,8 @@ describe("which role /mock opens on", () => {
 
   it("says which roles have enough questions for a test, counting unreviewed ones only where allowed", () => {
     expect(mockRoles(bank, roles, false)).toEqual([
-      { slug: "tech-writer", title: "Technical Writer", hasTest: false },
-      { slug: "data-analyst", title: "Data Analyst", hasTest: true },
+      { slug: "tech-writer", title: "Technical Writer", hasTest: false, followUps: "none" },
+      { slug: "data-analyst", title: "Data Analyst", hasTest: true, followUps: "none" },
     ]);
     expect(choicePool(bank, analyst, false)).toHaveLength(13);
     expect(choicePool(bank, analyst, true)).toHaveLength(14);
@@ -102,7 +104,15 @@ describe("the question bank", () => {
   it("opens everything on Elite, with a link into Practice for each question", () => {
     const view = bankViewFor(bank, analyst, true);
     expect(view.items.every((q) => q.open)).toBe(true);
-    expect(view.items[0]).toEqual({ open: true, id: "sql-1", topic: "SQL", question: "Open question 1 on sql", strongCovers: "What a strong answer to 1 covers", practiceHref: "/practice?q=sql-1" });
+    expect(view.items[0]).toEqual({
+      open: true,
+      id: "sql-1",
+      topic: "SQL",
+      question: "Open question 1 on sql",
+      strongCovers: "What a strong answer to 1 covers",
+      followUps: [],
+      practiceHref: "/practice?q=sql-1",
+    });
   });
 
   it("opens 5 on Free, one of each topic first, and sends nothing of the locked ones' notes", () => {
@@ -119,6 +129,52 @@ describe("the question bank", () => {
 
   it("opens all of a role with 5 or fewer questions on Free", () => {
     expect(bankViewFor(bank, writer, false).items.every((q) => q.open)).toBe(true);
+  });
+});
+
+describe("follow-ups in the bank (docs/plans/mock-followups-plan.md)", () => {
+  const withFollowUps = (q: MockQuestion, reviewed: boolean): MockQuestion =>
+    q.kind === "open"
+      ? {
+          ...q,
+          followUps: [
+            { id: `${q.id}-fu-1`, text: `Follow-up one on ${q.id}?`, skipIf: ["example"] },
+            { id: `${q.id}-fu-2`, text: `Follow-up two on ${q.id}?`, skipIf: [] },
+          ],
+          followUpsReviewed: reviewed,
+        }
+      : q;
+  const draft = bank.map((q) => (q.id === "sql-1" ? withFollowUps(q, false) : q));
+  const checked = bank.map((q) => (q.id === "sql-1" ? withFollowUps(q, true) : q));
+
+  it("asks reviewed follow-ups anywhere and unreviewed ones only where allowed, never for a choice question", () => {
+    const q = draft.find((x) => x.id === "sql-1")!;
+    expect(followUpsOf(q, true).map((f) => f.id)).toEqual(["sql-1-fu-1", "sql-1-fu-2"]);
+    expect(followUpsOf(q, false)).toEqual([]);
+    expect(followUpsOf(checked.find((x) => x.id === "sql-1")!, false)).toHaveLength(2);
+    expect(followUpsOf(bank.find((x) => x.kind === "choice")!, true)).toEqual([]);
+  });
+
+  it("says whether a role's rounds can ask follow-ups: none, waiting for review, or checked", () => {
+    expect(followUpStateFor(bank, analyst, true)).toBe("none");
+    expect(followUpStateFor(draft, analyst, true)).toBe("draft");
+    expect(followUpStateFor(draft, analyst, false)).toBe("none");
+    expect(followUpStateFor(checked, analyst, false)).toBe("checked");
+    // The writer's rounds never ask sql-1; an about-you question's follow-ups count for every role.
+    expect(followUpStateFor(checked, writer, true)).toBe("none");
+    const about = bank.map((q) => (q.id === "communication-1" ? withFollowUps(q, true) : q));
+    expect(followUpStateFor(about, { slug: "devops", title: "DevOps", skills: [] }, false)).toBe("checked");
+    expect(followUpStateFor([...checked.filter((q) => q.id !== "sql-2"), withFollowUps(bank.find((q) => q.id === "sql-2")!, false)], analyst, true)).toBe("draft");
+  });
+
+  it("lists an open question's follow-ups in the bank to study, and none for a locked one", () => {
+    expect(bankViewFor(checked, analyst, true).items[0]).toMatchObject({ open: true, followUps: ["Follow-up one on sql-1?", "Follow-up two on sql-1?"] });
+    expect(bankViewFor(draft, analyst, true, false).items[0]).toMatchObject({ followUps: [] });
+    expect(bankViewFor(draft, analyst, true, true).items[0]).toMatchObject({ followUps: ["Follow-up one on sql-1?", "Follow-up two on sql-1?"] });
+    const lockedBank = checked.map((q) => (q.id === "communication-2" ? withFollowUps(q, true) : q));
+    const locked = bankViewFor(lockedBank, analyst, false).items.find((i) => i.id === "communication-2")!;
+    expect(locked.open).toBe(false);
+    expect(JSON.stringify(locked)).not.toContain("Follow-up");
   });
 });
 

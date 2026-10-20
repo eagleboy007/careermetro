@@ -25,7 +25,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 29;
+export const EXPORT_VERSION = 30;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -241,7 +241,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     timedTests: timedTestRows,
     // Mock interviews (FR-50): the role, length, focus, the bank question ids, when it started and ended, and the
     // summary in words; with each answer still kept (answers go after 30 days) and what worked and what to add next
-    // time. The questions come from the bank, never from AI; no score.
+    // time, and from version 30 the follow-up asked after it (followUp: the question and your reply, null when
+    // skipped; null when none was asked). The questions and follow-ups come from the bank, never from AI; no score.
     mockSessions: mockSessionRows,
     // Job search (handoff 6): whether "Looking for a job" is on, your notice period in days and the day you resigned
     // (null when not given). Only you ever see these; companies you apply to see only Can join.

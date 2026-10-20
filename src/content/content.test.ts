@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
+import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
 import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
@@ -237,6 +238,36 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
     }
     // The right answer isn't always in the same place.
     expect(new Set(choice.map((q) => q.kind === "choice" && q.answer)).size).toBe(4);
+  });
+
+  it("gives follow-ups unique ids under their question, skip words on the first of two, and short questions", () => {
+    const open = mockQuestions.flatMap((q) => (q.kind === "open" && q.followUps?.length ? [q] : []));
+    expect(open.length).toBeGreaterThan(0);
+    const ids = open.flatMap((q) => q.followUps!.map((f) => f.id));
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const q of open) {
+      expect(q.followUps!.length).toBeLessThanOrEqual(2);
+      if (q.followUps!.length === 2) expect([q.id, q.followUps![0].skipIf.length > 0]).toEqual([q.id, true]);
+      expect(typeof q.followUpsReviewed).toBe("boolean");
+      for (const f of q.followUps!) {
+        expect(f.id.startsWith(`${q.id}-fu-`)).toBe(true);
+        expect(f.text.length).toBeLessThanOrEqual(200);
+        expect(f.text).toMatch(/[.?]$/);
+        expect(f.skipIf.length).toBeLessThanOrEqual(8);
+      }
+    }
+  });
+
+  it("asks no follow-up in production until someone who works in the role has reviewed it", () => {
+    const unreviewed = mockQuestions.filter((q) => q.kind === "open" && q.followUps?.length && !q.followUpsReviewed);
+    for (const q of unreviewed) expect([q.id, followUpsOf(q, false)]).toEqual([q.id, []]);
+    if (unreviewed.length && !mockQuestions.some((q) => q.kind === "open" && q.followUpsReviewed && q.followUps?.length)) {
+      expect(mockRoles(mockQuestions, roleProfiles, false).every((r) => r.followUps === "none")).toBe(true);
+      for (const r of roleProfiles) {
+        const items = bankViewFor(mockQuestions, r, true, false).items;
+        expect(items.flatMap((i) => (i.open ? (i.followUps ?? []) : []))).toEqual([]);
+      }
+    }
   });
 });
 

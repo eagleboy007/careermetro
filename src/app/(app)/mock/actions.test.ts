@@ -8,6 +8,7 @@ const log = vi.fn();
 const startMock = vi.fn();
 const saveAnswer = vi.fn();
 const endMock = vi.fn();
+const saveFollowUp = vi.fn();
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/server", () => ({ currentAccount: () => account() }));
 vi.mock("@/lib/log", () => ({ logEvent: (...a: unknown[]) => log(...a), errorFields: () => ({}) }));
@@ -21,9 +22,11 @@ vi.mock("@/lib/mock/interview-store", () => ({
   startMockInterview: (...a: unknown[]) => startMock(...a),
   saveMockAnswer: (...a: unknown[]) => saveAnswer(...a),
   endMockInterview: (...a: unknown[]) => endMock(...a),
+  saveFollowUpAnswer: (...a: unknown[]) => saveFollowUp(...a),
 }));
 
-const { endMockInterviewAction, finishTimedTestAction, pickTimedTestAction, saveMockAnswerAction, startMockInterviewAction, startTimedTestAction } = await import("./actions");
+const { endMockInterviewAction, finishTimedTestAction, pickTimedTestAction, saveFollowUpAnswerAction, saveMockAnswerAction, startMockInterviewAction, startTimedTestAction } =
+  await import("./actions");
 const TEST = "6f1c2a9e-5b7d-4c3e-9a1b-2d3e4f5a6b7c";
 
 describe("timed test actions", () => {
@@ -86,6 +89,8 @@ describe("mock interview actions", () => {
     expect(await startMockInterviewAction("data-analyst", "quick", "mix")).toEqual({ ok: false, message: "Please sign in again." });
     expect(await saveMockAnswerAction(SESSION, 1, "An answer")).toEqual({ ok: false, message: "Please sign in again.", over: false });
     expect(await endMockInterviewAction(SESSION, [])).toEqual({ ok: false, message: "Please sign in again." });
+    expect(await saveFollowUpAnswerAction(SESSION, 1, "A reply")).toEqual({ ok: false, message: "Please sign in again.", over: false });
+    expect(saveFollowUp).not.toHaveBeenCalled();
     expect(startMock).not.toHaveBeenCalled();
     expect(saveAnswer).not.toHaveBeenCalled();
     expect(endMock).not.toHaveBeenCalled();
@@ -103,6 +108,25 @@ describe("mock interview actions", () => {
     expect(endMock).toHaveBeenCalledWith("u1", { sessionId: SESSION, answers: [{ position: 1, answer: "x" }] });
     startMock.mockResolvedValueOnce({ ok: false, error: "limit" });
     expect((await startMockInterviewAction("data-analyst", "quick", "mix")).ok).toBe(false);
+  });
+
+  it("passes the follow-up the store picked to the screen, saves a reply, and sends open replies with the end", async () => {
+    const followUp = { position: 1, topic: "Communication", text: "What did they decide once they understood?" };
+    saveAnswer.mockResolvedValueOnce({ ok: true, followUp });
+    expect(await saveMockAnswerAction(SESSION, 1, "A long answer")).toEqual({ ok: true, followUp });
+    saveFollowUp.mockResolvedValueOnce({ ok: true });
+    expect(await saveFollowUpAnswerAction(SESSION, 1, "A reply")).toEqual({ ok: true });
+    expect(saveFollowUp).toHaveBeenCalledWith("u1", { sessionId: SESSION, position: 1, answer: "A reply" });
+    saveFollowUp.mockResolvedValueOnce({ ok: false, error: "over" });
+    expect(await saveFollowUpAnswerAction(SESSION, 1, "A reply")).toMatchObject({ ok: false, over: true });
+    saveFollowUp.mockResolvedValueOnce({ ok: false, error: "invalid" });
+    expect(await saveFollowUpAnswerAction(SESSION, 2, "A reply")).toEqual({ ok: false, message: "That didn't work. Please refresh the page and try again.", over: false });
+    endMock.mockResolvedValueOnce({ ok: true, result: { id: SESSION } });
+    await endMockInterviewAction(SESSION, [], [{ position: 2, answer: "Draft" }]);
+    expect(endMock).toHaveBeenLastCalledWith("u1", { sessionId: SESSION, answers: [], followUps: [{ position: 2, answer: "Draft" }] });
+    saveFollowUp.mockRejectedValueOnce(new Error("my secret reply asha@example.com"));
+    expect(await saveFollowUpAnswerAction(SESSION, 1, "my secret reply")).toMatchObject({ ok: false, over: false });
+    expect(JSON.stringify(log.mock.calls)).not.toMatch(/asha|secret reply/);
   });
 
   it("says so when something breaks, and logs no answer, name or email", async () => {

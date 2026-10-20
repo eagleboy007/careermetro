@@ -12,7 +12,7 @@ const PILL = "inline-flex min-h-11 items-center rounded-full border border-line-
 
 /**
  * The question bank tab of /mock (handoff 12l, prototype v44): a role's questions by topic, each opening "A strong
- * answer covers" and "Practise this one". On Free, 5 are open and the rest show locked, with nothing of their note
+ * answer covers", the follow-ups a mock interview may ask after it, and "Practise this one". On Free, 5 are open and the rest show locked, with nothing of their note
  * sent to the browser. The questions are content, never written by AI.
  */
 export function QuestionBank({ bank, elite, roleTitle }: { bank: MockBankView; elite: boolean; roleTitle: string }) {
@@ -66,6 +66,16 @@ export function QuestionBank({ bank, elite, roleTitle }: { bank: MockBankView; e
                     <div className="flex flex-col items-start gap-1.5 pb-3.5 text-[0.86rem]">
                       <span className={LABEL}>A strong answer covers</span>
                       <p className="max-w-[70ch] text-muted">{q.strongCovers}</p>
+                      {q.followUps && q.followUps.length > 0 && (
+                        <>
+                          <span className={`${LABEL} mt-1`}>Follow-ups the interviewer may ask</span>
+                          <ul className="flex max-w-[70ch] list-disc flex-col gap-1 pl-5 text-muted">
+                            {q.followUps.map((f) => (
+                              <li key={f}>{f}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
                       <Link href={q.practiceHref} className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
                         Practise this one
                         <ArrowRight size={15} {...ICON} />

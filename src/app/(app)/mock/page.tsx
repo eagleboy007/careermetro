@@ -8,8 +8,17 @@ import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleMockPage } from "@/lib/mock/fixtures";
 import { mockPageFor } from "@/lib/mock/store";
+import { unreviewedAllowed } from "@/lib/mock/rules";
 import { mockTab, type MockPageView, type MockTab } from "@/lib/schemas";
-import { endMockInterviewAction, finishTimedTestAction, pickTimedTestAction, saveMockAnswerAction, startMockInterviewAction, startTimedTestAction } from "./actions";
+import {
+  endMockInterviewAction,
+  finishTimedTestAction,
+  pickTimedTestAction,
+  saveFollowUpAnswerAction,
+  saveMockAnswerAction,
+  startMockInterviewAction,
+  startTimedTestAction,
+} from "./actions";
 
 export const metadata: Metadata = { title: "Interview prep · CareerMetro", robots: { index: false } };
 
@@ -31,7 +40,7 @@ async function MockScreen({ searchParams }: PageProps<"/mock">) {
     return (
       <div className="flex flex-col gap-4">
         <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">Preview with example data. Nothing you press here is saved.</p>
-        <MockView key={`${tab}-${role}`} view={exampleMockPage(role, false)} tab={tab ?? "bank"} />
+        <MockView key={`${tab}-${role}`} view={exampleMockPage(role, false, null, null, unreviewedAllowed())} tab={tab ?? "bank"} />
       </div>
     );
   }
@@ -59,6 +68,7 @@ async function MockScreen({ searchParams }: PageProps<"/mock">) {
       onFinish={finishTimedTestAction}
       onInterviewStart={startMockInterviewAction}
       onInterviewAnswer={saveMockAnswerAction}
+      onInterviewFollowUp={saveFollowUpAnswerAction}
       onInterviewEnd={endMockInterviewAction}
     />
   );

@@ -1,0 +1,6 @@
+-- Mock interview follow-ups (docs/plans/mock-followups-plan.md, v44 gap item 20; approved by the Project manager under Milin's delegation). Two columns on mock_answers, which already has row level security: follow_up_id, the bank follow-up asked after this answer (picked by code from src/content/mock-bank.json, never by the model), and follow_up_answer, the person's reply, 1 to 4,000 characters, only with a follow_up_id. The text is the person's own, never logged and never in ai_calls; the daily cleanup deletes the whole answer row after 30 days, the follow-up with it, and the account going deletes it through mock_sessions (on delete cascade). No new table or foreign key, so no new index. Expand only: two nullable columns and two checks.
+ALTER TABLE "mock_answers" ADD COLUMN "follow_up_id" text;--> statement-breakpoint
+ALTER TABLE "mock_answers" ADD COLUMN "follow_up_answer" text;--> statement-breakpoint
+ALTER TABLE "mock_answers" ADD CONSTRAINT "mock_answers_follow_up_length" CHECK (char_length("mock_answers"."follow_up_answer") between 1 and 4000);--> statement-breakpoint
+ALTER TABLE "mock_answers" ADD CONSTRAINT "mock_answers_follow_up_needs_id" CHECK ("mock_answers"."follow_up_answer" is null or "mock_answers"."follow_up_id" is not null);--> statement-breakpoint
+ALTER TABLE "mock_answers" ENABLE ROW LEVEL SECURITY;
