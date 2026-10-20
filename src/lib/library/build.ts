@@ -97,7 +97,8 @@ export function buildLibrary(input: LibraryInput): LibraryView {
       learnPitstop,
       provePitstop,
       now: g.goalId === rideGoalId,
-      learnDone: g.learnDone || (courses.length > 0 && courses.every((id) => input.ticked.has(taskId(g.goalId, id)))),
+      // As on Today, the learn pitstop is done only when its practice is ticked too.
+      learnDone: g.learnDone || (courses.length > 0 && courses.every((id) => input.ticked.has(taskId(g.goalId, id))) && input.ticked.has(`${g.goalId}:practice`)),
       resourceIds,
       certificates: certificatesFor(g.proofSkills ?? [g.skillId])
         .slice(0, 40)

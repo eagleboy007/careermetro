@@ -76,7 +76,7 @@ export function LibraryView({ view }: { view: View }) {
       <div className="flex min-w-0 flex-col gap-4 pb-8 min-[760px]:pr-7">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-[2rem] font-semibold leading-[1.1]">Library</h2>
+            <h1 className="text-[2rem] font-semibold leading-[1.1]">Library</h1>
             <p className="mt-1.5 max-w-[60ch] text-[0.92rem] text-muted">
               Free courses, docs, videos and practice, picked for your goals. We link to the source and never host or sell anything.
             </p>

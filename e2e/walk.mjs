@@ -686,7 +686,7 @@ await step("library: goal cards, the details panel, search and filters, Finished
   await p.goto(BASE + "/library");
   await settled();
   const main = p.locator("main").first();
-  await main.getByRole("heading", { name: "Library", level: 2 }).waitFor({ timeout: 10000 });
+  await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
   const cards = main.getByRole("region").filter({ has: p.getByText("Skill check", { exact: true }) });
   if (!(await cards.count())) throw new Error("no goal cards for the walk's goals");
   await a11y("library");

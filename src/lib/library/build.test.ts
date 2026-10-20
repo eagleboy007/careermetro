@@ -96,9 +96,11 @@ describe("buildLibrary", () => {
   it("counts only the person's own ticks as finished: ride tasks, and a learn pitstop marked done", () => {
     expect(new Set(view.finished)).toEqual(new Set(["c1", "c5"]));
     expect(view.goals.map((g) => g.learnDone)).toEqual([false, true]);
-    // Ticking the other ride course finishes the learn pitstop's courses, which is still not proof.
-    const both = buildLibrary({ ...input, ticked: new Set(["g1:r:c1", "g1:r:c2"]) });
-    expect(both.goals[0].learnDone).toBe(true);
+    // Both ride courses without the practice task leave the pitstop open, as on Today.
+    expect(buildLibrary({ ...input, ticked: new Set(["g1:r:c1", "g1:r:c2"]) }).goals[0].learnDone).toBe(false);
+    // With the practice ticked too the learn pitstop is done, which is still not proof.
+    const all = buildLibrary({ ...input, ticked: new Set(["g1:r:c1", "g1:r:c2", "g1:practice"]) });
+    expect(all.goals[0].learnDone).toBe(true);
   });
 
   it("lists the certificates that fill a goal, from our list", () => {
