@@ -46,7 +46,7 @@ const bytes = new TextEncoder().encode(readFileSync("fixtures/resumes/priya-shar
 const parsed: Profile = {
   headline: "Data Analyst",
   totalYearsExperience: 3,
-  roles: [{ title: "Analyst", employer: "Acme Traders", start: "2023-01", end: null, highlights: ["Built the weekly report"] }],
+  roles: [{ title: "Analyst", employer: "Acme Traders", start: "2023-01", end: null, highlights: ["Wrote SQL queries for weekly sales reports across 40 stores"] }],
   skills: [{ name: "SQL", lastUsed: null, evidence: [] }],
   education: [],
   certifications: [],
@@ -169,7 +169,7 @@ describe.skipIf(!db)("Me editing (database)", () => {
       ["Volunteer data lead", true],
       ["Analyst", false],
     ]);
-    expect(profile!.experience[1].highlights).toEqual(["Built the weekly report"]);
+    expect(profile!.experience[1].highlights).toEqual(["Wrote SQL queries for weekly sales reports across 40 stores"]);
   });
 
   it("adds, edits and deletes education for its owner only", async () => {
