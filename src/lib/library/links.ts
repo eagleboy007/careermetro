@@ -11,9 +11,9 @@ const TRACKING = /^(utm_.*|ref|aff.*|tag|fbclid|gclid)$/i;
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
-/** True for a host we refuse: an IP address, localhost, or a name with no dot (an intranet name). */
+/** True for a host we refuse: an IP address, localhost, a name with no dot (an intranet name), or one over 253 characters. */
 function badHost(host: string): boolean {
-  if (!host || host.startsWith("[") || host.includes(":")) return true;
+  if (!host || host.length > 253 || host.startsWith("[") || host.includes(":")) return true;
   if (IPV4.test(host) || /^\d+$/.test(host) || /^0x[0-9a-f]+$/i.test(host)) return true;
   if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")) return true;
   return !host.includes(".") || host.endsWith(".");

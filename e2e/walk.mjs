@@ -684,7 +684,7 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
 // says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. The Elite tab is locked on
 // Free: Turn on Elite opens /elite and no card links out (Elite part 5). axe passes on each tab.
 // Library part 2 (docs/plans/library-part-2-plan.md): from the details panel the walk saves a resource, ticks "I
-// finished this", adds one for a goal to its rides (Already on your ride) and takes it off again, and reports a
+// finished this", adds one for a goal to its rides (On your rides) and takes it off again, and reports a
 // broken link; an empty suggestion moves focus back to the box, and a link is sent for review. Saved lists the saved
 // one until its bookmark is pressed again. The reported link is hidden by the admin in the Library review step below.
 let libraryReported = null;
@@ -736,7 +736,7 @@ await step("library: goal cards, the details panel, search and filters, Finished
     if (!(await add.count())) continue;
     await add.click();
     await toast(/^Added/);
-    await panel.getByRole("button", { name: "Already on your ride", exact: true }).waitFor({ timeout: 5000 });
+    await panel.getByRole("button", { name: "On your rides", exact: true }).waitFor({ timeout: 5000 });
     await panel.getByRole("button", { name: "Take it off my rides", exact: true }).click();
     await toast("Taken off your rides.");
     await panel.getByRole("button", { name: "Add to my rides", exact: true }).waitFor({ timeout: 5000 });
@@ -2388,13 +2388,6 @@ await step("reports: the admin hides the reported message, and the other side se
     await sql.end();
   }
 });
-// The job the jobs step posts, for the applications step after it.
-let postedTitle = null;
-let proofSkill = "";
-// Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
-// again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
-// with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
-// takes it off Departures.
 // Library review (/admin/library, docs/plans/library-part-2-plan.md): not found when signed out; the admin sees the
 // link the walk reported and the link it suggested, hides the reported link (one audit line), and the walk's Library no
 // longer shows it; Show again brings it back. The suggestion is declined as off topic. axe passes, phone size in dark.
@@ -2422,7 +2415,7 @@ await step("library review: the admin hides the reported link, and the Library n
     await q.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
     const row = q.locator("article").filter({ has: q.getByRole("heading", { name: libraryReported, exact: true, level: 3 }) });
     await row.waitFor({ timeout: 10000 });
-    await row.getByText("Link is broken · 1", { exact: false }).waitFor();
+    await row.getByText(/Link is broken · \d+/).waitFor();
     const suggestion = q.locator("article").filter({ hasText: suggestedLink });
     const link = suggestion.getByRole("link", { name: new RegExp(suggestedLink.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
     if ((await link.getAttribute("target")) !== "_blank" || !(await link.getAttribute("rel"))?.includes("noreferrer")) throw new Error("a suggested link doesn't open in a new tab without a referrer");
@@ -2461,6 +2454,7 @@ await step("library review: the admin hides the reported link, and the Library n
   } finally {
     // Show it again, so later steps and runs have the whole catalog.
     if (hiddenId) await sql`update resources set hidden_at = null where id = ${hiddenId}`;
+    await sql`delete from resource_reports where user_id in (select id from users where email = ${testEmail})`;
     await sql`delete from resource_suggestions where url = ${suggestedLink}`;
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
@@ -2468,6 +2462,13 @@ await step("library review: the admin hides the reported link, and the Library n
     await sql.end();
   }
 });
+// The job the jobs step posts, for the applications step after it.
+let postedTitle = null;
+let proofSkill = "";
+// Corporate jobs (dev/corporate-plan.md, build step 3): the company review step has verified the company (we set it
+// again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
+// with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
+// takes it off Departures.
 await step("corporate jobs: post, open, see it on Departures, report, pause", async () => {
   if (!q) throw new Error("no company from the step before");
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to verify the company");

@@ -73,13 +73,15 @@ export const libraryView = z
     saved: z.array(z.string().min(1).max(60)).max(3000).default([]),
     /** "I finished this" ticked in the details panel (user_resources.finished_at). Finished is these or `finished`. */
     ticked: z.array(z.string().min(1).max(60)).max(3000).default([]),
-    /** Added with Add to my rides and not yet finished (user_resources.on_ride_at): the button reads "Already on your ride". */
+    /** Added with Add to my rides and not yet finished (user_resources.on_ride_at): the button reads "On your rides". */
     added: z.array(z.string().min(1).max(60)).max(ON_RIDE_MAX).default([]),
+    /** Each open goal's own ride courses (its path's first two): on the rides already, so the button reads "On your rides". */
+    rideCourses: z.array(z.string().min(1).max(60)).max(3000).default([]),
   })
   .superRefine((v, ctx) => {
     const ids = new Set(v.items.map((i) => i.id));
     if (ids.size !== v.items.length) ctx.addIssue({ code: "custom", message: "an item is listed twice", path: ["items"] });
-    const missing = [...v.goals.flatMap((g) => g.resourceIds), ...v.onRide, ...v.finished, ...v.saved, ...v.ticked, ...v.added].filter((id) => !ids.has(id));
+    const missing = [...v.goals.flatMap((g) => g.resourceIds), ...v.onRide, ...v.finished, ...v.saved, ...v.ticked, ...v.added, ...v.rideCourses].filter((id) => !ids.has(id));
     if (missing.length) ctx.addIssue({ code: "custom", message: "points to an item that isn't in the list", path: ["items"] });
   });
 

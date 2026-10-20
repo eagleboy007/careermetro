@@ -8,7 +8,7 @@ import { eliteOn } from "@/lib/elite/store";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf } from "@/lib/goals/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
-import { addedTaskId, buildRide, goalForAdded, rideParts } from "@/lib/ride/build";
+import { addedTaskId, buildRide, goalForAdded, MAX_COURSES, rideParts } from "@/lib/ride/build";
 import { indiaDay } from "@/lib/ride/days";
 import { rideGoalsFor } from "@/lib/ride/store";
 import {
@@ -185,7 +185,18 @@ async function onRideCount(tx: Tx, userId: string): Promise<number> {
     .select({ id: userResources.resourceId, minutes: resources.minutes })
     .from(userResources)
     .innerJoin(resources, eq(resources.id, userResources.resourceId))
-    .where(and(eq(userResources.userId, userId), isNotNull(userResources.onRideAt), isNull(userResources.finishedAt)));
+    .where(
+      and(
+        eq(userResources.userId, userId),
+        isNotNull(userResources.onRideAt),
+        isNull(userResources.finishedAt),
+        // The same rows the ride reads (addedResources in src/lib/ride/store.ts): a broken, paid or hidden link
+        // leaves the ride, so it holds no slot either.
+        eq(resources.healthy, true),
+        eq(resources.free, true),
+        isNull(resources.hiddenAt),
+      ),
+    );
   if (!rows.length) return 0;
   const ticked = await tx
     .selectDistinct({ id: sql<string>`unnest(${rideDays.taskIds})` })
@@ -210,9 +221,16 @@ export async function setLibraryMark(userId: string, raw: unknown, deps: Deps = 
   // Whether the link is for an open goal is read first, outside the transaction, as a ride tick reads the line.
   if (mark === "onRide" && on) {
     const [line, found] = await Promise.all([rideGoalsFor(userId, db, { sync: false }), resourceRow(db, resourceId)]);
-    if (found && listed(found) && !goalForAdded(line?.goals ?? [], found.skillIds)) {
+    const goal = found && listed(found) ? goalForAdded(line?.goals ?? [], found.skillIds) : null;
+    if (found && listed(found) && !goal) {
       if (!(await takeShared(LIMITS.libraryChangesPerUserDay, userId, { db, now: now.getTime() }))) return { ok: false, error: "limit" };
       return { ok: false, error: "not_on_goals" };
+    }
+    // One of the goal's own ride courses is on the rides already, ticked as that course; an added row for it would
+    // never be ticked as res:… and would hold a slot for good. So nothing is written.
+    if (goal?.resources.slice(0, MAX_COURSES).some((c) => c.id === resourceId)) {
+      if (!(await takeShared(LIMITS.libraryChangesPerUserDay, userId, { db, now: now.getTime() }))) return { ok: false, error: "limit" };
+      return { ok: true };
     }
   }
   const column = COLUMN[mark];

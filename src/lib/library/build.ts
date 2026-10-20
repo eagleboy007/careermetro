@@ -81,6 +81,7 @@ export function buildLibrary(input: LibraryInput): LibraryView {
   // An added resource is finished once its last part is ticked on a ride.
   for (const r of input.catalog) if (known.has(r.id) && input.ticked.has(addedTaskId(r.id, rideParts(r.minutes)))) finished.add(r.id);
   const cards: LibraryGoal[] = [];
+  const rideCourses = new Set<string>();
   let n = 1;
   for (const g of input.goals) {
     const learnPitstop = g.status === "missing" ? n++ : null;
@@ -92,6 +93,7 @@ export function buildLibrary(input: LibraryInput): LibraryView {
     // The Path's "done" tick counts as every task of the pitstop ticked.
     if (g.learnDone) for (const id of courses) finished.add(id);
     if (g.proved || g.skipped) continue;
+    if (!g.choice) for (const id of courses) rideCourses.add(id);
 
     const skill = input.learnSkill.get(g.goalId) ?? g.skillId;
     const extras = (bySkill.get(skill) ?? [])
@@ -126,5 +128,6 @@ export function buildLibrary(input: LibraryInput): LibraryView {
     saved: marks.saved.filter((id) => known.has(id)),
     ticked: marks.ticked.filter((id) => known.has(id)),
     added: marks.added.filter((id) => known.has(id) && !finished.has(id) && !marks.ticked.includes(id)).slice(0, ON_RIDE_MAX),
+    rideCourses: [...rideCourses],
   });
 }

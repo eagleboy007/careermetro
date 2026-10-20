@@ -70,10 +70,11 @@ export const exampleLibrary: LibraryView = {
   saved: ["r10", "r3"],
   ticked: [],
   added: [],
+  rideCourses: [],
 };
 
 /** The same person with no resume: no goals, the catalog for search. */
-export const exampleLibraryNoResume: LibraryView = { role: null, pathHref: null, goals: [], items, onRide: [], finished: [], saved: [], ticked: [], added: [] };
+export const exampleLibraryNoResume: LibraryView = { role: null, pathHref: null, goals: [], items, onRide: [], finished: [], saved: [], ticked: [], added: [], rideCourses: [] };
 
 /** The catalog's skills by URL, which the shelf reads to put the cards for a person's goals first. */
 export const shelfSkillIdsByUrl: ReadonlyMap<string, readonly string[]> = new Map(resources.map((r) => [r.url, r.skillIds]));

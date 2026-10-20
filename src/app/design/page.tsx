@@ -631,7 +631,7 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Library part 2: Save, I finished this, rides, reports and suggestions</h2>
         <p className="text-sm text-muted">
           docs/plans/library-part-2-plan.md: the bookmark on every row and in the details panel (pressed when saved), the Saved tab newest first with
-          its count, &quot;I finished this&quot; (the person&apos;s own tick; it never fills a gap), Add to my rides, which reads Already on your ride
+          its count, &quot;I finished this&quot; (the person&apos;s own tick; it never fills a gap), Add to my rides, which reads On your rides
           once added, with Take it off my rides, and Link broken or out of date? Below, the Saved tab with an item added to the rides, then the report
           menu open, and the suggest panel with goal chips, with no goals (Other only) and with a pasted link. Toasts say what changed. Example data.
         </p>

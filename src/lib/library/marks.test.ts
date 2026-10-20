@@ -214,6 +214,27 @@ describe.skipIf(!db)("Library marks, reports and suggestions (database)", () => 
     expect(await setLibraryMark(userId, { resourceId: elsewhere, mark: "onRide", on: true }, { db: db!, now: day(5) })).toEqual({ ok: false, error: "not_on_goals" });
   });
 
+  it("writes nothing for a goal's own ride course, and a broken or hidden added link holds no slot", async () => {
+    const { userId, skillId } = await withLine("own");
+    const view = await libraryFor(userId, day(0), db!);
+    const course = view.rideCourses.find((id) => view.items.find((i) => i.id === id)?.url.startsWith(linkPrefix));
+    if (!course) throw new Error("no goal rides this test's links");
+    // It is on the rides already, ticked as the goal's course, so no added row could ever clear.
+    expect(await setLibraryMark(userId, { resourceId: course, mark: "onRide", on: true }, { db: db!, now: day(0) })).toEqual({ ok: true });
+    expect(await rowOf(userId, course)).toBeNull();
+
+    const broken = await resource("own-broken", [skillId]);
+    const hidden = await resource("own-hidden", [skillId]);
+    for (const id of [broken, hidden]) expect(await setLibraryMark(userId, { resourceId: id, mark: "onRide", on: true }, { db: db!, now: day(0) })).toEqual({ ok: true });
+    await db!.update(schema.resources).set({ healthy: false }).where(eq(schema.resources.id, broken));
+    await db!.update(schema.resources).set({ hiddenAt: day(0) }).where(eq(schema.resources.id, hidden));
+    // They have left the ride, so all five slots are free again.
+    for (let k = 0; k < ON_RIDE_MAX; k++) {
+      const id = await resource(`own-more-${k}`, [skillId]);
+      expect(await setLibraryMark(userId, { resourceId: id, mark: "onRide", on: true }, { db: db!, now: day(0) })).toEqual({ ok: true });
+    }
+  });
+
   it("keeps one open report per person and link, and takes none for a hidden link", async () => {
     const me = await user("report");
     const other = await user("report-other");

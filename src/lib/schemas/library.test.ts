@@ -39,7 +39,7 @@ describe("Library marks, reports and suggestions: input", () => {
     expect(suggestionInput.parse({ url: "https://www.youtube.com/watch?v=abc123", skillId: null }).url.host).toBe("www.youtube.com");
   });
 
-  it("refuses http, user info, ports, IP addresses, localhost, intranet names and anything that isn't a link", () => {
+  it("refuses http, user info, ports, IP addresses, localhost, intranet names, hosts over 253 characters and anything that isn't a link", () => {
     for (const url of [
       "http://learn.example.org/",
       "https://me:secret@learn.example.org/",
@@ -58,6 +58,7 @@ describe("Library marks, reports and suggestions: input", () => {
       "https://learn.example.org/a b",
       "",
       `https://learn.example.org/${"a".repeat(500)}`,
+      `https://${"a".repeat(60)}.${"b".repeat(60)}.${"c".repeat(60)}.${"d".repeat(60)}.example.org/`,
     ]) {
       expect(cleanSuggestedUrl(url), url).toBeNull();
       expect(suggestionInput.safeParse({ url, skillId: null }).success, url).toBe(false);

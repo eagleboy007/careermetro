@@ -51,7 +51,7 @@ export const stageInput = z.object({ postId, stage: z.number().int().min(1).max(
 /** "I didn't apply": clears the tracker. */
 export const clearStageInput = z.object({ postId }).strict();
 
-/** One row of `departures` in Download your data (export version 26). */
+/** One row of `departures` in Download your data (added in export version 26). */
 export const departureExport = z.object({
   title: z.string(),
   company: z.string(),

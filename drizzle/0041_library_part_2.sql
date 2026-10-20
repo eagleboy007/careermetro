@@ -21,7 +21,8 @@ CREATE TABLE "resource_reports" (
 	"decided_at" timestamp with time zone,
 	"decided_by" uuid,
 	CONSTRAINT "resource_reports_reason" CHECK ("resource_reports"."reason" in ('broken', 'not_free', 'outdated', 'other')),
-	CONSTRAINT "resource_reports_status" CHECK ("resource_reports"."status" in ('open', 'hidden', 'dismissed'))
+	CONSTRAINT "resource_reports_status" CHECK ("resource_reports"."status" in ('open', 'hidden', 'dismissed')),
+	CONSTRAINT "resource_reports_decided" CHECK (("resource_reports"."status" = 'open') = ("resource_reports"."decided_at" is null))
 );
 --> statement-breakpoint
 CREATE TABLE "resource_suggestions" (
@@ -38,6 +39,7 @@ CREATE TABLE "resource_suggestions" (
 	CONSTRAINT "resource_suggestions_url" CHECK ("resource_suggestions"."url" like 'https://%' and char_length("resource_suggestions"."url") <= 500),
 	CONSTRAINT "resource_suggestions_host_length" CHECK (char_length("resource_suggestions"."host") between 1 and 253),
 	CONSTRAINT "resource_suggestions_status" CHECK ("resource_suggestions"."status" in ('open', 'accepted', 'duplicate', 'declined')),
+	CONSTRAINT "resource_suggestions_decided" CHECK (("resource_suggestions"."status" = 'open') = ("resource_suggestions"."decided_at" is null)),
 	CONSTRAINT "resource_suggestions_decline_reason" CHECK (("resource_suggestions"."status" = 'declined') = ("resource_suggestions"."decline_reason" is not null) and ("resource_suggestions"."decline_reason" is null or "resource_suggestions"."decline_reason" in ('not_free', 'paywall', 'affiliate', 'off_topic', 'other')))
 );
 --> statement-breakpoint

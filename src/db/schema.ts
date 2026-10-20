@@ -1540,6 +1540,7 @@ export const resourceReports = pgTable(
     index("resource_reports_user").on(t.userId),
     check("resource_reports_reason", sql`${t.reason} in ('broken', 'not_free', 'outdated', 'other')`),
     check("resource_reports_status", sql`${t.status} in ('open', 'hidden', 'dismissed')`),
+    check("resource_reports_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
   ],
 );
 
@@ -1571,6 +1572,7 @@ export const resourceSuggestions = pgTable(
     check("resource_suggestions_url", sql`${t.url} like 'https://%' and char_length(${t.url}) <= 500`),
     check("resource_suggestions_host_length", sql`char_length(${t.host}) between 1 and 253`),
     check("resource_suggestions_status", sql`${t.status} in ('open', 'accepted', 'duplicate', 'declined')`),
+    check("resource_suggestions_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
     check(
       "resource_suggestions_decline_reason",
       sql`(${t.status} = 'declined') = (${t.declineReason} is not null) and (${t.declineReason} is null or ${t.declineReason} in ('not_free', 'paywall', 'affiliate', 'off_topic', 'other'))`,

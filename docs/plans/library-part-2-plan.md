@@ -13,9 +13,9 @@ Development, 2026-10-20. Source: handoff 12a (data proposal: `user_resources`, `
   - Finished now means ride ticks, Path ticks or this box. Unticking the box removes only the box's tick.
   - The note "We can't see your progress on other sites, so Finished is your own tick…" loses its "come soon" sentence.
 - **Add to my rides**:
-  - Toast for 60 minutes or less: "Added to your next ride."
-  - Toast for longer items: "Added. We split it into daily tasks of about 25 minutes."
-  - Once added, the button reads "Already on your ride" (disabled). The next ride puts the item first for its goal, as "Part k of n" for split items.
+  - Toast for 60 minutes or less: "Added to your rides." (it joins the rides of its goal, which may not be today's).
+  - Toast for longer items: "Added to your rides, in parts of about 25 minutes."
+  - Once added, the button reads "On your rides" (disabled). The next ride puts the item first for its goal, as "Part k of n" for split items.
 - **Report a broken link** (link in the details panel): a small menu with "Link is broken", "Not free any more", "Out of date" and "Something else".
   - Then the toast "Thanks. A reviewer will check this link."
   - A second report of the same item by the same person says the same thing, and stores nothing new.
@@ -119,7 +119,7 @@ Development, 2026-10-20, branch `v44-library2`.
 3. **Three tasks a ride.** The ride schema shows at most three tasks. Added items come first, and the path's courses and practice follow once those are done. Each added item moves on one part a day.
 4. **Which goal.** An added item belongs to no goal id. It joins the first open goal on the line whose learn skill it teaches (its own skill, or the one "Not for me" swapped it to). A course already among that goal's ride courses isn't added twice. The Path's done tick doesn't cover added items, so adding one to such a goal brings the ride back to it.
 5. **Add to my rides needs a goal.** The button shows only for items on a goal card. The server also refuses a link that teaches no open goal on the line ("This one isn't for a goal on your line, so it can't go on a ride.").
-6. **Take it off my rides.** The five-item toast says "Finish or remove one first", so the panel has a small "Take it off my rides" under "Already on your ride" (toast "Taken off your rides."). Focus moves to Add to my rides, never to the page.
+6. **Take it off my rides.** The five-item toast says "Finish or remove one first", so the panel has a small "Take it off my rides" under "On your rides" (toast "Taken off your rides."). Focus moves to Add to my rides, never to the page.
 7. **The five.** The cap counts added items not finished: not ticked with the box and with a part still to do. A box tick takes an item off the ride.
 8. **Report link copy.** The panel uses the prototype's words, "Link broken or out of date?", which opens the four reasons.
 9. **Untick copy.** Unticking the box says "No longer marked finished.", or "Unticked. Your ride or Path tick still counts it as finished." when a ride or Path tick also counts.
@@ -132,3 +132,6 @@ Development, 2026-10-20, branch `v44-library2`.
 16. **Limits.** Every try counts once it passes the Zod check: a refused "not on a goal" counts as a change, and a duplicate counts as a suggestion. A link refused by the schema counts nothing.
 17. **Export v27.** `library.saved`, `finished` and `onRide` each list `{title, url, at}`. `finished` is the box's ticks; ride ticks are already in the download's ride days.
 18. **Nothing skipped.** No part needed a key, money or a legal call. Item 49 stays deferred (choice 7).
+19. **What holds a ride slot.** The five-item count reads the same rows the ride does: an added link that is broken, no longer free or hidden by an admin has left the ride, so it holds no slot. A goal's own ride course (its path's first two) is on the rides already and is ticked as that course, so Add to my rides writes nothing for it, and the panel shows "On your rides" from the start (the view's `rideCourses`).
+20. **Ride copy.** An added item rides with its goal, which may not be today's, so the words are "Added to your rides.", "Added to your rides, in parts of about 25 minutes." and "On your rides", never "next ride".
+21. **Decided means decided.** Both review tables check that a row is open exactly when it has no decided_at.

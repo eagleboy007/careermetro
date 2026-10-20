@@ -129,6 +129,7 @@ export function LibraryView({
   const set = (patch: Partial<LibraryFilters>) => setFilters((f) => ({ ...f, ...patch }));
 
   const onRide = useMemo(() => new Set(view.onRide), [view.onRide]);
+  const rideCourses = useMemo(() => new Set(view.rideCourses), [view.rideCourses]);
   const savedSet = useMemo(() => new Set(saved), [saved]);
   // Finished is the person's own tick: on a ride, on the Path, or "I finished this" here.
   const finished = useMemo(() => new Set([...view.finished, ...ticked]), [view.finished, ticked]);
@@ -187,7 +188,7 @@ export function LibraryView({
         return next;
       });
     flip(on);
-    const words = !on ? "Taken off your rides." : i.minutes > RIDE_SPLIT_OVER_MINUTES ? "Added. We split it into daily tasks of about 25 minutes." : "Added to your next ride.";
+    const words = !on ? "Taken off your rides." : i.minutes > RIDE_SPLIT_OVER_MINUTES ? "Added to your rides, in parts of about 25 minutes." : "Added to your rides.";
     keep(actions?.mark(i.id, "onRide", on), () => flip(!on), words);
   };
   const report = (i: LibraryItem, reason: string) => keep(actions?.report(i.id, reason), () => {}, REPORTED);
@@ -420,6 +421,7 @@ export function LibraryView({
             goal={goalOf(view.goals, item.id)}
             onRide={onRide.has(item.id)}
             added={added.has(item.id)}
+            rideCourse={rideCourses.has(item.id)}
             finished={finished.has(item.id)}
             ticked={ticked.has(item.id)}
             saved={savedSet.has(item.id)}
@@ -767,6 +769,7 @@ function ResourceDetail({
   goal,
   onRide,
   added,
+  rideCourse,
   finished,
   ticked,
   saved,
@@ -779,6 +782,8 @@ function ResourceDetail({
   goal: LibraryGoal | null;
   onRide: boolean;
   added: boolean;
+  /** One of its goal's own ride courses: on the rides already, with nothing to add. */
+  rideCourse: boolean;
   finished: boolean;
   ticked: boolean;
   saved: boolean;
@@ -800,7 +805,7 @@ function ResourceDetail({
       ? `Counts toward Pitstop ${goal.learnPitstop}, learning ${goal.name}. It moves your train along. To fill the gap, prove it at Pitstop ${goal.provePitstop}.`
       : `Practice for Pitstop ${goal.provePitstop}. Only the proof fills the ${goal.name} gap.`
     : "Not on your goals. Learning it never changes your goals, your gaps or your job matches.";
-  const already = onRide || added;
+  const already = onRide || added || rideCourse;
   return (
     <section aria-label={item.title} className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-3.5 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-start gap-3">
@@ -826,7 +831,7 @@ function ResourceDetail({
         <dt className="text-muted">Certificate</dt>
         <dd>If the site gives one, it shows as learning, never as proof.</dd>
         <dt className="text-muted">Your tick</dt>
-        <dd>{finished ? "Finished" : onRide ? "On today's ride" : added ? "On your rides" : "Not started here"}</dd>
+        <dd>{finished ? "Finished" : onRide ? "On today's ride" : added || rideCourse ? "On your rides" : "Not started here"}</dd>
       </dl>
       <div className="flex flex-col gap-2">
         {goal && !finished && (
@@ -840,7 +845,7 @@ function ResourceDetail({
             className={`${ghost} aria-disabled:cursor-default aria-disabled:opacity-70`}
           >
             {already ? <TrainFront size={17} {...ICON} /> : <Plus size={17} {...ICON} />}
-            {already ? "Already on your ride" : "Add to my rides"}
+            {already ? "On your rides" : "Add to my rides"}
           </button>
         )}
         <a href={item.url} target="_blank" rel="noopener noreferrer" className={primary} aria-label={`Open on ${item.provider} (opens in a new tab)`}>

@@ -131,6 +131,11 @@ describe("buildLibrary", () => {
     expect(buildLibrary({ ...input, marks: { saved: [], ticked: [], added: ["c6"] } }).added).toEqual(["c6"]);
   });
 
+  it("lists each open goal's own ride courses, which are on the rides already and can't be added", () => {
+    // g1's first two (not its third), g4's one; g2 is proved and g3 skipped.
+    expect(buildLibrary(input).rideCourses).toEqual(["c1", "c2", "c5"]);
+  });
+
   it("marks an added course on today's ride as on your ride", () => {
     const withAdded = goals.map((g) => (g.goalId === "g1" ? { ...g, added: [{ ...res("c4"), minutes: 30 }] } : g));
     const today = buildRide({ goals: withAdded, path: { href: "/resume/x/path/data-analyst", built: true }, doneBefore: ticked, doneToday: new Set(), doneThisWeek: new Set() });
