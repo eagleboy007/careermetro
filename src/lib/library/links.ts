@@ -11,6 +11,14 @@ const TRACKING = /^(utm_.*|ref|aff.*|tag|fbclid|gclid)$/i;
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+/** Link shorteners hide where a link goes, so an admin can't see the real site before opening it (T88). */
+const SHORTENERS: readonly string[] = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly", "rebrand.ly", "cutt.ly", "shorturl.at"];
+
+/** True for a known link shortener, or a name under one (www.bit.ly). */
+export function shortenerHost(host: string): boolean {
+  return SHORTENERS.some((s) => host === s || host.endsWith(`.${s}`));
+}
+
 /** True for a host we refuse: an IP address, localhost, a name with no dot (an intranet name), or one over 253 characters. */
 function badHost(host: string): boolean {
   if (!host || host.length > 253 || host.startsWith("[") || host.includes(":")) return true;
@@ -21,7 +29,7 @@ function badHost(host: string): boolean {
 
 /**
  * A suggested link, cleaned: https only, with no user name, password or port, and a host that is a public name (not
- * an IP address or localhost). Tracking and affiliate parameters and the #fragment are dropped. Null when it can't be
+ * an IP address, localhost or a link shortener). Tracking and affiliate parameters and the #fragment are dropped. Null when it can't be
  * used, or is longer than 500 characters once cleaned.
  */
 export function cleanSuggestedUrl(raw: string): { url: string; host: string } | null {
@@ -35,7 +43,7 @@ export function cleanSuggestedUrl(raw: string): { url: string; host: string } | 
   }
   if (u.protocol !== "https:" || u.username || u.password || u.port) return null;
   const host = u.hostname.toLowerCase();
-  if (badHost(host)) return null;
+  if (badHost(host) || shortenerHost(host)) return null;
   for (const key of [...u.searchParams.keys()]) if (TRACKING.test(key)) u.searchParams.delete(key);
   u.hash = "";
   const url = u.toString();

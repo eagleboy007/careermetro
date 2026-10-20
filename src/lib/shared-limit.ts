@@ -10,6 +10,7 @@ import { errorFields, logEvent } from "@/lib/log";
 import {
   AVAILABILITY_SAVES_PER_DAY,
   DEPARTURE_CHANGES_PER_DAY,
+  DIRECT_MESSAGES_PER_DAY,
   ELITE_CHANGES_PER_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
   LIBRARY_CHANGES_PER_DAY,
@@ -18,6 +19,7 @@ import {
   MOCK_SESSIONS_PER_DAY,
   NOTIFICATION_READS_PER_DAY,
   RESOURCE_REPORTS_PER_DAY,
+  RESUME_EXPORTS_PER_HOUR,
   SUGGESTIONS_PER_DAY,
   TIMED_TESTS_PER_DAY,
   TRACK_CHANGES_PER_DAY,
@@ -68,6 +70,10 @@ export const LIMITS = {
   companyMessagesPerCompanyDay: { bucket: "company-message", max: 200, windowMs: 24 * HOUR },
   /** Messages a company sends in one application chat a day, so one candidate can't be flooded. Keyed by the application's id. */
   companyMessagesPerApplicationDay: { bucket: "company-message-application", max: 20, windowMs: 24 * HOUR },
+  /** Messages one person sends in open direct chats a day, across every chat; a request has its own limit above. */
+  directMessagesPerUserDay: { bucket: "direct-message-user", max: DIRECT_MESSAGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Resume downloads an hour per owner (signed in or not), each try counted: every one renders a PDF or Word file. */
+  resumeExportsPerOwnerHour: { bucket: "resume-export", max: RESUME_EXPORTS_PER_HOUR, windowMs: HOUR },
   /** Messages one person sends in their application chats a day, across every company. */
   applicationMessagesPerUserDay: { bucket: "application-message-user", max: 50, windowMs: 24 * HOUR },
   /** "Is this username free?" checks one person makes, so the list of usernames can't be read out by script. */

@@ -1,8 +1,8 @@
 import "server-only";
-import { and, asc, count, eq, isNotNull, isNull, lt, ne, sql } from "drizzle-orm";
+import { and, asc, count, eq, inArray, isNotNull, isNull, lt, ne, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
-import { resourceReports, resources, resourceSuggestions, rideDays, userResources } from "@/db/schema";
+import { resourceReports, resources, resourceSuggestions, rideDays, userGoals, userResources } from "@/db/schema";
 import { resources as catalog, eliteShelfEntries, roleProfiles, skillGroupMembers, skills } from "@/content";
 import { eliteOn } from "@/lib/elite/store";
 import { swappedSkill } from "@/lib/goals/not-for-me";
@@ -285,10 +285,20 @@ export async function reportResource(userId: string, raw: unknown, deps: Deps = 
   });
 }
 
+/** The skills of the person's open goals (not skipped or met), the swapped-to skill included: what a suggestion may name (FR-51, T88). */
+async function openGoalSkills(userId: string, db: Db): Promise<Set<string>> {
+  const rows = await db
+    .select({ skillId: userGoals.skillId, swappedTo: userGoals.swappedTo })
+    .from(userGoals)
+    .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"])));
+  return new Set(rows.flatMap((r) => (r.swappedTo ? [r.skillId, r.swappedTo] : [r.skillId])));
+}
+
 /**
- * "Suggest a free resource": a cleaned https link (never fetched here) and the goal's skill, or null for Other. A
- * link already in the catalog is "duplicate" and stores nothing; the result names the catalog item when the Library
- * shows it. Five a day, and thirty waiting at once; the same link from the same person is kept once.
+ * "Suggest a free resource": a cleaned https link (never fetched here) and the skill of one of the person's open
+ * goals, or null for Other; any other skill is "invalid". A link already in the catalog is "duplicate" and stores
+ * nothing; the result names the catalog item when the Library shows it. Five a day, and thirty waiting at once; the
+ * same link from the same person is kept once.
  */
 export async function suggestResource(userId: string, raw: unknown, deps: Deps = {}): Promise<LibraryResult> {
   const input = suggestionInput.safeParse(raw);
@@ -296,6 +306,7 @@ export async function suggestResource(userId: string, raw: unknown, deps: Deps =
   const { url: link, skillId } = input.data;
   if (skillId !== null && !skillNames.has(skillId)) return { ok: false, error: "invalid" };
   const db = deps.db ?? getDb();
+  if (skillId !== null && !(await openGoalSkills(userId, db)).has(skillId)) return { ok: false, error: "invalid" };
   const now = deps.now ?? new Date();
   return db.transaction(async (tx): Promise<LibraryResult> => {
     if (!(await takeShared(LIMITS.resourceSuggestionsPerUserDay, userId, { db: tx, now: now.getTime() }))) return { ok: false, error: "limit" };

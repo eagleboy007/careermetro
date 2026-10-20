@@ -11,7 +11,7 @@
 import { appendFileSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
-import { capPosts, FEED_LIMITS, feedUrl, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
+import { capPosts, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow, TOKEN_PATTERN } from "../../src/lib/departures/feed-schemas.mjs";
 
 const root = new URL("../../", import.meta.url);
@@ -82,9 +82,10 @@ export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.
  * @param {Board} board
  * @param {unknown} data
  * @param {import("../../src/lib/departures/feed-rules.mjs").SkillMatcher[]} matchers
+ * @param {Date} [now] the run's time, so every post in a run is checked against the same clock
  * @returns {{ ok: true; rows: ReturnType<typeof jobPostRow.parse>[]; total: number; truncated: boolean } | { ok: false; error: "invalid" }}
  */
-export function boardRows(board, data, matchers) {
+export function boardRows(board, data, matchers, now = new Date()) {
   const schema = FEED_SCHEMAS[board.ats];
   const envelope = schema.board.safeParse(data);
   if (!envelope.success) return { ok: false, error: "invalid" };
@@ -96,7 +97,7 @@ export function boardRows(board, data, matchers) {
     if (job.success && board.ats === "ashby" && job.data.isListed === false) continue;
     total++;
     if (!job.success) continue;
-    const row = postRow(board.ats, board, rawPost(board.ats, job.data, board.token), matchers);
+    const row = postRow(board.ats, board, rawPost(board.ats, job.data, board.token), matchers, now);
     const checked = row ? jobPostRow.safeParse(row) : null;
     if (checked?.success) rows.push(checked.data);
   }
@@ -108,7 +109,7 @@ export function boardRows(board, data, matchers) {
  * doesn't fit its schema fails as a whole; one posting that doesn't fit is skipped. The caps are applied at the end.
  * @param {Board[]} boards
  * @param {import("../../src/lib/departures/feed-rules.mjs").SkillMatcher[]} matchers
- * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number; perBoard?: number; total?: number }} [deps]
+ * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number; perBoard?: number; total?: number; now?: Date }} [deps]
  */
 export async function collect(boards, matchers, deps = {}) {
   /** @type {BoardResult[]} */
@@ -118,10 +119,11 @@ export async function collect(boards, matchers, deps = {}) {
   /** @type {Map<string, BoardResult>} */
   const byKey = new Map();
   let next = 0;
+  const now = deps.now ?? new Date();
   const one = async (/** @type {Board} */ board) => {
     const got = await getJson(feedUrl(board.ats, board.token, board.host), deps);
     if (!got.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: got.error });
-    const read = boardRows(board, got.data, matchers);
+    const read = boardRows(board, got.data, matchers, now);
     if (!read.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: read.error });
     rows.push(...read.rows);
     const posts = read.rows.length;
@@ -208,7 +210,8 @@ export async function writeRun(sql, { boards, rows, results, seen = [], startedA
           url = excluded.url, title = excluded.title, company = excluded.company, city = excluded.city,
           work_type = excluded.work_type, experience_note = excluded.experience_note, role_slug = excluded.role_slug,
           required_skill_ids = excluded.required_skill_ids, nice_skill_ids = excluded.nice_skill_ids,
-          posted_at = coalesce(excluded.posted_at, job_posts.posted_at), last_seen_at = excluded.last_seen_at, closed_at = null`;
+          posted_at = case when job_posts.posted_at > ${new Date(now.getTime() + FUTURE_SKEW_MS)} then excluded.posted_at
+            else coalesce(excluded.posted_at, job_posts.posted_at) end, last_seen_at = excluded.last_seen_at, closed_at = null`;
     }
     const open = await tx`select distinct ats || ':' || board_token as key from job_posts where closed_at is null`;
     const closing = boardsToClose(
@@ -257,7 +260,7 @@ export async function main() {
   const startedAt = new Date();
   const boards = loadBoards();
   const skills = JSON.parse(readFileSync(new URL("src/content/skills.json", root), "utf8"));
-  const { rows, results, seen } = await collect(boards, skillMatchersFor(skills));
+  const { rows, results, seen } = await collect(boards, skillMatchersFor(skills), { now: startedAt });
   let written = null;
   if (process.env.DATABASE_URL) {
     const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1, onnotice: () => {} });

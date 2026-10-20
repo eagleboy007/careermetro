@@ -25,6 +25,13 @@ export async function withKeyLock<T>(db: Db, key: string, timeoutMs: number, fn:
 }
 
 /**
+ * Network's lock on a pair of people: every connection, request and block between them takes it first, so a block
+ * and an accept at the same moment run one after the other (FR-49: a block ends the connection for good). A block
+ * from the Inbox takes it too, before the Inbox's own lock.
+ */
+export const networkPairLock = (x: string, y: string, tx: Tx) => tx.execute(sql`select pg_advisory_xact_lock(hashtext(${["network", ...[x, y].sort()].join("|")}))`);
+
+/**
  * The Inbox's lock on two people's direct chat. Network takes it too (after its own pair lock) whenever a connection
  * starting or ending changes that chat, so a first message can't open a chat while the connection is being removed.
  */

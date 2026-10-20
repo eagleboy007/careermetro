@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobFeedRuns, jobPosts, jobSaves } from "@/db/schema";
@@ -18,17 +18,23 @@ import type { FitContext, StoredPost } from "./fit";
  */
 
 type Db = ReturnType<typeof getDb>;
-type Deps = { db?: Db; now?: Date };
+/** `listMax` stands in for OWN_LIST_MAX in tests. */
+type Deps = { db?: Db; now?: Date; listMax?: number };
 
 /** Open posts sent to the page, newest first. Saved and applied posts come too, whatever their age or state. */
 export const PAGE_POSTS = 300;
+/**
+ * Saved and Applied each hold at most this many posts a person (T91): a new save or application past it is refused,
+ * and the page loads at most this many of each, newest first, so a render never reads an unbounded list.
+ */
+export const OWN_LIST_MAX = 200;
 /** Closed posts (and their saves) go this long after closing: the same 180 days a company keeps access. */
 export const CLOSED_KEEP_DAYS = 180;
 /** Feed runs are kept this long. */
 export const RUN_KEEP_DAYS = 90;
 const DAY = 24 * 60 * 60 * 1000;
 
-export const DEPARTURE_ERRORS = ["invalid", "limit", "not_found", "closed"] as const;
+export const DEPARTURE_ERRORS = ["invalid", "limit", "not_found", "closed", "saved_full", "applied_full"] as const;
 export type DepartureError = (typeof DEPARTURE_ERRORS)[number];
 export type DepartureResult = { ok: true } | { ok: false; error: DepartureError };
 
@@ -37,6 +43,8 @@ export const DEPARTURE_MESSAGES: Record<DepartureError, string> = {
   limit: "That's as many changes as we allow in a day. Try again tomorrow.",
   not_found: "That role isn't on Departures any more. Refresh the page to see the latest roles.",
   closed: "This role has closed on the company's board, so it can't be saved or applied to now.",
+  saved_full: `You have ${OWN_LIST_MAX} saved roles, as many as we keep. Take one off Saved first.`,
+  applied_full: `You're tracking ${OWN_LIST_MAX} applications, as many as we keep. Use "I didn't apply" on one you don't need first.`,
 };
 
 const postColumns = {
@@ -75,21 +83,30 @@ export async function lastFeedRun(db: Db | Tx = getDb()): Promise<Date | null> {
   return row?.finishedAt ?? null;
 }
 
-/** The board for one person (null: signed out, open posts only). Read only. */
-/** `roleSlug` (the page's `?role=`) keeps only posts read as that role, the person's own included. */
+/**
+ * The board for one person (null: signed out, open posts only). Read only. `roleSlug` (the page's `?role=`) keeps only
+ * posts read as that role, the person's own included. Saved and Applied are read as at most `ownMax` each, newest
+ * change first (OWN_LIST_MAX, which the writes keep them under).
+ */
 export async function departuresBoard(
   userId: string | null,
-  { db = getDb(), limit = PAGE_POSTS, roleSlug = null }: { db?: Db; limit?: number; roleSlug?: string | null } = {},
+  { db = getDb(), limit = PAGE_POSTS, roleSlug = null, ownMax = OWN_LIST_MAX }: { db?: Db; limit?: number; roleSlug?: string | null; ownMax?: number } = {},
 ): Promise<DeparturesBoard> {
   const ofRole = roleSlug ? eq(jobPosts.roleSlug, roleSlug) : undefined;
-  const ownRows = (id: string) =>
+  const ownOf = (id: string, list: "saved" | "applied") =>
     db
       .select({ ...postColumns, savedAt: jobSaves.savedAt, stage: jobSaves.stage })
       .from(jobSaves)
       .innerJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
-      .where(and(eq(jobSaves.userId, id), ofRole))
-      .orderBy(desc(jobSaves.updatedAt));
-  type OwnRow = Awaited<ReturnType<typeof ownRows>>[number];
+      .where(and(eq(jobSaves.userId, id), list === "saved" ? isNotNull(jobSaves.savedAt) : isNotNull(jobSaves.stage), ofRole))
+      .orderBy(desc(jobSaves.updatedAt), asc(jobSaves.jobPostId))
+      .limit(ownMax);
+  type OwnRow = Awaited<ReturnType<typeof ownOf>>[number];
+  // Each list on its own, so a saved row past the Applied cap (or the other way) doesn't slip into the other list.
+  const ownRows = async (id: string): Promise<{ saved: OwnRow[]; applied: OwnRow[] }> => {
+    const [saved, applied] = await Promise.all([ownOf(id, "saved"), ownOf(id, "applied")]);
+    return { saved, applied };
+  };
   const [open, own, updatedAt] = await Promise.all([
     db
       .select(postColumns)
@@ -97,15 +114,20 @@ export async function departuresBoard(
       .where(and(isNull(jobPosts.closedAt), ofRole))
       .orderBy(desc(sql`coalesce(${jobPosts.postedAt}, ${jobPosts.firstSeenAt})`), asc(jobPosts.id))
       .limit(limit),
-    userId ? ownRows(userId) : Promise.resolve<OwnRow[]>([]),
+    userId ? ownRows(userId) : Promise.resolve({ saved: [] as OwnRow[], applied: [] as OwnRow[] }),
     lastFeedRun(db),
   ]);
   const ids = new Set(open.map((p) => p.id));
-  const posts: StoredPost[] = [...open, ...own.filter((r) => !ids.has(r.id))];
+  const posts: StoredPost[] = [...open];
+  for (const r of [...own.saved, ...own.applied]) {
+    if (ids.has(r.id)) continue;
+    ids.add(r.id);
+    posts.push(r);
+  }
   return {
     posts,
-    saved: own.filter((r) => r.savedAt !== null).map((r) => r.id),
-    applied: own.filter((r) => r.stage !== null).map((r) => [r.id, r.stage!] as [string, number]),
+    saved: own.saved.map((r) => r.id),
+    applied: own.applied.map((r) => [r.id, r.stage!] as [string, number]),
     updatedAt,
   };
 }
@@ -137,14 +159,27 @@ async function postAndRow(tx: Tx, userId: string, postId: string) {
   return { closed: post.closedAt !== null, row: row ?? null };
 }
 
-/** Runs one change in a transaction, counting the try against the day's 200 first. */
+/**
+ * Runs one change in a transaction, counting the try against the day's 200 first, then holding the person's
+ * Departures lock so two changes at once can't both pass the OWN_LIST_MAX count.
+ */
 async function change(userId: string, deps: Deps, fn: (tx: Tx, now: Date) => Promise<DepartureResult>): Promise<DepartureResult> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
     if (!(await takeShared(LIMITS.departureChangesPerUserDay, userId, { db: tx, now: now.getTime() }))) return { ok: false, error: "limit" };
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-departures:${userId}`}))`);
     return fn(tx, now);
   });
+}
+
+/** Whether the person's Saved or Applied list is already at its cap (OWN_LIST_MAX). */
+async function listFull(tx: Tx, userId: string, list: "saved" | "applied", max: number): Promise<boolean> {
+  const [row] = await tx
+    .select({ n: count() })
+    .from(jobSaves)
+    .where(and(eq(jobSaves.userId, userId), list === "saved" ? isNotNull(jobSaves.savedAt) : isNotNull(jobSaves.stage)));
+  return row.n >= max;
 }
 
 /**
@@ -161,6 +196,7 @@ export async function saveRole(userId: string, raw: unknown, deps: Deps = {}): P
     if (saved) {
       if (found.row?.savedAt) return { ok: true };
       if (found.closed) return { ok: false, error: "closed" };
+      if (await listFull(tx, userId, "saved", deps.listMax ?? OWN_LIST_MAX)) return { ok: false, error: "saved_full" };
       await tx
         .insert(jobSaves)
         .values({ userId, jobPostId: postId, savedAt: now, updatedAt: now })
@@ -187,6 +223,7 @@ export async function setStage(userId: string, raw: unknown, deps: Deps = {}): P
     const found = await postAndRow(tx, userId, postId);
     if (!found) return { ok: false, error: "not_found" };
     if (found.closed && found.row?.stage == null) return { ok: false, error: "closed" };
+    if (found.row?.stage == null && (await listFull(tx, userId, "applied", deps.listMax ?? OWN_LIST_MAX))) return { ok: false, error: "applied_full" };
     await tx
       .insert(jobSaves)
       .values({ userId, jobPostId: postId, stage, appliedAt: now, updatedAt: now })

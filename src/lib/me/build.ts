@@ -1,7 +1,7 @@
 import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile, type StoryBox } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "@/lib/map/life-layout";
 import { indiaDate, profileCertifications, type ProofCertRow } from "./certs";
-import { experienceCheck, jobToCheck, type JobCheckRow } from "./job-check-rules";
+import { experienceCheck, jobKeyOf, jobToCheck, type JobCheckRow } from "./job-check-rules";
 import { smartCheck } from "./smart";
 
 /** Goals shown one by one on the journey strip before the rest fold into "N more goals". */
@@ -140,6 +140,39 @@ export function meFromProfile(input: MeInput): MeProfile {
   const spans: [number, number][] = [];
   // An added current role is a current job for the work-email check as a resume one is (FR-47).
   const checked = jobToCheck({ roles: roles.map((x) => x.r) });
+  const checks = input.jobChecks ?? [];
+  const keyOf = (r: Profile["roles"][number]) => {
+    const k = jobKeyOf(r);
+    return k.employerKey ? `${k.employerKey}|${k.startMonth}` : null;
+  };
+  // T95: an added role can share the badge key (company key and start month) with a resume role uploaded after it was
+  // added. One check, one badge. The company as written on the check settles it when only one side has it. Otherwise
+  // (no check yet, or both sides write it the same) the badge goes to the side that is still current, the one jobToCheck
+  // picks, and to the resume role when both are current or both ended. The other row shows no check at all, only
+  // "Self-declared" where that applies.
+  const ownerOf = new Map<string, "resume" | "added">();
+  for (const { r, own } of roles) {
+    const k = keyOf(r);
+    if (!k || own) continue;
+    const clash = roles.filter((x) => x.own && keyOf(x.r) === k);
+    if (!clash.length) continue;
+    const resumeRows = roles.filter((x) => !x.own && keyOf(x.r) === k);
+    const written = checks.find((c) => `${c.employerKey}|${c.startMonth}` === k)?.employer;
+    const onResume = written !== undefined && resumeRows.some((x) => jobKeyOf(x.r).employer === written);
+    const onAdded = written !== undefined && clash.some((x) => jobKeyOf(x.r).employer === written);
+    if (onResume !== onAdded) {
+      ownerOf.set(k, onAdded ? "added" : "resume");
+      continue;
+    }
+    const resumeCurrent = resumeRows.some((x) => !x.r.end);
+    const addedCurrent = clash.some((x) => !x.r.end);
+    ownerOf.set(k, addedCurrent && !resumeCurrent ? "added" : "resume");
+  }
+  const checkOf = (r: Profile["roles"][number], added: boolean) => {
+    const k = keyOf(r);
+    const owner = k ? ownerOf.get(k) : undefined;
+    return owner && owner !== (added ? "added" : "resume") ? experienceCheck(r, null, []) : experienceCheck(r, checked, checks);
+  };
   const experience = roles.map(({ r, id, own, start, end }) => {
     const current = !!start && !end;
     const until = end?.t ?? (start ? nowT : null);
@@ -152,7 +185,7 @@ export function meFromProfile(input: MeInput): MeProfile {
       dates,
       current,
       highlights: r.highlights.slice(0, 8).map((h) => cut(h, 300)),
-      check: experienceCheck(r, checked, input.jobChecks ?? []),
+      check: checkOf(r, !!own),
       ...(own ? { added: own } : {}),
     };
   });

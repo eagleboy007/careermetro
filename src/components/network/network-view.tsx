@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, Ban, CalendarDays, Clock, Flag, Link2, MapPin, MessageSquare, Plus, Route, Search, UserMinus, Users } from "lucide-react";
+import { BadgeCheck, Ban, CalendarDays, Clock, Flag, Link2, MessageSquare, Plus, Route, Search, UserMinus, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
@@ -8,7 +8,7 @@ import { MessageBox } from "./message-box";
 import { ReportPerson } from "./report-person";
 import { CONNECTION_HOW_LABELS, CONNECTION_HOWS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
-import type { ExampleNetworkRow, NetworkActions, NetworkData, NetworkFilters, NetworkRow, NetworkTab } from "@/lib/network/types";
+import type { NetworkActions, NetworkData, NetworkFilters, NetworkRow, NetworkTab } from "@/lib/network/types";
 
 type How = (typeof CONNECTION_HOWS)[number];
 
@@ -27,22 +27,22 @@ const TABS: { key: NetworkTab; label: string; short?: string }[] = [
 
 type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" | "message" | "report" } | null;
 
-const NO_FILTERS: NetworkFilters = { sameRole: false, sameCity: false, verified: false };
+const NO_FILTERS: NetworkFilters = { sameRole: false, verified: false };
 
 /** The example search narrowed as the server narrows a real one (/design and the preview without accounts). */
-const exampleFiltered = (rows: ExampleNetworkRow[], f: NetworkFilters, data: NetworkData): NetworkRow[] =>
-  rows.filter((p) => (!f.sameRole || (p.aim !== null && p.aim === data.myRole)) && (!f.sameCity || (!!p.inMyCity && data.myCity !== null)) && (!f.verified || p.verified));
+const exampleFiltered = (rows: NetworkRow[], f: NetworkFilters, data: NetworkData): NetworkRow[] =>
+  rows.filter((p) => (!f.sameRole || (p.aim !== null && p.aim === data.myRole)) && (!f.verified || p.verified));
 
 const FAILED = "That didn't work. Please try again.";
 
 /**
  * Network (FR-49, handoff 12j): the "Let people find me" bar, then tabs for Connections, Requests, Sent and Find
- * people (with the optional filters Aiming for my role, In <city> and Verified, applied on the server). Connect opens
+ * people (with the optional filters Aiming for my role and Verified, applied on the server; no city filter, since only companies see a member's city, T93). Connect opens
  * an inline "How do you know them?" pick, and Remove, Block and Report open inline under the row; there are no pop-ups.
  * Then "On your line" (Later) and the Mentors teaser (after the beta). Without actions (example data, /design) nothing
  * is sent and the buttons only show what they do.
  */
-export function NetworkView({ data, actions, note, example }: { data: NetworkData; actions?: NetworkActions; note?: ReactNode; example?: ExampleNetworkRow[] }) {
+export function NetworkView({ data, actions, note, example }: { data: NetworkData; actions?: NetworkActions; note?: ReactNode; example?: NetworkRow[] }) {
   const ids = useId();
   const [tab, setTab] = useState<NetworkTab>(data.requests.length ? "requests" : "connections");
   const [lists, setLists] = useState({ connections: data.connections, requests: data.requests, sent: data.sent });
@@ -195,10 +195,9 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
     setFilters(next);
     if (searched !== null) search(searched, next);
   };
-  const filtered = filters.sameRole || filters.sameCity || filters.verified;
+  const filtered = filters.sameRole || filters.verified;
   const filterButtons: { key: keyof NetworkFilters; label: string; icon: ReactNode }[] = [
     ...(data.myRole ? [{ key: "sameRole" as const, label: "Aiming for my role", icon: <Route {...ICON} size={14} /> }] : []),
-    ...(data.myCity ? [{ key: "sameCity" as const, label: `In ${data.myCity}`, icon: <MapPin {...ICON} size={14} /> }] : []),
     { key: "verified", label: "Verified", icon: <BadgeCheck {...ICON} size={14} /> },
   ];
 

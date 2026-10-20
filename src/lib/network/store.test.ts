@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { roleProfiles, skills } from "@/content";
+import { networkPairLock } from "@/db/lock";
 import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { canViewProfile } from "@/lib/account/settings-store";
@@ -217,6 +218,69 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(await ask(a, closed, "other", deps())).toEqual({ ok: false, error: "closed" });
   });
 
+  it("refuses to block an id that names nobody, without touching the foreign key (Testing Run 5, T84)", async () => {
+    const a = await person("Asha");
+    expect(await blockPerson(a, "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69", deps())).toEqual({ ok: false, error: "gone" });
+    expect(await blockedPeople(a, db!)).toEqual([]);
+  });
+
+  it("a block from the Inbox waits for Network's pair lock, so an accept at the same moment can't keep the connection (T83)", async () => {
+    const a = await person("Asha");
+    const c = await person("Esha");
+    await ask(a, c, "other", deps());
+    await answerRequest(c, a, "accept", deps());
+    const chat = await startDirect(a, c, "Hello", { db: db! });
+    if (!chat.ok) throw new Error(chat.error);
+    // Another transaction holds the pair's lock, as an accept would.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const holder = db!.transaction(async (tx) => {
+      await networkPairLock(a, c, tx);
+      locked();
+      await new Promise<void>((r) => (release = r));
+    });
+    await held;
+    let done = false;
+    const blocking = blockInChat(c, chat.conversationId, { db: db! }).then((r) => ((done = true), r));
+    await new Promise((r) => setTimeout(r, 300));
+    expect(done).toBe(false);
+    release();
+    await holder;
+    expect((await blocking).ok).toBe(true);
+    expect(await areConnected(a, c, db!)).toBe(false);
+  });
+
+  it("a block from the Inbox takes the pair lock before the chat row, so a remove that updates the chat can't deadlock with it", async () => {
+    const a = await person("Asha");
+    const c = await person("Esha");
+    await ask(a, c, "other", deps());
+    await answerRequest(c, a, "accept", deps());
+    const chat = await startDirect(a, c, "Hello", { db: db! });
+    if (!chat.ok) throw new Error(chat.error);
+    const id = chat.conversationId;
+    // Another transaction takes the pair's lock and then updates the chat row, as removeConnection and connect do.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = db!.transaction(async (tx) => {
+      await networkPairLock(a, c, tx);
+      locked();
+      await gate;
+      await tx.update(schema.conversations).set({ lastMessageAt: new Date() }).where(eq(schema.conversations.id, id));
+    });
+    await held;
+    const blocking = blockInChat(c, id, { db: db! });
+    // Let the block reach its locks while the holder still has the pair lock, then let the holder touch the chat row.
+    await new Promise((r) => setTimeout(r, 300));
+    release();
+    // Neither fails with a deadlock (40P01): the block waits on the pair lock and never holds the row first.
+    await expect(holder).resolves.toBeUndefined();
+    expect((await blocking).ok).toBe(true);
+    expect(await areConnected(a, c, db!)).toBe(false);
+  });
+
   it("lists the people you blocked, newest first, and Unblock lifts only your own block (gap list item 34)", async () => {
     const a = await person("Asha");
     const b = await person("Dev");
@@ -294,7 +358,7 @@ describe.skipIf(!db)("network store (database)", () => {
     for (const not of [me, hidden, asked, blocker]) expect(ids).not.toContain(not);
     expect(all.people[0].state).toBe("connected");
     expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, state: "none" });
-    // A city is for companies only (T74): never on a member's row, though "In <city>" filters by it on the server.
+    // A city is for companies only (T74): never on a member's row, and no filter matches on it (T93).
     for (const p of all.people) expect(p).not.toHaveProperty("city");
     expect(JSON.stringify(all)).not.toContain("Pune");
     expect(all.people[2]).toMatchObject({ common: 1, aim: null });
@@ -304,13 +368,14 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(byName.ok && byName.people.map((p) => p.id)).toEqual([close]);
     const byHandle = await search(me, { q: `@LATA_${run.slice(0, 4)}` }, deps());
     expect(byHandle.ok && byHandle.people.map((p) => p.id)).toContain(named);
-    const inMyCity = await search(me, { q: tag, sameCity: true }, deps());
-    expect(inMyCity.ok && inMyCity.people.map((p) => p.id)).toEqual([close]);
+    // A sameCity flag sent anyway is ignored (T93): the same people as without it, so it can't tell who lives in my city.
+    const withCity = await search(me, { q: tag, sameCity: true }, deps());
+    expect(withCity.ok && withCity.people.map((p) => p.id)).toEqual(ids);
     // Only people who show their target role: the filter never reveals one that is hidden (Kiran and Karan hide theirs).
     const onMyRole = await search(me, { q: tag, sameRole: true }, deps());
     expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([close]);
-    expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title, city: "Pune" });
-    expect(await networkFiltersFor(asked, db!)).toEqual({ role: null, city: null });
+    expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title });
+    expect(await networkFiltersFor(asked, db!)).toEqual({ role: null });
     // Nobody here has proved a skill yet; then Karan has one.
     const verified = await search(me, { q: tag, verified: true }, deps());
     expect(verified.ok && verified.people).toEqual([]);

@@ -43,16 +43,19 @@ const picks = ids.map((id, i) => {
 });
 const row = { id: EXAMPLE_ID, roleSlug: analyst.slug, questionIds: ids, picks, startedAt: STARTED, endedAt: null, right: null };
 
-/** A Data Analyst test with 9 minutes left and the first four answered. */
-export const exampleTimedTest: TimedTestView | null = testViewOf(
+/**
+ * A Data Analyst test with 9 minutes left and the first four answered. Null where there aren't enough checked questions
+ * for a test (drafts are hidden there, for example in a build with no VERCEL_ENV).
+ */
+export const exampleTimedTest: TimedTestView | null = ids.length === 0 ? null : testViewOf(
   { ...row, picks: picks.map((p, i) => (i < 4 ? p : -1)) },
   byId,
   analyst.title,
   new Date(STARTED.getTime() + 6 * 60_000),
 );
 
-/** The same test finished after 11 minutes 40 seconds. */
-export const exampleTimedReview: TimedTestReview = reviewOf(
+/** The same test finished after 11 minutes 40 seconds; null like the test above. */
+export const exampleTimedReview: TimedTestReview | null = ids.length === 0 ? null : reviewOf(
   { ...row, endedAt: new Date(STARTED.getTime() + 700_000), right: scorePicks(ids, picks, byId) },
   byId,
   analyst.title,

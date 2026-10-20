@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { directChatLock } from "@/db/lock";
+import { directChatLock, networkPairLock } from "@/db/lock";
 import { applications, blocks, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, reports, userSettings, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { blockCompanyIn, companyBlocked } from "@/lib/corporate/company-blocks";
@@ -9,6 +9,7 @@ import { askDaysOf } from "@/lib/corporate/interview-reads";
 import { chatClosed } from "@/lib/corporate/rules";
 import { askAnswered, dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
 import { SLOT_TIMES } from "@/lib/schemas/constants";
+import { jobSearchOn } from "@/lib/job-search/store";
 import { logEvent } from "@/lib/log";
 import { areConnected, dropBetween } from "@/lib/network/store";
 import { messageBody, reportInput, type ReportInput } from "@/lib/schemas/inbox";
@@ -121,6 +122,8 @@ export async function startDirect(fromId: string, toId: string, body: string, de
   if (!linked && !(await takesRequests(toId, db))) return fail("unavailable");
   // Counted before the write, outside the transaction: the limit is shared by every server and lives in the database.
   if (!linked && !(await takeShared(LIMITS.inboxRequestsPerUser, fromId, { db, now: now.getTime() }))) return fail("limit");
+  // Between connections the first message opens the chat, so it counts toward the day's direct messages instead.
+  if (linked && !(await takeShared(LIMITS.directMessagesPerUserDay, fromId, { db, now: now.getTime() }))) return fail("limit");
   return db.transaction(async (tx) => {
     await pairLock(fromId, toId, tx);
     // Checked again under the lock: a block, a suspension or a deleted account may have come in since the first look.
@@ -243,6 +246,7 @@ export async function sendMessage(userId: string, conversationId: string, body: 
     if (me.kind === "direct") {
       const other = others[0]?.id;
       if (!other || !(await reachable(other, tx)) || (await blockedBetween(userId, other, tx))) return fail("unavailable");
+      if (!(await takeShared(LIMITS.directMessagesPerUserDay, userId, { db: tx, now: now.getTime() }))) return fail("limit");
     }
     const [message] = await tx.insert(messages).values({ conversationId, senderId: userId, body: text.data, createdAt: now }).returning({ id: messages.id });
     await tx.update(conversations).set({ lastMessageAt: now }).where(eq(conversations.id, conversationId));
@@ -304,6 +308,21 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   return db.transaction(async (tx) => {
+    // A direct chat takes Network's pair lock, then the chat's, before it locks the chat row, in the same order as
+    // Network's connect and remove (which update this row under those locks), so the two can't deadlock. The kind and
+    // the other person are read unlocked first, then checked again under the row lock.
+    const [peek] = await tx
+      .select({ kind: conversations.kind })
+      .from(conversationMembers)
+      .innerJoin(conversations, eq(conversations.id, conversationMembers.conversationId))
+      .where(and(eq(conversationMembers.conversationId, conversationId), eq(conversationMembers.userId, userId)));
+    const [peekOther] = peek?.kind === "direct" ? await othersIn(userId, conversationId, tx) : [];
+    if (peekOther) {
+      // Network's pair lock first, as Network's own block takes it, then the chat's: an accept at the same moment
+      // can't leave the connection in place (Testing Run 5, T83).
+      await networkPairLock(userId, peekOther.id, tx);
+      await directChatLock(userId, peekOther.id, tx);
+    }
     const me = await membership(userId, conversationId, tx);
     if (me?.kind === "application" && me.role === "member") {
       await closeApplicationChat(userId, conversationId, tx, now);
@@ -316,6 +335,8 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
     }
     if (!me || me.kind !== "direct") return fail("not_found");
     const [other] = await othersIn(userId, conversationId, tx);
+    // Never block someone the locks weren't taken for (a member who joined after the peek, which a direct chat can't have).
+    if (other && other.id !== peekOther?.id) return fail("not_found");
     if (other) {
       await tx.insert(blocks).values({ blockerId: userId, blockedId: other.id, createdAt: now }).onConflictDoNothing();
       // A block ends any Network connection or request between the two at once (FR-49).
@@ -523,6 +544,8 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
           .where(inArray(conversations.id, foundIds))
       : Promise.resolve([]),
   ]);
+  // Accepted found chats go on while job search is off, with a line saying so (FR-52); read only when there are any.
+  const searchOff = foundIds.length ? !(await jobSearchOn(userId, db)) : false;
   // "Ask for times" cards (corporate build step 6): the times already offered in answer to each.
   const askIds = rows.filter((m) => m.kind === "ask_times").map((m) => m.id);
   const offered = askIds.length
@@ -606,6 +629,7 @@ export async function listThreads(userId: string, deps: { db?: Db; now?: Date } 
           unread: requestToMe || unread,
           messages: list.filter((m) => m.text),
           state: c.status === "closed" ? "closed" : !requestToMe && !verified ? "paused" : undefined,
+          ...(searchOff && c.status === "open" ? { jobSearchOff: true } : {}),
         },
       ];
     }

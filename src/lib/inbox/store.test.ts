@@ -4,7 +4,7 @@ import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
 import { reportDeadlines } from "@/lib/schemas/inbox";
-import { LIMITS } from "@/lib/shared-limit";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "@/lib/account/export";
 import { purgeDeletedAccounts } from "@/lib/account/delete";
 import { acceptRequest, blockInChat, deleteRequest, formatAt, INBOX_ERROR_TEXT, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
@@ -156,6 +156,19 @@ describe.skipIf(!db)("inbox store (database)", () => {
       .onConflictDoNothing();
     for (let i = 0; i < LIMITS.inboxRequestsPerUser.max; i++) expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
     expect(await startDirect(a, await person(), "Hi", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+  });
+
+  it("limits messages in open direct chats per sender per day (Testing Run 5, T85)", async () => {
+    const { a, b, id } = await openChat();
+    const now = new Date();
+    expect((await sendMessage(a, id, "First", { db: db!, now })).ok).toBe(true);
+    // The rest of the day's messages used up elsewhere, all at once.
+    const left = LIMITS.directMessagesPerUserDay.max - 1;
+    await Promise.all(Array.from({ length: left }, () => takeShared(LIMITS.directMessagesPerUserDay, a, { db: db!, now: now.getTime() })));
+    expect(await sendMessage(a, id, "One more", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+    expect(await startDirect(a, b, "Through the other door", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+    // The limit is the sender's own: the other person still replies.
+    expect((await sendMessage(b, id, "Reply", { db: db!, now })).ok).toBe(true);
   });
 
   describe("message requests switch (FR-55, gap list item 33)", () => {

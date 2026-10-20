@@ -38,11 +38,10 @@ export const networkQuery = z
   .transform((t) => t.trim().replace(/\s+/g, " "))
   .refine((t) => t.normalize("NFKD").replace(/[^\p{L}\p{N}]/gu, "").length >= 2, { message: NETWORK_QUERY_MESSAGE });
 
-/** A name search with its optional filters (handoff 12j): aiming for my role, my city, verified. */
+/** A name search with its optional filters (handoff 12j): aiming for my role, verified. No city filter (T93): it would tell a member who lives in their city. Unknown keys such as `sameCity` are dropped. */
 export const networkSearchInput = z.object({
   q: networkQuery,
   sameRole: z.boolean().default(false),
-  sameCity: z.boolean().default(false),
   verified: z.boolean().default(false),
 });
 export type NetworkSearchInput = z.input<typeof networkSearchInput>;

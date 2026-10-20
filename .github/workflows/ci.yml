@@ -50,7 +50,10 @@ jobs:
       - run: npm ci
       - run: npm run db:migrate
       - run: npm run db:seed
+      # Built as the walk runs it (a preview, like staging), so pages rendered at build and at request agree.
       - run: npm run build
+        env:
+          VERCEL_ENV: preview
       - name: Install the browser
         # Not a project dependency: only this job needs it.
         run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium

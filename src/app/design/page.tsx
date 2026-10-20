@@ -821,8 +821,8 @@ export default function DesignPage() {
           question&apos;s follow-ups to study; a feedback item with the follow-up and its reply, and one with &quot;Follow-up skipped.&quot;
         </p>
         <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
-        <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />
-        <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />
+        {exampleTimedTest && <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />}
+        {exampleTimedReview && <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />}
         <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
         <MockView view={exampleMockPage("data-analyst", false)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
@@ -847,8 +847,8 @@ export default function DesignPage() {
         <p className="text-sm text-muted">
           The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
           target role only when shown, skills in common and the date (never a city: only companies see it); Connect opens the how-you-know pick inline, Remove and Block confirm inline,
-          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; (matched on the
-          server) and Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
+          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role and Verified (matched on the
+          server; no city filter, since only companies see a member&rsquo;s city). Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
           example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />
@@ -1176,6 +1176,8 @@ export default function DesignPage() {
           <CompanyDiscovery data={exampleSettings.discovery} />
         </div>
         <InboxView threads={exampleFoundThreads} />
+        {/* An accepted found chat while the person's job search is off (FR-52): it goes on, with one line saying so. */}
+        <InboxView threads={exampleFoundThreads.filter((t) => t.kind === "application").map((t) => ({ ...t, jobSearchOff: true }))} />
         <div className="max-w-[720px]">
           <CompanyChat chat={exampleFoundChat} company="Example Labs" />
         </div>

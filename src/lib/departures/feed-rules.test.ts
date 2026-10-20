@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
-import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, htmlLines, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
+import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
 // The daily Departures feed (docs/plans/departures-live-plan.md) against saved, synthetic answers of each public
@@ -141,6 +141,23 @@ describe("feed rules", () => {
     expect(at("London, United Kingdom")).toBeNull();
     expect(at("Pune", false, "http://jobs.example.com/1")).toBeNull();
     expect(at("Pune", false, "javascript:alert(1)")).toBeNull();
+  });
+
+  it("never keeps a posted time dated after the fetch (T90)", () => {
+    const now = new Date(Date.UTC(2026, 9, 20, 6));
+    const post = (postedAt: Date | null) =>
+      postRow("lever", { token: "examplecart", company: "Examplecart" }, { externalId: "1", title: "Data Analyst", url: "https://jobs.example.com/1", location: "Pune", remote: false, workType: "full_time", postedAt, lines: ["SQL"] }, matchers, now)?.postedAt;
+    const earlier = new Date(Date.UTC(2026, 9, 19));
+    expect(post(earlier)).toEqual(earlier);
+    expect(post(null)).toBeNull();
+    expect(post(now)).toEqual(now);
+    expect(post(new Date(now.getTime() + FUTURE_SKEW_MS))).toEqual(now);
+    expect(post(new Date(now.getTime() + FUTURE_SKEW_MS + 1))).toBeNull();
+    expect(post(new Date(Date.UTC(2027, 0, 1)))).toBeNull();
+    expect(postedAtOf(new Date(Date.UTC(2030, 0, 1)), now)).toBeNull();
+    // So a far-future post can't take a cap's place from a real one.
+    const row = (externalId: string, postedAt: Date | null) => ({ ats: "lever", boardToken: "a", externalId, postedAt: postedAtOf(postedAt, now) });
+    expect(capPosts([row("future", new Date(Date.UTC(2027, 0, 1))), row("real", earlier)], 1, 10).map((r) => r.externalId)).toEqual(["real"]);
   });
 
   it("caps posts per board and in all, keeping the newest", () => {
@@ -354,6 +371,28 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     runIds.push(closing.runId);
     expect(closing.closed).toBe(1);
     expect((await posts()).filter((p) => p.closed_at !== null).map((p) => p.external_id)).toEqual(["4004"]);
+  });
+
+  it("replaces a stored posted_at that is still in the future, and keeps a sane one the board stopped sending (T90)", async () => {
+    const runAt = new Date("2026-10-20T12:00:00Z");
+    const write = async (greenhouse: unknown) => {
+      const { rows, results } = await collect(mine, matchers, { fetchImpl: answers(greenhouse, fixture("lever")), now: runAt });
+      const written = await writeRun(sql!, { boards: mine, rows, results, startedAt: runAt, now: runAt, closeUnlisted: false });
+      runIds.push(written.runId);
+    };
+    await write(fixture("greenhouse"));
+    const token = `${run}g`;
+    await sql!`update job_posts set posted_at = '2099-01-01T00:00:00Z' where board_token = ${token} and external_id = '4001'`;
+    await sql!`update job_posts set posted_at = '2026-10-17T09:00:00Z' where board_token = ${token} and external_id = '4003'`;
+    // The board now sends no date for either.
+    const gh = fixture("greenhouse") as { jobs: Record<string, unknown>[] };
+    const undated = { jobs: gh.jobs.map((j) => (j.id === 4001 || j.id === 4003 ? { ...j, first_published: undefined, updated_at: undefined } : j)) };
+    await write(undated);
+    const dated = new Map(
+      (await sql!`select external_id, posted_at from job_posts where board_token = ${token} and external_id in ('4001', '4003')`).map((r) => [r.external_id, r.posted_at]),
+    );
+    expect(dated.get("4001")).toBeNull();
+    expect((dated.get("4003") as Date).toISOString()).toBe("2026-10-17T09:00:00.000Z");
   });
 
   it("refuses a row the table's checks don't allow", async () => {
