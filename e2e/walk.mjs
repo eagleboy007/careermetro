@@ -622,7 +622,7 @@ await step("not for me: skip a goal on Today, bring it back from the Map", async
   await skipped.getByRole("button", { name: "Bring back" }).click();
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
 });
-for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/network", "/builder", "/grievances", "/privacy", "/terms"]) {
+for (const path of ["/map", "/match", "/practice", "/me", "/departures", "/settings", "/inbox", "/network", "/library", "/builder", "/grievances", "/privacy", "/terms"]) {
   await step("open " + path, async () => {
     const r = await p.goto(BASE + path);
     if (!r.ok()) throw new Error("status " + r.status());
@@ -678,6 +678,46 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
   await p.getByRole("button", { name: "View as others" }).click();
   await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
   if (await p.getByRole("heading", { name: "Practice confidence" }).count()) throw new Error("View as others shows Practice confidence");
+});
+// Library (FR-51, handoff 12a). Signed in, with the walk's goals: one card per open goal with Learn or Brush up and
+// Prove; a resource opens in the details panel with its source link in a new tab and no referrer; a search for nothing
+// says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. axe passes on each tab.
+await step("library: goal cards, the details panel, search and filters, Finished and Saved", async () => {
+  await p.goto(BASE + "/library");
+  await settled();
+  const main = p.locator("main").first();
+  await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
+  const cards = main.getByRole("region").filter({ has: p.getByText("Skill check", { exact: true }) });
+  if (!(await cards.count())) throw new Error("no goal cards for the walk's goals");
+  await a11y("library");
+  const rows = main.locator("li button[aria-controls]");
+  if (await rows.count()) {
+    const title = (await rows.first().innerText()).trim();
+    await rows.first().click();
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    await panel.getByRole("heading", { name: title, exact: true, level: 3 }).waitFor({ timeout: 5000 });
+    const source = panel.getByRole("link", { name: /^Open on .+ \(opens in a new tab\)$/ });
+    if ((await source.getAttribute("target")) !== "_blank" || !(await source.getAttribute("rel"))?.includes("noreferrer")) throw new Error("the source link doesn't open in a new tab without a referrer");
+    if (!(await source.getAttribute("href"))?.startsWith("https://")) throw new Error("the source link isn't https");
+  }
+  const search = p.getByRole("searchbox", { name: "Search the Library" });
+  await search.fill("zzqx nothing like this");
+  await main.getByText("Nothing matches. Try another word or clear a filter.").waitFor({ timeout: 5000 });
+  await search.fill("");
+  await cards.first().waitFor({ timeout: 5000 });
+  const language = p.getByRole("group", { name: "Language" });
+  await language.getByRole("button", { name: "Hindi", exact: true }).click();
+  await language.getByRole("button", { name: "Hindi", pressed: true }).waitFor({ timeout: 5000 });
+  await language.getByRole("button", { name: "Any language" }).click();
+  const show = p.getByRole("group", { name: "Show" });
+  await show.getByRole("button", { name: /^Finished/ }).click();
+  await main.getByText(/^Nothing finished yet\.|^Ready to prove /).or(main.getByRole("region", { name: "Finished" })).first().waitFor({ timeout: 5000 });
+  await a11y("library-finished");
+  await show.getByRole("button", { name: "Saved" }).click();
+  await main.getByText(/^Saving isn.t on yet\./).waitFor({ timeout: 5000 });
+  await show.getByRole("button", { name: "Your interests" }).click();
+  await main.getByText("From the interests on your profile.", { exact: false }).waitFor({ timeout: 5000 });
+  await a11y("library-interests");
 });
 // The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
 // Example Retail Pvt Ltd since 2022-06. No verified company owns exampleretail.test, so a right code goes to an admin
@@ -1173,7 +1213,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/elite", "/mock", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/builder", "/elite", "/mock", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();

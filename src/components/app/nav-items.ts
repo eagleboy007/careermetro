@@ -14,7 +14,8 @@ export const NAV = {
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },
   /** Connections and name search (FR-49, handoff 12j). In the avatar menu, with a count of requests waiting. */
   network: { key: "network", label: "Network", href: "/network", Icon: Users, built: true },
-  library: { key: "library", label: "Library", href: "/library", Icon: BookOpen, built: false },
+  /** Free resources by goal (FR-51, handoff 12a). In the avatar menu. */
+  library: { key: "library", label: "Library", href: "/library", Icon: BookOpen, built: true },
   inbox: { key: "inbox", label: "Inbox", href: "/inbox", Icon: MessageSquare, built: true },
   /** The employer side (dev/corporate-plan.md): set up a company, or work in one a Recruiter admin added you to. */
   corporate: { key: "corporate", label: "Corporate", href: "/corporate", Icon: Building2, built: true },

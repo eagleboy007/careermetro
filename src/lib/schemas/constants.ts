@@ -21,6 +21,23 @@ export const JOB_TEXT_MAX = 12_000;
 export const JOB_COMPANY_MAX = 100;
 export const JOB_TITLE_MAX = 120;
 
+/* Library (FR-51, handoff 12a) --------------------------------------------------------------------------------------- */
+
+export const LIBRARY_TABS = ["goals", "interests", "saved", "finished"] as const;
+export const LIBRARY_TAB_LABELS: Record<(typeof LIBRARY_TABS)[number], string> = {
+  goals: "For your goals",
+  interests: "Your interests",
+  saved: "Saved",
+  finished: "Finished",
+};
+/** The catalog's resource kinds (FR-17), the Library's type filter. */
+export const LIBRARY_KINDS = ["course", "video", "docs", "practice"] as const;
+export const LIBRARY_KIND_LABELS: Record<(typeof LIBRARY_KINDS)[number], string> = { course: "Course", video: "Video", docs: "Docs", practice: "Practice" };
+/** The language a resource is taught in; a catalog entry without one is English. */
+export const LIBRARY_LANGUAGES = ["English", "Hindi"] as const;
+/** The length filter: under 1 hour, under 5 hours (prototype v44). */
+export const LIBRARY_LENGTHS = [60, 300] as const;
+
 /* Corporate (dev/corporate-plan.md, handoff 12e and 12f) ------------------------------------------------------------ */
 
 export const ORG_TYPES = ["company", "college", "training_partner"] as const;

@@ -4,6 +4,7 @@ export * from "./gap";
 export * from "./path";
 export * from "./profile";
 export * from "./resource";
+export * from "./library";
 export * from "./role-profile";
 export * from "./skill";
 export * from "./waitlist";

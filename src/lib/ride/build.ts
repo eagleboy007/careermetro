@@ -34,7 +34,8 @@ export type RideGoal = {
 /** The person's Path page for their current analysis, and whether a path has been built there yet. */
 export type RidePath = { href: string; built: boolean };
 
-const MAX_COURSES = 2;
+/** Courses a learn pitstop takes from the path; the Library marks the same ones "On your ride" (FR-51). */
+export const MAX_COURSES = 2;
 /** One sitting of a course: a ride is about 50 minutes an evening, so a long course is worked through over days. */
 const SITTING_MINUTES = 25;
 
