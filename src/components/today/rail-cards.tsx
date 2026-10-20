@@ -1,4 +1,5 @@
-import { MessageSquare } from "lucide-react";
+import { ArrowRight, MessageSquare } from "lucide-react";
+import Link from "next/link";
 import type { EventTeaser, OnYourLine } from "@/lib/schemas";
 
 const card = "flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5";
@@ -33,7 +34,7 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
   );
 }
 
-/** People on the same goal right now, from opted-in profiles. Junction and Network come later (build step 11). */
+/** People on the same goal right now, from opted-in profiles. "See people" opens Network; Junction comes later (build step 11). */
 export function OnYourLineCard({ line, firstDay = false }: { line: OnYourLine; firstDay?: boolean }) {
   const extra = line.count - line.initials.length;
   return (
@@ -68,7 +69,10 @@ export function OnYourLineCard({ line, firstDay = false }: { line: OnYourLine; f
           <MessageSquare size={16} strokeWidth={1.75} aria-hidden="true" />
           Ask on Junction · soon
         </span>
-        <span className="px-2 text-[0.8rem] font-semibold text-muted">See people · soon</span>
+        <Link href="/network" className="inline-flex min-h-11 items-center gap-1 px-2 text-[0.8rem] font-semibold text-ink hover:text-muted">
+          See people
+          <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
       </div>
     </section>
   );

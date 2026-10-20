@@ -1,4 +1,4 @@
-import { ArrowRight, Award, BadgeCheck, Check } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Check, Play } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PlanView } from "@/lib/schemas";
@@ -38,10 +38,13 @@ const PRICES = [
  */
 export function EliteView({
   plan,
+  roleTitle = null,
   onSwitch,
   idPrefix = "elite",
 }: {
   plan: PlanView;
+  /** The person's target role, under the Free and Elite heading; none before the first gap check. */
+  roleTitle?: string | null;
   onSwitch?: (on: boolean) => Promise<string | null>;
   /** Ids for the headings, so two copies on /design don't clash. */
   idPrefix?: string;
@@ -61,8 +64,15 @@ export function EliteView({
           Everything that gets you ready stays free: your gaps, your path, daily rides, the Library and Departures. Elite adds mock interviews, timed
           tests, the full question bank for your role and an expert-checked shelf in the Library.
         </p>
-        <div className="mb-2.5 mt-[18px]">
+        <div className="mb-2.5 mt-[18px] flex flex-wrap items-start gap-2.5">
           <TurnOnElite on={plan.elite} action={onSwitch} />
+          <Link
+            href="/mock"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line-strong bg-surface px-5 text-[0.9rem] font-[550] text-ink hover:bg-surface-2"
+          >
+            <Play size={17} {...ICON} />
+            See a mock interview
+          </Link>
         </div>
         <p className="max-w-[62ch] text-[0.8rem] text-muted">
           {plan.elite
@@ -74,9 +84,12 @@ export function EliteView({
       </section>
 
       <section aria-labelledby={id("compare-h")} className={CARD}>
-        <h2 id={id("compare-h")} className="text-[1.1rem] font-semibold">
-          Free and Elite
-        </h2>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 id={id("compare-h")} className="mr-auto text-[1.1rem] font-semibold">
+            Free and Elite
+          </h2>
+          {roleTitle && <span className={LABEL}>for {roleTitle}</span>}
+        </div>
         <table aria-labelledby={id("compare-h")} className="w-full border-collapse text-[0.86rem]">
           <thead>
             <tr>

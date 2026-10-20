@@ -607,7 +607,7 @@ export default function DesignPage() {
           badge next to a name, the plan card on your own profile (Free, and Elite with the badge switch), and Account settings, Your plan, both ways.
           Violet is for Elite only. Example data, so nothing changes.
         </p>
-        <EliteView plan={{ elite: false, badgeShown: false, since: null }} />
+        <EliteView plan={{ elite: false, badgeShown: false, since: null }} roleTitle="Cyber Security Analyst" />
         <EliteView plan={{ elite: true, badgeShown: true, since: "19 Oct 2026" }} idPrefix="design-elite-on" />
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface p-4">
           <span className="text-[1.2rem] font-semibold">
@@ -1031,11 +1031,13 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
         <p className="text-sm text-muted">
-          Top bar on desktop, tab bar under 760 px, avatar menu (Admin shows only for admins). Sections not built yet show as Soon. The second frame
+          Top bar on desktop, tab bar under 760 px, avatar menu with the @handle under the name (Admin shows only for admins). Sections not built yet show as Soon. The
+          first frame has the Arrivals count, which hides with no resume and on the first day; Network and Library leave the top bar under
+          1240 px and Market under 1000 px, as all three are in the menu. The second frame
           has Elite on: the violet award mark on the avatar, and &ldquo;Elite · beta&rdquo; and &ldquo;Elite is on&rdquo; in its menu.
         </p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true }}>
+          <AppShell embedded user={{ name: "Priya Nair", handle: "priya-n", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true, arrivalsCount: 3 }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>

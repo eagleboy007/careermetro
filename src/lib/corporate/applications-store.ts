@@ -339,6 +339,15 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
   }));
 }
 
+/** How many of the person's applications are on Arrivals and not withdrawn: the count on Arrivals in the top bar. */
+export async function arrivalsCount(userId: string, db: Db = getDb()): Promise<number> {
+  const [row] = await db
+    .select({ n: count() })
+    .from(applications)
+    .where(and(eq(applications.userId, userId), isNull(applications.withdrawnAt)));
+  return row?.n ?? 0;
+}
+
 /** Whether the person can apply to each of these posted jobs on Departures, or already has. */
 export async function applyStates(userId: string | null, jobIds: string[], deps: { db?: Db } = {}): Promise<Record<string, ApplyState>> {
   if (!userId) return Object.fromEntries(jobIds.map((id) => [id, { kind: "signed_out" } as const]));

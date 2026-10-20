@@ -333,7 +333,14 @@ export function MeView({
                     <small className="block text-[0.72rem] text-muted">Read {me.resumeReadOn} · only you see it</small>
                   </span>
                 </div>
-                <span className="text-[0.8rem] text-muted">Replace and Edit in builder · soon</span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Link href="/start" className={`${btn} border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] text-ink hover:bg-surface-2`}>
+                    Replace
+                  </Link>
+                  <Link href="/builder" className={`${btn} px-[11px] py-1.5 text-[0.8rem] text-muted hover:text-ink`}>
+                    Edit in builder
+                  </Link>
+                </div>
               </>
             ) : (
               <Link href="/today" className={`${btn} self-start bg-accent px-[11px] py-1.5 text-[0.8rem] text-on-accent`}>

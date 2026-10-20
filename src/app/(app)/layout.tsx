@@ -12,6 +12,8 @@ import { currentIdentity, signedInAccount, suspendedFor } from "@/lib/auth/serve
 import { isAdmin } from "@/lib/admin/access";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleThreads } from "@/lib/inbox/fixtures";
+import { exampleApplications } from "@/components/corporate/fixtures";
+import { arrivalsCount } from "@/lib/corporate/applications-store";
 import { corporateUnread } from "@/lib/corporate/overview";
 import { unreadChats } from "@/lib/inbox/store";
 import { requestsWaiting } from "@/lib/network/store";
@@ -58,7 +60,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     // Suspended after a report (FR-46): the notice instead of any signed-in page. Admins are never blocked.
     if (suspendedFor(account, await currentIdentity())) redirect(SUSPENDED_PATH);
-    const [, streak, inboxUnread, companyUnread, networkRequests, elite] = await Promise.all([
+    const [, streak, inboxUnread, companyUnread, networkRequests, elite, arrivals] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
       extra("inbox_unread", unreadChats(account.id), 0),
@@ -67,11 +69,14 @@ async function Shell({ children }: { children: React.ReactNode }) {
       extra("network_requests", requestsWaiting(account.id), 0),
       // Elite (FR-50): the award mark on the avatar and "Elite · beta" in the menu.
       extra("plan", eliteOn(account.id), false),
+      extra("arrivals_count", arrivalsCount(account.id), 0),
     ]);
     const name = displayName(account.name);
-    // The streak shows once the person has ridden a day.
+    // The streak shows once the person has ridden a day. So does the Arrivals count: like the prototype it hides with
+    // no resume and on the first day, and a streak is how Today tells a returning person from those two (todayStateFor).
     user = {
       name,
+      handle: account.username,
       initials: initials(name),
       streakDays: streak.days,
       todayCounted: streak.todayCounted,
@@ -81,10 +86,21 @@ async function Shell({ children }: { children: React.ReactNode }) {
       corporateUnread: companyUnread,
       networkRequests,
       elite,
+      arrivalsCount: streak.days > 0 ? arrivals : 0,
       isAdmin: isAdmin(await currentIdentity()),
     };
   } else {
-    user = { name: `${exampleName} Nair`, initials: "PN", streakDays: exampleStreak.days, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: unreadCount(exampleThreads) };
+    user = {
+      name: `${exampleName} Nair`,
+      handle: "priya-n",
+      initials: "PN",
+      streakDays: exampleStreak.days,
+      todayCounted: false,
+      showStreak: true,
+      canSignOut: false,
+      inboxUnread: unreadCount(exampleThreads),
+      arrivalsCount: exampleApplications.filter((a) => !a.withdrawn).length,
+    };
   }
   return <AppShell user={user}>{children}</AppShell>;
 }

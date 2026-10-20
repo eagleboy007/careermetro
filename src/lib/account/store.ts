@@ -34,6 +34,8 @@ export type Account = {
   firstName: string | null;
   lastName: string | null;
   weeklyHours: number;
+  /** The profile link's username (account settings part 2), or null until the person picks one. Shown as @handle in the avatar menu. */
+  username: string | null;
   /** Set while a deleted account waits out its grace period (src/lib/account/delete.ts); it then counts as signed out. */
   deletionRequestedAt: Date | null;
   /**
@@ -52,6 +54,7 @@ const accountColumns = {
   firstName: users.firstName,
   lastName: users.lastName,
   weeklyHours: users.weeklyHours,
+  username: users.username,
   deletionRequestedAt: users.deletionRequestedAt,
   suspendedAt: users.suspendedAt,
   suspendedReason: users.suspendedReason,
