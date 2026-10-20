@@ -430,7 +430,7 @@ export default function DesignPage() {
           <StreakChip days={11} todayCounted={false} />
           <StreakChip days={12} todayCounted />
         </div>
-        <TodayStatePreview data={exampleToday} upload={<UploadForm demo />} />
+        <TodayStatePreview data={exampleToday} upload={<UploadForm demo rolePick />} />
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
         <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>
@@ -1112,6 +1112,8 @@ export default function DesignPage() {
             standIns={[{ id: "example-stand-in", title: "Supply Chain Analyst", company: "Example Freight Pvt Ltd" }]}
             demo
           />
+          <p className="text-sm text-muted">With a target role picked on Today before the upload: it shows first.</p>
+          <RolePicker resumeId="example" roles={exampleRoleOptions} picked="data-analyst" demo />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Covered skills and rating</h2>
@@ -1202,6 +1204,7 @@ export default function DesignPage() {
           <p className="text-sm text-muted">Local test notice: shown only while the stand-in Claude API is in use, never on production.</p>
           <LocalTestNotice demo />
           <UploadForm demo />
+          <p className="text-sm text-muted">Press Read my resume with the box ticked to see the four reading steps (they never upload here).</p>
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>
