@@ -146,10 +146,6 @@ async function change(userId: string, deps: Deps, fn: (tx: Tx, now: Date) => Pro
   });
 }
 
-/** Deletes the person's row once it has neither a save nor a stage. */
-const dropEmpty = (tx: Tx, userId: string, postId: string) =>
-  tx.delete(jobSaves).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId), isNull(jobSaves.savedAt), isNull(jobSaves.stage)));
-
 /**
  * The bookmark. Saving a closed post is refused unless it is already saved; taking one off Saved always works, and
  * keeps the row only while it still has a stage.
@@ -171,7 +167,8 @@ export async function saveRole(userId: string, raw: unknown, deps: Deps = {}): P
       return { ok: true };
     }
     if (!found.row) return { ok: true };
-    if (found.row.stage === null) await dropEmpty(tx, userId, postId);
+    if (found.row.stage === null)
+      await tx.delete(jobSaves).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId), isNull(jobSaves.stage)));
     else await tx.update(jobSaves).set({ savedAt: null, updatedAt: now }).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
     return { ok: true };
   });

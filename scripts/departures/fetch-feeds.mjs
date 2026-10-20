@@ -182,7 +182,7 @@ export async function writeRun(sql, { boards, rows, results, seen = [], startedA
           required_skill_ids, nice_skill_ids, posted_at, first_seen_at, last_seen_at)
         select x.ats, x.board_token, x.external_id, x.url, x.title, x.company, x.city, x.work_type::job_work_type, x.experience_note,
           x.role_slug, x.required_skill_ids, x.nice_skill_ids, x.posted_at, ${now}, ${now}
-        from jsonb_to_recordset(${JSON.stringify(chunk)}::jsonb) as x(ats text, board_token text, external_id text, url text,
+        from jsonb_to_recordset(${JSON.stringify(chunk)}::text::jsonb) as x(ats text, board_token text, external_id text, url text,
           title text, company text, city text, work_type text, experience_note text, role_slug text, required_skill_ids text[],
           nice_skill_ids text[], posted_at timestamptz)
         on conflict (ats, board_token, external_id) do update set
@@ -202,7 +202,7 @@ export async function writeRun(sql, { boards, rows, results, seen = [], startedA
       update job_posts set closed_at = ${now}
       where closed_at is null and last_seen_at < ${startedAt} and (ats || ':' || board_token) = any(${pgArray(closing)}::text[])
         and not exists (
-          select 1 from jsonb_to_recordset(${JSON.stringify(seen)}::jsonb) as s(k text, id text)
+          select 1 from jsonb_to_recordset(${JSON.stringify(seen)}::text::jsonb) as s(k text, id text)
           where s.k = job_posts.ats || ':' || job_posts.board_token and s.id = job_posts.external_id)
       returning id`;
     const [{ count }] = await tx`select count(*)::int as count from job_posts where closed_at is null`;
