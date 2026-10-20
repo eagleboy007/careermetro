@@ -16,14 +16,14 @@ import type { ApplyState, CriteriaView, PostedJobView } from "@/lib/corporate/ty
 import { postView, updatedWords, type FitContext } from "@/lib/departures/fit";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
-import { eliteOn } from "@/lib/elite/store";
 import { suggestedCanJoin } from "@/lib/job-search/rules";
-import { jobSearchFor, openToWorkInFor } from "@/lib/job-search/store";
+import { openToWorkInFor } from "@/lib/job-search/store";
+import { eliteOnRequest, jobSearchForRequest } from "@/lib/request-reads";
 import { errorFields, logEvent } from "@/lib/log";
 import { prepForJobs } from "@/lib/mock/rules";
 import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_JOB_SEARCH } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/today/state";
+import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { applyAction, previewAction } from "../arrivals/actions";
 import { saveDepartureAction, stageDepartureAction } from "./actions";
 import { reportJobAction } from "../corporate/jobs/actions";
@@ -88,7 +88,7 @@ async function postedCriteria(userId: string | null, jobs: PostedJobView[]): Pro
 async function eliteFor(userId: string | null): Promise<boolean> {
   if (!userId) return false;
   try {
-    return await eliteOn(userId);
+    return await eliteOnRequest(userId);
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_elite_failed", errorFields(error));
@@ -123,9 +123,9 @@ async function liveBoard(userId: string, roleSlug: string | null): Promise<Depar
  * What fit is read against: null when the resume isn't confirmed yet, "failed" when it can't be read (the rows then
  * show without fit rather than fail).
  */
-async function fitFor(userId: string): Promise<FitContext | null | "failed"> {
+async function fitFor(userId: string, analysis: CurrentAnalysis): Promise<FitContext | null | "failed"> {
   try {
-    return await fitContextFor(userId);
+    return await fitContextFor(userId, undefined, analysis);
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_fit_failed", errorFields(error));
@@ -148,18 +148,22 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const account = await currentAccount();
   // Signed in, the roles are the daily feed's (docs/plans/departures-live-plan.md), with fit read on the server against
   // the person's confirmed profile, goals and proof. Signed out, the example roles and the example person's fit.
-  const analysis = account ? await currentAnalysis(account.id) : null;
-  const read = await postedJobs(role?.slug);
-  const posted = read ?? [];
-  const [board, fit, states, criteria, elite, search, places] = await Promise.all([
+  // Every read starts at once (docs/plans/perf-pass.md): fit waits only for the analysis, and the posted jobs' states
+  // and criteria only for the posted jobs, instead of the whole page waiting for each in turn.
+  const analysisRead: Promise<CurrentAnalysis | null> = account ? currentAnalysis(account.id) : Promise.resolve(null);
+  const postedRead = postedJobs(role?.slug);
+  const [analysis, read, board, fit, states, criteria, elite, search, places] = await Promise.all([
+    analysisRead,
+    postedRead,
     account ? liveBoard(account.id, role?.slug ?? null) : null,
-    account && analysis ? fitFor(account.id) : null,
-    postedStates(account?.id ?? null, posted),
-    postedCriteria(account?.id ?? null, posted),
+    analysisRead.then((a) => (account && a ? fitFor(account.id, a) : null)),
+    postedRead.then((jobs) => postedStates(account?.id ?? null, jobs ?? [])),
+    postedRead.then((jobs) => postedCriteria(account?.id ?? null, jobs ?? [])),
     eliteFor(account?.id ?? null),
-    account ? jobSearchFor(account.id) : DEFAULT_JOB_SEARCH,
+    account ? jobSearchForRequest(account.id) : DEFAULT_JOB_SEARCH,
     placesFor(account?.id ?? null),
   ]);
+  const posted = read ?? [];
   const now = new Date();
   const jobs = board ? board.posts.map((p) => postView(p, fit === "failed" ? null : fit, now)) : exampleJobs;
   // A resume on file is enough to say so; a fit that can't be shown gets its own reason, not "add your resume".

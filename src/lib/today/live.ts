@@ -4,7 +4,8 @@ import { getDb } from "@/db";
 import { blocks, connections, userGoals, userSettings, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
 import { postView } from "@/lib/departures/fit";
-import { departuresBoard, fitContextFor } from "@/lib/departures/store";
+import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
+import type { CurrentAnalysis } from "@/lib/gaps/current";
 import { onYourLine, type Departure, type OnYourLine } from "@/lib/schemas";
 import { boardRows } from "./live-board";
 
@@ -21,10 +22,17 @@ const roleTitles = new Map(roleProfiles.map((r) => [r.slug, r.title]));
 /**
  * The board's rows for a signed-in person: the open posts /departures lists (the newest 300), each read for fit by the
  * same matcher, grouped by role and city. Empty when fit can't be read (no confirmed resume) or no post matched a
- * library role. The caller leaves it out with job search off.
+ * library role. The caller leaves it out with job search off. Today hands in `analysis`, the `currentAnalysis` it
+ * already read (null for none), and `posts`, the open posts it started reading beside the ride (docs/plans/perf-pass.md);
+ * left out, each is read here. Fit is read here either way, after the ride has synced the goals it reads.
  */
-export async function todayBoardFor(userId: string, now: Date, db: Db = getDb()): Promise<Departure[]> {
-  const [board, ctx] = await Promise.all([departuresBoard(null, { db }), fitContextFor(userId, db)]);
+export async function todayBoardFor(
+  userId: string,
+  now: Date,
+  db: Db = getDb(),
+  { analysis, posts }: { analysis?: CurrentAnalysis | null; posts?: Promise<DeparturesBoard> } = {},
+): Promise<Departure[]> {
+  const [board, ctx] = await Promise.all([posts ?? departuresBoard(null, { db }), fitContextFor(userId, db, analysis)]);
   if (!ctx) return [];
   return boardRows(
     board.posts.map((p) => postView(p, ctx, now)),

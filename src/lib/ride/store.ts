@@ -9,6 +9,7 @@ import { fillingSkills } from "@/lib/goals/sync";
 import { mockQuestions, skillGroupMembers, skills } from "@/content";
 import type { GapAnalysis, GoalsSummary, MockQuestion, RoleProfile, RoleTrack, Ride, RideWeek, SignalAnswer, SignalLive, Streak } from "@/lib/schemas";
 import { orderForTrack, trackPickerFor } from "@/lib/tracks/apply";
+import type { CurrentAnalysis } from "@/lib/gaps/current";
 import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
 import { isSignalKey, pickSignal, signalAnswerOf, signalLiveOf } from "@/lib/today/signal";
@@ -50,40 +51,51 @@ export type LineTrack = {
  * (docs/plans/tracks-plan.md), in the track's order and then goal order, each with the courses and practice task of the
  * newest path's step for that skill. `chosen` holds their "Your choice" goals the same way; they are kept apart because
  * they never move the train, the ride or arrival. Null before there is a current analysis. `sync: false` only reads
- * the goals, for a tick, which must not write them.
+ * the goals, for a tick, which must not write them. `analysis` is `currentAnalysis` already read in this request (null
+ * for none), so Today doesn't read it again; left out, it is read here.
  */
 export async function rideGoalsFor(
   userId: string,
   db: Db = getDb(),
-  { sync = true }: { sync?: boolean } = {},
+  { sync = true, analysis: read }: { sync?: boolean; analysis?: CurrentAnalysis | null } = {},
 ): Promise<{ result: GapAnalysis; goals: RideGoal[]; chosen: RideGoal[]; path: RidePath; track: LineTrack } | null> {
-  const analysis = await trackedCurrentAnalysis(userId, db);
+  const analysis = await trackedCurrentAnalysis(userId, db, undefined, read);
   if (!analysis) return null;
-  const userGoals = sync ? await syncGoals(userId, analysis, db) : await goalsOf(userId, db);
-  const notConfirmed = await notConfirmedSkills(userId, db);
-  const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
-  const steps = path
-    ? await db
-        .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
-        .from(pathSteps)
-        .where(eq(pathSteps.pathId, path.id))
-        .orderBy(asc(pathSteps.position))
-    : [];
-  const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
-  const rows = ids.length
-    ? await db
-        .select({
-          id: resources.id,
-          title: resources.title,
-          provider: resources.provider,
-          kind: resources.kind,
-          minutes: resources.minutes,
-          healthy: resources.healthy,
-          hiddenAt: resources.hiddenAt,
-        })
-        .from(resources)
-        .where(inArray(resources.id, ids))
-    : [];
+  // The goals, the held certificates, the newest path with its steps and courses, and the added resources don't depend
+  // on each other, so they are read together rather than one after another (docs/plans/perf-pass.md). Syncing writes
+  // only goals and the steps' goal links, which none of the other reads use.
+  const pathAndSteps = async () => {
+    const [path] = await db.select({ id: paths.id }).from(paths).where(eq(paths.gapAnalysisId, analysis.id)).orderBy(desc(paths.createdAt)).limit(1);
+    const steps = path
+      ? await db
+          .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
+          .from(pathSteps)
+          .where(eq(pathSteps.pathId, path.id))
+          .orderBy(asc(pathSteps.position))
+      : [];
+    const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
+    const rows = ids.length
+      ? await db
+          .select({
+            id: resources.id,
+            title: resources.title,
+            provider: resources.provider,
+            kind: resources.kind,
+            minutes: resources.minutes,
+            healthy: resources.healthy,
+            hiddenAt: resources.hiddenAt,
+          })
+          .from(resources)
+          .where(inArray(resources.id, ids))
+      : [];
+    return { path, steps, rows };
+  };
+  const [userGoals, notConfirmed, { path, steps, rows }, added] = await Promise.all([
+    sync ? syncGoals(userId, analysis, db) : goalsOf(userId, db),
+    notConfirmedSkills(userId, db),
+    pathAndSteps(),
+    addedResources(userId, db),
+  ]);
   // A link an admin hid (/admin/library) leaves the ride at once, like a broken one.
   const byId = new Map(rows.filter((r) => r.healthy && !r.hiddenAt && r.title.trim()).map((r) => [r.id, r]));
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
@@ -129,7 +141,7 @@ export async function rideGoalsFor(
     return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
   });
   const chosen = line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null }));
-  attachAdded(goals, await addedResources(userId, db));
+  attachAdded(goals, added);
   return {
     result: analysis.result,
     goals,
@@ -207,13 +219,14 @@ export type SignalSource = { bank?: readonly MockQuestion[]; allowUnreviewed?: b
  * Today's ride with the person's own ticks, their week and streak. Null before there are goals to ride. Also the day's
  * signal check (null when the bank has no question for today's goal or the next) and the goal today's ride is on, for
  * "On your line". The ride's tasks don't include the signal task: Today adds it (`withSignalTask`) when there is one.
+ * `analysis` is `currentAnalysis` already read in this request; left out, it is read here.
  */
 export async function todayRideFor(
   userId: string,
   now: Date,
   db: Db = getDb(),
   role = "",
-  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed() }: SignalSource = {},
+  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed(), analysis }: SignalSource & { analysis?: CurrentAnalysis | null } = {},
 ): Promise<{
   ride: Ride;
   goals: GoalsSummary;
@@ -224,7 +237,7 @@ export async function todayRideFor(
   current: { skillId: string; name: string } | null;
 } | null> {
   const today = indiaDay(now);
-  const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
+  const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db, { analysis }), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
   if (!line) return null;
   const input = {
     goals: line.goals,

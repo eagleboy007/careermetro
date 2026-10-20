@@ -3,7 +3,7 @@ import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { gapAnalyses, profiles, resumes } from "@/db/schema";
 import { roleProfiles } from "@/content";
-import { currentAnalysis, type Db as ReadDb } from "@/lib/gaps/current";
+import { currentAnalysis, type CurrentAnalysis, type Db as ReadDb } from "@/lib/gaps/current";
 import { lockPerson } from "@/lib/goals/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
 import { trackChoice, type GapAnalysis, type RoleProfile, type RoleTrack } from "@/lib/schemas";
@@ -48,10 +48,16 @@ export async function savedTrackId(userId: string, roleSlug: string, db: ReadDb 
 
 /**
  * The person's current analysis with their track applied (./apply.ts). Null before there is one. With no tracks on
- * offer for the role, or none chosen, `result` is the analysis as stored.
+ * offer for the role, or none chosen, `result` is the analysis as stored. `read` is `currentAnalysis` already read in
+ * this request (null for none), so Today doesn't read it twice; left out, it is read here.
  */
-export async function trackedCurrentAnalysis(userId: string, db: ReadDb = getDb(), allowUnreviewed = unreviewedAllowed()): Promise<TrackedAnalysis | null> {
-  const analysis = await currentAnalysis(userId, db);
+export async function trackedCurrentAnalysis(
+  userId: string,
+  db: ReadDb = getDb(),
+  allowUnreviewed = unreviewedAllowed(),
+  read?: CurrentAnalysis | null,
+): Promise<TrackedAnalysis | null> {
+  const analysis = read === undefined ? await currentAnalysis(userId, db) : read;
   if (!analysis) return null;
   const role = roleProfiles.find((r) => r.slug === analysis.result.roleSlug) ?? null;
   const tracks = role ? allowedTracks(role.slug, allowUnreviewed) : [];

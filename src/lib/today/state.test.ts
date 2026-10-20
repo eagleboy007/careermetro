@@ -13,7 +13,7 @@ import { confirmProfile } from "@/lib/resume/store";
 import type { Profile } from "@/lib/schemas";
 import { goalsOf } from "@/lib/goals/store";
 import { tickTask } from "@/lib/ride/store";
-import { clip, todayStateFor } from "./state";
+import { clip, currentAnalysis, todayStateFor } from "./state";
 
 vi.mock("server-only", () => ({}));
 
@@ -79,6 +79,22 @@ describe.skipIf(!db)("todayStateFor (database)", () => {
 
   it("says No resume for a new account", async () => {
     expect(await todayStateFor(await user("new"), now, db!)).toEqual({ state: "no_resume", unfinishedResumeId: null });
+  });
+
+  it("gives the same state from an analysis the page already read, and No resume for null (perf pass)", async () => {
+    const userId = await user("pre");
+    const owner = { userId };
+    const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-pre` }, { db: db!, client });
+    if (!r.ok) throw new Error(r.code);
+    await confirmProfile(r.resumeId, owner, parsed, db!);
+    const gaps = await getGapsForOwner(r.resumeId, owner, role, { db: db! });
+    if (!gaps.ok) throw new Error(gaps.reason);
+    const read = await currentAnalysis(userId, db!);
+    expect(read).not.toBeNull();
+    const plain = await todayStateFor(userId, now, db!);
+    expect(plain).toMatchObject({ state: "first", resumeId: r.resumeId });
+    expect(await todayStateFor(userId, now, db!, read)).toEqual(plain);
+    expect(await todayStateFor(userId, now, db!, null)).toMatchObject({ state: "no_resume" });
   });
 
   it("points back to a resume that was read but whose gaps were never shown", async () => {

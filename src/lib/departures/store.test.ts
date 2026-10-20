@@ -7,7 +7,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { clearStageInput, departureExport, saveInput, stageInput } from "@/lib/schemas";
 import { DEPARTURE_CHANGES_PER_DAY } from "@/lib/schemas/constants";
 import { LIMITS } from "@/lib/shared-limit";
-import { clearOldDepartures, clearStage, DEPARTURE_MESSAGES, departuresBoard, exportDepartures, lastFeedRun, saveRole, setStage } from "./store";
+import { clearOldDepartures, clearStage, DEPARTURE_MESSAGES, departuresBoard, exportDepartures, fitContextFor, lastFeedRun, saveRole, setStage } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -78,6 +78,12 @@ describe.skipIf(!db)("departures store (database)", () => {
     await sqlClient?.end();
     // Titles, saves and stages never reach a log.
     expect(lines.join("\n")).not.toMatch(/Junior data analyst|Example Labs|Asha/);
+  });
+
+  it("reads no fit for a person with no current analysis, read here or handed in by the page (perf pass)", async () => {
+    const me = await person();
+    expect(await fitContextFor(me, db!)).toBeNull();
+    expect(await fitContextFor(me, db!, null)).toBeNull();
   });
 
   it("keeps only one role's posts for ?role=, the person's own included", async () => {

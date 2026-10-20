@@ -6,12 +6,15 @@ import { gapAnalysis, type GapAnalysis } from "@/lib/schemas";
 
 export type Db = Pick<ReturnType<typeof getDb>, "select">;
 
+/** What `currentAnalysis` returns: a page that read it once can hand it on instead of reading it again. */
+export type CurrentAnalysis = { id: string; resumeId: string; result: GapAnalysis };
+
 /**
  * The person's current gap analysis from the latest saved version of one of their resumes' profiles: the newest one
  * whichever matcher made it: an older matcher's analysis stands until the Gaps page carries it over or replaces it, so
  * a matcher update never empties Today, Map or Me. Null when there is none, or it no longer reads.
  */
-export async function currentAnalysis(userId: string, db: Db = getDb()): Promise<{ id: string; resumeId: string; result: GapAnalysis } | null> {
+export async function currentAnalysis(userId: string, db: Db = getDb()): Promise<CurrentAnalysis | null> {
   const [row] = await db
     .select({ id: gapAnalyses.id, result: gapAnalyses.result, resumeId: resumes.id })
     .from(gapAnalyses)
