@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (known limits: refused-certificate job)
+Last updated: 2026-10-20 (Testing Run 5 fixes T73 to T80)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -52,6 +52,7 @@ Last updated: 2026-10-20 (known limits: refused-certificate job)
 
 - Known limits: the daily job for refused or held certificates now looks only at met goals the certificate could fill (its skill's goal or a group goal with it), not every met goal the person has.
 - Market trends, role switches and state-wise jobs and pay (pending item 24): plan only, proposed and not approved, in `docs/plans/market-trends-plan.md` (dev/ copy); decisions D1 to D6 wait on Milin.
+- Testing Run 5 fixes (T73 to T80): /design is 404 in production and fixtures hide unreviewed content there; Network rows carry no city and search runs in SQL (no 2,000 cap); jobs added on Me hide the person from that employer; a hand-added role can't take another job's verified badge; capped boards close posts that left the feed; microphone=(self); a same-commit Redeploy on production builds. Lows T81 to T92 and the T82 chat note (PM: accepted chats continue, with a note) are next.
 
 ## Next up
 
