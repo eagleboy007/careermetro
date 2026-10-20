@@ -218,11 +218,29 @@ export const userSettings = pgTable("user_settings", {
   noticeDays: smallint("notice_days"),
   /** The India date the person resigned, which starts the countdown. Never later than today; needs notice_days. */
   resignedOn: date("resigned_on"),
+  /**
+   * "Allow message requests from people who aren't connections" (FR-55, migration 0045): on by default. Off, a first
+   * message from someone who isn't a connection is refused like a block; requests already there stay.
+   */
+  messageRequests: boolean("message_requests").notNull().default(true),
+  /**
+   * "Open to work in" (FR-55): Remote or PERSON_CITIES, at most 6, Remote first. Filters the person's Departures, is
+   * copied onto each Express apply application, and companies that can find them see it. Never on a profile.
+   */
+  openToWorkIn: text("open_to_work_in").array().notNull().default(sql`'{}'::text[]`),
+  /**
+   * "Usually free" (FR-55): weekday picker hours as "mon 17:00", at most 40. Private: it never leaves the person's own
+   * pages and only pre-ticks open times when a company asks for times.
+   */
+  usuallyFree: text("usually_free").array().notNull().default(sql`'{}'::text[]`),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 },
   (t) => [
     check("user_settings_notice_days", sql`${t.noticeDays} is null or ${t.noticeDays} in (15, 30, 60, 90)`),
     check("user_settings_resigned_needs_days", sql`${t.resignedOn} is null or ${t.noticeDays} is not null`),
+    check("user_settings_open_to_work_in_max", sql`cardinality(${t.openToWorkIn}) <= 6`),
+    // Each entry a weekday and a picker time (FREE_DAYS by SLOT_TIMES), checked again by usuallyFreeInput.
+    check("user_settings_usually_free_slots", sql`cardinality(${t.usuallyFree}) <= 40 and ${t.usuallyFree} <@ array['mon 10:00', 'mon 11:00', 'mon 12:00', 'mon 14:00', 'mon 15:00', 'mon 16:00', 'mon 17:00', 'mon 18:00', 'tue 10:00', 'tue 11:00', 'tue 12:00', 'tue 14:00', 'tue 15:00', 'tue 16:00', 'tue 17:00', 'tue 18:00', 'wed 10:00', 'wed 11:00', 'wed 12:00', 'wed 14:00', 'wed 15:00', 'wed 16:00', 'wed 17:00', 'wed 18:00', 'thu 10:00', 'thu 11:00', 'thu 12:00', 'thu 14:00', 'thu 15:00', 'thu 16:00', 'thu 17:00', 'thu 18:00', 'fri 10:00', 'fri 11:00', 'fri 12:00', 'fri 14:00', 'fri 15:00', 'fri 16:00', 'fri 17:00', 'fri 18:00']::text[]`),
   ],
 );
 
@@ -1075,6 +1093,11 @@ export const applications = pgTable(
      * (checked by `applicationNote`, the only writer). Shown to the job team in the drawer; deleted with the application.
      */
     note: text("note"),
+    /**
+     * "Open to work in" as it was when the person sent this application with Express apply (FR-55, migration 0045). A
+     * later change in Settings doesn't rewrite it. The job team sees it in the drawer next to Can join.
+     */
+    openToWorkIn: text("open_to_work_in").array().notNull().default(sql`'{}'::text[]`),
     withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
     /** Set by Not this time or withdrawing; cleared when the company opens it again. */
     closedAt: timestamp("closed_at", { withTimezone: true }),
@@ -1089,6 +1112,7 @@ export const applications = pgTable(
     index("applications_user").on(t.userId, t.createdAt),
     index("applications_consent").on(t.consentId),
     index("applications_resume").on(t.resumeId),
+    check("applications_open_to_work_in_max", sql`cardinality(${t.openToWorkIn}) <= 6`),
   ],
 );
 

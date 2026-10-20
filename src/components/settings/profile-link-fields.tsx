@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { checkUsernameAction } from "@/app/(app)/settings/actions";
 import { normalUsername, USERNAME_MESSAGES, usernameProblem } from "@/lib/account/username";
-import { HEADLINE_MAX, PERSON_CITIES, USERNAME_CHANGE_DAYS, USERNAME_MAX, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
+import { HEADLINE_MAX, USERNAME_CHANGE_DAYS, USERNAME_MAX, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { FieldError, useSettingsDraft } from "./settings-draft";
 
 const input =
@@ -117,33 +117,6 @@ export function ProfileLinkFields({ lockedUntil }: { lockedUntil: string | null 
         {!errors.headline && (
           <small id="acc-headline-hint" className="text-[0.78rem] text-muted">
             One line under your name. {HEADLINE_MAX} characters. No email address or phone number.
-          </small>
-        )}
-      </label>
-      <label className="flex min-w-0 flex-col gap-1.5">
-        <span className="text-[0.82rem] font-semibold">
-          City <em className="font-normal not-italic text-muted">optional</em>
-        </span>
-        <select
-          id="acc-city"
-          value={draft.city}
-          onChange={(e) => set({ city: e.target.value })}
-          disabled={!editable}
-          aria-invalid={errors.city ? true : undefined}
-          aria-describedby={errors.city ? "acc-city-error" : "acc-city-hint"}
-          className={input}
-        >
-          <option value="">Not given</option>
-          {PERSON_CITIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-        <FieldError id="acc-city-error" message={errors.city} />
-        {!errors.city && (
-          <small id="acc-city-hint" className="text-[0.78rem] text-muted">
-            Not on your profile. Only companies you let find you see it, and can search by it.
           </small>
         )}
       </label>

@@ -40,6 +40,15 @@ export async function jobSearchFor(userId: string, db: Db | Tx = getDb()): Promi
   return viewOf(row);
 }
 
+/**
+ * "Open to work in" as saved in Settings (FR-55): Remote first, then cities in the order picked; none with no row. It
+ * filters Departures and is copied onto each Express apply application when it is sent.
+ */
+export async function openToWorkInFor(userId: string, db: Db | Tx = getDb()): Promise<string[]> {
+  const [row] = await db.select({ places: userSettings.openToWorkIn }).from(userSettings).where(eq(userSettings.userId, userId)).limit(1);
+  return row?.places ?? [];
+}
+
 /** The one check for "is this person looking for a job". No row is on. */
 export async function jobSearchOn(userId: string, db: Db | Tx = getDb()): Promise<boolean> {
   return (await jobSearchFor(userId, db)).on;

@@ -516,6 +516,12 @@ function ProfileTab({ candidate }: { candidate: CandidateView }) {
         <dd>{formatDay(candidate.appliedOn)}</dd>
         <dt className="text-muted">Can join</dt>
         <dd>{CAN_JOIN_LABELS[candidate.canJoin]}</dd>
+        {candidate.openToWorkIn && candidate.openToWorkIn.length > 0 && (
+          <>
+            <dt className="text-muted">Open to work in</dt>
+            <dd>{candidate.openToWorkIn.join(", ")}</dd>
+          </>
+        )}
         {candidate.criteria.total > 0 && (
           <>
             <dt className="text-muted">Express apply criteria</dt>

@@ -295,6 +295,8 @@ export type CandidateView = {
   criteria: CriteriaView;
   /** The note the candidate sent with the application, if any. */
   note: string | null;
+  /** "Open to work in" as sent with the application (FR-55); for the job team only, so absent for Interviewers. */
+  openToWorkIn?: string[];
   events: ApplicationEventView[];
   /** Interviews, the shared phone (for that interview's team only) and whether the person can book (build step 6). */
   interviews: CandidateInterviewsView;
@@ -337,7 +339,15 @@ export type ApplyAction = (jobId: string, canJoin: CanJoin, consent: boolean, no
  * What a company would receive for one job (Express apply's preview), built by the same code as the company's drawer:
  * the public profile, Match to this job and the criteria. Can join and the note are added by the person in the preview.
  */
-export type ApplyPacketView = { company: string; jobTitle: string; profile: CandidateProfileView; match: JobMatchView; criteria: CriteriaView };
+export type ApplyPacketView = {
+  company: string;
+  jobTitle: string;
+  profile: CandidateProfileView;
+  match: JobMatchView;
+  criteria: CriteriaView;
+  /** "Open to work in" from Settings (FR-55), sent with the application next to Can join; empty when none. */
+  openToWorkIn?: string[];
+};
 export type ApplyPreviewAction = (jobId: string) => Promise<{ ok: true; packet: ApplyPacketView } | { ok: false; error: string }>;
 export type WithdrawAction = (applicationId: string) => Promise<string | null>;
 

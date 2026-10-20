@@ -8,6 +8,7 @@ import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
 import {
+  AVAILABILITY_SAVES_PER_DAY,
   DEPARTURE_CHANGES_PER_DAY,
   ELITE_CHANGES_PER_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
@@ -123,6 +124,8 @@ export const LIMITS = {
   meEditsPerUserDay: { bucket: "me-edit", max: ME_EDITS_PER_DAY, windowMs: 24 * HOUR },
   /** Opening the notifications panel, which marks every row read (docs/plans/notifications-plan.md), each try counted. */
   notificationReadsPerUserDay: { bucket: "notification-read", max: NOTIFICATION_READS_PER_DAY, windowMs: 24 * HOUR },
+  /** "Usually free" saves from the Inbox (docs/plans/settings-columns-plan.md), each try counted. */
+  availabilityPerUserDay: { bucket: "availability-save", max: AVAILABILITY_SAVES_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

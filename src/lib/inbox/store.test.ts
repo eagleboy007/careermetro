@@ -7,7 +7,7 @@ import { reportDeadlines } from "@/lib/schemas/inbox";
 import { LIMITS } from "@/lib/shared-limit";
 import { exportAccountData } from "@/lib/account/export";
 import { purgeDeletedAccounts } from "@/lib/account/delete";
-import { acceptRequest, blockInChat, deleteRequest, formatAt, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
+import { acceptRequest, blockInChat, deleteRequest, formatAt, INBOX_ERROR_TEXT, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests.
 const url = process.env.TEST_DATABASE_URL;
@@ -156,6 +156,70 @@ describe.skipIf(!db)("inbox store (database)", () => {
       .onConflictDoNothing();
     for (let i = 0; i < LIMITS.inboxRequestsPerUser.max; i++) expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
     expect(await startDirect(a, await person(), "Hi", { db: db!, now })).toEqual({ ok: false, error: "limit" });
+  });
+
+  describe("message requests switch (FR-55, gap list item 33)", () => {
+    const setRequests = (userId: string, on: boolean) =>
+      db!.insert(schema.userSettings).values({ userId, messageRequests: on }).onConflictDoUpdate({ target: schema.userSettings.userId, set: { messageRequests: on } });
+    const connect = (x: string, y: string) => db!.insert(schema.connections).values({ userLow: x < y ? x : y, userHigh: x < y ? y : x, how: "other" });
+
+    it("refuses a non-connection's first message with the block's words, without using a request", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      const now = new Date();
+      // 19 of the day's 20 requests to others, then refused tries to Vikram: the 20th still goes, so none was counted.
+      for (let i = 0; i < LIMITS.inboxRequestsPerUser.max - 1; i++) expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
+      for (let i = 0; i < 3; i++) expect(await startDirect(a, b, "Hi Vikram", { db: db!, now })).toEqual({ ok: false, error: "unavailable" });
+      expect(INBOX_ERROR_TEXT.unavailable).toBe("You can't message this person.");
+      expect((await startDirect(a, await person(), "Hi", { db: db!, now })).ok).toBe(true);
+      expect(await listThreads(b, deps())).toEqual([]);
+    });
+
+    it("lets a connection still open a chat", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      await connect(a, b);
+      const started = await startDirect(a, b, "Hi Vikram", deps());
+      expect(started.ok).toBe(true);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ kind: "person" });
+    });
+
+    it("keeps a request already sent readable and acceptable after the switch goes off", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      const started = await startDirect(a, b, "Hi Vikram", deps());
+      if (!started.ok) throw new Error(started.error);
+      await setRequests(b, false);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ id: started.conversationId, kind: "request" });
+      // The sender's second try is the chat's own rule, not the switch.
+      expect(await startDirect(a, b, "Again", deps())).toEqual({ ok: false, error: "waiting" });
+      expect((await acceptRequest(b, started.conversationId, deps())).ok).toBe(true);
+      expect((await sendMessage(a, started.conversationId, "Thanks", deps())).ok).toBe(true);
+    });
+
+    it("refuses when the switch goes off between the first look and the lock", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      type Run = Parameters<NonNullable<typeof db>["transaction"]>[0];
+      // The switch is still on at the first look; it goes off just before the transaction takes the pair lock.
+      const racing = new Proxy(db!, {
+        get(target, key) {
+          if (key === "transaction")
+            return async (run: Run) => {
+              await setRequests(b, false);
+              return target.transaction(run);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+      expect(await startDirect(a, b, "Hi Vikram", { db: racing })).toEqual({ ok: false, error: "unavailable" });
+      expect(await listThreads(b, deps())).toEqual([]);
+    });
   });
 
   it("files reports by target, logs no text, and can block too", async () => {

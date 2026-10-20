@@ -386,6 +386,7 @@ Added to prototype v2 on 2026-10-09, matching the Corporate mockup.
 - "Asking for interview times": the user picks slots; a connected calendar greys out busy times (busy or free only); the company sees only the picked times. The calendar is never on the profile; "Usually free" only pre-fills picks.
 - People: connections chat freely; anyone else sends one message request (Accept, Delete without telling the sender, Block and report). Report and Block on every chat. Phone and email never shown.
 - Data proposal (needs approval): conversations, conversation_members, messages, blocks, reports, availability_patterns, calendar_links.
+- Built (FR-55, 2026-10-20, `docs/plans/settings-columns-plan.md`): signed in, Your availability has "Usually free", Monday to Friday by the eight picker times as one row of time chips per day (the panel is narrow), saved from the Inbox, with a summary in words; "Ask for times" starts with the open slots in it ticked, and nothing is sent until Send. The pattern is a `user_settings.usually_free` column, not `availability_patterns`. No calendar yet: "Calendar: Not connected", "Connecting Google or Outlook comes later." "Who can message you" points to the new message requests switch in Settings > Privacy.
 
 ## 12c. Account settings (`/settings`)
 
@@ -397,6 +398,7 @@ Added to prototype v2 on 2026-10-09 (Milin's comment). Library is parked as desi
 - Sign-in: Google, password change (12+ characters, leaked-password check, other devices signed out), signed-in devices.
 - Two-step verification: authenticator app (TOTP) plus 10 backup codes; required for recruiter and HR access.
 - Pay (current and expected, lakh a year): optional, private, never on the profile or sent to companies; used only to mark roles below expected pay. City on profile; "Open to work in" filters Departures.
+- Built (FR-55, 2026-10-20, `docs/plans/settings-columns-plan.md`): Pay is now "Pay and location" with Current city (moved from Profile basics; not on the profile, only companies that can find you see it) and "Open to work in" chips, Remote first, up to 6, which open Departures on "Your places", go with Express apply applications and show in company search while you are in it. Privacy has "Allow message requests from people who aren't connections", on by default. Pay doesn't mark roles yet.
 - Privacy (profile visibility, people lists, company search, message requests), notifications, download data, delete account (30-day grace). Sticky save bar.
 - Your plan: Free during the beta; Elite card with prices Milin accepted for now (INR, 2026-10-09): monthly ₹299, yearly ₹2,499, Elite Pass ₹799 for 3 months paid once. UPI, card, net banking; GST invoices; cancel renewal; "Upgrade to Elite" in the avatar menu. No billing code during the beta.
 - Data proposal (needs approval): profile fields on `profiles`; pay in a separate owner-only table, never logged; email, password, MFA and sessions stay in Supabase Auth.

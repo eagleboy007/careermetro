@@ -70,6 +70,8 @@ export type FoundPersonView = {
   job: string;
   /** The city they gave (T44), or null. Not part of the public profile. */
   city: string | null;
+  /** "Open to work in" (FR-55): Remote and cities, Remote first; empty when none. Not part of the public profile. */
+  openToWorkIn: string[];
   profile: MeProfile;
   match: JobMatchView;
   request: FoundRequestState;

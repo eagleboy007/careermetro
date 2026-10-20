@@ -9,7 +9,20 @@ import {
   USERNAME_MESSAGES,
   usernameProblem,
 } from "@/lib/account/username";
-import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS } from "./constants";
+import { sortFree } from "@/lib/account/availability";
+import {
+  FREE_DAYS,
+  GAPS_VISIBLE_TO,
+  OPEN_TO_WORK_MAX,
+  PERSON_CITIES,
+  PROFILE_VISIBILITIES,
+  REQUESTS_FROM,
+  RIDE_REMINDERS,
+  SLOT_TIMES,
+  USUALLY_FREE_MAX,
+  WORK_PLACE_REMOTE,
+  WORK_PLACES,
+} from "./constants";
 export { NOTICE_DAYS, type NoticeDays } from "./constants";
 export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
@@ -94,6 +107,11 @@ export const userSettings = z.object({
   ...publicParts.shape,
   gapsVisibleTo: gapsChoice.optional(),
   requestsFrom: requestsChoice.optional(),
+  /**
+   * "Allow message requests from people who aren't connections" (gap list item 33, FR-55): on by default. Off, only
+   * connections can start a chat; requests already there stay. A save without it (an older page) keeps what is stored.
+   */
+  messageRequests: z.boolean().optional(),
   companiesCanFind,
   ...notificationPrefs.shape,
 });
@@ -112,6 +130,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   showGaps: false,
   showCertifications: true,
   gapsVisibleTo: "connections",
+  messageRequests: true,
   companiesCanFind: false,
   rideReminder: "19:30",
   emailCompanyMessages: true,
@@ -124,11 +143,36 @@ export const DEFAULT_SETTINGS: UserSettings = {
  */
 export const personCity = z.union([z.literal("").transform(() => null), z.enum(PERSON_CITIES)]);
 
+/**
+ * "Open to work in" (gap list item 36, FR-55): Remote or cities from PERSON_CITIES, each once, at most OPEN_TO_WORK_MAX.
+ * Kept in order, Remote first, then the order the person picked. It filters Departures and goes with Express apply
+ * applications; companies that can find the person see it too.
+ */
+export const openToWorkIn = z
+  .array(z.enum(WORK_PLACES))
+  .max(OPEN_TO_WORK_MAX)
+  .refine((places) => new Set(places).size === places.length)
+  .transform((places) => [...places.filter((p) => p === WORK_PLACE_REMOTE), ...places.filter((p) => p !== WORK_PLACE_REMOTE)]);
+
+const FREE_SLOT = new RegExp(`^(${FREE_DAYS.join("|")}) (${SLOT_TIMES.join("|")})$`);
+
+/**
+ * "Usually free" (gap list item 31, FR-55): weekday hours as "mon 17:00", each once, at most every hour of the grid.
+ * Saved apart from the form, from the Inbox. Kept Monday first, then by time.
+ */
+export const usuallyFreeInput = z
+  .array(z.string().regex(FREE_SLOT))
+  .max(USUALLY_FREE_MAX)
+  .refine((slots) => new Set(slots).size === slots.length)
+  .transform(sortFree);
+
 /** One save of the settings form. A blank username means "keep what I have" (it can't be cleared once set). */
 export const settingsInput = z.object({
   username: z.union([z.literal("").transform(() => null), username]),
   headline,
   city: personCity.optional(),
+  /** Left out of a save (an older page), it stays as it was. */
+  openToWorkIn: openToWorkIn.optional(),
   currentPay: payInput,
   expectedPay: payInput,
   settings: userSettings,
@@ -179,8 +223,9 @@ export type PublicParts = z.infer<typeof publicParts>;
 export type NotificationPrefs = z.infer<typeof notificationPrefs>;
 export type UserSettings = z.infer<typeof userSettings>;
 export type SettingsInput = z.infer<typeof settingsInput>;
+export type UsuallyFreeInput = z.infer<typeof usuallyFreeInput>;
 /** The fields a save can fail on, for the message next to each. */
-export type SettingsField = "username" | "headline" | "city" | "currentPay" | "expectedPay" | "settings";
+export type SettingsField = "username" | "headline" | "city" | "openToWorkIn" | "currentPay" | "expectedPay" | "settings";
 
 /** The first message for each field that failed, keyed by its top-level name. */
 export function settingsErrors(error: z.ZodError): Partial<Record<SettingsField, string>> {
@@ -188,7 +233,13 @@ export function settingsErrors(error: z.ZodError): Partial<Record<SettingsField,
   for (const issue of error.issues) {
     const field = (issue.path[0] ?? "settings") as SettingsField;
     out[field] ??=
-      field === "settings" ? "Something in these settings isn't one of the choices. Reload the page and try again." : field === "city" ? "Pick a city from the list." : issue.message;
+      field === "settings"
+        ? "Something in these settings isn't one of the choices. Reload the page and try again."
+        : field === "city"
+          ? "Pick a city from the list."
+          : field === "openToWorkIn"
+            ? `Pick up to ${OPEN_TO_WORK_MAX} places from the list, each once.`
+            : issue.message;
   }
   return out;
 }

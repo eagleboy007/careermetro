@@ -52,6 +52,7 @@ async function SettingsScreen() {
       username: saved?.username ?? "",
       headline: saved?.headline ?? "",
       city: saved?.city ?? "",
+      openToWorkIn: saved?.openToWorkIn ?? [],
       currentPay: lakhText(saved?.pay.currentLakh ?? null),
       expectedPay: lakhText(saved?.pay.expectedLakh ?? null),
       // "Connection requests from" is one of Network's choices; the form saves it with the rest (gap list item 32).

@@ -7,7 +7,7 @@ import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactN
 import { JobPostingForm } from "@/components/gaps/job-posting-form";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
-import { citiesOf, DEPARTURES_LEDE, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
+import { citiesOf, DEPARTURES_LEDE, filterDepartures, initials, readiness, startFilters, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
 import type { JobPost, RolePrepView } from "@/lib/schemas";
 import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
@@ -50,6 +50,7 @@ export function DeparturesView({
   demo = false,
   searchSwitch = null,
   updated = null,
+  places = [],
   actions,
 }: {
   jobs: JobPost[];
@@ -63,9 +64,11 @@ export function DeparturesView({
   /** "Looking for a job" (src/components/job-search), in the header. */
   searchSwitch?: ReactNode;
   updated?: string | null;
+  /** "Open to work in" from Settings (FR-55), read on the server: with any, the City filter opens on "Your places". */
+  places?: string[];
   actions?: DepartureActions;
 }) {
-  const [filters, setFilters] = useState<DepartureFilters>(NO_FILTERS);
+  const [filters, setFilters] = useState<DepartureFilters>(() => startFilters(places));
   const [saved, setSaved] = useState(() => new Set(initialSaved));
   const [applied, setApplied] = useState(() => new Map(initialApplied));
   const [selected, setSelected] = useState<string | null>(() => jobs[0]?.id ?? null);
@@ -80,7 +83,7 @@ export function DeparturesView({
     timer.current = setTimeout(() => setToast(null), 3200);
   };
   const detailId = useId();
-  const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied), [jobs, filters, saved, applied]);
+  const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
   const job = shown.find((j) => j.id === selected) ?? shown[0] ?? null;
@@ -160,7 +163,21 @@ export function DeparturesView({
         </label>
 
         <div role="group" aria-label="Filters" className="flex flex-wrap items-center justify-between gap-3.5">
-          <Pills label="City" value={filters.city} options={cities} any="Any city" onPick={(city) => set({ city })} />
+          <Pills
+            label="City"
+            value={filters.yourPlaces ? null : filters.city}
+            options={cities}
+            any="Any city"
+            onPick={(city) => set({ city, yourPlaces: false })}
+            first={
+              places.length > 0 ? (
+                <button type="button" aria-pressed={filters.yourPlaces} className={pill} onClick={() => set({ yourPlaces: true, city: null })}>
+                  Your places
+                </button>
+              ) : null
+            }
+            anyPressed={!filters.yourPlaces && filters.city === null}
+          />
           <Pills label="Work type" value={filters.workType} options={WORK_TYPES} any="Any type" onPick={(workType) => set({ workType })} />
           <label className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap text-[0.84rem] font-[550]">
             <input type="checkbox" checked={filters.boardingOnly} onChange={(e) => set({ boardingOnly: e.target.checked })} className="peer sr-only" />
@@ -205,7 +222,15 @@ export function DeparturesView({
           </ul>
         ) : (
           <p className="rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
-            {filters.tab === "all"
+            {filters.tab === "all" && filters.yourPlaces && places.length > 0 && jobs.some((j) => !j.closed) ? (
+              <>
+                No roles in your places yet. Try Any city, or{" "}
+                <Link href="/settings#acc-pay" className="text-ink underline underline-offset-2">
+                  add places in Settings
+                </Link>
+                .
+              </>
+            ) : filters.tab === "all"
               ? jobs.some((j) => !j.closed)
                 ? "No roles match. Try another city or type, or clear the search."
                 : "No roles from company job boards yet. They arrive with the next daily update."
@@ -248,10 +273,29 @@ export function DeparturesView({
 
 const NO_RESUME = "Add your resume and this shows what you have and what is missing for this role.";
 
-function Pills<T extends string>({ label, value, options, any, onPick }: { label: string; value: T | null; options: readonly T[]; any: string; onPick: (v: T | null) => void }) {
+function Pills<T extends string>({
+  label,
+  value,
+  options,
+  any,
+  onPick,
+  first = null,
+  anyPressed,
+}: {
+  label: string;
+  value: T | null;
+  options: readonly T[];
+  any: string;
+  onPick: (v: T | null) => void;
+  /** A choice before "Any …" (the City filter's "Your places"). */
+  first?: ReactNode;
+  /** Whether "Any …" is pressed, when `first` can be pressed instead. */
+  anyPressed?: boolean;
+}) {
   return (
     <div role="group" aria-label={label} className="inline-flex flex-wrap gap-1">
-      <button type="button" aria-pressed={value === null} className={pill} onClick={() => onPick(null)}>
+      {first}
+      <button type="button" aria-pressed={anyPressed ?? value === null} className={pill} onClick={() => onPick(null)}>
         {any}
       </button>
       {options.map((o) => (

@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_JOB_SEARCH, DEFAULT_SETTINGS, jobSearchInput, jobSearchView, noticeDays, noticeInput, settingsErrors, settingsInput, userSettings } from "./account-settings";
-import { NOTICE_DAYS } from "./constants";
+import {
+  DEFAULT_JOB_SEARCH,
+  DEFAULT_SETTINGS,
+  jobSearchInput,
+  jobSearchView,
+  noticeDays,
+  noticeInput,
+  openToWorkIn,
+  settingsErrors,
+  settingsInput,
+  userSettings,
+  usuallyFreeInput,
+} from "./account-settings";
+import { FREE_DAYS, NOTICE_DAYS, SLOT_TIMES, USUALLY_FREE_MAX } from "./constants";
 
 const base = { username: "Priya-N", headline: "  IT support  moving into SOC ", currentPay: "4.2", expectedPay: "", settings: DEFAULT_SETTINGS };
 
@@ -68,6 +80,46 @@ describe("account settings schemas", () => {
       expect(r.success).toBe(false);
       if (!r.success) expect(settingsErrors(r.error)).toEqual({ city: "Pick a city from the list." });
     }
+  });
+});
+
+describe("settings columns (FR-55, gap list items 31, 33 and 36)", () => {
+  it("allow message requests by default, take on or off, and keep what is stored when an older page leaves it out", () => {
+    expect(DEFAULT_SETTINGS.messageRequests).toBe(true);
+    expect(userSettings.parse({ ...DEFAULT_SETTINGS, messageRequests: false }).messageRequests).toBe(false);
+    const older: Partial<typeof DEFAULT_SETTINGS> = { ...DEFAULT_SETTINGS };
+    delete older.messageRequests;
+    expect(userSettings.parse(older).messageRequests).toBeUndefined();
+    expect(userSettings.safeParse({ ...DEFAULT_SETTINGS, messageRequests: "off" }).success).toBe(false);
+  });
+
+  it("take Open to work in as Remote and listed cities, each once, up to 6, Remote first", () => {
+    expect(openToWorkIn.parse(["Remote"])).toEqual(["Remote"]);
+    expect(openToWorkIn.parse(["Pune", "Remote", "Kochi"])).toEqual(["Remote", "Pune", "Kochi"]);
+    expect(openToWorkIn.parse([])).toEqual([]);
+    expect(openToWorkIn.safeParse(["Delhi NCR"]).success).toBe(false);
+    expect(openToWorkIn.safeParse(["remote"]).success).toBe(false);
+    expect(openToWorkIn.safeParse(["Pune", "Pune"]).success).toBe(false);
+    expect(openToWorkIn.safeParse(["Remote", "Pune", "Kochi", "Mumbai", "Chennai", "Noida", "Indore"]).success).toBe(false);
+    expect(openToWorkIn.safeParse(["Remote", "Pune", "Kochi", "Mumbai", "Chennai", "Noida"]).success).toBe(true);
+  });
+
+  it("save Open to work in with the form, keep it when an older page leaves it out, and say what went wrong", () => {
+    expect(settingsInput.parse({ ...base, openToWorkIn: ["Pune", "Remote"] }).openToWorkIn).toEqual(["Remote", "Pune"]);
+    expect(settingsInput.parse(base).openToWorkIn).toBeUndefined();
+    const r = settingsInput.safeParse({ ...base, openToWorkIn: ["Pune", "Pune"] });
+    expect(r.success).toBe(false);
+    if (!r.success) expect(settingsErrors(r.error)).toEqual({ openToWorkIn: "Pick up to 6 places from the list, each once." });
+  });
+
+  it("take Usually free as weekday picker hours, each once, Monday first", () => {
+    expect(usuallyFreeInput.parse(["tue 10:00", "mon 18:00", "mon 17:00"])).toEqual(["mon 17:00", "mon 18:00", "tue 10:00"]);
+    expect(usuallyFreeInput.parse([])).toEqual([]);
+    for (const bad of [["sat 10:00"], ["mon 13:00"], ["mon 9:00"], ["Mon 10:00"], ["mon 10:00", "mon 10:00"], [42]]) expect(usuallyFreeInput.safeParse(bad).success).toBe(false);
+    const every = FREE_DAYS.flatMap((d) => SLOT_TIMES.map((t) => `${d} ${t}`));
+    expect(every).toHaveLength(USUALLY_FREE_MAX);
+    expect(usuallyFreeInput.parse(every)).toHaveLength(40);
+    expect(usuallyFreeInput.safeParse([...every, "mon 10:00"]).success).toBe(false);
   });
 });
 

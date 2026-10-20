@@ -168,8 +168,10 @@ const personColumns = {
   showEducation: userSettings.showEducation,
   showSkills: userSettings.showSkills,
   showCertifications: userSettings.showCertifications,
+  // "Open to work in" (FR-55): read only for people already in search (findableWhere: the switch and job search on).
+  openToWorkIn: userSettings.openToWorkIn,
 };
-type Person = { id: string; name: string | null; headline: string | null; city: string | null; createdAt: Date } & Omit<PublicParts, "showGaps">;
+type Person = { id: string; name: string | null; headline: string | null; city: string | null; openToWorkIn: string[]; createdAt: Date } & Omit<PublicParts, "showGaps">;
 
 /**
  * The people found, read fresh: the switch, blocks and roles as they are now. At most FIND_SCAN_MAX are read, most
@@ -296,7 +298,7 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
     const years = yearsWorked(profile, now);
     if (!inBands(filters.bands, years, person.showExperience)) continue;
     const provedSkills = proved.get(person.id) ?? new Set<string>();
-    if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, provedSkills: provedSkills.size })) continue;
+    if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, openToWorkIn: person.openToWorkIn, provedSkills: provedSkills.size })) continue;
     if (worksAt(profile, ctx.companyNames) || onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain)) continue;
     const aim = roleTitles.get(analysis.roleSlug) ?? null;
     if (!passesText(filters, { name: person.name, aim, profile, experienceShown: person.showExperience })) continue;
@@ -394,6 +396,7 @@ export async function openFoundPerson(userId: string, raw: unknown, deps: FindDe
         jobId: job.id,
         job: job.title,
         city: person.city,
+        openToWorkIn: person.openToWorkIn,
         profile: companyView(person, profile, current.analysis, now, jobChecks),
         match: jobMatch(job.requirements, profile, proved, now),
         request: state,

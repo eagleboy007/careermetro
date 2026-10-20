@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { jobPost } from "@/lib/schemas";
 import { exampleApplied, exampleJobs, exampleSaved } from "./fixtures";
-import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness } from "./filter";
+import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, startFilters } from "./filter";
 
 const saved = new Set(exampleSaved);
 const applied = new Map(exampleApplied);
@@ -54,6 +54,35 @@ describe("filterDepartures", () => {
   it("keeps Saved and Applied to the person's own lists", () => {
     expect(ids({ tab: "saved" })).toEqual(["j4"]);
     expect(ids({ tab: "applied" })).toEqual(["j1", "j6"]);
+  });
+});
+
+describe("Your places (FR-55)", () => {
+  const places = (list: string[], f: Partial<typeof NO_FILTERS> = {}) =>
+    filterDepartures(exampleJobs, { ...NO_FILTERS, yourPlaces: true, ...f }, saved, applied, list).map((j) => j.id);
+  const india = { ...exampleJobs[0], id: "india", city: "India" };
+
+  it("opens on Your places only when the person picked a place", () => {
+    expect(startFilters(["Pune"]).yourPlaces).toBe(true);
+    expect(startFilters([]).yourPlaces).toBe(false);
+  });
+
+  it("keeps roles in the person's cities, and remote roles only when Remote is picked", () => {
+    expect(places(["Bengaluru", "Hyderabad"])).toEqual(["j4", "j5"]);
+    expect(places(["Remote"])).toEqual(["j3", "j8"]);
+    expect(places(["Remote", "Bengaluru"])).toEqual(["j3", "j4", "j8"]);
+    expect(places(["Kochi"])).toEqual([]);
+  });
+
+  it("leaves out roles that name no city", () => {
+    const shown = filterDepartures([...exampleJobs, india], { ...NO_FILTERS, yourPlaces: true }, saved, applied, ["Remote", "Pune"]).map((j) => j.id);
+    expect(shown).not.toContain("india");
+    expect(filterDepartures([india], NO_FILTERS, saved, applied, ["Pune"]).map((j) => j.id)).toEqual(["india"]);
+  });
+
+  it("filters nothing with no places, and Any city still lists every role", () => {
+    expect(places([])).toEqual(exampleJobs.map((j) => j.id));
+    expect(filterDepartures(exampleJobs, NO_FILTERS, saved, applied, ["Kochi"])).toHaveLength(exampleJobs.length);
   });
 });
 

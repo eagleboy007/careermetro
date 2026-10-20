@@ -109,4 +109,6 @@ export type InboxActions = {
   read: (conversationId: string) => Promise<void>;
   /** Answers "Ask for times" with the picked slot keys (corporate build step 6). */
   offerTimes?: (messageId: string, slots: string[]) => Promise<string | null>;
+  /** Saves "Usually free" (FR-55), the whole grid at once: "mon 17:00" entries. */
+  saveUsuallyFree?: (slots: string[]) => Promise<string | null>;
 };

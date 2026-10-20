@@ -14,7 +14,7 @@ import { notify } from "@/lib/notifications/store";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
 import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
-import { jobSearchOn } from "@/lib/job-search/store";
+import { jobSearchOn, openToWorkInFor } from "@/lib/job-search/store";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { criteriaStatus } from "./criteria";
 import { applicationPacketFor, jobMatch, publicProfile } from "./match";
@@ -210,9 +210,12 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .insert(consents)
         .values({ userId, purpose: APPLICATION_CONSENT_PURPOSE, policyVersion: APPLICATION_POLICY_VERSION, givenAt: now })
         .returning({ id: consents.id });
+      // "Open to work in" as it is now (FR-55), so the company sees what was sent with this application; a later change
+      // in Settings doesn't rewrite it.
+      const openToWorkIn = await openToWorkInFor(userId, tx);
       const [app] = await tx
         .insert(applications)
-        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, note: input.note || null, createdAt: now })
+        .values({ jobId: job.id, orgId: job.orgId, userId, consentId: consent.id, canJoin: input.canJoin, resumeId: analysis.resumeId, note: input.note || null, openToWorkIn, createdAt: now })
         .returning({ id: applications.id });
       await event(tx, app.id, "applied", "applied", userId, now);
       // The application's chat with the company, in the person's Inbox from now on (build step 5).
@@ -255,11 +258,12 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
   if (await companyBlocked(userId, job.orgId, db)) return fail("blocked_company");
   const analysis = await currentAnalysis(userId, db);
   if (!analysis) return fail("no_resume");
-  const [[me], profileOf, proved, certificates] = await Promise.all([
+  const [[me], profileOf, proved, certificates, openToWorkIn] = await Promise.all([
     db.select({ name: users.name }).from(users).where(eq(users.id, userId)),
     latestProfiles([analysis.resumeId], db),
     provedByUser([userId], db, now),
     certificatesByUser([userId], db, now),
+    openToWorkInFor(userId, db),
   ]);
   const packet = applicationPacketFor(
     {
@@ -273,7 +277,8 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
     now,
   );
   logEvent("info", "application_previewed");
-  return { ok: true, packet: { company: job.company, jobTitle: job.title, ...packet } };
+  // Open to work in goes with the application as it is when sent (FR-55), so the preview shows it next to Can join.
+  return { ok: true, packet: { company: job.company, jobTitle: job.title, ...packet, openToWorkIn } };
 }
 
 /** Withdraw an application: it closes, its consent is withdrawn, and the company sees only that one was withdrawn. */
@@ -539,6 +544,7 @@ export async function visibleApplication(userId: string, applicationId: string, 
       requirements: jobs.requirements,
       criteria: jobs.criteria,
       note: applications.note,
+      openToWorkIn: applications.openToWorkIn,
       jobTitle: jobs.title,
       orgId: applications.orgId,
       orgStatus: organizations.reviewStatus,
@@ -621,6 +627,8 @@ export async function openCandidate(userId: string, raw: unknown, deps: Applicat
       match: packet.match,
       criteria: packet.criteria,
       note: app.note,
+      // Open to work in as sent with the application (FR-55): for the job team; Interviewers see the drawer as before.
+      ...(access.canMove ? { openToWorkIn: app.openToWorkIn } : {}),
       events: events.get(app.id) ?? [],
       interviews: {
         interviews: booked.get(app.id) ?? [],
@@ -691,6 +699,7 @@ export async function exportApplications(userId: string, db: Db = getDb(), env: 
       stage: applications.stage,
       canJoin: applications.canJoin,
       note: applications.note,
+      openToWorkIn: applications.openToWorkIn,
       createdAt: applications.createdAt,
       withdrawnAt: applications.withdrawnAt,
       closedAt: applications.closedAt,

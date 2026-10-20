@@ -123,6 +123,7 @@ export const exampleCandidate: CandidateView = {
   match: exampleBoard.cards[0].match,
   criteria: exampleCriteria,
   note: "I triage about forty SIEM alerts a week at the bank and wrote its phishing runbook.\n\nHappy to walk you through one.",
+  openToWorkIn: ["Remote", "Pune"],
   events: [
     { kind: "applied", stage: "applied", on: "2026-10-03", note: null },
     { kind: "moved", stage: "shortlisted", on: "2026-10-05", note: null },
@@ -174,11 +175,14 @@ export const exampleApplyPacket: ApplyPacketView = {
   profile: exampleCandidate.profile,
   match: exampleCandidate.match,
   criteria: exampleCriteria,
+  openToWorkIn: ["Remote", "Pune"],
 };
 
 /** The drawer for an Interviewer on the candidate's interview: read only, with their own feedback form. */
 export const exampleInterviewerCandidate: CandidateView = {
   ...exampleCandidate,
+  // Interviewers see the drawer as before Open to work in existed (FR-55): it is for the job team.
+  openToWorkIn: undefined,
   interviews: {
     interviews: [{ ...exampleCandidate.interviews.interviews[0]!, canGiveFeedback: true, canCancel: false }],
     phone: "+91 98765 43210",
@@ -477,6 +481,7 @@ export const exampleFoundPerson: FoundPersonView = {
   jobId: "00000000-0000-4000-8000-0000000000b1",
   job: "SOC Analyst L1",
   city: "Pune",
+  openToWorkIn: ["Remote", "Pune", "Bengaluru"],
   profile: publicProfile(
     { ...exampleMe, name: "Priya Nair", headline: "IT support moving into security operations" },
     { showTargetRole: true, showExperience: true, showEducation: true, showSkills: true, showCertifications: true, showGaps: false },

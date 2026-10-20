@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, desc, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { directChatLock } from "@/db/lock";
-import { applications, blocks, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
+import { applications, blocks, candidateSlots, conversationMembers, conversations, jobs, messages, organizations, reports, userSettings, users } from "@/db/schema";
 import { displayName } from "@/lib/account/name";
 import { blockCompanyIn, companyBlocked } from "@/lib/corporate/company-blocks";
 import { askDaysOf } from "@/lib/corporate/interview-reads";
@@ -74,6 +74,16 @@ async function startable(userId: string, db: Db | Tx): Promise<boolean> {
   return !!row && !row.deleted && !row.suspended;
 }
 
+/**
+ * "Allow message requests from people who aren't connections" (FR-55, gap list item 33): on with no settings row. Off,
+ * a first message from someone who isn't a connection is refused as "unavailable", the same words as a block, so a
+ * blocked person can't tell the two apart.
+ */
+async function takesRequests(userId: string, db: Db | Tx): Promise<boolean> {
+  const [row] = await db.select({ on: userSettings.messageRequests }).from(userSettings).where(eq(userSettings.userId, userId));
+  return row?.on ?? true;
+}
+
 /** The direct chat between two people, if there is one. */
 async function directBetween(a: string, b: string, db: Db | Tx) {
   const mine = db.select({ id: conversationMembers.conversationId }).from(conversationMembers).where(eq(conversationMembers.userId, a));
@@ -90,7 +100,8 @@ const pairLock = directChatLock;
 
 /**
  * Starts a direct chat. With someone who isn't a connection it is a request: this one message, then nothing more until
- * they accept. Between connections it is open at once. A chat that already exists gets the message instead, under its rules.
+ * they accept, and only while they allow message requests (FR-55). Between connections it is open at once. A chat that
+ * already exists gets the message instead, under its rules (a request already sent stays, whatever the switch says).
  */
 export async function startDirect(fromId: string, toId: string, body: string, deps: { db?: Db; now?: Date } = {}): Promise<InboxResult<{ conversationId: string }>> {
   const db = deps.db ?? getDb();
@@ -106,6 +117,8 @@ export async function startDirect(fromId: string, toId: string, body: string, de
   }
   // Connections chat freely (handoff 12j): their first message opens the chat, with no request and no request limit.
   const linked = await areConnected(fromId, toId, db);
+  // Message requests off (FR-55): refused before the request limit is taken, so a refused try doesn't use one up.
+  if (!linked && !(await takesRequests(toId, db))) return fail("unavailable");
   // Counted before the write, outside the transaction: the limit is shared by every server and lives in the database.
   if (!linked && !(await takeShared(LIMITS.inboxRequestsPerUser, fromId, { db, now: now.getTime() }))) return fail("limit");
   return db.transaction(async (tx) => {
@@ -116,6 +129,8 @@ export async function startDirect(fromId: string, toId: string, body: string, de
     const raced = await directBetween(fromId, toId, tx);
     if (raced) return fail(raced.status !== "request" ? "not_found" : raced.startedBy === fromId ? "waiting" : "accept_first");
     const status = linked && (await areConnected(fromId, toId, tx)) ? "open" : "request";
+    // Checked again under the lock: the switch may have gone off since the first look.
+    if (status === "request" && !(await takesRequests(toId, tx))) return fail("unavailable");
     const [conversation] = await tx.insert(conversations).values({ kind: "direct", status, startedBy: fromId, createdAt: now, lastMessageAt: now }).returning({ id: conversations.id });
     await tx.insert(conversationMembers).values([
       { conversationId: conversation.id, userId: fromId, lastReadAt: now },
