@@ -80,9 +80,9 @@ export const companiesCanFind = z.boolean();
  * "Your gaps show to" (handoff 12j). When it is sent it decides, and showGaps follows it (on only for "profile"); a save
  * without it (an older page) keeps the old switch meaning.
  */
-export const gapsVisibleTo = z.enum(GAPS_VISIBLE_TO);
+const gapsChoice = z.enum(GAPS_VISIBLE_TO);
 
-export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, gapsVisibleTo: gapsVisibleTo.optional(), companiesCanFind, ...notificationPrefs.shape });
+export const userSettings = z.object({ visibility: profileVisibility, ...publicParts.shape, gapsVisibleTo: gapsChoice.optional(), companiesCanFind, ...notificationPrefs.shape });
 
 /**
  * No row in user_settings means these. Since migration 0034 every account made before it has a row, so no row means a
