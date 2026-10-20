@@ -51,4 +51,5 @@ export const exampleInCommon: ProfileInCommon = {
     { id: "ex-vr", name: "Vikram Rao", username: "vikram-r" },
     { id: "ex-nb", name: "Neha Bhat", username: "neha-b" },
   ],
+  interests: { shared: ["AI", "Public speaking"], yours: 4, theirOthers: ["Chess", "Cricket analytics"] },
 };

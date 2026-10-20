@@ -78,6 +78,25 @@ export function skillsInCommon(mine: readonly string[], theirs: readonly string[
   return new Set(theirs.filter((s) => set.has(s))).size;
 }
 
+/**
+ * "Interests" in common on a profile (handoff 12j, gap list 27; docs/plans/me-editing-plan.md): the owner's interests
+ * the viewer also lists, matched by key and named as the owner wrote them, how many the viewer lists, and the owner's
+ * others. Interests show on any profile that can be opened, so nothing here is hidden from the viewer. Null when either
+ * lists none, so the profile says nothing about it.
+ */
+export function interestsInCommon(
+  mine: readonly { name: string; key: string }[],
+  theirs: readonly { name: string; key: string }[],
+): { shared: string[]; yours: number; theirOthers: string[] } | null {
+  if (!mine.length || !theirs.length) return null;
+  const keys = new Set(mine.map((m) => m.key));
+  return {
+    shared: theirs.filter((t) => keys.has(t.key)).map((t) => t.name),
+    yours: mine.length,
+    theirOthers: theirs.filter((t) => !keys.has(t.key)).map((t) => t.name),
+  };
+}
+
 /** People both are connected to, never counting either of them. */
 export function mutualOf(mine: ReadonlySet<string>, theirs: ReadonlySet<string>): string[] {
   return [...mine].filter((id) => theirs.has(id));

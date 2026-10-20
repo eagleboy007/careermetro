@@ -2,7 +2,23 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { directChatLock, type Tx } from "@/db/lock";
-import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, pathSteps, paths, profiles, reports, resumes, userSettings, users } from "@/db/schema";
+import {
+  blocks,
+  connectionRequests,
+  connections,
+  conversationMembers,
+  conversations,
+  gapAnalyses,
+  gapProofs,
+  pathSteps,
+  paths,
+  profiles,
+  reports,
+  resumes,
+  userInterests,
+  userSettings,
+  users,
+} from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
@@ -28,6 +44,7 @@ import {
   byNetworkRank,
   connectionState,
   endsAt,
+  interestsInCommon,
   lineOrder,
   mutualOf,
   networkMatches,
@@ -40,7 +57,7 @@ import {
   type LineGap,
   type RequestRow,
 } from "./rules";
-import type { PathTogether } from "./types";
+import type { InterestsInCommon, PathTogether } from "./types";
 
 /*
  * Network part 1 (FR-49, handoff 12j, docs/plans/network-plan.md): requests, connections, name search and the Network
@@ -469,6 +486,24 @@ export async function pathTogetherWith(viewerId: string, ownerId: string, shared
   if (!a || !b || a.roleSlug !== b.roleSlug) return null;
   const learned = await learnedOf([a.id, b.id], db);
   return pathTogether(lineOrder(a.gaps, mine, learned.get(a.id)), lineOrder(b.gaps, theirs, learned.get(b.id)), (id) => skillNames.get(id) ?? id, sharedWith);
+}
+
+/**
+ * "Interests" in common on a profile (gap list 27, docs/plans/me-editing-plan.md): the owner's interests the viewer
+ * also lists. Interests show on any profile the viewer can open, so only call it once the page has decided they may
+ * open it. Null on your own profile or when either lists none.
+ */
+export async function interestsInCommonWith(viewerId: string, ownerId: string, db: Pick<Db, "select"> = getDb()): Promise<InterestsInCommon | null> {
+  if (viewerId === ownerId) return null;
+  const rows = await db
+    .select({ userId: userInterests.userId, name: userInterests.name, key: userInterests.nameKey })
+    .from(userInterests)
+    .where(inArray(userInterests.userId, [viewerId, ownerId]))
+    .orderBy(asc(userInterests.createdAt), asc(userInterests.nameKey));
+  return interestsInCommon(
+    rows.filter((r) => r.userId === viewerId),
+    rows.filter((r) => r.userId === ownerId),
+  );
 }
 
 /** People with at least one current accepted proof: "Verified" (as Find people, T44). */

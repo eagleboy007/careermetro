@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { meProfile, type MapLine, type Profile } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
-import { duration, journeyFor, meFromProfile, worked, type MeInput } from "./build";
+import { companyKey } from "@/lib/profile/employer";
+import { duration, journeyFor, meFromProfile, NO_ADDITIONS, worked, type MeAdditions, type MeInput } from "./build";
 import { exampleMe } from "./fixtures";
 
 const profile = (p: Partial<Profile>): Profile => ({
@@ -165,7 +166,7 @@ describe("meFromProfile", () => {
     expect(me.stats.filter((s) => !s.private).map((s) => s.label)).toEqual(["skills found"]);
   });
 
-  it("has nothing to say about stories, interests or proof yet", () => {
+  it("has no stories, interests or proof before the person adds any", () => {
     const me = meFromProfile(input({}));
     expect([me.stories, me.interests, me.proofs]).toEqual([[], [], []]);
     expect(me.resumeReadOn).toBeNull();
@@ -184,5 +185,72 @@ describe("meFromProfile", () => {
     expect(meProfile.safeParse(exampleMe).success).toBe(true);
     expect(exampleMe.nearby?.lines.length).toBeGreaterThan(0);
     expect(exampleMe.stories.some((s) => s.fromGoal)).toBe(true);
+  });
+});
+
+// Me editing (docs/plans/me-editing-plan.md). Every name and company here is made up.
+describe("what the person added on Me", () => {
+  const ids = { role: "00000000-0000-4000-8000-0000000a0101", edu: "00000000-0000-4000-8000-0000000a0102", story: "00000000-0000-4000-8000-0000000a0103", goal: "00000000-0000-4000-8000-0000000a0104" };
+  const added = (p: Partial<MeAdditions>): MeAdditions => ({ ...NO_ADDITIONS, ...p });
+  const resume = profile({
+    roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: null, highlights: ["Built the weekly report"] }],
+    education: [{ qualification: "B.Com", institution: "Example University", year: "2021" }],
+  });
+
+  it("merges added roles with resume roles by start date, and counts overlapping spans once", () => {
+    const me = meFromProfile(
+      input({
+        profile: resume,
+        added: added({ roles: [{ id: ids.role, title: "Volunteer data lead", employer: "Pune Reads", startMonth: "2023-06", endMonth: "2024-06", isCurrent: false }] }),
+      }),
+    );
+    expect(meProfile.safeParse(me).success).toBe(true);
+    expect(me.experience.map((e) => [e.title, e.added?.id ?? null])).toEqual([
+      ["Analyst", null],
+      ["Volunteer data lead", ids.role],
+    ]);
+    expect(me.experience[1]).toMatchObject({ dates: "Jun 2023 to Jun 2024 · 1 year", current: false, highlights: [], added: { startMonth: "2023-06", endMonth: "2024-06" } });
+    // Jun 2023 to now (10 Oct 2026), with Jan to Jun 2024 counted once.
+    expect(me.experienceTotal).toBe("3 years 4 months");
+  });
+
+  it("gives an added current role the work-email check, as a resume one (FR-47)", () => {
+    const role = { id: ids.role, title: "SOC analyst", employer: "Garuda Security", startMonth: "2025-02", endMonth: null, isCurrent: true };
+    const open = meFromProfile(input({ added: added({ roles: [role] }) }));
+    expect(open.experience[0]).toMatchObject({ current: true, dates: expect.stringMatching(/^Feb 2025 to now/), check: { state: "not_verified", month: null } });
+    const verified = meFromProfile(
+      input({
+        added: added({ roles: [role] }),
+        jobChecks: [{ employerKey: companyKey("Garuda Security"), startMonth: "2025-02", status: "verified", checkedAt: new Date("2026-10-01T00:00:00Z") }],
+      }),
+    );
+    expect(verified.experience[0].check).toEqual({ state: "verified", month: "Oct 2026" });
+  });
+
+  it("puts added education after the resume's, with its row id", () => {
+    const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
+    expect(me.education).toEqual([
+      { qualification: "B.Com", institution: "Example University", year: "2021" },
+      { qualification: "Data Analytics with Python", institution: "NPTEL", year: "", added: { id: ids.edu } },
+    ]);
+  });
+
+  it("shows stories with their SMART check, worked out here, and interests as typed", () => {
+    const story = {
+      id: ids.story,
+      title: "Cut missed alerts",
+      where: "Konkan Co-operative Bank · 2025",
+      situation: "Alerts piled up.",
+      task: "I owned triage.",
+      action: "Sorted alerts by sender.",
+      result: "Missed alerts fell a lot.",
+      boxes: ["Ownership" as const],
+      goalId: ids.goal,
+      confirmed: true,
+    };
+    const me = meFromProfile(input({ added: added({ stories: [story], interests: ["Chess", "Public speaking"] }) }));
+    expect(meProfile.safeParse(me).success).toBe(true);
+    expect(me.stories[0]).toMatchObject({ id: ids.story, smart: ["A", "R", "T"], hint: expect.stringMatching(/12 words/), confirmed: true, fromGoal: true, goalId: ids.goal });
+    expect(me.interests).toEqual(["Chess", "Public speaking"]);
   });
 });

@@ -73,6 +73,12 @@ export type PathTogether = {
   sharedWith: "connections" | "profile";
 };
 
+/**
+ * Interests both list (docs/plans/me-editing-plan.md): the owner's that the viewer also lists, as the owner wrote them;
+ * how many the viewer lists ("2 of your 4"); and the owner's others.
+ */
+export type InterestsInCommon = { shared: string[]; yours: number; theirOthers: string[] };
+
 /** "In common with you" on a profile (handoff 12j). Only what the owner's choices let this viewer see. */
 export type ProfileInCommon = {
   /** Skills both have, by name; null when the owner doesn't show skills. */
@@ -83,4 +89,6 @@ export type ProfileInCommon = {
   path: PathTogether | null;
   /** People both are connected to, never anyone either can't see. */
   mutual: { id: string; name: string; username: string | null }[];
+  /** Null when either lists no interests. */
+  interests?: InterestsInCommon | null;
 };

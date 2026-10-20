@@ -59,7 +59,7 @@ export function sameCompany(a: string, b: string): boolean {
  * The person's current jobs on the confirmed profile: the ones with no end date; with none open, the latest one
  * (Project manager, 2026-10-15: the latest job stands in for the current employer, which isn't stored separately).
  */
-export function currentJobs(profile: Profile): Profile["roles"] {
+export function currentJobs(profile: Pick<Profile, "roles">): Profile["roles"] {
   const open = profile.roles.filter((r) => !r.end);
   if (open.length) return open;
   const latest = [...profile.roles].sort((a, b) => (readYearMonth(b.end)?.t ?? 0) - (readYearMonth(a.end)?.t ?? 0))[0];

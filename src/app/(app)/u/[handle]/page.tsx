@@ -13,7 +13,7 @@ import { eliteBadgeFor } from "@/lib/elite/store";
 import { publicProfile } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
 import { seesGaps } from "@/lib/network/rules";
-import { connectionWith, inCommonWith, mutualConnections, networkSettingsFor, pathTogetherWith } from "@/lib/network/store";
+import { connectionWith, inCommonWith, interestsInCommonWith, mutualConnections, networkSettingsFor, pathTogetherWith } from "@/lib/network/store";
 import { answerConnection, blockFromNetwork, connectTo, messageConnection, removeFromNetwork, reportFromNetwork, withdrawConnection } from "../../network/actions";
 
 // A generic title: the person's name stays out of tab titles, history sync and any analytics that read titles.
@@ -23,7 +23,8 @@ export const metadata: Metadata = { title: "Profile · CareerMetro", robots: { i
  * Someone's profile at their username (handoff section 3, `/u/[handle]`; account settings part 2). Signed in only. A
  * missing username, a hidden profile and one whose owner blocked the viewer all give the same not-found page, so the
  * page never says which. A username given up in the last 14 days redirects to the new one. What shows is worked out
- * on the server (src/lib/me/public.ts): resume lines, pay, phone, email and notice period never reach this page.
+ * on the server (src/lib/me/public.ts): resume lines, pay, phone, email and notice period never reach this page. Stories
+ * follow the Experience switch, added roles and education their own switches, and interests show on any open profile.
  */
 async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] }) {
   await connection();
@@ -38,7 +39,7 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
   if (answer.kind === "redirect") redirect(`/u/${answer.to}`);
   const { owner } = answer;
   const yours = owner.id === viewer.id;
-  const [me, state, network, inCommon, eliteBadge, mutual] = await Promise.all([
+  const [me, state, network, inCommon, eliteBadge, mutual, interests] = await Promise.all([
     meFor(owner.id, now),
     connectionWith(viewer.id, owner.id, { now }),
     networkSettingsFor(owner.id),
@@ -47,6 +48,8 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
     eliteBadgeFor(owner.id),
     // Only people both are connected to, never anyone either can't see (FR-49).
     yours ? Promise.resolve([]) : mutualConnections(viewer.id, owner.id),
+    // Interests show on any profile the viewer may open (docs/plans/me-editing-plan.md choice 4), so both lists may be compared.
+    interestsInCommonWith(viewer.id, owner.id),
   ]);
   if (!me) notFound();
   // Gaps follow the owner's gaps choice (FR-49): a connection sees gaps shared with connections. The owner's own view
@@ -75,7 +78,7 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
           personId={owner.id}
           name={me.name}
           initial={state}
-          inCommon={{ skills: owner.settings.showSkills ? inCommon.skills : null, role: inCommon.role, path, mutual }}
+          inCommon={{ skills: owner.settings.showSkills ? inCommon.skills : null, role: inCommon.role, path, mutual, interests }}
           actions={{
             connect: connectTo,
             answer: answerConnection,

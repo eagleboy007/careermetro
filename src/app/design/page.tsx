@@ -51,6 +51,7 @@ import { DeparturesView } from "@/components/departures/departures-view";
 import { DEPARTURES_LEDE } from "@/lib/departures/filter";
 import { JobSearchOffToday, JobSearchPaused, JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
 import { NoticeCard } from "@/components/job-search/notice-card";
+import { MeEditGallery } from "@/components/me/me-editors";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
@@ -132,7 +133,7 @@ import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleInCommon, exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { exampleBuilder } from "@/lib/builder/fixtures";
 import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
-import { exampleMe } from "@/lib/me/fixtures";
+import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleSaved } from "@/lib/departures/fixtures";
@@ -520,13 +521,30 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Your profile (signed in)</h2>
-        <p className="text-sm text-muted">The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check.</p>
+        <p className="text-sm text-muted">
+          The person&apos;s own profile with &quot;View as others&quot;, stories on a Board or List with the SMART check (a full one, &ldquo;Month-end
+          reports&rdquo;, and a partial one with its hint, &ldquo;A branch report&rdquo;), and a role and a course marked &ldquo;Added by you&rdquo; with
+          Edit and Delete. Example data, so nothing saves.
+        </p>
         <MeView
           me={exampleMe}
           others={publicProfile(exampleMe, DEFAULT_SETTINGS)}
           whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }}
           practice={exampleTrends}
           planCard={<MePlanCard plan={{ elite: false, badgeShown: false, since: null }} />}
+          storyGoals={exampleStoryGoals}
+        />
+        <h3 className="text-lg font-semibold">Me editing: the forms</h3>
+        <p className="text-sm text-muted">
+          docs/plans/me-editing-plan.md: &ldquo;+ Add role&rdquo; and Edit on an added role, Education&apos;s &ldquo;+ Add&rdquo;, &ldquo;+ Add
+          story&rdquo; and Edit (each part up to 400 characters with a live count, at least one box, an optional goal), the delete question, and the
+          interests chips with remove and Add. Each opens inline on the page. Text others read refuses email addresses, phone numbers and links.
+        </p>
+        <MeEditGallery
+          role={exampleMe.experience.find((e) => e.added) ?? exampleMe.experience[0]}
+          education={exampleMe.education.find((e) => e.added) ?? exampleMe.education[0]}
+          story={exampleMe.stories[2]}
+          goals={exampleStoryGoals}
         />
       </section>
 
@@ -748,8 +766,9 @@ export default function DesignPage() {
         <NetworkView data={exampleNetwork} example={exampleSearch} />
         <h3 className="text-lg font-semibold">On a profile: connect, shared counts and In common with you</h3>
         <p className="text-sm text-muted">
-          The strip of shared counts, then skills, &ldquo;Gaps and path&rdquo; (only when the viewer may see the owner&rsquo;s gaps and both aim at the
-          role the owner shows) and mutual connections (only people both know). Then with nothing in common: no gaps shown and no mutual connections.
+          The strip of shared counts, then interests both list, skills, &ldquo;Gaps and path&rdquo; (only when the viewer may see the owner&rsquo;s gaps
+          and both aim at the role the owner shows) and mutual connections (only people both know). Then with nothing in common: no gaps shown and no
+          mutual connections.
         </p>
         <ProfileConnect personId="ex-am" name="Arjun Mehta" initial="connected" inCommon={exampleInCommon} />
         <ProfileConnect personId="ex-ak" name="Aditi Kulkarni" initial="none" inCommon={{ skills: [], role: null, path: null, mutual: [] }} />

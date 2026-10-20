@@ -314,7 +314,7 @@ export async function suggestResource(userId: string, raw: unknown, deps: Deps =
   });
 }
 
-/** For Download your data (export version 27): the person's Library marks, the links they reported and the links they suggested. */
+/** For Download your data (export version 28): the person's Library marks, the links they reported and the links they suggested. */
 export async function exportLibrary(
   userId: string,
   db: Db = getDb(),

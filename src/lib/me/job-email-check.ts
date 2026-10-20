@@ -13,6 +13,8 @@ import { jobEmailCheckReview } from "@/lib/schemas/admin";
 import { joinFinish, joinStart } from "@/lib/schemas/corporate";
 import { currentJobs } from "@/lib/profile/employer";
 import type { Profile } from "@/lib/schemas";
+import { addedAsResumeRole } from "./build";
+import { addedRolesOf } from "./edit-store";
 import { baseDomain, domainAndParents, jobKeyOf, jobToCheck, onVerifiedCompanyDomain, type JobCheckRow, type JobKey } from "./job-check-rules";
 
 /*
@@ -31,7 +33,7 @@ export type JobCheckError = "not_set_up" | "closed" | "no_job" | "invalid" | "li
 export const JOB_CHECK_ERROR_TEXT: Record<JobCheckError, string> = {
   not_set_up: "Work-email checks open soon.",
   closed: "Work-email checks open soon.",
-  no_job: "Add your current job to your resume first. Freelance and self-employed work doesn't need a check.",
+  no_job: "Add your current job to your resume or on your profile first. Freelance and self-employed work doesn't need a check.",
   invalid: "Check your work email. It looks incomplete.",
   limit: "You've asked for a lot of codes. Try again in an hour.",
   not_sent: NOT_SENT_TEXT,
@@ -45,12 +47,14 @@ const fail = (error: JobCheckError, message?: string) => ({ ok: false as const, 
 /** Whether this deployment can send a code for the check: off in production until the email sender is set up. */
 export const jobCheckOpen = (deps: CorporateDeps = {}): boolean => workEmailReady(deps.env ?? process.env) && (deps.delivery ?? codeDelivery(deps.env)) !== "off";
 
-/** The job a work email checks for this person now, from their current confirmed profile. */
+/**
+ * The job a work email checks for this person now, from their current confirmed profile and the roles they added on Me
+ * (docs/plans/me-editing-plan.md choice 7): an added current role is checked as a resume one is.
+ */
 async function checkedJob(userId: string, db: Db): Promise<JobKey | null> {
-  const analysis = await currentAnalysis(userId, db);
-  if (!analysis) return null;
-  const resume = await getResumeForOwner(analysis.resumeId, { userId }, db);
-  return jobToCheck(resume?.profile ?? null);
+  const [analysis, added] = await Promise.all([currentAnalysis(userId, db), addedRolesOf(userId, db)]);
+  const resume = analysis ? await getResumeForOwner(analysis.resumeId, { userId }, db) : null;
+  return jobToCheck({ roles: [...(resume?.profile?.roles ?? []), ...added.map(addedAsResumeRole)] });
 }
 
 /** "Send code": checks the address (free mail is refused) and sends a code to it. */

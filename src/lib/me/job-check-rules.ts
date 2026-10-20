@@ -43,10 +43,11 @@ export const jobKeyOf = (role: Pick<Role, "employer" | "start">): JobKey => ({
 });
 
 /**
- * The job a work email checks: the current job on the confirmed profile (the open one that started last, else the
- * latest), unless it is self-declared or has no company name to compare. Older jobs are never checked.
+ * The job a work email checks: the current job on the confirmed profile and the roles added on Me (the open one that
+ * started last, else the latest), unless it is self-declared or has no company name to compare. Older jobs are never
+ * checked.
  */
-export function jobToCheck(profile: Profile | null): JobKey | null {
+export function jobToCheck(profile: Pick<Profile, "roles"> | null): JobKey | null {
   if (!profile) return null;
   const [job] = [...currentJobs(profile)].sort((a, b) => startMonthOf(b.start).localeCompare(startMonthOf(a.start)));
   if (!job || isSelfDeclared(job.employer)) return null;

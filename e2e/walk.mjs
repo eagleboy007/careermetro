@@ -927,7 +927,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 27 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 28 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1251,7 +1251,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1325,6 +1325,165 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await q.goto(BASE + `/u/${handle}-nobody`);
   await q.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 10000 });
   await other.close();
+});
+// Me editing (docs/plans/me-editing-plan.md, v44 gap item 23). On /me the walk adds a role, an education row, a story (seen
+// in its Board column, then in the List) and two interests; edits one of each; checks View as others (the story and the
+// interests show, no Edit, Delete or remove); then deletes one of each. Each Save says "Saved." and Cancel puts focus
+// back on the control that opened the form. axe passes in light and dark, and /me fits a phone.
+await step("me editing: add, edit and delete a role, education, a story and interests; View as others shows them", async () => {
+  await p.goto(BASE + "/me");
+  await settled();
+  const main = p.locator("main").first();
+  await main.getByText("Write your first story: a time at work, college, an internship or volunteering. Keep each part short.").waitFor({ timeout: 10000 });
+  // The job search rail's "Show my pitstop on the map · soon" is a separate item (job-search plan) and stays.
+  if (await main.getByText(/· soon/).filter({ hasNotText: "Show my pitstop on the map" }).count()) throw new Error("Me still says soon");
+  // The toast stays in the page at opacity 0 until it clears, so wait for it to go before the next save can look for it.
+  const saved = async () => {
+    const toast = p.getByText("Saved.", { exact: true }).first();
+    await toast.waitFor({ timeout: 15000 });
+    await toast.waitFor({ state: "detached", timeout: 10000 });
+  };
+  // A story title is in its card's summary, and again (screen-reader only) in its Edit and Delete buttons.
+  const card = (scope) => scope.locator("summary").getByText(title, { exact: true });
+  const focused = (name) => p.waitForFunction((n) => document.activeElement?.textContent?.trim() === n, name, { timeout: 5000 });
+
+  // Cancel puts focus back on "+ Add role".
+  await main.getByRole("button", { name: "+ Add role" }).click();
+  await main.getByLabel("Job title", { exact: true }).waitFor();
+  await main.getByRole("button", { name: "Cancel", exact: true }).click();
+  await focused("+ Add role");
+  // A role: refused without a start, then saved.
+  await main.getByRole("button", { name: "+ Add role" }).click();
+  await main.getByLabel("Job title", { exact: true }).fill("Volunteer data lead");
+  await main.getByLabel("Company", { exact: true }).fill("Pune Reads Library Trust");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await main.getByText("Pick a month and year.").first().waitFor({ timeout: 10000 });
+  await main.getByLabel("Started, month").selectOption("06");
+  await main.getByLabel("Started, year").selectOption("2023");
+  await main.getByLabel("Ended, month").selectOption("12");
+  await main.getByLabel("Ended, year").selectOption("2023");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Edit Volunteer data lead" }).waitFor({ timeout: 15000 });
+  await main.getByText("Jun 2023 to Dec 2023", { exact: false }).waitFor();
+
+  // Education.
+  const education = main.getByRole("region", { name: "Education" });
+  await education.getByRole("button", { name: "+ Add", exact: true }).click();
+  await education.getByLabel("Qualification", { exact: true }).fill("Data Analytics with Python");
+  await education.getByLabel("Institution", { exact: true }).fill("NPTEL");
+  await education.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).waitFor({ timeout: 15000 });
+
+  // A story, refused with no box, then saved; it shows in its Board column, then in the List.
+  const title = "Cut missed phishing alerts";
+  await main.getByRole("button", { name: "+ Add story" }).click();
+  await main.getByLabel("Title", { exact: true }).fill(title);
+  await main.getByLabel("Where and when", { exact: true }).fill("Konkan Co-operative Bank · 2025");
+  await main.getByLabel("Situation", { exact: true }).fill("Phishing alerts piled up and the team missed some.");
+  await main.getByLabel("Task", { exact: true }).fill("I owned the morning triage of the alert queue.");
+  await main.getByLabel("Action", { exact: true }).fill("I sorted the alerts by sender domain and wrote a short checklist for the team to follow.");
+  await main.getByLabel("Result", { exact: true }).fill("Missed alerts fell from 9 a week to 1.");
+  await main.getByText("38 of 400").waitFor();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await main.getByText("Pick at least one box.").waitFor({ timeout: 10000 });
+  await main.getByRole("button", { name: "Problem solving", exact: true }).click();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  const column = main.getByRole("region", { name: "Problem solving" });
+  await card(column).waitFor({ timeout: 15000 });
+  await main.getByText("1 story · 5 boxes empty").waitFor();
+  await main.getByRole("button", { name: "List", exact: true }).click();
+  await main.getByRole("button", { name: "List", pressed: true }).waitFor();
+  await card(column).click();
+  // The SMART check: one box and no goal, so R is missing and its hint shows; never a score.
+  await column.getByLabel("SMART check: S, M, A, T met").waitFor();
+  await column.getByText("Link it to a goal, or pick another box it answers.").waitFor();
+
+  // Two interests; the same one again is refused.
+  await main.getByLabel("Add an interest").fill("Photography");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Remove Photography" }).waitFor({ timeout: 15000 });
+  await main.getByLabel("Add an interest").fill("Cricket stats");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ timeout: 15000 });
+  await main.getByLabel("Add an interest").fill(" photography ");
+  await main.getByRole("button", { name: "Add", exact: true }).click();
+  await main.getByText("That one is already on your list.").waitFor({ timeout: 10000 });
+  await main.getByLabel("Add an interest").fill("");
+
+  // Edit one of each.
+  await main.getByRole("button", { name: "Edit Volunteer data lead" }).click();
+  await main.getByLabel("Job title", { exact: true }).fill("Volunteer data analyst");
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await main.getByRole("button", { name: "Edit Volunteer data analyst" }).waitFor({ timeout: 15000 });
+  await focused("Edit Volunteer data analyst");
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).click();
+  await education.getByLabel("Year", { exact: true }).fill("2025");
+  await education.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await education.getByText("NPTEL · 2025").waitFor({ timeout: 15000 });
+  if (!(await column.getByRole("button", { name: `Edit ${title}` }).isVisible())) await card(column).click();
+  await column.getByRole("button", { name: `Edit ${title}` }).click();
+  await main.getByLabel("Result", { exact: true }).fill("Missed alerts fell from 9 a week to 1 in six weeks.");
+  await main.getByRole("button", { name: "Learning", exact: true }).click();
+  await main.getByRole("button", { name: "Save", exact: true }).click();
+  await saved();
+  await card(main.getByRole("region", { name: "Learning" })).waitFor({ timeout: 15000 });
+  await shot("me-editing");
+  await a11y("me-editing");
+
+  // View as others: the role, the course, the story and the interests, and no editing.
+  await main.getByRole("button", { name: "View as others" }).click();
+  await main.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
+  for (const text of ["Volunteer data analyst", "Data Analytics with Python", "Photography", "Cricket stats"]) await main.getByText(text, { exact: true }).first().waitFor();
+  await card(main.getByRole("region", { name: "Problem solving" })).waitFor();
+  for (const name of [/^Edit /, /^Delete /, /^Remove /, "+ Add role", "+ Add story"]) if (await main.getByRole("button", { name }).count()) throw new Error(`View as others offers ${name}`);
+  if (await main.getByText("Added by you").count()) throw new Error("View as others shows Added by you");
+  await main.getByRole("button", { name: "Back to editing" }).click();
+
+  // Delete one of each: Keep first, then Delete.
+  const storyColumn = main.getByRole("region", { name: "Problem solving" });
+  if (!(await storyColumn.getByRole("button", { name: `Delete ${title}` }).isVisible())) await card(storyColumn).click();
+  await storyColumn.getByRole("button", { name: `Delete ${title}` }).click();
+  await main.getByRole("group", { name: "Delete this story?" }).waitFor();
+  await main.getByRole("button", { name: "Keep", exact: true }).click();
+  await focused(`Delete ${title}`);
+  await storyColumn.getByRole("button", { name: `Delete ${title}` }).click();
+  await main.getByRole("group", { name: "Delete this story?" }).getByRole("button", { name: "Delete", exact: true }).click();
+  await main.getByText("Write your first story", { exact: false }).waitFor({ timeout: 15000 });
+  await main.getByRole("button", { name: "Delete Volunteer data analyst" }).click();
+  await main.getByRole("group", { name: "Delete this role?" }).getByRole("button", { name: "Delete", exact: true }).click();
+  await main.getByRole("button", { name: "Edit Volunteer data analyst" }).waitFor({ state: "detached", timeout: 15000 });
+  await education.getByRole("button", { name: "Delete Data Analytics with Python" }).click();
+  await main.getByRole("group", { name: "Delete this?", exact: true }).getByRole("button", { name: "Delete", exact: true }).click();
+  await education.getByRole("button", { name: "Edit Data Analytics with Python" }).waitFor({ state: "detached", timeout: 15000 });
+  await main.getByRole("button", { name: "Remove Cricket stats" }).click();
+  await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ state: "detached", timeout: 15000 });
+
+  // The download has what is left: one interest.
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+  if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
+
+  await p.emulateMedia({ colorScheme: "dark" });
+  await p.reload();
+  await settled();
+  await a11y("me-editing-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+  await p.setViewportSize({ width: 360, height: 780 });
+  await p.reload();
+  await settled();
+  await p.locator("main").first().getByRole("button", { name: "+ Add story" }).click();
+  await a11y("me-editing-phone");
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+  await shot("me-editing-phone");
+  await p.setViewportSize({ width: 1280, height: 900 });
+  if (overflow) throw new Error("/me scrolls sideways at 360px with the story form open");
 });
 await step("delete account, then restore it by signing in again", async () => {
   await p.goto(BASE + "/settings");
@@ -1602,7 +1761,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1700,7 +1859,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -1783,7 +1942,7 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
 
