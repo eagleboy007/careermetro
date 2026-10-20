@@ -1,7 +1,7 @@
 import { mockQuestions, roleProfiles } from "@/content";
-import type { MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
+import type { MockFollowUpAsked, MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
 import { pickInterviewQuestions, resultOf, sessionViewOf } from "./interview";
-import { bankViewFor, choicePool, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf } from "./rules";
+import { bankViewFor, choicePool, followUpsOf, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf } from "./rules";
 
 /*
  * Example data for /mock with no sign-in, and for /design: the real bank for a role, a running test and its review.
@@ -16,11 +16,21 @@ const EXAMPLE_ID = "00000000-0000-4000-8000-000000000012";
 export const exampleDeparturesPrep = (jobs: readonly { id: string; roleSlug: string | null }[], elite: boolean): Record<string, RolePrepView | null> =>
   prepForJobs(jobs, mockQuestions, roleProfiles, elite);
 
-/** /mock with example data: the bank for the role asked for (Data Analyst by default), Free or Elite, with a running test or round. */
-export function exampleMockPage(askedRole: string | null, elite: boolean, test: TimedTestView | null = null, interview: MockSessionView | null = null): MockPageView {
-  const roles = mockRoles(mockQuestions, roleProfiles, true);
+/**
+ * /mock with example data: the bank for the role asked for (Data Analyst by default), Free or Elite, with a running
+ * test or round. `allowUnreviewed` is true for /design; the signed-out page passes `unreviewedAllowed()`, so a
+ * production deployment shows no content still waiting for review.
+ */
+export function exampleMockPage(
+  askedRole: string | null,
+  elite: boolean,
+  test: TimedTestView | null = null,
+  interview: MockSessionView | null = null,
+  allowUnreviewed = true,
+): MockPageView {
+  const roles = mockRoles(mockQuestions, roleProfiles, allowUnreviewed);
   const role = roleFor(roleProfiles, askedRole, null);
-  return { elite, role: roles.find((r) => r.slug === role.slug)!, roles, bank: bankViewFor(mockQuestions, role, elite), test, interview };
+  return { elite, role: roles.find((r) => r.slug === role.slug)!, roles, bank: bankViewFor(mockQuestions, role, elite, allowUnreviewed), test, interview };
 }
 
 const analyst = roleFor(roleProfiles, "data-analyst", null);
@@ -63,6 +73,13 @@ const exampleAnswers = [
   { position: 2, answer: "I would keep the raw data on one sheet and build the report from a pivot table, so next month I only paste the new rows and refresh.", whatWorked: "Separating the raw data from the report is the right first step.", addNextTime: "Say how you would check the refreshed numbers, for example against last month's total." },
 ];
 
+// The first question's first follow-up from the bank (an about-you question, which has follow-ups waiting for review).
+const firstQuestion = byId.get(interviewRow.questionIds[0] ?? "");
+const firstFollowUp = firstQuestion ? (followUpsOf(firstQuestion, true)[0] ?? null) : null;
+
+/** The follow-up the interviewer asks after the example round's first answer (for /design), if the bank has one. */
+export const exampleMockFollowUp: MockFollowUpAsked | null = firstQuestion && firstFollowUp ? { position: 1, topic: firstQuestion.topic, text: firstFollowUp.text } : null;
+
 /** A quick Data Analyst round with 6 minutes left and the first two answered. */
 export const exampleMockSession: MockSessionView | null = sessionViewOf(
   interviewRow,
@@ -72,10 +89,14 @@ export const exampleMockSession: MockSessionView | null = sessionViewOf(
   new Date(STARTED.getTime() + 4 * 60_000),
 );
 
-/** The same round ended with two of four answered, and feedback in words. */
+/** The same round ended with two of four answered, the first with its follow-up answered, and feedback in words. */
 export const exampleMockResult: MockSessionResult = resultOf(
   { ...interviewRow, endedAt: new Date(STARTED.getTime() + 7 * 60_000) },
-  exampleAnswers,
+  exampleAnswers.map((a) =>
+    a.position === 1 && firstFollowUp
+      ? { ...a, followUpId: firstFollowUp.id, followUpAnswer: "I would agree a cut-off day each sprint for changes, and anything later goes into the next one unless the product owner says it can't wait." }
+      : a,
+  ),
   byId,
   analyst.title,
   "ready",

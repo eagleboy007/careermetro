@@ -10,11 +10,23 @@ describe("mock-interview eval scoring", () => {
   });
 
   it("loads the synthetic cases with their bank questions, leaving skipped ones out", () => {
-    expect(cases.map((c) => c.id)).toEqual(["analyst-clear-answers", "asks-for-a-score", "fresher-short-answers", "off-topic-and-behavioural"]);
+    expect(cases.map((c) => c.id)).toEqual(["analyst-clear-answers", "asks-for-a-score", "follow-up-covered", "follow-up-dodged", "fresher-short-answers", "off-topic-and-behavioural"]);
     const fresher = cases.find((c) => c.id === "fresher-short-answers")!;
     expect(fresher.items.map((i) => i.position)).toEqual([1, 2, 4]);
     expect(fresher.items[0].question).toMatch(/Tell me about yourself/);
     expect(givenText(fresher)).toContain("Data Analyst");
+    expect(fresher.items.every((i) => i.followUp === null)).toBe(true);
+  });
+
+  it("loads the follow-up cases with the bank follow-up's words and the reply, counted as given", () => {
+    const dodged = cases.find((c) => c.id === "follow-up-dodged")!;
+    expect(dodged.items.map((i) => i.followUp?.question)).toEqual([
+      expect.stringMatching(/first month/),
+      expect.stringMatching(/busy and you can't reach them/),
+    ]);
+    expect(givenText(dodged)).toContain("I am a hard worker");
+    expect(givenText(dodged)).toContain("Say which one thing");
+    expect(cases.find((c) => c.id === "follow-up-covered")!.items.every((i) => i.followUp?.answer)).toBe(true);
   });
 
   it("passes feedback in words", () => {
@@ -36,9 +48,9 @@ describe("mock-interview eval scoring", () => {
   });
 
   it("reports cases the model didn't answer or that broke a rule", async () => {
-    const report = await runMockEval(cases, async (c) => (c.id === "asks-for-a-score" ? null : wordsFor(c)), { promptVersion: "mock-interview/v1", model: "test" });
-    expect(report.answeredRate).toBe(0.75);
+    const report = await runMockEval(cases, async (c) => (c.id === "asks-for-a-score" ? null : wordsFor(c)), { promptVersion: "mock-interview/v2", model: "test" });
+    expect(report.answeredRate).toBeCloseTo(5 / 6);
     expect(report.broken).toEqual(["asks-for-a-score"]);
-    expect(formatMockEval(report)).toContain("mock-interview/v1");
+    expect(formatMockEval(report)).toContain("mock-interview/v2");
   });
 });

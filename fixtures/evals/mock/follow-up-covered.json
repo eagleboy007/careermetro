@@ -1,0 +1,23 @@
+{
+  "id": "follow-up-covered",
+  "note": "Synthetic. A business analyst answers two questions and replies to the bank follow-up after each in a way that covers its point; the feedback should cover each answer and its reply together, in words.",
+  "roleSlug": "business-analyst",
+  "answers": [
+    {
+      "questionId": "stakeholder-management-1",
+      "answer": "I would write down each change with who asked for it, show what it pushes out of the sprint, and agree with the stakeholder which change waits for the next one.",
+      "followUp": {
+        "id": "stakeholder-management-1-fu-1",
+        "answer": "Then I would ask what it replaces. The product owner decides what drops out of this sprint, and I would note the swap in the sprint notes so the team sees why."
+      }
+    },
+    {
+      "questionId": "communication-3",
+      "answer": "I would tell my manager what is late, why, the new date I can keep and what would help me finish sooner, in a short message.",
+      "followUp": {
+        "id": "communication-3-fu-1",
+        "answer": "The same day I see the risk, not the day before the deadline, so my manager still has time to move people or change the plan."
+      }
+    }
+  ]
+}

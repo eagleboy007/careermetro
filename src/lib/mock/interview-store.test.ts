@@ -2,13 +2,13 @@ import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { skills } from "@/content";
+import { mockQuestions, skills } from "@/content";
 import * as schema from "@/db/schema";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { setElite } from "@/lib/elite/store";
-import { MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY } from "@/lib/schemas";
+import { MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, type MockQuestion } from "@/lib/schemas";
 import { MOCK_MODEL, type MockFeedbackClient } from "./interview-feedback";
-import { clearOldMockAnswers, endMockInterview, runningInterview, saveMockAnswer, startMockInterview } from "./interview-store";
+import { clearOldMockAnswers, endMockInterview, runningInterview, saveFollowUpAnswer, saveMockAnswer, startMockInterview } from "./interview-store";
 import { mockPageFor } from "./store";
 
 vi.mock("server-only", () => ({}));
@@ -20,6 +20,21 @@ const sqlClient = url ? postgres(url, { max: 4, onnotice: () => {} }) : null;
 const db = sqlClient ? drizzle(sqlClient, { schema }) : null;
 const DAY = 86_400_000;
 const ANSWER = "Meera would check the slow query plan first, then add an index on the join column and test again.";
+// 20 words or more, so it may get a follow-up; ANSWER has 19, so it never does.
+const LONG = "Meera would check the slow query plan first, then add an index on the join column, test it again and tell the team what changed.";
+// Every open question with two follow-ups not yet reviewed, so a round always has one to ask where unreviewed ones are allowed.
+const FU_BANK: MockQuestion[] = mockQuestions.map((q) =>
+  q.kind === "open"
+    ? {
+        ...q,
+        followUps: [
+          { id: `${q.id}-fu-1`, text: `What would you check first on ${q.id}?`, skipIf: ["check first"] },
+          { id: `${q.id}-fu-2`, text: `What would you do next on ${q.id}?`, skipIf: [] },
+        ],
+        followUpsReviewed: false,
+      }
+    : q,
+);
 
 function client(reply: "words" | "not json" | Error = "words") {
   const create = vi.fn(async (body: { messages: { content: string }[] }) => {
@@ -129,7 +144,7 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     expect(ended.endedAt?.toISOString()).toBe(at(300).toISOString());
     expect(ended.feedback).toEqual({ summary: "You answer in order and in plain words." });
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, ended.aiCallId!));
-    expect(call).toMatchObject({ purpose: "mock-interview", promptVersion: "mock-interview/v1", status: "done", ok: true, inputRefs: { mockSessionId: session.id, roleSlug: "data-analyst" } });
+    expect(call).toMatchObject({ purpose: "mock-interview", promptVersion: "mock-interview/v2", status: "done", ok: true, inputRefs: { mockSessionId: session.id, roleSlug: "data-analyst" } });
     expect((await answersOf(session.id)).map((a) => [a.position, a.whatWorked])).toEqual(
       expect.arrayContaining([
         [1, "Clear start on 1."],
@@ -146,6 +161,89 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     expect(again).toEqual(out);
     expect(create).toHaveBeenCalledTimes(1);
     expect(await runningInterview(me, { db: db!, now: at(303) })).toBeNull();
+  });
+
+  it("asks a follow-up picked by code after a long answer, once a position and 2 a Quick round, and takes the reply", async () => {
+    const me = await person();
+    const t0 = new Date();
+    const at = (s: number) => new Date(t0.getTime() + s * 1000);
+    const deps = (s: number) => ({ db: db!, now: at(s), bank: FU_BANK, allowUnreviewed: true });
+    const started = await startMockInterview(me, { roleSlug: "data-analyst", length: "quick", focus: "mix" }, deps(0));
+    if (!started.ok) throw new Error(started.error);
+    const session = started.session;
+    const [q1, q2] = session.questions;
+
+    // A long answer gets the question's first follow-up; saving it again keeps that one and asks nothing new.
+    expect(await saveMockAnswer(me, { sessionId: session.id, position: 1, answer: LONG }, deps(30))).toEqual({
+      ok: true,
+      followUp: { position: 1, topic: q1.topic, text: `What would you check first on ${q1.id}?` },
+    });
+    expect(await saveMockAnswer(me, { sessionId: session.id, position: 1, answer: `${LONG} Edited.` }, deps(40))).toEqual({ ok: true });
+    expect((await answersOf(session.id)).find((a) => a.position === 1)).toMatchObject({ followUpId: `${q1.id}-fu-1`, followUpAnswer: null });
+    expect(await saveFollowUpAnswer(me, { sessionId: session.id, position: 1, answer: "  Meera would read the plan for a full scan.  " }, deps(60))).toEqual({ ok: true });
+    // No follow-up was asked at position 2 yet, and someone else's session is not found.
+    expect(await saveFollowUpAnswer(me, { sessionId: session.id, position: 2, answer: "Not asked" }, deps(61))).toEqual({ ok: false, error: "invalid" });
+    const other = await person();
+    expect(await saveFollowUpAnswer(other, { sessionId: session.id, position: 1, answer: "Not mine" }, deps(62))).toEqual({ ok: false, error: "not_found" });
+    expect(await saveFollowUpAnswer(me, { sessionId: session.id, position: 1, answer: "   " }, deps(62))).toEqual({ ok: false, error: "invalid" });
+
+    // An answer that already covers the first follow-up's point gets the second; then the round's share is used.
+    expect(await saveMockAnswer(me, { sessionId: session.id, position: 2, answer: `${LONG} I would check first the plan.` }, deps(90))).toEqual({
+      ok: true,
+      followUp: { position: 2, topic: q2.topic, text: `What would you do next on ${q2.id}?` },
+    });
+    expect(await saveMockAnswer(me, { sessionId: session.id, position: 3, answer: LONG }, deps(120))).toEqual({ ok: true });
+    expect(await saveMockAnswer(me, { sessionId: session.id, position: 4, answer: "Too short for one." }, deps(130))).toEqual({ ok: true });
+    const rows = await answersOf(session.id);
+    expect(rows.filter((a) => a.followUpId !== null).map((a) => a.position).sort()).toEqual([1, 2]);
+
+    // Ending sends the open follow-up's reply with it, and one call covers the answers and the replies.
+    const { client: c, create } = client();
+    const out = await endMockInterview(me, { sessionId: session.id, answers: [], followUps: [{ position: 2, answer: "Meera would add the index." }] }, { ...deps(200), client: c });
+    if (!out.ok) throw new Error(out.error);
+    expect(create).toHaveBeenCalledTimes(1);
+    const sent = create.mock.calls[0][0].messages[0].content;
+    expect(sent).toContain('<follow_up position="1">\nMeera would read the plan for a full scan.\n</follow_up>');
+    expect(sent).toContain('<follow_up position="2">\nMeera would add the index.\n</follow_up>');
+    expect(sent.match(/<follow_up position=/g)).toHaveLength(2);
+    expect(out.result).toMatchObject({ feedback: "ready", answered: 4, total: 4 });
+    expect(out.result.items[0].followUp).toEqual({ question: `What would you check first on ${q1.id}?`, answer: "Meera would read the plan for a full scan." });
+    expect(out.result.items[1].followUp).toEqual({ question: `What would you do next on ${q2.id}?`, answer: "Meera would add the index." });
+    expect(out.result.items[2].followUp).toBeNull();
+    const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, (await sessionOf(session.id)).aiCallId!));
+    expect(call).toMatchObject({ purpose: "mock-interview", promptVersion: "mock-interview/v2", ok: true });
+    expect(JSON.stringify(call)).not.toContain("Meera");
+    expect(lines.join("\n")).not.toMatch(/Meera|full scan/);
+
+    // Closed: no more replies.
+    expect(await saveFollowUpAnswer(me, { sessionId: session.id, position: 1, answer: "Late" }, deps(201))).toEqual({ ok: false, error: "over" });
+
+    // In Download your data with the follow-up and its reply, and cleared with the answers after 30 days.
+    const data = (await exportAccountData(me, db!))!;
+    expect(data.mockSessions[0].answers.find((a) => a.position === 1)?.followUp).toEqual({ question: `What would you check first on ${q1.id}?`, answer: "Meera would read the plan for a full scan." });
+    expect(data.mockSessions[0].answers.find((a) => a.position === 3)?.followUp).toBeNull();
+    expect(await clearOldMockAnswers(db!, new Date(t0.getTime() + 31 * DAY))).toBeGreaterThanOrEqual(4);
+    expect(await answersOf(session.id)).toEqual([]);
+  });
+
+  it("asks no follow-up that isn't reviewed where unreviewed ones aren't allowed, and refuses a reply after the grace", async () => {
+    const me = await person();
+    const t0 = new Date();
+    const at = (s: number) => new Date(t0.getTime() + s * 1000);
+    const prod = await startMockInterview(me, { roleSlug: "data-analyst", length: "quick", focus: "mix" }, { db: db!, now: t0, bank: FU_BANK, allowUnreviewed: false });
+    if (!prod.ok) throw new Error(prod.error);
+    expect(await saveMockAnswer(me, { sessionId: prod.session.id, position: 1, answer: LONG }, { db: db!, now: at(30), bank: FU_BANK, allowUnreviewed: false })).toEqual({ ok: true });
+    expect((await answersOf(prod.session.id))[0].followUpId).toBeNull();
+
+    const preview = await startMockInterview(me, { roleSlug: "data-analyst", length: "quick", focus: "mix" }, { db: db!, now: t0, bank: FU_BANK, allowUnreviewed: true });
+    if (!preview.ok) throw new Error(preview.error);
+    const asked = await saveMockAnswer(me, { sessionId: preview.session.id, position: 1, answer: LONG }, { db: db!, now: at(30), bank: FU_BANK, allowUnreviewed: true });
+    expect(asked).toMatchObject({ ok: true, followUp: { position: 1 } });
+    expect(await saveFollowUpAnswer(me, { sessionId: preview.session.id, position: 1, answer: "In time" }, { db: db!, now: at(650) })).toEqual({ ok: true });
+    // Clearing the answer takes its follow-up with it.
+    expect(await saveMockAnswer(me, { sessionId: preview.session.id, position: 1, answer: "" }, { db: db!, now: at(655), bank: FU_BANK, allowUnreviewed: true })).toEqual({ ok: true });
+    expect(await answersOf(preview.session.id)).toEqual([]);
+    expect(await saveFollowUpAnswer(me, { sessionId: preview.session.id, position: 1, answer: "Too late" }, { db: db!, now: at(661) })).toEqual({ ok: false, error: "over" });
   });
 
   it("refuses answers after the time and its minute's grace, and ends a late round at its deadline", async () => {
@@ -227,11 +325,11 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     const { client: c } = client();
     await endMockInterview(me, { sessionId: session.id, answers: [{ position: 1, answer: ANSWER }] }, { db: db!, now: t0, client: c });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(29);
-    expect(data.exportVersion).toBe(29);
+    expect(EXPORT_VERSION).toBe(30);
+    expect(data.exportVersion).toBe(30);
     expect(data.mockSessions).toHaveLength(1);
     expect(data.mockSessions[0]).toMatchObject({ roleSlug: "data-analyst", length: "quick", focus: "mix", summary: "You answer in order and in plain words." });
-    expect(data.mockSessions[0].answers).toEqual([{ position: 1, answer: ANSWER, whatWorked: "Clear start on 1.", addNextTime: "Add one example." }]);
+    expect(data.mockSessions[0].answers).toEqual([{ position: 1, answer: ANSWER, whatWorked: "Clear start on 1.", addNextTime: "Add one example.", followUp: null }]);
 
     expect(await clearOldMockAnswers(db!, new Date(t0.getTime() + 29 * DAY))).toBeGreaterThanOrEqual(0);
     expect(await answersOf(session.id)).toHaveLength(1);

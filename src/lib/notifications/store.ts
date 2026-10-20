@@ -198,7 +198,7 @@ export async function openNotifications(userId: string, raw: unknown, deps: Deps
 }
 
 /**
- * Download your data (version 29): each notification's kind and dates, with the company and job for the ones about an
+ * Download your data (from version 29): each notification's kind and dates, with the company and job for the ones about an
  * application or interview. Other people's names are left out.
  */
 export async function exportNotifications(userId: string, db: Pick<Db, "select"> = getDb()): Promise<NotificationExport[]> {

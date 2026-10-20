@@ -1,7 +1,24 @@
-import type { MockFeedbackState, MockFocus, MockInterviewError, MockInterviewFeedback, MockLength, MockQuestion, MockSessionResult, MockSessionView } from "@/lib/schemas";
-import { ELITE_NEEDED_MESSAGE, MOCK_LENGTH_MINUTES, MOCK_LENGTH_QUESTIONS, MOCK_SESSIONS_PER_DAY } from "@/lib/schemas/constants";
+import type {
+  MockFeedbackState,
+  MockFocus,
+  MockFollowUp,
+  MockInterviewError,
+  MockInterviewFeedback,
+  MockLength,
+  MockQuestion,
+  MockSessionResult,
+  MockSessionView,
+} from "@/lib/schemas";
+import {
+  ELITE_NEEDED_MESSAGE,
+  MOCK_FOLLOW_UP_MIN_WORDS,
+  MOCK_FOLLOW_UPS_PER_ROUND,
+  MOCK_LENGTH_MINUTES,
+  MOCK_LENGTH_QUESTIONS,
+  MOCK_SESSIONS_PER_DAY,
+} from "@/lib/schemas/constants";
 import { countWords } from "@/lib/practice/words";
-import { hash32, type MockRoleProfile } from "./rules";
+import { ABOUT_SKILLS, followUpsOf, hash32, type MockRoleProfile } from "./rules";
 
 /*
  * Mock interview rules (FR-50 part 3, handoff 12l), apart from the database so they can be tested on their own. The
@@ -11,8 +28,7 @@ import { hash32, type MockRoleProfile } from "./rules";
 
 type Open = Extract<MockQuestion, { kind: "open" }>;
 
-/** Skills whose questions are about the person rather than a tool: they fit every role, so "About you" uses them all. */
-export const ABOUT_SKILLS: ReadonlySet<string> = new Set(["communication", "stakeholder-management"]);
+export { ABOUT_SKILLS };
 
 const isOpen = (q: MockQuestion): q is Open => q.kind === "open";
 
@@ -89,6 +105,38 @@ export function pickInterviewQuestions(
   return out.length ? out : null;
 }
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** True when the answer has the word or phrase, in any case, as whole words: "log" is in "a log file", not in "login". */
+export function mentions(answer: string, phrase: string): boolean {
+  const words = phrase.trim().split(/\s+/).filter(Boolean).map(escapeRe);
+  if (!words.length) return false;
+  return new RegExp(`(?<![\\p{L}\\p{N}])${words.join("\\s+")}(?![\\p{L}\\p{N}])`, "iu").test(answer);
+}
+
+/**
+ * The follow-up to ask after this answer, picked by code, never by the model (docs/plans/mock-followups-plan.md):
+ * - none for an answer under 20 words, or once the round has asked its share (2 in a Quick round, 4 in a Full one);
+ * - else the question's first follow-up none of whose skip words or phrases is in the answer, since an answer that
+ *   already covers the point isn't asked it again;
+ * - else none.
+ * Only reviewed follow-ups, unless `allowUnreviewed` (local and preview). The same answer always gets the same one.
+ */
+export function pickFollowUp(
+  question: MockQuestion,
+  answer: string,
+  round: { used: number; length: MockLength; allowUnreviewed: boolean },
+): MockFollowUp | null {
+  if (countWords(answer) < MOCK_FOLLOW_UP_MIN_WORDS || round.used >= MOCK_FOLLOW_UPS_PER_ROUND[round.length]) return null;
+  return followUpsOf(question, round.allowUnreviewed).find((f) => !f.skipIf.some((w) => mentions(answer, w))) ?? null;
+}
+
+/** A follow-up's words by its id, from the question it was asked after; null when it has left the bank. */
+export function followUpText(question: MockQuestion | null | undefined, followUpId: string | null): string | null {
+  if (!followUpId || question?.kind !== "open") return null;
+  return question.followUps?.find((f) => f.id === followUpId)?.text ?? null;
+}
+
 /** How long a session runs, and when it ends: 10 minutes for Quick, 20 for Full. */
 export const minutesOf = (length: MockLength): number => MOCK_LENGTH_MINUTES[length];
 export const sessionDeadline = (startedAt: Date, length: MockLength): Date => new Date(startedAt.getTime() + minutesOf(length) * 60_000);
@@ -111,7 +159,7 @@ export const sessionEndOf = (s: Pick<SessionTimes, "startedAt" | "length">, now:
 export const bankHrefFor = (roleSlug: string): string => `/mock?tab=bank&role=${encodeURIComponent(roleSlug)}`;
 
 type SessionRow = { id: string; roleSlug: string; length: MockLength; focus: MockFocus; questionIds: string[]; startedAt: Date; endedAt: Date | null };
-type AnswerRow = { position: number; answer: string; whatWorked: string | null; addNextTime: string | null };
+type AnswerRow = { position: number; answer: string; whatWorked: string | null; addNextTime: string | null; followUpId?: string | null; followUpAnswer?: string | null };
 
 const openOf = (byId: ReadonlyMap<string, MockQuestion>, id: string): Open | null => {
   const q = byId.get(id);
@@ -149,6 +197,7 @@ export function resultOf(
     const q = openOf(byId, id);
     if (!q) return [];
     const a = saved.get(i + 1);
+    const asked = a ? followUpText(q, a.followUpId ?? null) : null;
     return [
       {
         position: i + 1,
@@ -158,6 +207,7 @@ export function resultOf(
         answer: a?.answer ?? null,
         whatWorked: a?.whatWorked ?? null,
         addNextTime: a?.addNextTime ?? null,
+        followUp: asked ? { question: asked, answer: a?.followUpAnswer ?? null } : null,
         bankHref: bankHrefFor(row.roleSlug),
       },
     ];

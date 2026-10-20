@@ -4,6 +4,7 @@ import {
   mockBankFile,
   mockBankItem,
   mockQuestion,
+  mockRole,
   mockTab,
   TIMED_TEST_MINUTES,
   TIMED_TEST_QUESTIONS,
@@ -46,6 +47,29 @@ describe("interview prep schemas (FR-50 part 2)", () => {
     expect(mockQuestion.safeParse({ ...choice, options: ["WHERE"], answer: 0 }).success).toBe(false);
   });
 
+  it("reads up to two follow-ups on an open question, with skip words on the first of two and whether they are reviewed", () => {
+    const up = (n: number, skipIf: string[] = ["index"]) => ({ id: `sql-1-fu-${n}`, text: `Which index would you add, and why? (${n})`, skipIf });
+    const withUps = { ...open, followUps: [up(1), up(2, [])], followUpsReviewed: false };
+    expect(mockQuestion.parse(withUps)).toEqual(withUps);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [up(1), up(2), up(3)] }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [{ ...up(1), text: "x".repeat(201) }] }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [{ ...up(1), skipIf: Array.from({ length: 9 }, (_, i) => `word${i}`) }] }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [{ ...up(1), score: 1 }] }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [up(1, []), up(2)] }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUpsReviewed: undefined }).success).toBe(false);
+    expect(mockQuestion.safeParse({ ...withUps, followUps: [up(1, [])] }).success).toBe(true);
+    expect(mockQuestion.safeParse({ ...choice, followUps: [up(1)] }).success).toBe(false);
+    expect(mockBankFile.safeParse({ note: "n", questions: [withUps, { ...withUps, id: "sql-2" }] }).success).toBe(false);
+    expect(mockBankFile.safeParse({ note: "n", questions: [withUps, { ...withUps, id: "sql-2", followUps: [{ ...up(1), id: "sql-2-fu-1" }] }] }).success).toBe(true);
+  });
+
+  it("says for each role whether its rounds ask follow-ups", () => {
+    const role = { slug: "data-analyst", title: "Data Analyst", hasTest: true, followUps: "draft" };
+    expect(mockRole.safeParse(role).success).toBe(true);
+    expect(mockRole.safeParse({ ...role, followUps: "maybe" }).success).toBe(false);
+    expect(mockRole.safeParse({ ...role, followUps: undefined }).success).toBe(false);
+  });
+
   it("refuses a bank with two questions of one id", () => {
     expect(mockBankFile.safeParse({ note: "n", questions: [open, choice] }).success).toBe(true);
     expect(mockBankFile.safeParse({ note: "n", questions: [open, open] }).success).toBe(false);
@@ -55,6 +79,9 @@ describe("interview prep schemas (FR-50 part 2)", () => {
     expect(mockBankItem.safeParse({ open: false, id: "sql-1", topic: "SQL", question: "Explain a join." }).success).toBe(true);
     expect(mockBankItem.safeParse({ open: false, id: "sql-1", topic: "SQL", question: "Explain a join.", strongCovers: "x y z" }).success).toBe(false);
     expect(mockBankItem.safeParse({ open: true, id: "sql-1", topic: "SQL", question: "Explain a join.", strongCovers: "Inner joins.", practiceHref: "/practice?q=sql-1" }).success).toBe(true);
+    const withUps = { open: true, id: "sql-1", topic: "SQL", question: "Explain a join.", strongCovers: "Inner joins.", followUps: ["Which join keeps every customer?"], practiceHref: "/practice?q=sql-1" };
+    expect(mockBankItem.safeParse(withUps).success).toBe(true);
+    expect(mockBankItem.safeParse({ open: false, id: "sql-1", topic: "SQL", question: "Explain a join.", followUps: ["Which join keeps every customer?"] }).success).toBe(false);
   });
 
   it("takes only a test of its own shape from the screen", () => {

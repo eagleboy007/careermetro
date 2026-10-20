@@ -3,10 +3,11 @@
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { MOCK_INTERVIEW_MESSAGES } from "@/lib/mock/interview";
-import { endMockInterview, saveMockAnswer, startMockInterview } from "@/lib/mock/interview-store";
+import { endMockInterview, saveFollowUpAnswer, saveMockAnswer, startMockInterview } from "@/lib/mock/interview-store";
 import { TIMED_TEST_MESSAGES } from "@/lib/mock/rules";
 import { finishTimedTest, pickTimedTest, startTimedTest } from "@/lib/mock/store";
 import type {
+  MockFollowUpAnswerResult,
   MockInterviewAnswerResult,
   MockInterviewEndResult,
   MockInterviewStartResult,
@@ -76,7 +77,10 @@ export async function startMockInterviewAction(roleSlug: unknown, length: unknow
   }
 }
 
-/** "Next": one answer saved as the person moves on. `over` tells the screen the time is up, so it ends the round. */
+/**
+ * "Next": one answer saved as the person moves on, and the follow-up the bank asks after it, if code picks one. `over`
+ * tells the screen the time is up, so it ends the round.
+ */
 export async function saveMockAnswerAction(sessionId: unknown, position: unknown, answer: unknown): Promise<MockInterviewAnswerResult> {
   const account = await currentAccount();
   if (!account) return { ok: false, message: SIGN_IN, over: false };
@@ -89,12 +93,25 @@ export async function saveMockAnswerAction(sessionId: unknown, position: unknown
   }
 }
 
-/** "End and get feedback", or the time running out, with any answers not saved yet. */
-export async function endMockInterviewAction(sessionId: unknown, answers: unknown): Promise<MockInterviewEndResult> {
+/** The reply to a follow-up, saved as the person moves on. Nothing typed is logged. */
+export async function saveFollowUpAnswerAction(sessionId: unknown, position: unknown, answer: unknown): Promise<MockFollowUpAnswerResult> {
+  const account = await currentAccount();
+  if (!account) return { ok: false, message: SIGN_IN, over: false };
+  try {
+    const out = await saveFollowUpAnswer(account.id, { sessionId, position, answer });
+    return out.ok ? out : { ok: false, message: MOCK_INTERVIEW_MESSAGES[out.error], over: out.error === "over" };
+  } catch (error) {
+    logEvent("error", "mock_follow_up_save_failed", errorFields(error));
+    return { ok: false, message: "That answer didn't save. It goes with the round when you end it.", over: false };
+  }
+}
+
+/** "End and get feedback", or the time running out, with any answers and follow-up replies not saved yet. */
+export async function endMockInterviewAction(sessionId: unknown, answers: unknown, followUps?: unknown): Promise<MockInterviewEndResult> {
   const account = await currentAccount();
   if (!account) return { ok: false, message: SIGN_IN };
   try {
-    const out = await endMockInterview(account.id, { sessionId, answers });
+    const out = await endMockInterview(account.id, { sessionId, answers, followUps });
     return out.ok ? out : { ok: false, message: MOCK_INTERVIEW_MESSAGES[out.error] };
   } catch (error) {
     logEvent("error", "mock_interview_end_failed", errorFields(error));

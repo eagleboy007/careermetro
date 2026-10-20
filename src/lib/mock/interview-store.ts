@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, inArray, isNull, lt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { mockAnswers, mockSessions } from "@/db/schema";
@@ -16,27 +16,39 @@ import {
   mockInterviewEndInput,
   mockInterviewStartInput,
   PRACTICE_KEEP_DAYS,
+  saveFollowUpAnswerInput,
   type MockFeedbackState,
+  type MockFollowUpAsked,
   type MockInterviewError,
   type MockInterviewFeedback,
+  type MockLength,
   type MockQuestion,
   type MockSessionResult,
   type MockSessionView,
 } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { pickInterviewQuestions, resultOf, sessionClosed, sessionEndOf, sessionRunning, sessionViewOf } from "./interview";
+import { followUpText, pickFollowUp, pickInterviewQuestions, resultOf, sessionClosed, sessionEndOf, sessionRunning, sessionViewOf } from "./interview";
 import { MOCK_MODEL, mockFeedbackFor, type MockFeedbackClient, type MockFeedbackItem } from "./interview-feedback";
-import type { MockRoleProfile } from "./rules";
+import { unreviewedAllowed, type MockRoleProfile } from "./rules";
 
 /*
  * The mock interview (FR-50 part 3, handoff 12l): sessions of bank questions picked by code, the person's answers, and
  * one model call for feedback in words when the session ends. Every read and write is scoped to the person's own user
  * id; every action checks Elite with `eliteOn`. Answers never reach a log, ai_calls or analytics: logs carry event names
- * and counts only, ai_calls ids only.
+ * and counts only, ai_calls ids only. Follow-ups come from the bank, picked by code when an answer is saved
+ * (docs/plans/mock-followups-plan.md); the person's reply to one is kept and cleared like an answer.
  */
 
 type Db = ReturnType<typeof getDb>;
-export type InterviewDeps = { db?: Db; now?: Date; bank?: readonly MockQuestion[]; roles?: readonly MockRoleProfile[]; client?: MockFeedbackClient };
+export type InterviewDeps = {
+  db?: Db;
+  now?: Date;
+  bank?: readonly MockQuestion[];
+  roles?: readonly MockRoleProfile[];
+  client?: MockFeedbackClient;
+  /** Ask follow-ups not yet reviewed: local and preview only (`unreviewedAllowed`). */
+  allowUnreviewed?: boolean;
+};
 
 export const MOCK_LIMITS = {
   /** Spend on mock interview feedback per UTC day, across everyone, apart from the other budgets. */
@@ -48,14 +60,17 @@ export const MOCK_LIMITS = {
     return Number.isFinite(usd) && usd >= 0 ? usd : 3;
   },
 };
-/** What a feedback call still running is assumed to cost when checking the budget. A typical one costs 3 to 8 cents. */
-const IN_FLIGHT_MOCK_USD = 0.12;
+/**
+ * What a feedback call still running is assumed to cost when checking the budget. A typical one costs 3 to 8 cents;
+ * follow-up replies make the input longer (prompts/mock-interview/v2).
+ */
+const IN_FLIGHT_MOCK_USD = 0.15;
 const DAY = 86_400_000;
 
-type Content = { bank: readonly MockQuestion[]; roles: readonly MockRoleProfile[]; byId: Map<string, MockQuestion> };
+type Content = { bank: readonly MockQuestion[]; roles: readonly MockRoleProfile[]; byId: Map<string, MockQuestion>; allowUnreviewed: boolean };
 const contentOf = (deps: InterviewDeps): Content => {
   const bank = deps.bank ?? mockQuestions;
-  return { bank, roles: deps.roles ?? roleProfiles, byId: new Map(bank.map((q) => [q.id, q])) };
+  return { bank, roles: deps.roles ?? roleProfiles, byId: new Map(bank.map((q) => [q.id, q])), allowUnreviewed: deps.allowUnreviewed ?? unreviewedAllowed() };
 };
 const titleOf = (c: Content, slug: string) => c.roles.find((r) => r.slug === slug)?.title ?? "Your role";
 
@@ -69,9 +84,16 @@ const sessionColumns = {
   endedAt: mockSessions.endedAt,
   feedback: mockSessions.feedback,
 };
-const answerColumns = { position: mockAnswers.position, answer: mockAnswers.answer, whatWorked: mockAnswers.whatWorked, addNextTime: mockAnswers.addNextTime };
+const answerColumns = {
+  position: mockAnswers.position,
+  answer: mockAnswers.answer,
+  whatWorked: mockAnswers.whatWorked,
+  addNextTime: mockAnswers.addNextTime,
+  followUpId: mockAnswers.followUpId,
+  followUpAnswer: mockAnswers.followUpAnswer,
+};
 
-type AnswerRow = { position: number; answer: string; whatWorked: string | null; addNextTime: string | null };
+type AnswerRow = { position: number; answer: string; whatWorked: string | null; addNextTime: string | null; followUpId: string | null; followUpAnswer: string | null };
 const answersOf = async (db: Db | Tx, sessionId: string): Promise<AnswerRow[]> =>
   db.select(answerColumns).from(mockAnswers).where(eq(mockAnswers.sessionId, sessionId)).orderBy(asc(mockAnswers.position));
 
@@ -97,7 +119,8 @@ export async function runningInterview(userId: string, deps: InterviewDeps = {})
 }
 
 type StartOutcome = { ok: true; session: MockSessionView } | { ok: false; error: MockInterviewError };
-type AnswerOutcome = { ok: true } | { ok: false; error: MockInterviewError };
+type AnswerOutcome = { ok: true; followUp?: MockFollowUpAsked } | { ok: false; error: MockInterviewError };
+type FollowUpOutcome = { ok: true } | { ok: false; error: MockInterviewError };
 type EndOutcome = { ok: true; result: MockSessionResult } | { ok: false; error: MockInterviewError };
 
 /**
@@ -141,25 +164,54 @@ async function lockedSession(tx: Tx, userId: string, sessionId: string) {
   return row ?? null;
 }
 
-/** Saves one answer, or clears it when empty (a skip). The caller has checked the session is the person's and open. */
-async function putAnswer(tx: Tx, sessionId: string, position: number, answer: string): Promise<void> {
+/**
+ * Saves one answer, or clears it when empty (a skip). Saving again keeps a follow-up already asked after it. The caller
+ * has checked the session is the person's and open. Returns the follow-up already asked at this position, if any.
+ */
+async function putAnswer(tx: Tx, sessionId: string, position: number, answer: string): Promise<{ followUpId: string | null } | null> {
   if (!answer) {
     await tx.delete(mockAnswers).where(and(eq(mockAnswers.sessionId, sessionId), eq(mockAnswers.position, position)));
-    return;
+    return null;
   }
-  await tx
+  const [row] = await tx
     .insert(mockAnswers)
     .values({ sessionId, position, answer })
-    .onConflictDoUpdate({ target: [mockAnswers.sessionId, mockAnswers.position], set: { answer } });
+    .onConflictDoUpdate({ target: [mockAnswers.sessionId, mockAnswers.position], set: { answer } })
+    .returning({ followUpId: mockAnswers.followUpId });
+  return row ?? null;
+}
+
+/**
+ * Picks the follow-up for an answer just saved, by code (`pickFollowUp`), and stores its id on the answer; null when
+ * none is asked. A position asks at most one: once one is stored, saving the answer again keeps it and asks none (an
+ * emptied answer goes, with its follow-up).
+ */
+async function askFollowUp(tx: Tx, c: Content, row: { id: string; length: MockLength; questionIds: string[] }, position: number, answer: string, already: string | null) {
+  if (already) return null;
+  const q = c.byId.get(row.questionIds[position - 1] ?? "");
+  if (!q || q.kind !== "open") return null;
+  const [{ used }] = await tx
+    .select({ used: sql<number>`count(*)::int` })
+    .from(mockAnswers)
+    .where(and(eq(mockAnswers.sessionId, row.id), isNotNull(mockAnswers.followUpId)));
+  const pick = pickFollowUp(q, answer, { used, length: row.length, allowUnreviewed: c.allowUnreviewed });
+  if (!pick) return null;
+  await tx
+    .update(mockAnswers)
+    .set({ followUpId: pick.id })
+    .where(and(eq(mockAnswers.sessionId, row.id), eq(mockAnswers.position, position)));
+  return { position, topic: q.topic, text: pick.text } satisfies MockFollowUpAsked;
 }
 
 /**
  * "Next": saves the answer to one question of the person's own session, while it hasn't ended and is within its time
- * (with a minute's grace for an answer sent as the clock ran out). Anything later is refused as "over".
+ * (with a minute's grace for an answer sent as the clock ran out). Anything later is refused as "over". In the same
+ * transaction it may pick one follow-up from the bank for the answer, which the screen then asks.
  */
 export async function saveMockAnswer(userId: string, raw: unknown, deps: InterviewDeps = {}): Promise<AnswerOutcome> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
+  const c = contentOf(deps);
   const input = mockInterviewAnswerInput.safeParse(raw);
   if (!input.success) return { ok: false, error: "invalid" };
   return db.transaction(async (tx): Promise<AnswerOutcome> => {
@@ -168,7 +220,40 @@ export async function saveMockAnswer(userId: string, raw: unknown, deps: Intervi
     if (!row) return { ok: false, error: "not_found" };
     if (sessionClosed(row, now)) return { ok: false, error: "over" };
     if (input.data.position > row.questionIds.length) return { ok: false, error: "invalid" };
-    await putAnswer(tx, row.id, input.data.position, input.data.answer);
+    const saved = await putAnswer(tx, row.id, input.data.position, input.data.answer);
+    if (!saved) return { ok: true };
+    const followUp = await askFollowUp(tx, c, row, input.data.position, input.data.answer, saved.followUpId);
+    if (followUp) logEvent("info", "mock_follow_up_asked", { position: followUp.position });
+    return followUp ? { ok: true, followUp } : { ok: true };
+  });
+}
+
+/** Saves the reply to the follow-up asked at a position. The caller has checked the session is the person's and open. */
+async function putFollowUpAnswer(tx: Tx, sessionId: string, position: number, answer: string): Promise<boolean> {
+  const done = await tx
+    .update(mockAnswers)
+    .set({ followUpAnswer: answer })
+    .where(and(eq(mockAnswers.sessionId, sessionId), eq(mockAnswers.position, position), isNotNull(mockAnswers.followUpId)))
+    .returning({ position: mockAnswers.position });
+  return done.length > 0;
+}
+
+/**
+ * The reply to a follow-up: 1 to 4,000 characters, only at a position of the person's own session where one was
+ * asked, under the same rules as answers (not after the session ended or its time and grace are over).
+ */
+export async function saveFollowUpAnswer(userId: string, raw: unknown, deps: InterviewDeps = {}): Promise<FollowUpOutcome> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const input = saveFollowUpAnswerInput.safeParse(raw);
+  if (!input.success) return { ok: false, error: "invalid" };
+  return db.transaction(async (tx): Promise<FollowUpOutcome> => {
+    if (!(await eliteOn(userId, tx))) return { ok: false, error: "not_elite" };
+    const row = await lockedSession(tx, userId, input.data.sessionId);
+    if (!row) return { ok: false, error: "not_found" };
+    if (sessionClosed(row, now)) return { ok: false, error: "over" };
+    if (input.data.position > row.questionIds.length) return { ok: false, error: "invalid" };
+    if (!(await putFollowUpAnswer(tx, row.id, input.data.position, input.data.answer))) return { ok: false, error: "invalid" };
     return { ok: true };
   });
 }
@@ -213,6 +298,8 @@ export async function endMockInterview(userId: string, raw: unknown, deps: Inter
     }
     if (!sessionClosed(row, now)) {
       for (const a of input.data.answers) if (a.position <= row.questionIds.length) await putAnswer(tx, row.id, a.position, a.answer);
+      // An open follow-up's reply goes with it; an empty one is a skip and saves nothing.
+      for (const f of input.data.followUps ?? []) if (f.answer && f.position <= row.questionIds.length) await putFollowUpAnswer(tx, row.id, f.position, f.answer);
     }
     const answers = await answersOf(tx, row.id);
     const reservedId = answers.length ? await reserveMockFeedback(tx, userId, { mockSessionId: row.id, roleSlug: row.roleSlug }, now) : null;
@@ -233,7 +320,10 @@ export async function endMockInterview(userId: string, raw: unknown, deps: Inter
   if (first.reservedId) {
     const items = answers.flatMap((a): MockFeedbackItem[] => {
       const q = c.byId.get(row.questionIds[a.position - 1] ?? "");
-      return q?.kind === "open" ? [{ position: a.position, topic: q.topic, question: q.question, strongCovers: q.strongCovers, answer: a.answer }] : [];
+      if (q?.kind !== "open") return [];
+      const asked = followUpText(q, a.followUpId);
+      const followUp = asked && a.followUpAnswer ? { question: asked, answer: a.followUpAnswer } : null;
+      return [{ position: a.position, topic: q.topic, question: q.question, strongCovers: q.strongCovers, answer: a.answer, followUp }];
     });
     let feedback: MockInterviewFeedback | null = null;
     try {
@@ -269,9 +359,10 @@ export async function endMockInterview(userId: string, raw: unknown, deps: Inter
 
 /**
  * For "Download your data": every session with its questions, times and summary, and the answers still kept (the
- * last 30 days) with the words on each.
+ * last 30 days) with the words on each and the follow-up asked after it with the reply (version 30).
  */
-export async function exportMockSessions(userId: string, db: Pick<Db, "select"> = getDb()) {
+export async function exportMockSessions(userId: string, db: Pick<Db, "select"> = getDb(), bank: readonly MockQuestion[] = mockQuestions) {
+  const byId = new Map(bank.map((q) => [q.id, q]));
   const [sessions, answers] = await Promise.all([
     db
       .select({ id: mockSessions.id, roleSlug: mockSessions.roleSlug, length: mockSessions.length, focus: mockSessions.focus, questionIds: mockSessions.questionIds, startedAt: mockSessions.startedAt, endedAt: mockSessions.endedAt, feedback: mockSessions.feedback })
@@ -288,7 +379,15 @@ export async function exportMockSessions(userId: string, db: Pick<Db, "select"> 
   return sessions.map(({ id, feedback, ...s }) => ({
     ...s,
     summary: feedback?.summary ?? null,
-    answers: answers.filter((a) => a.sessionId === id).map((a) => ({ position: a.position, answer: a.answer, whatWorked: a.whatWorked, addNextTime: a.addNextTime })),
+    answers: answers
+      .filter((a) => a.sessionId === id)
+      .map((a) => ({
+        position: a.position,
+        answer: a.answer,
+        whatWorked: a.whatWorked,
+        addNextTime: a.addNextTime,
+        followUp: a.followUpId ? { question: followUpText(byId.get(s.questionIds[a.position - 1] ?? ""), a.followUpId), answer: a.followUpAnswer } : null,
+      })),
   }));
 }
 

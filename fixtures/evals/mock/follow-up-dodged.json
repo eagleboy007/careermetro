@@ -1,0 +1,23 @@
+{
+  "id": "follow-up-dodged",
+  "note": "Synthetic. A fresher gives a fair answer but dodges the follow-up after it, and replies off topic to the second; the feedback should say plainly and kindly what each follow-up was asking for.",
+  "roleSlug": "data-analyst",
+  "answers": [
+    {
+      "questionId": "communication-1",
+      "answer": "I finished my B.Sc in statistics this year. In my final project I cleaned survey data in Excel and made charts for my college, and I want to do that kind of work every day.",
+      "followUp": {
+        "id": "communication-1-fu-1",
+        "answer": "I am a hard worker and I learn very fast, so I can do anything the team needs."
+      }
+    },
+    {
+      "questionId": "communication-5",
+      "answer": "I read the task twice, write down what I think the output is, and ask the person who gave it if that is what they want before I start.",
+      "followUp": {
+        "id": "communication-5-fu-1",
+        "answer": "I like working from home because there are fewer meetings."
+      }
+    }
+  ]
+}
