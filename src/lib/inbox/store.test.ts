@@ -197,7 +197,7 @@ describe.skipIf(!db)("inbox store (database)", () => {
       await gate;
     });
     await held;
-    // The first look still sees the connection (the delete isn't committed); the send then waits on the lock.
+    // The delete isn't committed yet; the send waits on the lock and then sees the chat as a request.
     const sending = startDirect(a, b, "Hi Vikram", { db: db!, now });
     await new Promise((r) => setTimeout(r, 300));
     release();
@@ -269,6 +269,29 @@ describe.skipIf(!db)("inbox store (database)", () => {
       });
       expect(await startDirect(a, b, "Hi Vikram", { db: racing })).toEqual({ ok: false, error: "unavailable" });
       expect(await listThreads(b, deps())).toEqual([]);
+    });
+
+    it("opens the chat for two people who connected just before the lock, with requests off (T102)", async () => {
+      const a = await person("Asha Rao");
+      const b = await person("Vikram Singh");
+      await setRequests(b, false);
+      type Run = Parameters<NonNullable<typeof db>["transaction"]>[0];
+      // They connect just before the transaction takes the pair lock; the switch must not refuse them.
+      const racing = new Proxy(db!, {
+        get(target, key) {
+          if (key === "transaction")
+            return async (run: Run) => {
+              await target.insert(schema.connections).values({ userLow: a < b ? a : b, userHigh: a < b ? b : a, how: "other" });
+              return target.transaction(run);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+      const sent = await startDirect(a, b, "Hi Vikram", { db: racing });
+      expect(sent.ok).toBe(true);
+      const [theirs] = await listThreads(b, deps());
+      expect(theirs).toMatchObject({ kind: "person" });
     });
   });
 

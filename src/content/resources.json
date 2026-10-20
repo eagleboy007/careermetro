@@ -4996,17 +4996,6 @@
     "free": true
   },
   {
-    "title": "Microsoft compliance offerings",
-    "url": "https://learn.microsoft.com/en-us/compliance/regulatory/offering-home",
-    "provider": "Microsoft Learn",
-    "kind": "docs",
-    "skillIds": [
-      "compliance-frameworks"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Best practices for designing and architecting with DynamoDB",
     "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html",
     "provider": "AWS",
@@ -5085,7 +5074,7 @@
   },
   {
     "title": "Risk Management Framework",
-    "url": "https://csrc.nist.gov/projects/risk-management",
+    "url": "https://csrc.nist.gov/Projects/risk-management",
     "provider": "NIST",
     "kind": "docs",
     "skillIds": [

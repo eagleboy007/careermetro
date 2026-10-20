@@ -17,10 +17,13 @@
 // The same rules as the dry run: BASE (or the first argument) is the site; BYPASS, when set, is sent as the
 // x-vercel-protection-bypass header to that site only, and only when it is a careermetro-*.vercel.app host. The header and
 // the test emails (the admin's too) are never printed. One line per step, ok or FAIL; the exit code is 1 on any
-// failure. The clean-up runs whatever happens before it (a failure, a crash, SIGINT or SIGTERM): A withdraws the
-// application, B closes the job, the admin dismisses any report still open, and both test accounts are deleted, as
-// prod-smoke.md section 8 says. The company itself can't be deleted in the app: it stays, verified, with no live job,
-// and shows on Company review as "No admin" once B's account is gone. The admin test account is kept for the next run.
+// failure. The clean-up runs after any failed step or crash, and when the script's own deadline (SMOKE_DEADLINE_MIN,
+// default 20) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
+// test accounts are deleted, as prod-smoke.md section 8 says. On SIGINT or SIGTERM (a cancel) it starts too, but
+// GitHub gives a cancelled job only about 10 seconds, so it may not finish then. The company itself can't be deleted in
+// the app, and a fresh account can't take over an old one without that company's admin, so each admin run leaves one:
+// verified, with no live job, on Company review as "No admin" once B's account is gone. The admin test account is kept
+// for the next run.
 // AI spend: the builder's "Review my resume" is one build-resume call; the mock round ends with nothing answered, so it
 // asks for no feedback; nothing here uploads a resume. With the admin, A's Gaps page is one explain-gaps call.
 // /api/health pings Claude once, as in the dry run.
@@ -64,8 +67,10 @@ const person = (tag, first, city) => ({
   signedUp: false,
   deleted: false,
 });
-const A = person("a", "Asha", "Indore");
-const B = person("b", "Bina", "Pune");
+// Cities no example data or fixture in src/ names (only the Market's place list, which these screens never load), so
+// the payload checks can't trip on an example Timetable or job.
+const A = person("a", "Asha", "Kohima");
+const B = person("b", "Bina", "Itanagar");
 // Each user picks a username in Settings too, so the other can open their profile from Network.
 for (const u of [A, B]) u.handle = `smoke-${letters(10)}`;
 
@@ -76,9 +81,10 @@ for (const u of [A, B]) u.handle = `smoke-${letters(10)}`;
  */
 const ADMIN_EMAIL = (process.env.SMOKE_ADMIN_EMAIL || "").trim();
 const ADMIN = ADMIN_EMAIL ? { tag: "admin", first: "Smoke", last: "Admin", name: "Smoke Admin", email: ADMIN_EMAIL, ctx: null, page: null, signedUp: false } : null;
+const ADMIN_DOMAIN = ADMIN_EMAIL.split("@")[1] ?? "";
 const NO_ADMIN = "skipped: SMOKE_ADMIN_EMAIL is not set, so there is no admin test account";
 /** The company B sets up and the job it posts: unique names, so every check finds this run's rows only. */
-const CO = { name: `Smoke Labs ${cap(letters(6))}`, domain: `smoke${Date.now()}${letters(4)}.example-labs.test`, created: false, verified: false };
+const CO = { name: `Smoke Labs ${cap(letters(6))}`, domain: `smoke${Date.now()}${letters(4)}.example-labs.test` };
 const JOB = { title: `Smoke Data Analyst ${cap(letters(6))}`, posted: false, closed: false };
 /** A's built resume (/resume/<id>) and the Library resource B saved, for the company steps. */
 let aResume = null;
@@ -113,7 +119,13 @@ const CITIES = (() => {
 })();
 const cityPattern = new RegExp(`\\b(${CITIES.map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\b`);
 
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+// Playwright's own signal handlers would close the browser before the clean-up below can use it.
+const browser = await chromium.launch({
+  handleSIGINT: false,
+  handleSIGTERM: false,
+  handleSIGHUP: false,
+  ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+});
 /**
  * One browser context per test user, as in the dry run: reduced motion, and the bypass header on every request of the
  * context, so requests to any other host are refused: the header never leaves for a third party (the Vercel toolbar, a
@@ -142,8 +154,12 @@ process.on("unhandledRejection", (err) => {
   console.log(`FAIL unhandled: ${redact(err?.message ?? err)}`);
 });
 let blockedBy = "";
-/** Set by SIGINT or SIGTERM: from then on only the clean-up runs. */
+/** Set by SIGINT, SIGTERM or the deadline: from then on only the clean-up runs. */
 let interrupted = false;
+/** The step running now, settled or not, so a signal can let it finish before the clean-up starts. */
+let current = Promise.resolve();
+/** Set when that step didn't finish in time after a signal: the clean-up then works on fresh pages. */
+let freshPages = false;
 let n = 0;
 const failedSteps = new Set();
 const path = (p) => {
@@ -156,7 +172,7 @@ const path = (p) => {
 /**
  * One line per step, on one user's page (its path is printed and, on a failure, its screenshot kept). A failed
  * `critical` step skips everything after it; `needs` names earlier steps this one can't run without. A step may return
- * a note (such as "skipped: no posts"), printed after its path. After SIGINT or SIGTERM only `cleanup` steps run.
+ * a note (such as "skipped: no posts"), printed after its path. After a signal or the deadline only `cleanup` steps run.
  */
 const step = async (name, u, fn, { critical = false, needs = [], cleanup = false } = {}) => {
   if (interrupted && !cleanup) {
@@ -172,7 +188,9 @@ const step = async (name, u, fn, { critical = false, needs = [], cleanup = false
   }
   const p = u.page;
   try {
-    const note = await fn(p);
+    const run = fn(p);
+    current = run.catch(() => {});
+    const note = await run;
     console.log("ok  ", name, "->", path(p), ...(note ? [`(${note})`] : []));
     return true;
   } catch (e) {
@@ -181,8 +199,8 @@ const step = async (name, u, fn, { critical = false, needs = [], cleanup = false
     console.log("FAIL", name, "@", path(p), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging screens::${redact(name)}`);
     if (SHOTS) {
-      // The email field and any line with a test address are masked.
-      const mask = [p.locator('input[type="email"], input[name="email"]'), p.getByText(EMAIL_DOMAIN, { exact: false })];
+      // The email field and any line with a test address (the admin's domain too) are masked.
+      const mask = [p.locator('input[type="email"], input[name="email"]'), ...[EMAIL_DOMAIN, ADMIN_DOMAIN].filter(Boolean).map((d) => p.getByText(d, { exact: false }))];
       await p.screenshot({ path: `${SHOTS}/screens-${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
     }
     if (critical) blockedBy = name;
@@ -300,18 +318,18 @@ const AS_ADMIN = ADMIN ?? A;
 // The company side's rows, for its steps and the clean-up.
 const jobCard = (p) => p.getByRole("article").filter({ has: p.getByRole("heading", { name: JOB.title }) });
 const reportRow = (p) => p.locator("article", { hasText: JOB.title });
-/** Library review's row for B's link; true when it is dismissed, false when other people's reports are open on it too. */
+/** Library review's row for B's link, dismissed. */
 const dismissLink = async (p) => {
   await open(p, "/admin/library");
   await p.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
   const link = p.locator("article").filter({ has: p.getByRole("heading", { name: libTitle, exact: true, level: 3 }) });
   await link.waitFor({ timeout: 15000 });
-  // Dismiss closes every open report on the link, so it is pressed only when B's is the only one.
-  if (!(await link.getByText("Link is broken · 1", { exact: true }).count())) return false;
+  // Dismiss closes every open report on the link. On staging and previews they are all synthetic (earlier runs' among
+  // them), so it is pressed whatever the count, and reports never pile up.
+  await link.getByText(/Link is broken · \d+/).first().waitFor();
   await link.getByRole("button", { name: `Dismiss reports: ${libTitle}`, exact: true }).click();
   await said(p, "Reports dismissed. The link stays as it is.");
   left.linkReportDone = true;
-  return true;
 };
 
 // ---- Clean-up, defined first so a crash or a signal can run it -------------------------------------------------------
@@ -347,56 +365,75 @@ let cleaning = null;
 const cleanUp = () =>
   (cleaning ??= (async () => {
     blockedBy = "";
-    // After a signal, a step may still hold the old pages: each user gets a fresh one.
-    if (interrupted) for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) u.page = await u.ctx.newPage().catch(() => u.page);
-    if (left.applied && !left.withdrawn && A.signedUp && !A.deleted) {
-      await step("clean-up 1 A withdraws the application on Arrivals", A, async (p) => {
-        await open(p, "/arrivals");
-        await p.getByRole("button", { name: `Withdraw ${JOB.title} at ${CO.name}`, exact: true }).click();
-        await p.getByRole("button", { name: "Withdraw application", exact: true }).click();
-        await said(p, `Withdrawn: ${JOB.title} at ${CO.name}.`);
-        left.withdrawn = true;
-      }, { cleanup: true });
-    }
-    if (JOB.posted && !JOB.closed && B.signedUp && !B.deleted) {
-      // Closed, not paused: deleting B's account leaves a verified company's open job live otherwise.
-      await step("clean-up 2 B closes the job: Close, Close job, so it leaves Departures for good", B, async (p) => {
-        await open(p, "/corporate");
-        await p.getByRole("button", { name: `Close ${JOB.title}`, exact: true }).click();
-        await p.getByRole("button", { name: "Close job", exact: true }).click();
-        await said(p, "Closed. It stays here for your records.");
-        JOB.closed = true;
-      }, { cleanup: true });
-    }
-    if (ADMIN && left.jobReport && !left.jobReportDone) {
-      await step("clean-up 3 the admin dismisses the job report still open", ADMIN, async (p) => {
-        await open(p, "/admin/reports");
-        await reportRow(p).getByRole("button", { name: /^Dismiss: / }).click();
-        await said(p, "Dismissed. It leaves the list.");
-        left.jobReportDone = true;
-      }, { cleanup: true });
-    }
-    if (ADMIN && left.linkReport && !left.linkReportDone) {
-      await step("clean-up 4 the admin dismisses B's link report still open", ADMIN, async (p) => {
-        if (!(await dismissLink(p))) return "left open: other people's reports are open on this link too";
-      }, { cleanup: true });
-    }
+    // After a signal, a step that didn't finish may still hold the old pages: each user gets a fresh one.
+    if (freshPages) for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) u.page = await u.ctx.newPage().catch(() => u.page);
+    await undoCompany();
+    // Once more, for anything a step still running at a signal made meanwhile (a part already done is not repeated; one
+    // that failed is tried again).
+    await undoCompany();
     for (const u of [B, A]) {
       if (u.signedUp && !u.deleted) await step(`8 delete test user ${u.tag.toUpperCase()}: /account/deleted, then signed out`, u, () => deleteAccount(u), { cleanup: true });
     }
   })());
+/** The company side's part of the clean-up: A's application, B's job, the reports still open. */
+const undoCompany = async () => {
+  if (left.applied && !left.withdrawn && A.signedUp && !A.deleted) {
+    await step("clean-up 1 A withdraws the application on Arrivals", A, async (p) => {
+      await open(p, "/arrivals");
+      await p.getByRole("button", { name: `Withdraw ${JOB.title} at ${CO.name}`, exact: true }).click();
+      await p.getByRole("button", { name: "Withdraw application", exact: true }).click();
+      await said(p, `Withdrawn: ${JOB.title} at ${CO.name}.`);
+      left.withdrawn = true;
+    }, { cleanup: true });
+  }
+  if (JOB.posted && !JOB.closed && B.signedUp && !B.deleted) {
+    // Closed, not paused: deleting B's account leaves a verified company's open job live otherwise.
+    await step("clean-up 2 B closes the job: Close, Close job, so it leaves Departures for good", B, async (p) => {
+      await open(p, "/corporate");
+      await p.getByRole("button", { name: `Close ${JOB.title}`, exact: true }).click();
+      await p.getByRole("button", { name: "Close job", exact: true }).click();
+      await said(p, "Closed. It stays here for your records.");
+      JOB.closed = true;
+    }, { cleanup: true });
+  }
+  if (ADMIN && left.jobReport && !left.jobReportDone) {
+    await step("clean-up 3 the admin dismisses the job report still open", ADMIN, async (p) => {
+      await open(p, "/admin/reports");
+      await reportRow(p).getByRole("button", { name: /^Dismiss: / }).click();
+      await said(p, "Dismissed. It leaves the list.");
+      left.jobReportDone = true;
+    }, { cleanup: true });
+  }
+  if (ADMIN && left.linkReport && !left.linkReportDone) {
+    await step("clean-up 4 the admin dismisses B's link report still open", ADMIN, async (p) => {
+      await dismissLink(p);
+    }, { cleanup: true });
+  }
+};
 
-// A cancel (SIGINT) or a job timeout (SIGTERM) still deletes the test accounts, then the run fails.
+// A cancel (SIGINT) or a kill (SIGTERM): the step running gets 3 seconds to finish, then the clean-up starts. GitHub
+// gives a cancelled job about 10 seconds, so it may not finish: the deadline below is the dependable path.
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.once(signal, async () => {
     failed++;
     interrupted = true;
     console.log(`FAIL interrupted by ${signal}: cleaning up before exiting`);
+    const done = await Promise.race([current.then(() => true), new Promise((r) => setTimeout(() => r(false), 3000))]);
+    if (!done) freshPages = true;
     await cleanUp().catch((e) => console.log(`FAIL clean-up: ${redact(e?.message ?? e)}`));
     await browser.close().catch(() => {});
     process.exit(1);
   });
 }
+// The script's own deadline, a few minutes inside the workflow step's timeout: once it passes, the step running
+// finishes, the rest are skipped and the clean-up runs with time to spare.
+const DEADLINE_MIN = Number(process.env.SMOKE_DEADLINE_MIN) || 20;
+setTimeout(() => {
+  if (interrupted) return;
+  failed++;
+  interrupted = true;
+  console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and cleaning up`);
+}, DEADLINE_MIN * 60_000).unref();
 
 try {
   await step("1.1 health answers ok", A, async () => {
@@ -718,8 +755,6 @@ try {
     await p.getByLabel("Code", { exact: true }).fill(await box.getAttribute("data-test-code"));
     await p.getByRole("button", { name: "Verify" }).click();
     await p.getByLabel("About the company").waitFor({ timeout: 15000 });
-    // The right code made the company, so from here the clean-up has a job to close if one is posted.
-    CO.created = true;
     await p.getByLabel("About the company").fill("Synthetic company for the staging dry run.");
     await p.getByRole("button", { name: "Send for review" }).click();
     await p.getByRole("heading", { name: /We check every new company by hand/ }).waitFor({ timeout: 15000 });
@@ -727,7 +762,7 @@ try {
     await p.waitForURL(/\/corporate$/);
     await p.getByText("Waiting for verification").first().waitFor({ timeout: 15000 });
     if ((await p.locator("body").innerText()).includes(workEmail)) throw new Error("the work email is shown on Corporate");
-  });
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin"] });
 
   await step("corporate 2 the admin verifies B's company on Company review", AS_ADMIN, async (p) => {
     if (!ADMIN) return NO_ADMIN;
@@ -738,7 +773,6 @@ try {
     await company.getByRole("button", { name: `Verify ${CO.name}`, exact: true }).click();
     await said(p, `${CO.name} is verified.`);
     await company.waitFor({ state: "detached", timeout: 15000 });
-    CO.verified = true;
   }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "corporate 1 B sets up a company: work email on an example domain, the test-mode code, Send for review, Waiting for verification"] });
 
   await step("corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures", B, async (p) => {
@@ -763,7 +797,7 @@ try {
     if (!aResume) throw new Error("the builder step saved no resume");
     await open(p, `${aResume}/gaps/data-analyst`);
     await p.getByRole("heading", { name: "Your gaps", exact: true, level: 1 }).waitFor({ timeout: 90000 });
-  }, { needs: ["corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
+  }, { needs: ["builder: A answers the seven sections, Review my resume, then Download gives a PDF", "corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
 
   await step("arrivals 3 A sends the job with Express apply: the preview, Within 30 days, the consent tick; Arrivals waits with Offers empty", A, async (p) => {
     if (!ADMIN) return NO_ADMIN;
@@ -822,7 +856,7 @@ try {
     await card.getByRole("button", { name: "Send report" }).click();
     await card.getByRole("status").getByText(/Reported/).waitFor({ timeout: 15000 });
     left.jobReport = true;
-  }, { needs: ["corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
 
   await step("reports 2 the admin finds A's report on Reports (Job at the company, A's first name and initial), acknowledges it, then dismisses it", AS_ADMIN, async (p) => {
     if (!ADMIN) return NO_ADMIN;
@@ -854,11 +888,11 @@ try {
     await panel.getByRole("group", { name: `Report ${libTitle}` }).getByRole("button", { name: "Link is broken", exact: true }).click();
     await toast(p, "Thanks. A reviewer will check this link.");
     left.linkReport = true;
-  }, { needs: [LIB_STEP] });
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", LIB_STEP] });
 
   await step("library 3 the admin sees B's broken-link report on Library review and dismisses it; the link stays", AS_ADMIN, async (p) => {
     if (!ADMIN) return NO_ADMIN;
-    if (!(await dismissLink(p))) return "left open: other people's reports are open on this link too";
+    await dismissLink(p);
   }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "library 2 B reports the saved resource's link: Link broken or out of date?, Link is broken"] });
 } finally {
   // The clean-up runs whatever failed before it, a crash included.
