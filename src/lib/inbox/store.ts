@@ -350,6 +350,27 @@ export async function blockInChat(userId: string, conversationId: string, deps: 
   });
 }
 
+/**
+ * End chat (FR-52): the person ends an accepted found chat themselves, with no report and no block. Only this chat
+ * closes for good, for both sides, the way a block closes it, and it stays in the person's Inbox as closed. The company
+ * is not blocked: it can still message about the person's applications, but this chat takes no more messages and, being
+ * closed, no new request from that company can start (sendFoundRequest refuses a closed chat). A request is answered
+ * with Delete instead. The chat row is locked through the membership read, as blockInChat locks it for a found chat.
+ */
+export async function endFoundChat(userId: string, conversationId: string, deps: { db?: Db; now?: Date } = {}): Promise<InboxResult> {
+  const db = deps.db ?? getDb();
+  return db.transaction(async (tx) => {
+    const me = await membership(userId, conversationId, tx);
+    // The person's own row of a found chat only: never a company-side row, a direct or an application chat.
+    if (!me || me.kind !== "found" || me.role !== "member" || me.hiddenAt) return fail("not_found");
+    // Ended already (another tab, a double tap, or a block): fine.
+    if (me.status === "closed") return { ok: true as const };
+    if (me.status !== "open") return fail("not_found");
+    await tx.update(conversations).set({ status: "closed" }).where(eq(conversations.id, conversationId));
+    return { ok: true as const };
+  });
+}
+
 /** Lifts a block. Chats the block hid stay hidden until a new message arrives in them. */
 export async function unblock(blockerId: string, blockedId: string, db: Db = getDb()): Promise<void> {
   await db.delete(blocks).where(and(eq(blocks.blockerId, blockerId), eq(blocks.blockedId, blockedId)));

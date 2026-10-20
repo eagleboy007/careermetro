@@ -8,9 +8,12 @@ export const HIDDEN_MESSAGE_TEXT = "This message was hidden by CareerMetro after
 
 /**
  * The line an accepted found chat shows the person while their job search is off (FR-52, Testing Run 5 T82): the chat
- * goes on, no new company requests arrive, and they can end it themselves with Block or report.
+ * goes on, no new company requests arrive, and they can end it themselves with End chat.
  */
-export const FOUND_JOB_SEARCH_OFF_LINE = "Job search is off. This chat stays open. To stop it, use Block or report.";
+export const FOUND_JOB_SEARCH_OFF_LINE = "Job search is off. This chat stays open until you choose End chat.";
+
+/** End chat's inline confirm on an accepted found chat (FR-52): no report, no block, only this chat closes. */
+export const END_FOUND_CHAT_CONFIRM = "End this chat? The company can't message you here again.";
 
 export type InboxKind = "application" | "person" | "request";
 export type InboxFilter = "all" | InboxKind;
@@ -115,6 +118,8 @@ export type InboxActions = {
   remove: (conversationId: string) => Promise<string | null>;
   report: (input: { conversationId: string; target: "person" | "chat"; reason: ReportReason; note?: string; block: boolean }) => Promise<string | null>;
   read: (conversationId: string) => Promise<void>;
+  /** End chat on an accepted found chat (FR-52): closes only this chat, with no report and no block. */
+  end?: (conversationId: string) => Promise<string | null>;
   /** Answers "Ask for times" with the picked slot keys (corporate build step 6). */
   offerTimes?: (messageId: string, slots: string[]) => Promise<string | null>;
   /** Saves "Usually free" (FR-55), the whole grid at once: "mon 17:00" entries. */

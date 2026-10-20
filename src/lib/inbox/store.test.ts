@@ -7,7 +7,7 @@ import { reportDeadlines } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { exportAccountData } from "@/lib/account/export";
 import { purgeDeletedAccounts } from "@/lib/account/delete";
-import { acceptRequest, blockInChat, deleteRequest, formatAt, INBOX_ERROR_TEXT, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
+import { acceptRequest, blockInChat, deleteRequest, endFoundChat, formatAt, INBOX_ERROR_TEXT, listThreads, markRead, report, sendMessage, startDirect, unblock, unreadChats } from "./store";
 
 // Runs against a real Postgres with migrations applied, like the other store tests.
 const url = process.env.TEST_DATABASE_URL;
@@ -81,6 +81,12 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect(await report(stranger, { conversationId: id, target: "chat", reason: "other" }, deps())).toEqual({ ok: false, error: "not_found" });
     expect(await startDirect(stranger, stranger, "Me", deps())).toEqual({ ok: false, error: "self" });
     expect(await sendMessage(stranger, id, "   ", deps())).toEqual({ ok: false, error: "invalid" });
+  });
+
+  it("keeps End chat to found chats: a direct chat is never closed by it (FR-52)", async () => {
+    const { a, b, id } = await openChat();
+    expect(await endFoundChat(a, id, deps())).toEqual({ ok: false, error: "not_found" });
+    expect((await sendMessage(b, id, "Still here", deps())).ok).toBe(true);
   });
 
   it("lets an interviewer read but not send", async () => {
