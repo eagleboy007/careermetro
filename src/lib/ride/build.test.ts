@@ -1,6 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { ride as rideSchema } from "@/lib/schemas";
-import { addedTaskId, attachAdded, buildGoalsSummary, buildRide, goalForAdded, parseAddedTask, rideParts, type RideGoal, type RidePath } from "./build";
+import {
+  addedTaskId,
+  arrivedRide,
+  attachAdded,
+  buildGoalsSummary,
+  buildRide,
+  goalForAdded,
+  parseAddedTask,
+  rideParts,
+  signalGoals,
+  signalTaskId,
+  withSignalTask,
+  type RideGoal,
+  type RidePath,
+} from "./build";
 
 const res = (id: string, minutes = 30) => ({ id, title: `Course ${id}`, provider: "Kaggle Learn", kind: "course", minutes });
 const goal = (p: Partial<RideGoal> & { goalId: string }): RideGoal => ({
@@ -283,5 +297,40 @@ describe("added resources on the ride", () => {
     expect(r.tasks[0]).toMatchObject({ minutes: 45, detail: "Kaggle Learn · course" });
     // Ticked on an earlier day, it is done, and the ride moves on.
     expect(ride([g, goal({ goalId: "pbi" })], { before: ["res:short:1"] })!.goalName).toBe("PBI");
+  });
+});
+
+describe("signal check goals and task", () => {
+  const input = (goals: RideGoal[], before: string[] = []) => ({ goals, path: BUILT, doneBefore: new Set(before), doneToday: new Set<string>(), doneThisWeek: new Set<string>() });
+
+  it("asks about today's ride goal, then the open goal after it, with the prove pitstop each warms up for", () => {
+    const goals = [
+      goal({ goalId: "g0", skillId: "excel", proved: true }),
+      goal({ goalId: "g1", skillId: "sql", status: "outdated" }),
+      goal({ goalId: "g2", skillId: "pbi", skipped: true }),
+      goal({ goalId: "g3", skillId: "python", learnSkillId: "r-lang" }),
+      goal({ goalId: "g4", skillId: "statistics" }),
+    ];
+    expect(signalGoals(input(goals))).toEqual([
+      { goalId: "g1", skillId: "sql", learnSkillId: "sql", name: "G1", status: "weak", provePitstop: 4 },
+      { goalId: "g3", skillId: "python", learnSkillId: "r-lang", name: "G3", status: "missing", provePitstop: 8 },
+    ]);
+    // Once today's goal is learned (its tasks done on an earlier day), the ride moves on, and so does the question.
+    const done = ["g1:r:g1-1", "g1:r:g1-2", "g1:practice"];
+    expect(signalGoals(input(goals, done)).map((g) => g.goalId)).toEqual(["g3", "g4"]);
+    expect(signalGoals(input([goal({ goalId: "g0", proved: true })]))).toEqual([]);
+  });
+
+  it("puts the day's signal task last and locked, in the third place, and never on an arrived ride", () => {
+    const r = ride([goal({ goalId: "sql" })])!;
+    const tasks = withSignalTask(r.tasks, "2026-10-20", false);
+    expect(tasks.map((t) => t.id)).toEqual(["sql:r:sql-1", "sql:r:sql-2", "signal:2026-10-20"]);
+    expect(tasks[2]).toMatchObject({ locked: true, signal: true, done: false, href: null });
+    expect(rideSchema.safeParse({ ...r, tasks }).success).toBe(true);
+    expect(withSignalTask(tasks, "2026-10-20", true).at(-1)).toMatchObject({ id: signalTaskId("2026-10-20"), done: true });
+    expect(withSignalTask(tasks, "2026-10-20", true)).toHaveLength(3);
+    expect(signalTaskId("2026-10-21")).not.toBe(signalTaskId("2026-10-20"));
+    const arrived = arrivedRide(4);
+    expect(withSignalTask(arrived.tasks, "2026-10-20", false)).toEqual(arrived.tasks);
   });
 });

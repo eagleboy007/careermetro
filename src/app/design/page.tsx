@@ -144,6 +144,10 @@ import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
+import { DeparturesBoard } from "@/components/today/departures-board";
+import { OnYourLineCard } from "@/components/today/rail-cards";
+import { SignalCheckCard } from "@/components/today/signal-check";
+import { boardRows } from "@/lib/today/live-board";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
 import type { Gap, GoalsSummary, Profile } from "@/lib/schemas";
@@ -162,6 +166,9 @@ import {
 } from "@/lib/today/fixtures";
 
 export const metadata: Metadata = { title: "Design system · CareerMetro", robots: { index: false } };
+
+/** Today's live board from the example live posts, grouped the way a signed-in person's board is (static data). */
+const exampleLiveBoard = boardRows(exampleLiveJobs, (slug) => (slug === "data-analyst" ? "Data Analyst" : null));
 
 // Example data only: shows every component in a realistic state.
 /** Today's goals with "Not for me" offers: a required goal to skip, a "one of these" goal to swap. */
@@ -443,6 +450,25 @@ export default function DesignPage() {
           <StreakChip days={12} todayCounted />
         </div>
         <TodayStatePreview data={exampleToday} upload={<UploadForm demo rolePick />} />
+        <p className="text-sm text-muted">
+          Live cards for a signed-in person: the signal check is checked on the server (waiting for the answer, and after a try that didn&apos;t go
+          through); the board is grouped by role and city from live posts, or says why it is empty; On your line on the first day has no tip until
+          Junction, and is hidden below three people.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <SignalCheckCard check={exampleSignalCheck} answered pickedKey="B" reveal={null} label="Signal check, waiting for the answer" />
+          <SignalCheckCard
+            check={exampleSignalCheck}
+            answered={false}
+            pickedKey={null}
+            reveal={null}
+            error="That didn't go through. Please try again."
+            label="Signal check, after a failed try"
+          />
+          <DeparturesBoard rows={exampleLiveBoard} allHref="/departures" label="Departures, live rows" />
+          <DeparturesBoard rows={[]} allHref="/departures" label="Departures, no rows yet" />
+          <OnYourLineCard line={{ ...exampleOnYourLine, tip: null }} firstDay label="On your line, first day" />
+        </div>
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
         <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>

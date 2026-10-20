@@ -22,6 +22,7 @@ export function WelcomeHero({
   onHours,
   onFindable,
   onToggle,
+  signalAnswered = false,
 }: {
   name: string;
   role: string;
@@ -36,6 +37,8 @@ export function WelcomeHero({
   onFindable?: (on: boolean) => void;
   /** Saves a tick. Without it the card only keeps local state (design page). */
   onToggle?: (taskId: string, done: boolean) => void | Promise<boolean>;
+  /** The signal check was answered today: that ticks the first ride's locked signal task. */
+  signalAnswered?: boolean;
 }) {
   const [done, setDone] = useState(() => new Set(firstTasks.filter((t) => t.done).map((t) => t.id)));
   const [hours, setHours] = useState<number>(weeklyHours);
@@ -101,7 +104,7 @@ export function WelcomeHero({
           <Tally value={tally.boardable} label={tally.boardable === 1 ? "role you could board today" : "roles you could board today"} dot="bg-line" />
         </dl>
         <h3 className="text-base font-semibold">Your first ride · Pitstop 1, about {firstTasks.reduce((n, t) => n + t.minutes, 0)} min</h3>
-        <TaskList tasks={firstTasks} done={done} onToggle={toggle} />
+        <TaskList tasks={firstTasks} done={signalAnswered ? new Set([...done, ...firstTasks.filter((t) => t.signal).map((t) => t.id)]) : done} onToggle={toggle} />
       </div>
 
       <div className="flex min-w-0 flex-col gap-3.5 border-t border-line pt-4 md:border-l md:border-t-0 md:pl-7 md:pt-0">

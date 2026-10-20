@@ -6,10 +6,12 @@ import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/li
 import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
 import { fillingSkills } from "@/lib/goals/sync";
-import { skillGroupMembers, skills } from "@/content";
-import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
+import { mockQuestions, skillGroupMembers, skills } from "@/content";
+import type { GapAnalysis, GoalsSummary, MockQuestion, Ride, RideWeek, SignalAnswer, SignalLive, Streak } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
-import { attachAdded, buildGoalsSummary, buildRide, type RideGoal, type RidePath, type RideResource } from "./build";
+import { unreviewedAllowed } from "@/lib/mock/rules";
+import { isSignalKey, pickSignal, signalAnswerOf, signalLiveOf } from "@/lib/today/signal";
+import { attachAdded, buildGoalsSummary, buildRide, signalGoals, signalTaskId, type RideGoal, type RidePath, type RideResource } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
@@ -171,13 +173,32 @@ async function doneBefore(userId: string, today: string, db: Pick<Db, "selectDis
   return new Set(rows.map((r) => r.id));
 }
 
-/** Today's ride with the person's own ticks, their week and streak. Null before there are goals to ride. */
+/** Today's signal check (handoff section 5): the question as the card shows it, and the day it is for. */
+export type TodaySignal = { live: SignalLive; day: string; done: boolean };
+
+/** Where the signal check's questions come from: the Practice bank, reviewed questions only in production. */
+export type SignalSource = { bank?: readonly MockQuestion[]; allowUnreviewed?: boolean };
+
+/**
+ * Today's ride with the person's own ticks, their week and streak. Null before there are goals to ride. Also the day's
+ * signal check (null when the bank has no question for today's goal or the next) and the goal today's ride is on, for
+ * "On your line". The ride's tasks don't include the signal task: Today adds it (`withSignalTask`) when there is one.
+ */
 export async function todayRideFor(
   userId: string,
   now: Date,
   db: Db = getDb(),
   role = "",
-): Promise<{ ride: Ride; goals: GoalsSummary; week: RideWeek; streak: Streak; roleSlug: string } | null> {
+  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed() }: SignalSource = {},
+): Promise<{
+  ride: Ride;
+  goals: GoalsSummary;
+  week: RideWeek;
+  streak: Streak;
+  roleSlug: string;
+  signal: TodaySignal | null;
+  current: { skillId: string; name: string } | null;
+} | null> {
   const today = indiaDay(now);
   const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
   if (!line) return null;
@@ -191,7 +212,58 @@ export async function todayRideFor(
   const ride = buildRide(input);
   if (!ride) return null;
   const goals = buildGoalsSummary({ ...input, role: role || line.result.roleSlug, gaps: line.result.gaps, chosen: line.chosen });
-  return { ride, goals, week: stats.week, streak: stats.streak, roleSlug: line.result.roleSlug };
+  const asked = signalGoals(input);
+  const pick = pickSignal(bank, asked, userId, today, allowUnreviewed);
+  const done = input.doneToday.has(signalTaskId(today));
+  return {
+    ride,
+    goals,
+    week: stats.week,
+    streak: stats.streak,
+    roleSlug: line.result.roleSlug,
+    signal: pick ? { live: signalLiveOf(pick, done), day: today, done } : null,
+    current: asked[0] ? { skillId: asked[0].skillId, name: asked[0].name } : null,
+  };
+}
+
+/**
+ * Answers today's signal check (handoff section 5): the question is picked again here, and the answer is checked
+ * against it, so a stale page (a goal proved since) or a key that isn't an option gets null. Any answer ticks the day's
+ * signal task, once; the pick and the key are never stored or logged. Returns the right answer and why. No score.
+ */
+export async function answerSignal(
+  userId: string,
+  questionId: unknown,
+  key: unknown,
+  now: Date,
+  db: Db = getDb(),
+  { bank = mockQuestions, allowUnreviewed = unreviewedAllowed() }: SignalSource = {},
+): Promise<SignalAnswer | null> {
+  if (typeof questionId !== "string" || questionId.length > 80) return null;
+  const line = await rideGoalsFor(userId, db, { sync: false });
+  if (!line) return null;
+  const day = indiaDay(now);
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-ride:${userId}`}))`);
+    const [row] = await tx
+      .select({ taskIds: rideDays.taskIds })
+      .from(rideDays)
+      .where(and(eq(rideDays.userId, userId), eq(rideDays.day, day)));
+    const ticked = row?.taskIds ?? [];
+    const input = { goals: line.goals, path: line.path, doneBefore: await doneBefore(userId, day, tx), doneToday: new Set<string>(ticked), doneThisWeek: new Set<string>() };
+    // Every goal proved or skipped: signalGoals is empty, so there is no question, as on the page.
+    const pick = pickSignal(bank, signalGoals(input), userId, day, allowUnreviewed);
+    if (!pick || pick.question.id !== questionId || !isSignalKey(pick.question, key)) return null;
+    const id = signalTaskId(day);
+    if (!ticked.includes(id)) {
+      const taskIds = toggled(ticked, id, true);
+      await tx
+        .insert(rideDays)
+        .values({ userId, day, taskIds, updatedAt: now })
+        .onConflictDoUpdate({ target: [rideDays.userId, rideDays.day], set: { taskIds, updatedAt: now } });
+    }
+    return signalAnswerOf(pick.question);
+  });
 }
 
 /**

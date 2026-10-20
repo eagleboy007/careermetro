@@ -34,11 +34,14 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
   );
 }
 
-/** People on the same goal right now, from opted-in profiles. "See people" opens Network; Junction comes later (build step 11). */
-export function OnYourLineCard({ line, firstDay = false }: { line: OnYourLine; firstDay?: boolean }) {
+/**
+ * People on the same goal right now, from people who chose to be found (src/lib/today/live.ts): a count, up to four
+ * initials and, once Junction exists, a tip. "See people" opens Network; Junction comes later (build step 11).
+ */
+export function OnYourLineCard({ line, firstDay = false, label = "On your line" }: { line: OnYourLine; firstDay?: boolean; label?: string }) {
   const extra = line.count - line.initials.length;
   return (
-    <section aria-label="On your line" className={card}>
+    <section aria-label={label} className={card}>
       <h3 className="text-[1.08rem] font-semibold tracking-[-0.01em]">On your line right now</h3>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex" aria-hidden="true">
@@ -50,7 +53,7 @@ export function OnYourLineCard({ line, firstDay = false }: { line: OnYourLine; f
         </div>
         <p className="min-w-[180px] flex-1 text-[0.86rem]">
           <b className="font-semibold">{line.count === 1 ? "1 person" : `${line.count} people`}</b>{" "}
-          {firstDay ? "started this line this week, like you." : `${line.count === 1 ? "is" : "are"} on the ${line.goalName} goal with you.`}
+          {firstDay ? `started on the ${line.goalName} goal this week, like you.` : `${line.count === 1 ? "is" : "are"} on the ${line.goalName} goal with you.`}
         </p>
       </div>
       {!firstDay && line.tip && (

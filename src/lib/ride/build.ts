@@ -205,6 +205,50 @@ function position(input: RideInput) {
   return { current: unfinished ?? open[0], unfinished, tasksFor, left };
 }
 
+/** A goal the signal check may ask about, with the prove pitstop its question warms the person up for. */
+export type SignalGoal = {
+  goalId: string;
+  /** The goal's own skill (the gap), as user_goals stores it. */
+  skillId: string;
+  /** The skill it learns: its own, or the one "Not for me" swapped it to. Questions are picked for this one. */
+  learnSkillId: string;
+  name: string;
+  status: "missing" | "weak";
+  provePitstop: number;
+};
+
+/**
+ * The goals the signal check may ask about (handoff section 5): today's ride goal, then the open goal after it, in line
+ * order. Empty once every goal is proved or skipped.
+ */
+export function signalGoals(input: RideInput): SignalGoal[] {
+  const at = position(input);
+  if (!at) return [];
+  const open = input.goals.filter((g) => !g.proved && !g.skipped);
+  const from = open.indexOf(at.current);
+  return open.slice(from, from + 2).map((g) => ({
+    goalId: g.goalId,
+    skillId: g.skillId,
+    learnSkillId: g.learnSkillId ?? g.skillId,
+    name: clip(g.name, 80),
+    status: g.status === "missing" ? "missing" : "weak",
+    provePitstop: input.goals.indexOf(g) * 2 + 2,
+  }));
+}
+
+/** The signal check task's id: one a day, so yesterday's answer never counts for today. */
+export const signalTaskId = (day: string) => `signal:${day}`;
+
+/**
+ * The day's tasks with the signal check task last (locked: it ticks itself when the question is answered). A ride
+ * shows three tasks, so the signal task takes the third place. Unchanged on a ride with nothing left to learn.
+ */
+export function withSignalTask(tasks: RideTask[], day: string, done: boolean): RideTask[] {
+  if (tasks.some((t) => t.id === "all-proved")) return tasks;
+  const task: RideTask = { id: signalTaskId(day), title: "Answer today's signal check", detail: "One question, just below", minutes: 2, done, locked: true, signal: true, href: null };
+  return [...tasks.filter((t) => !t.signal).slice(0, MAX_TASKS - 1), task];
+}
+
 /**
  * Today's ride (handoff section 5): the first goal not proved with tasks left, or, when every task is done, the first
  * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks

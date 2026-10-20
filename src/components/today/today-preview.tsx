@@ -10,7 +10,9 @@ import type {
   Ride,
   RideTask,
   RideWeek,
+  SignalAnswer,
   SignalCheck,
+  SignalLive,
   UserState,
 } from "@/lib/schemas";
 import { USER_STATES } from "@/lib/schemas/constants";
@@ -36,9 +38,16 @@ export type TodayData = {
   lineHours: number;
   /** The signed-in person's saved hours a week. */
   weeklyHours?: number;
-  signalCheck: SignalCheck;
+  /** Example data (signed out and /design). Null hides the card. */
+  signalCheck: SignalCheck | null;
+  /**
+   * A signed-in person's question from the Practice bank, checked on the server (`onAnswerSignal`). Used instead of
+   * `signalCheck` when set; null hides the card (no question for today's goal or the next).
+   */
+  signalLive?: SignalLive | null;
   events: EventTeaser[];
-  onYourLine: OnYourLine;
+  /** Null hides the card: fewer than three people on the goal who can be counted. */
+  onYourLine: OnYourLine | null;
   /** "Morning", "Afternoon" or "Evening" in the user's time zone. */
   greeting: string;
   /** No resume state: a resume that was read but whose gaps were never shown. */
@@ -56,6 +65,7 @@ export function TodayView({
   onToggleTask,
   onAddCertificate,
   onHours,
+  onAnswerSignal,
   departuresHref,
   mapHref,
 }: {
@@ -67,22 +77,37 @@ export function TodayView({
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
   /** Saves the hours a week picked on the welcome card. */
   onHours?: (hours: number) => void | Promise<boolean>;
+  /** Checks a live signal check answer on the server, which ticks the ride's signal task; null when it didn't go through. */
+  onAnswerSignal?: (questionId: string, key: string) => Promise<SignalAnswer | null>;
   /** Where "All departures" goes; without it the link is marked "soon". */
   departuresHref?: string;
   /** Where Your goals' map links go; without it they are marked "soon". */
   mapHref?: string;
 }) {
-  const lockedTask = data.ride.tasks.find((t) => t.signal);
-  // Answered earlier today when the locked task already came back done; the picked key is only known this visit.
-  const [answer, setAnswer] = useState<{
-    answered: boolean;
-    key: string | null;
-  }>(() => ({ answered: Boolean(lockedTask?.done), key: null }));
+  const live = data.signalLive;
+  const shown = live === undefined ? data.signalCheck : (live?.shown ?? null);
+  // The signal task is the ride's last task: on the welcome card's first tasks on the first day.
+  const lockedTask = (state === "first" ? data.firstTasks : data.ride.tasks).find((t) => t.signal);
+  const exampleAnswer = data.signalCheck ? { correctKey: data.signalCheck.correctKey, explanation: data.signalCheck.explanation } : null;
+  // Answered earlier today when the server sent the answer (live) or the locked task came back done (example); the
+  // picked key is only known this visit.
+  const [answer, setAnswer] = useState<{ answered: boolean; key: string | null; reveal: SignalAnswer | null; error: string | null }>(() => {
+    const earlier = live ? live.answer : lockedTask?.done ? exampleAnswer : null;
+    return { answered: earlier !== null, key: null, reveal: earlier, error: null };
+  });
 
   function answerSignal(key: string) {
-    setAnswer({ answered: true, key });
-    if (lockedTask && !lockedTask.done) onToggleTask?.(lockedTask.id, true);
+    if (!live) {
+      setAnswer({ answered: true, key, reveal: exampleAnswer, error: null });
+      if (lockedTask && !lockedTask.done) onToggleTask?.(lockedTask.id, true);
+      return;
+    }
+    // Checked on the server, which ticks the signal task; the card waits for the answer and opens again if it fails.
+    setAnswer({ answered: true, key, reveal: null, error: null });
+    const failed = () => setAnswer({ answered: false, key: null, reveal: null, error: "That didn't go through. Please try again." });
+    Promise.resolve(onAnswerSignal?.(live.id, key) ?? null).then((reveal) => (reveal ? setAnswer({ answered: true, key, reveal, error: null }) : failed()), failed);
   }
+  const signalAnswered = answer.answered && answer.reveal !== null;
 
   // Prototype v2 layout: the hero across the top, then signal check and Your goals on the left, the departures board,
   // Timetable and the people on your line in the right column. One column under 960 px.
@@ -100,6 +125,7 @@ export function TodayView({
             weeklyHours={data.weeklyHours}
             onHours={onHours}
             onToggle={onToggleTask}
+            signalAnswered={signalAnswered}
           />
         )}
         {state === "returning" && (
@@ -108,7 +134,7 @@ export function TodayView({
             greeting={data.greeting}
             ride={data.ride}
             week={data.week}
-            signalAnswered={answer.answered}
+            signalAnswered={signalAnswered}
             onToggle={onToggleTask}
             onAddCertificate={onAddCertificate}
           />
@@ -119,7 +145,9 @@ export function TodayView({
           <WhileYouDecide />
         ) : (
           <>
-            <SignalCheckCard check={data.signalCheck} answered={answer.answered} pickedKey={answer.key} onAnswer={answerSignal} />
+            {shown && (
+              <SignalCheckCard check={shown} answered={answer.answered} pickedKey={answer.key} reveal={answer.reveal} error={answer.error} onAnswer={answerSignal} />
+            )}
             <GoalsCard summary={data.goals} mapHref={mapHref} firstDay={state === "first"} />
           </>
         )}
@@ -134,7 +162,7 @@ export function TodayView({
           </JobSearchBoardSlot>
         )}
         <TimetableTeaser events={data.events} />
-        {state !== "no_resume" && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
+        {state !== "no_resume" && data.onYourLine && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
       </div>
     </div>
   );
