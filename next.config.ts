@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { cspReportOnly, ENFORCED_CSP, REPORTING_ENDPOINTS } from "./src/lib/csp";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -17,12 +18,21 @@ const nextConfig: NextConfig = {
   // careermetro.com. No preload: a vercel.app subdomain can't be preloaded. COOP same-origin-allow-popups: a cross-origin
   // page that opens ours can't reach it, while popups we open keep window.opener. The Vercel Toolbar's sign-in popup on
   // preview deployments needs that; our own Google sign-in is a full-page redirect (src/app/sign-in/actions.ts).
+  // The script-src policy is report-only for now (src/lib/csp.ts, docs/dev/security-sweep-2026-10-20.md): browsers send
+  // what it would block to /api/csp-report and block nothing. The enforced CSP above it is unchanged. Headers are fixed
+  // at build time, so VERCEL_ENV picks the preview policy (with the Vercel Toolbar's hosts) on preview builds, and a
+  // preview build promoted to production keeps those hosts until the next production build.
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [
-          { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
+          { key: "Content-Security-Policy", value: ENFORCED_CSP },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: cspReportOnly({ vercelToolbar: process.env.VERCEL_ENV === "preview", development: process.env.NODE_ENV === "development" }),
+          },
+          { key: "Reporting-Endpoints", value: REPORTING_ENDPOINTS },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

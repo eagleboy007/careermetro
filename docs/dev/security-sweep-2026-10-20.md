@@ -13,7 +13,7 @@ code. Nothing was built or installed here.
 | 3 | HSTS had no `includeSubDomains` | Low | **Yes** |
 | 4 | No `Cross-Origin-Opener-Policy` header | Low | **Yes** (`same-origin-allow-popups`) |
 | 5 | `access-control-allow-origin: *` on `/` comes from Vercel's prerender/static serving, not our config | Info | No |
-| 6 | The CSP has no `script-src` | Medium | No. Recommendation below |
+| 6 | The CSP has no `script-src` | Medium | Follow-up: option C ships as `Content-Security-Policy-Report-Only` with `/api/csp-report`; not enforced yet (see below) |
 | 7 | Majors behind: none confirmed, and latest versions couldn't be checked | Info | No |
 | 8 | Next 16 deprecations: none found in code. `unstable_rethrow` is called 16 times in 10 files | Info | No |
 
@@ -151,6 +151,28 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
   - Leave `form-action` out: the comment in `next.config.ts` explains it would block the Google redirect.
   - Run it on staging for a week with the e2e walk, then make it enforcing.
   - Do the nonce CSP only if the app ever renders user-supplied HTML.
+
+### script-src CSP, report-only: shipped
+
+- **What ships.** Option C, sent as `Content-Security-Policy-Report-Only` from `next.config.ts` (built in `src/lib/csp.ts`), next to the unchanged enforced CSP. Browsers block nothing; they report what the policy would block. Production policy:
+
+  ```
+  default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;
+    font-src 'self'; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'self' blob:; manifest-src 'self';
+    frame-ancestors 'none'; base-uri 'self'; object-src 'none'; report-uri /api/csp-report; report-to csp-endpoint
+  ```
+
+  plus `Reporting-Endpoints: csp-endpoint="/api/csp-report"`. No `form-action`.
+- **Hosts.** The app loads no third-party host in the browser: `next/font/google` self-hosts the fonts at build, Supabase, Resend, Credly and Anthropic are called from the server only, and there is no `@vercel/analytics`, `speed-insights`, `next/script` or `next/image`. Preview builds (`VERCEL_ENV=preview`) add the Vercel Toolbar's hosts (`vercel.live`, `vercel.com`, `assets.vercel.com`, `wss://ws-us3.pusher.com`); `next dev` adds `'unsafe-eval'`.
+- **Reports.** `POST /api/csp-report` (`src/app/api/csp-report/route.ts`) takes `application/csp-report` and `application/reports+json` only, at most 64 KB, checked with Zod.
+  - It logs one `csp_violation` line per violation (at most 10 per request) with only `directive` and `blocked`: the blocked URL's hostname, or a keyword such as `inline`, `eval` or `data`. Never the URL, path, query, page, referrer, source file or sample.
+  - A report it can't use logs one `csp_report_dropped` line with a fixed `reason` (`content_type`, `too_large`, `bad_json`, `bad_shape`, `not_csp`).
+  - Log volume is capped per server, in memory: 100 lines per address and about 1,000 in all an hour, oldest addresses evicted first. There is no shared database limit on purpose: a write per public report would be the cheapest way to make the app write to the database.
+  - No session, no cookies, no origin check. Always 204.
+- **Reading the reports.** Vercel keeps runtime logs only briefly on Hobby, so there are no days of history to look back on. Read them live: Vercel dashboard → the project → Logs, production, filter on `csp_violation` (and `csp_report_dropped`), during Testing Run 6 and at spot checks.
+  - Judge by spread, not raw counts: anyone can post fake reports, so one address repeating a host means little. A real problem shows the same `directive` and `blocked` from many addresses and pages.
+  - Expected noise: browser extensions (`chrome-extension`, `moz-extension`, `safari-web-extension`), scripts injected by ISPs or antivirus, and the Vercel Toolbar (`vercel.live`), which team members signed in to Vercel may see on production too.
+- **Switch to enforce when:** the live reads across Testing Run 6 and the spot checks show only known causes that are fixed or accepted, such as extensions; or, once the log drain is set up (launch readiness item 6), a few days of drained reports show the same. Then rename the header to `Content-Security-Policy`, merge it with the enforced one, and keep `report-uri`/`report-to` so new violations still show.
 
 ## 4. Next 16 deprecations (code search; the build log needs auth)
 
