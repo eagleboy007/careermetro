@@ -261,7 +261,7 @@ describe.skipIf(!db)("interviews (database)", () => {
     // Arrivals shows it to answer; never who booked it.
     const [app] = await myApplications(s.me, at());
     expect(app.interviews).toEqual([
-      { id: one.interviewId, round: "team", day: "2026-10-14", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false },
+      { id: one.interviewId, round: "team", day: "2026-10-14", startsAt: "2026-10-14T05:30:00.000Z", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false },
     ]);
     expect(await respondToInterview(s.hr, { interviewId: one.interviewId, answer: "accept", sharePhone: false }, at())).toMatchObject({ ok: false, error: "not_found" });
 

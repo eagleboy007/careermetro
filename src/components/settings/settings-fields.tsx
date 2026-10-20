@@ -283,6 +283,20 @@ export function NotificationFields() {
   const s = draft.settings;
   return (
     <>
+      {/* v44 gap list item 38: English is the only language, so nothing is stored. */}
+      <label className="flex max-w-[320px] flex-col gap-1.5">
+        <span className="text-[0.82rem] font-semibold">Language</span>
+        <select
+          defaultValue="en"
+          disabled={!editable}
+          className="min-h-11 rounded-md border border-line-strong bg-bg px-3 text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70"
+        >
+          <option value="en">English</option>
+          <option value="hi" disabled>
+            Hindi (coming later)
+          </option>
+        </select>
+      </label>
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         These apply once CareerMetro starts sending email. Nothing is sent yet; we keep your choices for then.
       </p>

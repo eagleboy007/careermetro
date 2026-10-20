@@ -345,6 +345,19 @@ export async function myApplications(userId: string, deps: { db?: Db; now?: Date
   }));
 }
 
+/**
+ * What each of the person's closed (Not this time, not withdrawn) applications' jobs asked for: required skills and
+ * "one of these" groups, for the line linking a closed role to a goal on Arrivals (v44 gap list item 47).
+ */
+export async function closedJobRequirements(userId: string, db: Db = getDb()): Promise<{ applicationId: string; requirements: { required: string[]; oneOf: string[][] } }[]> {
+  const rows = await db
+    .select({ applicationId: applications.id, requirements: jobs.requirements })
+    .from(applications)
+    .innerJoin(jobs, eq(jobs.id, applications.jobId))
+    .where(and(eq(applications.userId, userId), eq(applications.stage, "not_this_time"), isNull(applications.withdrawnAt)));
+  return rows.map((r) => ({ applicationId: r.applicationId, requirements: { required: r.requirements.required, oneOf: r.requirements.oneOf } }));
+}
+
 /** How many of the person's applications are on Arrivals and not withdrawn: the count on Arrivals in the top bar. */
 export async function arrivalsCount(userId: string, db: Db = getDb()): Promise<number> {
   const [row] = await db

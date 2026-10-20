@@ -261,8 +261,8 @@ export const exampleApplications: MyApplicationView[] = [
     events: exampleCandidate.events,
     phoneShared: true,
     interviews: [
-      { id: "iv0", round: "team", day: "2026-10-09", when: "Fri 9 Oct, 15:00", range: "15:00 to 15:30", minutes: 30, status: "done", canRespond: false, phoneShared: false },
-      { id: "iv1", round: "team", day: "2026-10-14", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:45", minutes: 45, status: "accepted", canRespond: false, phoneShared: true },
+      { id: "iv0", round: "team", day: "2026-10-09", startsAt: "2026-10-09T09:30:00.000Z", when: "Fri 9 Oct, 15:00", range: "15:00 to 15:30", minutes: 30, status: "done", canRespond: false, phoneShared: false },
+      { id: "iv1", round: "team", day: "2026-10-14", startsAt: "2026-10-14T05:30:00.000Z", when: "Wed 14 Oct, 11:00", range: "11:00 to 11:45", minutes: 45, status: "accepted", canRespond: false, phoneShared: true },
     ],
   },
   {
@@ -276,7 +276,7 @@ export const exampleApplications: MyApplicationView[] = [
     withdrawn: false,
     events: [{ kind: "applied", stage: "applied", on: "2026-10-10", note: null }],
     phoneShared: false,
-    interviews: [{ id: "iv3", round: "team", day: "2026-10-19", when: "Mon 19 Oct, 16:00", range: "16:00 to 16:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false }],
+    interviews: [{ id: "iv3", round: "team", day: "2026-10-19", startsAt: "2026-10-19T10:30:00.000Z", when: "Mon 19 Oct, 16:00", range: "16:00 to 16:30", minutes: 30, status: "proposed", canRespond: true, phoneShared: false }],
   },
   {
     id: "a5",
