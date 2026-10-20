@@ -52,6 +52,16 @@ export function ProfileConnect({
   }, [focusTick]);
   const first = name.split(" ")[0];
   const busy = pending || undefined;
+  // Cancel closes the panel and puts focus back on the button that opened it, never on the page (WCAG 2.4.3).
+  const buttons = useRef<HTMLDivElement>(null);
+  const [back, setBack] = useState<{ kind: NonNullable<Panel>; n: number } | null>(null);
+  useEffect(() => {
+    if (back) buttons.current?.querySelector<HTMLButtonElement>(`[data-opens="${back.kind}"]`)?.focus();
+  }, [back]);
+  const cancel = () => {
+    if (panel) setBack((b) => ({ kind: panel, n: (b?.n ?? 0) + 1 }));
+    setPanel(null);
+  };
 
   const run = (work: (a: ProfileConnectActions) => Promise<string | null>, next: ConnectionState | null | (() => ConnectionState), words: string | (() => string)) => {
     if (pending) return;
@@ -87,10 +97,10 @@ export function ProfileConnect({
 
   return (
     <section aria-label={`You and ${name}`} className="flex flex-col gap-3 rounded-[14px] border border-line bg-surface px-3.5 py-3" data-profile-connect>
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div ref={buttons} className="flex flex-wrap items-center gap-1.5">
         {state === "connected" ? (
           <>
-            <button type="button" className={ink} aria-disabled={busy} aria-expanded={panel === "message"} onClick={() => setPanel("message")}>
+            <button type="button" className={ink} aria-disabled={busy} aria-expanded={panel === "message"} data-opens="message" onClick={() => setPanel("message")}>
               <MessageSquare {...ICON} />
               Message
             </button>
@@ -98,7 +108,7 @@ export function ProfileConnect({
               <Check {...ICON} />
               Connected
             </span>
-            <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "remove"} onClick={() => setPanel("remove")}>
+            <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "remove"} data-opens="remove" onClick={() => setPanel("remove")}>
               <UserMinus {...ICON} />
               Remove connection
             </button>
@@ -118,21 +128,21 @@ export function ProfileConnect({
               <Clock {...ICON} />
               Requested
             </span>
-            <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "withdraw"} onClick={() => setPanel("withdraw")}>
+            <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "withdraw"} data-opens="withdraw" onClick={() => setPanel("withdraw")}>
               Withdraw
             </button>
           </>
         ) : (
-          <button type="button" className={ink} aria-disabled={busy} aria-expanded={panel === "pick"} onClick={() => setPanel("pick")}>
+          <button type="button" className={ink} aria-disabled={busy} aria-expanded={panel === "pick"} data-opens="pick" onClick={() => setPanel("pick")}>
             <Plus {...ICON} />
             Connect
           </button>
         )}
-        <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "block"} onClick={() => setPanel("block")}>
+        <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "block"} data-opens="block" onClick={() => setPanel("block")}>
           <Ban {...ICON} />
           Block
         </button>
-        <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "report"} onClick={() => setPanel("report")}>
+        <button type="button" className={quiet} aria-disabled={busy} aria-expanded={panel === "report"} data-opens="report" onClick={() => setPanel("report")}>
           <Flag {...ICON} />
           Report
         </button>
@@ -159,14 +169,14 @@ export function ProfileConnect({
             <button type="button" className={ink} aria-disabled={busy} onClick={send}>
               Send request
             </button>
-            <button type="button" className={quiet} onClick={() => setPanel(null)}>
+            <button type="button" className={quiet} onClick={cancel}>
               Cancel
             </button>
           </div>
         </div>
       )}
       {panel === "message" && (
-        <MessageBox name={first} busy={busy} onSend={(body) => run((a) => a.message(personId, body), null, `Sent to ${first}. The chat is in your Inbox.`)} onCancel={() => setPanel(null)} />
+        <MessageBox name={first} busy={busy} onSend={(body) => run((a) => a.message(personId, body), null, `Sent to ${first}. The chat is in your Inbox.`)} onCancel={cancel} />
       )}
       {panel === "withdraw" && (
         <Confirm
@@ -175,7 +185,7 @@ export function ProfileConnect({
           yes="Withdraw"
           busy={busy}
           onYes={() => run((a) => a.withdraw(personId), "none", `Request to ${first} withdrawn.`)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
         />
       )}
       {panel === "remove" && (
@@ -185,7 +195,7 @@ export function ProfileConnect({
           yes="Remove"
           busy={busy}
           onYes={() => run((a) => a.remove(personId), "none", `${first} removed from your connections.`)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
         />
       )}
       {panel === "report" && (
@@ -193,7 +203,7 @@ export function ProfileConnect({
           name={name}
           busy={busy}
           onSend={(reason, note) => run((a) => a.report(personId, reason, note), null, `Report sent. Our team reviews it; ${first} isn't told who reported.`)}
-          onCancel={() => setPanel(null)}
+          onCancel={cancel}
         />
       )}
       {panel === "block" && (
@@ -203,7 +213,7 @@ export function ProfileConnect({
           yes="Block"
           busy={busy}
           onYes={() => run((a) => a.block(personId), null, `${first} is blocked.`)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
         />
       )}
 

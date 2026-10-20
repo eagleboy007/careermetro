@@ -109,7 +109,7 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
 
         {mode === "file" ? (
           <label
-            className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-line bg-bg px-4 py-8 text-center hover:border-ink"
+            className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-line bg-bg px-4 py-8 text-center hover:border-ink focus-within:border-ink focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();

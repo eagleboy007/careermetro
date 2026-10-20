@@ -882,6 +882,37 @@ await step("library: goal cards, the details panel, search and filters, Finished
 // opens the post in a new tab and asks "Did you apply?", and Yes starts the tracker. After a reload both lists still
 // have the role. Once the role closes on its board it leaves All and stays in Saved with "Closed on the company's
 // board". The other post stays open and unapplied, so the Express apply step later still finds Apply on company site.
+await step("hardening: the Library's broken-link menu opens with Enter and closes with Escape", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/library");
+    await settled();
+    const main = p.locator("main").first();
+    await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    const toggle = panel.getByRole("button", { name: "Link broken or out of date?" });
+    if (!(await toggle.count())) {
+      const rows = main.locator("li button[aria-controls]");
+      if (!(await rows.count())) throw new Error("the Library lists nothing to open");
+      await rows.first().click();
+      await toggle.waitFor({ timeout: 5000 });
+    }
+    await toggle.focus();
+    await p.keyboard.press("Enter");
+    const reasons = panel.getByRole("group", { name: /^Report / });
+    await reasons.waitFor({ timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.closest('[role="group"]')?.getAttribute("aria-label")?.startsWith("Report ") === true, null, { timeout: 5000 });
+    await p.keyboard.press("Escape");
+    await reasons.waitFor({ state: "detached", timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Link broken or out of date?", null, { timeout: 5000 });
+    if ((await toggle.getAttribute("aria-expanded")) !== "false") throw new Error("the menu button still says it is open");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+  }
+});
 await step("departures: live roles, Updated, save, apply on the company site, Saved and Applied after a reload, a closed role", async () => {
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
   const { default: postgres } = await import("postgres");
@@ -944,6 +975,12 @@ await step("departures: live roles, Updated, save, apply on the company site, Sa
     await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
     await p.setViewportSize({ width: 390, height: 844 });
     await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks; the reload goes back to All.
+    await p.reload();
+    await settled();
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("Departures scrolls sideways at 390px (dark)");
     await a11y("departures-live-closed-phone-dark");
     await shot("departures-live-closed-phone-dark");
     await tabs.getByRole("button", { name: /^All/ }).click();
@@ -1860,6 +1897,11 @@ await step("notifications: a connection request rings the bell, opening it clear
     await qa.setViewportSize({ width: 360, height: 780 });
     for (const scheme of ["light", "dark"]) {
       await qa.emulateMedia({ colorScheme: scheme });
+      // Reload so every colour is drawn in this scheme from the start, as on the other dark checks.
+      await qa.reload();
+      // Wait for hydration, so the click opens the panel.
+      await qa.waitForLoadState("networkidle");
+      await bell.waitFor({ timeout: 10000 });
       await bell.click();
       await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).waitFor({ timeout: 10000 });
       if (await qa.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`the panel scrolls sideways at 360px (${scheme})`);
@@ -4062,6 +4104,344 @@ await step("screening check: confirm a missing keyword, and it stays a weak gap"
   const card = p.locator("article").filter({ hasText: name }).first();
   await card.getByText("Weak evidence").waitFor({ timeout: 10000 });
   await shot("screening-confirmed");
+});
+// Hardening pass over the screens of #175 to #193 (docs/plans/hardening-pass.md): keyboard paths, axe in light and in
+// dark (each dark check reloads first), and no sideways scroll at 390px, where the steps above don't already check
+// them. Each step puts back what it changes. Kept together here, after the walk's own steps.
+const focusedHas = (q, attr, value) =>
+  q.waitForFunction(([a, v]) => document.activeElement?.getAttribute(a) === v, [attr, value], { timeout: 5000 });
+const fitsPhone = async (q, what) => {
+  const over = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  // 1px of slack for sub-pixel rounding, as "phone + dark today" allows.
+  if (over > 1) throw new Error(`${what} scrolls sideways at 390px (${over}px)`);
+};
+await step("hardening: Today with no resume, the role chips and the drop zone by keyboard, light, dark and phone", async () => {
+  const fresh = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await fresh.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await signInAs(q, "Nisha Rao", `nores-${testEmail}`);
+    await q.goto(BASE + "/today");
+    const chips = q.getByRole("group", { name: "Target role", exact: true });
+    await chips.waitFor({ timeout: 15000 });
+    await q.waitForLoadState("networkidle");
+    // Space presses a chip; Tab goes on to the next one; Enter presses that one instead.
+    await chips.getByRole("button", { name: "Cyber Security Analyst", exact: true }).focus();
+    await q.keyboard.press("Space");
+    await chips.getByRole("button", { name: "Cyber Security Analyst", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Tab");
+    await q.waitForFunction(() => document.activeElement?.textContent?.trim() === "Data Analyst", null, { timeout: 5000 });
+    await q.keyboard.press("Enter");
+    await chips.getByRole("button", { name: "Data Analyst", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+    if ((await chips.getByRole("button", { pressed: true }).count()) !== 1) throw new Error("more than one target role is pressed");
+    // Paste text and back by keyboard, then Tab reaches the file box, which shows where focus is.
+    const how = q.getByRole("group", { name: "How to add your resume" });
+    await how.getByRole("button", { name: "Paste text", exact: true }).focus();
+    await q.keyboard.press("Enter");
+    await q.getByRole("textbox", { name: "Your resume" }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Shift+Tab");
+    await q.keyboard.press("Space");
+    await q.getByRole("textbox", { name: "Your resume" }).waitFor({ state: "detached", timeout: 5000 });
+    await q.getByText("Drop your resume here", { exact: true }).waitFor({ timeout: 5000 });
+    await q.keyboard.press("Tab");
+    await q.keyboard.press("Tab");
+    if ((await q.evaluate(() => document.activeElement?.getAttribute("type"))) !== "file") throw new Error("Tab doesn't reach the file box after the two buttons");
+    const ring = await q.evaluate(() => getComputedStyle(document.activeElement.closest("label")).outlineStyle);
+    if (ring === "none") throw new Error("the drop zone shows no focus ring");
+    await axeOn(q, "hardening-today-no-resume");
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await chips.waitFor({ timeout: 15000 });
+    await axeOn(q, "hardening-today-no-resume-dark");
+    await q.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["dark", "light"]) {
+      await q.emulateMedia({ colorScheme: scheme });
+      await q.reload();
+      await chips.waitFor({ timeout: 15000 });
+      await fitsPhone(q, `Today with no resume (${scheme})`);
+    }
+    await axeOn(q, "hardening-today-no-resume-phone");
+  } finally {
+    await fresh.close();
+  }
+});
+await step("hardening: the Life line by keyboard, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const openLife = async () => {
+      await p.goto(BASE + "/map");
+      await settled();
+      const life = p.getByRole("group", { name: "Which map" }).getByRole("button", { name: "Life line", exact: true });
+      await life.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+      await life.focus();
+      await p.keyboard.press("Enter");
+      await p.getByRole("group", { name: "Which map" }).getByRole("button", { name: "Life line", exact: true, pressed: true }).waitFor({ timeout: 5000 });
+      await p.getByRole("group", { name: "Time range" }).waitFor({ timeout: 10000 });
+      await p.locator('main svg g[role="button"]').first().waitFor({ timeout: 10000 });
+    };
+    await openLife();
+    // A moment opens with Enter, and its panel replaces "Your big moments".
+    const details = p.getByRole("complementary", { name: "Moment details" });
+    await details.getByRole("heading", { name: "Your big moments", level: 3 }).waitFor({ timeout: 10000 });
+    const station = p.locator('main svg g[role="button"]').first();
+    await station.focus();
+    await p.keyboard.press("Enter");
+    await p.locator('main svg g[role="button"][aria-pressed="true"]').waitFor({ timeout: 5000 });
+    await details.getByRole("heading", { name: "Your big moments", level: 3 }).waitFor({ state: "detached", timeout: 5000 });
+    await a11y("hardening-life-line");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await openLife();
+    await a11y("hardening-life-line-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await openLife();
+    await fitsPhone(p, "the Life line (dark)");
+    await a11y("hardening-life-line-phone-dark");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Report and Connect on a profile by keyboard, Cancel gives focus back, light, dark and phone", async () => {
+  const other = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const r = await other.newPage();
+  r.on("pageerror", (e) => problems.push(`pageerror@${r.url()}: ${e.message.slice(0, 200)}`));
+  r.on("response", (res) => res.status() >= 500 && problems.push(`${res.status()} ${res.request().method()} ${res.url()}`));
+  const NAME = "Kiran Joshi";
+  const handle = `kiran-${Date.now().toString(36)}`;
+  try {
+    await signInAs(r, NAME, `report-${testEmail}`);
+    // Kiran opens their profile to everyone signed in, so the walk's person can open it.
+    await r.goto(BASE + "/settings");
+    await r.getByLabel("Username").fill(handle);
+    await r.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+    await r.getByLabel("Everyone signed in").check({ force: true });
+    await r.getByRole("button", { name: "Save changes" }).click();
+    await r.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const you = p.getByRole("region", { name: `You and ${NAME}`, exact: true });
+    const open = async () => {
+      await p.goto(BASE + `/u/${handle}`);
+      await you.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+    };
+    await open();
+    // Report: Enter opens the form with focus on its first reason; Tab reaches Send report then Cancel; Cancel puts
+    // focus back on Report. Nothing is sent.
+    const report = you.getByRole("button", { name: "Report", exact: true });
+    const form = you.getByRole("form", { name: `Report ${NAME}` });
+    const openReport = async () => {
+      await report.focus();
+      await p.keyboard.press("Enter");
+      await form.waitFor({ timeout: 5000 });
+      await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "radio", null, { timeout: 5000 });
+    };
+    const cancelReport = async () => {
+      await form.getByRole("button", { name: "Cancel", exact: true }).focus();
+      await p.keyboard.press("Enter");
+      await form.waitFor({ state: "detached", timeout: 5000 });
+      await focusedHas(p, "data-opens", "report");
+    };
+    await openReport();
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.tagName === "TEXTAREA", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Send report", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Cancel", null, { timeout: 5000 });
+    await a11y("hardening-profile-report");
+    await cancelReport();
+    // Connect: the how-you-know pick opens inline; Cancel puts focus back on Connect, and no request goes.
+    await you.getByRole("button", { name: "Connect", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    const pick = you.getByRole("group", { name: `How you know ${NAME}` });
+    await pick.waitFor({ timeout: 5000 });
+    await pick.getByRole("button", { name: "Cancel", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    await pick.waitFor({ state: "detached", timeout: 5000 });
+    await focusedHas(p, "data-opens", "pick");
+    if (await you.getByText("Requested", { exact: true }).count()) throw new Error("Cancel sent a connection request");
+
+    await p.emulateMedia({ colorScheme: "dark" });
+    await open();
+    await openReport();
+    await a11y("hardening-profile-report-dark");
+    await cancelReport();
+    await p.setViewportSize({ width: 390, height: 844 });
+    for (const scheme of ["dark", "light"]) {
+      await p.emulateMedia({ colorScheme: scheme });
+      await open();
+      await openReport();
+      await fitsPhone(p, `a profile with Report open (${scheme})`);
+      await cancelReport();
+    }
+  } finally {
+    await other.close();
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Network's tabs and Find people by keyboard, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/network");
+    await settled();
+    const tabs = p.getByRole("tablist", { name: "Your network" });
+    await tabs.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    // Arrow keys move along the tabs, and only the selected tab is in the Tab order.
+    await tabs.getByRole("tab", { selected: true }).focus();
+    const find = tabs.getByRole("tab", { name: /^Find/ });
+    for (let k = 0; k < 4 && (await find.getAttribute("aria-selected")) !== "true"; k++) await p.keyboard.press("ArrowRight");
+    if ((await find.getAttribute("aria-selected")) !== "true") throw new Error("ArrowRight never reached Find people");
+    if ((await p.evaluate(() => document.activeElement?.getAttribute("role"))) !== "tab") throw new Error("focus left the tabs on ArrowRight");
+    // Tab goes from the tab to the search box, which shows where focus is, then Search, then the first filter.
+    await p.keyboard.press("Tab");
+    if ((await p.evaluate(() => document.activeElement?.getAttribute("type"))) !== "search") throw new Error("Tab from Find people doesn't reach the search box");
+    const ring = await p.evaluate(() => getComputedStyle(document.activeElement.closest("label")).outlineStyle);
+    if (ring === "none") throw new Error("the search box shows no focus ring");
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Search", null, { timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await focusedHas(p, "aria-pressed", "false");
+    // Before a search a filter only waits for one: Space turns it on and off, and nothing is sent.
+    await p.keyboard.press("Space");
+    await focusedHas(p, "aria-pressed", "true");
+    await p.keyboard.press("Space");
+    await focusedHas(p, "aria-pressed", "false");
+    await a11y("hardening-network-find");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await tabs.waitFor({ timeout: 10000 });
+    await a11y("hardening-network-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.reload();
+    await settled();
+    await tabs.waitFor({ timeout: 10000 });
+    await fitsPhone(p, "Network (dark)");
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: the avatar menu by keyboard, Escape gives focus back, light, dark and phone", async () => {
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    const avatar = p.getByRole("button", { name: /, open menu/ });
+    const profile = p.locator("header").getByRole("link", { name: "Your profile", exact: true });
+    const openMenu = async () => {
+      await p.goto(BASE + "/me");
+      await settled();
+      await avatar.waitFor({ timeout: 10000 });
+      await p.waitForLoadState("networkidle");
+      await avatar.focus();
+      await p.keyboard.press("Enter");
+      await profile.waitFor({ timeout: 5000 });
+      if ((await avatar.getAttribute("aria-expanded")) !== "true") throw new Error("the avatar button doesn't say the menu is open");
+    };
+    const escape = async () => {
+      await p.keyboard.press("Escape");
+      await profile.waitFor({ state: "hidden", timeout: 5000 });
+      await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label")?.includes(", open menu") === true, null, { timeout: 5000 });
+    };
+    await openMenu();
+    // Tab goes into the menu, at its first link.
+    await p.keyboard.press("Tab");
+    await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Your profile", null, { timeout: 5000 });
+    await a11y("hardening-avatar-menu");
+    await escape();
+    await p.emulateMedia({ colorScheme: "dark" });
+    await openMenu();
+    await a11y("hardening-avatar-menu-dark");
+    await escape();
+    // On a phone, Network and Library are in the menu, and the open menu fits.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await openMenu();
+    const menu = p.locator("header");
+    await menu.getByRole("link", { name: /^Network/ }).waitFor({ timeout: 5000 });
+    await menu.getByRole("link", { name: /^Library/ }).waitFor({ timeout: 5000 });
+    await fitsPhone(p, "the open avatar menu (dark)");
+    await a11y("hardening-avatar-menu-phone-dark");
+    await escape();
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: job search by keyboard on Departures, the notice card in dark at phone width", async () => {
+  const sw = p.getByRole("checkbox", { name: "Looking for a job", exact: true });
+  const off = p.getByRole("region", { name: "Job search is off" });
+  try {
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.goto(BASE + "/arrivals");
+    await settled();
+    await p.getByRole("region", { name: "Notice period" }).waitFor({ timeout: 10000 });
+    await fitsPhone(p, "Arrivals with the notice card (dark)");
+    await a11y("hardening-arrivals-notice-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.goto(BASE + "/departures");
+    await settled();
+    await sw.waitFor({ state: "attached", timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    if (!(await sw.isChecked())) throw new Error("job search is off before this step");
+    // Space on the switch turns job search off; the paused page's switch has focus.
+    await sw.focus();
+    await p.keyboard.press("Space");
+    await off.waitFor({ timeout: 10000 });
+    await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+    await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
+    await p.reload();
+    await settled();
+    await p.waitForLoadState("networkidle");
+    await off.waitFor({ timeout: 10000 });
+    await a11y("hardening-departures-search-off-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await fitsPhone(p, "Departures with job search off (dark)");
+    // Space again turns it back on.
+    await sw.focus();
+    await p.keyboard.press("Space");
+    await p.getByText("Job search is on. Departures and Arrivals are back.", { exact: true }).waitFor({ timeout: 10000 });
+    await off.waitFor({ state: "detached", timeout: 10000 });
+  } finally {
+    // Whatever failed above, the walk's person ends with job search on.
+    try {
+      await p.goto(BASE + "/departures");
+      await settled();
+      await p.waitForLoadState("networkidle");
+      if (await off.count()) {
+        await sw.click({ force: true });
+        await off.waitFor({ state: "detached", timeout: 10000 });
+      }
+    } catch {
+      // Best effort: the step has already failed and said why.
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
+await step("hardening: Settings, Match, Interview prep, Elite and the Inbox in dark at phone width", async () => {
+  try {
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    for (const path of ["/settings", "/match", "/mock", "/elite", "/inbox"]) {
+      await p.goto(BASE + path);
+      await settled();
+      await p.locator("main").first().waitFor({ timeout: 10000 });
+      await fitsPhone(p, `${path} (dark)`);
+      await a11y(`hardening${path.replace("/", "-")}-phone-dark`);
+    }
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
 });
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
