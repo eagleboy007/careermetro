@@ -2,6 +2,7 @@
 
 import { Check, Plus, Quote, X } from "lucide-react";
 import { useState } from "react";
+import { ResumeDownload } from "@/components/resume/resume-download";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
 import type { Profile } from "@/lib/schemas";
@@ -61,8 +62,21 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
 }
 
 /** FR-6: the parsed profile, editable, confirmed by the user before any analysis. */
-/** `demo` skips the network call, for the /design page. */
-export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: string; initial: Profile; demo?: boolean }) {
+/**
+ * `demo` skips the network call, for the /design page. `download` (only while the resume isn't confirmed yet, since the
+ * page shows the download itself once it is) offers the FR-20 download as soon as "Looks right" saves.
+ */
+export function ProfileEditor({
+  resumeId,
+  initial,
+  demo = false,
+  download,
+}: {
+  resumeId: string;
+  initial: Profile;
+  demo?: boolean;
+  download?: { named: boolean };
+}) {
   const [profile, setProfile] = useState<Profile>(initial);
   const [newSkill, setNewSkill] = useState("");
   const [state, setState] = useState<State>({ kind: "editing" });
@@ -275,18 +289,21 @@ export function ProfileEditor({ resumeId, initial, demo = false }: { resumeId: s
           </p>
         )}
         {state.kind === "saved" ? (
-          <div role="status" className="flex flex-col gap-1 rounded-lg border border-line bg-surface p-4">
-            <p className="flex items-center gap-2 font-semibold">
-              <Check size={18} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
-              Saved
-            </p>
-            <p className="text-sm text-muted">Next, pick the role you&apos;re aiming for and see your gaps.</p>
-            {!demo && (
-              <ButtonLink href={`/resume/${resumeId}/role`} className="mt-2 self-start">
-                Pick a role
-              </ButtonLink>
-            )}
-          </div>
+          <>
+            <div role="status" className="flex flex-col gap-1 rounded-lg border border-line bg-surface p-4">
+              <p className="flex items-center gap-2 font-semibold">
+                <Check size={18} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
+                Saved
+              </p>
+              <p className="text-sm text-muted">Next, pick the role you&apos;re aiming for and see your gaps.</p>
+              {!demo && (
+                <ButtonLink href={`/resume/${resumeId}/role`} className="mt-2 self-start">
+                  Pick a role
+                </ButtonLink>
+              )}
+            </div>
+            {download && !demo && <ResumeDownload resumeId={resumeId} named={download.named} />}
+          </>
         ) : (
           <Button type="button" onClick={save} disabled={state.kind === "saving"} className="self-start">
             {state.kind === "saving" ? "Saving…" : "Looks right"}
