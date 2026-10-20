@@ -11,8 +11,43 @@ const TRACKING = /^(utm_.*|ref|aff.*|tag|fbclid|gclid)$/i;
 
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
-/** Link shorteners hide where a link goes, so an admin can't see the real site before opening it (T88). */
-const SHORTENERS: readonly string[] = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly", "rebrand.ly", "cutt.ly", "shorturl.at"];
+/**
+ * Link shorteners hide where a link goes, so an admin can't see the real site before opening it (T88, T99). The common
+ * public ones; youtu.be is left out on purpose, as it only ever opens YouTube.
+ */
+export const SHORTENERS: readonly string[] = [
+  "bit.ly",
+  "bit.do",
+  "tinyurl.com",
+  "tiny.cc",
+  "t.co",
+  "t.ly",
+  "goo.gl",
+  "forms.gle",
+  "ow.ly",
+  "is.gd",
+  "v.gd",
+  "buff.ly",
+  "rebrand.ly",
+  "bl.ink",
+  "short.io",
+  "cutt.ly",
+  "shorturl.at",
+  "rb.gy",
+  "lnkd.in",
+  "s.id",
+  "tr.im",
+  "x.co",
+  "db.tt",
+  "amzn.to",
+  "qr.ae",
+  "adf.ly",
+  "shorte.st",
+  "bc.vc",
+  "po.st",
+  "mcaf.ee",
+  "su.pr",
+];
 
 /** True for a known link shortener, or a name under one (www.bit.ly). */
 export function shortenerHost(host: string): boolean {

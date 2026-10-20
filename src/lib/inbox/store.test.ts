@@ -2,6 +2,7 @@ import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, describe, expect, it, vi } from "vitest";
+import { directChatLock } from "@/db/lock";
 import * as schema from "@/db/schema";
 import { reportDeadlines } from "@/lib/schemas/inbox";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
@@ -175,6 +176,36 @@ describe.skipIf(!db)("inbox store (database)", () => {
     expect(await startDirect(a, b, "Through the other door", { db: db!, now })).toEqual({ ok: false, error: "limit" });
     // The limit is the sender's own: the other person still replies.
     expect((await sendMessage(b, id, "Reply", { db: db!, now })).ok).toBe(true);
+  });
+
+  it("picks the limit under the lock, so a connection removed just before sends a request, not a direct message (T98)", async () => {
+    const a = await person("Asha Rao");
+    const b = await person("Vikram Singh");
+    await db!.insert(schema.connections).values({ userLow: a < b ? a : b, userHigh: a < b ? b : a, how: "other" });
+    const now = new Date();
+    // The day's direct messages used up: only the request limit has room.
+    await Promise.all(Array.from({ length: LIMITS.directMessagesPerUserDay.max }, () => takeShared(LIMITS.directMessagesPerUserDay, a, { db: db!, now: now.getTime() })));
+    // Another transaction holds the chat's lock and removes the connection, as removeConnection does.
+    let release = () => {};
+    let locked = () => {};
+    const held = new Promise<void>((r) => (locked = r));
+    const gate = new Promise<void>((r) => (release = r));
+    const holder = db!.transaction(async (tx) => {
+      await directChatLock(a, b, tx);
+      await tx.delete(schema.connections).where(inArray(schema.connections.userLow, [a, b]));
+      locked();
+      await gate;
+    });
+    await held;
+    // The first look still sees the connection (the delete isn't committed); the send then waits on the lock.
+    const sending = startDirect(a, b, "Hi Vikram", { db: db!, now });
+    await new Promise((r) => setTimeout(r, 300));
+    release();
+    await holder;
+    const sent = await sending;
+    expect(sent.ok).toBe(true);
+    const [mine] = await listThreads(a, deps());
+    expect(mine).toMatchObject({ kind: "person", state: "waiting" });
   });
 
   describe("message requests switch (FR-55, gap list item 33)", () => {

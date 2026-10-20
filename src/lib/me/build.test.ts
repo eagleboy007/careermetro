@@ -274,6 +274,24 @@ describe("what the person added on Me", () => {
       ]);
   });
 
+  it("gives the shared badge to the row the check was made on, whichever is current now (T95)", () => {
+    // The check passed on the resume's Analyst at Acme from 2024-01 while it was current; it has ended since, and an
+    // added CTO role at Acme from 2024-01 is current. Both write the company the same.
+    const ended = profile({ roles: [{ title: "Analyst", employer: "Acme", start: "2024-01", end: "2025-06", highlights: [] }] });
+    const cto = { id: ids.role, title: "CTO", employer: "Acme", startMonth: "2024-01", endMonth: null, isCurrent: true };
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2025-03-01T00:00:00Z"), employer: "Acme" };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    expect(badges(meFromProfile(input({ profile: ended, added: added({ roles: [cto] }), jobChecks: [{ ...passed, source: "resume" }] })))).toEqual([
+      ["Analyst", "verified_while_there"],
+      ["CTO", null],
+    ]);
+    // Made on the added row: it stays there, even with the resume role current and written the same.
+    expect(badges(meFromProfile(input({ profile: resume, added: added({ roles: [cto] }), jobChecks: [{ ...passed, source: "added" }] })))).toEqual([
+      ["Analyst", null],
+      ["CTO", "verified"],
+    ]);
+  });
+
   it("puts added education after the resume's, with its row id", () => {
     const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
     expect(me.education).toEqual([
