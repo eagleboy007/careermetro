@@ -10,6 +10,7 @@ import {
   usernameProblem,
 } from "@/lib/account/username";
 import { GAPS_VISIBLE_TO, PERSON_CITIES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS } from "./constants";
+export { NOTICE_DAYS, type NoticeDays } from "./constants";
 export { PERSON_CITIES, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS, type PersonCity } from "./constants";
 
 /**
@@ -132,6 +133,46 @@ export const settingsInput = z.object({
   expectedPay: payInput,
   settings: userSettings,
 });
+
+/*
+ * Job search switch and notice period (handoff 6, docs/plans/job-search-plan.md). Saved at once, apart from the settings
+ * form, from Departures, Arrivals, Me and Settings. Never logged, never on a profile, never sent to a company.
+ */
+
+/** "Looking for a job": on or off. */
+export const jobSearchInput = z.boolean();
+
+/** A calendar date, YYYY-MM-DD, that exists. */
+const calendarDay = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine((d) => {
+    const t = new Date(`${d}T00:00:00Z`);
+    return !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d && d >= "2000-01-01";
+  });
+
+export const noticeDays = z.union([z.literal(15), z.literal(30), z.literal(60), z.literal(90)]);
+
+/**
+ * The notice period card: the days (null clears them) and the resignation date (null stops the countdown). A date needs
+ * the days. The server also refuses a date later than today in India, which this schema can't know.
+ */
+export const noticeInput = z
+  .strictObject({ days: noticeDays.nullable(), resignedOn: calendarDay.nullable() })
+  .refine((v) => v.resignedOn === null || v.days !== null, { message: "Pick your notice period first.", path: ["days"] });
+
+/** What the screens get: the switch (no row is on) and the notice period as saved. */
+export const jobSearchView = z.strictObject({
+  on: z.boolean(),
+  noticeDays: noticeDays.nullable(),
+  resignedOn: calendarDay.nullable(),
+});
+
+/** Everyone starts with job search on and no notice period. */
+export const DEFAULT_JOB_SEARCH: JobSearchView = { on: true, noticeDays: null, resignedOn: null };
+
+export type NoticeInput = z.infer<typeof noticeInput>;
+export type JobSearchView = z.infer<typeof jobSearchView>;
 
 export type ProfileVisibility = z.infer<typeof profileVisibility>;
 export type PublicParts = z.infer<typeof publicParts>;

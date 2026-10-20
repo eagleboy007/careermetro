@@ -3,10 +3,12 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MePlanCard } from "@/components/elite/me-plan-card";
+import { JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
 import { MeView } from "@/components/me/me-view";
 import { readAccountSettings } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { planFor } from "@/lib/elite/store";
+import { jobSearchOn } from "@/lib/job-search/store";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile, whoSeesFor } from "@/lib/me/public";
 import { jobCheckOpen } from "@/lib/me/job-email-check";
@@ -14,13 +16,17 @@ import { meFor } from "@/lib/me/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTrends } from "@/lib/practice/fixtures";
 import { practiceTrendsFor } from "@/lib/practice/store";
-import { DEFAULT_SETTINGS, type PlanView } from "@/lib/schemas";
+import { DEFAULT_SETTINGS, type MeProfile, type PlanView } from "@/lib/schemas";
 import { switchEliteBadge } from "../elite/actions";
+import { switchJobSearch } from "../settings/job-search-actions";
 import { checkCertificateOnCredly, confirmJobCheckCode, sendJobCheckCode } from "./actions";
 
 export const metadata: Metadata = { title: "Your profile · CareerMetro", robots: { index: false } };
 
 const FREE: PlanView = { elite: false, badgeShown: false, since: null };
+
+/** "Working at …" while job search is off: the latest current role on the resume. */
+const currentEmployer = (me: MeProfile): string | null => me.experience.find((e) => e.current)?.employer ?? null;
 
 async function MeScreen() {
   await connection();
@@ -31,12 +37,21 @@ async function MeScreen() {
         <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
           Preview with example data. Your own profile appears here once you sign in and add your resume.
         </p>
-        <MeView me={exampleMe} others={publicProfile(exampleMe, DEFAULT_SETTINGS)} practice={exampleTrends} planCard={<MePlanCard plan={FREE} />} />
+        <JobSearchProvider initialOn>
+          <MeView
+            me={exampleMe}
+            others={publicProfile(exampleMe, DEFAULT_SETTINGS)}
+            practice={exampleTrends}
+            planCard={<MePlanCard plan={FREE} />}
+            status={<JobSearchStatus employer={currentEmployer(exampleMe)} />}
+            searchSwitches={<MeSearchSwitches />}
+          />
+        </JobSearchProvider>
       </div>
     );
   }
   const now = new Date();
-  const [me, saved, practice, plan] = await Promise.all([
+  const [me, saved, practice, plan, searching] = await Promise.all([
     meFor(account.id, now),
     readAccountSettings(account.id, now),
     // Practice confidence is a side section: if it can't be read, the rest of the profile still shows.
@@ -49,6 +64,11 @@ async function MeScreen() {
       logEvent("error", "elite_plan_failed", errorFields(error));
       return FREE;
     }),
+    // The status line and the switch are side parts too: if job search can't be read, it shows as on.
+    jobSearchOn(account.id).catch((error: unknown) => {
+      logEvent("error", "job_search_read_failed", errorFields(error));
+      return true;
+    }),
   ]);
   const settings = saved?.settings ?? DEFAULT_SETTINGS;
   const hidden = settings.visibility === "only_me" || !saved?.username;
@@ -57,19 +77,23 @@ async function MeScreen() {
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         {hidden
           ? "Only you can see this page. Pick a username and who can open your profile in Account settings."
-          : "Your stories, interests and status come next."}
+          : "Your stories and interests come next."}
       </p>
       {me && (
-        <MeView
-          me={me}
-          others={publicProfile(me, settings)}
-          whoSees={whoSeesFor(settings, saved?.username ?? null)}
-          practice={practice}
-          onCheckCertificate={checkCertificateOnCredly}
-          jobCheck={{ open: jobCheckOpen(), actions: { startJoin: sendJobCheckCode, finishJoin: confirmJobCheckCode } }}
-          eliteBadge={plan.badgeShown}
-          planCard={<MePlanCard plan={plan} onBadge={switchEliteBadge} />}
-        />
+        <JobSearchProvider initialOn={searching} action={switchJobSearch}>
+          <MeView
+            me={me}
+            others={publicProfile(me, settings)}
+            whoSees={whoSeesFor(settings, saved?.username ?? null)}
+            practice={practice}
+            onCheckCertificate={checkCertificateOnCredly}
+            jobCheck={{ open: jobCheckOpen(), actions: { startJoin: sendJobCheckCode, finishJoin: confirmJobCheckCode } }}
+            eliteBadge={plan.badgeShown}
+            planCard={<MePlanCard plan={plan} onBadge={switchEliteBadge} />}
+            status={<JobSearchStatus employer={currentEmployer(me)} />}
+            searchSwitches={<MeSearchSwitches />}
+          />
+        </JobSearchProvider>
       )}
     </div>
   );

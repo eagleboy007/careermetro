@@ -7,7 +7,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
-import { ELITE_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import { ELITE_CHANGES_PER_DAY, JOB_SEARCH_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -97,6 +97,8 @@ export const LIMITS = {
   mockSessionsPerUserDay: { bucket: "mock-session", max: MOCK_SESSIONS_PER_DAY, windowMs: 24 * HOUR },
   /** Mock interview sessions one person gets feedback on a day: each is one model call, inside its own daily budget. */
   mockFeedbackPerUserDay: { bucket: "mock-feedback", max: MOCK_FEEDBACK_PER_DAY, windowMs: 24 * HOUR },
+  /** "Looking for a job" and the notice period (docs/plans/job-search-plan.md): changes a day per person, each try counted. */
+  jobSearchChangesPerUserDay: { bucket: "job-search-change", max: JOB_SEARCH_CHANGES_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

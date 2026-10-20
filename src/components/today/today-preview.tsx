@@ -15,6 +15,7 @@ import type {
 } from "@/lib/schemas";
 import { USER_STATES } from "@/lib/schemas/constants";
 import { USER_STATE_LABELS } from "@/lib/today/fixtures";
+import { JobSearchBoardSlot } from "@/components/job-search/job-search";
 import { DeparturesBoard } from "./departures-board";
 import { GoalsCard } from "./goals-card";
 import { NoResumeHero, WhileYouDecide } from "./no-resume-hero";
@@ -124,7 +125,14 @@ export function TodayView({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
-        <DeparturesBoard rows={data.departures} locked={state === "no_resume"} allHref={departuresHref} />
+        {/* Inside a JobSearchProvider, job search off shows "Job search is off" in the board's place (handoff 6). */}
+        {state === "no_resume" ? (
+          <DeparturesBoard rows={data.departures} locked allHref={departuresHref} />
+        ) : (
+          <JobSearchBoardSlot>
+            <DeparturesBoard rows={data.departures} allHref={departuresHref} />
+          </JobSearchBoardSlot>
+        )}
         <TimetableTeaser events={data.events} />
         {state !== "no_resume" && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
       </div>

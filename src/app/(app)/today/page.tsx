@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
+import { JobSearchProvider } from "@/components/job-search/job-search";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
 import { TodayView, type TodayData } from "@/components/today/today-preview";
@@ -10,8 +11,10 @@ import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
 import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { USER_STATES, type UserState } from "@/lib/schemas";
+import { jobSearchOn } from "@/lib/job-search/store";
 import { greetingAt } from "@/lib/today/board";
 import { todayStateFor } from "@/lib/today/state";
+import { switchJobSearch } from "../settings/job-search-actions";
 import { addCertificate, saveWeeklyHours, tickRideTask } from "./actions";
 import {
   exampleDepartures,
@@ -67,7 +70,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
     );
   }
   // Signed in: the server picks the state from the person's own resume and gaps.
-  const found = await todayStateFor(account.id, new Date());
+  const [found, searching] = await Promise.all([todayStateFor(account.id, new Date()), jobSearchOn(account.id)]);
   const name = firstName(account.name);
   const own: TodayData =
     found.state === "first"
@@ -99,17 +102,20 @@ async function Today({ searchParams }: PageProps<"/today">) {
             ? "Your ride, goals, week and streak are your own. The other cards are example data until we build them."
             : "Add your resume to start. The cards below are example data until we build them."}
       </Banner>
-      <TodayView
-        state={found.state}
-        data={own}
-        // Only the No resume state shows the upload form; leaving it out otherwise keeps it out of the page's payload.
-        upload={found.state === "no_resume" ? <Upload key="upload" /> : null}
-        departuresHref="/departures"
-        mapHref="/map"
-        onToggleTask={tickRideTask}
-        onAddCertificate={addCertificate}
-        onHours={saveWeeklyHours}
-      />
+      {/* Job search off hides the Departures board (handoff 6): no board rows are sent, and the card says how to turn it on. */}
+      <JobSearchProvider initialOn={searching} action={switchJobSearch}>
+        <TodayView
+          state={found.state}
+          data={searching || found.state === "no_resume" ? own : { ...own, departures: [] }}
+          // Only the No resume state shows the upload form; leaving it out otherwise keeps it out of the page's payload.
+          upload={found.state === "no_resume" ? <Upload key="upload" /> : null}
+          departuresHref="/departures"
+          mapHref="/map"
+          onToggleTask={tickRideTask}
+          onAddCertificate={addCertificate}
+          onHours={saveWeeklyHours}
+        />
+      </JobSearchProvider>
     </div>
   );
 }

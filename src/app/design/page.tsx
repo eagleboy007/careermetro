@@ -48,6 +48,8 @@ import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
+import { JobSearchOffToday, JobSearchPaused, JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
+import { NoticeCard } from "@/components/job-search/notice-card";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
@@ -463,6 +465,38 @@ export default function DesignPage() {
         <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, false)} demo />
         <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Job search and notice period (signed in)</h2>
+        <p className="text-sm text-muted">
+          &quot;Looking for a job&quot; off: Departures (and Arrivals, the same card) show the header and the off card only, and Today shows its card in the
+          board&apos;s place. Turn on works here, nothing saves. Then the status line on Me, on and off, and Me&apos;s switches.
+        </p>
+        <JobSearchProvider initialOn={false}>
+          <JobSearchPaused title="Departures" lede="Roles from public company job boards and posts you paste, applied for on the company's site." />
+          <div className="max-w-md">
+            <JobSearchOffToday />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <JobSearchStatus employer="Konkan Co-operative Bank" />
+          </div>
+        </JobSearchProvider>
+        <JobSearchProvider initialOn>
+          <div className="flex max-w-xs flex-col gap-3">
+            <JobSearchStatus employer="Konkan Co-operative Bank" />
+            <MeSearchSwitches />
+          </div>
+        </JobSearchProvider>
+        <p className="text-sm text-muted">
+          The notice period card, private: no days yet, 30 days picked (I have resigned asks for the date, then Start countdown), and a countdown
+          from 1 Oct with 60 days, seen on 20 Oct (cobalt, since it is progress). Example data, so nothing saves.
+        </p>
+        <div className="grid max-w-3xl gap-4">
+          <NoticeCard initial={{ days: null, resignedOn: null }} today="2026-10-20" />
+          <NoticeCard initial={{ days: 30, resignedOn: null }} today="2026-10-20" />
+          <NoticeCard initial={{ days: 60, resignedOn: "2026-10-01" }} today="2026-10-20" />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

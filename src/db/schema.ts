@@ -208,8 +208,22 @@ export const userSettings = pgTable("user_settings", {
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
+  /**
+   * "Looking for a job" (handoff 6, docs/plans/job-search-plan.md, migration 0039). Off pauses Departures and Arrivals:
+   * no Express apply, out of company search, no Today board. Rides, streak and the map keep going.
+   */
+  jobSearch: boolean("job_search").notNull().default(true),
+  /** The notice period in days (15, 30, 60 or 90), private: never on a profile or sent to a company. */
+  noticeDays: smallint("notice_days"),
+  /** The India date the person resigned, which starts the countdown. Never later than today; needs notice_days. */
+  resignedOn: date("resigned_on"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+},
+  (t) => [
+    check("user_settings_notice_days", sql`${t.noticeDays} is null or ${t.noticeDays} in (15, 30, 60, 90)`),
+    check("user_settings_resigned_needs_days", sql`${t.resignedOn} is null or ${t.noticeDays} is not null`),
+  ],
+);
 
 /** What the user agreed to and when (DPDP Act, SEC-1). */
 export const consents = pgTable("consents", {

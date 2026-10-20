@@ -18,6 +18,7 @@ import { corporateUnread } from "@/lib/corporate/overview";
 import { unreadChats } from "@/lib/inbox/store";
 import { requestsWaiting } from "@/lib/network/store";
 import { eliteOn } from "@/lib/elite/store";
+import { jobSearchOn } from "@/lib/job-search/store";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -60,7 +61,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     // Suspended after a report (FR-46): the notice instead of any signed-in page. Admins are never blocked.
     if (suspendedFor(account, await currentIdentity())) redirect(SUSPENDED_PATH);
-    const [, streak, inboxUnread, companyUnread, networkRequests, elite, arrivals] = await Promise.all([
+    const [, streak, inboxUnread, companyUnread, networkRequests, elite, arrivals, searching] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
       extra("inbox_unread", unreadChats(account.id), 0),
@@ -70,10 +71,13 @@ async function Shell({ children }: { children: React.ReactNode }) {
       // Elite (FR-50): the award mark on the avatar and "Elite · beta" in the menu.
       extra("plan", eliteOn(account.id), false),
       extra("arrivals_count", arrivalsCount(account.id), 0),
+      // Job search off (handoff 6) hides the Arrivals count; if it can't be read, the count shows as before.
+      extra("job_search", jobSearchOn(account.id), true),
     ]);
     const name = displayName(account.name);
     // The streak shows once the person has ridden a day. So does the Arrivals count: like the prototype it hides with
     // no resume and on the first day, and a streak is how Today tells a returning person from those two (todayStateFor).
+    // It also hides while job search is off.
     user = {
       name,
       handle: account.username,
@@ -86,7 +90,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       corporateUnread: companyUnread,
       networkRequests,
       elite,
-      arrivalsCount: streak.days > 0 ? arrivals : 0,
+      arrivalsCount: streak.days > 0 && searching ? arrivals : 0,
       isAdmin: isAdmin(await currentIdentity()),
     };
   } else {

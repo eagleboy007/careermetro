@@ -10,6 +10,7 @@ import { exportInbox } from "@/lib/inbox/store";
 import { exportJobChecks } from "@/lib/me/job-email-check";
 import { exportDraft } from "@/lib/builder/store";
 import { exportPlan } from "@/lib/elite/store";
+import { exportJobSearch } from "@/lib/job-search/store";
 import { exportMockSessions } from "@/lib/mock/interview-store";
 import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
@@ -20,7 +21,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 24;
+export const EXPORT_VERSION = 25;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -106,7 +107,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -165,6 +166,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportPlan(userId, db),
     exportTimedTests(userId, db),
     exportMockSessions(userId, db),
+    exportJobSearch(userId, db),
   ]);
 
   return {
@@ -233,5 +235,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // summary in words; with each answer still kept (answers go after 30 days) and what worked and what to add next
     // time. The questions come from the bank, never from AI; no score.
     mockSessions: mockSessionRows,
+    // Job search (handoff 6): whether "Looking for a job" is on, your notice period in days and the day you resigned
+    // (null when not given). Only you ever see these; companies you apply to see only Can join.
+    jobSearch,
   };
 }

@@ -137,7 +137,8 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
 }
 
 /**
- * The people a company may find, as one condition on `users` joined to `user_settings`: the switch on; not deleted;
+ * The people a company may find, as one condition on `users` joined to `user_settings`: the switch on; job search on
+ * (handoff 6: off takes them out of company search, whatever this switch says; the same column jobSearchOn reads); not deleted;
  * not suspended after a report (FR-46); not the searcher; not on the company's own team (an employee's job search
  * stays hidden); not blocking the company; no block either way with the searcher; not already applied to this job
  * (they are on its board).
@@ -145,6 +146,7 @@ async function jobContext(userId: string, jobId: string, db: Db | Tx, now: Date)
 function findableWhere(orgId: string, searcherId: string, jobId: string): SQL {
   return and(
     eq(userSettings.companiesCanFind, true),
+    eq(userSettings.jobSearch, true),
     isNull(users.deletionRequestedAt),
     isNull(users.suspendedAt),
     ne(users.id, searcherId),

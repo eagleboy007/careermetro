@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
 import type { PlanView } from "@/lib/schemas";
+import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
 import { BlockedPeople, type BlockedPersonLine } from "./blocked-people";
 import { CompanyDiscovery } from "./company-discovery";
 import { FindMeSwitch } from "./find-me-switch";
@@ -67,12 +68,15 @@ export function SettingsView({
   findMe,
   unblockPerson,
   planActions,
+  jobSearch,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
   findMe?: (on: boolean) => Promise<string | null>;
   unblockPerson?: (id: string) => Promise<string | null>;
   planActions?: PlanActions;
+  /** "Looking for a job" and the notice period (SettingsJobSearch); example data without it. */
+  jobSearch?: ReactNode;
 }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
@@ -128,6 +132,9 @@ export function SettingsView({
 
         <Section id="acc-pay" title="Pay" tag="private">
           <PayFields />
+          <div id="acc-job-search" className="scroll-mt-20">
+            {jobSearch ?? <SettingsJobSearch view={{ on: true, noticeDays: 30, resignedOn: null }} today="2026-10-20" />}
+          </div>
         </Section>
 
         <Section id="acc-privacy" title="Privacy">

@@ -12,7 +12,8 @@ import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
-import { CAN_JOIN_LABELS } from "@/lib/schemas/constants";
+import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
+import { jobSearchOn } from "@/lib/job-search/store";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { criteriaStatus } from "./criteria";
 import { applicationPacketFor, jobMatch, publicProfile } from "./match";
@@ -64,6 +65,7 @@ export type ApplicationError =
   | "not_found"
   | "blocked_company"
   | "paused"
+  | "search_off"
   | MoveRefusal;
 
 export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
@@ -77,6 +79,7 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_found: "That application isn't available any more.",
   blocked_company: "You've blocked this company. Unblock it in Settings, under Privacy, to apply to its jobs.",
   paused: "Your company's candidates are paused while we review it.",
+  search_off: JOB_SEARCH_OFF_MESSAGE,
   same_stage: "They're already in that lane.",
   ai_off: "The L1 AI interview is off for this job.",
   withdrawn: "That application isn't available any more.",
@@ -187,6 +190,8 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
         .innerJoin(organizations, eq(organizations.id, jobs.orgId))
         .where(eq(jobs.id, input.jobId))
         .for("share");
+      // Job search off pauses Express apply (handoff 6): refused before anything is written or counted.
+      if (!(await jobSearchOn(userId, tx))) return fail("search_off");
       if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
       const [already] = await tx.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
       if (already) return fail("already");
@@ -241,6 +246,7 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
     .where(eq(jobs.id, parsed.data.jobId));
+  if (!(await jobSearchOn(userId, db))) return fail("search_off");
   if (!job || !acceptsApplications(job.status, job.orgStatus)) return fail("not_open");
   const [already] = await db.select({ id: applications.id }).from(applications).where(and(eq(applications.jobId, job.id), eq(applications.userId, userId)));
   if (already) return fail("already");

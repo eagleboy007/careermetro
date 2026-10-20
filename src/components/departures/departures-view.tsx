@@ -35,6 +35,7 @@ export function DeparturesView({
   resumeId = null,
   prep = {},
   demo = false,
+  searchSwitch = null,
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
@@ -44,6 +45,8 @@ export function DeparturesView({
   resumeId?: string | null;
   prep?: Record<string, RolePrepView | null>;
   demo?: boolean;
+  /** "Looking for a job" (src/components/job-search), in the header. */
+  searchSwitch?: ReactNode;
 }) {
   const [filters, setFilters] = useState<DepartureFilters>(NO_FILTERS);
   const [saved, setSaved] = useState(() => new Set(initialSaved));
@@ -84,7 +87,7 @@ export function DeparturesView({
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <span className="text-[0.84rem] font-[550] text-muted">Looking for a job switch · soon</span>
+            {searchSwitch}
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">{plural(jobs.length, "role")}</span>
           </div>
         </div>
