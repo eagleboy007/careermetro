@@ -3,11 +3,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
+import type { PlanView } from "@/lib/schemas";
 import { CompanyDiscovery } from "./company-discovery";
 import { FindMeSwitch } from "./find-me-switch";
 import { BasicsForm } from "./basics-form";
 import { DeleteAccount } from "./delete-account";
-import { PlanCard } from "./plan-card";
+import { PlanCard, type PlanActions } from "./plan-card";
 import { ProfileLinkFields } from "./profile-link-fields";
 import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
 import { NotificationFields, PayFields, PrivacyFields } from "./settings-fields";
@@ -31,6 +32,8 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** Elite, free in the beta (FR-50): saved apart from the draft, at once. */
+  plan: PlanView;
   /** True while gaps are shared with connections only (the default for new accounts). */
 };
 
@@ -51,7 +54,7 @@ const ghostSm = "inline-flex items-center gap-1.5 rounded-full border border-lin
 
 /**
  * Account settings (handoff 12c, prototype v32). Part 1: name, the locked sign-in email, how the person signs in,
- * download and delete. Part 2 (dev/account-settings-plan.md): Your plan (shown only), username and headline, private
+ * download and delete. Part 2 (dev/account-settings-plan.md): Your plan (Elite's switch, FR-50), username and headline, private
  * pay, privacy and stored-only notifications, saved together from one sticky bar. Photo, two-step verification and
  * signed-in devices wait on storage and the full sign-in.
  */
@@ -59,10 +62,12 @@ export function SettingsView({
   data,
   discoveryActions,
   findMe,
+  planActions,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
   findMe?: (on: boolean) => Promise<string | null>;
+  planActions?: PlanActions;
 }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
@@ -84,8 +89,8 @@ export function SettingsView({
         )}
 
         <SettingsDraft initial={data.draft} editable={data.editable}>
-        <Section id="acc-plan" title="Your plan" chip="Free · beta">
-          <PlanCard />
+        <Section id="acc-plan" title="Your plan" chip={data.plan.elite ? "Elite · free in the beta" : "Free · beta"}>
+          <PlanCard plan={data.plan} actions={data.editable ? planActions : undefined} />
         </Section>
 
         <Section id="acc-basics" title="Profile basics" tag="shown on your profile">

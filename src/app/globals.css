@@ -41,6 +41,11 @@
   --heat-5: #7f2f73;
   --heat-ink: #2a1024;
   --heat-ink-strong: #ffffff;
+  /* Elite (handoff 12l, Milin 2026-10-19): its own violet, used for nothing else, apart from cobalt (progress) and the
+     gap-status colours. elite on surface 6.3:1, on bg 5.8:1, on elite-soft 5.3:1; on-elite on elite 6.3:1. */
+  --elite: #6d3fd6;
+  --elite-soft: #efe8fd;
+  --on-elite: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,6 +77,10 @@
     --heat-5: #f2a9d4;
     --heat-ink: #f6e3ef;
     --heat-ink-strong: #1a0c16;
+    /* elite on surface 7.7:1, on bg 8.3:1, on elite-soft 6.5:1; on-elite on elite 8.2:1. */
+    --elite: #b49bff;
+    --elite-soft: #2a1f4a;
+    --on-elite: #120c22;
     color-scheme: dark;
   }
 }
@@ -104,6 +113,9 @@
   --heat-5: #f2a9d4;
   --heat-ink: #f6e3ef;
   --heat-ink-strong: #1a0c16;
+  --elite: #b49bff;
+  --elite-soft: #2a1f4a;
+  --on-elite: #120c22;
   color-scheme: dark;
 }
 
@@ -138,6 +150,9 @@
   --color-heat-5: var(--heat-5);
   --color-heat-ink: var(--heat-ink);
   --color-heat-ink-strong: var(--heat-ink-strong);
+  --color-elite: var(--elite);
+  --color-elite-soft: var(--elite-soft);
+  --color-on-elite: var(--on-elite);
 
   --font-display: var(--font-bricolage), "Segoe UI", system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;

@@ -9,6 +9,7 @@ import { MeView } from "@/components/me/me-view";
 import { ProfileConnect } from "@/components/network/profile-connect";
 import { resolveProfile } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
+import { eliteBadgeFor } from "@/lib/elite/store";
 import { publicProfile } from "@/lib/me/public";
 import { meFor } from "@/lib/me/store";
 import { seesGaps } from "@/lib/network/rules";
@@ -37,11 +38,13 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
   if (answer.kind === "redirect") redirect(`/u/${answer.to}`);
   const { owner } = answer;
   const yours = owner.id === viewer.id;
-  const [me, state, network, inCommon] = await Promise.all([
+  const [me, state, network, inCommon, eliteBadge] = await Promise.all([
     meFor(owner.id, now),
     connectionWith(viewer.id, owner.id, { now }),
     networkSettingsFor(owner.id),
     inCommonWith(viewer.id, owner),
+    // The Elite badge (FR-50) shows only while Elite is on and its owner turned it on. It ranks nothing.
+    eliteBadgeFor(owner.id),
   ]);
   if (!me) notFound();
   // Gaps follow the owner's gaps choice (FR-49): a connection sees gaps shared with connections. The owner's own view
@@ -74,6 +77,7 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
       <MeView
         me={publicProfile(me, { ...owner.settings, showGaps })}
         mode="public"
+        eliteBadge={eliteBadge}
         gapsNote={connected && network.gapsVisibleTo === "connections" ? "Gaps shown because you are connected. They share them with connections only." : undefined}
       />
     </div>

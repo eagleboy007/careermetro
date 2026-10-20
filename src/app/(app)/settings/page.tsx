@@ -10,8 +10,10 @@ import { nameLocked } from "@/lib/account/store";
 import { lakhText } from "@/lib/account/username";
 import { currentAccount, currentIdentity } from "@/lib/auth/server";
 import { discoveryFor } from "@/lib/corporate/find-store";
+import { planFor } from "@/lib/elite/store";
 import { networkSettingsFor } from "@/lib/network/store";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
+import { switchElite, switchEliteBadge } from "../elite/actions";
 import { setFindMe } from "../network/actions";
 import { blockCompanyAction, unblockCompanyAction } from "./actions";
 
@@ -24,7 +26,7 @@ async function SettingsScreen() {
   const [account, identity] = await Promise.all([currentAccount(), currentIdentity()]);
   if (!account) return <SettingsView data={exampleSettings} />;
   const now = new Date();
-  const [saved, discovery, network] = await Promise.all([readAccountSettings(account.id, now), discoveryFor(account.id, { now }), networkSettingsFor(account.id)]);
+  const [saved, discovery, network, plan] = await Promise.all([readAccountSettings(account.id, now), discoveryFor(account.id, { now }), networkSettingsFor(account.id), planFor(account.id)]);
   // An account saved before first and last name were asked for starts from its full name.
   const names = account.firstName ? { first: account.firstName, last: account.lastName ?? "" } : splitName(account.name);
   const data: SettingsData = {
@@ -46,8 +48,9 @@ async function SettingsScreen() {
     usernameLockedUntil: saved?.usernameLockedUntil ? dateText(saved.usernameLockedUntil) : null,
     discovery,
     peopleCanFind: network.peopleCanFind,
+    plan,
   };
-  return <SettingsView data={data} discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }} findMe={setFindMe} />;
+  return <SettingsView data={data} discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }} findMe={setFindMe} planActions={{ switchElite, switchBadge: switchEliteBadge }} />;
 }
 
 export default function SettingsPage() {

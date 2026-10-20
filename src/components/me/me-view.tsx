@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { JoinForm } from "@/components/corporate/join-form";
 import { ProfileCertifications, type CredlyCheckResult } from "@/components/me/certifications";
+import { EliteBadge } from "@/components/elite/elite-badge";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
 import { StatusChip } from "@/components/ui/status-chip";
@@ -38,6 +39,8 @@ export function MeView({
   onCheckCertificate,
   jobCheck,
   gapsNote,
+  eliteBadge = false,
+  planCard,
 }: {
   me: MeProfile;
   others?: MeProfile;
@@ -54,6 +57,10 @@ export function MeView({
   jobCheck?: { open: boolean; actions?: JoinActions };
   /** On someone else's profile: why their gaps show to this viewer ("shared with connections", handoff 12j). */
   gapsNote?: string;
+  /** The Elite badge next to the name (FR-50): only while Elite is on and its owner turned it on. It ranks nothing. */
+  eliteBadge?: boolean;
+  /** "Your plan" (FR-50): on the person's own profile only, never in View as others or to anyone else. */
+  planCard?: ReactNode;
 }) {
   const [asOthers, setAsOthers] = useState(false);
   const certsHeading = `${useId()}-certifications`;
@@ -98,7 +105,10 @@ export function MeView({
             {initials(me.name)}
           </span>
           <div className="flex min-w-[220px] flex-1 flex-col gap-1">
-            <h1 className="text-[1.7rem] font-semibold leading-[1.1]">{me.name}</h1>
+            <h1 className="text-[1.7rem] font-semibold leading-[1.1]">
+              {me.name}
+              {eliteBadge && <EliteBadge className="ml-2.5" />}
+            </h1>
             {me.headline && <p className="text-[0.95rem]">{me.headline}</p>}
             {!viewer && <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>}
             {/* The target role says the person is looking, so others see it only when they turn it on in Account settings. */}
@@ -130,6 +140,8 @@ export function MeView({
               </span>
             ))}
         </p>
+
+        {own && planCard}
 
         {own && (
           <Section first title="Your journey" note={me.journeyLabel} action={<More href="/map">Open map</More>}>
