@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
-import { currentParseStep, parseSteps } from "@/lib/resume/parse-steps";
+import { PARSE_STEPS, currentParseStep } from "@/lib/resume/parse-steps";
 import { TARGET_ROLE_CHIPS, saveTargetRole } from "@/lib/target-role";
 
 type Mode = "file" | "text";
@@ -59,7 +59,8 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
     setStep(0);
     setState({ kind: "reading" });
     if (demo) return;
-    if (rolePick) saveTargetRole(role === MORE ? null : role);
+    // A pick from an earlier, unfinished visit to Today never carries into an upload from elsewhere.
+    saveTargetRole(rolePick && role !== MORE ? role : null);
     try {
       const res = await fetch("/api/resume", { method: "POST", body: form });
       const data = await readApiReply(res);
@@ -73,7 +74,6 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
     }
   }
 
-  const roleTitle = TARGET_ROLE_CHIPS.find((c) => c.slug === role)?.title ?? null;
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
@@ -129,7 +129,7 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
             )}
             <span className="font-display text-[1.2rem] font-semibold tracking-[-0.02em]">{fileName ?? "Drop your resume here"}</span>
             <span className="max-w-[42ch] text-[0.82rem] text-muted">
-              {fileName ? "Click to choose a different file" : `PDF or DOCX, up to ${MAX_MB} MB. Read once to find your skills; never shown to anyone.`}
+              {fileName ? "Click to choose a different file" : `PDF or DOCX, up to ${MAX_MB} MB. Used to find your skills; never shown to companies.`}
             </span>
             {!fileName && (
               <span aria-hidden="true" className="mt-2 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-on-accent">
@@ -157,7 +157,7 @@ export function UploadForm({ demo = false, builder = false, rolePick = false }: 
       {reading && (
         <div role="status" className="flex flex-col gap-3">
           <ol className="flex flex-col gap-2.5">
-            {parseSteps(roleTitle).map((label, i) => (
+            {PARSE_STEPS.map((label, i) => (
               <li key={label} className={`flex items-center gap-3 text-[0.95rem] ${i <= step ? "text-ink" : "text-muted"}`}>
                 {i < step ? (
                   <span className="grid size-[22px] shrink-0 place-items-center rounded-full bg-accent text-on-accent">
