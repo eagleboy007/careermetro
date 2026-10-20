@@ -5,7 +5,20 @@ import { z } from "zod";
 import { currentAccount } from "@/lib/auth/server";
 import { INBOX_ERROR_TEXT, startDirect } from "@/lib/inbox/store";
 import { messageBody } from "@/lib/schemas/inbox";
-import { answerRequest, blockPerson, NETWORK_ERROR_TEXT, networkSettingsFor, removeConnection, requestConnection, saveNetworkSettings, searchNetwork, unblockPerson, withdrawRequest, type NetworkResult } from "@/lib/network/store";
+import {
+  answerRequest,
+  blockPerson,
+  NETWORK_ERROR_TEXT,
+  networkSettingsFor,
+  removeConnection,
+  reportPerson,
+  requestConnection,
+  saveNetworkSettings,
+  searchNetwork,
+  unblockPerson,
+  withdrawRequest,
+  type NetworkResult,
+} from "@/lib/network/store";
 import type { NetworkActions } from "@/lib/network/types";
 import { networkRow } from "@/lib/network/view";
 import { NETWORK_QUERY_MESSAGE } from "@/lib/schemas/network";
@@ -75,12 +88,22 @@ export async function unblockFromNetwork(id: string): Promise<string | null> {
   return answer(r.ok || r.error === "not_found" ? { ok: true } : r);
 }
 
-export const searchPeopleByName: NetworkActions["search"] = async (q) => {
+/** Name search with Find people's optional filters (C13), applied on the server; anything but `true` is off. */
+export const searchPeopleByName: NetworkActions["search"] = async (q, filters) => {
   const account = await currentAccount();
   if (!account) return { error: SIGN_IN };
-  const r = await searchNetwork(account.id, { q });
+  const on = (v: unknown) => v === true;
+  const r = await searchNetwork(account.id, { q, sameRole: on(filters?.sameRole), sameCity: on(filters?.sameCity), verified: on(filters?.verified) });
   if (!r.ok) return { error: r.error === "invalid" ? NETWORK_QUERY_MESSAGE : NETWORK_ERROR_TEXT[r.error] };
   return { people: r.people.map((p) => networkRow(p, "find")) };
+};
+
+/** Report from a row or a profile, into the Inbox's review queue. Nothing about the report reaches the person reported. */
+export const reportFromNetwork: NetworkActions["report"] = async (id, reason, note) => {
+  const s = await signedIn(id);
+  if (!s.account) return s.error;
+  const r = await reportPerson(s.account.id, { personId: id, reason, note: typeof note === "string" && note.trim() ? note : undefined });
+  return r.ok ? null : NETWORK_ERROR_TEXT[r.error];
 };
 
 /** "Let people find me", from the bar on /network (the same switch as in Settings). The other choices stay as saved. */

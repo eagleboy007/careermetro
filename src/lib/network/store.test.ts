@@ -2,7 +2,7 @@ import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { roleProfiles } from "@/content";
+import { roleProfiles, skills } from "@/content";
 import * as schema from "@/db/schema";
 import { exportAccountData } from "@/lib/account/export";
 import { canViewProfile } from "@/lib/account/settings-store";
@@ -20,9 +20,12 @@ import {
   exportNetwork,
   inCommonWith,
   mutualConnections,
+  networkFiltersFor,
   networkLists,
   networkSettingsFor,
+  pathTogetherWith,
   removeConnection,
+  reportPerson,
   requestConnection as ask,
   requestsWaiting,
   saveNetworkSettings,
@@ -48,9 +51,9 @@ const profile: Profile = {
   education: [],
   certifications: [],
 };
-const analysis = (met: string[]): GapAnalysis => ({
-  roleSlug: roleProfiles[0].slug,
-  gaps: [],
+const analysis = (met: string[], gaps: string[] = [], roleSlug = roleProfiles[0].slug): GapAnalysis => ({
+  roleSlug,
+  gaps: gaps.map((skillId) => ({ skillId, skillName: skillId, status: "missing" as const, resumeQuote: null, requirement: "r", explanation: "e" })),
   metSkillIds: met,
   niceToHave: [],
   readiness: { headline: "h", explanation: "e", estimatedHours: 0 },
@@ -67,7 +70,10 @@ describe.skipIf(!db)("network store (database)", () => {
   const deps = (days = 0) => ({ db: db!, now: new Date(now.getTime() + days * DAY) });
   const lines: string[] = [];
 
-  async function person(first: string, opts: { met?: string[]; findable?: boolean; closed?: boolean; username?: string; showTargetRole?: boolean; city?: string } = {}) {
+  async function person(
+    first: string,
+    opts: { met?: string[]; gaps?: string[]; role?: string; findable?: boolean; closed?: boolean; username?: string; showTargetRole?: boolean; city?: string } = {},
+  ) {
     const [u] = await db!
       .insert(schema.users)
       .values({ email: `${run}-${n}@example.com`, authSubject: `${run}-${n++}`, name: `${first} ${tag}`, username: opts.username ?? null, city: opts.city ?? null })
@@ -76,7 +82,7 @@ describe.skipIf(!db)("network store (database)", () => {
     if (opts.met) {
       const [resume] = await db!.insert(schema.resumes).values({ userId: u.id, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning();
       const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
-      await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis(opts.met), matcherVersion: MATCHER_VERSION });
+      await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis(opts.met, opts.gaps, opts.role), matcherVersion: MATCHER_VERSION });
     }
     if (opts.findable) await saveNetworkSettings(u.id, { peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: opts.closed ? "nobody" : "anyone" }, deps());
     else if (opts.closed) await saveNetworkSettings(u.id, { peopleCanFind: false, gapsVisibleTo: "connections", requestsFrom: "nobody" }, deps());
@@ -285,8 +291,11 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(byHandle.ok && byHandle.people.map((p) => p.id)).toContain(named);
     const inMyCity = await search(me, { q: tag, sameCity: true }, deps());
     expect(inMyCity.ok && inMyCity.people.map((p) => p.id)).toEqual([close]);
+    // Only people who show their target role: the filter never reveals one that is hidden (Kiran and Karan hide theirs).
     const onMyRole = await search(me, { q: tag, sameRole: true }, deps());
-    expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([friend, close, far]);
+    expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([close]);
+    expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title, city: "Pune" });
+    expect(await networkFiltersFor(asked, db!)).toEqual({ role: null, city: null });
     // Nobody here has proved a skill.
     const verified = await search(me, { q: tag, verified: true }, deps());
     expect(verified.ok && verified.people).toEqual([]);
@@ -346,6 +355,39 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(both.role).toBe(roleProfiles[0].title);
     expect(await inCommonWith(friend, { id: owner, settings: { showSkills: false, showTargetRole: false } }, db!)).toEqual({ skills: [], role: null });
     expect(await inCommonWith(owner, { id: owner, settings: parts }, db!)).toEqual({ skills: [], role: null });
+  });
+
+  it("shows Gaps and path for two people on the same line: the gaps both have and each one's current goal", async () => {
+    const [s1, s2, s3] = skills.map((x) => x.id);
+    const name = (id: string) => skills.find((x) => x.id === id)!.name;
+    const me = await person("Uma", { met: [], gaps: [s1, s2, s3] });
+    const them = await person("Varun", { met: [], gaps: [s2, s3] });
+    const elsewhere = await person("Wasim", { met: [], gaps: [s2], role: roleProfiles[1].slug });
+    expect(await pathTogetherWith(me, them, "connections", db!)).toEqual({
+      gaps: [name(s2), name(s3)].sort((a, b) => a.localeCompare(b, "en")),
+      you: { step: 1, name: name(s1) },
+      them: { step: 1, name: name(s2) },
+      apart: 0,
+      sharedWith: "connections",
+    });
+    // Different lines can't be compared, and your own profile has no "in common".
+    expect(await pathTogetherWith(me, elsewhere, "profile", db!)).toBeNull();
+    expect(await pathTogetherWith(me, me, "profile", db!)).toBeNull();
+  });
+
+  it("reports a person into the review queue once, never themselves, and logs the reason only", async () => {
+    const me = await person("Xena");
+    const other = await person("Yash");
+    expect(await reportPerson(me, { personId: me, reason: "harassment" }, deps())).toEqual({ ok: false, error: "self_report" });
+    expect(await reportPerson(me, { personId: other, reason: "not a reason" }, deps())).toEqual({ ok: false, error: "invalid" });
+    expect(await reportPerson(me, { personId: "00000000-0000-4000-8000-000000000000", reason: "other" }, deps())).toEqual({ ok: false, error: "invalid" });
+    expect(await reportPerson(me, { personId: other, reason: "fake_or_spam", note: "  Asked for a fee  " }, deps())).toEqual({ ok: true });
+    // Asking again while it is open is the same report.
+    expect(await reportPerson(me, { personId: other, reason: "harassment" }, deps())).toEqual({ ok: true });
+    const filed = await db!.select().from(schema.reports).where(eq(schema.reports.reporterId, me));
+    expect(filed).toMatchObject([{ target: "person", targetId: other, reason: "fake_or_spam", note: "Asked for a fee", status: "open" }]);
+    expect(lines.join("\n")).not.toContain("Asked for a fee");
+    await db!.delete(schema.reports).where(eq(schema.reports.reporterId, me));
   });
 
   it("opens Inbox chats between connections, and a removal turns the chat back into a request", async () => {

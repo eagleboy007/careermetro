@@ -1,4 +1,4 @@
-import type { NetworkData, NetworkRow } from "./types";
+import type { NetworkData, NetworkRow, ProfileInCommon } from "./types";
 
 /* Example Network for /design and the preview without accounts (handoff 12j, prototype v39). Every person is made up. */
 
@@ -26,6 +26,8 @@ export const exampleNetwork: NetworkData = {
   sent: [row({ id: "ex-sk", name: "Sneha Kulkarni", username: "sneha-k", aim: "Cyber Security Analyst", city: "Pune", common: 5, mutual: 2, state: "requested", how: "same_line", when: "Sent 16 Oct · ends 15 Nov if not answered" })],
   peopleCanFind: false,
   profileLink: null,
+  myRole: "Cyber Security Analyst",
+  myCity: "Pune",
 };
 
 /** What an example name search finds. */
@@ -33,3 +35,20 @@ export const exampleSearch: NetworkRow[] = [
   row({ id: "ex-am", name: "Arjun Mehta", username: "arjun-m", aim: "Cyber Security Analyst", city: "Bengaluru", verified: true, common: 6, mutual: 2, state: "none" }),
   row({ id: "ex-ak", name: "Aditi Kulkarni", username: "aditi-k", aim: "Cloud Engineer", city: "Pune", common: 2, mutual: 2, state: "none" }),
 ];
+
+/** Example "In common with you" for a profile on /design: two people on the same line, connected through one friend. */
+export const exampleInCommon: ProfileInCommon = {
+  skills: ["Linux", "Networking basics", "Windows admin"],
+  role: "Cyber Security Analyst",
+  path: {
+    gaps: ["AWS security", "SIEM", "Threat detection"],
+    you: { step: 4, name: "SIEM" },
+    them: { step: 6, name: "Python" },
+    apart: 2,
+    sharedWith: "connections",
+  },
+  mutual: [
+    { id: "ex-vr", name: "Vikram Rao", username: "vikram-r" },
+    { id: "ex-nb", name: "Neha Bhat", username: "neha-b" },
+  ],
+};

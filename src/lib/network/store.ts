@@ -1,11 +1,11 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { directChatLock, type Tx } from "@/db/lock";
-import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, profiles, resumes, userSettings, users } from "@/db/schema";
+import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, pathSteps, paths, profiles, reports, resumes, userSettings, users } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
-import { indiaToday } from "@/lib/goals/store";
+import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
 import { NETWORK_SCAN_MAX } from "@/lib/schemas/constants";
@@ -17,12 +17,30 @@ import {
   connectionHow,
   networkSearchInput,
   networkSettings,
+  personReportInput,
   type ConnectionHow,
   type ConnectionState,
   type NetworkSettings,
 } from "@/lib/schemas/network";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { askAgainFrom, byNetworkRank, connectionState, endsAt, mutualOf, networkMatches, openSince, pairOf, requestOpen, senderSeesRequested, skillsInCommon, type RequestRow } from "./rules";
+import {
+  askAgainFrom,
+  byNetworkRank,
+  connectionState,
+  endsAt,
+  lineOrder,
+  mutualOf,
+  networkMatches,
+  openSince,
+  pairOf,
+  pathTogether,
+  requestOpen,
+  senderSeesRequested,
+  skillsInCommon,
+  type LineGap,
+  type RequestRow,
+} from "./rules";
+import type { PathTogether } from "./types";
 
 /*
  * Network part 1 (FR-49, handoff 12j, docs/plans/network-plan.md): requests, connections, name search and the Network
@@ -33,11 +51,12 @@ import { askAgainFrom, byNetworkRank, connectionState, endsAt, mutualOf, network
 type Db = ReturnType<typeof getDb>;
 type Deps = { db?: Db; now?: Date };
 
-export type NetworkError = "self" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
+export type NetworkError = "self" | "self_report" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
 
 /** What each refusal tells the person. "unavailable" is deliberately vague: a block is never revealed. */
 export const NETWORK_ERROR_TEXT: Record<NetworkError, string> = {
   self: "You can't connect with yourself.",
+  self_report: "You can't report yourself.",
   unavailable: "You can't connect with this person.",
   closed: "This person isn't taking connection requests.",
   wait: "You asked this person recently. You can ask again later.",
@@ -371,12 +390,13 @@ export async function mutualConnections(viewerId: string, otherId: string, db: D
   return rows.map((r) => ({ ...r, name: displayName(r.name) }));
 }
 
-/** Each person's met skills and target role, from their current analysis, as on their own Gaps page. */
-async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, { roleSlug: string; met: string[] }>> {
-  const out = new Map<string, { roleSlug: string; met: string[] }>();
+/** Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. */
+type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[] };
+async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, AnalysisOf>> {
+  const out = new Map<string, AnalysisOf>();
   if (!userIds.length) return out;
   const rows = await db
-    .selectDistinctOn([resumes.userId], { userId: resumes.userId, result: gapAnalyses.result })
+    .selectDistinctOn([resumes.userId], { userId: resumes.userId, id: gapAnalyses.id, result: gapAnalyses.result })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
@@ -384,7 +404,30 @@ async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, {
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
     const parsed = gapAnalysis.safeParse(r.result);
-    if (r.userId && parsed.success) out.set(r.userId, { roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds });
+    if (r.userId && parsed.success)
+      out.set(r.userId, { id: r.id, roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })) });
+  }
+  return out;
+}
+
+/** For each analysis, the skills whose step on its newest path is ticked done: the Map's learn pitstops that are done. */
+async function learnedOf(analysisIds: string[], db: Db | Tx): Promise<Map<string, Set<string>>> {
+  const out = new Map<string, Set<string>>();
+  if (!analysisIds.length) return out;
+  const newest = await db
+    .selectDistinctOn([paths.gapAnalysisId], { id: paths.id, analysisId: paths.gapAnalysisId })
+    .from(paths)
+    .where(inArray(paths.gapAnalysisId, analysisIds))
+    .orderBy(paths.gapAnalysisId, desc(paths.createdAt));
+  if (!newest.length) return out;
+  const analysisOf = new Map(newest.map((p) => [p.id, p.analysisId]));
+  const done = await db
+    .select({ pathId: pathSteps.pathId, skillId: pathSteps.skillId })
+    .from(pathSteps)
+    .where(and(inArray(pathSteps.pathId, [...analysisOf.keys()]), isNotNull(pathSteps.doneAt)));
+  for (const s of done) {
+    const id = analysisOf.get(s.pathId)!;
+    out.set(id, (out.get(id) ?? new Set<string>()).add(s.skillId));
   }
   return out;
 }
@@ -411,6 +454,21 @@ export async function inCommonWith(
     skills: shared.map((id) => skillNames.get(id) ?? id).sort((a, b) => a.localeCompare(b, "en")),
     role: owner.settings.showTargetRole && mine.roleSlug === theirs.roleSlug ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
   };
+}
+
+/**
+ * "Gaps and path" on a profile (handoff 12j, gap list 27): the gaps both still have and each one's current goal, when
+ * both aim at the same role. Only call it when the viewer may see the owner's gaps (seesGaps) and the owner shows their
+ * target role; `sharedWith` says why they may. Reads goals without writing them. Null on your own profile.
+ */
+export async function pathTogetherWith(viewerId: string, ownerId: string, sharedWith: PathTogether["sharedWith"], db: Db = getDb()): Promise<PathTogether | null> {
+  if (viewerId === ownerId) return null;
+  const [analyses, mine, theirs] = await Promise.all([analysesOf([viewerId, ownerId], db), goalsOf(viewerId, db), goalsOf(ownerId, db)]);
+  const a = analyses.get(viewerId);
+  const b = analyses.get(ownerId);
+  if (!a || !b || a.roleSlug !== b.roleSlug) return null;
+  const learned = await learnedOf([a.id, b.id], db);
+  return pathTogether(lineOrder(a.gaps, mine, learned.get(a.id)), lineOrder(b.gaps, theirs, learned.get(b.id)), (id) => skillNames.get(id) ?? id, sharedWith);
 }
 
 /** People with at least one current accepted proof: "Verified" (as Find people, T44). */
@@ -562,9 +620,16 @@ async function viewerOf(userId: string, db: Db) {
   return { city: me?.city ?? null, roleSlug: analyses.get(userId)?.roleSlug ?? null };
 }
 
+/** The person's own target role (its title) and city, to label Find people's filters; a filter they can't use isn't offered. */
+export async function networkFiltersFor(userId: string, db: Db = getDb()): Promise<{ role: string | null; city: string | null }> {
+  const me = await viewerOf(userId, db);
+  return { role: me.roleSlug ? (roleTitles.get(me.roleSlug) ?? null) : null, city: me.city };
+}
+
 /**
  * Name search (handoff 12j): the start of a first name, last name or handle, over the people `findableBy` allows, never
- * the searcher or anyone with a block either way. Optional filters: aiming for my role, my city, verified. At most
+ * the searcher or anyone with a block either way. Optional filters: aiming for my role (only people who show their
+ * target role, so the filter never reveals a hidden one), my city, verified. At most
  * NETWORK_SCAN_MAX are read (most recently saved settings first, as Find people does) and NETWORK_RESULTS_MAX shown.
  * Counts against the hourly search limit.
  */
@@ -588,11 +653,42 @@ export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {
   const found = scanned.filter((p) => networkMatches(q, p));
   const states = await statesWith(userId, found.map((p) => p.id), db, now);
   const people = (await asPeople(userId, found.map((p) => ({ ...p, state: states.get(p.id) ?? "none", how: null, at: null, endsAt: null })), db, now))
-    .filter((e) => (!sameRole || e.roleSlug === me.roleSlug) && (!verified || e.person.verified))
+    .filter((e) => (!sameRole || (e.person.aim !== null && e.roleSlug === me.roleSlug)) && (!verified || e.person.verified))
     .map(strip)
     .sort(byNetworkRank)
     .slice(0, NETWORK_RESULTS_MAX);
   return { ok: true, people };
+}
+
+/**
+ * Report from Network (a row or a profile, handoff 12j) into the same review queue and deadlines as Inbox reports
+ * (FR-45). The person reported isn't told, nor who reported. One open report per reporter and person: asking again is
+ * the same report. Counts against the daily report limit. Logged by reason only.
+ */
+export async function reportPerson(userId: string, raw: unknown, deps: Deps = {}): Promise<NetworkResult> {
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const input = personReportInput.safeParse(raw);
+  if (!input.success) return fail("invalid");
+  const r = input.data;
+  if (r.personId === userId) return fail("self_report");
+  const out = await db.transaction(async (tx): Promise<NetworkResult> => {
+    // One reporter and person at a time, so two quick reports can't both find no open one and insert twice.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`network-report:${userId}|${r.personId}`}))`);
+    const [target] = await tx.select({ id: users.id }).from(users).where(eq(users.id, r.personId));
+    if (!target) return fail("invalid");
+    const [already] = await tx
+      .select({ id: reports.id })
+      .from(reports)
+      .where(and(eq(reports.reporterId, userId), eq(reports.target, "person"), eq(reports.targetId, r.personId), eq(reports.status, "open")))
+      .limit(1);
+    if (already) return { ok: true };
+    if (!(await takeShared(LIMITS.inboxReportsPerUser, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    await tx.insert(reports).values({ reporterId: userId, target: "person", targetId: r.personId, reason: r.reason, note: r.note || null, createdAt: now });
+    return { ok: true };
+  });
+  if (out.ok) logEvent("info", "network_report", { reason: r.reason, status: "open" });
+  return out;
 }
 
 /** How the person stands with each of these people. */

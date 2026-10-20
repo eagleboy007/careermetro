@@ -1,3 +1,4 @@
+import type { ReportReason } from "@/lib/schemas/inbox";
 import type { ConnectionAnswer, ConnectionHow, ConnectionState } from "@/lib/schemas/network";
 
 /*
@@ -31,7 +32,13 @@ export type NetworkData = {
   peopleCanFind: boolean;
   /** The person's own profile path ("/u/<handle>"), for "Copy your profile link"; null without a username. */
   profileLink: string | null;
+  /** The person's own target role (its title) and city, for Find people's "Aiming for my role" and "In <city>" filters; null when they have none. */
+  myRole: string | null;
+  myCity: string | null;
 };
+
+/** Find people's optional filters (C13): aiming for my role, in my city, verified. All off by default. */
+export type NetworkFilters = { sameRole: boolean; sameCity: boolean; verified: boolean };
 
 /** Each returns the words to show on failure, or null when it worked. Connect returns how the two now stand. */
 export type NetworkActions = {
@@ -40,8 +47,40 @@ export type NetworkActions = {
   withdraw: (id: string) => Promise<string | null>;
   remove: (id: string) => Promise<string | null>;
   block: (id: string) => Promise<string | null>;
-  search: (q: string) => Promise<{ people: NetworkRow[] } | { error: string }>;
+  search: (q: string, filters: NetworkFilters) => Promise<{ people: NetworkRow[] } | { error: string }>;
   findMe: (on: boolean) => Promise<string | null>;
   /** Sends a message; between connections the Inbox chat opens at once. */
   message: (id: string, body: string) => Promise<string | null>;
+  /** Reports the person into the same review queue as Inbox reports. They aren't told who reported. */
+  report: (id: string, reason: ReportReason, note: string) => Promise<string | null>;
+};
+
+/** Where two people on the same line stand (a profile's "Gaps and path"): the pitstop each is at, numbered as on the Map, and its skill. */
+export type LineStep = { step: number; name: string };
+
+/**
+ * "Gaps and path" on a profile, worked out only when the viewer may see the owner's gaps and both aim at the same role
+ * the owner shows. `you` or `them` is null once that person has met every goal on their line.
+ */
+export type PathTogether = {
+  /** Gaps both still have, by skill name. */
+  gaps: string[];
+  you: LineStep | null;
+  them: LineStep | null;
+  /** How many pitstops apart the two current steps are; null when either has met every goal. */
+  apart: number | null;
+  /** Why the viewer sees the owner's gaps: shared with connections, or with everyone who can open the profile. */
+  sharedWith: "connections" | "profile";
+};
+
+/** "In common with you" on a profile (handoff 12j). Only what the owner's choices let this viewer see. */
+export type ProfileInCommon = {
+  /** Skills both have, by name; null when the owner doesn't show skills. */
+  skills: string[] | null;
+  /** The target role both aim at, when the owner shows theirs. */
+  role: string | null;
+  /** Null unless the viewer may see the owner's gaps and both are on the same line. */
+  path: PathTogether | null;
+  /** People both are connected to, never anyone either can't see. */
+  mutual: { id: string; name: string; username: string | null }[];
 };

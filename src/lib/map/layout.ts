@@ -58,15 +58,27 @@ const PREP_SHARE = 0.5;
 /** Extra room before the current pitstop, so the train clears the labels on both sides. */
 const NOW_GAP = 160;
 
-type Pitstop = { kind: PitstopKind; goal: MapGoal; state: Exclude<StationState, "now"> };
+/** What numbering a line's pitstops needs of a goal. The Map passes its goals; Network passes a person's line (FR-49). */
+export type PitstopGoal = Pick<MapGoal, "status" | "learnDone" | "proved" | "skipped">;
+type Pitstop<G extends PitstopGoal = MapGoal> = { kind: PitstopKind; goal: G; state: Exclude<StationState, "now"> };
 
 /** Missing skills: learn then prove. Weak or outdated: prove only. Only proof is "done" for a prove pitstop. */
-export function pitstopsFor(goals: MapGoal[]): Pitstop[] {
-  return goals.flatMap((goal) => {
-    const prove: Pitstop = { kind: "prove", goal, state: goal.proved ? "done" : "future" };
+export function pitstopsFor<G extends PitstopGoal>(goals: readonly G[]): Pitstop<G>[] {
+  return goals.flatMap((goal): Pitstop<G>[] => {
+    const prove: Pitstop<G> = { kind: "prove", goal, state: goal.proved ? "done" : "future" };
     if (goal.status !== "missing") return [prove];
-    return [{ kind: "learn", goal, state: goal.learnDone || goal.proved ? "done" : "future" }, prove];
+    const learn: Pitstop<G> = { kind: "learn", goal, state: goal.learnDone || goal.proved ? "done" : "future" };
+    return [learn, prove];
   });
+}
+
+/**
+ * Where the person is: the first pitstop that isn't done, -1 with every pitstop done. The train passes a skipped
+ * goal's pitstops (FR-48): it stays a gap, but it is no longer where the person is heading. Pitstop numbers are this
+ * index plus one.
+ */
+export function nowPitstop<G extends PitstopGoal>(pitstops: readonly Pitstop<G>[]): number {
+  return pitstops.findIndex((p) => p.state !== "done" && !p.goal.skipped);
 }
 
 type Point = { x: number; y: number };
@@ -80,9 +92,8 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
   const climbAt = new Set(Array.from({ length: climbs }, (_, i) => Math.round(((i + 1) * goalCount) / (climbs + 1))));
   const startY = TOP_Y + (CLIMB * (climbs + BAND)) / 2;
 
-  // The first pitstop that isn't done is where the person is. With every pitstop done, it is Practice. The train passes
-  // a skipped goal's pitstops (FR-48): it stays a gap, but it is no longer where the person is heading.
-  const nowIndex = pitstops.findIndex((p) => p.state !== "done" && !p.goal.skipped);
+  // With every pitstop done, the person is at Practice.
+  const nowIndex = nowPitstop(pitstops);
 
   const route: Point[] = [];
   const stationAt: number[] = [];
