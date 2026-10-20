@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mockQuestions, roleProfiles } from "@/content";
 import { mockPageView, mockSessionResult, type MockQuestion } from "@/lib/schemas";
 import { exampleMockFollowUp, exampleMockPage, exampleMockResult } from "./fixtures";
@@ -245,5 +245,14 @@ describe("follow-ups (docs/plans/mock-followups-plan.md)", () => {
     const page = mockPageView.parse(exampleMockPage("data-analyst", true));
     expect(page.role.followUps).toBe("draft");
     expect(mockPageView.parse(exampleMockPage("data-analyst", false, null, null, false)).role.followUps).toBe("none");
+  });
+
+  it("asks no unreviewed follow-ups by default on a production deployment (T73)", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    try {
+      expect(mockPageView.parse(exampleMockPage("data-analyst", true)).role.followUps).toBe("none");
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });

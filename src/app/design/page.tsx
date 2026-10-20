@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { designGalleryEnabled } from "@/lib/preview";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
@@ -386,7 +388,9 @@ const exampleToday: TodayData = {
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
+// Example data includes content still waiting for review, so production never serves this page (T73).
 export default function DesignPage() {
+  if (!designGalleryEnabled()) notFound();
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-4 py-10">
       <header className="flex items-center justify-between border-b border-line pb-5">
