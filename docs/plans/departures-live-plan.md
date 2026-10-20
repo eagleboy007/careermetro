@@ -114,7 +114,7 @@ Two PRs. PR 1 is the feed, the tables and Departures (items 40 and 42). PR 2 is 
 12. The signed-in page with no resume says "Add your resume to see your fit for each role." With a resume whose skills aren't confirmed it asks to confirm them, and when fit can't be read it says so. The signed-out "no resume" example keeps the prototype's wording in the detail panel.
 13. Every save or stage try counts toward the 200 a day. Taking a closed post off Saved still works.
 14. The signed-out banner now says the roles and the fit are examples, and what signing in shows.
-15. The caps (500 a board, 5000 in all) never close a live post. Every post read before the caps counts as seen and is never closed, and a board the caps cut closes nothing that run.
+15. The caps (500 a board, 5000 in all) never close a live post. Every post read before the caps counts as seen and is never closed, and a board the caps cut was still read whole, so it closes posts no longer on it (T79, 2026-10-20). Only a failed board or one whose answer was cut short (a full SmartRecruiters page) closes nothing that run.
 16. SmartRecruiters is read one page (`limit=100`) without paging. A full page, or a `totalFound` above what came back, counts as cut short, so that board closes nothing.
 17. A board answer is fetched with `redirect: "error"`, and one that ends anywhere but https is refused.
 18. `?role=` filters the live board too, the person's own saved and applied posts included.

@@ -19,8 +19,9 @@ const root = new URL("../../", import.meta.url);
 /** @typedef {import("../../src/lib/departures/feed-rules.mjs").Ats} Ats */
 /** @typedef {{ company: string; ats: Ats; token: string; host?: import("../../src/lib/departures/feed-rules.mjs").BoardHost }} Board */
 /**
- * `capped`: the caps dropped some of this board's posts. `truncated`: the answer may be only part of the board (a full
- * SmartRecruiters page). Either way the board closes nothing this run.
+ * `capped`: the caps dropped some of this board's posts. The board was still read whole, so it closes posts that left
+ * it; the ones the caps dropped were seen and stay open (T79). `truncated`: the answer may be only part of the board (a
+ * full SmartRecruiters page), so the board closes nothing this run.
  * @typedef {{ ats: Ats; token: string; ok: boolean; posts: number; error: string | null; capped?: boolean; truncated?: boolean }} BoardResult
  */
 
@@ -134,8 +135,8 @@ export async function collect(boards, matchers, deps = {}) {
       while (next < boards.length) await one(boards[next++]);
     }),
   );
-  // Every row checked before the caps counts as seen, so writeRun never closes a live post the caps left out; a board
-  // the caps cut is marked so it closes nothing at all.
+  // Every row checked before the caps counts as seen, so writeRun never closes a live post the caps left out, while a
+  // board the caps cut still closes posts it no longer lists (T79). It is marked for the summary.
   const seen = rows.map((r) => ({ k: `${r.ats}:${r.boardToken}`, id: r.externalId }));
   const kept = capPosts(rows, deps.perBoard, deps.total);
   /** @type {Map<string, number>} */
@@ -154,8 +155,8 @@ const key = (/** @type {{ ats: string; token: string }} */ b) => `${b.ats}:${b.t
 const SAFE_KEY = new RegExp(`^[a-z]+:${TOKEN_PATTERN}$`);
 
 /**
- * The boards whose open posts this run may close: each board read whole and kept whole (a board that failed, was cut
- * short or was cut by the caps closes nothing),
+ * The boards whose open posts this run may close: each board read whole (a board that failed or was cut short closes
+ * nothing; one the caps cut was read whole, and writeRun keeps every post it saw open, T79),
  * and, with `unlisted`, every board that still has open posts but is no longer on the reviewed list.
  * @param {string[]} openKeys `ats:token` of the boards with open posts now
  * @param {BoardResult[]} results
@@ -163,7 +164,7 @@ const SAFE_KEY = new RegExp(`^[a-z]+:${TOKEN_PATTERN}$`);
  */
 export function boardsToClose(openKeys, results, boards, unlisted = true) {
   const listed = new Set(boards.map(key));
-  const read = results.filter((r) => r.ok && !r.capped && !r.truncated).map(key);
+  const read = results.filter((r) => r.ok && !r.truncated).map(key);
   // Only well-formed keys go into the array literal below.
   return [...new Set([...read, ...(unlisted ? openKeys.filter((k) => !listed.has(k)) : [])])].filter((k) => SAFE_KEY.test(k)).sort();
 }
@@ -246,8 +247,9 @@ export function summaryLines(/** @type {BoardResult[]} */ results, /** @type {nu
     written ? `Open posts: ${written.open}. Closed this run: ${written.closed}.` : "Dry run: DATABASE_URL is not set, so nothing was written.",
   ];
   for (const r of results.filter((x) => !x.ok)) lines.push(`Skipped ${r.ats}/${r.token}: last_error ${r.error}`);
-  for (const r of results.filter((x) => x.ok && (x.capped || x.truncated)))
-    lines.push(`Kept open ${r.ats}/${r.token}: ${r.truncated ? "answer cut short" : "over the post caps"}, so nothing on it was closed`);
+  for (const r of results.filter((x) => x.ok && x.truncated)) lines.push(`Kept open ${r.ats}/${r.token}: answer cut short, so nothing on it was closed`);
+  for (const r of results.filter((x) => x.ok && x.capped && !x.truncated))
+    lines.push(`Capped ${r.ats}/${r.token}: over the post caps, so posts it still lists stay open and only ones it dropped were closed`);
   return lines;
 }
 

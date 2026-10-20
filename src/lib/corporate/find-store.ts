@@ -24,7 +24,8 @@ import { displayName } from "@/lib/account/name";
 import { shownBody } from "@/lib/inbox/hidden";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
-import { duration, meFromProfile } from "@/lib/me/build";
+import { addedAsResumeRole, duration, meFromProfile } from "@/lib/me/build";
+import { addedRolesFor } from "@/lib/me/edit-store";
 import type { JobCheckRow } from "@/lib/me/job-check-rules";
 import { jobChecksFor, staffDomainsFor } from "@/lib/me/job-email-check";
 import { publicProfile as publicMe } from "@/lib/me/public";
@@ -283,7 +284,8 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
     db,
   );
   const withResume = people.filter((p) => current.has(p.id));
-  const staffDomains = await staffDomainsFor(
+  const staff = await staffOf(
+    ctx,
     withResume.map((p) => ({ id: p.id, profile: current.get(p.id)!.profile })),
     db,
   );
@@ -299,7 +301,7 @@ async function rankPeople(ctx: JobContext, searcherId: string, filters: FindSear
     if (!inBands(filters.bands, years, person.showExperience)) continue;
     const provedSkills = proved.get(person.id) ?? new Set<string>();
     if (!passesFilters(filters, { roleSlug: analysis.roleSlug, city: person.city, openToWorkIn: person.openToWorkIn, provedSkills: provedSkills.size })) continue;
-    if (worksAt(profile, ctx.companyNames) || onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain)) continue;
+    if (staff.has(person.id)) continue;
     const aim = roleTitles.get(analysis.roleSlug) ?? null;
     if (!passesText(filters, { name: person.name, aim, profile, experienceShown: person.showExperience })) continue;
     const match = jobMatch(job.requirements, profile, provedSkills, now);
@@ -348,6 +350,21 @@ function companyView(person: Person, profile: Profile, analysis: GapAnalysis, no
 const onCompanyDomain = (domains: string[] | undefined, companyDomain: string | null) => !!companyDomain && !!domains?.some((d) => isOnDomain(d, companyDomain));
 
 /**
+ * Who among these people works at the searching company now: by a current job on their confirmed resume or one they
+ * added on Me (FR-47 and FR-53 let the current job come from either, T75), named as the company or tied to it by a
+ * work-email check of that job. The company never sees them.
+ */
+async function staffOf(ctx: JobContext, people: { id: string; profile: Profile }[], db: Db | Tx): Promise<Set<string>> {
+  const added = await addedRolesFor(
+    people.map((p) => p.id),
+    db,
+  );
+  const jobs = people.map((p) => ({ id: p.id, profile: { ...p.profile, roles: [...p.profile.roles, ...(added.get(p.id) ?? []).map(addedAsResumeRole)] } }));
+  const domains = await staffDomainsFor(jobs, db);
+  return new Set(jobs.filter((p) => worksAt(p.profile, ctx.companyNames) || onCompanyDomain(domains.get(p.id), ctx.companyDomain)).map((p) => p.id));
+}
+
+/**
  * A person found from a search, resolved from the company's ref and checked again now, including that they don't work
  * at the company now.
  */
@@ -358,8 +375,8 @@ async function resolve(ctx: JobContext, userId: string, ref: string, db: Db | Tx
   if (!person) return null;
   const current = (await currentResumes([person.id], db)).get(person.id);
   if (!current) return null;
-  const staffDomains = await staffDomainsFor([{ id: person.id, profile: current.profile }], db);
-  return !worksAt(current.profile, ctx.companyNames) && !onCompanyDomain(staffDomains.get(person.id), ctx.companyDomain) ? person : null;
+  const staff = await staffOf(ctx, [{ id: person.id, profile: current.profile }], db);
+  return staff.has(person.id) ? null : person;
 }
 
 /**

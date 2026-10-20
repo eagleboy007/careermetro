@@ -16,12 +16,14 @@ import {
   type InterestExport,
   type MeEducationExport,
   type MeRoleExport,
+  type Profile,
   type StoryBox,
   type StoryExport,
 } from "@/lib/schemas";
 import { INTERESTS_MAX, ME_EDUCATION_MAX, ME_ROLES_MAX, STORIES_MAX, STORY_BOXES, type STORY_SOURCES } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import type { AddedRole, AddedStory, MeAdditions } from "./build";
+import { jobKeyOf, type JobKey } from "./job-check-rules";
 import { interestKey, oneLine } from "./text";
 
 /*
@@ -82,15 +84,31 @@ const notFound: MeEditResult = { ok: false, error: "not_found" };
 
 /* Roles ------------------------------------------------------------------------------------------------------------ */
 
-/** The roles on the person's current confirmed resume, as "title|employer" keys, ignoring case and spacing. */
-async function resumeRoleKeys(userId: string, db: Db): Promise<Set<string>> {
+/** The roles on the person's current confirmed resume. */
+async function resumeRoles(userId: string, db: Db): Promise<Profile["roles"]> {
   const analysis = await currentAnalysis(userId, db);
-  if (!analysis) return new Set();
+  if (!analysis) return [];
   const resume = await getResumeForOwner(analysis.resumeId, { userId }, db);
-  return new Set((resume?.profile?.roles ?? []).map((r) => roleKey(r.title, r.employer)));
+  return resume?.profile?.roles ?? [];
 }
 
 const roleKey = (title: string, employer: string) => `${oneLine(title).toLowerCase()}|${oneLine(employer).toLowerCase()}`;
+
+/**
+ * Whether two jobs are one job to the work-email check: the same company key and start month, which is what a saved
+ * check and its "Verified" badge match on (job-check-rules.ts). A hand-added role that matched another job this way
+ * would show that job's badge (T76), so it is refused.
+ */
+const sameCheckedJob = (a: JobKey, b: Pick<Profile["roles"][number], "employer" | "start">) => {
+  const k = jobKeyOf(b);
+  return !!a.employerKey && k.employerKey === a.employerKey && k.startMonth === a.startMonth;
+};
+
+/** "A job at this company starting that month": the badge key, said plainly, on the start month field. */
+export const SAME_JOB_MESSAGES = {
+  resume: "A job at this company that started that month is already on your resume.",
+  added: "A job at this company that started that month is already on your profile.",
+} as const;
 
 /**
  * Ticking "I work here now" on one role clears it on the others: each ends the month the new current role started,
@@ -117,9 +135,16 @@ export async function saveMeRole(userId: string, id: string | null, raw: unknown
   const role = input.data;
   const db = deps.db ?? getDb();
   // Read before the transaction, as other stores read the line: the resume doesn't change under a Me edit.
-  const onResume = await resumeRoleKeys(userId, db);
+  const onResume = await resumeRoles(userId, db);
+  const job = jobKeyOf({ employer: role.employer, start: role.startMonth });
   return change(userId, deps, async (tx, now) => {
-    if (onResume.has(roleKey(role.title, role.employer))) return { ok: false, error: "on_resume", message: ME_EDIT_MESSAGES.on_resume, field: "title" };
+    if (onResume.some((r) => roleKey(r.title, r.employer) === roleKey(role.title, role.employer))) return { ok: false, error: "on_resume", message: ME_EDIT_MESSAGES.on_resume, field: "title" };
+    if (onResume.some((r) => sameCheckedJob(job, r))) return { ok: false, error: "on_resume", message: SAME_JOB_MESSAGES.resume, field: "startMonth" };
+    const others = await tx
+      .select({ employer: meRoles.employer, start: meRoles.startMonth })
+      .from(meRoles)
+      .where(and(eq(meRoles.userId, userId), id ? ne(meRoles.id, id) : undefined));
+    if (others.some((r) => sameCheckedJob(job, r))) return { ok: false, error: "duplicate", message: SAME_JOB_MESSAGES.added, field: "startMonth" };
     const values = { title: role.title, employer: role.employer, startMonth: role.startMonth, endMonth: role.isCurrent ? null : role.endMonth, isCurrent: role.isCurrent, updatedAt: now };
     if (id === null) {
       const [{ n }] = await tx.select({ n: count() }).from(meRoles).where(eq(meRoles.userId, userId));
@@ -250,6 +275,19 @@ export async function addedRolesOf(userId: string, db: Pick<Db, "select"> = getD
     .from(meRoles)
     .where(eq(meRoles.userId, userId))
     .orderBy(desc(meRoles.startMonth), asc(meRoles.createdAt));
+}
+
+/** Each person's added roles, for keeping them out of their own employer's searches (T75). */
+export async function addedRolesFor(userIds: string[], db: Pick<Db, "select"> = getDb()): Promise<Map<string, AddedRole[]>> {
+  const out = new Map<string, AddedRole[]>();
+  if (!userIds.length) return out;
+  const rows = await db
+    .select({ userId: meRoles.userId, id: meRoles.id, title: meRoles.title, employer: meRoles.employer, startMonth: meRoles.startMonth, endMonth: meRoles.endMonth, isCurrent: meRoles.isCurrent })
+    .from(meRoles)
+    .where(inArray(meRoles.userId, userIds))
+    .orderBy(desc(meRoles.startMonth), asc(meRoles.createdAt));
+  for (const { userId, ...role } of rows) out.set(userId, [...(out.get(userId) ?? []), role]);
+  return out;
 }
 
 /** The person's interests as typed, oldest first. */

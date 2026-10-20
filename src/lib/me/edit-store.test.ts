@@ -24,6 +24,7 @@ import {
   removeInterest,
   saveMeEducation,
   saveMeRole,
+  SAME_JOB_MESSAGES,
   saveStory,
   storyGoalOptions,
 } from "./edit-store";
@@ -161,7 +162,23 @@ describe.skipIf(!db)("Me editing (database)", () => {
       message: "That role is already on your resume.",
       field: "title",
     });
+    // Another title at the same company and start month is one job to the work-email check, so it would wear the
+    // resume job's badge: refused on the start month (T76).
+    expect(await saveMeRole(me, null, { ...role, title: "Head of Engineering", employer: "Example Retail", startMonth: "2022-06" }, deps())).toEqual({
+      ok: false,
+      error: "on_resume",
+      message: SAME_JOB_MESSAGES.resume,
+      field: "startMonth",
+    });
     expect((await saveMeRole(me, null, role, deps())).ok).toBe(true);
+    // And against the other roles added on Me, but a role's own edit is fine.
+    const twin = { ...role, title: "Volunteer coordinator", employer: "Pune Reads Library Trust Ltd" };
+    expect(await saveMeRole(me, null, twin, deps())).toEqual({ ok: false, error: "duplicate", message: SAME_JOB_MESSAGES.added, field: "startMonth" });
+    const later = await saveMeRole(me, null, { ...twin, startMonth: "2023-07" }, deps());
+    if (!later.ok) throw new Error(later.error);
+    expect(await saveMeRole(me, later.id!, twin, deps())).toMatchObject({ ok: false, error: "duplicate" });
+    expect(await saveMeRole(me, later.id!, { ...twin, startMonth: "2023-08" }, deps())).toEqual({ ok: true, id: later.id });
+    expect(await deleteMeRole(me, later.id!, deps())).toEqual({ ok: true });
     // Me shows both, newest start first; the resume role keeps its own lines.
     const profile = await meFor(me, new Date("2026-10-10T06:00:00Z"), db!);
     expect(meProfile.safeParse(profile).success).toBe(true);
