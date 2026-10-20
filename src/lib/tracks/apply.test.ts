@@ -148,6 +148,20 @@ describe("trackPickerFor", () => {
     expect(picker.options[0]).toMatchObject({ goals: 5, met: 3, firstGoals: ["EXCEL", "STATISTICS"], moreGoals: 0 });
   });
 
+  it("names goals in goal order after the track's first skills, and leaves skipped goals out", () => {
+    const goals = [
+      { skillId: "statistics", position: 1, skipped: false },
+      { skillId: "excel", position: 2, skipped: true },
+      { skillId: "python", position: 3, skipped: false },
+      { skillId: "aws", position: 4, skipped: false },
+    ];
+    const picker = trackPickerFor({ base, role, tracks, current: null, provedSkillIds: new Set(), goals })!;
+    // The whole role: statistics, Python, the cloud group; Excel was skipped.
+    expect(picker.options[0]).toMatchObject({ goals: 4, met: 1, firstGoals: ["STATISTICS", "PYTHON", "AWS"], moreGoals: 0 });
+    // BI and reporting: Power BI first (no goal yet), then statistics and the cloud group.
+    expect(picker.options[1]).toMatchObject({ goals: 5, met: 2, firstGoals: ["Power BI", "STATISTICS", "AWS"], moreGoals: 0 });
+  });
+
   it("reads a track that isn't offered as the whole role, and offers nothing without tracks", () => {
     expect(trackPickerFor({ base, role, tracks, current: "gone", provedSkillIds: new Set() })!.current).toBeNull();
     expect(trackPickerFor({ base, role, tracks: [], current: null, provedSkillIds: new Set() })).toBeNull();

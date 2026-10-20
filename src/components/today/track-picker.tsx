@@ -149,7 +149,7 @@ export function TrackPanel({
   };
 
   return (
-    <div id={id} hidden={!open} onKeyDown={onKeyDown} className="flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 px-3.5 py-3">
+    <div id={id} role="group" aria-label="Pick a track" hidden={!open} onKeyDown={onKeyDown} className="flex flex-col gap-2.5 rounded-[14px] border border-line bg-surface-2 px-3.5 py-3">
       <p className="text-[0.84rem] text-muted">
         Your destination is {picker.role}. What kind of work do you want there? Your goals come from the track you pick.
       </p>
@@ -170,7 +170,8 @@ export function TrackPanel({
           </button>
         ))}
       </div>
-      <div aria-live="polite" className="flex flex-col gap-2 text-[0.84rem] empty:hidden">
+      {/* Not a live region: focus moves to Switch track, which this preview describes, so it is read once. */}
+      <div className="flex flex-col gap-2 text-[0.84rem] empty:hidden">
         {option && (
           <>
             <p id={previewId}>

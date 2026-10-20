@@ -36,7 +36,14 @@ export function lineGoals<G extends { skillId: string; source: "gap" | "user"; s
 export const choiceName = (skillId: string) => skillNames.get(skillId) ?? skillId;
 
 /** The person's track of their goal role, for the Track picker (docs/plans/tracks-plan.md). */
-export type LineTrack = { base: GapAnalysis; role: RoleProfile | null; current: RoleTrack | null; tracks: RoleTrack[] };
+export type LineTrack = {
+  base: GapAnalysis;
+  role: RoleProfile | null;
+  current: RoleTrack | null;
+  tracks: RoleTrack[];
+  /** Every goal of the person: where it sits and whether it was skipped, so the picker's preview reads like the card. */
+  goals: { skillId: string; position: number; skipped: boolean }[];
+};
 
 /**
  * The person's line as ride goals: their goals for the current analysis's gaps, as their track sees them
@@ -128,7 +135,13 @@ export async function rideGoalsFor(
     goals,
     chosen,
     path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) },
-    track: { base: analysis.base, role: analysis.role, current: analysis.track, tracks: analysis.tracks },
+    track: {
+      base: analysis.base,
+      role: analysis.role,
+      current: analysis.track,
+      tracks: analysis.tracks,
+      goals: userGoals.map((g) => ({ skillId: g.skillId, position: g.position, skipped: g.status === "skipped" })),
+    },
   };
 }
 
@@ -226,7 +239,7 @@ export async function todayRideFor(
   const { track } = line;
   const picker =
     track.role && track.tracks.length
-      ? trackPickerFor({ base: track.base, role: track.role, tracks: track.tracks, current: track.current?.id ?? null, provedSkillIds: new Set(await provedSkills(userId, db)) })
+      ? trackPickerFor({ base: track.base, role: track.role, tracks: track.tracks, current: track.current?.id ?? null, provedSkillIds: new Set(await provedSkills(userId, db)), goals: track.goals })
       : null;
   const goals = buildGoalsSummary({ ...input, role: track.current?.name ?? (role || line.result.roleSlug), gaps: line.result.gaps, chosen: line.chosen, picker });
   const asked = signalGoals(input);

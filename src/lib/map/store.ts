@@ -143,7 +143,8 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
     resumeId: analysis.resumeId,
-    skillsFound: result.metSkillIds.length,
+    // What the resume shows against the whole role, as on the Gaps page; the track changes the line, not the reading.
+    skillsFound: analysis.base.metSkillIds.length,
     goals: gapGoals,
     choiceGoals,
     // Other lines cross at the line's gaps: Nearby lines first, as interchanges.

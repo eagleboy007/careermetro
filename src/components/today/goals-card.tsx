@@ -65,12 +65,12 @@ export function GoalsCard({
     setTrackOpen(false);
     chip.current?.focus();
   };
-  // A switch closes the picker with focus on the chip, which stays put while the goals are worked out again.
+  // A switch closes the picker with focus on the chip. The server action's refresh() brings the new goals, as for the
+  // other Today actions; the chip stays put meanwhile.
   const switched = (name: string) => {
     closeTrack();
     setOpen(null);
     setNote(`Track changed to ${name}. Your goals were worked out again from your resume.`);
-    startRefresh(() => router.refresh());
   };
   const more = summary.moreCount === 1 ? "1 more goal" : `${summary.moreCount} more goals`;
   return (

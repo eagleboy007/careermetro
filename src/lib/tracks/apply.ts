@@ -107,8 +107,10 @@ const WHOLE_ROLE_BLURB = "Every skill the role profile asks for";
 
 /**
  * The Track picker on Your goals: the whole role first, then the role's tracks, each with its goal count (met ones
- * included: shown on the resume or proved) and its first open goals for the preview. Null when the role has no tracks
- * to offer. `current` is the track in use (null for the whole role); one that isn't offered reads as the whole role.
+ * included: shown on the resume or proved) and its first open goals for the preview, in the order Your goals would
+ * show them: the track's first skills, then the person's goal order (a skill with no goal yet goes last, as a new goal
+ * does). Goals the person skipped are left out, as on the card. Null when the role has no tracks to offer. `current`
+ * is the track in use (null for the whole role); one that isn't offered reads as the whole role.
  */
 export function trackPickerFor(input: {
   base: GapAnalysis;
@@ -116,14 +118,24 @@ export function trackPickerFor(input: {
   tracks: readonly RoleTrack[];
   current: string | null;
   provedSkillIds: ReadonlySet<string>;
+  /** The person's goals: where each skill's goal sits, and whether they skipped it. */
+  goals?: readonly { skillId: string; position: number; skipped: boolean }[];
 }): TrackPicker | null {
   if (!input.tracks.length) return null;
   const { base, role, provedSkillIds: proved } = input;
+  const goalBySkill = new Map((input.goals ?? []).map((g) => [g.skillId, g]));
+  const skipped = (skillId: string) => goalBySkill.get(skillId)?.skipped ?? false;
+  const position = (skillId: string) => goalBySkill.get(skillId)?.position ?? Number.MAX_SAFE_INTEGER;
   const option = (track: RoleTrack | null): TrackOption => {
     const tracked = applyTrack(base, role, track);
     const met = new Set([...tracked.metSkillIds, ...proved]);
     const groupSkills = (groupId: string) => role.skills.filter((s) => s.oneOf === groupId).map((s) => s.skillId);
-    const open = tracked.gaps.filter((g) => !(g.groupId ? groupSkills(g.groupId) : [g.skillId]).some((id) => proved.has(id)));
+    const rank = trackRank(track);
+    const open = tracked.gaps
+      .map((g, i) => ({ g, i }))
+      .filter(({ g }) => !skipped(g.skillId) && !(g.groupId ? groupSkills(g.groupId) : [g.skillId]).some((id) => proved.has(id)))
+      .sort((a, b) => rank(a.g.skillId) - rank(b.g.skillId) || position(a.g.skillId) - position(b.g.skillId) || a.i - b.i)
+      .map(({ g }) => g);
     const metUnits = requiredUnits(trackedRole(role, track)).filter((unit) => unit.some((id) => met.has(id))).length;
     const firstGoals = open.slice(0, 3).map((g) => clip(g.skillName, 80));
     return {
