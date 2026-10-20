@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (mock follow-ups part 2).
+Last updated: 2026-10-20 (staging smoke dry run).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -44,11 +44,12 @@ Last updated: 2026-10-20 (mock follow-ups part 2).
   - Performance pass (#198, migration 0046 `job_posts_open_newest`, `docs/plans/perf-pass.md`): Today, Map and Departures read the analysis once and run independent reads in parallel; the goal sync on every view is what's left.
   - Refused sign-in codes logged (#199): `auth_email_code_send_refused` and `auth_email_code_verify_refused` with Supabase's error code and status only, never the email or the code.
   - Goal sync skip (#200, no migration, `docs/plans/goal-sync-skip-plan.md`): a view first plans the sync from one read-only snapshot with no lock and writes nothing when nothing would change; otherwise the locked path runs as before.
+  - Mock follow-ups part 2 (#201, no migration): all 95 open bank questions have two follow-ups (188), all `followUpsReviewed: false`, so production asks none until the expert review (`dev/mock-followups-draft.md`, pending item 27).
 
 ## In progress
 
-- Mock follow-ups part 2 (branch `v44-followups2`, no migration, no prompt change): 170 follow-ups for the other 85 open bank questions, so all 95 have one or two (188 in all), every one `followUpsReviewed: false`, so production still asks none.
-  - The expert review draft, grouped by skill with a role index, is `dev/mock-followups-draft.md` in the project files (pending-items 27). Content tests now check that every open question has follow-ups, unique texts, and skip words that are not in their own question.
+- Staging dry run of `docs/launch/prod-smoke.md` (no migration): `scripts/smoke/staging-dry-run.mjs` and the manual **Smoke dry run (staging)** workflow walk 1.1, sections 3 to 6 and the deletion in 8 with the test user, sending the bypass header to that site only, and delete the test account even after a failure. The doc now names the real buttons (Create my account, Read my resume, Pick a role, Delete my account), the Welcome card on day one and the staging limits of section 2.
+- The e2e walk gains `smoke 6`: the settings Download link's file name, Sign out from the avatar menu, and signing in again straight to Today.
 
 ## Next up
 

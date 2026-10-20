@@ -54,11 +54,15 @@ The parse check runs the real resume-parse request on a built-in synthetic resum
 **On staging** (`https://careermetro-git-staging-career-metro.vercel.app`, behind Vercel Deployment Protection): run the same workflow with that URL. It sends the `VERCEL_AUTOMATION_BYPASS_SECRET` repository secret as the `x-vercel-protection-bypass` header. By hand from a terminal, read the value from the password manager into a variable first, so it stays out of your shell history and out of any document:
 `curl -sS -H "x-vercel-protection-bypass: $BYPASS" https://careermetro-git-staging-career-metro.vercel.app/api/health`
 
+The browser part runs on staging too: GitHub > Actions > **Smoke dry run (staging)** > Run workflow (URL defaults to staging). It runs `scripts/smoke/staging-dry-run.mjs`: 1.1, then sections 3 to 6 and the account deletion in 8, with "Continue as test user" in place of the emailed code, and it deletes the test account at the end even after a failure. Each step prints one ok or FAIL line; the header, the test email and the resume are never printed. It spends a few cents of staging's parse and explain budget. By hand: `BASE=<url> BYPASS=$BYPASS node scripts/smoke/staging-dry-run.mjs` after `npm install --no-save playwright@1.56.1 && npx playwright install chromium`. The header goes only to `careermetro-*.vercel.app` hosts.
+
 ---
 
 ## 2. Sign in by email code (3 minutes)
 
 Use an inbox you can open now, never a real candidate's. Name the account **Priya Sharma**: the test resume in step 3 has that name, and a signed-in upload under another name is refused on purpose (the resume name check).
+
+**On staging** there are no emailed codes: `/sign-in` shows "Preview only" and **Continue as test user** (Name and Email, nothing checked; docs/staging.md). 2.2 and 2.3 and the code in 2.4 can't run there, and are checked only on production. The test user covers the rest: a new address still goes to "Create your account" (2.4) and the name step (2.5), and a returning one straight to Today (6.3). Use a new email each run: anyone who types the same one sees that account.
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
@@ -66,40 +70,40 @@ Use an inbox you can open now, never a real candidate's. Name the account **Priy
 | 2.2 | Type the email and press **Email me a code** | "We sent a code to <email>. It works for 1 hour." and a Code field | "We couldn't send a code just now": Supabase refused it (Vercel log `auth_email_code_send_refused` gives its code; Supabase auth logs: rate limit, SMTP error). "Too many tries": the app's limit (5 codes an hour for one email, 20 an hour from one network) |
 | 2.3 | Open the inbox | Within a minute, from CareerMetro `no-reply@careermetro.com`, an email with a 6-digit code | Nothing after 2 minutes: check spam, then Supabase auth logs and Resend > Emails. A link but no code: the template lacks `{{ .Token }}`. Sender `noreply@mail.app.supabase.io`: Supabase SMTP isn't pointed at Resend yet |
 | 2.4 | Type the code and press **Sign in** | A new address goes to "Create your account" ("Signed in as <email>. One last step."). A returning one goes straight to Today | "That code didn't work": an older code was used, or it expired. Press **Send a new code** and use only the newest email |
-| 2.5 | Enter the name **Priya Sharma**, tick "I am 18 or older and agree to the terms and privacy policy.", continue | Today in the No resume state: the role chips and the "Drop your resume here" box | Vercel logs for an error at that minute. The `users` table should have one new row |
+| 2.5 | First name **Priya**, Last name **Sharma**, tick "I am 18 or older and agree to the terms and privacy policy.", press **Create my account** | Today in the No resume state: the role chips and the "Drop your resume here" box | Vercel logs for an error at that minute. The `users` table should have one new row |
 
 ## 3. Upload the synthetic resume (2 minutes)
 
-The file is `fixtures/resumes/priya-sharma.pdf` in the repo (an invented person; `.docx` and `.txt` copies sit next to it). Download it from GitHub first. Never use a real resume for a smoke check.
+The file is `fixtures/resumes/priya-sharma.pdf` in the repo (an invented person; a `.docx` copy sits next to it, and the `.txt` copy is for **Paste text**, since a file upload takes PDF or DOCX only). Download it from GitHub first. Never use a real resume for a smoke check.
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
-| 3.1 | On Today (or `/start`), choose the file, tick the consent box and send it | The reading steps, then within about 30 seconds the review page `/resume/<id>` with her roles and skills | "Our resume reader is unavailable": the Claude key, credit or the parse budget (health `claude`, Vercel `ai_call_failed`). "This resume shows a different name": the account isn't named Priya Sharma. Any other error: Vercel `resume_upload_failed` |
-| 3.2 | Press **Looks right**, then go on to the roles | "Closest to your resume" with 1 to 3 roles, each saying "Your resume shows N of its N key skills, like …" | Vercel `profile_save_failed` |
+| 3.1 | On Today (or `/start`), choose the file, tick the consent box ("I agree that CareerMetro reads my resume…") and press **Read my resume** | The reading steps, then within about 30 seconds the review page `/resume/<id>` with her roles and skills | "Our resume reader is unavailable": the Claude key, credit or the parse budget (health `claude`, Vercel `ai_call_failed`). "This resume shows a different name": the account isn't named Priya Sharma. Any other error: Vercel `resume_upload_failed` |
+| 3.2 | Press **Looks right**, then **Pick a role** in the "Saved" box | "Closest to your resume" with 1 to 3 roles, each saying "Your resume shows N of its N key skills, like …" | Vercel `profile_save_failed` |
 
 ## 4. Gaps and Path (3 minutes)
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
 | 4.1 | Pick **Data Analyst** | `/resume/<id>/gaps/data-analyst`: the gaps with a status and an explanation each, and "Build my path" | Explanations in plain template wording are fine (budget or Claude down) but say so in the report. Errors: Vercel logs; the `gap_analyses` table should have a new row |
-| 4.2 | Press **Build my path** | The path: sized steps with free resources and hours, "Works toward: <skill>" | Vercel logs; template wording is the fallback when Claude is down |
+| 4.2 | Press **Build my path** | "Your path": sized steps with free resources and hours, "Works toward: <skill> (<status>)", and "0 of N steps done" | Vercel logs; template wording is the fallback when Claude is down |
 | 4.3 | Press **Mark done** on the first step | "1 of N steps done" | The step stays undone after a reload: Vercel logs at that minute |
 
 ## 5. Today: the ride and goals (2 minutes)
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
-| 5.1 | Open `/today` | "Your goals" with this resume's own goals (never the example "SQL window functions"), and today's ride | Example data instead: the goals sync failed (Vercel `goals_sync_failed`), or the resume isn't on this account |
-| 5.2 | Under "Hours a week", press **8 h**, then reload | 8 h stays pressed | Vercel logs |
-| 5.3 | Tick the first ride task | The streak chip in the top bar shows 1 ("1-day streak" on screens 400px or wider) | Vercel logs. Untick it afterwards if you like |
+| 5.1 | Open `/today` | "Your goals" with this resume's own goals (never the example "SQL window functions"). On the first day the ride is in the "Welcome aboard, Priya." card, under "Your first ride"; from the first tick it is "Today's ride" | Example data instead: the goals sync failed (Vercel `goals_sync_failed`), or the resume isn't on this account |
+| 5.2 | In the Welcome card's "Set up in three taps", under "Hours a week", press **8 h**, then reload | 8 h stays pressed | Vercel logs |
+| 5.3 | Tick the first ride task, then untick it | Ticked: the streak chip in the top bar shows 1 ("1-day streak" on screens 400px or wider) and "Today's ride" takes the Welcome card's place. Unticked: the Welcome card is back and the chip is gone | Vercel logs |
 | 5.4 | Open `/map` | The line with the same goals as stops | Vercel logs |
 
 ## 6. Settings: download, then sign out (2 minutes)
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
-| 6.1 | Open `/settings` > Your data > **Download your data** > Download | A file `careermetro-data-<date>.json` with the account, the resume profile, the gap result, the path and the goals (no resume file: it's never kept) | 401: the session dropped, so sign in again. 500: Vercel logs for `/api/account/export` |
-| 6.2 | Open the avatar menu > **Sign out** | The home page, signed out. Opening `/today` now goes to `/sign-in` | Still signed in: Vercel logs for `/auth/sign-out` (403 means the form came from another origin) |
+| 6.1 | Open `/settings` > Your data > **Download your data** > Download | A file `careermetro-data-<date>.json` (the date is UTC, so before 05:30 IST it is yesterday's) with the account, the resume profile, the gap result, the path and the goals (no resume file: it's never kept) | 401: the session dropped, so sign in again. 500: Vercel logs for `/api/account/export` |
+| 6.2 | Open the avatar menu (your initials, top right) > **Sign out** | The home page, signed out. Opening `/today` now goes to `/sign-in` | Still signed in: Vercel logs for `/auth/sign-out` (403 means the form came from another origin) |
 | 6.3 | Sign in again with the same email (steps 2.1 to 2.4) | Straight to Today with the same goals, with no name step | A name step again: the `users` row lost its name, so tell Development |
 
 ## 7. Admin and clean-up (Milin, 2 minutes)
@@ -112,6 +116,6 @@ The file is `fixtures/resumes/priya-sharma.pdf` in the repo (an invented person;
 
 ## 8. Finish
 
-- Delete the test account: `/settings` > **Delete account**, type DELETE. It is gone for good after the 30-day restore window.
+- Delete the test account: `/settings` > Your data > Delete account > **Delete**, type DELETE in "Type DELETE to confirm", press **Delete my account**. You land on `/account/deleted`, signed out. It is gone for good after the 30-day restore window; signing in with that email before then offers **Restore my account**, so use a new email for the next smoke check.
 - Post one line in the Development thread, for example "smoke 2026-10-2x: all green", or the step numbers that failed with the time. Never paste a code, an email or a key.
 - If 1.1, 2.x or 3.1 fails and can't be fixed in a few minutes, follow the rollback in `docs/dev/launch-day.md`: remove `TODAY_PREVIEW` and redeploy, or promote the last good deploy.
