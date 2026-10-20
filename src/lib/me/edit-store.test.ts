@@ -46,7 +46,7 @@ const bytes = new TextEncoder().encode(readFileSync("fixtures/resumes/priya-shar
 const parsed: Profile = {
   headline: "Data Analyst",
   totalYearsExperience: 3,
-  roles: [{ title: "Analyst", employer: "Acme Traders", start: "2023-01", end: null, highlights: ["Wrote SQL queries for weekly sales reports across 40 stores"] }],
+  roles: [{ title: "Data Analyst", employer: "Example Retail Pvt Ltd", start: "2022-06", end: null, highlights: ["Wrote SQL queries for weekly sales reports across 40 stores"] }],
   skills: [{ name: "SQL", lastUsed: null, evidence: [] }],
   education: [],
   certifications: [],
@@ -155,7 +155,7 @@ describe.skipIf(!db)("Me editing (database)", () => {
     await confirmProfile(r.resumeId, owner, parsed, db!);
     const gaps = await getGapsForOwner(r.resumeId, owner, roleProfiles[0], { db: db! });
     if (!gaps.ok) throw new Error(gaps.reason);
-    expect(await saveMeRole(me, null, { ...role, title: " analyst ", employer: "ACME traders" }, deps())).toEqual({
+    expect(await saveMeRole(me, null, { ...role, title: " data analyst ", employer: "EXAMPLE retail pvt ltd" }, deps())).toEqual({
       ok: false,
       error: "on_resume",
       message: "That role is already on your resume.",
@@ -167,7 +167,7 @@ describe.skipIf(!db)("Me editing (database)", () => {
     expect(meProfile.safeParse(profile).success).toBe(true);
     expect(profile!.experience.map((e) => [e.title, !!e.added])).toEqual([
       ["Volunteer data lead", true],
-      ["Analyst", false],
+      ["Data Analyst", false],
     ]);
     expect(profile!.experience[1].highlights).toEqual(["Wrote SQL queries for weekly sales reports across 40 stores"]);
   });
