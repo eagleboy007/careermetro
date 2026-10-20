@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LIBRARY_LANGUAGES } from "./constants";
 
 /**
  * A free learning resource in the reviewed catalog (FR-17). Paths link only to these; the model never writes a URL.
@@ -15,6 +16,8 @@ export const resource = z.object({
     .refine((ids) => new Set(ids).size === ids.length, "lists a skill twice"),
   minutes: z.number().int().positive().max(6000),
   free: z.boolean().default(true),
+  /** Taught in this language; left out for English. Read by the Library's language filter (FR-51), not stored in the table. */
+  language: z.enum(LIBRARY_LANGUAGES).optional(),
 });
 export type Resource = z.infer<typeof resource>;
 

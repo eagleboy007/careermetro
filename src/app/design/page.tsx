@@ -54,6 +54,8 @@ import { MarketView } from "@/components/market/market-view";
 import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
+import { LibraryView } from "@/components/library/library-view";
+import { exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
@@ -544,6 +546,18 @@ export default function DesignPage() {
         <div className="max-w-[300px] rounded-lg border border-line bg-surface p-4">
           <ConfidenceSpark ratings={[1, 2, 2, 3, 4]} width={260} height={70} />
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Library (signed in)</h2>
+        <p className="text-sm text-muted">
+          Handoff 12a, FR-51: For your goals (default) with one card per open goal in map order, each with Learn (or Brush up for a goal that starts
+          at proof) and Prove, the courses on today&apos;s ride marked On your ride (progress, so cobalt), and Finished from the person&apos;s own
+          ticks. Search, type, length and Hindi filters, the details panel with Open on the source site, How the Library is picked, and the Your
+          interests, Saved and Finished tabs. Real catalog links with made-up goals. Below it, the Library with no resume.
+        </p>
+        <LibraryView view={exampleLibrary} />
+        <LibraryView view={exampleLibraryNoResume} />
       </section>
 
       <section className="flex flex-col gap-4">

@@ -374,6 +374,7 @@ Designed 2026-10-09 (prototype v2, Library tab; dev notes have the full list).
 - Rules: free to learn only; an exam fee is shown before the click; no ads or affiliate links; reviewers re-check broken or outdated links; "Suggest a free resource" goes to a review queue.
 - No resume: the goals tab asks for a resume; interests, saved and search still work.
 - Data proposal (needs approval): `resources`, `user_resources` (saved, on_ride, finished_at), `resource_reports`, `resource_suggestions`.
+- Built, part 1 (FR-51, 2026-10-20, against the frozen v44 copy): the four tabs, search, filters, goal cards with Learn or Brush up and Prove, "On your ride", the details panel and How the Library is picked, read only from the catalog, goals, path and ride ticks. Finished is the person's own ticks on Today's ride or the Path. Saved, "I finished this", Add to my rides, Report a broken link and Suggest a free resource wait for `user_resources`, `resource_reports` and `resource_suggestions` (a migration), and the screen says so. Your interests waits for profile interests. "People on your line who finished it" waits for a count we don't keep. The Elite tab comes with Elite part 5 (12l).
 
 ## 12b. Inbox (`/inbox`)
 
