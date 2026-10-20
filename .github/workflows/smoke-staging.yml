@@ -3,8 +3,13 @@ name: Smoke dry run (staging)
 # The browser part of docs/launch/prod-smoke.md (sections 3 to 6 and the account deletion in 8), run by hand against
 # staging or another preview that offers "Continue as test user": sign up as a fresh test user, upload the synthetic
 # resume, Gaps and Path, Today, Map, download the data, sign out and in again, then delete the account
-# (scripts/smoke/staging-dry-run.mjs). One line per step in the log; any failed step turns the run red.
-# The upload and the gaps call the real Claude API on that deployment, so a run spends a few cents of its budget.
+# (scripts/smoke/staging-dry-run.mjs). Then, even if that failed, the screens it doesn't reach, with two fresh test users
+# in two browsers (scripts/smoke/staging-screens.mjs): Network search, request and accept with no city on any row, the
+# notification bell, the resume builder through to Download, Library Save and "I finished this", a mock interview
+# started and ended at once, and Departures save and applied ("skipped: no posts" on an empty board); both accounts are
+# deleted at the end. One line per step in the log; any failed step turns the run red.
+# The upload, the gaps and the builder's review call the real Claude API on that deployment, so a run spends a few
+# cents of its budget (the mock round ends unanswered, so it asks for no feedback).
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +24,7 @@ permissions:
 jobs:
   dry-run:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -38,6 +43,14 @@ jobs:
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           SMOKE_SHOTS: smoke-results
         run: node scripts/smoke/staging-dry-run.mjs
+      - name: Walk the other signed-in screens on the preview
+        # Runs even when the dry run failed, so one broken screen doesn't hide the rest.
+        if: success() || failure()
+        env:
+          BASE: ${{ inputs.url }}
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          SMOKE_SHOTS: smoke-results
+        run: node scripts/smoke/staging-screens.mjs
       - name: Keep screenshots of failed steps
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
