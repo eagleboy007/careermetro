@@ -58,6 +58,8 @@ export function SignalCheckCard({
       <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="Answers">
         {check.options.map((o) => {
           const right = answered && reveal !== null && o.key === reveal.correctKey;
+          // While the answer is checked, the option picked keeps a clear edge.
+          const checking = answered && reveal === null && o.key === pickedKey;
           return (
             <button
               key={o.key}
@@ -65,8 +67,8 @@ export function SignalCheckCard({
               aria-disabled={answered}
               onClick={() => pick(o.key)}
               className={`flex items-start gap-2.5 rounded-[14px] border-[1.5px] px-3.5 py-3 text-left text-[0.86rem] transition ${
-                right ? "border-accent bg-accent-soft" : "border-line bg-bg"
-              } ${answered && !right ? "opacity-55" : ""} ${answered ? "cursor-default" : "hover:-translate-y-px hover:border-ink"}`}
+                right ? "border-accent bg-accent-soft" : checking ? "border-ink bg-bg" : "border-line bg-bg"
+              } ${answered && !right && !checking ? "opacity-55" : ""} ${answered ? "cursor-default" : "hover:-translate-y-px hover:border-ink"}`}
             >
               <span
                 className={`grid size-[22px] shrink-0 place-items-center rounded-[6px] font-mono text-[0.7rem] ${right ? "bg-accent text-on-accent" : "bg-surface-2"}`}

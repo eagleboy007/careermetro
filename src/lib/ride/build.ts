@@ -250,6 +250,17 @@ export function withSignalTask(tasks: RideTask[], day: string, done: boolean): R
 }
 
 /**
+ * The ride with the day's signal task (`withSignalTask`). The week's count leaves out a learn task the signal task
+ * pushed off today's list, so the ring counts only learn tasks the person can see or has done.
+ */
+export function rideWithSignal(ride: Ride, day: string, done: boolean): Ride {
+  const tasks = withSignalTask(ride.tasks, day, done);
+  const kept = new Set(tasks.map((t) => t.id));
+  const hidden = ride.tasks.filter((t) => !t.signal && !t.done && !kept.has(t.id)).length;
+  return { ...ride, tasks, weekTasksTotal: Math.max(1, ride.weekTasksDone, ride.weekTasksTotal - hidden) };
+}
+
+/**
  * Today's ride (handoff section 5): the first goal not proved with tasks left, or, when every task is done, the first
  * goal still waiting for proof. Tasks done on an earlier day leave the list (they are done for good); today's ticks
  * stay so they can be taken back until the day ends. A goal waiting for proof shows its tasks done and locked. Each

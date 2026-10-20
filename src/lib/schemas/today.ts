@@ -271,6 +271,11 @@ export type SignalCheck = z.infer<typeof signalCheck>;
 export type SignalShown = z.infer<typeof signalShown>;
 export type SignalAnswer = z.infer<typeof signalAnswer>;
 export type SignalLive = z.infer<typeof signalLive>;
+/**
+ * What answering a live signal check gives back: the right answer and why, or why not. "stale": the day's question
+ * changed since the page loaded (a new day, or a goal proved or skipped); "limit": too many tries today.
+ */
+export type SignalAnswerResult = { ok: true; answer: SignalAnswer } | { ok: false; reason: "stale" | "limit" | "invalid" };
 export type GoalsSummary = z.infer<typeof goalsSummary>;
 export type ProvePitstop = z.infer<typeof provePitstop>;
 export type EventTeaser = z.infer<typeof eventTeaser>;

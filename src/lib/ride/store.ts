@@ -228,8 +228,9 @@ export async function todayRideFor(
 
 /**
  * Answers today's signal check (handoff section 5): the question is picked again here, and the answer is checked
- * against it, so a stale page (a goal proved since) or a key that isn't an option gets null. Any answer ticks the day's
- * signal task, once; the pick and the key are never stored or logged. Returns the right answer and why. No score.
+ * against it. A stale page (a new day, or a goal proved or skipped since) gets "stale", with nothing ticked; a key that
+ * isn't an option, or someone with no line, gets null. Any answer ticks the day's signal task, once; the pick and the
+ * key are never stored or logged. Returns the right answer and why. No score.
  */
 export async function answerSignal(
   userId: string,
@@ -238,7 +239,7 @@ export async function answerSignal(
   now: Date,
   db: Db = getDb(),
   { bank = mockQuestions, allowUnreviewed = unreviewedAllowed() }: SignalSource = {},
-): Promise<SignalAnswer | null> {
+): Promise<SignalAnswer | "stale" | null> {
   if (typeof questionId !== "string" || questionId.length > 80) return null;
   const line = await rideGoalsFor(userId, db, { sync: false });
   if (!line) return null;
@@ -253,7 +254,8 @@ export async function answerSignal(
     const input = { goals: line.goals, path: line.path, doneBefore: await doneBefore(userId, day, tx), doneToday: new Set<string>(ticked), doneThisWeek: new Set<string>() };
     // Every goal proved or skipped: signalGoals is empty, so there is no question, as on the page.
     const pick = pickSignal(bank, signalGoals(input), userId, day, allowUnreviewed);
-    if (!pick || pick.question.id !== questionId || !isSignalKey(pick.question, key)) return null;
+    if (!pick || pick.question.id !== questionId) return "stale";
+    if (!isSignalKey(pick.question, key)) return null;
     const id = signalTaskId(day);
     if (!ticked.includes(id)) {
       const taskIds = toggled(ticked, id, true);

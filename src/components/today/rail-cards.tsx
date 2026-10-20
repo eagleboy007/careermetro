@@ -53,7 +53,7 @@ export function OnYourLineCard({ line, firstDay = false, label = "On your line" 
         </div>
         <p className="min-w-[180px] flex-1 text-[0.86rem]">
           <b className="font-semibold">{line.count === 1 ? "1 person" : `${line.count} people`}</b>{" "}
-          {firstDay ? `started on the ${line.goalName} goal this week, like you.` : `${line.count === 1 ? "is" : "are"} on the ${line.goalName} goal with you.`}
+          {firstDay ? `took on the ${line.goalName} goal this week.` : `${line.count === 1 ? "is" : "are"} on the ${line.goalName} goal with you.`}
         </p>
       </div>
       {!firstDay && line.tip && (

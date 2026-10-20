@@ -19,10 +19,14 @@ Development, 2026-10-20. This is PR 2 of `docs/plans/departures-live-plan.md` (i
 6. With no rows (no confirmed resume, or no post matched) the board says "No roles to show yet…". The board's footer now says "From public company job-board feeds", since pasted posts never reach it.
 7. On your line counts a person only if they turned on "Let people find me", aren't suspended, deleting or nameless, have no block either way, and the viewer may see both their profile and their gaps under the "Who sees what" rules: gaps to everyone who can open the profile on a profile open to everyone signed in, or a connection with gaps to connections or more on any profile but Only you. "People on your line" profiles count only for connections, because sharing a goal doesn't mean aiming at the same role. Job search off doesn't matter here: the card is about learning, not hiring.
 8. "On your line" uses `user_goals.skill_id` with status `active` (the goal's own skill, so a swapped goal still meets people on the same gap). Initials put connections first, then the newest on the goal.
-9. On the first day the card counts people who took the goal on in the last 7 days, and reads "started on the {goal} goal this week, like you." instead of the prototype's "started this line this week", which would claim the same role.
+9. On the first day the card counts people who took the goal on in the last 7 days, and reads "{N} people took on the {goal} goal this week." instead of the prototype's "started this line this week, like you.", which would claim the same role and the same start.
 10. A failed read of the board or the line logs its event name only and leaves the card out (the board shows its empty line); it never fails the page.
 11. /design keeps static example data: the live board rows are built from `exampleLiveJobs` at module level with no clock, and the waiting and failed signal states and the first-day line have their own region names.
 12. The e2e walk answers the signal check when the bank has a question for the walk's goal (preview allows unreviewed questions), checks that it ticks the streak, and checks that no example board, tip or question shows.
+
+13. After review: the card's answer state is kept with its question id, so a refresh that brings a new question (a goal skipped, or midnight in India) shows that question fresh, with no effect. A question that changed since the page loaded answers "Today's question changed. Reload Today for the new one." and ticks nothing. Answers are limited to 100 tries a day (`signalAnswersPerUserDay`, no migration: rate-limit buckets are free text).
+14. The week's ring counts learn tasks only: the signal task never moves it, and `rideWithSignal` takes the learn task it pushes off today's list out of the week's total.
+15. The Library's "On your ride" mark (FR-51) still follows the path's ride courses (`MAX_COURSES`), so on a day with a signal check it can mark a course that today's list pushed to the next day. Accepted: the course is still on the person's rides, just not today's three.
 
 ## Not in this change
 

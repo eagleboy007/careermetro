@@ -13,7 +13,7 @@ import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { USER_STATES, type Departure, type OnYourLine, type UserState } from "@/lib/schemas";
 import { jobSearchOn } from "@/lib/job-search/store";
 import { errorFields, logEvent } from "@/lib/log";
-import { withSignalTask } from "@/lib/ride/build";
+import { rideWithSignal, withSignalTask } from "@/lib/ride/build";
 import { greetingAt } from "@/lib/today/board";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
 import { todayStateFor } from "@/lib/today/state";
@@ -112,7 +112,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
             name,
             greeting,
             role: found.role.title,
-            ride: signal ? { ...found.ride, tasks: withSignalTask(found.ride.tasks, signal.day, signal.done) } : found.ride,
+            ride: signal ? rideWithSignal(found.ride, signal.day, signal.done) : found.ride,
             goals: found.goals,
             week: found.week,
             departures: board,

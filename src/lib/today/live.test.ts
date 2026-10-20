@@ -126,7 +126,7 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       expect(today!.ride.tasks.some((t) => t.signal)).toBe(false);
 
       // A stale question, a key that isn't an option, or someone with no line: nothing is ticked.
-      expect(await answerSignal(userId, "t-another", "A", now, db!, { bank })).toBeNull();
+      expect(await answerSignal(userId, "t-another", "A", now, db!, { bank })).toBe("stale");
       expect(await answerSignal(userId, signal.live.id, "D", now, db!, { bank })).toBeNull();
       expect(await answerSignal(userId, signal.live.id, 2, now, db!, { bank })).toBeNull();
       expect(await answerSignal(await user("No Line"), signal.live.id, "A", now, db!, { bank })).toBeNull();
@@ -153,7 +153,7 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       const drafts = bank.map((q) => ({ ...q, reviewed: false }));
       const today = await todayRideFor(userId, now, db!, "", { bank: drafts, allowUnreviewed: false });
       expect(today!.signal).toBeNull();
-      expect(await answerSignal(userId, bank[0].id, "A", now, db!, { bank: drafts, allowUnreviewed: false })).toBeNull();
+      expect(await answerSignal(userId, bank[0].id, "A", now, db!, { bank: drafts, allowUnreviewed: false })).toBe("stale");
       expect(await ticks(userId)).toEqual([]);
     });
   });
@@ -168,7 +168,8 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       user?: Partial<typeof schema.users.$inferInsert>;
     };
     const open = { peopleCanFind: true, profileVisibility: "signed_in", gapsVisibleTo: "profile" } as const;
-    // Goals are stamped by the database clock, so the first-day week is read from it too.
+    // Goals are stamped with the time they are written (the column default), not the fixed `now` above, so the
+    // first-day week is read from the test's real clock.
     const wall = new Date();
     async function rider({ name = "Rider Person", settings = open, status = "active", skill = lineSkill, createdAt, user: u = {} }: Who = {}) {
       const id = await user(name, u);

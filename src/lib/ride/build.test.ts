@@ -9,6 +9,7 @@ import {
   goalForAdded,
   parseAddedTask,
   rideParts,
+  rideWithSignal,
   signalGoals,
   signalTaskId,
   withSignalTask,
@@ -330,6 +331,9 @@ describe("signal check goals and task", () => {
     expect(withSignalTask(tasks, "2026-10-20", true).at(-1)).toMatchObject({ id: signalTaskId("2026-10-20"), done: true });
     expect(withSignalTask(tasks, "2026-10-20", true)).toHaveLength(3);
     expect(signalTaskId("2026-10-21")).not.toBe(signalTaskId("2026-10-20"));
+    // The week's ring no longer counts the learn task the signal task pushed off today's list.
+    expect(r.weekTasksTotal).toBe(3);
+    expect(rideWithSignal(r, "2026-10-20", false)).toMatchObject({ weekTasksTotal: 2, tasks: tasks });
     const arrived = arrivedRide(4);
     expect(withSignalTask(arrived.tasks, "2026-10-20", false)).toEqual(arrived.tasks);
   });

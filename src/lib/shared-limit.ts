@@ -126,6 +126,8 @@ export const LIMITS = {
   notificationReadsPerUserDay: { bucket: "notification-read", max: NOTIFICATION_READS_PER_DAY, windowMs: 24 * HOUR },
   /** "Usually free" saves from the Inbox (docs/plans/settings-columns-plan.md), each try counted. */
   availabilityPerUserDay: { bucket: "availability-save", max: AVAILABILITY_SAVES_PER_DAY, windowMs: 24 * HOUR },
+  /** Today's signal check answers (docs/plans/today-live-plan.md), each try counted; one question a day, so this is generous. */
+  signalAnswersPerUserDay: { bucket: "signal-answer", max: 100, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

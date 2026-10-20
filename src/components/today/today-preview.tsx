@@ -11,6 +11,7 @@ import type {
   RideTask,
   RideWeek,
   SignalAnswer,
+  SignalAnswerResult,
   SignalCheck,
   SignalLive,
   UserState,
@@ -25,6 +26,13 @@ import { OnYourLineCard, TimetableTeaser } from "./rail-cards";
 import { RideCard } from "./ride-card";
 import { SignalCheckCard } from "./signal-check";
 import { WelcomeHero, type FirstTally } from "./welcome-hero";
+
+/** What the signal check card says when an answer didn't go through. */
+const SIGNAL_ERRORS: Record<"stale" | "limit" | "invalid", string> = {
+  stale: "Today's question changed. Reload Today for the new one.",
+  limit: "That's as many answers as we take in a day. Try again tomorrow.",
+  invalid: "That didn't go through. Please try again.",
+};
 
 export type TodayData = {
   name: string;
@@ -77,8 +85,8 @@ export function TodayView({
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
   /** Saves the hours a week picked on the welcome card. */
   onHours?: (hours: number) => void | Promise<boolean>;
-  /** Checks a live signal check answer on the server, which ticks the ride's signal task; null when it didn't go through. */
-  onAnswerSignal?: (questionId: string, key: string) => Promise<SignalAnswer | null>;
+  /** Checks a live signal check answer on the server, which ticks the ride's signal task, or says why it didn't. */
+  onAnswerSignal?: (questionId: string, key: string) => Promise<SignalAnswerResult>;
   /** Where "All departures" goes; without it the link is marked "soon". */
   departuresHref?: string;
   /** Where Your goals' map links go; without it they are marked "soon". */
@@ -90,24 +98,33 @@ export function TodayView({
   const lockedTask = (state === "first" ? data.firstTasks : data.ride.tasks).find((t) => t.signal);
   const exampleAnswer = data.signalCheck ? { correctKey: data.signalCheck.correctKey, explanation: data.signalCheck.explanation } : null;
   // Answered earlier today when the server sent the answer (live) or the locked task came back done (example); the
-  // picked key is only known this visit.
-  const [answer, setAnswer] = useState<{ answered: boolean; key: string | null; reveal: SignalAnswer | null; error: string | null }>(() => {
-    const earlier = live ? live.answer : lockedTask?.done ? exampleAnswer : null;
-    return { answered: earlier !== null, key: null, reveal: earlier, error: null };
+  // picked key is only known this visit. The state is kept with the question it belongs to: a refresh that brings a new
+  // question (a goal skipped, or midnight in India) starts from what the server says about that one.
+  type Answer = { id: string | null; answered: boolean; key: string | null; reveal: SignalAnswer | null; error: string | null };
+  const fromServer = (l: SignalLive): Answer => ({ id: l.id, answered: l.answer !== null, key: null, reveal: l.answer, error: null });
+  const [answer, setAnswer] = useState<Answer>(() => {
+    if (live) return fromServer(live);
+    const earlier = lockedTask?.done ? exampleAnswer : null;
+    return { id: null, answered: earlier !== null, key: null, reveal: earlier, error: null };
   });
+  const a = live && answer.id !== live.id ? fromServer(live) : answer;
 
   function answerSignal(key: string) {
     if (!live) {
-      setAnswer({ answered: true, key, reveal: exampleAnswer, error: null });
+      setAnswer({ id: null, answered: true, key, reveal: exampleAnswer, error: null });
       if (lockedTask && !lockedTask.done) onToggleTask?.(lockedTask.id, true);
       return;
     }
     // Checked on the server, which ticks the signal task; the card waits for the answer and opens again if it fails.
-    setAnswer({ answered: true, key, reveal: null, error: null });
-    const failed = () => setAnswer({ answered: false, key: null, reveal: null, error: "That didn't go through. Please try again." });
-    Promise.resolve(onAnswerSignal?.(live.id, key) ?? null).then((reveal) => (reveal ? setAnswer({ answered: true, key, reveal, error: null }) : failed()), failed);
+    const id = live.id;
+    setAnswer({ id, answered: true, key, reveal: null, error: null });
+    const failed = (error: string) => setAnswer({ id, answered: false, key: null, reveal: null, error });
+    Promise.resolve(onAnswerSignal?.(id, key) ?? null).then(
+      (r) => (r?.ok ? setAnswer({ id, answered: true, key, reveal: r.answer, error: null }) : failed(SIGNAL_ERRORS[r?.reason ?? "invalid"])),
+      () => failed(SIGNAL_ERRORS.invalid),
+    );
   }
-  const signalAnswered = answer.answered && answer.reveal !== null;
+  const signalAnswered = a.answered && a.reveal !== null;
 
   // Prototype v2 layout: the hero across the top, then signal check and Your goals on the left, the departures board,
   // Timetable and the people on your line in the right column. One column under 960 px.
@@ -146,7 +163,7 @@ export function TodayView({
         ) : (
           <>
             {shown && (
-              <SignalCheckCard check={shown} answered={answer.answered} pickedKey={answer.key} reveal={answer.reveal} error={answer.error} onAnswer={answerSignal} />
+              <SignalCheckCard check={shown} answered={a.answered} pickedKey={a.key} reveal={a.reveal} error={a.error} onAnswer={answerSignal} />
             )}
             <GoalsCard summary={data.goals} mapHref={mapHref} firstDay={state === "first"} />
           </>

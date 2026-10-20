@@ -92,7 +92,7 @@ export function DeparturesBoard({
         </div>
       )}
       <p className="border-t border-board-line pt-1.5 text-[0.72rem] text-board-dim">
-        From public company job-board feeds. Tap a row to see what stands between you and it.
+        From public company job-board feeds.{rows.length > 0 && " Tap a row to see what stands between you and it."}
       </p>
     </section>
   );

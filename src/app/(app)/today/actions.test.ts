@@ -11,7 +11,7 @@ vi.mock("server-only", () => ({}));
 vi.mock("next/cache", () => ({ refresh: () => refresh() }));
 vi.mock("@/lib/auth/server", () => ({ currentAccount: () => account() }));
 vi.mock("@/lib/goals/store", () => ({ submitCertificate: (...a: unknown[]) => submit(...a) }));
-vi.mock("@/lib/shared-limit", () => ({ LIMITS: { certificateTriesPerUser: {} }, takeShared: () => take() }));
+vi.mock("@/lib/shared-limit", () => ({ LIMITS: { certificateTriesPerUser: {}, signalAnswersPerUserDay: {} }, takeShared: () => take() }));
 vi.mock("@/lib/account/store", () => ({ setWeeklyHours: vi.fn() }));
 vi.mock("@/lib/ride/store", () => ({ tickTask: vi.fn(), answerSignal: (...a: unknown[]) => answer(...a) }));
 vi.mock("@/lib/proofs/credly-store", () => ({ checkCertificateWithCredly: (...a: unknown[]) => credly(...a) }));
@@ -115,23 +115,32 @@ describe("answerSignalCheck", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     account.mockResolvedValue({ id: "u1" });
+    take.mockResolvedValue(true);
   });
 
   it("answers nothing signed out, and checks nothing that isn't text", async () => {
     account.mockResolvedValue(null);
-    expect(await answerSignalCheck("sql-mc-1", "B")).toBeNull();
+    expect(await answerSignalCheck("sql-mc-1", "B")).toEqual({ ok: false, reason: "invalid" });
     account.mockResolvedValue({ id: "u1" });
-    expect(await answerSignalCheck(1 as unknown as string, "B")).toBeNull();
+    expect(await answerSignalCheck(1 as unknown as string, "B")).toEqual({ ok: false, reason: "invalid" });
     expect(answer).not.toHaveBeenCalled();
   });
 
-  it("checks the answer for the session's person only, and refreshes once it is saved", async () => {
+  it("stops after the day's tries", async () => {
+    take.mockResolvedValue(false);
+    expect(await answerSignalCheck("sql-mc-1", "A")).toEqual({ ok: false, reason: "limit" });
+    expect(answer).not.toHaveBeenCalled();
+  });
+
+  it("checks the answer for the session's person only, refreshes once it is saved, and says when the question changed", async () => {
     answer.mockResolvedValueOnce({ correctKey: "B", explanation: "Why." });
-    expect(await answerSignalCheck("sql-mc-1", "A")).toEqual({ correctKey: "B", explanation: "Why." });
+    expect(await answerSignalCheck("sql-mc-1", "A")).toEqual({ ok: true, answer: { correctKey: "B", explanation: "Why." } });
     expect(answer).toHaveBeenCalledWith("u1", "sql-mc-1", "A", expect.any(Date));
     expect(refresh).toHaveBeenCalledTimes(1);
+    answer.mockResolvedValueOnce("stale");
+    expect(await answerSignalCheck("old-question", "A")).toEqual({ ok: false, reason: "stale" });
     answer.mockResolvedValueOnce(null);
-    expect(await answerSignalCheck("stale", "A")).toBeNull();
+    expect(await answerSignalCheck("sql-mc-1", "Z")).toEqual({ ok: false, reason: "invalid" });
     expect(refresh).toHaveBeenCalledTimes(1);
     expect(log).not.toHaveBeenCalled();
   });

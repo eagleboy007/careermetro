@@ -17,7 +17,7 @@ import {
 } from "@/lib/proofs/messages";
 import type { CertificateResult } from "@/lib/proofs/result";
 import { answerSignal, tickTask } from "@/lib/ride/store";
-import { certificateSubmission, type CredlyCheckOutcome, type SignalAnswer } from "@/lib/schemas";
+import { certificateSubmission, type CredlyCheckOutcome, type SignalAnswerResult } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 
 /** The first field that is wrong, in the person's words. */
@@ -106,17 +106,20 @@ export async function tickRideTask(taskId: string, on: boolean): Promise<boolean
 
 /**
  * Answers today's signal check for the signed-in person: checked on the server against the day's question, it ticks
- * the ride's signal task and returns the right answer and why (null for a stale question, a bad key, or signed out).
- * Neither the question nor the answer is logged.
+ * the ride's signal task and returns the right answer and why. A question that changed since the page loaded is
+ * "stale"; tries are limited to 100 a day. Neither the question nor the answer is logged.
  */
-export async function answerSignalCheck(questionId: string, key: string): Promise<SignalAnswer | null> {
-  if (typeof questionId !== "string" || typeof key !== "string") return null;
+export async function answerSignalCheck(questionId: string, key: string): Promise<SignalAnswerResult> {
+  if (typeof questionId !== "string" || typeof key !== "string") return { ok: false, reason: "invalid" };
   const account = await currentAccount();
-  if (!account) return null;
+  if (!account) return { ok: false, reason: "invalid" };
+  if (!(await takeShared(LIMITS.signalAnswersPerUserDay, account.id))) return { ok: false, reason: "limit" };
   const answer = await answerSignal(account.id, questionId, key, new Date());
+  if (answer === "stale") return { ok: false, reason: "stale" };
+  if (!answer) return { ok: false, reason: "invalid" };
   // The ride's task and the header's streak read ride days too.
-  if (answer) refresh();
-  return answer;
+  refresh();
+  return { ok: true, answer };
 }
 
 /** Saves the hours a week the signed-in person picked on Today. The Path page opens at these hours. */
