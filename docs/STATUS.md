@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Testing Run 5 low fixes)
+Last updated: 2026-10-20 (End chat, staging screens check, re-test 30 fixes)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -48,10 +48,11 @@ Last updated: 2026-10-20 (Testing Run 5 low fixes)
   - Staging dry run of prod-smoke (#202): `scripts/smoke/staging-dry-run.mjs` and the manual Smoke dry run (staging) workflow; prod-smoke.md's steps now match the app; the e2e walk's `smoke 6` covers Download, Sign out and signing in again.
   - Staging dry run export check and fewer Vercel deployments (#203): 6.1 fetches the export with the page's cookies, and a full run passed; working branches make no Vercel deployment, and docs-only merges don't move staging.
   - Testing Run 5 fixes T73 to T80, the refused-certificate job limited to goals the certificate could fill, and the market trends plan (proposed; D1 to D6 wait on Milin) (#204).
+  - Testing Run 5 lows T81 to T93 and T95 (#205): rate limits on resume downloads and direct messages, Inbox block lock order, job-search-off note, Google callback flag, drafts only on preview/dev, real Elite limits, Library suggestion checks, future dates and list caps on Departures, no Network city filter. T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
 
 ## In progress
 
-- Testing Run 5 lows: limits on resume downloads (30 an hour) and direct messages (300 a day); Inbox block takes the Network pair lock; blocking a missing person is not_found; accepted found chats stay open after job search is off, with a note (FR-52); the Google callback checks GOOGLE_SIGNIN; drafts only on preview, development or local; /elite shows the real daily limits; Library suggestions must be one of the person's goals, no link shorteners; future-dated posts don't sort first; saved and applied lists capped at 200; no city filter on Network for members (T93); an added role doesn't take a resume role's badge (T95). T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
+- End chat on accepted found chats (FR-52, PM 2026-10-20): ends only that chat, files no report. Staging screens check (`scripts/smoke/staging-screens.mjs`, run after the dry run by the same workflow): Network request and accept with no city shown, the bell, the builder to Download, Library Save and I finished this, a Mock round, Departures save and apply. Re-test 30: report-with-block takes the Network locks (T97); the work-email badge goes to the row the check was made on (T95, migration 0047 `job_email_checks.role_source`); the message limit is chosen under the lock (T98); more link shorteners refused (T99).
 
 ## Next up
 
