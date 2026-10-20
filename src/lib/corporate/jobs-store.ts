@@ -425,9 +425,10 @@ export async function jobForm(
 
 /**
  * Jobs candidates see on Departures: open, from verified companies, newest first. The company's name only; never its
- * members, their names, email or phone.
+ * members, their names, email or phone. With `roleSlug`, only the jobs that started from that role profile, as Match
+ * counts them (`openJobsByRole`).
  */
-export async function liveJobs(deps: { db?: Db } = {}, limit = 50): Promise<PostedJobView[]> {
+export async function liveJobs(deps: { db?: Db; roleSlug?: string } = {}, limit = 50): Promise<PostedJobView[]> {
   const db = deps.db ?? getDb();
   const rows = await db
     .select({
@@ -442,7 +443,13 @@ export async function liveJobs(deps: { db?: Db } = {}, limit = 50): Promise<Post
     })
     .from(jobs)
     .innerJoin(organizations, eq(organizations.id, jobs.orgId))
-    .where(and(eq(jobs.status, "open"), eq(organizations.reviewStatus, "verified")))
+    .where(
+      and(
+        eq(jobs.status, "open"),
+        eq(organizations.reviewStatus, "verified"),
+        deps.roleSlug ? inArray(jobs.roleProfileId, db.select({ id: roleProfiles.id }).from(roleProfiles).where(eq(roleProfiles.slug, deps.roleSlug))) : undefined,
+      ),
+    )
     .orderBy(desc(jobs.createdAt))
     .limit(limit);
   return rows.map((r) => ({
