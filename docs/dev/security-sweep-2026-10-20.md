@@ -13,7 +13,7 @@ code. Nothing was built or installed here.
 | 3 | HSTS had no `includeSubDomains` | Low | **Yes** |
 | 4 | No `Cross-Origin-Opener-Policy` header | Low | **Yes** (`same-origin-allow-popups`) |
 | 5 | `access-control-allow-origin: *` on `/` comes from Vercel's prerender/static serving, not our config | Info | No |
-| 6 | The CSP has no `script-src` | Medium | No. Recommendation below |
+| 6 | The CSP has no `script-src` | Medium | Follow-up: option C ships as `Content-Security-Policy-Report-Only` with `/api/csp-report`; not enforced yet (see below) |
 | 7 | Majors behind: none confirmed, and latest versions couldn't be checked | Info | No |
 | 8 | Next 16 deprecations: none found in code. `unstable_rethrow` is called 16 times in 10 files | Info | No |
 
@@ -151,6 +151,22 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
   - Leave `form-action` out: the comment in `next.config.ts` explains it would block the Google redirect.
   - Run it on staging for a week with the e2e walk, then make it enforcing.
   - Do the nonce CSP only if the app ever renders user-supplied HTML.
+
+### script-src CSP, report-only: shipped
+
+- **What ships.** Option C, sent as `Content-Security-Policy-Report-Only` from `next.config.ts` (built in `src/lib/csp.ts`), next to the unchanged enforced CSP. Browsers block nothing; they report what the policy would block. Production policy:
+
+  ```
+  default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;
+    font-src 'self'; connect-src 'self'; media-src 'self'; frame-src 'none'; worker-src 'self' blob:; manifest-src 'self';
+    frame-ancestors 'none'; base-uri 'self'; object-src 'none'; report-uri /api/csp-report; report-to csp-endpoint
+  ```
+
+  plus `Reporting-Endpoints: csp-endpoint="/api/csp-report"`. No `form-action`.
+- **Hosts.** The app loads no third-party host in the browser: `next/font/google` self-hosts the fonts at build, Supabase, Resend, Credly and Anthropic are called from the server only, and there is no `@vercel/analytics`, `speed-insights`, `next/script` or `next/image`. Preview builds (`VERCEL_ENV=preview`) add the Vercel Toolbar's hosts (`vercel.live`, `vercel.com`, `assets.vercel.com`, `wss://ws-us3.pusher.com`); `next dev` adds `'unsafe-eval'`.
+- **Reports.** `POST /api/csp-report` (`src/app/api/csp-report/route.ts`) takes `application/csp-report` and `application/reports+json` only, at most 16 KB, checked with Zod. It logs one `csp_violation` line per violation (at most 10 per request) with only `directive` and `blocked` (the blocked URL's hostname, or a keyword such as `inline`, `eval`, `data`). Never the URL, path, query, page, referrer, source file or sample. 100 reports per address per hour (`LIMITS.cspReportsPerIp`, with a per-server guard in front). No session, no cookies, no origin check. Always 204.
+- **Reading the reports.** Vercel dashboard → the project → Logs, production, filter on `csp_violation` (or `"event":"csp_violation"`), last few days. Group by `directive` and `blocked`. Expected noise: browser extensions (`chrome-extension`, `moz-extension`), injected scripts from ISPs or antivirus.
+- **Switch to enforce when:** a few days (at least 3, with the e2e walk run on staging) of production reports show only known causes that are fixed or accepted, such as extensions. Then rename the header to `Content-Security-Policy`, merge it with the enforced one, and keep `report-uri`/`report-to` so new violations still show.
 
 ## 4. Next 16 deprecations (code search; the build log needs auth)
 
