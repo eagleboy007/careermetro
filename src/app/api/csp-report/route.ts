@@ -1,12 +1,16 @@
 import { localGuard, parseCspReport, reportFormat } from "@/lib/csp-report";
 import { logEvent } from "@/lib/log";
 import { clientIp } from "@/lib/session";
-import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
+import { addressKey } from "@/lib/shared-limit";
 
-/** A real report is well under 4 KB; a Reporting API batch of a few is still far below this. */
-const MAX_BODY_BYTES = 16 * 1024;
+/** One report is a few KB at most, but a Reporting API batch can hold many, each with a script sample. */
+const MAX_BODY_BYTES = 64 * 1024;
 
-const guard = localGuard(LIMITS.cspReportsPerIp.max, LIMITS.cspReportsPerIp.windowMs);
+const HOUR = 60 * 60 * 1000;
+/** Log lines an hour per server: 100 per address and about 1,000 from everyone together. */
+const guard = localGuard({ perKey: 100, total: 1_000, windowMs: HOUR });
+
+type DropReason = "content_type" | "too_large" | "bad_json" | "bad_shape" | "not_csp";
 
 const done = () => new Response(null, { status: 204 });
 
@@ -38,26 +42,32 @@ async function readCapped(request: Request): Promise<string | null> {
  * CSP violation reports (docs/dev/security-sweep-2026-10-20.md). Browsers send them without cookies and without an
  * Origin we can rely on, so there is no same-origin check and no session: the route reads no cookie and sets none,
  * and the proxy's matcher leaves /api/ alone. Only the two report content types are read. Each violation is logged
- * as its directive and the blocked host or keyword, never a URL, path, query, page address, referrer, source file or
+ * as its directive and the blocked host or keyword (at most 100 lines per address and 1,000 in all an hour, per
+ * server, with no database write), never a URL, path, query, page address, referrer, source file or
  * script sample. Always answers 204, whatever was sent, so the endpoint tells a caller nothing.
  */
 export async function POST(request: Request) {
+  const key = addressKey(clientIp(request));
+  // One line with a fixed reason, behind the same guard, so a refused report is visible but can't flood the logs.
+  const drop = (reason: DropReason) => {
+    if (guard.take(key)) logEvent("info", "csp_report_dropped", { reason });
+    return done();
+  };
   const format = reportFormat(request.headers.get("content-type"));
-  if (!format) return done();
+  if (!format) return drop("content_type");
   const text = await readCapped(request);
-  if (text === null) return done();
+  if (text === null) return drop("too_large");
   let json: unknown = null;
   try {
     json = JSON.parse(text);
   } catch {
-    return done();
+    return drop("bad_json");
   }
   const violations = parseCspReport(format, json);
-  if (!violations || violations.length === 0) return done();
+  if (!violations) return drop("bad_shape");
+  if (violations.length === 0) return drop("not_csp");
 
-  const key = addressKey(clientIp(request));
-  if (!guard.take(key) || !(await takeShared(LIMITS.cspReportsPerIp, key))) return done();
-
+  if (!guard.take(key, violations.length)) return done();
   for (const v of violations) logEvent("warn", "csp_violation", { directive: v.directive, blocked: v.blocked });
   return done();
 }

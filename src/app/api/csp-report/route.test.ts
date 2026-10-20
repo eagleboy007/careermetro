@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// The CSP report endpoint: both report formats, directive and host only in the logs, always 204, and no session.
+// The CSP report endpoint: both report formats, directive and host only in the logs, always 204, no session and no
+// database write (the database mock throws).
 const m = vi.hoisted(() => ({
-  takeShared: vi.fn<(limit: { bucket: string; max: number }, key: string) => Promise<boolean>>(async () => true),
   cookies: vi.fn(async () => {
     throw new Error("the report endpoint must not read or set cookies");
   }),
@@ -14,10 +14,9 @@ vi.mock("@/db", () => ({
     throw new Error("database must not be touched");
   },
 }));
-vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), takeShared: m.takeShared }));
 
 import { POST } from "@/app/api/csp-report/route";
-import { blockedHost, directiveName, parseCspReport, reportFormat } from "@/lib/csp-report";
+import { blockedHost, directiveName, localGuard, parseCspReport, reportFormat } from "@/lib/csp-report";
 import { cspReportOnly, ENFORCED_CSP, REPORTING_ENDPOINTS } from "@/lib/csp";
 import nextConfig from "../../../../next.config";
 
@@ -142,39 +141,68 @@ describe("POST /api/csp-report", () => {
     ]);
     for (const e of events) expect(Object.keys(e).sort()).toEqual(["at", "blocked", "directive", "event", "level"]);
     for (const line of lines) for (const bit of SECRET_BITS) expect(line).not.toContain(bit);
-    expect(m.takeShared).toHaveBeenCalledTimes(2);
-    expect(m.takeShared.mock.calls[0][0].bucket).toBe("csp-report");
     expect(m.cookies).not.toHaveBeenCalled();
   });
 
-  it("answers 204 and logs nothing for other content types, invalid JSON, wrong shapes and oversize bodies", async () => {
-    const big = JSON.stringify({ "csp-report": { "effective-directive": "script-src", "blocked-uri": "https://a.example/" + "x".repeat(20_000) } });
-    const requests = [
-      post(legacy, "application/json"),
-      post(legacy, null),
-      post("{not json", "application/csp-report"),
-      post({ hello: "world" }, "application/csp-report"),
-      post([{ type: "deprecation", body: {} }], "application/reports+json"),
-      post(big, "application/csp-report"),
+  it("answers 204 and logs one csp_report_dropped line with a fixed reason for anything it can't use", async () => {
+    // Only the byte cap refuses this: the padding is in a field zod drops, and blocked-uri is valid.
+    const over = JSON.stringify({ "csp-report": { ...legacy["csp-report"], "script-sample": "x".repeat(70 * 1024) } });
+    const cases: [Request, string][] = [
+      [post(legacy, "application/json"), "content_type"],
+      [post(legacy, null), "content_type"],
+      [post("{not json", "application/csp-report"), "bad_json"],
+      [post({ hello: "world" }, "application/csp-report"), "bad_shape"],
+      [post([{ type: "deprecation", body: {} }], "application/reports+json"), "not_csp"],
+      [post(over, "application/csp-report"), "too_large"],
       // A body larger than it claims: the cap holds on the bytes read, not the header.
-      post(big, "application/csp-report", { "content-length": "10" }),
+      [post(over, "application/csp-report", { "content-length": "10" }), "too_large"],
     ];
-    for (const r of requests) expect((await POST(r)).status).toBe(204);
-    expect(lines).toEqual([]);
-    expect(m.takeShared).not.toHaveBeenCalled();
+    for (const [request, reason] of cases) {
+      lines = [];
+      expect((await POST(request)).status).toBe(204);
+      expect(logged().map(({ event, reason: why, ...rest }) => ({ event, reason: why, keys: Object.keys(rest).sort() }))).toEqual([
+        { event: "csp_report_dropped", reason, keys: ["at", "level"] },
+      ]);
+      for (const bit of SECRET_BITS) expect(lines[0]).not.toContain(bit);
+    }
   });
 
-  it("answers 204 and logs nothing once an address is over its limit", async () => {
-    m.takeShared.mockResolvedValueOnce(false);
-    expect((await POST(post(legacy, "application/csp-report"))).status).toBe(204);
-    expect(lines).toEqual([]);
+  it("logs a valid report just under the byte cap", async () => {
+    const under = JSON.stringify({ "csp-report": { ...legacy["csp-report"], "script-sample": "x".repeat(60 * 1024) } });
+    expect(under.length).toBeLessThan(64 * 1024);
+    expect((await POST(post(under, "application/csp-report"))).status).toBe(204);
+    expect(logged().map(({ event, blocked }) => ({ event, blocked }))).toEqual([{ event: "csp_violation", blocked: "cdn.evil.example" }]);
+    expect(lines[0]).not.toContain("xxx");
   });
 
-  it("stops at the per-server guard before the shared limit is asked", async () => {
+  it("stops logging an address after 100 lines an hour, drops included", async () => {
     const same = { "x-forwarded-for": "203.0.113.50" };
-    for (let i = 0; i < 101; i++) await POST(post(legacy, "application/csp-report", same));
-    expect(m.takeShared).toHaveBeenCalledTimes(100);
+    for (let i = 0; i < 99; i++) await POST(post(legacy, "application/csp-report", same));
+    await POST(post("{not json", "application/csp-report", same));
+    await POST(post(legacy, "application/csp-report", same));
+    await POST(post("{not json", "application/csp-report", same));
     expect(lines).toHaveLength(100);
+    expect(logged().at(-1)?.event).toBe("csp_report_dropped");
+    // Another address is still heard.
+    await POST(post(legacy, "application/csp-report"));
+    expect(lines).toHaveLength(101);
+  });
+});
+
+describe("the per-server log guard", () => {
+  it("caps each address and everyone together, per window", () => {
+    const g = localGuard({ perKey: 3, total: 5, windowMs: 1000 });
+    expect([g.take("a", 1, 10), g.take("a", 2, 10), g.take("a", 1, 10)]).toEqual([true, true, false]);
+    expect([g.take("b", 2, 10), g.take("c", 1, 10)]).toEqual([true, false]);
+    expect(g.take("a", 1, 1010)).toBe(true);
+  });
+
+  it("evicts the oldest addresses when full, not the whole map", () => {
+    const g = localGuard({ perKey: 1, total: 100, windowMs: 1000, maxKeys: 2 });
+    expect([g.take("a", 1, 0), g.take("b", 1, 0)]).toEqual([true, true]);
+    expect(g.take("c", 1, 0)).toBe(true); // forgets a, the oldest
+    expect(g.take("b", 1, 0)).toBe(false); // b is still counted
+    expect(g.take("a", 1, 0)).toBe(true); // a was forgotten
   });
 });
 

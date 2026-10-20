@@ -26,5 +26,5 @@ export const cspViolationBody = z.object({
  * The Reporting API format, `application/reports+json`: a batch of reports of any type. Entries of other types
  * (deprecation, intervention) are skipped by the parser, not refused here.
  */
-export const reportingApiBatch = z.array(z.object({ type: z.string().max(64), body: z.unknown() })).min(1).max(50);
+export const reportingApiBatch = z.array(z.object({ type: z.string().max(64), body: z.unknown() })).min(1).max(100);
 export type ReportingApiBatch = z.infer<typeof reportingApiBatch>;

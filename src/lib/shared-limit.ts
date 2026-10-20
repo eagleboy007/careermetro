@@ -39,8 +39,6 @@ export const LIMITS = {
   signInCodePerIp: { bucket: "signin-code-ip", max: 20, windowMs: HOUR },
   /** Waitlist sign-ups from one network address: enough for a family on one connection, not for a script. */
   waitlistPerIp: { bucket: "waitlist", max: 10, windowMs: HOUR },
-  /** CSP violation reports from one network address (api/csp-report). A page with a violation reports on every load. */
-  cspReportsPerIp: { bucket: "csp-report", max: 100, windowMs: HOUR },
   /** Files that couldn't be read, per network address per day (T18). Generous: a college network shares one address. */
   failedReadsPerIp: { bucket: "failed-read", max: 30, windowMs: 24 * HOUR },
   /**

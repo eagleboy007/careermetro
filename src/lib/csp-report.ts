@@ -72,27 +72,43 @@ export function parseCspReport(format: CspReportFormat, json: unknown): CspViola
   return out;
 }
 
+export type GuardOptions = {
+  /** Log lines one address may cause in a window. */
+  perKey: number;
+  /** Log lines this server writes in a window, from everyone together. */
+  total: number;
+  windowMs: number;
+  /** Addresses remembered at once; past this the oldest is forgotten first. */
+  maxKeys?: number;
+};
+
 /**
- * A per-server count of reports per address, checked before the shared limit so a page stuck in a report loop costs
- * no database write once this server has seen its allowance. Each server counts apart; the shared limit is the real one.
+ * The only limit on the report endpoint, and per server: it guards log volume, nothing else, so it costs no database
+ * write (a write per public report would be the cheapest way to make the app write to the database). Counts log
+ * lines per address and in total in fixed windows. When more addresses are seen than it remembers, the oldest are
+ * evicted, never the whole map, so a flood of new addresses can't reset everyone else's count.
  */
-export function localGuard(max: number, windowMs: number, maxKeys = 10_000) {
+export function localGuard({ perKey, total, windowMs, maxKeys = 10_000 }: GuardOptions) {
   let windowStart = 0;
+  let lines = 0;
   const counts = new Map<string, number>();
   return {
-    take(key: string, now = Date.now()): boolean {
+    /** Counts `n` lines for `key` and says whether they may be written; refused lines aren't counted. */
+    take(key: string, n = 1, now = Date.now()): boolean {
       const start = Math.floor(now / windowMs) * windowMs;
-      if (start !== windowStart || counts.size >= maxKeys) {
+      if (start !== windowStart) {
         windowStart = start;
+        lines = 0;
         counts.clear();
       }
-      const n = (counts.get(key) ?? 0) + 1;
-      counts.set(key, n);
-      return n <= max;
-    },
-    reset() {
-      windowStart = 0;
-      counts.clear();
+      const used = counts.get(key) ?? 0;
+      if (lines + n > total || used + n > perKey) return false;
+      // Re-inserting moves the key to the end, so the first key is always the one seen longest ago.
+      counts.delete(key);
+      while (counts.size >= maxKeys) counts.delete(counts.keys().next().value!);
+      counts.set(key, used + n);
+      lines += n;
+      return true;
     },
   };
 }

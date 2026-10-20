@@ -156,7 +156,7 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 - SEC-4: Do not use user resumes to train models. State this plainly in the UI.
 - SEC-5: Auto-delete uploaded raw files after N days (default 30); the user can delete earlier.
 - SEC-6: Strip or mask phone, email and address before sending text to the LLM where the analysis does not need them.
-- SEC-7: OWASP ASVS L1 baseline: rate limiting, upload validation (type, size, malware scan), CSRF protection, secure session handling, dependency scanning in CI, secrets in a vault not the repo. Abuse limits (sign-in codes: 5 per email and 20 per network address per hour; waitlist: 10 per address per hour; unreadable files: 30 per address per day; CSP violation reports to `/api/csp-report`: 100 per address per hour) are counted in the database so every server shares them, store only keyed hashes, and let requests through if the database is unreachable.
+- SEC-7: OWASP ASVS L1 baseline: rate limiting, upload validation (type, size, malware scan), CSRF protection, secure session handling, dependency scanning in CI, secrets in a vault not the repo. Abuse limits (sign-in codes: 5 per email and 20 per network address per hour; waitlist: 10 per address per hour; unreadable files: 30 per address per day) are counted in the database so every server shares them, store only keyed hashes, and let requests through if the database is unreachable. CSP violation reports (`/api/csp-report`) are capped per server in memory instead (100 log lines per address and about 1,000 in all an hour), so a public report never writes to the database.
 - SEC-8: Role-based access; audit log for any admin access to user data.
 - SEC-9: Pre-launch penetration test of upload, auth and admin paths.
 

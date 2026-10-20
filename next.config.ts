@@ -20,7 +20,8 @@ const nextConfig: NextConfig = {
   // preview deployments needs that; our own Google sign-in is a full-page redirect (src/app/sign-in/actions.ts).
   // The script-src policy is report-only for now (src/lib/csp.ts, docs/dev/security-sweep-2026-10-20.md): browsers send
   // what it would block to /api/csp-report and block nothing. The enforced CSP above it is unchanged. Headers are fixed
-  // at build time, so VERCEL_ENV picks the preview policy (with the Vercel Toolbar's hosts) on preview builds.
+  // at build time, so VERCEL_ENV picks the preview policy (with the Vercel Toolbar's hosts) on preview builds, and a
+  // preview build promoted to production keeps those hosts until the next production build.
   async headers() {
     return [
       {
