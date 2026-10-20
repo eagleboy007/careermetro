@@ -1,5 +1,5 @@
-import type { MockBankItem, MockBankView, MockChoiceQuestion, MockQuestion, MockRole, TimedTestError, TimedTestReview, TimedTestView } from "@/lib/schemas";
-import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, TIMED_TEST_MINUTES, TIMED_TEST_QUESTIONS, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import type { MockBankItem, MockBankView, MockChoiceQuestion, MockQuestion, MockRole, RolePrepView, TimedTestError, TimedTestReview, TimedTestView } from "@/lib/schemas";
+import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, ROLE_PREP_FREE_OPEN, ROLE_PREP_QUESTIONS, TIMED_TEST_MINUTES, TIMED_TEST_QUESTIONS, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 
 /*
  * Interview prep rules (`/mock`, FR-50 part 2, handoff 12l), kept apart from the database so they can be tested on
@@ -61,6 +61,41 @@ export function freeOpenIds(open: readonly BankQuestion[]): Set<string> {
     if (!ids.includes(q.id)) ids.push(q.id);
   }
   return new Set(ids);
+}
+
+/**
+ * "Interview prep for this role" on a Departures role (handoff 12l): five of the role's open questions, in the order
+ * the bank opens them on Free (the first of each topic first). On Free only the first is open; a locked question keeps
+ * its id and nothing else. Null when the role has fewer than five open questions, so the screen says it is coming.
+ */
+export function rolePrepFor(bank: readonly BankQuestion[], role: Role, elite: boolean): RolePrepView | null {
+  const open = forRole(
+    bank.filter((q) => q.kind === "open"),
+    role,
+  );
+  const byId = new Map(open.map((q) => [q.id, q]));
+  const five = [...freeOpenIds(open)].slice(0, ROLE_PREP_QUESTIONS).map((id) => byId.get(id)!);
+  if (five.length < ROLE_PREP_QUESTIONS) return null;
+  return {
+    roleSlug: role.slug,
+    elite,
+    questions: five.map((q, i) => (elite || i < ROLE_PREP_FREE_OPEN ? { open: true, id: q.id, question: q.question } : { open: false, id: q.id })),
+  };
+}
+
+/** Each Departures job's interview prep, by job id: null for a job with no library role, or one the bank can't fill. */
+export function prepForJobs(
+  jobs: readonly { id: string; roleSlug: string | null }[],
+  bank: readonly BankQuestion[],
+  roles: readonly Role[],
+  elite: boolean,
+): Record<string, RolePrepView | null> {
+  return Object.fromEntries(
+    jobs.map((j) => {
+      const role = j.roleSlug ? roles.find((r) => r.slug === j.roleSlug) : undefined;
+      return [j.id, role ? rolePrepFor(bank, role, elite) : null];
+    }),
+  );
 }
 
 /** The question bank tab for a role: every open question, 5 of them open on Free and all on Elite. */

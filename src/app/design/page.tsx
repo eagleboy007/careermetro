@@ -69,7 +69,7 @@ import { EliteView } from "@/components/elite/elite-view";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { PlanCard } from "@/components/settings/plan-card";
 import { MockView } from "@/components/mock/mock-view";
-import { exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
+import { exampleDeparturesPrep, exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -455,9 +455,14 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Departures (signed in)</h2>
-        <p className="text-sm text-muted">Roles with readiness in words, filters, Saved and Applied, and the detail panel. Below it, the page before a resume.</p>
-        <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} />
-        <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} />
+        <p className="text-sm text-muted">
+          Roles with readiness in words, filters, Saved and Applied, the detail panel with Interview prep for this role (on Free: one question open, the
+          rest locked; the MIS, trainer and freelance roles say it is coming), and the paste box checking a post against the resume. Then the same on Elite,
+          and the page before a resume, whose paste box links to the upload.
+        </p>
+        <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, false)} demo />
+        <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
+        <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
       </section>
 
       <section className="flex flex-col gap-4">

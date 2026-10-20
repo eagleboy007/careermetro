@@ -524,6 +524,9 @@ export const TIMED_TEST_QUESTIONS = 12;
 export const TIMED_TEST_MINUTES = 15;
 /** Timed tests one person can start a day (each start counts), so the bank can't be read out by script. */
 export const TIMED_TESTS_PER_DAY = 10;
+/** "Interview prep for this role" on a Departures role: this many bank questions, this many of them open on Free. */
+export const ROLE_PREP_QUESTIONS = 5;
+export const ROLE_PREP_FREE_OPEN = 1;
 /** The tabs of /mock, in order. */
 export const MOCK_TABS = ["interview", "test", "bank"] as const;
 

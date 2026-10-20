@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { MockChoiceQuestion, MockQuestion } from "@/lib/schemas";
+import { rolePrepView, type MockChoiceQuestion, type MockQuestion } from "@/lib/schemas";
 import {
   bankViewFor,
   choicePool,
@@ -12,8 +12,10 @@ import {
   mockRoles,
   NO_PICK,
   pickTestQuestions,
+  prepForJobs,
   reviewOf,
   roleFor,
+  rolePrepFor,
   scorePicks,
   testViewOf,
   TIMED_TEST_MESSAGES,
@@ -117,6 +119,50 @@ describe("the question bank", () => {
 
   it("opens all of a role with 5 or fewer questions on Free", () => {
     expect(bankViewFor(bank, writer, false).items.every((q) => q.open)).toBe(true);
+  });
+});
+
+describe("interview prep for a Departures role", () => {
+  it("is five of the role's questions in the bank's Free order, all open on Elite", () => {
+    const prep = rolePrepFor(bank, analyst, true)!;
+    expect(rolePrepView.safeParse(prep).success).toBe(true);
+    expect(prep.questions.map((q) => q.id)).toEqual(["sql-1", "excel-1", "communication-1", "sql-2", "sql-3"]);
+    expect(prep.questions.every((q) => q.open)).toBe(true);
+    expect(prep.questions[0]).toEqual({ open: true, id: "sql-1", question: "Open question 1 on sql" });
+  });
+
+  it("opens only the first on Free and sends no text of the locked four", () => {
+    const prep = rolePrepFor(bank, analyst, false)!;
+    expect(rolePrepView.safeParse(prep).success).toBe(true);
+    expect(prep.elite).toBe(false);
+    expect(prep.questions.map((q) => q.open)).toEqual([true, false, false, false, false]);
+    const locked = prep.questions.slice(1);
+    expect(locked).toEqual([{ open: false, id: "excel-1" }, { open: false, id: "communication-1" }, { open: false, id: "sql-2" }, { open: false, id: "sql-3" }]);
+    expect(JSON.stringify(locked)).not.toContain("question");
+    // The schema refuses a locked question that carries its text.
+    expect(rolePrepView.safeParse({ ...prep, questions: prep.questions.map((q) => ({ ...q, question: "Leaked question text" })) }).success).toBe(false);
+  });
+
+  it("is null for a role with fewer than five questions, so the screen says it is coming", () => {
+    expect(rolePrepFor(bank, writer, true)).toBeNull();
+  });
+
+  it("maps each job to its role's prep, and a job with no bank role to null", () => {
+    const prep = prepForJobs(
+      [
+        { id: "j1", roleSlug: "data-analyst" },
+        { id: "j2", roleSlug: null },
+        { id: "j3", roleSlug: "no-such-role" },
+        { id: "j4", roleSlug: "tech-writer" },
+      ],
+      bank,
+      roles,
+      false,
+    );
+    expect(prep.j1?.questions[0].open).toBe(true);
+    expect(prep.j2).toBeNull();
+    expect(prep.j3).toBeNull();
+    expect(prep.j4).toBeNull();
   });
 });
 

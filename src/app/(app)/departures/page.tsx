@@ -5,12 +5,15 @@ import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { PostedJobs } from "@/components/departures/posted-jobs";
+import { mockQuestions, roleProfiles } from "@/content";
 import { currentAccount } from "@/lib/auth/server";
 import { applyStates, criteriaStates } from "@/lib/corporate/applications-store";
 import { liveJobs } from "@/lib/corporate/jobs-store";
 import type { ApplyState, CriteriaView, PostedJobView } from "@/lib/corporate/types";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
+import { eliteOn } from "@/lib/elite/store";
 import { errorFields, logEvent } from "@/lib/log";
+import { prepForJobs } from "@/lib/mock/rules";
 import { currentAnalysis } from "@/lib/today/state";
 import { applyAction, previewAction } from "../arrivals/actions";
 import { reportJobAction } from "../corporate/jobs/actions";
@@ -59,16 +62,35 @@ async function postedCriteria(userId: string | null, jobs: PostedJobView[]): Pro
   }
 }
 
+/** Whether the person has Elite, for each role's interview prep. If it can't be read, the prep shows as on Free. */
+async function eliteFor(userId: string | null): Promise<boolean> {
+  if (!userId) return false;
+  try {
+    return await eliteOn(userId);
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "departures_elite_failed", errorFields(error));
+    return false;
+  }
+}
+
 async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const state = (await searchParams).state;
   await connection();
   const account = await currentAccount();
   // Real roles need the job-post tables (dev/departures-plan.md). Until then everyone sees example roles. The example fit
   // belongs to the example person, so a signed-in person never sees it as their own.
-  const hasResume = account ? (await currentAnalysis(account.id)) !== null : state !== "no_resume";
+  const analysis = account ? await currentAnalysis(account.id) : null;
+  const hasResume = account ? analysis !== null : state !== "no_resume";
   const noFit = account && hasResume ? "Your fit for each role shows here once real roles come from company job boards." : null;
   const posted = await postedJobs();
-  const [states, criteria] = await Promise.all([postedStates(account?.id ?? null, posted), postedCriteria(account?.id ?? null, posted)]);
+  const [states, criteria, elite] = await Promise.all([
+    postedStates(account?.id ?? null, posted),
+    postedCriteria(account?.id ?? null, posted),
+    eliteFor(account?.id ?? null),
+  ]);
+  // Interview prep for each role, locked on the server: on Free, only the first question's text reaches the browser.
+  const prep = prepForJobs(exampleJobs, mockQuestions, roleProfiles, elite);
   return (
     <div className="flex flex-col gap-4">
       <PostedJobs
@@ -82,7 +104,16 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         Example roles for now. Real roles from public company job boards, and your own saved and applied lists, come next.
       </p>
-      <DeparturesView jobs={exampleJobs} hasResume={hasResume} noFit={noFit} initialSaved={account ? [] : exampleSaved} initialApplied={account ? [] : exampleApplied} />
+      <DeparturesView
+        jobs={exampleJobs}
+        hasResume={hasResume}
+        noFit={noFit}
+        initialSaved={account ? [] : exampleSaved}
+        initialApplied={account ? [] : exampleApplied}
+        // A pasted post is checked against the person's latest resume; without one the box links to the upload.
+        resumeId={analysis?.resumeId ?? null}
+        prep={prep}
+      />
     </div>
   );
 }

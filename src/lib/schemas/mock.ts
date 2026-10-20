@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MOCK_ANSWER_MAX_CHARS, MOCK_FEEDBACK_STATES, MOCK_FOCUSES, MOCK_LENGTHS, MOCK_MAX_QUESTIONS, MOCK_TABS, TIMED_TEST_QUESTIONS } from "./constants";
+import { MOCK_ANSWER_MAX_CHARS, MOCK_FEEDBACK_STATES, MOCK_FOCUSES, MOCK_LENGTHS, MOCK_MAX_QUESTIONS, MOCK_TABS, ROLE_PREP_QUESTIONS, TIMED_TEST_QUESTIONS } from "./constants";
 
 /*
  * Interview prep (`/mock`, FR-50 part 2, handoff 12l, docs/plans/elite-plan.md): the question bank and the timed test.
@@ -19,6 +19,8 @@ export {
   MOCK_MAX_QUESTIONS,
   MOCK_SESSIONS_PER_DAY,
   MOCK_TABS,
+  ROLE_PREP_FREE_OPEN,
+  ROLE_PREP_QUESTIONS,
   TIMED_TEST_MINUTES,
   TIMED_TEST_QUESTIONS,
   TIMED_TESTS_PER_DAY,
@@ -86,6 +88,20 @@ export const mockBankView = z.strictObject({
   items: z.array(mockBankItem).max(400),
 });
 export type MockBankView = z.infer<typeof mockBankView>;
+
+/**
+ * "Interview prep for this role" on a Departures role (FR-50, handoff 12l): five of the role's bank questions. A
+ * locked question carries no text at all, so nothing of it reaches the browser.
+ */
+export const rolePrepItem = z.union([z.strictObject({ open: z.literal(true), id: questionId, question: text(300) }), z.strictObject({ open: z.literal(false), id: questionId })]);
+export type RolePrepItem = z.infer<typeof rolePrepItem>;
+
+export const rolePrepView = z.strictObject({
+  roleSlug: z.string().regex(slug),
+  elite: z.boolean(),
+  questions: z.array(rolePrepItem).length(ROLE_PREP_QUESTIONS),
+});
+export type RolePrepView = z.infer<typeof rolePrepView>;
 
 /** A role in the picker, and whether it has enough multiple-choice questions for a timed test. */
 export const mockRole = z.strictObject({ slug: z.string().regex(slug), title: z.string().min(1).max(120), hasTest: z.boolean() });
