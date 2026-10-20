@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   certification,
+  mockBankFile,
   practiceQuestion,
   proofTask,
   resource,
@@ -8,6 +9,7 @@ import {
   skillGroups,
   skill,
   type Certification,
+  type MockQuestion,
   type PracticeQuestion,
   type ProofTask,
   type Resource,
@@ -15,6 +17,7 @@ import {
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
 import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
@@ -71,6 +74,14 @@ export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
  * an answer by matching its words.
  */
 export const practiceQuestions: PracticeQuestion[] = z.array(practiceQuestion).parse(practiceQuestionsJson);
+
+/**
+ * The interview prep bank (`/mock`, FR-50, handoff 12l). Open questions are the Practice bank's, with "a strong answer
+ * covers" taken from its `lookFor` (a test keeps them the same). Multiple-choice questions for the timed test were
+ * hand-written by Development and carry `reviewed: false` until someone who works in the role checks them; production
+ * uses only reviewed ones (src/lib/mock/rules.ts). Never written by the model.
+ */
+export const mockQuestions: MockQuestion[] = mockBankFile.parse(mockBankJson).questions;
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z

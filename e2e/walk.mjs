@@ -996,7 +996,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 22) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1173,7 +1173,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/elite", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/elite", "/mock", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();
@@ -1335,7 +1335,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 22) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1343,6 +1343,88 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     if (await q.getByRole("button", { name: /, Elite, open menu$/ }).count()) throw new Error("the avatar still says Elite");
   } finally {
     await ctxE.close();
+  }
+});
+// Interview prep (FR-50 part 2, handoff 12l). A fresh person opens /mock on Free: the locked panel with Turn on Elite,
+// and the question bank with 5 questions open (each with "A strong answer covers" and "Practise this one") and the rest
+// locked. With Elite on, they take a timed test: 12 questions, each pick saved as it is made, then the review of every
+// question with the count right. axe passes on each screen.
+await step("mock: the bank opens 5 on Free; with Elite, a timed test and its review", async () => {
+  const ctxM = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxM.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await q.goto(BASE + "/mock");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Mira Prep");
+    await q.locator('input[name="email"]').fill(`mock-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today|mock)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/(today|mock)/, { timeout: 15000 });
+    }
+    if (!new URL(q.url()).pathname.startsWith("/mock")) await q.goto(BASE + "/mock");
+    const main = q.locator("main");
+    await main.getByRole("heading", { level: 1, name: /Interview prep/ }).waitFor({ timeout: 15000 });
+
+    // Free: the locked panel, and the bank tab with 5 open.
+    const unlock = main.getByRole("link", { name: "Turn on Elite", exact: true });
+    await unlock.waitFor();
+    if ((await unlock.getAttribute("href")) !== "/elite") throw new Error("Turn on Elite doesn't open /elite");
+    const mode = main.getByRole("group", { name: "Mode" });
+    if ((await mode.getByRole("button", { name: "Question bank", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("Free doesn't open on the bank");
+    const openItems = main.locator('[data-bank-item="open"]');
+    const lockedItems = main.locator('[data-bank-item="locked"]');
+    await openItems.first().waitFor();
+    if ((await openItems.count()) !== 5) throw new Error(`${await openItems.count()} bank questions open on Free`);
+    if ((await lockedItems.count()) < 1) throw new Error("nothing locked in the bank on Free");
+    await openItems.first().locator("summary").click();
+    await openItems.first().getByText("A strong answer covers", { exact: true }).waitFor();
+    const practise = openItems.first().getByRole("link", { name: "Practise this one" });
+    if (!(await practise.getAttribute("href"))?.startsWith("/practice?q=")) throw new Error("Practise this one doesn't open Practice");
+    await lockedItems.first().locator("summary").click();
+    await lockedItems.first().getByText(/opens with Elite/).waitFor();
+    if (await lockedItems.getByText("A strong answer covers", { exact: true }).count()) throw new Error("a locked question shows its note");
+    await axeOn(q, "mock-free-bank");
+    await mode.getByRole("button", { name: "Timed test", exact: true }).click();
+    await main.getByText("Timed tests open with Elite.", { exact: false }).waitFor();
+    if (await main.getByRole("button", { name: "Start the test", exact: true }).count()) throw new Error("Free can start a timed test");
+
+    // Turn Elite on, then take a test.
+    await q.goto(BASE + "/elite");
+    await main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true }).click();
+    await main.getByRole("button", { name: "Elite is on, free in the beta", exact: true }).waitFor({ timeout: 10000 });
+    await q.goto(BASE + "/mock?tab=test&role=data-analyst");
+    if (await main.getByRole("link", { name: "Turn on Elite", exact: true }).count()) throw new Error("the locked panel stays with Elite on");
+    await main.getByRole("button", { name: "Start the test", exact: true }).click();
+    const timer = main.getByRole("timer");
+    await timer.waitFor({ timeout: 15000 });
+    if (!/1[45]:\d\d/.test(await timer.innerText())) throw new Error(`the timer reads ${await timer.innerText()}`);
+    await axeOn(q, "mock-test-running");
+    for (let i = 0; i < 12; i++) {
+      await main.getByText(`Question ${i + 1} of 12`, { exact: true }).waitFor();
+      const option = main.getByRole("radiogroup").getByRole("radio").nth(i % 2);
+      await Promise.all([q.waitForResponse((r) => r.request().method() === "POST" && new URL(r.url()).pathname === "/mock"), option.check()]);
+      if (!(await option.isChecked())) throw new Error(`pick ${i + 1} didn't stay`);
+      await main.getByRole("button", { name: i === 11 ? "Finish test" : "Next", exact: true }).click();
+    }
+    await main.getByRole("heading", { name: "Your test review", exact: true }).waitFor({ timeout: 15000 });
+    await main.getByText(/^\d+ of 12 right\.$/).waitFor();
+    if ((await main.locator("[data-review-item]").count()) !== 12) throw new Error("the review doesn't list all 12");
+    await axeOn(q, "mock-test-review");
+
+    // The whole bank opens with Elite.
+    await mode.getByRole("button", { name: "Question bank", exact: true }).click();
+    await openItems.first().waitFor();
+    if (await lockedItems.count()) throw new Error("bank questions stay locked with Elite on");
+    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
+    if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
+  } finally {
+    await ctxM.close();
   }
 });
 // Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted

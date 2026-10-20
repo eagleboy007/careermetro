@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { confidenceWord, sessionsText } from "./confidence-spark";
-import { canSend, leftText, listText, trendSummary } from "./practice-view";
+import { canSend, leftText, listText, startAt, trendSummary } from "./practice-view";
 
 describe("Practice wording", () => {
   it("counts the answers left today out of 10, and none on Elite", () => {
@@ -29,5 +29,18 @@ describe("Practice wording", () => {
     expect(listText(["Statistics"])).toBe("Statistics");
     expect(listText(["Statistics", "Excel"])).toBe("Statistics and Excel");
     expect(listText(["A", "B", "C"])).toBe("A, B and C");
+  });
+
+  it("opens on the question asked for from the interview prep bank, else the current goal's first", () => {
+    const q = (id: string) => ({ id, question: `Question ${id}`, lookFor: "What to look for" });
+    const skills = [
+      { tag: "met" as const, questions: [q("sql-1"), q("sql-2")] },
+      { tag: "current" as const, questions: [q("excel-1"), q("excel-2"), q("excel-3")] },
+    ];
+    expect(startAt(skills, "excel-3")).toEqual({ skill: 1, question: 2 });
+    expect(startAt(skills, "sql-2")).toEqual({ skill: 0, question: 1 });
+    expect(startAt(skills, "python-1")).toEqual({ skill: 1, question: 0 });
+    expect(startAt(skills, null)).toEqual({ skill: 1, question: 0 });
+    expect(startAt([{ tag: "ahead" as const, questions: [q("git-1")] }], null)).toEqual({ skill: 0, question: 0 });
   });
 });

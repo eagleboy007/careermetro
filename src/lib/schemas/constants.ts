@@ -484,3 +484,16 @@ export const BUILDER_LINES_MAX = 4;
 export const ELITE_CHANGES_PER_DAY = 10;
 /** What a Free person gets from an Elite action, instead of an error. */
 export const ELITE_NEEDED_MESSAGE = "Turn on Elite to use this.";
+
+/*
+ * Interview prep (`/mock`, FR-50 part 2, handoff 12l): the question bank and the timed test. No model here.
+ */
+/** Questions a Free person can open in the bank for a role; the rest show locked. */
+export const MOCK_BANK_FREE_OPEN = 5;
+/** A timed test: this many multiple-choice questions in this many minutes, like company screening tests. */
+export const TIMED_TEST_QUESTIONS = 12;
+export const TIMED_TEST_MINUTES = 15;
+/** Timed tests one person can start a day (each start counts), so the bank can't be read out by script. */
+export const TIMED_TESTS_PER_DAY = 10;
+/** The tabs of /mock, in order. */
+export const MOCK_TABS = ["interview", "test", "bank"] as const;

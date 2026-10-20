@@ -1298,6 +1298,29 @@ export const userPlans = pgTable("user_plans", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/**
+ * Timed tests (FR-50 part 2, handoff 12l): 12 multiple-choice questions from the bank (src/content/mock-bank.json) in 15
+ * minutes, picked and scored by code, never by the model. `picks` holds one option index per question, -1 for none;
+ * picks after `ended_at` or the 15 minutes are refused. `right` is set when the test ends. Goes with the account (on
+ * delete cascade); in Download your data.
+ */
+export const timedTests = pgTable(
+  "timed_tests",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    roleSlug: text("role_slug").notNull(),
+    questionIds: text("question_ids").array().notNull(),
+    picks: smallint("picks").array().notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    right: smallint("right"),
+  },
+  (t) => [index("timed_tests_user").on(t.userId, t.startedAt)],
+);
+
 /* Audit ------------------------------------------------------------------- */
 
 /**

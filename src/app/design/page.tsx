@@ -66,6 +66,8 @@ import { EliteBadge } from "@/components/elite/elite-badge";
 import { EliteView } from "@/components/elite/elite-view";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { PlanCard } from "@/components/settings/plan-card";
+import { MockView } from "@/components/mock/mock-view";
+import { exampleMockPage, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -603,6 +605,21 @@ export default function DesignPage() {
         </div>
         <p className="text-sm text-muted">Practice with Elite on: no daily cap of 10.</p>
         <PracticeView view={{ ...examplePractice, left: null }} sampleFeedback={exampleFeedback} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Interview prep (signed in)</h2>
+        <p className="text-sm text-muted">
+          Handoff 12l, FR-50 part 2: /mock with its three tabs. On Free, the locked panel with Turn on Elite (violet) over the question bank, 5
+          questions open and the rest locked. With Elite: a timed test running (the clock turns ink in the last minute; cobalt is only the progress
+          bar), then its review with the count right, the only number. The mock interview tab says it comes next. Example data from the real bank
+          for Data Analyst, so nothing saves.
+        </p>
+        <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
+        <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />
+        <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />
+        <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
+        <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
       </section>
 
       <section className="flex flex-col gap-4">
