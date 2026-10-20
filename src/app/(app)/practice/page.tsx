@@ -18,14 +18,17 @@ export const metadata: Metadata = { title: "Practice · CareerMetro", robots: { 
  * and with no sign-in on this deployment the page shows example data that saves nothing. The skills are the person's
  * own goals, read by their user id; the questions come from the bank, never from the model.
  */
-async function PracticeScreen() {
+async function PracticeScreen({ searchParams }: PageProps<"/practice">) {
+  const asked = (await searchParams).q;
+  // "Practise this one" on /mock opens that question when it is one of the person's goals.
+  const startQuestion = typeof asked === "string" ? asked.slice(0, 80) : null;
   await connection();
   const account = await currentAccount();
   if (!account) {
     return (
       <div className="flex flex-col gap-4">
         <Banner>Preview with example data. Nothing you type here is saved or sent.</Banner>
-        <PracticeView view={examplePractice} sampleFeedback={exampleFeedback} />
+        <PracticeView view={examplePractice} sampleFeedback={exampleFeedback} startQuestion={startQuestion} />
       </div>
     );
   }
@@ -45,7 +48,7 @@ async function PracticeScreen() {
   return (
     <div className="flex flex-col gap-4">
       <Banner>Questions for the goals on your line. Practice gets you ready; only proof fills a goal or moves your train.</Banner>
-      <PracticeView view={view} onSubmit={submitPracticeAction} onRate={ratePracticeAction} />
+      <PracticeView view={view} onSubmit={submitPracticeAction} onRate={ratePracticeAction} startQuestion={startQuestion} />
     </div>
   );
 }
@@ -54,10 +57,10 @@ function Banner({ children }: { children: React.ReactNode }) {
   return <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">{children}</p>;
 }
 
-export default function PracticePage() {
+export default function PracticePage(props: PageProps<"/practice">) {
   return (
     <Suspense fallback={<PageLoading />}>
-      <PracticeScreen />
+      <PracticeScreen {...props} />
     </Suspense>
   );
 }

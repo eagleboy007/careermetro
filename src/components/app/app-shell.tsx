@@ -234,6 +234,9 @@ function AvatarMenu({ user }: { user: ShellUser }) {
                 <Link href={item.href} onClick={() => setOpen(false)} aria-current={path === item.href ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
                   <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
                   {item.label}
+                  {item.elite && (
+                    <span className="ml-auto rounded-full bg-elite-soft px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.06em] text-elite">Elite</span>
+                  )}
                   {(counts[item.key]?.n ?? 0) > 0 && (
                     <span className="ml-auto grid h-[18px] min-w-[18px] place-items-center rounded-full bg-ink px-1 font-mono text-[0.62rem] text-bg">
                       {counts[item.key]!.n}

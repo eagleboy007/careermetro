@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Elite part 1, the plan switch).
+Last updated: 2026-10-20 (Elite part 2, the question bank and timed test).
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -35,7 +35,7 @@ Last updated: 2026-10-20 (Elite part 1, the plan switch).
 
 - Network, FR-49 (handoff 12j): part 1, data and rules, is in (#165, migration 0034). Part 2, the `/network` page (Connections, Requests, Sent, Find people), the avatar-menu count and the Settings "Let people find me" switch, is in (#166). Part 3 is in this PR: Connect and "In common with you" on `/u/[handle]`, chats between connections open at once (Remove turns the chat back into a request), and Settings' "Your gaps show to" (Nobody else, Your connections, Everyone who can see your profile) replaces the "Your gaps" switch. Network is then done; what follows is in the plan's "Not in this plan". Plan `docs/plans/network-plan.md`.
 - Build your resume, FR-36 (handoff 12k), is built on branch `resume-builder` (migration 0035, export version 21), with the review fixes: the line check reads ambiguous names (React, Express) and number words against the answer, the AI-5 backstop reads only the person's words, rebuilds reuse the waiting version under the cap and a per-person lock, the reword's cost is reserved (H4), and saves coalesce and never block Next. The review page points to the confirm page for the download. Plan `docs/plans/resume-builder-plan.md`.
-- Elite, FR-50 (handoff 12l, C15): part 1, the plan switch, is on branch `elite` (migration 0036 `user_plans`, export version 22): `/elite`, Settings > Your plan with Turn off, the avatar mark and "Elite · beta" menu line, the profile plan card and opt-in badge, Practice's cap for Free only, and the violet `elite` tokens. Parts 2 to 5 (question bank and timed test, mock interview, Library, Elite shelf) follow `docs/plans/elite-plan.md`.
+- Elite, FR-50 (handoff 12l, C15): part 1, the plan switch, is on branch `elite` (migration 0036 `user_plans`, export version 22): `/elite`, Settings > Your plan with Turn off, the avatar mark and "Elite · beta" menu line, the profile plan card and opt-in badge, Practice's cap for Free only, and the violet `elite` tokens. Part 2 is on branch `elite-2` (migration 0037 `timed_tests`, export version 23): `/mock` with the question bank (the Practice bank's 95 questions, 5 open on Free) and the timed test (12 multiple-choice in 15 minutes, picked, timed and scored on the server, 10 starts a day), and the Interview prep entry points. Its 48 multiple-choice questions (12 skills, 4 each) are Development's own and marked `reviewed: false`, so production shows no timed test until someone who works in each role checks them (Project manager to arrange). Parts 3 to 5 (mock interview, Library, Elite shelf) follow `docs/plans/elite-plan.md`.
 
 ## Next up
 
@@ -45,6 +45,7 @@ Open, all waiting on someone else:
 1. Pending item 1, post-upload issues: Testing has no open upload defects (2026-10-15). It needs Milin's details.
 2. Launch readiness (c) 6, full alerts: needs a log drain on Milin's Vercel account. The 6-hourly smoke check runs meanwhile.
 3. The 95 practice questions are self-checked only; an expert review is still owed (Data research).
+4. The 48 timed-test questions in `src/content/mock-bank.json` (Elite part 2) need checking by people who work in the roles; until then `reviewed` stays false and production shows no timed test.
 
 Handover (2026-10-15 18:25 UTC): "Development 3" took over from Development 2 for T44.
 
@@ -52,7 +53,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0037**. `EXPORT_VERSION` (22) lives in `src/lib/account/export.ts`. The latest FR is FR-50 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0038**. `EXPORT_VERSION` (23) lives in `src/lib/account/export.ts`. The latest FR is FR-50 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

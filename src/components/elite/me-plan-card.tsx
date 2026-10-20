@@ -1,6 +1,6 @@
 "use client";
 
-import { Award } from "lucide-react";
+import { Award, Play } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Switch } from "@/components/ui/switch";
@@ -8,7 +8,7 @@ import type { PlanView } from "@/lib/schemas";
 
 /**
  * "Your plan" on the person's own profile (handoff 12l, prototype v41): only they see it, and it is hidden in View as
- * others. With Elite on: "Show the Elite badge on my profile", off by default. On Free: See Elite. Without an action
+ * others. With Elite on: "Show the Elite badge on my profile", off by default, and Interview prep. On Free: See Elite. Without an action
  * (example data) the switch changes nothing on the server.
  */
 export function MePlanCard({ plan, onBadge }: { plan: PlanView; onBadge?: (shown: boolean) => Promise<string | null> }) {
@@ -59,9 +59,15 @@ export function MePlanCard({ plan, onBadge }: { plan: PlanView; onBadge?: (shown
       </div>
       <div className="flex flex-col gap-1">
         {plan.elite ? (
-          <Switch checked={shown} onChange={toggle} tone="elite">
-            Show the Elite badge on my profile
-          </Switch>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Switch checked={shown} onChange={toggle} tone="elite">
+              Show the Elite badge on my profile
+            </Switch>
+            <Link href="/mock" className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
+              <Play size={15} strokeWidth={1.75} aria-hidden="true" />
+              Interview prep
+            </Link>
+          </div>
         ) : (
           <Link href="/elite" className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full bg-elite px-3.5 text-[0.84rem] font-[550] text-on-elite hover:opacity-90">
             <Award size={15} strokeWidth={1.75} aria-hidden="true" />

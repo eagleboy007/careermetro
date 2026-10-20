@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Flag, Lock, MessageSquareText, RotateCcw, SkipForward } from "lucide-react";
+import { ArrowRight, Flag, Lock, MessageSquareText, Play, RotateCcw, SkipForward } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { countWords } from "@/lib/practice/words";
@@ -22,6 +22,17 @@ export const leftText = (left: number | null) => (left === null ? "No daily cap 
 /** Whether "Get feedback" can be pressed: enough words and answers left today (always, on Elite). */
 export const canSend = (words: number, left: number | null) => words >= PRACTICE_MIN_WORDS && (left === null || left > 0);
 
+/** Where Practice opens: the question asked for (from the interview prep bank's "Practise this one"), else the first question of the current goal. */
+export function startAt(skills: readonly Pick<PracticeSkill, "tag" | "questions">[], questionId: string | null | undefined): { skill: number; question: number } {
+  if (questionId) {
+    for (let i = 0; i < skills.length; i++) {
+      const q = skills[i].questions.findIndex((x) => x.id === questionId);
+      if (q >= 0) return { skill: i, question: q };
+    }
+  }
+  return { skill: Math.max(0, skills.findIndex((s) => s.tag === "current")), question: 0 };
+}
+
 /** What the side card says about the person's trend for the skill picked. */
 export function trendSummary(ratings: number[]): string {
   if (ratings.length === 0) return "";
@@ -42,6 +53,7 @@ export function PracticeView({
   onRate,
   sampleFeedback,
   initial,
+  startQuestion,
 }: {
   view: View;
   onSubmit?: (questionId: string, answer: string) => Promise<PracticeAnswerResult>;
@@ -49,11 +61,13 @@ export function PracticeView({
   sampleFeedback?: PracticeFeedback;
   /** For /design: open on the feedback card with this answer. */
   initial?: { answer: string; feedback: PracticeFeedback };
+  /** Opens on this bank question when it is one of the person's goals ("Practise this one" on /mock). */
+  startQuestion?: string | null;
 }) {
   const id = useId();
-  const start = Math.max(0, view.skills.findIndex((s) => s.tag === "current"));
-  const [skillAt, setSkillAt] = useState(start);
-  const [questionAt, setQuestionAt] = useState(0);
+  const [first] = useState(() => startAt(view.skills, startQuestion));
+  const [skillAt, setSkillAt] = useState(first.skill);
+  const [questionAt, setQuestionAt] = useState(first.question);
   const [answer, setAnswer] = useState(initial?.answer ?? "");
   const [phase, setPhase] = useState<Phase>(initial ? { kind: "feedback", answerId: null, feedback: initial.feedback, rated: null } : { kind: "write" });
   const [left, setLeft] = useState(view.left);
@@ -151,10 +165,17 @@ export function PracticeView({
             Interview questions on your goals. Write an answer, get feedback in words and a stronger sample. No scores, and practice never fills a goal.
           </p>
         </div>
-        <p role="status" className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-[0.8rem] text-ink">
-          <MessageSquareText size={14} {...ICON} />
-          {leftText(left)}
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link href="/mock" className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
+            <Play size={14} {...ICON} />
+            Mock interview
+            <span className="rounded-full bg-elite px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.06em] text-on-elite">Elite</span>
+          </Link>
+          <p role="status" className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-[0.8rem] text-ink">
+            <MessageSquareText size={14} {...ICON} />
+            {leftText(left)}
+          </p>
+        </div>
       </div>
 
       <section aria-labelledby={`${id}-pick`} className={CARD}>
