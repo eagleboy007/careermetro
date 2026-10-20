@@ -131,6 +131,14 @@ export const LIMITS = {
   signalAnswersPerUserDay: { bucket: "signal-answer", max: 100, windowMs: 24 * HOUR },
   /** Track switches on Your goals (docs/plans/tracks-plan.md), each try counted. */
   trackChangesPerUserDay: { bucket: "track-change", max: TRACK_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /**
+   * Account settings saves a day per person, each try counted (launch-readiness pass, docs/plans/launch-readiness-pass.md).
+   * One Save sends the whole form, so 100 is far more than anyone needs, while a script can't turn "Let companies find
+   * me" on and off without end, each on writing a consent row.
+   */
+  settingsSavesPerUserDay: { bucket: "settings-save", max: 100, windowMs: 24 * HOUR },
+  /** Unblocks from Settings > Privacy a day per person, each try counted, so a block and unblock loop can't be scripted. */
+  unblocksPerUserDay: { bucket: "unblock", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */
