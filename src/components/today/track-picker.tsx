@@ -37,8 +37,7 @@ export function TrackChip({
   if (!picker) {
     return (
       <span className={CHIP}>
-        {label}
-        {name}
+        {label} {name}
         <ChevronRight size={14} strokeWidth={1.75} aria-hidden="true" />
       </span>
     );
@@ -56,8 +55,7 @@ export function TrackChip({
       }}
       className={`${CHIP} hover:border-ink`}
     >
-      {label}
-      {name}
+      {label} {name}
       <ChevronRight size={14} strokeWidth={1.75} aria-hidden="true" className={`motion-safe:transition-transform ${open ? "rotate-90" : ""}`} />
     </button>
   );
