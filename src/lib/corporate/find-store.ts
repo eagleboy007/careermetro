@@ -360,8 +360,12 @@ async function staffOf(ctx: JobContext, people: { id: string; profile: Profile }
     db,
   );
   const jobs = people.map((p) => ({ id: p.id, profile: { ...p.profile, roles: [...p.profile.roles, ...(added.get(p.id) ?? []).map(addedAsResumeRole)] } }));
+  // The resume on its own too: with no open job, the latest one counts as current, and an added role that ended later
+  // mustn't stop the resume's own job hiding them.
   const domains = await staffDomainsFor(jobs, db);
-  return new Set(jobs.filter((p) => worksAt(p.profile, ctx.companyNames) || onCompanyDomain(domains.get(p.id), ctx.companyDomain)).map((p) => p.id));
+  const resumeDomains = await staffDomainsFor(people, db);
+  const staff = (p: { id: string; profile: Profile }, d: Map<string, string[]>) => worksAt(p.profile, ctx.companyNames) || onCompanyDomain(d.get(p.id), ctx.companyDomain);
+  return new Set([...jobs.filter((p) => staff(p, domains)), ...people.filter((p) => staff(p, resumeDomains))].map((p) => p.id));
 }
 
 /**

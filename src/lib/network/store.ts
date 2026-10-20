@@ -738,13 +738,15 @@ export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {
       ),
     )
     .orderBy(desc(connectedTo(userId)), asc(sql`lower(${users.name})`), asc(users.id))
-    .limit(NETWORK_RESULTS_MAX);
+    // A few spare rows, so the checks below and the ranking still fill a page of the best.
+    .limit(NETWORK_RESULTS_MAX * 2);
   const found = page.filter((p) => networkMatches(q, p));
   const states = await statesWith(userId, found.map((p) => p.id), db, now);
   const people = (await asPeople(userId, found.map((p) => ({ ...p, state: states.get(p.id) ?? "none", how: null, at: null, endsAt: null })), db, now))
     .filter((e) => (!sameRole || (e.person.aim !== null && e.roleSlug === me.roleSlug)) && (!verified || e.person.verified))
     .map(strip)
-    .sort(byNetworkRank);
+    .sort(byNetworkRank)
+    .slice(0, NETWORK_RESULTS_MAX);
   return { ok: true, people };
 }
 
