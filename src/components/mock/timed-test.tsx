@@ -93,7 +93,8 @@ export function TimedTest({
     setMessage(null);
     deadline.current = null;
     setPhase({ kind: "review", review: out.review });
-    moveFocus("review");
+    focusTarget.current = "review";
+    setFocusTick((n) => n + 1);
   }, [onFinish, testId]);
 
   // The clock counts down to the deadline, not by ticks, so a slow tab can't stretch it; at 0 the test finishes.
@@ -301,7 +302,7 @@ export function TimedTest({
             Back
           </button>
         )}
-        {last ? (
+        {last || left === 0 ? (
           <button type="button" onClick={() => void finish()} aria-disabled={busy || undefined} className={INK}>
             Finish test
           </button>
