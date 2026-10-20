@@ -63,6 +63,10 @@ describe("the sample resume fixture", () => {
     expect(isSampleResume("text/plain")).toBe(false);
     expect(isSampleResume(null)).toBe(false);
   });
+
+  it("says where to go when it is refused for the person's own resume", () => {
+    expect(HAS_OWN_RESUME).toMatchObject({ ok: false, status: 409, code: "has_resume", message: "You already have your own resume. Open it from your Map." });
+  });
 });
 
 // Runs against a real Postgres with migrations applied, e.g. TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/cm

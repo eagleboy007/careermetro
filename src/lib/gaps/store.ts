@@ -6,6 +6,7 @@ import { gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
+import { hasOwnAnalysis } from "@/lib/resume/sample";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
@@ -26,7 +27,8 @@ export const GAP_LIMITS = {
 };
 
 export type GapsForOwner =
-  | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null }
+  /** `sample`: the resume is the sample (T113), so what is made from it keeps checked-in or template words. */
+  | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null; sample: boolean }
   | { ok: false; reason: "not_found" | "not_confirmed" | "busy" };
 
 /** What an explanation still running is assumed to cost when checking the budget. A typical one costs 2 to 4 cents. */
@@ -54,6 +56,8 @@ async function reserveExplanation(tx: Tx, owner: Owner, profileId: string, roleS
   });
 }
 
+type StoredAnalysis = Omit<Extract<GapsForOwner, { ok: true }>, "sample">;
+
 /**
  * The stored analysis for this profile and role, if one still says what today's matcher says. Prefers today's
  * matcher, else the newest older one, which carries over (with its words, rating and goals) when the rules agree.
@@ -64,7 +68,7 @@ async function storedAnalysis(
   roleRowId: string | null,
   role: RoleProfile,
   match: MatchResult,
-): Promise<Extract<GapsForOwner, { ok: true }> | null> {
+): Promise<StoredAnalysis | null> {
   const [stored] = await tx
     .select({ id: gapAnalyses.id, result: gapAnalyses.result, rating: gapAnalyses.userRating, matcherVersion: gapAnalyses.matcherVersion })
     .from(gapAnalyses)
@@ -123,6 +127,9 @@ async function analyse(
     const resume = await getResumeForOwner(resumeId, owner, tx);
     if (!resume) return { done: { ok: false, reason: "not_found" } };
     if (!resume.confirmed) return { done: { ok: false, reason: "not_confirmed" } };
+    // Once the person's own resume has gaps, the sample is refused (T114), here too: its Gaps page would otherwise make
+    // the made-up person current again. It reads as not found, like a resume that is gone.
+    if (resume.sample && (await hasOwnAnalysis(owner, tx))) return { done: { ok: false, reason: "not_found" } };
     // The stored role row pins the role's version, so an edited role profile gets a fresh analysis.
     const [roleRow] = await tx
       .select({ id: roleProfiles.id })
@@ -132,7 +139,7 @@ async function analyse(
       .limit(1);
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
-    if (stored) return { done: stored };
+    if (stored) return { done: { ...stored, sample: resume.sample } };
     // A role the person fully meets needs no words from the model, so it uses none of their explanations. Nor does the
     // sample resume (T113): it gets checked-in words or the template, never the model or the shared budget.
     const reservedId = match.gaps.length > 0 && !resume.sample ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
@@ -153,12 +160,12 @@ async function analyse(
   const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {
     // Another request may have stored one meanwhile; then this call stays logged and its words are dropped.
     const stored = await storedAnalysis(tx, profileId, roleRowId, role, match);
-    if (stored) return stored;
+    if (stored) return { ...stored, sample: first.sample };
     const [row] = await tx
       .insert(gapAnalyses)
       .values({ profileId, roleProfileId: roleRowId, result: explained.analysis, matcherVersion: MATCHER_VERSION, aiCallId: callId })
       .returning({ id: gapAnalyses.id });
-    return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null } as const;
+    return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null, sample: first.sample } as const;
   });
   return second === "busy" ? { ok: false, reason: "busy" } : second;
 }

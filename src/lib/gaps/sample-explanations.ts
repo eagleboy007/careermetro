@@ -1,3 +1,5 @@
+import { z } from "zod";
+import { gapStatus } from "@/lib/schemas";
 import dataAnalyst from "../../../fixtures/sample-resume/explanations.data-analyst.json";
 import type { Explanations } from "./analysis";
 import { SHOWN_GAPS } from "./analysis";
@@ -12,20 +14,40 @@ import type { MatchResult } from "./match";
  */
 const BY_ROLE: Record<string, unknown> = { "data-analyst": dataAnalyst };
 
+/**
+ * A checked-in file: the explain-gaps output, plus what the matcher said when the words were written (each gap's state
+ * and resume line, and the readiness numbers), so words written for one reading are never shown for another.
+ */
+export const sampleWords = explainOutput.extend({
+  matched: z.object({ requiredMet: z.number().int(), requiredTotal: z.number().int(), estimatedHours: z.number().int() }),
+  gaps: z.array(
+    z.object({ skillId: z.string(), status: gapStatus, resumeQuote: z.string().nullable(), explanation: z.string().min(1).max(400) }),
+  ),
+});
+
 /** The roles with checked-in words, for the fixture test. */
 export const SAMPLE_EXPLAINED_ROLES = Object.keys(BY_ROLE);
 
 /**
- * The checked-in words for this match, if they cover exactly its shown gaps in order (as a model answer must); else
- * null, and the caller uses the template sentences. Never calls the model.
+ * The checked-in words for this match, if they were written for exactly this reading: its shown gaps in order (as a
+ * model answer must), each in the same state with the same resume line, and the same readiness numbers. Otherwise null,
+ * and the caller uses the template sentences: a profile the person edited on the confirm step (Python taken out, say)
+ * reads differently, and the words would no longer be true. Never calls the model.
  */
 export function sampleExplanations(match: MatchResult): Explanations | null {
   const words = BY_ROLE[match.roleSlug];
   if (!words) return null;
-  const parsed = explainOutput.safeParse(words);
+  const parsed = sampleWords.safeParse(words);
   if (!parsed.success) return null;
-  const expected = match.gaps.slice(0, SHOWN_GAPS).map((g) => g.skillId);
-  const got = parsed.data.gaps.map((g) => g.skillId);
-  if (got.length !== expected.length || got.some((id, i) => id !== expected[i])) return null;
-  return { readiness: parsed.data.readiness, bySkill: new Map(parsed.data.gaps.map((g) => [g.skillId, g.explanation])) };
+  const { matched, gaps, readiness } = parsed.data;
+  const shown = match.gaps.slice(0, SHOWN_GAPS);
+  if (gaps.length !== shown.length) return null;
+  const same = gaps.every(
+    (g, i) => g.skillId === shown[i].skillId && g.status === shown[i].status && g.resumeQuote === shown[i].resumeQuote,
+  );
+  const r = match.readiness;
+  if (!same || matched.requiredMet !== r.requiredMet || matched.requiredTotal !== r.requiredTotal || matched.estimatedHours !== r.estimatedHours) {
+    return null;
+  }
+  return { readiness, bySkill: new Map(gaps.map((g) => [g.skillId, g.explanation])) };
 }

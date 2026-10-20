@@ -13,6 +13,7 @@ import { indiaToday, lockPerson } from "@/lib/goals/store";
 import { jobTextHashKey } from "@/lib/hash-keys";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { getResumeForOwner } from "@/lib/resume/store";
+import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { MAX_CHOICE_GOALS, MAX_GAPS, type GapAnalysis, type JobCheckRequest } from "@/lib/schemas";
 import { jobCheckView, type JobCheckView, type StoredJobCheck } from "./groups";
 import { PARSE_JD_MODEL, parseJobPosting, type ParseJdClient } from "./parse";
@@ -48,7 +49,10 @@ export function jobTextHash(text: string, env: Record<string, string | undefined
 
 export type CreateJobCheckResult =
   | { ok: true; id: string; reused: boolean }
-  | { ok: false; reason: "not_found" | "not_confirmed" | "limit" | "budget" | "busy" | "unavailable" | "refused" | "malformed" | "no_skills" };
+  | {
+      ok: false;
+      reason: "not_found" | "not_confirmed" | "limit" | "sample_limit" | "budget" | "busy" | "unavailable" | "refused" | "malformed" | "no_skills";
+    };
 
 /**
  * Reserves the model call for a job check when this owner is under its daily count and the budget has room, and
@@ -88,7 +92,7 @@ async function existingCheck(tx: Tx, resumeId: string, roleSlug: string | null, 
 export async function createJobCheck(
   input: JobCheckRequest,
   owner: Owner,
-  deps: { db?: Db; client?: ParseJdClient; env?: Record<string, string | undefined> } = {},
+  deps: { db?: Db; client?: ParseJdClient; env?: Record<string, string | undefined>; clientHash?: string } = {},
 ): Promise<CreateJobCheckResult> {
   const db = deps.db ?? getDb();
   const { resumeId, roleSlug, company, title, text } = input;
@@ -101,6 +105,12 @@ export async function createJobCheck(
     if (!resume.confirmed) return { ok: false, reason: "not_confirmed" };
     const existing = await existingCheck(tx, resumeId, roleSlug, textHash);
     if (existing) return { ok: true, id: existing, reused: true };
+    // A new check of the sample resume also counts against its address (T113): every new anonymous session brings a
+    // fresh per-owner count, so without it a script could spend the parse budget through the sample. Each new try is
+    // counted, like the sample's own limits.
+    if (resume.sample && !(await takeShared(LIMITS.sampleJobChecksPerIp, deps.clientHash ?? "unknown", { db: tx }))) {
+      return { ok: false, reason: "sample_limit" };
+    }
     const reserved = await reserveJobCheck(tx, owner, resumeId, roleSlug);
     return reserved === "limit" || reserved === "budget" ? { ok: false, reason: reserved } : { reservedId: reserved };
   });

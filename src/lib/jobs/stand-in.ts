@@ -58,7 +58,7 @@ export function standInView(
       explanation:
         open.length === 0
           ? "Your resume shows every skill this posting asks for."
-          : `As a rough estimate, about ${hours} hours of focused work gets you ready to prove the rest.`,
+          : `As a rough estimate, about ${hours} hours of focused work closes the remaining gaps.`,
       estimatedHours: hours,
     },
     gaps: open.map((g) => ({

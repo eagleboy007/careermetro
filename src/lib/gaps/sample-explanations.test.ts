@@ -7,7 +7,7 @@ import parsed from "../../../fixtures/sample-resume/priya-sharma.parsed.json";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
 import { explainOutput } from "./explain";
 import { matchProfile } from "./match";
-import { SAMPLE_EXPLAINED_ROLES, sampleExplanations } from "./sample-explanations";
+import { SAMPLE_EXPLAINED_ROLES, sampleExplanations, sampleWords } from "./sample-explanations";
 import { suggestRoles } from "./suggest";
 
 vi.mock("server-only", () => ({}));
@@ -29,10 +29,13 @@ describe("the sample resume's explanations", () => {
     it(`for ${slug} fit the explain-gaps output and the prompt's rules`, () => {
       const data = JSON.parse(readFileSync(join(process.cwd(), `fixtures/sample-resume/explanations.${slug}.json`), "utf8"));
       expect(explainOutput.safeParse(data).success).toBe(true);
+      expect(sampleWords.safeParse(data).success).toBe(true);
       const role = roleProfiles.find((r) => r.slug === slug)!;
       const match = matchProfile(sample, role, now);
-      // Exactly the matcher's shown gaps, in its order.
-      expect(data.gaps.map((g: { skillId: string }) => g.skillId)).toEqual(match.gaps.slice(0, SHOWN_GAPS).map((g) => g.skillId));
+      // Exactly the matcher's shown gaps, in its order, each in the state and with the resume line it was written for.
+      const shown = match.gaps.slice(0, SHOWN_GAPS).map(({ skillId, status, resumeQuote }) => ({ skillId, status, resumeQuote }));
+      expect(data.gaps.map(({ skillId, status, resumeQuote }: { skillId: string; status: string; resumeQuote: string | null }) => ({ skillId, status, resumeQuote }))).toEqual(shown);
+      expect(data.matched).toEqual(match.readiness);
       const texts: string[] = [data.readiness, ...data.gaps.map((g: { explanation: string }) => g.explanation)];
       for (const t of texts) {
         expect(t).not.toContain("!");
@@ -59,5 +62,39 @@ describe("the sample resume's explanations", () => {
     const role = roleProfiles.find((r) => r.slug === SAMPLE_EXPLAINED_ROLES[0])!;
     const match = matchProfile(sample, role, now);
     expect(sampleExplanations({ ...match, gaps: match.gaps.slice(1) })).toBeNull();
+    // The same gaps in the same order, but another state, resume line or readiness number.
+    const [first, ...rest] = match.gaps;
+    expect(sampleExplanations({ ...match, gaps: [{ ...first, status: first.status === "missing" ? "weak" : "missing" }, ...rest] })).toBeNull();
+    expect(sampleExplanations({ ...match, gaps: [{ ...first, resumeQuote: "Another line" }, ...rest] })).toBeNull();
+    expect(sampleExplanations({ ...match, readiness: { ...match.readiness, estimatedHours: match.readiness.estimatedHours + 1 } })).toBeNull();
+    expect(sampleExplanations({ ...match, readiness: { ...match.readiness, requiredMet: match.readiness.requiredMet - 1 } })).toBeNull();
+  });
+
+  it("give nothing for a sample the person edited on the confirm step, so its gaps get the template", () => {
+    const role = roleProfiles.find((r) => r.slug === "data-analyst")!;
+    // Python taken out: Python is now missing and the hours change.
+    const noPython = {
+      ...sample,
+      roles: sample.roles.map((r) => ({ ...r, highlights: r.highlights.filter((h) => !/python/i.test(h)) })),
+      skills: sample.skills.filter((sk) => !/python|pandas/i.test(sk.name)).map((sk) => ({ ...sk, evidence: sk.evidence.map((e) => e.replace(/Python, /, "")) })),
+    };
+    const edited = matchProfile(noPython, role, now);
+    expect(edited.gaps.find((g) => g.skillId === "python")?.status).toBe("missing");
+    expect(sampleExplanations(edited)).toBeNull();
+    const analysis = buildGapAnalysis(edited, sampleExplanations(edited));
+    expect(analysis.readiness.explanation).toContain("rough estimate");
+    expect(analysis.gaps.find((g) => g.skillId === "python")!.explanation).not.toContain("Used Python (pandas)");
+
+    // The Python line reworded: still outdated, but the words quote a line the resume no longer has.
+    const line = "Used Python (pandas) to merge vendor files";
+    const reworded = (t: string) => (t === line ? "Used Python (pandas) to merge vendor and supplier files" : t);
+    const otherLine = {
+      ...sample,
+      roles: sample.roles.map((r) => ({ ...r, highlights: r.highlights.map(reworded) })),
+      skills: sample.skills.map((sk) => ({ ...sk, evidence: sk.evidence.map(reworded) })),
+    };
+    const moved = matchProfile(otherLine, role, now);
+    expect(moved.gaps.find((g) => g.skillId === "python")?.status).toBe("outdated");
+    expect(sampleExplanations(moved)).toBeNull();
   });
 });

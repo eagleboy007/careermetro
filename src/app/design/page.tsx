@@ -1454,7 +1454,7 @@ export default function DesignPage() {
           <ReadinessCard
             readiness={{
               headline: "You cover 2 of the 5 skills this job asks for.",
-              explanation: "As a rough estimate, about 28 hours of focused work gets you ready to prove the rest.",
+              explanation: "As a rough estimate, about 28 hours of focused work closes the remaining gaps.",
               estimatedHours: 28,
             }}
           />

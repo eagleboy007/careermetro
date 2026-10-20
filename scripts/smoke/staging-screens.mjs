@@ -394,10 +394,6 @@ const capPage = (pg) => {
   pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
 };
 /**
- * One clean-up part as a step. Past CLEAN_PART_MS it fails: its screenshot is taken, then the user's page is closed
- * (stopping whatever it was waiting for) and replaced with a fresh one for the next part.
- */
-/**
  * A fresh page for the user, or their old one if the browser doesn't give one within CLEAN_ACTION_MS (T108): a hung
  * newPage() must not hold the clean-up past the job's limit.
  */
@@ -410,6 +406,10 @@ const freshPage = async (u) => {
     .catch(() => u.page)
     .finally(() => clearTimeout(timer));
 };
+/**
+ * One clean-up part as a step. Past CLEAN_PART_MS it fails: its screenshot is taken, then the user's page is closed
+ * (stopping whatever it was waiting for) and replaced with a fresh one for the next part.
+ */
 const cleanStep = async (name, u, fn) => {
   if (failedSteps.has(name)) return;
   await step(name, u, (p) => {

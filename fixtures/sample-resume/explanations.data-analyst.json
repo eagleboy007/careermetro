@@ -1,12 +1,17 @@
 {
-  "readiness": "You cover 4 of the 6 skills this role requires. As an estimate, about 18 hours of focused work on Python and statistics gets you ready to prove the rest.",
+  "readiness": "You cover 4 of the 6 skills this role requires. As an estimate, about 18 hours of focused work on Python and statistics closes the remaining gaps.",
+  "matched": { "requiredMet": 4, "requiredTotal": 6, "estimatedHours": 18 },
   "gaps": [
     {
       "skillId": "python",
+      "status": "outdated",
+      "resumeQuote": "Used Python (pandas) to merge vendor files",
       "explanation": "Your resume shows \"Used Python (pandas) to merge vendor files\" in a role that ended more than four years ago. This role expects you to use Python for analysis when spreadsheets are not enough."
     },
     {
       "skillId": "statistics",
+      "status": "missing",
+      "resumeQuote": null,
       "explanation": "Nothing in your resume shows statistics. This role expects you to explain averages, distributions and significance to a non-technical manager."
     }
   ]

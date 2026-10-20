@@ -23,7 +23,7 @@ export function sampleProfile(): Profile {
 }
 
 /** T114: the person's own resume, once its gaps were seen, is never quietly replaced by the sample. */
-export const HAS_OWN_RESUME: IngestResult = { ok: false, status: 409, code: "has_resume", message: "You already have your own resume." };
+export const HAS_OWN_RESUME: IngestResult = { ok: false, status: 409, code: "has_resume", message: "You already have your own resume. Open it from your Map." };
 
 const RATE_LIMITED: IngestResult = {
   ok: false,
@@ -83,7 +83,7 @@ export async function createSampleResume(input: { owner: Owner; clientHash: stri
 }
 
 /** Whether the owner has a resume of their own (not the sample) with a gap analysis. */
-async function hasOwnAnalysis(owner: Owner, db: Pick<Db, "select">): Promise<boolean> {
+export async function hasOwnAnalysis(owner: Owner, db: Pick<Db, "select">): Promise<boolean> {
   const [row] = await db
     .select({ id: gapAnalyses.id })
     .from(gapAnalyses)

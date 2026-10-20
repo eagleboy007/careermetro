@@ -63,6 +63,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     const { client, create } = explainClient();
     const first = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
     if (!first.ok) throw new Error(first.reason);
+    expect(first.sample).toBe(false);
     expect(first.analysis.gaps.length).toBeGreaterThan(SHOWN_GAPS);
     expect(first.analysis.gaps[0].explanation).toMatch(/^Explained /);
 
@@ -87,6 +88,7 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     for (const r of [analyst, role]) {
       const got = await getGapsForOwner(resume.id, { sessionId: session }, r, { db: db!, client, now: new Date("2026-10-20T00:00:00Z") });
       if (!got.ok) throw new Error(got.reason);
+      expect(got.sample).toBe(true);
       expect(got.analysis.gaps.length).toBeGreaterThan(0);
       expect(got.analysis.gaps.every((g) => !g.explanation.startsWith("Explained "))).toBe(true);
       const [row] = await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, got.analysisId));
@@ -95,6 +97,32 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(create).not.toHaveBeenCalled();
     const calls = await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'profileId' = ${p.id}`);
     expect(calls).toEqual([]);
+  });
+
+  it("reads the sample as not found once the person's own resume has gaps, and stores nothing for it (T114)", async () => {
+    const session = `gaps-sample-own-${Date.now()}-${n++}`;
+    const [sample] = await db!.insert(schema.resumes).values({ anonymousSessionId: session, mimeType: SAMPLE_MIME, sizeBytes: 10, status: "parsed" }).returning();
+    created.push(sample.id);
+    const [sp] = await db!.insert(schema.profiles).values({ resumeId: sample.id, version: 1, data: profileSchema.parse(sampleParsed), confirmedByUser: true }).returning();
+    const analyst = roleProfiles.find((r) => r.slug === "data-analyst")!;
+    const owner = { sessionId: session };
+    // While only the sample has gaps, it opens as usual, and opens again.
+    expect(await getGapsForOwner(sample.id, owner, analyst, { db: db! })).toMatchObject({ ok: true, sample: true });
+
+    // Their own resume, checked, with its gaps seen.
+    const [own] = await db!.insert(schema.resumes).values({ anonymousSessionId: session, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+    created.push(own.id);
+    await db!.insert(schema.profiles).values({ resumeId: own.id, version: 1, data: profile, confirmedByUser: true });
+    const mine = await getGapsForOwner(own.id, owner, role, { db: db!, client: explainClient().client });
+    expect(mine).toMatchObject({ ok: true, sample: false });
+
+    const { client, create } = explainClient();
+    for (const r of [analyst, role]) {
+      expect(await getGapsForOwner(sample.id, owner, r, { db: db!, client })).toEqual({ ok: false, reason: "not_found" });
+    }
+    expect(create).not.toHaveBeenCalled();
+    // Only the one analysis from before; none for the other role.
+    expect(await db!.select().from(schema.gapAnalyses).where(eq(schema.gapAnalyses.profileId, sp.id))).toHaveLength(1);
   });
 
   it("links the analysis to the call that answered, after a retry", async () => {
