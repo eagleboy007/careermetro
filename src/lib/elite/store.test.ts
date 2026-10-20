@@ -88,11 +88,11 @@ describe.skipIf(!db)("elite store (database)", () => {
     const never = await person();
     await setElite(me, true, { db: db!, now: new Date("2026-10-19T06:00:00Z") });
     await setEliteBadge(me, true, { db: db! });
-    const data = await exportAccountData(me, db!);
+    const data = (await exportAccountData(me, db!))!;
     expect(EXPORT_VERSION).toBe(22);
     expect(data.exportVersion).toBe(22);
     expect(data.plan).toMatchObject({ plan: "elite", eliteSince: new Date("2026-10-19T06:00:00Z"), badgeShown: true });
-    expect((await exportAccountData(never, db!)).plan).toBeNull();
+    expect((await exportAccountData(never, db!))!.plan).toBeNull();
     await db!.delete(schema.users).where(eq(schema.users.id, me));
     expect(await rowOf(me)).toBeUndefined();
   });
