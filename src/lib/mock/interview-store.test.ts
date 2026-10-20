@@ -8,7 +8,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { setElite } from "@/lib/elite/store";
 import { MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, type MockQuestion } from "@/lib/schemas";
 import { MOCK_MODEL, type MockFeedbackClient } from "./interview-feedback";
-import { clearOldMockAnswers, endMockInterview, runningInterview, saveFollowUpAnswer, saveMockAnswer, startMockInterview } from "./interview-store";
+import { clearOldMockAnswers, endMockInterview, exportMockSessions, runningInterview, saveFollowUpAnswer, saveMockAnswer, startMockInterview } from "./interview-store";
 import { mockPageFor } from "./store";
 
 vi.mock("server-only", () => ({}));
@@ -219,9 +219,10 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     expect(await saveFollowUpAnswer(me, { sessionId: session.id, position: 1, answer: "Late" }, deps(201))).toEqual({ ok: false, error: "over" });
 
     // In Download your data with the follow-up and its reply, and cleared with the answers after 30 days.
-    const data = (await exportAccountData(me, db!))!;
-    expect(data.mockSessions[0].answers.find((a) => a.position === 1)?.followUp).toEqual({ question: `What would you check first on ${q1.id}?`, answer: "Meera would read the plan for a full scan." });
-    expect(data.mockSessions[0].answers.find((a) => a.position === 3)?.followUp).toBeNull();
+    // Read with the test bank: Download your data uses the real bank, whose about-you follow-ups have other words.
+    const exported = await exportMockSessions(me, db!, FU_BANK);
+    expect(exported[0].answers.find((a) => a.position === 1)?.followUp).toEqual({ question: `What would you check first on ${q1.id}?`, answer: "Meera would read the plan for a full scan." });
+    expect(exported[0].answers.find((a) => a.position === 3)?.followUp).toBeNull();
     expect(await clearOldMockAnswers(db!, new Date(t0.getTime() + 31 * DAY))).toBeGreaterThanOrEqual(4);
     expect(await answersOf(session.id)).toEqual([]);
   });
