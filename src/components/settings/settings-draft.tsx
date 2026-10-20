@@ -124,12 +124,5 @@ export function SettingsDraft({ initial, editable, children }: { initial: Settin
   );
 }
 
-/** A field's message from the last save, tied to its input by id. */
-export function FieldError({ id, message }: { id: string; message?: string }) {
-  if (!message) return null;
-  return (
-    <small id={id} className="text-[0.78rem] text-bad">
-      {message}
-    </small>
-  );
-}
+/** A field's message from the last save, tied to its input by id. Shared with the other forms. */
+export { FieldError } from "@/components/ui/field-error";

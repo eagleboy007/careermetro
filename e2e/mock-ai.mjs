@@ -71,6 +71,16 @@ const practiceFeedback = {
   correctness: "What you said is right for an entry-level answer. One thing to add is when you would not use this approach.",
   strongerAnswer: "First I would check what the task needs. Then I would pick the simplest way that works and test it on a small example. In a college project I did this and it saved time when the data changed.",
 };
+// Build your resume (prompts/build-resume): each answer's own words as its line, plus a line with a made-up number that
+// the app's check must drop, and one suggestion that must stay out until the person adds it.
+function buildReply(content) {
+  const json = content.slice(content.indexOf("{"), content.lastIndexOf("}") + 1);
+  const answers = JSON.parse(json || "{}").answers ?? [];
+  return {
+    answers: answers.map((a) => ({ answerId: a.id, lines: [a.text.slice(0, 200), "Improved results by 99% across 400 systems"] })),
+    suggestions: answers.length ? [{ kind: "number", text: "How many people used what you built?", answerId: answers[0].id }] : [],
+  };
+}
 // MOCK_AI_DELAY_MS holds each answer back, as a real call takes 10 to 40 seconds (the load test, e2e/load-upload.mjs).
 const delay = Number(process.env.MOCK_AI_DELAY_MS ?? 0);
 let n = 0;
@@ -85,18 +95,21 @@ http
       const sent = JSON.stringify(j.messages ?? "");
       const isJd = /job posting/i.test(sys) && sent.includes("<job_posting>");
       const isPractice = !isJd && /practice interview answers/i.test(sys) && sent.includes("<answer>");
-      const isParse = !isJd && !isPractice && /resume/i.test(sys) && /<resume|resume_text|wrap/i.test(sent);
+      const isBuild = !isJd && !isPractice && /answers into resume lines/i.test(sys) && sent.includes("<answers>");
+      const isParse = !isJd && !isPractice && !isBuild && /resume/i.test(sys) && /<resume|resume_text|wrap/i.test(sent);
       const persona = isParse ? personas.find((p) => sent.includes(p.key)) : undefined;
       const content = typeof j.messages?.[0]?.content === "string" ? j.messages[0].content : "";
       const posting = isJd ? postings.find((p) => content.includes(p.text.split("\n")[0])) : undefined;
       const text = isJd
         ? JSON.stringify({ skills: posting?.skills ?? [] })
+        : isBuild
+          ? JSON.stringify(buildReply(content))
         : isPractice
           ? JSON.stringify(practiceFeedback)
           : isParse
             ? JSON.stringify(persona?.profile ?? profile)
             : "not json";
-      console.log(id, req.url, isJd ? "parse-jd" : isPractice ? "practice-feedback" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
+      console.log(id, req.url, isJd ? "parse-jd" : isBuild ? "build-resume" : isPractice ? "practice-feedback" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
       const answer = () => {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(

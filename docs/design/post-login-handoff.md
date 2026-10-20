@@ -528,6 +528,17 @@ Approved 2026-10-19 by the Project manager under Milin's delegation, with the ru
 - Uses the existing `blocks`, `reports` and `rate_limits`.
 - *(C13)* would add `connections.how` and `user_settings.requests_from` (anyone / nobody), and turn the gaps switch into `gaps_visible_to` (nobody / connections / profile). Each needs approval before any migration.
 
+## 12k. Build your resume (`/builder`)
+
+Approved 2026-10-19 (C14) by the Project manager under Milin's delegation, for pending item 23 (approved by Milin 2026-10-19). Prototype v39: the "No resume yet? Build one" link on the Resume step (User: No resume) opens it. Development builds it after Network. Needs `prompts/build-resume/v1.md`, logged in `ai_calls`.
+
+- Entry: "No resume yet? Build one in about 10 minutes" under the upload box on the Resume step. "I have a resume after all" goes back.
+- Seven short sections, one card at a time, with a section list on the left (a row of numbered dots on phone) and Back / Next with a cobalt progress bar: Role (target role, Not sure yet; Studying / Just graduated / Working / On a break; name; city), Education (degree, college, start and end year, optional marks), Projects (name, "What did you build or do?" in plain words, optional link; add another), Internships and jobs (Internship / Job / Freelance / Volunteer, company, title, from and to month, what you did; add another; "I haven't worked yet" skips it), Tools (picked chips for the role, tools named in earlier answers pre-picked and labelled "from your project", add your own), Certificates (name, issuer, month earned, optional badge link checked before a verified tick; "None yet"), Links (GitHub, portfolio, LinkedIn, email on the resume; phone only on the downloaded file).
+- Answers save as you go and are used only to write the resume. They never go into logs or analytics, like resume text.
+- Review page before Gaps: a plain one-column resume preview. Every line is a button that shows the answer it came from. A side panel lists "Skills we found", each with its source answer; a skill with no answer behind it is never added. "Suggested, not added" lists what the model would add (a tool it guesses, a missing number) with "Yes, add it" or "Leave out"; nothing there enters the resume until the person adds it.
+- Required tick "Everything here is true and mine." before "Check my gaps", which runs the same confirm step and gap match as an upload. Also "Download PDF or DOCX" (FR-20, ATS-friendly: one column, standard headings, no photos or tables) and "Edit answers".
+- No-fabrication rule (FR-19): the model only rewords what the person typed. It never adds a skill, tool, employer, date or number. In the prototype, the numbers in the lines ("3 home machines", "about 20 tickets a week") come from the sample answers.
+
 ## 13. Data model proposals (need Milin's approval before any migration)
 
 Current tables: organizations, users, consents, waitlist_entries, resumes, profiles, skills, skill_aliases, role_profiles, job_descriptions, ai_calls, gap_analyses, resources, resource_checks, paths, path_steps, audit_logs.

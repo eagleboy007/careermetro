@@ -3,6 +3,7 @@ import { ProgressRoute } from "@/components/route/progress-route";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
 import { SiteHeader } from "@/components/site/site-header";
+import { signedInPreviewEnabled } from "@/lib/preview";
 
 // Private beta: reachable by link only, not indexed.
 export const metadata: Metadata = { title: "Add your resume · CareerMetro", robots: { index: false } };
@@ -19,7 +20,7 @@ export default function StartPage() {
         </p>
       </section>
       <LocalTestNotice />
-      <UploadForm />
+      <UploadForm builder={signedInPreviewEnabled()} />
     </main>
   );
 }
