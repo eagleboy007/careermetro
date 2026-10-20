@@ -66,6 +66,18 @@ describe.skipIf(!db)("account settings store (database)", () => {
     }
   });
 
+  it("saves Connection requests from, and keeps it when a save leaves it out", async () => {
+    const r = await makeUser("requests");
+    const now = new Date();
+    const stored = async () => (await db!.select({ to: schema.userSettings.requestsFrom }).from(schema.userSettings).where(eq(schema.userSettings.userId, r)))[0]?.to;
+    expect(await saveAccountSettings(r, form({ settings: { ...DEFAULT_SETTINGS, requestsFrom: "nobody" } }), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("nobody");
+    expect(await saveAccountSettings(r, form(), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("nobody");
+    expect(await saveAccountSettings(r, form({ settings: { ...DEFAULT_SETTINGS, requestsFrom: "anyone" } }), now, db!)).toEqual({ ok: true });
+    expect(await stored()).toBe("anyone");
+  });
+
   it("saves an optional city from the list, keeps it when a save leaves it out, and clears it (T44)", async () => {
     const now = new Date();
     expect(await saveAccountSettings(b, form({ city: "Pune" }), now, db!)).toEqual({ ok: true });

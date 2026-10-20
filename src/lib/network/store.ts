@@ -283,6 +283,41 @@ export async function blockPerson(userId: string, otherId: string, deps: Deps = 
   return { ok: true };
 }
 
+/** A person this person blocked, for Settings > Privacy: name and when, never anything else. */
+export type BlockedPerson = { id: string; name: string; since: Date };
+
+/**
+ * The people this person blocked (from Network or the Inbox), newest first, for "Blocked people" in Settings > Privacy.
+ * Only blocks they made: never who blocked them. Deleted and suspended accounts are left out, as everywhere else.
+ */
+export async function blockedPeople(userId: string, db: Pick<Db, "select"> = getDb()): Promise<BlockedPerson[]> {
+  const rows = await db
+    .select({ id: users.id, name: users.name, since: blocks.createdAt })
+    .from(blocks)
+    .innerJoin(users, eq(users.id, blocks.blockedId))
+    .where(and(eq(blocks.blockerId, userId), isNull(users.deletionRequestedAt), isNull(users.suspendedAt)))
+    .orderBy(desc(blocks.createdAt), asc(users.id));
+  return rows.map((r) => ({ id: r.id, name: displayName(r.name), since: r.since }));
+}
+
+/**
+ * Unblock from Settings > Privacy: only a block this person made. Nothing comes back with it: a connection or request
+ * the block ended stays ended, and chats it hid stay hidden until a new message arrives. The other person isn't told.
+ */
+export async function unblockPerson(userId: string, otherId: string, db: Db = getDb()): Promise<NetworkResult> {
+  if (userId === otherId) return fail("self");
+  const gone = await db.transaction(async (tx) => {
+    await pairLock(userId, otherId, tx);
+    return tx
+      .delete(blocks)
+      .where(and(eq(blocks.blockerId, userId), eq(blocks.blockedId, otherId)))
+      .returning({ at: blocks.createdAt });
+  });
+  if (!gone.length) return fail("not_found");
+  logEvent("info", "person_unblocked");
+  return { ok: true };
+}
+
 /** Whether two people are connected now. Profile visibility, gaps and the Inbox use it. */
 export async function areConnected(x: string, y: string, db: Db | Tx = getDb()): Promise<boolean> {
   if (x === y) return false;

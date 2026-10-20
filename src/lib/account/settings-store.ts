@@ -160,7 +160,7 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         await tx.insert(userPay).values({ userId, ...pay }).onConflictDoUpdate({ target: userPay.userId, set: pay });
       }
 
-      const { visibility, gapsVisibleTo: gapsTo, ...rest } = input.settings;
+      const { visibility, gapsVisibleTo: gapsTo, requestsFrom, ...rest } = input.settings;
       // "Let companies find me" (pending item 19): turning it on records a consent, turning it off withdraws it.
       // Read under a row lock (the users row above already serialises this person's saves), so two saves at once can't
       // both see the switch off and record two consents, or both see it on and withdraw none.
@@ -181,7 +181,8 @@ export async function saveAccountSettings(userId: string, input: SettingsInput, 
         : gapsChanged
           ? { gapsVisibleTo: rest.showGaps ? ("profile" as const) : ("nobody" as const) }
           : {};
-      const row = { profileVisibility: visibility, ...rest, ...gaps, updatedAt: now };
+      // "Connection requests from" (gap list item 32): saved when sent; a save without it keeps what is stored.
+      const row = { profileVisibility: visibility, ...rest, ...gaps, ...(requestsFrom ? { requestsFrom } : {}), updatedAt: now };
       await tx.insert(userSettings).values({ userId, ...row }).onConflictDoUpdate({ target: userSettings.userId, set: row });
       return { ok: true } as const;
     });

@@ -2,7 +2,16 @@
 
 import { ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { GAPS_VISIBLE_TO, GAPS_VISIBLE_TO_LABELS, PAY_MAX_LAKH, PROFILE_VISIBILITIES, PROFILE_VISIBILITY_LABELS, RIDE_REMINDERS } from "@/lib/schemas/constants";
+import {
+  GAPS_VISIBLE_TO,
+  GAPS_VISIBLE_TO_LABELS,
+  PAY_MAX_LAKH,
+  PROFILE_VISIBILITIES,
+  PROFILE_VISIBILITY_LABELS,
+  REQUESTS_FROM,
+  REQUESTS_FROM_LABELS,
+  RIDE_REMINDERS,
+} from "@/lib/schemas/constants";
 import type { ProfileVisibility, UserSettings } from "@/lib/schemas";
 import { FieldError, useSettingsDraft } from "./settings-draft";
 
@@ -60,12 +69,28 @@ export function PayFields() {
   );
 }
 
+/** Prototype v44's words for each choice (gap list item 35); canViewProfile enforces them. */
 const VISIBILITY_NOTES: Record<ProfileVisibility, string> = {
-  signed_in: "Anyone signed in to CareerMetro can open your profile link. Companies you apply to always see what you send with that application.",
-  line: "Only people aiming at the same role as you can open your profile link. Companies you apply to always see what you send with that application.",
-  connections: "Only people you are connected to on Network can open your profile link. Companies you apply to always see what you send with that application.",
-  only_me: "Hidden from everyone: your link shows them a not-found page. Companies you apply to still see what you send with that application.",
+  signed_in: "Anyone signed in to CareerMetro, and your connections, can open your profile link.",
+  line: "People aiming at the same role, and your connections, can open your profile link.",
+  connections: "Only your connections can open your profile link; everyone else sees a not-found page. The default for new accounts.",
+  only_me: "Hidden from everyone, connections included: your link shows a not-found page.",
 };
+
+const GAPS_NOTES: Record<(typeof GAPS_VISIBLE_TO)[number], string> = {
+  nobody: "Nobody sees your gaps, connections included. Companies never see gaps, whatever you choose.",
+  connections: "Only your connections see the skills you are still working on. Companies never see gaps.",
+  profile: "Everyone who can open your profile sees your gaps. Companies still never see them.",
+};
+
+const REQUESTS_NOTES: Record<(typeof REQUESTS_FROM)[number], string> = {
+  anyone: "Anyone who can find you or open your profile can ask to connect. People you block never can.",
+  nobody: "Nobody can ask to connect with you. You can still send requests yourself.",
+};
+
+const SEG = "inline-flex flex-wrap gap-0.5 self-start rounded-[22px] bg-surface-2 p-[3px]";
+const SEG_OPTION =
+  "inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-checked:ring-1 peer-checked:ring-line-strong peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent";
 
 const PARTS: { key: keyof UserSettings & `show${string}`; label: string; hint?: string }[] = [
   { key: "showExperience", label: "Experience", hint: "Job titles, employers and dates. Lines from your resume never show." },
@@ -75,17 +100,19 @@ const PARTS: { key: keyof UserSettings & `show${string}`; label: string; hint?: 
   { key: "showTargetRole", label: "The role you are aiming for", hint: "Off by default: it tells people you are looking. Companies you let find you see it either way." },
 ];
 
-/** Who can open the profile, and what it shows (handoff 12c Privacy and section 11 "Who sees what"). */
+/** Who can open the profile, what it shows, gaps and connection requests (handoff 12c and 12j Privacy, prototype v44). */
 export function PrivacyFields() {
   const { draft, setSetting, editable, errors } = useSettingsDraft();
   const s = draft.settings;
   // A save from before the choice existed has none; the old switch then says which it is.
   const gaps = s.gapsVisibleTo ?? (s.showGaps ? "profile" : "nobody");
+  // The page fills it from Network's settings; "anyone" is the column's default.
+  const requests = s.requestsFrom ?? "anyone";
   return (
     <>
       <fieldset className="flex min-w-0 flex-col gap-1.5" disabled={!editable}>
-        <legend className="mb-1.5 text-[0.82rem] font-semibold">Who can see your profile</legend>
-        <div className="inline-flex flex-wrap gap-0.5 self-start rounded-[22px] bg-surface-2 p-[3px]">
+        <legend className="mb-1.5 text-[0.82rem] font-semibold">Who can open your profile</legend>
+        <div className={SEG}>
           {PROFILE_VISIBILITIES.map((v) => (
             <label key={v} className="relative">
               <input
@@ -97,7 +124,7 @@ export function PrivacyFields() {
                 aria-describedby={v === "line" ? "acc-visibility-note acc-line-hint" : "acc-visibility-note"}
                 className="peer sr-only"
               />
-              <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-checked:ring-1 peer-checked:ring-line-strong peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
+              <span className={SEG_OPTION}>
                 {PROFILE_VISIBILITY_LABELS[v]}
               </span>
             </label>
@@ -106,6 +133,7 @@ export function PrivacyFields() {
         <small id="acc-visibility-note" className="text-[0.78rem] text-muted">
           {VISIBILITY_NOTES[s.visibility]}
         </small>
+        <small className="text-[0.78rem] text-muted">Companies you apply to always see what you send with that application.</small>
         <small id="acc-line-hint" className="text-[0.78rem] text-muted">
           &ldquo;People on your line&rdquo; shows your profile to people whose target role is the same as yours.
         </small>
@@ -121,7 +149,7 @@ export function PrivacyFields() {
       </fieldset>
       <fieldset className="flex min-w-0 flex-col gap-1.5" disabled={!editable}>
         <legend className="mb-1.5 text-[0.82rem] font-semibold">Your gaps show to</legend>
-        <div className="inline-flex flex-wrap gap-0.5 self-start rounded-[22px] bg-surface-2 p-[3px]">
+        <div className={SEG}>
           {GAPS_VISIBLE_TO.map((v) => (
             <label key={v} className="relative">
               <input
@@ -136,14 +164,36 @@ export function PrivacyFields() {
                 aria-describedby="acc-gaps-note"
                 className="peer sr-only"
               />
-              <span className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted peer-checked:bg-surface peer-checked:text-ink peer-checked:shadow-[0_1px_2px_var(--shadow)] peer-checked:ring-1 peer-checked:ring-line-strong peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-accent">
+              <span className={SEG_OPTION}>
                 {GAPS_VISIBLE_TO_LABELS[v]}
               </span>
             </label>
           ))}
         </div>
         <small id="acc-gaps-note" className="text-[0.78rem] text-muted">
-          The skills you are still working on. Companies never see them.
+          {GAPS_NOTES[gaps]}
+        </small>
+      </fieldset>
+      <fieldset className="flex min-w-0 flex-col gap-1.5" disabled={!editable}>
+        <legend className="mb-1.5 text-[0.82rem] font-semibold">Connection requests from</legend>
+        <div className={SEG}>
+          {REQUESTS_FROM.map((v) => (
+            <label key={v} className="relative">
+              <input
+                type="radio"
+                name="acc-requests"
+                value={v}
+                checked={requests === v}
+                onChange={() => setSetting("requestsFrom", v)}
+                aria-describedby="acc-requests-note"
+                className="peer sr-only"
+              />
+              <span className={SEG_OPTION}>{REQUESTS_FROM_LABELS[v]}</span>
+            </label>
+          ))}
+        </div>
+        <small id="acc-requests-note" className="text-[0.78rem] text-muted">
+          {REQUESTS_NOTES[requests]}
         </small>
       </fieldset>
       <fieldset className="flex min-w-0 flex-col" disabled={!editable}>
@@ -165,6 +215,57 @@ export function PrivacyFields() {
           : "Companies can't find you. They see only the applications you send them, and only what each one shares."}
       </PrivacyLine>
     </>
+  );
+}
+
+/**
+ * "Who sees what" (prototype v44, gap list item 35): what anyone signed in and your connections can do, by the rules
+ * the app enforces. Two rows differ from the prototype on purpose: there is no switch for message requests yet, so
+ * anyone who can reach you may send one; and nobody is ever shown who you are connected to, only a count of the
+ * people you both know on Network.
+ */
+const WHO_SEES_WHAT: { what: string; anyone: string; connections: string }[] = [
+  { what: "Find you by name", anyone: "Only with “Let people find me”", connections: "Always" },
+  { what: "Open your profile", anyone: "As set in “Who can open your profile”", connections: "Unless you picked “Only you”" },
+  { what: "See your gaps", anyone: "Only with “Everyone who can open your profile”", connections: "Unless you pick “Nobody”" },
+  { what: "Ask to connect", anyone: "Unless you pick “Nobody”", connections: "Already connected" },
+  { what: "Message you", anyone: "One message request, which you accept or delete", connections: "Chat freely" },
+  { what: "See who you are connected to", anyone: "Never, only how many people you both know", connections: "Never, only how many people you both know" },
+];
+
+export function WhoSeesWhat() {
+  return (
+    <details className="rounded-[14px] border border-line" data-who-sees-what>
+      <summary className="flex min-h-11 cursor-pointer items-center px-3.5 text-[0.86rem] font-semibold focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent">
+        Who sees what
+      </summary>
+      <table className="w-full border-collapse border-t border-line text-left text-[0.8rem] [overflow-wrap:anywhere]">
+        <thead>
+          <tr className="border-b border-line">
+            <th scope="col" className="px-3.5 py-2 font-mono text-[0.7rem] font-medium uppercase tracking-[0.06em] text-muted">
+              What
+            </th>
+            <th scope="col" className="px-3.5 py-2 font-mono text-[0.7rem] font-medium uppercase tracking-[0.06em] text-muted">
+              Anyone signed in
+            </th>
+            <th scope="col" className="px-3.5 py-2 font-mono text-[0.7rem] font-medium uppercase tracking-[0.06em] text-muted">
+              Your connections
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {WHO_SEES_WHAT.map((r) => (
+            <tr key={r.what}>
+              <th scope="row" className="px-3.5 py-2 align-top font-semibold">
+                {r.what}
+              </th>
+              <td className="px-3.5 py-2 align-top text-muted">{r.anyone}</td>
+              <td className="px-3.5 py-2 align-top text-muted">{r.connections}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
   );
 }
 

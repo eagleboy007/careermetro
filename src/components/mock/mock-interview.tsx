@@ -347,8 +347,8 @@ export function MockInterview({
               </label>
             </div>
             <small className="text-[0.76rem] text-muted">
-              Speaking uses your browser&apos;s own speech-to-text on this device. The audio never leaves your device and is never sent or kept; you can edit the
-              text before you move on.
+              Speaking needs your microphone. We keep the text of your answers 30 days and never the audio. Your browser turns speech into text on
+              this device, and you can edit the text before you move on.
             </small>
           </fieldset>
         )}

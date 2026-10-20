@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { SignInMethod } from "@/lib/account/store";
 import type { DiscoveryActions, DiscoveryView } from "@/lib/corporate/find-types";
 import type { PlanView } from "@/lib/schemas";
+import { BlockedPeople, type BlockedPersonLine } from "./blocked-people";
 import { CompanyDiscovery } from "./company-discovery";
 import { FindMeSwitch } from "./find-me-switch";
 import { BasicsForm } from "./basics-form";
@@ -11,7 +12,7 @@ import { DeleteAccount } from "./delete-account";
 import { PlanCard, type PlanActions } from "./plan-card";
 import { ProfileLinkFields } from "./profile-link-fields";
 import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
-import { NotificationFields, PayFields, PrivacyFields } from "./settings-fields";
+import { NotificationFields, PayFields, PrivacyFields, WhoSeesWhat } from "./settings-fields";
 import { SettingsNav } from "./settings-nav";
 
 export type SettingsData = {
@@ -32,6 +33,8 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** People this person blocked on Network or in the Inbox, newest first (gap list item 34). */
+  blockedPeople: BlockedPersonLine[];
   /** Elite, free in the beta (FR-50): saved apart from the draft, at once. */
   plan: PlanView;
   /** True while gaps are shared with connections only (the default for new accounts). */
@@ -62,11 +65,13 @@ export function SettingsView({
   data,
   discoveryActions,
   findMe,
+  unblockPerson,
   planActions,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
   findMe?: (on: boolean) => Promise<string | null>;
+  unblockPerson?: (id: string) => Promise<string | null>;
   planActions?: PlanActions;
 }) {
   return (
@@ -128,6 +133,8 @@ export function SettingsView({
         <Section id="acc-privacy" title="Privacy">
           <PrivacyFields />
           <FindMeSwitch initial={data.peopleCanFind} action={data.editable ? findMe : undefined} />
+          <WhoSeesWhat />
+          <BlockedPeople people={data.blockedPeople} unblock={data.editable ? unblockPerson : undefined} />
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>
 

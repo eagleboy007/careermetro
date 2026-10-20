@@ -103,6 +103,7 @@ import { CompanyInterviews, Scheduler } from "@/components/corporate/interviews-
 import { ArrivalsView } from "@/components/arrivals/arrivals-view";
 import { JobBoard } from "@/components/corporate/job-board";
 import { FindPeople } from "@/components/corporate/find-people";
+import { BlockedPeople } from "@/components/settings/blocked-people";
 import { CompanyDiscovery } from "@/components/settings/company-discovery";
 import { MatchDots, MatchList } from "@/components/corporate/match-parts";
 import { JobForm } from "@/components/corporate/job-form";
@@ -571,12 +572,16 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
         <p className="text-sm text-muted">
-          Section list, Your plan (You&apos;re on Free with See Elite; nothing can be bought), name, username with its availability check and
-          headline, the locked email, how the person signs in, private pay, privacy (who can see the profile and what it shows, switches in ink),
-          notifications stored for when email is on, download and delete with its DELETE check. Example data, so nothing saves.
+          Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
+          availability check and headline, the locked email, how the person signs in, private pay, privacy (who can open the profile and what it
+          shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications stored for
+          when email is on, download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked.
         </p>
         <div className="rounded-lg border border-line px-4 pt-6">
           <SettingsView data={exampleSettings} />
+        </div>
+        <div className="max-w-[640px] rounded-lg border border-line p-4">
+          <BlockedPeople people={[]} />
         </div>
       </section>
 
