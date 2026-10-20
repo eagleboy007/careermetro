@@ -945,7 +945,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   await p.goto(BASE + "/settings");
   await settled();
   // Nothing is set yet: no link, and a new user's profile starts at Your connections (FR-49, rulings 3 and 4).
-  if (!(await p.getByLabel("Your connections", { exact: true }).isChecked())) throw new Error("profile visibility does not start at Your connections");
+  if (!(await p.locator('input[name="acc-visibility"][value="connections"]').isChecked())) throw new Error("profile visibility does not start at Your connections");
   const username = p.getByLabel("Username");
   await username.fill("admin");
   await p.getByText("That one is reserved. Try another.").waitFor({ timeout: 5000 });
