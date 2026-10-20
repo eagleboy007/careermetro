@@ -846,9 +846,9 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Network (signed in)</h2>
         <p className="text-sm text-muted">
           The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
-          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline,
-          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; and
-          Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
+          target role only when shown, skills in common and the date (never a city: only companies see it); Connect opens the how-you-know pick inline, Remove and Block confirm inline,
+          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; (matched on the
+          server) and Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
           example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />

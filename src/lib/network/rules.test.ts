@@ -10,6 +10,7 @@ import {
   lineOrder,
   mutualOf,
   networkMatches,
+  networkQueryParts,
   pairOf,
   pathTogether,
   requestOpen,
@@ -73,6 +74,16 @@ describe("network rules", () => {
     // "@" means a handle, never a name.
     expect(networkMatches("@nair", { name: "Priya Nair", username: "pn" })).toBe(false);
     expect(handleOf("@Asha_R")).toBe("asha_r");
+  });
+
+  it("splits a search into the handle and name words the database matches (T77)", () => {
+    expect(networkQueryParts("Pri  Naïr")).toEqual({ handle: null, words: ["pri", "nair"] });
+    expect(networkQueryParts("priya")).toEqual({ handle: "priya", words: ["priya"] });
+    // "@" means a handle only; a typed space can't start a handle.
+    expect(networkQueryParts("@Priya_N")).toEqual({ handle: "priya_n", words: [] });
+    expect(networkQueryParts("a.b")).toEqual({ handle: "a.b", words: ["a", "b"] });
+    // Letters searchKey drops leave no words, so only the handle can match.
+    expect(networkQueryParts("राम")).toEqual({ handle: "राम", words: [] });
   });
 
   it("counts shared skills only when the other person shows skills, and mutual connections", () => {

@@ -8,7 +8,7 @@ import { MessageBox } from "./message-box";
 import { ReportPerson } from "./report-person";
 import { CONNECTION_HOW_LABELS, CONNECTION_HOWS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
-import type { NetworkActions, NetworkData, NetworkFilters, NetworkRow, NetworkTab } from "@/lib/network/types";
+import type { ExampleNetworkRow, NetworkActions, NetworkData, NetworkFilters, NetworkRow, NetworkTab } from "@/lib/network/types";
 
 type How = (typeof CONNECTION_HOWS)[number];
 
@@ -30,8 +30,8 @@ type Panel = { id: string; kind: "pick" | "withdraw" | "remove" | "block" | "mes
 const NO_FILTERS: NetworkFilters = { sameRole: false, sameCity: false, verified: false };
 
 /** The example search narrowed as the server narrows a real one (/design and the preview without accounts). */
-const exampleFiltered = (rows: NetworkRow[], f: NetworkFilters, data: NetworkData) =>
-  rows.filter((p) => (!f.sameRole || (p.aim !== null && p.aim === data.myRole)) && (!f.sameCity || (p.city !== null && p.city === data.myCity)) && (!f.verified || p.verified));
+const exampleFiltered = (rows: ExampleNetworkRow[], f: NetworkFilters, data: NetworkData): NetworkRow[] =>
+  rows.filter((p) => (!f.sameRole || (p.aim !== null && p.aim === data.myRole)) && (!f.sameCity || (!!p.inMyCity && data.myCity !== null)) && (!f.verified || p.verified));
 
 const FAILED = "That didn't work. Please try again.";
 
@@ -42,7 +42,7 @@ const FAILED = "That didn't work. Please try again.";
  * Then "On your line" (Later) and the Mentors teaser (after the beta). Without actions (example data, /design) nothing
  * is sent and the buttons only show what they do.
  */
-export function NetworkView({ data, actions, note, example }: { data: NetworkData; actions?: NetworkActions; note?: ReactNode; example?: NetworkRow[] }) {
+export function NetworkView({ data, actions, note, example }: { data: NetworkData; actions?: NetworkActions; note?: ReactNode; example?: ExampleNetworkRow[] }) {
   const ids = useId();
   const [tab, setTab] = useState<NetworkTab>(data.requests.length ? "requests" : "connections");
   const [lists, setLists] = useState({ connections: data.connections, requests: data.requests, sent: data.sent });
@@ -451,7 +451,6 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
           </p>
           <p className="flex flex-wrap gap-x-2 text-[0.8rem] text-muted">
             {p.aim && <span>Aiming for {p.aim}</span>}
-            {p.city && <span>{p.city}</span>}
             <span>
               {p.common} shared skill{p.common === 1 ? "" : "s"}
             </span>

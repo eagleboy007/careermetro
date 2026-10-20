@@ -3,7 +3,8 @@ import type { ConnectionAnswer, ConnectionHow, ConnectionState } from "@/lib/sch
 
 /*
  * What the /network page shows and can do (FR-49, handoff 12j). Plain data for a client component: dates are already
- * words in India time, and nothing here holds an email, phone, employer history, gaps or pay.
+ * words in India time, and nothing here holds an email, phone, anyone else's city (only companies see it, T74), employer
+ * history, gaps or pay.
  */
 
 export type NetworkTab = "connections" | "requests" | "sent" | "find";
@@ -14,7 +15,6 @@ export type NetworkRow = {
   /** For the /u/<handle> link; null when they have none. */
   username: string | null;
   aim: string | null;
-  city: string | null;
   verified: boolean;
   common: number;
   mutual: number;
@@ -36,6 +36,9 @@ export type NetworkData = {
   myRole: string | null;
   myCity: string | null;
 };
+
+/** An example search row (/design and the preview without accounts): whether the made-up person is in my city, so the example "In <city>" filter works without a city on the row. */
+export type ExampleNetworkRow = NetworkRow & { inMyCity?: boolean };
 
 /** Find people's optional filters (C13): aiming for my role, in my city, verified. All off by default. */
 export type NetworkFilters = { sameRole: boolean; sameCity: boolean; verified: boolean };

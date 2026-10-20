@@ -25,7 +25,6 @@ import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
 import { forgetBetween, forgetRequests, notify } from "@/lib/notifications/store";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
-import { NETWORK_SCAN_MAX } from "@/lib/schemas/constants";
 import {
   CONNECTION_PENDING_MAX,
   DEFAULT_NETWORK_SETTINGS,
@@ -49,6 +48,7 @@ import {
   lineOrder,
   mutualOf,
   networkMatches,
+  networkQueryParts,
   openSince,
   pairOf,
   pathTogether,
@@ -88,8 +88,9 @@ export type NetworkResult<T = object> = ({ ok: true } & T) | { ok: false; error:
 const fail = (error: NetworkError) => ({ ok: false as const, error });
 
 /**
- * A person as Network lists them (handoff 12j): name, handle, target role only if they show it, city, verified, a count
- * of skills in common and of mutual connections. Never email, phone, employer history, gaps or pay.
+ * A person as Network lists them (handoff 12j): name, handle, target role only if they show it, verified, a count
+ * of skills in common and of mutual connections. Never email, phone, city (only companies see it, FR-41/FR-55, T74),
+ * employer history, gaps or pay.
  */
 export type NetworkPerson = {
   id: string;
@@ -97,7 +98,6 @@ export type NetworkPerson = {
   /** For the /u/<handle> link; null when they have none. */
   username: string | null;
   aim: string | null;
-  city: string | null;
   /** At least one proved skill (as Find people's "Verified"). */
   verified: boolean;
   common: number;
@@ -539,7 +539,6 @@ type Candidate = {
   id: string;
   name: string | null;
   username: string | null;
-  city: string | null;
   showTargetRole: boolean | null;
   showSkills: boolean | null;
   state: ConnectionState;
@@ -566,7 +565,6 @@ async function asPeople(userId: string, people: Candidate[], db: Db | Tx, now: D
       name: displayName(p.name),
       username: p.username,
       aim: (p.showTargetRole ?? DEFAULT_SETTINGS.showTargetRole) && theirs ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
-      city: p.city,
       verified: verified.has(p.id),
       common: skillsInCommon(mine, theirs?.met ?? [], p.showSkills ?? DEFAULT_SETTINGS.showSkills),
       mutual: mutualOf(myConnections, sets.get(p.id)!).filter((m) => shown.has(m)).length,
@@ -594,7 +592,6 @@ const personColumns = {
   id: users.id,
   name: users.name,
   username: users.username,
-  city: users.city,
   showTargetRole: userSettings.showTargetRole,
   showSkills: userSettings.showSkills,
 };
@@ -660,13 +657,39 @@ export async function requestsWaiting(userId: string, deps: Deps = {}): Promise<
   return row?.n ?? 0;
 }
 
+/** Whether `users` is connected to `userId` (by the connections key and connections_user_high). */
+const connectedTo = (userId: string): SQL =>
+  sql`exists (select 1 from ${connections} c where (c.user_low = ${userId} and c.user_high = ${users.id}) or (c.user_high = ${userId} and c.user_low = ${users.id}))`;
+
 /** The people a person may find by name (handoff 12j): their connections and people who turned on "Let people find me". */
 function findableBy(userId: string): SQL {
-  return or(
-    eq(userSettings.peopleCanFind, true),
-    sql`exists (select 1 from ${connections} c where (c.user_low = ${userId} and c.user_high = ${users.id}) or (c.user_high = ${userId} and c.user_low = ${users.id}))`,
-  )!;
+  return or(eq(userSettings.peopleCanFind, true), connectedTo(userId))!;
 }
+
+/**
+ * The name as searchKey reads it, with a space in front: NFKD, accents dropped, lowercase, anything but a-z and 0-9 one
+ * space. So " <word>" in it is the start of a word of the name, as networkMatches checks.
+ */
+const nameKey = sql`' ' || btrim(regexp_replace(lower(regexp_replace(normalize(${users.name}, NFKD), ${"[\u0300-\u036f]"}, '', 'g')), '[^a-z0-9]+', ' ', 'g'))`;
+
+/** The typed search as SQL over `users` (T77): the start of the handle, or every word starting a word of the name. */
+function matchesQuery(q: string): SQL | null {
+  const { handle, words } = networkQueryParts(q);
+  const byHandle = handle ? sql`starts_with(lower(${users.username}), ${handle})` : undefined;
+  const byName = words.length ? and(...words.map((w) => sql`position(${` ${w}`} in ${nameKey}) > 0`)) : undefined;
+  return or(byHandle, byName) ?? null;
+}
+
+/** At least one current accepted proof, in SQL over `users`: the same rule as verifiedOf. */
+const provedSql = (now: Date): SQL =>
+  sql`exists (select 1 from ${gapProofs} gp where gp.user_id = ${users.id} and gp.status = 'accepted' and (gp.expires_on is null or gp.expires_on >= ${indiaToday(now)}))`;
+
+/**
+ * Shows their target role and it is `roleSlug`, in SQL over `users` (joined to user_settings): the role of their newest
+ * analysis on each resume's newest profile, as analysesOf reads it. The page is checked again after it is read.
+ */
+const aimsAtSql = (roleSlug: string): SQL =>
+  sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select ga.result->>'roleSlug' from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
 
 /** The viewer's own role and city, for the "Aiming for my role" and "My city" filters. */
 async function viewerOf(userId: string, db: Db) {
@@ -683,9 +706,9 @@ export async function networkFiltersFor(userId: string, db: Db = getDb()): Promi
 /**
  * Name search (handoff 12j): the start of a first name, last name or handle, over the people `findableBy` allows, never
  * the searcher or anyone with a block either way. Optional filters: aiming for my role (only people who show their
- * target role, so the filter never reveals a hidden one), my city, verified. At most
- * NETWORK_SCAN_MAX are read (most recently saved settings first, as Find people does) and NETWORK_RESULTS_MAX shown.
- * Counts against the hourly search limit.
+ * target role, so the filter never reveals a hidden one), my city (matched here; nobody's city is sent back, T74),
+ * verified. The match and the filters run in SQL, which returns one page of NETWORK_RESULTS_MAX (connections first, then
+ * by name), and only that page is worked out and put in Network's order (T77). Counts against the hourly search limit.
  */
 export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {}): Promise<NetworkResult<{ people: NetworkPerson[] }>> {
   const db = deps.db ?? getDb();
@@ -696,21 +719,32 @@ export async function searchNetwork(userId: string, raw: unknown, deps: Deps = {
   if (!(await takeShared(LIMITS.networkSearchesPerUserHour, userId, { db, now: now.getTime() }))) return fail("limit");
   const me = await viewerOf(userId, db);
   if ((sameRole && !me.roleSlug) || (sameCity && !me.city)) return { ok: true, people: [] };
-  const scanned = await db
+  const match = matchesQuery(q);
+  if (!match) return { ok: true, people: [] };
+  const page = await db
     .select(personColumns)
     .from(users)
     .leftJoin(userSettings, eq(userSettings.userId, users.id))
-    .where(and(findableBy(userId), sql`${users.name} is not null and btrim(${users.name}) <> ''`, sql`${users.id} <> ${userId}`, shownTo(userId), sameCity ? eq(users.city, me.city!) : undefined))
-    .orderBy(desc(userSettings.updatedAt), asc(users.id))
-    .limit(NETWORK_SCAN_MAX);
-  if (scanned.length >= NETWORK_SCAN_MAX) logEvent("warn", "network_scan_capped", { scanned: scanned.length });
-  const found = scanned.filter((p) => networkMatches(q, p));
+    .where(
+      and(
+        findableBy(userId),
+        sql`${users.name} is not null and btrim(${users.name}) <> ''`,
+        sql`${users.id} <> ${userId}`,
+        shownTo(userId),
+        match,
+        sameCity ? eq(users.city, me.city!) : undefined,
+        sameRole ? aimsAtSql(me.roleSlug!) : undefined,
+        verified ? provedSql(now) : undefined,
+      ),
+    )
+    .orderBy(desc(connectedTo(userId)), asc(sql`lower(${users.name})`), asc(users.id))
+    .limit(NETWORK_RESULTS_MAX);
+  const found = page.filter((p) => networkMatches(q, p));
   const states = await statesWith(userId, found.map((p) => p.id), db, now);
   const people = (await asPeople(userId, found.map((p) => ({ ...p, state: states.get(p.id) ?? "none", how: null, at: null, endsAt: null })), db, now))
     .filter((e) => (!sameRole || (e.person.aim !== null && e.roleSlug === me.roleSlug)) && (!verified || e.person.verified))
     .map(strip)
-    .sort(byNetworkRank)
-    .slice(0, NETWORK_RESULTS_MAX);
+    .sort(byNetworkRank);
   return { ok: true, people };
 }
 

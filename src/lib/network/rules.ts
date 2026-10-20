@@ -1,4 +1,4 @@
-import { nameMatches } from "@/lib/corporate/find-rules";
+import { nameMatches, searchKey } from "@/lib/corporate/find-rules";
 import { nowPitstop, pitstopsFor } from "@/lib/map/layout";
 import { CONNECTION_REQUEST_DAYS, type ConnectionState, type GapsVisibleTo } from "@/lib/schemas/network";
 import type { LineStep, PathTogether } from "./types";
@@ -60,6 +60,16 @@ export function connectionState(connected: boolean, rows: readonly RequestRow[],
 
 /** A typed handle: "@Asha_R" reads as "asha_r", as usernames are stored. */
 export const handleOf = (query: string) => query.replace(/^@/, "").toLowerCase();
+
+/**
+ * What the database matches for a search (T77): the handle the start of a username must be (none when the query has a
+ * space), and the name words each of which must start a word of the name's searchKey (none after an "@"). The same
+ * rule as networkMatches, which checks the page again.
+ */
+export function networkQueryParts(query: string): { handle: string | null; words: string[] } {
+  const handle = handleOf(query);
+  return { handle: handle && !handle.includes(" ") ? handle : null, words: query.startsWith("@") ? [] : searchKey(query).split(" ").filter(Boolean) };
+}
 
 /**
  * Whether a person is found by what was typed (handoff 12j): the start of their first name, last name or handle. An

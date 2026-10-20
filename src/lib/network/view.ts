@@ -17,5 +17,5 @@ export function networkRow(p: NetworkPerson, tab: "connections" | "requests" | "
         : tab === "requests"
           ? `Asked ${day(p.at, false)}`
           : `Sent ${day(p.at, false)}${p.endsAt ? ` · ends ${day(p.endsAt, false)} if not answered` : ""}`;
-  return { id: p.id, name: p.name, username: p.username, aim: p.aim, city: p.city, verified: p.verified, common: p.common, mutual: p.mutual, state: p.state, how: p.how, when };
+  return { id: p.id, name: p.name, username: p.username, aim: p.aim, verified: p.verified, common: p.common, mutual: p.mutual, state: p.state, how: p.how, when };
 }

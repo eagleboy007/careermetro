@@ -293,7 +293,10 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(ids).toContain(named);
     for (const not of [me, hidden, asked, blocker]) expect(ids).not.toContain(not);
     expect(all.people[0].state).toBe("connected");
-    expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, city: "Pune", state: "none" });
+    expect(all.people[1]).toMatchObject({ common: 2, mutual: 1, aim: roleProfiles[0].title, state: "none" });
+    // A city is for companies only (T74): never on a member's row, though "In <city>" filters by it on the server.
+    for (const p of all.people) expect(p).not.toHaveProperty("city");
+    expect(JSON.stringify(all)).not.toContain("Pune");
     expect(all.people[2]).toMatchObject({ common: 1, aim: null });
     expect(all.people.length).toBeLessThanOrEqual(NETWORK_RESULTS_MAX);
 
@@ -308,9 +311,14 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(onMyRole.ok && onMyRole.people.map((p) => p.id)).toEqual([close]);
     expect(await networkFiltersFor(me, db!)).toEqual({ role: roleProfiles[0].title, city: "Pune" });
     expect(await networkFiltersFor(asked, db!)).toEqual({ role: null, city: null });
-    // Nobody here has proved a skill.
+    // Nobody here has proved a skill yet; then Karan has one.
     const verified = await search(me, { q: tag, verified: true }, deps());
     expect(verified.ok && verified.people).toEqual([]);
+    await db!.insert(schema.gapProofs).values({ userId: far, skillId: "sql", type: "skill_check", status: "accepted", evidence: { type: "skill_check", checkId: "sql-basics" } });
+    const proved = await search(me, { q: tag, verified: true }, deps());
+    expect(proved.ok && proved.people.map((p) => ({ id: p.id, verified: p.verified }))).toEqual([{ id: far, verified: true }]);
+    const lists = await networkLists(me, deps());
+    for (const p of [...lists.connections, ...lists.requests, ...lists.sent]) expect(p).not.toHaveProperty("city");
     expect(await search(me, { q: "a." }, deps())).toEqual({ ok: false, error: "invalid" });
 
     expect((await mutualConnections(me, close, db!)).map((p) => p.id)).toEqual([friend]);
@@ -320,6 +328,32 @@ describe.skipIf(!db)("network store (database)", () => {
     expect((await networkSettingsFor(close, db!)).peopleCanFind).toBe(false);
     const after = await search(me, { q: tag }, deps());
     expect(after.ok && after.people.map((p) => p.id)).not.toContain(close);
+  });
+
+  it("finds a match however many findable people there are, and returns one page, connections first (T77)", async () => {
+    const me = await person("Asha");
+    const friend = await person("Zubin");
+    await ask(me, friend, "other", deps());
+    await answerRequest(friend, me, "accept", deps());
+    // Saved settings longest ago, behind more findable people than the old 2,000-person scan read.
+    const old = await person("Yohan", { findable: true });
+    await db!.update(schema.userSettings).set({ updatedAt: new Date(now.getTime() - 400 * DAY) }).where(eq(schema.userSettings.userId, old));
+    const filler = `Fx${run.slice(-6)}`;
+    const fillers = await db!
+      .insert(schema.users)
+      .values(Array.from({ length: 2001 }, (_, i) => ({ email: `${run}-f${i}@example.com`, authSubject: `${run}-f${i}`, name: `Filler${i} ${filler}` })))
+      .returning({ id: schema.users.id });
+    userIds.push(...fillers.map((f) => f.id));
+    const { visibility, ...rest } = DEFAULT_SETTINGS;
+    for (let i = 0; i < fillers.length; i += 500)
+      await db!.insert(schema.userSettings).values(fillers.slice(i, i + 500).map((f) => ({ userId: f.id, profileVisibility: visibility, ...rest, peopleCanFind: true, updatedAt: now })));
+    const found = await search(me, { q: `yoh ${tag}` }, deps());
+    expect(found.ok && found.people.map((p) => p.id)).toEqual([old]);
+    // Many matches: one page, with the connection first even though its name sorts last.
+    const many = await search(me, { q: filler }, deps());
+    expect(many.ok && many.people.length).toBe(NETWORK_RESULTS_MAX);
+    const withFriend = await search(me, { q: `${tag}` }, deps());
+    expect(withFriend.ok && withFriend.people[0]).toMatchObject({ id: friend, state: "connected" });
   });
 
   it("limits searches an hour", async () => {

@@ -425,8 +425,6 @@ export const REQUESTS_FROM_LABELS: Record<(typeof REQUESTS_FROM)[number], string
 };
 /** People a network search shows, best first. A longer name narrows it; there is no paging in v1. */
 export const NETWORK_RESULTS_MAX = 20;
-/** People a network search reads at most, newest settings first, as Find people does (FIND_SCAN_MAX). */
-export const NETWORK_SCAN_MAX = 2000;
 /** The longest Inbox message. Here, not in schemas/inbox, so client components can read it without Zod. */
 export const MESSAGE_MAX_CHARS = 2000;
 /** The longest note on a report (Inbox or Network). Here, so the report form can read it without Zod. */
