@@ -7,6 +7,7 @@ import * as schema from "@/db/schema";
 import { purgeDeletedAccounts, requestDeletion } from "@/lib/account/delete";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { saveAccountSettings } from "@/lib/account/settings-store";
+import { setJobSearch } from "@/lib/job-search/store";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, deleteRequest, listThreads, sendMessage } from "@/lib/inbox/store";
 import { HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
@@ -207,6 +208,20 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await found(s.admin, s.jobId, { bands: ["2-5"] })).toEqual([]);
     const [hidden] = await found(s.admin, s.jobId);
     expect(hidden.experience).toBeNull();
+  });
+
+  it("leaves out people with job search off, even with Let companies find me on, and finds them again once it is back on", async () => {
+    const s = await setup("search-off");
+    const paused = await seeker("search-off", { name: "Priya Nair" });
+    const [card] = await found(s.admin, s.jobId);
+    expect(card?.name).toBe("Priya Nair");
+    expect((await setJobSearch(paused, false, { db: db!, now: clock })).ok).toBe(true);
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    // An old ref opens nobody and takes no request while search is off.
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect((await setJobSearch(paused, true, { db: db!, now: clock })).ok).toBe(true);
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Priya Nair"]);
   });
 
   it("shows the target role of everyone found and filters by target roles and verified profiles, alone or together (T44)", async () => {
@@ -567,8 +582,8 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await blockCompany(p, { orgId: other.orgId }, fd())).toBe(true);
 
     const data = await exportAccountData(p, db!, clock);
-    expect(EXPORT_VERSION).toBe(24);
-    expect(data!.exportVersion).toBe(24);
+    expect(EXPORT_VERSION).toBe(25);
+    expect(data!.exportVersion).toBe(25);
     expect(data!.companyDiscovery.companiesCanFind).toBe(true);
     expect(data!.companyDiscovery.profileViews).toMatchObject([{ company: "Example Labs", job: "SOC Analyst L1" }]);
     expect(data!.companyDiscovery.blockedCompanies).toMatchObject([{ company: "Example Labs" }]);

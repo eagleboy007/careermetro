@@ -167,8 +167,8 @@ describe.skipIf(!db)("practice store (database)", () => {
     const { client: c } = client(JSON.stringify(good));
     await submitPracticeAnswer(me, { questionId: "python-4", answer: ANSWER }, { db: db!, client: c, now: clock });
     const data = await exportAccountData(me, db!);
-    expect(EXPORT_VERSION).toBe(24);
-    expect(data!.exportVersion).toBe(24);
+    expect(EXPORT_VERSION).toBe(25);
+    expect(data!.exportVersion).toBe(25);
     expect(data!.practiceAnswers).toEqual([expect.objectContaining({ skill: "python", questionId: "python-4", answer: ANSWER, feedback: good, question: expect.stringMatching(/\?$/) })]);
 
     expect(await clearOldPracticeAnswers(db!, new Date(clock.getTime() + 29 * DAY))).toBeGreaterThanOrEqual(0);

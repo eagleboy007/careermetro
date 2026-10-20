@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
+import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView, type SettingsData } from "@/components/settings/settings-view";
 import { splitName } from "@/lib/account/name";
@@ -11,11 +12,14 @@ import { lakhText } from "@/lib/account/username";
 import { currentAccount, currentIdentity } from "@/lib/auth/server";
 import { discoveryFor } from "@/lib/corporate/find-store";
 import { planFor } from "@/lib/elite/store";
+import { jobSearchFor } from "@/lib/job-search/store";
 import { blockedPeople, networkSettingsFor } from "@/lib/network/store";
+import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
 import { switchElite, switchEliteBadge } from "../elite/actions";
 import { setFindMe, unblockFromNetwork } from "../network/actions";
 import { blockCompanyAction, unblockCompanyAction } from "./actions";
+import { saveNotice, switchJobSearch } from "./job-search-actions";
 
 export const metadata: Metadata = { title: "Account settings · CareerMetro", robots: { index: false } };
 
@@ -26,12 +30,13 @@ async function SettingsScreen() {
   const [account, identity] = await Promise.all([currentAccount(), currentIdentity()]);
   if (!account) return <SettingsView data={exampleSettings} />;
   const now = new Date();
-  const [saved, discovery, network, plan, blocked] = await Promise.all([
+  const [saved, discovery, network, plan, blocked, search] = await Promise.all([
     readAccountSettings(account.id, now),
     discoveryFor(account.id, { now }),
     networkSettingsFor(account.id),
     planFor(account.id),
     blockedPeople(account.id),
+    jobSearchFor(account.id),
   ]);
   // An account saved before first and last name were asked for starts from its full name.
   const names = account.firstName ? { first: account.firstName, last: account.lastName ?? "" } : splitName(account.name);
@@ -58,7 +63,16 @@ async function SettingsScreen() {
     blockedPeople: blocked.map((p) => ({ id: p.id, name: p.name, since: dateText(p.since) })),
     plan,
   };
-  return <SettingsView data={data} discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }} findMe={setFindMe} unblockPerson={unblockFromNetwork} planActions={{ switchElite, switchBadge: switchEliteBadge }} />;
+  return (
+    <SettingsView
+      data={data}
+      discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }}
+      findMe={setFindMe}
+      unblockPerson={unblockFromNetwork}
+      planActions={{ switchElite, switchBadge: switchEliteBadge }}
+      jobSearch={<SettingsJobSearch view={search} today={indiaDay(now)} actions={{ jobSearch: switchJobSearch, notice: saveNotice }} />}
+    />
+  );
 }
 
 export default function SettingsPage() {

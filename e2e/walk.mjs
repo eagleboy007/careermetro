@@ -728,6 +728,73 @@ await step("library: goal cards, the details panel, search and filters, Finished
   if (await shelf.locator("[data-shelf-card] a, [data-shelf-card] details").count()) throw new Error("a locked shelf card opens");
   await a11y("library-elite-free");
 });
+// Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
+// shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
+// Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.
+// Then the private notice card on Arrivals: 60 days, I have resigned 10 days ago, Start countdown shows 50 days left and
+// the last working day, the download has it, and Stop the countdown clears the date (so later applying isn't prefilled).
+await step("job search: off pauses Departures, Arrivals and Today's board, back on, then the notice countdown", async () => {
+  await p.goto(BASE + "/departures");
+  await settled();
+  const sw = p.getByRole("checkbox", { name: "Looking for a job", exact: true });
+  await sw.waitFor({ state: "attached", timeout: 10000 });
+  if (!(await sw.isChecked())) throw new Error("job search starts off");
+  // A click, not uncheck(): the switch pressed goes away with the page it was on, and the paused page's switch takes focus.
+  await sw.click({ force: true });
+  const off = p.getByRole("region", { name: "Job search is off" });
+  await off.getByText(/Departures and Arrivals are paused: no job alerts, no Express apply/).waitFor({ timeout: 10000 });
+  await p.getByText("Job search is off. Your rides and map keep going.", { exact: true }).waitFor({ timeout: 10000 });
+  await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+  if (await p.getByRole("searchbox", { name: "Search roles" }).count()) throw new Error("Departures lists roles with job search off");
+  await shot("departures-search-off");
+  await a11y("departures-search-off");
+  await p.reload();
+  await settled();
+  await off.waitFor({ timeout: 10000 });
+  await p.goto(BASE + "/today");
+  await settled();
+  await p.getByRole("region", { name: "Job search is off" }).getByText(/Your ride keeps going/).waitFor({ timeout: 10000 });
+  if (await p.locator("[data-board]").count()) throw new Error("Today shows the Departures board with job search off");
+  await a11y("today-search-off");
+  await p.goto(BASE + "/me");
+  await settled();
+  await p.getByText("Working at Example Retail Pvt Ltd", { exact: true }).waitFor({ timeout: 10000 });
+  await p.goto(BASE + "/arrivals");
+  await settled();
+  const paused = p.getByRole("region", { name: "Job search is off" });
+  await paused.waitFor({ timeout: 10000 });
+  if (await p.getByRole("region", { name: "Notice period" }).count()) throw new Error("Arrivals shows the notice card with job search off");
+  await paused.getByRole("button", { name: "Turn on job search" }).click();
+  await p.getByText("Job search is on. Departures and Arrivals are back.", { exact: true }).waitFor({ timeout: 10000 });
+  await p.waitForFunction(() => document.activeElement?.closest("[data-job-search]") != null, null, { timeout: 5000 });
+
+  const notice = p.getByRole("region", { name: "Notice period" });
+  await notice.getByText("only you see this", { exact: true }).waitFor({ timeout: 10000 });
+  await notice.getByRole("button", { name: "60 days" }).click();
+  await notice.getByRole("button", { name: "60 days", pressed: true }).waitFor();
+  await notice.getByRole("button", { name: "I have resigned" }).click();
+  await p.waitForFunction(() => document.activeElement?.getAttribute("type") === "date", null, { timeout: 5000 });
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  const resigned = new Date(Date.parse(`${today}T00:00:00Z`) - 10 * 86_400_000).toISOString().slice(0, 10);
+  await notice.getByLabel("When did you hand in your resignation?").fill(resigned);
+  await notice.getByRole("button", { name: "Start countdown" }).click();
+  await notice.getByText("days left", { exact: true }).waitFor({ timeout: 10000 });
+  await notice.getByText("50", { exact: true }).waitFor();
+  await notice.getByText(/^Last working day: /).waitFor();
+  await notice.getByText(/^Free to join from /).waitFor();
+  await notice.getByRole("progressbar", { name: "Notice period served" }).waitFor();
+  await shot("arrivals-notice-countdown");
+  await a11y("arrivals-notice-countdown");
+  await p.reload();
+  await settled();
+  await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
+  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const js = data.jobSearch;
+  if (data.exportVersion !== 25 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  await notice.getByRole("button", { name: "Change", exact: true }).click();
+  await notice.getByRole("button", { name: "Stop the countdown" }).click();
+  await notice.getByRole("button", { name: "I have resigned" }).waitFor({ timeout: 10000 });
+});
 // The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
 // Example Retail Pvt Ltd since 2022-06. No verified company owns exampleretail.test, so a right code goes to an admin
 // (T53): the owner sees it's being checked, everyone else sees Not verified.
@@ -1045,7 +1112,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1396,7 +1463,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1494,7 +1561,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -1577,7 +1644,7 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 25) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
 

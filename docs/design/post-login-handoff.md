@@ -269,6 +269,7 @@ Examples:
   - Show a countdown to the last working day.
   - Employers see only a "Can join from" date. It is never on a profile.
   - Search stays open after an offer is accepted, until the joining date.
+- Built (2026-10-20, FR-52, `docs/plans/job-search-plan.md`): `job_search`, `notice_days` and `resigned_on` live on `user_settings`, not `profiles`. Companies see the Can join choice (Immediately, within 30, 30 to 60, 60 to 90 days), which the countdown prefills on applying; there is no "Can join from" date field yet. The switch is also in Settings > Pay, where Me's Change status goes. Job alerts and "open until the joining date" wait for the email sender and offers.
 
 ---
 

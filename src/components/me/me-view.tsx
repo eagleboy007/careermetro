@@ -41,6 +41,8 @@ export function MeView({
   gapsNote,
   eliteBadge = false,
   planCard,
+  status = null,
+  searchSwitches = null,
 }: {
   me: MeProfile;
   others?: MeProfile;
@@ -61,6 +63,10 @@ export function MeView({
   eliteBadge?: boolean;
   /** "Your plan" (FR-50): on the person's own profile only, never in View as others or to anyone else. */
   planCard?: ReactNode;
+  /** The job search status line (src/components/job-search): on the person's own view only, never to others. */
+  status?: ReactNode;
+  /** "Looking for a job" and the other "Who sees what" switches, on the person's own view only. */
+  searchSwitches?: ReactNode;
 }) {
   const [asOthers, setAsOthers] = useState(false);
   const certsHeading = `${useId()}-certifications`;
@@ -110,7 +116,7 @@ export function MeView({
               {eliteBadge && <EliteBadge className="ml-2.5" />}
             </h1>
             {me.headline && <p className="text-[0.95rem]">{me.headline}</p>}
-            {!viewer && <span className="self-start rounded-full bg-surface-2 px-[11px] py-[3px] text-[0.84rem] font-medium text-muted">Status · soon</span>}
+            {own && status}
             {/* The target role says the person is looking, so others see it only when they turn it on in Account settings. */}
             {(own || me.aim) && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
           </div>
@@ -121,7 +127,11 @@ export function MeView({
                 View as others
               </button>
             )}
-            {own && <span className={quiet}>Change status · soon</span>}
+            {own && (
+              <Link href="/settings#acc-job-search" className={quiet}>
+                Change status
+              </Link>
+            )}
             {own && (
               <Link href="/settings" className={quiet}>
                 Account settings
@@ -364,6 +374,7 @@ export function MeView({
         {own && (
           <section>
             <RailHead name="Who sees what" />
+            {searchSwitches}
             {whoSees ? (
               <>
                 <p className="text-[0.84rem]">

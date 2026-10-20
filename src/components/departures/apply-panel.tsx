@@ -36,6 +36,7 @@ export function ApplyPanel({
   action,
   preview,
   example,
+  initialCanJoin,
 }: {
   jobId: string;
   company: string;
@@ -45,10 +46,12 @@ export function ApplyPanel({
   preview?: ApplyPreviewAction;
   /** /design: the packet to show instead of reading one. Nothing is sent. */
   example?: ApplyPacketView;
+  /** Prefilled from the person's notice countdown (the nearest choice not before "Free to join from"). */
+  initialCanJoin?: CanJoin;
 }) {
   const [open, setOpen] = useState(false);
   // Kept here, so closing the preview and opening it again keeps what the person wrote.
-  const [canJoin, setCanJoin] = useState<CanJoin | "">("");
+  const [canJoin, setCanJoin] = useState<CanJoin | "">(initialCanJoin ?? "");
   const [note, setNote] = useState("");
   const [consent, setConsent] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);

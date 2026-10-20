@@ -547,3 +547,15 @@ export const MOCK_SESSIONS_PER_DAY = 5;
 export const MOCK_FEEDBACK_PER_DAY = 5;
 /** What the feedback screen says: feedback in words, nothing answered, not today (budget or limit), or not just now. */
 export const MOCK_FEEDBACK_STATES = ["ready", "none_answered", "unavailable_today", "unavailable"] as const;
+
+/*
+ * Job search switch and notice period (handoff 6, docs/plans/job-search-plan.md). Off pauses Departures and Arrivals:
+ * no Express apply, out of company search, no Today board. The notice period is private: never on a profile, never sent
+ * to a company (companies see only Can join).
+ */
+export const NOTICE_DAYS = [15, 30, 60, 90] as const;
+export type NoticeDays = (typeof NOTICE_DAYS)[number];
+/** Switch and notice changes one person makes a day, each try counted. */
+export const JOB_SEARCH_CHANGES_PER_DAY = 20;
+/** What Express apply says while job search is off. */
+export const JOB_SEARCH_OFF_MESSAGE = "Turn on job search to apply.";
