@@ -5,11 +5,13 @@ import { PageLoading } from "@/components/app/page-loading";
 import { JobSearchProvider } from "@/components/job-search/job-search";
 import { LocalTestNotice } from "@/components/resume/local-test-notice";
 import { UploadForm } from "@/components/resume/upload-form";
+import { SampleLineNote } from "@/components/ui/sample-tag";
 import { TodayView, type TodayData } from "@/components/today/today-preview";
 import { firstName } from "@/lib/account/name";
 import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
 import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
+import { isSampleResumeId } from "@/lib/resume/sample";
 import { USER_STATES, type Departure, type OnYourLine, type UserState } from "@/lib/schemas";
 import { jobSearchForRequest } from "@/lib/request-reads";
 import { errorFields, logEvent } from "@/lib/log";
@@ -84,7 +86,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
   // failed read from counting as unhandled while the ride runs: the board below still sees the failure.
   const openPosts = analysis && searching ? departuresBoard(null) : null;
   if (openPosts) openPosts.catch(() => {});
-  const found = await todayStateFor(account.id, now, undefined, analysis);
+  const [found, sample] = await Promise.all([todayStateFor(account.id, now, undefined, analysis), analysis ? isSampleResumeId(analysis.resumeId) : false]);
   // The live cards never fail the page: a card that can't be read is left out (the board shows it has no rows).
   const [board, line]: [Departure[], OnYourLine | null] =
     found.state === "no_resume"
@@ -143,6 +145,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
           ? "Add your resume to start. The cards below are example data until we build them."
           : "Everything here is your own except the Timetable, which is example data until we build it."}
       </Banner>
+      {sample && found.state !== "no_resume" && <SampleLineNote />}
       {/* Job search off hides the Departures board (handoff 6): no board rows are sent, and the card says how to turn it on. */}
       <JobSearchProvider initialOn={searching} action={switchJobSearch}>
         <TodayView

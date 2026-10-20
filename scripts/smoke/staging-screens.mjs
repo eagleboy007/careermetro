@@ -11,7 +11,8 @@
 // in a third browser: B sets up a company with the test-mode code, the admin verifies it, B posts a job, A opens Gaps
 // for the built resume and sends it with Express apply, B moves A to Offer and A sees it under Offers on Arrivals; A
 // reports the job and B reports a Library link, and the admin acknowledges and dismisses both (Reports, Library
-// review). Without it, or on any other host, those steps print "skipped: ...".
+// review). Without it, or on any other host, those steps print "skipped: ...". A deployment whose /api/health says
+// "env": "production" (any alias of it) is refused at the first step, before any sign-in.
 //
 //   BASE=https://careermetro-git-staging-career-metro.vercel.app BYPASS=... node scripts/smoke/staging-screens.mjs
 //
@@ -19,7 +20,7 @@
 // x-vercel-protection-bypass header to that site only, and only when it is a careermetro-*.vercel.app host. The header and
 // the test emails (the admin's too) are never printed. One line per step, ok or FAIL; the exit code is 1 on any
 // failure. The clean-up runs after any failed step or crash, and when the script's own deadline (SMOKE_DEADLINE_MIN,
-// default 18) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
+// default 18, and never later than 12 minutes before the job's limit counted from JOB_STARTED) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
 // test accounts are deleted, as prod-smoke.md section 8 says. On SIGINT or SIGTERM (a cancel) it starts too, but
 // GitHub gives a cancelled job only about 10 seconds, so it may not finish then. The company itself can't be deleted in
 // the app, and a fresh account can't take over an old one without that company's admin, so each admin run leaves one:
@@ -393,6 +394,19 @@ const capPage = (pg) => {
   pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
 };
 /**
+ * A fresh page for the user, or their old one if the browser doesn't give one within CLEAN_ACTION_MS (T108): a hung
+ * newPage() must not hold the clean-up past the job's limit.
+ */
+const freshPage = async (u) => {
+  let timer;
+  const late = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error("no new page")), CLEAN_ACTION_MS);
+  });
+  return Promise.race([u.ctx.newPage(), late])
+    .catch(() => u.page)
+    .finally(() => clearTimeout(timer));
+};
+/**
  * One clean-up part as a step. Past CLEAN_PART_MS it fails: its screenshot is taken, then the user's page is closed
  * (stopping whatever it was waiting for) and replaced with a fresh one for the next part.
  */
@@ -403,7 +417,7 @@ const cleanStep = async (name, u, fn) => {
     const limit = new Promise((_, reject) => {
       timer = setTimeout(async () => {
         await shoot(p, name);
-        u.page = await u.ctx.newPage().catch(() => u.page);
+        u.page = await freshPage(u);
         if (u.page !== p) {
           capPage(u.page);
           await p.close().catch(() => {});
@@ -426,7 +440,7 @@ const cleanUp = () =>
     cleanupMs = CLEAN_ACTION_MS;
     for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) {
       // After a signal, a step that didn't finish may still hold the old pages: each user gets a fresh one.
-      if (freshPages) u.page = await u.ctx.newPage().catch(() => u.page);
+      if (freshPages) u.page = await freshPage(u);
       capPage(u.page);
     }
     await undoCompany();
@@ -489,22 +503,37 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
 }
 // The script's own deadline, 7 minutes inside the workflow step's timeout: once it passes, the step running finishes
 // under the clean-up's caps (set on every open page here), the rest are skipped and the clean-up runs with time to spare.
+// T108: it is also never later than 12 minutes before the job's own limit, counted from the job's start (JOB_STARTED,
+// epoch seconds, and SMOKE_JOB_LIMIT_MIN from the workflow), so a slow install or dry run can't push the clean-up past
+// the point where GitHub kills the job.
 const DEADLINE_MIN = Number(process.env.SMOKE_DEADLINE_MIN) || 18;
+const JOB_STARTED_MS = Number(process.env.JOB_STARTED) * 1000;
+const JOB_LIMIT_MIN = Number(process.env.SMOKE_JOB_LIMIT_MIN) || 45;
+const CLEANUP_MARGIN_MIN = 12;
+const deadlineMs = Math.max(
+  60_000,
+  Math.min(DEADLINE_MIN * 60_000, JOB_STARTED_MS > 0 ? JOB_STARTED_MS + (JOB_LIMIT_MIN - CLEANUP_MARGIN_MIN) * 60_000 - Date.now() : Infinity),
+);
+if (deadlineMs < DEADLINE_MIN * 60_000) console.log(`note: the deadline is ${Math.round(deadlineMs / 60_000)} minutes from now, ${CLEANUP_MARGIN_MIN} before the job's ${JOB_LIMIT_MIN}-minute limit`);
 setTimeout(() => {
   if (interrupted) return;
   failed++;
   interrupted = true;
-  console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and cleaning up`);
+  console.log(`FAIL deadline: ${Math.round(deadlineMs / 60_000)} minutes passed; skipping the rest and cleaning up`);
   // The step in flight gets the clean-up's caps too: its next waits end within CLEAN_ACTION_MS.
   cleanupMs = CLEAN_ACTION_MS;
   for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) if (u.page && !u.page.isClosed()) capPage(u.page);
-}, DEADLINE_MIN * 60_000).unref();
+}, deadlineMs).unref();
 
 try {
   await step("1.1 health answers ok", A, async () => {
     const res = await A.ctx.request.get(BASE + "/api/health", { timeout: 60000 });
     if (res.status() === 401 || res.status() === 403) throw new Error(`HTTP ${res.status()}: Deployment Protection blocked it; BYPASS is missing or wrong`);
     const body = await res.json().catch(() => ({}));
+    // T107: production also answers on careermetro-<team>.vercel.app aliases that pass the preview host check, so the
+    // deployment says what it is: on production nothing runs, the admin address is never typed, no test user is made.
+    if (body.env === "production") throw new Error(`refused: ${HOST} is production; this script only runs on previews`);
+    if (!body.env) console.log("note: /api/health names no env (an older build); the host check alone keeps production out");
     if (res.status() !== 200 || body.ok !== true) {
       throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
     }

@@ -62,6 +62,7 @@ const IN_FLIGHT_WRITE_USD = 0.1;
 /**
  * Reserves a worded path when this owner is under its daily count and the wording budget has room, and returns the
  * reserved call's id; null keeps template wording. Like the Gaps page, it runs under a short lock for the purpose.
+ * Never called for the sample resume (T113): its path keeps template wording.
  */
 async function reserveWording(tx: Tx, owner: Owner, gapAnalysisId: string, weeklyHours: number): Promise<string | null> {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext('cm-ai:write-path'))`);
@@ -136,7 +137,9 @@ async function buildForOwner(
       .where(and(eq(resources.healthy, true), isNull(resources.hiddenAt)));
     const plan = buildPath({ gaps: gaps.analysis.gaps, weeklyHours, resources: catalog });
     const titles: ResourceTitles = new Map(catalog.map((r) => [r.id, { title: r.title, provider: r.provider }]));
-    return { plan, titles, reservedId: await reserveWording(tx, owner, gaps.analysisId, weeklyHours) };
+    // The sample resume's path keeps template wording (T113): no model call and none of the shared wording budget.
+    const reservedId = gaps.sample ? null : await reserveWording(tx, owner, gaps.analysisId, weeklyHours);
+    return { plan, titles, reservedId };
   });
   if (first === "busy") return { ok: false, reason: "busy" };
   if ("done" in first) return first.done;

@@ -69,10 +69,11 @@ export function filterDepartures(
 }
 
 /**
- * Why Departures shows no roles, and the next step the list offers: `places` "Show every city" (and Settings),
- * `filtered` "Clear filters", `no_roles` the paste box, `no_saved` and `no_applied` "See all roles".
+ * Why Departures shows no roles, and the next step the list offers: `places` "Show every city" (and Settings, and
+ * "Clear filters" too when `clear` says a search or another filter is also on), `filtered` "Clear filters",
+ * `no_roles` the paste box, `no_saved` and `no_applied` "See all roles".
  */
-export type DeparturesEmpty = { kind: "places" | "filtered" | "no_roles" | "no_saved" | "no_applied"; text: string };
+export type DeparturesEmpty = { kind: "places" | "filtered" | "no_roles" | "no_saved" | "no_applied"; text: string; clear?: true };
 
 export const EMPTY_SAVED = "Nothing saved yet. Tap the bookmark on anything you want to come back to.";
 
@@ -87,7 +88,11 @@ export function departuresEmpty(
   if (f.tab !== "all") return { kind: "filtered", text: `Nothing ${f.tab} matches these filters.` };
   if (open === 0)
     return { kind: "no_roles", text: "No roles from company job boards yet. They arrive with the next daily update. You can still paste a job post below." };
-  if (f.yourPlaces && places.length > 0) return { kind: "places", text: "No roles in your places yet." };
+  if (f.yourPlaces && places.length > 0) {
+    // T110: with a search or another filter on too, every city alone may still show nothing, so say so and offer both.
+    const more = f.query.trim() !== "" || f.city !== null || f.workType !== null || f.boardingOnly;
+    return more ? { kind: "places", text: "No roles in your places match these filters.", clear: true } : { kind: "places", text: "No roles in your places yet." };
+  }
   return { kind: "filtered", text: "No roles match. Try another city or type, or clear the filters." };
 }
 

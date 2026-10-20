@@ -1,6 +1,6 @@
 import { APIConnectionError, APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import { checkHealth, checkParse, missingSecrets, type HealthDeps } from "./health";
+import { checkHealth, checkParse, deployEnv, missingSecrets, type HealthDeps } from "./health";
 
 const usage = { input_tokens: 8, output_tokens: 1 };
 
@@ -108,5 +108,18 @@ describe("missingSecrets", () => {
     const d = deps({ missingSecrets: ["CRON_SECRET"] });
     expect(await checkHealth(d)).toEqual({ ok: false, database: "ok", claude: "ok", missingSecrets: ["CRON_SECRET"] });
     expect(await checkHealth(deps({ missingSecrets: [] }))).toEqual({ ok: true, database: "ok", claude: "ok" });
+  });
+});
+
+describe("deployEnv", () => {
+  it("names the kind of deployment, so the smoke scripts can refuse production under any alias (T107)", async () => {
+    expect(deployEnv({ VERCEL_ENV: "production" })).toBe("production");
+    expect(deployEnv({ VERCEL_ENV: "preview" })).toBe("preview");
+    expect(deployEnv({ VERCEL_ENV: "development" })).toBe("development");
+    expect(deployEnv({})).toBe("development");
+    expect(deployEnv({ VERCEL_ENV: "staging" })).toBe("development");
+    // Shown on health, red or green, and nothing else rides along.
+    expect(await checkHealth(deps({ env: "production" }))).toEqual({ ok: true, database: "ok", claude: "ok", env: "production" });
+    expect(await checkHealth(deps({ env: "preview", hasKey: false }))).toEqual({ ok: false, database: "ok", claude: "no_key", env: "preview" });
   });
 });

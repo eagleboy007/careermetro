@@ -10,7 +10,9 @@ import fixture from "../../../fixtures/sample-resume/priya-sharma.parsed.json";
 import { ingestResume, LIMITS } from "./ingest";
 import { maskPii } from "./mask";
 import { parsedResume, type ParseClient } from "./parse";
-import { createSampleResume, isSampleResume, SAMPLE_MIME, sampleProfile } from "./sample";
+import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
+import { MATCHER_VERSION } from "@/lib/gaps/match";
+import { createSampleResume, HAS_OWN_RESUME, isSampleResume, SAMPLE_MIME, sampleProfile } from "./sample";
 import { getResumeForOwner } from "./store";
 import { verifyProfile } from "./verify";
 
@@ -60,6 +62,10 @@ describe("the sample resume fixture", () => {
     expect(isSampleResume(SAMPLE_MIME)).toBe(true);
     expect(isSampleResume("text/plain")).toBe(false);
     expect(isSampleResume(null)).toBe(false);
+  });
+
+  it("says where to go when it is refused for the person's own resume", () => {
+    expect(HAS_OWN_RESUME).toMatchObject({ ok: false, status: 409, code: "has_resume", message: "You already have your own resume. Open it from your Map." });
   });
 });
 
@@ -152,6 +158,36 @@ describe.skipIf(!db)("createSampleResume (database)", () => {
     expect(over).toMatchObject({ ok: false, status: 429, code: "rate_limited" });
     const rows = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, s));
     expect(rows).toHaveLength(1);
+  });
+
+  it("is refused once the person's own resume has gaps, so the sample never quietly becomes current again (T114)", async () => {
+    const s = `${session}-own`;
+    const tried = await createSampleResume({ owner: { sessionId: s }, clientHash: `h-${s}` }, { db: db! });
+    if (!tried.ok) throw new Error("sample failed");
+    created.push(tried.resumeId);
+    // Their own resume, checked and with its gaps seen.
+    const [own] = await db!.insert(schema.resumes).values({ anonymousSessionId: s, mimeType: "text/plain", sizeBytes: 1, status: "parsed" }).returning();
+    created.push(own.id);
+    const [p] = await db!.insert(schema.profiles).values({ resumeId: own.id, version: 1, data: sampleProfile(), confirmedByUser: true }).returning();
+    const result = { roleSlug: "data-analyst", gaps: [], metSkillIds: [], niceToHave: [], readiness: { headline: "h", explanation: "e", estimatedHours: 1 } };
+    await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result, matcherVersion: MATCHER_VERSION });
+    expect(await createSampleResume({ owner: { sessionId: s }, clientHash: `h-${s}-2` }, { db: db! })).toEqual(HAS_OWN_RESUME);
+    const rows = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, s));
+    expect(rows).toHaveLength(2);
+  });
+
+  it("is marked sample: true in Download your data (version 32) (T114)", async () => {
+    const [u] = await db!.insert(schema.users).values({ email: `${session}-export@example.test`, name: "Test Person" }).returning({ id: schema.users.id });
+    try {
+      const tried = await createSampleResume({ owner: { userId: u.id }, clientHash: `h-${session}-export` }, { db: db! });
+      if (!tried.ok) throw new Error("sample failed");
+      const data = await exportAccountData(u.id, db!);
+      expect(EXPORT_VERSION).toBe(32);
+      expect(data!.exportVersion).toBe(32);
+      expect(data!.resumes).toEqual([expect.objectContaining({ id: tried.resumeId, sample: true })]);
+    } finally {
+      await db!.delete(schema.users).where(eq(schema.users.id, u.id));
+    }
   });
 
   it("stops at the per-address limit before counting the owner's", async () => {

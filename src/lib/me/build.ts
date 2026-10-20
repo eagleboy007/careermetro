@@ -140,8 +140,10 @@ export function meFromProfile(input: MeInput): MeProfile {
     ...added.roles.slice(0, 20).map((a): Row => ({ r: addedAsResumeRole(a), id: `me-${a.id}`, own: { id: a.id, startMonth: a.startMonth, endMonth: a.endMonth } })).map(dated),
   ].sort(newestFirst);
   const spans: [number, number][] = [];
+  // The sample's jobs are made up (T111): its rows get no check at all, and only added roles can be the checked job.
+  const sample = Boolean(input.resumeSample);
   // An added current role is a current job for the work-email check as a resume one is (FR-47).
-  const checked = jobToCheck({ roles: roles.map((x) => x.r) });
+  const checked = jobToCheck({ roles: roles.filter((x) => !sample || x.own).map((x) => x.r) });
   const checks = input.jobChecks ?? [];
   const keyOf = (r: Profile["roles"][number]) => {
     const k = jobKeyOf(r);
@@ -156,7 +158,7 @@ export function meFromProfile(input: MeInput): MeProfile {
   const ownerOf = new Map<string, "resume" | "added">();
   for (const { r, own } of roles) {
     const k = keyOf(r);
-    if (!k || own) continue;
+    if (!k || own || sample) continue;
     const clash = roles.filter((x) => x.own && keyOf(x.r) === k);
     if (!clash.length) continue;
     const resumeRows = roles.filter((x) => !x.own && keyOf(x.r) === k);
@@ -177,6 +179,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     ownerOf.set(k, addedCurrent && !resumeCurrent ? "added" : "resume");
   }
   const checkOf = (r: Profile["roles"][number], added: boolean) => {
+    if (sample && !added) return null;
     const k = keyOf(r);
     const owner = k ? ownerOf.get(k) : undefined;
     const side = added ? "added" : "resume";

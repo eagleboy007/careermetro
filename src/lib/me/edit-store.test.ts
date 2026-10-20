@@ -287,7 +287,7 @@ describe.skipIf(!db)("Me editing (database)", () => {
     }
   });
 
-  it("exports all of it (version 31), and the account's deletion takes all of it", async () => {
+  it("exports all of it (version 32), and the account's deletion takes all of it", async () => {
     const me = await user("export");
     const g = await goal(me, "sql");
     await saveMeRole(me, null, role, deps());
@@ -295,8 +295,8 @@ describe.skipIf(!db)("Me editing (database)", () => {
     await saveStory(me, null, { ...story, goalId: g }, deps());
     await addInterest(me, { name: "Photography" }, deps());
     const data = await exportAccountData(me, db! as never);
-    expect(EXPORT_VERSION).toBe(31);
-    expect(data!.exportVersion).toBe(31);
+    expect(EXPORT_VERSION).toBe(32);
+    expect(data!.exportVersion).toBe(32);
     expect(data!.meRoles.map((r) => meRoleExport.parse(r))).toMatchObject([{ title: role.title, employer: role.employer, startMonth: "2023-06" }]);
     expect(meEducationExport.parse(data!.meEducation[0])).toMatchObject({ institution: "NPTEL", year: "2025" });
     expect(storyExport.parse(data!.stories[0])).toMatchObject({ boxes: ["Ownership", "Problem solving"], goalSkill: skills.find((s) => s.id === "sql")!.name, source: "user" });

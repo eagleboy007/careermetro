@@ -2,7 +2,7 @@ import { roleProfiles } from "@/content";
 import { countRoleRequest } from "@/lib/jobs/role-requests";
 import { createJobCheck, JOB_CHECK_LIMITS, type CreateJobCheckResult } from "@/lib/jobs/store";
 import { jobCheckRequest, JOB_TEXT_MAX } from "@/lib/schemas";
-import { isSameOrigin, readOwner } from "@/lib/session";
+import { clientHash, clientIp, isSameOrigin, readOwner } from "@/lib/session";
 import { errorFields, logEvent } from "@/lib/log";
 
 // Reading a posting takes one model call of roughly 5 to 30 seconds; parseJobPosting gives up after 100 seconds.
@@ -19,6 +19,7 @@ const FAILURES: Record<Exclude<CreateJobCheckResult, { ok: true }>["reason"], [n
   not_found: [404, NOT_FOUND],
   not_confirmed: [409, "First check your resume and press Looks right."],
   limit: [429, `You've checked ${JOB_CHECK_LIMITS.perOwnerPerDay} jobs today, the most for one day. Nothing was saved. Please try again tomorrow.`],
+  sample_limit: [429, "You've checked a lot of jobs against the sample resume today. Nothing was saved. Please try again tomorrow, or upload your own resume."],
   budget: [503, "We've reached today's capacity for job checks. Nothing was saved. Please try again tomorrow."],
   busy: [503, "Another check is still running. Please try again in a minute."],
   unavailable: [503, "We couldn't read the posting just now. Nothing was saved. Please try again in a few minutes."],
@@ -57,7 +58,8 @@ export async function POST(request: Request) {
   const owner = await readOwner();
   if (!owner) return fail(404, NOT_FOUND);
   try {
-    const result = await createJobCheck(parsed.data, owner);
+    // The address only as a keyed hash, for the sample resume's per-address limit (T113).
+    const result = await createJobCheck(parsed.data, owner, { clientHash: clientHash(clientIp(request)) });
     if (result.ok) {
       logEvent("info", "job_check_saved", { route: "/api/job-checks", role, reused: result.reused });
       // A role we don't have is counted once its posting is saved; countRoleRequest never throws.

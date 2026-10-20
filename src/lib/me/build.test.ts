@@ -301,6 +301,25 @@ describe("what the person added on Me", () => {
     for (const check of [{ ...passed, source: "resume" as const }, passed]) expect(badges(meFromProfile(input({ profile: resume, jobChecks: [check] })))).toEqual([["Analyst", "verified"]]);
   });
 
+  it("gives the sample's made-up jobs no work-email check, and checks only an added role instead (T111)", () => {
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    const read = new Date("2026-10-05T00:00:00Z");
+    // A saved check on the sample's key (as before this fix) still shows nothing on the sample row.
+    const stale = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "review" as const, checkedAt: read, employer: "Acme", source: "resume" as const };
+    expect(badges(meFromProfile(input({ profile: resume, resumeReadAt: read, resumeSample: true, jobChecks: [stale] })))).toEqual([["Analyst", null]]);
+    // An added current role takes the check, even though the sample's role is current too.
+    const lead = { id: ids.role, title: "Lead", employer: "Garuda Sec", startMonth: "2023-01", endMonth: null, isCurrent: true };
+    expect(badges(meFromProfile(input({ profile: resume, resumeReadAt: read, resumeSample: true, added: added({ roles: [lead] }) })))).toEqual([
+      ["Analyst", null],
+      ["Lead", "not_verified"],
+    ]);
+    // The same profile as the person's own resume is checked as usual.
+    expect(badges(meFromProfile(input({ profile: resume, resumeReadAt: read, added: added({ roles: [lead] }) })))).toEqual([
+      ["Analyst", "not_verified"],
+      ["Lead", null],
+    ]);
+  });
+
   it("puts added education after the resume's, with its row id", () => {
     const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
     expect(me.education).toEqual([

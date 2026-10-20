@@ -4,6 +4,7 @@ import postgres from "postgres";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { roleProfiles, skills } from "@/content";
 import * as schema from "@/db/schema";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import type { Profile } from "@/lib/schemas";
 import { getPathForOwner, markStepDone, PATH_LIMITS } from "./store";
 import type { WriteClient } from "./write";
@@ -41,9 +42,12 @@ describe.skipIf(!db)("paths (database)", () => {
   const created: string[] = [];
   let n = 0;
 
-  async function seed() {
+  async function seed({ sample = false } = {}) {
     const session = `path-${Date.now()}-${n++}`;
-    const [resume] = await db!.insert(schema.resumes).values({ anonymousSessionId: session, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+    const [resume] = await db!
+      .insert(schema.resumes)
+      .values({ anonymousSessionId: session, mimeType: sample ? SAMPLE_MIME : "text/plain", sizeBytes: 10, status: "parsed" })
+      .returning();
     created.push(resume.id);
     await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true });
     return { session, resumeId: resume.id };
@@ -104,6 +108,29 @@ describe.skipIf(!db)("paths (database)", () => {
     const r = await getPathForOwner(resumeId, { sessionId: session }, role, 5, { db: db!, client });
     expect(create).not.toHaveBeenCalled();
     expect(r.ok && r.path.steps[0].reason).not.toMatch(/^Worded /);
+  });
+
+  it("never words the sample resume's path or reserves the wording budget for it (T113)", async () => {
+    const { session, resumeId } = await seed({ sample: true });
+    const { client, create } = writeClient();
+    for (const hours of [5, 8]) {
+      const r = await getPathForOwner(resumeId, { sessionId: session }, role, hours, { db: db!, client });
+      if (!r.ok) throw new Error(r.reason);
+      expect(r.path.steps.length).toBeGreaterThan(0);
+      expect(r.path.steps.every((s) => !s.reason.startsWith("Worded "))).toBe(true);
+    }
+    expect(create).not.toHaveBeenCalled();
+    const rows = await db!
+      .select({ aiCallId: schema.paths.aiCallId })
+      .from(schema.paths)
+      .where(sql`${schema.paths.gapAnalysisId} in (select g.id from gap_analyses g join profiles p on p.id = g.profile_id where p.resume_id = ${resumeId})`);
+    expect(rows).toHaveLength(2);
+    expect(rows.every((r) => r.aiCallId === null)).toBe(true);
+    const reserved = await db!
+      .select()
+      .from(schema.aiCalls)
+      .where(sql`${schema.aiCalls.purpose} = 'write-path' and ${schema.aiCalls.inputRefs}->>'gapAnalysisId' in (select g.id::text from gap_analyses g join profiles p on p.id = g.profile_id where p.resume_id = ${resumeId})`);
+    expect(reserved).toEqual([]);
   });
 
   it("stops wording paths past the per-session daily count", async () => {

@@ -3,6 +3,7 @@
 import { LazyCertificateForm, preloadCertificateForm } from "@/components/proof/certificate-form-lazy";
 import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import { ChoiceTag } from "@/components/ui/choice-tag";
+import { SampleTag } from "@/components/ui/sample-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -35,11 +36,14 @@ export function MetroMap({
   life = null,
   onAddCertificate,
   initialMode = "role",
+  sample = false,
 }: {
   line: MapLine | null;
   life?: LifeLine | null;
   /** Which map shows first; /design opens some examples on the Life line. */
   initialMode?: "role" | "life";
+  /** The lines come from the sample resume (T114): both carry the Sample tag, so its jobs never read as the person's. */
+  sample?: boolean;
   /** Saves a certificate for a prove pitstop; without it the form only says nothing is saved. */
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
 }) {
@@ -67,6 +71,7 @@ export function MetroMap({
       <div className={`flex min-w-0 flex-col gap-3 pb-6 ${line ? "min-[960px]:border-r min-[960px]:border-line min-[960px]:pr-6" : ""}`}>
         <div className="flex flex-wrap items-center gap-3">
           <h2 className="text-[1.5rem] font-semibold">Your journey</h2>
+          {line && sample && <SampleTag />}
           {line && (
             <div role="group" aria-label="Which map" className="inline-flex gap-0.5 rounded-full bg-surface-2 p-[3px]">
               <button type="button" aria-pressed={mode === "role"} className={seg} onClick={() => setMode("role")}>

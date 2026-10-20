@@ -7,6 +7,11 @@
 // BASE (or the first argument) is the site; BYPASS, when set, is sent as the x-vercel-protection-bypass header to that
 // site only, and only when it is a careermetro-*.vercel.app host. The header, the test email and anything from the resume are never printed. One line per step, ok or FAIL;
 // the exit code is 1 on any failure. The test account is deleted at the end, as section 8 says, even after a failure.
+// A deployment whose /api/health says "env": "production" (any alias of it) is refused at the first step, before any
+// sign-in, as in staging-screens.mjs. The script has its own deadline (SMOKE_DRY_RUN_DEADLINE_MIN, default 12), inside
+// the workflow step's 15-minute cap: once it passes, the step running finishes under short waits, the rest are skipped
+// and the account is deleted. On SIGINT, SIGTERM or SIGHUP (a cancel, or the step's cap) the deletion runs too, then
+// the script exits; GitHub gives a cancelled job only about 10 seconds, so the deadline is the dependable path.
 // Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright@1.56.1`.
 import { randomBytes } from "node:crypto";
 import { mkdirSync } from "node:fs";
@@ -42,7 +47,16 @@ if (!/^https?:\/\//.test(BASE)) {
 }
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+// Refused before any sign-in when the deployment says it is production (T107), checked in step 1.1.
+const HOST = new URL(BASE).host;
+
+// Playwright's own signal handlers would close the browser before the account deletion below can use it.
+const browser = await chromium.launch({
+  handleSIGINT: false,
+  handleSIGTERM: false,
+  handleSIGHUP: false,
+  ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+});
 // Reduced motion, as in e2e/walk.mjs. The bypass header goes on every request of this context, so requests to any other
 // host are refused below: the header never leaves for a third party (the Vercel toolbar, a font host).
 const ctx = await browser.newContext({
@@ -55,12 +69,33 @@ await ctx.route(
   (url) => url.origin !== ORIGIN,
   (route) => route.abort("blockedbyclient"),
 );
-const p = await ctx.newPage();
+/** The page every step works on. Replaced by a fresh one when a signal comes while a step still holds it. */
+let p = await ctx.newPage();
 p.setDefaultTimeout(30000);
 p.setDefaultNavigationTimeout(60000);
 
 let failed = 0;
+// A stray rejection counts as a failure instead of ending the run, so the account is still deleted.
+process.on("unhandledRejection", (err) => {
+  failed++;
+  console.log(`FAIL unhandled: ${redact(err?.message ?? err)}`);
+});
 let blockedBy = "";
+/** Set by a signal or the deadline: from then on only the account deletion runs. */
+let interrupted = false;
+/** The step running now, settled or not, so a signal can let it finish before the deletion starts. */
+let current = Promise.resolve();
+/**
+ * The cap on any one wait once the deadline or a signal has come (0 before): the step in flight and the deletion must
+ * fit in the minutes left inside the workflow step's cap.
+ */
+let capMs = 0;
+const CLEAN_ACTION_MS = 15000;
+const upTo = (ms) => (capMs ? Math.min(ms, capMs) : ms);
+const capPage = (pg) => {
+  pg.setDefaultTimeout(CLEAN_ACTION_MS);
+  pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
+};
 let n = 0;
 const path = () => {
   try {
@@ -69,22 +104,31 @@ const path = () => {
     return "?";
   }
 };
-/** One line per step. A failed `critical` step skips the rest of the flow, since each later step needs it. */
-const step = async (name, fn, { critical = false } = {}) => {
+/**
+ * One line per step. A failed `critical` step skips the rest of the flow, since each later step needs it. After a
+ * signal or the deadline only `cleanup` steps run.
+ */
+const step = async (name, fn, { critical = false, cleanup = false } = {}) => {
+  if (interrupted && !cleanup) {
+    console.log("FAIL", name, "(skipped: the run was interrupted)");
+    return false;
+  }
   if (blockedBy) {
     failed++;
     console.log("FAIL", name, `(skipped: "${blockedBy}" failed)`);
     return false;
   }
   try {
-    await fn();
+    const run = fn();
+    current = run.catch(() => {});
+    await run;
     console.log("ok  ", name, "->", path());
     return true;
   } catch (e) {
     failed++;
     console.log("FAIL", name, "@", path(), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging dry run::${redact(name)}`);
-    if (SHOTS) {
+    if (SHOTS && !p.isClosed()) {
       // The email field and any line with the test address are masked; the resume is synthetic.
       const mask = [p.locator('input[type="email"], input[name="email"]'), p.getByText(EMAIL_DOMAIN, { exact: false })];
       await p.screenshot({ path: `${SHOTS}/${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
@@ -98,7 +142,7 @@ const settled = () =>
   p
     .getByText(/Comparing your resume|Building your path|Loading…/)
     .first()
-    .waitFor({ state: "detached", timeout: 90000 })
+    .waitFor({ state: "detached", timeout: upTo(90000) })
     .catch(() => {});
 const reload = async () => {
   await p.reload();
@@ -125,7 +169,7 @@ const testSignIn = async () => {
   await p.getByRole("textbox", { name: "Name", exact: true }).fill(NAME);
   await p.getByRole("textbox", { name: "Email", exact: true }).fill(EMAIL);
   await button.click();
-  await p.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: 30000 });
+  await p.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: upTo(30000) });
   await p.waitForLoadState("networkidle");
   return path();
 };
@@ -134,10 +178,84 @@ let signedUp = false;
 let deleted = false;
 let goalNames = [];
 
+/** Section 8: Settings > Delete account > Delete, type DELETE, Delete my account. Signs in first when signed out. */
+const deleteAccount = async () => {
+  await open("/settings");
+  if (path().startsWith("/sign-in")) {
+    const landed = await testSignIn();
+    // Still at the name step: Create my account never finished, so there is no account to delete.
+    if (landed.startsWith("/sign-up/finish")) {
+      deleted = true;
+      return;
+    }
+    if (!landed.startsWith("/today")) throw new Error(`signing in to delete went to ${landed}`);
+    await open("/settings");
+  }
+  await p.getByRole("button", { name: "Delete", exact: true }).click();
+  await p.getByLabel("Type DELETE to confirm", { exact: true }).fill("DELETE");
+  await p.getByRole("button", { name: "Delete my account", exact: true }).click();
+  await p.waitForURL(/\/account\/deleted/, { timeout: upTo(30000) });
+  deleted = true;
+  await p.goto(BASE + "/today");
+  await p.waitForURL(/\/sign-in/, { timeout: upTo(30000) });
+};
+
+/**
+ * After a failure, the deadline or a signal the test account still goes, so a preview never keeps a half-checked one.
+ * Runs once: a signal during it waits for the same run.
+ */
+let cleaning = null;
+const cleanUp = () =>
+  (cleaning ??= (async () => {
+    if (!signedUp || deleted) return;
+    blockedBy = "";
+    await step("8 clean-up: delete the test account after the failure", deleteAccount, { cleanup: true });
+  })());
+
+// A cancel (SIGINT), a kill (SIGTERM, as at the step's cap) or a hang-up: the step running gets 3 seconds to finish,
+// then the account is deleted on a fresh page and the script exits.
+for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
+  process.once(signal, async () => {
+    failed++;
+    interrupted = true;
+    console.log(`FAIL interrupted by ${signal}: deleting the test account before exiting`);
+    capMs = CLEAN_ACTION_MS;
+    const done = await Promise.race([current.then(() => true), new Promise((r) => setTimeout(() => r(false), 3000))]);
+    if (!done) {
+      // The step still holds the page: the deletion gets a fresh one (or the old one if none comes in time).
+      let timer;
+      const late = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error("no new page")), CLEAN_ACTION_MS)));
+      const old = p;
+      p = await Promise.race([ctx.newPage(), late]).catch(() => old).finally(() => clearTimeout(timer));
+      if (p !== old) await old.close().catch(() => {});
+    }
+    capPage(p);
+    await cleanUp().catch((e) => console.log(`FAIL clean-up: ${redact(e?.message ?? e)}`));
+    await browser.close().catch(() => {});
+    process.exit(1);
+  });
+}
+
+// The script's own deadline, 3 minutes inside the workflow step's 15-minute cap: once it passes, the step running
+// finishes under short waits, the rest are skipped and the account is deleted with time to spare.
+const DEADLINE_MIN = Number(process.env.SMOKE_DRY_RUN_DEADLINE_MIN) || 12;
+setTimeout(() => {
+  if (interrupted) return;
+  failed++;
+  interrupted = true;
+  console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and deleting the test account`);
+  capMs = CLEAN_ACTION_MS;
+  if (!p.isClosed()) capPage(p);
+}, DEADLINE_MIN * 60_000).unref();
+
 await step("1.1 health answers ok", async () => {
   const res = await ctx.request.get(BASE + "/api/health", { timeout: 60000 });
   if (res.status() === 401 || res.status() === 403) throw new Error(`HTTP ${res.status()}: Deployment Protection blocked it; BYPASS is missing or wrong`);
   const body = await res.json().catch(() => ({}));
+  // T107: production also answers on careermetro-<team>.vercel.app aliases that pass the bypass host check, so the
+  // deployment says what it is: on production nothing runs and no test user is made.
+  if (body.env === "production") throw new Error(`refused: ${HOST} is production; this script only runs on previews`);
+  if (!body.env) console.log("note: /api/health names no env (an older build); nothing else here keeps production out");
   if (res.status() !== 200 || body.ok !== true) {
     throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
   }
@@ -155,7 +273,7 @@ await step("2 sign up as the test user: Create your account, with the name fille
   await p.getByRole("button", { name: "Create my account", exact: true }).click();
   // From here an account may exist, so the clean-up deletes it even if Today never loads.
   signedUp = true;
-  await p.waitForURL(/\/today/, { timeout: 30000 });
+  await p.waitForURL(/\/today/, { timeout: upTo(30000) });
 }, { critical: true });
 
 await step("2.5 Today with no resume: the role chips and the drop zone", async () => {
@@ -169,7 +287,7 @@ await step("3.1 upload the synthetic resume on Today: the review page", async ()
   await p.getByRole("checkbox", { name: /^I agree that CareerMetro reads my resume/ }).check();
   await p.getByRole("button", { name: "Read my resume", exact: true }).click();
   try {
-    await p.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 90000 });
+    await p.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: upTo(90000) });
   } catch (e) {
     throw new Error(`no review page after 90 s${await alertText()}`, { cause: e });
   }
@@ -193,7 +311,7 @@ await step("3.2 Looks right, then Pick a role: Closest to your resume, 1 to 3 ro
 
 await step("4.1 pick Data Analyst: the gaps, each with a status, and Build my path", async () => {
   await p.locator('a[href$="/gaps/data-analyst"]').first().click();
-  await p.waitForURL(/\/gaps\/data-analyst/, { timeout: 90000 });
+  await p.waitForURL(/\/gaps\/data-analyst/, { timeout: upTo(90000) });
   await p.waitForLoadState("networkidle");
   await settled();
   await p.getByRole("heading", { name: "Your gaps", exact: true, level: 1 }).waitFor();
@@ -203,7 +321,7 @@ await step("4.1 pick Data Analyst: the gaps, each with a status, and Build my pa
 
 await step("4.2 Build my path: steps with free resources and Works toward", async () => {
   await p.getByRole("link", { name: "Build my path", exact: true }).click();
-  await p.waitForURL(/\/path\/data-analyst/, { timeout: 90000 });
+  await p.waitForURL(/\/path\/data-analyst/, { timeout: upTo(90000) });
   await p.waitForLoadState("networkidle");
   await settled();
   await p.getByRole("heading", { name: "Your path", exact: true, level: 1 }).waitFor();
@@ -252,7 +370,7 @@ await step("5.3 tick the first ride task: the top bar shows a 1-day streak", asy
   await task.waitFor();
   await task.click();
   ticked = true;
-  await p.locator("header").getByText(/1-day streak/).first().waitFor({ timeout: 15000 });
+  await p.locator("header").getByText(/1-day streak/).first().waitFor({ timeout: upTo(15000) });
 });
 
 await step("5.3 untick it again: back to the first ride, no streak", async () => {
@@ -261,8 +379,8 @@ await step("5.3 untick it again: back to the first ride, no streak", async () =>
   const box = p.locator(`section[aria-label="Today's ride"] ${tickable}:has(input:checked), section[aria-label="Welcome"] ${tickable}:has(input:checked)`).first();
   await box.waitFor();
   await box.click();
-  await p.locator('section[aria-label="Welcome"]').waitFor({ timeout: 15000 });
-  await p.locator("header").getByText(/streak/).first().waitFor({ state: "detached", timeout: 15000 });
+  await p.locator('section[aria-label="Welcome"]').waitFor({ timeout: upTo(15000) });
+  await p.locator("header").getByText(/streak/).first().waitFor({ state: "detached", timeout: upTo(15000) });
 });
 
 await step("5.4 Map: the line with the same goals as stops", async () => {
@@ -307,11 +425,11 @@ await step("6.2 avatar menu > Sign out: the home page, signed out; /today goes t
   await open("/today");
   await p.getByRole("button", { name: /open menu$/ }).click();
   await p.getByRole("button", { name: "Sign out", exact: true }).click();
-  await p.waitForURL((u) => u.pathname === "/", { timeout: 30000 });
+  await p.waitForURL((u) => u.pathname === "/", { timeout: upTo(30000) });
   await p.waitForLoadState("networkidle");
-  await p.getByRole("link", { name: "Sign in", exact: true }).first().waitFor({ timeout: 15000 });
+  await p.getByRole("link", { name: "Sign in", exact: true }).first().waitFor({ timeout: upTo(15000) });
   await p.goto(BASE + "/today");
-  await p.waitForURL(/\/sign-in/, { timeout: 30000 });
+  await p.waitForURL(/\/sign-in/, { timeout: upTo(30000) });
 });
 
 await step("6.3 sign in again: straight to Today with the same goals, no name step", async () => {
@@ -323,34 +441,8 @@ await step("6.3 sign in again: straight to Today with the same goals, no name st
   if (goalNames.length && goalNames[0] !== again[0]) throw new Error("the goals changed after signing in again");
 });
 
-/** Section 8: Settings > Delete account > Delete, type DELETE, Delete my account. Signs in first when signed out. */
-const deleteAccount = async () => {
-  await open("/settings");
-  if (path().startsWith("/sign-in")) {
-    const landed = await testSignIn();
-    // Still at the name step: Create my account never finished, so there is no account to delete.
-    if (landed.startsWith("/sign-up/finish")) {
-      deleted = true;
-      return;
-    }
-    if (!landed.startsWith("/today")) throw new Error(`signing in to delete went to ${landed}`);
-    await open("/settings");
-  }
-  await p.getByRole("button", { name: "Delete", exact: true }).click();
-  await p.getByLabel("Type DELETE to confirm", { exact: true }).fill("DELETE");
-  await p.getByRole("button", { name: "Delete my account", exact: true }).click();
-  await p.waitForURL(/\/account\/deleted/, { timeout: 30000 });
-  deleted = true;
-  await p.goto(BASE + "/today");
-  await p.waitForURL(/\/sign-in/, { timeout: 30000 });
-};
-
 if (!blockedBy) await step("8 delete the test account: /account/deleted, then signed out", deleteAccount);
-// After a failure the test account still goes, so a preview never keeps a half-checked one.
-if (signedUp && !deleted) {
-  blockedBy = "";
-  await step("8 clean-up: delete the test account after the failure", deleteAccount);
-}
+await cleanUp();
 
 await browser.close();
 console.log(failed ? `${failed} step(s) failed on ${BASE}` : `All steps passed on ${BASE}`);

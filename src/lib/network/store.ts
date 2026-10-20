@@ -435,9 +435,10 @@ export async function mutualConnections(viewerId: string, otherId: string, db: D
 /**
  * Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. A current
  * analysis of the sample resume ("Try a sample resume") is a made-up person's, so for anyone but `viewerId` it counts
- * as none: never an older resume instead, and never skills, gaps or a role shown to others.
+ * as none: never an older resume instead, and never skills, gaps or a role shown to others. The viewer's own sample is
+ * kept, marked `sample`, so their own skills still count for them while it aims at nothing (T112, as canViewProfile).
  */
-type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[] };
+type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[]; sample: boolean };
 async function analysesOf(userIds: string[], viewerId: string, db: Db | Tx): Promise<Map<string, AnalysisOf>> {
   const out = new Map<string, AnalysisOf>();
   if (!userIds.length) return out;
@@ -452,7 +453,13 @@ async function analysesOf(userIds: string[], viewerId: string, db: Db | Tx): Pro
     if (r.userId !== viewerId && isSampleResume(r.mimeType)) continue;
     const parsed = gapAnalysis.safeParse(r.result);
     if (r.userId && parsed.success)
-      out.set(r.userId, { id: r.id, roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })) });
+      out.set(r.userId, {
+        id: r.id,
+        roleSlug: parsed.data.roleSlug,
+        met: parsed.data.metSkillIds,
+        gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })),
+        sample: isSampleResume(r.mimeType),
+      });
   }
   return out;
 }
@@ -483,7 +490,8 @@ const skillNames = new Map(skills.map((x) => [x.id, x.name]));
 
 /**
  * "In common with you" on a profile (handoff 12j): the skills both have, by name, when the owner shows skills, and the
- * target role when both aim at it and the owner shows theirs. Nothing about the viewer is shown to the owner.
+ * target role when both aim at it and the owner shows theirs. The viewer's own current sample aims at nothing, so it
+ * shares no role (T112). Nothing about the viewer is shown to the owner.
  */
 export async function inCommonWith(
   viewerId: string,
@@ -499,7 +507,7 @@ export async function inCommonWith(
   const shared = owner.settings.showSkills ? [...new Set(theirs.met.filter((id) => met.has(id)))] : [];
   return {
     skills: shared.map((id) => skillNames.get(id) ?? id).sort((a, b) => a.localeCompare(b, "en")),
-    role: owner.settings.showTargetRole && mine.roleSlug === theirs.roleSlug ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
+    role: owner.settings.showTargetRole && !mine.sample && mine.roleSlug === theirs.roleSlug ? (roleTitles.get(theirs.roleSlug) ?? null) : null,
   };
 }
 
@@ -513,7 +521,8 @@ export async function pathTogetherWith(viewerId: string, ownerId: string, shared
   const [analyses, mine, theirs] = await Promise.all([analysesOf([viewerId, ownerId], viewerId, db), goalsOf(viewerId, db), goalsOf(ownerId, db)]);
   const a = analyses.get(viewerId);
   const b = analyses.get(ownerId);
-  if (!a || !b || a.roleSlug !== b.roleSlug) return null;
+  // The viewer's own current sample aims at nothing, so it is on no line with anyone (T112).
+  if (!a || !b || a.sample || a.roleSlug !== b.roleSlug) return null;
   const learned = await learnedOf([a.id, b.id], db);
   return pathTogether(lineOrder(a.gaps, mine, learned.get(a.id)), lineOrder(b.gaps, theirs, learned.get(b.id)), (id) => skillNames.get(id) ?? id, sharedWith);
 }
@@ -703,10 +712,10 @@ const provedSql = (now: Date): SQL =>
 const aimsAtSql = (roleSlug: string): SQL =>
   sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select case when r.mime_type = ${SAMPLE_MIME} then null else ga.result->>'roleSlug' end from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
 
-/** The viewer's own target role, for the "Aiming for my role" filter. */
+/** The viewer's own target role, for the "Aiming for my role" filter. A current sample resume aims at nothing (T112). */
 async function viewerOf(userId: string, db: Db) {
-  const analyses = await analysesOf([userId], userId, db);
-  return { roleSlug: analyses.get(userId)?.roleSlug ?? null };
+  const mine = (await analysesOf([userId], userId, db)).get(userId);
+  return { roleSlug: mine && !mine.sample ? mine.roleSlug : null };
 }
 
 /** The person's own target role (its title), to label Find people's filter; a filter they can't use isn't offered. */

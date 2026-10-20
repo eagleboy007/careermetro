@@ -603,14 +603,22 @@ describe("job check", () => {
     m.account = { id: "user-1" };
     m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-1", reused: false });
     expect(await json(await checkJob(post(good)))).toEqual({ status: 200, body: { ok: true, id: "check-1", reused: false } });
-    expect(m.createJobCheck).toHaveBeenCalledWith({ ...good, text: posting.trim() }, { userId: "user-1" });
+    expect(m.createJobCheck).toHaveBeenCalledWith({ ...good, text: posting.trim() }, { userId: "user-1" }, { clientHash: expect.any(String) });
+  });
+
+  it("passes the address only as a keyed hash, for the sample resume's per-address limit", async () => {
+    m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-1", reused: false });
+    await checkJob(post(good, SITE, { "x-forwarded-for": "203.0.113.7" }));
+    const deps = m.createJobCheck.mock.calls[0][2] as { clientHash: string };
+    expect(deps.clientHash).toEqual(expect.any(String));
+    expect(deps.clientHash).not.toContain("203.0.113.7");
   });
 
   it("stands in for a role we don't have, and counts its title once it is saved", async () => {
     const standIn = { ...good, roleSlug: null, title: "Supply Chain Analyst" };
     m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-2", reused: false });
     expect(await json(await checkJob(post(standIn)))).toEqual({ status: 200, body: { ok: true, id: "check-2", reused: false } });
-    expect(m.createJobCheck).toHaveBeenCalledWith({ ...standIn, text: posting.trim() }, { sessionId: SESSION });
+    expect(m.createJobCheck).toHaveBeenCalledWith({ ...standIn, text: posting.trim() }, { sessionId: SESSION }, { clientHash: expect.any(String) });
     expect(m.countRoleRequest).toHaveBeenCalledWith("Supply Chain Analyst", { sessionId: SESSION });
 
     // Not again for a posting checked before, nor when nothing was saved, nor for a library role.
@@ -629,6 +637,7 @@ describe("job check", () => {
       ["not_found", 404, /couldn't find/],
       ["not_confirmed", 409, /Looks right/],
       ["limit", 429, /checked 5 jobs today.*Nothing was saved/],
+      ["sample_limit", 429, /sample resume today.*Nothing was saved/],
       ["budget", 503, /capacity.*Nothing was saved/],
       ["unavailable", 503, /Nothing was saved/],
       ["no_skills", 422, /any skills/],

@@ -522,9 +522,18 @@ describe.skipIf(!db)("network store (database)", () => {
     if (!found.ok) throw new Error(found.error);
     expect(found.people.find((x) => x.id === owner)).toMatchObject({ common: 0, aim: null });
     // The viewer's own sample still counts for them: it is only hidden from others.
+    const peer = await person("Omkar", { met: ["sql"], gaps: [s1, s2], findable: true, showTargetRole: true });
+    expect(await inCommonWith(viewer, { id: peer, settings: parts }, db!)).toEqual({ skills: [skills.find((x) => x.id === "sql")!.name], role: roleProfiles[0].title });
+    expect(await networkFiltersFor(viewer, db!)).toEqual({ role: roleProfiles[0].title });
     await addSample(viewer);
-    const mine = await person("Omkar", { met: ["sql"] });
-    expect((await inCommonWith(viewer, { id: mine, settings: parts }, db!)).skills).toHaveLength(1);
+    const mine = await inCommonWith(viewer, { id: peer, settings: parts }, db!);
+    expect(mine.skills).toHaveLength(1);
+    // But it aims at nothing (T112, as canViewProfile): no role in common, no "Aiming for my role" filter, no shared line.
+    expect(mine.role).toBeNull();
+    expect(await networkFiltersFor(viewer, db!)).toEqual({ role: null });
+    const sameRole = await search(viewer, { q: "Omkar", sameRole: true }, deps());
+    expect(sameRole.ok && sameRole.people).toEqual([]);
+    expect(await pathTogetherWith(viewer, peer, "profile", db!)).toBeNull();
   });
 
   it("shows Gaps and path for two people on the same line: the gaps both have and each one's current goal", async () => {
@@ -599,7 +608,7 @@ describe.skipIf(!db)("network store (database)", () => {
     await ask(c, a, "event", deps());
     await answerRequest(a, c, "ignore", deps());
     const data = await exportAccountData(a, db!);
-    expect(data!.exportVersion).toBe(31);
+    expect(data!.exportVersion).toBe(32);
     expect(data!.network).toMatchObject({ peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: "anyone" });
     expect(data!.network.connections).toMatchObject([{ name: `Om ${tag}`, username: null, how: "same_line" }]);
     expect(data!.network.requestsReceived).toMatchObject([{ name: `Pia ${tag}`, how: "event", status: "ignored" }]);

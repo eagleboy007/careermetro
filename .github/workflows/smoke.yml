@@ -34,6 +34,8 @@ jobs:
           # Only needed if Vercel Deployment Protection covers the URL above.
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           CHECK: ${{ inputs.check }}
+          # A site typed in by hand may be a preview; only the production site must say it is production.
+          CUSTOM_URL: ${{ inputs.url }}
           # The parse check spends from the upload budget, so the site only runs it for the cron secret.
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
@@ -53,4 +55,9 @@ jobs:
           echo "Health of ${SITE}: HTTP $code: $body" >> "$GITHUB_STEP_SUMMARY"
           # An annotation, so the result can be read from the checks API without downloading logs.
           esc=${body//'%'/'%25'}; esc=${esc//$'\r'/'%0D'}; esc=${esc//$'\n'/'%0A'}
+          # The production site must say it is production (/api/health "env"), so this never checks a preview by mistake.
+          if [ "$code" = 200 ] && [ -z "$CUSTOM_URL" ]; then
+            env_name=$(jq -r '.env // empty' health.json 2>/dev/null || true)
+            if [ "$env_name" != production ]; then echo "::error title=Health::${SITE} says env \"${env_name:-none}\", not production"; exit 1; fi
+          fi
           if [ "$code" = 200 ]; then echo "::notice title=Health::HTTP $code: $esc"; else echo "::error title=Health::HTTP $code: $esc"; exit 1; fi

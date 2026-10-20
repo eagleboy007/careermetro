@@ -49,13 +49,17 @@ export const jobCheckOpen = (deps: CorporateDeps = {}): boolean => workEmailRead
 
 /**
  * The job a work email checks for this person now, from their current confirmed profile and the roles they added on Me
- * (docs/plans/me-editing-plan.md choice 7): an added current role is checked as a resume one is.
+ * (docs/plans/me-editing-plan.md choice 7): an added current role is checked as a resume one is. The sample resume's
+ * roles never count.
  */
 async function checkedJob(userId: string, db: Db): Promise<(JobKey & { source: JobCheckSource }) | null> {
   const [analysis, added] = await Promise.all([currentAnalysis(userId, db), addedRolesOf(userId, db)]);
   const resume = analysis ? await getResumeForOwner(analysis.resumeId, { userId }, db) : null;
+  // The sample's jobs are made up (T111): only added roles can be checked while it is the current resume, so a check
+  // can never be started or saved for the sample's employer.
+  const resumeRoles = resume?.sample ? [] : (resume?.profile?.roles ?? []);
   const rows = [
-    ...(resume?.profile?.roles ?? []).map((r) => ({ r, source: "resume" as const })),
+    ...resumeRoles.map((r) => ({ r, source: "resume" as const })),
     ...added.map((a) => ({ r: addedAsResumeRole(a), source: "added" as const })),
   ];
   const roles = rows.map((x) => x.r);

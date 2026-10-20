@@ -18,6 +18,8 @@ import { rideGoalsFor } from "@/lib/ride/store";
 import { mapLine, MAX_CHOICE_GOALS } from "@/lib/schemas";
 import { addJobCheckGoal, createJobCheck, deleteJobCheck, goalSkillsOf, JOB_CHECK_LIMITS, jobChecksForPage, jobTextHash, listJobChecks, listStandInChecks, ownJobCheck, standInForPage } from "./store";
 import type { ParseJdClient } from "./parse";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
+import { LIMITS } from "@/lib/shared-limit";
 
 vi.mock("server-only", () => ({}));
 
@@ -75,7 +77,7 @@ describe.skipIf(!db)("job checks (database)", () => {
   });
 
   /** A confirmed resume for an anonymous session, or for a new account with an open goal and a stored analysis. */
-  async function seed({ account = false, confirmed = true } = {}) {
+  async function seed({ account = false, confirmed = true, sample = false } = {}) {
     let owner: Owner;
     let userId: string | null = null;
     if (account) {
@@ -86,7 +88,7 @@ describe.skipIf(!db)("job checks (database)", () => {
     } else owner = { sessionId: `${run}-${n++}` };
     const [resume] = await db!
       .insert(schema.resumes)
-      .values({ userId, anonymousSessionId: owner.sessionId ?? null, mimeType: "text/plain", sizeBytes: 10, status: "parsed" })
+      .values({ userId, anonymousSessionId: owner.sessionId ?? null, mimeType: sample ? SAMPLE_MIME : "text/plain", sizeBytes: 10, status: "parsed" })
       .returning();
     resumeIds.push(resume.id);
     const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: confirmed }).returning();
@@ -164,6 +166,24 @@ describe.skipIf(!db)("job checks (database)", () => {
     expect(await checksOf(me.resumeId)).toHaveLength(JOB_CHECK_LIMITS.perOwnerPerDay);
     // A posting already checked still opens: it costs nothing.
     expect(await createJobCheck(request(me.resumeId, { text: `${fixture.text}\nRef 0` }), me.owner, { db: db!, client })).toMatchObject({ ok: true, reused: true });
+  });
+
+  it(`allows ${LIMITS.sampleJobChecksPerIp.max} new checks of the sample resume a day per address, across sessions (T113)`, async () => {
+    const address = `${run}-address`;
+    const { client, create } = jdClient();
+    // Each try from a fresh anonymous session, as a script would: the per-owner count never fills.
+    for (let i = 0; i < LIMITS.sampleJobChecksPerIp.max; i++) {
+      const anon = await seed({ sample: true });
+      expect(await createJobCheck(request(anon.resumeId), anon.owner, { db: db!, client, clientHash: address })).toMatchObject({ ok: true, reused: false });
+    }
+    const late = await seed({ sample: true });
+    expect(await createJobCheck(request(late.resumeId), late.owner, { db: db!, client, clientHash: address })).toEqual({ ok: false, reason: "sample_limit" });
+    expect(create).toHaveBeenCalledTimes(LIMITS.sampleJobChecksPerIp.max);
+    expect(await checksOf(late.resumeId)).toHaveLength(0);
+    // Another address still can, and a person's own resume never counts against the address.
+    expect((await createJobCheck(request(late.resumeId), late.owner, { db: db!, client, clientHash: `${address}-other` })).ok).toBe(true);
+    const own = await seed();
+    expect((await createJobCheck(request(own.resumeId), own.owner, { db: db!, client, clientHash: address })).ok).toBe(true);
   });
 
   it("pauses when the day's budget is spent, and saves nothing", async () => {

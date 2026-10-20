@@ -13,7 +13,15 @@ export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model
 /** claudeError names a failed ping (status, type and, for a rejected request, the API's reason). The ping's input is fixed text, so the reason can't hold user data. */
 /** `schema` is "behind" when the database is missing migrations this build expects (pages that use the new tables fail). */
 /** `missingSecrets` names (never shows) production secrets that aren't set; without them the cleanup job can't run. */
-export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string; missingSecrets?: string[] };
+export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string; missingSecrets?: string[]; env?: DeployEnv };
+
+/** Which kind of deployment answers (T107): not secret, and lets the smoke scripts refuse production under any alias. */
+export type DeployEnv = "production" | "preview" | "development";
+
+/** VERCEL_ENV as one of three words; anything else (local, CI) is development. */
+export function deployEnv(env: Record<string, string | undefined> = process.env): DeployEnv {
+  return env.VERCEL_ENV === "production" || env.VERCEL_ENV === "preview" ? env.VERCEL_ENV : "development";
+}
 
 /** Secrets production needs: the cleanup job's key (FR-2's 24-hour delete) and the two hashing keys. */
 const PRODUCTION_SECRETS = ["CRON_SECRET", "NAME_HASH_KEY", "IP_HASH_KEY"] as const;
@@ -34,6 +42,8 @@ export type HealthDeps = {
   countMigrations?: () => Promise<{ applied: number; expected: number }>;
   /** From missingSecrets(). */
   missingSecrets?: string[];
+  /** From deployEnv(), shown as `env`. */
+  env?: DeployEnv;
 };
 
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
@@ -49,6 +59,7 @@ export async function checkHealth(deps: HealthDeps): Promise<Health> {
     claude,
     ...(error ? { claudeError: error } : {}),
     ...(missing ? { missingSecrets: missing } : {}),
+    ...(deps.env ? { env: deps.env } : {}),
   };
 }
 

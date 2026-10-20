@@ -47,6 +47,12 @@ export const LIMITS = {
    */
   sampleResumesPerOwner: { bucket: "sample-resume", max: 10, windowMs: 24 * HOUR },
   sampleResumesPerIp: { bucket: "sample-resume-ip", max: 60, windowMs: 24 * HOUR },
+  /**
+   * Pasted-job checks against the sample resume per network address a day (T113), each new check counted. Each one is a
+   * model call, and new anonymous sessions each bring a fresh per-owner count, so the address caps what a script can
+   * spend of the parse budget through the sample.
+   */
+  sampleJobChecksPerIp: { bucket: "sample-job-check-ip", max: 5, windowMs: 24 * HOUR },
   /** New message requests one person sends to people who aren't connections (dev/inbox-plan.md). */
   inboxRequestsPerUser: { bucket: "inbox-request", max: 20, windowMs: 24 * HOUR },
   /** Reports one person files: each starts IT Rules deadlines, so the grievance queue can't be flooded. */
