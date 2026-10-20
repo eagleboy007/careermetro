@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { eliteShelfEntries } from "@/content";
 import { eliteShelfView, type LibraryItem, type ShelfEntry } from "@/lib/schemas";
 import { exampleEliteShelf } from "./fixtures";
@@ -75,5 +75,14 @@ describe("buildEliteShelf", () => {
     const live = real(true, false);
     const checked = eliteShelfEntries.filter((e) => e.type === "own" && e.reviewed).length;
     expect(live.cards.filter((c) => c.type === "own")).toHaveLength(checked);
+  });
+
+  it("shows only checked items by default on a production deployment (T73)", () => {
+    vi.stubEnv("VERCEL_ENV", "production");
+    try {
+      expect(exampleEliteShelf(true)).toEqual(exampleEliteShelf(true, false));
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });

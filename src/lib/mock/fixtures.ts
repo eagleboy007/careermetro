@@ -1,7 +1,7 @@
 import { mockQuestions, roleProfiles } from "@/content";
 import type { MockFollowUpAsked, MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
 import { pickInterviewQuestions, resultOf, sessionViewOf } from "./interview";
-import { bankViewFor, choicePool, followUpsOf, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf } from "./rules";
+import { bankViewFor, choicePool, followUpsOf, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf, unreviewedAllowed } from "./rules";
 
 /*
  * Example data for /mock with no sign-in, and for /design: the real bank for a role, a running test and its review.
@@ -18,15 +18,15 @@ export const exampleDeparturesPrep = (jobs: readonly { id: string; roleSlug: str
 
 /**
  * /mock with example data: the bank for the role asked for (Data Analyst by default), Free or Elite, with a running
- * test or round. `allowUnreviewed` is true for /design; the signed-out page passes `unreviewedAllowed()`, so a
- * production deployment shows no content still waiting for review.
+ * test or round. `allowUnreviewed` defaults to `unreviewedAllowed()`, so a production deployment shows no content still
+ * waiting for review; tests pass it explicitly.
  */
 export function exampleMockPage(
   askedRole: string | null,
   elite: boolean,
   test: TimedTestView | null = null,
   interview: MockSessionView | null = null,
-  allowUnreviewed = true,
+  allowUnreviewed = unreviewedAllowed(),
 ): MockPageView {
   const roles = mockRoles(mockQuestions, roleProfiles, allowUnreviewed);
   const role = roleFor(roleProfiles, askedRole, null);
@@ -34,7 +34,7 @@ export function exampleMockPage(
 }
 
 const analyst = roleFor(roleProfiles, "data-analyst", null);
-const ids = pickTestQuestions(choicePool(mockQuestions, analyst, true), EXAMPLE_ID) ?? [];
+const ids = pickTestQuestions(choicePool(mockQuestions, analyst, unreviewedAllowed()), EXAMPLE_ID) ?? [];
 /** Picks for the example: the right answer on most, a wrong one on two, none on the last. */
 const picks = ids.map((id, i) => {
   const q = byId.get(id);
@@ -75,7 +75,7 @@ const exampleAnswers = [
 
 // The first question's first follow-up from the bank (an about-you question, which has follow-ups waiting for review).
 const firstQuestion = byId.get(interviewRow.questionIds[0] ?? "");
-const firstFollowUp = firstQuestion ? (followUpsOf(firstQuestion, true)[0] ?? null) : null;
+const firstFollowUp = firstQuestion ? (followUpsOf(firstQuestion, unreviewedAllowed())[0] ?? null) : null;
 
 /** The follow-up the interviewer asks after the example round's first answer (for /design), if the bank has one. */
 export const exampleMockFollowUp: MockFollowUpAsked | null = firstQuestion && firstFollowUp ? { position: 1, topic: firstQuestion.topic, text: firstFollowUp.text } : null;

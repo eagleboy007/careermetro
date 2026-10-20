@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { designGalleryEnabled } from "@/lib/preview";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
@@ -386,7 +388,9 @@ const exampleToday: TodayData = {
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
+// Example data includes content still waiting for review, so production never serves this page (T73).
 export default function DesignPage() {
+  if (!designGalleryEnabled()) notFound();
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-4 py-10">
       <header className="flex items-center justify-between border-b border-line pb-5">
@@ -842,9 +846,9 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">Network (signed in)</h2>
         <p className="text-sm text-muted">
           The &ldquo;Let people find me&rdquo; bar, then Connections, Requests, Sent and Find people with counts. Rows show the verified tick, handle,
-          target role only when shown, city, skills in common and the date; Connect opens the how-you-know pick inline, Remove and Block confirm inline,
-          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; and
-          Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
+          target role only when shown, skills in common and the date (never a city: only companies see it); Connect opens the how-you-know pick inline, Remove and Block confirm inline,
+          and Report opens a reason pick inline (the Inbox&rsquo;s review queue). Find people has the optional filters Aiming for my role, In &lt;city&gt; (matched on the
+          server) and Verified. Below: &ldquo;On your line&rdquo; (Later) and the Mentors teaser (after the beta). Example data, so nothing sends; Find people shows
           example results.
         </p>
         <NetworkView data={exampleNetwork} example={exampleSearch} />

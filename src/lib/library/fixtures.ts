@@ -1,4 +1,5 @@
 import { eliteShelfEntries, resources } from "@/content";
+import { unreviewedAllowed } from "@/lib/mock/rules";
 import type { EliteShelfView, LibraryItem, LibraryView } from "@/lib/schemas";
 import { buildEliteShelf } from "./shelf";
 
@@ -81,9 +82,10 @@ export const shelfSkillIdsByUrl: ReadonlyMap<string, readonly string[]> = new Ma
 
 /**
  * The real Elite shelf for the example person, Free (locked) or Elite. Its free sources are taken from the catalog file
- * as the healthy table would list them; the goals are the example's. Unchecked playbooks and drills show, as on preview.
+ * as the healthy table would list them; the goals are the example's. Unchecked playbooks and drills show only where
+ * `unreviewedAllowed()` allows them (local and preview), never in production.
  */
-export function exampleEliteShelf(elite: boolean, allowUnreviewed = true): EliteShelfView {
+export function exampleEliteShelf(elite: boolean, allowUnreviewed = unreviewedAllowed()): EliteShelfView {
   const urls = new Set(eliteShelfEntries.flatMap((e) => (e.type === "free" ? [e.url] : [])));
   const shelfItems: LibraryItem[] = resources
     .filter((r) => urls.has(r.url))

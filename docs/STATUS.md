@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (staging dry run: export check; fewer Vercel deployments)
+Last updated: 2026-10-20 (Testing Run 5 fixes T73 to T80)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -46,11 +46,13 @@ Last updated: 2026-10-20 (staging dry run: export check; fewer Vercel deployment
   - Goal sync skip (#200, no migration, `docs/plans/goal-sync-skip-plan.md`): a view first plans the sync from one read-only snapshot with no lock and writes nothing when nothing would change; otherwise the locked path runs as before.
   - Mock follow-ups part 2 (#201, no migration): all 95 open bank questions have two follow-ups (188), all `followUpsReviewed: false`, so production asks none until the expert review (`dev/mock-followups-draft.md`, pending item 27).
   - Staging dry run of prod-smoke (#202): `scripts/smoke/staging-dry-run.mjs` and the manual Smoke dry run (staging) workflow; prod-smoke.md's steps now match the app; the e2e walk's `smoke 6` covers Download, Sign out and signing in again.
+  - Staging dry run export check and fewer Vercel deployments (#203): 6.1 fetches the export with the page's cookies, and a full run passed; working branches make no Vercel deployment, and docs-only merges don't move staging.
 
 ## In progress
 
-- Staging dry run, first run (2026-10-20): every step passed except 6.1, where the browser download of the data file timed out behind Deployment Protection; 6.1 now fetches `/api/account/export` with the page's cookies and headers and checks the link's target (the click itself stays covered by the e2e walk's `smoke 6`). The second run from the fix branch passed every step.
-- Fewer Vercel deployments: `git.deploymentEnabled` in vercel.json turns off deployments for claude/, feature/, fix/, dependabot/ and data/ branches; staging.yml skips moving staging when a merge only touches docs, eval fixtures, e2e or smoke scripts or workflows; vercel-ignore.sh skips the same list.
+- Known limits: the daily job for refused or held certificates now looks only at met goals the certificate could fill (its skill's goal or a group goal with it), not every met goal the person has.
+- Market trends, role switches and state-wise jobs and pay (pending item 24): plan only, proposed and not approved, in `docs/plans/market-trends-plan.md` (dev/ copy); decisions D1 to D6 wait on Milin.
+- Testing Run 5 fixes (T73 to T80): /design is 404 in production and fixtures hide unreviewed content there; Network rows carry no city and search runs in SQL (no 2,000 cap); jobs added on Me hide the person from that employer; a hand-added role can't take another job's verified badge; capped boards close posts that left the feed; microphone=(self); a same-commit Redeploy on production builds. Lows T81 to T92 and the T82 chat note (PM: accepted chats continue, with a note) are next.
 
 ## Next up
 
@@ -93,7 +95,6 @@ Numbers: the next migration is **0046**. `EXPORT_VERSION` (31) lives in `src/lib
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
 - **Milin, decisions:** the cut-off end of his name-search message; the employer-hiding rule (Project manager's call, reversible); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
 - **Project manager:** deleting merged remote branches, which the permission check blocks for Development.
-- `reopenUnconfirmedGoals` (daily cleanup) re-checks every rejected or held certificate each day. That is fine at beta scale, but limit it to recent rows when there are many.
 - `/mnt/project-files` sometimes gives I/O errors. When it does, write to `docs/` and copy across later.
 - Thread containers can't reach `registry.npmjs.org`, so CI is the npm check.
 - CI logs are readable only through the GitHub MCP `get_job_logs` with `return_content`.
@@ -102,4 +103,4 @@ Numbers: the next migration is **0046**. `EXPORT_VERSION` (31) lives in `src/lib
 - Worktrees are locked; remove them with `git worktree remove -f -f`.
 - `.claude/` is in git's local exclude file; use `git add -f`.
 - Next 16 differs from the Next you know; read `node_modules/next/dist/docs/` first.
-- Vercel Hobby allows 100 deploys a day, and every PR push deploys. Push once per PR.
+- Vercel Hobby allows 100 deploys a day. Working branches (`claude/`, `feature/`, `fix/`, `dependabot/`, `data/`) make no deployment (#203), so only merges to main and the staging move count; push once per PR anyway.

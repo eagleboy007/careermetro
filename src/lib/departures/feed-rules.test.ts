@@ -240,7 +240,7 @@ describe("collect", () => {
     expect(text).not.toMatch(/Analyst|Engineer|SQL|Pune/);
   });
 
-  it("marks a board the caps cut and a full SmartRecruiters page, keeps every post it saw, and closes neither board", async () => {
+  it("marks a board the caps cut and a full SmartRecruiters page, keeps every post it saw, and closes only on the board read whole (T79)", async () => {
     const capped = await collect(boards, matchers, { fetchImpl: fakeFetch(allAnswers()), perBoard: 1 });
     const gh = capped.results.find((r) => r.token === "examplelabs");
     expect(gh).toMatchObject({ ok: true, posts: 3, capped: true });
@@ -248,8 +248,10 @@ describe("collect", () => {
     expect(capped.seen.filter((s) => s.k === "greenhouse:examplelabs")).toHaveLength(3);
     expect(capped.results.find((r) => r.token === "examplepay")?.capped).toBeUndefined();
     const closing = boardsToClose([], capped.results, boards, false);
-    expect(closing).not.toContain("greenhouse:examplelabs");
+    // Read whole though capped: it closes what left it, and writeRun keeps the posts it saw (seen) open.
+    expect(closing).toContain("greenhouse:examplelabs");
     expect(closing).toContain("ashby:examplepay");
+    expect(summaryLines(capped.results, capped.rows.length, null).join("\n")).toContain("Capped greenhouse/examplelabs: over the post caps");
 
     const page = fixture("smartrecruiters") as { content: unknown[] };
     const full = { content: Array.from({ length: FEED_LIMITS.smartRecruitersPage }, (_, i) => page.content[i % page.content.length]) };
@@ -333,7 +335,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     expect((await posts()).filter((p) => p.external_id === "4003")).toHaveLength(1);
   });
 
-  it("never closes a post the caps left out", async () => {
+  it("never closes a post the caps left out, but still closes one that left a capped board (T79)", async () => {
     await once(answers(fixture("greenhouse"), fixture("lever")), 3);
     const { rows, results, seen } = await collect(mine, matchers, { fetchImpl: answers(fixture("greenhouse"), fixture("lever")), perBoard: 1 });
     const startedAt = at(4);
@@ -342,6 +344,16 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     // Both boards were cut to one post; the others were seen, so all stay open.
     expect(written.closed).toBe(0);
     expect((await posts()).filter((p) => p.closed_at !== null).map((p) => p.external_id)).toEqual([]);
+
+    // Next day 4004 is gone from Greenhouse and the caps still cut both boards: 4004 closes, every post seen stays open.
+    const gh = fixture("greenhouse") as { jobs: { id: unknown }[] };
+    const later = await collect(mine, matchers, { fetchImpl: answers({ jobs: gh.jobs.filter((j) => j.id !== 4004) }, fixture("lever")), perBoard: 1 });
+    expect(later.results.every((r) => r.capped)).toBe(true);
+    const next = at(5);
+    const closing = await writeRun(sql!, { ...later, boards: mine, startedAt: next, now: new Date(next.getTime() + 1000), closeUnlisted: false });
+    runIds.push(closing.runId);
+    expect(closing.closed).toBe(1);
+    expect((await posts()).filter((p) => p.closed_at !== null).map((p) => p.external_id)).toEqual(["4004"]);
   });
 
   it("refuses a row the table's checks don't allow", async () => {

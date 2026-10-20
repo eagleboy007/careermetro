@@ -325,6 +325,40 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
   });
 
+  it("never shows the company someone whose only current job there was added on Me, by name or by a work-email check (T75)", async () => {
+    const s = await setup("added");
+    // Both left Konkan on their resumes; their current job is one they added on Me.
+    const named = await seeker("a-named", { name: "Priya Sharma" });
+    const checked = await seeker("a-checked", { name: "Priya Nair" });
+    const other = await seeker("a-other", { name: "Kavya Reddy" });
+    const ended = profileWith(["Python", "Linux"]);
+    ended.roles = ended.roles.map((r) => ({ ...r, end: "2025-12" }));
+    for (const id of [named, checked, other]) {
+      const [resume] = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.userId, id));
+      await db!.update(schema.profiles).set({ data: ended }).where(eq(schema.profiles.resumeId, resume.id));
+    }
+    const cards = await found(s.admin, s.jobId);
+    expect(names(cards)).toEqual(["Kavya Reddy", "Priya Nair", "Priya Sharma"]);
+    const refOf = (name: string) => cards.find((c) => c.name === name)!.ref;
+    const added = (userId: string, employer: string) =>
+      db!.insert(schema.meRoles).values({ userId, title: "SOC analyst", employer, startMonth: "2026-01", endMonth: null, isCurrent: true, createdAt: clock, updatedAt: clock });
+    // "Example Labs, I work here now", added on Me.
+    await added(named, "Example Labs Pvt. Ltd.");
+    // A name that doesn't plainly say Example Labs, but a work-email code at its domain checked that job.
+    await added(checked, "Nimbus Cyber Unit");
+    await db!.insert(schema.jobEmailChecks).values({ userId: checked, employer: "Nimbus Cyber Unit", employerKey: "nimbus cyber unit", startMonth: "2026-01", domain: s.domain, status: "review", checkedAt: clock });
+    // A current job somewhere else changes nothing.
+    await added(other, "Garuda Security");
+
+    expect(names(await found(s.admin, s.jobId))).toEqual(["Kavya Reddy"]);
+    expect(await found(s.admin, s.jobId, { name: "priya" })).toEqual([]);
+    for (const name of ["Priya Sharma", "Priya Nair"]) {
+      expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: refOf(name) }, fd())).toEqual({ ok: false, error: "not_found" });
+      expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: refOf(name), body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
+    }
+    expect((await openFoundPerson(s.admin, { jobId: s.jobId, ref: refOf("Kavya Reddy") }, fd())).ok).toBe(true);
+  });
+
   it("lets only Recruiter admins and Hiring HR on the job of a verified company search", async () => {
     const s = await setup("roles");
     await seeker("roles-p");
