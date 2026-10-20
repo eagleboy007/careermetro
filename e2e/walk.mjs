@@ -1312,7 +1312,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   await p.goto(BASE + "/settings");
   await settled();
-  await p.getByLabel("Only you").check({ force: true });
+  await p.getByLabel("Only you", { exact: true }).check({ force: true });
   await p.getByRole("button", { name: "Save changes" }).click();
   await p.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
   await q.goto(BASE + `/u/${handle}`);
