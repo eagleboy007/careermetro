@@ -26,6 +26,7 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
+import { RESOURCE_REPORT_REASONS, RESOURCE_REPORT_STATUSES, SUGGESTION_DECLINE_REASONS, SUGGESTION_STATUSES } from "../lib/schemas/constants";
 import {
   APPLICATION_EVENT_KINDS,
   APPLICATION_STAGES,
@@ -468,6 +469,11 @@ export const resources = pgTable("resources", {
   healthy: boolean("healthy").notNull().default(true),
   lastCheckedAt: timestamp("last_checked_at", { withTimezone: true }),
   createdAt: createdAt(),
+  /**
+   * Hidden by an admin from /admin/library (docs/plans/library-part-2-plan.md): it leaves the Library, paths and rides
+   * at once. Apart from `healthy`, which the daily link check writes, so the check can't bring a hidden link back.
+   */
+  hiddenAt: timestamp("hidden_at", { withTimezone: true }),
 });
 
 export const resourceChecks = pgTable("resource_checks", {
@@ -1477,6 +1483,101 @@ export const jobFeedRuns = pgTable(
     postsClosed: integer("posts_closed").notNull().default(0),
   },
   (t) => [index("job_feed_runs_finished").on(t.finishedAt)],
+);
+
+/* Library part 2 (docs/plans/library-part-2-plan.md) -------------------------------------------------------- */
+
+/**
+ * The person's own marks on a catalog resource: the bookmark (`saved_at`), "I finished this" (`finished_at`, the box
+ * only; ride and Path ticks stay in their own tables) and Add to my rides (`on_ride_at`). Owner only; a row with none
+ * of the three is deleted, not kept. Goes with the account and with the resource (on delete cascade).
+ */
+export const userResources = pgTable(
+  "user_resources",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    resourceId: uuid("resource_id")
+      .notNull()
+      .references(() => resources.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    onRideAt: timestamp("on_ride_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.resourceId] }),
+    index("user_resources_resource").on(t.resourceId),
+    check("user_resources_not_empty", sql`${t.savedAt} is not null or ${t.finishedAt} is not null or ${t.onRideAt} is not null`),
+  ],
+);
+
+/**
+ * "Report a broken link": a fixed reason and no note, so nothing typed is kept. One open report per person and
+ * resource. An admin hides the link or dismisses the reports from /admin/library. Outlives the reporter's account
+ * (user set to null): it holds no personal data. Decided reports go 180 days after the decision (the daily cleanup).
+ */
+export const resourceReports = pgTable(
+  "resource_reports",
+  {
+    id: id(),
+    resourceId: uuid("resource_id")
+      .notNull()
+      .references(() => resources.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    reason: text("reason", { enum: RESOURCE_REPORT_REASONS }).notNull(),
+    status: text("status", { enum: RESOURCE_REPORT_STATUSES }).notNull().default("open"),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    /** The admin who decided. Never queried by, so not indexed (as messages.hidden_by). */
+    decidedBy: uuid("decided_by").references(() => users.id, { onDelete: "set null" }),
+  },
+  (t) => [
+    uniqueIndex("resource_reports_open_once").on(t.resourceId, t.userId).where(sql`${t.status} = 'open'`),
+    index("resource_reports_status_created").on(t.status, t.createdAt),
+    index("resource_reports_resource").on(t.resourceId),
+    index("resource_reports_user").on(t.userId),
+    check("resource_reports_reason", sql`${t.reason} in ('broken', 'not_free', 'outdated', 'other')`),
+    check("resource_reports_status", sql`${t.status} in ('open', 'hidden', 'dismissed')`),
+    check("resource_reports_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
+  ],
+);
+
+/**
+ * "Suggest a free resource": an https link (tracking and affiliate parameters stripped, never fetched by the server),
+ * its host and the goal's skill it is for (null is Other). A reviewer decides on /admin/library; an accepted link
+ * reaches the catalog only by a pull request to src/content/resources.json. Outlives the account (user set to null).
+ * Decided suggestions go 180 days after the decision (the daily cleanup).
+ */
+export const resourceSuggestions = pgTable(
+  "resource_suggestions",
+  {
+    id: id(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    url: text("url").notNull(),
+    host: text("host").notNull(),
+    skillId: text("skill_id").references(() => skills.id, { onDelete: "set null" }),
+    status: text("status", { enum: SUGGESTION_STATUSES }).notNull().default("open"),
+    declineReason: text("decline_reason", { enum: SUGGESTION_DECLINE_REASONS }),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    /** The admin who decided. Never queried by, so not indexed. */
+    decidedBy: uuid("decided_by").references(() => users.id, { onDelete: "set null" }),
+  },
+  (t) => [
+    uniqueIndex("resource_suggestions_user_url").on(t.userId, t.url),
+    index("resource_suggestions_status_created").on(t.status, t.createdAt),
+    index("resource_suggestions_skill").on(t.skillId),
+    check("resource_suggestions_url", sql`${t.url} like 'https://%' and char_length(${t.url}) <= 500`),
+    check("resource_suggestions_host_length", sql`char_length(${t.host}) between 1 and 253`),
+    check("resource_suggestions_status", sql`${t.status} in ('open', 'accepted', 'duplicate', 'declined')`),
+    check("resource_suggestions_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
+    check(
+      "resource_suggestions_decline_reason",
+      sql`(${t.status} = 'declined') = (${t.declineReason} is not null) and (${t.declineReason} is null or ${t.declineReason} in ('not_free', 'paywall', 'affiliate', 'off_topic', 'other'))`,
+    ),
+  ],
 );
 
 /* Audit ------------------------------------------------------------------- */

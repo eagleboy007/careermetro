@@ -1,5 +1,6 @@
 import type { JobCheckRowView } from "@/components/admin/job-check-review";
 import type { AdminCompanyView } from "@/lib/corporate/types";
+import type { LibraryAdminView } from "@/lib/schemas";
 import type { HeldProofView, HiddenMessageView, ReportReviewView, SuspendedAccountView } from "@/lib/schemas/admin";
 
 /** Example rows of the company review list for /design. Synthetic companies on reserved example domains. */
@@ -166,3 +167,35 @@ export const exampleJobChecks: JobCheckRowView[] = [
   { id: "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b01", employer: "Konkan Co-operative Bank", domain: "kcbank.example", checkedAt: "2026-10-14T05:20:00.000Z" },
   { id: "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b02", employer: "Western Ghats Logistics", domain: "wgl-group.example", checkedAt: "2026-10-15T09:45:00.000Z" },
 ];
+
+/** Example Library review lists for /design: real catalog links, made-up reports and suggestions on example domains. */
+export const exampleLibraryQueue: LibraryAdminView = {
+  broken: [
+    {
+      id: "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+      title: "OpenIntro Statistics (free textbook)",
+      provider: "OpenIntro",
+      url: "https://www.openintro.org/book/os/",
+      counts: { broken: 2, not_free: 0, outdated: 1, other: 0 },
+      firstReported: "2026-10-17",
+      healthy: false,
+      lastChecked: "2026-10-19",
+      hidden: false,
+    },
+    {
+      id: "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e",
+      title: "DAX reference",
+      provider: "Microsoft Learn",
+      url: "https://learn.microsoft.com/en-us/dax/",
+      counts: { broken: 0, not_free: 0, outdated: 0, other: 0 },
+      firstReported: null,
+      healthy: true,
+      lastChecked: null,
+      hidden: true,
+    },
+  ],
+  suggestions: [
+    { id: "3c4d5e6f-7a8b-4c9d-8e1f-2a3b4c5d6e7f", url: "https://learn.example.org/power-bi/intro", host: "learn.example.org", skill: "Power BI", sent: "2026-10-18" },
+    { id: "4d5e6f7a-8b9c-4d0e-9f2a-3b4c5d6e7f80", url: "https://videos.example.org/watch?v=stats101", host: "videos.example.org", skill: null, sent: "2026-10-19" },
+  ],
+};

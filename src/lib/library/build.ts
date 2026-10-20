@@ -1,6 +1,7 @@
 import { certificatesFor } from "@/lib/proofs/eligible";
-import { MAX_COURSES, type RideGoal } from "@/lib/ride/build";
+import { addedTaskId, MAX_COURSES, parseAddedTask, rideParts, type RideGoal } from "@/lib/ride/build";
 import { libraryItem, libraryView, type LibraryGoal, type LibraryItem, type LibraryLanguage, type LibraryView, type Ride } from "@/lib/schemas";
+import { ON_RIDE_MAX } from "@/lib/schemas/constants";
 import { clip } from "@/lib/text";
 
 /** Resources on one goal card: the path's courses first, then the catalog's for the same skill. */
@@ -24,7 +25,12 @@ export type LibraryInput = {
   ticked: ReadonlySet<string>;
   /** Today's ride, for "On your ride". Null when there is none. */
   ride: Ride | null;
+  /** The person's own marks (user_resources): saved newest first, the "I finished this" ticks, and Add to my rides. */
+  marks?: LibraryMarks;
 };
+
+export type LibraryMarks = { saved: string[]; ticked: string[]; added: string[] };
+const NO_MARKS: LibraryMarks = { saved: [], ticked: [], added: [] };
 
 /** A catalog row as the Library shows it, or null when it can't be shown (a kind or link the schema refuses). */
 function item(row: CatalogRow, input: LibraryInput): LibraryItem | null {
@@ -51,6 +57,7 @@ const taskId = (goalId: string, resourceId: string) => `${goalId}:r:${resourceId
  * the person's own ticks (ride tasks ticked, a learn pitstop marked done on the Path); nothing here fills a gap.
  */
 export function buildLibrary(input: LibraryInput): LibraryView {
+  const marks = input.marks ?? NO_MARKS;
   const items = input.catalog.flatMap((r) => {
     const i = item(r, input);
     return i ? [i] : [];
@@ -63,14 +70,18 @@ export function buildLibrary(input: LibraryInput): LibraryView {
   }
 
   const onRide = (input.ride?.tasks ?? []).flatMap((t) => {
+    const added = parseAddedTask(t.id);
     const at = t.id.indexOf(":r:");
-    const id = at > 0 ? t.id.slice(at + 3) : "";
+    const id = added ? added.resourceId : at > 0 ? t.id.slice(at + 3) : "";
     return id && known.has(id) ? [id] : [];
   });
   const rideGoalId = input.ride?.prove?.goalId ?? null;
 
   const finished = new Set<string>();
+  // An added resource is finished once its last part is ticked on a ride.
+  for (const r of input.catalog) if (known.has(r.id) && input.ticked.has(addedTaskId(r.id, rideParts(r.minutes)))) finished.add(r.id);
   const cards: LibraryGoal[] = [];
+  const rideCourses = new Set<string>();
   let n = 1;
   for (const g of input.goals) {
     const learnPitstop = g.status === "missing" ? n++ : null;
@@ -82,6 +93,7 @@ export function buildLibrary(input: LibraryInput): LibraryView {
     // The Path's "done" tick counts as every task of the pitstop ticked.
     if (g.learnDone) for (const id of courses) finished.add(id);
     if (g.proved || g.skipped) continue;
+    if (!g.choice) for (const id of courses) rideCourses.add(id);
 
     const skill = input.learnSkill.get(g.goalId) ?? g.skillId;
     const extras = (bySkill.get(skill) ?? [])
@@ -110,7 +122,12 @@ export function buildLibrary(input: LibraryInput): LibraryView {
     pathHref: input.pathHref,
     goals: cards,
     items,
-    onRide: [...new Set(onRide)].slice(0, 3),
+    onRide: [...new Set(onRide)],
     finished: [...finished],
+    // A mark on a link that has since left the catalog (broken or hidden) isn't shown.
+    saved: marks.saved.filter((id) => known.has(id)),
+    ticked: marks.ticked.filter((id) => known.has(id)),
+    added: marks.added.filter((id) => known.has(id) && !finished.has(id) && !marks.ticked.includes(id)).slice(0, ON_RIDE_MAX),
+    rideCourses: [...rideCourses],
   });
 }

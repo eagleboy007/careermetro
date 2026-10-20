@@ -7,7 +7,17 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
-import { DEPARTURE_CHANGES_PER_DAY, ELITE_CHANGES_PER_DAY, JOB_SEARCH_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import {
+  DEPARTURE_CHANGES_PER_DAY,
+  ELITE_CHANGES_PER_DAY,
+  JOB_SEARCH_CHANGES_PER_DAY,
+  LIBRARY_CHANGES_PER_DAY,
+  MOCK_FEEDBACK_PER_DAY,
+  MOCK_SESSIONS_PER_DAY,
+  RESOURCE_REPORTS_PER_DAY,
+  SUGGESTIONS_PER_DAY,
+  TIMED_TESTS_PER_DAY,
+} from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -101,6 +111,12 @@ export const LIMITS = {
   jobSearchChangesPerUserDay: { bucket: "job-search-change", max: JOB_SEARCH_CHANGES_PER_DAY, windowMs: 24 * HOUR },
   /** Saves and stage changes on Departures (docs/plans/departures-live-plan.md), each try counted. */
   departureChangesPerUserDay: { bucket: "departure-change", max: DEPARTURE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Save, "I finished this" and Add to my rides in the Library (docs/plans/library-part-2-plan.md), each try counted. */
+  libraryChangesPerUserDay: { bucket: "library-change", max: LIBRARY_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** "Report a broken link" tries one person makes a day. */
+  resourceReportsPerUserDay: { bucket: "resource-report", max: RESOURCE_REPORTS_PER_DAY, windowMs: 24 * HOUR },
+  /** "Suggest a free resource" tries one person makes a day. */
+  resourceSuggestionsPerUserDay: { bucket: "resource-suggestion", max: SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

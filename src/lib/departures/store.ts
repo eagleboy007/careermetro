@@ -212,7 +212,7 @@ export async function clearStage(userId: string, raw: unknown, deps: Deps = {}):
   });
 }
 
-/** For Download your data (export version 26): the person's saved and applied posts, oldest change first. */
+/** For Download your data (added in export version 26): the person's saved and applied posts, oldest change first. */
 export async function exportDepartures(userId: string, db: Db = getDb()): Promise<DepartureExport[]> {
   const rows = await db
     .select({

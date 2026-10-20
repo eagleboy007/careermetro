@@ -57,7 +57,7 @@ import { MarketView } from "@/components/market/market-view";
 import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
-import { LibraryView } from "@/components/library/library-view";
+import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
@@ -123,7 +123,8 @@ import { OrgSignupForm } from "@/components/corporate/org-signup-form";
 import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/components/corporate/parts";
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
 import { JobCheckReview } from "@/components/admin/job-check-review";
-import { exampleHeldProofs, exampleInForce, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies, exampleJobChecks } from "@/components/admin/fixtures";
+import { BrokenLinkCard, LibraryReview, SuggestionCard } from "@/components/admin/library-review";
+import { exampleHeldProofs, exampleInForce, exampleJobChecks, exampleLibraryQueue, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
 import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
@@ -627,6 +628,24 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Library part 2: Save, I finished this, rides, reports and suggestions</h2>
+        <p className="text-sm text-muted">
+          docs/plans/library-part-2-plan.md: the bookmark on every row and in the details panel (pressed when saved), the Saved tab newest first with
+          its count, &quot;I finished this&quot; (the person&apos;s own tick; it never fills a gap), Add to my rides, which reads On your rides
+          once added, with Take it off my rides, and Link broken or out of date? Below, the Saved tab with an item added to the rides, then the report
+          menu open, and the suggest panel with goal chips, with no goals (Other only) and with a pasted link. Toasts say what changed. Example data.
+        </p>
+        <LibraryView view={{ ...exampleLibrary, added: ["r3"], ticked: ["r10"] }} shelf={exampleEliteShelf(false)} tab="saved" initialSelected="r3" />
+        <div className="grid gap-4 min-[760px]:grid-cols-3">
+          <div className="rounded-lg border border-line p-4">
+            <ReportLink title="DAX reference" initialOpen />
+          </div>
+          <SuggestPanel id="design-suggest-goals" goals={exampleLibrary.goals} />
+          <SuggestPanel id="design-suggest-other" goals={[]} initialUrl="https://www.kaggle.com/learn/pandas" />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
         <p className="text-sm text-muted">
           Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
@@ -848,6 +867,27 @@ export default function DesignPage() {
         </div>
         <div className="rounded-lg border border-line p-4">
           <ProofReview proofs={[]} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Library review (admins only)</h2>
+        <p className="text-sm text-muted">
+          /admin/library: Broken links, one row per link with open reports (counts by reason, first report, the link check&apos;s last result) and
+          links already hidden, with Hide link, Show again and Dismiss reports; Suggestions with the link (opened by the admin in a new tab, no
+          referrer), the host, the goal chip and the date, with Accept, Already in the Library and Decline with its reason. No reporter or suggester
+          is shown. Example data, so the buttons do nothing.
+        </p>
+        {/* Their own ids, so the rows below don't repeat the whole page's. */}
+        <BrokenLinkCard row={{ ...exampleLibraryQueue.broken[0]!, id: "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d" }} pending={false} />
+        <BrokenLinkCard row={{ ...exampleLibraryQueue.broken[1]!, id: "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e" }} pending={false} />
+        <SuggestionCard row={{ ...exampleLibraryQueue.suggestions[0]!, id: "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f" }} pending={false} />
+        <p className="text-sm text-muted">The whole page, and the page with nothing waiting.</p>
+        <div className="rounded-lg border border-line p-4">
+          <LibraryReview queue={exampleLibraryQueue} />
+        </div>
+        <div className="rounded-lg border border-line p-4">
+          <LibraryReview queue={{ broken: [], suggestions: [] }} />
         </div>
       </section>
 
