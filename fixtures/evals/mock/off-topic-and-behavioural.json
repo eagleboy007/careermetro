@@ -1,0 +1,10 @@
+{
+  "id": "off-topic-and-behavioural",
+  "note": "Synthetic. A full About you round with one off-topic answer and one in Hinglish; the feedback must say plainly when an answer misses the question.",
+  "roleSlug": "business-analyst",
+  "answers": [
+    { "questionId": "stakeholder-management-2", "answer": "My manager wanted a report in two days which needed a week. I said no to the date, showed what we could give in two days and agreed the full report for Friday." },
+    { "questionId": "communication-4", "answer": "I like cricket and I watch every IPL match with my friends." },
+    { "questionId": "communication-1", "answer": "Main ne BBA kiya, phir ek startup mein operations sambhala. Ab business analyst banna chahta hoon kyunki mujhe process improve karna pasand hai." }
+  ]
+}

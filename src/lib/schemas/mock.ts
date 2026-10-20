@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MOCK_TABS, TIMED_TEST_QUESTIONS } from "./constants";
+import { MOCK_ANSWER_MAX_CHARS, MOCK_FEEDBACK_STATES, MOCK_FOCUSES, MOCK_LENGTHS, MOCK_MAX_QUESTIONS, MOCK_TABS, TIMED_TEST_QUESTIONS } from "./constants";
 
 /*
  * Interview prep (`/mock`, FR-50 part 2, handoff 12l, docs/plans/elite-plan.md): the question bank and the timed test.
@@ -7,7 +7,22 @@ import { MOCK_TABS, TIMED_TEST_QUESTIONS } from "./constants";
  * by code. No billing anywhere.
  */
 
-export { MOCK_BANK_FREE_OPEN, MOCK_TABS, TIMED_TEST_MINUTES, TIMED_TEST_QUESTIONS, TIMED_TESTS_PER_DAY } from "./constants";
+export {
+  MOCK_ANSWER_MAX_CHARS,
+  MOCK_BANK_FREE_OPEN,
+  MOCK_FEEDBACK_PER_DAY,
+  MOCK_FEEDBACK_STATES,
+  MOCK_FOCUSES,
+  MOCK_LENGTH_MINUTES,
+  MOCK_LENGTH_QUESTIONS,
+  MOCK_LENGTHS,
+  MOCK_MAX_QUESTIONS,
+  MOCK_SESSIONS_PER_DAY,
+  MOCK_TABS,
+  TIMED_TEST_MINUTES,
+  TIMED_TEST_QUESTIONS,
+  TIMED_TESTS_PER_DAY,
+} from "./constants";
 
 const slug = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const uuid = z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
@@ -104,15 +119,6 @@ export const timedTestReview = z.strictObject({
 });
 export type TimedTestReview = z.infer<typeof timedTestReview>;
 
-/** Everything /mock shows. `test` is the person's running test, if one is still within its 15 minutes. */
-export const mockPageView = z.strictObject({
-  elite: z.boolean(),
-  role: mockRole,
-  roles: z.array(mockRole).max(60),
-  bank: mockBankView,
-  test: timedTestView.nullable(),
-});
-export type MockPageView = z.infer<typeof mockPageView>;
 
 /** "Start the test" for a role. */
 export const timedTestStartInput = z.strictObject({ roleSlug: z.string().min(1).max(80).regex(slug) });
@@ -128,3 +134,106 @@ export type TimedTestError = (typeof TIMED_TEST_ERRORS)[number];
 export type TimedTestStartResult = { ok: true; test: TimedTestView } | { ok: false; message: string };
 export type TimedTestPickResult = { ok: true } | { ok: false; message: string; over: boolean };
 export type TimedTestFinishResult = { ok: true; review: TimedTestReview } | { ok: false; message: string };
+
+/*
+ * The mock interview (FR-50 part 3, handoff 12l, prompts/mock-interview): bank questions picked by code for a role,
+ * length and focus; the person's typed (or spoken, turned to text on their device) answers; and one model call when
+ * the session ends, for feedback in words. Never a score, grade, rating or "ready".
+ */
+
+export const mockLength = z.enum(MOCK_LENGTHS);
+export type MockLength = z.infer<typeof mockLength>;
+export const mockFocus = z.enum(MOCK_FOCUSES);
+export type MockFocus = z.infer<typeof mockFocus>;
+const position = z.number().int().min(1).max(MOCK_MAX_QUESTIONS);
+/** An answer as typed: trimmed, at most 4,000 characters. Empty means the question was skipped. */
+const answerText = z.string().trim().max(MOCK_ANSWER_MAX_CHARS);
+
+/** "Start mock interview": the role, Quick or Full, and the focus. */
+export const mockInterviewStartInput = z.strictObject({ roleSlug: z.string().min(1).max(80).regex(slug), length: mockLength, focus: mockFocus });
+/** "Next": the answer to one question of the person's running session (empty clears a saved one). */
+export const mockInterviewAnswerInput = z.strictObject({ sessionId: uuid, position, answer: answerText });
+/** "End and get feedback", or the time running out: any answers not saved yet go with it. */
+export const mockInterviewEndInput = z.strictObject({
+  sessionId: uuid,
+  answers: z.array(z.strictObject({ position, answer: answerText })).max(MOCK_MAX_QUESTIONS),
+});
+
+/**
+ * What prompts/mock-interview must return: a summary in words and, for each answered question by its position, what
+ * worked and what to add next time. Positions are checked against the answers in code (src/lib/mock/interview-feedback.ts).
+ */
+export const mockInterviewFeedback = z.object({
+  summary: z.string().trim().min(1).max(800),
+  questions: z
+    .array(z.object({ position: z.number().int(), whatWorked: z.string().trim().min(1).max(500), addNextTime: z.string().trim().min(1).max(500) }))
+    .min(1)
+    .max(MOCK_MAX_QUESTIONS),
+});
+export type MockInterviewFeedback = z.infer<typeof mockInterviewFeedback>;
+/** What mock_sessions.feedback keeps: the summary only; per-question words sit with the answers. */
+export type MockSessionFeedback = { summary: string };
+
+const roleTitle = z.string().min(1).max(120);
+export const mockInterviewQuestion = z.strictObject({ position, id: questionId, topic, question: text(300) });
+export type MockInterviewQuestion = z.infer<typeof mockInterviewQuestion>;
+
+/** A running session as the screen gets it: its questions, the answers saved so far ("" for none) and time left. */
+export const mockSessionView = z.strictObject({
+  id: uuid,
+  roleSlug: z.string().regex(slug),
+  roleTitle,
+  length: mockLength,
+  focus: mockFocus,
+  questions: z.array(mockInterviewQuestion).min(1).max(MOCK_MAX_QUESTIONS),
+  answers: z.array(z.string().max(MOCK_ANSWER_MAX_CHARS)).max(MOCK_MAX_QUESTIONS),
+  secondsLeft: z.number().int().min(0),
+});
+export type MockSessionView = z.infer<typeof mockSessionView>;
+
+export const mockFeedbackState = z.enum(MOCK_FEEDBACK_STATES);
+export type MockFeedbackState = z.infer<typeof mockFeedbackState>;
+
+/** The feedback screen: the summary in words, then each question with the answer, what worked and what to add. */
+export const mockSessionResult = z.strictObject({
+  id: uuid,
+  roleTitle,
+  length: mockLength,
+  answered: z.number().int().min(0).max(MOCK_MAX_QUESTIONS),
+  total: z.number().int().min(1).max(MOCK_MAX_QUESTIONS),
+  feedback: mockFeedbackState,
+  summary: z.string().max(800).nullable(),
+  items: z
+    .array(
+      z.strictObject({
+        position,
+        id: questionId,
+        topic,
+        question: text(300),
+        answer: z.string().max(MOCK_ANSWER_MAX_CHARS).nullable(),
+        whatWorked: z.string().max(500).nullable(),
+        addNextTime: z.string().max(500).nullable(),
+        bankHref: z.string().startsWith("/mock"),
+      }),
+    )
+    .max(MOCK_MAX_QUESTIONS),
+});
+export type MockSessionResult = z.infer<typeof mockSessionResult>;
+
+export const MOCK_INTERVIEW_ERRORS = ["invalid", "not_elite", "limit", "no_questions", "not_found", "over"] as const;
+export type MockInterviewError = (typeof MOCK_INTERVIEW_ERRORS)[number];
+
+export type MockInterviewStartResult = { ok: true; session: MockSessionView } | { ok: false; message: string };
+export type MockInterviewAnswerResult = { ok: true } | { ok: false; message: string; over: boolean };
+export type MockInterviewEndResult = { ok: true; result: MockSessionResult } | { ok: false; message: string };
+
+/** Everything /mock shows. `test` and `interview` are the person's running test and session, if still within time. */
+export const mockPageView = z.strictObject({
+  elite: z.boolean(),
+  role: mockRole,
+  roles: z.array(mockRole).max(60),
+  bank: mockBankView,
+  test: timedTestView.nullable(),
+  interview: mockSessionView.nullable(),
+});
+export type MockPageView = z.infer<typeof mockPageView>;

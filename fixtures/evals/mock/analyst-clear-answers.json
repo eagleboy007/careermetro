@@ -1,0 +1,11 @@
+{
+  "id": "analyst-clear-answers",
+  "note": "Synthetic. A career switcher from sales operations gives clear, ordinary answers for a Data Analyst round.",
+  "roleSlug": "data-analyst",
+  "answers": [
+    { "questionId": "communication-1", "answer": "I did a B.Com and then worked two years in sales operations, where I made the weekly sales report in Excel. I liked finding why one region dropped, so I learned SQL and now want to do analysis full time." },
+    { "questionId": "sql-1", "answer": "An inner join keeps only rows that match in both tables. A left join keeps every row from the left table and fills blanks where the right table has no match, so I use it when I must not lose customers who have no orders." },
+    { "questionId": "data-cleaning-1", "answer": "First I would remove exact duplicate rows, then check near duplicates by customer id. For missing phone numbers I would not invent them; I would flag them and ask the team that owns the data." },
+    { "questionId": "statistics-1", "answer": "I would check whether a few very big orders pulled the average up, so I would look at the median too, and compare with the same month last year." }
+  ]
+}

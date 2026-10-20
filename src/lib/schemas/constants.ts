@@ -514,3 +514,21 @@ export const TIMED_TEST_MINUTES = 15;
 export const TIMED_TESTS_PER_DAY = 10;
 /** The tabs of /mock, in order. */
 export const MOCK_TABS = ["interview", "test", "bank"] as const;
+
+/*
+ * Mock interview (`/mock`, FR-50 part 3, handoff 12l): questions from the bank, picked by code; one model call for
+ * feedback in words when the session ends. No score anywhere.
+ */
+export const MOCK_LENGTHS = ["quick", "full"] as const;
+export const MOCK_FOCUSES = ["mix", "gaps", "technical", "about"] as const;
+/** Quick is 4 questions in 10 minutes, Full 8 in 20. */
+export const MOCK_LENGTH_QUESTIONS = { quick: 4, full: 8 } as const;
+export const MOCK_LENGTH_MINUTES = { quick: 10, full: 20 } as const;
+export const MOCK_MAX_QUESTIONS = 8;
+/** One answer, as Practice: at most 4,000 characters. */
+export const MOCK_ANSWER_MAX_CHARS = 4000;
+/** Mock interviews one person starts a day, and sessions they get feedback on a day. */
+export const MOCK_SESSIONS_PER_DAY = 5;
+export const MOCK_FEEDBACK_PER_DAY = 5;
+/** What the feedback screen says: feedback in words, nothing answered, not today (budget or limit), or not just now. */
+export const MOCK_FEEDBACK_STATES = ["ready", "none_answered", "unavailable_today", "unavailable"] as const;

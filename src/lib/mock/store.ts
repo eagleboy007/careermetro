@@ -8,6 +8,7 @@ import { mockQuestions, roleProfiles } from "@/content";
 import { eliteOn } from "@/lib/elite/store";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { logEvent } from "@/lib/log";
+import { runningInterview } from "./interview-store";
 import {
   timedTestFinishInput,
   timedTestPickInput,
@@ -76,7 +77,7 @@ async function runningTest(userId: string, c: Content, db: Db, now: Date): Promi
 
 /**
  * /mock for a signed-in person: the role asked for in the address, else their target role, else Data Analyst; the bank
- * for that role (5 open on Free, all on Elite); and a test still running, on Elite only.
+ * for that role (5 open on Free, all on Elite); and a test and a mock interview still running, on Elite only.
  */
 export async function mockPageFor(userId: string, askedRole: string | null, deps: MockDeps = {}): Promise<MockPageView> {
   const db = deps.db ?? getDb();
@@ -91,6 +92,7 @@ export async function mockPageFor(userId: string, askedRole: string | null, deps
     roles,
     bank: bankViewFor(c.bank, role, elite),
     test: elite ? await runningTest(userId, c, db, now) : null,
+    interview: elite ? await runningInterview(userId, { db, now, bank: c.bank, roles: c.roles }) : null,
   };
 }
 

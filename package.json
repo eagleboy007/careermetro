@@ -13,6 +13,7 @@
     "eval:jd": "vitest run --config vitest.eval.config.ts src/evals/jd.eval.ts",
     "eval:explain": "vitest run --config vitest.eval.config.ts src/evals/explain.eval.ts",
     "eval:build": "vitest run --config vitest.eval.config.ts src/evals/build.eval.ts",
+    "eval:mock": "vitest run --config vitest.eval.config.ts src/evals/mock.eval.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node scripts/seed-content.mjs",

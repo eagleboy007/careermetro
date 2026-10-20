@@ -8,7 +8,7 @@ import type { PlanView } from "@/lib/schemas";
 
 /**
  * "Your plan" on the person's own profile (handoff 12l, prototype v41): only they see it, and it is hidden in View as
- * others. With Elite on: "Show the Elite badge on my profile", off by default, and Interview prep. On Free: See Elite. Without an action
+ * others. With Elite on: "Show the Elite badge on my profile", off by default, and a Mock interview link. On Free: See Elite. Without an action
  * (example data) the switch changes nothing on the server.
  */
 export function MePlanCard({ plan, onBadge }: { plan: PlanView; onBadge?: (shown: boolean) => Promise<string | null> }) {
@@ -63,9 +63,9 @@ export function MePlanCard({ plan, onBadge }: { plan: PlanView; onBadge?: (shown
             <Switch checked={shown} onChange={toggle} tone="elite">
               Show the Elite badge on my profile
             </Switch>
-            <Link href="/mock" className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
+            <Link href="/mock?tab=interview" className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
               <Play size={15} strokeWidth={1.75} aria-hidden="true" />
-              Interview prep
+              Mock interview
             </Link>
           </div>
         ) : (

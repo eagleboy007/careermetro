@@ -69,7 +69,7 @@ import { EliteView } from "@/components/elite/elite-view";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { PlanCard } from "@/components/settings/plan-card";
 import { MockView } from "@/components/mock/mock-view";
-import { exampleMockPage, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
+import { exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -626,14 +626,25 @@ export default function DesignPage() {
         <p className="text-sm text-muted">
           Handoff 12l, FR-50 part 2: /mock with its three tabs. On Free, the locked panel with Turn on Elite (violet) over the question bank, 5
           questions open and the rest locked. With Elite: a timed test running (the clock turns ink in the last minute; cobalt is only the progress
-          bar), then its review with the count right, the only number. The mock interview tab says it comes next. Example data from the real bank
-          for Data Analyst, so nothing saves.
+          bar), then its review with the count right, the only number. The mock interview (part 3): locked on Free; the set-up (role, Quick or
+          Full, focus, the AI note; Speaking shows only where the browser turns speech to text on the device); a quick round running with the
+          countdown and the cobalt progress bar; the feedback in words with What worked and Add next time, a skipped question linking to the bank;
+          and the screen when feedback isn&apos;t available today. No score anywhere. Example data from the real bank for Data Analyst, so nothing
+          saves.
         </p>
         <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
         <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="test" initialReview={exampleTimedReview} />
         <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
+        <MockView view={exampleMockPage("data-analyst", false)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
+        <MockView view={exampleMockPage("data-analyst", true, null, exampleMockSession)} tab="interview" />
+        <MockView view={exampleMockPage("data-analyst", true)} tab="interview" initialInterviewResult={exampleMockResult} />
+        <MockView
+          view={exampleMockPage("data-analyst", true)}
+          tab="interview"
+          initialInterviewResult={{ ...exampleMockResult, feedback: "unavailable_today", summary: null, items: exampleMockResult.items.map((i) => ({ ...i, whatWorked: null, addNextTime: null })) }}
+        />
       </section>
 
       <section className="flex flex-col gap-4">

@@ -1036,7 +1036,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1375,7 +1375,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1461,10 +1461,99 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await openItems.first().waitFor();
     if (await lockedItems.count()) throw new Error("bank questions stay locked with Elite on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 23) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
+  }
+});
+// The mock interview (FR-50 part 3, handoff 12l). A fresh person on Free sees the Mock interview tab locked; with Elite
+// on, /mock opens on it: they set up a Quick round for Data Analyst, answer the first two questions (each saved on
+// Next), skip the rest with "End and get feedback", and get the stand-in model's feedback in words: a summary, then
+// What worked and Add next time on each answer, and "Open it in the bank" on each skipped one. No score. The download
+// has the round with its answers. axe passes on the set-up, the running round and the feedback.
+await step("mock interview: a quick round, answered, ended, with feedback in words", async () => {
+  const ctxI = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxI.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await q.goto(BASE + "/mock?tab=interview");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Ravi Round");
+    await q.locator('input[name="email"]').fill(`interview-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today|mock)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/(today|mock)/, { timeout: 15000 });
+    }
+    const main = q.locator("main");
+    await q.goto(BASE + "/mock?tab=interview");
+    await main.getByText("Mock interviews open with Elite.", { exact: false }).waitFor({ timeout: 15000 });
+    if (await main.getByRole("button", { name: "Start mock interview", exact: true }).count()) throw new Error("Free can start a mock interview");
+
+    await q.goto(BASE + "/elite");
+    await main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true }).click();
+    await main.getByRole("button", { name: "Elite is on, free in the beta", exact: true }).waitFor({ timeout: 10000 });
+    await q.goto(BASE + "/mock?role=data-analyst");
+    const mode = main.getByRole("group", { name: "Mode" });
+    await mode.getByRole("button", { name: "Mock interview", exact: true }).waitFor({ timeout: 15000 });
+    if ((await mode.getByRole("button", { name: "Mock interview", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("Elite doesn't open on the mock interview");
+    const setup = main.getByRole("region", { name: "Set up your mock interview" });
+    await setup.waitFor();
+    await setup.getByText("The interviewer is an AI and it can be wrong.", { exact: false }).waitFor();
+    if ((await setup.getByLabel("Role").inputValue()) !== "data-analyst") throw new Error("the role isn't the one asked for");
+    // The choices are radios inside their labels; press the label, as a person would.
+    await setup.getByText("Quick round", { exact: true }).click();
+    await setup.getByText("Mix", { exact: true }).click();
+    if (!(await setup.getByRole("radio", { name: /Quick round/ }).isChecked())) throw new Error("Quick round isn't picked");
+    await axeOn(q, "mock-interview-setup");
+    await setup.getByRole("button", { name: "Start mock interview", exact: true }).click();
+
+    const timer = main.getByRole("timer");
+    await timer.waitFor({ timeout: 15000 });
+    if (!/^(10:00|9:\d\d)$/.test((await timer.innerText()).trim())) throw new Error(`the timer reads ${await timer.innerText()}`);
+    await main.getByText(/^Question 1 of 4 · /).waitFor();
+    await main.getByText("AI interviewer", { exact: true }).waitFor();
+    await axeOn(q, "mock-interview-running");
+    const box = main.getByRole("textbox", { name: "Your answer" });
+    const saved = () => q.waitForResponse((r) => r.request().method() === "POST" && new URL(r.url()).pathname === "/mock");
+    await box.fill("I studied commerce and made weekly sales reports in Excel for two years; now I want to analyse data full time.");
+    if (!(await box.inputValue()).startsWith("I studied commerce")) throw new Error("the answer box didn't keep the text");
+    await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
+    await main.getByText(/^Question 2 of 4 · /).waitFor();
+    if ((await box.inputValue()) !== "") throw new Error("question 2 opens with text in the box");
+    await box.fill("I would check the duplicates and the blanks first, then the odd values, before any chart.");
+    await Promise.all([saved(), main.getByRole("button", { name: "Next question", exact: true }).click()]);
+    await main.getByText(/^Question 3 of 4 · /).waitFor();
+    await main.getByRole("button", { name: "End and get feedback", exact: true }).click();
+
+    await main.getByRole("heading", { name: "Feedback on your round", exact: true }).waitFor({ timeout: 30000 });
+    await main.getByText("You answer in plain words and start in the right place.", { exact: false }).waitFor();
+    await main.getByText(/2 of 4 answered/).waitFor();
+    if ((await main.locator('[data-feedback-item="answered"]').count()) !== 2) throw new Error("the feedback doesn't show both answers");
+    if ((await main.locator('[data-feedback-item="skipped"]').count()) !== 2) throw new Error("the feedback doesn't show the two skipped");
+    if ((await main.getByText("What worked", { exact: true }).count()) !== 2) throw new Error("What worked isn't on each answer");
+    if ((await main.getByText("Add next time", { exact: true }).count()) !== 2) throw new Error("Add next time isn't on each answer");
+    const bankLink = main.getByRole("link", { name: "Open it in the bank", exact: true }).first();
+    if ((await bankLink.getAttribute("href")) !== "/mock?tab=bank&role=data-analyst") throw new Error("a skipped question doesn't link to the bank");
+    const words = (await main.locator("[data-feedback-item]").allInnerTexts()).join("\n");
+    if (/\b(score|grade|rating|\d+\s*\/\s*10|ready)\b/i.test(words)) throw new Error("the feedback shows a score or 'ready'");
+    await axeOn(q, "mock-interview-feedback");
+
+    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
+    const round = data.mockSessions?.[0];
+    if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
+
+    // A skipped question opens the bank for the role.
+    await bankLink.click();
+    await q.waitForURL(/tab=bank/);
+    await main.getByRole("region", { name: "Question bank" }).waitFor({ timeout: 15000 });
+  } finally {
+    await ctxI.close();
   }
 });
 // Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted

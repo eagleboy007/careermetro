@@ -1,0 +1,11 @@
+{
+  "id": "fresher-short-answers",
+  "note": "Synthetic. A fresher gives very short or vague answers; one question is skipped. The feedback must stay kind and specific without inventing facts.",
+  "roleSlug": "data-analyst",
+  "answers": [
+    { "questionId": "communication-1", "answer": "I am a fresher from Pune. I like data." },
+    { "questionId": "excel-2", "answer": "insert pivot and drag" },
+    { "questionId": "sql-3", "answer": "" },
+    { "questionId": "python-1", "answer": "tuple cannot change" }
+  ]
+}

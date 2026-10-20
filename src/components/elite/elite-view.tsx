@@ -68,8 +68,8 @@ export function EliteView({
           {plan.elite
             ? `Elite is on since ${plan.since}. You have everything in Elite until the beta ends. We tell you at least 30 days before, and nothing is charged unless you choose a plan.`
             : "No card needed. Nothing is charged during the beta, and nothing renews on its own after it."}{" "}
-          With Elite, Practice has no daily cap and Interview prep opens timed tests and the full question bank; mock interviews and the Elite shelf
-          open as each one is built.
+          With Elite, Practice has no daily cap and Interview prep opens mock interviews, timed tests and the full question bank; the Elite shelf
+          opens once it is built.
         </p>
       </section>
 
