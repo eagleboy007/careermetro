@@ -4443,6 +4443,41 @@ await step("hardening: Settings, Match, Interview prep, Elite and the Inbox in d
     await p.emulateMedia({ colorScheme: "light" });
   }
 });
+// docs/launch/prod-smoke.md 6.1 to 6.3: the Download link in Account settings saves careermetro-data-<date>.json; Sign out
+// in the avatar menu lands on the home page signed out, and /today then asks to sign in; signing in again goes straight to
+// Today with no name step.
+await step("smoke 6: the settings Download link, Sign out from the menu, and back in straight to Today", async () => {
+  const ctxS = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxS.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  const email = `signout-${testEmail}`;
+  try {
+    await signInAs(q, "Sana Iyer", email);
+    await q.goto(BASE + "/settings");
+    await q.waitForLoadState("networkidle");
+    const link = q.getByRole("region", { name: "Your data", exact: true }).getByRole("link", { name: "Download", exact: true });
+    const [download] = await Promise.all([q.waitForEvent("download"), link.click()]);
+    if (!/^careermetro-data-\d{4}-\d{2}-\d{2}\.json$/.test(download.suggestedFilename())) throw new Error(`download named ${download.suggestedFilename()}`);
+    if (!JSON.parse(readFileSync(await download.path(), "utf8")).account) throw new Error("the downloaded file has no account");
+    await q.goto(BASE + "/today");
+    await q.waitForLoadState("networkidle");
+    await q.getByRole("button", { name: /open menu$/ }).click();
+    await q.getByRole("button", { name: "Sign out", exact: true }).click();
+    await q.waitForURL((u) => u.pathname === "/", { timeout: 15000 });
+    await q.waitForLoadState("networkidle");
+    await q.getByRole("link", { name: "Sign in", exact: true }).first().waitFor({ timeout: 15000 });
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/, { timeout: 15000 });
+    await q.locator('input[name="name"]').fill("Sana Iyer");
+    await q.locator('input[name="email"]').fill(email);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: 15000 });
+    if (new URL(q.url()).pathname !== "/today") throw new Error(`signing in again went to ${new URL(q.url()).pathname}, not straight to Today`);
+  } finally {
+    await ctxS.close();
+  }
+});
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
 if (process.env.GITHUB_ACTIONS) for (const pr of problems) console.log(`::error title=e2e problem::${pr.split("\n")[0]}`);

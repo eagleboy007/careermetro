@@ -9,6 +9,8 @@ frame, Map, Me, Departures, Corporate (a fresh account sets up a company on an e
 code and lands on "Waiting for verification"), company review (signed out and a non-admin get the not-found page with a 404; the local test admin `admin@careermetro.test` tries Suspend, cancels, and verifies that company), then phone size in dark mode with a horizontal-overflow check, and last, confirming a missing keyword, which stays a weak gap. It fails on any failed
 step, browser console error, page error or 5xx response, and saves screenshots to `e2e/results/`.
 
+`scripts/smoke/staging-dry-run.mjs` reuses this walk's selectors to run `docs/launch/prod-smoke.md` sections 3 to 6 and 8 on staging with the real API (`.github/workflows/smoke-staging.yml`, by hand only).
+
 `mock-ai.mjs` stands in for the Claude API, so the walk costs nothing and needs no key: the parse call gets a fixed
 profile of `fixtures/resumes/priya-sharma.pdf`, the job-posting call ("Check against a job") gets the skills listed in
 `fixtures/job-postings/`, and other calls get text that fails their schema, so the app's plain-code fallbacks run.
