@@ -9,7 +9,7 @@
 // the exit code is 1 on any failure. The test account is deleted at the end, as section 8 says, even after a failure.
 // Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright@1.56.1`.
 import { randomBytes } from "node:crypto";
-import { mkdirSync, readFileSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import { chromium } from "playwright";
 
 const STAGING = "https://careermetro-git-staging-career-metro.vercel.app";
@@ -281,12 +281,16 @@ await step("5.4 Map: the line with the same goals as stops", async () => {
 await step("6.1 Settings > Your data > Download: careermetro-data-<date>.json with the account, resume, gaps, path and goals", async () => {
   await open("/settings");
   const link = p.getByRole("region", { name: "Your data", exact: true }).getByRole("link", { name: "Download", exact: true });
-  const [download] = await Promise.all([p.waitForEvent("download", { timeout: 60000 }), link.click()]);
-  try {
-    if (!/^careermetro-data-\d{4}-\d{2}-\d{2}\.json$/.test(download.suggestedFilename())) throw new Error("unexpected file name");
-    const file = await download.path();
+  // The link's own click is covered by the e2e walk's smoke 6. Behind Deployment Protection a browser download isn't
+  // reliably sent with the bypass header, so the file is fetched with the page's cookies and the same headers instead.
+  if ((await link.getAttribute("href")) !== "/api/account/export") throw new Error("the Download link doesn't point at /api/account/export");
+  const res = await p.request.get(BASE + "/api/account/export");
+  {
+    if (res.status() !== 200) throw new Error(`the export answered HTTP ${res.status()}`);
+    const name = /filename="([^"]+)"/.exec(res.headers()["content-disposition"] ?? "")?.[1] ?? "";
+    if (!/^careermetro-data-\d{4}-\d{2}-\d{2}\.json$/.test(name)) throw new Error("unexpected file name");
     // Read and checked here, never printed: it holds the resume profile.
-    const data = JSON.parse(readFileSync(file, "utf8"));
+    const data = await res.json();
     const analyses = (data.resumes ?? []).flatMap((r) => r.profiles ?? []).flatMap((pr) => pr.gapAnalyses ?? []);
     const missing = [
       !data.account && "account",
@@ -296,8 +300,6 @@ await step("6.1 Settings > Your data > Download: careermetro-data-<date>.json wi
       !data.goals?.length && "goals",
     ].filter(Boolean);
     if (missing.length) throw new Error(`the file has no ${missing.join(", ")}`);
-  } finally {
-    await download.delete().catch(() => {});
   }
 });
 
