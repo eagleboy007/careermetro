@@ -1,6 +1,6 @@
-import { BookOpen, Building2, CalendarDays, House, Inbox, Map as MapIcon, MessageSquare, MessageSquareText, MessagesSquare, Route, Shield, TrainFront, TrendingUp, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, Building2, CalendarDays, FileText, House, Inbox, Map as MapIcon, MessageSquare, MessageSquareText, MessagesSquare, Route, Shield, TrainFront, TrendingUp, Users, type LucideIcon } from "lucide-react";
 
-export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox" | "corporate" | "market" | "match" | "practice";
+export type NavKey = "today" | "map" | "departures" | "arrivals" | "timetable" | "junction" | "network" | "library" | "inbox" | "corporate" | "market" | "match" | "practice" | "builder";
 export type NavItem = { key: NavKey; label: string; href: string; Icon: LucideIcon; built: boolean };
 
 /** Signed-in sections (handoff section 3). `built` is false until the screen exists; those show as "Soon". */
@@ -23,12 +23,14 @@ export const NAV = {
   match: { key: "match", label: "Match", href: "/match", Icon: Route, built: true },
   /** Interview questions on the person's goals, with feedback in words (handoff 12h). Never fills a goal. */
   practice: { key: "practice", label: "Practice", href: "/practice", Icon: MessageSquareText, built: true },
+  /** Build your resume from answers (FR-36, handoff 12k); in the avatar menu since handoff 12l. */
+  builder: { key: "builder", label: "Build your resume", href: "/builder", Icon: FileText, built: true },
 } satisfies Record<NavKey, NavItem>;
 
 /** Desktop top bar. */
 export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", "junction", "market"] as const).map((k) => NAV[k]);
 /** Phone tab bar; Network, Library, Market and Timetable move to the avatar menu. */
 export const TAB_NAV = (["today", "map", "departures", "arrivals", "junction"] as const).map((k) => NAV[k]);
-export const MENU_NAV = (["inbox", "corporate", "library", "practice", "match", "market", "network", "timetable"] as const).map((k) => NAV[k]);
+export const MENU_NAV = (["inbox", "corporate", "library", "practice", "builder", "match", "market", "network", "timetable"] as const).map((k) => NAV[k]);
 /** CareerMetro's own company review page. In the avatar menu only for admins, decided on the server (src/lib/admin). */
 export const ADMIN_LINK = { label: "Admin", href: "/admin/companies", Icon: Shield } as const;

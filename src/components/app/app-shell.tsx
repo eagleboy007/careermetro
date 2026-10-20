@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, LogOut, MessageSquare, User } from "lucide-react";
+import { Award, Lock, LogOut, MessageSquare, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
@@ -24,6 +24,8 @@ export type ShellUser = {
   networkRequests?: number;
   /** CareerMetro's own admins (ADMIN_EMAILS), worked out on the server: the menu shows Admin. */
   isAdmin?: boolean;
+  /** Elite is on (FR-50): the award mark on the avatar and "Elite · beta" in the menu. */
+  elite?: boolean;
 };
 
 /**
@@ -182,19 +184,31 @@ function AvatarMenu({ user }: { user: ShellUser }) {
         aria-expanded={open}
         aria-controls={menuId}
         // Starts with the initials it shows (WCAG 2.5.3, label in name).
-        aria-label={`${user.initials}: ${user.name}, open menu${corporateUnread ? `, Corporate ${corporateUnread} unread` : ""}${networkRequests ? `, Network ${networkRequests} ${counts.network!.words}` : ""}`}
+        aria-label={`${user.initials}: ${user.name}${user.elite ? ", Elite" : ""}, open menu${corporateUnread ? `, Corporate ${corporateUnread} unread` : ""}${networkRequests ? `, Network ${networkRequests} ${counts.network!.words}` : ""}`}
         onClick={() => setOpen((o) => !o)}
         className="relative grid size-9 place-items-center rounded-full bg-ink font-mono text-[0.72rem] font-medium text-bg"
       >
         {user.initials}
         {corporateUnread + networkRequests > 0 && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-bg bg-ink" />}
+        {user.elite && (
+          <span aria-hidden="true" data-elite-mark="" className="absolute -bottom-1 -right-1 grid size-[18px] place-items-center rounded-full border-2 border-bg bg-elite text-on-elite">
+            <Award size={10} strokeWidth={1.75} />
+          </span>
+        )}
       </button>
       <div
         id={menuId}
         hidden={!open}
         className="shadow-raised absolute right-0 top-[calc(100%+8px)] z-30 flex w-56 flex-col gap-0.5 rounded-md border border-line bg-surface p-1.5"
       >
-        <p className="px-2.5 pb-1.5 pt-1 text-sm font-semibold">{user.name}</p>
+        <div className="flex flex-col items-start gap-1.5 px-2.5 pb-1.5 pt-1">
+          <p className="text-sm font-semibold">{user.name}</p>
+          <span
+            className={`rounded-full px-2 py-0.5 font-mono text-[0.62rem] uppercase tracking-[0.06em] ${user.elite ? "bg-elite text-on-elite" : "bg-surface-2 text-muted"}`}
+          >
+            {user.elite ? "Elite · beta" : "Free"}
+          </span>
+        </div>
         <ul className="flex flex-col gap-0.5">
           <li>
             <Link href="/me" onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
@@ -206,6 +220,12 @@ function AvatarMenu({ user }: { user: ShellUser }) {
             <Link href="/settings" onClick={() => setOpen(false)} className={`${row} hover:bg-surface-2`}>
               <Lock size={16} strokeWidth={1.75} aria-hidden="true" />
               Account settings
+            </Link>
+          </li>
+          <li>
+            <Link href="/elite" onClick={() => setOpen(false)} aria-current={path === "/elite" ? "page" : undefined} className={`${row} hover:bg-surface-2`}>
+              <Award size={16} strokeWidth={1.75} aria-hidden="true" />
+              {user.elite ? "Elite is on" : "Elite, free in the beta"}
             </Link>
           </li>
           {MENU_NAV.map((item) =>

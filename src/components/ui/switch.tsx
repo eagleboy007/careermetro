@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /**
  * An on/off switch: a native checkbox under a drawn track, so it keeps keyboard, label and screen-reader behaviour.
- * On is ink, not cobalt: cobalt means progress only.
+ * On is ink, not cobalt: cobalt means progress only. Elite's own switches (the badge, FR-50) are on in Elite violet.
  */
 export function Switch({
   checked,
@@ -10,19 +10,21 @@ export function Switch({
   disabled = false,
   children,
   hint,
+  tone = "ink",
 }: {
   checked: boolean;
   onChange: (next: boolean) => void;
   disabled?: boolean;
   children: ReactNode;
   hint?: ReactNode;
+  tone?: "ink" | "elite";
 }) {
   return (
     <label className={`flex min-h-11 items-center gap-3 text-[0.86rem] font-[550] ${disabled ? "opacity-60" : "cursor-pointer"}`}>
       <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
       <i
         aria-hidden="true"
-        className="relative h-5 w-9 shrink-0 rounded-full bg-line-strong transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] peer-checked:bg-ink peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
+        className={`relative h-5 w-9 shrink-0 rounded-full bg-line-strong transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] ${tone === "elite" ? "peer-checked:bg-elite" : "peer-checked:bg-ink"} peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent`}
       />
       <span className="min-w-0">
         {children}

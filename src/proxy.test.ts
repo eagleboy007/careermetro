@@ -24,7 +24,7 @@ describe("proxy", () => {
   it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
-    for (const p of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/corporate", "/corporate/jobs/board", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
+    for (const p of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/elite", "/corporate", "/corporate/jobs/board", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
     expect((await proxy(req("/start"))).headers.get("x-middleware-next")).toBe("1");
     expect(refresh).not.toHaveBeenCalled();
   });
@@ -37,6 +37,7 @@ describe("proxy", () => {
     expect((await proxy(req("/map"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fmap");
     expect((await proxy(req("/match"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fmatch");
     expect((await proxy(req("/practice"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fpractice");
+    expect((await proxy(req("/elite"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Felite");
     expect((await proxy(req("/settings"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fsettings");
     expect((await proxy(req("/corporate/messages"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fcorporate%2Fmessages");
     expect((await proxy(req("/u/priya-n"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fu%2Fpriya-n");

@@ -17,10 +17,10 @@ const GHOST = `${BTN} border border-line-strong bg-surface text-ink hover:bg-sur
 
 const TAG_TEXT: Record<PracticeTag, string> = { current: "Current goal", ahead: "Goal ahead", met: "Goal met · keep sharp" };
 
-/** "7 of 10" for the chip at the top. */
-export const leftText = (left: number) => `${left} of ${PRACTICE_DAILY_ANSWERS}`;
-/** Whether "Get feedback" can be pressed: enough words and answers left today. */
-export const canSend = (words: number, left: number) => words >= PRACTICE_MIN_WORDS && left > 0;
+/** "7 of 10 answers left today" for the chip at the top; Elite has no daily cap (FR-50), shown as `left` null. */
+export const leftText = (left: number | null) => (left === null ? "No daily cap with Elite" : `${left} of ${PRACTICE_DAILY_ANSWERS} answers left today`);
+/** Whether "Get feedback" can be pressed: enough words and answers left today (always, on Elite). */
+export const canSend = (words: number, left: number | null) => words >= PRACTICE_MIN_WORDS && (left === null || left > 0);
 
 /** What the side card says about the person's trend for the skill picked. */
 export function trendSummary(ratings: number[]): string {
@@ -101,7 +101,7 @@ export function PracticeView({
       // Example data: nothing is saved.
       if (sampleFeedback) {
         setPhase({ kind: "feedback", answerId: null, feedback: sampleFeedback, rated: null });
-        setLeft((n) => Math.max(0, n - 1));
+        setLeft((n) => (n === null ? null : Math.max(0, n - 1)));
       } else setPhase({ kind: "saved" });
       moveFocus("result");
       return;
@@ -153,7 +153,7 @@ export function PracticeView({
         </div>
         <p role="status" className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-[0.8rem] text-ink">
           <MessageSquareText size={14} {...ICON} />
-          {leftText(left)} answers left today
+          {leftText(left)}
         </p>
       </div>
 

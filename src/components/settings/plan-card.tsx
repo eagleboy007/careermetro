@@ -1,63 +1,132 @@
-import { Award, Check } from "lucide-react";
+"use client";
 
-const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
+import { Award, Eye, X } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { Switch } from "@/components/ui/switch";
+import type { PlanView } from "@/lib/schemas";
 
-/** What Elite adds, from prototype v32. Shown only: Elite isn't on sale during the beta. */
-const ELITE = [
-  "AI mock interviews for your target role, with written feedback",
-  "A practice AI round before a company's real AI interview on Arrivals",
-  "Question bank by role and timed mock tests",
-  "Elite shelf in the Library: paid and expert-checked courses",
-  "Elite badge on your profile",
-];
+const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
+const FAILED = "That didn't work. Please try again.";
 
-/** The prices Milin accepted for now (handoff 12c and change C4, 2026-10-09). */
-const PRICES = [
-  { name: "Elite monthly", price: "₹299", per: "/month", note: "Renews each month." },
-  { name: "Elite yearly", price: "₹2,499", per: "/year", note: "Renews each year." },
-  { name: "Elite Pass", price: "₹799", per: " once", note: "3 months, paid once. Never renews." },
-];
+export type PlanActions = {
+  /** "Turn off" here (false); /elite turns it on. */
+  switchElite: (on: boolean) => Promise<string | null>;
+  switchBadge: (shown: boolean) => Promise<string | null>;
+};
 
 /**
- * "Your plan" (handoff 12c, change C4): Free during the beta, and the Elite card for later. Nothing here can be
- * bought: there is no billing code during the beta, so the card has no buttons.
+ * Account settings > Your plan (handoff 12l, prototype v44): with Elite on, "Elite, free in the beta", the badge switch
+ * and Turn off; on Free, "You're on Free" with See Elite. Nothing can be bought: there is no billing in the beta. Without
+ * actions (example data) nothing changes.
  */
-export function PlanCard() {
+export function PlanCard({ plan, actions }: { plan: PlanView; actions?: PlanActions }) {
+  const [badge, setBadge] = useState(plan.badgeShown);
+  const [message, setMessage] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+  const status = useRef<HTMLParagraphElement>(null);
+  // Turn off removes its own button, so focus moves to the line that says what happened (after a press only).
+  const [focusTick, setFocusTick] = useState(0);
+  useEffect(() => {
+    if (focusTick) status.current?.focus();
+  }, [focusTick]);
+  // A new plan from the server (after Turn off, or a change elsewhere) resets the switch.
+  const [base, setBase] = useState(plan);
+  if (base.elite !== plan.elite || base.badgeShown !== plan.badgeShown) {
+    setBase(plan);
+    setBadge(plan.badgeShown);
+  }
+
+  const toggleBadge = (next: boolean) => {
+    if (!actions || pending) return;
+    // The switch moves at once and goes back if the save fails.
+    setBadge(next);
+    start(async () => {
+      const error = await actions.switchBadge(next).catch(() => FAILED);
+      if (error) {
+        setBadge(!next);
+        setMessage(error);
+      } else setMessage(next ? "Your Elite badge shows next to your name." : "Your Elite badge is hidden.");
+    });
+  };
+  const turnOff = () => {
+    if (pending) return;
+    if (!actions) return setMessage("Example data: nothing changes here.");
+    start(async () => {
+      const error = await actions.switchElite(false).catch(() => FAILED);
+      setMessage(error ?? "Elite is off. You are back on Free, and everything you made stays.");
+      if (!error) setFocusTick((n) => n + 1);
+    });
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-[0.88rem] text-muted">
-        Everything you use today is free during the beta: your gaps, path, daily rides, Departures and the Inbox. There is nothing to pay.
+    <div className="flex flex-col gap-3">
+      {plan.elite ? (
+        <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-[14px] border border-line">
+          <Row icon={<Award {...ICON} />} title="Elite, free in the beta" detail={`On since ${plan.since}. Everything in Elite is open until the beta ends. We tell you at least 30 days before, and nothing is charged unless you choose a plan.`} />
+          <Row
+            icon={<Eye {...ICON} />}
+            title="Elite badge on your profile"
+            detail="Off unless you turn it on. It never ranks you anywhere."
+            action={
+              <Switch checked={badge} onChange={toggleBadge} disabled={!actions} tone="elite">
+                <span className="sr-only">Show the Elite badge on my profile</span>
+              </Switch>
+            }
+          />
+          <Row
+            icon={<X {...ICON} />}
+            title="Turn off Elite"
+            detail="Back to Free at once. Everything you made stays."
+            action={
+              <button
+                type="button"
+                onClick={turnOff}
+                aria-disabled={pending || undefined}
+                className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-surface px-3.5 text-[0.8rem] font-medium text-ink hover:bg-surface-2 aria-disabled:opacity-60"
+              >
+                Turn off
+              </button>
+            }
+          />
+        </ul>
+      ) : (
+        <>
+          <p className="text-[0.88rem] text-muted">
+            Everything you use today stays free: your gaps, path, daily rides, Library free shelf, Departures and the Inbox. Elite adds interview
+            practice and expert content on top, free during the beta.
+          </p>
+          <ul className="flex flex-col overflow-hidden rounded-[14px] border border-line">
+            <Row
+              icon={<Award {...ICON} />}
+              title="You're on Free"
+              detail="Elite adds mock interviews, timed tests, the full question bank, no daily cap on Practice and the Elite shelf. No card needed."
+              action={
+                <Link href="/elite" className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-elite px-3.5 text-[0.8rem] font-medium text-on-elite hover:opacity-90">
+                  <Award size={14} strokeWidth={1.75} aria-hidden="true" />
+                  See Elite
+                </Link>
+              }
+            />
+          </ul>
+        </>
+      )}
+      <p ref={status} tabIndex={-1} role="status" className="text-[0.78rem] text-muted outline-none">
+        {message}
       </p>
-      <div data-board="" className="flex flex-col gap-3.5 rounded-[18px] bg-board p-[18px] text-board-ink">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-board-line px-2.5 py-1 font-mono text-[0.78rem] uppercase tracking-[0.14em]">
-            <Award size={14} {...ICON} />
-            Elite
-          </span>
-          <span className="ml-auto text-[0.78rem] text-board-dim">After the beta · not on sale yet</span>
-        </div>
-        <ul className="grid gap-x-4 gap-y-2 text-[0.86rem] min-[760px]:grid-cols-2">
-          {ELITE.map((line) => (
-            <li key={line} className="flex items-start gap-2">
-              <Check size={15} {...ICON} className="mt-0.5 shrink-0 text-board-dim" />
-              {line}
-            </li>
-          ))}
-        </ul>
-        <ul aria-label="Elite prices" className="grid gap-2.5 min-[760px]:grid-cols-3">
-          {PRICES.map((p) => (
-            <li key={p.name} className="flex flex-col gap-1 rounded-[14px] border border-board-line p-3.5">
-              <b className="text-[0.88rem] font-semibold">{p.name}</b>
-              <span className="font-display text-[1.5rem] font-semibold tracking-[-0.02em]">
-                {p.price}
-                <small className="font-sans text-[0.78rem] font-normal">{p.per}</small>
-              </span>
-              <small className="text-[0.76rem] text-board-dim">{p.note}</small>
-            </li>
-          ))}
-        </ul>
-        <small className="text-[0.76rem] text-board-dim">Prices in rupees. When Elite opens you choose whether to join; until then nothing changes.</small>
-      </div>
     </div>
+  );
+}
+
+function Row({ icon, title, detail, action }: { icon: ReactNode; title: string; detail: string; action?: ReactNode }) {
+  return (
+    <li className="grid grid-cols-[30px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3 min-[760px]:grid-cols-[34px_minmax(0,1fr)_auto]">
+      <span className="grid size-[30px] place-items-center rounded-[10px] bg-elite-soft text-elite min-[760px]:size-[34px]">{icon}</span>
+      <div className="min-w-0">
+        <b className="text-[0.9rem] font-semibold">{title}</b>
+        <small className="block text-[0.78rem] text-muted">{detail}</small>
+      </div>
+      {action && <div className="col-start-2 justify-self-start min-[760px]:col-start-3">{action}</div>}
+    </li>
   );
 }

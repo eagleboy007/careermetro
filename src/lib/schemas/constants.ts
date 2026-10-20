@@ -476,3 +476,11 @@ export const BUILDER_TEXT_MAX = 600;
 export const BUILDER_TOOLS_MAX = 30;
 /** The model returns at most this many resume lines for one free-text answer. */
 export const BUILDER_LINES_MAX = 4;
+
+/*
+ * Elite, free in the beta (FR-50, handoff 12l, docs/plans/elite-plan.md). No billing: prices are copy only.
+ */
+/** Turning Elite on or off: at most this many changes a day per person, so it can't be scripted. */
+export const ELITE_CHANGES_PER_DAY = 10;
+/** What a Free person gets from an Elite action, instead of an error. */
+export const ELITE_NEEDED_MESSAGE = "Turn on Elite to use this.";

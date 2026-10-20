@@ -31,6 +31,7 @@ export const exampleSettings: SettingsData = {
   },
   usernameLockedUntil: null,
   peopleCanFind: false,
+  plan: { elite: false, badgeShown: false, since: null },
   discovery: {
     views: [
       { orgId: "00000000-0000-4000-8000-0000000000a1", company: "Example Labs", times: 2, lastOn: "11 Oct", blocked: false },

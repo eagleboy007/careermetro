@@ -996,7 +996,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 21) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 22) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1173,7 +1173,7 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     await q.locator('input[name="age"]').check();
     await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
     await q.waitForURL(/\/today/, { timeout: 15000 });
-    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/me", "/settings"]) {
+    for (const path of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/builder", "/elite", "/me", "/settings"]) {
       await q.goto(BASE + path);
       await q.locator("header").first().waitFor();
       await q.locator("main").first().waitFor();
@@ -1266,6 +1266,83 @@ await step("builder: seven sections, one click each, and Review drops the model'
     await axeOn(q, "builder-phone-dark");
   } finally {
     await ctxB.close();
+  }
+});
+// Elite, free in the beta (FR-50, handoff 12l). A fresh person turns Elite on from /elite: the avatar gets its mark and
+// the menu says "Elite · beta" and "Elite is on". Their own profile shows the plan card; its switch puts the Elite badge
+// by their name, and View as others hides the card. Settings > Your plan turns Elite off: back to Free, the badge gone,
+// and the download says so. axe passes on each screen, and nothing asks for a card.
+await step("elite: turn it on from /elite, see it in the menu and on the profile, turn it off in Settings", async () => {
+  const ctxE = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await ctxE.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    await q.goto(BASE + "/elite");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill("Vela Rider");
+    await q.locator('input[name="email"]').fill(`elite-${testEmail}`);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today|elite)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/(today|elite)/, { timeout: 15000 });
+    }
+    if (!new URL(q.url()).pathname.startsWith("/elite")) await q.goto(BASE + "/elite");
+    const main = q.locator("main");
+    const turnOn = main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true });
+    await turnOn.waitFor({ timeout: 15000 });
+    for (const words of ["not charged now", "Prices are not final", "₹299", "₹2,499", "₹799", "at least 30 days"]) await main.getByText(words).first().waitFor();
+    if (await main.getByRole("textbox").count()) throw new Error("/elite asks for something to type");
+    await axeOn(q, "elite-free");
+    await turnOn.click();
+    await main.getByRole("button", { name: "Elite is on, free in the beta", exact: true }).waitFor({ timeout: 10000 });
+
+    // The avatar and its menu.
+    const avatar = q.getByRole("button", { name: /, Elite, open menu$/ });
+    await avatar.waitFor({ timeout: 10000 });
+    await avatar.click();
+    const menu = q.locator("header");
+    await menu.getByText("Elite · beta", { exact: true }).waitFor();
+    await menu.getByRole("link", { name: "Elite is on", exact: true }).waitFor();
+    await menu.getByRole("link", { name: "Build your resume", exact: true }).waitFor();
+    await axeOn(q, "elite-on-menu");
+    await q.keyboard.press("Escape");
+
+    // Their own profile: the plan card, and the badge only once they turn it on.
+    await q.goto(BASE + "/me");
+    const card = q.getByRole("region", { name: "Your plan" });
+    await card.getByText("Elite is on, free in the beta", { exact: true }).waitFor({ timeout: 15000 });
+    const name = q.locator("main h1").first();
+    if (await name.getByText("Elite", { exact: true }).count()) throw new Error("the Elite badge shows before it is turned on");
+    const badge = card.getByRole("checkbox", { name: "Show the Elite badge on my profile" });
+    if (await badge.isChecked()) throw new Error("the badge switch starts on");
+    await badge.check({ force: true });
+    await name.getByText("Elite", { exact: true }).waitFor({ timeout: 10000 });
+    await axeOn(q, "elite-me");
+    await main.getByRole("button", { name: "View as others", exact: true }).click();
+    await main.getByRole("button", { name: "Back to editing", exact: true }).waitFor();
+    if (await q.getByRole("region", { name: "Your plan" }).count()) throw new Error("the plan card shows in View as others");
+    await main.getByRole("button", { name: "Back to editing", exact: true }).click();
+
+    // Settings > Your plan: Turn off goes back to Free and keeps everything.
+    await q.goto(BASE + "/settings");
+    const plan = q.locator("#acc-plan");
+    await plan.getByText("Elite, free in the beta", { exact: true }).waitFor({ timeout: 15000 });
+    await plan.getByRole("button", { name: "Turn off", exact: true }).click();
+    await plan.getByText("You're on Free", { exact: true }).waitFor({ timeout: 10000 });
+    await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
+    await axeOn(q, "elite-settings-free");
+    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    if (data.exportVersion !== 22) throw new Error(`export version ${data.exportVersion}`);
+    if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
+    await q.goto(BASE + "/me");
+    await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
+    if (await q.locator("main h1").first().getByText("Elite", { exact: true }).count()) throw new Error("the Elite badge stays after Elite is off");
+    if (await q.getByRole("button", { name: /, Elite, open menu$/ }).count()) throw new Error("the avatar still says Elite");
+  } finally {
+    await ctxE.close();
   }
 });
 // Verified certifications on the profile (pending item 13, dev/profile-certs-plan.md). Asha signs in; four accepted

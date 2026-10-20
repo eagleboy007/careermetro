@@ -62,6 +62,10 @@ import { SettingsView } from "@/components/settings/settings-view";
 import { InboxView, VerifiedBadge } from "@/components/inbox/inbox-view";
 import { NetworkView } from "@/components/network/network-view";
 import { BuilderView } from "@/components/builder/builder-view";
+import { EliteBadge } from "@/components/elite/elite-badge";
+import { EliteView } from "@/components/elite/elite-view";
+import { MePlanCard } from "@/components/elite/me-plan-card";
+import { PlanCard } from "@/components/settings/plan-card";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -354,7 +358,7 @@ const exampleToday: TodayData = {
   greeting: "Evening",
 };
 
-const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5"] as const;
+const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
 export default function DesignPage() {
   return (
@@ -459,6 +463,7 @@ export default function DesignPage() {
           others={publicProfile(exampleMe, DEFAULT_SETTINGS)}
           whoSees={{ visibility: "Everyone signed in", link: "priya-n", shown: ["experience", "education", "skills", "certifications"] }}
           practice={exampleTrends}
+          planCard={<MePlanCard plan={{ elite: false, badgeShown: false, since: null }} />}
         />
       </section>
 
@@ -542,7 +547,7 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Account settings (signed in)</h2>
         <p className="text-sm text-muted">
-          Section list, Your plan (Free during the beta, the Elite card with no way to buy), name, username with its availability check and
+          Section list, Your plan (You&apos;re on Free with See Elite; nothing can be bought), name, username with its availability check and
           headline, the locked email, how the person signs in, private pay, privacy (who can see the profile and what it shows, switches in ink),
           notifications stored for when email is on, download and delete with its DELETE check. Example data, so nothing saves.
         </p>
@@ -568,6 +573,36 @@ export default function DesignPage() {
           mine.&rdquo; tick. Example answers, so nothing saves.
         </p>
         <BuilderView data={{ ...exampleBuilder, roles: builderRoles, roleTools: builderRoleTools }} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Elite (signed in)</h2>
+        <p className="text-sm text-muted">
+          Handoff 12l, FR-50: free in the beta, no billing. The /elite page on Free (the Turn on button in Elite violet, never cobalt), the Free and
+          Elite table, the prices after the beta (not charged now, not final) and the verified tick, never for sale. Then the page with Elite on, the
+          badge next to a name, the plan card on your own profile (Free, and Elite with the badge switch), and Account settings, Your plan, both ways.
+          Violet is for Elite only. Example data, so nothing changes.
+        </p>
+        <EliteView plan={{ elite: false, badgeShown: false, since: null }} />
+        <EliteView plan={{ elite: true, badgeShown: true, since: "19 Oct 2026" }} idPrefix="design-elite-on" />
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface p-4">
+          <span className="text-[1.2rem] font-semibold">
+            Priya Nair
+            <EliteBadge className="ml-2.5" />
+          </span>
+        </div>
+        <MePlanCard plan={{ elite: false, badgeShown: false, since: null }} />
+        <MePlanCard plan={{ elite: true, badgeShown: false, since: "19 Oct 2026" }} />
+        <div className="grid gap-4 min-[760px]:grid-cols-2">
+          <div className="rounded-lg border border-line bg-surface p-4">
+            <PlanCard plan={{ elite: false, badgeShown: false, since: null }} />
+          </div>
+          <div className="rounded-lg border border-line bg-surface p-4">
+            <PlanCard plan={{ elite: true, badgeShown: true, since: "19 Oct 2026" }} />
+          </div>
+        </div>
+        <p className="text-sm text-muted">Practice with Elite on: no daily cap of 10.</p>
+        <PracticeView view={{ ...examplePractice, left: null }} sampleFeedback={exampleFeedback} />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -945,9 +980,17 @@ export default function DesignPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
-        <p className="text-sm text-muted">Top bar on desktop, tab bar under 760 px, avatar menu (Admin shows only for admins). Sections not built yet show as Soon.</p>
+        <p className="text-sm text-muted">
+          Top bar on desktop, tab bar under 760 px, avatar menu (Admin shows only for admins). Sections not built yet show as Soon. The second frame
+          has Elite on: the violet award mark on the avatar, and &ldquo;Elite · beta&rdquo; and &ldquo;Elite is on&rdquo; in its menu.
+        </p>
         <div className="h-96 rounded-lg border border-line">
           <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true }}>
+            <p className="text-sm text-muted">Page content goes here.</p>
+          </AppShell>
+        </div>
+        <div className="h-96 rounded-lg border border-line">
+          <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 0, elite: true }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>

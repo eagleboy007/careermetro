@@ -55,6 +55,12 @@ export const practiceFeedback = z.object({
 /** How a goal skill sits on the person's line: the goal the train is on, one ahead of it, or one already met. */
 export const PRACTICE_TAGS = ["current", "ahead", "met"] as const;
 
+/**
+ * Ratings one skill can hold: answers are kept 30 days, and feedback calls stop at 20 a person a day
+ * (PRACTICE_LIMITS.callsPerPersonPerDay), which bounds Elite too, since Elite has no cap of 10 (FR-50).
+ */
+const PRACTICE_RATINGS_MAX = 20 * 31;
+
 /** One skill in the picker: a goal of the person's with questions in the bank, and their own ratings for it, oldest first. */
 export const practiceSkill = z.strictObject({
   skillId: z.string().regex(slug),
@@ -64,14 +70,15 @@ export const practiceSkill = z.strictObject({
     .array(z.strictObject({ id: z.string().min(1).max(80), question: z.string().min(1).max(300), lookFor: z.string().min(1).max(300) }))
     .min(1)
     .max(20),
-  ratings: z.array(practiceConfidence).max(PRACTICE_DAILY_ANSWERS * 31),
+  ratings: z.array(practiceConfidence).max(PRACTICE_RATINGS_MAX),
 });
 
 /** The Practice page: the picker's skills, the answers left today, and goals the bank has no questions for yet. */
 export const practiceView = z
   .strictObject({
     skills: z.array(practiceSkill).max(60),
-    left: z.number().int().min(0).max(PRACTICE_DAILY_ANSWERS),
+    /** Answers with feedback left today on Free; null on Elite, which has no daily cap (FR-50). */
+    left: z.number().int().min(0).max(PRACTICE_DAILY_ANSWERS).nullable(),
     /** Names of the person's goals with no questions yet. */
     noQuestions: z.array(z.string().min(1).max(120)).max(60),
   })
@@ -82,12 +89,12 @@ export const practiceView = z
 export const practiceTrend = z.strictObject({
   skillId: z.string().regex(slug),
   name: z.string().min(1).max(120),
-  ratings: z.array(practiceConfidence).min(1).max(PRACTICE_DAILY_ANSWERS * 31),
+  ratings: z.array(practiceConfidence).min(1).max(PRACTICE_RATINGS_MAX),
 });
 
 /** What "Get feedback" answers. `feedback` null: saved, but feedback isn't available now, and it used no daily answer. */
 export type PracticeAnswerResult =
-  | { ok: true; answerId: string; feedback: PracticeFeedback | null; left: number }
+  | { ok: true; answerId: string; feedback: PracticeFeedback | null; left: number | null }
   | { ok: false; message: string; left?: number };
 export type PracticeRateResult = { ok: true } | { ok: false; message: string };
 

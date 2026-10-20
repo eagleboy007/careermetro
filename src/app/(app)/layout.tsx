@@ -15,6 +15,7 @@ import { exampleThreads } from "@/lib/inbox/fixtures";
 import { corporateUnread } from "@/lib/corporate/overview";
 import { unreadChats } from "@/lib/inbox/store";
 import { requestsWaiting } from "@/lib/network/store";
+import { eliteOn } from "@/lib/elite/store";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -57,13 +58,15 @@ async function Shell({ children }: { children: React.ReactNode }) {
     if (!account) redirect((await currentIdentity()) ? "/sign-up/finish" : "/sign-in");
     // Suspended after a report (FR-46): the notice instead of any signed-in page. Admins are never blocked.
     if (suspendedFor(account, await currentIdentity())) redirect(SUSPENDED_PATH);
-    const [, streak, inboxUnread, companyUnread, networkRequests] = await Promise.all([
+    const [, streak, inboxUnread, companyUnread, networkRequests, elite] = await Promise.all([
       extra("last_seen", touchLastSeen(account.id), undefined),
       extra("streak", rideStatsFor(account.id, new Date()).then((s) => s.streak), { days: 0, todayCounted: false }),
       extra("inbox_unread", unreadChats(account.id), 0),
       // Read from the person's live company role, so a removed role shows nothing.
       extra("corporate_unread", corporateUnread(account.id), 0),
       extra("network_requests", requestsWaiting(account.id), 0),
+      // Elite (FR-50): the award mark on the avatar and "Elite · beta" in the menu.
+      extra("plan", eliteOn(account.id), false),
     ]);
     const name = displayName(account.name);
     // The streak shows once the person has ridden a day.
@@ -77,6 +80,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       inboxUnread,
       corporateUnread: companyUnread,
       networkRequests,
+      elite,
       isAdmin: isAdmin(await currentIdentity()),
     };
   } else {

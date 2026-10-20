@@ -7,6 +7,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
+import { ELITE_CHANGES_PER_DAY } from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -86,6 +87,10 @@ export const LIMITS = {
   builderBuildsPerUserHour: { bucket: "builder-build", max: 30, windowMs: HOUR },
   /** Rewords a day per person; they also count toward the parse budget. */
   builderRewordsPerUserDay: { bucket: "builder-reword", max: 5, windowMs: 24 * HOUR },
+  /** Elite (FR-50): turning it on or off, each try counted, so the switch can't be scripted. */
+  eliteChangesPerUserDay: { bucket: "elite-change", max: ELITE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** "Show the Elite badge on my profile" switched a day per person. */
+  eliteBadgePerUserDay: { bucket: "elite-badge", max: 20, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

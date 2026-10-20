@@ -7,6 +7,8 @@ import { aiCalls, practiceAnswers, userGoals } from "@/db/schema";
 import { practiceQuestions, skillGroupMembers, skills } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, RESERVATION_MINUTES, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
+import { eliteOn } from "@/lib/elite/store";
+import { practiceCapFor } from "@/lib/elite/rules";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
@@ -30,7 +32,10 @@ import { PRACTICE_MODEL, practiceFeedbackFor, type FeedbackClient } from "./feed
 type Db = ReturnType<typeof getDb>;
 
 export const PRACTICE_LIMITS = {
-  /** Answers with feedback one person gets a day (an India day); one whose feedback wasn't available doesn't count. */
+  /**
+   * Answers with feedback one person on Free gets a day (an India day); one whose feedback wasn't available doesn't
+   * count. Elite has no daily cap (FR-50, practiceCapFor).
+   */
   answersPerDay: PRACTICE_DAILY_ANSWERS,
   /** Feedback calls one person may start a UTC day, failed ones included, so retrying can't run up the budget (AI-6). */
   callsPerPersonPerDay: 20,
@@ -118,7 +123,7 @@ export async function submitPracticeAnswer(
 
   const answerId = randomUUID();
   const refs = { practiceAnswerId: answerId, questionId: question.id };
-  type First = { ok: false; reason: "not_goal" | "limit" } | { ok: true; used: number; reservedId: string | null };
+  type First = { ok: false; reason: "not_goal" | "limit" } | { ok: true; used: number; cap: number | null; reservedId: string | null };
   const first = await withKeyLock(db, `cm-practice:${userId}`, PRACTICE_LIMITS.lockTimeoutMs, async (tx): Promise<First> => {
     const [goal] = await tx
       .select({ id: userGoals.id })
@@ -128,7 +133,9 @@ export async function submitPracticeAnswer(
       .limit(1);
     if (!goal) return { ok: false, reason: "not_goal" };
     const used = await usedAnswers(tx, userId, now);
-    if (used >= PRACTICE_LIMITS.answersPerDay) return { ok: false, reason: "limit" };
+    // 10 a day on Free; Elite has no daily cap (FR-50), though feedback calls still stop at 20 a day.
+    const cap = practiceCapFor(await eliteOn(userId, tx));
+    if (cap !== null && used >= cap) return { ok: false, reason: "limit" };
     const reservedId = await reserveFeedback(tx, userId, refs);
     await tx.insert(practiceAnswers).values({
       id: answerId,
@@ -139,7 +146,7 @@ export async function submitPracticeAnswer(
       aiCallId: reservedId,
       createdAt: now,
     });
-    return { ok: true, used, reservedId };
+    return { ok: true, used, cap, reservedId };
   });
   if (first === "busy") return { ok: false, message: PRACTICE_MESSAGES.busy };
   if (!first.ok) return first.reason === "limit" ? { ok: false, message: PRACTICE_MESSAGES.limit, left: 0 } : { ok: false, message: PRACTICE_MESSAGES.not_goal };
@@ -160,7 +167,7 @@ export async function submitPracticeAnswer(
       .set({ feedback })
       .where(and(eq(practiceAnswers.id, answerId), eq(practiceAnswers.userId, userId)));
   }
-  const left = Math.max(0, PRACTICE_LIMITS.answersPerDay - first.used - (feedback ? 1 : 0));
+  const left = first.cap === null ? null : Math.max(0, first.cap - first.used - (feedback ? 1 : 0));
   logEvent("info", "practice_answered", { feedback: feedback !== null, left });
   return { ok: true, answerId, feedback, left };
 }
@@ -198,7 +205,8 @@ async function ratingsBySkill(db: Db, userId: string): Promise<Map<string, numbe
  * questions yet. Read only: practice never changes goals.
  */
 export async function practiceFor(userId: string, now = new Date(), db: Db = getDb()): Promise<PracticeView> {
-  const [goals, ratings, used] = await Promise.all([goalsOf(userId, db), ratingsBySkill(db, userId), usedAnswers(db, userId, now)]);
+  const [goals, ratings, used, elite] = await Promise.all([goalsOf(userId, db), ratingsBySkill(db, userId), usedAnswers(db, userId, now), eliteOn(userId, db)]);
+  const cap = practiceCapFor(elite);
   const open = goals.filter((g) => g.status !== "skipped");
   const current = open.find((g) => g.status !== "met" && !g.proved);
   const skillsOut: PracticeSkill[] = [];
@@ -220,7 +228,7 @@ export async function practiceFor(userId: string, now = new Date(), db: Db = get
       ratings: ratings.get(skillId) ?? [],
     });
   }
-  return practiceView.parse({ skills: skillsOut, left: Math.max(0, PRACTICE_LIMITS.answersPerDay - used), noQuestions });
+  return practiceView.parse({ skills: skillsOut, left: cap === null ? null : Math.max(0, cap - used), noQuestions });
 }
 
 /**

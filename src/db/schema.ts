@@ -1281,6 +1281,23 @@ export const practiceAnswers = pgTable(
   ],
 );
 
+/* Elite ------------------------------------------------------------------- */
+
+/**
+ * Elite, free in the beta (FR-50, docs/plans/elite-plan.md): one row a person, written when they first turn it on.
+ * `eliteSince` null is Free, and so is no row. Turning it off sets it back to null and keeps everything they made.
+ * `badgeShown` is "Show the Elite badge on my profile", off by default. No billing: no price, card or payment here.
+ * Goes with the account (on delete cascade); in Download your data.
+ */
+export const userPlans = pgTable("user_plans", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  eliteSince: timestamp("elite_since", { withTimezone: true }),
+  badgeShown: boolean("badge_shown").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /* Audit ------------------------------------------------------------------- */
 
 /**
