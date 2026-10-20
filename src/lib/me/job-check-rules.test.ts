@@ -73,6 +73,16 @@ describe("the work-email check of the current job (FR-47)", () => {
     expect(experienceCheck(role("Konkan Bank", "2021-01", "2024-05"), key, [])).toBeNull();
   });
 
+  it("gives nothing for a check saved on the other side of the profile, and keeps the key-only rule for older rows (T100)", () => {
+    const now = role("Garuda Sec", "2024-06");
+    const key = jobKeyOf(now);
+    const verified = { employerKey: "garuda sec", startMonth: "2024-06", status: "verified" as const, checkedAt: OCT };
+    expect(experienceCheck(now, key, [{ ...verified, source: "added" }], "resume")).toBeNull();
+    expect(experienceCheck(now, key, [{ ...verified, source: "added" }], "added")).toEqual({ state: "verified", month: "Oct 2026" });
+    expect(experienceCheck(now, key, [verified], "resume")).toEqual({ state: "verified", month: "Oct 2026" });
+    expect(experienceCheck(role("Freelance", "2024-06"), null, [{ ...verified, employerKey: "freelance", source: "added" }], "resume")).toEqual({ state: "self_declared", month: null });
+  });
+
   it("says each label in words, and a domain under review reads as not verified to others", () => {
     expect(experienceCheckText({ state: "verified", month: "Oct 2026" }, false)).toBe("Verified with work email · Oct 2026");
     expect(experienceCheckText({ state: "verified_while_there", month: "Oct 2026" }, false)).toBe("Verified while there · Oct 2026");

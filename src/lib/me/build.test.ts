@@ -292,6 +292,15 @@ describe("what the person added on Me", () => {
     ]);
   });
 
+  it("gives a check made on an added row no badge on a resume row with the same key, where the added row isn't shown (T100)", () => {
+    // Companies never get added rows; the check passed on the hand-added CTO role at Acme from 2024-01.
+    const passed = { employerKey: companyKey("Acme"), startMonth: "2024-01", status: "verified" as const, checkedAt: new Date("2026-10-01T00:00:00Z"), employer: "Acme" };
+    const badges = (me: ReturnType<typeof meFromProfile>) => me.experience.map((e) => [e.title, e.check?.state ?? null]);
+    expect(badges(meFromProfile(input({ profile: resume, jobChecks: [{ ...passed, source: "added" }] })))).toEqual([["Analyst", null]]);
+    // Made on the resume row, or an older row with no side: the resume row keeps it.
+    for (const check of [{ ...passed, source: "resume" as const }, passed]) expect(badges(meFromProfile(input({ profile: resume, jobChecks: [check] })))).toEqual([["Analyst", "verified"]]);
+  });
+
   it("puts added education after the resume's, with its row id", () => {
     const me = meFromProfile(input({ profile: resume, added: added({ education: [{ id: ids.edu, qualification: "Data Analytics with Python", institution: "NPTEL", year: null }] }) }));
     expect(me.education).toEqual([

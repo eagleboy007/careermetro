@@ -1,17 +1,29 @@
 // The signed-in screens the dry run (staging-dry-run.mjs) doesn't reach, on staging or any preview that offers
 // "Continue as test user" (docs/staging.md): Network (search, request, accept, and no city on any row), the notification
 // bell, the guided resume builder through to Download, Library (Save and "I finished this"), a mock interview round
-// started and ended at once, and Departures (save a role and mark it applied). Two fresh test users, each in its own
-// browser context, so one can ask the other to connect.
+// started and ended at once, and Departures (save a role and mark it applied). Then the company side: Arrivals, and the
+// admin pages' not-found for a member. Two fresh test users, each in its own browser context, so one can ask the other
+// to connect. No member's city may reach the other's screen or the page's data (Network rows, Sent, the profile, the
+// bell).
+//
+// With SMOKE_ADMIN_EMAIL (optional; a test-user address the deployment treats as an admin, docs/secrets.md) the rest
+// of the company side runs too, in a third browser: B sets up a company with the test-mode code, the admin verifies
+// it, B posts a job, A opens Gaps for the built resume and sends it with Express apply, B moves A to Offer and A sees
+// it under Offers on Arrivals; A reports the job and B reports a Library link, and the admin acknowledges and
+// dismisses both (Reports, Library review). Without it those steps print "skipped: ...".
 //
 //   BASE=https://careermetro-git-staging-career-metro.vercel.app BYPASS=... node scripts/smoke/staging-screens.mjs
 //
 // The same rules as the dry run: BASE (or the first argument) is the site; BYPASS, when set, is sent as the
 // x-vercel-protection-bypass header to that site only, and only when it is a careermetro-*.vercel.app host. The header and
-// the test emails are never printed. One line per step, ok or FAIL; the exit code is 1 on any failure. Both test
-// accounts are deleted at the end, as prod-smoke.md section 8 says, even after a failure.
+// the test emails (the admin's too) are never printed. One line per step, ok or FAIL; the exit code is 1 on any
+// failure. The clean-up runs whatever happens before it (a failure, a crash, SIGINT or SIGTERM): A withdraws the
+// application, B closes the job, the admin dismisses any report still open, and both test accounts are deleted, as
+// prod-smoke.md section 8 says. The company itself can't be deleted in the app: it stays, verified, with no live job,
+// and shows on Company review as "No admin" once B's account is gone. The admin test account is kept for the next run.
 // AI spend: the builder's "Review my resume" is one build-resume call; the mock round ends with nothing answered, so it
-// asks for no feedback; nothing here uploads a resume or opens gaps. /api/health pings Claude once, as in the dry run.
+// asks for no feedback; nothing here uploads a resume. With the admin, A's Gaps page is one explain-gaps call.
+// /api/health pings Claude once, as in the dry run.
 // Run by .github/workflows/smoke-staging.yml after the dry run. Playwright isn't a project dependency:
 // `npm install --no-save playwright@1.56.1`.
 import { randomBytes } from "node:crypto";
@@ -54,11 +66,30 @@ const person = (tag, first, city) => ({
 });
 const A = person("a", "Asha", "Indore");
 const B = person("b", "Bina", "Pune");
+// Each user picks a username in Settings too, so the other can open their profile from Network.
+for (const u of [A, B]) u.handle = `smoke-${letters(10)}`;
+
+/**
+ * Optional: the admin test account (docs/secrets.md). The test sign-in adds ".test" to any address without it, and an
+ * admin is a test user whose address Preview's ADMIN_EMAILS lists, or admin@careermetro.test while it is unset
+ * (src/lib/admin/access.ts). Never deleted: it is the same account every run.
+ */
+const ADMIN_EMAIL = (process.env.SMOKE_ADMIN_EMAIL || "").trim();
+const ADMIN = ADMIN_EMAIL ? { tag: "admin", first: "Smoke", last: "Admin", name: "Smoke Admin", email: ADMIN_EMAIL, ctx: null, page: null, signedUp: false } : null;
+const NO_ADMIN = "skipped: SMOKE_ADMIN_EMAIL is not set, so there is no admin test account";
+/** The company B sets up and the job it posts: unique names, so every check finds this run's rows only. */
+const CO = { name: `Smoke Labs ${cap(letters(6))}`, domain: `smoke${Date.now()}${letters(4)}.example-labs.test`, created: false, verified: false };
+const JOB = { title: `Smoke Data Analyst ${cap(letters(6))}`, posted: false, closed: false };
+/** A's built resume (/resume/<id>) and the Library resource B saved, for the company steps. */
+let aResume = null;
+let libTitle = null;
+/** What the clean-up has to undo: A's application, and the two reports. */
+const left = { applied: false, withdrawn: false, jobReport: false, jobReportDone: false, linkReport: false, linkReportDone: false };
 
 /** Never lets the bypass value or a test email reach the log, whatever an error message carries. */
 const redact = (s) => {
   let out = String(s);
-  for (const secret of [BYPASS, A.email, A.email.toLowerCase(), B.email, B.email.toLowerCase()]) if (secret) out = out.split(secret).join("[hidden]");
+  for (const secret of [BYPASS, A.email, A.email.toLowerCase(), B.email, B.email.toLowerCase(), ADMIN_EMAIL, ADMIN_EMAIL.toLowerCase()]) if (secret) out = out.split(secret).join("[hidden]");
   return out;
 };
 
@@ -88,7 +119,7 @@ const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePa
  * context, so requests to any other host are refused: the header never leaves for a third party (the Vercel toolbar, a
  * font host, a company's job post opened by Apply).
  */
-for (const u of [A, B]) {
+for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) {
   u.ctx = await browser.newContext({
     viewport: { width: 1280, height: 900 },
     reducedMotion: "reduce",
@@ -111,6 +142,8 @@ process.on("unhandledRejection", (err) => {
   console.log(`FAIL unhandled: ${redact(err?.message ?? err)}`);
 });
 let blockedBy = "";
+/** Set by SIGINT or SIGTERM: from then on only the clean-up runs. */
+let interrupted = false;
 let n = 0;
 const failedSteps = new Set();
 const path = (p) => {
@@ -123,9 +156,13 @@ const path = (p) => {
 /**
  * One line per step, on one user's page (its path is printed and, on a failure, its screenshot kept). A failed
  * `critical` step skips everything after it; `needs` names earlier steps this one can't run without. A step may return
- * a note (such as "skipped: no posts"), printed after its path.
+ * a note (such as "skipped: no posts"), printed after its path. After SIGINT or SIGTERM only `cleanup` steps run.
  */
-const step = async (name, u, fn, { critical = false, needs = [] } = {}) => {
+const step = async (name, u, fn, { critical = false, needs = [], cleanup = false } = {}) => {
+  if (interrupted && !cleanup) {
+    console.log("FAIL", name, "(skipped: the run was interrupted)");
+    return false;
+  }
   const missing = blockedBy || needs.find((s) => failedSteps.has(s));
   if (missing) {
     failed++;
@@ -183,9 +220,13 @@ const testSignIn = async (u) => {
 };
 /** Sign up as a new test user: Create your account with the name, then Today. */
 const signUp = async (u) => {
-  const p = u.page;
   const landed = await testSignIn(u);
   if (!landed.startsWith("/sign-up/finish")) throw new Error(`a new address should go to Create your account, went to ${landed}`);
+  await finishSignUp(u);
+};
+/** Create your account: the name, the age and terms tick, then Today. */
+const finishSignUp = async (u) => {
+  const p = u.page;
   await p.getByRole("heading", { name: "Create your account", exact: true }).waitFor();
   if ((await p.getByLabel("First name", { exact: true }).inputValue()) !== u.first) await p.getByLabel("First name", { exact: true }).fill(u.first);
   if ((await p.getByLabel("Last name", { exact: true }).inputValue()) !== u.last) await p.getByLabel("Last name", { exact: true }).fill(u.last);
@@ -204,242 +245,76 @@ const noCityOnRows = async (p, min = 1) => {
     if (city) throw new Error(`a Network row shows a city (${city}); members never see one`);
   }
 };
+/**
+ * Every same-origin page, RSC and fetch body this user's browser reads while `fn` runs, plus the page's HTML at the
+ * end, as one string: a city can travel in the data without being drawn on a row.
+ */
+const payloadDuring = async (u, fn) => {
+  const bodies = [];
+  const reads = [];
+  const onResponse = (res) => {
+    let origin = "";
+    try {
+      origin = new URL(res.url()).origin;
+    } catch {}
+    if (origin !== ORIGIN || !/html|x-component|json|text\/plain/.test(res.headers()["content-type"] ?? "")) return;
+    reads.push(res.text().then((t) => bodies.push(t), () => {}));
+  };
+  u.ctx.on("response", onResponse);
+  try {
+    await fn(u.page);
+  } finally {
+    u.ctx.off("response", onResponse);
+  }
+  await Promise.all(reads);
+  bodies.push(await u.page.content().catch(() => ""));
+  return bodies.join("\n");
+};
+/** Fails when the data this user's browser got carries the other user's city (their own city is theirs to see). */
+const noCityIn = (payload, other) => {
+  if (new RegExp(`\\b${other.city}\\b`).test(payload)) throw new Error(`the page's data carries ${other.tag.toUpperCase()}'s city (${other.city}); members never get one`);
+};
+/** The step that sets the user's city: the no-city checks prove nothing without it. */
+const cityStep = (u) => `network 1 ${u.tag.toUpperCase()} picks a Current city and a username in Settings (only companies see the city)`;
+const cityNeeds = [cityStep(A), cityStep(B)];
+/**
+ * A checkbox or switch whose state follows the server (the Switch flips only once its action answers): click it,
+ * wait for the words the page says, then for the state.
+ */
+const clickUntil = async (p, box, words, want = true) => {
+  await box.click({ force: true });
+  await toast(p, words);
+  for (let t = 0; (await box.isChecked()) !== want; t++) {
+    if (t >= 40) throw new Error(`still ${want ? "off" : "on"} after "${words}"`);
+    await p.waitForTimeout(250);
+  }
+};
 const row = (p, u) => p.locator("main li[data-person]").filter({ hasText: u.name });
 const bell = (p) => p.locator("header button[data-bell]");
+/** The words a server action announces in a status line. */
+const said = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: 15000 });
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** A step that needs the admin test account prints why it didn't run, the way an empty board does. */
+const AS_ADMIN = ADMIN ?? A;
 
-await step("1.1 health answers ok", A, async () => {
-  const res = await A.ctx.request.get(BASE + "/api/health", { timeout: 60000 });
-  if (res.status() === 401 || res.status() === 403) throw new Error(`HTTP ${res.status()}: Deployment Protection blocked it; BYPASS is missing or wrong`);
-  const body = await res.json().catch(() => ({}));
-  if (res.status() !== 200 || body.ok !== true) {
-    throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
-  }
-}, { critical: true });
+// The company side's rows, for its steps and the clean-up.
+const jobCard = (p) => p.getByRole("article").filter({ has: p.getByRole("heading", { name: JOB.title }) });
+const reportRow = (p) => p.locator("article", { hasText: JOB.title });
+/** Library review's row for B's link; true when it is dismissed, false when other people's reports are open on it too. */
+const dismissLink = async (p) => {
+  await open(p, "/admin/library");
+  await p.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+  const link = p.locator("article").filter({ has: p.getByRole("heading", { name: libTitle, exact: true, level: 3 }) });
+  await link.waitFor({ timeout: 15000 });
+  // Dismiss closes every open report on the link, so it is pressed only when B's is the only one.
+  if (!(await link.getByText("Link is broken · 1", { exact: true }).count())) return false;
+  await link.getByRole("button", { name: `Dismiss reports: ${libTitle}`, exact: true }).click();
+  await said(p, "Reports dismissed. The link stays as it is.");
+  left.linkReportDone = true;
+  return true;
+};
 
-await step("sign up test user A: Create your account, then Today", A, () => signUp(A), { critical: true });
-await step("sign up test user B in a second browser: Create your account, then Today", B, () => signUp(B), { critical: true });
-
-// ---- Network, and the bell -------------------------------------------------------------------------------------------
-for (const u of [A, B]) {
-  await step(`network 1 ${u.tag.toUpperCase()} picks a Current city in Settings (only companies see it)`, u, async (p) => {
-    await open(p, "/settings");
-    await p.getByRole("combobox", { name: /^Current city/ }).selectOption(u.city);
-    await p.getByRole("button", { name: "Save changes", exact: true }).click();
-    await p.getByText("Settings saved.", { exact: true }).waitFor({ state: "attached", timeout: 15000 });
-  });
-}
-
-await step("network 2 B turns on Let people find me", B, async (p) => {
-  await open(p, "/network");
-  await p.getByRole("tablist", { name: "Your network", exact: true }).waitFor();
-  const findMe = p.getByRole("checkbox", { name: "Let people find me", exact: true });
-  await findMe.waitFor({ state: "attached" });
-  if (!(await findMe.isChecked())) {
-    await findMe.check({ force: true });
-    await p.getByText("People can now find you by name.", { exact: true }).waitFor({ timeout: 15000 });
-  }
-});
-
-await step("network 3 A finds B by name in Find people, with no city on the row", A, async (p) => {
-  await open(p, "/network");
-  await p.getByRole("tablist", { name: "Your network", exact: true }).getByRole("tab", { name: /^Find/ }).click();
-  await p.getByRole("searchbox", { name: "Find people by name or @handle", exact: true }).fill(B.last);
-  await p.getByRole("button", { name: "Search", exact: true }).click();
-  await row(p, B).waitFor({ timeout: 15000 });
-  await noCityOnRows(p);
-}, { needs: ["network 2 B turns on Let people find me"] });
-
-await step("network 4 A sends B a request: Connect, How do you know them, Send request", A, async (p) => {
-  await row(p, B).getByRole("button", { name: `Connect with ${B.name}`, exact: true }).click();
-  await p.getByRole("group", { name: `How you know ${B.name}`, exact: true }).getByRole("button", { name: "Send request", exact: true }).click();
-  await p.getByText(`Request sent to ${B.first}. It shows under Sent until they answer.`, { exact: true }).waitFor({ timeout: 15000 });
-}, { needs: ["network 3 A finds B by name in Find people, with no city on the row"] });
-
-await step("bell 1 B's bell rings, its list has A's request, and the row opens Network on Requests", B, async (p) => {
-  await open(p, "/today");
-  await bell(p).waitFor();
-  const label = await bell(p).getAttribute("aria-label");
-  if (!/^Notifications, \d+ new$/.test(label ?? "")) throw new Error(`the bell reads "${label}", not "Notifications, N new"`);
-  await bell(p).click();
-  const item = p.getByRole("link", { name: `${A.name} asked to connect.`, exact: false });
-  await item.waitFor({ timeout: 15000 });
-  await item.click();
-  await p.waitForURL(/\/network\?tab=requests/, { timeout: 15000 });
-}, { needs: ["network 4 A sends B a request: Connect, How do you know them, Send request"] });
-
-await step("network 5 B accepts on Requests; A's row shows no city before or after", B, async (p) => {
-  if (!path(p).startsWith("/network")) await open(p, "/network?tab=requests");
-  await p.waitForLoadState("networkidle");
-  await p.getByRole("tab", { name: /^Requests/, selected: true }).waitFor({ timeout: 15000 });
-  await row(p, A).waitFor({ timeout: 15000 });
-  await noCityOnRows(p);
-  await row(p, A).getByRole("button", { name: `Accept ${A.name}`, exact: true }).click();
-  await p.getByText(`You and ${A.first} are connected.`, { exact: true }).waitFor({ timeout: 15000 });
-  await open(p, "/network");
-  await p.getByRole("tab", { name: /^Connections/, selected: true }).waitFor({ timeout: 15000 });
-  await row(p, A).waitFor({ timeout: 15000 });
-  await noCityOnRows(p);
-}, { needs: ["network 4 A sends B a request: Connect, How do you know them, Send request"] });
-
-await step("bell 2 A's bell lists B's accept; A's Connections show B with no city", A, async (p) => {
-  await open(p, "/today");
-  await bell(p).click();
-  await p.getByRole("link", { name: `${B.name} accepted your request.`, exact: false }).waitFor({ timeout: 15000 });
-  await p.keyboard.press("Escape");
-  await open(p, "/network");
-  await p.getByRole("tab", { name: /^Connections/, selected: true }).waitFor({ timeout: 15000 });
-  await row(p, B).waitFor({ timeout: 15000 });
-  await noCityOnRows(p);
-}, { needs: ["network 5 B accepts on Requests; A's row shows no city before or after"] });
-
-// ---- Build your resume, through to Download -------------------------------------------------------------------------
-await step("builder: A answers the seven sections, Review my resume, then Download gives a PDF", A, async (p) => {
-  await open(p, "/builder");
-  const section = (name) => p.getByRole("heading", { name, level: 2, exact: true });
-  const next = async (name) => {
-    await p.getByRole("button", { name: "Next", exact: true }).click();
-    await section(name).waitFor({ timeout: 10000 });
-  };
-  await section("Role").waitFor({ timeout: 15000 });
-  await p.getByLabel("Target role").selectOption("data-analyst");
-  await p.getByText("Just graduated", { exact: true }).click();
-  await next("Education");
-  await p.getByRole("button", { name: "Add degree" }).click();
-  await p.getByLabel("Degree", { exact: true }).fill("B.Com.");
-  await p.getByLabel("College", { exact: true }).fill("Example College, Indore");
-  await p.getByLabel("Start year").fill("2021");
-  await p.getByLabel("End year").fill("2024");
-  await next("Projects");
-  await p.getByRole("button", { name: "Add project" }).click();
-  await p.getByLabel("Project name").fill("Shop sales dashboard");
-  await p.getByLabel("What did you build or do?").fill("Built a sales dashboard in Excel for 3 shops.");
-  await next("Internships and jobs");
-  await p.getByRole("checkbox", { name: /haven.t worked yet/ }).check();
-  await next("Tools");
-  const tools = p.getByRole("list", { name: "Tools" });
-  if (!(await tools.getByRole("button", { pressed: true }).count())) {
-    await p.getByLabel("Add your own").fill("Excel");
-    await p.getByRole("button", { name: "Add", exact: true }).click();
-  }
-  await tools.getByRole("button", { pressed: true }).first().waitFor({ timeout: 10000 });
-  await next("Certificates");
-  await p.getByRole("checkbox", { name: "None yet" }).check();
-  await next("Links");
-  await p.getByLabel("GitHub").fill("github.com/smoke-builder");
-  // The one AI call of this script: the build-resume reword.
-  await p.getByRole("button", { name: "Review my resume" }).click();
-  await p.getByRole("heading", { name: "Your resume", level: 1 }).waitFor({ timeout: 90000 });
-  await p.getByRole("article", { name: "Resume preview" }).waitFor();
-  // Download goes through the confirm step: the file is made only from a confirmed profile (FR-20).
-  await p.getByRole("checkbox", { name: "Everything here is true and mine." }).check();
-  await p.getByRole("button", { name: "Download PDF or DOCX" }).click();
-  await p.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 30000 });
-  await p.waitForLoadState("networkidle");
-  await p.getByRole("button", { name: "Looks right", exact: true }).click();
-  await p.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 15000 });
-  // Fetched with the page's cookies and headers, as the dry run fetches its export (a browser download isn't reliably
-  // sent with the bypass header). Checked, never printed.
-  const href = await p.getByRole("link", { name: "PDF", exact: true }).getAttribute("href");
-  if (!href) throw new Error("no PDF link");
-  const pdf = await p.request.get(new URL(href, BASE).href);
-  if (pdf.status() !== 200 || !(await pdf.body()).subarray(0, 5).toString("latin1").startsWith("%PDF-")) throw new Error(`the PDF download gave HTTP ${pdf.status()}, not a PDF`);
-});
-
-// ---- Library ---------------------------------------------------------------------------------------------------------
-await step("library: B searches, opens a resource, Saves it and ticks I finished this", B, async (p) => {
-  await open(p, "/library");
-  const main = p.locator("main").first();
-  await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 15000 });
-  // B has no resume, so no goal cards: a search lists the catalog.
-  await p.getByRole("searchbox", { name: "Search the Library" }).fill("SQL");
-  const rows = main.locator("li button[aria-controls]");
-  await rows.first().waitFor({ timeout: 15000 });
-  const title = (await rows.first().innerText()).trim();
-  await rows.first().click();
-  const panel = p.getByRole("complementary", { name: "Resource details" });
-  await panel.getByRole("heading", { name: title, exact: true, level: 3 }).waitFor({ timeout: 10000 });
-  await panel.getByRole("button", { name: `Save ${title}`, exact: true }).click();
-  await toast(p, "Saved to your Library.");
-  await panel.getByRole("button", { name: `Save ${title}`, exact: true, pressed: true }).waitFor({ timeout: 10000 });
-  const tick = panel.getByRole("checkbox", { name: "I finished this" });
-  await tick.check();
-  await toast(p, "Marked finished.");
-  if (!(await tick.isChecked())) throw new Error("I finished this didn't stay ticked");
-});
-
-// ---- Mock interview (Elite, free in the beta) -----------------------------------------------------------------------
-await step("mock: B turns on Elite, starts a Quick round and ends it at once (no answers, so no AI feedback call)", B, async (p) => {
-  await open(p, "/elite");
-  const main = p.locator("main");
-  const on = main.getByRole("button", { name: "Elite is on, free in the beta", exact: true });
-  if (!(await on.count())) {
-    await main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true }).click();
-    await on.waitFor({ timeout: 15000 });
-  }
-  await open(p, "/mock?role=data-analyst");
-  const mode = main.getByRole("group", { name: "Mode" });
-  const tab = mode.getByRole("button", { name: "Mock interview", exact: true });
-  await tab.waitFor({ timeout: 15000 });
-  if ((await tab.getAttribute("aria-pressed")) !== "true") await tab.click();
-  const setup = main.getByRole("region", { name: "Set up your mock interview" });
-  await setup.waitFor({ timeout: 15000 });
-  await setup.getByText("Quick round", { exact: true }).click();
-  if (!(await setup.getByRole("radio", { name: /Quick round/ }).isChecked())) throw new Error("Quick round isn't picked");
-  await setup.getByRole("button", { name: "Start mock interview", exact: true }).click();
-  await main.getByRole("timer").waitFor({ timeout: 15000 });
-  await main.getByText(/^Question 1 of 4 · /).waitFor();
-  await main.getByRole("button", { name: "End and get feedback", exact: true }).click();
-  await main.getByRole("heading", { name: "Feedback on your round", exact: true }).waitFor({ timeout: 30000 });
-  await main.getByText(/0 of 4 answered/).waitFor();
-  await main.getByText("Nothing answered this round, so there is no feedback.", { exact: false }).waitFor();
-});
-
-// ---- Departures ------------------------------------------------------------------------------------------------------
-await step("departures: A opens the board, saves a role and marks it applied", A, async (p) => {
-  await open(p, "/departures");
-  if (await p.getByRole("region", { name: "Job search is off" }).count()) throw new Error("Departures is paused: Looking for a job is off for a new account");
-  // A live row: its title opens the details, and its bookmark is "Save <role>". CareerMetro's own posts are another list.
-  const rows = p
-    .locator("main li")
-    .filter({ has: p.locator("button[aria-controls]") })
-    .filter({ has: p.locator('button[aria-label^="Save "]') });
-  const empty = p.getByText("No roles from company job boards yet.", { exact: false });
-  await rows.first().or(empty).first().waitFor({ timeout: 20000 });
-  if (!(await rows.count())) return "skipped: no posts";
-  const first = rows.first();
-  const save = first.locator('button[aria-label^="Save "]');
-  const role = (await save.getAttribute("aria-label")).replace(/^Save /, "");
-  await first.locator("button[aria-controls]").click();
-  const detail = p.getByRole("complementary", { name: "Role details" });
-  await detail.getByRole("heading", { name: role }).first().waitFor({ timeout: 10000 });
-  if ((await save.getAttribute("aria-pressed")) !== "true") {
-    await save.click();
-    await toast(p, "Saved.");
-  }
-  const saveButton = (opts = {}) => p.getByRole("button", { name: `Save ${role}`, exact: true, ...opts });
-  await saveButton({ pressed: true }).first().waitFor({ timeout: 10000 });
-  // The company's post opens in a new tab, which this context refuses to load (no other host gets the header).
-  const [popup] = await Promise.all([
-    p.waitForEvent("popup", { timeout: 15000 }),
-    detail.getByRole("link", { name: /^Apply on company site: .+ \(opens in a new tab\)$/ }).click(),
-  ]);
-  await popup.close().catch(() => {});
-  await detail.getByRole("group", { name: "Did you apply?" }).getByRole("button", { name: "Yes, I applied", exact: true }).click();
-  await toast(p, "Marked as applied to ");
-  await detail.getByRole("heading", { name: "Your application" }).waitFor({ timeout: 10000 });
-  // Both lists keep it after a reload.
-  await p.reload();
-  await p.waitForLoadState("networkidle");
-  await settled(p);
-  const tabs = p.getByRole("group", { name: "Show" });
-  const kept = p.locator("main li").filter({ has: saveButton() }).first();
-  await tabs.getByRole("button", { name: /^Saved/ }).click();
-  await kept.waitFor({ timeout: 10000 });
-  await tabs.getByRole("button", { name: /^Applied/ }).click();
-  await kept.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
-});
-
-// ---- Clean-up: delete both test accounts, even after a failure ------------------------------------------------------
+// ---- Clean-up, defined first so a crash or a signal can run it -------------------------------------------------------
 /** Section 8: Settings > Delete account > Delete, type DELETE, Delete my account. Signs in first when signed out. */
 const deleteAccount = async (u) => {
   const p = u.page;
@@ -463,10 +338,531 @@ const deleteAccount = async (u) => {
   await p.waitForURL(/\/sign-in/, { timeout: 30000 });
 };
 
-// The clean-up runs whatever failed before it, so a preview never keeps a half-checked account.
-blockedBy = "";
-for (const u of [B, A]) {
-  if (u.signedUp && !u.deleted) await step(`8 delete test user ${u.tag.toUpperCase()}: /account/deleted, then signed out`, u, () => deleteAccount(u));
+/**
+ * Undoes what the run made, whatever failed before it, so a preview never keeps a half-checked account or a live test
+ * job: A's application, B's job, any report still open, then both accounts. Each part runs only when its thing exists.
+ * Runs once: a signal during the clean-up waits for the same run.
+ */
+let cleaning = null;
+const cleanUp = () =>
+  (cleaning ??= (async () => {
+    blockedBy = "";
+    // After a signal, a step may still hold the old pages: each user gets a fresh one.
+    if (interrupted) for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) u.page = await u.ctx.newPage().catch(() => u.page);
+    if (left.applied && !left.withdrawn && A.signedUp && !A.deleted) {
+      await step("clean-up 1 A withdraws the application on Arrivals", A, async (p) => {
+        await open(p, "/arrivals");
+        await p.getByRole("button", { name: `Withdraw ${JOB.title} at ${CO.name}`, exact: true }).click();
+        await p.getByRole("button", { name: "Withdraw application", exact: true }).click();
+        await said(p, `Withdrawn: ${JOB.title} at ${CO.name}.`);
+        left.withdrawn = true;
+      }, { cleanup: true });
+    }
+    if (JOB.posted && !JOB.closed && B.signedUp && !B.deleted) {
+      // Closed, not paused: deleting B's account leaves a verified company's open job live otherwise.
+      await step("clean-up 2 B closes the job: Close, Close job, so it leaves Departures for good", B, async (p) => {
+        await open(p, "/corporate");
+        await p.getByRole("button", { name: `Close ${JOB.title}`, exact: true }).click();
+        await p.getByRole("button", { name: "Close job", exact: true }).click();
+        await said(p, "Closed. It stays here for your records.");
+        JOB.closed = true;
+      }, { cleanup: true });
+    }
+    if (ADMIN && left.jobReport && !left.jobReportDone) {
+      await step("clean-up 3 the admin dismisses the job report still open", ADMIN, async (p) => {
+        await open(p, "/admin/reports");
+        await reportRow(p).getByRole("button", { name: /^Dismiss: / }).click();
+        await said(p, "Dismissed. It leaves the list.");
+        left.jobReportDone = true;
+      }, { cleanup: true });
+    }
+    if (ADMIN && left.linkReport && !left.linkReportDone) {
+      await step("clean-up 4 the admin dismisses B's link report still open", ADMIN, async (p) => {
+        if (!(await dismissLink(p))) return "left open: other people's reports are open on this link too";
+      }, { cleanup: true });
+    }
+    for (const u of [B, A]) {
+      if (u.signedUp && !u.deleted) await step(`8 delete test user ${u.tag.toUpperCase()}: /account/deleted, then signed out`, u, () => deleteAccount(u), { cleanup: true });
+    }
+  })());
+
+// A cancel (SIGINT) or a job timeout (SIGTERM) still deletes the test accounts, then the run fails.
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.once(signal, async () => {
+    failed++;
+    interrupted = true;
+    console.log(`FAIL interrupted by ${signal}: cleaning up before exiting`);
+    await cleanUp().catch((e) => console.log(`FAIL clean-up: ${redact(e?.message ?? e)}`));
+    await browser.close().catch(() => {});
+    process.exit(1);
+  });
+}
+
+try {
+  await step("1.1 health answers ok", A, async () => {
+    const res = await A.ctx.request.get(BASE + "/api/health", { timeout: 60000 });
+    if (res.status() === 401 || res.status() === 403) throw new Error(`HTTP ${res.status()}: Deployment Protection blocked it; BYPASS is missing or wrong`);
+    const body = await res.json().catch(() => ({}));
+    if (res.status() !== 200 || body.ok !== true) {
+      throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
+    }
+  }, { critical: true });
+
+  await step("sign up test user A: Create your account, then Today", A, () => signUp(A), { critical: true });
+  await step("sign up test user B in a second browser: Create your account, then Today", B, () => signUp(B), { critical: true });
+
+  // ---- Network, and the bell -------------------------------------------------------------------------------------------
+  for (const u of [A, B]) {
+    await step(cityStep(u), u, async (p) => {
+      await open(p, "/settings");
+      await p.getByRole("combobox", { name: /^Current city/ }).selectOption(u.city);
+      await p.getByLabel("Username").fill(u.handle);
+      await p.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+      await p.getByRole("button", { name: "Save changes", exact: true }).click();
+      await p.getByText("Settings saved.", { exact: true }).waitFor({ state: "attached", timeout: 15000 });
+    });
+  }
+
+  await step("network 2 B turns on Let people find me", B, async (p) => {
+    await open(p, "/network");
+    await p.getByRole("tablist", { name: "Your network", exact: true }).waitFor();
+    const findMe = p.getByRole("checkbox", { name: "Let people find me", exact: true });
+    await findMe.waitFor({ state: "attached" });
+    // Controlled: it flips only once the server answers.
+    if (!(await findMe.isChecked())) await clickUntil(p, findMe, "People can now find you by name.");
+  });
+
+  // Each no-city check also reads the page's HTML and the RSC and fetch bodies behind it, so a city sent but not drawn
+  // still fails.
+  await step("network 3 A finds B by name in Find people, with no city on the row", A, async (p) => {
+    const payload = await payloadDuring(A, async () => {
+      await open(p, "/network");
+      await p.getByRole("tablist", { name: "Your network", exact: true }).getByRole("tab", { name: /^Find/ }).click();
+      await p.getByRole("searchbox", { name: "Find people by name or @handle", exact: true }).fill(B.last);
+      await p.getByRole("button", { name: "Search", exact: true }).click();
+      await row(p, B).waitFor({ timeout: 15000 });
+    });
+    await noCityOnRows(p);
+    noCityIn(payload, B);
+  }, { needs: [...cityNeeds, "network 2 B turns on Let people find me"] });
+
+  await step("network 4 A sends B a request: Connect, How do you know them, Send request; Sent shows B with no city", A, async (p) => {
+    await row(p, B).getByRole("button", { name: `Connect with ${B.name}`, exact: true }).click();
+    await p.getByRole("group", { name: `How you know ${B.name}`, exact: true }).getByRole("button", { name: "Send request", exact: true }).click();
+    await p.getByText(`Request sent to ${B.first}. It shows under Sent until they answer.`, { exact: true }).waitFor({ timeout: 15000 });
+    const payload = await payloadDuring(A, async () => {
+      await open(p, "/network");
+      await p.getByRole("tablist", { name: "Your network", exact: true }).getByRole("tab", { name: /^Sent/ }).click();
+      await row(p, B).waitFor({ timeout: 15000 });
+    });
+    await noCityOnRows(p);
+    noCityIn(payload, B);
+  }, { needs: [...cityNeeds, "network 3 A finds B by name in Find people, with no city on the row"] });
+
+  await step("bell 1 B's bell rings, its list has A's request with no city, and the row opens Network on Requests", B, async (p) => {
+    const payload = await payloadDuring(B, async () => {
+      await open(p, "/today");
+      await bell(p).waitFor();
+      const label = await bell(p).getAttribute("aria-label");
+      if (!/^Notifications, \d+ new$/.test(label ?? "")) throw new Error(`the bell reads "${label}", not "Notifications, N new"`);
+      await bell(p).click();
+      const item = p.getByRole("link", { name: `${A.name} asked to connect.`, exact: false });
+      await item.waitFor({ timeout: 15000 });
+      if (cityPattern.test(await item.innerText())) throw new Error("the bell's row shows a city");
+      await item.click();
+      await p.waitForURL(/\/network\?tab=requests/, { timeout: 15000 });
+    });
+    noCityIn(payload, A);
+  }, { needs: [...cityNeeds, "network 4 A sends B a request: Connect, How do you know them, Send request; Sent shows B with no city"] });
+
+  await step("network 5 B accepts on Requests; A's row shows no city before or after", B, async (p) => {
+    const payload = await payloadDuring(B, async () => {
+      if (!path(p).startsWith("/network")) await open(p, "/network?tab=requests");
+      await p.waitForLoadState("networkidle");
+      await p.getByRole("tab", { name: /^Requests/, selected: true }).waitFor({ timeout: 15000 });
+      await row(p, A).waitFor({ timeout: 15000 });
+      await noCityOnRows(p);
+      await row(p, A).getByRole("button", { name: `Accept ${A.name}`, exact: true }).click();
+      await p.getByText(`You and ${A.first} are connected.`, { exact: true }).waitFor({ timeout: 15000 });
+      await open(p, "/network");
+      await p.getByRole("tab", { name: /^Connections/, selected: true }).waitFor({ timeout: 15000 });
+      await row(p, A).waitFor({ timeout: 15000 });
+    });
+    await noCityOnRows(p);
+    noCityIn(payload, A);
+  }, { needs: [...cityNeeds, "network 4 A sends B a request: Connect, How do you know them, Send request; Sent shows B with no city"] });
+
+  await step("bell 2 A's bell lists B's accept; A's Connections show B with no city", A, async (p) => {
+    const payload = await payloadDuring(A, async () => {
+      await open(p, "/today");
+      await bell(p).click();
+      await p.getByRole("link", { name: `${B.name} accepted your request.`, exact: false }).waitFor({ timeout: 15000 });
+      await p.keyboard.press("Escape");
+      await open(p, "/network");
+      await p.getByRole("tab", { name: /^Connections/, selected: true }).waitFor({ timeout: 15000 });
+      await row(p, B).waitFor({ timeout: 15000 });
+    });
+    await noCityOnRows(p);
+    noCityIn(payload, B);
+  }, { needs: [...cityNeeds, "network 5 B accepts on Requests; A's row shows no city before or after"] });
+
+  await step("network 6 A opens B's profile from Connections: no city on the page or in its data", A, async (p) => {
+    const payload = await payloadDuring(A, async () => {
+      await row(p, B).getByRole("link", { name: B.name, exact: true }).click();
+      await p.waitForURL(new RegExp(`/u/${escapeRe(B.handle)}$`), { timeout: 15000 });
+      await p.waitForLoadState("networkidle");
+      await p.getByRole("heading", { level: 1 }).first().waitFor({ timeout: 15000 });
+    });
+    const city = cityPattern.exec(await p.locator("main").first().innerText())?.[1];
+    if (city) throw new Error(`B's profile shows a city (${city}); members never see one`);
+    noCityIn(payload, B);
+  }, { needs: [...cityNeeds, "bell 2 A's bell lists B's accept; A's Connections show B with no city"] });
+
+  // ---- Build your resume, through to Download -------------------------------------------------------------------------
+  await step("builder: A answers the seven sections, Review my resume, then Download gives a PDF", A, async (p) => {
+    await open(p, "/builder");
+    const section = (name) => p.getByRole("heading", { name, level: 2, exact: true });
+    const next = async (name) => {
+      await p.getByRole("button", { name: "Next", exact: true }).click();
+      await section(name).waitFor({ timeout: 10000 });
+    };
+    await section("Role").waitFor({ timeout: 15000 });
+    await p.getByLabel("Target role").selectOption("data-analyst");
+    await p.getByText("Just graduated", { exact: true }).click();
+    await next("Education");
+    await p.getByRole("button", { name: "Add degree" }).click();
+    await p.getByLabel("Degree", { exact: true }).fill("B.Com.");
+    await p.getByLabel("College", { exact: true }).fill("Example College, Indore");
+    await p.getByLabel("Start year").fill("2021");
+    await p.getByLabel("End year").fill("2024");
+    await next("Projects");
+    await p.getByRole("button", { name: "Add project" }).click();
+    await p.getByLabel("Project name").fill("Shop sales dashboard");
+    await p.getByLabel("What did you build or do?").fill("Built a sales dashboard in Excel for 3 shops.");
+    await next("Internships and jobs");
+    await p.getByRole("checkbox", { name: /haven.t worked yet/ }).check();
+    await next("Tools");
+    const tools = p.getByRole("list", { name: "Tools" });
+    if (!(await tools.getByRole("button", { pressed: true }).count())) {
+      await p.getByLabel("Add your own").fill("Excel");
+      await p.getByRole("button", { name: "Add", exact: true }).click();
+    }
+    await tools.getByRole("button", { pressed: true }).first().waitFor({ timeout: 10000 });
+    await next("Certificates");
+    await p.getByRole("checkbox", { name: "None yet" }).check();
+    await next("Links");
+    await p.getByLabel("GitHub").fill("github.com/smoke-builder");
+    // The one AI call of this script: the build-resume reword.
+    await p.getByRole("button", { name: "Review my resume" }).click();
+    await p.getByRole("heading", { name: "Your resume", level: 1 }).waitFor({ timeout: 90000 });
+    await p.getByRole("article", { name: "Resume preview" }).waitFor();
+    // Download goes through the confirm step: the file is made only from a confirmed profile (FR-20).
+    await p.getByRole("checkbox", { name: "Everything here is true and mine." }).check();
+    await p.getByRole("button", { name: "Download PDF or DOCX" }).click();
+    await p.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 30000 });
+    await p.waitForLoadState("networkidle");
+    // Kept for Express apply, which needs gaps for a confirmed resume.
+    aResume = path(p);
+    await p.getByRole("button", { name: "Looks right", exact: true }).click();
+    await p.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 15000 });
+    // Fetched with the page's cookies and headers, as the dry run fetches its export (a browser download isn't reliably
+    // sent with the bypass header). Checked, never printed.
+    const href = await p.getByRole("link", { name: "PDF", exact: true }).getAttribute("href");
+    if (!href) throw new Error("no PDF link");
+    const pdf = await p.request.get(new URL(href, BASE).href);
+    if (pdf.status() !== 200 || !(await pdf.body()).subarray(0, 5).toString("latin1").startsWith("%PDF-")) throw new Error(`the PDF download gave HTTP ${pdf.status()}, not a PDF`);
+  });
+
+  // ---- Library ---------------------------------------------------------------------------------------------------------
+  await step("library: B searches, opens a resource, Saves it and ticks I finished this", B, async (p) => {
+    await open(p, "/library");
+    const main = p.locator("main").first();
+    await main.getByRole("heading", { name: "Library", level: 1 }).waitFor({ timeout: 15000 });
+    // B has no resume, so no goal cards: a search lists the catalog.
+    await p.getByRole("searchbox", { name: "Search the Library" }).fill("SQL");
+    const rows = main.locator("li button[aria-controls]");
+    await rows.first().waitFor({ timeout: 15000 });
+    const title = (await rows.first().innerText()).trim();
+    await rows.first().click();
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    await panel.getByRole("heading", { name: title, exact: true, level: 3 }).waitFor({ timeout: 10000 });
+    await panel.getByRole("button", { name: `Save ${title}`, exact: true }).click();
+    await toast(p, "Saved to your Library.");
+    await panel.getByRole("button", { name: `Save ${title}`, exact: true, pressed: true }).waitFor({ timeout: 10000 });
+    libTitle = title;
+    // Ticked once the server has it.
+    await clickUntil(p, panel.getByRole("checkbox", { name: "I finished this" }), "Marked finished.");
+  });
+
+  // ---- Mock interview (Elite, free in the beta) -----------------------------------------------------------------------
+  await step("mock: B turns on Elite, starts a Quick round and ends it at once (no answers, so no AI feedback call)", B, async (p) => {
+    await open(p, "/elite");
+    const main = p.locator("main");
+    const on = main.getByRole("button", { name: "Elite is on, free in the beta", exact: true });
+    if (!(await on.count())) {
+      await main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true }).click();
+      await on.waitFor({ timeout: 15000 });
+    }
+    await open(p, "/mock?role=data-analyst");
+    const mode = main.getByRole("group", { name: "Mode" });
+    const tab = mode.getByRole("button", { name: "Mock interview", exact: true });
+    await tab.waitFor({ timeout: 15000 });
+    if ((await tab.getAttribute("aria-pressed")) !== "true") await tab.click();
+    const setup = main.getByRole("region", { name: "Set up your mock interview" });
+    await setup.waitFor({ timeout: 15000 });
+    await setup.getByText("Quick round", { exact: true }).click();
+    if (!(await setup.getByRole("radio", { name: /Quick round/ }).isChecked())) throw new Error("Quick round isn't picked");
+    await setup.getByRole("button", { name: "Start mock interview", exact: true }).click();
+    await main.getByRole("timer").waitFor({ timeout: 15000 });
+    await main.getByText(/^Question 1 of 4 · /).waitFor();
+    await main.getByRole("button", { name: "End and get feedback", exact: true }).click();
+    await main.getByRole("heading", { name: "Feedback on your round", exact: true }).waitFor({ timeout: 30000 });
+    await main.getByText(/0 of 4 answered/).waitFor();
+    await main.getByText("Nothing answered this round, so there is no feedback.", { exact: false }).waitFor();
+  });
+
+  // ---- Departures ------------------------------------------------------------------------------------------------------
+  await step("departures: A opens the board, saves a role and marks it applied", A, async (p) => {
+    await open(p, "/departures");
+    if (await p.getByRole("region", { name: "Job search is off" }).count()) throw new Error("Departures is paused: Looking for a job is off for a new account");
+    // A live row: its title opens the details, and its bookmark is "Save <role>". CareerMetro's own posts are another list.
+    const rows = p
+      .locator("main li")
+      .filter({ has: p.locator("button[aria-controls]") })
+      .filter({ has: p.locator('button[aria-label^="Save "]') });
+    const empty = p.getByText("No roles from company job boards yet.", { exact: false });
+    await rows.first().or(empty).first().waitFor({ timeout: 20000 });
+    if (!(await rows.count())) return "skipped: no posts";
+    const first = rows.first();
+    const save = first.locator('button[aria-label^="Save "]');
+    const role = (await save.getAttribute("aria-label")).replace(/^Save /, "");
+    await first.locator("button[aria-controls]").click();
+    const detail = p.getByRole("complementary", { name: "Role details" });
+    await detail.getByRole("heading", { name: role }).first().waitFor({ timeout: 10000 });
+    if ((await save.getAttribute("aria-pressed")) !== "true") {
+      await save.click();
+      await toast(p, "Saved.");
+    }
+    const saveButton = (opts = {}) => p.getByRole("button", { name: `Save ${role}`, exact: true, ...opts });
+    await saveButton({ pressed: true }).first().waitFor({ timeout: 10000 });
+    // The company's post opens in a new tab, which this context refuses to load (no other host gets the header).
+    const [popup] = await Promise.all([
+      p.waitForEvent("popup", { timeout: 15000 }),
+      detail.getByRole("link", { name: /^Apply on company site: .+ \(opens in a new tab\)$/ }).click(),
+    ]);
+    await popup.close().catch(() => {});
+    await detail.getByRole("group", { name: "Did you apply?" }).getByRole("button", { name: "Yes, I applied", exact: true }).click();
+    await toast(p, "Marked as applied to ");
+    await detail.getByRole("heading", { name: "Your application" }).waitFor({ timeout: 10000 });
+    // Both lists keep it after a reload.
+    await p.reload();
+    await p.waitForLoadState("networkidle");
+    await settled(p);
+    const tabs = p.getByRole("group", { name: "Show" });
+    const kept = p.locator("main li").filter({ has: saveButton() }).first();
+    await tabs.getByRole("button", { name: /^Saved/ }).click();
+    await kept.waitFor({ timeout: 10000 });
+    await tabs.getByRole("button", { name: /^Applied/ }).click();
+    await kept.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+  });
+
+  // ---- The company side: Arrivals, Offers, Reports and Library review --------------------------------------------------
+  await step("arrivals 1 A opens Arrivals before applying: Your applications, No applications yet", A, async (p) => {
+    await open(p, "/arrivals");
+    await p.getByRole("heading", { name: "Your applications", level: 1, exact: true }).waitFor({ timeout: 15000 });
+    await p.getByText("No applications yet.", { exact: true }).waitFor();
+    await p.locator("main").getByRole("link", { name: "Open Departures", exact: true }).waitFor();
+  });
+
+  await step("admin 1 A, not an admin, gets the not-found page with a 404 on Company review, Reports and Library review", A, async (p) => {
+    for (const route of ["/admin/companies", "/admin/reports", "/admin/library"]) {
+      const res = await p.goto(BASE + route);
+      if (res?.status() !== 404) throw new Error(`${route} answered ${res?.status()}, not 404`);
+      await p.getByRole("heading", { name: "We can't find that page" }).waitFor();
+    }
+  });
+
+  await step("admin 2 the admin test account signs in, and its menu shows Admin", AS_ADMIN, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    // The same account every run: only the first run lands on Create your account.
+    if ((await testSignIn(ADMIN)).startsWith("/sign-up/finish")) await finishSignUp(ADMIN);
+    await open(p, "/today");
+    await p.getByRole("button", { name: /open menu$/ }).click();
+    if (!(await p.getByRole("link", { name: "Admin", exact: true }).count())) {
+      throw new Error("SMOKE_ADMIN_EMAIL is not an admin here: Preview's ADMIN_EMAILS must list it (ending in .test), or be unset for admin@careermetro.test");
+    }
+    await p.keyboard.press("Escape");
+  });
+
+  await step("corporate 1 B sets up a company: work email on an example domain, the test-mode code, Send for review, Waiting for verification", B, async (p) => {
+    // Only with the admin: nothing after this step can run without a verified company, and the app can't delete one.
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/corporate");
+    const setUp = p.getByRole("link", { name: "Set up your company", exact: true });
+    if (!(await setUp.count())) throw new Error("company sign-up is closed here: no Set up your company (codes need NAME_HASH_KEY or the test sign-in)");
+    await setUp.click();
+    await p.waitForURL(/\/corporate\/new/);
+    await p.getByRole("heading", { name: "Set up your company on CareerMetro" }).waitFor();
+    const workEmail = `smoke.${letters(6)}@${CO.domain}`;
+    await p.getByLabel("Registered name").fill(`${CO.name} Private Limited`);
+    await p.getByLabel("Name candidates see").fill(CO.name);
+    await p.getByLabel("Website").fill(CO.domain);
+    await p.getByLabel("Your work email").fill(workEmail);
+    await p.getByLabel("Company size").selectOption("51 to 200");
+    await p.getByLabel("Head office city").fill("Pune");
+    await p.getByRole("button", { name: "Continue" }).click();
+    // Test mode (previews with the test sign-in): the code shows on screen, no email is sent.
+    const box = p.locator("[data-test-code]");
+    await box.waitFor({ timeout: 15000 });
+    await p.getByRole("status").filter({ hasText: "Test mode" }).waitFor();
+    await p.getByLabel("Code", { exact: true }).fill(await box.getAttribute("data-test-code"));
+    await p.getByRole("button", { name: "Verify" }).click();
+    await p.getByLabel("About the company").waitFor({ timeout: 15000 });
+    // The right code made the company, so from here the clean-up has a job to close if one is posted.
+    CO.created = true;
+    await p.getByLabel("About the company").fill("Synthetic company for the staging dry run.");
+    await p.getByRole("button", { name: "Send for review" }).click();
+    await p.getByRole("heading", { name: /We check every new company by hand/ }).waitFor({ timeout: 15000 });
+    await p.getByRole("link", { name: "Open Corporate" }).click();
+    await p.waitForURL(/\/corporate$/);
+    await p.getByText("Waiting for verification").first().waitFor({ timeout: 15000 });
+    if ((await p.locator("body").innerText()).includes(workEmail)) throw new Error("the work email is shown on Corporate");
+  });
+
+  await step("corporate 2 the admin verifies B's company on Company review", AS_ADMIN, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/admin/companies");
+    await p.getByRole("heading", { name: "Company review", level: 1 }).waitFor({ timeout: 15000 });
+    const company = p.locator("article", { hasText: CO.domain });
+    await company.getByText("Waiting for verification").waitFor({ timeout: 15000 });
+    await company.getByRole("button", { name: `Verify ${CO.name}`, exact: true }).click();
+    await said(p, `${CO.name} is verified.`);
+    await company.waitFor({ state: "detached", timeout: 15000 });
+    CO.verified = true;
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "corporate 1 B sets up a company: work email on an example domain, the test-mode code, Send for review, Waiting for verification"] });
+
+  await step("corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures", B, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/corporate");
+    await p.getByText("Verified company").first().waitFor({ timeout: 15000 });
+    await p.getByRole("link", { name: "Post a job" }).click();
+    await p.waitForURL(/\/corporate\/jobs\/new$/);
+    await p.getByRole("heading", { name: "Post a job", level: 1 }).waitFor({ timeout: 15000 });
+    await p.getByLabel("Role profile").selectOption("data-analyst");
+    await p.getByLabel("Job title as you post it").fill(JOB.title);
+    await p.getByLabel("City").fill("Pune");
+    for (const name of ["This job is real and open now.", "We never ask candidates for a fee, deposit or paid training.", /don't screen people out/]) await p.getByRole("checkbox", { name }).check();
+    await p.getByRole("button", { name: "Open job" }).click();
+    JOB.posted = true;
+    await p.waitForURL(/\/corporate(#jobs)?$/, { timeout: 15000 });
+    await p.getByRole("listitem").filter({ has: p.getByRole("heading", { name: JOB.title }) }).getByText("Live on Departures").waitFor({ timeout: 15000 });
+  }, { needs: ["corporate 2 the admin verifies B's company on Company review"] });
+
+  await step("arrivals 2 A opens Gaps for the built resume (one explain-gaps call), so Express apply has gaps to send", A, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    if (!aResume) throw new Error("the builder step saved no resume");
+    await open(p, `${aResume}/gaps/data-analyst`);
+    await p.getByRole("heading", { name: "Your gaps", exact: true, level: 1 }).waitFor({ timeout: 90000 });
+  }, { needs: ["corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
+
+  await step("arrivals 3 A sends the job with Express apply: the preview, Within 30 days, the consent tick; Arrivals waits with Offers empty", A, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/departures");
+    const card = jobCard(p);
+    await card.waitFor({ timeout: 15000 });
+    await card.getByRole("button", { name: `Express apply: ${JOB.title}` }).click();
+    const preview = p.getByRole("dialog", { name: `What ${CO.name} receives` });
+    await preview.getByRole("heading", { name: "Match to this job" }).waitFor({ timeout: 15000 });
+    if ((await preview.innerText()).includes(A.email)) throw new Error("the email is shown in the preview");
+    await preview.getByLabel("When can you join?").selectOption({ label: "Within 30 days" });
+    await preview.getByRole("checkbox", { name: `I agree to send this to ${CO.name} for this job.`, exact: false }).check();
+    await preview.getByRole("button", { name: "Send application" }).click();
+    await preview.waitFor({ state: "hidden", timeout: 15000 });
+    left.applied = true;
+    await card.getByRole("status").getByText("Applied · Applied").waitFor({ timeout: 15000 });
+    await open(p, "/arrivals");
+    const waiting = p.locator("section", { has: p.getByRole("heading", { name: "Waiting to hear", exact: true, level: 2 }) });
+    await waiting.getByRole("heading", { name: JOB.title }).waitFor({ timeout: 15000 });
+    const offers = p.locator("section", { has: p.getByRole("heading", { name: "Offers", exact: true, level: 2 }) });
+    await offers.getByText("Offers land here. Your line keeps going while you wait.").waitFor();
+  }, { needs: ["arrivals 2 A opens Gaps for the built resume (one explain-gaps call), so Express apply has gaps to send"] });
+
+  await step("offers 1 B opens the job's board, finds A under Applied with no email, and moves A to Offer", B, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/corporate");
+    await p.getByRole("link", { name: `Board for ${JOB.title}, 1 open application` }).click();
+    await p.waitForURL(/\/corporate\/jobs\/board\?id=/);
+    await p.getByRole("heading", { name: JOB.title, level: 1 }).waitFor({ timeout: 15000 });
+    const lane = (name) => p.locator("section", { has: p.getByRole("heading", { name, exact: true, level: 2 }) });
+    await lane("Applied").getByRole("button", { name: new RegExp(`^${escapeRe(A.name)}`) }).click();
+    const drawer = p.getByRole("dialog", { name: A.name });
+    await drawer.getByText("Never shown to companies", { exact: false }).waitFor({ timeout: 15000 });
+    if ((await p.locator("body").innerText()).includes(A.email.split("@")[0])) throw new Error("A's email is shown on the board");
+    await drawer.getByLabel("Move to").selectOption("offer");
+    await drawer.getByRole("button", { name: "Move", exact: true }).click();
+    await said(p, `Moved ${A.name} to Offer`);
+  }, { needs: ["arrivals 3 A sends the job with Express apply: the preview, Within 30 days, the consent tick; Arrivals waits with Offers empty"] });
+
+  await step("offers 2 A sees it under Offers on Arrivals, with the company's step", A, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/arrivals");
+    const offers = p.locator("section", { has: p.getByRole("heading", { name: "Offers", exact: true, level: 2 }) });
+    const mine = offers.getByRole("article").filter({ has: p.getByRole("heading", { name: JOB.title }) });
+    await mine.waitFor({ timeout: 15000 });
+    await mine.getByText(`${CO.name} moved you to Offer`).waitFor();
+    await mine.getByText("Offer", { exact: true }).first().waitFor();
+  }, { needs: ["offers 1 B opens the job's board, finds A under Applied with no email, and moves A to Offer"] });
+
+  await step("reports 1 A reports the job from Departures: Fake job, scam or spam, Send report", A, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/departures");
+    const card = jobCard(p);
+    await card.getByRole("button", { name: `Report this job: ${JOB.title}` }).click();
+    await card.getByRole("radio", { name: "Fake job, scam or spam" }).check();
+    await card.getByRole("button", { name: "Send report" }).click();
+    await card.getByRole("status").getByText(/Reported/).waitFor({ timeout: 15000 });
+    left.jobReport = true;
+  }, { needs: ["corporate 3 B posts a Data Analyst job and opens it after the three checks: Live on Departures"] });
+
+  await step("reports 2 the admin finds A's report on Reports (Job at the company, A's first name and initial), acknowledges it, then dismisses it", AS_ADMIN, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/admin/reports");
+    await p.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+    const rep = reportRow(p);
+    await rep.getByText(`Job at ${CO.name}`).waitFor({ timeout: 15000 });
+    await rep.getByText(`${A.first} ${A.last[0]}.`, { exact: true }).waitFor();
+    const text = await rep.innerText();
+    if (text.includes(A.last) || /@/.test(text)) throw new Error("the report shows the reporter's last name or an email");
+    await rep.getByRole("button", { name: /^Acknowledge: / }).click();
+    await said(p, "Acknowledged.");
+    await rep.getByRole("button", { name: /^Dismiss: / }).click();
+    await said(p, "Dismissed. It leaves the list.");
+    left.jobReportDone = true;
+    await rep.waitFor({ state: "detached", timeout: 15000 });
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "reports 1 A reports the job from Departures: Fake job, scam or spam, Send report"] });
+
+  const LIB_STEP = "library: B searches, opens a resource, Saves it and ticks I finished this";
+  await step("library 2 B reports the saved resource's link: Link broken or out of date?, Link is broken", B, async (p) => {
+    // Only with the admin, who dismisses it after; otherwise it would sit open on Library review.
+    if (!ADMIN) return NO_ADMIN;
+    await open(p, "/library");
+    await p.getByRole("searchbox", { name: "Search the Library" }).fill(libTitle);
+    await p.locator("main").first().getByRole("button", { name: libTitle, exact: true }).first().click();
+    const panel = p.getByRole("complementary", { name: "Resource details" });
+    await panel.getByRole("heading", { name: libTitle, exact: true, level: 3 }).waitFor({ timeout: 15000 });
+    await panel.getByRole("button", { name: "Link broken or out of date?" }).click();
+    await panel.getByRole("group", { name: `Report ${libTitle}` }).getByRole("button", { name: "Link is broken", exact: true }).click();
+    await toast(p, "Thanks. A reviewer will check this link.");
+    left.linkReport = true;
+  }, { needs: [LIB_STEP] });
+
+  await step("library 3 the admin sees B's broken-link report on Library review and dismisses it; the link stays", AS_ADMIN, async (p) => {
+    if (!ADMIN) return NO_ADMIN;
+    if (!(await dismissLink(p))) return "left open: other people's reports are open on this link too";
+  }, { needs: ["admin 2 the admin test account signs in, and its menu shows Admin", "library 2 B reports the saved resource's link: Link broken or out of date?, Link is broken"] });
+} finally {
+  // The clean-up runs whatever failed before it, a crash included.
+  await cleanUp();
 }
 
 await browser.close();

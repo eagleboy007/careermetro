@@ -80,7 +80,7 @@ describe("Library marks, reports and suggestions: input", () => {
       expect(cleanSuggestedUrl(`https://${host}/abc`), host).toBeNull();
       expect(cleanSuggestedUrl(`https://www.${host}/abc`), host).toBeNull();
     }
-    for (const url of ["https://rb.gy/abc", "https://tiny.cc/abc", "https://lnkd.in/abc", "https://amzn.to/abc", "https://forms.gle/abc"]) expect(cleanSuggestedUrl(url), url).toBeNull();
+    for (const url of ["https://rb.gy/abc", "https://tiny.cc/abc", "https://lnkd.in/abc", "https://amzn.to/abc", "https://forms.gle/abc", "https://j.mp/abc", "https://aka.ms/abc", "https://myapp.page.link/abc"]) expect(cleanSuggestedUrl(url), url).toBeNull();
     // A name that only ends like a shortener is a site of its own, and youtu.be only opens YouTube.
     expect(cleanSuggestedUrl("https://habit.ly/x")?.host).toBe("habit.ly");
     expect(cleanSuggestedUrl("https://days.id/x")?.host).toBe("days.id");

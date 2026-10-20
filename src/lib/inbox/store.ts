@@ -117,9 +117,8 @@ export async function startDirect(fromId: string, toId: string, body: string, de
     return sent.ok ? { ok: true, conversationId: existing.id } : sent;
   }
   // Connections chat freely (handoff 12j): their first message opens the chat, with no request and no request limit.
-  const linked = await areConnected(fromId, toId, db);
-  // Message requests off (FR-55): refused before the request limit is taken, so a refused try doesn't use one up.
-  if (!linked && !(await takesRequests(toId, db))) return fail("unavailable");
+  // Whether they are connected, and so whether message requests off (FR-55) refuses, is read only under the lock below,
+  // so someone who connected a moment ago is never refused by a stale first look (T102). Both come before the limit.
   return db.transaction(async (tx) => {
     await pairLock(fromId, toId, tx);
     // Checked again under the lock: a block, a suspension or a deleted account may have come in since the first look.
