@@ -757,4 +757,17 @@ describe.skipIf(!db)("interviews (database)", () => {
     expect(await texts(5)).toEqual([]);
     expect(await newCount(s.me, t(5))).toBe(0);
   });
+
+  it("drops the interview line when closing the application cancels the interview", async () => {
+    const s = await setup("notify-close");
+    const t = (minutes: number) => at(minutes / 1440);
+    const { slot } = await offered(s, ["2026-10-14T11:00"]);
+    const booked = await scheduleInterview(s.hr, { applicationId: s.applicationId, slotId: slot("2026-10-14T11:00"), minutes: 30, interviewers: [s.ivMember] }, t(1));
+    if (!booked.ok) throw new Error(booked.error);
+    expect((await notificationsFor(s.me, t(1))).map((x) => x.kind)).toEqual(["interview_scheduled", "application_moved"]);
+    // Not this time cancels the interview ahead with no line of its own; the "set" line must not stay behind.
+    expect(await moveApplication(s.hr, { applicationId: s.applicationId, to: "not_this_time", note: "We went with someone closer to Pune this time." }, t(2))).toEqual({ ok: true });
+    expect((await notificationsFor(s.me, t(2))).map((x) => x.text)).toEqual(["Example Labs closed your application for SOC Analyst L1. Their note is on Arrivals."]);
+    expect(await newCount(s.me, t(2))).toBe(1);
+  });
 });

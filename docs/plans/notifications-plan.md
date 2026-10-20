@@ -24,7 +24,7 @@ Development, 2026-10-20. Source: the v44 prototype's top bar (`aria-label="Notif
   | Interview cancelled (`cancelInterview`, by the company) | "{Company} cancelled the interview for {job}." | `/arrivals` |
 
 - **Not in the bell**: chat messages, message requests and "Ask for times" (all Inbox messages). The Inbox icon's unread count already covers them, so counting them twice is avoided. Nothing the person did themselves notifies them.
-- **Settings > Notifications** adds one line under the email switches: "In the app you always see connection requests and updates on your applications. Email for these comes later." The existing email switches stay "stored only".
+- **Settings > Notifications** adds one line under the email switches: "In the app you see connection requests and updates on your applications. Email for these comes later." The existing email switches stay "stored only".
 
 ## Data (migration 0043, export version 29)
 
@@ -47,7 +47,7 @@ Development, 2026-10-20. Source: the v44 prototype's top bar (`aria-label="Notif
   - `dropBetween` (a block either way, or remove) deletes notifications between the pair;
   - a withdrawn application cascades through its row when deleted, or is filtered on read when `withdrawn_at` is set.
 - **Read path**: `notificationsFor(userId)` returns at most 20 rows from 60 days, in one query with joins. It drops rows whose actor is suspended, deleting, blocked either way, or gone. `newCount(userId)` is a count over the partial index, run in the signed-in layout next to `unreadChats`.
-- `markAllRead(userId)` is a server action with a Zod-empty input, limited to 300 a day per person. The panel refetches the list on open, and there is no polling or realtime.
+- `markRead(userId, ids)` marks only the ids the panel was given; opening it is a server action with a Zod-empty input, limited to 300 a day per person. The panel refetches the list on open, and there is no polling or realtime.
 - **Write volume** is bounded by the source limits already in place: 20 connection requests a day, the company's own moves and interview steps. Notifications are never logged with names; logs carry the kind and counts only.
 - **Email**: `emailed_at` and a `NOTIFY_EMAIL` flag are reserved. Part 2 sends a digest through `src/lib/email/send.ts`, honouring the Settings switches, once `RESEND_API_KEY` and `EMAIL_FROM` are in (`dev/email-sender-steps.md` step 6). It is marked **waiting on RESEND_API_KEY**.
 

@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, notInArray, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { applications, blocks, companyBlocks, interviews, jobs, notifications, organizations, users, userSettings } from "@/db/schema";
@@ -84,6 +84,8 @@ export async function forgetBetween(tx: Tx | Db, x: string, y: string): Promise<
  * What the person may be shown. The actor must still be there (not deleting, not suspended) and not blocked either way.
  * A row about an application or interview needs the application to be theirs, not withdrawn and from a company they
  * haven't blocked; moves and closings pause while job search is off (Arrivals is paused then), interviews never do.
+ * An interview that was set and has since been cancelled or declined no longer shows as set (closing an application
+ * cancels the interviews ahead without a line of their own).
  */
 function shownTo(userId: string): SQL {
   return and(
@@ -100,6 +102,7 @@ function shownTo(userId: string): SQL {
       ),
     ),
     or(notInArray(notifications.kind, [...APPLICATION_KINDS]), sql`coalesce(${userSettings.jobSearch}, true)`),
+    or(ne(notifications.kind, "interview_scheduled"), and(isNull(interviews.cancelledAt), notInArray(interviews.status, ["cancelled", "declined"]))),
   )!;
 }
 
@@ -164,28 +167,33 @@ export async function newCount(userId: string, deps: Deps = {}): Promise<number>
   return Math.min(row?.n ?? 0, NOTIFICATIONS_SHOWN);
 }
 
-/** Marks every unread notification of the person's read, counting the try against the day's limit. False past it. */
-export async function markAllRead(userId: string, deps: Deps = {}): Promise<boolean> {
+/**
+ * Marks the given notifications of the person's read (only those the panel showed: never a row hidden, past the newest
+ * NOTIFICATIONS_SHOWN or written since), counting the try against the day's limit. False past it.
+ */
+export async function markRead(userId: string, ids: string[], deps: Deps = {}): Promise<boolean> {
+  if (!ids.length) return true;
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   if (!(await takeShared(LIMITS.notificationReadsPerUserDay, userId, { db, now: now.getTime() }))) return false;
   const marked = await db
     .update(notifications)
     .set({ readAt: now })
-    .where(and(eq(notifications.userId, userId), isNull(notifications.readAt)))
+    .where(and(eq(notifications.userId, userId), inArray(notifications.id, ids), isNull(notifications.readAt)))
     .returning({ id: notifications.id });
   logEvent("info", "notifications_read", { count: marked.length });
   return true;
 }
 
 /**
- * Opening the panel: the rows as they stood (new ones flagged, so they stay bold until it closes), then every row is
- * marked read. Past the day's limit the rows still show and stay unread.
+ * Opening the panel: the rows as they stood (new ones flagged, so they stay bold until it closes), then the new ones it
+ * returned are marked read. Past the day's limit the rows still show and stay unread.
  */
 export async function openNotifications(userId: string, raw: unknown, deps: Deps = {}): Promise<{ ok: true; items: NotificationView[] } | { ok: false; error: "invalid" }> {
   if (!openNotificationsInput.safeParse(raw).success) return { ok: false, error: "invalid" };
   const items = await notificationsFor(userId, deps);
-  if (!(await markAllRead(userId, deps))) logEvent("info", "notifications_read_limited");
+  const unread = items.filter((x) => x.isNew).map((x) => x.id);
+  if (!(await markRead(userId, unread, deps))) logEvent("info", "notifications_read_limited");
   return { ok: true, items };
 }
 

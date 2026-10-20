@@ -101,7 +101,7 @@ describe.skipIf(!db)("notifications (database)", () => {
     }
   });
 
-  it("marks everything read on opening, tells the sender when their request is accepted, and a withdrawn request takes its row", async () => {
+  it("marks what it shows read on opening, tells the sender when their request is accepted, and a withdrawn request takes its row", async () => {
     const a = await person("Ananya", { username: true });
     const b = await person("Vikram");
     const c = await person("Sana");
@@ -126,6 +126,24 @@ describe.skipIf(!db)("notifications (database)", () => {
     expect(await withdrawRequest(c, a, deps())).toEqual({ ok: true });
     expect(await newCount(a, deps())).toBe(0);
     expect((await rowsOf(a)).filter((r) => r.actorId === c)).toEqual([]);
+  });
+
+  it("marks read only the rows the panel was given, never one it hid", async () => {
+    const a = await person("Neha");
+    const b = await person("Suresh");
+    const d = await person("Zoya");
+    await requestConnection(b, a, "same_line", deps());
+    await requestConnection(d, a, "event", deps());
+    // While Zoya is suspended her request is hidden, so opening the panel leaves it unread.
+    await db!.update(schema.users).set({ suspendedAt: now }).where(eq(schema.users.id, d));
+    const opened = await openNotifications(a, {}, deps());
+    expect(opened.ok && opened.items.map((x) => x.text)).toEqual([`Suresh ${tag} asked to connect.`]);
+    await db!.update(schema.users).set({ suspendedAt: null }).where(eq(schema.users.id, d));
+    expect(await newCount(a, deps())).toBe(1);
+    expect((await notificationsFor(a, deps())).map((x) => [x.text, x.isNew])).toEqual([
+      [`Zoya ${tag} asked to connect.`, true],
+      [`Suresh ${tag} asked to connect.`, false],
+    ]);
   });
 
   it("collapses a second write before reading into one unread row", async () => {

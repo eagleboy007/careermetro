@@ -62,7 +62,7 @@ export function AppShell({
     <div className={`flex flex-col ${embedded ? "relative min-h-full" : "min-h-full"}`}>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1240px] items-center gap-4 px-4 py-3">
-          {/* The wordmark gives way under 420 px, so the bell fits beside the streak, Inbox and avatar at 360 px. */}
+          {/* The wordmark (about 150 px with the mark) gives way under 420 px: at 390 px it, a streak, the bell, Inbox and avatar need about 400 px. */}
           <Link href="/today" aria-label="CareerMetro, Today">
             <Logo wordmarkClassName="max-[419px]:hidden" />
           </Link>
