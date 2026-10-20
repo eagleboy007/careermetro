@@ -109,7 +109,7 @@ function ShelfCard({ card, elite }: { card: EliteShelfCard; elite: boolean }) {
         </small>
         {goal}
         {card.url ? (
-          <a href={card.url} target="_blank" rel="noopener noreferrer" className={`${btn} mt-auto`} aria-label={`Open ${card.title} on ${card.provider} (opens in a new tab)`}>
+          <a href={card.url} target="_blank" rel="noopener noreferrer" className={`${btn} mt-auto`} aria-label={`Open on ${card.provider}: ${card.title}, opens in a new tab`}>
             <ExternalLink size={14} {...ICON} />
             Open on {card.provider}
           </a>
