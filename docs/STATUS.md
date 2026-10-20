@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Testing Run 5 fixes T73 to T80)
+Last updated: 2026-10-20 (Testing Run 5 low fixes)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -47,12 +47,11 @@ Last updated: 2026-10-20 (Testing Run 5 fixes T73 to T80)
   - Mock follow-ups part 2 (#201, no migration): all 95 open bank questions have two follow-ups (188), all `followUpsReviewed: false`, so production asks none until the expert review (`dev/mock-followups-draft.md`, pending item 27).
   - Staging dry run of prod-smoke (#202): `scripts/smoke/staging-dry-run.mjs` and the manual Smoke dry run (staging) workflow; prod-smoke.md's steps now match the app; the e2e walk's `smoke 6` covers Download, Sign out and signing in again.
   - Staging dry run export check and fewer Vercel deployments (#203): 6.1 fetches the export with the page's cookies, and a full run passed; working branches make no Vercel deployment, and docs-only merges don't move staging.
+  - Testing Run 5 fixes T73 to T80, the refused-certificate job limited to goals the certificate could fill, and the market trends plan (proposed; D1 to D6 wait on Milin) (#204).
 
 ## In progress
 
-- Known limits: the daily job for refused or held certificates now looks only at met goals the certificate could fill (its skill's goal or a group goal with it), not every met goal the person has.
-- Market trends, role switches and state-wise jobs and pay (pending item 24): plan only, proposed and not approved, in `docs/plans/market-trends-plan.md` (dev/ copy); decisions D1 to D6 wait on Milin.
-- Testing Run 5 fixes (T73 to T80): /design is 404 in production and fixtures hide unreviewed content there; Network rows carry no city and search runs in SQL (no 2,000 cap); jobs added on Me hide the person from that employer; a hand-added role can't take another job's verified badge; capped boards close posts that left the feed; microphone=(self); a same-commit Redeploy on production builds. Lows T81 to T92 and the T82 chat note (PM: accepted chats continue, with a note) are next.
+- Testing Run 5 lows: limits on resume downloads (30 an hour) and direct messages (300 a day); Inbox block takes the Network pair lock; blocking a missing person is not_found; accepted found chats stay open after job search is off, with a note (FR-52); the Google callback checks GOOGLE_SIGNIN; drafts only on preview, development or local; /elite shows the real daily limits; Library suggestions must be one of the person's goals, no link shorteners; future-dated posts don't sort first; saved and applied lists capped at 200; no city filter on Network for members (T93); an added role doesn't take a resume role's badge (T95). T89 (feed-only database role) waits on Milin: dev/feed-db-role-steps.md.
 
 ## Next up
 
