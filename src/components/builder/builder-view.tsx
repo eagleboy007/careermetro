@@ -462,7 +462,7 @@ function JobsCard({ a, set, err }: CardProps) {
           rows={a.jobs}
           label="Job"
           onChange={(jobs) => set({ jobs, worked: jobs.length ? true : null })}
-          blank={() => ({ id: newId(), kind: "internship", company: "", title: "", from: "", to: "", did: "" })}
+          blank={() => ({ id: newId(), kind: "internship" as const, company: "", title: "", from: "", to: "", did: "" })}
           render={(j, patch, i) => (
             <>
               <Choice legend="Kind" options={BUILDER_JOB_KINDS} labels={BUILDER_JOB_KIND_LABELS} value={j.kind} onChange={(kind) => patch({ kind })} />
