@@ -123,27 +123,39 @@ describe("the question bank", () => {
 });
 
 describe("interview prep for a Departures role", () => {
-  it("is five of the role's questions in the bank's Free order, all open on Elite", () => {
-    const prep = rolePrepFor(bank, analyst, true)!;
+  // Two more questions, so the analyst has four the bank opens only on Elite: sql-4, excel-2, excel-3, communication-2.
+  const prepBank = [...bank, openQ("sql", 4, "SQL"), openQ("excel", 3, "Excel")];
+
+  it("is the bank's first Free question, then four it opens only on Elite, all open on Elite", () => {
+    const prep = rolePrepFor(prepBank, analyst, true)!;
     expect(rolePrepView.safeParse(prep).success).toBe(true);
-    expect(prep.questions.map((q) => q.id)).toEqual(["sql-1", "excel-1", "communication-1", "sql-2", "sql-3"]);
+    expect(prep.questions.map((q) => q.id)).toEqual(["sql-1", "sql-4", "excel-2", "excel-3", "communication-2"]);
     expect(prep.questions.every((q) => q.open)).toBe(true);
     expect(prep.questions[0]).toEqual({ open: true, id: "sql-1", question: "Open question 1 on sql" });
   });
 
+  it("locks only questions the bank never opens on Free", () => {
+    const free = new Set(bankViewFor(prepBank, analyst, false).items.filter((q) => q.open).map((q) => q.id));
+    const locked = rolePrepFor(prepBank, analyst, false)!.questions.filter((q) => !q.open);
+    expect(locked).toHaveLength(4);
+    expect(locked.some((q) => free.has(q.id))).toBe(false);
+  });
+
   it("opens only the first on Free and sends no text of the locked four", () => {
-    const prep = rolePrepFor(bank, analyst, false)!;
+    const prep = rolePrepFor(prepBank, analyst, false)!;
     expect(rolePrepView.safeParse(prep).success).toBe(true);
     expect(prep.elite).toBe(false);
     expect(prep.questions.map((q) => q.open)).toEqual([true, false, false, false, false]);
     const locked = prep.questions.slice(1);
-    expect(locked).toEqual([{ open: false, id: "excel-1" }, { open: false, id: "communication-1" }, { open: false, id: "sql-2" }, { open: false, id: "sql-3" }]);
+    expect(locked).toEqual([{ open: false, id: "sql-4" }, { open: false, id: "excel-2" }, { open: false, id: "excel-3" }, { open: false, id: "communication-2" }]);
     expect(JSON.stringify(locked)).not.toContain("question");
     // The schema refuses a locked question that carries its text.
     expect(rolePrepView.safeParse({ ...prep, questions: prep.questions.map((q) => ({ ...q, question: "Leaked question text" })) }).success).toBe(false);
   });
 
-  it("is null for a role with fewer than five questions, so the screen says it is coming", () => {
+  it("is null for a role with fewer than four Elite-only questions, so the screen says it is coming", () => {
+    // The plain bank leaves the analyst only two (excel-2, communication-2); the writer has none.
+    expect(rolePrepFor(bank, analyst, true)).toBeNull();
     expect(rolePrepFor(bank, writer, true)).toBeNull();
   });
 
@@ -155,7 +167,7 @@ describe("interview prep for a Departures role", () => {
         { id: "j3", roleSlug: "no-such-role" },
         { id: "j4", roleSlug: "tech-writer" },
       ],
-      bank,
+      prepBank,
       roles,
       false,
     );

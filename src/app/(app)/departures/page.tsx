@@ -110,8 +110,10 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
         noFit={noFit}
         initialSaved={account ? [] : exampleSaved}
         initialApplied={account ? [] : exampleApplied}
-        // A pasted post is checked against the person's latest resume; without one the box links to the upload.
-        resumeId={analysis?.resumeId ?? null}
+        // A pasted post is checked against the person's latest resume; without one the box links to the upload. The
+        // signed-out example has the example person's resume, so its box is an example too and saves nothing.
+        resumeId={account ? (analysis?.resumeId ?? null) : hasResume ? "example" : null}
+        demo={!account}
         prep={prep}
       />
     </div>

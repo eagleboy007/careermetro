@@ -64,22 +64,24 @@ export function freeOpenIds(open: readonly BankQuestion[]): Set<string> {
 }
 
 /**
- * "Interview prep for this role" on a Departures role (handoff 12l): five of the role's open questions, in the order
- * the bank opens them on Free (the first of each topic first). On Free only the first is open; a locked question keeps
- * its id and nothing else. Null when the role has fewer than five open questions, so the screen says it is coming.
+ * "Interview prep for this role" on a Departures role (handoff 12l): five of the role's open questions. The first is
+ * the first the bank opens on Free; the other four are ones the bank opens only on Elite, in role order, so the lock
+ * here locks what Elite adds. On Free only the first is open; a locked question keeps its id and nothing else. Null
+ * when the role has too few Elite-only questions, so the screen says it is coming.
  */
 export function rolePrepFor(bank: readonly BankQuestion[], role: Role, elite: boolean): RolePrepView | null {
   const open = forRole(
     bank.filter((q) => q.kind === "open"),
     role,
   );
-  const byId = new Map(open.map((q) => [q.id, q]));
-  const five = [...freeOpenIds(open)].slice(0, ROLE_PREP_QUESTIONS).map((id) => byId.get(id)!);
-  if (five.length < ROLE_PREP_QUESTIONS) return null;
+  const free = freeOpenIds(open);
+  const first = open.find((q) => free.has(q.id));
+  const eliteOnly = open.filter((q) => !free.has(q.id)).slice(0, ROLE_PREP_QUESTIONS - 1);
+  if (!first || eliteOnly.length < ROLE_PREP_QUESTIONS - 1) return null;
   return {
     roleSlug: role.slug,
     elite,
-    questions: five.map((q, i) => (elite || i < ROLE_PREP_FREE_OPEN ? { open: true, id: q.id, question: q.question } : { open: false, id: q.id })),
+    questions: [first, ...eliteOnly].map((q, i) => (elite || i < ROLE_PREP_FREE_OPEN ? { open: true, id: q.id, question: q.question } : { open: false, id: q.id })),
   };
 }
 

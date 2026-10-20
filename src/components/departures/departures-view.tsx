@@ -439,11 +439,12 @@ function JobDetail({
   );
 }
 
-const ELITE_LOCK_NOTE = "One question free. All five, model answers and a timed mock round come with Elite.";
+const ELITE_LOCK_NOTE = "One question free. The full bank, what a strong answer covers, and mock rounds come with Elite.";
 
 /**
  * "Interview prep for this role" (handoff 12l, prototype v44): five of the role's bank questions. On Free only the
- * first is open; the server sends no text for the other four, so they show as blurred lines. Elite violet marks Elite
+ * first is open; the other four are ones the bank opens only on Elite, and the server sends no text for them, so they
+ * show as blurred lines. Elite violet marks Elite
  * only.
  */
 function RolePrep({ prep }: { prep: RolePrepView }) {
@@ -486,7 +487,8 @@ function RolePrep({ prep }: { prep: RolePrepView }) {
 /**
  * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
  * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
- * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload.
+ * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
+ * (the signed-out example and /design) checks the fields and saves nothing.
  */
 function PasteBox({ resumeId, demo }: { resumeId: string | null; demo: boolean }) {
   const router = useRouter();
@@ -509,7 +511,7 @@ function PasteBox({ resumeId, demo }: { resumeId: string | null; demo: boolean }
             submitLabel="Check my gaps"
             busy={opening}
             demo={demo}
-            doneMessage={() => "Checked. Opening your gaps for this job…"}
+            doneMessage={() => (demo ? "This is an example, so nothing was checked or saved. Signed in, your gaps for this job open here." : "Checked. Opening your gaps for this job…")}
             onSaved={({ id }) => startOpening(() => router.push(`/resume/${resumeId}/job/${id}`))}
           />
         </>
