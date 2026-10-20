@@ -44,6 +44,17 @@ describe("contact details and links", () => {
     for (const ok of ["Node.js and Vue.js", "ASP.NET Core", "Closed 40 alerts a week in 2025", "B.Tech, 2021 to 2024", "e.g. Photography"]) expect(hasContactOrLink(ok)).toBe(false);
     expect(hasLink("Next.js")).toBe(false);
   });
+
+  it("need a lowercase domain, so a sentence run together is not a link", () => {
+    for (const ok of ["Moved to Pune.In 2023 I joined", "Built it for.Me and the team"]) expect(hasContactOrLink(ok)).toBe(false);
+    expect(hasLink("Priya.in/cv")).toBe(true);
+  });
+
+  it("skip bare domains only when asked, never a scheme or www.", () => {
+    expect(hasLink("Booking.com", { domains: false })).toBe(false);
+    expect(hasLink("https://booking.example.test", { domains: false })).toBe(true);
+    expect(hasLink("www.amazon.in", { domains: false })).toBe(true);
+  });
 });
 
 describe("meRoleInput", () => {
@@ -66,7 +77,11 @@ describe("meRoleInput", () => {
     expect(meRoleInput.safeParse({ ...role, title: "x".repeat(120) }).success).toBe(true);
     expect(message(meRoleInput.safeParse({ ...role, title: "x".repeat(121) }))).toBe("At most 120 characters.");
     expect(message(meRoleInput.safeParse({ ...role, employer: "Call 98765 43210" }))).toBe(ME_CONTACT_TEXT);
-    expect(message(meRoleInput.safeParse({ ...role, employer: "konkan.in" }))).toBe(ME_CONTACT_TEXT);
+    expect(message(meRoleInput.safeParse({ ...role, title: "konkan.in" }))).toBe(ME_CONTACT_TEXT);
+    expect(message(meRoleInput.safeParse({ ...role, employer: "https://konkan.in" }))).toBe(ME_CONTACT_TEXT);
+    expect(message(meRoleInput.safeParse({ ...role, employer: "www.konkan.in" }))).toBe(ME_CONTACT_TEXT);
+    expect(meRoleInput.parse({ ...role, employer: "Booking.com" }).employer).toBe("Booking.com");
+    expect(meRoleInput.parse({ ...role, employer: "Amazon.in" }).employer).toBe("Amazon.in");
     expect(meRoleInput.safeParse({ ...role, userId: "00000000-0000-4000-8000-000000000001" }).success).toBe(false);
   });
 });
@@ -87,6 +102,8 @@ describe("meEducationInput", () => {
     expect(meEducationInput.safeParse({ ...edu, qualification: "x".repeat(161) }).success).toBe(false);
     expect(meEducationInput.safeParse({ ...edu, year: "x".repeat(41) }).success).toBe(false);
     expect(message(meEducationInput.safeParse({ ...edu, institution: "www.example.test" }))).toBe(ME_CONTACT_TEXT);
+    expect(meEducationInput.parse({ ...edu, institution: "Coursera.org" }).institution).toBe("Coursera.org");
+    expect(message(meEducationInput.safeParse({ ...edu, qualification: "coursera.org/cert" }))).toBe(ME_CONTACT_TEXT);
     expect(meEducationInput.safeParse({ ...edu, source: "resume" }).success).toBe(false);
   });
 });

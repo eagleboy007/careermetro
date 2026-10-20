@@ -1336,13 +1336,20 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   const main = p.locator("main").first();
   await main.getByText("Write your first story: a time at work, college, an internship or volunteering. Keep each part short.").waitFor({ timeout: 10000 });
   if (await main.getByText(/· soon/).count()) throw new Error("Me still says soon");
-  const saved = () => p.getByText("Saved.", { exact: true }).first().waitFor({ timeout: 15000 });
+  // The toast stays in the page at opacity 0 until it clears, so wait for it to go before the next save can look for it.
+  const saved = async () => {
+    const toast = p.getByText("Saved.", { exact: true }).first();
+    await toast.waitFor({ timeout: 15000 });
+    await toast.waitFor({ state: "detached", timeout: 10000 });
+  };
+  // A story title is in its card's summary, and again (screen-reader only) in its Edit and Delete buttons.
+  const card = (scope) => scope.locator("summary").getByText(title, { exact: true });
   const focused = (name) => p.waitForFunction((n) => document.activeElement?.textContent?.trim() === n, name, { timeout: 5000 });
 
   // Cancel puts focus back on "+ Add role".
   await main.getByRole("button", { name: "+ Add role" }).click();
   await main.getByLabel("Job title", { exact: true }).waitFor();
-  await main.getByRole("button", { name: "Cancel" }).click();
+  await main.getByRole("button", { name: "Cancel", exact: true }).click();
   await focused("+ Add role");
   // A role: refused without a start, then saved.
   await main.getByRole("button", { name: "+ Add role" }).click();
@@ -1384,11 +1391,11 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await main.getByRole("button", { name: "Save", exact: true }).click();
   await saved();
   const column = main.getByRole("region", { name: "Problem solving" });
-  await column.getByText(title).waitFor({ timeout: 15000 });
+  await card(column).waitFor({ timeout: 15000 });
   await main.getByText("1 story · 5 boxes empty").waitFor();
   await main.getByRole("button", { name: "List", exact: true }).click();
   await main.getByRole("button", { name: "List", pressed: true }).waitFor();
-  await column.getByText(title).click();
+  await card(column).click();
   // The SMART check: one box and no goal, so R is missing and its hint shows; never a score.
   await column.getByLabel("SMART check: S, M, A, T met").waitFor();
   await column.getByText("Link it to a goal, or pick another box it answers.").waitFor();
@@ -1396,9 +1403,11 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   // Two interests; the same one again is refused.
   await main.getByLabel("Add an interest").fill("Photography");
   await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
   await main.getByRole("button", { name: "Remove Photography" }).waitFor({ timeout: 15000 });
   await main.getByLabel("Add an interest").fill("Cricket stats");
   await main.getByRole("button", { name: "Add", exact: true }).click();
+  await saved();
   await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ timeout: 15000 });
   await main.getByLabel("Add an interest").fill(" photography ");
   await main.getByRole("button", { name: "Add", exact: true }).click();
@@ -1417,13 +1426,13 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await education.getByRole("button", { name: "Save", exact: true }).click();
   await saved();
   await education.getByText("NPTEL · 2025").waitFor({ timeout: 15000 });
-  if (!(await column.getByRole("button", { name: `Edit ${title}` }).isVisible())) await column.getByText(title).click();
+  if (!(await column.getByRole("button", { name: `Edit ${title}` }).isVisible())) await card(column).click();
   await column.getByRole("button", { name: `Edit ${title}` }).click();
   await main.getByLabel("Result", { exact: true }).fill("Missed alerts fell from 9 a week to 1 in six weeks.");
   await main.getByRole("button", { name: "Learning", exact: true }).click();
   await main.getByRole("button", { name: "Save", exact: true }).click();
   await saved();
-  await main.getByRole("region", { name: "Learning" }).getByText(title).waitFor({ timeout: 15000 });
+  await card(main.getByRole("region", { name: "Learning" })).waitFor({ timeout: 15000 });
   await shot("me-editing");
   await a11y("me-editing");
 
@@ -1431,14 +1440,14 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await main.getByRole("button", { name: "View as others" }).click();
   await main.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
   for (const text of ["Volunteer data analyst", "Data Analytics with Python", "Photography", "Cricket stats"]) await main.getByText(text, { exact: true }).first().waitFor();
-  await main.getByRole("region", { name: "Problem solving" }).getByText(title).waitFor();
+  await card(main.getByRole("region", { name: "Problem solving" })).waitFor();
   for (const name of [/^Edit /, /^Delete /, /^Remove /, "+ Add role", "+ Add story"]) if (await main.getByRole("button", { name }).count()) throw new Error(`View as others offers ${name}`);
   if (await main.getByText("Added by you").count()) throw new Error("View as others shows Added by you");
   await main.getByRole("button", { name: "Back to editing" }).click();
 
   // Delete one of each: Keep first, then Delete.
   const storyColumn = main.getByRole("region", { name: "Problem solving" });
-  if (!(await storyColumn.getByRole("button", { name: `Delete ${title}` }).isVisible())) await storyColumn.getByText(title).click();
+  if (!(await storyColumn.getByRole("button", { name: `Delete ${title}` }).isVisible())) await card(storyColumn).click();
   await storyColumn.getByRole("button", { name: `Delete ${title}` }).click();
   await main.getByRole("group", { name: "Delete this story?" }).waitFor();
   await main.getByRole("button", { name: "Keep", exact: true }).click();

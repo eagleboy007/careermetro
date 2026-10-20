@@ -161,7 +161,7 @@ export const suggestionRow = z.object({
 
 export const libraryAdminView = z.object({ broken: z.array(brokenLinkRow).max(200), suggestions: z.array(suggestionRow).max(200) });
 
-/** Download your data, version 27: the Library marks, reports and suggestions. */
+/** Download your data, version 28: the Library marks, reports and suggestions. */
 const markedExport = z.object({ title: z.string(), url: z.string(), at: z.string() });
 export const libraryExport = z.object({ saved: z.array(markedExport), finished: z.array(markedExport), onRide: z.array(markedExport) });
 export const resourceReportExport = z.object({ title: z.string(), reason: z.enum(RESOURCE_REPORT_REASONS), status: z.enum(RESOURCE_REPORT_STATUSES), created_at: z.string() });

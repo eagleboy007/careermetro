@@ -95,7 +95,7 @@ async function MeScreen() {
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         {hidden
           ? "Only you can see this page. Pick a username and who can open your profile in Account settings."
-          : "Others see only the parts you choose in Account settings. Your resume lines never show."}
+          : "Others see only the parts you choose in Account settings. Your resume lines never show. Interests show to anyone who can open your profile."}
       </p>
       {me && (
         <JobSearchProvider initialOn={searching} action={switchJobSearch}>

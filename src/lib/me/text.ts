@@ -22,15 +22,22 @@ export const storyText = (raw: string): string =>
 export const interestKey = (raw: string): string => oneLine(raw).toLowerCase();
 
 /**
- * A web link: a scheme, "www.", or a name on a common top-level domain ("bit.ly", "wa.me", "priya.in/cv"). Tech names
- * with a dot ("Node.js", "ASP.NET", "Vue.js") are not links: .js and .net are left off on purpose.
+ * A web link: a scheme, "www.", or a name on a common top-level domain ("bit.ly", "wa.me", "priya.in/cv"). The
+ * domain must be lowercase, so a sentence run together ("Pune.In 2023", "for.Me") is not a link. Tech names with a dot
+ * ("Node.js", "ASP.NET", "Vue.js") are not links either: .js and .net are left off on purpose.
  */
-const LINK = /\bhttps?:\/\/|\bwww\.|\b[a-z0-9-]+\.(?:com|in|org|io|me|ly|link|xyz|site|online|co|info|app|dev|gg|to)\b/i;
+const SCHEME_LINK = /\bhttps?:\/\/|\bwww\./i;
+const DOMAIN_LINK = /\b[A-Za-z0-9-]+\.(?:com|in|org|io|me|ly|link|xyz|site|online|co|info|app|dev|gg|to)\b/;
 
-export const hasLink = (text: string): boolean => LINK.test(text);
+/**
+ * Whether text carries a link. `domains: false` skips the bare-domain check, for a company or institution whose name
+ * is a domain ("Booking.com", "Amazon.in"); a scheme or "www." is still a link there.
+ */
+export const hasLink = (text: string, { domains = true }: { domains?: boolean } = {}): boolean =>
+  SCHEME_LINK.test(text) || (domains && DOMAIN_LINK.test(text));
 
 /** Whether text others read carries an email address, a phone number or a link (plan choice 8). */
-export const hasContactOrLink = (text: string): boolean => hasContactDetails(text) || hasLink(text);
+export const hasContactOrLink = (text: string, opts?: { domains?: boolean }): boolean => hasContactDetails(text) || hasLink(text, opts);
 
 /** "2024-06": a year and month as the month fields send them. */
 export const MONTH = /^(19|20)\d{2}-(0[1-9]|1[0-2])$/;

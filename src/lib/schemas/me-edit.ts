@@ -21,15 +21,18 @@ import {
 
 const tooLong = (max: number) => `At most ${max} characters.`;
 
-/** One line of text others read: single-spaced and trimmed, `min` to `max` characters, with no contact details or links. */
-const line = (min: number, max: number, empty: string) =>
+/**
+ * One line of text others read: single-spaced and trimmed, `min` to `max` characters, with no contact details or links.
+ * `domains: false` lets a name that is a domain through ("Booking.com" as a company); see hasLink.
+ */
+const line = (min: number, max: number, empty: string, linkRules?: { domains?: boolean }) =>
   z
     .string()
     .max(max * 4, { error: tooLong(max) })
     .transform(oneLine)
     .refine((v) => v.length >= min, { error: empty })
     .refine((v) => v.length <= max, { error: tooLong(max) })
-    .refine((v) => !hasContactOrLink(v), { error: ME_CONTACT_TEXT });
+    .refine((v) => !hasContactOrLink(v, linkRules), { error: ME_CONTACT_TEXT });
 
 /** A story part: line breaks kept, at most STORY_PART_MAX characters, "" when empty. */
 const part = z
@@ -48,7 +51,7 @@ const month = z.string().regex(MONTH, { error: "Pick a month and year." });
 export const meRoleInput = z
   .strictObject({
     title: line(1, ME_ROLE_TEXT_MAX, "Add the job title."),
-    employer: line(1, ME_ROLE_TEXT_MAX, "Add the company."),
+    employer: line(1, ME_ROLE_TEXT_MAX, "Add the company.", { domains: false }),
     startMonth: month,
     endMonth: month.nullable(),
     isCurrent: z.boolean(),
@@ -62,7 +65,7 @@ export const meRoleInput = z
 /** "+ Add" under Education (and its Edit). The year is free text, such as "2024" or "2021 to 2024", or empty. */
 export const meEducationInput = z.strictObject({
   qualification: line(1, ME_EDUCATION_TEXT_MAX, "Add the qualification."),
-  institution: line(1, ME_EDUCATION_TEXT_MAX, "Add the institution."),
+  institution: line(1, ME_EDUCATION_TEXT_MAX, "Add the institution.", { domains: false }),
   year: line(0, ME_EDUCATION_YEAR_MAX, "").transform((v) => v || null),
 });
 

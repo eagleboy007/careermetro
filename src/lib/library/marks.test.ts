@@ -299,7 +299,7 @@ describe.skipIf(!db)("Library marks, reports and suggestions (database)", () => 
     expect((await libraryFor(userId, day(0), db!)).items.some((i) => i.id === course)).toBe(true);
   });
 
-  it("is in Download your data (version 27); marks go with the account, reports and suggestions stay without it", async () => {
+  it("is in Download your data (version 28); marks go with the account, reports and suggestions stay without it", async () => {
     const me = await user("export");
     const a = await resource("export-a", ["sql"]);
     await setLibraryMark(me, { resourceId: a, mark: "saved", on: true }, { db: db! });

@@ -7313,6 +7313,10 @@
         "resource_reports_status": {
           "name": "resource_reports_status",
           "value": "\"resource_reports\".\"status\" in ('open', 'hidden', 'dismissed')"
+        },
+        "resource_reports_decided": {
+          "name": "resource_reports_decided",
+          "value": "(\"resource_reports\".\"status\" = 'open') = (\"resource_reports\".\"decided_at\" is null)"
         }
       },
       "isRLSEnabled": false
@@ -7500,6 +7504,10 @@
         "resource_suggestions_status": {
           "name": "resource_suggestions_status",
           "value": "\"resource_suggestions\".\"status\" in ('open', 'accepted', 'duplicate', 'declined')"
+        },
+        "resource_suggestions_decided": {
+          "name": "resource_suggestions_decided",
+          "value": "(\"resource_suggestions\".\"status\" = 'open') = (\"resource_suggestions\".\"decided_at\" is null)"
         },
         "resource_suggestions_decline_reason": {
           "name": "resource_suggestions_decline_reason",

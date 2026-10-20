@@ -190,7 +190,7 @@ describe.skipIf(!db)("departures store (database)", () => {
     expect(await db!.select().from(schema.jobFeedRuns).where(eq(schema.jobFeedRuns.id, c.id))).toEqual([]);
   });
 
-  it("is in Download your data (version 27), and goes with the account", async () => {
+  it("is in Download your data (version 28), and goes with the account", async () => {
     const me = await person();
     const p = await post({ title: "Reporting analyst", city: "Remote" });
     await saveRole(me, { postId: p, saved: true }, { db: db!, now });
