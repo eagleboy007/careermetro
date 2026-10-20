@@ -12,12 +12,12 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 import { capPosts, FEED_LIMITS, feedUrl, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
-import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "../../src/lib/departures/feed-schemas.mjs";
+import { FEED_SCHEMAS, jobBoardsFile, jobPostRow, TOKEN_PATTERN } from "../../src/lib/departures/feed-schemas.mjs";
 
 const root = new URL("../../", import.meta.url);
 
 /** @typedef {import("../../src/lib/departures/feed-rules.mjs").Ats} Ats */
-/** @typedef {{ company: string; ats: Ats; token: string }} Board */
+/** @typedef {{ company: string; ats: Ats; token: string; host?: import("../../src/lib/departures/feed-rules.mjs").BoardHost }} Board */
 /**
  * `capped`: the caps dropped some of this board's posts. `truncated`: the answer may be only part of the board (a full
  * SmartRecruiters page). Either way the board closes nothing this run.
@@ -74,6 +74,35 @@ export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.
 }
 
 /**
+ * One board's answer as checked job_posts rows (India and remote India only), with the number of postings it listed
+ * (Ashby's unlisted ones left out) and whether it may be only part of the board. An answer that doesn't fit the
+ * board's schema fails as a whole ("invalid"); one posting that doesn't fit is skipped. The board check
+ * (check-boards.mjs) counts with this too, so a board it passes reads the same in the feed.
+ * @param {Board} board
+ * @param {unknown} data
+ * @param {import("../../src/lib/departures/feed-rules.mjs").SkillMatcher[]} matchers
+ * @returns {{ ok: true; rows: ReturnType<typeof jobPostRow.parse>[]; total: number; truncated: boolean } | { ok: false; error: "invalid" }}
+ */
+export function boardRows(board, data, matchers) {
+  const schema = FEED_SCHEMAS[board.ats];
+  const envelope = schema.board.safeParse(data);
+  if (!envelope.success) return { ok: false, error: "invalid" };
+  /** @type {ReturnType<typeof jobPostRow.parse>[]} */
+  const rows = [];
+  let total = 0;
+  for (const item of schema.jobs(envelope.data)) {
+    const job = schema.job.safeParse(item);
+    if (job.success && board.ats === "ashby" && job.data.isListed === false) continue;
+    total++;
+    if (!job.success) continue;
+    const row = postRow(board.ats, board, rawPost(board.ats, job.data, board.token), matchers);
+    const checked = row ? jobPostRow.safeParse(row) : null;
+    if (checked?.success) rows.push(checked.data);
+  }
+  return { ok: true, rows, total, truncated: schema.truncated(envelope.data) };
+}
+
+/**
  * Every board, read in turn (a few at once), as checked job_posts rows and one result per board. A board whose answer
  * doesn't fit its schema fails as a whole; one posting that doesn't fit is skipped. The caps are applied at the end.
  * @param {Board[]} boards
@@ -89,25 +118,14 @@ export async function collect(boards, matchers, deps = {}) {
   const byKey = new Map();
   let next = 0;
   const one = async (/** @type {Board} */ board) => {
-    const got = await getJson(feedUrl(board.ats, board.token), deps);
+    const got = await getJson(feedUrl(board.ats, board.token, board.host), deps);
     if (!got.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: got.error });
-    const schema = FEED_SCHEMAS[board.ats];
-    const envelope = schema.board.safeParse(got.data);
-    if (!envelope.success) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: "invalid" });
-    let posts = 0;
-    const truncated = schema.truncated(envelope.data);
-    for (const item of schema.jobs(envelope.data)) {
-      const job = schema.job.safeParse(item);
-      if (!job.success) continue;
-      if (board.ats === "ashby" && job.data.isListed === false) continue;
-      const row = postRow(board.ats, board, rawPost(board.ats, job.data, board.token), matchers);
-      const checked = row ? jobPostRow.safeParse(row) : null;
-      if (!checked?.success) continue;
-      rows.push(checked.data);
-      posts++;
-    }
+    const read = boardRows(board, got.data, matchers);
+    if (!read.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: read.error });
+    rows.push(...read.rows);
+    const posts = read.rows.length;
     /** @type {BoardResult} */
-    const result = { ats: board.ats, token: board.token, ok: true, posts, error: null, ...(truncated ? { truncated: true } : {}) };
+    const result = { ats: board.ats, token: board.token, ok: true, posts, error: null, ...(read.truncated ? { truncated: true } : {}) };
     results.push(result);
     byKey.set(key(board), result);
   };
@@ -129,11 +147,11 @@ export async function collect(boards, matchers, deps = {}) {
 
 /**
  * A Postgres array literal of ids already checked as slugs or `ats:token` keys (feed-schemas.mjs allows letters,
- * digits, - and _ only), so nothing needs quoting.
+ * digits, -, _ and a single . between them only), so nothing needs quoting.
  */
 const pgArray = (/** @type {string[]} */ ids) => `{${ids.join(",")}}`;
 const key = (/** @type {{ ats: string; token: string }} */ b) => `${b.ats}:${b.token}`;
-const SAFE_KEY = /^[a-z]+:[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/;
+const SAFE_KEY = new RegExp(`^[a-z]+:${TOKEN_PATTERN}$`);
 
 /**
  * The boards whose open posts this run may close: each board read whole and kept whole (a board that failed, was cut

@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
-import { capPosts, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, htmlLines, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
+import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, htmlLines, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
 // The daily Departures feed (docs/plans/departures-live-plan.md) against saved, synthetic answers of each public
@@ -49,9 +49,9 @@ describe("the board list (src/content/job-boards.json)", () => {
     expect(list.length).toBeGreaterThan(20);
     expect(list.length).toBeLessThanOrEqual(FEED_LIMITS.boards);
     for (const b of list) {
-      expect(new URL(b.careersUrl).hostname).toBe(host[b.ats]);
-      // The first list is taken from the boards skill mining already reads.
-      if (b.ats !== "smartrecruiters") expect(mined[b.ats]).toContain(b.token);
+      expect(new URL(b.careersUrl).hostname).toBe(b.host === "eu" ? "job-boards.eu.greenhouse.io" : host[b.ats]);
+      // The first list is taken from the boards skill mining already reads; boards added later passed the board check.
+      if (b.ats !== "smartrecruiters" && b.addedBy === "Development") expect(mined[b.ats]).toContain(b.token);
     }
   });
 
@@ -63,6 +63,34 @@ describe("the board list (src/content/job-boards.json)", () => {
     expect(jobBoardsFile.safeParse([{ ...ok, careersUrl: "http://jobs.lever.co/examplecart" }]).success).toBe(false);
     expect(jobBoardsFile.safeParse([{ ...ok, token: "../x" }]).success).toBe(false);
     expect(jobBoardsFile.safeParse([{ ...ok, extra: 1 }]).success).toBe(false);
+  });
+
+  it("keeps a token's case, takes a dot in an Ashby token only, and refuses anything unsafe in a URL", () => {
+    const sr = board("smartrecruiters", "SWIGGY", "Swiggy");
+    expect(jobBoardsFile.parse([sr, board("smartrecruiters", "NielsenIQ", "NielsenIQ"), board("smartrecruiters", "KLA-Tencor", "KLA")]).map((b) => b.token)).toEqual(["SWIGGY", "NielsenIQ", "KLA-Tencor"]);
+    expect(feedUrl("smartrecruiters", "SWIGGY")).toBe("https://api.smartrecruiters.com/v1/companies/SWIGGY/postings?limit=100");
+    expect(jobBoardsFile.safeParse([board("ashby", "flagright.com", "Flagright")]).success).toBe(true);
+    expect(feedUrl("ashby", "flagright.com")).toBe("https://api.ashbyhq.com/posting-api/job-board/flagright.com");
+    expect(jobBoardsFile.safeParse([board("lever", "flagright.com", "Flagright")]).success).toBe(false);
+    for (const bad of ["..", "a..b", ".a", "a.", "a/b", "a%2Fb", "a?b", "a#b", "a b", "a\\b", "", "x".repeat(81)])
+      expect(jobBoardsFile.safeParse([board("ashby", bad, "Bad")]).success, bad).toBe(false);
+    expect(jobPostRow.shape.boardToken.safeParse("flagright.com").success).toBe(true);
+    expect(jobPostRow.shape.boardToken.safeParse("../x").success).toBe(false);
+  });
+
+  it("takes Greenhouse's EU host on a Greenhouse board only, and reads and links it there", () => {
+    const eu = { ...board("greenhouse", "examplelabs", "Example Labs"), host: "eu", careersUrl: careersUrlOf("greenhouse", "examplelabs", "eu") };
+    expect(jobBoardsFile.safeParse([eu]).success).toBe(true);
+    expect(jobBoardsFile.safeParse([{ ...eu, host: "us" }]).success).toBe(false);
+    expect(jobBoardsFile.safeParse([{ ...board("lever", "examplecart", "Examplecart"), host: "eu" }]).success).toBe(false);
+    expect(feedUrl("greenhouse", "examplelabs", "eu")).toBe("https://boards-api.eu.greenhouse.io/v1/boards/examplelabs/jobs?content=true");
+    expect(eu.careersUrl).toBe("https://job-boards.eu.greenhouse.io/examplelabs");
+    expect(careersUrlOf("greenhouse", "examplelabs")).toBe("https://job-boards.greenhouse.io/examplelabs");
+    expect([careersUrlOf("lever", "a"), careersUrlOf("ashby", "a.com"), careersUrlOf("smartrecruiters", "SWIGGY")]).toEqual([
+      "https://jobs.lever.co/a",
+      "https://jobs.ashbyhq.com/a.com",
+      "https://jobs.smartrecruiters.com/SWIGGY",
+    ]);
   });
 });
 
@@ -244,6 +272,7 @@ describe("collect", () => {
     expect(boardsToClose(["lever:a", "lever:b", "ashby:old"], results, listed)).toEqual(["ashby:old", "lever:a"]);
     expect(boardsToClose(["lever:a", "lever:b", "ashby:old"], results, listed, false)).toEqual(["lever:a"]);
     expect(boardsToClose(["lever:bad,key}"], [], listed)).toEqual([]);
+    expect(boardsToClose(["ashby:flagright.com", "ashby:a..b"], [], listed)).toEqual(["ashby:flagright.com"]);
   });
 });
 

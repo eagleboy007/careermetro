@@ -31,13 +31,24 @@ export const FEED_LIMITS = {
 
 export const USER_AGENT = "CareerMetro jobs (careermetro.vercel.app)";
 
-/** The one public GET per board. */
-export function feedUrl(/** @type {Ats} */ ats, /** @type {string} */ token) {
+/** @typedef {"eu"} BoardHost A Greenhouse board on its EU host; every other board is on the default host. */
+
+/** The one public GET per board. A Greenhouse board with `host: "eu"` is read from Greenhouse's EU host. */
+export function feedUrl(/** @type {Ats} */ ats, /** @type {string} */ token, /** @type {BoardHost | undefined} */ host = undefined) {
   const t = encodeURIComponent(token);
-  if (ats === "greenhouse") return `https://boards-api.greenhouse.io/v1/boards/${t}/jobs?content=true`;
+  if (ats === "greenhouse") return `https://boards-api${host === "eu" ? ".eu" : ""}.greenhouse.io/v1/boards/${t}/jobs?content=true`;
   if (ats === "lever") return `https://api.lever.co/v0/postings/${t}?mode=json`;
   if (ats === "ashby") return `https://api.ashbyhq.com/posting-api/job-board/${t}`;
   return `https://api.smartrecruiters.com/v1/companies/${t}/postings?limit=${FEED_LIMITS.smartRecruitersPage}`;
+}
+
+/** The company's careers page on its job board, as job-boards.json lists it. */
+export function careersUrlOf(/** @type {Ats} */ ats, /** @type {string} */ token, /** @type {BoardHost | undefined} */ host = undefined) {
+  const t = encodeURIComponent(token);
+  if (ats === "greenhouse") return `https://job-boards${host === "eu" ? ".eu" : ""}.greenhouse.io/${t}`;
+  if (ats === "lever") return `https://jobs.lever.co/${t}`;
+  if (ats === "ashby") return `https://jobs.ashbyhq.com/${t}`;
+  return `https://jobs.smartrecruiters.com/${t}`;
 }
 
 /* The live role, from the title (moved from mine.mjs) ------------------------------------------------------------ */
