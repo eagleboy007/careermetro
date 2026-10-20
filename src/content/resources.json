@@ -2028,8 +2028,8 @@
     "free": true
   },
   {
-    "title": "Testing the web layer",
-    "url": "https://spring.io/guides/gs/testing-web",
+    "title": "Testing Spring Boot applications",
+    "url": "https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html",
     "provider": "Spring",
     "kind": "docs",
     "skillIds": [
