@@ -12,7 +12,14 @@ export const ATS = /** @type {const} */ (["greenhouse", "lever", "ashby", "smart
 /** As the jobs table stores work type (JOB_WORK_TYPES in src/lib/schemas/constants.ts). */
 export const FEED_WORK_TYPES = /** @type {const} */ (["full_time", "part_time", "freelance"]);
 
-const token = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/);
+/**
+ * A board token, kept in its own case (SmartRecruiters ids are case-sensitive: "SWIGGY", "NielsenIQ"). Letters, digits,
+ * "_" and "-", and a single "." between letters or digits for Ashby boards named by domain ("flagright.com"). It starts
+ * with a letter or digit, so it is never "." or "..", and it has no "/", "%", "?", "#" or space, so it is safe in a URL
+ * path. TOKEN_PATTERN is the same rule for the feed's `ats:token` keys.
+ */
+export const TOKEN_PATTERN = "[A-Za-z0-9](?:[A-Za-z0-9_-]|\\.(?=[A-Za-z0-9])){0,79}";
+const token = z.string().max(80).regex(new RegExp(`^${TOKEN_PATTERN}$`));
 const https = z.url({ protocol: /^https$/ }).max(500);
 const slug = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).max(80);
 
@@ -22,12 +29,18 @@ export const jobBoard = z
     company: z.string().trim().min(1).max(80),
     ats: z.enum(ATS),
     token,
+    /** Greenhouse only: "eu" for a board on Greenhouse's EU host (boards-api.eu.greenhouse.io). Left out otherwise. */
+    host: z.literal("eu").optional(),
     /** The company's own careers page on its job board, for a reviewer to check the board is the company's. */
     careersUrl: https,
     addedBy: z.string().trim().min(1).max(60),
     addedOn: z.iso.date(),
   })
-  .strict();
+  .strict()
+  .superRefine((b, ctx) => {
+    if (b.host && b.ats !== "greenhouse") ctx.addIssue({ code: "custom", path: ["host"], message: "Only a Greenhouse board has an EU host" });
+    if (b.token.includes(".") && b.ats !== "ashby") ctx.addIssue({ code: "custom", path: ["token"], message: "Only an Ashby token may have a dot" });
+  });
 
 /** The whole board file: at most 150 boards (the feed's cap), each ATS and token once. */
 export const jobBoardsFile = z
