@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarClock, Phone, PhoneOff } from "lucide-react";
+import { CalendarClock, Phone, PhoneOff, Play } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { actionBtn, inkBtn } from "@/components/corporate/jobs-panel";
 import { fieldClass, hintClass, ICON } from "@/components/corporate/parts";
@@ -160,6 +161,7 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
         </span>
         <span className={`ml-auto text-[0.8rem] ${live ? "text-ink" : "text-muted"}`}>{iv.status === "proposed" && iv.canRespond ? "Waiting for your answer" : INTERVIEW_STATUS_LABELS[iv.status]}</span>
       </div>
+      {live && <PracticeRound />}
       {iv.canRespond && !accepting && (
         <div className="flex flex-wrap gap-2">
           <button ref={acceptRef} type="button" className={inkBtn} disabled={pending} onClick={() => setAccepting(true)} aria-label={`Accept the interview on ${iv.when}`}>
@@ -204,5 +206,19 @@ function InterviewRow({ app, iv, respond, onDone }: { app: MyApplicationView; iv
         </form>
       )}
     </div>
+  );
+}
+
+/** The practice round before an interview (handoff 12l, C15): Interview prep's mock interview, which is Elite. */
+export function PracticeRound() {
+  return (
+    <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.8rem] text-muted">
+      <Link href="/mock" className="inline-flex min-h-11 items-center gap-1.5 font-[550] text-ink hover:text-muted">
+        <Play {...ICON} size={14} />
+        <span className="underline underline-offset-2">Practice round</span>
+        <span className="rounded-full bg-elite px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.06em] text-on-elite">Elite</span>
+      </Link>
+      <span>A mock interview with an AI interviewer, on your role&apos;s questions.</span>
+    </p>
   );
 }

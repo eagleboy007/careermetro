@@ -8,7 +8,7 @@ import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
-import { applyStates, applyToJob, jobBoard, moveApplication, myApplications, openCandidate, withdrawApplication } from "./applications-store";
+import { applyStates, applyToJob, arrivalsCount, jobBoard, moveApplication, myApplications, openCandidate, withdrawApplication } from "./applications-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { saveJob } from "./jobs-store";
 import { activeMembership, corporateHome, finishCompanySignup, finishJoin, inviteMember, removeMember, startCompanySignup, startJoin, type CorporateDeps } from "./store";
@@ -239,6 +239,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     ]);
     const mine = await myApplications(me, { db: db! });
     expect(mine).toHaveLength(1);
+    // Not this time stays on Arrivals, so it counts on the top bar.
+    expect(await arrivalsCount(me, db!)).toBe(1);
     expect(mine[0]).toMatchObject({ title: "SOC Analyst L1", company: "Example Labs", stage: "not_this_time", withdrawn: false });
     expect(mine[0].events.at(-1)).toEqual({ kind: "moved", stage: "not_this_time", on: "2026-10-15", note: NOTE });
     expect(JSON.stringify(mine)).not.toContain("Meera");
@@ -345,6 +347,8 @@ describe.skipIf(!db)("applications and the board (database)", () => {
     expect(await jobBoard(admin, jobId, at(3))).toMatchObject({ ok: true, board: { cards: [], withdrawn: 1 } });
     const mine = await myApplications(me, { db: db! });
     expect(mine[0]).toMatchObject({ stage: "not_this_time", withdrawn: true });
+    // A withdrawn application no longer counts on the top bar.
+    expect(await arrivalsCount(me, db!)).toBe(0);
     expect(mine[0].events.map((e) => e.kind)).toEqual(["applied", "moved", "withdrawn"]);
   });
 

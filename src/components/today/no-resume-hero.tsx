@@ -2,12 +2,12 @@ import { ArrowRight, BriefcaseBusiness, Map as MapIcon, MessagesSquare, Route, T
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** Before the resume: what is open without one. The linked screens come in later build steps. */
+/** Before the resume: what is open without one. Junction comes in a later build step, so it has no link yet. */
 export function WhileYouDecide() {
-  const items = [
+  const items: { Icon: typeof User; title: string; detail: string; href?: string }[] = [
     { Icon: MessagesSquare, title: "Read Junction", detail: "Questions and wins from people on the same roles." },
-    { Icon: MapIcon, title: "Explore role lines", detail: "See the goals other roles take, before you pick yours." },
-    { Icon: User, title: "Set up your profile", detail: "Status and interests now; skills fill in from your resume." },
+    { Icon: MapIcon, title: "Explore role lines", detail: "See the goals other roles take, before you pick yours.", href: "/roles" },
+    { Icon: User, title: "Set up your profile", detail: "Status and interests now; skills fill in from your resume.", href: "/me" },
   ];
   return (
     <section
@@ -17,12 +17,20 @@ export function WhileYouDecide() {
       <h3 className="text-[1.08rem] font-semibold tracking-[-0.01em]">While you decide</h3>
       <p className="text-[0.9rem] text-muted">Everything except your own line works without a resume.</p>
       <ul className="flex flex-col gap-3 text-[0.86rem]">
-        {items.map(({ Icon, title, detail }) => (
+        {items.map(({ Icon, title, detail, href }) => (
           <li key={title} className="flex items-start gap-2.5">
             <Icon size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
             <span>
               <b className="block font-semibold">
-                {title} <span className="font-mono text-[0.62rem] font-normal uppercase text-muted">· soon</span>
+                {href ? (
+                  <Link href={href} className="underline underline-offset-2 hover:text-muted">
+                    {title}
+                  </Link>
+                ) : (
+                  <>
+                    {title} <span className="font-mono text-[0.62rem] font-normal uppercase text-muted">· soon</span>
+                  </>
+                )}
               </b>
               <small className="text-[0.8rem] text-muted">{detail}</small>
             </span>
