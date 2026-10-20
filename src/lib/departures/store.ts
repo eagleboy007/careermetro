@@ -76,20 +76,25 @@ export async function lastFeedRun(db: Db | Tx = getDb()): Promise<Date | null> {
 }
 
 /** The board for one person (null: signed out, open posts only). Read only. */
-export async function departuresBoard(userId: string | null, { db = getDb(), limit = PAGE_POSTS }: { db?: Db; limit?: number } = {}): Promise<DeparturesBoard> {
+/** `roleSlug` (the page's `?role=`) keeps only posts read as that role, the person's own included. */
+export async function departuresBoard(
+  userId: string | null,
+  { db = getDb(), limit = PAGE_POSTS, roleSlug = null }: { db?: Db; limit?: number; roleSlug?: string | null } = {},
+): Promise<DeparturesBoard> {
+  const ofRole = roleSlug ? eq(jobPosts.roleSlug, roleSlug) : undefined;
   const ownRows = (id: string) =>
     db
       .select({ ...postColumns, savedAt: jobSaves.savedAt, stage: jobSaves.stage })
       .from(jobSaves)
       .innerJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
-      .where(eq(jobSaves.userId, id))
+      .where(and(eq(jobSaves.userId, id), ofRole))
       .orderBy(desc(jobSaves.updatedAt));
   type OwnRow = Awaited<ReturnType<typeof ownRows>>[number];
   const [open, own, updatedAt] = await Promise.all([
     db
       .select(postColumns)
       .from(jobPosts)
-      .where(isNull(jobPosts.closedAt))
+      .where(and(isNull(jobPosts.closedAt), ofRole))
       .orderBy(desc(sql`coalesce(${jobPosts.postedAt}, ${jobPosts.firstSeenAt})`), asc(jobPosts.id))
       .limit(limit),
     userId ? ownRows(userId) : Promise.resolve<OwnRow[]>([]),

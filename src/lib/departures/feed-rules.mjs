@@ -20,6 +20,8 @@ export const FEED_LIMITS = {
   boards: 150,
   postsPerBoard: 500,
   openPosts: 5000,
+  /** One SmartRecruiters page; the feed reads one page per board, so a full page counts as cut short. */
+  smartRecruitersPage: 100,
   timeoutMs: 15_000,
   /** The biggest board answer read. A large Greenhouse board with full descriptions is a few MB. */
   maxBytes: 25 * 1024 * 1024,
@@ -35,7 +37,7 @@ export function feedUrl(/** @type {Ats} */ ats, /** @type {string} */ token) {
   if (ats === "greenhouse") return `https://boards-api.greenhouse.io/v1/boards/${t}/jobs?content=true`;
   if (ats === "lever") return `https://api.lever.co/v0/postings/${t}?mode=json`;
   if (ats === "ashby") return `https://api.ashbyhq.com/posting-api/job-board/${t}`;
-  return `https://api.smartrecruiters.com/v1/companies/${t}/postings?limit=100`;
+  return `https://api.smartrecruiters.com/v1/companies/${t}/postings?limit=${FEED_LIMITS.smartRecruitersPage}`;
 }
 
 /* The live role, from the title (moved from mine.mjs) ------------------------------------------------------------ */

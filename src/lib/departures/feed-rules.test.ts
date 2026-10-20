@@ -158,7 +158,16 @@ describe("getJson", () => {
     expect(await getJson("https://api.lever.co/v0/postings/x", { fetchImpl: notJson })).toEqual({ ok: false, error: "not_json" });
     const sent = fakeFetch({ "https://api.lever.co/v0/postings/x?mode=json": [] });
     expect(await getJson("https://api.lever.co/v0/postings/x?mode=json", { fetchImpl: sent })).toEqual({ ok: true, data: [] });
-    expect(vi.mocked(sent).mock.calls[0][1]).toMatchObject({ headers: { "user-agent": USER_AGENT } });
+    expect(vi.mocked(sent).mock.calls[0][1]).toMatchObject({ headers: { "user-agent": USER_AGENT }, redirect: "error" });
+  });
+
+  it("refuses an answer that ended up anywhere but https", async () => {
+    const plain = vi.fn(async () => Object.defineProperty(json([]), "url", { value: "http://api.lever.co/v0/postings/x" })) as unknown as typeof fetch;
+    expect(await getJson("https://api.lever.co/v0/postings/x", { fetchImpl: plain })).toEqual({ ok: false, error: "network" });
+    const thrown = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    }) as unknown as typeof fetch;
+    expect(await getJson("https://api.lever.co/v0/postings/x", { fetchImpl: thrown })).toEqual({ ok: false, error: "network" });
   });
 });
 
@@ -201,6 +210,29 @@ describe("collect", () => {
     expect(text).toContain("Boards read: 4 of 5. Posts kept: 7.");
     expect(text).toContain("Skipped lever/gone: last_error 404");
     expect(text).not.toMatch(/Analyst|Engineer|SQL|Pune/);
+  });
+
+  it("marks a board the caps cut and a full SmartRecruiters page, keeps every post it saw, and closes neither board", async () => {
+    const capped = await collect(boards, matchers, { fetchImpl: fakeFetch(allAnswers()), perBoard: 1 });
+    const gh = capped.results.find((r) => r.token === "examplelabs");
+    expect(gh).toMatchObject({ ok: true, posts: 3, capped: true });
+    expect(capped.rows.filter((r) => r.boardToken === "examplelabs")).toHaveLength(1);
+    expect(capped.seen.filter((s) => s.k === "greenhouse:examplelabs")).toHaveLength(3);
+    expect(capped.results.find((r) => r.token === "examplepay")?.capped).toBeUndefined();
+    const closing = boardsToClose([], capped.results, boards, false);
+    expect(closing).not.toContain("greenhouse:examplelabs");
+    expect(closing).toContain("ashby:examplepay");
+
+    const page = fixture("smartrecruiters") as { content: unknown[] };
+    const full = { content: Array.from({ length: FEED_LIMITS.smartRecruitersPage }, (_, i) => page.content[i % page.content.length]) };
+    const sr = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch({ [feedUrl("smartrecruiters", "ExampleWorks")]: full }) });
+    expect(sr.results[0]).toMatchObject({ ok: true, truncated: true });
+    expect(boardsToClose([], sr.results, boards, false)).toEqual([]);
+    const more = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch({ [feedUrl("smartrecruiters", "ExampleWorks")]: { ...page, totalFound: 250 } }) });
+    expect(more.results[0]).toMatchObject({ truncated: true });
+    const whole = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(allAnswers()) });
+    expect(whole.results[0].truncated).toBeUndefined();
+    expect(summaryLines(sr.results, sr.rows.length, null).join("\n")).toContain("Kept open smartrecruiters/ExampleWorks: answer cut short");
   });
 
   it("closes only boards it read, and boards taken off the list", () => {
@@ -270,6 +302,17 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     expect(back.get("4003")).toBeNull();
     expect(back.get("4004")).not.toBeNull();
     expect((await posts()).filter((p) => p.external_id === "4003")).toHaveLength(1);
+  });
+
+  it("never closes a post the caps left out", async () => {
+    await once(answers(fixture("greenhouse"), fixture("lever")), 3);
+    const { rows, results, seen } = await collect(mine, matchers, { fetchImpl: answers(fixture("greenhouse"), fixture("lever")), perBoard: 1 });
+    const startedAt = at(4);
+    const written = await writeRun(sql!, { boards: mine, rows, results, seen, startedAt, now: new Date(startedAt.getTime() + 1000), closeUnlisted: false });
+    runIds.push(written.runId);
+    // Both boards were cut to one post; the others were seen, so all stay open.
+    expect(written.closed).toBe(0);
+    expect((await posts()).filter((p) => p.closed_at !== null).map((p) => p.external_id)).toEqual([]);
   });
 
   it("refuses a row the table's checks don't allow", async () => {

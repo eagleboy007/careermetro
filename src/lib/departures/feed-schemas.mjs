@@ -4,6 +4,7 @@
 // stage) are in src/lib/schemas/departures.ts. Only the four public job-board APIs the Project manager approved:
 // Greenhouse, Lever, Ashby and SmartRecruiters. Nothing here is scraped from a web page.
 import { z } from "zod";
+import { FEED_LIMITS } from "./feed-rules.mjs";
 
 /** The job-board APIs Departures reads. Changing this list is a PR and a plan change, never a setting. */
 export const ATS = /** @type {const} */ (["greenhouse", "lever", "ashby", "smartrecruiters"]);
@@ -93,7 +94,7 @@ export const ashbyJob = z.object({
   publishedAt: z.string().max(40).nullish(),
 });
 
-export const smartRecruitersBoard = z.object({ content: z.array(z.unknown()) });
+export const smartRecruitersBoard = z.object({ content: z.array(z.unknown()), totalFound: z.number().int().nonnegative().nullish() });
 export const smartRecruitersJob = z.object({
   id,
   name: z.string().max(500),
@@ -111,12 +112,24 @@ export const smartRecruitersJob = z.object({
   typeOfEmployment: z.object({ label: z.string().max(80).nullish() }).nullish(),
 });
 
-/** The envelope and the posting schema of each ATS. */
+/** @type {(d: unknown) => boolean} */
+const whole = () => false;
+
+/**
+ * The envelope and the posting schema of each ATS, and whether the answer may be only part of the board. Greenhouse,
+ * Lever and Ashby answer with every posting. SmartRecruiters answers one page of `limit=100` and the feed doesn't page
+ * it, so a full page (or a totalFound above what came back) counts as cut short, and that board closes nothing.
+ */
 export const FEED_SCHEMAS = {
-  greenhouse: { board: greenhouseBoard, job: greenhouseJob, jobs: (/** @type {any} */ d) => d.jobs },
-  lever: { board: leverBoard, job: leverJob, jobs: (/** @type {any} */ d) => d },
-  ashby: { board: ashbyBoard, job: ashbyJob, jobs: (/** @type {any} */ d) => d.jobs },
-  smartrecruiters: { board: smartRecruitersBoard, job: smartRecruitersJob, jobs: (/** @type {any} */ d) => d.content },
+  greenhouse: { board: greenhouseBoard, job: greenhouseJob, jobs: (/** @type {any} */ d) => d.jobs, truncated: whole },
+  lever: { board: leverBoard, job: leverJob, jobs: (/** @type {any} */ d) => d, truncated: whole },
+  ashby: { board: ashbyBoard, job: ashbyJob, jobs: (/** @type {any} */ d) => d.jobs, truncated: whole },
+  smartrecruiters: {
+    board: smartRecruitersBoard,
+    job: smartRecruitersJob,
+    jobs: (/** @type {any} */ d) => d.content,
+    truncated: (/** @type {any} */ d) => d.content.length >= FEED_LIMITS.smartRecruitersPage || (d.totalFound ?? 0) > d.content.length,
+  },
 };
 
 /**

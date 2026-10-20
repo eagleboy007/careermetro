@@ -97,9 +97,9 @@ async function eliteFor(userId: string | null): Promise<boolean> {
 }
 
 /** The feed's roles and the person's own lists. If they can't be read, Departures shows its other roles and says nothing is listed yet. */
-async function liveBoard(userId: string): Promise<DeparturesBoard> {
+async function liveBoard(userId: string, roleSlug: string | null): Promise<DeparturesBoard> {
   try {
-    return await departuresBoard(userId);
+    return await departuresBoard(userId, { roleSlug });
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_board_failed", errorFields(error));
@@ -107,15 +107,25 @@ async function liveBoard(userId: string): Promise<DeparturesBoard> {
   }
 }
 
-/** What fit is read against. If it can't be read, the rows show without fit rather than fail. */
-async function fitFor(userId: string): Promise<FitContext | null> {
+/**
+ * What fit is read against: null when the resume isn't confirmed yet, "failed" when it can't be read (the rows then
+ * show without fit rather than fail).
+ */
+async function fitFor(userId: string): Promise<FitContext | null | "failed"> {
   try {
     return await fitContextFor(userId);
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_fit_failed", errorFields(error));
-    return null;
+    return "failed";
   }
+}
+
+/** Why a signed-in person with a resume sees no fit, or null when fit shows. */
+function noFitWords(fit: FitContext | null | "failed"): string | null {
+  if (fit === "failed") return "Your fit can't be read right now. Reload the page to try again.";
+  if (fit === null) return "Confirm your resume's skills to see your fit for each role.";
+  return null;
 }
 
 async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
@@ -130,7 +140,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const read = await postedJobs(role?.slug);
   const posted = read ?? [];
   const [board, fit, states, criteria, elite, search] = await Promise.all([
-    account ? liveBoard(account.id) : null,
+    account ? liveBoard(account.id, role?.slug ?? null) : null,
     account && analysis ? fitFor(account.id) : null,
     postedStates(account?.id ?? null, posted),
     postedCriteria(account?.id ?? null, posted),
@@ -138,8 +148,10 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
     account ? jobSearchFor(account.id) : DEFAULT_JOB_SEARCH,
   ]);
   const now = new Date();
-  const jobs = board ? board.posts.map((p) => postView(p, fit, now)) : exampleJobs;
-  const hasResume = account ? fit !== null : state !== "no_resume";
+  const jobs = board ? board.posts.map((p) => postView(p, fit === "failed" ? null : fit, now)) : exampleJobs;
+  // A resume on file is enough to say so; a fit that can't be shown gets its own reason, not "add your resume".
+  const hasResume = account ? analysis !== null : state !== "no_resume";
+  const noFit = account && analysis ? noFitWords(fit) : account ? "Add your resume to see your fit for each role." : null;
   // Interview prep for each role, locked on the server: on Free, only the first question's text reaches the browser.
   const prep = prepForJobs(jobs, mockQuestions, roleProfiles, elite);
   // Job search off pauses Departures (handoff 6): the header with the switch and the off card only. Express apply is
@@ -177,7 +189,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
           <DeparturesView
             jobs={jobs}
             hasResume={hasResume}
-            noFit={account && !hasResume ? "Add your resume to see your fit for each role." : null}
+            noFit={noFit}
             initialSaved={board ? board.saved : exampleSaved}
             initialApplied={board ? board.applied : exampleApplied}
             updated={board ? updatedWords(board.updatedAt, now) : null}

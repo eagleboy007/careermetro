@@ -80,6 +80,19 @@ describe.skipIf(!db)("departures store (database)", () => {
     expect(lines.join("\n")).not.toMatch(/Junior data analyst|Example Labs|Asha/);
   });
 
+  it("keeps only one role's posts for ?role=, the person's own included", async () => {
+    const me = await person();
+    const slug = `${run}-role`;
+    const mineOfRole = await post({ roleSlug: slug });
+    const other = await post({ roleSlug: `${run}-other` });
+    await saveRole(me, { postId: mineOfRole, saved: true }, { db: db!, now });
+    await saveRole(me, { postId: other, saved: true }, { db: db!, now });
+    const board = await departuresBoard(me, { db: db!, roleSlug: slug });
+    expect(board.posts.map((p) => p.id)).toEqual([mineOfRole]);
+    expect(board.saved).toEqual([mineOfRole]);
+    expect((await departuresBoard(me, { db: db! })).saved).toEqual(expect.arrayContaining([mineOfRole, other]));
+  });
+
   it("saves and unsaves for that person only; another person never sees the list", async () => {
     const me = await person();
     const other = await person();

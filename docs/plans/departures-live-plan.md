@@ -110,7 +110,12 @@ Two PRs. PR 1 is the feed, the tables and Departures (items 40 and 42). PR 2 is 
 8. Fit: a skill with current accepted proof counts under "You have". The row's chips show missing and weak only, so an outdated skill shows as weak.
 9. "Updated" is the finish time of the last run that read at least one board. A run where every board failed is recorded and fails the workflow, so someone looks.
 10. A board taken off the list closes its open posts on the next run. A board whose fetch failed closes nothing.
-11. The workflow writes only from the default branch, with the existing `DATABASE_MIGRATION_URL` secret. Without it, the job posts a notice and skips every step.
-12. The signed-in page with no resume says "Add your resume to see your fit for each role." The signed-out "no resume" example keeps the prototype's wording in the detail panel.
+11. The workflow writes only from the default branch, with the existing `DATABASE_MIGRATION_URL` secret, which reaches only the database-check and write steps. Without it, a scheduled run posts a notice and skips the rest; a manual run does a dry run that reads the boards and prints counts.
+12. The signed-in page with no resume says "Add your resume to see your fit for each role." With a resume whose skills aren't confirmed it asks to confirm them, and when fit can't be read it says so. The signed-out "no resume" example keeps the prototype's wording in the detail panel.
 13. Every save or stage try counts toward the 200 a day. Taking a closed post off Saved still works.
 14. The signed-out banner now says the roles and the fit are examples, and what signing in shows.
+15. The caps (500 a board, 5000 in all) never close a live post. Every post read before the caps counts as seen and is never closed, and a board the caps cut closes nothing that run.
+16. SmartRecruiters is read one page (`limit=100`) without paging. A full page, or a `totalFound` above what came back, counts as cut short, so that board closes nothing.
+17. A board answer is fetched with `redirect: "error"`, and one that ends anywhere but https is refused.
+18. `?role=` filters the live board too, the person's own saved and applied posts included.
+19. The board tokens could not be checked by GET from the build container, because its network refuses the ATS hosts. They are the jd-mining list as it was.

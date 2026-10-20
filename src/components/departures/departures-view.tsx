@@ -309,7 +309,7 @@ function JobRow({
           <span className="sr-only"> at {job.company}</span>
         </button>
         <p className="flex flex-wrap gap-1.5 text-[0.8rem] text-muted">
-          {[job.company, job.city, job.workType, job.experience, `posted ${job.posted}`].filter(Boolean).map((m, i) => (
+          {[job.company, job.city, job.workType, job.experience, job.posted ? `posted ${job.posted}` : null].filter(Boolean).map((m, i) => (
             <span key={i} className="contents">
               {i > 0 && <span aria-hidden="true">·</span>}
               <span>{m}</span>

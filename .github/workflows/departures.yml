@@ -1,12 +1,15 @@
 name: Departures feed
 
-# Live Departures (docs/plans/departures-live-plan.md): once a day, one GET per reviewed board in
-# src/content/job-boards.json through the public job-board APIs of Greenhouse, Lever, Ashby and SmartRecruiters only
-# (never a web page, never LinkedIn, Naukri or any site whose terms forbid it). Skills are found by code over the
-# taxonomy; no model is called, so no Anthropic key is needed. The scheduled run on main writes job_posts and
-# job_feed_runs with the existing repository secret DATABASE_MIGRATION_URL, as the link check does. Without it (a fork,
-# or before the secret is set) the job says so and stops cleanly. The log and the summary name boards and counts only,
-# never post text.
+# Live Departures (docs/plans/departures-live-plan.md): once a day, one GET per board in src/content/job-boards.json
+# through the public job-board APIs of Greenhouse, Lever, Ashby and SmartRecruiters only (never a web page, never
+# LinkedIn, Naukri or any site whose terms forbid it). Skills are found by code over the taxonomy; no model is called,
+# so no Anthropic key is needed. The log and the summary name boards and counts only, never post text.
+#
+# The database link (the existing repository secret DATABASE_MIGRATION_URL, as the link check uses) reaches only the
+# two steps that need it, and only on the default branch:
+# - default branch with the secret: the boards are read and job_posts and job_feed_runs are written;
+# - a scheduled run without it (a fork, or before the secret is set): a notice, and nothing is fetched or written;
+# - a manual run without it, or on another branch: a dry run that reads the boards and prints the counts only.
 on:
   schedule:
     - cron: "0 1 * * *" # 06:30 IST
@@ -23,25 +26,34 @@ jobs:
   feed:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      # Only runs on the default branch write; a manual run elsewhere is a dry run.
-      DATABASE_URL: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && secrets.DATABASE_MIGRATION_URL || '' }}
     steps:
+      - name: See whether this run may write
+        id: db
+        env:
+          DATABASE_URL: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && secrets.DATABASE_MIGRATION_URL || '' }}
+        run: echo "write=${DATABASE_URL:+yes}" >> "$GITHUB_OUTPUT"
       - name: Skip when the database secret is not set
-        if: env.DATABASE_URL == ''
+        if: steps.db.outputs.write != 'yes' && github.event_name == 'schedule'
         run: echo "::notice title=Departures feed::DATABASE_MIGRATION_URL is not available to this run, so nothing is fetched or written."
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: env.DATABASE_URL != ''
+        if: steps.db.outputs.write == 'yes' || github.event_name != 'schedule'
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        if: env.DATABASE_URL != ''
+        if: steps.db.outputs.write == 'yes' || github.event_name != 'schedule'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-        if: env.DATABASE_URL != ''
+        if: steps.db.outputs.write == 'yes' || github.event_name != 'schedule'
       - name: Check the database link
-        if: env.DATABASE_URL != ''
+        if: steps.db.outputs.write == 'yes'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         run: node scripts/check-database-url.mjs
       - name: Read the boards and update Departures
-        if: env.DATABASE_URL != ''
+        if: steps.db.outputs.write == 'yes'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+        run: node scripts/departures/fetch-feeds.mjs
+      - name: Read the boards (dry run, nothing written)
+        if: steps.db.outputs.write != 'yes' && github.event_name != 'schedule'
         run: node scripts/departures/fetch-feeds.mjs

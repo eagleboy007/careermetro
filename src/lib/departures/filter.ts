@@ -2,7 +2,7 @@ import type { JobPost, WorkType } from "@/lib/schemas";
 
 /** What the Departures header says under the title (prototype v44), also on the paused page while job search is off. */
 export const DEPARTURES_LEDE =
-  "Roles from public company job boards and posts you paste. Apply on the company's site, or in one tap with Express apply where the company takes it.";
+  "Roles from public company job boards and posts you paste. Apply on the company's site, or with Express apply where the company takes it.";
 
 export type DepartureTab = "all" | "saved" | "applied";
 

@@ -18,7 +18,11 @@ const root = new URL("../../", import.meta.url);
 
 /** @typedef {import("../../src/lib/departures/feed-rules.mjs").Ats} Ats */
 /** @typedef {{ company: string; ats: Ats; token: string }} Board */
-/** @typedef {{ ats: Ats; token: string; ok: boolean; posts: number; error: string | null }} BoardResult */
+/**
+ * `capped`: the caps dropped some of this board's posts. `truncated`: the answer may be only part of the board (a full
+ * SmartRecruiters page). Either way the board closes nothing this run.
+ * @typedef {{ ats: Ats; token: string; ok: boolean; posts: number; error: string | null; capped?: boolean; truncated?: boolean }} BoardResult
+ */
 
 /**
  * The board's answer as JSON, read with a time limit and a size cap. Fails with a short code only ("404", "timeout",
@@ -30,7 +34,11 @@ const root = new URL("../../", import.meta.url);
 export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.timeoutMs, maxBytes = FEED_LIMITS.maxBytes } = {}) {
   const signal = AbortSignal.timeout(timeoutMs);
   try {
-    const res = await fetchImpl(url, { headers: { "user-agent": USER_AGENT, accept: "application/json" }, redirect: "follow", signal });
+    const res = await fetchImpl(url, { headers: { "user-agent": USER_AGENT, accept: "application/json" }, redirect: "error", signal });
+    if (res.url && !res.url.startsWith("https://")) {
+      await res.body?.cancel();
+      return { ok: false, error: "network" };
+    }
     if (!res.ok) {
       await res.body?.cancel();
       return { ok: false, error: String(res.status) };
@@ -70,13 +78,15 @@ export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.
  * doesn't fit its schema fails as a whole; one posting that doesn't fit is skipped. The caps are applied at the end.
  * @param {Board[]} boards
  * @param {import("../../src/lib/departures/feed-rules.mjs").SkillMatcher[]} matchers
- * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number }} [deps]
+ * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number; perBoard?: number; total?: number }} [deps]
  */
 export async function collect(boards, matchers, deps = {}) {
   /** @type {BoardResult[]} */
   const results = [];
   /** @type {ReturnType<typeof jobPostRow.parse>[]} */
   const rows = [];
+  /** @type {Map<string, BoardResult>} */
+  const byKey = new Map();
   let next = 0;
   const one = async (/** @type {Board} */ board) => {
     const got = await getJson(feedUrl(board.ats, board.token), deps);
@@ -85,6 +95,7 @@ export async function collect(boards, matchers, deps = {}) {
     const envelope = schema.board.safeParse(got.data);
     if (!envelope.success) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: "invalid" });
     let posts = 0;
+    const truncated = schema.truncated(envelope.data);
     for (const item of schema.jobs(envelope.data)) {
       const job = schema.job.safeParse(item);
       if (!job.success) continue;
@@ -95,14 +106,25 @@ export async function collect(boards, matchers, deps = {}) {
       rows.push(checked.data);
       posts++;
     }
-    results.push({ ats: board.ats, token: board.token, ok: true, posts, error: null });
+    /** @type {BoardResult} */
+    const result = { ats: board.ats, token: board.token, ok: true, posts, error: null, ...(truncated ? { truncated: true } : {}) };
+    results.push(result);
+    byKey.set(key(board), result);
   };
   await Promise.all(
     Array.from({ length: Math.max(1, deps.concurrency ?? 4) }, async () => {
       while (next < boards.length) await one(boards[next++]);
     }),
   );
-  return { rows: capPosts(rows), results };
+  // Every row checked before the caps counts as seen, so writeRun never closes a live post the caps left out; a board
+  // the caps cut is marked so it closes nothing at all.
+  const seen = rows.map((r) => ({ k: `${r.ats}:${r.boardToken}`, id: r.externalId }));
+  const kept = capPosts(rows, deps.perBoard, deps.total);
+  /** @type {Map<string, number>} */
+  const keptPer = new Map();
+  for (const r of kept) keptPer.set(`${r.ats}:${r.boardToken}`, (keptPer.get(`${r.ats}:${r.boardToken}`) ?? 0) + 1);
+  for (const [k, result] of byKey) if ((keptPer.get(k) ?? 0) < result.posts) result.capped = true;
+  return { rows: kept, results, seen };
 }
 
 /**
@@ -114,7 +136,8 @@ const key = (/** @type {{ ats: string; token: string }} */ b) => `${b.ats}:${b.t
 const SAFE_KEY = /^[a-z]+:[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/;
 
 /**
- * The boards whose open posts this run may close: each board read without error (a board that failed closes nothing),
+ * The boards whose open posts this run may close: each board read whole and kept whole (a board that failed, was cut
+ * short or was cut by the caps closes nothing),
  * and, with `unlisted`, every board that still has open posts but is no longer on the reviewed list.
  * @param {string[]} openKeys `ats:token` of the boards with open posts now
  * @param {BoardResult[]} results
@@ -122,7 +145,7 @@ const SAFE_KEY = /^[a-z]+:[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/;
  */
 export function boardsToClose(openKeys, results, boards, unlisted = true) {
   const listed = new Set(boards.map(key));
-  const read = results.filter((r) => r.ok).map(key);
+  const read = results.filter((r) => r.ok && !r.capped && !r.truncated).map(key);
   // Only well-formed keys go into the array literal below.
   return [...new Set([...read, ...(unlisted ? openKeys.filter((k) => !listed.has(k)) : [])])].filter((k) => SAFE_KEY.test(k)).sort();
 }
@@ -132,9 +155,10 @@ export function boardsToClose(openKeys, results, boards, unlisted = true) {
  * then closes what this run didn't see on a board it read, and every open post of a board no longer on the list.
  * @param {import("postgres").Sql} sql
  * `closeUnlisted` false leaves boards off the list alone (for tests sharing a database).
- * @param {{ boards: Board[]; rows: ReturnType<typeof jobPostRow.parse>[]; results: BoardResult[]; startedAt: Date; now?: Date; closeUnlisted?: boolean }} run
+ * @param {{ boards: Board[]; rows: ReturnType<typeof jobPostRow.parse>[]; results: BoardResult[]; seen?: { k: string; id: string }[]; startedAt: Date; now?: Date; closeUnlisted?: boolean }} run
+ * `seen`: every post read this run before the caps (from collect); none of them is closed.
  */
-export async function writeRun(sql, { boards, rows, results, startedAt, now = new Date(), closeUnlisted = true }) {
+export async function writeRun(sql, { boards, rows, results, seen = [], startedAt, now = new Date(), closeUnlisted = true }) {
   return sql.begin(async (tx) => {
     const [run] = await tx`insert into job_feed_runs (started_at) values (${startedAt}) returning id`;
     for (let i = 0; i < rows.length; i += 1000) {
@@ -177,6 +201,9 @@ export async function writeRun(sql, { boards, rows, results, startedAt, now = ne
     const closed = await tx`
       update job_posts set closed_at = ${now}
       where closed_at is null and last_seen_at < ${startedAt} and (ats || ':' || board_token) = any(${pgArray(closing)}::text[])
+        and not exists (
+          select 1 from jsonb_to_recordset(${JSON.stringify(seen)}::jsonb) as s(k text, id text)
+          where s.k = job_posts.ats || ':' || job_posts.board_token and s.id = job_posts.external_id)
       returning id`;
     const [{ count }] = await tx`select count(*)::int as count from job_posts where closed_at is null`;
     const ok = results.filter((r) => r.ok).length;
@@ -201,6 +228,8 @@ export function summaryLines(/** @type {BoardResult[]} */ results, /** @type {nu
     written ? `Open posts: ${written.open}. Closed this run: ${written.closed}.` : "Dry run: DATABASE_URL is not set, so nothing was written.",
   ];
   for (const r of results.filter((x) => !x.ok)) lines.push(`Skipped ${r.ats}/${r.token}: last_error ${r.error}`);
+  for (const r of results.filter((x) => x.ok && (x.capped || x.truncated)))
+    lines.push(`Kept open ${r.ats}/${r.token}: ${r.truncated ? "answer cut short" : "over the post caps"}, so nothing on it was closed`);
   return lines;
 }
 
@@ -208,12 +237,12 @@ export async function main() {
   const startedAt = new Date();
   const boards = loadBoards();
   const skills = JSON.parse(readFileSync(new URL("src/content/skills.json", root), "utf8"));
-  const { rows, results } = await collect(boards, skillMatchersFor(skills));
+  const { rows, results, seen } = await collect(boards, skillMatchersFor(skills));
   let written = null;
   if (process.env.DATABASE_URL) {
     const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1, onnotice: () => {} });
     try {
-      written = await writeRun(sql, { boards, rows, results, startedAt });
+      written = await writeRun(sql, { boards, rows, results, seen, startedAt });
     } finally {
       await sql.end();
     }
