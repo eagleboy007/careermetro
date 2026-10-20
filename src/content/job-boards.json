@@ -1,13 +1,5 @@
 [
   {
-    "company": "PhonePe",
-    "ats": "greenhouse",
-    "token": "phonepe",
-    "careersUrl": "https://job-boards.greenhouse.io/phonepe",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Razorpay",
     "ats": "greenhouse",
     "token": "razorpaysoftwareprivatelimited",
@@ -32,14 +24,6 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "ShareChat",
-    "ats": "greenhouse",
-    "token": "sharechat",
-    "careersUrl": "https://job-boards.greenhouse.io/sharechat",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Druva",
     "ats": "greenhouse",
     "token": "druva",
@@ -48,58 +32,10 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Chargebee",
-    "ats": "greenhouse",
-    "token": "chargebee",
-    "careersUrl": "https://job-boards.greenhouse.io/chargebee",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "HackerRank",
     "ats": "greenhouse",
     "token": "hackerrank",
     "careersUrl": "https://job-boards.greenhouse.io/hackerrank",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Whatfix",
-    "ats": "greenhouse",
-    "token": "whatfix",
-    "careersUrl": "https://job-boards.greenhouse.io/whatfix",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Innovaccer",
-    "ats": "greenhouse",
-    "token": "innovaccer",
-    "careersUrl": "https://job-boards.greenhouse.io/innovaccer",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Sprinklr",
-    "ats": "greenhouse",
-    "token": "sprinklr",
-    "careersUrl": "https://job-boards.greenhouse.io/sprinklr",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "BrowserStack",
-    "ats": "greenhouse",
-    "token": "browserstack",
-    "careersUrl": "https://job-boards.greenhouse.io/browserstack",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Postman",
-    "ats": "greenhouse",
-    "token": "postman",
-    "careersUrl": "https://job-boards.greenhouse.io/postman",
     "addedBy": "Development",
     "addedOn": "2026-10-20"
   },
@@ -136,34 +72,10 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Securonix",
-    "ats": "greenhouse",
-    "token": "securonix",
-    "careersUrl": "https://job-boards.greenhouse.io/securonix",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Cyble",
-    "ats": "greenhouse",
-    "token": "cyble",
-    "careersUrl": "https://job-boards.greenhouse.io/cyble",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "AppViewX",
     "ats": "greenhouse",
     "token": "appviewx",
     "careersUrl": "https://job-boards.greenhouse.io/appviewx",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Atomicwork",
-    "ats": "greenhouse",
-    "token": "atomicwork",
-    "careersUrl": "https://job-boards.greenhouse.io/atomicwork",
     "addedBy": "Development",
     "addedOn": "2026-10-20"
   },
@@ -184,74 +96,10 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Upstox",
-    "ats": "lever",
-    "token": "upstox",
-    "careersUrl": "https://jobs.lever.co/upstox",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Jupiter",
-    "ats": "lever",
-    "token": "jupiter",
-    "careersUrl": "https://jobs.lever.co/jupiter",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "slice",
-    "ats": "lever",
-    "token": "slice",
-    "careersUrl": "https://jobs.lever.co/slice",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Dream11",
-    "ats": "lever",
-    "token": "dream11",
-    "careersUrl": "https://jobs.lever.co/dream11",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Swiggy",
-    "ats": "lever",
-    "token": "swiggy",
-    "careersUrl": "https://jobs.lever.co/swiggy",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Paytm",
     "ats": "lever",
     "token": "paytm",
     "careersUrl": "https://jobs.lever.co/paytm",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Zoomcar",
-    "ats": "lever",
-    "token": "zoomcar",
-    "careersUrl": "https://jobs.lever.co/zoomcar",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Atlan",
-    "ats": "lever",
-    "token": "atlan",
-    "careersUrl": "https://jobs.lever.co/atlan",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Sprinto",
-    "ats": "lever",
-    "token": "sprinto",
-    "careersUrl": "https://jobs.lever.co/sprinto",
     "addedBy": "Development",
     "addedOn": "2026-10-20"
   },
@@ -304,14 +152,6 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "AppSecure",
-    "ats": "lever",
-    "token": "appsecure",
-    "careersUrl": "https://jobs.lever.co/appsecure",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Brillio",
     "ats": "lever",
     "token": "brillio-2",
@@ -328,14 +168,6 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Zepto",
-    "ats": "ashby",
-    "token": "zepto",
-    "careersUrl": "https://jobs.ashbyhq.com/zepto",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Plane",
     "ats": "ashby",
     "token": "plane",
@@ -344,34 +176,10 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Multiplier",
-    "ats": "ashby",
-    "token": "multiplier",
-    "careersUrl": "https://jobs.ashbyhq.com/multiplier",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "Atlys",
     "ats": "ashby",
     "token": "atlys",
     "careersUrl": "https://jobs.ashbyhq.com/atlys",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Scrut Automation",
-    "ats": "ashby",
-    "token": "scrut",
-    "careersUrl": "https://jobs.ashbyhq.com/scrut",
-    "addedBy": "Development",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Hasura",
-    "ats": "ashby",
-    "token": "hasura",
-    "careersUrl": "https://jobs.ashbyhq.com/hasura",
     "addedBy": "Development",
     "addedOn": "2026-10-20"
   }
