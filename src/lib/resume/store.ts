@@ -4,10 +4,19 @@ import { getDb } from "@/db";
 import { profiles, resumes } from "@/db/schema";
 import { ownsResume, type Owner } from "@/lib/owner";
 import { storedProfile, type Profile } from "@/lib/schemas";
+import { isSampleResume } from "./sample-mime";
 
 type Db = ReturnType<typeof getDb>;
 
-export type ResumeForReview = { resumeId: string; profileId: string; version: number; confirmed: boolean; profile: Profile };
+export type ResumeForReview = {
+  resumeId: string;
+  profileId: string;
+  version: number;
+  confirmed: boolean;
+  profile: Profile;
+  /** The sample resume ("Try a sample resume"), labelled "Sample" wherever the resume is shown. */
+  sample: boolean;
+};
 
 /**
  * The latest profile of a resume, only if it belongs to this owner (see `ownsResume`). Anyone else gets null, as if
@@ -16,13 +25,15 @@ export type ResumeForReview = { resumeId: string; profileId: string; version: nu
 export async function getResumeForOwner(resumeId: string, owner: Owner, db: Pick<Db, "select"> = getDb()): Promise<ResumeForReview | null> {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(resumeId)) return null;
   const [row] = await db
-    .select({ profileId: profiles.id, version: profiles.version, confirmed: profiles.confirmedByUser, data: profiles.data })
+    .select({ profileId: profiles.id, version: profiles.version, confirmed: profiles.confirmedByUser, data: profiles.data, mimeType: resumes.mimeType })
     .from(profiles)
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
     .where(and(eq(resumes.id, resumeId), ownsResume(owner)))
     .orderBy(desc(profiles.version))
     .limit(1);
-  return row ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: storedProfile(row.data) } : null;
+  return row
+    ? { resumeId, profileId: row.profileId, version: row.version, confirmed: row.confirmed, profile: storedProfile(row.data), sample: isSampleResume(row.mimeType) }
+    : null;
 }
 
 /** A resume keeps at most this many profile versions; each save adds one. */

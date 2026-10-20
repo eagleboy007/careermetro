@@ -82,6 +82,7 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
     skillName: (id) => skillNames.get(id) ?? id,
     joinedAt: user.createdAt,
     resumeReadAt: resume ? (read?.createdAt ?? null) : null,
+    resumeSample: resume?.sample ?? false,
     now,
     proofCerts,
     jobChecks: jobChecks.get(userId) ?? [],

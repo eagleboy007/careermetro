@@ -4188,6 +4188,9 @@ await step("hardening: the Life line by keyboard, light, dark and phone", async 
       await p.locator('main svg g[role="button"]').first().waitFor({ timeout: 10000 });
     };
     await openLife();
+    // The Interests row shows the interests from Me as one undated row, or links to Me to add them; never "soon".
+    if (await p.locator("main svg").getByText(/interests show here/i).count()) throw new Error("the Interests row still says soon");
+    if (!(await p.locator("main svg").getByText(/NO DATES · FROM YOUR PROFILE|No interests yet\. Add them on your profile/).count())) throw new Error("the Interests row shows neither interests nor the link to add them");
     // A moment opens with Enter, and its panel replaces "Your big moments".
     const details = p.getByRole("complementary", { name: "Moment details" });
     await details.getByRole("heading", { name: "Your big moments", level: 3 }).waitFor({ timeout: 10000 });

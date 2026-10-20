@@ -10,6 +10,7 @@ import { ConfirmDelete, EducationForm, InterestsEditor, RoleForm, rowLink, Story
 import { EliteBadge } from "@/components/elite/elite-badge";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
+import { SampleTag } from "@/components/ui/sample-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JoinActions } from "@/lib/corporate/types";
 import { initials } from "@/lib/departures/filter";
@@ -485,9 +486,14 @@ export function MeView({
               <>
                 <div className="flex items-center gap-2.5 rounded-[12px] border border-line px-3 py-2.5 text-[0.84rem]">
                   <FileText size={18} {...ICON} className="shrink-0 text-muted" />
-                  <span>
-                    Your resume
-                    <small className="block text-[0.72rem] text-muted">Read {me.resumeReadOn} · only you see it</small>
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-center gap-1.5">
+                      {me.resumeSample ? "Sample resume" : "Your resume"}
+                      {me.resumeSample && <SampleTag />}
+                    </span>
+                    <small className="block text-[0.72rem] text-muted">
+                      {me.resumeSample ? `Added ${me.resumeReadOn} · replace it with your own` : `Read ${me.resumeReadOn} · only you see it`}
+                    </small>
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">

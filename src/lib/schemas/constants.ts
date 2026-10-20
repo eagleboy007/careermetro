@@ -692,3 +692,6 @@ export const TRACK_CHANGES_PER_DAY = 20;
 export const RESUME_EXPORTS_PER_HOUR = 30;
 /** Messages one person sends in open direct chats a day, across every chat (Testing Run 5, T85). */
 export const DIRECT_MESSAGES_PER_DAY = 300;
+
+/** Express apply with the sample resume ("Try a sample resume") as the current one: a made-up person's is never sent. */
+export const SAMPLE_CANT_SEND = "The sample resume can't be sent. Upload your own resume first.";

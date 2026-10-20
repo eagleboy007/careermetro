@@ -25,7 +25,7 @@ export type ParseClient = Pick<Anthropic, "beta">;
  * What the model returns: the profile plus the person's name as printed on the resume. The name is used once, for the
  * name check before the resume joins an account (src/lib/resume/name-match.ts), and is never stored or logged.
  */
-const parsedResume = profileSchema.extend({ personName: z.string().nullable() });
+export const parsedResume = profileSchema.extend({ personName: z.string().nullable() });
 // Reading tolerates a missing name (older mocks and fixtures) as "no name shown".
 const readSchema = profileSchema.extend({ personName: z.string().nullable().catch(null) });
 

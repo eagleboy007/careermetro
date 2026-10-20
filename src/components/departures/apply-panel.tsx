@@ -18,6 +18,7 @@ import {
   CAN_JOIN,
   CAN_JOIN_LABELS,
   PREVIEW_LIVE_NOTE,
+  SAMPLE_CANT_SEND,
 } from "@/lib/schemas/constants";
 import { actionFailed } from "@/lib/api-reply";
 
@@ -84,6 +85,15 @@ export function ApplyPanel({
         Add your resume first, so {company} can see how you match this job.{" "}
         <Link href="/today" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2">
           Add your resume
+        </Link>
+      </p>
+    );
+  } else if (state.kind === "sample") {
+    main = (
+      <p className="text-[0.84rem] text-muted">
+        {SAMPLE_CANT_SEND}{" "}
+        <Link href="/start" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2">
+          Upload your resume
         </Link>
       </p>
     );

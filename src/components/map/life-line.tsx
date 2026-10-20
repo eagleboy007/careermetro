@@ -1,10 +1,11 @@
 "use client";
 
 import { BadgeCheck, CalendarClock, Route } from "lucide-react";
+import Link from "next/link";
 import { LIFE_HEIGHT, LIFE_WIDTH, ROW_NAME, ROW_Y, X0, type LifeLayout, type LifeStation } from "@/lib/map/life-layout";
 import type { LifeLine } from "@/lib/schemas";
 import { LIFE_ROWS } from "@/lib/schemas/constants";
-import { Key, Label, List, Panel, Soon } from "./map-parts";
+import { Cta, Key, Label, List, Panel, Soon } from "./map-parts";
 
 /** The Life line SVG (handoff section 7): five rows by year, big moments only. */
 export function LifeSvg({
@@ -17,16 +18,19 @@ export function LifeSvg({
   onSelect: (id: string) => void;
 }) {
   const filled = new Set(layout.stations.map((s) => (s.kind === "group" ? s.row : s.moment.row)));
+  // Interests have no dates on Me: with no dated ones on the map, they run as one undated row, or the row asks for them.
+  const interestsEmpty = !filled.has("interests") && !layout.earlierRows.includes("interests");
+  const halo = "[paint-order:stroke] stroke-surface [stroke-width:4px] [stroke-linejoin:round]";
+  // Empty rows, said once in <desc>. With no interests the row's link says it, so it isn't repeated here.
+  const described = LIFE_ROWS.filter((row) => !filled.has(row) && !(row === "interests" && interestsEmpty && !layout.undatedInterests));
   return (
     <svg
       viewBox={`0 0 ${LIFE_WIDTH} ${LIFE_HEIGHT}`}
       role="group"
-      aria-label="Life line: work, education, certificates and interests by year"
+      aria-label="Life line: work, education and certificates by year, and your interests"
       className="block h-auto w-full min-w-[860px]"
     >
-      {LIFE_ROWS.filter((row) => !filled.has(row)).length > 0 && (
-        <desc>{LIFE_ROWS.filter((row) => !filled.has(row)).map((row) => `${ROW_NAME[row]}: ${emptyText(row, layout)}`).join(". ")}</desc>
-      )}
+      {described.length > 0 && <desc>{described.map((row) => `${ROW_NAME[row]}: ${emptyText(row, layout)}`).join(". ")}</desc>}
       <g aria-hidden="true">
         {layout.splitX !== null && (
           <>
@@ -57,7 +61,7 @@ export function LifeSvg({
             <text x={20} y={ROW_Y[row] + 5} className="fill-muted font-mono text-[14px] tracking-[0.08em]">
               {ROW_NAME[row].toUpperCase()}
             </text>
-            {!filled.has(row) && (
+            {!filled.has(row) && !(row === "interests" && interestsEmpty) && (
               <text x={X0 + 20} y={ROW_Y[row] + 5} className="fill-muted text-[15px]">
                 {emptyText(row, layout)}
               </text>
@@ -83,6 +87,23 @@ export function LifeSvg({
             </text>
           </>
         )}
+        {interestsEmpty && layout.undatedInterests && (
+          <>
+            <path
+              d={`M${X0} ${ROW_Y.interests} H${layout.nowX}`}
+              className={`fill-none ${trackClass.interests}`}
+              strokeWidth={8}
+              strokeLinecap="round"
+              strokeDasharray="14 9"
+            />
+            <text x={X0 + 20} y={ROW_Y.interests - 19} className={`fill-ink text-[17px] font-[550] ${halo}`}>
+              {layout.undatedInterests}
+            </text>
+            <text x={X0 + 20} y={ROW_Y.interests + 34} className={`fill-muted font-mono text-[13.5px] tracking-[0.05em] ${halo}`}>
+              NO DATES · FROM YOUR PROFILE
+            </text>
+          </>
+        )}
         {layout.links.map((l) => (
           <path key={`${l.from}-${l.to}`} d={l.d} className="fill-none stroke-muted" strokeWidth={2} strokeDasharray="2 5" strokeLinecap="round">
             <title>{l.text}</title>
@@ -93,6 +114,23 @@ export function LifeSvg({
       {layout.stations.map((s) => (
         <LifeMark key={s.id} s={s} selected={selected === s.id} onSelect={onSelect} />
       ))}
+      {interestsEmpty && !layout.undatedInterests && (
+        <Link href="/me" className="group outline-none">
+          {/* The whole stretch is the target, and its edge is the focus ring. */}
+          <rect
+            x={X0 + 8}
+            y={ROW_Y.interests - 22}
+            width={340}
+            height={44}
+            rx={10}
+            className="fill-transparent stroke-ink opacity-0 group-focus-visible:opacity-100"
+            strokeWidth={2}
+          />
+          <text x={X0 + 20} y={ROW_Y.interests + 5} className="fill-muted text-[15px] underline underline-offset-2 group-hover:fill-ink group-focus-visible:fill-ink">
+            No interests yet. Add them on your profile
+          </text>
+        </Link>
+      )}
     </svg>
   );
 }
@@ -101,7 +139,9 @@ const emptyText = (row: (typeof LIFE_ROWS)[number], layout: LifeLayout) =>
   layout.earlierRows.includes(row)
     ? "Earlier years only · show the whole career"
     : row === "interests"
-      ? "Your interests show here · soon"
+      ? layout.undatedInterests
+        ? `${layout.undatedInterests}, with no dates`
+        : "No interests yet. Add them on your profile"
       : row === "certificates"
         ? "Certificates with a date show here"
         : "Nothing dated yet";
@@ -266,13 +306,25 @@ export function LifeSheet({
       </Panel>
     );
   }
+  // The interests row comes from Me, not the resume, so it is listed on its own.
+  const fromResume = line.undated.filter((u) => u.row !== "interests");
+  const interests = line.undated.find((u) => u.row === "interests");
   return (
     <Panel kicker="Life line" title="Your big moments">
-      <p>Work, education, certificates and interests by year. Pitstops and prep stay on the Role line. Tap any moment to open it.</p>
-      {line.undated.length > 0 && (
+      <p>Work, education and certificates by year, and your interests. Pitstops and prep stay on the Role line. Tap any moment to open it.</p>
+      {fromResume.length > 0 && (
         <>
           <Label>Not on the map yet: no date on your resume</Label>
-          <List items={line.undated.slice(0, 6).map((u) => ({ Icon: CalendarClock, title: u.name, detail: ROW_NAME[u.row].toLowerCase() }))} />
+          <List items={fromResume.slice(0, 6).map((u) => ({ Icon: CalendarClock, title: u.name, detail: ROW_NAME[u.row].toLowerCase() }))} />
+        </>
+      )}
+      {interests && (
+        <>
+          <Label>Your interests · no dates</Label>
+          <p>{interests.name}</p>
+          <Cta href="/me" ghost>
+            Edit them on your profile
+          </Cta>
         </>
       )}
       <Soon>Add a moment</Soon>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, FileText, Upload } from "lucide-react";
+import { Check, FileText, FlaskConical, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,7 @@ import { TARGET_ROLE_CHIPS, saveTargetRole } from "@/lib/target-role";
 
 type Mode = "file" | "text";
 /** `signedIn` comes with a refusal from /api/resume: /builder needs an account, so a signed-out visitor is sent to the roles instead. */
-type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string; code?: string; signedIn?: boolean };
+type State = { kind: "idle" } | { kind: "reading" } | { kind: "sample" } | { kind: "error"; message: string; code?: string; signedIn?: boolean } | { kind: "note"; message: string };
 
 /** Refusals where pasting the text is the way on, so the error offers "Paste text instead" (codes from src/lib/resume). */
 const PASTE_HELPS = new Set(["too_large", "too_many_pages", "too_slow", "unreadable", "unsupported_type", "too_little_text", "unparsed", "timeout"]);
@@ -29,16 +29,19 @@ const MORE = "more";
 /** `builder` shows "No resume yet? Build one" (FR-36), only where the signed-in screens exist. `rolePick` shows the */
 /** target role chips (Today, No resume): the picked role is carried to the role step in this tab (src/lib/target-role.ts). */
 /** `example` opens /design on a slow reading or on a refusal, with its message, code and whether the visitor is signed in. */
+/** `sample` shows "Try a sample resume" (v44 gap item 3): the checked-in sample, opened with no model call. */
 export function UploadForm({
   demo = false,
   builder = false,
   rolePick = false,
   example,
+  sample = false,
 }: {
   demo?: boolean;
   builder?: boolean;
   rolePick?: boolean;
   example?: "slow" | { message: string; code?: string; signedIn?: boolean };
+  sample?: boolean;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("file");
@@ -55,6 +58,7 @@ export function UploadForm({
   // /builder sends a signed-out visitor to sign in, so the spent-budget refusal offers it only to someone signed in
   // (the route says so on the refusal; /design's example sets it).
   const offerBuilder = builder && state.kind === "error" && state.signedIn === true;
+  const opening = state.kind === "sample";
 
   // The steps move on a timer while the one request runs (src/lib/resume/parse-steps.ts).
   useEffect(() => {
@@ -69,7 +73,7 @@ export function UploadForm({
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (state.kind === "reading") return;
+    if (reading || opening) return;
     const form = new FormData(event.currentTarget);
     if (form.get("consent") !== "yes") {
       setState({ kind: "error", message: "Please tick the box to agree to how we use your resume." });
@@ -111,6 +115,27 @@ export function UploadForm({
       );
     } finally {
       clearTimeout(timer);
+    }
+  }
+
+  async function trySample() {
+    if (reading || opening) return;
+    if (demo) {
+      setState({ kind: "note", message: "Example data: the sample opens only in the app." });
+      return;
+    }
+    setState({ kind: "sample" });
+    saveTargetRole(rolePick && role !== MORE ? role : null);
+    try {
+      const res = await fetch("/api/resume/sample", { method: "POST" });
+      const data = await readApiReply(res);
+      if (data.ok && typeof data.resumeId === "string") {
+        router.push(`/resume/${data.resumeId}`);
+        return;
+      }
+      setState({ kind: "error", message: data.error ?? "Something went wrong. Please try again." });
+    } catch {
+      setState({ kind: "error", message: "We couldn't reach the server. Check your connection and try again." });
     }
   }
 
@@ -242,12 +267,26 @@ export function UploadForm({
           ) : null}
         </div>
       )}
+      {state.kind === "note" && (
+        <p role="status" className="text-sm text-muted">
+          {state.message}
+        </p>
+      )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" busy={reading}>
+        <Button type="submit" busy={reading || opening}>
           {reading ? "Reading your resume…" : "Read my resume"}
         </Button>
+        {sample && !reading && (
+          <Button type="button" variant="ghost" busy={opening} onClick={trySample}>
+            <FlaskConical size={16} strokeWidth={1.75} aria-hidden="true" />
+            {opening ? "Opening the sample…" : "Try a sample resume"}
+          </Button>
+        )}
       </div>
+      {sample && !reading && (
+        <p className="-mt-2 text-[0.8rem] text-muted">The sample is a made-up data analyst. Nothing of yours is read, and you can upload your own after.</p>
+      )}
       {builder && !demo && (
         <p className="text-sm text-muted">
           No resume yet?{" "}

@@ -12,6 +12,7 @@ import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, deleteRequest, endFoundChat, listThreads, sendMessage } from "@/lib/inbox/store";
 import { FOUND_JOB_SEARCH_OFF_LINE, HIDDEN_MESSAGE_TEXT } from "@/lib/inbox/types";
 import { DEFAULT_SETTINGS, settingsInput, type GapAnalysis, type Profile } from "@/lib/schemas";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import { FIND_CONSENT_PURPOSE } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { applyToJob } from "./applications-store";
@@ -208,6 +209,20 @@ describe.skipIf(!db)("let companies find me (database)", () => {
     expect(await found(s.admin, s.jobId, { bands: ["2-5"] })).toEqual([]);
     const [hidden] = await found(s.admin, s.jobId);
     expect(hidden.experience).toBeNull();
+  });
+
+  it("never finds someone by the sample resume, and never falls back to their older real one while it is current", async () => {
+    const s = await setup("sample");
+    const p = await seeker("sample", { name: "Priya Nair" });
+    const [card] = await found(s.admin, s.jobId);
+    expect(card?.name).toBe("Priya Nair");
+    // "Try a sample resume" after their own: the sample is now current, so they aren't found at all.
+    const [resume] = await db!.insert(schema.resumes).values({ userId: p, mimeType: SAMPLE_MIME, sizeBytes: 1, status: "parsed" }).returning();
+    const [sp] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profileWith(["Python", "Linux"]), confirmedByUser: true }).returning();
+    await db!.insert(schema.gapAnalyses).values({ profileId: sp.id, result: analysis, matcherVersion: MATCHER_VERSION });
+    expect(await found(s.admin, s.jobId)).toEqual([]);
+    expect(await openFoundPerson(s.admin, { jobId: s.jobId, ref: card.ref }, fd())).toEqual({ ok: false, error: "not_found" });
+    expect(await sendFoundRequest(s.admin, { jobId: s.jobId, ref: card.ref, body: HELLO }, fd())).toEqual({ ok: false, error: "not_found" });
   });
 
   it("leaves out people with job search off, even with Let companies find me on, and finds them again once it is back on", async () => {

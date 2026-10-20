@@ -9,7 +9,8 @@ import { exportAccountData } from "@/lib/account/export";
 import { MATCHER_VERSION } from "@/lib/gaps/match";
 import type { GapAnalysis, Profile } from "@/lib/schemas";
 import { setJobSearch } from "@/lib/job-search/store";
-import { APPLICATION_ERROR_TEXT, applyPreview, applyToJob, criteriaStates, openCandidate, withdrawApplication } from "./applications-store";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
+import { APPLICATION_ERROR_TEXT, applyPreview, applyStates, applyToJob, criteriaStates, openCandidate, withdrawApplication } from "./applications-store";
 import { requirementsFromRole, roleBySlug } from "./job-content";
 import { jobForm, liveJobs, saveJob } from "./jobs-store";
 import { finishCompanySignup, startCompanySignup, type CorporateDeps } from "./store";
@@ -192,6 +193,27 @@ describe.skipIf(!db)("Express apply (database)", () => {
     await db!.update(schema.jobs).set({ status: "paused" }).where(eq(schema.jobs.id, jobId));
     const me = await candidate("preview-refuse-cand");
     expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: false, error: "not_open" });
+  });
+
+  it("never previews or sends the sample resume, even over an older real one, and says why", async () => {
+    const { jobId } = await openJob("sample");
+    const me = await candidate("sample-cand");
+    // "Try a sample resume" after the real one: the sample is now the current resume.
+    const addResume = async (mimeType: string) => {
+      const [resume] = await db!.insert(schema.resumes).values({ userId: me, mimeType, sizeBytes: 1, status: "parsed" }).returning();
+      const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
+      await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis, matcherVersion: MATCHER_VERSION });
+    };
+    await addResume(SAMPLE_MIME);
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: false, error: "sample" });
+    expect(await applyToJob(me, { jobId, canJoin: "30", consent: true, note: NOTE }, at())).toMatchObject({ ok: false, error: "sample" });
+    expect(await applyStates(me, [jobId], { db: db! })).toEqual({ [jobId]: { kind: "sample" } });
+    expect(APPLICATION_ERROR_TEXT.sample).toBe("The sample resume can't be sent. Upload your own resume first.");
+    expect(await db!.select().from(schema.applications).where(eq(schema.applications.userId, me))).toEqual([]);
+    // Their own resume, read after the sample, can be sent again.
+    await addResume("text/plain");
+    expect(await applyStates(me, [jobId], { db: db! })).toEqual({ [jobId]: { kind: "can_apply" } });
+    expect(await applyPreview(me, { jobId }, at())).toMatchObject({ ok: true });
   });
 
   it("refuses the preview and the send for a company the person blocked, and allows both after Unblock", async () => {

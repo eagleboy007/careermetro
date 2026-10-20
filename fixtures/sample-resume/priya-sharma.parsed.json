@@ -1,0 +1,36 @@
+{
+  "personName": "Priya Sharma",
+  "headline": "Data Analyst",
+  "totalYearsExperience": 3,
+  "roles": [
+    {
+      "title": "Data Analyst",
+      "employer": "Example Retail Pvt Ltd",
+      "start": "2022-06",
+      "end": null,
+      "highlights": [
+        "Wrote SQL queries for weekly sales reports across 40 stores",
+        "Built Excel dashboards with pivot tables for regional managers",
+        "Cleaned duplicate customer records, cutting report errors by 15%"
+      ]
+    },
+    {
+      "title": "Junior Analyst",
+      "employer": "Sample Analytics LLP",
+      "start": "2021-07",
+      "end": "2022-05",
+      "highlights": ["Prepared monthly MIS reports in Excel", "Used Python (pandas) to merge vendor files"]
+    }
+  ],
+  "skills": [
+    { "name": "SQL", "lastUsed": null, "evidence": ["Wrote SQL queries for weekly sales reports across 40 stores"] },
+    { "name": "Excel", "lastUsed": null, "evidence": ["Built Excel dashboards with pivot tables for regional managers", "Prepared monthly MIS reports in Excel"] },
+    { "name": "Python", "lastUsed": "2022-05", "evidence": ["Used Python (pandas) to merge vendor files"] },
+    { "name": "pandas", "lastUsed": "2022-05", "evidence": ["Used Python (pandas) to merge vendor files"] },
+    { "name": "Data cleaning", "lastUsed": null, "evidence": ["Cleaned duplicate customer records, cutting report errors by 15%"] },
+    { "name": "Power BI", "lastUsed": null, "evidence": ["SQL, Excel, Python, Power BI, Communication"] },
+    { "name": "Communication", "lastUsed": null, "evidence": ["SQL, Excel, Python, Power BI, Communication"] }
+  ],
+  "education": [{ "qualification": "B.Com", "institution": "Savitribai Phule Pune University", "year": "2021" }],
+  "certifications": [{ "name": "Google Data Analytics Professional Certificate", "earned": null, "expires": null }]
+}

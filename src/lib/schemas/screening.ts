@@ -105,6 +105,8 @@ export const screeningView = z.object({
     z.object({ state: z.literal("checked"), issues: z.array(z.object({ section: sectionKey, problem: headingState.exclude(["standard"]) })) }),
     z.object({ state: z.literal("unknown") }),
   ]),
+  /** The sample resume ("Try a sample resume"): the check offers no download, since a made-up person's isn't yours. */
+  sample: z.boolean().optional(),
 });
 export type ScreeningView = z.infer<typeof screeningView>;
 

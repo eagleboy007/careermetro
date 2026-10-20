@@ -50,6 +50,8 @@ export type MeInput = {
   skillName: (skillId: string) => string;
   joinedAt: Date;
   resumeReadAt: Date | null;
+  /** The resume is the sample ("Try a sample resume"). */
+  resumeSample?: boolean;
   now: Date;
   /** The person's accepted certificate proofs (src/lib/me/store.ts); none for views that don't read proof. */
   proofCerts?: ProofCertRow[];
@@ -256,6 +258,7 @@ export function meFromProfile(input: MeInput): MeProfile {
     proofs: [],
     certifications: profileCertifications({ proofs: input.proofCerts ?? [], resume: profile?.certifications ?? [], today: indiaDate(now) }),
     resumeReadOn: input.resumeReadAt ? monthLabel(input.resumeReadAt) : null,
+    resumeSample: Boolean(input.resumeReadAt && input.resumeSample),
     // Read from the line, so Me and the Map always show the same Nearby lines.
     nearby: line?.nearby ?? null,
     changeRoleHref: line?.resumeId ? `/resume/${line.resumeId}/role` : null,

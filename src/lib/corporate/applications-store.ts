@@ -6,14 +6,15 @@ import { displayName } from "@/lib/account/name";
 import { writeAudit } from "./audit-line";
 import { assignedApplications, assignedSubquery, cancelUpcoming, companyInterviewsOf, myInterviewsOf, offeredState, phoneAudience } from "./interview-reads";
 import { decryptPhone } from "./phone";
-import { currentAnalysis } from "@/lib/gaps/current";
+import { currentAnalysis as anyCurrentAnalysis } from "@/lib/gaps/current";
 import { indiaToday } from "@/lib/goals/store";
 import { openApplicationChat } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
 import { notify } from "@/lib/notifications/store";
+import { isSampleResumeId } from "@/lib/resume/sample";
 import { storedProfile, type Profile } from "@/lib/schemas";
 import { applicationIdInput, applyInput, moveInput, previewInput } from "@/lib/schemas/corporate";
-import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE } from "@/lib/schemas/constants";
+import { CAN_JOIN_LABELS, JOB_SEARCH_OFF_MESSAGE, SAMPLE_CANT_SEND } from "@/lib/schemas/constants";
 import { jobSearchOn, openToWorkInFor } from "@/lib/job-search/store";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { criteriaStatus } from "./criteria";
@@ -61,6 +62,7 @@ export type ApplicationError =
   | "not_open"
   | "already"
   | "no_resume"
+  | "sample"
   | "not_member"
   | "not_allowed"
   | "not_found"
@@ -75,6 +77,7 @@ export const APPLICATION_ERROR_TEXT: Record<ApplicationError, string> = {
   not_open: "This job isn't taking applications now.",
   already: "You've already applied to this job. Follow it on Arrivals.",
   no_resume: "Add your resume first, so the company can see how you match this job.",
+  sample: SAMPLE_CANT_SEND,
   not_member: "You don't have access to this company.",
   not_allowed: "Only Recruiter admins, and Hiring HR on this job, can move candidates.",
   not_found: "That application isn't available any more.",
@@ -101,6 +104,16 @@ const companyMaySee = (app: { closedAt: Date | null; companyAccessEndsAt: Date |
   (!app.companyAccessEndsAt || app.companyAccessEndsAt > now) && (!app.closedAt || now.getTime() - app.closedAt.getTime() < COMPANY_ACCESS_DAYS * DAY);
 
 /* Reading helpers ------------------------------------------------------------------------------------------------- */
+
+/**
+ * The person's current analysis for applying: "none" without one, "sample" when it is the sample resume ("Try a sample
+ * resume"), a made-up person's, which is never sent to a company as theirs.
+ */
+async function currentAnalysis(userId: string, db: Parameters<typeof anyCurrentAnalysis>[1]) {
+  const analysis = await anyCurrentAnalysis(userId, db);
+  if (!analysis) return "none" as const;
+  return (await isSampleResumeId(analysis.resumeId, db)) ? ("sample" as const) : analysis;
+}
 
 /** The latest saved profile of each resume. */
 async function latestProfiles(resumeIds: string[], db: Db | Tx): Promise<Map<string, Profile>> {
@@ -199,7 +212,8 @@ export async function applyToJob(userId: string, raw: unknown, deps: Application
       // A company the person blocked can't reach them, so it can't be sent a new application either (Testing T37).
       if (await companyBlocked(userId, job.orgId, tx)) return fail("blocked_company");
       const analysis = await currentAnalysis(userId, tx);
-      if (!analysis) return fail("no_resume");
+      if (analysis === "none") return fail("no_resume");
+      if (analysis === "sample") return fail("sample");
       // Counted only once the cheap checks pass, so tries on closed jobs, repeats and blocked companies don't use up
       // the day's applications (Testing T52). On the transaction, so a failed application doesn't count either.
       if (!(await takeShared(LIMITS.applicationsPerUserDay, userId, { db: tx, now: now.getTime() }))) {
@@ -257,7 +271,8 @@ export async function applyPreview(userId: string, raw: unknown, deps: Applicati
   // The same refusal as applyToJob: a company the person blocked can't be sent an application, so it isn't previewed.
   if (await companyBlocked(userId, job.orgId, db)) return fail("blocked_company");
   const analysis = await currentAnalysis(userId, db);
-  if (!analysis) return fail("no_resume");
+  if (analysis === "none") return fail("no_resume");
+  if (analysis === "sample") return fail("sample");
   const [[me], profileOf, proved, certificates, openToWorkIn] = await Promise.all([
     db.select({ name: users.name }).from(users).where(eq(users.id, userId)),
     latestProfiles([analysis.resumeId], db),
@@ -391,7 +406,7 @@ export async function applyStates(userId: string | null, jobIds: string[], deps:
     jobIds.map((id): [string, ApplyState] => {
       const a = byJob.get(id);
       if (a) return [id, { kind: "applied", stage: a.stage, withdrawn: a.withdrawnAt !== null }];
-      return [id, analysis ? { kind: "can_apply" } : { kind: "no_resume" }];
+      return [id, analysis === "none" ? { kind: "no_resume" } : analysis === "sample" ? { kind: "sample" } : { kind: "can_apply" }];
     }),
   );
 }
