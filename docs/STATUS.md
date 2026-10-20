@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (staging smoke dry run).
+Last updated: 2026-10-20 (staging dry run: export check; fewer Vercel deployments)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -45,11 +45,12 @@ Last updated: 2026-10-20 (staging smoke dry run).
   - Refused sign-in codes logged (#199): `auth_email_code_send_refused` and `auth_email_code_verify_refused` with Supabase's error code and status only, never the email or the code.
   - Goal sync skip (#200, no migration, `docs/plans/goal-sync-skip-plan.md`): a view first plans the sync from one read-only snapshot with no lock and writes nothing when nothing would change; otherwise the locked path runs as before.
   - Mock follow-ups part 2 (#201, no migration): all 95 open bank questions have two follow-ups (188), all `followUpsReviewed: false`, so production asks none until the expert review (`dev/mock-followups-draft.md`, pending item 27).
+  - Staging dry run of prod-smoke (#202): `scripts/smoke/staging-dry-run.mjs` and the manual Smoke dry run (staging) workflow; prod-smoke.md's steps now match the app; the e2e walk's `smoke 6` covers Download, Sign out and signing in again.
 
 ## In progress
 
-- Staging dry run of `docs/launch/prod-smoke.md` (no migration): `scripts/smoke/staging-dry-run.mjs` and the manual **Smoke dry run (staging)** workflow walk 1.1, sections 3 to 6 and the deletion in 8 with the test user, sending the bypass header to that site only, and delete the test account even after a failure. The doc now names the real buttons (Create my account, Read my resume, Pick a role, Delete my account), the Welcome card on day one and the staging limits of section 2.
-- The e2e walk gains `smoke 6`: the settings Download link's file name, Sign out from the avatar menu, and signing in again straight to Today.
+- Staging dry run, first run (2026-10-20): every step passed except 6.1, where the browser download of the data file timed out behind Deployment Protection; 6.1 now fetches `/api/account/export` with the page's cookies and headers and checks the link's target (the click itself stays covered by the e2e walk's `smoke 6`). The second run from the fix branch passed every step.
+- Fewer Vercel deployments: `git.deploymentEnabled` in vercel.json turns off deployments for claude/, feature/, fix/, dependabot/ and data/ branches; staging.yml skips moving staging when a merge only touches docs, eval fixtures, e2e or smoke scripts or workflows; vercel-ignore.sh skips the same list.
 
 ## Next up
 

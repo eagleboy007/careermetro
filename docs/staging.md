@@ -10,6 +10,7 @@ Staging always runs the newest code on main as a *preview*. That means the signe
 - Before it builds, staging brings its own database up to date: it applies the migrations and loads the roles, skills and resources (`scripts/staging-db.mjs`). Staging holds main's code, so these are migrations already merged. If a screen still fails, open `/api/health` on staging: `"schema":"behind"` means its database is missing migrations.
 - Pull requests and other branches get no Vercel preview, to stay inside Vercel's 100 deployments a day. Work is checked locally first (`docs/local-setup.md`), then shows on staging after the merge.
 - Changes that touch only docs don't build (`scripts/vercel-ignore.sh`, run by `ignoreCommand` in `vercel.json`). The staging branch always builds the first time, since there is nothing to compare with.
+- `git.deploymentEnabled` in `vercel.json` stops pushes to `claude/`, `feature/`, `fix/`, `dependabot/` and `data/` branches from creating a Vercel deployment at all, and `staging.yml` leaves staging where it is when a merge only touches docs, eval fixtures, e2e or smoke scripts or workflows. CI and e2e build locally and never deploy.
 
 ## Optional: a shorter address (owner only, in Vercel)
 1. vercel.com → the **careermetro** project → **Settings** → **Domains** → **Add Domain**.
