@@ -1369,6 +1369,9 @@ await step("settings columns: message requests off, Open to work in filters Depa
       if ((await chips.getByRole("button", { name: place, exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error(`${place} did not save`);
     await a11y("settings-columns");
     await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks.
+    await p.reload();
+    await settled();
     await a11y("settings-columns-dark");
     await p.emulateMedia({ colorScheme: "light" });
 
@@ -1399,6 +1402,9 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await shot("inbox-usually-free");
     await a11y("inbox-usually-free");
     await p.emulateMedia({ colorScheme: "dark" });
+    // Reload so every colour is drawn dark from the start, as on the other dark checks.
+    await p.reload();
+    await settled();
     await a11y("inbox-usually-free-dark");
     await p.emulateMedia({ colorScheme: "light" });
 
