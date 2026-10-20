@@ -138,16 +138,33 @@ describe.skipIf(!db)("createSampleResume (database)", () => {
     }
   });
 
-  it("stops at its own daily limit per owner", async () => {
+  it("reuses the owner's sample on every try, even two at once, and stops at its own daily limit per owner", async () => {
     const s = `${session}-limit`;
-    for (let i = 0; i < SHARED.sampleResumesPerOwner.max; i++) {
+    const both = await Promise.all([0, 1].map((i) => createSampleResume({ owner: { sessionId: s }, clientHash: `h-${s}-${i}` }, { db: db! })));
+    const ids = new Set(both.flatMap((r) => (r.ok ? [r.resumeId] : [])));
+    expect(ids.size).toBe(1);
+    created.push(...ids);
+    for (let i = 2; i < SHARED.sampleResumesPerOwner.max; i++) {
       const r = await createSampleResume({ owner: { sessionId: s }, clientHash: `h-${s}-${i}` }, { db: db! });
-      expect(r.ok).toBe(true);
-      if (r.ok) created.push(r.resumeId);
+      expect(r).toEqual({ ok: true, resumeId: [...ids][0] });
     }
     const over = await createSampleResume({ owner: { sessionId: s }, clientHash: `h-${s}-x` }, { db: db! });
     expect(over).toMatchObject({ ok: false, status: 429, code: "rate_limited" });
     const rows = await db!.select({ id: schema.resumes.id }).from(schema.resumes).where(eq(schema.resumes.anonymousSessionId, s));
-    expect(rows).toHaveLength(SHARED.sampleResumesPerOwner.max);
+    expect(rows).toHaveLength(1);
+  });
+
+  it("stops at the per-address limit before counting the owner's", async () => {
+    const hash = `h-${session}-ip`;
+    for (let i = 0; i < SHARED.sampleResumesPerIp.max; i++) {
+      const r = await createSampleResume({ owner: { sessionId: `${session}-ip-${i}` }, clientHash: hash }, { db: db! });
+      if (r.ok) created.push(r.resumeId);
+    }
+    const fresh = { sessionId: `${session}-ip-fresh` };
+    expect(await createSampleResume({ owner: fresh, clientHash: hash }, { db: db! })).toMatchObject({ ok: false, status: 429 });
+    // The owner's count was never taken, so the same owner from another address still gets the sample.
+    const elsewhere = await createSampleResume({ owner: fresh, clientHash: `${hash}-other` }, { db: db! });
+    expect(elsewhere.ok).toBe(true);
+    if (elsewhere.ok) created.push(elsewhere.resumeId);
   });
 });

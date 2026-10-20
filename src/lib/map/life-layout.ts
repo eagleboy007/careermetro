@@ -53,7 +53,8 @@ export type LifeLayout = {
   hidden: { count: number; fromYear: number; toYear: number } | null;
   /**
    * The person's interests from Me, which have no dates: drawn as one row along Interests when that row has no dated
-   * moments, cut to fit the map (the panel shows them all). Null with none.
+   * moments, cut to whole interests that fit the map. The panel shows the whole row, which lists as many as fit in
+   * 160 characters and counts the rest ("+3"). Null with none.
    */
   undatedInterests: string | null;
 };

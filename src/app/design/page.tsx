@@ -1512,6 +1512,8 @@ export default function DesignPage() {
           <ScreeningCheck view={exampleScreeningPasted} resumeId="example" demo />
           <p className="text-sm text-muted">Uploaded before the check: no flags, so it asks for the file again and never guesses.</p>
           <ScreeningCheck view={exampleScreeningOld} resumeId="example" demo />
+          <p className="text-sm text-muted">The sample resume: no download, since it is a made-up person&apos;s.</p>
+          <ScreeningCheck view={{ ...exampleScreeningPasted, sample: true }} resumeId="example" demo />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>

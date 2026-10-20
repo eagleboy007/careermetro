@@ -22,7 +22,7 @@ export function SampleResumeNote() {
       </span>
       <p className="text-muted">
         A made-up data analyst, so you can see how CareerMetro works before adding your own. Check it, pick a role and see its gaps. Upload your own
-        resume whenever you like; it takes over from the sample.
+        resume whenever you like; it takes over once you check it and see its gaps.
       </p>
     </div>
   );

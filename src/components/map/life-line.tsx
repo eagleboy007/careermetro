@@ -21,16 +21,16 @@ export function LifeSvg({
   // Interests have no dates on Me: with no dated ones on the map, they run as one undated row, or the row asks for them.
   const interestsEmpty = !filled.has("interests") && !layout.earlierRows.includes("interests");
   const halo = "[paint-order:stroke] stroke-surface [stroke-width:4px] [stroke-linejoin:round]";
+  // Empty rows, said once in <desc>. With no interests the row's link says it, so it isn't repeated here.
+  const described = LIFE_ROWS.filter((row) => !filled.has(row) && !(row === "interests" && interestsEmpty && !layout.undatedInterests));
   return (
     <svg
       viewBox={`0 0 ${LIFE_WIDTH} ${LIFE_HEIGHT}`}
       role="group"
-      aria-label="Life line: work, education, certificates and interests by year"
+      aria-label="Life line: work, education and certificates by year, and your interests"
       className="block h-auto w-full min-w-[860px]"
     >
-      {LIFE_ROWS.filter((row) => !filled.has(row)).length > 0 && (
-        <desc>{LIFE_ROWS.filter((row) => !filled.has(row)).map((row) => `${ROW_NAME[row]}: ${emptyText(row, layout)}`).join(". ")}</desc>
-      )}
+      {described.length > 0 && <desc>{described.map((row) => `${ROW_NAME[row]}: ${emptyText(row, layout)}`).join(". ")}</desc>}
       <g aria-hidden="true">
         {layout.splitX !== null && (
           <>
@@ -115,7 +115,17 @@ export function LifeSvg({
         <LifeMark key={s.id} s={s} selected={selected === s.id} onSelect={onSelect} />
       ))}
       {interestsEmpty && !layout.undatedInterests && (
-        <Link href="/me" className="group">
+        <Link href="/me" className="group outline-none">
+          {/* The whole stretch is the target, and its edge is the focus ring. */}
+          <rect
+            x={X0 + 8}
+            y={ROW_Y.interests - 22}
+            width={340}
+            height={44}
+            rx={10}
+            className="fill-transparent stroke-ink opacity-0 group-focus-visible:opacity-100"
+            strokeWidth={2}
+          />
           <text x={X0 + 20} y={ROW_Y.interests + 5} className="fill-muted text-[15px] underline underline-offset-2 group-hover:fill-ink group-focus-visible:fill-ink">
             No interests yet. Add them on your profile
           </text>
@@ -301,7 +311,7 @@ export function LifeSheet({
   const interests = line.undated.find((u) => u.row === "interests");
   return (
     <Panel kicker="Life line" title="Your big moments">
-      <p>Work, education, certificates and interests by year. Pitstops and prep stay on the Role line. Tap any moment to open it.</p>
+      <p>Work, education and certificates by year, and your interests. Pitstops and prep stay on the Role line. Tap any moment to open it.</p>
       {fromResume.length > 0 && (
         <>
           <Label>Not on the map yet: no date on your resume</Label>

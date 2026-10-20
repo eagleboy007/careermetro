@@ -66,7 +66,8 @@ export async function screeningForPage(
   const role = "role" in target ? target.role : await targetRole(resumeId, owner, key, { db, now, standInOnly: true });
   if (!role) return null;
   const stored = await storedScreening(resumeId, owner, db);
-  return buildScreeningView({ target: key, profileVersion: resume.version, profile: resume.profile, role, stored, now });
+  const view = buildScreeningView({ target: key, profileVersion: resume.version, profile: resume.profile, role, stored, now });
+  return resume.sample ? { ...view, sample: true } : view;
 }
 
 export type ConfirmKeywordResult =

@@ -330,6 +330,8 @@ export type MyApplicationView = {
 export type ApplyState =
   | { kind: "signed_out" }
   | { kind: "no_resume" }
+  /** The current resume is the sample ("Try a sample resume"), which is never sent. */
+  | { kind: "sample" }
   | { kind: "can_apply" }
   | { kind: "applied"; stage: ApplicationStage; withdrawn: boolean };
 

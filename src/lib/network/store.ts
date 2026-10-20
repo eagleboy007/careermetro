@@ -23,6 +23,7 @@ import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
+import { isSampleResume, SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import { forgetBetween, forgetRequests, notify } from "@/lib/notifications/store";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
 import {
@@ -431,19 +432,24 @@ export async function mutualConnections(viewerId: string, otherId: string, db: D
   return rows.map((r) => ({ ...r, name: displayName(r.name) }));
 }
 
-/** Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. */
+/**
+ * Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. A current
+ * analysis of the sample resume ("Try a sample resume") is a made-up person's, so for anyone but `viewerId` it counts
+ * as none: never an older resume instead, and never skills, gaps or a role shown to others.
+ */
 type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[] };
-async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, AnalysisOf>> {
+async function analysesOf(userIds: string[], viewerId: string, db: Db | Tx): Promise<Map<string, AnalysisOf>> {
   const out = new Map<string, AnalysisOf>();
   if (!userIds.length) return out;
   const rows = await db
-    .selectDistinctOn([resumes.userId], { userId: resumes.userId, id: gapAnalyses.id, result: gapAnalyses.result })
+    .selectDistinctOn([resumes.userId], { userId: resumes.userId, id: gapAnalyses.id, result: gapAnalyses.result, mimeType: resumes.mimeType })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
     .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`))
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
+    if (r.userId !== viewerId && isSampleResume(r.mimeType)) continue;
     const parsed = gapAnalysis.safeParse(r.result);
     if (r.userId && parsed.success)
       out.set(r.userId, { id: r.id, roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })) });
@@ -485,7 +491,7 @@ export async function inCommonWith(
   db: Db = getDb(),
 ): Promise<{ skills: string[]; role: string | null }> {
   if (viewerId === owner.id) return { skills: [], role: null };
-  const analyses = await analysesOf([viewerId, owner.id], db);
+  const analyses = await analysesOf([viewerId, owner.id], viewerId, db);
   const mine = analyses.get(viewerId);
   const theirs = analyses.get(owner.id);
   if (!mine || !theirs) return { skills: [], role: null };
@@ -504,7 +510,7 @@ export async function inCommonWith(
  */
 export async function pathTogetherWith(viewerId: string, ownerId: string, sharedWith: PathTogether["sharedWith"], db: Db = getDb()): Promise<PathTogether | null> {
   if (viewerId === ownerId) return null;
-  const [analyses, mine, theirs] = await Promise.all([analysesOf([viewerId, ownerId], db), goalsOf(viewerId, db), goalsOf(ownerId, db)]);
+  const [analyses, mine, theirs] = await Promise.all([analysesOf([viewerId, ownerId], viewerId, db), goalsOf(viewerId, db), goalsOf(ownerId, db)]);
   const a = analyses.get(viewerId);
   const b = analyses.get(ownerId);
   if (!a || !b || a.roleSlug !== b.roleSlug) return null;
@@ -558,7 +564,7 @@ type Enriched = { person: NetworkPerson; roleSlug: string | null };
 /** Rows of people as Network shows them to `userId`. A missing settings row means the defaults: target role off, skills on. */
 async function asPeople(userId: string, people: Candidate[], db: Db | Tx, now: Date): Promise<Enriched[]> {
   const ids = people.map((p) => p.id);
-  const [analyses, verified, sets] = await Promise.all([analysesOf([userId, ...ids], db), verifiedOf(ids, db, now), connectionSets([userId, ...ids], db)]);
+  const [analyses, verified, sets] = await Promise.all([analysesOf([userId, ...ids], userId, db), verifiedOf(ids, db, now), connectionSets([userId, ...ids], db)]);
   const mine = analyses.get(userId)?.met ?? [];
   const myConnections = sets.get(userId)!;
   const mutualIds = [...new Set(ids.flatMap((id) => mutualOf(myConnections, sets.get(id)!)))];
@@ -691,14 +697,15 @@ const provedSql = (now: Date): SQL =>
 
 /**
  * Shows their target role and it is `roleSlug`, in SQL over `users` (joined to user_settings): the role of their newest
- * analysis on each resume's newest profile, as analysesOf reads it. The page is checked again after it is read.
+ * analysis on each resume's newest profile, as analysesOf reads it. The page is checked again after it is read. A
+ * newest analysis of the sample resume aims at nothing.
  */
 const aimsAtSql = (roleSlug: string): SQL =>
-  sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select ga.result->>'roleSlug' from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
+  sql`coalesce(${userSettings.showTargetRole}, ${DEFAULT_SETTINGS.showTargetRole}) and (select case when r.mime_type = ${SAMPLE_MIME} then null else ga.result->>'roleSlug' end from ${gapAnalyses} ga join ${profiles} pr on pr.id = ga.profile_id join ${resumes} r on r.id = pr.resume_id where r.user_id = ${users.id} and pr.version = (select max(p2.version) from ${profiles} p2 where p2.resume_id = pr.resume_id) order by ga.created_at desc limit 1) = ${roleSlug}`;
 
 /** The viewer's own target role, for the "Aiming for my role" filter. */
 async function viewerOf(userId: string, db: Db) {
-  const analyses = await analysesOf([userId], db);
+  const analyses = await analysesOf([userId], userId, db);
   return { roleSlug: analyses.get(userId)?.roleSlug ?? null };
 }
 

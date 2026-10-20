@@ -1,6 +1,7 @@
 import { Columns2, Download, Heading, Image as ImageIcon, PanelTop, SquareDashed, Table2, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SampleTag } from "@/components/ui/sample-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { headingWords, LAYOUT_WORDS, screeningSummary, UNCHECKED_WORDS } from "@/lib/resume/screening";
 import type { LayoutKind, ScreeningView } from "@/lib/schemas";
@@ -152,6 +153,17 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
         </>
       )}
 
+      {view.sample ? (
+        <div className="flex flex-col gap-2 rounded-md bg-surface-2 p-3">
+          <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+            This is the sample resume <SampleTag />
+          </p>
+          <p className="text-sm text-muted">It can&apos;t be downloaded: it&apos;s a made-up person&apos;s. Upload your own resume to check it and download a fixed copy.</p>
+          <Link href="/start" className="inline-flex min-h-11 items-center self-start text-sm font-medium text-ink underline underline-offset-2">
+            Upload your resume
+          </Link>
+        </div>
+      ) : (
       <div className="flex flex-col gap-2 rounded-md bg-surface-2 p-3">
         <p className="text-sm font-semibold">The fix: download your resume from CareerMetro</p>
         <p className="text-sm text-muted">
@@ -176,6 +188,7 @@ export function ScreeningCheck({ view, resumeId, demo = false }: { view: Screeni
           ))}
         </div>
       </div>
+      )}
       </KeywordAnnouncer>
     </section>
   );

@@ -11,6 +11,7 @@ import { MATCHER_VERSION } from "@/lib/gaps/match";
 import { acceptRequest, blockInChat, report, sendMessage, startDirect } from "@/lib/inbox/store";
 import { DEFAULT_SETTINGS, type GapAnalysis, type Profile } from "@/lib/schemas";
 import { CONNECTION_PENDING_MAX, NETWORK_RESULTS_MAX } from "@/lib/schemas/network";
+import { SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import { LIMITS } from "@/lib/shared-limit";
 import {
   answerRequest,
@@ -499,6 +500,31 @@ describe.skipIf(!db)("network store (database)", () => {
     expect(both.role).toBe(roleProfiles[0].title);
     expect(await inCommonWith(friend, { id: owner, settings: { showSkills: false, showTargetRole: false } }, db!)).toEqual({ skills: [], role: null });
     expect(await inCommonWith(owner, { id: owner, settings: parts }, db!)).toEqual({ skills: [], role: null });
+  });
+
+  it("shows nothing from someone's current sample resume to anyone else: no skills, gaps or role in common, and no older resume instead", async () => {
+    const [s1, s2] = skills.map((x) => x.id);
+    const owner = await person("Mira", { met: ["sql", "linux"], gaps: [s1, s2], findable: true, showTargetRole: true });
+    const viewer = await person("Nikhil", { met: ["sql", "linux"], gaps: [s1, s2] });
+    const parts = { showSkills: true, showTargetRole: true };
+    expect((await inCommonWith(viewer, { id: owner, settings: parts }, db!)).skills).toHaveLength(2);
+    expect(await pathTogetherWith(viewer, owner, "profile", db!)).not.toBeNull();
+    // "Try a sample resume" after their own: the sample is now the owner's current analysis.
+    const addSample = async (userId: string) => {
+      const [resume] = await db!.insert(schema.resumes).values({ userId, mimeType: SAMPLE_MIME, sizeBytes: 1, status: "parsed" }).returning();
+      const [p] = await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true }).returning();
+      await db!.insert(schema.gapAnalyses).values({ profileId: p.id, result: analysis(["sql", "linux"], [s1, s2]), matcherVersion: MATCHER_VERSION });
+    };
+    await addSample(owner);
+    expect(await inCommonWith(viewer, { id: owner, settings: parts }, db!)).toEqual({ skills: [], role: null });
+    expect(await pathTogetherWith(viewer, owner, "profile", db!)).toBeNull();
+    const found = await search(viewer, { q: "Mira" }, deps());
+    if (!found.ok) throw new Error(found.error);
+    expect(found.people.find((x) => x.id === owner)).toMatchObject({ common: 0, aim: null });
+    // The viewer's own sample still counts for them: it is only hidden from others.
+    await addSample(viewer);
+    const mine = await person("Omkar", { met: ["sql"] });
+    expect((await inCommonWith(viewer, { id: mine, settings: parts }, db!)).skills).toHaveLength(1);
   });
 
   it("shows Gaps and path for two people on the same line: the gaps both have and each one's current goal", async () => {

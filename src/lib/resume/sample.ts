@@ -1,8 +1,8 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { profiles, resumes } from "@/db/schema";
-import { ownerKey, type Owner } from "@/lib/owner";
+import { ownerKey, ownsResume, type Owner } from "@/lib/owner";
 import { profile as profileSchema, type Profile } from "@/lib/schemas";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import parsed from "../../../fixtures/sample-resume/priya-sharma.parsed.json";
@@ -35,17 +35,29 @@ const RATE_LIMITED: IngestResult = {
  * sample doesn't: no file is read or kept, no model call is made or logged in ai_calls, no AI budget is spent, and no
  * resume consent is asked for, since none of the person's data is read. The row is marked by its MIME type
  * (SAMPLE_MIME), like the builder's, so every screen that shows the resume can label it "Sample". It carries no name
- * hashes: the sample isn't anyone's, so it never fails the name check when an anonymous visitor signs up. Uploading
- * a resume later replaces it as the current one, like any newer upload.
+ * hashes: the sample isn't anyone's, so it never fails the name check when an anonymous visitor signs up. An owner
+ * who already has a sample gets that one back, so trying it again never piles up rows. Their own resume takes over
+ * once they check it and see its gaps, like any newer upload.
  */
 export async function createSampleResume(input: { owner: Owner; clientHash: string }, deps: { db?: Db } = {}): Promise<IngestResult> {
   const db = deps.db ?? getDb();
-  // Its own limits, so trying the sample never uses up a real upload (LIMITS.perOwnerPerDay in ingest.ts).
-  if (!(await takeShared(LIMITS.sampleResumesPerOwner, ownerKey(input.owner), { db }))) return RATE_LIMITED;
+  // Its own limits, so trying the sample never uses up a real upload (LIMITS.perOwnerPerDay in ingest.ts). The address
+  // first: a script making new anonymous sessions is stopped there.
   if (!(await takeShared(LIMITS.sampleResumesPerIp, input.clientHash, { db }))) return RATE_LIMITED;
+  if (!(await takeShared(LIMITS.sampleResumesPerOwner, ownerKey(input.owner), { db }))) return RATE_LIMITED;
 
   const data = sampleProfile();
   const resumeId = await db.transaction(async (tx) => {
+    // One sample per owner: a second try opens the one they have (an anonymous one only within its 24 hours). The
+    // lock stops a double click making two.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cm-sample:${ownerKey(input.owner)}`}))`);
+    const [mine] = await tx
+      .select({ id: resumes.id })
+      .from(resumes)
+      .where(and(ownsResume(input.owner), eq(resumes.mimeType, SAMPLE_MIME)))
+      .orderBy(desc(resumes.createdAt))
+      .limit(1);
+    if (mine) return mine.id;
     const [resume] = await tx
       .insert(resumes)
       .values({
