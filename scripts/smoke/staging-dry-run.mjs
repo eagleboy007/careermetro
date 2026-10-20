@@ -5,9 +5,9 @@
 //   BASE=https://careermetro-git-staging-career-metro.vercel.app BYPASS=... node scripts/smoke/staging-dry-run.mjs
 //
 // BASE (or the first argument) is the site; BYPASS, when set, is sent as the x-vercel-protection-bypass header to that
-// site only. The header, the test email and anything from the resume are never printed. One line per step, ok or FAIL;
+// site only, and only when it is a careermetro-*.vercel.app host. The header, the test email and anything from the resume are never printed. One line per step, ok or FAIL;
 // the exit code is 1 on any failure. The test account is deleted at the end, as section 8 says, even after a failure.
-// Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright`.
+// Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright@1.56.1`.
 import { randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync } from "node:fs";
 import { chromium } from "playwright";
@@ -15,7 +15,12 @@ import { chromium } from "playwright";
 const STAGING = "https://careermetro-git-staging-career-metro.vercel.app";
 const BASE = (process.argv[2] || process.env.BASE || STAGING).replace(/\/+$/, "");
 const ORIGIN = new URL(BASE).origin;
-const BYPASS = process.env.BYPASS || "";
+// The bypass opens every preview of the project, so it only goes to the project's own Vercel hosts.
+const BYPASS_HOST = /^careermetro-[a-z0-9-]+\.vercel\.app$/;
+const BYPASS = process.env.BYPASS && BYPASS_HOST.test(new URL(BASE).host) ? process.env.BYPASS : "";
+if (process.env.BYPASS && !BYPASS) console.log(`note: the bypass header was not sent to ${new URL(BASE).host} (not a careermetro-*.vercel.app host)`);
+// The test email's domain: screenshots mask any text with it.
+const EMAIL_DOMAIN = "example.com";
 // Optional: a folder for a screenshot of each failed step (the workflow keeps them for 3 days).
 const SHOTS = process.env.SMOKE_SHOTS || "";
 const RESUME = new URL("../../fixtures/resumes/priya-sharma.pdf", import.meta.url).pathname;
@@ -79,7 +84,11 @@ const step = async (name, fn, { critical = false } = {}) => {
     failed++;
     console.log("FAIL", name, "@", path(), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging dry run::${redact(name)}`);
-    if (SHOTS) await p.screenshot({ path: `${SHOTS}/${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true }).catch(() => {});
+    if (SHOTS) {
+      // The email field and any line with the test address are masked; the resume is synthetic.
+      const mask = [p.locator('input[type="email"], input[name="email"]'), p.getByText(EMAIL_DOMAIN, { exact: false })];
+      await p.screenshot({ path: `${SHOTS}/${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
+    }
     if (critical) blockedBy = name;
     return false;
   }
@@ -144,8 +153,9 @@ await step("2 sign up as the test user: Create your account, with the name fille
   if ((await p.getByLabel("Last name", { exact: true }).inputValue()) !== "Sharma") await p.getByLabel("Last name", { exact: true }).fill("Sharma");
   await p.getByRole("checkbox", { name: "I am 18 or older and agree to the terms and privacy policy.", exact: true }).check();
   await p.getByRole("button", { name: "Create my account", exact: true }).click();
-  await p.waitForURL(/\/today/, { timeout: 30000 });
+  // From here an account may exist, so the clean-up deletes it even if Today never loads.
   signedUp = true;
+  await p.waitForURL(/\/today/, { timeout: 30000 });
 }, { critical: true });
 
 await step("2.5 Today with no resume: the role chips and the drop zone", async () => {
@@ -231,8 +241,9 @@ await step("5.2 Hours a week: 8 h stays pressed after a reload", async () => {
   await p.getByRole("group", { name: "Hours a week", exact: true }).getByRole("button", { name: "8 h", exact: true, pressed: true }).waitFor();
 });
 
-// The first box that can be ticked (a task done on another page is a link, and the signal check is locked).
-const tickable = 'li label:has(input[type="checkbox"]:not([disabled]))';
+// A box in the ride's task list (a <ul>; the Welcome card's set-up steps, with "Show me in people lists", are an <ol>).
+// A task done on another page is a link, and the signal check is locked, so neither counts.
+const tickable = 'ul > li > label:has(input[type="checkbox"]:not([disabled])):not(:has-text("Show me in people lists"))';
 let ticked = false;
 await step("5.3 tick the first ride task: the top bar shows a 1-day streak", async () => {
   const welcome = p.locator('section[aria-label="Welcome"]');
@@ -315,6 +326,11 @@ const deleteAccount = async () => {
   await open("/settings");
   if (path().startsWith("/sign-in")) {
     const landed = await testSignIn();
+    // Still at the name step: Create my account never finished, so there is no account to delete.
+    if (landed.startsWith("/sign-up/finish")) {
+      deleted = true;
+      return;
+    }
     if (!landed.startsWith("/today")) throw new Error(`signing in to delete went to ${landed}`);
     await open("/settings");
   }
