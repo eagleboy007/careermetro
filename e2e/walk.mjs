@@ -1313,6 +1313,18 @@ await step("builder: seven sections, one click each, and Review drops the model'
     await section("Role").waitFor({ timeout: 5000 });
     if (await q.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("the builder scrolls sideways at 390px (dark)");
     await axeOn(q, "builder-phone-dark");
+    // "Download PDF or DOCX" on the review goes through the confirm step (the file is made only from a confirmed
+    // profile, FR-20); the download appears as soon as "Looks right" saves.
+    for (const name of ["Education", "Projects", "Internships and jobs", "Tools", "Certificates", "Links"]) await next(name);
+    await q.getByRole("button", { name: "Review my resume" }).click();
+    await q.getByRole("heading", { name: "Your resume", level: 1 }).waitFor({ timeout: 60000 });
+    await q.getByRole("checkbox", { name: "Everything here is true and mine." }).check();
+    await q.getByRole("button", { name: "Download PDF or DOCX" }).click();
+    await q.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 15000 });
+    await q.getByRole("button", { name: "Looks right", exact: true }).click();
+    await q.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 15000 });
+    const pdf = await q.request.get(BASE + (await q.getByRole("link", { name: "PDF", exact: true }).getAttribute("href")));
+    if (pdf.status() !== 200 || !(await pdf.body()).subarray(0, 5).toString("latin1").startsWith("%PDF-")) throw new Error(`the built resume's PDF download gave ${pdf.status()}`);
   } finally {
     await ctxB.close();
   }

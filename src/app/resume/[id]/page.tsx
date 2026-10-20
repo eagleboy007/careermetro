@@ -23,6 +23,7 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
   const resume = owner ? await getResumeForOwner(id, owner) : null;
 
   if (!resume) return <ResumeNotFound />;
+  const named = Boolean(resumeName(owner?.userId ? await currentAccount() : null));
   return (
     <div className="flex flex-col gap-6">
       {resume.confirmed && (
@@ -34,8 +35,9 @@ async function Review({ params }: { params: Promise<{ id: string }> }) {
           or change anything below and confirm again.
         </p>
       )}
-      {resume.confirmed && <ResumeDownload resumeId={resume.resumeId} named={Boolean(resumeName(owner?.userId ? await currentAccount() : null))} />}
-      <ProfileEditor resumeId={resume.resumeId} initial={resume.profile} />
+      {resume.confirmed && <ResumeDownload resumeId={resume.resumeId} named={named} />}
+      {/* Not confirmed yet: the download appears as soon as "Looks right" saves (FR-20; the builder's review sends people here for it). */}
+      <ProfileEditor resumeId={resume.resumeId} initial={resume.profile} download={resume.confirmed ? undefined : { named }} />
     </div>
   );
 }

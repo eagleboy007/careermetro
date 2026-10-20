@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Lock, Plus, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, FileText, Lock, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { FieldError } from "@/components/ui/field-error";
@@ -815,12 +815,32 @@ function Review({
               Check my gaps
             </button>
           )}
+          {/* The file is made only from a confirmed profile (FR-20), so this goes the same way as "Check my gaps": to the
+              confirm step, where the download appears once the person confirms. */}
+          <button
+            type="button"
+            className={ghost}
+            aria-disabled={dirty || !sure || pending || undefined}
+            onClick={() => {
+              if (dirty) return say('Press "Update my resume" first, so the file matches your answers.');
+              if (!sure) return say('Tick "Everything here is true and mine." first.');
+              if (!actions) return say("This is an example. Nothing is saved.");
+              start(async () => {
+                const error = await actions.gaps(review.resumeId, sure);
+                if (error) say(error);
+              });
+            }}
+          >
+            <FileText {...ICON} />
+            Download PDF or DOCX
+          </button>
           <button type="button" className={quiet} onClick={() => onEdit(0)}>
             Edit answers
           </button>
         </div>
         <small className="text-[0.78rem] text-muted">
-          Next you check what we read, as with an upload. Once you confirm it, the download (PDF or Word, one column, standard headings, no photos or tables) is on that page.
+          The file is plain and readable by hiring software: one column, standard headings, no photos or tables. First you check what we read, as with an
+          upload; once you confirm it, the download is right there.
         </small>
         <p ref={statusRef} tabIndex={-1} role="status" className="text-[0.84rem] text-muted outline-none empty:hidden">
           {[problem, message].filter(Boolean).join(" ")}
