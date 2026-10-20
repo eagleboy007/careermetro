@@ -79,7 +79,7 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
     if (!days) return setMessage("Pick your notice period first.");
     if (!date) return setMessage("Pick the day you handed in your resignation.");
     if (date > today) return setMessage("Pick the day you handed in your resignation. It can't be later than today.");
-    save({ days, resignedOn: date }, () => moveTo("countdown", "change"), "Countdown started. Companies now see when you can join.");
+    save({ days, resignedOn: date }, () => moveTo("countdown", "change"), "Countdown started. Your Can join answer on applications now starts from it.");
   };
   const stopCountdown = () => save({ days, resignedOn: null }, () => moveTo("days", "resign"), "Countdown stopped.");
 
@@ -145,8 +145,7 @@ export function NoticeCard({ initial, today, action }: { initial: NoticeValue; t
           <ul className="flex flex-col gap-1.5 text-[0.82rem] text-muted">
             {[
               "Keep applying and interviewing, even after you accept an offer, until the day you join.",
-              `Companies you apply to see "Can join from ${noticeDayText(countdown.joinFrom)}". Your notice terms stay private.`,
-              "Express apply checks a company's notice period rule against your days left.",
+              "Companies you apply to see only when you can join, never your notice terms.",
             ].map((note) => (
               <li key={note} className="flex gap-2">
                 <Check size={14} strokeWidth={1.75} aria-hidden="true" className="mt-0.5 shrink-0" />
