@@ -22,10 +22,10 @@ export type ProfileConnectActions = Pick<NetworkActions, "connect" | "answer" | 
 
 /**
  * Network on someone's profile (`/u/[handle]`, handoff 12j): the header button by state, then the strip of shared
- * counts and "In common with you" (skills, gaps and path, mutual connections). Connect opens the how-you-know pick
- * inline; Remove, Block and Report open inline. No connection count and nobody's list: only the people both know.
- * Everything here was cut on the server to what the owner's choices let this viewer see. Interests wait for profile
- * interests. Without actions (example data) nothing is sent.
+ * counts and "In common with you" (interests, skills, gaps and path, mutual connections). Connect opens the
+ * how-you-know pick inline; Remove, Block and Report open inline. No connection count and nobody's list: only the people
+ * both know. Everything here was cut on the server to what the owner's choices let this viewer see. Without actions
+ * (example data) nothing is sent.
  */
 export function ProfileConnect({
   personId,
@@ -235,18 +235,31 @@ function Confirm({ title, body, yes, onYes, onNo, busy }: { title: string; body:
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
+/** "Chess", "Chess and Go", "Chess, Go and Yoga", and past three "Chess, Go, Yoga and 2 more". */
+function listed(names: string[]): string {
+  const shown = names.slice(0, 3);
+  const rest = names.length - shown.length;
+  if (rest > 0) return `${shown.join(", ")} and ${rest} more`;
+  return shown.length < 2 ? (shown[0] ?? "") : `${shown.slice(0, -1).join(", ")} and ${shown.at(-1)}`;
+}
+
 /**
- * The strip of shared counts, then "In common with you": skills, gaps and path, and mutual connections. The region's
+ * The strip of shared counts, then "In common with you": interests, skills, gaps and path, and mutual connections. The region's
  * label carries the person's name, so two profiles on one page (as on /design) never share a landmark name.
  */
 function InCommon({ name, first, inCommon }: { name: string; first: string; inCommon: ProfileInCommon }) {
-  const { skills, role, path, mutual } = inCommon;
+  const { skills, role, path, mutual, interests = null } = inCommon;
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-wrap gap-x-6 gap-y-1 border-y border-line py-3 text-[0.82rem] text-muted" aria-label={`What you share with ${name}`}>
         {skills && (
           <li>
             <b className="mr-1 font-mono font-medium text-ink">{skills.length}</b>shared skill{skills.length === 1 ? "" : "s"}
+          </li>
+        )}
+        {interests && (
+          <li>
+            <b className="mr-1 font-mono font-medium text-ink">{interests.shared.length}</b>shared interest{interests.shared.length === 1 ? "" : "s"}
           </li>
         )}
         {path && (
@@ -265,6 +278,23 @@ function InCommon({ name, first, inCommon }: { name: string; first: string; inCo
           <span className="font-mono text-[0.7rem] font-normal uppercase tracking-wide text-muted">Only what {first} lets you see is used.</span>
         </h2>
         {role && <p className="text-[0.84rem]">You are both aiming for {role}.</p>}
+
+        {interests && interests.shared.length > 0 && (
+          <Block title="Interests" note={`${interests.shared.length} of your ${interests.yours}`}>
+            <ul className="flex flex-wrap gap-1.5" aria-label="Interests you both list">
+              {interests.shared.map((t) => (
+                <li key={t} className="rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem]">
+                  {t}
+                </li>
+              ))}
+            </ul>
+            {interests.theirOthers.length > 0 && (
+              <p className="text-[0.8rem] text-muted">
+                {first} also lists {listed(interests.theirOthers)}.
+              </p>
+            )}
+          </Block>
+        )}
 
         {skills && skills.length > 0 && (
           <Block title="Skills" note={`${skills.length} you both have`}>

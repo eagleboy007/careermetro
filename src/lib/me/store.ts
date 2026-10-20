@@ -9,6 +9,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import type { MeProfile } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/today/state";
 import { meFromProfile } from "./build";
+import { meAdditionsFor } from "./edit-store";
 import { jobChecksFor } from "./job-email-check";
 import type { ProofCertRow } from "./certs";
 
@@ -47,15 +48,17 @@ export async function certificateProofsFor(userId: string, db: ReturnType<typeof
 }
 
 /**
- * The signed-in person's own profile page: their account, the latest saved profile behind their current gaps, and their
- * line. Everything is read through the owner, so it only ever shows the person their own data. Null without an account.
+ * The signed-in person's own profile page: their account, the latest saved profile behind their current gaps, their
+ * line, and what they added on Me (docs/plans/me-editing-plan.md). Everything is read through the owner, so it only ever
+ * shows the person their own data; /u cuts it to the owner's switches (src/lib/me/public.ts). Null without an account.
  */
 export async function meFor(userId: string, now: Date, db: ReturnType<typeof getDb> = getDb()): Promise<MeProfile | null> {
-  const [[user], analysis, proofCerts, jobChecks] = await Promise.all([
+  const [[user], analysis, proofCerts, jobChecks, added] = await Promise.all([
     db.select({ name: users.name, headline: users.headline, createdAt: users.createdAt }).from(users).where(eq(users.id, userId)).limit(1),
     currentAnalysis(userId, db),
     certificateProofsFor(userId, db),
     jobChecksFor([userId], db),
+    meAdditionsFor(userId, db),
   ]);
   if (!user) return null;
   const [resume, [read], line] = analysis
@@ -82,5 +85,6 @@ export async function meFor(userId: string, now: Date, db: ReturnType<typeof get
     now,
     proofCerts,
     jobChecks: jobChecks.get(userId) ?? [],
+    added,
   });
 }

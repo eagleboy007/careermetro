@@ -85,6 +85,28 @@ export const SUGGESTIONS_OPEN_MAX = 30;
 /** The longest link a suggestion keeps. */
 export const SUGGESTION_URL_MAX = 500;
 
+/* Me editing (docs/plans/me-editing-plan.md, v44 gap item 23): roles and education added by hand, stories and interests. */
+
+/** Rows one person can keep: added roles, added education, stories and interests. */
+export const ME_ROLES_MAX = 20;
+export const ME_EDUCATION_MAX = 12;
+export const STORIES_MAX = 50;
+export const INTERESTS_MAX = 30;
+/** Adds, edits and deletes on Me one person makes a day, each try counted. */
+export const ME_EDITS_PER_DAY = 100;
+export const ME_ROLE_TEXT_MAX = 120;
+export const ME_EDUCATION_TEXT_MAX = 160;
+export const ME_EDUCATION_YEAR_MAX = 40;
+export const STORY_TITLE_MAX = 120;
+export const STORY_WHERE_MAX = 120;
+/** Each of Situation, Task, Action and Result. */
+export const STORY_PART_MAX = 400;
+export const INTEREST_MAX = 40;
+/** Where a story came from. Only "user" is written in v1; the others are kept for drafting later (plan choice 1). */
+export const STORY_SOURCES = ["user", "resume", "goal", "college"] as const;
+/** What Me shows when text others read carries contact details or a link (plan choice 8). */
+export const ME_CONTACT_TEXT = "Leave out email addresses, phone numbers and links.";
+
 /* Corporate (dev/corporate-plan.md, handoff 12e and 12f) ------------------------------------------------------------ */
 
 export const ORG_TYPES = ["company", "college", "training_partner"] as const;

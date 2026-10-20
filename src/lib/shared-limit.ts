@@ -12,6 +12,7 @@ import {
   ELITE_CHANGES_PER_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
   LIBRARY_CHANGES_PER_DAY,
+  ME_EDITS_PER_DAY,
   MOCK_FEEDBACK_PER_DAY,
   MOCK_SESSIONS_PER_DAY,
   RESOURCE_REPORTS_PER_DAY,
@@ -117,6 +118,8 @@ export const LIMITS = {
   resourceReportsPerUserDay: { bucket: "resource-report", max: RESOURCE_REPORTS_PER_DAY, windowMs: 24 * HOUR },
   /** "Suggest a free resource" tries one person makes a day. */
   resourceSuggestionsPerUserDay: { bucket: "resource-suggestion", max: SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
+  /** Adds, edits and deletes on Me (docs/plans/me-editing-plan.md): roles, education, stories and interests, each try counted. */
+  meEditsPerUserDay: { bucket: "me-edit", max: ME_EDITS_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

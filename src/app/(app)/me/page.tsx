@@ -12,6 +12,7 @@ import { jobSearchOn } from "@/lib/job-search/store";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile, whoSeesFor } from "@/lib/me/public";
 import { jobCheckOpen } from "@/lib/me/job-email-check";
+import { storyGoalOptions } from "@/lib/me/edit-store";
 import { meFor } from "@/lib/me/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTrends } from "@/lib/practice/fixtures";
@@ -19,7 +20,19 @@ import { practiceTrendsFor } from "@/lib/practice/store";
 import { DEFAULT_SETTINGS, type MeProfile, type PlanView } from "@/lib/schemas";
 import { switchEliteBadge } from "../elite/actions";
 import { switchJobSearch } from "../settings/job-search-actions";
-import { checkCertificateOnCredly, confirmJobCheckCode, sendJobCheckCode } from "./actions";
+import {
+  addInterestAction,
+  checkCertificateOnCredly,
+  confirmJobCheckCode,
+  deleteMeEducationAction,
+  deleteMeRoleAction,
+  deleteStoryAction,
+  removeInterestAction,
+  saveMeEducationAction,
+  saveMeRoleAction,
+  saveStoryAction,
+  sendJobCheckCode,
+} from "./actions";
 
 export const metadata: Metadata = { title: "Your profile · CareerMetro", robots: { index: false } };
 
@@ -51,7 +64,7 @@ async function MeScreen() {
     );
   }
   const now = new Date();
-  const [me, saved, practice, plan, searching] = await Promise.all([
+  const [me, saved, practice, plan, searching, storyGoals] = await Promise.all([
     meFor(account.id, now),
     readAccountSettings(account.id, now),
     // Practice confidence is a side section: if it can't be read, the rest of the profile still shows.
@@ -69,6 +82,11 @@ async function MeScreen() {
       logEvent("error", "job_search_read_failed", errorFields(error));
       return true;
     }),
+    // "From a goal" on the story form: if the goals can't be read, a story can still be saved without one.
+    storyGoalOptions(account.id).catch((error: unknown) => {
+      logEvent("error", "story_goals_read_failed", errorFields(error));
+      return [];
+    }),
   ]);
   const settings = saved?.settings ?? DEFAULT_SETTINGS;
   const hidden = settings.visibility === "only_me" || !saved?.username;
@@ -77,7 +95,7 @@ async function MeScreen() {
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
         {hidden
           ? "Only you can see this page. Pick a username and who can open your profile in Account settings."
-          : "Your stories and interests come next."}
+          : "Others see only the parts you choose in Account settings. Your resume lines never show."}
       </p>
       {me && (
         <JobSearchProvider initialOn={searching} action={switchJobSearch}>
@@ -92,6 +110,17 @@ async function MeScreen() {
             planCard={<MePlanCard plan={plan} onBadge={switchEliteBadge} />}
             status={<JobSearchStatus employer={currentEmployer(me)} />}
             searchSwitches={<MeSearchSwitches />}
+            edits={{
+              saveRole: saveMeRoleAction,
+              deleteRole: deleteMeRoleAction,
+              saveEducation: saveMeEducationAction,
+              deleteEducation: deleteMeEducationAction,
+              saveStory: saveStoryAction,
+              deleteStory: deleteStoryAction,
+              addInterest: addInterestAction,
+              removeInterest: removeInterestAction,
+            }}
+            storyGoals={storyGoals}
           />
         </JobSearchProvider>
       )}

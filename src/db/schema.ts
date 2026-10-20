@@ -1580,6 +1580,134 @@ export const resourceSuggestions = pgTable(
   ],
 );
 
+/* Me editing (docs/plans/me-editing-plan.md, migration 0042) -------------------------------------------------
+ * What a person adds on Me by hand: roles, education, stories and interests. All owner only, kept until the person
+ * deletes them or the account goes (on delete cascade). The matcher, gaps and company Match never read these: they read
+ * the confirmed resume profile only (plan choice 2). */
+
+/** "+ Add role": a job the person added by hand. At most one current row each (the partial unique index). */
+export const meRoles = pgTable(
+  "me_roles",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    employer: text("employer").notNull(),
+    /** "2024-06". */
+    startMonth: text("start_month").notNull(),
+    /** "2025-03", or null while current. */
+    endMonth: text("end_month"),
+    isCurrent: boolean("is_current").notNull().default(false),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("me_roles_user_start").on(t.userId, t.startMonth),
+    uniqueIndex("me_roles_one_current").on(t.userId).where(sql`${t.isCurrent}`),
+    check("me_roles_title_length", sql`char_length(${t.title}) between 1 and 120`),
+    check("me_roles_employer_length", sql`char_length(${t.employer}) between 1 and 120`),
+    check("me_roles_start_month", sql`${t.startMonth} ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'`),
+    check("me_roles_end_month", sql`${t.endMonth} is null or ${t.endMonth} ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'`),
+    check("me_roles_end_after_start", sql`${t.endMonth} is null or ${t.endMonth} >= ${t.startMonth}`),
+    check("me_roles_current_open", sql`${t.isCurrent} = (${t.endMonth} is null)`),
+  ],
+);
+
+/** "+ Add" under Education: a qualification the person added by hand. */
+export const meEducation = pgTable(
+  "me_education",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    qualification: text("qualification").notNull(),
+    institution: text("institution").notNull(),
+    /** Free text, such as "2024" or "2021 to 2024". */
+    year: text("year"),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("me_education_user").on(t.userId),
+    check("me_education_qualification_length", sql`char_length(${t.qualification}) between 1 and 160`),
+    check("me_education_institution_length", sql`char_length(${t.institution}) between 1 and 160`),
+    check("me_education_year_length", sql`${t.year} is null or char_length(${t.year}) between 1 and 40`),
+  ],
+);
+
+/**
+ * "Your stories": a Situation, Task, Action, Result story, hand-written in v1 (plan choice 1). The linked goal is set
+ * to null when that goal goes. Its SMART check is worked out when shown and never stored.
+ */
+export const stories = pgTable(
+  "stories",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    whereText: text("where_text").notNull().default(""),
+    situation: text("situation").notNull().default(""),
+    task: text("task").notNull().default(""),
+    action: text("action").notNull().default(""),
+    result: text("result").notNull().default(""),
+    goalId: uuid("goal_id").references(() => userGoals.id, { onDelete: "set null" }),
+    /** "user" only in v1; "resume", "goal" and "college" are kept for drafting later. */
+    source: text("source").notNull().default("user"),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("stories_user_updated").on(t.userId, t.updatedAt),
+    index("stories_goal").on(t.goalId),
+    check("stories_title_length", sql`char_length(${t.title}) between 1 and 120`),
+    check("stories_where_length", sql`char_length(${t.whereText}) <= 120`),
+    check(
+      "stories_parts_length",
+      sql`char_length(${t.situation}) <= 400 and char_length(${t.task}) <= 400 and char_length(${t.action}) <= 400 and char_length(${t.result}) <= 400`,
+    ),
+    check("stories_source", sql`${t.source} in ('user', 'resume', 'goal', 'college')`),
+  ],
+);
+
+/** The boxes a story answers (STORY_BOXES), at least one per story (checked in the store). */
+export const storyBoxes = pgTable(
+  "story_boxes",
+  {
+    storyId: uuid("story_id")
+      .notNull()
+      .references(() => stories.id, { onDelete: "cascade" }),
+    box: text("box").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.storyId, t.box] }),
+    check("story_boxes_box", sql`${t.box} in ('Ownership', 'Problem solving', 'Delivering results', 'Learning', 'Working with others', 'Speaking up')`),
+  ],
+);
+
+/** Interests, free text per person (plan choice 5), one per normalised key. */
+export const userInterests = pgTable(
+  "user_interests",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    /** Lowercase, trimmed, single spaces (src/lib/me/text.ts interestKey). */
+    nameKey: text("name_key").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.nameKey] }),
+    check("user_interests_name_length", sql`char_length(${t.name}) between 1 and 40`),
+    check("user_interests_key_length", sql`char_length(${t.nameKey}) between 1 and 40`),
+  ],
+);
+
 /* Audit ------------------------------------------------------------------- */
 
 /**

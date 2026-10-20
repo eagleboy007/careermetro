@@ -1,10 +1,43 @@
-import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile } from "@/lib/schemas";
+import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile, type StoryBox } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "@/lib/map/life-layout";
 import { indiaDate, profileCertifications, type ProofCertRow } from "./certs";
 import { experienceCheck, jobToCheck, type JobCheckRow } from "./job-check-rules";
+import { smartCheck } from "./smart";
 
 /** Goals shown one by one on the journey strip before the rest fold into "N more goals". */
 const GOAL_STOPS = 5;
+
+/*
+ * What the person added on Me by hand (docs/plans/me-editing-plan.md), as read by src/lib/me/edit-store.ts. Owner-only
+ * ids ride along so their own view can offer Edit and Delete; the public profile drops them (src/lib/me/public.ts).
+ */
+export type AddedRole = { id: string; title: string; employer: string; startMonth: string; endMonth: string | null; isCurrent: boolean };
+export type AddedEducation = { id: string; qualification: string; institution: string; year: string | null };
+export type AddedStory = {
+  id: string;
+  title: string;
+  where: string;
+  situation: string;
+  task: string;
+  action: string;
+  result: string;
+  boxes: StoryBox[];
+  goalId: string | null;
+  /** The linked goal's skill has accepted work proof (plan choice 6). Never set by the person. */
+  confirmed: boolean;
+};
+export type MeAdditions = { roles: AddedRole[]; education: AddedEducation[]; stories: AddedStory[]; interests: string[] };
+
+export const NO_ADDITIONS: MeAdditions = { roles: [], education: [], stories: [], interests: [] };
+
+/** An added role in the resume profile's shape, for the work-email check's choice of current job (FR-47, plan choice 7). */
+export const addedAsResumeRole = (r: AddedRole): Profile["roles"][number] => ({
+  title: r.title,
+  employer: r.employer,
+  start: r.startMonth,
+  end: r.isCurrent ? null : r.endMonth,
+  highlights: [],
+});
 
 export type MeInput = {
   name: string;
@@ -22,6 +55,8 @@ export type MeInput = {
   proofCerts?: ProofCertRow[];
   /** The person's work-email checks of their jobs (FR-47); none for views that don't read them. */
   jobChecks?: readonly JobCheckRow[];
+  /** Roles, education, stories and interests added on Me (docs/plans/me-editing-plan.md); none when not read. */
+  added?: MeAdditions;
 };
 
 /** Cut to the schema's limit at a word break. */
@@ -79,32 +114,46 @@ export function journeyFor(line: MapLine | null, opts: { joinedAt: Date; resumeR
 }
 
 /**
- * Your profile from the confirmed profile and current gaps, in plain code. Stories, interests and proof stay empty until
- * their tables exist. Certifications come from accepted certificate proof and the resume (src/lib/me/certs.ts); only a
- * Credly badge that matched is ever marked verified.
+ * Your profile from the confirmed profile and current gaps, in plain code, with what the person added on Me: added
+ * roles merge with resume roles by start date and count in the total once where they overlap; added education follows
+ * the resume's; stories carry their SMART check, worked out here and never stored. Proof stays empty until its table
+ * exists. Certifications come from accepted certificate proof and the resume (src/lib/me/certs.ts); only a Credly badge
+ * that matched is ever marked verified. The matcher, gaps and Match never read the added rows (plan choice 2).
  */
 export function meFromProfile(input: MeInput): MeProfile {
   const { profile, analysis, line, now } = input;
+  const added = input.added ?? NO_ADDITIONS;
   const nowT = decimalYear(now);
 
-  const roles = (profile?.roles ?? [])
-    .map((r, i) => ({ r, i, start: readYearMonth(r.start), end: readYearMonth(r.end) }))
-    .sort((a, b) => (b.start?.t ?? -Infinity) - (a.start?.t ?? -Infinity));
+  type Row = { r: Profile["roles"][number]; id: string; own: { id: string; startMonth: string; endMonth: string | null } | null };
+  const dated = (x: Row) => ({ ...x, start: readYearMonth(x.r.start), end: readYearMonth(x.r.end) });
+  const newestFirst = (a: ReturnType<typeof dated>, b: ReturnType<typeof dated>) => (b.start?.t ?? -Infinity) - (a.start?.t ?? -Infinity);
+  // The 20 newest resume roles and up to 20 added ones, merged by start date.
+  const roles = [
+    ...(profile?.roles ?? [])
+      .map((r, i): Row => ({ r, id: `role-${i}`, own: null }))
+      .map(dated)
+      .sort(newestFirst)
+      .slice(0, 20),
+    ...added.roles.slice(0, 20).map((a): Row => ({ r: addedAsResumeRole(a), id: `me-${a.id}`, own: { id: a.id, startMonth: a.startMonth, endMonth: a.endMonth } })).map(dated),
+  ].sort(newestFirst);
   const spans: [number, number][] = [];
-  const checked = jobToCheck(profile);
-  const experience = roles.map(({ r, i, start, end }) => {
+  // An added current role is a current job for the work-email check as a resume one is (FR-47).
+  const checked = jobToCheck({ roles: roles.map((x) => x.r) });
+  const experience = roles.map(({ r, id, own, start, end }) => {
     const current = !!start && !end;
     const until = end?.t ?? (start ? nowT : null);
     if (start && until !== null && until > start.t) spans.push([start.t, until]);
     const dates = start ? `${start.label} to ${end ? end.label : "now"} · ${duration(start.t, until!)}` : (end?.label ?? "No dates on your resume");
     return {
-      id: `role-${i}`,
+      id,
       title: cut(r.title, 120),
       employer: cut(r.employer, 120),
       dates,
       current,
       highlights: r.highlights.slice(0, 8).map((h) => cut(h, 300)),
       check: experienceCheck(r, checked, input.jobChecks ?? []),
+      ...(own ? { added: own } : {}),
     };
   });
 
@@ -135,14 +184,35 @@ export function meFromProfile(input: MeInput): MeProfile {
     ],
     journey: journeyFor(line, { joinedAt: input.joinedAt, resumeReadAt: input.resumeReadAt, gaps: gaps.length }),
     journeyLabel: line ? `${line.role.title} · ${plural(line.goals.length, "goal")}` : "starts with your resume",
-    experience: experience.slice(0, 20),
+    experience,
     experienceTotal: worked(spans) > 0 ? duration(0, worked(spans)) : null,
-    education: (profile?.education ?? [])
-      .slice(0, 12)
-      .map((e) => ({ qualification: cut(e.qualification, 160), institution: cut(e.institution, 160), year: cut(e.year ?? "", 40) })),
+    education: [
+      ...(profile?.education ?? [])
+        .slice(0, 12)
+        .map((e) => ({ qualification: cut(e.qualification, 160), institution: cut(e.institution, 160), year: cut(e.year ?? "", 40) })),
+      ...added.education.slice(0, 12).map((e) => ({
+        qualification: cut(e.qualification, 160),
+        institution: cut(e.institution, 160),
+        year: cut(e.year ?? "", 40),
+        added: { id: e.id },
+      })),
+    ],
     skills: { have, weak: weak.slice(0, 12), missing: missing.slice(0, 12) },
-    interests: [],
-    stories: [],
+    interests: added.interests.slice(0, 30),
+    stories: added.stories.slice(0, 50).map((s) => ({
+      id: s.id,
+      title: s.title,
+      where: s.where,
+      boxes: s.boxes,
+      situation: s.situation,
+      task: s.task,
+      action: s.action,
+      result: s.result,
+      ...smartCheck({ ...s, goalLinked: s.goalId !== null }),
+      confirmed: s.confirmed,
+      fromGoal: s.goalId !== null,
+      goalId: s.goalId,
+    })),
     proofs: [],
     certifications: profileCertifications({ proofs: input.proofCerts ?? [], resume: profile?.certifications ?? [], today: indiaDate(now) }),
     resumeReadOn: input.resumeReadAt ? monthLabel(input.resumeReadAt) : null,

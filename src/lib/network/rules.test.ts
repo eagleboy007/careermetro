@@ -6,6 +6,7 @@ import {
   connectionState,
   currentStep,
   handleOf,
+  interestsInCommon,
   lineOrder,
   mutualOf,
   networkMatches,
@@ -135,5 +136,22 @@ describe("network rules", () => {
       const done = lineOrder(gaps("a"), [goal("a", 1, { proved: true })]);
       expect(pathTogether(done, theirs, name, "profile")).toMatchObject({ gaps: [], you: null, apart: null, sharedWith: "profile" });
     });
+  });
+});
+
+describe("interestsInCommon", () => {
+  const i = (name: string) => ({ name, key: name.toLowerCase() });
+  it("names the owner's interests the viewer also lists, as the owner wrote them, and their others", () => {
+    expect(interestsInCommon([i("ai"), i("Public speaking"), i("Design"), i("Marketing")], [i("AI"), i("Chess"), i("public speaking"), i("Cricket analytics")])).toEqual({
+      shared: ["AI", "public speaking"],
+      yours: 4,
+      theirOthers: ["Chess", "Cricket analytics"],
+    });
+  });
+
+  it("says nothing when either lists none", () => {
+    expect(interestsInCommon([], [i("Chess")])).toBeNull();
+    expect(interestsInCommon([i("Chess")], [])).toBeNull();
+    expect(interestsInCommon([i("Chess")], [i("Go")])).toEqual({ shared: [], yours: 1, theirOthers: ["Go"] });
   });
 });

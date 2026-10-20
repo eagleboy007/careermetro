@@ -5,7 +5,7 @@ export { STORY_BOXES, SMART } from "./constants";
 
 /**
  * Your profile (post-login handoff, section 11). The server fills it from the person's confirmed profile and current
- * gaps; stories, interests, status and the visibility switches wait on their tables (dev/profile-plan.md), so the
+ * gaps, plus the roles, education, stories and interests the person adds on Me (docs/plans/me-editing-plan.md). The
  * design page and the preview use a synthetic example.
  */
 export const storyBox = z.enum(STORY_BOXES);
@@ -28,6 +28,8 @@ export const story = z.object({
   confirmed: z.boolean(),
   /** Written from a goal the person proved or is working on. */
   fromGoal: z.boolean(),
+  /** The linked goal, for the owner's Edit only; others never get it. */
+  goalId: z.uuid().nullable().optional(),
 });
 
 export const journeyStop = z.object({
@@ -53,6 +55,22 @@ export const meExperience = z.object({
     .object({ state: z.enum(["verified", "verified_while_there", "review", "self_declared", "not_verified"]), month: z.string().max(20).nullable() })
     .nullable()
     .optional(),
+  /**
+   * Set on a role the person added on Me ("Added by you", with Edit and Delete), for the owner only: its row id and
+   * months as saved. Null or absent for a resume role, which is never edited on Me (plan choice 3).
+   */
+  added: z
+    .object({ id: z.uuid(), startMonth: z.string().max(7), endMonth: z.string().max(7).nullable() })
+    .nullable()
+    .optional(),
+});
+
+/** One qualification. `added` is the row id of one the person added on Me, for the owner only. */
+export const meEducationItem = z.object({
+  qualification: z.string().max(160),
+  institution: z.string().max(160),
+  year: z.string().max(40),
+  added: z.object({ id: z.uuid() }).nullable().optional(),
 });
 
 /** The only link a profile shows for a certificate: a verified badge's public Credly page, rebuilt from its id. */
@@ -97,17 +115,18 @@ export const meProfile = z.object({
   stats: z.array(z.object({ value: z.string().max(20), label: z.string().max(60), private: z.boolean() })).max(6),
   journey: z.array(journeyStop).max(12),
   journeyLabel: z.string().max(120),
-  experience: z.array(meExperience).max(20),
+  /** Resume roles (up to 20) and roles added on Me (up to 20), newest start first. */
+  experience: z.array(meExperience).max(40),
   /** "2 years 4 months", or null when no role has dates. */
   experienceTotal: z.string().max(40).nullable(),
-  education: z.array(z.object({ qualification: z.string().max(160), institution: z.string().max(160), year: z.string().max(40) })).max(12),
+  education: z.array(meEducationItem).max(24),
   skills: z.object({
     have: z.array(z.string().max(80)).max(30),
     weak: z.array(z.string().max(80)).max(12),
     missing: z.array(z.string().max(80)).max(12),
   }),
   interests: z.array(z.string().max(60)).max(30),
-  stories: z.array(story).max(40),
+  stories: z.array(story).max(50),
   proofs: z.array(z.object({ title: z.string().max(160), detail: z.string().max(120) })).max(20),
   certifications: z.array(meCertification).max(30),
   /** When the resume was read, or null with no resume. */
@@ -122,5 +141,6 @@ export type StoryBox = z.infer<typeof storyBox>;
 export type Story = z.infer<typeof story>;
 export type JourneyStop = z.infer<typeof journeyStop>;
 export type MeExperience = z.infer<typeof meExperience>;
+export type MeEducationItem = z.infer<typeof meEducationItem>;
 export type MeProfile = z.infer<typeof meProfile>;
 export type MeCertification = z.infer<typeof meCertification>;

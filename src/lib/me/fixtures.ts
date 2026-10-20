@@ -1,7 +1,7 @@
 import { story, type MeProfile, type Profile, type Story } from "@/lib/schemas";
 import { exampleMapLine } from "@/lib/map/fixtures";
 import { companyKey } from "@/lib/profile/employer";
-import { meFromProfile } from "./build";
+import { meFromProfile, type MeAdditions } from "./build";
 import type { ProofCertRow } from "./certs";
 
 /* A synthetic profile for Priya on the Data Analyst line, for the design page and the preview. Companies are made up. */
@@ -168,6 +168,29 @@ export const exampleStories: Story[] = [
   }),
 ];
 
+/** Priya's goals, for "From a goal" on the story form. Synthetic ids. */
+export const exampleStoryGoals = [
+  { id: "00000000-0000-4000-8000-0000000b0001", name: "SQL window functions" },
+  { id: "00000000-0000-4000-8000-0000000b0002", name: "Power BI" },
+];
+
+/** What Priya added on Me by hand: a volunteer role her resume leaves out, and a course. Synthetic ids. */
+export const exampleAdditions: MeAdditions = {
+  roles: [
+    {
+      id: "00000000-0000-4000-8000-0000000a0001",
+      title: "Volunteer data lead",
+      employer: "Pune Reads Library Trust",
+      startMonth: "2023-06",
+      endMonth: "2023-12",
+      isCurrent: false,
+    },
+  ],
+  education: [{ id: "00000000-0000-4000-8000-0000000a0002", qualification: "Data Analytics with Python", institution: "NPTEL", year: "2025" }],
+  stories: [],
+  interests: [],
+};
+
 const built = meFromProfile({
   name: "Priya Nair",
   profile: exampleMeResume,
@@ -191,6 +214,8 @@ const built = meFromProfile({
   proofCerts: exampleProofCerts,
   // Her current job, checked with her work email (FR-47).
   jobChecks: [{ employerKey: companyKey("Konkan Co-operative Bank"), startMonth: "2024-06", status: "verified", checkedAt: new Date("2026-10-08T00:00:00Z") }],
+  // A role and a course she added on Me herself (docs/plans/me-editing-plan.md): "Added by you", with Edit and Delete.
+  added: exampleAdditions,
 });
 
 export const exampleMe: MeProfile = {

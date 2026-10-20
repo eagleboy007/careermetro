@@ -14,6 +14,7 @@ export * from "./map";
 export * from "./life";
 export * from "./departures";
 export * from "./me";
+export * from "./me-edit";
 export * from "./goals";
 export * from "./inbox";
 export * from "./resume-document";
