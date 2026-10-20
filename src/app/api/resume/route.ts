@@ -7,7 +7,9 @@ import { errorFields, logEvent } from "@/lib/log";
 export const maxDuration = 120;
 
 /** `code` lets the form offer the right next step, such as the builder once today's reading budget is spent ("busy"). */
-const fail = (status: number, error: string, code?: string) => Response.json({ ok: false, error, ...(code ? { code } : {}) }, { status });
+/** `signedIn` (on ingest refusals) lets it offer /builder, which needs an account, only to someone signed in. */
+const fail = (status: number, error: string, code?: string, signedIn?: boolean) =>
+  Response.json({ ok: false, error, ...(code ? { code } : {}), ...(signedIn === undefined ? {} : { signedIn }) }, { status });
 
 /** Upload a resume as a file or pasted text (FR-4). Responds with the id of the parsed, unconfirmed resume. */
 export async function POST(request: Request) {
@@ -45,6 +47,6 @@ export async function POST(request: Request) {
     logEvent("error", "resume_upload_failed", { route: "/api/resume", ms: Date.now() - startedAt, ...errorFields(error) });
     return fail(500, "Something went wrong reading your resume. Please try again.");
   }
-  if (!result.ok) return fail(result.status, result.message, result.code);
+  if (!result.ok) return fail(result.status, result.message, result.code, Boolean(owner.userId));
   return Response.json({ ok: true, resumeId: result.resumeId });
 }

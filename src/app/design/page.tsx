@@ -1473,7 +1473,7 @@ export default function DesignPage() {
           <p className="text-sm text-muted">A slow reading (after 40 seconds), a file we can&rsquo;t read, and today&rsquo;s reading budget spent, signed in.</p>
           <UploadForm demo example="slow" />
           <UploadForm demo example={{ message: "Please upload a PDF or Word (.docx) file, or paste your resume as text.", code: "unsupported_type" }} />
-          <UploadForm demo builder example={{ message: "We've reached today's capacity for the beta. Please try again tomorrow.", code: "busy" }} />
+          <UploadForm demo builder example={{ message: "We've reached today's capacity for the beta. Please try again tomorrow.", code: "busy", signedIn: true }} />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>

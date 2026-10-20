@@ -19,7 +19,7 @@ import {
   CAN_JOIN_LABELS,
   PREVIEW_LIVE_NOTE,
 } from "@/lib/schemas/constants";
-import { NO_CONNECTION } from "@/lib/api-reply";
+import { actionFailed } from "@/lib/api-reply";
 
 /**
  * Express apply (pending item 16; dev/express-apply-plan.md), on a job a verified company posted on CareerMetro. The
@@ -230,7 +230,7 @@ export function ApplyPreview({
       setError(null);
       setSaid("Sending…");
       // Offline, the packet stays open with the note as typed, and says why.
-      const message = await action(jobId, canJoin, true, form.note).catch(() => NO_CONNECTION);
+      const message = await action(jobId, canJoin, true, form.note).catch(actionFailed);
       if (message) {
         setSaid(null);
         setError(message);

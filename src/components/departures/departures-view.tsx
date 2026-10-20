@@ -38,8 +38,6 @@ export type DepartureActions = {
 const FAILED = "That didn't work. Please try again.";
 /** The empty list's next step: quieter than Apply, with the control edge of a button. */
 const quiet = `${btn} border border-line-strong text-ink hover:bg-surface-2`;
-/** The paste box's id, for the empty list's "Paste a job post" link. */
-const PASTE_ID = "paste-job-post";
 const CLOSED = "Closed on the company's board";
 
 /**
@@ -97,6 +95,8 @@ export function DeparturesView({
     timer.current = setTimeout(() => setToast(null), 3200);
   };
   const detailId = useId();
+  // The paste box's id, for the empty list's "Paste a job post" link: one per instance, as /design shows several.
+  const pasteId = useId();
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
@@ -237,12 +237,14 @@ export function DeparturesView({
         ) : (
           <EmptyList
             empty={departuresEmpty(filters, { open: openCount, places, saved: saved.size, applied: applied.size })}
+            pasteId={pasteId}
             onClear={() => set({ ...NO_FILTERS, tab: filters.tab })}
+            onEveryCity={() => set({ yourPlaces: false, city: null })}
             onAll={() => set({ tab: "all" })}
           />
         )}
 
-        <PasteBox resumeId={resumeId} demo={demo} />
+        <PasteBox id={pasteId} resumeId={resumeId} demo={demo} />
         <p
           role="status"
           className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[700px]:rounded-full min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
@@ -638,20 +640,29 @@ function RolePrep({ prep }: { prep: RolePrepView }) {
 }
 
 /**
- * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
- * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
- * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
- * (the signed-out example and /design) checks the fields and saves nothing.
+ * Why the list is empty, with one next step (src/lib/departures/filter.ts, departuresEmpty). "Show every city" drops
+ * only the city filter, keeping the tab, search and type; `pasteId` is the paste box's id.
  */
-/** Why the list is empty, with one next step (src/lib/departures/filter.ts, departuresEmpty). */
-function EmptyList({ empty, onClear, onAll }: { empty: ReturnType<typeof departuresEmpty>; onClear: () => void; onAll: () => void }) {
+function EmptyList({
+  empty,
+  pasteId,
+  onClear,
+  onEveryCity,
+  onAll,
+}: {
+  empty: ReturnType<typeof departuresEmpty>;
+  pasteId: string;
+  onClear: () => void;
+  onEveryCity: () => void;
+  onAll: () => void;
+}) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
       <p>{empty.text}</p>
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
         {empty.kind === "places" && (
           <>
-            <button type="button" className={quiet} onClick={onClear}>
+            <button type="button" className={quiet} onClick={onEveryCity}>
               Show every city
             </button>
             <Link href="/settings#acc-pay" className="text-ink underline underline-offset-2">
@@ -665,7 +676,7 @@ function EmptyList({ empty, onClear, onAll }: { empty: ReturnType<typeof departu
           </button>
         )}
         {empty.kind === "no_roles" && (
-          <a href={`#${PASTE_ID}`} className={quiet}>
+          <a href={`#${pasteId}`} className={quiet}>
             Paste a job post
           </a>
         )}
@@ -679,11 +690,17 @@ function EmptyList({ empty, onClear, onAll }: { empty: ReturnType<typeof departu
   );
 }
 
-function PasteBox({ resumeId, demo }: { resumeId: string | null; demo: boolean }) {
+/**
+ * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
+ * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
+ * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
+ * (the signed-out example and /design) checks the fields and saves nothing.
+ */
+function PasteBox({ id, resumeId, demo }: { id: string; resumeId: string | null; demo: boolean }) {
   const router = useRouter();
   const [opening, startOpening] = useTransition();
   return (
-    <section id={PASTE_ID} aria-label="Paste a job post" className="mt-1.5 flex scroll-mt-20 flex-col gap-2.5">
+    <section id={id} aria-label="Paste a job post" className="mt-1.5 flex scroll-mt-20 flex-col gap-2.5">
       <div className="flex flex-wrap items-baseline gap-2.5">
         <h3 className="text-[1.05rem] font-semibold">Saw a role somewhere else?</h3>
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">paste the job post</span>

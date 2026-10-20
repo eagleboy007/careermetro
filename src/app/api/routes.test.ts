@@ -321,7 +321,7 @@ describe("resume upload", () => {
   it("passes a refusal's code on, so the form can offer the builder once the day's budget is spent", async () => {
     m.ingestResume.mockResolvedValueOnce({ ok: false, status: 503, code: "busy", message: "We've reached today's capacity for the beta. Please try again tomorrow." });
     const res = await json(await upload(post(form({ consent: "yes", text: "My resume" }))));
-    expect(res).toEqual({ status: 503, body: { ok: false, code: "busy", error: "We've reached today's capacity for the beta. Please try again tomorrow." } });
+    expect(res).toEqual({ status: 503, body: { ok: false, code: "busy", error: "We've reached today's capacity for the beta. Please try again tomorrow.", signedIn: false } });
   });
 
   it("gives a visitor without a session a new one rather than failing", async () => {

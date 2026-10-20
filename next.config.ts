@@ -14,9 +14,9 @@ const nextConfig: NextConfig = {
   // Google sign-in form is redirected off-site, which that rule would block before the page has loaded its script.
   // HSTS includes subdomains: the app is served only on *.vercel.app hosts, whose subdomains are all Vercel's HTTPS, and
   // careermetro.com (the public site, hosted apart) never gets this header. Revisit before serving the app on the apex
-  // careermetro.com. No preload: a vercel.app subdomain can't be preloaded. COOP same-origin: no page opens or is opened by
-  // a cross-origin window (Google sign-in is a full-page redirect, src/app/sign-in/actions.ts); a sign-in popup would
-  // need same-origin-allow-popups instead.
+  // careermetro.com. No preload: a vercel.app subdomain can't be preloaded. COOP same-origin-allow-popups: a cross-origin
+  // page that opens ours can't reach it, while popups we open keep window.opener. The Vercel Toolbar's sign-in popup on
+  // preview deployments needs that; our own Google sign-in is a full-page redirect (src/app/sign-in/actions.ts).
   async headers() {
     return [
       {
@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=()" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
     ];

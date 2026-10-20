@@ -19,7 +19,7 @@
 // x-vercel-protection-bypass header to that site only, and only when it is a careermetro-*.vercel.app host. The header and
 // the test emails (the admin's too) are never printed. One line per step, ok or FAIL; the exit code is 1 on any
 // failure. The clean-up runs after any failed step or crash, and when the script's own deadline (SMOKE_DEADLINE_MIN,
-// default 20) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
+// default 18) passes: A withdraws the application, B closes the job, the admin dismisses any report still open, and both
 // test accounts are deleted, as prod-smoke.md section 8 says. On SIGINT or SIGTERM (a cancel) it starts too, but
 // GitHub gives a cancelled job only about 10 seconds, so it may not finish then. The company itself can't be deleted in
 // the app, and a fresh account can't take over an old one without that company's admin, so each admin run leaves one:
@@ -181,6 +181,12 @@ const path = (p) => {
     return "?";
   }
 };
+/** With SMOKE_SHOTS, a screenshot of a failed step. The email field and any line with a test address (the admin's domain too) are masked. */
+const shoot = async (p, name) => {
+  if (!SHOTS) return;
+  const mask = [p.locator('input[type="email"], input[name="email"]'), ...[EMAIL_DOMAIN, ADMIN_DOMAIN].filter(Boolean).map((d) => p.getByText(d, { exact: false }))];
+  await p.screenshot({ path: `${SHOTS}/screens-${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
+};
 /**
  * One line per step, on one user's page (its path is printed and, on a failure, its screenshot kept). A failed
  * `critical` step skips everything after it; `needs` names earlier steps this one can't run without. A step may return
@@ -210,11 +216,8 @@ const step = async (name, u, fn, { critical = false, needs = [], cleanup = false
     failedSteps.add(name);
     console.log("FAIL", name, "@", path(p), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging screens::${redact(name)}`);
-    if (SHOTS) {
-      // The email field and any line with a test address (the admin's domain too) are masked.
-      const mask = [p.locator('input[type="email"], input[name="email"]'), ...[EMAIL_DOMAIN, ADMIN_DOMAIN].filter(Boolean).map((d) => p.getByText(d, { exact: false }))];
-      await p.screenshot({ path: `${SHOTS}/screens-${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
-    }
+    // A clean-up part that ran out of time took its screenshot before its page was closed (cleanStep).
+    if (!p.isClosed()) await shoot(p, name);
     if (critical) blockedBy = name;
     return false;
   }
@@ -379,8 +382,9 @@ const deleteAccount = async (u) => {
 
 /**
  * The clean-up's budget: 15 seconds for any one action or wait, 40 for a whole part. A part runs at most once (one that
- * failed is not tried again), so its six parts (four company ones, two accounts) end within 4 minutes, well inside the 5
- * between the deadline and the workflow step's timeout.
+ * failed is not tried again), so its six parts (four company ones, two accounts) end within 4 minutes, inside the 7
+ * between the deadline and the workflow step's timeout, with time left for the step in flight at the deadline (capped
+ * there the same way).
  */
 const CLEAN_ACTION_MS = 15000;
 const CLEAN_PART_MS = 40000;
@@ -389,8 +393,8 @@ const capPage = (pg) => {
   pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
 };
 /**
- * One clean-up part as a step. Past CLEAN_PART_MS it fails, and the user's page is closed (stopping whatever it was
- * waiting for) and replaced with a fresh one for the next part.
+ * One clean-up part as a step. Past CLEAN_PART_MS it fails: its screenshot is taken, then the user's page is closed
+ * (stopping whatever it was waiting for) and replaced with a fresh one for the next part.
  */
 const cleanStep = async (name, u, fn) => {
   if (failedSteps.has(name)) return;
@@ -398,6 +402,7 @@ const cleanStep = async (name, u, fn) => {
     let timer;
     const limit = new Promise((_, reject) => {
       timer = setTimeout(async () => {
+        await shoot(p, name);
         u.page = await u.ctx.newPage().catch(() => u.page);
         if (u.page !== p) {
           capPage(u.page);
@@ -482,14 +487,17 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
     process.exit(1);
   });
 }
-// The script's own deadline, a few minutes inside the workflow step's timeout: once it passes, the step running
-// finishes, the rest are skipped and the clean-up runs with time to spare.
+// The script's own deadline, 7 minutes inside the workflow step's timeout: once it passes, the step running finishes
+// under the clean-up's caps (set on every open page here), the rest are skipped and the clean-up runs with time to spare.
 const DEADLINE_MIN = Number(process.env.SMOKE_DEADLINE_MIN) || 18;
 setTimeout(() => {
   if (interrupted) return;
   failed++;
   interrupted = true;
   console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and cleaning up`);
+  // The step in flight gets the clean-up's caps too: its next waits end within CLEAN_ACTION_MS.
+  cleanupMs = CLEAN_ACTION_MS;
+  for (const u of [A, B, ...(ADMIN ? [ADMIN] : [])]) if (u.page && !u.page.isClosed()) capPage(u.page);
 }, DEADLINE_MIN * 60_000).unref();
 
 try {

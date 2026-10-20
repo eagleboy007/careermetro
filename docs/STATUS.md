@@ -55,7 +55,7 @@ Last updated: 2026-10-20 (#207 merged; security sweep, error and empty states)
 
 ## In progress
 
-- Security sweep (`docs/dev/security-sweep-2026-10-20.md`): Next 16.4.2 for three Next advisories npm audit missed (dependabot #161); CI now also checks runtime dependencies against GitHub's advisory database (`scripts/check-advisories.mjs`); headers add COOP same-origin and HSTS includeSubDomains; a script-src CSP is written up only (nonces would end prerendering). Error and empty states pass (above). Staging screens check: the admin test account defaults to `admin@careermetro.test` and is used only on previews (T104); city saves are confirmed and an empty payload read fails (T105); the clean-up fits its time (T106). Deleting each run's test company waits on Milin.
+- Security sweep (`docs/dev/security-sweep-2026-10-20.md`): Next 16.4.0 to 16.4.2 for two critical and one high Next advisory that npm audit missed (dependabot #161, merged; production serves 16.4.2 since 2026-10-20 22:01 UTC); CI now also checks runtime dependencies against GitHub's advisory database (`scripts/check-advisories.mjs`); headers add COOP same-origin-allow-popups and HSTS includeSubDomains; a script-src CSP is written up only (nonces would end prerendering). Error and empty states pass (above). Staging screens check: the admin test account defaults to `admin@careermetro.test` and is used only on previews (T104); city saves are confirmed and an empty payload read fails (T105); the clean-up fits its time (T106). Deleting each run's test company waits on Milin.
 
 ## Next up
 

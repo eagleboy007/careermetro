@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PARSE_GIVE_UP_MS, PARSE_STEP_STARTS_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "./parse-steps";
+import { PARSE_GIVE_UP_FILE_MS, PARSE_GIVE_UP_MS, PARSE_STEP_STARTS_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "./parse-steps";
 
 describe("the steps shown while a resume is read", () => {
   it("name only what the upload itself does, never the role or the line", () => {
@@ -21,8 +21,10 @@ describe("the steps shown while a resume is read", () => {
     expect(parseWaitNote(0)).toBe("This usually takes 10 to 30 seconds.");
     expect(parseWaitNote(SLOW_PARSE_MS - 1)).toBe("This usually takes 10 to 30 seconds.");
     expect(parseWaitNote(SLOW_PARSE_MS)).toMatch(/^Still reading\./);
-    // /api/resume runs for at most 120 seconds, so the form never gives up on a reply that can still come.
+    // /api/resume runs for at most 120 seconds once the request has arrived, so the form never gives up on a reply that
+    // can still come. A file also has to arrive first (fetch can't say when it has), so it gets about a minute more.
     expect(PARSE_GIVE_UP_MS).toBeGreaterThan(120_000);
+    expect(PARSE_GIVE_UP_FILE_MS).toBeGreaterThanOrEqual(PARSE_GIVE_UP_MS + 45_000);
     expect(SLOW_PARSE_MS).toBeLessThan(PARSE_GIVE_UP_MS);
   });
 });

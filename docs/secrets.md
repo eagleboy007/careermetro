@@ -46,6 +46,7 @@ Set each one for both **Production** and **Preview**, unless the table says othe
 | CRON_SECRET | Lets the 6-hourly smoke check run the parse check. Must match Vercel. |
 | VERCEL_AUTOMATION_BYPASS_SECRET | Lets the smoke check through Vercel Deployment Protection. Must match the Vercel bypass secret. |
 | ANTHROPIC_API_KEY | Only for the paid AI evals. Can be a separate, low-limit key. |
+| SMOKE_ADMIN_EMAIL | Optional override. The admin test account the staging screens run (`.github/workflows/smoke-staging.yml`) signs in as; without this secret the workflow uses `admin@careermetro.test`, which isn't secret (Preview treats it as an admin while its ADMIN_EMAILS is unset). Set it only when Preview's ADMIN_EMAILS names a different `.test` address. |
 
 One repository **variable** (same page, Variables tab), not a secret: PRODUCTION_URL, the address the smoke check opens. It defaults to https://careermetro.vercel.app.
 

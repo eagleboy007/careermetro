@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
-import { PARSE_GAVE_UP, PARSE_GIVE_UP_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "@/lib/resume/parse-steps";
+import { PARSE_GAVE_UP, PARSE_GIVE_UP_FILE_MS, PARSE_GIVE_UP_MS, PARSE_STEPS, SLOW_PARSE_MS, currentParseStep, parseWaitNote } from "@/lib/resume/parse-steps";
 import { TARGET_ROLE_CHIPS, saveTargetRole } from "@/lib/target-role";
 
 type Mode = "file" | "text";
-type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string; code?: string };
+/** `signedIn` comes with a refusal from /api/resume: /builder needs an account, so a signed-out visitor is sent to the roles instead. */
+type State = { kind: "idle" } | { kind: "reading" } | { kind: "error"; message: string; code?: string; signedIn?: boolean };
 
 /** Refusals where pasting the text is the way on, so the error offers "Paste text instead" (codes from src/lib/resume). */
 const PASTE_HELPS = new Set(["too_large", "too_many_pages", "too_slow", "unreadable", "unsupported_type", "too_little_text", "unparsed", "timeout"]);
@@ -27,7 +28,7 @@ const MORE = "more";
 /** Upload a resume or paste it (FR-4). Consent is required before anything is sent (SEC-1). `demo` never uploads, for /design. */
 /** `builder` shows "No resume yet? Build one" (FR-36), only where the signed-in screens exist. `rolePick` shows the */
 /** target role chips (Today, No resume): the picked role is carried to the role step in this tab (src/lib/target-role.ts). */
-/** `example` opens /design on a slow reading or on a refusal, with its message and code. */
+/** `example` opens /design on a slow reading or on a refusal, with its message, code and whether the visitor is signed in. */
 export function UploadForm({
   demo = false,
   builder = false,
@@ -37,7 +38,7 @@ export function UploadForm({
   demo?: boolean;
   builder?: boolean;
   rolePick?: boolean;
-  example?: "slow" | { message: string; code?: string };
+  example?: "slow" | { message: string; code?: string; signedIn?: boolean };
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("file");
@@ -51,6 +52,9 @@ export function UploadForm({
   const fileInput = useRef<HTMLInputElement>(null);
   const reading = state.kind === "reading";
   const slowExample = example === "slow";
+  // /builder sends a signed-out visitor to sign in, so the spent-budget refusal offers it only to someone signed in
+  // (the route says so on the refusal; /design's example sets it).
+  const offerBuilder = builder && state.kind === "error" && state.signedIn === true;
 
   // The steps move on a timer while the one request runs (src/lib/resume/parse-steps.ts).
   useEffect(() => {
@@ -87,16 +91,18 @@ export function UploadForm({
     saveTargetRole(rolePick && role !== MORE ? role : null);
     // A reply that never comes (a connection dropped without an error) ends the wait instead of spinning for ever.
     const giveUp = new AbortController();
-    const timer = setTimeout(() => giveUp.abort(), PARSE_GIVE_UP_MS);
+    // A file has to arrive before the route's own limit starts, and fetch can't say when it has, so it gets longer.
+    const timer = setTimeout(() => giveUp.abort(), mode === "file" ? PARSE_GIVE_UP_FILE_MS : PARSE_GIVE_UP_MS);
     try {
       const res = await fetch("/api/resume", { method: "POST", body: form, signal: giveUp.signal });
-      const data = await readApiReply(res);
+      const data = await readApiReply(res, giveUp.signal);
       if (data.ok && typeof data.resumeId === "string") {
         router.push(`/resume/${data.resumeId}`);
         return;
       }
-      const code = typeof data.code === "string" ? data.code : res.status === 504 ? "timeout" : undefined;
-      setState({ kind: "error", message: data.error ?? "Something went wrong. Please try again.", code });
+      const code =
+        typeof data.code === "string" ? data.code : res.status === 413 ? "too_large" : res.status === 504 ? "timeout" : undefined;
+      setState({ kind: "error", message: data.error ?? "Something went wrong. Please try again.", code, signedIn: data.signedIn === true });
     } catch {
       setState(
         giveUp.signal.aborted
@@ -107,7 +113,6 @@ export function UploadForm({
       clearTimeout(timer);
     }
   }
-
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
@@ -227,8 +232,8 @@ export function UploadForm({
             {state.message}
           </p>
           {state.code === BUDGET_SPENT ? (
-            <Link href={builder ? "/builder" : "/roles"} className="text-sm font-medium text-ink underline underline-offset-2">
-              {builder ? "Build your resume from a few answers instead" : "Browse the roles we cover meanwhile"}
+            <Link href={offerBuilder ? "/builder" : "/roles"} className="text-sm font-medium text-ink underline underline-offset-2">
+              {offerBuilder ? "Build your resume from a few answers instead" : "Browse the roles we cover meanwhile"}
             </Link>
           ) : state.code && PASTE_HELPS.has(state.code) && mode === "file" ? (
             <Button type="button" variant="ghost" onClick={() => setMode("text")}>

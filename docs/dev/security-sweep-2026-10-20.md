@@ -8,14 +8,14 @@ code. Nothing was built or installed here.
 
 | # | Finding | Severity | Changed here? |
 |---|---|---|---|
-| 1 | Production runs `next@16.4.0`, which has 2 critical RCE advisories and 1 high DoS advisory, all fixed in 16.4.1. Dependabot PR #161 (to 16.4.2) is green and has been open since 2026-10-18 | **Critical** | No. Merge #161 |
-| 2 | CI's `npm audit --omit=dev --audit-level=high` still passes on 16.4.0 | Medium (blind spot) | No |
+| 1 | Production ran `next@16.4.0`, which has 2 critical RCE advisories and 1 high DoS advisory, all fixed in 16.4.1. Dependabot PR #161 (to 16.4.2) had been open since 2026-10-18 | **Critical** | No. #161 is now merged and production serves 16.4.2 |
+| 2 | CI's `npm audit --omit=dev --audit-level=high` still passes on 16.4.0 | Medium (blind spot) | **Yes**: this PR adds a CI step, `scripts/check-advisories.mjs`, that checks GitHub's advisory database |
 | 3 | HSTS had no `includeSubDomains` | Low | **Yes** |
-| 4 | No `Cross-Origin-Opener-Policy` header | Low | **Yes** (`same-origin`) |
+| 4 | No `Cross-Origin-Opener-Policy` header | Low | **Yes** (`same-origin-allow-popups`) |
 | 5 | `access-control-allow-origin: *` on `/` comes from Vercel's prerender/static serving, not our config | Info | No |
 | 6 | The CSP has no `script-src` | Medium | No. Recommendation below |
 | 7 | Majors behind: none confirmed, and latest versions couldn't be checked | Info | No |
-| 8 | Next 16 deprecations: none found in code. `unstable_rethrow` is used in 10 files | Info | No |
+| 8 | Next 16 deprecations: none found in code. `unstable_rethrow` is called 16 times in 10 files | Info | No |
 
 ## 1. npm audit and the Next 16.4.1 security release
 
@@ -26,11 +26,13 @@ code. Nothing was built or installed here.
   - High [GHSA-p3m5-59mp-jv5r](https://github.com/vercel/next.js/security/advisories/GHSA-p3m5-59mp-jv5r): DoS in the App Router through Server Actions.
 - **Our exposure:**
   - The code has no `"use cache"` and no `next/image`. Prod `/_next/image?url=/icon.svg` answers 400 (SVG not allowed by default).
-  - The app has about 20 `actions.ts` files with Server Actions, so the high DoS advisory applies.
+  - The app has 25 `actions.ts` files with Server Actions, so the high DoS advisory applies.
   - Don't count on the criticals being out of reach. Upgrade.
 - **Why audit didn't catch it:** most likely the GHSAs are repository advisories that hadn't yet reached the reviewed GitHub Advisory Database, which `npm audit` reads. The logs would confirm this, but they need auth. A green audit step is not proof of "no known vulns".
 - **Recommendation:**
   - Merge #161 now. It also brings react/react-dom 19.3.1 ("Improve transport protocol" for RSC).
+  - **Done:** #161 is merged, and production serves Next 16.4.2: a client chunk carried "16.4.2" when checked at about 22:01 UTC on 2026-10-20.
+  - This PR adds a CI step after `npm audit`, `node scripts/check-advisories.mjs`, which checks every installed runtime package against GitHub's advisory database, unreviewed advisories included, and fails on a high or critical one.
   - Watch the release notes of `next`, `react` and `react-dom` (GitHub "Watch → Releases → Security"), or turn on Dependabot security alerts. Security updates aren't held to the Monday schedule.
 
 ### Direct dependencies (package.json → package-lock.json)
@@ -110,11 +112,11 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
   - `careermetro.com` is the public site, hosted elsewhere. It never gets this header, and HSTS never covers a parent domain.
   - The earlier comment ("a subdomain served over plain HTTP is never locked out") was a precaution with no live case behind it.
   - Not adding `preload`: a vercel.app subdomain can't be preloaded. Revisit both settings if the app ever moves to the apex `careermetro.com`, where tracking or mail subdomains might be plain HTTP.
-- **COOP `same-origin` (changed).**
+- **COOP `same-origin-allow-popups` (changed).**
   - Google sign-in is a full-page server redirect (`src/app/sign-in/actions.ts:20-24`, `src/lib/auth/server.ts:83`), not a popup.
   - No `window.open` or `postMessage` in `src/`.
   - Outbound links use `rel="noopener noreferrer"`.
-  - The one possible casualty is the Vercel Toolbar's own sign-in popup on preview deployments. If that breaks, use `same-origin-allow-popups` there.
+  - Not plain `same-origin`: the Vercel Toolbar on preview deployments signs in through a popup that needs `window.opener`, which `same-origin` would cut. `same-origin-allow-popups` still keeps a cross-origin page that opens ours from reaching it.
 
 ### Not changed
 
@@ -157,7 +159,7 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
 - **Sync request APIs:** none.
   - Every `cookies()` and `headers()` call is awaited (`src/lib/auth/server.ts`, `src/lib/session.ts`, `src/app/sign-in/actions.ts`, `src/app/auth/sign-out/route.ts`, `src/app/account/restore/actions.ts`, `src/app/(app)/settings/actions.ts`).
   - Pages take `PageProps<…>` and `await searchParams`, for example `src/app/sign-in/page.tsx:17-18` and `src/app/(app)/today/page.tsx:62-63`.
-- **`unstable_` APIs:** only `unstable_rethrow` from `next/navigation`, 26 calls in 10 files, for example:
+- **`unstable_` APIs:** only `unstable_rethrow` from `next/navigation`, 16 calls in 10 files, for example:
   - `src/app/(app)/mock/page.tsx:2,51`
   - `src/app/(app)/departures/page.tsx:3,51-130`
   - `src/app/(app)/library/page.tsx:2,46`
@@ -176,4 +178,3 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
 
 - Dependency versions and `package-lock.json`.
 - `vercel.json`, `src/proxy.ts`.
-- `docs/STATUS.md`: add the 2–3 STATUS lines in the PR that carries this sweep.

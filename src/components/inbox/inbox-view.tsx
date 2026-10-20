@@ -24,7 +24,7 @@ import { ANTI_SCAM_LINE } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
 import { UsuallyFree } from "./usually-free";
-import { NO_CONNECTION } from "@/lib/api-reply";
+import { actionFailed } from "@/lib/api-reply";
 
 const ICON = { size: 14, strokeWidth: 1.75, "aria-hidden": true } as const;
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border px-[11px] py-1.5 text-[0.8rem] font-[550]";
@@ -141,7 +141,7 @@ export function InboxView({
   const act = (run: () => Promise<string | null>, done?: () => void) =>
     startTransition(async () => {
       // A dropped connection says so here instead of replacing the page with the error screen.
-      const error = await run().catch(() => NO_CONNECTION);
+      const error = await run().catch(actionFailed);
       if (error) say(error);
       else done?.();
     });
@@ -177,7 +177,7 @@ export function InboxView({
       // Cleared at once and put back if the message doesn't go.
       setDraft("");
       startTransition(async () => {
-        const error = await actions.send(current.id, text).catch(() => NO_CONNECTION);
+        const error = await actions.send(current.id, text).catch(actionFailed);
         if (error) {
           setDraft((now) => now || text);
           say(error);
@@ -199,7 +199,7 @@ export function InboxView({
       // A real "Ask for times": only the picked slot keys go to the server; the page refreshes with the answer.
       const offerTimes = actions.offerTimes;
       startTransition(async () => {
-        const error = await offerTimes(ask.messageId, [...picks].sort()).catch(() => NO_CONNECTION);
+        const error = await offerTimes(ask.messageId, [...picks].sort()).catch(actionFailed);
         if (error) return say(error);
         setPicking(false);
         say(`Sent. ${current.name} sees only the times you picked.`);
