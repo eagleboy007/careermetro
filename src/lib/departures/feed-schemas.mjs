@@ -42,10 +42,10 @@ export const jobBoard = z
     if (b.token.includes(".") && b.ats !== "ashby") ctx.addIssue({ code: "custom", path: ["token"], message: "Only an Ashby token may have a dot" });
   });
 
-/** The whole board file: at most 150 boards (the feed's cap), each ATS and token once. */
+/** The whole board file: at most 300 boards (the feed's cap, FEED_LIMITS.boards), each ATS and token once. */
 export const jobBoardsFile = z
   .array(jobBoard)
-  .max(150)
+  .max(300)
   .superRefine((boards, ctx) => {
     const seen = new Set();
     boards.forEach((b, i) => {

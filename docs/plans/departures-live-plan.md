@@ -46,7 +46,7 @@ Two PRs. PR 1 is the feed, the tables and Departures (items 40 and 42). PR 2 is 
   - The user-agent is "CareerMetro jobs (careermetro.vercel.app)". Each request times out after 15 s, and a 4xx or 5xx skips that board with a `last_error` in the run summary.
   - It keeps posts located in India or listed as remote-India, matching `INDIA` from `mine.mjs`, moved to `src/lib/departures/feed-rules.mjs` and shared.
   - It upserts by external id and closes rows not seen in this run. A board whose fetch failed closes nothing.
-  - Caps: 150 boards, 500 posts a board, 5,000 open posts in all. Above that the newest are kept.
+  - Caps: 300 boards, 500 posts a board, 10,000 open posts in all (raised from 150 and 5,000 on 2026-10-20; 144 boards ran in about 75 seconds). Above that the newest are kept.
 - **Skills are read by code, not the model**: the role comes from the title (`classify` from `mine.mjs`) and the skills from the taxonomy aliases (`hasSkill`).
   - A skill counts as required when it appears under a requirements-style heading ("Requirements", "What you'll need", "Must have"). Under "Nice to have", "Preferred" or "Bonus" it is nice to have.
   - With no headings, every skill found in the post counts as required.
