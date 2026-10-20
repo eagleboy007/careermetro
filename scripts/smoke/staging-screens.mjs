@@ -105,6 +105,11 @@ for (const u of [A, B]) {
 }
 
 let failed = 0;
+// A stray rejection counts as a failure instead of ending the run, so the clean-up below still deletes both accounts.
+process.on("unhandledRejection", (err) => {
+  failed++;
+  console.log(`FAIL unhandled: ${redact(err?.message ?? err)}`);
+});
 let blockedBy = "";
 let n = 0;
 const failedSteps = new Set();
@@ -414,9 +419,11 @@ await step("departures: A opens the board, saves a role and marks it applied", A
   const saveButton = (opts = {}) => p.getByRole("button", { name: `Save ${role}`, exact: true, ...opts });
   await saveButton({ pressed: true }).first().waitFor({ timeout: 10000 });
   // The company's post opens in a new tab, which this context refuses to load (no other host gets the header).
-  const popup = p.waitForEvent("popup", { timeout: 15000 });
-  await detail.getByRole("link", { name: /^Apply on company site: .+ \(opens in a new tab\)$/ }).click();
-  await (await popup).close().catch(() => {});
+  const [popup] = await Promise.all([
+    p.waitForEvent("popup", { timeout: 15000 }),
+    detail.getByRole("link", { name: /^Apply on company site: .+ \(opens in a new tab\)$/ }).click(),
+  ]);
+  await popup.close().catch(() => {});
   await detail.getByRole("group", { name: "Did you apply?" }).getByRole("button", { name: "Yes, I applied", exact: true }).click();
   await toast(p, "Marked as applied to ");
   await detail.getByRole("heading", { name: "Your application" }).waitFor({ timeout: 10000 });

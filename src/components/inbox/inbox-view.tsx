@@ -420,7 +420,7 @@ export function InboxView({
                   data-end
                   onClick={() => {
                     setReporting(null);
-                    setEnding(true);
+                    setEnding((v) => !v);
                   }}
                   aria-expanded={ending}
                   aria-controls={ending ? endId : undefined}
