@@ -23,12 +23,20 @@ export const JOB_TITLE_MAX = 120;
 
 /* Library (FR-51, handoff 12a) --------------------------------------------------------------------------------------- */
 
-export const LIBRARY_TABS = ["goals", "interests", "saved", "finished"] as const;
+export const LIBRARY_TABS = ["goals", "interests", "saved", "finished", "elite"] as const;
 export const LIBRARY_TAB_LABELS: Record<(typeof LIBRARY_TABS)[number], string> = {
   goals: "For your goals",
   interests: "Your interests",
   saved: "Saved",
   finished: "Finished",
+  elite: "Elite",
+};
+/** The Elite shelf's groups (handoff 12l, Elite part 5), in the order the shelf shows them. */
+export const ELITE_SHELF_GROUPS = ["course", "playbook", "drill"] as const;
+export const ELITE_SHELF_GROUP_LABELS: Record<(typeof ELITE_SHELF_GROUPS)[number], string> = {
+  course: "Paid courses",
+  playbook: "Playbooks and walkthroughs",
+  drill: "Drills and labs",
 };
 /** The catalog's resource kinds (FR-17), the Library's type filter. */
 export const LIBRARY_KINDS = ["course", "video", "docs", "practice"] as const;

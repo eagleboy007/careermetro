@@ -2,20 +2,26 @@ import "server-only";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { resources, rideDays } from "@/db/schema";
-import { resources as catalog, roleProfiles, skillGroupMembers, skills } from "@/content";
+import { resources as catalog, eliteShelfEntries, roleProfiles, skillGroupMembers, skills } from "@/content";
+import { eliteOn } from "@/lib/elite/store";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf } from "@/lib/goals/store";
+import { unreviewedAllowed } from "@/lib/mock/rules";
 import { buildRide } from "@/lib/ride/build";
 import { indiaDay } from "@/lib/ride/days";
 import { rideGoalsFor } from "@/lib/ride/store";
-import type { LibraryLanguage, LibraryView } from "@/lib/schemas";
+import type { EliteShelfView, LibraryLanguage, LibraryView } from "@/lib/schemas";
 import { buildLibrary } from "./build";
+import { buildEliteShelf } from "./shelf";
 
 type Db = ReturnType<typeof getDb>;
 
 const skillNames: ReadonlyMap<string, string> = new Map(skills.map((s) => [s.id, s.name]));
 /** The language each catalog link is taught in. The table has no column for it, so it comes from the catalog file. */
 const languageByUrl: ReadonlyMap<string, LibraryLanguage> = new Map(catalog.flatMap((r) => (r.language ? [[r.url, r.language] as const] : [])));
+
+/** The catalog's skills by URL, for putting the Elite shelf's free sources for the person's goals first. */
+const skillIdsByUrl: ReadonlyMap<string, readonly string[]> = new Map(catalog.map((r) => [r.url, r.skillIds]));
 
 /** The healthy catalog, as the path builder reads it: only links the link check hasn't marked broken. Read only. */
 async function healthyCatalog(db: Db) {
@@ -72,5 +78,21 @@ export async function libraryFor(userId: string, now = new Date(), db: Db = getD
     skillNames,
     ticked,
     ride,
+  });
+}
+
+/**
+ * The Library's Elite tab (FR-50 part 5, handoff 12l) for the person whose Library this is: eliteOn decides whether it
+ * opens. Free sources come from the same healthy catalog as the rest of the Library; playbooks and drills not yet
+ * checked by someone in the role show on local and preview deployments only.
+ */
+export async function eliteShelfFor(userId: string, view: LibraryView, db: Db = getDb()): Promise<EliteShelfView> {
+  return buildEliteShelf({
+    elite: await eliteOn(userId, db),
+    entries: eliteShelfEntries,
+    items: view.items,
+    skillIdsByUrl,
+    goals: view.goals,
+    allowUnreviewed: unreviewedAllowed(),
   });
 }

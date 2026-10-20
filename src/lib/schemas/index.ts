@@ -5,6 +5,7 @@ export * from "./path";
 export * from "./profile";
 export * from "./resource";
 export * from "./library";
+export * from "./elite-shelf";
 export * from "./role-profile";
 export * from "./skill";
 export * from "./waitlist";

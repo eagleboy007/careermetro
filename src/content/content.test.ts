@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
-import { certifications, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -237,5 +237,33 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
     }
     // The right answer isn't always in the same place.
     expect(new Set(choice.map((q) => q.kind === "choice" && q.answer)).size).toBe(4);
+  });
+});
+
+describe("Elite shelf (FR-50 part 5, handoff 12l)", () => {
+  const byUrl = new Map(resources.map((r) => [r.url, r]));
+  const known = new Set(skills.map((s) => s.id));
+
+  it("names free sources only by a URL of the free catalog", () => {
+    const free = eliteShelfEntries.filter((e) => e.type === "free");
+    expect(free.length).toBeGreaterThan(0);
+    expect(free.filter((e) => !byUrl.get(e.url)?.free).map((e) => e.url)).toEqual([]);
+  });
+
+  it("files paid courses only as Coming soon slots, and nothing else under them", () => {
+    expect(eliteShelfEntries.filter((e) => (e.type === "slot") !== (e.group === "course")).map((e) => e.id)).toEqual([]);
+  });
+
+  it("has no price, link, maker or offer in anything it wrote itself", () => {
+    const own = eliteShelfEntries.flatMap((e) =>
+      e.type === "slot" ? [e.label, e.summary] : e.type === "own" ? [e.title, e.summary, ...e.parts.flatMap((p) => [p.text, p.answer ?? ""])] : [e.why],
+    );
+    expect(own.filter((t) => /₹|\brs\.?\s?\d|\binr\b|https?:|www\.|affiliate|coupon|discount|% off|\bbuy\b/i.test(t))).toEqual([]);
+  });
+
+  it("ties every playbook and drill to known skills", () => {
+    const own = eliteShelfEntries.filter((e) => e.type === "own");
+    expect(own.length).toBeGreaterThan(0);
+    for (const e of own) if (e.type === "own") expect([e.id, e.skillIds.filter((id) => !known.has(id))]).toEqual([e.id, []]);
   });
 });

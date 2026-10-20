@@ -681,7 +681,8 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
 });
 // Library (FR-51, handoff 12a). Signed in, with the walk's goals: one card per open goal with Learn or Brush up and
 // Prove; a resource opens in the details panel with its source link in a new tab and no referrer; a search for nothing
-// says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. axe passes on each tab.
+// says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. The Elite tab is locked on
+// Free: Turn on Elite opens /elite and no card links out (Elite part 5). axe passes on each tab.
 await step("library: goal cards, the details panel, search and filters, Finished and Saved", async () => {
   await p.goto(BASE + "/library");
   await settled();
@@ -718,6 +719,14 @@ await step("library: goal cards, the details panel, search and filters, Finished
   await show.getByRole("button", { name: "Your interests" }).click();
   await main.getByText("From the interests on your profile.", { exact: false }).waitFor({ timeout: 5000 });
   await a11y("library-interests");
+  await show.getByRole("button", { name: "Elite", exact: true }).click();
+  const shelf = main.getByRole("region", { name: "Elite shelf", exact: true });
+  const unlock = shelf.getByRole("link", { name: "Turn on Elite", exact: true });
+  await unlock.waitFor({ timeout: 5000 });
+  if ((await unlock.getAttribute("href")) !== "/elite") throw new Error("the shelf's Turn on Elite doesn't open /elite");
+  if (!(await shelf.locator('[data-shelf-card="slot"]').count())) throw new Error("no Coming soon slot for paid courses");
+  if (await shelf.locator("[data-shelf-card] a, [data-shelf-card] details").count()) throw new Error("a locked shelf card opens");
+  await a11y("library-elite-free");
 });
 // The current job checked by work email (FR-47, dev/current-job-check-plan.md). The walk's resume is a Data Analyst at
 // Example Retail Pvt Ltd since 2022-06. No verified company owns exampleretail.test, so a right code goes to an admin
@@ -1460,6 +1469,18 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await mode.getByRole("button", { name: "Question bank", exact: true }).click();
     await openItems.first().waitFor();
     if (await lockedItems.count()) throw new Error("bank questions stay locked with Elite on");
+
+    // The Library's Elite tab opens with Elite (part 5): no locked panel, our playbooks and drills open, and paid
+    // courses stay Coming soon slots with no link.
+    await q.goto(BASE + "/library?tab=elite");
+    const shelf = main.getByRole("region", { name: "Elite shelf", exact: true });
+    await shelf.waitFor({ timeout: 15000 });
+    if (await shelf.getByRole("link", { name: "Turn on Elite", exact: true }).count()) throw new Error("the shelf stays locked with Elite on");
+    if (await shelf.locator('[data-shelf-card="slot"] a').count()) throw new Error("a paid-course slot links somewhere");
+    const drills = shelf.locator('[data-shelf-card="own"]').filter({ hasText: "Drill set" }).first();
+    await drills.locator("summary").first().click();
+    await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
+    await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
     if (data.exportVersion !== 24) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");

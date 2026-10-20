@@ -10,6 +10,7 @@ import {
   FileText,
   FlaskConical,
   Lightbulb,
+  Lock,
   Route,
   Search,
   TrainFront,
@@ -22,10 +23,11 @@ import { useId, useMemo, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { filtersOn, goalCards, goalOf, lengthLabel, moreResults, NO_FILTERS, pick, readyToProve, type LibraryFilters } from "@/lib/library/filter";
-import type { LibraryGoal, LibraryItem, LibraryKind, LibraryView as View } from "@/lib/schemas";
+import type { EliteShelfView, LibraryGoal, LibraryItem, LibraryKind, LibraryView as View } from "@/lib/schemas";
 import { LIBRARY_KIND_LABELS, LIBRARY_KINDS, LIBRARY_LENGTHS, LIBRARY_TAB_LABELS, LIBRARY_TABS } from "@/lib/schemas/constants";
+import { EliteShelf } from "./elite-shelf";
 
-type Tab = (typeof LIBRARY_TABS)[number];
+export type LibraryTab = (typeof LIBRARY_TABS)[number];
 
 const KIND_ICON: Record<LibraryKind, LucideIcon> = { course: BookOpen, video: CirclePlay, docs: FileText, practice: FlaskConical };
 const LABEL = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
@@ -40,10 +42,11 @@ const LENGTH_LABELS: Record<(typeof LIBRARY_LENGTHS)[number], string> = { 60: "U
 /**
  * The Library (handoff 12a, prototype v44): free resources grouped by the person's open goals in map order, each with
  * Learn (or Brush up) and Prove, plus Your interests, Saved and Finished, search, type, length and Hindi filters, and a
- * details panel. Read only: links open the source site in a new tab, and nothing here fills a gap.
+ * details panel. Read only: links open the source site in a new tab, and nothing here fills a gap. The fifth tab, Elite,
+ * is the Elite shelf (handoff 12l): locked with "Turn on Elite" while Elite is off.
  */
-export function LibraryView({ view }: { view: View }) {
-  const [tab, setTab] = useState<Tab>("goals");
+export function LibraryView({ view, shelf, tab: firstTab = "goals" }: { view: View; shelf: EliteShelfView; tab?: LibraryTab }) {
+  const [tab, setTab] = useState<LibraryTab>(firstTab);
   const [filters, setFilters] = useState<LibraryFilters>(NO_FILTERS);
   const [selected, setSelected] = useState<string | null>(() => view.onRide[0] ?? view.goals[0]?.resourceIds[0] ?? null);
   const detailId = useId();
@@ -89,131 +92,142 @@ export function LibraryView({ view }: { view: View }) {
             <button key={t} type="button" aria-pressed={tab === t} className={`${seg} min-h-9 whitespace-nowrap`} onClick={() => setTab(t)}>
               {LIBRARY_TAB_LABELS[t]}
               {t === "finished" && <span className="ml-1 font-mono text-[0.72rem] text-muted">{view.finished.length}</span>}
+              {t === "elite" && !shelf.elite && (
+                <span className="ml-1.5 inline-grid h-5 w-5 place-items-center rounded-full bg-elite-soft text-elite">
+                  <Lock size={11} {...ICON} />
+                </span>
+              )}
             </button>
           ))}
         </div>
 
-        <label className="flex items-center gap-2.5 rounded-full border border-line-strong bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
-          <Search size={18} {...ICON} />
-          <input
-            type="search"
-            value={filters.query}
-            onChange={(e) => set({ query: e.target.value })}
-            placeholder="Search a skill, topic or source"
-            aria-label="Search the Library"
-            className="min-w-0 flex-1 bg-transparent text-ink outline-none"
-          />
-        </label>
+        {tab === "elite" ? (
+          <EliteShelf shelf={shelf} role={view.role} />
+        ) : (
+          <>
+            <label className="flex items-center gap-2.5 rounded-full border border-line-strong bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
+              <Search size={18} {...ICON} />
+              <input
+                type="search"
+                value={filters.query}
+                onChange={(e) => set({ query: e.target.value })}
+                placeholder="Search a skill, topic or source"
+                aria-label="Search the Library"
+                className="min-w-0 flex-1 bg-transparent text-ink outline-none"
+              />
+            </label>
 
-        <div role="group" aria-label="Filters" className="-mr-4 flex items-center gap-x-3.5 gap-y-2.5 overflow-x-auto pb-1 pr-4 min-[760px]:mr-0 min-[760px]:flex-wrap min-[760px]:pr-0">
-          <div role="group" aria-label="Type" className="inline-flex flex-none gap-1">
-            <button type="button" aria-pressed={filters.kind === null} className={pill} onClick={() => set({ kind: null })}>
-              All
-            </button>
-            {LIBRARY_KINDS.map((k) => {
-              const Icon = KIND_ICON[k];
-              return (
-                <button key={k} type="button" aria-pressed={filters.kind === k} className={pill} onClick={() => set({ kind: k })}>
-                  <Icon size={14} {...ICON} />
-                  {LIBRARY_KIND_LABELS[k]}
+            <div role="group" aria-label="Filters" className="-mr-4 flex items-center gap-x-3.5 gap-y-2.5 overflow-x-auto pb-1 pr-4 min-[760px]:mr-0 min-[760px]:flex-wrap min-[760px]:pr-0">
+              <div role="group" aria-label="Type" className="inline-flex flex-none gap-1">
+                <button type="button" aria-pressed={filters.kind === null} className={pill} onClick={() => set({ kind: null })}>
+                  All
                 </button>
-              );
-            })}
-          </div>
-          <div role="group" aria-label="Length" className="inline-flex flex-none gap-1">
-            <button type="button" aria-pressed={filters.under === null} className={pill} onClick={() => set({ under: null })}>
-              Any length
-            </button>
-            {LIBRARY_LENGTHS.map((m) => (
-              <button key={m} type="button" aria-pressed={filters.under === m} className={pill} onClick={() => set({ under: m })}>
-                {LENGTH_LABELS[m]}
-              </button>
-            ))}
-          </div>
-          <div role="group" aria-label="Language" className="inline-flex flex-none gap-1">
-            <button type="button" aria-pressed={!filters.hindi} className={pill} onClick={() => set({ hindi: false })}>
-              Any language
-            </button>
-            <button type="button" aria-pressed={filters.hindi} className={pill} onClick={() => set({ hindi: true })}>
-              Hindi
-            </button>
-          </div>
-        </div>
-
-        {noResume && (
-          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 text-[0.88rem]">
-            <Upload size={18} {...ICON} className="shrink-0" />
-            <span className="min-w-[200px] flex-1">
-              <b className="font-semibold">Add your resume to get picks for your gaps.</b> Until then, search any topic.
-            </span>
-            <Link href="/today" className={`${ghost} px-3 py-1.5 text-[0.8rem]`}>
-              Add resume
-            </Link>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-[18px]">
-          {tab === "goals" && (
-            <>
-              {cards.map((c) => (
-                <GoalCard key={c.goal.goalId ?? c.goal.skillId} goal={c.goal} filtered={filtersOn(filters)}>
-                  {c.items.map(row)}
-                </GoalCard>
-              ))}
-              {!noResume && !view.goals.length && !filtersOn(filters) && (
-                <p className={EMPTY}>Every goal on your line is proved or set aside. Search any topic above to keep learning.</p>
-              )}
-              {more.length > 0 && <ResultList title={cards.length ? "More in the Library" : "In the Library"}>{more.map(row)}</ResultList>}
-              {filtersOn(filters) && !cards.length && !more.length && <p className={EMPTY}>Nothing matches. Try another word or clear a filter.</p>}
-            </>
-          )}
-
-          {tab === "interests" && (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium text-muted">Your choice</span>
-                <p className="basis-full text-[0.84rem] text-muted">From the interests on your profile. These never change your goals or your job matches.</p>
+                {LIBRARY_KINDS.map((k) => {
+                  const Icon = KIND_ICON[k];
+                  return (
+                    <button key={k} type="button" aria-pressed={filters.kind === k} className={pill} onClick={() => set({ kind: k })}>
+                      <Icon size={14} {...ICON} />
+                      {LIBRARY_KIND_LABELS[k]}
+                    </button>
+                  );
+                })}
               </div>
-              <p className={EMPTY}>Your profile has no interests yet, so there are no picks here. Search any topic above to look through the whole Library.</p>
-              {more.length > 0 && <ResultList title="In the Library">{more.map(row)}</ResultList>}
-            </>
-          )}
+              <div role="group" aria-label="Length" className="inline-flex flex-none gap-1">
+                <button type="button" aria-pressed={filters.under === null} className={pill} onClick={() => set({ under: null })}>
+                  Any length
+                </button>
+                {LIBRARY_LENGTHS.map((m) => (
+                  <button key={m} type="button" aria-pressed={filters.under === m} className={pill} onClick={() => set({ under: m })}>
+                    {LENGTH_LABELS[m]}
+                  </button>
+                ))}
+              </div>
+              <div role="group" aria-label="Language" className="inline-flex flex-none gap-1">
+                <button type="button" aria-pressed={!filters.hindi} className={pill} onClick={() => set({ hindi: false })}>
+                  Any language
+                </button>
+                <button type="button" aria-pressed={filters.hindi} className={pill} onClick={() => set({ hindi: true })}>
+                  Hindi
+                </button>
+              </div>
+            </div>
 
-          {tab === "saved" && (
-            <>
-              <p className={EMPTY}>Saving isn&apos;t on yet. Until it is, the courses for your goals stay under For your goals and on your path.</p>
-              {more.length > 0 && <ResultList title="In the Library">{more.map(row)}</ResultList>}
-            </>
-          )}
+            {noResume && (
+              <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface px-4 py-3.5 text-[0.88rem]">
+                <Upload size={18} {...ICON} className="shrink-0" />
+                <span className="min-w-[200px] flex-1">
+                  <b className="font-semibold">Add your resume to get picks for your gaps.</b> Until then, search any topic.
+                </span>
+                <Link href="/today" className={`${ghost} px-3 py-1.5 text-[0.8rem]`}>
+                  Add resume
+                </Link>
+              </div>
+            )}
 
-          {tab === "finished" && (
-            <>
-              {ready.map((g) => (
-                <div key={g.goalId ?? g.skillId} className="flex flex-wrap items-center gap-3 rounded-[18px] bg-accent-soft px-4 py-3.5 text-ink">
-                  <Route size={18} {...ICON} className="shrink-0 text-accent" />
-                  <span className="min-w-[200px] flex-1 text-[0.88rem]">
-                    <b className="font-semibold">Ready to prove {g.name}?</b> Finishing a course doesn&apos;t fill the gap. The proof at Pitstop {g.provePitstop} does.
-                  </span>
-                  <Link href="/map" className={`${primary} px-3 py-1.5 text-[0.8rem]`}>
-                    Prove it on the Map
-                  </Link>
-                </div>
-              ))}
-              {done.length > 0 ? (
-                <ResultList title="Finished">{done.map(row)}</ResultList>
-              ) : (
-                <p className={EMPTY}>
-                  {view.finished.length
-                    ? "Nothing finished matches. Try another word or clear a filter."
-                    : "Nothing finished yet. When you finish a course, tick it on today's ride. We can't see your progress on other sites."}
-                </p>
+            <div className="flex flex-col gap-[18px]">
+              {tab === "goals" && (
+                <>
+                  {cards.map((c) => (
+                    <GoalCard key={c.goal.goalId ?? c.goal.skillId} goal={c.goal} filtered={filtersOn(filters)}>
+                      {c.items.map(row)}
+                    </GoalCard>
+                  ))}
+                  {!noResume && !view.goals.length && !filtersOn(filters) && (
+                    <p className={EMPTY}>Every goal on your line is proved or set aside. Search any topic above to keep learning.</p>
+                  )}
+                  {more.length > 0 && <ResultList title={cards.length ? "More in the Library" : "In the Library"}>{more.map(row)}</ResultList>}
+                  {filtersOn(filters) && !cards.length && !more.length && <p className={EMPTY}>Nothing matches. Try another word or clear a filter.</p>}
+                </>
               )}
-              {notDone.length > 0 && <ResultList title="In the Library">{notDone.map(row)}</ResultList>}
-            </>
-          )}
-        </div>
+
+              {tab === "interests" && (
+                <>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs font-medium text-muted">Your choice</span>
+                    <p className="basis-full text-[0.84rem] text-muted">From the interests on your profile. These never change your goals or your job matches.</p>
+                  </div>
+                  <p className={EMPTY}>Your profile has no interests yet, so there are no picks here. Search any topic above to look through the whole Library.</p>
+                  {more.length > 0 && <ResultList title="In the Library">{more.map(row)}</ResultList>}
+                </>
+              )}
+
+              {tab === "saved" && (
+                <>
+                  <p className={EMPTY}>Saving isn&apos;t on yet. Until it is, the courses for your goals stay under For your goals and on your path.</p>
+                  {more.length > 0 && <ResultList title="In the Library">{more.map(row)}</ResultList>}
+                </>
+              )}
+
+              {tab === "finished" && (
+                <>
+                  {ready.map((g) => (
+                    <div key={g.goalId ?? g.skillId} className="flex flex-wrap items-center gap-3 rounded-[18px] bg-accent-soft px-4 py-3.5 text-ink">
+                      <Route size={18} {...ICON} className="shrink-0 text-accent" />
+                      <span className="min-w-[200px] flex-1 text-[0.88rem]">
+                        <b className="font-semibold">Ready to prove {g.name}?</b> Finishing a course doesn&apos;t fill the gap. The proof at Pitstop {g.provePitstop} does.
+                      </span>
+                      <Link href="/map" className={`${primary} px-3 py-1.5 text-[0.8rem]`}>
+                        Prove it on the Map
+                      </Link>
+                    </div>
+                  ))}
+                  {done.length > 0 ? (
+                    <ResultList title="Finished">{done.map(row)}</ResultList>
+                  ) : (
+                    <p className={EMPTY}>
+                      {view.finished.length
+                        ? "Nothing finished matches. Try another word or clear a filter."
+                        : "Nothing finished yet. When you finish a course, tick it on today's ride. We can't see your progress on other sites."}
+                    </p>
+                  )}
+                  {notDone.length > 0 && <ResultList title="In the Library">{notDone.map(row)}</ResultList>}
+                </>
+              )}
+            </div>
+          </>
+        )}
         <p role="status" className="sr-only">
-          {filtersOn(filters) ? `${shownCount} ${shownCount === 1 ? "resource" : "resources"} shown` : ""}
+          {tab !== "elite" && filtersOn(filters) ? `${shownCount} ${shownCount === 1 ? "resource" : "resources"} shown` : ""}
         </p>
       </div>
 
