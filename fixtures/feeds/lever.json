@@ -1,0 +1,51 @@
+[
+  {
+    "id": "a1b2c3d4-0001",
+    "text": "QA Automation Engineer",
+    "hostedUrl": "https://jobs.lever.co/examplecart/a1b2c3d4-0001",
+    "createdAt": 1792130400000,
+    "workplaceType": "onsite",
+    "categories": {
+      "location": "Bengaluru",
+      "allLocations": [
+        "Bengaluru",
+        "Chennai"
+      ],
+      "commitment": "Full-time"
+    },
+    "descriptionPlain": "Examplecart ships groceries across India.\nYou will own our test suites.",
+    "lists": [
+      {
+        "text": "What you'll need",
+        "content": "<li>Selenium and Java</li><li>API testing with Postman</li>"
+      },
+      {
+        "text": "Bonus points",
+        "content": "<li>Docker</li><li>Java on the backend</li>"
+      }
+    ],
+    "additionalPlain": "We offer health cover."
+  },
+  {
+    "id": "a1b2c3d4-0002",
+    "text": "Weekend Support Analyst",
+    "hostedUrl": "https://jobs.lever.co/examplecart/a1b2c3d4-0002",
+    "createdAt": 1791525600000,
+    "categories": {
+      "location": "Mumbai, India",
+      "commitment": "Part-time"
+    },
+    "descriptionPlain": "Answer tickets on weekends. Excel and SQL help.",
+    "lists": []
+  },
+  {
+    "id": "a1b2c3d4-0003",
+    "text": "Data Analyst",
+    "hostedUrl": "https://jobs.lever.co/examplecart/a1b2c3d4-0003",
+    "categories": {
+      "location": "London, United Kingdom",
+      "commitment": "Contract"
+    },
+    "descriptionPlain": "SQL and Tableau."
+  }
+]

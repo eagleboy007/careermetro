@@ -48,6 +48,7 @@ import { arrivedRide } from "@/lib/ride/build";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
+import { DEPARTURES_LEDE } from "@/lib/departures/filter";
 import { JobSearchOffToday, JobSearchPaused, JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
 import { NoticeCard } from "@/components/job-search/notice-card";
 import { MeView } from "@/components/me/me-view";
@@ -133,7 +134,7 @@ import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
 import type { JobCheckView } from "@/lib/jobs/groups";
@@ -466,6 +467,22 @@ export default function DesignPage() {
         <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, false)} demo />
         <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
+        <p className="text-sm text-muted">
+          Live roles from public company job boards (docs/plans/departures-live-plan.md): &quot;Updated 19:42&quot; in the header, Apply on company site
+          opening the post in a new tab and then asking &quot;Did you apply?&quot;, a role that closed on its company&apos;s board (off All, still in Saved and
+          Applied with its tracker, no Apply), and a post that names too few skills we know (no fit). Then the board before the first feed run, and Saved
+          with nothing saved.
+        </p>
+        <DeparturesView
+          jobs={exampleLiveJobs}
+          initialSaved={exampleLiveSaved}
+          initialApplied={exampleLiveApplied}
+          updated="Updated 19:42"
+          resumeId="example"
+          prep={exampleDeparturesPrep(exampleLiveJobs, false)}
+          demo
+        />
+        <DeparturesView jobs={exampleLiveJobs.slice(1, 2)} updated="Updated 18 Oct" resumeId="example" demo />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -475,7 +492,7 @@ export default function DesignPage() {
           board&apos;s place. Turn on works here, nothing saves. Then the status line on Me, on and off, and Me&apos;s switches.
         </p>
         <JobSearchProvider initialOn={false}>
-          <JobSearchPaused title="Departures" lede="Roles from public company job boards and posts you paste, applied for on the company's site." />
+          <JobSearchPaused title="Departures" lede={DEPARTURES_LEDE} />
           <div className="max-w-md">
             <JobSearchOffToday />
           </div>

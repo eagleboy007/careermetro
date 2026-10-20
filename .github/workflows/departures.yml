@@ -1,0 +1,47 @@
+name: Departures feed
+
+# Live Departures (docs/plans/departures-live-plan.md): once a day, one GET per reviewed board in
+# src/content/job-boards.json through the public job-board APIs of Greenhouse, Lever, Ashby and SmartRecruiters only
+# (never a web page, never LinkedIn, Naukri or any site whose terms forbid it). Skills are found by code over the
+# taxonomy; no model is called, so no Anthropic key is needed. The scheduled run on main writes job_posts and
+# job_feed_runs with the existing repository secret DATABASE_MIGRATION_URL, as the link check does. Without it (a fork,
+# or before the secret is set) the job says so and stops cleanly. The log and the summary name boards and counts only,
+# never post text.
+on:
+  schedule:
+    - cron: "0 1 * * *" # 06:30 IST
+  workflow_dispatch:
+
+concurrency:
+  group: departures-feed
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Only runs on the default branch write; a manual run elsewhere is a dry run.
+      DATABASE_URL: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && secrets.DATABASE_MIGRATION_URL || '' }}
+    steps:
+      - name: Skip when the database secret is not set
+        if: env.DATABASE_URL == ''
+        run: echo "::notice title=Departures feed::DATABASE_MIGRATION_URL is not available to this run, so nothing is fetched or written."
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.DATABASE_URL != ''
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: env.DATABASE_URL != ''
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: env.DATABASE_URL != ''
+      - name: Check the database link
+        if: env.DATABASE_URL != ''
+        run: node scripts/check-database-url.mjs
+      - name: Read the boards and update Departures
+        if: env.DATABASE_URL != ''
+        run: node scripts/departures/fetch-feeds.mjs

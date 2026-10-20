@@ -563,6 +563,8 @@ export const userGoals = pgTable(
     uniqueIndex("user_goals_skill").on(t.userId, t.skillId),
     index("user_goals_gap_analysis").on(t.gapAnalysisId),
     index("user_goals_job_check").on(t.jobCheckId),
+    // "On your line right now" counts other people with an active goal on a skill (docs/plans/departures-live-plan.md).
+    index("user_goals_skill_status").on(t.skillId, t.status),
   ],
 );
 
@@ -1386,6 +1388,95 @@ export const mockAnswers = pgTable(
     check("mock_answers_answer_length", sql`char_length(${t.answer}) between 1 and 4000`),
     check("mock_answers_position", sql`${t.position} between 1 and 8`),
   ],
+);
+
+/* Live Departures (docs/plans/departures-live-plan.md, migration 0040) --------------------------------------- */
+
+/**
+ * Roles from the reviewed public job boards (src/content/job-boards.json; the Greenhouse, Lever, Ashby and
+ * SmartRecruiters public APIs only), written once a day by scripts/departures/fetch-feeds.mjs. No post text: the
+ * title, company, place, work type, the experience the post states, the live role read from the title and the skill
+ * ids the taxonomy finds by code. Belongs to no one. A post the feed no longer sees gets `closed_at`; closed posts are
+ * deleted with their saves 180 days later (clearOldDepartures, the daily cleanup).
+ */
+export const jobPosts = pgTable(
+  "job_posts",
+  {
+    id: id(),
+    ats: text("ats", { enum: ["greenhouse", "lever", "ashby", "smartrecruiters"] }).notNull(),
+    boardToken: text("board_token").notNull(),
+    externalId: text("external_id").notNull(),
+    /** The post on the company's own board; https only. */
+    url: text("url").notNull(),
+    title: text("title").notNull(),
+    company: text("company").notNull(),
+    /** A city in India, "Remote" or "India". */
+    city: text("city").notNull(),
+    workType: jobWorkType("work_type").notNull().default("full_time"),
+    /** "2 to 4 years", when the post states years. */
+    experienceNote: text("experience_note"),
+    /** The live role the title reads as; null when none matches. */
+    roleSlug: text("role_slug"),
+    requiredSkillIds: text("required_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    niceSkillIds: text("nice_skill_ids").array().notNull().default(sql`'{}'::text[]`),
+    postedAt: timestamp("posted_at", { withTimezone: true }),
+    firstSeenAt: timestamp("first_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("job_posts_external").on(t.ats, t.boardToken, t.externalId),
+    index("job_posts_closed_role").on(t.closedAt, t.roleSlug),
+    index("job_posts_open_role_city").on(t.roleSlug, t.city).where(sql`${t.closedAt} is null`),
+    check("job_posts_ats", sql`${t.ats} in ('greenhouse', 'lever', 'ashby', 'smartrecruiters')`),
+    check("job_posts_url_https", sql`${t.url} like 'https://%'`),
+    check("job_posts_title_length", sql`char_length(${t.title}) between 2 and 160`),
+    check("job_posts_company_length", sql`char_length(${t.company}) between 1 and 80`),
+    check("job_posts_city_length", sql`char_length(${t.city}) between 1 and 60`),
+    check("job_posts_experience_length", sql`${t.experienceNote} is null or char_length(${t.experienceNote}) <= 40`),
+  ],
+);
+
+/**
+ * The person's own Saved and Applied lists on Departures: `saved_at` for the bookmark, `stage` 1 to 4 (Applied, Heard
+ * back, Interview, Offer) for the tracker. Owner only; a row with neither is deleted, not kept. Goes with the account
+ * and with its post (on delete cascade); in Download your data.
+ */
+export const jobSaves = pgTable(
+  "job_saves",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    jobPostId: uuid("job_post_id")
+      .notNull()
+      .references(() => jobPosts.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at", { withTimezone: true }),
+    stage: smallint("stage"),
+    appliedAt: timestamp("applied_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.jobPostId] }),
+    index("job_saves_job_post").on(t.jobPostId),
+    check("job_saves_stage", sql`${t.stage} is null or ${t.stage} between 1 and 4`),
+    check("job_saves_not_empty", sql`${t.savedAt} is not null or ${t.stage} is not null`),
+  ],
+);
+
+/** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */
+export const jobFeedRuns = pgTable(
+  "job_feed_runs",
+  {
+    id: id(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    boardsOk: integer("boards_ok").notNull().default(0),
+    boardsFailed: integer("boards_failed").notNull().default(0),
+    postsOpen: integer("posts_open").notNull().default(0),
+    postsClosed: integer("posts_closed").notNull().default(0),
+  },
+  (t) => [index("job_feed_runs_finished").on(t.finishedAt)],
 );
 
 /* Audit ------------------------------------------------------------------- */

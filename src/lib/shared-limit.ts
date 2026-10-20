@@ -7,7 +7,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
-import { ELITE_CHANGES_PER_DAY, JOB_SEARCH_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import { DEPARTURE_CHANGES_PER_DAY, ELITE_CHANGES_PER_DAY, JOB_SEARCH_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -99,6 +99,8 @@ export const LIMITS = {
   mockFeedbackPerUserDay: { bucket: "mock-feedback", max: MOCK_FEEDBACK_PER_DAY, windowMs: 24 * HOUR },
   /** "Looking for a job" and the notice period (docs/plans/job-search-plan.md): changes a day per person, each try counted. */
   jobSearchChangesPerUserDay: { bucket: "job-search-change", max: JOB_SEARCH_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** Saves and stage changes on Departures (docs/plans/departures-live-plan.md), each try counted. */
+  departureChangesPerUserDay: { bucket: "departure-change", max: DEPARTURE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

@@ -559,5 +559,7 @@ export const NOTICE_DAYS = [15, 30, 60, 90] as const;
 export type NoticeDays = (typeof NOTICE_DAYS)[number];
 /** Switch and notice changes one person makes a day, each try counted. */
 export const JOB_SEARCH_CHANGES_PER_DAY = 20;
+/** Save and stage changes on Departures one person makes a day (docs/plans/departures-live-plan.md). */
+export const DEPARTURE_CHANGES_PER_DAY = 200;
 /** What Express apply says while job search is off. */
 export const JOB_SEARCH_OFF_MESSAGE = "Turn on job search to apply.";

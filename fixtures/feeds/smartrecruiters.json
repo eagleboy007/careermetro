@@ -1,0 +1,42 @@
+{
+  "offset": 0,
+  "limit": 100,
+  "totalFound": 2,
+  "content": [
+    {
+      "id": "744000000000001",
+      "name": "Business Analyst, SQL",
+      "releasedDate": "2026-10-14T06:00:00.000Z",
+      "company": {
+        "identifier": "ExampleWorks"
+      },
+      "location": {
+        "city": "Chennai",
+        "region": "Tamil Nadu",
+        "country": "in",
+        "remote": false,
+        "fullLocation": "Chennai, Tamil Nadu, India"
+      },
+      "typeOfEmployment": {
+        "label": "Full-time"
+      }
+    },
+    {
+      "id": "744000000000002",
+      "name": "Sales Executive",
+      "releasedDate": "2026-10-13T06:00:00.000Z",
+      "company": {
+        "identifier": "ExampleWorks"
+      },
+      "location": {
+        "city": "Berlin",
+        "country": "de",
+        "remote": false,
+        "fullLocation": "Berlin, Germany"
+      },
+      "typeOfEmployment": {
+        "label": "Full-time"
+      }
+    }
+  ]
+}

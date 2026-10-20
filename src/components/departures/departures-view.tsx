@@ -7,7 +7,7 @@ import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactN
 import { JobPostingForm } from "@/components/gaps/job-posting-form";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
-import { citiesOf, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
+import { citiesOf, DEPARTURES_LEDE, filterDepartures, initials, NO_FILTERS, readiness, type DepartureFilters, type DepartureTab } from "@/lib/departures/filter";
 import type { JobPost, RolePrepView } from "@/lib/schemas";
 import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
@@ -18,13 +18,26 @@ const pill =
 const btn = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-[15px] py-[9px] text-[0.86rem] font-[550]";
 const primary = `${btn} bg-accent text-on-accent hover:opacity-90`;
 
+/** Saves and stage changes, kept on the server (src/app/(app)/departures/actions.ts). Each returns null or the words to show. */
+export type DepartureActions = {
+  save: (postId: string, saved: boolean) => Promise<string | null>;
+  stage: (postId: string, stage: number) => Promise<string | null>;
+};
+
+const FAILED = "That didn't work. Please try again.";
+const EMPTY_SAVED = "Nothing saved yet. Tap the bookmark on anything you want to come back to.";
+const CLOSED = "Closed on the company's board";
+
 /**
  * Departures (handoff section 8): roles with readiness in words, search and filters, the person's Saved and Applied
- * lists, and a detail panel for the role they pick. `hasResume` false hides fit until there is a resume; `noFit`
- * hides it with its own reason (a signed-in person, while the roles are still examples). `resumeId` is the person's
- * latest resume, which "Saw a role somewhere else?" checks a pasted post against; null links to the upload instead.
- * `prep` is each role's interview prep, locked on the server; a role with none says it is coming. `demo` skips the
- * network call of the paste box (for /design).
+ * lists, and a detail panel for the role they pick. Signed in, the roles come from the daily feed of public company job
+ * boards (docs/plans/departures-live-plan.md) and `actions` keeps Saved and Applied on the server; without `actions`
+ * (the signed-out example and /design) they change on the screen only. `updated` is the header's "Updated 19:42".
+ * `hasResume` false hides fit until there is a resume; `noFit` hides it with its own reason. A post that names too
+ * few skills we know (`fitNote`) shows no fit on its own; a closed post stays in Saved and Applied with no Apply.
+ * `resumeId` is the person's latest resume, which "Saw a role somewhere else?" checks a pasted post against; null
+ * links to the upload instead. `prep` is each role's interview prep, locked on the server; a role with none says it
+ * is coming. `demo` skips the network call of the paste box (for /design).
  */
 export function DeparturesView({
   jobs,
@@ -36,6 +49,8 @@ export function DeparturesView({
   prep = {},
   demo = false,
   searchSwitch = null,
+  updated = null,
+  actions,
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
@@ -47,34 +62,73 @@ export function DeparturesView({
   demo?: boolean;
   /** "Looking for a job" (src/components/job-search), in the header. */
   searchSwitch?: ReactNode;
+  updated?: string | null;
+  actions?: DepartureActions;
 }) {
   const [filters, setFilters] = useState<DepartureFilters>(NO_FILTERS);
   const [saved, setSaved] = useState(() => new Set(initialSaved));
   const [applied, setApplied] = useState(() => new Map(initialApplied));
   const [selected, setSelected] = useState<string | null>(() => jobs[0]?.id ?? null);
-  const [said, setSaid] = useState("");
+  const [toast, setToast] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const say = (text: string) => {
+    // Cleared first, so the same words twice are read out twice.
+    setToast(null);
+    requestAnimationFrame(() => setToast(text));
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setToast(null), 3200);
+  };
   const detailId = useId();
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied), [jobs, filters, saved, applied]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
   const job = shown.find((j) => j.id === selected) ?? shown[0] ?? null;
   const fit = hasResume && noFit === null;
+  const openCount = useMemo(() => jobs.filter((j) => !j.closed).length, [jobs]);
   const set = (patch: Partial<DepartureFilters>) => setFilters((f) => ({ ...f, ...patch }));
 
-  const toggleSave = (id: string) => {
-    const next = new Set(saved);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    setSaved(next);
-    setSaid(next.has(id) ? "Saved." : "Removed from saved.");
+  /** Runs a change on the server; if it fails, the screen goes back and says why. Without actions it only says `done`. */
+  const keep = (call: Promise<string | null> | undefined, undo: () => void, done: string) => {
+    if (!call) return say(done);
+    call.then(
+      (error) => {
+        if (!error) return say(done);
+        undo();
+        say(error);
+      },
+      () => {
+        undo();
+        say(FAILED);
+      },
+    );
   };
-  const setStage = (id: string, stage: number) =>
+  const toggleSave = (job: JobPost) => {
+    const was = saved.has(job.id);
+    // A closed role can't be newly saved; one already saved can still come off the list.
+    if (!was && job.closed) return say("This role has closed on the company's board, so it can't be saved now.");
+    const flip = (on: boolean) =>
+      setSaved((s) => {
+        const next = new Set(s);
+        if (on) next.add(job.id);
+        else next.delete(job.id);
+        return next;
+      });
+    flip(!was);
+    keep(actions?.save(job.id, !was), () => flip(was), was ? "Removed from saved." : "Saved.");
+  };
+  const put = (id: string, stage: number) =>
     setApplied((m) => {
       const next = new Map(m);
       if (stage === 0) next.delete(id);
       else next.set(id, stage);
       return next;
     });
+  const setStage = (job: JobPost, stage: number) => {
+    const before = applied.get(job.id) ?? 0;
+    put(job.id, stage);
+    keep(actions?.stage(job.id, stage), () => put(job.id, before), stage === 0 ? "No longer marked as applied." : stage === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[stage - 1]}.`);
+  };
 
   return (
     <div className="grid min-w-0 min-[760px]:min-h-[700px] min-[760px]:grid-cols-[minmax(0,1fr)_360px]">
@@ -82,13 +136,14 @@ export function DeparturesView({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-[2rem] font-semibold leading-[1.1]">Departures</h2>
-            <p className="mt-1.5 max-w-[60ch] text-[0.92rem] text-muted">
-              Roles from public company job boards and posts you paste, applied for on the company&apos;s site. Jobs posted on CareerMetro, above, take Express apply.
-            </p>
+            <p className="mt-1.5 max-w-[60ch] text-[0.92rem] text-muted">{DEPARTURES_LEDE}</p>
           </div>
           <div className="flex flex-col items-end gap-2">
             {searchSwitch}
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">{plural(jobs.length, "role")}</span>
+            <span data-departures-clock className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">
+              {updated ? `${updated} · ` : ""}
+              {plural(openCount, "role")}
+            </span>
           </div>
         </div>
 
@@ -135,7 +190,7 @@ export function DeparturesView({
               <JobRow
                 key={j.id}
                 job={j}
-                fit={fit}
+                fit={fit && j.fitNote === null}
                 selected={j.id === job?.id}
                 detailId={detailId}
                 saved={saved.has(j.id)}
@@ -144,19 +199,28 @@ export function DeparturesView({
                   setSelected(j.id);
                   if (window.matchMedia("(max-width: 759px)").matches) document.getElementById(detailId)?.scrollIntoView({ block: "start" });
                 }}
-                onSave={() => toggleSave(j.id)}
+                onSave={() => toggleSave(j)}
               />
             ))}
           </ul>
         ) : (
           <p className="rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
-            {filters.tab === "all" ? "No roles match. Try another city or type, or clear the search." : `Nothing ${filters.tab} matches yet.`}
+            {filters.tab === "all"
+              ? jobs.some((j) => !j.closed)
+                ? "No roles match. Try another city or type, or clear the search."
+                : "No roles from company job boards yet. They arrive with the next daily update."
+              : filters.tab === "saved" && saved.size === 0
+                ? EMPTY_SAVED
+                : `Nothing ${filters.tab} matches yet.`}
           </p>
         )}
 
         <PasteBox resumeId={resumeId} demo={demo} />
-        <p role="status" className="sr-only">
-          {said}
+        <p
+          role="status"
+          className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[700px]:rounded-full min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}
+        >
+          {toast}
         </p>
       </div>
 
@@ -169,14 +233,12 @@ export function DeparturesView({
           <JobDetail
             key={job.id}
             job={job}
-            fit={fit}
-            noFit={noFit ?? (hasResume ? null : NO_RESUME)}
+            fit={fit && job.fitNote === null}
+            noFit={hasResume ? (noFit ?? job.fitNote) : (noFit ?? NO_RESUME)}
+            addResume={!hasResume}
             stage={applied.get(job.id) ?? 0}
             prep={prep[job.id] ?? null}
-            onStage={(s) => {
-              setStage(job.id, s);
-              setSaid(s === 0 ? "No longer marked as applied." : s === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[s - 1]}.`);
-            }}
+            onStage={(s) => setStage(job, s)}
           />
         )}
       </aside>
@@ -247,13 +309,14 @@ function JobRow({
           <span className="sr-only"> at {job.company}</span>
         </button>
         <p className="flex flex-wrap gap-1.5 text-[0.8rem] text-muted">
-          {[job.company, job.city, job.workType, job.experience, job.posted].map((m, i) => (
+          {[job.company, job.city, job.workType, job.experience, `posted ${job.posted}`].filter(Boolean).map((m, i) => (
             <span key={i} className="contents">
               {i > 0 && <span aria-hidden="true">·</span>}
               <span>{m}</span>
             </span>
           ))}
         </p>
+        {job.closed && <p className="text-[0.8rem] font-[550] text-muted">{CLOSED}</p>}
         <div className="flex flex-wrap gap-1.5">
           {fit && (job.gaps.length ? job.gaps.map((g) => <StatusChip key={g.name} status={g.status} label={g.name} />) : <StatusChip status="met" label="No required gaps" />)}
         </div>
@@ -261,6 +324,8 @@ function JobRow({
       <div className="col-start-2 flex items-center justify-between gap-2.5 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
         {applied ? (
           <When className="bg-accent-soft text-accent">Applied</When>
+        ) : job.closed ? (
+          <When className="bg-surface-2 text-muted">Closed</When>
         ) : fit ? (
           <When className={WHEN_TONE[tone]}>{departureWhen(job.goalsBefore)}</When>
         ) : (
@@ -270,8 +335,9 @@ function JobRow({
           type="button"
           onClick={onSave}
           aria-pressed={saved}
+          aria-disabled={(job.closed && !saved) || undefined}
           aria-label={`Save ${job.role}`}
-          className="relative z-10 grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted aria-pressed:border-accent aria-pressed:bg-accent-soft aria-pressed:text-accent"
+          className="relative z-10 grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted aria-disabled:opacity-60 aria-pressed:border-accent aria-pressed:bg-accent-soft aria-pressed:text-accent"
         >
           <Bookmark size={16} {...ICON} className={saved ? "fill-current" : undefined} />
         </button>
@@ -300,9 +366,11 @@ function JobDetail({
   stage,
   prep,
   onStage,
+  addResume,
 }: {
   job: JobPost;
   fit: boolean;
+  addResume: boolean;
   noFit: string | null;
   stage: number;
   prep: RolePrepView | null;
@@ -324,6 +392,14 @@ function JobDetail({
     onStage(next);
     setMoved((n) => n + 1);
   };
+  // "Did you apply?" after the company's post opens in a new tab: yes marks Applied, no puts focus back on Apply.
+  const [asking, setAsking] = useState(false);
+  const askId = useId();
+  const answer = (yes: boolean) => {
+    setAsking(false);
+    if (yes) swap(1);
+    else setMoved((n) => n + 1);
+  };
   return (
     <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-4 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-center gap-3">
@@ -332,7 +408,8 @@ function JobDetail({
           <h3 className="text-[1.3rem] font-semibold leading-[1.15]">{job.role}</h3>
           <small className="mt-0.5 block text-[0.8rem] text-muted">
             {job.company} · {job.city} · {job.workType}
-            {job.hours ? ` (${job.hours})` : ""} · {job.experience}
+            {job.hours ? ` (${job.hours})` : ""}
+            {job.experience ? ` · ${job.experience}` : ""}
           </small>
         </div>
       </div>
@@ -370,7 +447,7 @@ function JobDetail({
         <div className="flex flex-col gap-1.5 rounded-lg border border-line bg-bg p-3.5">
           <b className="font-display text-[1.15rem] font-semibold">Fit unknown yet</b>
           <span className="text-[0.84rem] text-muted">{noFit}</span>
-          {noFit === NO_RESUME && (
+          {addResume && (
             <Link href="/today" className={`${primary} mt-1 self-start px-[11px] py-1.5 text-[0.8rem]`}>
               Add resume
             </Link>
@@ -408,11 +485,23 @@ function JobDetail({
           </p>
           <Soon>Ask people who work in this role</Soon>
         </section>
+      ) : job.closed ? (
+        <p data-departure-closed className="rounded-lg border border-line bg-surface-2 p-3.5 text-[0.86rem] text-muted">
+          {CLOSED}. It stays here in your lists.
+        </p>
       ) : (
         <>
           <div className="flex flex-col gap-2">
             {job.applyUrl ? (
-              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" aria-label={`Apply on company site: ${job.company} (opens in a new tab)`} ref={applyControl} onClick={() => swap(1)} className={primary}>
+              <a
+                href={job.applyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Apply on company site: ${job.company} (opens in a new tab)`}
+                ref={applyControl}
+                onClick={() => setAsking(true)}
+                className={primary}
+              >
                 <ExternalLink size={17} {...ICON} />
                 {site}
               </a>
@@ -424,10 +513,25 @@ function JobDetail({
               </button>
             )}
           </div>
+          {asking && (
+            <div role="group" aria-labelledby={askId} data-did-you-apply className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-3.5">
+              <b id={askId} className="text-[0.92rem] font-semibold">
+                Did you apply?
+              </b>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => answer(true)} className={`${primary} px-[11px] py-1.5 text-[0.8rem]`}>
+                  Yes, I applied
+                </button>
+                <button type="button" onClick={() => answer(false)} className={`${btn} border border-line-strong px-[11px] py-1.5 text-[0.8rem] text-ink hover:bg-surface-2`}>
+                  I didn&apos;t apply
+                </button>
+              </div>
+            </div>
+          )}
           <Note Icon={ShieldCheck}>
             {!job.applyUrl
               ? "An example role: this marks it as applied so you can see the tracking. Real roles open the company's own posting."
-              : "Opens the company's own posting. We note that you applied so you can track it here."}
+              : "Opens the company's own posting in a new tab. Tell us here if you applied, and track it. Only you see this."}
           </Note>
           {fit && job.gaps.length > 0 && <Soon>Ask someone who got this role</Soon>}
         </>
