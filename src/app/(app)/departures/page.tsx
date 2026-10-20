@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -29,11 +30,17 @@ const LEDE = "Roles from public company job boards and posts you paste, applied 
 
 export const metadata: Metadata = { title: "Departures · CareerMetro", robots: { index: false } };
 
-/** Open jobs from verified companies. If they can't be read, Departures still shows its other roles. */
-async function postedJobs(): Promise<PostedJobView[]> {
+/** Match's "N open jobs" link: `?role=<slug>` of one of our role profiles. Anything else shows every job. */
+function roleFilter(value: string | string[] | undefined): { slug: string; title: string } | null {
+  const role = typeof value === "string" ? roleProfiles.find((r) => r.slug === value) : undefined;
+  return role ? { slug: role.slug, title: role.title } : null;
+}
+
+/** Open jobs from verified companies, for one role when given. If they can't be read, Departures still shows its other roles. */
+async function postedJobs(roleSlug?: string): Promise<PostedJobView[]> {
   if (!process.env.DATABASE_URL) return [];
   try {
-    return await liveJobs();
+    return await liveJobs({ roleSlug });
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_posted_jobs_failed", errorFields(error));
@@ -84,7 +91,9 @@ async function eliteFor(userId: string | null): Promise<boolean> {
 }
 
 async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
-  const state = (await searchParams).state;
+  const params = await searchParams;
+  const state = params.state;
+  const role = roleFilter(params.role);
   await connection();
   const account = await currentAccount();
   // Real roles need the job-post tables (dev/departures-plan.md). Until then everyone sees example roles. The example fit
@@ -92,7 +101,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const analysis = account ? await currentAnalysis(account.id) : null;
   const hasResume = account ? analysis !== null : state !== "no_resume";
   const noFit = account && hasResume ? "Your fit for each role shows here once real roles come from company job boards." : null;
-  const posted = await postedJobs();
+  const posted = await postedJobs(role?.slug);
   const [states, criteria, elite, search] = await Promise.all([
     postedStates(account?.id ?? null, posted),
     postedCriteria(account?.id ?? null, posted),
@@ -107,6 +116,18 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
     <JobSearchProvider initialOn={search.on} action={account ? switchJobSearch : undefined}>
       <JobSearchGate paused={<JobSearchPaused title="Departures" lede={LEDE} />}>
         <div className="flex flex-col gap-4">
+          {role && (
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
+              <span>
+                {posted.length ? "Posted jobs for " : "No posted jobs for "}
+                <b className="font-medium text-ink">{role.title}</b>
+                {posted.length ? " only." : " right now."}
+              </span>
+              <Link href="/departures" className="font-medium text-ink underline underline-offset-2">
+                Show every job
+              </Link>
+            </p>
+          )}
           <PostedJobs
             jobs={posted}
             report={account ? reportJobAction : undefined}

@@ -141,7 +141,7 @@ export function MetroMap({
         )}
         {!showLife && line && (
           <ul className="flex flex-wrap items-center gap-4 text-[0.78rem] text-muted" aria-label="Key">
-            <Key swatch="bg-accent">Ridden: learned, or proved ✓</Key>
+            <Key swatch="bg-accent">Gaps filled with proof ✓</Key>
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
             <Key swatch="bg-line">Still ahead</Key>
             <Key swatch="bg-muted opacity-30">Other people&apos;s lines</Key>
@@ -433,7 +433,7 @@ function LockedMap() {
       <div className="absolute left-1/2 top-1/2 flex w-[min(420px,88%)] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-[20px] border border-line bg-surface p-5 text-center">
         <MapIcon size={30} className="text-accent" {...ICON} />
         <b className="font-display text-[1.3rem] font-semibold tracking-[-0.02em]">Your map draws itself from your resume</b>
-        <span className="max-w-[40ch] text-[0.88rem] text-muted">Your line appears here, crossing the lines of other roles.</span>
+        <span className="max-w-[40ch] text-[0.88rem] text-muted">Until then, the lines of other roles are here to explore.</span>
         <Link href="/today" className="mt-1 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-2 text-[0.84rem] font-medium text-on-accent hover:opacity-90">
           Add resume
         </Link>

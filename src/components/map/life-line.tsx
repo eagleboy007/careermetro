@@ -83,6 +83,11 @@ export function LifeSvg({
             </text>
           </>
         )}
+        {layout.links.map((l) => (
+          <path key={`${l.from}-${l.to}`} d={l.d} className="fill-none stroke-muted" strokeWidth={2} strokeDasharray="2 5" strokeLinecap="round">
+            <title>{l.text}</title>
+          </path>
+        ))}
       </g>
 
       {layout.stations.map((s) => (
@@ -98,7 +103,7 @@ const emptyText = (row: (typeof LIFE_ROWS)[number], layout: LifeLayout) =>
     : row === "interests"
       ? "Your interests show here · soon"
       : row === "certificates"
-        ? "Certificates with a date show here · soon"
+        ? "Certificates with a date show here"
         : "Nothing dated yet";
 
 const trackClass: Record<(typeof LIFE_ROWS)[number], string> = {
@@ -181,6 +186,10 @@ export function LifeLegend() {
       <Key swatch="bg-ink">Work</Key>
       <Key swatch="bg-muted">Education and certificates</Key>
       <Key swatch="bg-[repeating-linear-gradient(90deg,var(--muted)_0_7px,transparent_7px_11px)] opacity-70">Interests</Key>
+      <li className="inline-flex items-center gap-[7px]">
+        <i className="inline-block h-0.5 w-[22px] bg-[repeating-linear-gradient(90deg,var(--muted)_0_2px,transparent_2px_6px)]" />
+        Where one fed another
+      </li>
     </ul>
   );
 }
@@ -231,6 +240,7 @@ export function LifeSheet({
     );
   }
   if (moment) {
+    const fed = line.links.filter((l) => l.from === moment.id || l.to === moment.id);
     return (
       <Panel kicker={`${ROW_NAME[moment.row]} · ${moment.date}`} title={moment.heading}>
         {moment.detail && <p>{moment.detail}</p>}
@@ -239,6 +249,12 @@ export function LifeSheet({
             <BadgeCheck size={14} strokeWidth={1.75} aria-hidden className="text-muted" />
             Verified
           </span>
+        )}
+        {fed.length > 0 && (
+          <div className="flex items-start gap-1.5 text-[0.76rem] text-muted">
+            <Route size={14} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />
+            <span>{fed.map((l) => l.text).join(". ")}.</span>
+          </div>
         )}
         <Soon>Add a moment</Soon>
       </Panel>

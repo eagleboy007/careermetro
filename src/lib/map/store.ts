@@ -160,5 +160,10 @@ export async function lifeLineFor(userId: string, now: Date, db: Db = getDb()): 
   ]);
   if (!resume || !user) return null;
   const role = roleProfiles.find((r) => r.slug === analysis.result.roleSlug);
-  return lifeFromProfile(resume.profile, { joinedAt: user.createdAt, now, destination: role?.title ?? analysis.result.roleSlug });
+  return lifeFromProfile(resume.profile, {
+    joinedAt: user.createdAt,
+    now,
+    destination: role?.title ?? analysis.result.roleSlug,
+    metSkillIds: analysis.result.metSkillIds,
+  });
 }

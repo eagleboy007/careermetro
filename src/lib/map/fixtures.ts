@@ -60,6 +60,11 @@ export const exampleLifeLine: LifeLine = {
   now: 2026.77,
   destination: "Data Analyst",
   undated: [],
+  // In the shape lifeLinks draws them: a moment that names a skill, to the job that used it.
+  links: [
+    { from: "e2", to: "w1", text: "Final-year Excel project fed the Excel you used as MIS Intern" },
+    { from: "c1", to: "w2", text: "Google Data Analytics fed the SQL you used as MIS Executive" },
+  ],
   moments: [
     moment({ id: "j1", row: "journey", t: 2023.45, date: "Jun 2023", name: "Journey started", heading: "Your journey started", detail: "Your working life began after your B.Com, so your journey starts here, not the day you joined CareerMetro." }),
     moment({ id: "j2", row: "journey", t: 2026.67, date: "Sep 2026", name: "Joined CareerMetro", heading: "Joined CareerMetro · heading for Data Analyst", detail: "You set your next destination here. Pitstops and prep live on the Role line; this map keeps only the big moments." }),

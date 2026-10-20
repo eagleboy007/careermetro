@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { jobsText, soonHeading, whenText } from "./match-view";
+import { jobsHref, jobsText, soonHeading, whenText } from "./match-view";
 
 describe("Match wording", () => {
   it("says how far a role is in weeks, or Now", () => {
@@ -19,5 +19,9 @@ describe("Match wording", () => {
     expect(jobsText(1)).toBe("1 open job in Departures");
     expect(jobsText(0)).toBe("No open jobs in Departures yet");
     expect(jobsText(null)).toBe("Browse Departures");
+    // "N open jobs" opens that role's jobs; with none, or no count, all of Departures.
+    expect(jobsHref("data-analyst", 3)).toBe("/departures?role=data-analyst");
+    expect(jobsHref("data-analyst", 0)).toBe("/departures");
+    expect(jobsHref("data-analyst", null)).toBe("/departures");
   });
 });

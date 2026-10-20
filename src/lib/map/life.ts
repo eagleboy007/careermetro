@@ -1,16 +1,21 @@
+import { skills as taxonomy } from "@/content";
+import { certificationsIn, skillsNamedIn } from "@/lib/gaps/match";
 import { lifeLine, type LifeLine, type LifeMoment, type Profile } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "./life-layout";
 
 /**
  * The Life line from a confirmed profile, in plain code. Work roles become moments by their start date, education by
- * its year, and the journey starts when the first education ends (or at the first job). Certificates on a resume have
- * no dates, so they wait in `undated` until the person adds one. Interests come with the profile page (build step 9).
- * Anything that can't be placed sensibly (no date, a year before 1950, a date still ahead) waits in `undated` too.
+ * its year, certificates by the month they were earned, and the journey starts when the first education ends (or at
+ * the first job). A certificate with no date waits in `undated` until the person adds one. Interests come with the
+ * profile page (build step 9). Anything that can't be placed sensibly (no date, a year before 1950, a date still
+ * ahead) waits in `undated` too. Dotted links between moments come from `lifeLinks`.
  */
 const EARLIEST = 1950;
 /** Caps that keep a very long resume inside the schema's 120 moments. */
 const MAX_EDUCATION = 20;
-const MAX_ROLES = 90;
+const MAX_ROLES = 80;
+const MAX_CERTIFICATES = 16;
+const MAX_LINKS = 12;
 
 /** "2019-2023", "2019 – 2023" or "2023" → 2023, the year it ended. Null for "2019 – Present" or no year. */
 function educationYear(value: string | null): ReturnType<typeof readYearMonth> {
@@ -18,7 +23,10 @@ function educationYear(value: string | null): ReturnType<typeof readYearMonth> {
   return readYearMonth(value.match(/\d{4}/g)?.at(-1) ?? null);
 }
 
-export function lifeFromProfile(profile: Profile, opts: { joinedAt: Date; now: Date; destination: string }): LifeLine {
+export function lifeFromProfile(
+  profile: Profile,
+  opts: { joinedAt: Date; now: Date; destination: string; /** The current analysis's met skills, for "counts toward". */ metSkillIds?: readonly string[] },
+): LifeLine {
   const now = decimalYear(opts.now);
   const moments: LifeMoment[] = [];
   const undated: LifeLine["undated"] = [];
@@ -68,7 +76,30 @@ export function lifeFromProfile(profile: Profile, opts: { joinedAt: Date; now: D
     });
   });
 
-  for (const { name } of profile.certifications) if (name.trim()) undated.push({ row: "certificates", name: name.trim() });
+  const certificates = profile.certifications
+    .map((c, i) => ({ c, i, earned: readYearMonth(c.earned) }))
+    .filter((x) => {
+      if (!x.c.name.trim()) return false;
+      if (x.earned && x.earned.t >= EARLIEST && x.earned.t <= now) return true;
+      undated.push({ row: "certificates", name: x.c.name.trim() });
+      return false;
+    })
+    .sort((a, b) => a.earned!.t - b.earned!.t)
+    .slice(-MAX_CERTIFICATES);
+  for (const { c, i, earned } of certificates) {
+    const known = certificationsIn(c.name, opts.now)[0]?.cert;
+    const expires = c.expires === "none" ? "Doesn't expire." : c.expires ? `Valid until ${readYearMonth(c.expires)?.label ?? c.expires}.` : "";
+    moments.push({
+      id: `cert-${i}`,
+      row: "certificates",
+      t: earned!.t,
+      date: earned!.label,
+      name: c.name.trim(),
+      heading: c.name.trim(),
+      detail: [known ? `${known.issuer}.` : "", expires].filter(Boolean).join(" "),
+      verified: false,
+    });
+  }
 
   // Working life begins after the last education finished before the first job (a degree, not 10th standard), or at
   // the first job when there is none. With no job yet, after the latest education.
@@ -107,8 +138,77 @@ export function lifeFromProfile(profile: Profile, opts: { joinedAt: Date; now: D
     now,
     destination: opts.destination,
     moments: moments.map(clipMoment),
+    links: lifeLinks(profile, moments, { now: opts.now, destination: opts.destination, metSkillIds: opts.metSkillIds ?? [] }),
     undated: undated.filter((u) => u.name.trim()).slice(0, 60).map((u) => ({ ...u, name: u.name.slice(0, 160) })),
   });
 }
 
 const clipMoment = (m: LifeMoment): LifeMoment => ({ ...m, name: m.name.slice(0, 80), heading: m.heading.slice(0, 160), detail: m.detail.slice(0, 400) });
+
+const skillName = new Map(taxonomy.map((s) => [s.id, s.name]));
+
+/** "2024-06" as a decimal year, or null. */
+const yearOf = (value: string | null) => readYearMonth(value)?.t ?? null;
+
+/**
+ * Where one moment fed another (handoff section 7, "Dotted links show where one fed another"), in plain code over the
+ * skill taxonomy, never guessed:
+ * - a certificate, or a qualification whose name names a skill, links to the first job still running after it whose
+ *   title or highlights name one of those skills;
+ * - a certificate that proves a skill the current analysis counts as met links to "Joined CareerMetro".
+ * At most one link per pair, and the first skill in the taxonomy's order names it, so the same profile always draws
+ * the same links.
+ */
+export function lifeLinks(
+  profile: Profile,
+  moments: readonly LifeMoment[],
+  opts: { now: Date; destination: string; metSkillIds: readonly string[] },
+): LifeLine["links"] {
+  const placed = new Set(moments.map((m) => m.id));
+  const nowT = decimalYear(opts.now);
+  const jobs = profile.roles
+    .map((r, i) => ({ id: `work-${i}`, title: r.title, start: yearOf(r.start), end: yearOf(r.end) ?? nowT, skills: skillsNamedIn([r.title, ...r.highlights].join("\n")) }))
+    .filter((j) => placed.has(j.id) && j.start !== null)
+    .sort((a, b) => a.start! - b.start!);
+  const firstShared = (from: Iterable<string>, to: ReadonlySet<string>) => {
+    const ids = new Set(from);
+    return taxonomy.find((s) => ids.has(s.id) && to.has(s.id))?.id;
+  };
+  const links: LifeLine["links"] = [];
+  const feed = (id: string, name: string, t: number, skills: Iterable<string>) => {
+    const list = [...skills];
+    if (!list.length) return;
+    for (const job of jobs) {
+      if (job.end < t) continue;
+      const skill = firstShared(list, job.skills);
+      if (skill) {
+        links.push({ from: id, to: job.id, text: clipText(`${name} fed the ${skillName.get(skill)} you used as ${job.title}`) });
+        return;
+      }
+    }
+  };
+
+  const met = new Set(opts.metSkillIds);
+  profile.certifications.forEach((c, i) => {
+    const id = `cert-${i}`;
+    const t = yearOf(c.earned);
+    if (!placed.has(id) || t === null) return;
+    const known = certificationsIn(c.name, opts.now).map((f) => f.cert);
+    feed(id, c.name.trim(), t, known.flatMap((k) => [...k.proves, ...k.partial]));
+    // An expired certificate shows its skills only as weak, so it counts toward nothing.
+    const until = c.expires && c.expires !== "none" ? readYearMonth(c.expires) : null;
+    const expired = until !== null && until.t + (/^\d{4}$/.test(c.expires!) ? 1 : 1 / 12) <= nowT;
+    const counted = expired ? undefined : firstShared(known.flatMap((k) => k.proves), met);
+    if (counted && placed.has("joined")) {
+      links.push({ from: id, to: "joined", text: clipText(`Counts toward ${skillName.get(counted)} for ${opts.destination}`) });
+    }
+  });
+  profile.education.forEach((e, i) => {
+    const id = `edu-${i}`;
+    const moment = moments.find((m) => m.id === id);
+    if (moment) feed(id, e.qualification.trim(), moment.t, skillsNamedIn(e.qualification));
+  });
+  return links.slice(0, MAX_LINKS);
+}
+
+const clipText = (text: string) => (text.length > 200 ? `${text.slice(0, 199)}…` : text);
