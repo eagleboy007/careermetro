@@ -129,4 +129,17 @@ describe.skipIf(!db)("certificates saved before Credly had to confirm them (data
     await reopenUnconfirmedGoals(db! as never, noGroups, [p.userId]);
     expect(await goalStatus(p.goalId)).toBe("met");
   });
+
+  it("leaves a refused certificate alone when only an unrelated goal is met", async () => {
+    const p = await before("unrelated", { url: `https://www.credly.com/badges/${badge("b206")}`, badgeId: badge("b206"), checkNote: "earner_name" });
+    for (const statement of scoped([p.userId])) await db!.execute(sql.raw(statement));
+    expect(await reopenUnconfirmedGoals(db! as never, noGroups, [p.userId])).toBe(1);
+    // The AWS goal is open now; a goal for another skill, met by the resume, doesn't bring the refused AWS badge back.
+    await db!.insert(schema.userGoals).values({ userId: p.userId, skillId: "sql", position: 2, status: "met", metAt: new Date() });
+    expect(await reopenUnconfirmedGoals(db! as never, noGroups, [p.userId])).toBe(0);
+    // A group goal that has AWS still counts.
+    const groups = new Map([["cloud-any", ["aws", "azure"]]]);
+    await db!.insert(schema.userGoals).values({ userId: p.userId, skillId: "azure", groupId: "cloud-any", position: 3, status: "met", metAt: new Date() });
+    expect(await reopenUnconfirmedGoals(db! as never, groups, [p.userId])).toBe(1);
+  });
 });

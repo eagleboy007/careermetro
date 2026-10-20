@@ -619,10 +619,19 @@ export async function reopenUnconfirmedGoals(
   /** Only these people (tests share one database). */
   only?: string[],
 ): Promise<number> {
-  const stale = await db
-    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId })
+  // Only met goals the certificate could fill (its skill's goal, or a group goal), so a person's other met goals don't
+  // bring every refused certificate of theirs back each day.
+  const rows = await db
+    .selectDistinct({ userId: gapProofs.userId, skillId: gapProofs.skillId, goalSkillId: userGoals.skillId, groupId: userGoals.groupId })
     .from(gapProofs)
-    .innerJoin(userGoals, and(eq(userGoals.userId, gapProofs.userId), eq(userGoals.status, "met")))
+    .innerJoin(
+      userGoals,
+      and(
+        eq(userGoals.userId, gapProofs.userId),
+        eq(userGoals.status, "met"),
+        or(eq(userGoals.skillId, gapProofs.skillId), isNotNull(userGoals.groupId)),
+      ),
+    )
     .where(
       and(
         eq(gapProofs.type, "certification"),
@@ -630,8 +639,13 @@ export async function reopenUnconfirmedGoals(
         only ? inArray(gapProofs.userId, only) : undefined,
       ),
     );
+  const stale = new Map<string, { userId: string; skillId: string }>();
+  for (const r of rows) {
+    if (r.goalSkillId !== r.skillId && !(r.groupId && members.get(r.groupId)?.includes(r.skillId))) continue;
+    stale.set(`${r.userId}:${r.skillId}`, { userId: r.userId, skillId: r.skillId });
+  }
   const people = new Set<string>();
-  for (const s of stale) {
+  for (const s of stale.values()) {
     await db.transaction(async (tx) => {
       await lockPerson(tx, s.userId);
       await refreshGoals(tx, s.userId, s.skillId, members);
