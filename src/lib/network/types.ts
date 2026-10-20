@@ -55,7 +55,7 @@ export type NetworkActions = {
   report: (id: string, reason: ReportReason, note: string) => Promise<string | null>;
 };
 
-/** Where two people on the same line stand (a profile's "Gaps and path"): a goal number on each line and its skill. */
+/** Where two people on the same line stand (a profile's "Gaps and path"): the pitstop each is at, numbered as on the Map, and its skill. */
 export type LineStep = { step: number; name: string };
 
 /**
@@ -67,7 +67,7 @@ export type PathTogether = {
   gaps: string[];
   you: LineStep | null;
   them: LineStep | null;
-  /** How many goals apart the two current steps are; null when either has met every goal. */
+  /** How many pitstops apart the two current steps are; null when either has met every goal. */
   apart: number | null;
   /** Why the viewer sees the owner's gaps: shared with connections, or with everyone who can open the profile. */
   sharedWith: "connections" | "profile";

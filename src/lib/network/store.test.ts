@@ -378,7 +378,7 @@ describe.skipIf(!db)("network store (database)", () => {
   it("reports a person into the review queue once, never themselves, and logs the reason only", async () => {
     const me = await person("Xena");
     const other = await person("Yash");
-    expect(await reportPerson(me, { personId: me, reason: "harassment" }, deps())).toEqual({ ok: false, error: "self" });
+    expect(await reportPerson(me, { personId: me, reason: "harassment" }, deps())).toEqual({ ok: false, error: "self_report" });
     expect(await reportPerson(me, { personId: other, reason: "not a reason" }, deps())).toEqual({ ok: false, error: "invalid" });
     expect(await reportPerson(me, { personId: "00000000-0000-4000-8000-000000000000", reason: "other" }, deps())).toEqual({ ok: false, error: "invalid" });
     expect(await reportPerson(me, { personId: other, reason: "fake_or_spam", note: "  Asked for a fee  " }, deps())).toEqual({ ok: true });

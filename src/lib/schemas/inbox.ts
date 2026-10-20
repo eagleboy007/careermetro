@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MESSAGE_MAX_CHARS } from "./constants";
+import { MESSAGE_MAX_CHARS, REPORT_NOTE_MAX_CHARS } from "./constants";
 
 /**
  * Inbox, part 1 (handoff 12b; dev/inbox-plan.md, approved by Milin 2026-10-11). Chats between two people, or between a
@@ -28,8 +28,7 @@ export const REPORT_STATUSES = ["open", "actioned", "dismissed"] as const;
  */
 export const SYSTEM_CODES = ["accepted", "applied"] as const;
 
-export { MESSAGE_MAX_CHARS };
-export const REPORT_NOTE_MAX_CHARS = 500;
+export { MESSAGE_MAX_CHARS, REPORT_NOTE_MAX_CHARS };
 
 export type ConversationKind = (typeof CONVERSATION_KINDS)[number];
 export type ConversationStatus = (typeof CONVERSATION_STATUSES)[number];

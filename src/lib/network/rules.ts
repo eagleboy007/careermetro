@@ -1,4 +1,5 @@
 import { nameMatches } from "@/lib/corporate/find-rules";
+import { nowPitstop, pitstopsFor } from "@/lib/map/layout";
 import { CONNECTION_REQUEST_DAYS, type ConnectionState, type GapsVisibleTo } from "@/lib/schemas/network";
 import type { LineStep, PathTogether } from "./types";
 
@@ -104,31 +105,52 @@ export function seesGaps(to: GapsVisibleTo, viewer: { self: boolean; connected: 
 
 /** A goal as a line reads it: its skill, its place, whether it is proved or skipped, and a "Not for me" swap. */
 export type LineGoalRow = { skillId: string; position: number; proved: boolean; status: string; swappedTo: string | null };
-/** One stop of a person's line: the gap's skill, the skill they learn for it, and whether it is proved or skipped. */
-export type LineStop = { skillId: string; learns: string; proved: boolean; skipped: boolean };
+/** A gap of the person's current analysis, as their line reads it. */
+export type LineGap = { skillId: string; status: "missing" | "weak" | "outdated" };
+/**
+ * One goal of a person's line: the gap's skill, the skill they learn for it, its status as the Map draws it (a goal
+ * waiting for a renewed certificate is weak), whether its learn pitstop is done, and whether it is proved or skipped.
+ */
+export type LineStop = { skillId: string; learns: string; status: LineGap["status"]; learnDone: boolean; proved: boolean; skipped: boolean };
 
-/** A person's line: their current gaps in the order of their goals, as on the Map (a gap with no goal yet goes last). */
-export function lineOrder(gapSkillIds: readonly string[], goals: readonly LineGoalRow[]): LineStop[] {
+/**
+ * A person's line: their current gaps in the order of their goals, as on the Map (a gap with no goal yet goes last).
+ * Only gaps are on it: "Your choice" goals sit off the line on the Map and aren't numbered. `learned` holds the skills
+ * whose step on their newest path is ticked done.
+ */
+export function lineOrder(gaps: readonly LineGap[], goals: readonly LineGoalRow[], learned: ReadonlySet<string> = new Set()): LineStop[] {
   const bySkill = new Map(goals.map((g) => [g.skillId, g]));
   const at = (id: string) => bySkill.get(id)?.position ?? Number.MAX_SAFE_INTEGER;
-  return [...new Set(gapSkillIds)]
-    .sort((a, b) => at(a) - at(b))
-    .map((skillId) => {
+  return [...new Map(gaps.map((g) => [g.skillId, g])).values()]
+    .sort((a, b) => at(a.skillId) - at(b.skillId))
+    .map(({ skillId, status }): LineStop => {
       const g = bySkill.get(skillId);
       const proved = g?.proved ?? false;
-      return { skillId, learns: (!proved && g?.swappedTo) || skillId, proved, skipped: g?.status === "skipped" };
+      return {
+        skillId,
+        learns: (!proved && g?.swappedTo) || skillId,
+        status: g?.status === "renew" ? "weak" : status,
+        learnDone: learned.has(skillId),
+        proved,
+        skipped: g?.status === "skipped",
+      };
     });
 }
 
-/** The current goal of a line, numbered from 1 as on the Map: the first not proved and not skipped. Null when all are met. */
+/**
+ * Where a line's person is, numbered as the Map numbers its pitstops (a missing skill has learn then prove, a weak or
+ * outdated one prove only): the first pitstop not done, passing skipped goals. Null when every pitstop is done.
+ */
 export function currentStep(line: readonly LineStop[], name: (skillId: string) => string): LineStep | null {
-  const i = line.findIndex((g) => !g.proved && !g.skipped);
-  return i === -1 ? null : { step: i + 1, name: name(line[i].learns) };
+  const stops = pitstopsFor(line);
+  const i = nowPitstop(stops);
+  return i === -1 ? null : { step: i + 1, name: name(stops[i].goal.learns) };
 }
 
 /**
  * "Gaps and path" for two people on the same role's line (handoff 12j): the gaps both still have, each one's current
- * goal, and how many goals apart they are. The caller has already decided the viewer may see the owner's gaps.
+ * pitstop (numbered as on the Map), and how many pitstops apart they are. The caller has already decided the viewer
+ * may see the owner's gaps.
  */
 export function pathTogether(mine: readonly LineStop[], theirs: readonly LineStop[], name: (skillId: string) => string, sharedWith: PathTogether["sharedWith"]): PathTogether {
   const open = new Set(theirs.filter((g) => !g.proved).map((g) => g.skillId));

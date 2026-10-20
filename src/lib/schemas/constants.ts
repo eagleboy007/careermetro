@@ -368,6 +368,8 @@ export const NETWORK_RESULTS_MAX = 20;
 export const NETWORK_SCAN_MAX = 2000;
 /** The longest Inbox message. Here, not in schemas/inbox, so client components can read it without Zod. */
 export const MESSAGE_MAX_CHARS = 2000;
+/** The longest note on a report (Inbox or Network). Here, so the report form can read it without Zod. */
+export const REPORT_NOTE_MAX_CHARS = 500;
 /** The longest network search typed. */
 export const NETWORK_QUERY_MAX = 80;
 

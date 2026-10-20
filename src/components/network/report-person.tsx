@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { REPORT_REASON_LABELS } from "@/lib/inbox/types";
+import { REPORT_NOTE_MAX_CHARS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 
 const ghost =
@@ -48,7 +49,7 @@ export function ReportPerson({ name, busy, onSend, onCancel }: { name: string; b
       </fieldset>
       <label className="flex flex-col gap-1 text-[0.8rem] text-muted">
         Anything we should know (optional)
-        <textarea rows={2} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} className="resize-none rounded-[10px] border border-line-strong bg-bg px-2.5 py-2 text-[0.84rem] text-ink" />
+        <textarea rows={2} maxLength={REPORT_NOTE_MAX_CHARS} value={note} onChange={(e) => setNote(e.target.value)} className="resize-none rounded-[10px] border border-line-strong bg-bg px-2.5 py-2 text-[0.84rem] text-ink" />
       </label>
       <small className="text-[0.78rem] text-muted">Our team reviews it. {first} isn&rsquo;t told who reported.</small>
       {error && (

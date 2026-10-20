@@ -15,6 +15,7 @@ import {
   seesGaps,
   senderSeesRequested,
   skillsInCommon,
+  type LineGap,
   type LineGoalRow,
   type RequestRow,
 } from "./rules";
@@ -108,21 +109,30 @@ describe("network rules", () => {
 
   describe("Gaps and path", () => {
     const goal = (skillId: string, position: number, over: Partial<LineGoalRow> = {}): LineGoalRow => ({ skillId, position, proved: false, status: "active", swappedTo: null, ...over });
+    const gaps = (...ids: string[]): LineGap[] => ids.map((skillId) => ({ skillId, status: "missing" }));
     const name = (id: string) => id.toUpperCase();
 
-    it("orders a line by the person's goals, as on the Map, and finds the current goal", () => {
-      const line = lineOrder(["c", "a", "b", "d"], [goal("a", 1, { proved: true }), goal("b", 2, { status: "skipped" }), goal("c", 3, { swappedTo: "x" })]);
+    it("orders a line by the person's goals, as on the Map, and numbers the current pitstop as the Map does", () => {
+      const line = lineOrder(gaps("c", "a", "b", "d"), [goal("a", 1, { proved: true }), goal("b", 2, { status: "skipped" }), goal("c", 3, { swappedTo: "x" })]);
       expect(line.map((g) => g.skillId)).toEqual(["a", "b", "c", "d"]);
-      // Proved and skipped goals are passed; a swapped goal learns its other skill.
-      expect(currentStep(line, name)).toEqual({ step: 3, name: "X" });
-      expect(currentStep(lineOrder(["a"], [goal("a", 1, { proved: true })]), name)).toBeNull();
+      // Proved and skipped goals are passed (two pitstops each: learn and prove); a swapped goal learns its other skill.
+      expect(currentStep(line, name)).toEqual({ step: 5, name: "X" });
+      expect(currentStep(lineOrder(gaps("a"), [goal("a", 1, { proved: true })]), name)).toBeNull();
     });
 
-    it("shares only gaps both still have, and counts the goals between the two current steps", () => {
-      const mine = lineOrder(["a", "b", "c"], [goal("a", 1), goal("b", 2), goal("c", 3)]);
-      const theirs = lineOrder(["a", "b", "c", "d"], [goal("a", 1, { proved: true }), goal("b", 2, { proved: true }), goal("c", 3), goal("d", 4)]);
-      expect(pathTogether(mine, theirs, name, "connections")).toEqual({ gaps: ["C"], you: { step: 1, name: "A" }, them: { step: 3, name: "C" }, apart: 2, sharedWith: "connections" });
-      const done = lineOrder(["a"], [goal("a", 1, { proved: true })]);
+    it("gives a weak gap, or one waiting for a renewed certificate, a prove pitstop only, and passes a done learn pitstop", () => {
+      const weak: LineGap[] = [{ skillId: "a", status: "weak" }, ...gaps("b", "c")];
+      expect(currentStep(lineOrder(weak, [goal("a", 1, { proved: true }), goal("b", 2), goal("c", 3)]), name)).toEqual({ step: 2, name: "B" });
+      expect(lineOrder(gaps("a"), [goal("a", 1, { status: "renew" })])[0].status).toBe("weak");
+      // Learning ticked done on the path: the person is at the prove pitstop.
+      expect(currentStep(lineOrder(gaps("a", "b"), [goal("a", 1), goal("b", 2)], new Set(["a"])), name)).toEqual({ step: 2, name: "A" });
+    });
+
+    it("shares only gaps both still have, and counts the pitstops between the two current steps", () => {
+      const mine = lineOrder(gaps("a", "b", "c"), [goal("a", 1), goal("b", 2), goal("c", 3)]);
+      const theirs = lineOrder(gaps("a", "b", "c", "d"), [goal("a", 1, { proved: true }), goal("b", 2, { proved: true }), goal("c", 3), goal("d", 4)]);
+      expect(pathTogether(mine, theirs, name, "connections")).toEqual({ gaps: ["C"], you: { step: 1, name: "A" }, them: { step: 5, name: "C" }, apart: 4, sharedWith: "connections" });
+      const done = lineOrder(gaps("a"), [goal("a", 1, { proved: true })]);
       expect(pathTogether(done, theirs, name, "profile")).toMatchObject({ gaps: [], you: null, apart: null, sharedWith: "profile" });
     });
   });

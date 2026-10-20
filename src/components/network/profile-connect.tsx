@@ -207,7 +207,7 @@ export function ProfileConnect({
         />
       )}
 
-      <InCommon first={first} inCommon={inCommon} />
+      <InCommon name={name} first={first} inCommon={inCommon} />
 
       <p ref={statusRef} tabIndex={-1} role="status" className="text-[0.82rem] text-muted outline-none empty:hidden">
         {message}
@@ -235,12 +235,15 @@ function Confirm({ title, body, yes, onYes, onNo, busy }: { title: string; body:
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-/** The strip of shared counts, then "In common with you": skills, gaps and path, and mutual connections. */
-function InCommon({ first, inCommon }: { first: string; inCommon: ProfileInCommon }) {
+/**
+ * The strip of shared counts, then "In common with you": skills, gaps and path, and mutual connections. The region's
+ * label carries the person's name, so two profiles on one page (as on /design) never share a landmark name.
+ */
+function InCommon({ name, first, inCommon }: { name: string; first: string; inCommon: ProfileInCommon }) {
   const { skills, role, path, mutual } = inCommon;
   return (
     <div className="flex flex-col gap-3">
-      <ul className="flex flex-wrap gap-x-6 gap-y-1 border-y border-line py-3 text-[0.82rem] text-muted" aria-label="What you share">
+      <ul className="flex flex-wrap gap-x-6 gap-y-1 border-y border-line py-3 text-[0.82rem] text-muted" aria-label={`What you share with ${name}`}>
         {skills && (
           <li>
             <b className="mr-1 font-mono font-medium text-ink">{skills.length}</b>shared skill{skills.length === 1 ? "" : "s"}
@@ -256,10 +259,10 @@ function InCommon({ first, inCommon }: { first: string; inCommon: ProfileInCommo
         </li>
       </ul>
 
-      <section aria-label="In common with you" className="flex flex-col gap-3.5">
+      <section aria-label={`In common with you and ${name}`} className="flex flex-col gap-3.5">
         <h2 className="flex flex-wrap items-baseline gap-x-2.5 text-[1rem] font-semibold">
           In common with you
-          <span className="font-mono text-[0.7rem] font-normal uppercase tracking-wide text-muted">Only {first}&rsquo;s public fields are used</span>
+          <span className="font-mono text-[0.7rem] font-normal uppercase tracking-wide text-muted">Only what {first} lets you see is used.</span>
         </h2>
         {role && <p className="text-[0.84rem]">You are both aiming for {role}.</p>}
 
@@ -350,7 +353,7 @@ function Step({ dot, who, step, detail, strong }: { dot: string; who: string; st
     <li className="flex items-start gap-3">
       <span className={`${dot} ${strong ? "border-2 border-ink" : "border border-line-strong"} bg-surface`}>
         <span aria-hidden="true">{step ? step.step : <Check size={12} strokeWidth={1.75} />}</span>
-        {step && <span className="sr-only">Goal {step.step}</span>}
+        {step && <span className="sr-only">Pitstop {step.step}</span>}
       </span>
       <span className="flex flex-col text-[0.84rem]">
         {who}: {step ? step.name : "every goal met"}

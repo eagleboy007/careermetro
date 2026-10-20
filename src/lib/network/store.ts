@@ -1,8 +1,8 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { directChatLock, type Tx } from "@/db/lock";
-import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, profiles, reports, resumes, userSettings, users } from "@/db/schema";
+import { blocks, connectionRequests, connections, conversationMembers, conversations, gapAnalyses, gapProofs, pathSteps, paths, profiles, reports, resumes, userSettings, users } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
@@ -37,6 +37,7 @@ import {
   requestOpen,
   senderSeesRequested,
   skillsInCommon,
+  type LineGap,
   type RequestRow,
 } from "./rules";
 import type { PathTogether } from "./types";
@@ -50,11 +51,12 @@ import type { PathTogether } from "./types";
 type Db = ReturnType<typeof getDb>;
 type Deps = { db?: Db; now?: Date };
 
-export type NetworkError = "self" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
+export type NetworkError = "self" | "self_report" | "unavailable" | "closed" | "wait" | "limit" | "pending_max" | "not_found" | "invalid";
 
 /** What each refusal tells the person. "unavailable" is deliberately vague: a block is never revealed. */
 export const NETWORK_ERROR_TEXT: Record<NetworkError, string> = {
   self: "You can't connect with yourself.",
+  self_report: "You can't report yourself.",
   unavailable: "You can't connect with this person.",
   closed: "This person isn't taking connection requests.",
   wait: "You asked this person recently. You can ask again later.",
@@ -389,11 +391,12 @@ export async function mutualConnections(viewerId: string, otherId: string, db: D
 }
 
 /** Each person's met skills, gaps and target role, from their current analysis, as on their own Gaps page. */
-async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, { roleSlug: string; met: string[]; gaps: string[] }>> {
-  const out = new Map<string, { roleSlug: string; met: string[]; gaps: string[] }>();
+type AnalysisOf = { id: string; roleSlug: string; met: string[]; gaps: LineGap[] };
+async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, AnalysisOf>> {
+  const out = new Map<string, AnalysisOf>();
   if (!userIds.length) return out;
   const rows = await db
-    .selectDistinctOn([resumes.userId], { userId: resumes.userId, result: gapAnalyses.result })
+    .selectDistinctOn([resumes.userId], { userId: resumes.userId, id: gapAnalyses.id, result: gapAnalyses.result })
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
@@ -401,7 +404,30 @@ async function analysesOf(userIds: string[], db: Db | Tx): Promise<Map<string, {
     .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
   for (const r of rows) {
     const parsed = gapAnalysis.safeParse(r.result);
-    if (r.userId && parsed.success) out.set(r.userId, { roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => g.skillId) });
+    if (r.userId && parsed.success)
+      out.set(r.userId, { id: r.id, roleSlug: parsed.data.roleSlug, met: parsed.data.metSkillIds, gaps: parsed.data.gaps.map((g) => ({ skillId: g.skillId, status: g.status })) });
+  }
+  return out;
+}
+
+/** For each analysis, the skills whose step on its newest path is ticked done: the Map's learn pitstops that are done. */
+async function learnedOf(analysisIds: string[], db: Db | Tx): Promise<Map<string, Set<string>>> {
+  const out = new Map<string, Set<string>>();
+  if (!analysisIds.length) return out;
+  const newest = await db
+    .selectDistinctOn([paths.gapAnalysisId], { id: paths.id, analysisId: paths.gapAnalysisId })
+    .from(paths)
+    .where(inArray(paths.gapAnalysisId, analysisIds))
+    .orderBy(paths.gapAnalysisId, desc(paths.createdAt));
+  if (!newest.length) return out;
+  const analysisOf = new Map(newest.map((p) => [p.id, p.analysisId]));
+  const done = await db
+    .select({ pathId: pathSteps.pathId, skillId: pathSteps.skillId })
+    .from(pathSteps)
+    .where(and(inArray(pathSteps.pathId, [...analysisOf.keys()]), isNotNull(pathSteps.doneAt)));
+  for (const s of done) {
+    const id = analysisOf.get(s.pathId)!;
+    out.set(id, (out.get(id) ?? new Set<string>()).add(s.skillId));
   }
   return out;
 }
@@ -441,7 +467,8 @@ export async function pathTogetherWith(viewerId: string, ownerId: string, shared
   const a = analyses.get(viewerId);
   const b = analyses.get(ownerId);
   if (!a || !b || a.roleSlug !== b.roleSlug) return null;
-  return pathTogether(lineOrder(a.gaps, mine), lineOrder(b.gaps, theirs), (id) => skillNames.get(id) ?? id, sharedWith);
+  const learned = await learnedOf([a.id, b.id], db);
+  return pathTogether(lineOrder(a.gaps, mine, learned.get(a.id)), lineOrder(b.gaps, theirs, learned.get(b.id)), (id) => skillNames.get(id) ?? id, sharedWith);
 }
 
 /** People with at least one current accepted proof: "Verified" (as Find people, T44). */
@@ -644,19 +671,24 @@ export async function reportPerson(userId: string, raw: unknown, deps: Deps = {}
   const input = personReportInput.safeParse(raw);
   if (!input.success) return fail("invalid");
   const r = input.data;
-  if (r.personId === userId) return fail("self");
-  const [target] = await db.select({ id: users.id }).from(users).where(eq(users.id, r.personId));
-  if (!target) return fail("invalid");
-  const [already] = await db
-    .select({ id: reports.id })
-    .from(reports)
-    .where(and(eq(reports.reporterId, userId), eq(reports.target, "person"), eq(reports.targetId, r.personId), eq(reports.status, "open")))
-    .limit(1);
-  if (already) return { ok: true };
-  if (!(await takeShared(LIMITS.inboxReportsPerUser, userId, { db, now: now.getTime() }))) return fail("limit");
-  await db.insert(reports).values({ reporterId: userId, target: "person", targetId: r.personId, reason: r.reason, note: r.note || null, createdAt: now });
-  logEvent("info", "network_report", { reason: r.reason, status: "open" });
-  return { ok: true };
+  if (r.personId === userId) return fail("self_report");
+  const out = await db.transaction(async (tx): Promise<NetworkResult> => {
+    // One reporter and person at a time, so two quick reports can't both find no open one and insert twice.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`network-report:${userId}|${r.personId}`}))`);
+    const [target] = await tx.select({ id: users.id }).from(users).where(eq(users.id, r.personId));
+    if (!target) return fail("invalid");
+    const [already] = await tx
+      .select({ id: reports.id })
+      .from(reports)
+      .where(and(eq(reports.reporterId, userId), eq(reports.target, "person"), eq(reports.targetId, r.personId), eq(reports.status, "open")))
+      .limit(1);
+    if (already) return { ok: true };
+    if (!(await takeShared(LIMITS.inboxReportsPerUser, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    await tx.insert(reports).values({ reporterId: userId, target: "person", targetId: r.personId, reason: r.reason, note: r.note || null, createdAt: now });
+    return { ok: true };
+  });
+  if (out.ok) logEvent("info", "network_report", { reason: r.reason, status: "open" });
+  return out;
 }
 
 /** How the person stands with each of these people. */

@@ -371,7 +371,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
             <Tag>After the beta</Tag>
           </h2>
           <p className="mt-1 max-w-[60ch] text-[0.86rem] text-muted">
-            Book an hour with someone who already does the job: role prep, your interview questions, a look at your resume. Paid per session, open to free members. Mentors are vetted before they appear here.
+            Book an hour with someone who already does the job: role prep, your interview questions, a look at your resume. Mentors come after the beta.
           </p>
         </div>
         <span aria-hidden="true" className="flex">
