@@ -42,8 +42,8 @@ Checked every `WHERE` and `ORDER BY` on these three pages, and every foreign key
   and every Today view with job search on read the newest 300 open posts of up to 10,000 (#194) ordered by that
   expression; `job_posts_closed_role` and `job_posts_open_role_city` find open posts but not in that order, so each
   request read and sorted every open post. Read backwards, the new index gives the order and the read stops at 300;
-  the tie on `id` is an incremental sort within equal times. One column, ascending, because drizzle can't mark an
-  expression column descending, and a backward scan gives exactly `DESC NULLS FIRST`, the query's own order. The
+  the tie on `id` is an incremental sort within equal times. One column, ascending: a backward scan gives exactly
+  `DESC NULLS FIRST`, the query's own order, so a descending index would add nothing. The
   `?role=` read keeps using `job_posts_open_role_city` (one role's posts are few).
 - Already covered: `job_saves` by its primary key (user first) and `job_saves_job_post`; `job_feed_runs_finished`;
   `ride_days` by its primary key (user, day) for the count, the week and `doneBefore`; `user_goals` by
