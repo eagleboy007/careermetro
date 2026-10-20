@@ -659,7 +659,16 @@ export function ReportLink({ title, onReport, initialOpen = false }: { title: st
     if (back) toggle.current?.focus();
   }, [back]);
   return (
-    <div className="flex flex-col gap-2">
+    // Escape closes the reasons and puts focus back on the button that opened them.
+    <div
+      className="flex flex-col gap-2"
+      onKeyDown={(e) => {
+        if (e.key !== "Escape" || !open) return;
+        e.stopPropagation();
+        setOpen(false);
+        setBack((n) => n + 1);
+      }}
+    >
       <button ref={toggle} type="button" aria-expanded={open} aria-controls={open ? menuId : undefined} onClick={() => setOpen((o) => !o)} className={`${textButton} inline-flex items-center gap-1.5`}>
         <Flag size={14} {...ICON} />
         Link broken or out of date?

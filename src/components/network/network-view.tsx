@@ -272,7 +272,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
                 search(query);
               }}
             >
-              <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5">
+              <label className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-line-strong bg-surface px-3.5 focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent">
                 <Search {...ICON} />
                 <span className="sr-only">Find people by name or @handle</span>
                 <input
@@ -410,6 +410,16 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
   const open = panel?.id === p.id ? panel.kind : null;
   const busy = pending || undefined;
   const firstName = p.name.split(" ")[0];
+  // Cancel closes the panel and puts focus back on the button that opened it, never on the page (WCAG 2.4.3).
+  const buttons = useRef<HTMLDivElement>(null);
+  const [back, setBack] = useState<{ kind: NonNullable<Panel>["kind"]; n: number } | null>(null);
+  useEffect(() => {
+    if (back) buttons.current?.querySelector<HTMLButtonElement>(`[data-opens="${back.kind}"]`)?.focus();
+  }, [back]);
+  const cancel = () => {
+    if (open) setBack((b) => ({ kind: open, n: (b?.n ?? 0) + 1 }));
+    setPanel(null);
+  };
   const initials = p.name
     .split(" ")
     .slice(0, 2)
@@ -464,14 +474,14 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
             </p>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 max-[759px]:basis-full">
+        <div ref={buttons} className="flex flex-wrap items-center gap-1.5 max-[759px]:basis-full">
           {p.state === "connected" ? (
             <>
-              <button type="button" className={ghost} aria-disabled={busy} aria-expanded={open === "message"} onClick={() => setPanel({ id: p.id, kind: "message" })}>
+              <button type="button" className={ghost} aria-disabled={busy} aria-expanded={open === "message"} data-opens="message" onClick={() => setPanel({ id: p.id, kind: "message" })}>
                 <MessageSquare {...ICON} />
                 Message<span className="sr-only"> {p.name}</span>
               </button>
-              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} onClick={() => setPanel({ id: p.id, kind: "remove" })}>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "remove"} data-opens="remove" onClick={() => setPanel({ id: p.id, kind: "remove" })}>
                 <UserMinus {...ICON} />
                 Remove<span className="sr-only"> {p.name}</span>
               </button>
@@ -491,21 +501,21 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
                 <Clock {...ICON} />
                 Requested
               </span>
-              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "withdraw"} onClick={() => setPanel({ id: p.id, kind: "withdraw" })}>
+              <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "withdraw"} data-opens="withdraw" onClick={() => setPanel({ id: p.id, kind: "withdraw" })}>
                 Withdraw<span className="sr-only"> request to {p.name}</span>
               </button>
             </>
           ) : (
-            <button type="button" className={ink} aria-disabled={busy} aria-expanded={open === "pick"} onClick={() => act.connect(p)}>
+            <button type="button" className={ink} aria-disabled={busy} aria-expanded={open === "pick"} data-opens="pick" onClick={() => act.connect(p)}>
               <Plus {...ICON} />
               Connect<span className="sr-only"> with {p.name}</span>
             </button>
           )}
-          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "block"} onClick={() => setPanel({ id: p.id, kind: "block" })}>
+          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "block"} data-opens="block" onClick={() => setPanel({ id: p.id, kind: "block" })}>
             <Ban {...ICON} />
             Block<span className="sr-only"> {p.name}</span>
           </button>
-          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "report"} onClick={() => setPanel({ id: p.id, kind: "report" })}>
+          <button type="button" className={quiet} aria-disabled={busy} aria-expanded={open === "report"} data-opens="report" onClick={() => setPanel({ id: p.id, kind: "report" })}>
             <Flag {...ICON} />
             Report<span className="sr-only"> {p.name}</span>
           </button>
@@ -535,7 +545,7 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
             <button type="button" className={ink} aria-disabled={busy} onClick={() => act.send(p)}>
               Send request
             </button>
-            <button type="button" className={quiet} onClick={() => setPanel(null)}>
+            <button type="button" className={quiet} onClick={cancel}>
               Cancel
             </button>
           </div>
@@ -547,29 +557,29 @@ function PersonRow({ person: p, tab, panel, pick, setPick, setPanel, act, pendin
           body={`${firstName} isn't told. You can ask again 30 days after you sent it.`}
           yes="Withdraw"
           onYes={() => act.withdraw(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}
-      {open === "message" && <MessageBox name={firstName} busy={busy} onSend={(body) => act.message(p, body)} onCancel={() => setPanel(null)} />}
+      {open === "message" && <MessageBox name={firstName} busy={busy} onSend={(body) => act.message(p, body)} onCancel={cancel} />}
       {open === "remove" && (
         <Confirm
           title={`Remove ${p.name} from your connections?`}
           body={`${firstName} isn't told. What only connections see ends for both of you. Either of you can connect again later.`}
           yes="Remove"
           onYes={() => act.remove(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}
-      {open === "report" && <ReportPerson name={p.name} busy={busy} onSend={(reason, note) => act.report(p, reason, note)} onCancel={() => setPanel(null)} />}
+      {open === "report" && <ReportPerson name={p.name} busy={busy} onSend={(reason, note) => act.report(p, reason, note)} onCancel={cancel} />}
       {open === "block" && (
         <Confirm
           title={`Block ${p.name}?`}
           body="You disappear from each other's search, lists and profiles, any connection or request between you ends, and neither of you can message the other. They aren't told."
           yes="Block"
           onYes={() => act.block(p)}
-          onNo={() => setPanel(null)}
+          onNo={cancel}
           busy={busy}
         />
       )}
