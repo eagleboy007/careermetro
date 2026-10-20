@@ -39,6 +39,8 @@ import { ChoiceTag } from "@/components/ui/choice-tag";
 import { StatusChip } from "@/components/ui/status-chip";
 import { GoalsCard } from "@/components/today/goals-card";
 import { AppShell } from "@/components/app/app-shell";
+import { NotificationsBell } from "@/components/app/notifications-bell";
+import { exampleNotifications } from "@/lib/notifications/fixtures";
 import { PageLoading } from "@/components/app/page-loading";
 import { StreakChip } from "@/components/today/streak-chip";
 import { CertificateForm } from "@/components/proof/certificate-form";
@@ -1164,12 +1166,12 @@ export default function DesignPage() {
         <h2 className="text-2xl font-semibold">App shell (signed in)</h2>
         <p className="text-sm text-muted">
           Top bar on desktop, tab bar under 760 px, avatar menu with the @handle under the name (Admin shows only for admins). Sections not built yet show as Soon. The
-          first frame has the Arrivals count, which hides with no resume and on the first day; Network and Library leave the top bar under
+          first frame has the Arrivals count, which hides with no resume and on the first day, and the notifications bell with its dot; Network and Library leave the top bar under
           1240 px and Market under 1000 px, as all three are in the menu. The second frame
           has Elite on: the violet award mark on the avatar, and &ldquo;Elite · beta&rdquo; and &ldquo;Elite is on&rdquo; in its menu.
         </p>
         <div className="h-96 rounded-lg border border-line">
-          <AppShell embedded user={{ name: "Priya Nair", handle: "priya-n", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true, arrivalsCount: 3 }}>
+          <AppShell embedded user={{ name: "Priya Nair", handle: "priya-n", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 2, isAdmin: true, arrivalsCount: 3, notificationsNew: 2 }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
         </div>
@@ -1177,6 +1179,26 @@ export default function DesignPage() {
           <AppShell embedded user={{ name: "Priya Nair", initials: "PN", streakDays: 11, todayCounted: false, showStreak: true, canSignOut: false, inboxUnread: 0, elite: true }}>
             <p className="text-sm text-muted">Page content goes here.</p>
           </AppShell>
+        </div>
+        <h3 className="text-lg font-semibold">Notifications bell</h3>
+        <p className="text-sm text-muted">
+          Between the streak and the Inbox (docs/plans/notifications-plan.md). With something new its label is &ldquo;Notifications, 2 new&rdquo; and a small
+          ink dot shows (never cobalt, which means progress); with nothing new, no dot. Opening it marks everything read and the dot clears; rows that were
+          new stay bold until it closes. Under 760 px the panel fills the screen under the top bar. Below: the bell with and without the dot (open either for
+          the examples), the panel with each kind, and the empty panel.
+        </p>
+        <div className="flex flex-wrap items-center gap-6">
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <NotificationsBell count={2} />2 new
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <NotificationsBell count={0} />
+            Nothing new
+          </div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <NotificationsBell count={0} startItems={exampleNotifications} />
+          <NotificationsBell count={0} startItems={[]} />
         </div>
         <p className="text-sm text-muted">While a screen loads: the frame with an empty avatar and quiet blocks, never a blank page.</p>
         <div className="h-96 overflow-hidden rounded-lg border border-line">

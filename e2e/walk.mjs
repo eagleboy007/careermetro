@@ -927,7 +927,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 28 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 29 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1251,7 +1251,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 29) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1467,7 +1467,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 29) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -1596,6 +1596,89 @@ await step("fresh test user, no resume: every signed-in screen loads", async () 
     }
   } finally {
     await fresh.close();
+  }
+});
+// Notifications in the app (docs/plans/notifications-plan.md, v44 gap item 15). Person B asks person A to connect from
+// A's profile; A's bell reads "Notifications, 1 new" with its dot. Opening it shows the sentence and clears the dot,
+// Esc puts focus back on the bell, and the row opens Network on Requests. axe passes with the panel open at phone width,
+// light and dark, with no sideways scroll.
+await step("notifications: a connection request rings the bell, opening it clears the dot, the row opens Requests", async () => {
+  const ctxA = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const ctxR = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const qa = await ctxA.newPage();
+  const qr = await ctxR.newPage();
+  for (const q of [qa, qr]) {
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  }
+  const signUp = async (q, name, email) => {
+    await q.goto(BASE + "/today");
+    await q.waitForURL(/\/sign-in/);
+    await q.locator('input[name="name"]').fill(name);
+    await q.locator('input[name="email"]').fill(email);
+    await q.locator('form button[type="submit"]').last().click();
+    await q.waitForURL(/\/(sign-up\/finish|today)/, { timeout: 15000 });
+    if (new URL(q.url()).pathname.startsWith("/sign-up/finish")) {
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/today/, { timeout: 15000 });
+    }
+  };
+  try {
+    const handle = `bell-${Date.now().toString(36)}`;
+    await signUp(qa, "Asha Bellamy", `bell-a-${testEmail}`);
+    await signUp(qr, "Ravi Bellamy", `bell-r-${testEmail}`);
+    // A new account has nothing new: the bell reads "Notifications", with no dot.
+    const bell = qa.locator("header button[data-bell]");
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error(`a new account's bell reads ${await bell.getAttribute("aria-label")}`);
+    // A opens their profile to everyone signed in, so B can find the Connect button there.
+    await qa.goto(BASE + "/settings");
+    await qa.getByLabel("Username").fill(handle);
+    await qa.getByText(/^Available\. After you save/).waitFor({ timeout: 10000 });
+    await qa.getByLabel("Everyone signed in").check({ force: true });
+    await qa.getByRole("button", { name: "Save changes" }).click();
+    await qa.getByText("You have unsaved changes.").waitFor({ state: "detached", timeout: 15000 });
+    await qr.goto(BASE + `/u/${handle}`);
+    await qr.getByRole("heading", { level: 1, name: "Asha Bellamy" }).waitFor({ timeout: 10000 });
+    await qr.getByRole("button", { name: "Connect", exact: true }).click();
+    await qr.getByRole("button", { name: "Send request", exact: true }).click();
+    await qr.getByText("Request sent to Asha.").waitFor({ timeout: 10000 });
+    // B gets nothing for their own request.
+    if ((await qr.locator("header button[data-bell]").getAttribute("aria-label")) !== "Notifications") throw new Error("the sender's own bell rang");
+
+    await qa.goto(BASE + "/today");
+    await bell.waitFor();
+    if ((await bell.getAttribute("aria-label")) !== "Notifications, 1 new") throw new Error(`the bell reads ${await bell.getAttribute("aria-label")}`);
+    if (!(await qa.locator("header [data-bell-dot]").count())) throw new Error("no dot on the bell");
+    await bell.click();
+    const row = qa.getByRole("link", { name: "New: Ravi Bellamy asked to connect.", exact: false });
+    await row.waitFor({ timeout: 10000 });
+    if (await qa.locator("header [data-bell-dot]").count()) throw new Error("the dot stayed after opening");
+    await axeOn(qa, "notifications-panel");
+    await qa.keyboard.press("Escape");
+    await qa.waitForFunction(() => document.activeElement?.hasAttribute("data-bell"), null, { timeout: 5000 });
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error("the bell still reads new after opening");
+    // Phone width, light then dark: the panel fills the screen under the top bar, with no sideways scroll.
+    await qa.setViewportSize({ width: 360, height: 780 });
+    for (const scheme of ["light", "dark"]) {
+      await qa.emulateMedia({ colorScheme: scheme });
+      await bell.click();
+      await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).waitFor({ timeout: 10000 });
+      if (await qa.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error(`the panel scrolls sideways at 360px (${scheme})`);
+      await axeOn(qa, `notifications-panel-phone-${scheme}`);
+      await qa.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-notifications-phone-${scheme}.png` });
+      await qa.keyboard.press("Escape");
+    }
+    await qa.setViewportSize({ width: 1280, height: 900 });
+    await qa.emulateMedia({ colorScheme: "light" });
+    // The row opens Network, on Requests.
+    await bell.click();
+    await qa.getByRole("link", { name: "Ravi Bellamy asked to connect.", exact: false }).click();
+    await qa.waitForURL(/\/network\?tab=requests/, { timeout: 15000 });
+    await qa.getByRole("tab", { name: /^Requests/, selected: true }).waitFor({ timeout: 10000 });
+  } finally {
+    await ctxA.close();
+    await ctxR.close();
   }
 });
 // Build your resume (FR-36, handoff 12k). A fresh person answers the seven sections; one click on Next moves on each
@@ -1761,7 +1844,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 29) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1859,7 +1942,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 29) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -1942,7 +2025,7 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 28) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 29) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
 
@@ -2940,6 +3023,14 @@ await step("corporate applications: apply with consent, the board, move a lane, 
     await p.locator("section", { has: p.getByRole("heading", { name: "Not this time", exact: true }) }).getByRole("heading", { name: title }).waitFor();
     await mine.getByText(NOTE).waitFor();
     await mine.getByText("Example Labs moved you to Shortlisted").waitFor();
+    // The bell says so too (docs/plans/notifications-plan.md): the move and the closing make one row, the closing line.
+    const bell = p.locator("header button[data-bell]");
+    if ((await bell.getAttribute("aria-label")) !== "Notifications, 1 new") throw new Error(`the bell reads ${await bell.getAttribute("aria-label")}`);
+    await bell.click();
+    await p.getByRole("link", { name: `New: Example Labs closed your application for ${title}. Their note is on Arrivals.`, exact: false }).waitFor({ timeout: 10000 });
+    await p.keyboard.press("Escape");
+    await p.waitForFunction(() => document.activeElement?.hasAttribute("data-bell"), null, { timeout: 5000 });
+    if ((await bell.getAttribute("aria-label")) !== "Notifications") throw new Error("the bell still reads new after opening");
     await shot("arrivals");
     await a11y("arrivals");
     await p.setViewportSize({ width: 390, height: 844 });

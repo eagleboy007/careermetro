@@ -15,6 +15,7 @@ import {
   ME_EDITS_PER_DAY,
   MOCK_FEEDBACK_PER_DAY,
   MOCK_SESSIONS_PER_DAY,
+  NOTIFICATION_READS_PER_DAY,
   RESOURCE_REPORTS_PER_DAY,
   SUGGESTIONS_PER_DAY,
   TIMED_TESTS_PER_DAY,
@@ -120,6 +121,8 @@ export const LIMITS = {
   resourceSuggestionsPerUserDay: { bucket: "resource-suggestion", max: SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
   /** Adds, edits and deletes on Me (docs/plans/me-editing-plan.md): roles, education, stories and interests, each try counted. */
   meEditsPerUserDay: { bucket: "me-edit", max: ME_EDITS_PER_DAY, windowMs: 24 * HOUR },
+  /** Opening the notifications panel, which marks every row read (docs/plans/notifications-plan.md), each try counted. */
+  notificationReadsPerUserDay: { bucket: "notification-read", max: NOTIFICATION_READS_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

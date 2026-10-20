@@ -26,7 +26,7 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
-import { RESOURCE_REPORT_REASONS, RESOURCE_REPORT_STATUSES, SUGGESTION_DECLINE_REASONS, SUGGESTION_STATUSES } from "../lib/schemas/constants";
+import { NOTIFICATION_KINDS, RESOURCE_REPORT_REASONS, RESOURCE_REPORT_STATUSES, SUGGESTION_DECLINE_REASONS, SUGGESTION_STATUSES } from "../lib/schemas/constants";
 import {
   APPLICATION_EVENT_KINDS,
   APPLICATION_STAGES,
@@ -1705,6 +1705,55 @@ export const userInterests = pgTable(
     primaryKey({ columns: [t.userId, t.nameKey] }),
     check("user_interests_name_length", sql`char_length(${t.name}) between 1 and 40`),
     check("user_interests_key_length", sql`char_length(${t.nameKey}) between 1 and 40`),
+  ],
+);
+
+/* Notifications, in-app (docs/plans/notifications-plan.md, migration 0043) ---------------------------------------------- */
+
+/**
+ * One row per event the bell shows: a connection request to the person, their request accepted, a company moving or
+ * closing their application, and an interview set or cancelled. Ids only, never text: the sentence is built from the
+ * live rows when the panel opens, so a hidden, suspended, deleted or blocked source drops out on its own. Written in the
+ * event's own transaction (src/lib/notifications/store.ts notify). One unread row per kind and source (the partial
+ * unique index), so a card dragged through lanes makes one. `emailed_at` is kept for the email part (waiting on
+ * RESEND_API_KEY). The daily cleanup deletes read rows 60 days after reading and any row after 90 days.
+ */
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: NOTIFICATION_KINDS }).notNull(),
+    /** Who did it. Their account going sets it null, and the row is then not shown. */
+    actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+    connectionRequestId: uuid("connection_request_id").references(() => connectionRequests.id, { onDelete: "cascade" }),
+    applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }),
+    interviewId: uuid("interview_id").references(() => interviews.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    /** Unused until the email part. */
+    emailedAt: timestamp("emailed_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("notifications_user_created").on(t.userId, t.createdAt.desc()),
+    index("notifications_user_unread").on(t.userId).where(sql`${t.readAt} is null`),
+    index("notifications_actor").on(t.actorId),
+    index("notifications_connection_request").on(t.connectionRequestId),
+    index("notifications_application").on(t.applicationId),
+    index("notifications_interview").on(t.interviewId),
+    uniqueIndex("notifications_one_unread")
+      .on(t.userId, t.kind, sql`coalesce(${t.applicationId}, ${t.connectionRequestId}, ${t.interviewId})`)
+      .where(sql`${t.readAt} is null`),
+    check(
+      "notifications_kind",
+      sql`${t.kind} in ('connection_request', 'connection_accepted', 'application_moved', 'application_closed', 'interview_scheduled', 'interview_cancelled')`,
+    ),
+    check(
+      "notifications_refs",
+      sql`(${t.kind} in ('connection_request', 'connection_accepted') and ${t.connectionRequestId} is not null and ${t.applicationId} is null and ${t.interviewId} is null) or (${t.kind} in ('application_moved', 'application_closed') and ${t.applicationId} is not null and ${t.connectionRequestId} is null and ${t.interviewId} is null) or (${t.kind} in ('interview_scheduled', 'interview_cancelled') and ${t.interviewId} is not null and ${t.connectionRequestId} is null and ${t.applicationId} is null)`,
+    ),
   ],
 );
 

@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { StreakChip } from "@/components/today/streak-chip";
 import { Logo } from "@/components/ui/logo";
+import type { OpenNotifications } from "@/lib/notifications/types";
+import { NotificationsBell } from "./notifications-bell";
 import { ADMIN_LINK, MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
 
 export type ShellUser = {
@@ -33,6 +35,8 @@ export type ShellUser = {
    * first day, as the prototype hides it then.
    */
   arrivalsCount?: number;
+  /** Unread notifications the person may see (docs/plans/notifications-plan.md): the dot on the bell. */
+  notificationsNew?: number;
 };
 
 /**
@@ -40,15 +44,27 @@ export type ShellUser = {
  * menu. Sections that are not built yet show as "Soon" and are not links. With no user yet (the account is still
  * loading) the frame shows with an empty avatar, so a screen never opens blank.
  */
-export function AppShell({ user, children, embedded = false }: { user: ShellUser | null; children: ReactNode; embedded?: boolean }) {
+export function AppShell({
+  user,
+  children,
+  embedded = false,
+  openNotifications,
+}: {
+  user: ShellUser | null;
+  children: ReactNode;
+  embedded?: boolean;
+  /** The server action that opens the bell's panel; without it (example data, /design) the panel shows examples. */
+  openNotifications?: OpenNotifications;
+}) {
   const path = usePathname();
   const active = (item: NavItem) => path === item.href || path.startsWith(`${item.href}/`);
   return (
     <div className={`flex flex-col ${embedded ? "relative min-h-full" : "min-h-full"}`}>
       <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1240px] items-center gap-4 px-4 py-3">
+          {/* The wordmark gives way under 420 px, so the bell fits beside the streak, Inbox and avatar at 360 px. */}
           <Link href="/today" aria-label="CareerMetro, Today">
-            <Logo wordmarkClassName="max-[359px]:hidden" />
+            <Logo wordmarkClassName="max-[419px]:hidden" />
           </Link>
           <nav aria-label="Main" className="hidden flex-1 items-center gap-1 text-sm min-[760px]:flex">
             {TOP_NAV.map((item) => (
@@ -57,6 +73,7 @@ export function AppShell({ user, children, embedded = false }: { user: ShellUser
           </nav>
           <div className="ml-auto flex items-center gap-2.5">
             {user?.showStreak && <StreakChip days={user.streakDays} todayCounted={user.todayCounted} />}
+            {user && <NotificationsBell count={user.notificationsNew ?? 0} open={openNotifications} />}
             <InboxLink unread={user?.inboxUnread ?? 0} active={path === "/inbox" || path.startsWith("/inbox/")} />
             {user ? <AvatarMenu user={user} /> : <span aria-hidden="true" className="size-9 rounded-full bg-surface-2" />}
           </div>

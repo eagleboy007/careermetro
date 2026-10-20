@@ -624,3 +624,27 @@ export const JOB_SEARCH_CHANGES_PER_DAY = 20;
 export const DEPARTURE_CHANGES_PER_DAY = 200;
 /** What Express apply says while job search is off. */
 export const JOB_SEARCH_OFF_MESSAGE = "Turn on job search to apply.";
+
+/*
+ * Notifications, in-app (docs/plans/notifications-plan.md, v44 gap item 15). A row per event holds ids only; the
+ * sentence is built from the live rows when the panel opens. Chat messages stay on the Inbox badge.
+ */
+export const NOTIFICATION_KINDS = [
+  "connection_request",
+  "connection_accepted",
+  "application_moved",
+  "application_closed",
+  "interview_scheduled",
+  "interview_cancelled",
+] as const;
+export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
+/** The panel lists at most this many, from the last NOTIFICATION_SHOWN_DAYS days. */
+export const NOTIFICATIONS_SHOWN = 20;
+export const NOTIFICATION_SHOWN_DAYS = 60;
+/** The daily cleanup deletes a read notification this many days after it was read, and any after NOTIFICATION_KEEP_DAYS. */
+export const NOTIFICATION_READ_KEEP_DAYS = 60;
+export const NOTIFICATION_KEEP_DAYS = 90;
+/** Panel opens (each marks all as read) one person makes a day, each try counted. */
+export const NOTIFICATION_READS_PER_DAY = 300;
+/** What the panel says with nothing to show. */
+export const NOTIFICATIONS_EMPTY = "Nothing new. Connection requests and updates on your applications show here.";
