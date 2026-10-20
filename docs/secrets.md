@@ -26,7 +26,7 @@ Set each one for both **Production** and **Preview**, unless the table says othe
 | TODAY_PREVIEW | `1` opens the signed-in app and the privacy and terms pages in production (they are always open on previews) | Just the value `1` | Yes. Removing it closes the app again. |
 | RESEND_API_KEY | Sends the app's own emails: company sign-up, join and re-check codes, and the current-job check | resend.com > API keys | Yes. Make a new key, paste it, then delete the old one. |
 | EMAIL_FROM | The sender, e.g. `CareerMetro <no-reply@careermetro.com>` | Your verified domain in Resend | Yes. |
-| PARSE_DAILY_BUDGET_USD, EXPLAIN_DAILY_BUDGET_USD, WRITE_PATH_DAILY_BUDGET_USD, PRACTICE_DAILY_BUDGET_USD, JOB_CHECK_DAILY_BUDGET_USD | Optional daily AI spend caps in US dollars, per feature: resume reading (default 5), gap explanations, path writing, practice feedback and pasted-job checks (default 2 each) | Your choice | Yes, any time. |
+| PARSE_DAILY_BUDGET_USD, EXPLAIN_DAILY_BUDGET_USD, WRITE_PATH_DAILY_BUDGET_USD, PRACTICE_DAILY_BUDGET_USD, JOB_CHECK_DAILY_BUDGET_USD, MOCK_DAILY_BUDGET_USD | Optional daily AI spend caps in US dollars, per feature: resume reading (default 5), gap explanations, path writing, practice feedback and pasted-job checks (default 2 each), and mock interview feedback (default 3) | Your choice | Yes, any time. |
 
 ## 2. Secrets kept inside other services (not in Vercel)
 

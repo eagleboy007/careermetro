@@ -10,6 +10,7 @@ import { exportInbox } from "@/lib/inbox/store";
 import { exportJobChecks } from "@/lib/me/job-email-check";
 import { exportDraft } from "@/lib/builder/store";
 import { exportPlan } from "@/lib/elite/store";
+import { exportMockSessions } from "@/lib/mock/interview-store";
 import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
 import { exportPractice } from "@/lib/practice/store";
@@ -19,7 +20,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 23;
+export const EXPORT_VERSION = 24;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -105,7 +106,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -163,6 +164,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportDraft(userId, db),
     exportPlan(userId, db),
     exportTimedTests(userId, db),
+    exportMockSessions(userId, db),
   ]);
 
   return {
@@ -227,5 +229,9 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Timed tests (FR-50): the role, the bank question ids, your pick for each (-1 is no answer), when it started and
     // ended, and how many were right. Picked and scored by code, never by AI.
     timedTests: timedTestRows,
+    // Mock interviews (FR-50): the role, length, focus, the bank question ids, when it started and ended, and the
+    // summary in words; with each answer still kept (answers go after 30 days) and what worked and what to add next
+    // time. The questions come from the bank, never from AI; no score.
+    mockSessions: mockSessionRows,
   };
 }

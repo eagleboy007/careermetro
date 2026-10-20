@@ -51,3 +51,4 @@ Tokens live in `src/app/globals.css` and are exposed to Tailwind as `bg`, `surfa
 - `npm run eval:parse` — run the parse prompt over `fixtures/evals` with the real API (needs `ANTHROPIC_API_KEY`, about $1)
 - `npm run eval:explain` — run the explain-gaps prompt over the matcher's gaps for `fixtures/evals` with the real API (needs `ANTHROPIC_API_KEY`, about $1; never in CI)
 - `npm run eval:build` — run the build-resume prompt over the synthetic answers in `fixtures/evals/builder` with the real API (needs `ANTHROPIC_API_KEY`, a few cents; never in CI)
+- `npm run eval:mock` — run the mock-interview prompt over the synthetic answers in `fixtures/evals/mock` with the real API (needs `ANTHROPIC_API_KEY`, a few cents; never in CI)

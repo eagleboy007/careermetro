@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config";
 import base from "./vitest.config";
 
-// Evals call the real Claude API and cost money, so they run only through `npm run eval:parse`, `npm run eval:jd`, `npm run eval:explain` and `npm run eval:build`,
+// Evals call the real Claude API and cost money, so they run only through `npm run eval:parse`, `npm run eval:jd`, `npm run eval:explain`, `npm run eval:build` and `npm run eval:mock`,
 // never with `npm test`.
 export default defineConfig({
   resolve: base.resolve,

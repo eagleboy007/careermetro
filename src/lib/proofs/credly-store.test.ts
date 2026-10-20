@@ -524,8 +524,8 @@ describe.skipIf(!db)("Credly check (database)", () => {
     const me = await person("export");
     const id = await verified(me.userId, me.goalId);
     const data = await exportAccountData(me.userId, db! as never);
-    expect(EXPORT_VERSION).toBe(23);
-    expect(data!.exportVersion).toBe(23);
+    expect(EXPORT_VERSION).toBe(24);
+    expect(data!.exportVersion).toBe(24);
     expect(data!.proofs[0]).toMatchObject({ verifier: "credly", badgeId: (await proof(id)).badgeId, checkNote: null });
     expect(data!.proofs[0].checkedAt).toBeTruthy();
     await db!.delete(schema.users).where(eq(schema.users.id, me.userId));

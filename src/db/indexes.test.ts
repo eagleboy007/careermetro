@@ -20,6 +20,7 @@ const unindexedOk = new Set([
   "job_checks.ai_call_id",
   "job_email_checks.reviewed_by",
   "messages.hidden_by",
+  "mock_sessions.ai_call_id",
   "path_steps.skill_id",
   "practice_answers.ai_call_id",
   "practice_answers.skill_id",

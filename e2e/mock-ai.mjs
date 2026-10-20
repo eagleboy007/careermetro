@@ -2,7 +2,8 @@
 // profile: for a synthetic resume from fixtures/evals (matched by its first line, "Name | City"), one built from that
 // resume's reviewed skills and quotes; for anything else, the fixed profile of fixtures/resumes/priya-sharma. The
 // parse-jd call ("Check against a job") gets the skills listed for a fixture posting. The practice-feedback call
-// (Practice, matched on its system prompt) gets fixed feedback in words and a stronger answer. Every other call gets
+// (Practice, matched on its system prompt) gets fixed feedback in words and a stronger answer. The mock-interview call
+// (Interview prep, matched on its system prompt) gets a fixed summary and words for each answered position. Every other call gets
 // text that fails its schema, so the app's plain-code fallbacks are used.
 import { readdirSync, readFileSync } from "node:fs";
 import http from "node:http";
@@ -81,6 +82,20 @@ function buildReply(content) {
     suggestions: answers.length ? [{ kind: "number", text: "How many people used what you built?", answerId: answers[0].id }] : [],
   };
 }
+// Mock interview feedback (prompts/mock-interview): a fixed summary, and the same words for each answered position read
+// from the <answer position="N"> tags; the answers themselves are never logged.
+const MOCK_SUMMARY = "You answer in plain words and start in the right place. The thing to practise next is the step after: what you would do with what you find.";
+function mockReply(content) {
+  const positions = [...content.matchAll(/<answer position="(\d+)">/g)].map((m) => Number(m[1]));
+  return {
+    summary: MOCK_SUMMARY,
+    questions: positions.map((position) => ({
+      position,
+      whatWorked: "You kept to the question and gave a clear first step.",
+      addNextTime: "Add one example from your own work or studies, and say what you would do next.",
+    })),
+  };
+}
 // MOCK_AI_DELAY_MS holds each answer back, as a real call takes 10 to 40 seconds (the load test, e2e/load-upload.mjs).
 const delay = Number(process.env.MOCK_AI_DELAY_MS ?? 0);
 let n = 0;
@@ -93,14 +108,17 @@ http
       const j = JSON.parse(body || "{}");
       const sys = typeof j.system === "string" ? j.system : JSON.stringify(j.system ?? "");
       const sent = JSON.stringify(j.messages ?? "");
-      const isJd = /job posting/i.test(sys) && sent.includes("<job_posting>");
-      const isPractice = !isJd && /practice interview answers/i.test(sys) && sent.includes("<answer>");
+      const isMock = /mock interview round/i.test(sys) && sent.includes("<mock_interview>");
+      const isJd = !isMock && /job posting/i.test(sys) && sent.includes("<job_posting>");
+      const isPractice = !isMock && !isJd && /practice interview answers/i.test(sys) && sent.includes("<answer>");
       const isBuild = !isJd && !isPractice && /answers into resume lines/i.test(sys) && sent.includes("<answers>");
-      const isParse = !isJd && !isPractice && !isBuild && /resume/i.test(sys) && /<resume|resume_text|wrap/i.test(sent);
+      const isParse = !isMock && !isJd && !isPractice && !isBuild && /resume/i.test(sys) && /<resume|resume_text|wrap/i.test(sent);
       const persona = isParse ? personas.find((p) => sent.includes(p.key)) : undefined;
       const content = typeof j.messages?.[0]?.content === "string" ? j.messages[0].content : "";
       const posting = isJd ? postings.find((p) => content.includes(p.text.split("\n")[0])) : undefined;
-      const text = isJd
+      const text = isMock
+        ? JSON.stringify(mockReply(content))
+        : isJd
         ? JSON.stringify({ skills: posting?.skills ?? [] })
         : isBuild
           ? JSON.stringify(buildReply(content))
@@ -109,7 +127,7 @@ http
           : isParse
             ? JSON.stringify(persona?.profile ?? profile)
             : "not json";
-      console.log(id, req.url, isJd ? "parse-jd" : isBuild ? "build-resume" : isPractice ? "practice-feedback" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
+      console.log(id, req.url, isMock ? "mock-interview" : isJd ? "parse-jd" : isBuild ? "build-resume" : isPractice ? "practice-feedback" : isParse ? "parse" : "other", sys.slice(0, 60).replace(/\n/g, " "));
       const answer = () => {
         res.writeHead(200, { "content-type": "application/json" });
         res.end(

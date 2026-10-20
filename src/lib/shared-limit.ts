@@ -7,7 +7,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { rateLimits } from "@/db/schema";
 import { errorFields, logEvent } from "@/lib/log";
-import { ELITE_CHANGES_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
+import { ELITE_CHANGES_PER_DAY, MOCK_FEEDBACK_PER_DAY, MOCK_SESSIONS_PER_DAY, TIMED_TESTS_PER_DAY } from "@/lib/schemas/constants";
 
 type Db = ReturnType<typeof getDb>;
 
@@ -93,6 +93,10 @@ export const LIMITS = {
   eliteBadgePerUserDay: { bucket: "elite-badge", max: 20, windowMs: 24 * HOUR },
   /** Timed tests (FR-50 part 2) one person starts a day, each start counted, so the bank can't be read out by script. */
   timedTestsPerUserDay: { bucket: "timed-test", max: TIMED_TESTS_PER_DAY, windowMs: 24 * HOUR },
+  /** Mock interviews (FR-50 part 3) one person starts a day, each start counted. */
+  mockSessionsPerUserDay: { bucket: "mock-session", max: MOCK_SESSIONS_PER_DAY, windowMs: 24 * HOUR },
+  /** Mock interview sessions one person gets feedback on a day: each is one model call, inside its own daily budget. */
+  mockFeedbackPerUserDay: { bucket: "mock-feedback", max: MOCK_FEEDBACK_PER_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

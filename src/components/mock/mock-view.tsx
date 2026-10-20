@@ -3,8 +3,22 @@
 import { Lock, MessageSquareText, Zap } from "lucide-react";
 import Link from "next/link";
 import { useId, useState } from "react";
-import type { MockPageView, MockTab, TimedTestFinishResult, TimedTestPickResult, TimedTestReview, TimedTestStartResult } from "@/lib/schemas";
+import type {
+  MockFocus,
+  MockInterviewAnswerResult,
+  MockInterviewEndResult,
+  MockInterviewStartResult,
+  MockLength,
+  MockPageView,
+  MockSessionResult,
+  MockTab,
+  TimedTestFinishResult,
+  TimedTestPickResult,
+  TimedTestReview,
+  TimedTestStartResult,
+} from "@/lib/schemas";
 import { MOCK_TABS } from "@/lib/schemas/constants";
+import { MockInterview } from "./mock-interview";
 import { QuestionBank } from "./question-bank";
 import { TimedTest } from "./timed-test";
 
@@ -15,8 +29,8 @@ const SEG = "inline-flex min-h-11 items-center rounded-full px-4 text-[0.86rem] 
 /**
  * Interview prep (`/mock`, handoff 12l, prototype v44): three tabs, Mock interview, Timed test and Question bank, for
  * a role (the target role by default). With Elite off, a locked panel with "Turn on Elite" sits on top; the bank still
- * opens 5 questions on Free. The mock interview arrives in the next part. Elite violet marks Elite only; cobalt is
- * only the test's progress bar. Without actions (example data) nothing is saved.
+ * opens 5 questions on Free. Elite violet marks Elite only; cobalt is only the progress bars of the mock interview and
+ * the test. Without actions (example data) nothing is saved.
  */
 export function MockView({
   view,
@@ -25,6 +39,10 @@ export function MockView({
   onPick,
   onFinish,
   initialReview,
+  onInterviewStart,
+  onInterviewAnswer,
+  onInterviewEnd,
+  initialInterviewResult,
 }: {
   view: MockPageView;
   tab: MockTab;
@@ -33,6 +51,11 @@ export function MockView({
   onFinish?: (testId: string) => Promise<TimedTestFinishResult>;
   /** For /design: the timed test tab opens on this review. */
   initialReview?: TimedTestReview;
+  onInterviewStart?: (roleSlug: string, length: MockLength, focus: MockFocus) => Promise<MockInterviewStartResult>;
+  onInterviewAnswer?: (sessionId: string, position: number, answer: string) => Promise<MockInterviewAnswerResult>;
+  onInterviewEnd?: (sessionId: string, answers: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
+  /** For /design: the mock interview tab opens on this feedback. */
+  initialInterviewResult?: MockSessionResult;
 }) {
   const id = useId();
   const [tab, setTab] = useState<MockTab>(firstTab);
@@ -46,8 +69,8 @@ export function MockView({
             <span className="rounded-full bg-elite px-2 py-0.5 align-middle font-mono text-[0.66rem] font-medium uppercase tracking-[0.06em] text-on-elite">Elite</span>
           </h1>
           <p className="mt-1.5 max-w-[62ch] text-[0.92rem] text-muted">
-            A question bank for your role, timed tests like the ones companies send and, next, mock interviews. Practice gets you ready; only proof fills a
-            goal.
+            A question bank for your role, mock interviews with an AI interviewer and timed tests like the ones companies send. Feedback comes in words,
+            never a score. Practice gets you ready; only proof fills a goal.
           </p>
         </div>
         <Link href="/practice" className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[0.84rem] font-[550] text-ink hover:bg-surface-2">
@@ -103,25 +126,18 @@ export function MockView({
         )}
       </div>
 
-      {/* All three stay mounted, so a running test keeps its clock and picks while another tab is open. */}
+      {/* All three stay mounted, so a running round or test keeps its clock and answers while another tab is open. */}
       <div hidden={tab !== "interview"}>
-        <section aria-labelledby={`${id}-mi`} className="flex min-w-0 flex-col gap-3 rounded-lg border border-line bg-surface px-[18px] py-4">
-          <h2 id={`${id}-mi`} className="font-sans text-[1.05rem] font-semibold">
-            Mock interview
-          </h2>
-          <p className="max-w-[62ch] text-[0.88rem] text-muted">
-            Mock interviews come next: a quick or full round for your role with an AI interviewer, typed or spoken answers, and feedback in words on each
-            answer, never a score. Until then, take a timed test or study the question bank.
-          </p>
-          <div className="flex flex-wrap gap-2.5">
-            <button type="button" onClick={() => setTab("test")} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-[0.86rem] font-[550] text-bg hover:opacity-90">
-              Take a timed test
-            </button>
-            <button type="button" onClick={() => setTab("bank")} className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-surface px-4 text-[0.86rem] font-[550] text-ink hover:bg-surface-2">
-              Open the question bank
-            </button>
-          </div>
-        </section>
+        <MockInterview
+          elite={view.elite}
+          roles={view.roles}
+          roleSlug={view.interview?.roleSlug ?? view.role.slug}
+          initial={view.interview}
+          initialResult={initialInterviewResult}
+          onStart={onInterviewStart}
+          onAnswer={onInterviewAnswer}
+          onEnd={onInterviewEnd}
+        />
       </div>
       <div hidden={tab !== "test"}>
         <TimedTest

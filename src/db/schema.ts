@@ -33,9 +33,9 @@ import {
   INTERVIEW_RECOMMENDATIONS,
   INTERVIEW_ROUNDS,
   INTERVIEW_STATUSES,
-  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
+  CONNECTION_HOWS, CONNECTION_REQUEST_STATUSES, GAPS_VISIBLE_TO, JOB_EMAIL_CHECK_STATUSES, JOB_STATUSES, JOB_TEAM_ROLES, JOB_WORK_TYPES, MOCK_FOCUSES, MOCK_LENGTHS, ORG_INVITE_KINDS, ORG_REVIEW_STATUSES, ORG_ROLES, ORG_TYPES, PROFILE_VISIBILITIES, REQUESTS_FROM, RIDE_REMINDERS, WORK_EMAIL_PURPOSES } from "../lib/schemas/constants";
 import { GOAL_SOURCES, GOAL_STATUSES, PROOF_STATUSES, PROOF_TYPES, PROOF_VERIFIERS, STEP_KINDS, STEP_SOURCES } from "../lib/schemas/goals";
-import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
+import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequirements, MockSessionFeedback, PracticeFeedback, Profile, ProofEvidence, ResumeScreening, RoleProfile } from "@/lib/schemas";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
@@ -1319,6 +1319,59 @@ export const timedTests = pgTable(
     right: smallint("right"),
   },
   (t) => [index("timed_tests_user").on(t.userId, t.startedAt)],
+);
+
+/**
+ * Mock interviews (FR-50 part 3, handoff 12l): bank questions picked by code for a role, length (Quick: 4 in 10
+ * minutes, Full: 8 in 20) and focus. `feedback` holds the summary in words once the session ends with feedback;
+ * `ai_call_id` is the one call for it (prompts/mock-interview). Goes with the account (on delete cascade); in Download
+ * your data. The daily clean-up deletes the answers after 30 days and keeps this row.
+ */
+export const mockSessions = pgTable(
+  "mock_sessions",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    roleSlug: text("role_slug").notNull(),
+    length: text("length", { enum: MOCK_LENGTHS }).notNull(),
+    focus: text("focus", { enum: MOCK_FOCUSES }).notNull(),
+    questionIds: text("question_ids").array().notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    feedback: jsonb("feedback").$type<MockSessionFeedback>(),
+    aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
+  },
+  (t) => [
+    index("mock_sessions_user").on(t.userId, t.startedAt),
+    index("mock_sessions_started").on(t.startedAt),
+    check("mock_sessions_length", sql`${t.length} in ('quick', 'full')`),
+    check("mock_sessions_focus", sql`${t.focus} in ('mix', 'gaps', 'technical', 'about')`),
+  ],
+);
+
+/**
+ * One answer in a mock interview, by the question's position (1 to 8). The text is the person's own (typed, or spoken
+ * and turned to text on their device; audio is never sent or kept), 1 to 4,000 characters, kept 30 days and never
+ * logged. `what_worked` and `add_next_time` are the model's words, null until feedback. A skipped question has no row.
+ */
+export const mockAnswers = pgTable(
+  "mock_answers",
+  {
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => mockSessions.id, { onDelete: "cascade" }),
+    position: smallint("position").notNull(),
+    answer: text("answer").notNull(),
+    whatWorked: text("what_worked"),
+    addNextTime: text("add_next_time"),
+  },
+  (t) => [
+    primaryKey({ columns: [t.sessionId, t.position] }),
+    check("mock_answers_answer_length", sql`char_length(${t.answer}) between 1 and 4000`),
+    check("mock_answers_position", sql`${t.position} between 1 and 8`),
+  ],
 );
 
 /* Audit ------------------------------------------------------------------- */
