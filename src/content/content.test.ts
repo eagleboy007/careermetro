@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
-import { certifications, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -196,5 +196,46 @@ describe("person cities (T44)", () => {
     const { PERSON_CITIES } = await import("@/lib/schemas/constants");
     const known = [...new Set(marketStates.flatMap((s) => s.cities))].sort();
     expect([...PERSON_CITIES]).toEqual(known);
+  });
+});
+
+describe("interview prep bank (FR-50, handoff 12l)", () => {
+  const roleBySlug = new Map(roleProfiles.map((r) => [r.slug, r]));
+
+  it("takes every open question from the Practice bank, word for word, with its look-for note as a strong answer", () => {
+    const open = mockQuestions.filter((q) => q.kind === "open");
+    expect(open.map((q) => q.id).sort()).toEqual(practiceQuestions.map((q) => q.id).sort());
+    for (const q of open) {
+      const p = practiceQuestions.find((x) => x.id === q.id)!;
+      expect(q.kind === "open" && [q.skillId, q.question, q.strongCovers, q.level]).toEqual([p.skillId, p.question, p.lookFor, p.level]);
+    }
+  });
+
+  it("files each question under exactly the roles whose profile has its skill", () => {
+    for (const q of mockQuestions) {
+      const want = roleProfiles.filter((r) => r.skills.some((s) => s.skillId === q.skillId)).map((r) => r.slug).sort();
+      expect([q.id, [...q.roleSlugs].sort()]).toEqual([q.id, want]);
+      for (const slug of q.roleSlugs) expect(roleBySlug.has(slug)).toBe(true);
+    }
+  });
+
+  it("gives every skill one topic, and the topic list stays short", () => {
+    const topicOf = new Map<string, Set<string>>();
+    for (const q of mockQuestions) topicOf.set(q.skillId, (topicOf.get(q.skillId) ?? new Set()).add(q.topic));
+    for (const [skillId, topics] of topicOf) expect([skillId, topics.size]).toEqual([skillId, 1]);
+    for (const q of mockQuestions) expect(skills.some((s) => s.id === q.skillId)).toBe(true);
+  });
+
+  it("keeps multiple-choice questions to four different options, each with its explanation", () => {
+    const choice = mockQuestions.filter((q) => q.kind === "choice");
+    expect(choice.length).toBeGreaterThanOrEqual(12);
+    for (const q of choice) {
+      if (q.kind !== "choice") continue;
+      expect(q.options).toHaveLength(4);
+      expect(q.answer).toBeLessThan(q.options.length);
+      expect(q.explanation.length).toBeGreaterThan(20);
+    }
+    // The right answer isn't always in the same place.
+    expect(new Set(choice.map((q) => q.kind === "choice" && q.answer)).size).toBe(4);
   });
 });

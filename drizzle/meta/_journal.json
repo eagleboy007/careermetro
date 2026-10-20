@@ -260,6 +260,13 @@
       "when": 1792453200000,
       "tag": "0036_user_plans",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1792456800000,
+      "tag": "0037_timed_tests",
+      "breakpoints": true
     }
   ]
 }
