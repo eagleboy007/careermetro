@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ride as rideSchema } from "@/lib/schemas";
-import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
+import { addedTaskId, attachAdded, buildGoalsSummary, buildRide, goalForAdded, parseAddedTask, rideParts, type RideGoal, type RidePath } from "./build";
 
 const res = (id: string, minutes = 30) => ({ id, title: `Course ${id}`, provider: "Kaggle Learn", kind: "course", minutes });
 const goal = (p: Partial<RideGoal> & { goalId: string }): RideGoal => ({
@@ -220,5 +220,68 @@ describe("buildGoalsSummary", () => {
     expect(proved.choiceGoals![0]).toMatchObject({ status: "met", pitstops: [{ state: "done" }, { state: "done" }] });
     // Every gap goal proved: arrived, whatever Your choice goals are open (they aren't on the ride at all).
     expect(ride([{ ...goal({ goalId: "sql" }), proved: true }])).toMatchObject({ pitstop: 3, pitstopCount: 2, goalName: "Practice" });
+  });
+});
+
+// Add to my rides (docs/plans/library-part-2-plan.md): what the person added comes first among the goal's tasks, one
+// daily part of about 25 minutes at a time when it is longer than an hour.
+describe("added resources on the ride", () => {
+  const long = { ...res("long", 90), skillIds: ["sql"] };
+  const short = { ...res("short", 45), skillIds: ["sql"] };
+
+  it("splits only what is over an hour, into parts of about 25 minutes", () => {
+    expect(rideParts(45)).toBe(1);
+    expect(rideParts(60)).toBe(1);
+    expect(rideParts(61)).toBe(3);
+    expect(rideParts(90)).toBe(4);
+    expect(parseAddedTask(addedTaskId("abc-1", 3))).toEqual({ resourceId: "abc-1", part: 3 });
+    expect(parseAddedTask("sql:r:sql-1")).toBeNull();
+    expect(parseAddedTask("res:../x:1")).toBeNull();
+  });
+
+  it("puts each one on the first open goal it teaches, never on a proved, skipped or Your choice goal, and never twice", () => {
+    const goals = [
+      goal({ goalId: "done", skillId: "sql", proved: true }),
+      goal({ goalId: "skip", skillId: "sql", skipped: true }),
+      goal({ goalId: "mine", skillId: "sql", choice: { company: null } }),
+      goal({ goalId: "sql", skillId: "sql" }),
+      goal({ goalId: "py", skillId: "python", learnSkillId: "pandas" }),
+    ];
+    expect(goalForAdded(goals, ["sql"])?.goalId).toBe("sql");
+    // A swapped goal learns its new skill.
+    expect(goalForAdded(goals, ["pandas"])?.goalId).toBe("py");
+    expect(goalForAdded(goals, ["python"])).toBeNull();
+    // A course the path already rides for that goal isn't added again.
+    attachAdded(goals, [long, { ...res("sql-1"), skillIds: ["sql"] }, { ...res("x"), skillIds: ["excel"] }]);
+    expect(goals[3].added?.map((r) => r.id)).toEqual(["long"]);
+    expect(goals.filter((g) => g.added).length).toBe(1);
+  });
+
+  it("rides a 90-minute course as 4 parts, one a day, first among the goal's tasks, and three tasks at most", () => {
+    const g = goal({ goalId: "sql", added: [long] });
+    const day1 = ride([g])!;
+    expect(rideSchema.safeParse(day1).success).toBe(true);
+    expect(day1.tasks.map((t) => t.id)).toEqual(["res:long:1", "sql:r:sql-1", "sql:r:sql-2"]);
+    expect(day1.tasks[0]).toMatchObject({ minutes: 25, detail: "Kaggle Learn · course · Part 1 of 4" });
+    // Today's tick can be taken back: the same part stays until the day ends.
+    expect(ride([g], { today: ["res:long:1"] })!.tasks[0]).toMatchObject({ id: "res:long:1", done: true });
+    const day2 = ride([g], { before: ["res:long:1"] })!;
+    expect(day2.tasks[0].id).toBe("res:long:2");
+    const day4 = ride([g], { before: ["res:long:1", "res:long:2", "res:long:3"] })!;
+    // The last part is what is left of the 90 minutes.
+    expect(day4.tasks[0]).toMatchObject({ id: "res:long:4", minutes: 15, detail: "Kaggle Learn · course · Part 4 of 4" });
+    // Once every part is ticked it leaves the ride, and the practice task comes back into the three.
+    const after = ride([g], { before: ["res:long:1", "res:long:2", "res:long:3", "res:long:4"] })!;
+    expect(after.tasks.map((t) => t.id)).toEqual(SQL);
+  });
+
+  it("keeps a short one whole, and brings the ride back to a goal whose path step was ticked done", () => {
+    const g = goal({ goalId: "sql", learnDone: true, added: [short] });
+    const r = ride([g, goal({ goalId: "pbi" })])!;
+    expect(r.goalName).toBe("SQL");
+    expect(r.tasks.map((t) => t.id)).toEqual(["res:short:1"]);
+    expect(r.tasks[0]).toMatchObject({ minutes: 45, detail: "Kaggle Learn · course" });
+    // Ticked on an earlier day, it is done, and the ride moves on.
+    expect(ride([g, goal({ goalId: "pbi" })], { before: ["res:short:1"] })!.goalName).toBe("PBI");
   });
 });

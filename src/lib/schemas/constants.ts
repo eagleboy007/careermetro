@@ -46,6 +46,45 @@ export const LIBRARY_LANGUAGES = ["English", "Hindi"] as const;
 /** The length filter: under 1 hour, under 5 hours (prototype v44). */
 export const LIBRARY_LENGTHS = [60, 300] as const;
 
+/* Library part 2 (docs/plans/library-part-2-plan.md): the person's own Saved, finished and on-ride marks, reports
+ * of a broken link and suggested free resources. */
+
+/** The three marks a person sets on a resource (user_resources): the bookmark, "I finished this" and Add to my rides. */
+export const LIBRARY_MARKS = ["saved", "finished", "onRide"] as const;
+/** Save, finish and ride changes one person makes a day, each try counted. */
+export const LIBRARY_CHANGES_PER_DAY = 300;
+/** Items one person can have on their rides at once. */
+export const ON_RIDE_MAX = 5;
+/** Items longer than this are split into daily parts on the ride. */
+export const RIDE_SPLIT_OVER_MINUTES = 60;
+/** One daily part of a long item. */
+export const RIDE_PART_MINUTES = 25;
+/** Why someone reports a link (resource_reports.reason). There is no note, so nothing typed is kept. */
+export const RESOURCE_REPORT_REASONS = ["broken", "not_free", "outdated", "other"] as const;
+export const RESOURCE_REPORT_REASON_LABELS: Record<(typeof RESOURCE_REPORT_REASONS)[number], string> = {
+  broken: "Link is broken",
+  not_free: "Not free any more",
+  outdated: "Out of date",
+  other: "Something else",
+};
+export const RESOURCE_REPORT_STATUSES = ["open", "hidden", "dismissed"] as const;
+/** Reports one person files a day. */
+export const RESOURCE_REPORTS_PER_DAY = 10;
+export const SUGGESTION_STATUSES = ["open", "accepted", "duplicate", "declined"] as const;
+export const SUGGESTION_DECLINE_REASONS = ["not_free", "paywall", "affiliate", "off_topic", "other"] as const;
+export const SUGGESTION_DECLINE_LABELS: Record<(typeof SUGGESTION_DECLINE_REASONS)[number], string> = {
+  not_free: "Not free",
+  paywall: "Paid wall",
+  affiliate: "Affiliate",
+  off_topic: "Off topic",
+  other: "Other",
+};
+/** Suggestions one person sends a day, and how many can wait for a reviewer at once. */
+export const SUGGESTIONS_PER_DAY = 5;
+export const SUGGESTIONS_OPEN_MAX = 30;
+/** The longest link a suggestion keeps. */
+export const SUGGESTION_URL_MAX = 500;
+
 /* Corporate (dev/corporate-plan.md, handoff 12e and 12f) ------------------------------------------------------------ */
 
 export const ORG_TYPES = ["company", "college", "training_partner"] as const;

@@ -3,20 +3,25 @@ import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
-import { LibraryView } from "@/components/library/library-view";
+import { LibraryView, type LibraryActions } from "@/components/library/library-view";
 import { currentAccount } from "@/lib/auth/server";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { eliteShelfFor, libraryFor } from "@/lib/library/store";
 import { errorFields, logEvent } from "@/lib/log";
 import type { EliteShelfView, LibraryView as View } from "@/lib/schemas";
 import { LIBRARY_TABS } from "@/lib/schemas/constants";
+import { libraryMarkAction, reportResourceAction, suggestResourceAction } from "./actions";
 
 export const metadata: Metadata = { title: "Library · CareerMetro", robots: { index: false } };
 
+/** Save, finish, ride, report and suggest, kept on the server (docs/plans/library-part-2-plan.md). */
+const LIBRARY_ACTIONS: LibraryActions = { mark: libraryMarkAction, report: reportResourceAction, suggest: suggestResourceAction };
+
 /**
  * The Library (FR-51, handoff 12a). Signed in only: the signed-in layout and the proxy send everyone else away, and
- * with no sign-in on this deployment the page shows example data. Read only: free links to the source sites, grouped by
- * the person's own goals, read by their user id. `?tab=elite` opens the Elite shelf (Elite part 5), which eliteOn opens.
+ * with no sign-in on this deployment the page shows example data, where the marks change on the screen only. Free links
+ * to the source sites, grouped by the person's own goals, read by their user id; Save, "I finished this", Add to my
+ * rides, Report a broken link and Suggest a free resource write through the actions. `?tab=elite` opens the Elite shelf (Elite part 5), which eliteOn opens.
  */
 async function LibraryScreen({ searchParams }: PageProps<"/library">) {
   const { state, tab: askedTab } = await searchParams;
@@ -46,7 +51,7 @@ async function LibraryScreen({ searchParams }: PageProps<"/library">) {
       </p>
     );
   }
-  return <LibraryView view={view} shelf={shelf} tab={tab} />;
+  return <LibraryView view={view} shelf={shelf} tab={tab} actions={LIBRARY_ACTIONS} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

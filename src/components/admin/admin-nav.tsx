@@ -5,6 +5,7 @@ const PAGES = [
   { key: "companies", href: "/admin/companies", label: "Company review" },
   { key: "proofs", href: "/admin/proofs", label: "Held proofs" },
   { key: "reports", href: "/admin/reports", label: "Reports" },
+  { key: "library", href: "/admin/library", label: "Library review" },
 ] as const;
 
 export function AdminNav({ current }: { current: (typeof PAGES)[number]["key"] }) {

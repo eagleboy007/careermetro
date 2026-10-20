@@ -112,4 +112,29 @@ describe("buildLibrary", () => {
     expect(none).toMatchObject({ role: null, pathHref: null, goals: [], onRide: [], finished: [] });
     expect(none.items).toHaveLength(7);
   });
+
+  it("adds the person's own marks, and counts an added course finished once its last ride part is ticked", () => {
+    const long = row("c4", ["power-bi"], { minutes: 90 });
+    const marked = buildLibrary({
+      ...input,
+      catalog: catalog.map((r) => (r.id === "c4" ? long : r)),
+      ticked: new Set([...ticked, "res:c4:4"]),
+      marks: { saved: ["c6", "gone", "c1"], ticked: ["c7"], added: ["c4", "c5", "gone"] },
+    });
+    expect(libraryView.safeParse(marked).success).toBe(true);
+    // Saved keeps its order (newest first); a link no longer in the catalog drops out.
+    expect(marked.saved).toEqual(["c6", "c1"]);
+    expect(marked.ticked).toEqual(["c7"]);
+    expect(marked.finished).toContain("c4");
+    // Finished items aren't "on your rides" any more (c4 by its last part, c5 by the Path's tick).
+    expect(marked.added).toEqual([]);
+    expect(buildLibrary({ ...input, marks: { saved: [], ticked: [], added: ["c6"] } }).added).toEqual(["c6"]);
+  });
+
+  it("marks an added course on today's ride as on your ride", () => {
+    const withAdded = goals.map((g) => (g.goalId === "g1" ? { ...g, added: [{ ...res("c4"), minutes: 30 }] } : g));
+    const today = buildRide({ goals: withAdded, path: { href: "/resume/x/path/data-analyst", built: true }, doneBefore: ticked, doneToday: new Set(), doneThisWeek: new Set() });
+    const view2 = buildLibrary({ ...input, goals: withAdded, ride: today });
+    expect(view2.onRide).toEqual(["c4", "c2"]);
+  });
 });

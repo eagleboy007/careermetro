@@ -12,6 +12,7 @@ import { exportDraft } from "@/lib/builder/store";
 import { exportDepartures } from "@/lib/departures/store";
 import { exportPlan } from "@/lib/elite/store";
 import { exportJobSearch } from "@/lib/job-search/store";
+import { exportLibrary } from "@/lib/library/store";
 import { exportMockSessions } from "@/lib/mock/interview-store";
 import { exportTimedTests } from "@/lib/mock/store";
 import { exportNetwork } from "@/lib/network/store";
@@ -22,7 +23,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 26;
+export const EXPORT_VERSION = 27;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -108,7 +109,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, libraryRows] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -169,6 +170,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportMockSessions(userId, db),
     exportJobSearch(userId, db),
     exportDepartures(userId, db),
+    exportLibrary(userId, db),
   ]);
 
   return {
@@ -244,5 +246,11 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // with the post's title, company, place and link, when you saved it, how far it went (Applied, Heard back,
     // Interview or Offer) and when you applied, and whether it has closed on the company's board.
     departures: departureRows,
+    // Library (docs/plans/library-part-2-plan.md): the resources you saved, ticked "I finished this" on and added to your
+    // rides, each with its title, link and when; the links you reported, with the reason you picked and what a reviewer
+    // decided (there is no note); and the links you suggested, with what a reviewer decided.
+    library: libraryRows.library,
+    resourceReports: libraryRows.resourceReports,
+    resourceSuggestions: libraryRows.resourceSuggestions,
   };
 }

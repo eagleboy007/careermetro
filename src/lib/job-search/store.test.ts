@@ -115,8 +115,8 @@ describe.skipIf(!db)("job search store (database)", () => {
     await setJobSearch(me, false, { db: db!, now });
     await setNotice(me, { days: 90, resignedOn: "2026-10-05" }, { db: db!, now });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(26);
-    expect(data.exportVersion).toBe(26);
+    expect(EXPORT_VERSION).toBe(27);
+    expect(data.exportVersion).toBe(27);
     expect(data.jobSearch).toEqual({ lookingForAJob: false, noticeDays: 90, resignedOn: "2026-10-05" });
     expect(await exportJobSearch(never, db!)).toEqual({ lookingForAJob: true, noticeDays: null, resignedOn: null });
     await db!.delete(schema.users).where(eq(schema.users.id, me));

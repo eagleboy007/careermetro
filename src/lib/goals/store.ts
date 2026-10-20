@@ -680,7 +680,7 @@ export async function resourcesForSkills(skillIds: string[], db: Db | Tx = getDb
   const rows = await db
     .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, url: resources.url, minutes: resources.minutes, free: resources.free, skillIds: resources.skillIds })
     .from(resources)
-    .where(and(eq(resources.healthy, true), arrayOverlaps(resources.skillIds, skillIds)));
+    .where(and(eq(resources.healthy, true), isNull(resources.hiddenAt), arrayOverlaps(resources.skillIds, skillIds)));
   for (const skillId of skillIds) {
     const picked = rows
       .filter((r) => r.skillIds.includes(skillId) && r.title.trim())

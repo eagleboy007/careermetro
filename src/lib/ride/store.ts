@@ -1,7 +1,7 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { paths, pathSteps, resources, rideDays } from "@/db/schema";
+import { paths, pathSteps, resources, rideDays, userResources } from "@/db/schema";
 import { goalsOf, notConfirmedSkills, resourcesForSkills, syncGoals } from "@/lib/goals/store";
 import { offerFor, swappedSkill } from "@/lib/goals/not-for-me";
 import { goalName } from "@/lib/goals/name";
@@ -9,7 +9,7 @@ import { fillingSkills } from "@/lib/goals/sync";
 import { skillGroupMembers, skills } from "@/content";
 import type { GapAnalysis, GoalsSummary, Ride, RideWeek, Streak } from "@/lib/schemas";
 import { currentAnalysis } from "@/lib/gaps/current";
-import { buildGoalsSummary, buildRide, type RideGoal, type RidePath } from "./build";
+import { attachAdded, buildGoalsSummary, buildRide, type RideGoal, type RidePath, type RideResource } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
@@ -65,11 +65,13 @@ export async function rideGoalsFor(
           kind: resources.kind,
           minutes: resources.minutes,
           healthy: resources.healthy,
+          hiddenAt: resources.hiddenAt,
         })
         .from(resources)
         .where(inArray(resources.id, ids))
     : [];
-  const byId = new Map(rows.filter((r) => r.healthy && r.title.trim()).map((r) => [r.id, r]));
+  // A link an admin hid (/admin/library) leaves the ride at once, like a broken one.
+  const byId = new Map(rows.filter((r) => r.healthy && !r.hiddenAt && r.title.trim()).map((r) => [r.id, r]));
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
   const gapBySkill = new Map(analysis.result.gaps.map((g) => [g.skillId, g]));
 
@@ -86,6 +88,7 @@ export async function rideGoalsFor(
     return {
       goalId: g.id,
       skillId: g.skillId,
+      learnSkillId: swapped ?? g.skillId,
       name: swapped && !g.proved ? (skillNames.get(swapped) ?? name) : name,
       // An expired certificate turns the goal amber again (dev/proof-plan.md rule 4).
       status: g.status === "renew" ? "weak" : status,
@@ -112,7 +115,30 @@ export async function rideGoalsFor(
     return rideGoal(g, goalName(gap, g.proved, analysis.result.roleSlug), status, null);
   });
   const chosen = line.chosen.map((g) => rideGoal(g, choiceName(g.skillId), "missing", g.choice ?? { company: null }));
+  attachAdded(goals, await addedResources(userId, db));
   return { result: analysis.result, goals, chosen, path: { href: `/resume/${analysis.resumeId}/path/${analysis.result.roleSlug}`, built: Boolean(path) } };
+}
+
+/**
+ * What the person added with Add to my rides (docs/plans/library-part-2-plan.md) and hasn't ticked as finished,
+ * oldest first: healthy, free links an admin hasn't hidden only.
+ */
+async function addedResources(userId: string, db: Pick<Db, "select">): Promise<(RideResource & { skillIds: string[] })[]> {
+  return db
+    .select({ id: resources.id, title: resources.title, provider: resources.provider, kind: resources.kind, minutes: resources.minutes, skillIds: resources.skillIds })
+    .from(userResources)
+    .innerJoin(resources, eq(resources.id, userResources.resourceId))
+    .where(
+      and(
+        eq(userResources.userId, userId),
+        isNotNull(userResources.onRideAt),
+        isNull(userResources.finishedAt),
+        eq(resources.healthy, true),
+        eq(resources.free, true),
+        isNull(resources.hiddenAt),
+      ),
+    )
+    .orderBy(asc(userResources.onRideAt), asc(resources.id));
 }
 
 const rode = sql`cardinality(${rideDays.taskIds}) > 0`;

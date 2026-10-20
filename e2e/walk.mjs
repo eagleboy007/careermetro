@@ -683,6 +683,12 @@ await step("practice: answer a bank question, get feedback in words, rate it, an
 // Prove; a resource opens in the details panel with its source link in a new tab and no referrer; a search for nothing
 // says so; the Hindi filter is pressed and let go; Finished and Saved say what they hold. The Elite tab is locked on
 // Free: Turn on Elite opens /elite and no card links out (Elite part 5). axe passes on each tab.
+// Library part 2 (docs/plans/library-part-2-plan.md): from the details panel the walk saves a resource, ticks "I
+// finished this", adds one for a goal to its rides (Already on your ride) and takes it off again, and reports a
+// broken link; an empty suggestion moves focus back to the box, and a link is sent for review. Saved lists the saved
+// one until its bookmark is pressed again. The reported link is hidden by the admin in the Library review step below.
+let libraryReported = null;
+const suggestedLink = `https://learn.example.org/e2e-walk-${Date.now()}`;
 await step("library: goal cards, the details panel, search and filters, Finished and Saved", async () => {
   await p.goto(BASE + "/library");
   await settled();
@@ -701,6 +707,53 @@ await step("library: goal cards, the details panel, search and filters, Finished
     if ((await source.getAttribute("target")) !== "_blank" || !(await source.getAttribute("rel"))?.includes("noreferrer")) throw new Error("the source link doesn't open in a new tab without a referrer");
     if (!(await source.getAttribute("href"))?.startsWith("https://")) throw new Error("the source link isn't https");
   }
+  const panel = p.getByRole("complementary", { name: "Resource details" });
+  const toast = (text) => p.getByRole("status").filter({ hasText: text }).waitFor({ timeout: 10000 });
+  const savedTitle = (await rows.first().innerText()).trim();
+  await rows.first().click();
+  await panel.getByRole("heading", { name: savedTitle, exact: true, level: 3 }).waitFor({ timeout: 5000 });
+  await panel.getByRole("button", { name: `Save ${savedTitle}`, exact: true }).click();
+  await toast("Saved to your Library.");
+  await panel.getByRole("button", { name: `Save ${savedTitle}`, exact: true, pressed: true }).waitFor({ timeout: 5000 });
+  // "I finished this" is the person's own tick, and says what proves the goal next.
+  const tick = panel.getByRole("checkbox", { name: "I finished this" });
+  await tick.check();
+  await toast("Marked finished.");
+  await tick.uncheck();
+  await toast(/^(No longer marked finished|Unticked)\./);
+  // Report a broken link: a small menu of fixed reasons, no note.
+  await panel.getByRole("button", { name: "Link broken or out of date?" }).click();
+  await panel.getByRole("group", { name: `Report ${savedTitle}` }).getByRole("button", { name: "Link is broken", exact: true }).click();
+  await toast("Thanks. A reviewer will check this link.");
+  libraryReported = savedTitle;
+  // Add to my rides, on a resource of a goal that isn't on today's ride; then take it off again.
+  let added = false;
+  for (let k = 0, n = Math.min(await rows.count(), 24); k < n && !added; k++) {
+    const name = (await rows.nth(k).innerText()).trim();
+    await rows.nth(k).click();
+    await panel.getByRole("heading", { name, exact: true, level: 3 }).waitFor({ timeout: 5000 });
+    const add = panel.getByRole("button", { name: "Add to my rides", exact: true });
+    if (!(await add.count())) continue;
+    await add.click();
+    await toast(/^Added/);
+    await panel.getByRole("button", { name: "Already on your ride", exact: true }).waitFor({ timeout: 5000 });
+    await panel.getByRole("button", { name: "Take it off my rides", exact: true }).click();
+    await toast("Taken off your rides.");
+    await panel.getByRole("button", { name: "Add to my rides", exact: true }).waitFor({ timeout: 5000 });
+    added = true;
+  }
+  if (!added) throw new Error("no resource in the Library offers Add to my rides");
+  // Suggest a free resource: an empty link moves focus back to the box, then a link goes for review.
+  const suggest = p.getByRole("region", { name: "Suggest a free resource" });
+  const box = suggest.getByRole("textbox", { name: "Link to a free resource" });
+  await suggest.getByRole("button", { name: "Send for review" }).click();
+  await p.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "Link to a free resource", null, { timeout: 5000 });
+  await box.fill(suggestedLink);
+  await suggest.getByRole("button", { name: "Other", exact: true }).click();
+  await suggest.getByRole("button", { name: "Send for review" }).click();
+  await toast("Thanks. A reviewer will check it before it goes in the Library.");
+  if (await box.inputValue()) throw new Error("the suggest box kept the sent link");
+  await a11y("library-part-2");
   const search = p.getByRole("searchbox", { name: "Search the Library" });
   await search.fill("zzqx nothing like this");
   await main.getByText("Nothing matches. Try another word or clear a filter.").waitFor({ timeout: 5000 });
@@ -714,8 +767,12 @@ await step("library: goal cards, the details panel, search and filters, Finished
   await show.getByRole("button", { name: /^Finished/ }).click();
   await main.getByText(/^Nothing finished yet\.|^Ready to prove /).or(main.getByRole("region", { name: "Finished" })).first().waitFor({ timeout: 5000 });
   await a11y("library-finished");
-  await show.getByRole("button", { name: "Saved" }).click();
-  await main.getByText(/^Saving isn.t on yet\./).waitFor({ timeout: 5000 });
+  await show.getByRole("button", { name: /^Saved/ }).click();
+  const savedList = main.getByRole("region", { name: "Saved", exact: true });
+  await savedList.getByRole("button", { name: savedTitle, exact: true }).waitFor({ timeout: 5000 });
+  await savedList.getByRole("button", { name: `Save ${savedTitle}`, exact: true }).click();
+  await toast("Removed from saved.");
+  await main.getByText("Nothing saved yet. Tap the bookmark on anything you want to come back to.").waitFor({ timeout: 5000 });
   await show.getByRole("button", { name: "Your interests" }).click();
   await main.getByText("From the interests on your profile.", { exact: false }).waitFor({ timeout: 5000 });
   await a11y("library-interests");
@@ -870,7 +927,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 26 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 27 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1194,7 +1251,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1545,7 +1602,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -1643,7 +1700,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -1726,7 +1783,7 @@ await step("mock interview: a quick round, answered, ended, with feedback in wor
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 26) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 27) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "quick" || !round.endedAt || round.answers?.length !== 2 || !round.summary) throw new Error("the download's mock interview is wrong");
 
@@ -2338,6 +2395,79 @@ let proofSkill = "";
 // again in the database so this step also runs alone), the admin posts a job from a role profile, opens it after the three checks, it shows on Departures
 // with Apply switched off and no member or email, Report this job opens and cancels with focus back, and pausing it
 // takes it off Departures.
+// Library review (/admin/library, docs/plans/library-part-2-plan.md): not found when signed out; the admin sees the
+// link the walk reported and the link it suggested, hides the reported link (one audit line), and the walk's Library no
+// longer shows it; Show again brings it back. The suggestion is declined as off topic. axe passes, phone size in dark.
+await step("library review: the admin hides the reported link, and the Library no longer shows it", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to read the audit lines");
+  if (!libraryReported) throw new Error("the Library step reported no link");
+  const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+  try {
+    const res = await (await out.newPage()).goto(BASE + "/admin/library");
+    if (res?.status() !== 404) throw new Error(`signed out: /admin/library answered ${res?.status()}, not 404`);
+  } finally {
+    await out.close();
+  }
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  const q = await adm.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  let hiddenId = null;
+  try {
+    await signInAs(q, "Admin Tester", "admin@careermetro.test");
+    await q.goto(BASE + "/admin/library");
+    await q.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+    const row = q.locator("article").filter({ has: q.getByRole("heading", { name: libraryReported, exact: true, level: 3 }) });
+    await row.waitFor({ timeout: 10000 });
+    await row.getByText("Link is broken · 1", { exact: false }).waitFor();
+    const suggestion = q.locator("article").filter({ hasText: suggestedLink });
+    const link = suggestion.getByRole("link", { name: new RegExp(suggestedLink.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
+    if ((await link.getAttribute("target")) !== "_blank" || !(await link.getAttribute("rel"))?.includes("noreferrer")) throw new Error("a suggested link doesn't open in a new tab without a referrer");
+    await axeOn(q, "admin-library");
+    await row.getByRole("button", { name: `Hide link: ${libraryReported}`, exact: true }).click();
+    await q.getByRole("status").filter({ hasText: "Hidden. It has left the Library, paths and rides." }).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: `Show again: ${libraryReported}`, exact: true }).waitFor({ timeout: 10000 });
+    [{ id: hiddenId }] = await sql`select id from resources where title = ${libraryReported} and hidden_at is not null`;
+    const audit = await sql`select action from audit_logs where target = ${`resource:${hiddenId}`} and action = 'resource_hidden'`;
+    if (!audit.length) throw new Error("no audit line for Hide link");
+    // The walk's own Library no longer has it, in search or anywhere else.
+    await p.goto(BASE + "/library");
+    await settled();
+    await p.getByRole("searchbox", { name: "Search the Library" }).fill(libraryReported);
+    // The search says how many it shows; none of them is the hidden link.
+    await p.getByRole("status").filter({ hasText: /^\d+ resources? shown$/ }).waitFor({ timeout: 10000 });
+    if (await p.locator("main").first().getByRole("button", { name: libraryReported, exact: true }).count()) throw new Error("the hidden link still shows in the Library");
+    // The suggestion is declined with its reason.
+    await suggestion.getByLabel(/^Why decline /).selectOption("off_topic");
+    await suggestion.getByRole("button", { name: /^Decline: / }).click();
+    await q.getByRole("status").filter({ hasText: "Declined." }).waitFor({ timeout: 10000 });
+    await suggestion.waitFor({ state: "detached", timeout: 10000 });
+    await q.setViewportSize({ width: 390, height: 844 });
+    await q.emulateMedia({ colorScheme: "dark" });
+    await q.reload();
+    await q.getByRole("heading", { name: "Library review", level: 1 }).waitFor({ timeout: 15000 });
+    const overflow = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("admin-library: horizontal overflow " + overflow + "px");
+    await axeOn(q, "admin-library-phone-dark");
+    // Phone size in dark on the person's Library too.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.goto(BASE + "/library");
+    await settled();
+    await a11y("library-phone-dark");
+  } finally {
+    // Show it again, so later steps and runs have the whole catalog.
+    if (hiddenId) await sql`update resources set hidden_at = null where id = ${hiddenId}`;
+    await sql`delete from resource_suggestions where url = ${suggestedLink}`;
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await adm.close();
+    await sql.end();
+  }
+});
 await step("corporate jobs: post, open, see it on Departures, report, pause", async () => {
   if (!q) throw new Error("no company from the step before");
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to verify the company");

@@ -54,11 +54,13 @@ export async function mapLineFor(userId: string, db: ReturnType<typeof getDb> = 
           kind: resources.kind,
           minutes: resources.minutes,
           healthy: resources.healthy,
+          hiddenAt: resources.hiddenAt,
         })
         .from(resources)
         .where(inArray(resources.id, resourceIds))
     : [];
-  const byId = new Map(rows.filter((r) => r.healthy && r.title.trim()).map((r) => [r.id, r]));
+  // A link an admin hid (/admin/library) leaves the Map's stops at once, like a broken one.
+  const byId = new Map(rows.filter((r) => r.healthy && !r.hiddenAt && r.title.trim()).map((r) => [r.id, r]));
   const stepBySkill = new Map(steps.map((s) => [s.skillId, s]));
 
   const goalBySkill = new Map(userGoals.map((g) => [g.skillId, g]));
