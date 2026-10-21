@@ -834,8 +834,9 @@ try {
     const text = await main.innerText();
     if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
     if (/₹|\bLPA\b|lakh/i.test(text) || /\d(\.\d)?\s?L\b/.test(text)) throw new Error("the live Market shows a pay figure");
+    if (await main.getByRole("link", { name: "Median pay" }).count()) throw new Error("the live Market offers the Median pay map");
     const data = payload.replace(new RegExp(ELITE_PRICES.map(escapeRe).join("|"), "g"), "");
-    const pay = /₹|&#8377;|\\u20b9|\bLPA\b|\d(\.\d+)?\s?lakhs?\b|"pay(P25|Median|P75)"\s*:\s*\d/i.exec(data)?.[0];
+    const pay = /₹|&#8377;|\\u20b9|\bLPA\b|\d(\.\d+)?\s?lakhs?\b|\\?"pay(P25|Median|P75)\\?"\s*:\s*\d/i.exec(data)?.[0];
     if (pay) throw new Error(`the live Market's data carries a pay figure (${pay.slice(0, 20)})`);
   });
 

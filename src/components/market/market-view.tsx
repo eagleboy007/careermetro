@@ -4,6 +4,7 @@ import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { DEFAULT_MARKET_ROLE, marketData, marketRoles } from "@/lib/market/data";
 import { liveHeadline, liveSourceLine, marketCards, openingsWords, PAY_LATER, trendWaitText, UNDERCOUNT_NOTE } from "@/lib/market/live";
 import { compareSentence, count, heatRanges, heatSteps, lakh, mergeSources, middleText, monthLabel, PAY_BAND, payText, placeName, shortMonth, type Cell, type MarketData, type Sourced } from "@/lib/market/query";
+import { monthOf } from "@/lib/market/rollup.mjs";
 import { INDIA_PLACE, marketChoices, marketHref, marketQuery, placeKey, readMarketView, type MarketQuery, type MarketView as View } from "@/lib/market/view";
 import { MARKET_BAND_LABELS, MARKET_BANDS, type MarketPlace, type MarketTrend, type NearbyLines, type StateCode } from "@/lib/schemas";
 import { Card, ExampleDataBadge, ICON, label, LiveSourceLine, NotEnough, SourceLine, Stat } from "./market-parts";
@@ -124,7 +125,7 @@ export function MarketView({
           className="min-[960px]:col-span-2"
           source={
             <p className="font-mono text-[0.66rem] tracking-[0.04em] text-muted">
-              Source: CareerMetro role profiles{nearby.nearby ? (nearby.example ? " and an example resume" : " and your resume") : ""} · {monthLabel(today.toISOString().slice(0, 7))}
+              Source: CareerMetro role profiles{nearby.nearby ? (nearby.example ? " and an example resume" : " and your resume") : ""} · {monthLabel(monthOf(today).slice(0, 7))}
             </p>
           }
         >
