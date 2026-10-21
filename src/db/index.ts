@@ -15,7 +15,9 @@ export function getDb() {
     if (!url) throw new Error("DATABASE_URL is not set. Copy .env.example to .env.local and fill it in.");
     // prepare: false is required by Supabase's transaction pooler, which serverless functions use. One pool of 5 per
     // server process (e2e/load-upload.mjs checks it).
-    shared.careermetroDb = drizzle(postgres(url, { prepare: false, max: 5 }), { schema });
+    // idle_timeout and connect_timeout (seconds): a pooled socket the Supabase pooler dropped while idle can hang a
+    // query with no server-side timeout to end it, so idle sockets are closed first and a connect gives up (T122).
+    shared.careermetroDb = drizzle(postgres(url, { prepare: false, max: 5, idle_timeout: 20, connect_timeout: 10 }), { schema });
   }
   return shared.careermetroDb;
 }

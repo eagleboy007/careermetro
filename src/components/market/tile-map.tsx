@@ -55,10 +55,13 @@ export function TileMap({
     <div className="flex flex-col gap-3">
       {metrics.length > 1 && (
         <div role="group" aria-label="Colour the map by" className="inline-flex self-start rounded-full bg-surface-2 p-1">
+          {/* No prefetch on these /market links: they only change the address's choices on this screen, and the ~70 in
+              view would each prefetch /market, which reads the database (T122). */}
           {metrics.map(([m, href]) => (
             <Link
               key={m}
               href={href}
+              prefetch={false}
               scroll={false}
               aria-current={metric === m ? "true" : undefined}
               className="inline-flex min-h-9 items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-[0_1px_2px_var(--shadow)]"
@@ -81,9 +84,11 @@ export function TileMap({
           if (!t) return <span key={i} aria-hidden="true" />;
           const on = selected === t.state.code;
           return (
+            // Same screen, so no prefetch (see the metric links above).
             <Link
               key={t.state.code}
               href={t.href}
+              prefetch={false}
               scroll={false}
               aria-current={on ? "true" : undefined}
               title={`${t.state.name} · ${said(t)}`}
@@ -142,7 +147,7 @@ export function TileMap({
               .map((t) => (
                 <tr key={t.state.code} className="border-t border-line">
                   <th scope="row" className="px-3.5 text-left font-normal">
-                    <Link href={t.href} scroll={false} aria-current={selected === t.state.code ? "true" : undefined} className="flex min-h-11 items-center underline-offset-2 hover:underline aria-[current=true]:font-semibold">
+                    <Link href={t.href} prefetch={false} scroll={false} aria-current={selected === t.state.code ? "true" : undefined} className="flex min-h-11 items-center underline-offset-2 hover:underline aria-[current=true]:font-semibold">
                       {t.state.name}
                     </Link>
                   </th>

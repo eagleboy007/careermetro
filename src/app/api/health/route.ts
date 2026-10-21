@@ -12,8 +12,9 @@ import { hasBearer } from "@/lib/secret";
 const CACHE_MS = 60_000;
 let cached: { at: number; result: Promise<Health> } | undefined;
 
-/** The market read's statement limit (checkHealth's own MARKET_CHECK_MS is a little longer). */
+/** The market read's statement limit (checkHealth's own MARKET_CHECK_MS is a little longer), and its lock limit, lower so a lock wait fails as one (55P03). */
 const MARKET_STATEMENT_MS = 3000;
+const MARKET_LOCK_MS = 2000;
 
 /** A parse can take up to 100 s (PARSE_DEADLINE_MS), as in the upload route. */
 export const maxDuration = 120;
@@ -59,11 +60,12 @@ function runCheck(): Promise<Health> {
       return { applied: row?.applied ?? 0, expected: journal.entries.length };
     },
     // T122: the one table only /market reads. Its own read-only transaction, so SET LOCAL holds through the transaction
-    // pooler; a lock or a stuck read fails in 3 s (57014 or 55P03) and health says "timeout" instead of waiting.
+    // pooler; a lock wait fails in 2 s (55P03) and a stuck read in 3 s (57014), and health says "timeout" instead of waiting.
     readMarket: async () => {
       await getDb().transaction(
         async (tx) => {
           await tx.execute(sql.raw(`set local statement_timeout = ${MARKET_STATEMENT_MS}`));
+          await tx.execute(sql.raw(`set local lock_timeout = ${MARKET_LOCK_MS}`));
           await tx.execute(sql`select 1 from market_openings_monthly limit 1`);
         },
         { accessMode: "read only" },

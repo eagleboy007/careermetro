@@ -15,14 +15,17 @@ type Db = ReturnType<typeof getDb>;
 
 /**
  * T122: the server's limit on each live read, so /market can never wait on them for good (a lock on
- * market_openings_monthly, a stuck query). The page races the whole read against MARKET_PAGE_LIMIT_MS, a little longer,
- * which also covers waiting for a pooled connection.
+ * market_openings_monthly, a stuck query). The four reads go one after another on the transaction's connection, so
+ * the worst case is 4 × 1.5 s = 6 s, still under MARKET_PAGE_LIMIT_MS.
  */
-export const MARKET_READ_TIMEOUT_MS = 5000;
+export const MARKET_READ_TIMEOUT_MS = 1500;
 /** Shorter than the statement limit, so a lock wait fails as one (55P03) and the log says which it was. */
-export const MARKET_LOCK_TIMEOUT_MS = 3000;
-/** The page's own limit on the whole read (src/app/(app)/market/page.tsx). */
-export const MARKET_PAGE_LIMIT_MS = MARKET_READ_TIMEOUT_MS + 1500;
+export const MARKET_LOCK_TIMEOUT_MS = 1000;
+/**
+ * The page's own limit on the whole read (src/app/(app)/market/page.tsx), above the transaction's worst case; it also
+ * covers waiting for a pooled connection, which statement_timeout can't.
+ */
+export const MARKET_PAGE_LIMIT_MS = 6500;
 
 /** `timeouts` stands in for the limits above in tests; a lockMs of 0 turns the lock limit off. */
 type Deps = { db?: Db; now?: Date; timeouts?: { statementMs: number; lockMs: number } };
