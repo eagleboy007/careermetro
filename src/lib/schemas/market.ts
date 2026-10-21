@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CITIES } from "../market/cities.mjs";
 
 /*
  * Market (handoff C6, dev/market-plan.md). One row shape for every market figure, so Data research's licensed tables
@@ -19,6 +20,12 @@ export const EXAMPLE_SOURCE = "Example data";
 
 /** The source of openings counted from public ATS job boards (scripts/jd-mining/market.mjs writes the same string). */
 export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
+
+/**
+ * The source of live counts (MARKET_DATA = "live"): the daily Departures feed's job_posts and the monthly rollup it
+ * writes (docs/plans/market-trends-plan.md). These are the four job-board systems the feed reads.
+ */
+export const LIVE_SOURCE = "Public company job boards (Greenhouse, Lever, Ashby, SmartRecruiters)";
 
 /** India's 28 states and 8 union territories, by their usual two-letter codes. */
 export const STATE_CODES = [
@@ -46,8 +53,12 @@ export const marketRow = z
     state: z.union([stateCode, z.literal(INDIA_ROW)]),
     /** Null for the whole state. A city row is part of its state's row, never added to it. */
     city: z.string().min(1).max(60).nullable(),
-    band: z.enum(MARKET_BANDS),
-    /** Openings a month for this cell. */
+    /**
+     * Null when the posts state no years (live counts keep them, so a cell's total counts every post; only the band
+     * figures leave them out). Example and feed rows always have a band.
+     */
+    band: z.enum(MARKET_BANDS).nullable(),
+    /** Openings for this cell: a month's (example, feed, the live trend) or open now (live). */
     openings: z.number().int().min(0),
     /** Null when the source gives no pay for the cell. */
     payP25: lakh.nullable(),
@@ -84,6 +95,18 @@ export const marketState = z
   .strict();
 export type MarketState = z.infer<typeof marketState>;
 
+/** A duplicate cell, or a row after the table's latest month, in words; null when the rows are fine. */
+function rowsIssue(t: { latestMonth: string; rows: MarketRow[] }): string | null {
+  const seen = new Set<string>();
+  for (const r of t.rows) {
+    const key = `${r.role}|${r.state}|${r.city ?? ""}|${r.band ?? ""}|${r.month}`;
+    if (seen.has(key)) return `duplicate row ${key}`;
+    seen.add(key);
+    if (r.month > t.latestMonth) return `row after the latest month: ${key}`;
+  }
+  return null;
+}
+
 /** The whole table: rows plus the latest month they cover. Validated once when the module loads. */
 export const marketTable = z
   .object({
@@ -92,21 +115,31 @@ export const marketTable = z
   })
   .strict()
   .superRefine((t, ctx) => {
-    const seen = new Set<string>();
-    for (const r of t.rows) {
-      const key = `${r.role}|${r.state}|${r.city ?? ""}|${r.band}|${r.month}`;
-      if (seen.has(key)) {
-        ctx.addIssue({ code: "custom", message: `duplicate row ${key}` });
-        return;
-      }
-      seen.add(key);
-      if (r.month > t.latestMonth) {
-        ctx.addIssue({ code: "custom", message: `row after the latest month: ${key}` });
-        return;
-      }
-    }
+    const issue = rowsIssue(t);
+    if (issue) ctx.addIssue({ code: "custom", message: issue });
   });
 export type MarketTable = z.infer<typeof marketTable>;
+
+/** City → state code for the cities the Market counts (src/lib/market/cities.mjs, the rollup's list). */
+const STATE_OF_CITY = new Map(CITIES.map(([state, city]) => [city, state]));
+
+/**
+ * A table of live counts, read per request (src/lib/market/live.ts). The same shape, but it may be empty: a database
+ * the feed hasn't filled yet (CI's, a new staging) reads as "Not enough data" everywhere, which is the honest answer.
+ * Every city row must be in its city's state, as the rollup counts it.
+ */
+export const liveMarketTable = z
+  .object({
+    latestMonth: month,
+    rows: z.array(marketRow),
+  })
+  .strict()
+  .superRefine((t, ctx) => {
+    const issue = rowsIssue(t);
+    if (issue) ctx.addIssue({ code: "custom", message: issue });
+    const misplaced = t.rows.find((r) => r.city !== null && STATE_OF_CITY.get(r.city) !== r.state);
+    if (misplaced) ctx.addIssue({ code: "custom", message: `${misplaced.city} is not a city of ${misplaced.state}` });
+  });
 
 /** The map can be coloured by openings or by the median pay at 3 to 5 years. */
 export const MARKET_METRICS = ["openings", "pay"] as const;

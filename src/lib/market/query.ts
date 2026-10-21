@@ -39,32 +39,55 @@ export const mergeSources = (a: Sourced, b: Sourced): Sourced => ({ sources: [..
 
 export type MarketData = ReturnType<typeof createMarket>;
 
-/** Indexes the table once, so each figure reads only its own rows. */
-export function createMarket(table: MarketTable, states: MarketState[]) {
+/**
+ * What live counts add (MARKET_DATA = "live", src/lib/market/live.ts): `asOf` is the India day of the last feed run
+ * that read a board (YYYY-MM-DD; null before the first), `countingSince` the first month the rollup counted (YYYY-MM;
+ * null before the first). `failed`: the counts couldn't be read, so the screen shows no figure and no "Not enough data",
+ * only that. Example and feed tables have none.
+ */
+export type MarketLive = { asOf: string | null; countingSince: string | null; failed: boolean };
+
+type Index = { byKey: Map<string, MarketRow[]>; sources: string[]; latestMonth: string };
+const keyOf = (role: string, state: string, city: string | null, month: string) => `${role}|${state}|${city ?? ""}|${month}`;
+
+function indexTable(table: MarketTable): Index {
   const byKey = new Map<string, MarketRow[]>();
-  const key = (role: string, state: string, city: string | null, month: string) => `${role}|${state}|${city ?? ""}|${month}`;
   for (const r of table.rows) {
-    const k = key(r.role, r.state, r.city, r.month);
+    const k = keyOf(r.role, r.state, r.city, r.month);
     const list = byKey.get(k);
     if (list) list.push(r);
     else byKey.set(k, [r]);
   }
+  // A cell with no rows still names the table's sources, so an empty cell never reads as example data by default.
+  return { byKey, sources: [...new Set(table.rows.map((r) => r.source))], latestMonth: table.latestMonth };
+}
+
+/**
+ * Indexes the table once, so each figure reads only its own rows. `trend` is a separate table for the trend card, with
+ * the months it covers (live counts: new posts a month from the rollup, while `table` holds the posts open now; a month
+ * with no rows still counts, as zero). Left out, the trend reads `table` and the months its rows have.
+ */
+export function createMarket(
+  table: MarketTable,
+  states: MarketState[],
+  { trend, live = null }: { trend?: { table: MarketTable; months: string[] }; live?: MarketLive | null } = {},
+) {
+  const main = indexTable(table);
+  const over = trend ? indexTable(trend.table) : main;
   const stateByCode = new Map(states.map((s) => [s.code, s]));
   const cityState = new Map(states.flatMap((s) => s.cities.map((c) => [c, s.code] as const)));
   const roles = [...new Set(table.rows.map((r) => r.role))];
-  const months = [...new Set(table.rows.map((r) => r.month))].sort().slice(-12);
-  // A cell with no rows still names the table's sources, so an empty cell never reads as example data by default.
-  const tableSources = [...new Set(table.rows.map((r) => r.source))];
+  const months = (trend ? [...trend.months] : [...new Set(table.rows.map((r) => r.month))]).sort().slice(-12);
 
   // India reads its own rows (INDIA_ROW) when the table has them for the role and month, and adds up the states
   // otherwise, so a posting listed in two states is not counted twice.
-  const rowsFor = (role: string, place: MarketPlace, month: string): MarketRow[] =>
+  const rowsFor = (ix: Index, role: string, place: MarketPlace, month: string): MarketRow[] =>
     place.kind === "india"
-      ? (byKey.get(key(role, INDIA_ROW, null, month)) ?? states.flatMap((s) => byKey.get(key(role, s.code, null, month)) ?? []))
-      : (byKey.get(key(role, place.state, place.kind === "city" ? place.city : null, month)) ?? []);
+      ? (ix.byKey.get(keyOf(role, INDIA_ROW, null, month)) ?? states.flatMap((s) => ix.byKey.get(keyOf(role, s.code, null, month)) ?? []))
+      : (ix.byKey.get(keyOf(role, place.state, place.kind === "city" ? place.city : null, month)) ?? []);
 
-  function cell(role: string, place: MarketPlace, month = table.latestMonth): Cell {
-    const rows = rowsFor(role, place, month);
+  function cellIn(ix: Index, role: string, place: MarketPlace, month: string): Cell {
+    const rows = rowsFor(ix, role, place, month);
     const bands = Object.fromEntries(
       MARKET_BANDS.map((band) => {
         const inBand = rows.filter((r) => r.band === band);
@@ -79,12 +102,16 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
         return [band, { openings, enough, pay }];
       }),
     ) as Record<MarketBand, BandFigure>;
+    // Every row counts in the total, posts that state no years (band null) included.
     const openings = rows.reduce((s, r) => s + r.openings, 0);
-    return { openings, enough: openings >= MARKET_MIN_OPENINGS, bands, sources: rows.length ? [...new Set(rows.map((r) => r.source))] : tableSources, month };
+    return { openings, enough: openings >= MARKET_MIN_OPENINGS, bands, sources: rows.length ? [...new Set(rows.map((r) => r.source))] : ix.sources, month };
   }
+  const cell = (role: string, place: MarketPlace, month = table.latestMonth): Cell => cellIn(main, role, place, month);
 
   return {
     latestMonth: table.latestMonth,
+    /** Null for example and feed tables. */
+    live,
     months,
     roles,
     states,
@@ -120,11 +147,11 @@ export function createMarket(table: MarketTable, states: MarketState[]) {
         )
         .slice(0, limit);
     },
-    /** Openings a month over the last 12 months, for India or a state (a city reads its state). */
+    /** Openings a month over the last 12 months (of the trend table, when there is one), for India or a state (a city reads its state). */
     trend(role: string, place: MarketPlace) {
       const where: MarketPlace = place.kind === "city" ? { kind: "state", state: place.state } : place;
-      const series = months.map((month) => cell(role, where, month));
-      return { where, ...trendOf(series.map((c) => c.openings)), sources: [...new Set(series.flatMap((c) => c.sources))], month: months.at(-1) ?? table.latestMonth };
+      const series = months.map((month) => cellIn(over, role, where, month));
+      return { where, ...trendOf(series.map((c) => c.openings)), sources: series.length ? [...new Set(series.flatMap((c) => c.sources))] : over.sources, month: months.at(-1) ?? over.latestMonth };
     },
   };
 }

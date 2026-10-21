@@ -2,14 +2,14 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-21 (Market trends PR 1: monthly openings rollup, migration 0048)
+Last updated: 2026-10-21 (Market trends PR 2: live counts on the Market)
 
 ## Built and live (https://careermetro.vercel.app)
 
 - **Job seeker**
   - Resume, Gaps, Path, Today, Map, Life line, Departures, Me and public profile, account settings 1–2, Inbox part 1, and resume download (PDF and Word). See `docs/REQUIREMENTS.md`.
   - 29 role profiles, "one of these" skill groups, certificate dates, and "Closest to your resume". See `docs/plans/`.
-  - Pasted-job check (#109–#117). Nearby lines (#123). Market with example data (#125, #130). AI-ready resume check (#126).
+  - Pasted-job check (#109–#117). Nearby lines (#123). Market (#125, #130; live counts from Market trends PR 2, below). AI-ready resume check (#126).
   - v44 fixes, Today No resume (gap list items 1 to 4, no migration): target role chips above the upload box, carried to the role step in sessionStorage and shown first there (FR-8); the four reading steps while a resume uploads; the drop zone's "Drop your resume here" copy and Choose file; the full subline. "Try a sample resume" is left out: it needs new server code that sends a fixture through the parser.
   - Not for me per goal, FR-48 (2026-10-17): skip a required goal (it stays a gap; the train passes it; Bring back restores it) or swap a "one of these" goal to another skill of its group, on the Map (#154) and in an open goal on Today (#155). After Testing Run 4 (T58 to T60, T67, T68), a swapped goal learns its new skill on Path and Practice too, keeps its learn tick, and Me and the Map's stop labels pass skipped goals; asking twice is fine, and someone else's goal is 404. No migration; export version 19. Tracks wait for role tracks. See `docs/plans/not-for-me-plan.md`.
 - **Proof**
@@ -66,7 +66,8 @@ Last updated: 2026-10-21 (Market trends PR 1: monthly openings rollup, migration
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).
 - T119: the toolbar hosts are also withheld when `VERCEL_TARGET_ENV` is production (every production alias); the idle-instance summary loss and the 404 for missing static files without the CSP header are documented. Junction plan: docs/plans/junction-plan.md (plan only; decision 13 asks whether it is free or Elite).
-- Market trends PR 1 (`docs/plans/market-trends-plan.md`; Milin's D1 to D6 of 2026-10-21): migration 0048 `market_openings_monthly` (month × role × state or `IN` × city × band, new posts, open at the month's last run, the month's lowest board count; unique with nulls not distinct; RLS, no policies, no grant). The daily feed rewrites the current month after its posts (`writeRollup`, `src/lib/market/rollup.mjs`), and the month before when its last run's rollup failed, so counts outlive the 180-day purge; the cleanup keeps them. A post counts in its first listed city only (unlike accumulate for multi-city posts); `boards_ok` skips runs where every board failed; NULLS NOT DISTINCT needs Postgres 15+. No screen change. Next: PR 2 (Market reads live counts), PR 3 (retire the accumulate step). When the T89 feed role is made, it also needs select, insert, update and delete on this table and a policy.
+- Market trends PR 1 (`docs/plans/market-trends-plan.md`; Milin's D1 to D6 of 2026-10-21): migration 0048 `market_openings_monthly` (month × role × state or `IN` × city × band, new posts, open at the month's last run, the month's lowest board count; unique with nulls not distinct; RLS, no policies, no grant). The daily feed rewrites the current month after its posts (`writeRollup`, `src/lib/market/rollup.mjs`), and the month before when its last run's rollup failed, so counts outlive the 180-day purge; the cleanup keeps them. A post counts in its first listed city only (unlike accumulate for multi-city posts); `boards_ok` skips runs where every board failed; NULLS NOT DISTINCT needs Postgres 15+. No screen change. When the T89 feed role is made, it also needs select, insert, update and delete on this table and a policy.
+- Market trends PR 2, no migration: `MARKET_DATA = "live"`. Signed in, `/market` reads open `job_posts` and the rollup per request (`src/lib/market/live.ts`, `live-store.ts`): open posts now for every figure, new posts a month for the trend (its first month dropped as a baseline), the 15 floor everywhere. The header names the boards, the day and the undercount note; each card names its source; no pay anywhere ("Pay comes later", no Median pay map); the trend says "Counting since {month}; the trend shows from {month + 13}" until it has 12 months; a failed read shows only its status line and Nearby lines. `CITIES` moved to `src/lib/market/cities.mjs` (review), so production code imports nothing from `scripts/`. Signed out and on `/design` the example table stays, labelled EXAMPLE DATA; `/design` also shows live, empty and unreadable states. Next: PR 3 (retire the accumulate step).
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
 
 ## Next up
@@ -83,7 +84,7 @@ Handover (2026-10-19 21:53 UTC): "Development 4" took over from Development 3 an
 
 Also waiting on Milin: T89's feed database role, and item 45 (AI first interview, not to be built until he answers). D1 to D6 of `docs/plans/market-trends-plan.md` are decided (2026-10-21).
 
-Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
+Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 

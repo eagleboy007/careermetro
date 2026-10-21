@@ -1,7 +1,7 @@
 import { CircleAlert } from "lucide-react";
 import type { ReactNode } from "react";
+import { floorText } from "@/lib/market/live";
 import { isExampleSource, monthLabel, type Sourced } from "@/lib/market/query";
-import { MARKET_MIN_OPENINGS } from "@/lib/schemas";
 
 /* Small pieces shared by the Market cards (handoff C6). */
 
@@ -42,14 +42,19 @@ export function SourceLine({ of, shape }: { of: Sourced; shape: string }) {
   );
 }
 
-/** Shown instead of any figure with fewer than 15 openings a month behind it. */
-export function NotEnough({ children, small = false }: { children?: ReactNode; small?: boolean }) {
+/** A live card's source line (src/lib/market/live.ts, liveSourceLine): the boards and the day, never EXAMPLE DATA. */
+export function LiveSourceLine({ text }: { text: string }) {
+  return <p className="font-mono text-[0.66rem] leading-relaxed tracking-[0.04em] text-muted">{text}</p>;
+}
+
+/** Shown instead of any figure with fewer than 15 openings behind it (a month's on example data, open now on live). */
+export function NotEnough({ children, small = false, live = false }: { children?: ReactNode; small?: boolean; live?: boolean }) {
   if (small) return <span className="text-[0.8rem] text-muted">Not enough data</span>;
   return (
     <p className="flex items-start gap-2 text-[0.84rem] text-muted">
       <CircleAlert size={16} {...ICON} className="mt-0.5 shrink-0" />
       <span>
-        <b className="font-semibold text-ink">Not enough data.</b> {children ?? `We show a figure only when at least ${MARKET_MIN_OPENINGS} openings a month back it.`}
+        <b className="font-semibold text-ink">Not enough data.</b> {children ?? floorText(live)}
       </span>
     </p>
   );

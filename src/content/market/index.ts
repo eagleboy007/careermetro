@@ -10,25 +10,22 @@ import { marketStates } from "./places";
 export { marketStates } from "./places";
 
 /**
- * Which rows the screen shows: "example" (labelled EXAMPLE DATA) or "feed" (openings counted from public company job
- * boards, ./feed.ts). It stays on "example" until the feed has cells at 15 or more openings a month; Data research says
- * when (dev/market-plan.md).
+ * Which rows the screen shows (docs/plans/market-trends-plan.md): "live" (signed in: open posts and new posts a month
+ * from the daily Departures feed, read per request in src/lib/market/live-store.ts), "example" (labelled EXAMPLE DATA)
+ * or "feed" (the monthly Lever and Greenhouse counts, ./feed.ts, retired by the plan's PR 3).
  *
- * Switch-on checklist:
- * 1. Copy market-rows.csv from the data/market branch to src/content/market/feed-rows.csv (next.config.ts already
- *    ships it with the server functions) and set this to "feed".
- * 2. The header in src/components/market/market-view.tsx still says "Example data" and "These figures are made up to
- *    show the design"; change it to name the source ("Openings on public company job boards (Lever, Greenhouse)"),
- *    say these count new postings, not all hiring, and give the month.
- * 3. The feed has no pay: the pay map, pay bands and the compare card's pay show "Not enough data". Hide the pay
- *    metric or say pay comes later.
- * 4. The baseline month (the file's first) is dropped by the loader; the trend needs 12 months after it, so it shows
- *    "Not enough data" for about a year. Say so on the trend card.
- * 5. Openings are by place listed: a posting in two cities counts in each, India rows count it once. Check the
- *    undercounting notes in dev/market-plan.md and put the short version in the source line.
- * 6. Update the example-data tests in ./market.test.ts and the plan's decision log.
+ * Switched to "live" by Market trends PR 2 (Milin's D1, 2026-10-21). The switch-on checklist, done for "live":
+ * 1. The loader (src/lib/market/live.ts) reads market_openings_monthly and today's open job_posts into the same table
+ *    shape, with the 15 floor of MARKET_MIN_OPENINGS on every figure.
+ * 2. The header names the source and the day, and carries the undercount note (UNDERCOUNT_NOTE in live.ts).
+ * 3. No pay (D3 (a)): the pay card and the compare card say "Pay comes later", the place panel shows no pay, and the
+ *    map's Median pay metric is hidden.
+ * 4. The rollup's first month is a baseline and is dropped; until the trend has 12 months it says "Counting since
+ *    {month}; the trend shows from {month + 13}" (D6).
+ * 5. Every card's source line names the boards and the day (or the month counting began).
+ * 6. The example table stays for /design and for the signed-out preview, both labelled EXAMPLE DATA.
  */
-export const MARKET_DATA = "example" as "example" | "feed";
+export const MARKET_DATA = "live" as "example" | "feed" | "live";
 
 const feedTable = () =>
   feedTableFromCsv(readFileSync(join(process.cwd(), "src/content/market/feed-rows.csv"), "utf8"), {
@@ -36,8 +33,12 @@ const feedTable = () =>
     states: marketStates,
   }).table;
 
+/** The example table (EXAMPLE DATA), for /design and the signed-out preview. Validated when the module loads. */
+export const exampleMarket: MarketTable = marketTable.parse(exampleMarketTable);
+
 /**
- * The market table the screen reads (handoff C6). Example data for now; real rows replace it here, in the same shape.
- * Validated when the module loads, so a bad row fails the tests and the build.
+ * The table the screen reads when it isn't on live counts: the feed's, or the example. Live counts are read per
+ * request instead (src/lib/market/live-store.ts). Validated when the module loads, so a bad row fails the tests and the
+ * build.
  */
-export const market: MarketTable = MARKET_DATA === "feed" ? feedTable() : marketTable.parse(exampleMarketTable);
+export const market: MarketTable = MARKET_DATA === "feed" ? feedTable() : exampleMarket;

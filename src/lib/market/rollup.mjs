@@ -12,7 +12,7 @@
 // null) is left out, and the run log reports how many. Months are calendar months in UTC (the feed runs at 01:00 UTC,
 // 06:30 IST, so a run's date is the same in both).
 import { z } from "zod";
-import { CITIES } from "../../../scripts/jd-mining/market.mjs";
+import { CITIES } from "./cities.mjs";
 
 /** The state code of an all-India row (INDIA_ROW in src/lib/schemas/market.ts). */
 export const INDIA_ROW = "IN";
@@ -21,7 +21,7 @@ export const INDIA_ROW = "IN";
 export const ROLLUP_BANDS = /** @type {const} */ (["0-2", "3-5", "6-10", "10+"]);
 
 /**
- * City → state code, from the /market city list (scripts/jd-mining/market.mjs, kept in step with
+ * City → state code, from the /market city list (./cities.mjs, kept in step with
  * src/content/market/places.ts and STATE_CODES by src/lib/market/feed-scripts.test.ts).
  * @type {Map<string, string>}
  */

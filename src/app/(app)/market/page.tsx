@@ -4,23 +4,50 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MarketView, type MarketNearby } from "@/components/market/market-view";
+import { MARKET_DATA, marketStates } from "@/content/market";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleMapLine } from "@/lib/map/fixtures";
 import { mapLineFor } from "@/lib/map/store";
-import { DEFAULT_MARKET_ROLE } from "@/lib/market/data";
+import { DEFAULT_MARKET_ROLE, exampleMarketData, marketData, marketRoles } from "@/lib/market/data";
+import { liveNothing } from "@/lib/market/fixtures";
+import { liveMarket } from "@/lib/market/live";
+import { liveMarketInputs } from "@/lib/market/live-store";
+import type { MarketData } from "@/lib/market/query";
 
 export const metadata: Metadata = { title: "Market · CareerMetro", robots: { index: false } };
 
 /**
- * Market (handoff C6). The figures are example data from src/content/market; the choices live in the address. The
- * person's own line gives the role it opens on and their Nearby lines; if it can't be read, the Market still shows,
- * without them (logged as market_line_failed, error fields only).
+ * Live counts (MARKET_DATA = "live", docs/plans/market-trends-plan.md), read per request like Departures: the feed
+ * changes them once a day, and nothing here is cached across requests. If they can't be read, the screen says so and
+ * shows no figure (only Nearby lines) rather than fail (logged as market_live_failed, error fields only). Posts of a role the Market no
+ * longer offers are left out and logged as a count.
+ */
+async function liveFigures(now: Date): Promise<MarketData> {
+  const opts = { now, roles: marketRoles.map((r) => r.slug), states: marketStates };
+  try {
+    const { market, dropped } = liveMarket(await liveMarketInputs({ now }), opts);
+    if (dropped) logEvent("info", "market_live_unknown_roles", { posts: dropped });
+    return market;
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "market_live_failed", errorFields(error));
+    return liveMarket(liveNothing, { ...opts, failed: true }).market;
+  }
+}
+
+/**
+ * Market (handoff C6). Signed in, the figures are live counts from public company job boards; signed out (the preview
+ * without sign-in), the example table, labelled EXAMPLE DATA, as the example line is. The choices live in the address.
+ * The person's own line gives the role it opens on and their Nearby lines; if it can't be read, the Market still
+ * shows, without them (logged as market_line_failed, error fields only).
  */
 async function MarketScreen({ searchParams }: PageProps<"/market">) {
   const params = await searchParams;
   await connection();
+  const now = new Date();
   const account = await currentAccount();
+  const figures = account && MARKET_DATA === "live" ? liveFigures(now) : Promise.resolve(account ? marketData : exampleMarketData);
   let line = account ? null : exampleMapLine;
   if (account) {
     try {
@@ -30,12 +57,13 @@ async function MarketScreen({ searchParams }: PageProps<"/market">) {
       logEvent("error", "market_line_failed", errorFields(error));
     }
   }
+  const market = await figures;
   const nearby: MarketNearby = {
     nearby: line?.nearby ?? null,
     changeRoleHref: line?.resumeId ? `/resume/${line.resumeId}/role` : null,
     example: !account,
   };
-  return <MarketView params={params} defaultRole={line?.role.slug ?? DEFAULT_MARKET_ROLE} nearby={nearby} today={new Date()} />;
+  return <MarketView params={params} defaultRole={line?.role.slug ?? DEFAULT_MARKET_ROLE} nearby={nearby} today={now} market={market} />;
 }
 
 export default function MarketPage(props: PageProps<"/market">) {
