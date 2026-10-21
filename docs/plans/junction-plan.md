@@ -353,3 +353,4 @@ Nothing needs Vercel Pro: no new cron (the existing daily cleanup runs the recou
 10. **Companies and Junction**: keep companies out of Junction in v1 (recommended), or let a verified company post (the employer side is next, but company posts change the risk and the rules).
 11. **Comments on a deleted post**: delete them with the post (recommended, simpler), or keep them under a "This post was deleted" stub.
 12. **Hindi**: publish the Junction rules in Hindi at launch, or English first (lawyer's answer to 2.8 decides).
+13. **Free or Elite**: docs/REQUIREMENTS.md (section 12 Phasing, Later: Elite tier) lists "a community" as a paid Elite extra. This plan builds Junction free for everyone. If Milin approves that, update REQUIREMENTS in the same PR as part 1 (recommended: free, since a board needs people to be useful); otherwise Junction posting waits for Elite.

@@ -62,14 +62,15 @@ export function cspReportOnly(options: CspOptions = {}): string {
 /**
  * Whether a request may get the Vercel Toolbar's hosts (T118). Decided per request in src/proxy.ts, not at build time:
  * next.config.ts headers are fixed when the build runs, so a preview build later promoted to production kept the
- * preview policy. Two runtime checks, both of which a promoted deployment answers correctly:
+ * preview policy. Three runtime checks, all of which a promoted deployment answers correctly:
  * - VERCEL_ENV, read when the request comes, not when the build ran: only "preview" gets the hosts.
  * - The request's host: never on the project's production domain (VERCEL_PROJECT_PRODUCTION_URL, such as
  *   careermetro.vercel.app), whatever the deployment's own VERCEL_ENV says, so a promoted build serving production
  *   traffic never gets them even if it still carries its preview environment.
+ * - VERCEL_TARGET_ENV: "production" on every production alias, not only the one VERCEL_PROJECT_PRODUCTION_URL names (T119).
  */
 export function vercelToolbarAllowed(host: string, env: Record<string, string | undefined> = process.env): boolean {
-  if (env.VERCEL_ENV !== "preview") return false;
+  if (env.VERCEL_ENV !== "preview" || env.VERCEL_TARGET_ENV === "production") return false;
   const production = (env.VERCEL_PROJECT_PRODUCTION_URL ?? "").trim().toLowerCase();
   return !production || host.trim().toLowerCase() !== production;
 }

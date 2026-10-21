@@ -78,6 +78,8 @@ export async function POST(request: Request) {
   const address = createHash("sha256").update(key).digest("hex").slice(0, 16);
   // The window that just ended: one summary line per directive and host reported again after its first line, so the
   // spread (how many reports, from how many addresses) can still be judged. Each counts against the shared line cap.
+  // Summaries are only written when a later report reaches this server, so an instance that goes idle or is recycled
+  // loses the summary of its last window (T119); the first line of each pair is always logged.
   for (const summary of seen.takeEnded()) {
     if (!guard.take(`summary ${summary.directive} ${summary.blocked}`)) break;
     logEvent("info", "csp_violation_summary", { ...summary });
