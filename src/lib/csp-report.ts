@@ -112,3 +112,70 @@ export function localGuard({ perKey, total, windowMs, maxKeys = 10_000 }: GuardO
     },
   };
 }
+
+/** Distinct addresses counted for one directive and host in a window; past this the count stops (it reads "50 or more"). */
+export const MAX_COUNTED_ADDRESSES = 50;
+
+/** One directive and host that was reported again after its first line, over a window that has ended. */
+export type ViolationSummary = { directive: string; blocked: string; count: number; addresses: number };
+
+/**
+ * The violations seen in this window, by directive and blocked host (T118), per server and in memory only. A report
+ * already logged this hour is not logged or counted against the line cap again, so one address (or one noisy browser)
+ * repeating the same violation can't use up the shared cap and hide reports from everyone else. Only pairs actually
+ * logged are remembered, so a pair refused by the line cap is still logged when there is room.
+ *
+ * Repeats still count, so the spread can be judged: each pair keeps how many reports came (the first included) and how
+ * many distinct addresses sent them (hashes, at most MAX_COUNTED_ADDRESSES each). When the window ends, every pair that
+ * was reported more than once becomes a summary, handed out once by `takeEnded()` for one `csp_violation_summary` line.
+ * Bounded: at most `maxKeys` pairs (the oldest forgotten first, summary and all) and as many summaries waiting.
+ */
+export function firstPerWindow({ windowMs, maxKeys = 2_000 }: { windowMs: number; maxKeys?: number }) {
+  let windowStart = 0;
+  const seen = new Map<string, { count: number; addresses: Set<string> }>();
+  let ended: ViolationSummary[] = [];
+  const roll = (now: number) => {
+    const start = Math.floor(now / windowMs) * windowMs;
+    if (start === windowStart) return;
+    windowStart = start;
+    for (const [key, entry] of seen) {
+      if (entry.count < 2) continue;
+      const [directive, blocked] = key.split(" ");
+      ended.push({ directive, blocked, count: entry.count, addresses: entry.addresses.size });
+    }
+    if (ended.length > maxKeys) ended = ended.slice(-maxKeys);
+    seen.clear();
+  };
+  return {
+    /** Whether this key was logged in the current window. */
+    has(key: string, now = Date.now()): boolean {
+      roll(now);
+      return seen.has(key);
+    },
+    /** Remembers a key just logged, from this address (a hash), for the rest of the window. */
+    add(key: string, address: string, now = Date.now()): void {
+      roll(now);
+      seen.delete(key);
+      while (seen.size >= maxKeys) seen.delete(seen.keys().next().value!);
+      seen.set(key, { count: 1, addresses: new Set([address]) });
+    },
+    /** Counts one more report of a key already logged this window; nothing for a key it doesn't hold. */
+    repeat(key: string, address: string, now = Date.now()): void {
+      roll(now);
+      const entry = seen.get(key);
+      if (!entry) return;
+      entry.count++;
+      if (entry.addresses.size < MAX_COUNTED_ADDRESSES) entry.addresses.add(address);
+    },
+    /** The summaries of ended windows not handed out yet, once each. */
+    takeEnded(now = Date.now()): ViolationSummary[] {
+      roll(now);
+      const out = ended;
+      ended = [];
+      return out;
+    },
+  };
+}
+
+/** The key firstPerWindow() remembers a violation by. Neither part can hold a space. */
+export const violationKey = (v: CspViolation) => `${v.directive} ${v.blocked}`;

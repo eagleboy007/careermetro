@@ -32,19 +32,30 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Note the job's start
-        # The screens script ends its run 12 minutes before the job's 45-minute limit, counted from here (T108).
-        run: echo "JOB_STARTED=$(date +%s)" >> "$GITHUB_ENV"
+        # Both scripts' deadlines fall no later than 12 minutes before the job's limit; their clean-up runs inside that margin.
+        # SMOKE_JOB_LIMIT_MIN is the job's timeout-minutes above.
+        run: |
+          echo "JOB_STARTED=$(date +%s)" >> "$GITHUB_ENV"
+          echo "SMOKE_JOB_LIMIT_MIN=45" >> "$GITHUB_ENV"
+      # The set-up steps have their own caps (T116), so a hung install fails fast instead of eating the time both
+      # scripts need for their clean-up: at most 21 minutes in all, leaving the dry run its full deadline.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        timeout-minutes: 2
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 3
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+        timeout-minutes: 8
       - name: Install the browser
         # Not a project dependency: only the e2e job and this one need it.
+        timeout-minutes: 8
         run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
       - name: Walk prod-smoke.md on the preview
         # Its own cap, so a slow dry run leaves the screens script and its clean-up time inside the job's limit (T108).
+        # The script's deadline (12 minutes, or 12 before the job's limit if that comes first) and its clean-up end
+        # inside it (T116).
         timeout-minutes: 15
         env:
           # Passed through env, never pasted into the script line, so the input can't run as shell.
@@ -62,8 +73,8 @@ jobs:
           BASE: ${{ inputs.url }}
           BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           SMOKE_DEADLINE_MIN: "18"
-          # The job's timeout-minutes above: the deadline also falls 12 minutes before it, from JOB_STARTED.
-          SMOKE_JOB_LIMIT_MIN: "45"
+          # The deadline also falls 12 minutes before the job's limit (SMOKE_JOB_LIMIT_MIN), from JOB_STARTED: both are
+          # in GITHUB_ENV, set by the first step.
           # Optional: the admin test account for the company side and the admin pages; never printed.
           # A fake .test address, not a secret: Preview treats it as an admin while ADMIN_EMAILS is unset. A
           # SMOKE_ADMIN_EMAIL repository secret overrides it, for a preview whose ADMIN_EMAILS names another one.
@@ -72,6 +83,7 @@ jobs:
         run: node scripts/smoke/staging-screens.mjs
       - name: Keep screenshots of failed steps
         if: failure()
+        timeout-minutes: 5
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: smoke-staging-results

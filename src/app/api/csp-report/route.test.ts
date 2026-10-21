@@ -16,7 +16,7 @@ vi.mock("@/db", () => ({
 }));
 
 import { POST } from "@/app/api/csp-report/route";
-import { blockedHost, directiveName, localGuard, parseCspReport, reportFormat } from "@/lib/csp-report";
+import { blockedHost, directiveName, firstPerWindow, localGuard, MAX_COUNTED_ADDRESSES, parseCspReport, reportFormat } from "@/lib/csp-report";
 import { cspReportOnly, ENFORCED_CSP, REPORTING_ENDPOINTS } from "@/lib/csp";
 import nextConfig from "../../../../next.config";
 
@@ -62,6 +62,9 @@ const reportingApi = [
   { type: "deprecation", age: 1, url: `${SITE}/today`, body: { id: "x", message: "y" } },
   { type: "csp-violation", age: 1, url: `${SITE}/map`, body: { effectiveDirective: "connect-src", blockedURL: "wss://socket.evil.example/live?u=1" } },
 ];
+
+/** The legacy report with another blocked host: each directive and host is logged once an hour (T118). */
+const legacyAt = (host: string) => ({ "csp-report": { ...legacy["csp-report"], "blocked-uri": `https://${host}/x.js?token=abc123` } });
 
 let ip = 0;
 const post = (body: unknown, contentType: string | null, headers: Record<string, string> = {}) =>
@@ -168,24 +171,69 @@ describe("POST /api/csp-report", () => {
   });
 
   it("logs a valid report just under the byte cap", async () => {
-    const under = JSON.stringify({ "csp-report": { ...legacy["csp-report"], "script-sample": "x".repeat(60 * 1024) } });
+    const under = JSON.stringify({ "csp-report": { ...legacyAt("under-cap.evil.example")["csp-report"], "script-sample": "x".repeat(60 * 1024) } });
     expect(under.length).toBeLessThan(64 * 1024);
     expect((await POST(post(under, "application/csp-report"))).status).toBe(204);
-    expect(logged().map(({ event, blocked }) => ({ event, blocked }))).toEqual([{ event: "csp_violation", blocked: "cdn.evil.example" }]);
+    expect(logged().map(({ event, blocked }) => ({ event, blocked }))).toEqual([{ event: "csp_violation", blocked: "under-cap.evil.example" }]);
     expect(lines[0]).not.toContain("xxx");
   });
 
   it("stops logging an address after 100 lines an hour, drops included", async () => {
     const same = { "x-forwarded-for": "203.0.113.50" };
-    for (let i = 0; i < 99; i++) await POST(post(legacy, "application/csp-report", same));
+    for (let i = 0; i < 99; i++) await POST(post(legacyAt(`h${i}.cap.evil.example`), "application/csp-report", same));
     await POST(post("{not json", "application/csp-report", same));
-    await POST(post(legacy, "application/csp-report", same));
+    await POST(post(legacyAt("h99.cap.evil.example"), "application/csp-report", same));
     await POST(post("{not json", "application/csp-report", same));
     expect(lines).toHaveLength(100);
     expect(logged().at(-1)?.event).toBe("csp_report_dropped");
-    // Another address is still heard.
-    await POST(post(legacy, "application/csp-report"));
+    // Another address is still heard, and the pair the cap refused is logged once there is room.
+    await POST(post(legacyAt("h99.cap.evil.example"), "application/csp-report"));
     expect(lines).toHaveLength(101);
+    expect(logged().at(-1)?.blocked).toBe("h99.cap.evil.example");
+  });
+
+  it("logs each directive and blocked host once an hour, so one address repeating it can't use up the shared cap (T118)", async () => {
+    const noisy = { "x-forwarded-for": "203.0.113.77" };
+    for (let i = 0; i < 300; i++) await POST(post(legacyAt("repeat.evil.example"), "application/csp-report", noisy));
+    expect(logged().map(({ event, blocked }) => ({ event, blocked }))).toEqual([{ event: "csp_violation", blocked: "repeat.evil.example" }]);
+    // Repeats from other addresses, and twice in one batch, aren't logged again either.
+    await POST(post(legacyAt("repeat.evil.example"), "application/csp-report"));
+    const entry = { type: "csp-violation", age: 1, url: `${SITE}/map`, body: { effectiveDirective: "connect-src", blockedURL: "wss://twice.evil.example/" } };
+    const twice = [entry, entry];
+    await POST(post(twice, "application/reports+json"));
+    expect(logged().map(({ blocked }) => blocked)).toEqual(["repeat.evil.example", "twice.evil.example"]);
+    // The noisy address used one line of its 100, so it is still heard for a new pair.
+    await POST(post(legacyAt("new.evil.example"), "application/csp-report", noisy));
+    expect(logged().map(({ blocked }) => blocked)).toEqual(["repeat.evil.example", "twice.evil.example", "new.evil.example"]);
+  });
+});
+
+describe("POST /api/csp-report, the hour's summary", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("logs one csp_violation_summary per repeated directive and host once the hour ends, with the count and the addresses (T118)", async () => {
+    const at = (n: number) => ({ "x-forwarded-for": `192.0.2.${n}` });
+    // 3 addresses, 2 reports each, plus a pair sent once (no summary for it).
+    for (const n of [1, 1, 2, 2, 3, 3]) await POST(post(legacyAt("spread.evil.example"), "application/csp-report", at(n)));
+    await POST(post(legacyAt("once.evil.example"), "application/csp-report", at(4)));
+    expect(logged().filter((e) => e.event === "csp_violation_summary")).toEqual([]);
+
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(Date.now() + 60 * 60 * 1000);
+    lines = [];
+    await POST(post(legacyAt("next-hour.evil.example"), "application/csp-report", at(5)));
+    const summaries = logged().filter((e) => e.event === "csp_violation_summary");
+    expect(summaries.find((e) => e.blocked === "spread.evil.example")).toMatchObject({ directive: "script-src-elem", count: 6, addresses: 3 });
+    expect(summaries.find((e) => e.blocked === "once.evil.example")).toBeUndefined();
+    for (const e of summaries) expect(Object.keys(e).sort()).toEqual(["addresses", "at", "blocked", "count", "directive", "event", "level"]);
+    for (const line of lines) expect(line).not.toContain("192.0.2.");
+    // The new hour's report is logged after them, and each summary comes out once.
+    expect(logged().at(-1)).toMatchObject({ event: "csp_violation", blocked: "next-hour.evil.example" });
+    lines = [];
+    await POST(post(legacyAt("later.evil.example"), "application/csp-report", at(6)));
+    expect(logged().map(({ event }) => event)).toEqual(["csp_violation"]);
   });
 });
 
@@ -206,13 +254,45 @@ describe("the per-server log guard", () => {
   });
 });
 
+describe("the once-a-window memory", () => {
+  it("remembers a key until the window ends, and forgets the oldest when full", () => {
+    const seen = firstPerWindow({ windowMs: 1000, maxKeys: 2 });
+    expect(seen.has("a", 10)).toBe(false);
+    seen.add("a", "ip1", 10);
+    expect(seen.has("a", 999)).toBe(true);
+    expect(seen.has("a", 1000)).toBe(false); // a new window
+    seen.add("a", "ip1", 1000);
+    seen.add("b", "ip1", 1000);
+    seen.add("c", "ip1", 1000); // forgets a, the oldest
+    expect([seen.has("a", 1000), seen.has("b", 1000), seen.has("c", 1000)]).toEqual([false, true, true]);
+  });
+
+  it("counts repeats and distinct addresses, stops counting addresses at the cap, and hands each summary out once", () => {
+    const seen = firstPerWindow({ windowMs: 1000 });
+    seen.add("script-src x.example", "ip0", 0);
+    for (let i = 0; i < 120; i++) seen.repeat("script-src x.example", `ip${i % 80}`, 1);
+    seen.add("img-src once.example", "ip0", 2);
+    seen.repeat("connect-src unknown.example", "ip0", 3); // never logged: not counted
+    expect(seen.takeEnded(999)).toEqual([]);
+    expect(seen.takeEnded(1000)).toEqual([{ directive: "script-src", blocked: "x.example", count: 121, addresses: MAX_COUNTED_ADDRESSES }]);
+    expect(seen.takeEnded(1001)).toEqual([]);
+    // An hour with no request in between still keeps the older window's summaries until they are taken.
+    seen.add("font-src f.example", "ip1", 1100);
+    seen.repeat("font-src f.example", "ip2", 1100);
+    expect(seen.has("font-src f.example", 2100)).toBe(false);
+    expect(seen.takeEnded(5000)).toEqual([{ directive: "font-src", blocked: "f.example", count: 2, addresses: 2 }]);
+  });
+});
+
 describe("the CSP headers", () => {
-  it("sends the report-only policy with report-uri and report-to, and keeps the enforced policy as it was", async () => {
+  it("builds the report-only policy with report-uri and report-to, and keeps the enforced policy as it was", async () => {
     const headers = (await nextConfig.headers!())[0].headers;
     const value = (key: string) => headers.find((h) => h.key === key)?.value;
     expect(value("Content-Security-Policy")).toBe("frame-ancestors 'none'; base-uri 'self'; object-src 'none'");
     expect(ENFORCED_CSP).toBe(value("Content-Security-Policy"));
-    const reportOnly = value("Content-Security-Policy-Report-Only")!;
+    // Set per request by src/proxy.ts (T118), never fixed at build time here (src/proxy.test.ts checks it is sent).
+    expect(value("Content-Security-Policy-Report-Only")).toBeUndefined();
+    const reportOnly = cspReportOnly();
     expect(reportOnly).toContain("report-uri /api/csp-report");
     expect(reportOnly).toContain("report-to csp-endpoint");
     expect(reportOnly).toContain("script-src 'self' 'unsafe-inline'");

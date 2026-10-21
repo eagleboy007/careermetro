@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin/access";
 import { authConfig } from "@/lib/auth/config";
+import { cspReportOnly, vercelToolbarAllowed } from "@/lib/csp";
 import { refreshSession } from "@/lib/auth/proxy-session";
 import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/auth/test-user";
 import { signedInPreviewEnabled } from "@/lib/preview";
@@ -49,6 +50,22 @@ function notFoundKeeping(request: NextRequest, response?: NextResponse): NextRes
  *   page never shows it exists. The page and its actions check again themselves.
  */
 export async function proxy(request: NextRequest) {
+  return withReportOnlyCsp(request, await route(request));
+}
+
+/**
+ * The report-only CSP (src/lib/csp.ts), set here per request rather than in next.config.ts headers (T118): headers there
+ * are fixed at build time, so a preview build promoted to production kept the Vercel Toolbar's hosts. Here VERCEL_ENV
+ * is read at request time and the production host never gets them. Every page passes through this proxy (see the
+ * matcher); API routes and static files, which aren't documents, have no use for the policy.
+ */
+function withReportOnlyCsp(request: NextRequest, response: NextResponse): NextResponse {
+  const policy = cspReportOnly({ vercelToolbar: vercelToolbarAllowed(request.nextUrl.host), development: process.env.NODE_ENV === "development" });
+  response.headers.set("Content-Security-Policy-Report-Only", policy);
+  return response;
+}
+
+async function route(request: NextRequest): Promise<NextResponse> {
   const path = request.nextUrl.pathname;
   const adminPage = under(path, ADMIN_PREFIXES);
   if (!signedInPreviewEnabled()) {
