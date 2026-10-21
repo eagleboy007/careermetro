@@ -67,9 +67,10 @@ export function cspReportOnly(options: CspOptions = {}): string {
  * - The request's host: never on the project's production domain (VERCEL_PROJECT_PRODUCTION_URL, such as
  *   careermetro.vercel.app), whatever the deployment's own VERCEL_ENV says, so a promoted build serving production
  *   traffic never gets them even if it still carries its preview environment.
+ * - VERCEL_TARGET_ENV: "production" on every production alias, not only the one VERCEL_PROJECT_PRODUCTION_URL names (T119).
  */
 export function vercelToolbarAllowed(host: string, env: Record<string, string | undefined> = process.env): boolean {
-  if (env.VERCEL_ENV !== "preview") return false;
+  if (env.VERCEL_ENV !== "preview" || env.VERCEL_TARGET_ENV === "production") return false;
   const production = (env.VERCEL_PROJECT_PRODUCTION_URL ?? "").trim().toLowerCase();
   return !production || host.trim().toLowerCase() !== production;
 }

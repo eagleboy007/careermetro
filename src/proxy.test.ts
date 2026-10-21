@@ -156,6 +156,7 @@ describe("proxy", () => {
     expect(vercelToolbarAllowed("careermetro.vercel.app", { ...preview, VERCEL_PROJECT_PRODUCTION_URL: "CareerMetro.Vercel.App" })).toBe(false);
     expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "preview" })).toBe(true);
     expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "production" })).toBe(false);
+    expect(vercelToolbarAllowed("www.careermetro.com", { VERCEL_ENV: "preview", VERCEL_TARGET_ENV: "production" })).toBe(false);
     expect(vercelToolbarAllowed("localhost:3000", {})).toBe(false);
   });
 

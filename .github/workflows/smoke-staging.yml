@@ -32,7 +32,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Note the job's start
-        # Both scripts' deadlines fall no later than 12 minutes before the job's limit; their clean-up runs inside that margin.
+        # Both scripts' deadlines fall no later than 12 minutes before the job's limit, and their clean-up runs inside that
+        # margin. When the dry run uses its whole 15-minute step, the screens script's margin can shrink to about 8 minutes.
         # SMOKE_JOB_LIMIT_MIN is the job's timeout-minutes above.
         run: |
           echo "JOB_STARTED=$(date +%s)" >> "$GITHUB_ENV"

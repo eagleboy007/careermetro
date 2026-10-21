@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-20 (Run 6 fixes: the sample resume's budgets, words and refusal, the dry run's deadline)
+Last updated: 2026-10-21 (Re-test 34 fixes and T119 notes; Junction plan in docs/plans)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -65,6 +65,7 @@ Last updated: 2026-10-20 (Run 6 fixes: the sample resume's budgets, words and re
 - Re-test 34 fixes T115 to T118: the staging smoke scripts go on only when `/api/health` says `"env": "preview"` (T115).
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).
+- T119: the toolbar hosts are also withheld when `VERCEL_TARGET_ENV` is production (every production alias); the idle-instance summary loss and the 404 for missing static files without the CSP header are documented. Junction plan: docs/plans/junction-plan.md (plan only; decision 13 asks whether it is free or Elite).
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
 
 ## Next up

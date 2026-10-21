@@ -89,6 +89,7 @@ async function route(request: NextRequest): Promise<NextResponse> {
 
 export const config = {
   // Every page, so a session can be refreshed wherever it is read. API routes can set cookies themselves, and leaving
-  // them out keeps uploads from passing through the proxy.
+  // them out keeps uploads from passing through the proxy. Files with these extensions skip the proxy too, so a missing
+  // one (/x.png) gets the 404 page without the report-only CSP header (T119); it carries no script, so that is accepted.
   matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|woff2?)$).*)"],
 };
