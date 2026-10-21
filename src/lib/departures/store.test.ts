@@ -37,8 +37,11 @@ describe.skipIf(!db)("departures store (database)", () => {
   const runIds: string[] = [];
   const lines: string[] = [];
   let n = 0;
+  const rollupIds: string[] = [];
   const now = new Date();
   const DAY = 86_400_000;
+  // Only this file's posts and runs: other files keep old posts and runs in the same database (the feed tests).
+  const mine = () => ({ boardToken: run, runIds: [...runIds] });
   const person = async () => {
     const [u] = await db!
       .insert(schema.users)
@@ -75,6 +78,7 @@ describe.skipIf(!db)("departures store (database)", () => {
     if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
     await db!.delete(schema.jobPosts).where(like(schema.jobPosts.boardToken, `${run}%`));
     if (runIds.length) await db!.delete(schema.jobFeedRuns).where(inArray(schema.jobFeedRuns.id, runIds));
+    if (rollupIds.length) await db!.delete(schema.marketOpeningsMonthly).where(inArray(schema.marketOpeningsMonthly.id, rollupIds));
     await sqlClient?.end();
     // Titles, saves and stages never reach a log.
     expect(lines.join("\n")).not.toMatch(/Junior data analyst|Example Labs|Asha/);
@@ -204,7 +208,7 @@ describe.skipIf(!db)("departures store (database)", () => {
     const recent = await post({ closedAt: new Date(now.getTime() - 179 * DAY) });
     const open = await post({ firstSeenAt: new Date(now.getTime() - 400 * DAY) });
     for (const p of [old, recent]) await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, stage: 1, appliedAt: now });
-    const result = await clearOldDepartures(db!, now);
+    const result = await clearOldDepartures(db!, now, mine());
     expect(result.closedPostsDeleted).toBeGreaterThanOrEqual(1);
     const left = await db!.select({ id: schema.jobPosts.id }).from(schema.jobPosts).where(inArray(schema.jobPosts.id, [old, recent, open]));
     expect(left.map((r) => r.id).sort()).toEqual([recent, open].sort());
@@ -217,10 +221,10 @@ describe.skipIf(!db)("departures store (database)", () => {
       .insert(schema.marketOpeningsMonthly)
       .values({ month: "2023-01-01", roleSlug: run, state: "IN", newPosts: 3, openAtEnd: 1 })
       .returning({ id: schema.marketOpeningsMonthly.id });
+    rollupIds.push(kept.id);
     await post({ closedAt: new Date(now.getTime() - 400 * DAY) });
-    await clearOldDepartures(db!, now);
+    await clearOldDepartures(db!, now, mine());
     expect(await db!.select({ id: schema.marketOpeningsMonthly.id }).from(schema.marketOpeningsMonthly).where(eq(schema.marketOpeningsMonthly.id, kept.id))).toEqual([kept]);
-    await db!.delete(schema.marketOpeningsMonthly).where(eq(schema.marketOpeningsMonthly.id, kept.id));
   });
 
   it("says Updated from the last run that read a board, not a run where every board failed", async () => {
@@ -235,7 +239,7 @@ describe.skipIf(!db)("departures store (database)", () => {
     // Runs over 90 days old go.
     const [c] = await db!.insert(schema.jobFeedRuns).values({ startedAt: new Date(now.getTime() - 91 * DAY) }).returning({ id: schema.jobFeedRuns.id });
     runIds.push(c.id);
-    expect((await clearOldDepartures(db!, now)).feedRunsDeleted).toBeGreaterThanOrEqual(1);
+    expect((await clearOldDepartures(db!, now, mine())).feedRunsDeleted).toBeGreaterThanOrEqual(1);
     expect(await db!.select().from(schema.jobFeedRuns).where(eq(schema.jobFeedRuns.id, c.id))).toEqual([]);
   });
 

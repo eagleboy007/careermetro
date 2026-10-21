@@ -1527,9 +1527,10 @@ export const jobFeedRuns = pgTable(
 /**
  * Openings a month for /market: one row per month × role × state (or "IN" for all of India) × city (null for the
  * whole state) × experience band (null when the posts state no years). Written by the daily feed
- * (scripts/departures/fetch-feeds.mjs, writeRollup) from job_posts as an idempotent upsert of the current month only,
- * so it outlives the 180-day purge of closed posts; the daily cleanup never deletes it. Counts only: no post, no
- * person. `boards_ok` is the month's lowest daily count of boards read. No foreign keys (role slugs are content).
+ * (scripts/departures/fetch-feeds.mjs, writeRollup) from job_posts as an idempotent upsert of the current month (and
+ * of the month before when its rollup missed its last run), so it outlives the 180-day purge of closed posts; the daily cleanup never deletes it. Counts only: no post, no
+ * person. `boards_ok` is the month's lowest count of boards read over its runs that read at least one board (runs
+ * where every board failed are left out). A post counts in its one stored city (the first it lists) and that state. No foreign keys (role slugs are content).
  */
 export const marketOpeningsMonthly = pgTable(
   "market_openings_monthly",
@@ -1544,7 +1545,7 @@ export const marketOpeningsMonthly = pgTable(
     band: text("band", { enum: ["0-2", "3-5", "6-10", "10+"] }),
     /** Posts first seen in the month. */
     newPosts: integer("new_posts").notNull().default(0),
-    /** Posts open on the month's last run (so far: the latest run). */
+    /** Posts open at the month's last run (for the current month, the latest run so far). */
     openAtEnd: integer("open_at_end").notNull().default(0),
     boardsOk: integer("boards_ok").notNull().default(0),
     computedAt: timestamp("computed_at", { withTimezone: true }).notNull().defaultNow(),

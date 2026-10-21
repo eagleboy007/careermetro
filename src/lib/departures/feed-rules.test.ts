@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardsToClose, collect, failureCode, getJson, loadBoards, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
@@ -257,6 +257,26 @@ describe("collect", () => {
     expect(text).not.toMatch(/Analyst|Engineer|SQL|Pune/);
   });
 
+  it("reports the rollup as counts only, and a rollup failure as its code only", () => {
+    const stats = { month: "2026-10-01", rows: 12, counted: 9, unmatched: 4, indiaOnly: 2, previous: "2026-09-01" };
+    const text = summaryLines([], 0, { open: 9, closed: 0 }, stats).join("\n");
+    expect(text).toContain(
+      "Market 2026-10: 12 rows from 9 posts new this month or open; 4 matched no live role and are left out; 2 counted in India only",
+    );
+    expect(text).toContain("Market 2026-09 was behind its last run, so it was rewritten as of that run.");
+    expect(summaryLines([], 0, null, null).join("\n")).not.toContain("Market");
+
+    // A Postgres error's message can quote a row's values; only its SQLSTATE is printed.
+    const pg = Object.assign(new Error('duplicate key value violates unique constraint: (data-analyst, MH, Pune)'), { code: "23505" });
+    expect(failureCode(pg)).toBe("23505");
+    expect(failureCode(new TypeError("Cannot read Pune of undefined"))).toBe("TypeError");
+    expect(failureCode(Object.assign(new Error("x"), { code: "not a code", name: "Error with Pune" }))).toBe("error");
+    expect(failureCode(null)).toBe("error");
+    const failed = summaryLines([], 0, { open: 9, closed: 0 }, { failed: failureCode(pg) }).join("\n");
+    expect(failed).toContain("Market rollup failed (23505): this month's market_openings_monthly rows were not updated.");
+    expect(failed).not.toMatch(/Pune|duplicate|data-analyst/);
+  });
+
   it("marks a board the caps cut and a full SmartRecruiters page, keeps every post it saw, and closes only on the board read whole (T79)", async () => {
     const capped = await collect(boards, matchers, { fetchImpl: fakeFetch(allAnswers()), perBoard: 1 });
     const gh = capped.results.find((r) => r.token === "examplelabs");
@@ -315,7 +335,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
   };
 
   // The rollup's test months are long before any other test's posts, so only this file's posts count in them.
-  const rollupMonths = ["2024-06-01", "2024-07-01"];
+  const rollupMonths = ["2024-05-01", "2024-06-01", "2024-07-01"];
   afterAll(async () => {
     await sql!`delete from job_posts where board_token in ${sql!(mine.map((b) => b.token))} or board_token = ${`${run}m`}`;
     if (runIds.length) await sql!`delete from job_feed_runs where id in ${sql!(runIds)}`;
@@ -398,7 +418,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     expect((dated.get("4003") as Date).toISOString()).toBe("2026-10-17T09:00:00.000Z");
   });
 
-  it("writes this month's openings rollup as an idempotent upsert, drops cells the posts no longer give, and never touches another month", async () => {
+  it("writes this month's openings rollup as an idempotent upsert, drops cells the posts no longer give, and catches up only a month that missed its last run", async () => {
     const token = `${run}m`;
     let n = 0;
     const add = async (city: string, roleSlug: string | null, note: string | null, firstSeen: string, closed: string | null = null) => {
@@ -413,7 +433,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     await add("Remote", "data-analyst", null, "2024-06-04T01:00:00Z", "2024-06-10T01:00:00Z");
     await add("Bengaluru", null, "5+ years", "2024-06-05T01:00:00Z");
     await add("Hyderabad", "data-analyst", "3+ years", "2024-05-20T01:00:00Z");
-    for (const [finished, ok] of [["2024-06-03T01:05:00Z", 7], ["2024-06-04T01:05:00Z", 5], ["2024-05-31T01:05:00Z", 2]] as const) {
+    for (const [finished, ok] of [["2024-06-03T01:05:00Z", 7], ["2024-06-04T01:05:00Z", 5], ["2024-06-05T01:05:00Z", 0], ["2024-05-31T01:05:00Z", 2]] as const) {
       const [r] = await sql!`insert into job_feed_runs (started_at, finished_at, boards_ok) values (${finished}, ${finished}, ${ok}) returning id`;
       runIds.push(String(r.id));
     }
@@ -425,10 +445,12 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
       rows.map((r) => [r.role_slug, r.state, r.city, r.band, r.new_posts, r.open_at_end, r.boards_ok].join("|")).sort();
 
     const stats = await writeRollup(sql!, { now: june });
-    expect(stats).toMatchObject({ month: "2024-06-01", counted: 3, unmatched: 1, indiaOnly: 1 });
+    // May has a run but no rows: it is never filled in afterwards.
+    expect(stats).toMatchObject({ month: "2024-06-01", counted: 3, unmatched: 1, indiaOnly: 1, previous: null });
+    expect(await rowsOf("2024-05-01")).toHaveLength(0);
     const first = await rowsOf("2024-06-01");
     // Pune and Hyderabad count in their city, state and India; Remote only in India; the post with no live role nowhere.
-    // boards_ok is June's lowest run (5), not May's.
+    // boards_ok is June's lowest run that read a board (5): not May's (2), and not the run where every board failed (0).
     expect(cells(first)).toEqual([
       "data-analyst|IN|||1|0|5",
       "data-analyst|IN||0-2|1|1|5",
@@ -449,11 +471,12 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     await sql!`update job_posts set role_slug = 'devops-engineer' where id = ${pune}`;
     await writeRollup(sql!, { now: june });
     const changed = cells(await rowsOf("2024-06-01"));
-    expect(changed.some((c) => c.startsWith("data-analyst|MH"))).toBe(false);
+    expect(changed).not.toContain("data-analyst|MH|Pune|0-2|1|1|5");
+    expect(changed.some((c) => c.startsWith("data-analyst|MH") || c.startsWith("data-analyst|IN||0-2|"))).toBe(false);
     expect(changed).toContain("devops-engineer|MH|Pune|0-2|1|1|5");
 
-    // A new month: July counts what is still open, June stays as it was.
-    await writeRollup(sql!, { now: new Date("2024-07-02T01:00:00Z") });
+    // A new month: July counts what is still open, June stays as it was (its rows are newer than its last run).
+    expect((await writeRollup(sql!, { now: new Date("2024-07-02T01:00:00Z") })).previous).toBeNull();
     expect(cells(await rowsOf("2024-06-01"))).toEqual(changed);
     expect(cells(await rowsOf("2024-07-01"))).toEqual(
       [
@@ -465,6 +488,20 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
         "data-analyst|TG|Hyderabad|3-5|0|1|0",
       ].sort(),
     );
+
+    // June's last run (28 June) wrote a post but its rollup failed: the next run rewrites June as of that run, once.
+    await add("Chennai", "data-analyst", "2 to 4 years", "2024-06-28T01:00:00Z");
+    const lastJune = "2024-06-28T01:05:00Z";
+    const [late] = await sql!`insert into job_feed_runs (started_at, finished_at, boards_ok) values (${lastJune}, ${lastJune}, 6) returning id`;
+    runIds.push(String(late.id));
+    const july3 = new Date("2024-07-03T01:00:00Z");
+    expect((await writeRollup(sql!, { now: july3 })).previous).toBe("2024-06-01");
+    const caughtUp = await rowsOf("2024-06-01");
+    expect(cells(caughtUp)).toEqual(
+      [...changed, "data-analyst|IN||0-2|1|1|5", "data-analyst|TN||0-2|1|1|5", "data-analyst|TN|Chennai|0-2|1|1|5"].sort(),
+    );
+    expect(new Set(caughtUp.map((r) => (r.computed_at as Date).toISOString()))).toEqual(new Set(["2024-06-28T01:05:00.000Z"]));
+    expect((await writeRollup(sql!, { now: july3 })).previous).toBeNull();
 
     // The table's own checks back the schema.
     await expect(sql!`insert into market_openings_monthly (month, role_slug, state, city) values ('2024-06-02', 'data-analyst', 'MH', null)`).rejects.toThrow();

@@ -62,15 +62,20 @@ all figures are SQL or plain code.
 `market_openings_monthly`: one row per month × role_slug × state × city (null for state-only) × band (null when no
 years stated). Columns: `month` (date, first of month), `role_slug`, `state` (2-letter code or `IN` for all India),
 `city`, `band` (`0-2`, `3-5`, `6-10`, `10+`), `new_posts` (first seen that month), `open_at_end` (open on the month's
-last run), `boards_ok` (that month's lowest daily board count, so a jump from a fixed board is visible),
-`computed_at` (plus an `id` uuid primary key, like the other tables). Unique on (month, role_slug, state, city, band) with nulls not distinct; index on (role_slug, month).
-Written by the daily feed job (`scripts/departures/fetch-feeds.mjs`) as an idempotent upsert for the current month,
-before the 180-day purge, so history outlives `job_posts`. No foreign keys (role slugs are content, not rows), so no
+last run), `boards_ok` (that month's lowest board count over its runs that read at least one board, so a jump from
+a fixed board is visible; a run where every board failed is left out), `computed_at` (plus an `id` uuid primary key,
+like the other tables). Unique on (month, role_slug, state, city, band) with nulls not distinct (Postgres 15 or later);
+index on (role_slug, month). Written by the daily feed job (`scripts/departures/fetch-feeds.mjs`) as an idempotent
+upsert for the current month, before the 180-day purge, so history outlives `job_posts`. The month before is
+rewritten too, as of its last finished run, when that run's rollup failed (its rows are older than the run); a month
+whose last day had no run stays as its last rollup left it, and a month with no rows is never filled in afterwards. No foreign keys (role slugs are content, not rows), so no
 FK indexes are needed. **RLS enabled with no policies**, like every table; read only from the server. No personal
 data: a post belongs to no one. Expand only.
 
-Counting rules, kept from `accumulate.mjs` so the numbers mean the same: a post counts once per city and once per
-state it lists, once in `IN`; "Remote" and "India" count in `IN` only; a repost under a new URL counts again.
+Counting rules, kept from `accumulate.mjs` where `job_posts` allows: a post counts once in its city, once in that
+city's state, once in `IN`; "Remote" and "India" count in `IN` only; a repost under a new URL counts again.
+`job_posts` keeps one city per post (the first Indian city it lists), so a post listing several cities counts only in
+that first city and its state, where `accumulate.mjs` counted it in every city and state listed. `IN` counts match.
 
 ## Screens
 
@@ -88,7 +93,8 @@ Reuse `/market` as is. Changes only:
 
 1. **Rollup table and writer**: Zod schema for a rollup row and tests first (city → state, `IN`, band from
    `experience_note`, idempotent re-run of a day, month roll-over); then migration 0048, the upsert in the daily
-   feed, and the cleanup keeping rollups. No screen change.
+   feed, and the cleanup keeping rollups. No screen change. Built 2026-10-21 (`src/lib/market/rollup.mjs`,
+   `writeRollup`); the cleanup now takes a test-only scope so test files sharing a database keep each other's rows.
 2. **Market reads live counts**: loader from the rollup and open `job_posts` into `marketTable`; tests for the floor
    (14 hidden, 15 shown), sources, "Counting since"; header and card copy; e2e that no EXAMPLE DATA label shows on
    `"live"` and no pay number shows. Switch on only when Milin says (D1).
