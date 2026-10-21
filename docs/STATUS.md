@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-21 (T120 and T121: India-day months, notes, staging Market step)
+Last updated: 2026-10-21 (T122: /market's live reads bounded)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -71,6 +71,8 @@ Last updated: 2026-10-21 (T120 and T121: India-day months, notes, staging Market
 - Market trends PR 3 (D4 yes), no migration: the monthly Lever and Greenhouse accumulate is gone (its `jd-mining.yml` step and `market` input, `scripts/jd-mining/accumulate.mjs`, `src/content/market/feed.ts`, `MARKET_DATA = "feed"`, `FEED_SOURCE`, the CSV reader, `mine.mjs`'s `market-postings.csv` and their fixtures). `jd-mining.yml` still mines skills monthly into `data/jd-snapshot`; `market.mjs` keeps `placesOf`, `experienceBand` and `STATES` for the daily feed. No history to freeze: `data/market` was never created, and `data/jd-snapshots/2026-10-06` (skill mining) is untouched.
 - T120 and T121, no migration: the Market's months are India calendar months (Asia/Kolkata, UTC+05:30), cut by one helper (`monthOf`, `monthBounds`, `addMonths` in `src/lib/market/rollup.mjs`) for the feed's rollup, the trend's months and the store's read window; 31 Oct 18:29 UTC is October, 18:30 UTC November. The previous-month catch-up's reopen limit is documented (`docs/plans/market-trends-plan.md`); 0048's header comment now says the job_posts and job_feed_runs policies come from the T89 steps (comment only). `/design`'s live Market sections carry the Example data badge.
 - The staging screens script opens signed-in `/market`: the boards' source line, "Remote posts count in India only.", "Pay comes later", and no ₹, LPA or lakh figure in `main` or in `/market`'s own HTML and RSC data (T121, `docs/launch/prod-smoke.md`).
+- T122, no migration (signed-in `/market` hung past 60 s on staging; cause not confirmed, a lock or hung connection on `market_openings_monthly` suspected): its live reads run in one read-only transaction with `set local statement_timeout` 1.5 s and `lock_timeout` 1 s (four reads in series, 6 s at worst), and the page gives up on them and on the Nearby line after 6.5 s (`withinLimit`, `src/lib/time-limit.ts`), showing the existing unreadable state; `market_live_failed` and `market_line_failed` log a `reason` (timeout, statement_timeout, lock_timeout, missing, error).
+- `/api/health` adds `market` ("ok", "timeout", "missing" or "error"), a one-row read of `market_openings_monthly` (3 s statement, 2 s lock limit) that never changes `ok`; the staging screens script's Market step puts it at the front of its FAIL line. The app's pool closes idle sockets after 20 s and gives up a connect after 10 s; Market links to the same screen don't prefetch.
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
 
 ## Next up

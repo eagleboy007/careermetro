@@ -816,28 +816,48 @@ try {
   });
 
   // ---- Market on live counts (T121) ------------------------------------------------------------------------------------
+  // T122: /market's live reads carry statement and lock limits and the page gives up on them after a few seconds, so
+  // the page always finishes and open() keeps the 60 s navigation default. If the step fails anyway, it says what
+  // /api/health's `market` field (a bounded one-row read of the rollup table) reports, since the run can't see the
+  // deployment's logs: "ok", "timeout", "missing" or "error".
+  const healthMarket = async () => {
+    try {
+      const res = await A.ctx.request.get(BASE + "/api/health", { timeout: upTo(60000) });
+      const body = await res.json().catch(() => ({}));
+      return typeof body.market === "string" && /^[a-z_]{1,20}$/.test(body.market) ? body.market : `nothing (HTTP ${res.status()})`;
+    } catch {
+      return "nothing (no answer)";
+    }
+  };
   // Signed in, /market reads live counts (src/lib/market/live.ts): each card names the job boards, the undercount note
   // says Remote posts count in India only, the pay card says "Pay comes later", and no pay figure shows (D3 (a)). The
   // visible check reads `main` only, as e2e/walk.mjs's marketIsLive does, so the header and avatar menu never count. The
   // data check reads /market's own HTML and RSC bodies (payloadDuring, so no link's prefetch of /elite or /settings),
   // with the Elite prices taken out first in case the shell ever carries them: a pay figure sent but not drawn fails.
   await step("market: A opens /market on live counts: the boards' source line, the India-only note, Pay comes later, and no pay on the page or in its data", A, async (p) => {
-    const payload = await payloadDuring(A, async () => {
-      await open(p, "/market");
-      await p.getByRole("heading", { name: "Market", level: 1 }).waitFor({ timeout: 15000 });
-    }, (pathname) => pathname === "/market");
-    const main = p.locator("main").first();
-    if (await main.getByText("The live counts can't be read right now.").count()) throw new Error("the Market couldn't read its live counts");
-    await main.locator("p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.+\) · / }).first().waitFor({ timeout: 15000 });
-    await main.getByText(/Remote posts count in India only\./).first().waitFor();
-    await main.getByText(/Pay comes later/).first().waitFor();
-    const text = await main.innerText();
-    if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
-    if (/₹|\bLPA\b|lakh/i.test(text) || /\d(\.\d)?\s?L\b/.test(text)) throw new Error("the live Market shows a pay figure");
-    if (await main.getByRole("link", { name: "Median pay" }).count()) throw new Error("the live Market offers the Median pay map");
-    const data = payload.replace(new RegExp(ELITE_PRICES.map(escapeRe).join("|"), "g"), "");
-    const pay = /₹|&#8377;|\\u20b9|\bLPA\b|\d(\.\d+)?\s?lakhs?\b|\\?"pay(P25|Median|P75)\\?"\s*:\s*\d/i.exec(data)?.[0];
-    if (pay) throw new Error(`the live Market's data carries a pay figure (${pay.slice(0, 20)})`);
+    try {
+      const payload = await payloadDuring(A, async () => {
+        await open(p, "/market");
+        await p.getByRole("heading", { name: "Market", level: 1 }).waitFor({ timeout: 15000 });
+      }, (pathname) => pathname === "/market");
+      const main = p.locator("main").first();
+      if (await main.getByText("The live counts can't be read right now.").count()) {
+        throw new Error("the Market says \"The live counts can't be read right now.\": its live reads failed or passed their time limit (market_live_failed in the logs)");
+      }
+      await main.locator("p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.+\) · / }).first().waitFor({ timeout: 15000 });
+      await main.getByText(/Remote posts count in India only\./).first().waitFor();
+      await main.getByText(/Pay comes later/).first().waitFor();
+      const text = await main.innerText();
+      if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
+      if (/₹|\bLPA\b|lakh/i.test(text) || /\d(\.\d)?\s?L\b/.test(text)) throw new Error("the live Market shows a pay figure");
+      if (await main.getByRole("link", { name: "Median pay" }).count()) throw new Error("the live Market offers the Median pay map");
+      const data = payload.replace(new RegExp(ELITE_PRICES.map(escapeRe).join("|"), "g"), "");
+      const pay = /₹|&#8377;|\\u20b9|\bLPA\b|\d(\.\d+)?\s?lakhs?\b|\\?"pay(P25|Median|P75)\\?"\s*:\s*\d/i.exec(data)?.[0];
+      if (pay) throw new Error(`the live Market's data carries a pay figure (${pay.slice(0, 20)})`);
+    } catch (e) {
+      // The first line is what the log keeps, so health's word goes first.
+      throw new Error(`(health says market ${await healthMarket()}) ${String(e?.message ?? e).split("\n")[0]}`);
+    }
   });
 
   // ---- The company side: Arrivals, Offers, Reports and Library review --------------------------------------------------

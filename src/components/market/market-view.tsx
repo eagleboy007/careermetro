@@ -135,8 +135,10 @@ export function MarketView({
               {nearby.nearby.lines.length > 0 && (
                 <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.84rem]">
                   <span className="text-muted">See the market for</span>
+                  {/* No prefetch: these only change the address's choices on this screen, and each prefetch of /market
+                      reads the database (T122). */}
                   {nearby.nearby.lines.map((l) => (
-                    <Link key={l.slug} href={href({ role: l.slug })} scroll={false} className="inline-flex min-h-11 items-center gap-1 font-[550] underline-offset-2 hover:underline">
+                    <Link key={l.slug} href={href({ role: l.slug })} prefetch={false} scroll={false} className="inline-flex min-h-11 items-center gap-1 font-[550] underline-offset-2 hover:underline">
                       {l.title}
                       <ArrowRight size={14} {...ICON} />
                     </Link>
@@ -260,7 +262,8 @@ function TopRoles({ state, market, href }: { state: StateCode; market: MarketDat
     <ol className="mt-1 flex list-decimal flex-col pl-5 text-[0.86rem]">
       {top.map((x) => (
         <li key={x.role}>
-          <Link href={href({ role: x.role })} scroll={false} className="inline-flex min-h-11 items-center underline-offset-2 hover:underline">
+          {/* Same screen, so no prefetch (T122). */}
+          <Link href={href({ role: x.role })} prefetch={false} scroll={false} className="inline-flex min-h-11 items-center underline-offset-2 hover:underline">
             {marketRoleTitle(x.role)}
           </Link>{" "}
           <span className="text-muted">· {count(x.cell.openings)}</span>
