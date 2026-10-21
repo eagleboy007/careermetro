@@ -1,7 +1,8 @@
 // The signed-in screens the dry run (staging-dry-run.mjs) doesn't reach, on staging or any preview that offers
 // "Continue as test user" (docs/staging.md): Network (search, request, accept, and no city on any row), the notification
 // bell, the guided resume builder through to Download, Library (Save and "I finished this"), a mock interview round
-// started and ended at once, and Departures (save a role and mark it applied). Then the company side: Arrivals, and the
+// started and ended at once, Departures (save a role and mark it applied), and the Market on live counts (its source
+// line, the India-only note, "Pay comes later", and no pay figure on the page or in its data). Then the company side: Arrivals, and the
 // admin pages' not-found for a member. Two fresh test users, each in its own browser context, so one can ask the other
 // to connect. No member's city may reach the other's screen or the page's data (Network rows, Sent, the profile, the
 // bell).
@@ -288,18 +289,20 @@ const noCityOnRows = async (p, min = 1) => {
 };
 /**
  * Every same-origin page, RSC and fetch body this user's browser reads while `fn` runs, plus the page's HTML at the
- * end, as one string: a city can travel in the data without being drawn on a row.
+ * end, as one string: a city can travel in the data without being drawn on a row. `only`, when given, keeps the bodies
+ * of the paths it accepts (the Market's own, not a link's prefetch).
  */
-const payloadDuring = async (u, fn) => {
+const payloadDuring = async (u, fn, only = () => true) => {
   const bodies = [];
   const reads = [];
   let unread = 0;
   const onResponse = (res) => {
     let origin = "";
+    let pathname = "";
     try {
-      origin = new URL(res.url()).origin;
+      ({ origin, pathname } = new URL(res.url()));
     } catch {}
-    if (origin !== ORIGIN || !/html|x-component|json|text\/plain/.test(res.headers()["content-type"] ?? "")) return;
+    if (origin !== ORIGIN || !only(pathname) || !/html|x-component|json|text\/plain/.test(res.headers()["content-type"] ?? "")) return;
     reads.push(res.text().then((t) => bodies.push(t), () => unread++));
   };
   u.ctx.on("response", onResponse);
@@ -338,6 +341,8 @@ const bell = (p) => p.locator("header button[data-bell]");
 /** The words a server action announces in a status line. */
 const said = (p, text) => p.getByRole("status").filter({ hasText: text }).first().waitFor({ timeout: upTo(15000) });
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** The Elite prices (src/components/elite/elite-view.tsx): not Market pay, so the Market's data check leaves them out. */
+const ELITE_PRICES = ["₹299", "₹2,499", "₹799", "₹208"];
 /** A step that needs the admin test account prints why it didn't run, the way an empty board does. */
 const AS_ADMIN = ADMIN ?? A;
 
@@ -808,6 +813,30 @@ try {
     await kept.waitFor({ timeout: 10000 });
     await tabs.getByRole("button", { name: /^Applied/ }).click();
     await kept.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+  });
+
+  // ---- Market on live counts (T121) ------------------------------------------------------------------------------------
+  // Signed in, /market reads live counts (src/lib/market/live.ts): each card names the job boards, the undercount note
+  // says Remote posts count in India only, the pay card says "Pay comes later", and no pay figure shows (D3 (a)). The
+  // visible check reads `main` only, as e2e/walk.mjs's marketIsLive does, so the header and avatar menu never count. The
+  // data check reads /market's own HTML and RSC bodies (payloadDuring, so no link's prefetch of /elite or /settings),
+  // with the Elite prices taken out first in case the shell ever carries them: a pay figure sent but not drawn fails.
+  await step("market: A opens /market on live counts: the boards' source line, the India-only note, Pay comes later, and no pay on the page or in its data", A, async (p) => {
+    const payload = await payloadDuring(A, async () => {
+      await open(p, "/market");
+      await p.getByRole("heading", { name: "Market", level: 1 }).waitFor({ timeout: 15000 });
+    }, (pathname) => pathname === "/market");
+    const main = p.locator("main").first();
+    if (await main.getByText("The live counts can't be read right now.").count()) throw new Error("the Market couldn't read its live counts");
+    await main.locator("p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.+\) · / }).first().waitFor({ timeout: 15000 });
+    await main.getByText(/Remote posts count in India only\./).first().waitFor();
+    await main.getByText(/Pay comes later/).first().waitFor();
+    const text = await main.innerText();
+    if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
+    if (/₹|\bLPA\b|lakh/i.test(text) || /\d(\.\d)?\s?L\b/.test(text)) throw new Error("the live Market shows a pay figure");
+    const data = payload.replace(new RegExp(ELITE_PRICES.map(escapeRe).join("|"), "g"), "");
+    const pay = /₹|&#8377;|\\u20b9|\bLPA\b|\d(\.\d+)?\s?lakhs?\b|"pay(P25|Median|P75)"\s*:\s*\d/i.exec(data)?.[0];
+    if (pay) throw new Error(`the live Market's data carries a pay figure (${pay.slice(0, 20)})`);
   });
 
   // ---- The company side: Arrivals, Offers, Reports and Library review --------------------------------------------------

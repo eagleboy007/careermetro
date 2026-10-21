@@ -1531,12 +1531,14 @@ export const jobFeedRuns = pgTable(
  * of the month before when its rollup missed its last run), so it outlives the 180-day purge of closed posts; the daily cleanup never deletes it. Counts only: no post, no
  * person. `boards_ok` is the month's lowest count of boards read over its runs that read at least one board (runs
  * where every board failed are left out). A post counts in its one stored city (the first it lists) and that state. No foreign keys (role slugs are content).
+ * No policies and no grant yet: when the T89 feed-only role is made (dev/feed-db-role-steps.md, steps, not a migration)
+ * it needs select, insert, update and delete here and a policy like the ones those steps add on job_posts and job_feed_runs.
  */
 export const marketOpeningsMonthly = pgTable(
   "market_openings_monthly",
   {
     id: id(),
-    /** The first day of the month (UTC). */
+    /** The first day of the month, an India calendar month (Asia/Kolkata; monthOf in src/lib/market/rollup.mjs). */
     month: date("month").notNull(),
     roleSlug: text("role_slug").notNull(),
     /** A state's two-letter code, or "IN" for all of India. */

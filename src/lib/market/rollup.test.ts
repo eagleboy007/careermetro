@@ -3,7 +3,7 @@ import { marketStates } from "@/content/market/places";
 import { INDIA_ROW as APP_INDIA_ROW, MARKET_BANDS, STATE_CODES } from "@/lib/schemas";
 import { experienceBand } from "../../../scripts/jd-mining/market.mjs";
 import { experienceNoteOf } from "../departures/feed-rules.mjs";
-import { bandOfNote, INDIA_ROW, marketRollupRow, monthBounds, monthOf, placesOfPost, ROLLUP_BANDS, rollupMonth, STATE_OF_CITY } from "./rollup.mjs";
+import { addMonths, bandOfNote, INDIA_ROW, marketRollupRow, monthBounds, monthOf, placesOfPost, ROLLUP_BANDS, rollupMonth, STATE_OF_CITY } from "./rollup.mjs";
 
 // The monthly openings rollup the daily feed writes (docs/plans/market-trends-plan.md, migration 0048), over synthetic
 // posts only: no board, no database.
@@ -190,20 +190,39 @@ describe("the month's rows", () => {
     ]);
   });
 
-  it("rolls over at the month's end (UTC): a new month counts only its own new posts, and still counts what is open", () => {
-    const lastOfOctober = new Date("2026-10-31T23:59:59.999Z");
-    const firstOfNovember = new Date("2026-11-01T00:00:00.000Z");
+  it("rolls over at the month's end on the India day: a new month counts only its own new posts, and still counts what is open", () => {
+    // Midnight IST on 1 November is 18:30 UTC on 31 October.
+    const lastOfOctober = new Date("2026-10-31T18:29:59.999Z");
+    const firstOfNovember = new Date("2026-10-31T18:30:00.000Z");
     const posts = [post({ firstSeenAt: day("2026-10-31") }), post({ firstSeenAt: firstOfNovember }), post({ firstSeenAt: day("2026-10-10"), closedAt: day("2026-10-30") })];
     const october = run(posts, lastOfOctober);
     expect(october.stats.month).toBe("2026-10-01");
-    // The November post is not seen yet on 31 October.
+    // The November post is not seen yet at 23:59 IST on 31 October.
     expect(cell(october.rows, "MH", "Pune")).toMatchObject({ month: "2026-10-01", newPosts: 2, openAtEnd: 1 });
     const november = run(posts, day("2026-11-01"));
     expect(november.stats.month).toBe("2026-11-01");
+    // The post first seen at 18:30 UTC on 31 October is November's.
     expect(cell(november.rows, "MH", "Pune")).toMatchObject({ month: "2026-11-01", newPosts: 1, openAtEnd: 2 });
-    // December wraps the year.
-    expect(monthBounds("2026-12-01")).toEqual({ start: new Date("2026-12-01T00:00:00.000Z"), end: new Date("2027-01-01T00:00:00.000Z") });
+    // December wraps the year; the bounds are midnight IST.
+    expect(monthBounds("2026-12-01")).toEqual({ start: new Date("2026-11-30T18:30:00.000Z"), end: new Date("2026-12-31T18:30:00.000Z") });
     expect(() => monthBounds("2026-12-15")).toThrow();
+  });
+
+  it("cuts months on the India day (Asia/Kolkata, UTC+05:30), not UTC", () => {
+    expect(monthOf(new Date("2026-10-31T18:29:00Z"))).toBe("2026-10-01"); // 23:59 IST on 31 October
+    expect(monthOf(new Date("2026-10-31T18:30:00Z"))).toBe("2026-11-01"); // 00:00 IST on 1 November
+    expect(monthOf(new Date("2026-12-31T18:29:59.999Z"))).toBe("2026-12-01");
+    expect(monthOf(new Date("2026-12-31T18:30:00Z"))).toBe("2027-01-01"); // the year turns in India first
+    expect(monthOf(new Date("2026-11-01T01:00:00Z"))).toBe("2026-11-01"); // the feed's 01:00 UTC run, 06:30 IST
+    // No daylight saving: the same offset in every month, and a month's end is the next month's start.
+    const oct = monthBounds("2026-10-01");
+    expect(oct).toEqual({ start: new Date("2026-09-30T18:30:00.000Z"), end: new Date("2026-10-31T18:30:00.000Z") });
+    expect(monthBounds("2026-11-01").start).toEqual(oct.end);
+    expect(monthBounds("2027-06-01").start).toEqual(new Date("2027-05-31T18:30:00.000Z"));
+    expect(monthOf(oct.start)).toBe("2026-10-01");
+    expect(monthOf(new Date(oct.end.getTime() - 1))).toBe("2026-10-01");
+    expect(addMonths("2026-12", 1)).toBe("2027-01");
+    expect(addMonths("2026-01", -1)).toBe("2025-12");
   });
 
   it("names no post: rows hold only the role, place, band and counts", () => {

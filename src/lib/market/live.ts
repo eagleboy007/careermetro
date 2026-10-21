@@ -1,7 +1,7 @@
 import { indiaDay } from "@/lib/ride/days";
 import { LIVE_SOURCE, liveMarketTable, MARKET_MIN_OPENINGS, type MarketRow, type MarketState, type MarketTable } from "@/lib/schemas";
 import { createMarket, count, monthLabel, type MarketData, type MarketLive } from "./query";
-import { bandOfNote, placesOfPost } from "./rollup.mjs";
+import { addMonths, bandOfNote, monthOf, placesOfPost } from "./rollup.mjs";
 
 /*
  * Live counts for /market (MARKET_DATA = "live", docs/plans/market-trends-plan.md PR 2): plain code over two reads the
@@ -31,12 +31,10 @@ export type LiveInputs = {
 /** The months of a trend: at most 12, so the chart and the 12-month rule read the same list. */
 export const TREND_MONTHS = 12;
 
-const ym = (d: Date) => d.toISOString().slice(0, 7);
-/** "2026-10" plus `n` months, as YYYY-MM (UTC calendar months, as the rollup counts them). */
-export function addMonths(month: string, n: number): string {
-  const [y, m] = month.split("-").map(Number) as [number, number];
-  return ym(new Date(Date.UTC(y, m - 1 + n, 1)));
-}
+/** The India month `d` falls in, as YYYY-MM (monthOf in ./rollup.mjs, the rollup's own cut). */
+const ym = (d: Date) => monthOf(d).slice(0, 7);
+/** "2026-10" plus `n` months, as YYYY-MM (addMonths in ./rollup.mjs). */
+export { addMonths };
 
 /** The months the trend can read: after the first (baseline) month, up to the last full month, the latest 12. */
 export function trendMonths(firstMonth: string | null, now: Date): string[] {

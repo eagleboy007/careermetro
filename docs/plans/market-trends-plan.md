@@ -66,7 +66,13 @@ like the other tables). Unique on (month, role_slug, state, city, band) with nul
 index on (role_slug, month). Written by the daily feed job (`scripts/departures/fetch-feeds.mjs`) as an idempotent
 upsert for the current month, before the 180-day purge, so history outlives `job_posts`. The month before is
 rewritten too, as of its last finished run, when that run's rollup failed (its rows are older than the run); a month
-whose last day had no run stays as its last rollup left it, and a month with no rows is never filled in afterwards. No foreign keys (role slugs are content, not rows), so no
+whose last day had no run stays as its last rollup left it, and a month with no rows is never filled in afterwards.
+That catch-up reads today's post state, and `job_posts` keeps only a post's latest close, so a post closed at the
+month's last run that has reopened since (or reopened and closed again later) counts in that month's `open_at_end`;
+`new_posts` is exact. Rare (a reopen, after a failed rollup), so accepted; an exact fix would keep each post's close
+history (T120). Months are calendar months on the India day (Asia/Kolkata, UTC+05:30, no daylight saving): a month
+starts at 00:00 IST on its first day (18:30 UTC the day before), cut by `monthOf` and `monthBounds` in
+`src/lib/market/rollup.mjs` for the feed, the rollup and the screen alike (T120). No foreign keys (role slugs are content, not rows), so no
 FK indexes are needed. **RLS enabled with no policies**, like every table; read only from the server. No personal
 data: a post belongs to no one. Expand only.
 
