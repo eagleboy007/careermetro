@@ -61,6 +61,10 @@ import { MeEditGallery } from "@/components/me/me-editors";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { MarketView } from "@/components/market/market-view";
+import { marketStates } from "@/content/market/places";
+import { exampleMarketData, marketRoles } from "@/lib/market/data";
+import { LIVE_FIXTURE_NOW, liveFixture, liveNothing } from "@/lib/market/fixtures";
+import { liveMarket } from "@/lib/market/live";
 import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
@@ -389,6 +393,11 @@ const exampleToday: TodayData = {
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
+// Live counts for the Market section, from synthetic reads (src/lib/market/fixtures.ts).
+const liveOpts = { now: LIVE_FIXTURE_NOW, roles: marketRoles.map((r) => r.slug), states: marketStates };
+const designLive = liveMarket(liveFixture, liveOpts).market;
+const designLiveEmpty = liveMarket(liveNothing, liveOpts).market;
+
 // Example data includes content still waiting for review, so production never serves this page (T73).
 export default function DesignPage() {
   if (!designGalleryEnabled()) notFound();
@@ -671,8 +680,21 @@ export default function DesignPage() {
           Search, role and place pickers, the tile map in five plum steps with its key and list, the place panel, trend, pay bands, top cities, compare and
           Nearby lines. Every figure is example data; picking something opens /market. Below it, Mizoram picked: a thin place shows &quot;Not enough data&quot;.
         </p>
-        <MarketView ids="design-market" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
-        <MarketView ids="design-market-thin" params={{ place: "MZ", map: "pay", role: "soc-lead" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} />
+        <MarketView ids="design-market" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} market={exampleMarketData} />
+        <MarketView ids="design-market-thin" params={{ place: "MZ", map: "pay", role: "soc-lead" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={new Date("2026-10-13T00:00:00Z")} market={exampleMarketData} />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Market on live counts (signed in)</h2>
+        <p className="text-sm text-muted">
+          What signed-in people see (docs/plans/market-trends-plan.md): open roles on public company job boards with the day they were read and the undercount
+          note, no pay anywhere (&quot;Pay comes later&quot;, no Median pay map), and the trend saying &quot;Counting since&quot; until it has 12 months. The counts
+          here are synthetic: Data Analyst has 15 open in Karnataka (shown) and 14 in Maharashtra (hidden). Below it, an empty database (CI&apos;s, a new
+          staging): every figure reads &quot;Not enough data&quot;. Last, the counts couldn&apos;t be read.
+        </p>
+        <MarketView ids="design-market-live" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLive} />
+        <MarketView ids="design-market-live-empty" params={{ place: "MH", map: "pay" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLiveEmpty} />
+        <MarketView ids="design-market-live-failed" params={{}} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLiveEmpty} liveFailed />
       </section>
 
       <section className="flex flex-col gap-4">

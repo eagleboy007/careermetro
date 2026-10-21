@@ -79,8 +79,8 @@ describe("market feed loader", () => {
     expect(() => feedTableFromCsv(`${header}\n`, opts)).toThrow();
   });
 
-  it("is switched off: the screen still shows example data", () => {
-    expect(MARKET_DATA).toBe("example");
+  it("is switched off: the screen reads live counts (docs/plans/market-trends-plan.md), and the static table is the example", () => {
+    expect(MARKET_DATA).toBe("live");
     expect(market.rows.every((r) => r.source !== FEED_SOURCE)).toBe(true);
   });
 });

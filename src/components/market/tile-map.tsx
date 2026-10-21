@@ -34,7 +34,8 @@ export function TileMap({
   tiles: Tile[];
   selected: string | null;
   metric: MarketMetric;
-  metricHrefs: Record<MarketMetric, string>;
+  /** The metrics the map offers, each with its address. With one (live counts have no pay), there is no switch. */
+  metricHrefs: Partial<Record<MarketMetric, string>>;
   ranges: ({ lo: number; hi: number } | null)[];
   rangeText: (r: { lo: number; hi: number }) => string;
   /** What the figure is, for the list's column: "Openings a month" or "Median pay, 3–5 yrs". */
@@ -46,21 +47,27 @@ export function TileMap({
 }) {
   const said = (t: Tile) => (t.figure === null ? "Not enough data" : `${t.figure} ${unit}`);
   const at = new Map(tiles.map((t) => [`${t.state.col},${t.state.row}`, t]));
+  const metrics = (["openings", "pay"] as const).flatMap((m) => {
+    const href = metricHrefs[m];
+    return href ? [[m, href] as const] : [];
+  });
   return (
     <div className="flex flex-col gap-3">
-      <div role="group" aria-label="Colour the map by" className="inline-flex self-start rounded-full bg-surface-2 p-1">
-        {(["openings", "pay"] as const).map((m) => (
-          <Link
-            key={m}
-            href={metricHrefs[m]}
-            scroll={false}
-            aria-current={metric === m ? "true" : undefined}
-            className="inline-flex min-h-9 items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-[0_1px_2px_var(--shadow)]"
-          >
-            {m === "openings" ? "Openings" : "Median pay"}
-          </Link>
-        ))}
-      </div>
+      {metrics.length > 1 && (
+        <div role="group" aria-label="Colour the map by" className="inline-flex self-start rounded-full bg-surface-2 p-1">
+          {metrics.map(([m, href]) => (
+            <Link
+              key={m}
+              href={href}
+              scroll={false}
+              aria-current={metric === m ? "true" : undefined}
+              className="inline-flex min-h-9 items-center rounded-full px-3.5 text-[0.82rem] font-[550] text-muted aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-[0_1px_2px_var(--shadow)]"
+            >
+              {m === "openings" ? "Openings" : "Median pay"}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <a
         href={`#${skipTo}`}

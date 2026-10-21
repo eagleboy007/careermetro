@@ -18,6 +18,8 @@ describe("market row", () => {
   it("takes the one shape: role × state [× city] × band, openings, p25, median, p75, source, month", () => {
     expect(marketRow.parse(row)).toEqual(row);
     expect(marketRow.parse({ ...row, city: null }).city).toBeNull();
+    // Live counts keep posts that state no years, with no band.
+    expect(marketRow.parse({ ...row, band: null }).band).toBeNull();
     expect(marketRow.safeParse({ ...row, extra: 1 }).success).toBe(false);
   });
 

@@ -1,6 +1,6 @@
 # Market trends, role switches and state-wise jobs and pay (pending item 24) (2026-10-20)
 
-**Status: PR 1 built; PR 2 and PR 3 approved.** Milin proposed item 24 on 2026-10-12 and decided D1 to D6 on
+**Status: PR 1 and PR 2 built; PR 3 approved.** Milin proposed item 24 on 2026-10-12 and decided D1 to D6 on
 2026-10-21: D1 yes (live counts, PR 2), D2 hold, D3 (a) no role pay for now, D4 yes (retire the accumulate step,
 PR 3), D5 park, D6 keep the floor of 15 and a 12-month trend. PR 4 and PR 5 are not built. Nothing below is a plan
 step if it needs money or a new kind of personal data; those are listed as decisions only.
@@ -14,8 +14,8 @@ step if it needs money or a new kind of personal data; those are listed as decis
   map in plum `--heat-1..5` tokens (neutral, never cobalt or red/amber/green), place panel, 12-month trend, pay bands
   by experience, top cities, compare two places, Nearby lines. One Zod row shape (`src/lib/schemas/market.ts`:
   role × state [× city] × band, openings, pay p25/median/p75, source, month). The 15-a-month floor is
-  `MARKET_MIN_OPENINGS`; below it every figure reads "Not enough data". **Every figure is EXAMPLE DATA today**
-  (`MARKET_DATA = "example"` in `src/content/market/index.ts`).
+  `MARKET_MIN_OPENINGS`; below it every figure reads "Not enough data". **Every figure was EXAMPLE DATA until PR 2**
+  (`MARKET_DATA = "example"` in `src/content/market/index.ts`); now only signed out and on `/design`.
 - **Monthly openings feed**: wired but off. `scripts/jd-mining/accumulate.mjs` (in `.github/workflows/jd-mining.yml`,
   03:00 UTC on the 1st) counts Lever and Greenhouse India postings into `market-rows.csv` on a `data/market` branch;
   `src/content/market/feed.ts` loads it and drops the first (baseline) month.
@@ -97,7 +97,10 @@ Reuse `/market` as is. Changes only:
    `writeRollup`); the cleanup now takes a test-only scope so test files sharing a database keep each other's rows.
 2. **Market reads live counts**: loader from the rollup and open `job_posts` into `marketTable`; tests for the floor
    (14 hidden, 15 shown), sources, "Counting since"; header and card copy; e2e that no EXAMPLE DATA label shows on
-   `"live"` and no pay number shows. Switch on only when Milin says (D1).
+   `"live"` and no pay number shows. Switch on only when Milin says (D1). Built 2026-10-21 and switched on (D1 yes):
+   `src/lib/market/live.ts` (open posts now, new posts a month for the trend with the rollup's first month dropped as a
+   baseline, the words), `live-store.ts` (the reads, per request after `connection()`, like Departures; no cache),
+   `MARKET_DATA = "live"` for signed-in people; signed out and `/design` keep the example table.
 3. **Retire the monthly accumulate step** (if D4 says so): remove the market step from `jd-mining.yml`, `feed.ts` and
    its tests; keep skill mining.
 4. **PLFS state pay** (only after D2): a hand-checked CSV in `src/content/market/` with source, table number and

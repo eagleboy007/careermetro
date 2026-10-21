@@ -1206,20 +1206,38 @@ await step("nearby lines: a switcher sees them on Me and as an interchange on th
     await ctx2.close();
   }
 });
-// Market (handoff C6, dev/market-plan.md): from the top nav, every card labelled EXAMPLE DATA with its month; search a
-// city and a role (Enter takes the first match); open a state from the map; a thin state says "Not enough data"
-// instead of figures; Market is in the avatar menu; axe passes in light and dark, with no sideways scroll at 360px.
-await step("market: search, open a state, a thin one says Not enough data, every card says example data", async () => {
+// Market (handoff C6, dev/market-plan.md, docs/plans/market-trends-plan.md): from the top nav. Signed in it reads live
+// counts: no EXAMPLE DATA label and no pay figure anywhere, the header names the boards, the day and the undercount
+// note, each card names its source, the pay card says "Pay comes later" and the trend says when counting began. CI's
+// database has few or no posts, so most figures read "Not enough data", which is what the checks below rely on.
+// Search a city and a role (Enter takes the first match); open a state from the map; a thin state says "Not enough
+// data" instead of figures; Market is in the avatar menu; axe passes in light and dark, with no sideways scroll at 360px.
+const LIVE_HEADLINE = /^Open roles on public company job boards \(Greenhouse, Lever, Ashby, SmartRecruiters\)/;
+const marketIsLive = async () => {
+  const main = p.locator("main");
+  if (await main.getByText("The live counts can't be read right now.").count()) throw new Error("the Market couldn't read its live counts");
+  await main.getByText(LIVE_HEADLINE).first().waitFor();
+  const text = await main.innerText();
+  if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
+  if (/₹|\d\s?L\b|lakh/i.test(text)) throw new Error("the live Market shows a pay figure");
+  if (await main.getByRole("link", { name: "Median pay" }).count()) throw new Error("the live Market offers the Median pay map");
+};
+await step("market: live counts, no example label or pay, search, open a state, a thin one says Not enough data", async () => {
   await p.goto(BASE + "/today");
   await settled();
   await p.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Market" }).click();
   await p.waitForURL(/\/market/, { timeout: 15000 });
   await settled();
   await p.getByRole("heading", { name: "Market", level: 1 }).waitFor();
-  await p.getByText("Example data", { exact: true }).first().waitFor();
-  // Map, trend, pay, top cities and compare each say EXAMPLE DATA and the month.
-  const labels = await p.locator("main p").filter({ hasText: /^EXAMPLE DATA · .* · [A-Z][a-z]{2} \d{4}$/ }).count();
-  if (labels < 5) throw new Error(`only ${labels} cards say EXAMPLE DATA with a month`);
+  await marketIsLive();
+  await p.locator("main").getByText(/undercount the market/).first().waitFor();
+  // Map, trend, top cities and compare each name the boards and a day or month; pay says it has no source yet.
+  const sources = await p.locator("main p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.*\) · ((\d{1,2} [A-Z][a-z]{2} \d{4})|(counting since [A-Z][a-z]{2} \d{4})|not read yet|not counted yet)$/ }).count();
+  if (sources < 4) throw new Error(`only ${sources} cards name the job boards with a day or month`);
+  await p.locator("main p").filter({ hasText: /^Source: none yet$/ }).first().waitFor();
+  await p.locator("main").getByText("Pay comes later: company job boards in India rarely state pay.").first().waitFor();
+  // Until the trend has 12 months it says when counting began (a database with a year of rollups gets the floor instead).
+  await p.locator("main").getByText(/Counting (since [A-Z][a-z]{2} \d{4}|hasn't started yet); the trend shows after 12 months\.|A trend needs at least 15 new roles/).first().waitFor();
   // The walk's target role is Data Analyst, so the Market opens on it.
   await p.getByRole("heading", { name: "India · Data Analyst" }).waitFor();
   const box = p.getByRole("combobox", { name: "Search a role, state or city" });
@@ -1245,7 +1263,7 @@ await step("market: search, open a state, a thin one says Not enough data, every
   const panel = p.getByRole("heading", { name: "Mizoram · Machine Learning Engineer" });
   await panel.waitFor();
   await p.locator("main").getByText("Not enough data.").first().waitFor();
-  if (await p.locator("main").getByText("openings a month", { exact: true }).count()) throw new Error("a thin place shows a figure");
+  if (await p.locator("main").getByText(/^(openings a month|open now)$/).count()) throw new Error("a thin place shows a figure");
   await shot("market");
   // "Show all of India" goes away once India shows, so focus lands on the panel's heading, never the page.
   await p.getByRole("link", { name: "Show all of India" }).focus();
@@ -1286,7 +1304,7 @@ await step("market: search, open a state, a thin one says Not enough data, every
     await p.emulateMedia({ colorScheme: scheme });
     await p.reload();
     await settled();
-    await p.getByText("Example data", { exact: true }).first().waitFor();
+    await marketIsLive();
     const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (overflow > 1) throw new Error(`market scrolls sideways at 360px (${scheme}) by ${overflow}px`);
     await shot(`market-phone-${scheme}`);
