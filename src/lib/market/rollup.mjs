@@ -4,12 +4,12 @@
 // no network, and no post text or URL (only the role, the place, the experience note and the dates are read). A post
 // belongs to no one, so nothing here is personal data. Plain JavaScript, so the feed runs with plain Node.
 //
-// Counting rules, kept from scripts/jd-mining/accumulate.mjs where job_posts allows: a post counts once in its city,
+// Counting rules, kept from the retired monthly accumulate step (Market trends PR 3) where job_posts allows: a post counts once in its city,
 // once in that city's state and once in all of India ("IN"); "Remote" and "India" count in "IN" only; a repost under a
 // new URL is a new job_posts row, so it counts again. job_posts keeps one city per post, the first Indian city it lists
 // (cityOf in src/lib/departures/feed-rules.mjs), so a post listing several cities counts only in that first city and
-// its state here, where accumulate counted it in every city and state it listed. India counts are the same either way. A post whose title reads as no live role (role_slug
-// null) is left out, and the run log reports how many. Months are calendar months in UTC (the feed runs at 01:00 UTC,
+// its state here, where accumulate counted it in every city and state it listed. India counts are the same either way.
+// A post whose title reads as no live role (role_slug null) is left out, and the run log reports how many. Months are calendar months in UTC (the feed runs at 01:00 UTC,
 // 06:30 IST, so a run's date is the same in both).
 import { z } from "zod";
 import { CITIES } from "./cities.mjs";

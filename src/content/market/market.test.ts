@@ -3,7 +3,7 @@ import { roleProfiles } from "@/content";
 import { createMarket } from "@/lib/market/query";
 import { EXAMPLE_SOURCE, STATE_CODES } from "@/lib/schemas";
 import { exampleMonths } from "./example";
-import { market, marketStates } from "./index";
+import { exampleMarket as market, marketStates } from "./index";
 
 describe("market places", () => {
   it("has one tile for each state and union territory, no two on the same square", () => {

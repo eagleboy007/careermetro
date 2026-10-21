@@ -18,9 +18,6 @@ export const MARKET_BAND_LABELS: Record<MarketBand, string> = { "0-2": "0–2 yr
 /** The source every example row carries. The screen labels any row with it EXAMPLE DATA. */
 export const EXAMPLE_SOURCE = "Example data";
 
-/** The source of openings counted from public ATS job boards (scripts/jd-mining/market.mjs writes the same string). */
-export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
-
 /**
  * The source of live counts (MARKET_DATA = "live"): the daily Departures feed's job_posts and the monthly rollup it
  * writes (docs/plans/market-trends-plan.md). These are the four job-board systems the feed reads.

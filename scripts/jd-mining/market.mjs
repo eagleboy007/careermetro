@@ -1,74 +1,13 @@
-// Market openings for /market (dev/market-plan.md): which live role a posting is, where in India it is, and the
-// experience band it states. Plain code over public Lever and Greenhouse postings; nothing is guessed. A posting that
-// states no years gets no band, and one whose place can't be read gets no state. Only the posting's URL, role, place
-// and band are kept: no posting text, no names or emails of recruiters or anyone else.
+// Where in India a posting is, and the experience band it states: plain code over public job-board postings, used by
+// the daily Departures feed (src/lib/departures/feed-rules.mjs), whose job_posts the /market rollup counts. Nothing is
+// guessed: a posting that states no years gets no band, and one whose place can't be read gets no place. The monthly
+// Lever and Greenhouse openings count that first used these was retired by Market trends PR 3 (D4, 2026-10-21).
 // Reviewed from the Data research handoff (data/market/jd-mining-market), 2026-10-13.
 import { CITIES } from "../../src/lib/market/cities.mjs";
 
-/** The source the openings rows carry (src/content/market/feed.ts reads the same string). */
-export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
-
-/** Only these boards feed the market counts; Ashby postings still feed skill mining. */
-export const MARKET_ATS = new Set(["lever", "greenhouse"]);
-
-/** Live role for a title, for counting openings (seniority is kept, unlike skill mining). First match wins. */
-export const MARKET_ROLES = [
-  ["soc-lead", /\b(soc|security operations)\b.*\b(lead|manager|head)\b/i],
-  ["soc-analyst-l2", /\b(soc|security operations)\b.*\b(analyst|engineer)\b|\bincident respon(se|der)\b/i],
-  ["privacy-analyst", /\b(privacy|data protection|dpo)\b/i],
-  ["grc-manager", /\b(grc|governance,? risk|security (compliance|governance|risk)|information security|cyber ?risk|it risk)\b.*\b(manager|lead|head)\b/i],
-  ["information-security-analyst", /\b(grc|governance,? risk|security (compliance|governance|risk)|information security|infosec|cyber ?risk|it risk|it audit)\b/i],
-  ["penetration-tester", /\b(penetration|pen ?test(er|ing)?|vapt|offensive security|red team)\b/i],
-  ["cloud-security-engineer", /\bcloud security\b/i],
-  ["appsec-engineer", /\b(application|product|appsec) security\b|\bappsec\b|\bdevsecops\b/i],
-  ["cyber-security-analyst", /\b(security (analyst|engineer|specialist)|cyber ?security|threat|detection engineer|blue team)\b/i],
-  ["engineering-manager", /\b(engineering manager|manager,? (software )?engineering|software development manager)\b/i],
-  ["product-manager", /\b(product manager|product owner)\b/i],
-  ["ui-ux-designer", /\b(ui|ux|product|interaction|visual)\b.*\bdesigner\b|\bux researcher\b/i],
-  ["site-reliability-engineer", /\b(site reliability|sre)\b/i],
-  ["devops-engineer", /\b(devops|platform engineer|infrastructure engineer|build and release|release engineer)\b/i],
-  ["cloud-engineer", /\bcloud (engineer|architect|administrator|operations)\b/i],
-  ["ml-engineer", /\b(machine learning|ml|ai|mlops|llm|genai)\b.*\bengineer\b/i],
-  ["senior-data-scientist", /\b(senior|lead|staff|principal)\b.*\b(data scientist|applied scientist)\b/i],
-  ["data-scientist", /\b(data scientist|applied scientist|machine learning scientist)\b/i],
-  ["data-engineer", /\b(data|analytics|etl|big data) engineer\b/i],
-  ["database-architect", /\b(database (architect|administrator|engineer|reliability)|dba|data architect|data modeler)\b/i],
-  ["data-analyst", /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i],
-  ["business-analyst", /\bbusiness (systems )?analyst\b/i],
-  ["qa-automation-engineer", /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b/i],
-  ["android-developer", /\bandroid\b/i],
-  ["ios-developer", /\bios\b/i],
-  ["cross-platform-mobile-developer", /\b(flutter|react native|mobile)\b.*\b(engineer|developer)\b/i],
-  ["full-stack-developer", /\bfull[- ]?stack\b/i],
-  ["frontend-developer", /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b/i],
-  ["senior-backend-engineer", /\b(senior|lead|staff)\b.*\b(back[- ]?end|server[- ]side|software) (engineer|developer)\b/i],
-  ["java-backend-developer", /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b/i],
-  ["digital-marketing-executive", /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i],
-];
-// Not one of the live roles, whatever else the title says. Executives (a CISO is not an information security
-// analyst) are out; heads and leads stay, since soc-lead and grc-manager are live roles.
-const OUT =
-  /\b(counsel|attorney|legal|paralegal|sales|account executive|recruit(er|ing)|intern|internship|hardware|mechanical|electrical|silicon|asic|firmware|chief|director|vice president|vp)\b/i;
-// The same guard skill mining uses: quality and test titles outside software.
-const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
-
-export function marketRole(title, text = "") {
-  if (OUT.test(title)) return null;
-  for (const [slug, re] of MARKET_ROLES) {
-    if (!re.test(title)) continue;
-    if (slug === "qa-automation-engineer" && NOT_SOFTWARE.test(title)) continue;
-    if (slug === "java-backend-developer" && !/\bjava\b/i.test(`${title} ${text}`)) continue;
-    return slug;
-  }
-  return null;
-}
-
-// City → state code, with the patterns that find each city in a location: src/lib/market/cities.mjs, shared with the
-// daily rollup (src/lib/market/rollup.mjs) so production code never imports from scripts/.
-export { CITIES };
 /**
  * State and union-territory names, for a location that names a state but no city of it ("Karnataka, India"): the
- * posting counts in the state, with no city. Delhi is left to the city pattern above.
+ * posting is in the state, with no city. Delhi is left to its city pattern (CITIES).
  */
 export const STATES = [
   ["AN", /\bandaman\b/i], ["AP", /\bandhra pradesh\b/i], ["AR", /\barunachal pradesh\b/i], ["AS", /\bassam\b/i],
@@ -99,7 +38,6 @@ export function placesOf(location) {
   const india = INDIA.test(location) || all.some((p) => !shared(p)) || !ABROAD.test(location);
   return india ? all : all.filter((p) => !shared(p));
 }
-export const isIndia = (location) => INDIA.test(location) || placesOf(location).length > 0;
 
 /*
  * Experience band from the years a posting states: "3-5 years of experience", "5+ years", "minimum 4 years",
@@ -137,30 +75,3 @@ export function experienceBand(raw) {
   const y = Math.max(...mins);
   return y < 3 ? "0-2" : y < 6 ? "3-5" : y < 10 ? "6-10" : "10+";
 }
-
-/**
- * This run's India postings for the market counts: one row per posting and place it lists, as
- * { url, role, state, city, band } (city "" when only the state is named). A posting that names India but no place
- * gets one row with state and city blank: it counts only in the India row. Deduped on URL, state and city.
- */
-export function marketPostings(postings) {
-  const rows = [];
-  const keys = new Set();
-  for (const p of postings) {
-    if (!MARKET_ATS.has(p.ats) || !isIndia(p.location ?? "")) continue;
-    if (!/^https:\/\/[^\s"]+$/.test(p.url ?? "")) continue;
-    const role = marketRole(p.title ?? "", p.text ?? "");
-    if (!role) continue;
-    const band = experienceBand(p.text ?? "") ?? "";
-    const places = placesOf(p.location);
-    for (const { state, city } of places.length ? places : [{ state: "", city: "" }]) {
-      const key = `${p.url}|${state}|${city}`;
-      if (keys.has(key)) continue;
-      keys.add(key);
-      rows.push({ url: p.url, role, state, city, band });
-    }
-  }
-  return rows;
-}
-
-export const MARKET_POSTING_COLUMNS = ["url", "role", "state", "city", "band"];

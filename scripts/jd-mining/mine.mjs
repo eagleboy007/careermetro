@@ -1,13 +1,10 @@
 // Mines public job postings from Greenhouse, Lever and Ashby job-board APIs (public, meant for
 // syndication) and measures how often each taxonomy skill appears per CareerMetro role.
 // Output is aggregate only: no posting text is stored, just titles, URLs and counts.
-// It also writes market-postings.csv: India postings from Lever and Greenhouse boards with their live role, city and
-// stated experience band, which accumulate.mjs turns into /market openings (market.mjs, dev/market-plan.md).
 // Usage: node scripts/jd-mining/mine.mjs <outDir>
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { toCsv as csv } from "../../src/lib/market/csv.mjs";
-import { MARKET_POSTING_COLUMNS, marketPostings } from "./market.mjs";
 import { classify, escape, hasSkill, INDIA, norm, plain, ROLE_TITLES, skillMatchersFor } from "../../src/lib/departures/feed-rules.mjs";
 
 const root = new URL("../../", import.meta.url).pathname;
@@ -131,9 +128,5 @@ writeFileSync(join(outDir, "role-skill-frequency.csv"), csv(freqRows));
 writeFileSync(join(outDir, "role-cert-frequency.csv"), csv(certRows));
 writeFileSync(join(outDir, "candidate-skills.csv"), csv(candRows));
 writeFileSync(join(outDir, "postings.csv"), csv(postingRows));
-// Market openings: every India posting, seniority kept, independent of the skill-mining classification above.
-const market = marketPostings(postings);
-writeFileSync(join(outDir, "market-postings.csv"), csv([MARKET_POSTING_COLUMNS, ...market.map((p) => MARKET_POSTING_COLUMNS.map((c) => p[c]))]));
 console.log(JSON.stringify(summary.roles, null, 2));
-console.log(`Market: ${market.length} India posting-city rows, ${market.filter((p) => !p.band).length} without stated years`);
 console.log(`Boards ok: ${sourceLog.filter((s) => s.ok).length}/${sourceLog.length}, postings: ${postings.length}`);
