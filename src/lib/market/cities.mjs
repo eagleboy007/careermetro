@@ -1,6 +1,6 @@
 // The cities the Market counts, with the state each is in and the pattern that finds it in a job location. Plain
-// JavaScript, so the monthly JD-mining scripts (scripts/jd-mining/market.mjs) and the daily feed's rollup
-// (src/lib/market/rollup.mjs) run it with plain Node, and production code never imports from scripts/.
+// JavaScript, so the place rules (scripts/jd-mining/market.mjs, read by the daily Departures feed) and the feed's
+// rollup (src/lib/market/rollup.mjs) run it with plain Node.
 
 /**
  * City → state code (STATE_CODES in src/lib/schemas/market.ts). The cities are exactly the ones on the /market tile

@@ -3,18 +3,12 @@ name: Mine job postings
 # Reads public Greenhouse, Lever and Ashby job boards and measures how often each skill appears per role.
 # On main, results (aggregate counts, titles and links only) are pushed to the data/jd-snapshot branch. A run on any
 # other branch only uploads them as a workflow artifact, so a branch experiment never replaces main's snapshot.
-# Monthly (03:00 UTC on the 1st) main also counts /market openings: India postings on Lever and Greenhouse boards
-# first seen in the month that just ended (scripts/jd-mining/accumulate.mjs, dev/market-plan.md). That history lives
-# on its own branch, data/market, which only this step writes, with ordinary (never forced) pushes.
+# Main runs monthly (03:00 UTC on the 1st) and by hand. It no longer counts /market openings: the monthly Lever and
+# Greenhouse count was retired (docs/plans/market-trends-plan.md, PR 3, D4) for the daily Departures feed's rollup.
 on:
   schedule:
     - cron: "0 3 1 * *"
   workflow_dispatch:
-    inputs:
-      market:
-        description: Count market openings for last month (on main only, to redo a failed run from the 1st)
-        type: boolean
-        default: false
   push:
     branches-ignore: [main]
     paths: ["scripts/jd-mining/**"]
@@ -23,8 +17,7 @@ permissions:
   contents: write
 
 # One group per branch. A new push to a branch replaces that branch's running experiment; runs on main (scheduled or
-# manual) queue and are never cancelled, so a monthly count always finishes and each starts from the last push to
-# data/market. Branch runs write no shared branch, so they can't race main's.
+# manual) queue and are never cancelled. Branch runs write no shared branch, so they can't race main's.
 concurrency:
   group: jd-mining-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'push' }}
@@ -34,7 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ON_MAIN: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'push' }}
-      COUNT_MARKET: ${{ github.event_name == 'schedule' || inputs.market == true }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -62,33 +54,3 @@ jobs:
           git add -A
           git commit -qm "Job posting snapshot $(date -u +%F) from ${GITHUB_SHA::7}"
           git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data/jd-snapshot
-      - name: Count market openings on the data/market branch
-        if: env.ON_MAIN == 'true' && env.COUNT_MARKET == 'true'
-        run: |
-          dir="$RUNNER_TEMP/market"
-          set +e
-          git ls-remote --exit-code --heads origin data/market > /dev/null
-          found=$?
-          set -e
-          if [ "$found" = 0 ]; then
-            git fetch -q origin data/market
-            git worktree add -q -B data/market "$dir" FETCH_HEAD
-          elif [ "$found" = 2 ]; then
-            echo "No data/market branch yet: this run starts it, and its month is the baseline (a stock count)."
-            git worktree add -q --detach "$dir"
-            git -C "$dir" checkout -q --orphan data/market
-            git -C "$dir" rm -rfq .
-            export MARKET_BASELINE=1
-          else
-            exit "$found"
-          fi
-          node scripts/jd-mining/accumulate.mjs "$dir" "$RUNNER_TEMP/jd-snapshot/market-postings.csv"
-          cd "$dir"
-          # This branch holds data only, so tell Vercel not to build a preview for it.
-          echo '{"git":{"deploymentEnabled":false}}' > vercel.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen.csv market-rows.csv vercel.json
-          git commit -qm "Market openings $(date -u +%F) from ${GITHUB_SHA::7}"
-          # An ordinary push with the checkout's credentials: it fails rather than overwrite history it hasn't seen.
-          git push -q origin HEAD:refs/heads/data/market

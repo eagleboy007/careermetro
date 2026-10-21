@@ -42,7 +42,7 @@ Set each one for both **Production** and **Preview**, unless the table says othe
 
 | Name | What it does |
 |---|---|
-| DATABASE_MIGRATION_URL | Applies database changes on each merge, and lets the monthly openings feed and link check write to the database (Supabase session pooler, port 5432) |
+| DATABASE_MIGRATION_URL | Applies database changes on each merge, and lets the daily Departures feed (and its Market rollup), the companies review and the link check write to the database (Supabase session pooler, port 5432) |
 | CRON_SECRET | Lets the 6-hourly smoke check run the parse check. Must match Vercel. |
 | VERCEL_AUTOMATION_BYPASS_SECRET | Lets the smoke check through Vercel Deployment Protection. Must match the Vercel bypass secret. |
 | ANTHROPIC_API_KEY | Only for the paid AI evals. Can be a separate, low-limit key. |

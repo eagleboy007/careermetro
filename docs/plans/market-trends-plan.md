@@ -1,6 +1,6 @@
 # Market trends, role switches and state-wise jobs and pay (pending item 24) (2026-10-20)
 
-**Status: PR 1 and PR 2 built; PR 3 approved.** Milin proposed item 24 on 2026-10-12 and decided D1 to D6 on
+**Status: PR 1, PR 2 and PR 3 built.** Milin proposed item 24 on 2026-10-12 and decided D1 to D6 on
 2026-10-21: D1 yes (live counts, PR 2), D2 hold, D3 (a) no role pay for now, D4 yes (retire the accumulate step,
 PR 3), D5 park, D6 keep the floor of 15 and a 12-month trend. PR 4 and PR 5 are not built. Nothing below is a plan
 step if it needs money or a new kind of personal data; those are listed as decisions only.
@@ -16,15 +16,13 @@ step if it needs money or a new kind of personal data; those are listed as decis
   role × state [× city] × band, openings, pay p25/median/p75, source, month). The 15-a-month floor is
   `MARKET_MIN_OPENINGS`; below it every figure reads "Not enough data". **Every figure was EXAMPLE DATA until PR 2**
   (`MARKET_DATA = "example"` in `src/content/market/index.ts`); now only signed out and on `/design`.
-- **Monthly openings feed**: wired but off. `scripts/jd-mining/accumulate.mjs` (in `.github/workflows/jd-mining.yml`,
-  03:00 UTC on the 1st) counts Lever and Greenhouse India postings into `market-rows.csv` on a `data/market` branch;
-  `src/content/market/feed.ts` loads it and drops the first (baseline) month.
+- **Monthly openings feed**: retired by PR 3 (D4). It was `scripts/jd-mining/accumulate.mjs` in
+  `.github/workflows/jd-mining.yml`, counting Lever and Greenhouse India postings into `market-rows.csv` on a
+  `data/market` branch, loaded by `src/content/market/feed.ts`. It never ran: the branch was never made.
 
 ## What feed data we actually hold (checked 2026-10-20)
 
-- **`data/market` branch does not exist yet** (only `origin/data/jd-snapshot`). The first monthly run (1 Nov) will be
-  the baseline, which the loader drops, so the monthly feed gives its first usable month on 1 Dec and a 12-month
-  trend in late 2027.
+- **`data/market` branch does not exist** (only `origin/data/jd-snapshot`), and with PR 3 nothing will make it.
 - **The 2026-10-06 snapshot** (`data/market/ats-india-postings-2026-10-06.csv`): 68 India postings in 28
   role × state × city cells, all bands blank. No cell is near 15.
 - **`job_posts` (live Departures feed, #184, 0040)**: daily, 147 boards (Greenhouse 54, Lever 44, Ashby 30,
@@ -72,7 +70,7 @@ whose last day had no run stays as its last rollup left it, and a month with no 
 FK indexes are needed. **RLS enabled with no policies**, like every table; read only from the server. No personal
 data: a post belongs to no one. Expand only.
 
-Counting rules, kept from `accumulate.mjs` where `job_posts` allows: a post counts once in its city, once in that
+Counting rules, kept from the retired `accumulate.mjs` where `job_posts` allows: a post counts once in its city, once in that
 city's state, once in `IN`; "Remote" and "India" count in `IN` only; a repost under a new URL counts again.
 `job_posts` keeps one city per post (the first Indian city it lists), so a post listing several cities counts only in
 that first city and its state, where `accumulate.mjs` counted it in every city and state listed. `IN` counts match.
@@ -103,7 +101,9 @@ Reuse `/market` as is. Changes only:
    baseline, the words), `live-store.ts` (the reads, per request after `connection()`, like Departures; no cache),
    `MARKET_DATA = "live"` for signed-in people; signed out and `/design` keep the example table.
 3. **Retire the monthly accumulate step** (if D4 says so): remove the market step from `jd-mining.yml`, `feed.ts` and
-   its tests; keep skill mining.
+   its tests; keep skill mining. Built 2026-10-21 (D4 yes): the step, `accumulate.mjs`, `feed.ts`, the `"feed"` value
+   of `MARKET_DATA`, `FEED_SOURCE`, the CSV reader and the market-postings output of `mine.mjs` are gone; `market.mjs` keeps
+   only `placesOf` and `experienceBand`, which the daily feed reads. No collected counts existed to keep.
 4. **PLFS state pay** (only after D2): a hand-checked CSV in `src/content/market/` with source, table number and
    date, Zod-validated; a separate "Salaried earnings by state (government survey, all occupations)" layer.
 5. **Role pay** (only after D3): depends entirely on the decision.
