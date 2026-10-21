@@ -9,8 +9,10 @@
 // new URL is a new job_posts row, so it counts again. job_posts keeps one city per post, the first Indian city it lists
 // (cityOf in src/lib/departures/feed-rules.mjs), so a post listing several cities counts only in that first city and
 // its state here, where accumulate counted it in every city and state it listed. India counts are the same either way.
-// A post whose title reads as no live role (role_slug null) is left out, and the run log reports how many. Months are calendar months in UTC (the feed runs at 01:00 UTC,
-// 06:30 IST, so a run's date is the same in both).
+// A post whose title reads as no live role (role_slug null) is left out, and the run log reports how many. Months are calendar months on the India day
+// (Asia/Kolkata, UTC+05:30, no daylight saving; T120): a month starts at 00:00 IST on its first day, which is 18:30 UTC
+// the day before. monthOf and monthBounds below are the one place that cuts months, for the feed, the rollup and the
+// screen (src/lib/market/live.ts, live-store.ts).
 import { z } from "zod";
 import { CITIES } from "./cities.mjs";
 
@@ -65,17 +67,27 @@ export const marketRollupRow = z
  * @typedef {{ city: string; experienceNote: string | null; roleSlug: string | null; firstSeenAt: Date; closedAt: Date | null }} RollupPost
  */
 
-/** The month `date` falls in, in UTC, as its first day (YYYY-MM-01). */
+/** India's offset from UTC: +05:30 all year (no daylight saving), as indiaDay in src/lib/ride/days.ts. */
+export const INDIA_OFFSET_MS = 5.5 * 3600_000;
+
+/** The calendar month `date` falls in on the India day (Asia/Kolkata), as its first day (YYYY-MM-01). */
 export function monthOf(/** @type {Date} */ date) {
-  return `${date.toISOString().slice(0, 7)}-01`;
+  return `${new Date(date.getTime() + INDIA_OFFSET_MS).toISOString().slice(0, 7)}-01`;
 }
 
-/** The start of a month (YYYY-MM-01) and of the next one, as UTC instants. */
+/** The start of a month (YYYY-MM-01) and of the next one, as instants: 00:00 IST on each first day (18:30 UTC the day before). */
 export function monthBounds(/** @type {string} */ month) {
-  const start = new Date(`${month}T00:00:00.000Z`);
-  if (Number.isNaN(start.getTime()) || !month.endsWith("-01")) throw new Error("month must be YYYY-MM-01");
-  const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
-  return { start, end };
+  const first = new Date(`${month}T00:00:00.000Z`);
+  if (Number.isNaN(first.getTime()) || !month.endsWith("-01")) throw new Error("month must be YYYY-MM-01");
+  const next = Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 1);
+  return { start: new Date(first.getTime() - INDIA_OFFSET_MS), end: new Date(next - INDIA_OFFSET_MS) };
+}
+
+/** "2026-10" plus `n` months, as YYYY-MM. Plain calendar arithmetic on a month key, so no time zone comes in. */
+export function addMonths(/** @type {string} */ month, /** @type {number} */ n) {
+  const y = Number(month.slice(0, 4));
+  const m = Number(month.slice(5, 7));
+  return new Date(Date.UTC(y, m - 1 + n, 1)).toISOString().slice(0, 7);
 }
 
 /**

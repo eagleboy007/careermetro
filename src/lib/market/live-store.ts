@@ -3,7 +3,8 @@ import { and, count, gte, isNotNull, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { jobPosts, marketOpeningsMonthly } from "@/db/schema";
 import { lastFeedRun } from "@/lib/departures/store";
-import { addMonths, TREND_MONTHS, type LiveInputs } from "./live";
+import { TREND_MONTHS, type LiveInputs } from "./live";
+import { addMonths, monthOf } from "./rollup.mjs";
 
 /*
  * The reads behind live counts on /market (./live.ts turns them into figures). Read only, counts only: no post title,
@@ -19,8 +20,9 @@ type Db = ReturnType<typeof getDb>;
  */
 export async function liveMarketInputs({ db = getDb(), now = new Date() }: { db?: Db; now?: Date } = {}): Promise<LiveInputs> {
   const t = marketOpeningsMonthly;
-  // The trend reads at most the last 12 full months; one more covers the month the window starts after.
-  const from = `${addMonths(now.toISOString().slice(0, 7), -(TREND_MONTHS + 1))}-01`;
+  // The trend reads at most the last 12 full months; one more covers the month the window starts after. Months are
+  // India months (monthOf in ./rollup.mjs), as the rollup writes them.
+  const from = `${addMonths(monthOf(now).slice(0, 7), -(TREND_MONTHS + 1))}-01`;
   const [open, rollup, [first], lastRun] = await Promise.all([
     db
       .select({ roleSlug: sql<string>`${jobPosts.roleSlug}`, city: jobPosts.city, experienceNote: jobPosts.experienceNote, posts: count() })

@@ -335,7 +335,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
   };
 
   // The rollup's test months are long before any other test's posts, so only this file's posts count in them.
-  const rollupMonths = ["2024-05-01", "2024-06-01", "2024-07-01"];
+  const rollupMonths = ["2024-05-01", "2024-06-01", "2024-07-01", "2024-08-01", "2024-09-01"];
   afterAll(async () => {
     await sql!`delete from job_posts where board_token in ${sql!(mine.map((b) => b.token))} or board_token = ${`${run}m`}`;
     if (runIds.length) await sql!`delete from job_feed_runs where id in ${sql!(runIds)}`;
@@ -510,6 +510,44 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     await expect(
       sql!`insert into market_openings_monthly (month, role_slug, state, city, band, new_posts) values ('2024-06-01', 'data-analyst', 'IN', null, null, 1)`,
     ).rejects.toThrow();
+  });
+
+  it("cuts the rollup's months on the India day: a post and a run after 18:30 UTC on 31 August are September's, and August's catch-up ignores that run", async () => {
+    // Its own role, so the posts the test above leaves open never land in these cells.
+    const token = `${run}m`;
+    const role = "product-manager";
+    const add = async (id: string, firstSeen: string, closed: string | null = null) => {
+      await sql!`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, first_seen_at, last_seen_at, closed_at)
+        values ('lever', ${token}, ${id}, 'https://jobs.lever.co/example/2', 'Product Manager', 'Example Labs', 'Pune', '2 to 4 years', ${role},
+          ${firstSeen}, ${firstSeen}, ${closed})`;
+    };
+    await add("india-aug", "2024-08-20T01:00:00Z", "2024-08-25T01:00:00Z");
+    // 00:30 IST on 1 September.
+    await add("india-sep", "2024-08-31T19:00:00Z");
+    // 01:30 IST on 1 September: September's run, though its UTC date is 31 August.
+    for (const [finished, ok] of [["2024-08-20T01:05:00Z", 9], ["2024-08-31T20:00:00Z", 3]] as const) {
+      const [r] = await sql!`insert into job_feed_runs (started_at, finished_at, boards_ok) values (${finished}, ${finished}, ${ok}) returning id`;
+      runIds.push(String(r.id));
+    }
+    const mineIn = async (month: string) =>
+      (
+        await sql!`select state, city, band, new_posts, open_at_end, boards_ok from market_openings_monthly
+          where month = ${month}::date and role_slug = ${role}`
+      )
+        .map((r) => [r.state, r.city, r.band, r.new_posts, r.open_at_end, r.boards_ok].join("|"))
+        .sort();
+
+    await writeRollup(sql!, { now: new Date("2024-08-20T02:00:00Z") });
+    const august = ["IN||0-2|1|1|9", "MH||0-2|1|1|9", "MH|Pune|0-2|1|1|9"].sort();
+    expect(await mineIn("2024-08-01")).toEqual(august);
+
+    // On UTC days the 20:00 run would be August's last, newer than August's rows, and August would be caught up.
+    const september = await writeRollup(sql!, { now: new Date("2024-09-01T01:00:00Z") });
+    expect(september).toMatchObject({ month: "2024-09-01", previous: null });
+    // The post first seen at 19:00 UTC is new in September, and boards_ok is that run's 3, not August's 9.
+    expect(await mineIn("2024-09-01")).toEqual(["IN||0-2|1|1|3", "MH||0-2|1|1|3", "MH|Pune|0-2|1|1|3"].sort());
+    expect(await mineIn("2024-08-01")).toEqual(august);
   });
 
   it("refuses a row the table's checks don't allow", async () => {

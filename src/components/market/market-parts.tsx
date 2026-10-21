@@ -1,4 +1,4 @@
-import { CircleAlert } from "lucide-react";
+import { CircleAlert, FlaskConical } from "lucide-react";
 import type { ReactNode } from "react";
 import { floorText } from "@/lib/market/live";
 import { isExampleSource, monthLabel, type Sourced } from "@/lib/market/query";
@@ -7,6 +7,19 @@ import { isExampleSource, monthLabel, type Sourced } from "@/lib/market/query";
 
 export const ICON = { strokeWidth: 1.75, "aria-hidden": true } as const;
 export const label = "font-mono text-[0.68rem] uppercase tracking-[0.06em] text-muted";
+
+/**
+ * The "Example data" badge in the Market's header when its figures are made up, and on /design over the live sections,
+ * whose counts are synthetic (T120). Neutral chip style: it says nothing about gaps or progress.
+ */
+export function ExampleDataBadge() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] text-ink">
+      <FlaskConical size={14} {...ICON} />
+      Example data
+    </span>
+  );
+}
 
 /** A Market card: a heading, a note on the right, the body, and the source line at the foot. */
 export function Card({ id, title, note, source, className = "", children }: { id: string; title: string; note?: ReactNode; source: ReactNode; className?: string; children: ReactNode }) {

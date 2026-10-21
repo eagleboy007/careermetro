@@ -1,12 +1,13 @@
-import { ArrowRight, CircleAlert, FlaskConical, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowRight, CircleAlert, MoveRight, TrendingDown, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { DEFAULT_MARKET_ROLE, marketData, marketRoles } from "@/lib/market/data";
 import { liveHeadline, liveSourceLine, marketCards, openingsWords, PAY_LATER, trendWaitText, UNDERCOUNT_NOTE } from "@/lib/market/live";
 import { compareSentence, count, heatRanges, heatSteps, lakh, mergeSources, middleText, monthLabel, PAY_BAND, payText, placeName, shortMonth, type Cell, type MarketData, type Sourced } from "@/lib/market/query";
+import { monthOf } from "@/lib/market/rollup.mjs";
 import { INDIA_PLACE, marketChoices, marketHref, marketQuery, placeKey, readMarketView, type MarketQuery, type MarketView as View } from "@/lib/market/view";
 import { MARKET_BAND_LABELS, MARKET_BANDS, type MarketPlace, type MarketTrend, type NearbyLines, type StateCode } from "@/lib/schemas";
-import { Card, ICON, label, LiveSourceLine, NotEnough, SourceLine, Stat } from "./market-parts";
+import { Card, ExampleDataBadge, ICON, label, LiveSourceLine, NotEnough, SourceLine, Stat } from "./market-parts";
 import { MarketSearch, MarketSelect, type PickGroup } from "./market-pickers";
 import { PanelHeading } from "./panel-heading";
 import { TileMap, type Tile } from "./tile-map";
@@ -82,12 +83,7 @@ export function MarketView({
             {market.live ? "Where the open roles are and which way each role is moving." : "Where the openings are, what they pay, and which way each role is moving."} Pick a role and a place.
           </p>
         </div>
-        {!market.live && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 font-mono text-[0.72rem] font-medium uppercase tracking-[0.06em] text-ink">
-            <FlaskConical size={14} {...ICON} />
-            Example data
-          </span>
-        )}
+        {!market.live && <ExampleDataBadge />}
       </div>
       {market.live ? (
         market.live.failed ? (
@@ -129,7 +125,7 @@ export function MarketView({
           className="min-[960px]:col-span-2"
           source={
             <p className="font-mono text-[0.66rem] tracking-[0.04em] text-muted">
-              Source: CareerMetro role profiles{nearby.nearby ? (nearby.example ? " and an example resume" : " and your resume") : ""} · {monthLabel(today.toISOString().slice(0, 7))}
+              Source: CareerMetro role profiles{nearby.nearby ? (nearby.example ? " and an example resume" : " and your resume") : ""} · {monthLabel(monthOf(today).slice(0, 7))}
             </p>
           }
         >

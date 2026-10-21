@@ -195,8 +195,10 @@ describe("the words on live counts", () => {
     // The month it names is the first month the trend's 12 months are all over: counting since Oct 2026, the trend
     // reads Nov 2026 to Oct 2027, so it shows from Nov 2027 and not before.
     expect(trendFrom("2026-10")).toBe("2027-11");
-    expect(trendMonths("2026-10-01", new Date("2027-10-31T23:00:00Z"))).toHaveLength(11);
-    expect(trendMonths("2026-10-01", new Date("2027-11-01T00:00:00Z"))).toHaveLength(12);
+    // October 2027 ends at midnight IST, 18:30 UTC on 31 October (India months, monthOf in ./rollup.mjs).
+    expect(trendMonths("2026-10-01", new Date("2027-10-31T18:29:00Z"))).toHaveLength(11);
+    expect(trendMonths("2026-10-01", new Date("2027-10-31T18:30:00Z"))).toHaveLength(12);
+    expect(trendMonths("2026-10-01", new Date("2027-10-31T18:30:00Z")).at(-1)).toBe("2027-10");
     const twelve = trendMonths("2026-10-01", new Date("2027-11-03T00:00:00Z"));
     expect(trendWaitText(live, twelve, "Karnataka")).toBe("A trend needs at least 15 new roles in each of the last 12 months in Karnataka.");
   });

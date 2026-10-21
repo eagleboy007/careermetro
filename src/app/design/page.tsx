@@ -60,6 +60,7 @@ import { NoticeCard } from "@/components/job-search/notice-card";
 import { MeEditGallery } from "@/components/me/me-editors";
 import { MeView } from "@/components/me/me-view";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
+import { ExampleDataBadge } from "@/components/market/market-parts";
 import { MarketView } from "@/components/market/market-view";
 import { marketStates } from "@/content/market/places";
 import { exampleMarketData, marketRoles } from "@/lib/market/data";
@@ -686,7 +687,10 @@ export default function DesignPage() {
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold">Market on live counts (signed in)</h2>
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="text-2xl font-semibold">Market on live counts (signed in)</h2>
+          <ExampleDataBadge />
+        </div>
         <p className="text-sm text-muted">
           What signed-in people see (docs/plans/market-trends-plan.md): open roles on public company job boards with the day they were read and the undercount
           note, no pay anywhere (&quot;Pay comes later&quot;, no Median pay map), and the trend saying &quot;Counting since&quot; until it has 12 months. The counts

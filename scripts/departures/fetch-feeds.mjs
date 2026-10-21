@@ -293,14 +293,21 @@ async function rewriteMonth(tx, month, now) {
 }
 
 /**
- * The Market's monthly rollup, after writeRun, in one transaction of its own. It rewrites the current month (UTC) as of
- * `now`, so a re-run of a day gives the same rows, and no month but the current one and the one before is ever written.
+ * The Market's monthly rollup, after writeRun, in one transaction of its own. It rewrites the current month (an India
+ * calendar month, Asia/Kolkata: monthOf and monthBounds in src/lib/market/rollup.mjs) as of `now`, so a re-run of a
+ * day gives the same rows, and no month but the current one and the one before is ever written.
  *
  * The month before is rewritten too when it is behind: when it has rows and its last finished run is later than
  * their computed_at (that run wrote its posts but its rollup failed). It is then rewritten as of that run's
  * finished_at, the month's real last run, so the month is final. A month with no rows is never filled in afterwards
  * (no backfill before the table existed), and a month whose last day had no run at all stays as its last rollup left
  * it: there are no posts to add.
+ *
+ * Known limit of the catch-up (T120): it reads job_posts as they are today, and job_posts keeps only a post's latest
+ * close. A post that was closed at last month's last run and has reopened since (writeRun sets closed_at back to null,
+ * and a later close overwrites it) reads as open at that run, so its open_at_end can count it. new_posts is exact
+ * (first_seen_at never changes). Reopens are rare and the catch-up runs only after a failed rollup, so this is left as
+ * is; fixing it would need the close history kept per post.
  * @param {import("postgres").Sql} sql
  * @param {{ now?: Date }} [opts] `now`: the run's time (writeRun's `now`), no earlier than any post's first_seen_at
  * @returns {Promise<{ month: string; rows: number; counted: number; unmatched: number; indiaOnly: number; previous: string | null }>}
