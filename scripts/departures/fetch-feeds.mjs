@@ -6,13 +6,17 @@
 //
 // With DATABASE_URL set it upserts job_posts by external id, closes the open posts of each board it read that this run
 // didn't see (a board that failed closes nothing; a board taken off the list closes all of its posts) and records the
-// run in job_feed_runs. Without it, it reads the boards and prints the counts (a dry run).
+// run in job_feed_runs. Then, in its own transaction, it rewrites this month's market_openings_monthly rows from
+// job_posts (writeRollup, docs/plans/market-trends-plan.md), so the Market's counts outlive the 180-day purge of closed
+// posts; the daily cleanup never deletes rollups. Without DATABASE_URL, it reads the boards and prints the counts (a
+// dry run).
 // Usage: node scripts/departures/fetch-feeds.mjs
 import { appendFileSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 import { capPosts, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow, TOKEN_PATTERN } from "../../src/lib/departures/feed-schemas.mjs";
+import { monthBounds, monthOf, rollupMonth } from "../../src/lib/market/rollup.mjs";
 
 const root = new URL("../../", import.meta.url);
 
@@ -237,18 +241,78 @@ export async function writeRun(sql, { boards, rows, results, seen = [], startedA
   });
 }
 
+/**
+ * Rewrites the current month's market_openings_monthly rows (in UTC) from job_posts, in one transaction: every row the
+ * month has now is upserted on its cell (month, role, state, city, band; nulls not distinct) and any row of the month
+ * the posts no longer give (a post's role or note changed) is deleted. Other months are never touched, so a month is
+ * final once its last run is done, and a re-run of a day gives the same rows. Runs after writeRun, so the posts and the
+ * run's board count are this run's. Only posts first seen this month or open now are read, and of those only the role,
+ * city, experience note and dates: never a title, company, URL or skill.
+ * @param {import("postgres").Sql} sql
+ * @param {{ now?: Date }} [opts] `now`: the run's time (writeRun's `now`), no earlier than any post's first_seen_at
+ */
+export async function writeRollup(sql, { now = new Date() } = {}) {
+  const month = monthOf(now);
+  const { start, end } = monthBounds(month);
+  return sql.begin(async (tx) => {
+    const found = await tx`
+      select city, experience_note, role_slug, first_seen_at, closed_at from job_posts
+      where first_seen_at <= ${now} and (closed_at is null or closed_at > ${now} or first_seen_at >= ${start})`;
+    // The month's lowest board count over its finished runs (this one included); 0 when it has none yet.
+    const [{ low }] = await tx`
+      select min(boards_ok)::int as low from job_feed_runs where finished_at >= ${start} and finished_at < ${end} and finished_at <= ${now}`;
+    const { rows, stats } = rollupMonth({
+      posts: found.map((p) => ({
+        city: p.city,
+        experienceNote: p.experience_note,
+        roleSlug: p.role_slug,
+        firstSeenAt: new Date(p.first_seen_at),
+        closedAt: p.closed_at ? new Date(p.closed_at) : null,
+      })),
+      month,
+      boardsOk: low ?? 0,
+      computedAt: now,
+    });
+    const cells = JSON.stringify(
+      rows.map((r) => ({ role_slug: r.roleSlug, state: r.state, city: r.city, band: r.band, new_posts: r.newPosts, open_at_end: r.openAtEnd })),
+    );
+    await tx`
+      delete from market_openings_monthly m
+      where m.month = ${month}::date and not exists (
+        select 1 from jsonb_to_recordset(${cells}::text::jsonb) as x(role_slug text, state text, city text, band text)
+        where x.role_slug = m.role_slug and x.state = m.state and x.city is not distinct from m.city and x.band is not distinct from m.band)`;
+    await tx`
+      insert into market_openings_monthly (month, role_slug, state, city, band, new_posts, open_at_end, boards_ok, computed_at)
+      select ${month}::date, x.role_slug, x.state, x.city, x.band, x.new_posts, x.open_at_end, ${low ?? 0}::int, ${now}::timestamptz
+      from jsonb_to_recordset(${cells}::text::jsonb) as x(role_slug text, state text, city text, band text, new_posts int, open_at_end int)
+      on conflict (month, role_slug, state, city, band) do update set
+        new_posts = excluded.new_posts, open_at_end = excluded.open_at_end, boards_ok = excluded.boards_ok, computed_at = excluded.computed_at`;
+    return stats;
+  });
+}
+
 /** The reviewed board list, checked. */
 export function loadBoards(path = new URL("src/content/job-boards.json", root)) {
   return jobBoardsFile.parse(JSON.parse(readFileSync(path, "utf8")));
 }
 
 /** Counts and board names only, for the log and the job summary. */
-export function summaryLines(/** @type {BoardResult[]} */ results, /** @type {number} */ kept, /** @type {{ open: number; closed: number } | null} */ written) {
+export function summaryLines(
+  /** @type {BoardResult[]} */ results,
+  /** @type {number} */ kept,
+  /** @type {{ open: number; closed: number } | null} */ written,
+  /** @type {{ month: string; rows: number; counted: number; unmatched: number; indiaOnly: number } | null | undefined} */ rollup = undefined,
+) {
   const ok = results.filter((r) => r.ok);
   const lines = [
     `Boards read: ${ok.length} of ${results.length}. Posts kept: ${kept}.`,
     written ? `Open posts: ${written.open}. Closed this run: ${written.closed}.` : "Dry run: DATABASE_URL is not set, so nothing was written.",
   ];
+  if (rollup)
+    lines.push(
+      `Market ${rollup.month.slice(0, 7)}: ${rollup.rows} rows from ${rollup.counted} posts new this month or open; ` +
+        `${rollup.unmatched} matched no live role and are left out; ${rollup.indiaOnly} counted in India only (Remote, India or a city off the list).`,
+    );
   for (const r of results.filter((x) => !x.ok)) lines.push(`Skipped ${r.ats}/${r.token}: last_error ${r.error}`);
   for (const r of results.filter((x) => x.ok && x.truncated)) lines.push(`Kept open ${r.ats}/${r.token}: answer cut short, so nothing on it was closed`);
   for (const r of results.filter((x) => x.ok && x.capped && !x.truncated))
@@ -262,19 +326,33 @@ export async function main() {
   const skills = JSON.parse(readFileSync(new URL("src/content/skills.json", root), "utf8"));
   const { rows, results, seen } = await collect(boards, skillMatchersFor(skills), { now: startedAt });
   let written = null;
+  let rollup = null;
+  /** @type {string | null} */
+  let rollupFailed = null;
   if (process.env.DATABASE_URL) {
     const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1, onnotice: () => {} });
     try {
-      written = await writeRun(sql, { boards, rows, results, seen, startedAt });
+      const now = new Date();
+      written = await writeRun(sql, { boards, rows, results, seen, startedAt, now });
+      // Its own transaction: a rollup that fails leaves today's posts written. The log names no post, only that it failed.
+      try {
+        rollup = await writeRollup(sql, { now });
+      } catch (error) {
+        // A short code only (a Postgres SQLSTATE or the error's name), never its message.
+        const e = /** @type {{ code?: unknown; name?: unknown }} */ (error);
+        rollupFailed = typeof e?.code === "string" && /^[0-9A-Z]{5}$/.test(e.code) ? e.code : typeof e?.name === "string" ? e.name.slice(0, 40) : "error";
+      }
     } finally {
       await sql.end();
     }
   }
-  const lines = summaryLines(results, rows.length, written);
+  const lines = summaryLines(results, rows.length, written, rollup);
+  if (rollupFailed) lines.push(`Market rollup failed (${rollupFailed}): this month's market_openings_monthly rows were not updated.`);
   for (const line of lines) console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Departures feed\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`);
   // Every board failing is the runner's network or an outage, not the boards: fail so someone looks.
   if (results.length && !results.some((r) => r.ok)) process.exitCode = 1;
+  if (rollupFailed) process.exitCode = 1;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();

@@ -212,6 +212,17 @@ describe.skipIf(!db)("departures store (database)", () => {
     expect(await rowOf(me, recent)).toBeDefined();
   });
 
+  it("keeps the Market's monthly rollups, however old, when it deletes old posts (market-trends-plan.md)", async () => {
+    const [kept] = await db!
+      .insert(schema.marketOpeningsMonthly)
+      .values({ month: "2023-01-01", roleSlug: run, state: "IN", newPosts: 3, openAtEnd: 1 })
+      .returning({ id: schema.marketOpeningsMonthly.id });
+    await post({ closedAt: new Date(now.getTime() - 400 * DAY) });
+    await clearOldDepartures(db!, now);
+    expect(await db!.select({ id: schema.marketOpeningsMonthly.id }).from(schema.marketOpeningsMonthly).where(eq(schema.marketOpeningsMonthly.id, kept.id))).toEqual([kept]);
+    await db!.delete(schema.marketOpeningsMonthly).where(eq(schema.marketOpeningsMonthly.id, kept.id));
+  });
+
   it("says Updated from the last run that read a board, not a run where every board failed", async () => {
     const good = new Date(now.getTime() + 60_000);
     const [a] = await db!.insert(schema.jobFeedRuns).values({ startedAt: good, finishedAt: good, boardsOk: 3 }).returning({ id: schema.jobFeedRuns.id });

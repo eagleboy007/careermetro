@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardsToClose, collect, getJson, loadBoards, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
@@ -314,9 +314,12 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     return written;
   };
 
+  // The rollup's test months are long before any other test's posts, so only this file's posts count in them.
+  const rollupMonths = ["2024-06-01", "2024-07-01"];
   afterAll(async () => {
-    await sql!`delete from job_posts where board_token in ${sql!(mine.map((b) => b.token))}`;
+    await sql!`delete from job_posts where board_token in ${sql!(mine.map((b) => b.token))} or board_token = ${`${run}m`}`;
     if (runIds.length) await sql!`delete from job_feed_runs where id in ${sql!(runIds)}`;
+    await sql!`delete from market_openings_monthly where month in ${sql!(rollupMonths)}`;
     await sql!.end();
   });
 
@@ -393,6 +396,83 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     );
     expect(dated.get("4001")).toBeNull();
     expect((dated.get("4003") as Date).toISOString()).toBe("2026-10-17T09:00:00.000Z");
+  });
+
+  it("writes this month's openings rollup as an idempotent upsert, drops cells the posts no longer give, and never touches another month", async () => {
+    const token = `${run}m`;
+    let n = 0;
+    const add = async (city: string, roleSlug: string | null, note: string | null, firstSeen: string, closed: string | null = null) => {
+      const [p] = await sql!`
+        insert into job_posts (ats, board_token, external_id, url, title, company, city, experience_note, role_slug, first_seen_at, last_seen_at, closed_at)
+        values ('lever', ${token}, ${String(n++)}, 'https://jobs.lever.co/example/1', 'Data Analyst', 'Example Labs', ${city}, ${note}, ${roleSlug},
+          ${firstSeen}, ${firstSeen}, ${closed})
+        returning id`;
+      return String(p.id);
+    };
+    const pune = await add("Pune", "data-analyst", "2 to 4 years", "2024-06-03T01:00:00Z");
+    await add("Remote", "data-analyst", null, "2024-06-04T01:00:00Z", "2024-06-10T01:00:00Z");
+    await add("Bengaluru", null, "5+ years", "2024-06-05T01:00:00Z");
+    await add("Hyderabad", "data-analyst", "3+ years", "2024-05-20T01:00:00Z");
+    for (const [finished, ok] of [["2024-06-03T01:05:00Z", 7], ["2024-06-04T01:05:00Z", 5], ["2024-05-31T01:05:00Z", 2]] as const) {
+      const [r] = await sql!`insert into job_feed_runs (started_at, finished_at, boards_ok) values (${finished}, ${finished}, ${ok}) returning id`;
+      runIds.push(String(r.id));
+    }
+    const june = new Date("2024-06-20T01:00:00Z");
+    const rowsOf = (month: string) =>
+      sql!`select id, role_slug, state, city, band, new_posts, open_at_end, boards_ok, computed_at from market_openings_monthly
+        where month = ${month}::date order by role_slug, state, city nulls first, band nulls last`;
+    const cells = (rows: Awaited<ReturnType<typeof rowsOf>>) =>
+      rows.map((r) => [r.role_slug, r.state, r.city, r.band, r.new_posts, r.open_at_end, r.boards_ok].join("|")).sort();
+
+    const stats = await writeRollup(sql!, { now: june });
+    expect(stats).toMatchObject({ month: "2024-06-01", counted: 3, unmatched: 1, indiaOnly: 1 });
+    const first = await rowsOf("2024-06-01");
+    // Pune and Hyderabad count in their city, state and India; Remote only in India; the post with no live role nowhere.
+    // boards_ok is June's lowest run (5), not May's.
+    expect(cells(first)).toEqual([
+      "data-analyst|IN|||1|0|5",
+      "data-analyst|IN||0-2|1|1|5",
+      "data-analyst|IN||3-5|0|1|5",
+      "data-analyst|MH||0-2|1|1|5",
+      "data-analyst|MH|Pune|0-2|1|1|5",
+      "data-analyst|TG||3-5|0|1|5",
+      "data-analyst|TG|Hyderabad|3-5|0|1|5",
+    ].sort());
+
+    // The same day again: the same rows, updated in place.
+    await writeRollup(sql!, { now: june });
+    const again = await rowsOf("2024-06-01");
+    expect(cells(again)).toEqual(cells(first));
+    expect(again.map((r) => r.id)).toEqual(first.map((r) => r.id));
+
+    // A post's role changed: its old cells go, its new ones come.
+    await sql!`update job_posts set role_slug = 'devops-engineer' where id = ${pune}`;
+    await writeRollup(sql!, { now: june });
+    const changed = cells(await rowsOf("2024-06-01"));
+    expect(changed.some((c) => c.startsWith("data-analyst|MH"))).toBe(false);
+    expect(changed).toContain("devops-engineer|MH|Pune|0-2|1|1|5");
+
+    // A new month: July counts what is still open, June stays as it was.
+    await writeRollup(sql!, { now: new Date("2024-07-02T01:00:00Z") });
+    expect(cells(await rowsOf("2024-06-01"))).toEqual(changed);
+    expect(cells(await rowsOf("2024-07-01"))).toEqual(
+      [
+        "devops-engineer|IN||0-2|0|1|0",
+        "devops-engineer|MH||0-2|0|1|0",
+        "devops-engineer|MH|Pune|0-2|0|1|0",
+        "data-analyst|IN||3-5|0|1|0",
+        "data-analyst|TG||3-5|0|1|0",
+        "data-analyst|TG|Hyderabad|3-5|0|1|0",
+      ].sort(),
+    );
+
+    // The table's own checks back the schema.
+    await expect(sql!`insert into market_openings_monthly (month, role_slug, state, city) values ('2024-06-02', 'data-analyst', 'MH', null)`).rejects.toThrow();
+    await expect(sql!`insert into market_openings_monthly (month, role_slug, state, city) values ('2024-06-01', 'data-analyst', 'IN', 'Pune')`).rejects.toThrow();
+    // Nulls are not distinct in the cell key: a second India row with no band is refused.
+    await expect(
+      sql!`insert into market_openings_monthly (month, role_slug, state, city, band, new_posts) values ('2024-06-01', 'data-analyst', 'IN', null, null, 1)`,
+    ).rejects.toThrow();
   });
 
   it("refuses a row the table's checks don't allow", async () => {

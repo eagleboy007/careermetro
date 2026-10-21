@@ -1,7 +1,8 @@
 # Market trends, role switches and state-wise jobs and pay (pending item 24) (2026-10-20)
 
-**Status: PROPOSED, not approved.** Milin proposed item 24 on 2026-10-12. This plan covers only what is left of it and
-needs Milin's approval of the open decisions at the end (D1 to D6) before anything is built. Nothing below is a plan
+**Status: PR 1 built; PR 2 and PR 3 approved.** Milin proposed item 24 on 2026-10-12 and decided D1 to D6 on
+2026-10-21: D1 yes (live counts, PR 2), D2 hold, D3 (a) no role pay for now, D4 yes (retire the accumulate step,
+PR 3), D5 park, D6 keep the floor of 15 and a 12-month trend. PR 4 and PR 5 are not built. Nothing below is a plan
 step if it needs money or a new kind of personal data; those are listed as decisions only.
 
 ## What is already built (no work needed)
@@ -56,13 +57,13 @@ SmartRecruiters), 20 Oct 2026", and the undercount note from `dev/market-plan.md
 skews to tech and startups; most Indian hiring is on portals we do not read). The model produces no number anywhere;
 all figures are SQL or plain code.
 
-## Data model (migration 0047)
+## Data model (migration 0048)
 
 `market_openings_monthly`: one row per month × role_slug × state × city (null for state-only) × band (null when no
 years stated). Columns: `month` (date, first of month), `role_slug`, `state` (2-letter code or `IN` for all India),
 `city`, `band` (`0-2`, `3-5`, `6-10`, `10+`), `new_posts` (first seen that month), `open_at_end` (open on the month's
 last run), `boards_ok` (that month's lowest daily board count, so a jump from a fixed board is visible),
-`computed_at`. Unique on (month, role_slug, state, city, band) with nulls not distinct; index on (role_slug, month).
+`computed_at` (plus an `id` uuid primary key, like the other tables). Unique on (month, role_slug, state, city, band) with nulls not distinct; index on (role_slug, month).
 Written by the daily feed job (`scripts/departures/fetch-feeds.mjs`) as an idempotent upsert for the current month,
 before the 180-day purge, so history outlives `job_posts`. No foreign keys (role slugs are content, not rows), so no
 FK indexes are needed. **RLS enabled with no policies**, like every table; read only from the server. No personal
@@ -86,7 +87,7 @@ Reuse `/market` as is. Changes only:
 ## PRs (one feature each, one review pass, full check before the single push)
 
 1. **Rollup table and writer**: Zod schema for a rollup row and tests first (city → state, `IN`, band from
-   `experience_note`, idempotent re-run of a day, month roll-over); then migration 0047, the upsert in the daily
+   `experience_note`, idempotent re-run of a day, month roll-over); then migration 0048, the upsert in the daily
    feed, and the cleanup keeping rollups. No screen change.
 2. **Market reads live counts**: loader from the rollup and open `job_posts` into `marketTable`; tests for the floor
    (14 hidden, 15 shown), sources, "Counting since"; header and card copy; e2e that no EXAMPLE DATA label shows on
