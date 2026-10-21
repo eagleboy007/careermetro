@@ -21,7 +21,7 @@ export { marketStates } from "./places";
  * 3. No pay (D3 (a)): the pay card and the compare card say "Pay comes later", the place panel shows no pay, and the
  *    map's Median pay metric is hidden.
  * 4. The rollup's first month is a baseline and is dropped; until the trend has 12 months it says "Counting since
- *    {month}; the trend shows after 12 months" (D6).
+ *    {month}; the trend shows from {month + 13}" (D6).
  * 5. Every card's source line names the boards and the day (or the month counting began).
  * 6. The example table stays for /design and for the signed-out preview, both labelled EXAMPLE DATA.
  */

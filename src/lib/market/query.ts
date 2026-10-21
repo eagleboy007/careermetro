@@ -42,9 +42,10 @@ export type MarketData = ReturnType<typeof createMarket>;
 /**
  * What live counts add (MARKET_DATA = "live", src/lib/market/live.ts): `asOf` is the India day of the last feed run
  * that read a board (YYYY-MM-DD; null before the first), `countingSince` the first month the rollup counted (YYYY-MM;
- * null before the first). Example and feed tables have none.
+ * null before the first). `failed`: the counts couldn't be read, so the screen shows no figure and no "Not enough data",
+ * only that. Example and feed tables have none.
  */
-export type MarketLive = { asOf: string | null; countingSince: string | null };
+export type MarketLive = { asOf: string | null; countingSince: string | null; failed: boolean };
 
 type Index = { byKey: Map<string, MarketRow[]>; sources: string[]; latestMonth: string };
 const keyOf = (role: string, state: string, city: string | null, month: string) => `${role}|${state}|${city ?? ""}|${month}`;

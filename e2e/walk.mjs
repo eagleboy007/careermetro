@@ -1219,8 +1219,20 @@ const marketIsLive = async () => {
   await main.getByText(LIVE_HEADLINE).first().waitFor();
   const text = await main.innerText();
   if (/EXAMPLE DATA|Example data|made up to show the design/i.test(text)) throw new Error("the live Market says example data");
-  if (/₹|\d\s?L\b|lakh/i.test(text)) throw new Error("the live Market shows a pay figure");
+  if (/₹|lakh/i.test(text) || /\d(\.\d)?\s?L\b/.test(text)) throw new Error("the live Market shows a pay figure");
   if (await main.getByRole("link", { name: "Median pay" }).count()) throw new Error("the live Market offers the Median pay map");
+  await main.getByText(/undercount the market/).first().waitFor();
+  // Map, trend, top cities and compare each name the boards and a day or month; pay says it has no source yet.
+  const sources = await main.locator("p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.*\) · ((\d{1,2} [A-Z][a-z]{2} \d{4})|(counting since [A-Z][a-z]{2} \d{4})|not read yet|not counted yet)$/ }).count();
+  if (sources < 4) throw new Error(`only ${sources} cards name the job boards with a day or month`);
+  await main.locator("p").filter({ hasText: /^Source: none yet$/ }).first().waitFor();
+  await main.getByText("Pay comes later: company job boards in India rarely state pay.").first().waitFor();
+  // Until the trend has 12 months it says when counting began and when the trend shows (a database with a year of
+  // rollups gets the floor instead).
+  await main
+    .getByText(/Counting since [A-Z][a-z]{2} \d{4}; the trend shows from [A-Z][a-z]{2} \d{4}\.|Counting hasn't started yet; the trend shows 13 months after it starts\.|A trend needs at least 15 new roles/)
+    .first()
+    .waitFor();
 };
 await step("market: live counts, no example label or pay, search, open a state, a thin one says Not enough data", async () => {
   await p.goto(BASE + "/today");
@@ -1230,14 +1242,6 @@ await step("market: live counts, no example label or pay, search, open a state, 
   await settled();
   await p.getByRole("heading", { name: "Market", level: 1 }).waitFor();
   await marketIsLive();
-  await p.locator("main").getByText(/undercount the market/).first().waitFor();
-  // Map, trend, top cities and compare each name the boards and a day or month; pay says it has no source yet.
-  const sources = await p.locator("main p").filter({ hasText: /^Source: (Open on|New each month on) public company job boards \(.*\) · ((\d{1,2} [A-Z][a-z]{2} \d{4})|(counting since [A-Z][a-z]{2} \d{4})|not read yet|not counted yet)$/ }).count();
-  if (sources < 4) throw new Error(`only ${sources} cards name the job boards with a day or month`);
-  await p.locator("main p").filter({ hasText: /^Source: none yet$/ }).first().waitFor();
-  await p.locator("main").getByText("Pay comes later: company job boards in India rarely state pay.").first().waitFor();
-  // Until the trend has 12 months it says when counting began (a database with a year of rollups gets the floor instead).
-  await p.locator("main").getByText(/Counting (since [A-Z][a-z]{2} \d{4}|hasn't started yet); the trend shows after 12 months\.|A trend needs at least 15 new roles/).first().waitFor();
   // The walk's target role is Data Analyst, so the Market opens on it.
   await p.getByRole("heading", { name: "India · Data Analyst" }).waitFor();
   const box = p.getByRole("combobox", { name: "Search a role, state or city" });

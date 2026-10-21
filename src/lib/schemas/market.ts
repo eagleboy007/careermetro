@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CITIES } from "../market/cities.mjs";
 
 /*
  * Market (handoff C6, dev/market-plan.md). One row shape for every market figure, so Data research's licensed tables
@@ -119,9 +120,13 @@ export const marketTable = z
   });
 export type MarketTable = z.infer<typeof marketTable>;
 
+/** City → state code for the cities the Market counts (src/lib/market/cities.mjs, the rollup's list). */
+const STATE_OF_CITY = new Map(CITIES.map(([state, city]) => [city, state]));
+
 /**
  * A table of live counts, read per request (src/lib/market/live.ts). The same shape, but it may be empty: a database
  * the feed hasn't filled yet (CI's, a new staging) reads as "Not enough data" everywhere, which is the honest answer.
+ * Every city row must be in its city's state, as the rollup counts it.
  */
 export const liveMarketTable = z
   .object({
@@ -132,6 +137,8 @@ export const liveMarketTable = z
   .superRefine((t, ctx) => {
     const issue = rowsIssue(t);
     if (issue) ctx.addIssue({ code: "custom", message: issue });
+    const misplaced = t.rows.find((r) => r.city !== null && STATE_OF_CITY.get(r.city) !== r.state);
+    if (misplaced) ctx.addIssue({ code: "custom", message: `${misplaced.city} is not a city of ${misplaced.state}` });
   });
 
 /** The map can be coloured by openings or by the median pay at 3 to 5 years. */

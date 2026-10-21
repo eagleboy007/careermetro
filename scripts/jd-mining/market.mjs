@@ -3,6 +3,7 @@
 // states no years gets no band, and one whose place can't be read gets no state. Only the posting's URL, role, place
 // and band are kept: no posting text, no names or emails of recruiters or anyone else.
 // Reviewed from the Data research handoff (data/market/jd-mining-market), 2026-10-13.
+import { CITIES } from "../../src/lib/market/cities.mjs";
 
 /** The source the openings rows carry (src/content/market/feed.ts reads the same string). */
 export const FEED_SOURCE = "Public company job boards (Lever, Greenhouse)";
@@ -62,64 +63,9 @@ export function marketRole(title, text = "") {
   return null;
 }
 
-/**
- * City → state code (STATE_CODES in src/lib/schemas/market.ts). The cities are exactly the ones on the /market tile
- * map (src/content/market/places.ts), spelt the same, so every city row links on screen; a test keeps them in step.
- */
-export const CITIES = [
-  ["KA", "Bengaluru", /\b(bengaluru|bangalore)\b/i],
-  ["KA", "Mysuru", /\b(mysuru|mysore)\b/i],
-  ["KA", "Mangaluru", /\b(mangaluru|mangalore)\b/i],
-  ["TG", "Hyderabad", /\b(hyderabad|secunderabad)\b/i],
-  ["MH", "Pune", /\bpune\b/i],
-  ["MH", "Mumbai", /\b(mumbai|bombay)\b/i],
-  ["MH", "Nagpur", /\bnagpur\b/i],
-  ["TN", "Chennai", /\b(chennai|madras)\b/i],
-  ["TN", "Coimbatore", /\bcoimbatore\b/i],
-  ["HR", "Gurugram", /\b(gurugram|gurgaon)\b/i],
-  ["HR", "Faridabad", /\bfaridabad\b/i],
-  ["UP", "Noida", /\bnoida\b/i],
-  ["UP", "Lucknow", /\blucknow\b/i],
-  // "Delhi NCR" names a region, not the city.
-  ["DL", "New Delhi", /\b(new delhi|delhi)\b(?![\s/-]*ncr\b)/i],
-  ["WB", "Kolkata", /\b(kolkata|calcutta)\b/i],
-  ["GJ", "Ahmedabad", /\bahmedabad\b/i],
-  ["GJ", "Vadodara", /\b(vadodara|baroda)\b/i],
-  ["GJ", "Gandhinagar", /\b(gandhinagar|gift city)\b/i],
-  ["RJ", "Jaipur", /\bjaipur\b/i],
-  ["RJ", "Udaipur", /\budaipur\b/i],
-  ["KL", "Kochi", /\b(kochi|cochin)\b/i],
-  ["KL", "Thiruvananthapuram", /\b(thiruvananthapuram|trivandrum)\b/i],
-  ["MP", "Indore", /\bindore\b/i],
-  ["MP", "Bhopal", /\bbhopal\b/i],
-  ["CH", "Chandigarh", /\bchandigarh\b/i],
-  ["PB", "Mohali", /\bmohali\b/i],
-  ["PB", "Ludhiana", /\bludhiana\b/i],
-  ["OD", "Bhubaneswar", /\b(bhubaneswar|bhubaneshwar)\b/i],
-  ["AP", "Visakhapatnam", /\b(visakhapatnam|vizag)\b/i],
-  ["AP", "Vijayawada", /\bvijayawada\b/i],
-  ["JK", "Srinagar", /\bsrinagar\b/i],
-  ["JK", "Jammu", /\bjammu\b(?!\s*(and|&)\s*kashmir)/i],
-  ["LA", "Leh", /\bleh\b/i],
-  ["HP", "Shimla", /\bshimla\b/i],
-  ["UK", "Dehradun", /\bdehradun\b/i],
-  ["BR", "Patna", /\bpatna\b/i],
-  ["SK", "Gangtok", /\bgangtok\b/i],
-  ["AR", "Itanagar", /\bitanagar\b/i],
-  ["CG", "Raipur", /\braipur\b/i],
-  ["JH", "Ranchi", /\branchi\b/i],
-  ["AS", "Guwahati", /\bguwahati\b/i],
-  ["NL", "Kohima", /\bkohima\b/i],
-  ["DH", "Silvassa", /\bsilvassa\b/i],
-  ["ML", "Shillong", /\bshillong\b/i],
-  ["MN", "Imphal", /\bimphal\b/i],
-  ["GA", "Panaji", /\b(panaji|panjim)\b/i],
-  ["TR", "Agartala", /\bagartala\b/i],
-  ["MZ", "Aizawl", /\baizawl\b/i],
-  ["LD", "Kavaratti", /\bkavaratti\b/i],
-  ["PY", "Puducherry", /\b(puducherry|pondicherry)\b/i],
-  ["AN", "Port Blair", /\bport blair\b/i],
-];
+// City → state code, with the patterns that find each city in a location: src/lib/market/cities.mjs, shared with the
+// daily rollup (src/lib/market/rollup.mjs) so production code never imports from scripts/.
+export { CITIES };
 /**
  * State and union-territory names, for a location that names a state but no city of it ("Karnataka, India"): the
  * posting counts in the state, with no city. Delhi is left to the city pattern above.

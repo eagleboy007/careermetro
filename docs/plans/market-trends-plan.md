@@ -85,7 +85,8 @@ Reuse `/market` as is. Changes only:
 - Header and cards name the source and date (the switch-on checklist in `src/content/market/index.ts`, steps 2-5).
 - Map metric "Openings" defaults to open-now counts; "Median pay" tile metric is hidden until a pay source exists
   (or shows PLFS state pay under its own label after D2, never mixed with role figures).
-- Trend card: "Counting since {month}; the trend shows after 12 months" until it has 12 months at the floor.
+- Trend card: "Counting since {month}; the trend shows from {month + 13}" (Oct 2026 → Nov 2027, when the 12 months after
+  the baseline month are all over) until it has 12 months; then the floor in words when a month is under 15.
 - Pay bands card: "Pay comes later: company job boards in India rarely state pay." with no numbers.
 - Colours unchanged: plum heat steps and ink; cobalt only on the Nearby lines bar.
 

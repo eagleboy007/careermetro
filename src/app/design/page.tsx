@@ -397,6 +397,7 @@ const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "a
 const liveOpts = { now: LIVE_FIXTURE_NOW, roles: marketRoles.map((r) => r.slug), states: marketStates };
 const designLive = liveMarket(liveFixture, liveOpts).market;
 const designLiveEmpty = liveMarket(liveNothing, liveOpts).market;
+const designLiveFailed = liveMarket(liveNothing, { ...liveOpts, failed: true }).market;
 
 // Example data includes content still waiting for review, so production never serves this page (T73).
 export default function DesignPage() {
@@ -690,11 +691,11 @@ export default function DesignPage() {
           What signed-in people see (docs/plans/market-trends-plan.md): open roles on public company job boards with the day they were read and the undercount
           note, no pay anywhere (&quot;Pay comes later&quot;, no Median pay map), and the trend saying &quot;Counting since&quot; until it has 12 months. The counts
           here are synthetic: Data Analyst has 15 open in Karnataka (shown) and 14 in Maharashtra (hidden). Below it, an empty database (CI&apos;s, a new
-          staging): every figure reads &quot;Not enough data&quot;. Last, the counts couldn&apos;t be read.
+          staging): every figure reads &quot;Not enough data&quot;. Last, the counts couldn&apos;t be read: only that line and Nearby lines show, no figure and no &quot;Not enough data&quot;.
         </p>
         <MarketView ids="design-market-live" params={{ place: "KA" }} nearby={{ nearby: exampleNearby, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLive} />
         <MarketView ids="design-market-live-empty" params={{ place: "MH", map: "pay" }} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLiveEmpty} />
-        <MarketView ids="design-market-live-failed" params={{}} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLiveEmpty} liveFailed />
+        <MarketView ids="design-market-live-failed" params={{}} nearby={{ nearby: null, changeRoleHref: null, example: true }} today={LIVE_FIXTURE_NOW} market={designLiveFailed} />
       </section>
 
       <section className="flex flex-col gap-4">

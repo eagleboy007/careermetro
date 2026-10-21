@@ -20,19 +20,19 @@ export const metadata: Metadata = { title: "Market · CareerMetro", robots: { in
 /**
  * Live counts (MARKET_DATA = "live", docs/plans/market-trends-plan.md), read per request like Departures: the feed
  * changes them once a day, and nothing here is cached across requests. If they can't be read, the screen says so and
- * shows no figure rather than fail (logged as market_live_failed, error fields only). Posts of a role the Market no
+ * shows no figure (only Nearby lines) rather than fail (logged as market_live_failed, error fields only). Posts of a role the Market no
  * longer offers are left out and logged as a count.
  */
-async function liveFigures(now: Date): Promise<{ market: MarketData; failed: boolean }> {
+async function liveFigures(now: Date): Promise<MarketData> {
   const opts = { now, roles: marketRoles.map((r) => r.slug), states: marketStates };
   try {
     const { market, dropped } = liveMarket(await liveMarketInputs({ now }), opts);
     if (dropped) logEvent("info", "market_live_unknown_roles", { posts: dropped });
-    return { market, failed: false };
+    return market;
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "market_live_failed", errorFields(error));
-    return { market: liveMarket(liveNothing, opts).market, failed: true };
+    return liveMarket(liveNothing, { ...opts, failed: true }).market;
   }
 }
 
@@ -47,7 +47,7 @@ async function MarketScreen({ searchParams }: PageProps<"/market">) {
   await connection();
   const now = new Date();
   const account = await currentAccount();
-  const figures = account && MARKET_DATA === "live" ? liveFigures(now) : Promise.resolve({ market: account ? marketData : exampleMarketData, failed: false });
+  const figures = account && MARKET_DATA === "live" ? liveFigures(now) : Promise.resolve(account ? marketData : exampleMarketData);
   let line = account ? null : exampleMapLine;
   if (account) {
     try {
@@ -57,13 +57,13 @@ async function MarketScreen({ searchParams }: PageProps<"/market">) {
       logEvent("error", "market_line_failed", errorFields(error));
     }
   }
-  const { market, failed } = await figures;
+  const market = await figures;
   const nearby: MarketNearby = {
     nearby: line?.nearby ?? null,
     changeRoleHref: line?.resumeId ? `/resume/${line.resumeId}/role` : null,
     example: !account,
   };
-  return <MarketView params={params} defaultRole={line?.role.slug ?? DEFAULT_MARKET_ROLE} nearby={nearby} today={now} market={market} liveFailed={failed} />;
+  return <MarketView params={params} defaultRole={line?.role.slug ?? DEFAULT_MARKET_ROLE} nearby={nearby} today={now} market={market} />;
 }
 
 export default function MarketPage(props: PageProps<"/market">) {

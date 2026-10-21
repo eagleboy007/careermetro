@@ -2,7 +2,7 @@ import { ArrowRight, CircleAlert, FlaskConical, MoveRight, TrendingDown, Trendin
 import Link from "next/link";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { DEFAULT_MARKET_ROLE, marketData, marketRoles } from "@/lib/market/data";
-import { liveHeadline, liveSourceLine, openingsWords, PAY_LATER, trendWaitText, UNDERCOUNT_NOTE } from "@/lib/market/live";
+import { liveHeadline, liveSourceLine, marketCards, openingsWords, PAY_LATER, trendWaitText, UNDERCOUNT_NOTE } from "@/lib/market/live";
 import { compareSentence, count, heatRanges, heatSteps, lakh, mergeSources, middleText, monthLabel, PAY_BAND, payText, placeName, shortMonth, type Cell, type MarketData, type Sourced } from "@/lib/market/query";
 import { INDIA_PLACE, marketChoices, marketHref, marketQuery, placeKey, readMarketView, type MarketQuery, type MarketView as View } from "@/lib/market/view";
 import { MARKET_BAND_LABELS, MARKET_BANDS, type MarketPlace, type MarketTrend, type NearbyLines, type StateCode } from "@/lib/schemas";
@@ -30,8 +30,8 @@ function sourceFor(market: MarketData, kind: "open" | "new" | "pay", of: Sourced
  * and which way each role is moving. On live counts (`market.live`) the figures are open posts on public company job
  * boards, with no pay (D3 (a)), and every card names the boards and the day; on example data every card says EXAMPLE
  * DATA with its month. Nearby lines are real: the person's own, from the role profiles and their resume, as on Me.
- * `ids` prefixes the card headings' ids, so two views on one page (the design page) never share one. `liveFailed`:
- * the live counts couldn't be read, so the header says so.
+ * `ids` prefixes the card headings' ids, so two views on one page (the design page) never share one. When the live
+ * counts couldn't be read (`market.live.failed`), only the header's status line and Nearby lines show (marketCards).
  */
 export function MarketView({
   params,
@@ -40,7 +40,6 @@ export function MarketView({
   today,
   market = marketData,
   ids = "market",
-  liveFailed = false,
 }: {
   params: Record<string, string | string[] | undefined>;
   defaultRole?: string;
@@ -48,8 +47,9 @@ export function MarketView({
   today: Date;
   market?: MarketData;
   ids?: string;
-  liveFailed?: boolean;
 }) {
+  const shows = new Set(marketCards(market.live));
+  const figures = shows.has("map");
   const read = readMarketView(params, { roles: marketRoles.map((r) => r.slug), states: market.states, defaultRole });
   // Live counts have no pay, so the map shows openings whatever the address says.
   const view: View = market.live ? { ...read, metric: "openings" } : read;
@@ -90,7 +90,7 @@ export function MarketView({
         )}
       </div>
       {market.live ? (
-        liveFailed ? (
+        market.live.failed ? (
           <p role="status" className="-mt-1 max-w-[70ch] text-[0.84rem] text-muted">
             <b className="font-semibold text-ink">The live counts can&apos;t be read right now.</b> Reload the page to try again.
           </p>
@@ -106,18 +106,22 @@ export function MarketView({
         </p>
       )}
 
-      <MarketSearch choices={marketChoices(marketRoles, market.states)} base={base} />
-      <div className="grid gap-3 min-[560px]:grid-cols-2">
-        <MarketSelect label="Role" base={base} param="role" options={marketRoles.map((r) => ({ label: r.title, key: r.slug }))} />
-        <MarketSelect label="Place" base={base} param="place" groups={placeGroups} />
-      </div>
+      {figures && (
+        <>
+          <MarketSearch choices={marketChoices(marketRoles, market.states)} base={base} />
+          <div className="grid gap-3 min-[560px]:grid-cols-2">
+            <MarketSelect label="Role" base={base} param="role" options={marketRoles.map((r) => ({ label: r.title, key: r.slug }))} />
+            <MarketSelect label="Place" base={base} param="place" groups={placeGroups} />
+          </div>
+        </>
+      )}
 
       <div className="grid gap-4 min-[960px]:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] min-[960px]:items-start">
-        <MapCard ids={ids} view={view} roleTitle={role.title} market={market} href={href} className="min-[960px]:row-span-2" />
-        <TrendCard ids={ids} view={view} roleTitle={role.title} market={market} />
-        <PayCard ids={ids} cell={here} where={where} market={market} />
-        <CitiesCard ids={ids} view={view} market={market} />
-        <CompareCard ids={ids} view={view} roleTitle={role.title} market={market} groups={placeGroups} base={base} />
+        {shows.has("map") && <MapCard ids={ids} view={view} roleTitle={role.title} market={market} href={href} className="min-[960px]:row-span-2" />}
+        {shows.has("trend") && <TrendCard ids={ids} view={view} roleTitle={role.title} market={market} />}
+        {shows.has("pay") && <PayCard ids={ids} cell={here} where={where} market={market} />}
+        {shows.has("cities") && <CitiesCard ids={ids} view={view} market={market} />}
+        {shows.has("compare") && <CompareCard ids={ids} view={view} roleTitle={role.title} market={market} groups={placeGroups} base={base} />}
         <Card
           id={`${ids}-nearby`}
           title="Nearby lines"
@@ -298,7 +302,7 @@ function TrendCard({ ids, view, roleTitle, market }: { ids: string; view: View; 
           </p>
         </>
       ) : market.live ? (
-        <NotEnough live>{trendWaitText(market.live, market.months, view.place.kind === "india" ? null : where)}</NotEnough>
+        <NotEnough>{trendWaitText(market.live, market.months, view.place.kind === "india" ? null : where)}</NotEnough>
       ) : (
         <NotEnough>A trend needs at least 15 openings in each of the last 12 months{view.place.kind === "india" ? "" : ` in ${where}`}.</NotEnough>
       )}
@@ -348,7 +352,8 @@ function TrendChart({ points, months, label: said }: { points: number[]; months:
 }
 
 function PayCard({ ids, cell, where, market }: { ids: string; cell: Cell; where: string; market: MarketData }) {
-  const max = Math.max(...MARKET_BANDS.map((b) => cell.bands[b].pay?.p75 ?? 0)) * 1.05;
+  // The bars' scale; live counts draw no bars.
+  const max = market.live ? 0 : Math.max(...MARKET_BANDS.map((b) => cell.bands[b].pay?.p75 ?? 0)) * 1.05;
   return (
     <Card id={`${ids}-pay`} title="Pay by experience" note={<span className={label}>{where}</span>} source={sourceFor(market, "pay", cell, PAY_SHAPE)}>
       {market.live ? (
@@ -424,7 +429,7 @@ function CitiesCard({ ids, view, market }: { ids: string; view: View; market: Ma
           })}
         </ol>
       ) : (
-        <NotEnough live={live}>No city here has at least 15 {live ? "open roles" : "openings a month"} for this role.</NotEnough>
+        <NotEnough>No city here has at least 15 {live ? "open roles" : "openings a month"} for this role.</NotEnough>
       )}
     </Card>
   );

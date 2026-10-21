@@ -105,14 +105,18 @@ export function trendRows(rollup: RollupGroup[], { months, roles }: { months: st
 /**
  * The live Market: open posts now for every figure, new posts a month for the trend. Both tables are checked by the
  * live table schema, so a row the screen can't place (an unknown state, a city in the wrong state) fails loudly.
+ * `failed`: the counts couldn't be read (pass liveNothing); the screen then shows only that and Nearby lines.
  */
-export function liveMarket(inputs: LiveInputs, { now, roles, states }: { now: Date; roles: string[]; states: MarketState[] }): { market: MarketData; dropped: number } {
+export function liveMarket(
+  inputs: LiveInputs,
+  { now, roles, states, failed = false }: { now: Date; roles: string[]; states: MarketState[]; failed?: boolean },
+): { market: MarketData; dropped: number } {
   const month = ym(now);
   const { rows, dropped } = openRows(inputs.open, { month, roles });
   const table: MarketTable = liveMarketTable.parse({ latestMonth: month, rows });
   const months = trendMonths(inputs.firstMonth, now);
   const trend: MarketTable = liveMarketTable.parse({ latestMonth: months.at(-1) ?? addMonths(month, -1), rows: trendRows(inputs.rollup, { months, roles }) });
-  const live: MarketLive = { asOf: inputs.lastRun ? indiaDay(inputs.lastRun) : null, countingSince: inputs.firstMonth?.slice(0, 7) ?? null };
+  const live: MarketLive = { asOf: inputs.lastRun ? indiaDay(inputs.lastRun) : null, countingSince: inputs.firstMonth?.slice(0, 7) ?? null, failed };
   return { market: createMarket(table, states, { trend: { table: trend, months }, live }), dropped };
 }
 
@@ -129,7 +133,7 @@ const SOURCE_WORDS = LIVE_SOURCE[0]!.toLowerCase() + LIVE_SOURCE.slice(1);
  * The undercount note (dev/market-plan.md, 2026-10-13), in short. The header carries it on live counts.
  */
 export const UNDERCOUNT_NOTE =
-  "These counts undercount the market. They include only companies with a public Greenhouse, Lever, Ashby or SmartRecruiters board, so they lean to tech companies and startups; most hiring in India goes through job portals and staffing firms we don't read. A post counts once, in the first city it lists, and posts whose title matches none of our roles are left out.";
+  "These counts undercount the market. They include only the companies on our list of public Greenhouse, Lever, Ashby and SmartRecruiters boards, so they lean to tech companies and startups; most hiring in India goes through job portals and staffing firms we don't read. A post counts once, in the first city it lists. Remote posts count in India only. Posts whose title matches none of our roles are left out.";
 
 /** What the pay card and the compare card say on live counts (D3 (a), 2026-10-21): no pay figure anywhere. */
 export const PAY_LATER = "Pay comes later: company job boards in India rarely state pay.";
@@ -147,18 +151,31 @@ export function liveSourceLine(kind: "open" | "new" | "pay", live: MarketLive): 
 }
 
 /**
- * Why the trend card shows no line yet. Until the trend has 12 months to read it says when counting began (D6,
- * 2026-10-21); after that, a thin role or place gets the floor in words.
+ * The month the trend first shows: the rollup's first month is a baseline, the next 12 are the trend, and the last of
+ * them is read once it ends, so counting since Oct 2026 shows the trend from Nov 2027.
+ */
+export const trendFrom = (countingSince: string) => addMonths(countingSince, TREND_MONTHS + 1);
+
+/**
+ * Why the trend card shows no line yet. Until the trend has 12 months to read it says when counting began and the
+ * month the trend shows from (D6, 2026-10-21); after that, a thin role or place gets the floor in words.
  */
 export function trendWaitText(live: MarketLive, months: string[], where: string | null): string {
   if (months.length < TREND_MONTHS)
-    return live.countingSince ? `Counting since ${monthLabel(live.countingSince)}; the trend shows after 12 months.` : "Counting hasn't started yet; the trend shows after 12 months.";
+    return live.countingSince
+      ? `Counting since ${monthLabel(live.countingSince)}; the trend shows from ${monthLabel(trendFrom(live.countingSince))}.`
+      : "Counting hasn't started yet; the trend shows 13 months after it starts.";
   return `A trend needs at least ${MARKET_MIN_OPENINGS} new roles in each of the last 12 months${where ? ` in ${where}` : ""}.`;
 }
 
 /** The floor in words: example figures are a month's openings, live ones are open posts. */
 export const floorText = (live: boolean) =>
   live ? `We show a figure only when at least ${MARKET_MIN_OPENINGS} open roles back it.` : `We show a figure only when at least ${MARKET_MIN_OPENINGS} openings a month back it.`;
+
+/** The Market's parts that show: on a failed live read only Nearby lines (and the header's status line), never a figure. */
+export const MARKET_CARDS = ["map", "trend", "pay", "cities", "compare", "nearby"] as const;
+export type MarketCard = (typeof MARKET_CARDS)[number];
+export const marketCards = (live: MarketLive | null): readonly MarketCard[] => (live?.failed ? ["nearby"] : MARKET_CARDS);
 
 /** A count with its unit: "1,240 open now" on live counts, "1,240 a month" on example data. */
 export const openingsWords = (n: number, live: boolean) => `${count(n)} ${live ? "open now" : "a month"}`;

@@ -10,10 +10,13 @@ import {
   liveHeadline,
   liveMarket,
   liveSourceLine,
+  MARKET_CARDS,
+  marketCards,
   openingsWords,
   openRows,
   PAY_LATER,
   trendMonths,
+  trendFrom,
   trendRows,
   trendWaitText,
   UNDERCOUNT_NOTE,
@@ -36,6 +39,15 @@ describe("the live table", () => {
     expect(liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [] }).success).toBe(true);
     expect(liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [row, { ...row, openings: 4 }] }).success).toBe(false);
     expect(liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [{ ...row, state: "XX" }] }).success).toBe(false);
+  });
+
+  it("puts every city row in its city's state, as the rollup counts it", () => {
+    const row: MarketRow = { role: "data-analyst", state: "MH", city: "Pune", band: "3-5", openings: 3, payP25: null, payMedian: null, payP75: null, source: LIVE_SOURCE, month: "2026-10" };
+    expect(liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [row] }).success).toBe(true);
+    const wrong = liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [{ ...row, state: "KA" }] });
+    expect(wrong.success).toBe(false);
+    expect(JSON.stringify(wrong.error?.issues)).toMatch(/Pune is not a city of KA/);
+    expect(liveMarketTable.safeParse({ latestMonth: "2026-10", rows: [{ ...row, city: "Atlantis" }] }).success).toBe(false);
   });
 });
 
@@ -94,7 +106,16 @@ describe("the floor of 15 (D6)", () => {
     expect(market.cell("data-analyst", { kind: "india" }).enough).toBe(false);
     expect(market.topCities("data-analyst", { kind: "india" })).toEqual([]);
     expect(market.trend("data-analyst", { kind: "india" }).enough).toBe(false);
-    expect(market.live).toEqual({ asOf: null, countingSince: null });
+    expect(market.live).toEqual({ asOf: null, countingSince: null, failed: false });
+  });
+
+  it("shows only Nearby lines when the counts couldn't be read, never Not enough data", () => {
+    const { market } = liveMarket(liveNothing, { ...opts, failed: true });
+    expect(market.live?.failed).toBe(true);
+    expect(marketCards(market.live)).toEqual(["nearby"]);
+    expect(marketCards(liveMarket(liveNothing, opts).market.live)).toEqual(MARKET_CARDS);
+    expect(marketCards(null)).toEqual(MARKET_CARDS);
+    expect(MARKET_CARDS).toEqual(["map", "trend", "pay", "cities", "compare", "nearby"]);
   });
 });
 
@@ -148,7 +169,8 @@ describe("the trend's months", () => {
 });
 
 describe("the words on live counts", () => {
-  const live = { asOf: "2026-10-20", countingSince: "2026-10" };
+  const live = { asOf: "2026-10-20", countingSince: "2026-10", failed: false };
+  const none = { asOf: null, countingSince: null, failed: false };
 
   it("names the boards and the day in the header and the source lines, never example data", () => {
     expect(dayLabel("2026-10-20")).toBe("20 Oct 2026");
@@ -156,26 +178,33 @@ describe("the words on live counts", () => {
     expect(liveSourceLine("open", live)).toBe("Source: Open on public company job boards (Greenhouse, Lever, Ashby, SmartRecruiters) · 20 Oct 2026");
     expect(liveSourceLine("new", live)).toBe("Source: New each month on public company job boards (Greenhouse, Lever, Ashby, SmartRecruiters) · counting since Oct 2026");
     expect(liveSourceLine("pay", live)).toBe("Source: none yet");
-    expect(liveSourceLine("open", { asOf: null, countingSince: null })).toMatch(/not read yet$/);
-    expect(liveSourceLine("new", { asOf: null, countingSince: null })).toMatch(/not counted yet$/);
+    expect(liveSourceLine("open", none)).toMatch(/not read yet$/);
+    expect(liveSourceLine("new", none)).toMatch(/not counted yet$/);
     for (const words of [liveHeadline(live), liveSourceLine("open", live), liveSourceLine("new", live), UNDERCOUNT_NOTE]) expect(words).not.toMatch(/example/i);
     const { market } = liveMarket(liveFixture, opts);
     expect(isExampleSource(market.cell("data-analyst", { kind: "india" }))).toBe(false);
     expect(isExampleSource(market.cell("ui-ux-designer", { kind: "india" }))).toBe(false);
-    expect(market.live).toEqual({ asOf: "2026-10-21", countingSince: "2026-10" });
+    expect(market.live).toEqual({ asOf: "2026-10-21", countingSince: "2026-10", failed: false });
   });
 
-  it("says counting since the first month until the trend has 12 months, then the floor", () => {
-    expect(trendWaitText(live, [], null)).toBe("Counting since Oct 2026; the trend shows after 12 months.");
-    expect(trendWaitText(live, ["2026-11"], "Karnataka")).toBe("Counting since Oct 2026; the trend shows after 12 months.");
-    expect(trendWaitText({ asOf: null, countingSince: null }, [], null)).toBe("Counting hasn't started yet; the trend shows after 12 months.");
+  it("says counting since the first month and the month the trend shows from, then the floor", () => {
+    expect(trendWaitText(live, [], null)).toBe("Counting since Oct 2026; the trend shows from Nov 2027.");
+    expect(trendWaitText(live, ["2026-11"], "Karnataka")).toBe("Counting since Oct 2026; the trend shows from Nov 2027.");
+    expect(trendWaitText({ ...live, countingSince: "2026-12" }, [], null)).toBe("Counting since Dec 2026; the trend shows from Jan 2028.");
+    expect(trendWaitText(none, [], null)).toBe("Counting hasn't started yet; the trend shows 13 months after it starts.");
+    // The month it names is the first month the trend's 12 months are all over: counting since Oct 2026, the trend
+    // reads Nov 2026 to Oct 2027, so it shows from Nov 2027 and not before.
+    expect(trendFrom("2026-10")).toBe("2027-11");
+    expect(trendMonths("2026-10-01", new Date("2027-10-31T23:00:00Z"))).toHaveLength(11);
+    expect(trendMonths("2026-10-01", new Date("2027-11-01T00:00:00Z"))).toHaveLength(12);
     const twelve = trendMonths("2026-10-01", new Date("2027-11-03T00:00:00Z"));
     expect(trendWaitText(live, twelve, "Karnataka")).toBe("A trend needs at least 15 new roles in each of the last 12 months in Karnataka.");
   });
 
   it("carries the undercount note: company boards only, skewed to tech, portals not read", () => {
     expect(UNDERCOUNT_NOTE).toMatch(/undercount/);
-    expect(UNDERCOUNT_NOTE).toMatch(/Greenhouse, Lever, Ashby or SmartRecruiters/);
+    expect(UNDERCOUNT_NOTE).toMatch(/only the companies on our list of public Greenhouse, Lever, Ashby and SmartRecruiters boards, so they lean to/);
+    expect(UNDERCOUNT_NOTE).toMatch(/Remote posts count in India only\./);
     expect(UNDERCOUNT_NOTE).toMatch(/job portals/);
     expect(UNDERCOUNT_NOTE).toMatch(/first city it lists/);
   });
