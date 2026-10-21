@@ -141,7 +141,6 @@ describe("proxy", () => {
     refresh.mockImplementation(async () => ({ response: NextResponse.next(), signedIn: false }));
     expect(policy(await proxy(onPreview("careermetro-git-staging-career-metro.vercel.app")))).toContain("script-src 'self' 'unsafe-inline' https://vercel.live");
     expect(policy(await proxy(onPreview("careermetro.vercel.app")))).not.toContain("vercel.live");
-    expect(policy(await proxy(onPreview("CareerMetro.vercel.app")))).not.toContain("vercel.live");
     // A redirect gets it too.
     const redirect = await proxy(onPreview("careermetro-git-staging-career-metro.vercel.app", "/today"));
     expect(redirect.headers.get("location")).toContain("/sign-in");
@@ -152,6 +151,9 @@ describe("proxy", () => {
     const preview = { VERCEL_ENV: "preview", VERCEL_PROJECT_PRODUCTION_URL: "careermetro.vercel.app" };
     expect(vercelToolbarAllowed("careermetro-git-staging-career-metro.vercel.app", preview)).toBe(true);
     expect(vercelToolbarAllowed("careermetro.vercel.app", preview)).toBe(false);
+    // Case doesn't matter, on either side (a URL would lowercase the host before it got here, so this is called directly).
+    expect(vercelToolbarAllowed("CareerMetro.vercel.app", preview)).toBe(false);
+    expect(vercelToolbarAllowed("careermetro.vercel.app", { ...preview, VERCEL_PROJECT_PRODUCTION_URL: "CareerMetro.Vercel.App" })).toBe(false);
     expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "preview" })).toBe(true);
     expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "production" })).toBe(false);
     expect(vercelToolbarAllowed("localhost:3000", {})).toBe(false);

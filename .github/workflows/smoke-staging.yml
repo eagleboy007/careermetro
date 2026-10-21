@@ -32,15 +32,15 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Note the job's start
-        # Both scripts end their runs no later than 12 minutes before the job's limit, counted from here (T108, T116).
+        # Both scripts' deadlines fall no later than 12 minutes before the job's limit; their clean-up runs inside that margin.
         # SMOKE_JOB_LIMIT_MIN is the job's timeout-minutes above.
         run: |
           echo "JOB_STARTED=$(date +%s)" >> "$GITHUB_ENV"
           echo "SMOKE_JOB_LIMIT_MIN=45" >> "$GITHUB_ENV"
       # The set-up steps have their own caps (T116), so a hung install fails fast instead of eating the time both
-      # scripts need for their clean-up: at most 22 minutes in all, leaving the dry run its full deadline.
+      # scripts need for their clean-up: at most 21 minutes in all, leaving the dry run its full deadline.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        timeout-minutes: 3
+        timeout-minutes: 2
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         timeout-minutes: 3
         with:

@@ -12,7 +12,7 @@
 // The script has its own deadline (SMOKE_DRY_RUN_DEADLINE_MIN, default 12, and never later than 12 minutes before the
 // job's limit counted from JOB_STARTED, as in staging-screens.mjs), inside the workflow step's 15-minute cap: once it
 // passes, the step running gets 15 seconds under short waits and is then given up (T116), the rest are skipped and the
-// account is deleted on a fresh page within 90 seconds. On SIGINT, SIGTERM or SIGHUP (a cancel, or the step's cap) the
+// account is deleted in a fresh browser context within 90 seconds. On SIGINT, SIGTERM or SIGHUP (a cancel, or the step's cap) the
 // deletion runs too, then the script exits; GitHub gives a cancelled job only about 10 seconds, so the deadline is the
 // dependable path.
 // Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright@1.56.1`.
@@ -62,18 +62,26 @@ const browser = await chromium.launch({
 });
 // Reduced motion, as in e2e/walk.mjs. The bypass header goes on every request of this context, so requests to any other
 // host are refused below: the header never leaves for a third party (the Vercel toolbar, a font host).
-const ctx = await browser.newContext({
-  viewport: { width: 1280, height: 900 },
-  reducedMotion: "reduce",
-  acceptDownloads: true,
-  ...(BYPASS ? { extraHTTPHeaders: { "x-vercel-protection-bypass": BYPASS } } : {}),
-});
-await ctx.route(
-  (url) => url.origin !== ORIGIN,
-  (route) => route.abort("blockedbyclient"),
-);
-/** The page every step works on. Replaced by a fresh one when a signal comes while a step still holds it. */
-let p = await ctx.newPage();
+// The clean-up gets a context of its own the same way (cleanUp below).
+const newContext = async () => {
+  const c = await browser.newContext({
+    viewport: { width: 1280, height: 900 },
+    reducedMotion: "reduce",
+    acceptDownloads: true,
+    ...(BYPASS ? { extraHTTPHeaders: { "x-vercel-protection-bypass": BYPASS } } : {}),
+  });
+  await c.route(
+    (url) => url.origin !== ORIGIN,
+    (route) => route.abort("blockedbyclient"),
+  );
+  return c;
+};
+const ctx = await newContext();
+/**
+ * The page every flow step works on. Never replaced: the clean-up works in its own context and page (cleanUp), which a
+ * step given up at the deadline or a signal never references.
+ */
+const p = await ctx.newPage();
 p.setDefaultTimeout(30000);
 p.setDefaultNavigationTimeout(60000);
 
@@ -88,8 +96,11 @@ let blockedBy = "";
 let interrupted = false;
 /** The step running now, settled or not, so a signal can let it finish before the deletion starts. */
 let current = Promise.resolve();
-/** Its name, for the screenshot taken when it is given up. */
+/** Its name, for the screenshot taken when it is given up, and whether it is the clean-up's own step. */
 let currentName = "";
+let currentIsCleanup = false;
+/** Set once the step in flight has been given up: the flow page's helpers then stop at their next call (T116). */
+let givenUp = false;
 /**
  * The cap on any one wait once the deadline or a signal has come (0 before): the step in flight and the deletion must
  * fit in the minutes left inside the workflow step's cap.
@@ -104,9 +115,9 @@ const capPage = (pg) => {
   pg.setDefaultNavigationTimeout(CLEAN_ACTION_MS);
 };
 let n = 0;
-const path = () => {
+const path = (pg = p) => {
   try {
-    return new URL(p.url()).pathname;
+    return new URL(pg.url()).pathname;
   } catch {
     return "?";
   }
@@ -129,7 +140,7 @@ abandoned.catch(() => {});
  * One line per step. A failed `critical` step skips the rest of the flow, since each later step needs it. After a
  * signal or the deadline only `cleanup` steps run.
  */
-const step = async (name, fn, { critical = false, cleanup = false } = {}) => {
+const step = async (name, fn, { critical = false, cleanup = false, page = p } = {}) => {
   if (interrupted && !cleanup) {
     console.log("FAIL", name, "(skipped: the run was interrupted)");
     return false;
@@ -143,35 +154,45 @@ const step = async (name, fn, { critical = false, cleanup = false } = {}) => {
     const run = fn();
     current = run.catch(() => {});
     currentName = name;
+    currentIsCleanup = cleanup;
     await (cleanup ? run : Promise.race([run, abandoned]));
-    console.log("ok  ", name, "->", path());
+    console.log("ok  ", name, "->", path(page));
     return true;
   } catch (e) {
     failed++;
-    console.log("FAIL", name, "@", path(), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
+    console.log("FAIL", name, "@", path(page), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging dry run::${redact(name)}`);
     // A step that was given up had its screenshot taken before its page was closed (giveUpStep).
-    if (!e?.givenUp) await shoot(p, name);
+    if (!e?.givenUp) await shoot(page, name);
     if (critical) blockedBy = name;
     return false;
   }
 };
-// The same wait as the walk: the gaps and path pages stream in behind these words.
-const settled = () =>
-  p
+/** A flow helper called after its step was given up stops here, before it touches anything (T116). */
+const stillOurs = (pg) => {
+  if (givenUp && pg === p) throw Object.assign(new Error("the step was given up"), { givenUp: true });
+};
+// The same wait as the walk: the gaps and path pages stream in behind these words. A closed page is an error, so a step
+// given up (its page closed) stops instead of going on as if the page had settled.
+const settled = (pg = p) =>
+  pg
     .getByText(/Comparing your resume|Building your path|Loading…/)
     .first()
     .waitFor({ state: "detached", timeout: upTo(90000) })
-    .catch(() => {});
-const reload = async () => {
-  await p.reload();
-  await p.waitForLoadState("networkidle");
-  await settled();
+    .catch((e) => {
+      if (pg.isClosed()) throw e;
+    });
+const reload = async (pg = p) => {
+  stillOurs(pg);
+  await pg.reload();
+  await pg.waitForLoadState("networkidle");
+  await settled(pg);
 };
-const open = async (route) => {
-  await p.goto(BASE + route);
-  await p.waitForLoadState("networkidle");
-  await settled();
+const open = async (route, pg = p) => {
+  stillOurs(pg);
+  await pg.goto(BASE + route);
+  await pg.waitForLoadState("networkidle");
+  await settled(pg);
 };
 /** The app's own error line on the page (role=alert), for a failure message. App copy only, never resume text. */
 const alertText = async () => {
@@ -179,68 +200,72 @@ const alertText = async () => {
   return (await alert.count()) ? ` (page says: ${(await alert.innerText()).slice(0, 160)})` : "";
 };
 /** "Continue as test user" with the test name and email; returns the path it lands on. */
-const testSignIn = async () => {
-  await open("/sign-in");
-  const button = p.getByRole("button", { name: "Continue as test user", exact: true });
+const testSignIn = async (pg = p) => {
+  stillOurs(pg);
+  await open("/sign-in", pg);
+  const button = pg.getByRole("button", { name: "Continue as test user", exact: true });
   if (!(await button.count())) {
     throw new Error("no \"Continue as test user\" here: real sign-in is on, so run prod-smoke.md section 2 by hand instead");
   }
-  await p.getByRole("textbox", { name: "Name", exact: true }).fill(NAME);
-  await p.getByRole("textbox", { name: "Email", exact: true }).fill(EMAIL);
+  await pg.getByRole("textbox", { name: "Name", exact: true }).fill(NAME);
+  await pg.getByRole("textbox", { name: "Email", exact: true }).fill(EMAIL);
   await button.click();
-  await p.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: upTo(30000) });
-  await p.waitForLoadState("networkidle");
-  return path();
+  await pg.waitForURL((u) => !u.pathname.startsWith("/sign-in"), { timeout: upTo(30000) });
+  await pg.waitForLoadState("networkidle");
+  return path(pg);
 };
 
 let signedUp = false;
 let deleted = false;
 let goalNames = [];
 
-/** Section 8: Settings > Delete account > Delete, type DELETE, Delete my account. Signs in first when signed out. */
-const deleteAccount = async () => {
-  await open("/settings");
-  if (path().startsWith("/sign-in")) {
-    const landed = await testSignIn();
+/**
+ * Section 8: Settings > Delete account > Delete, type DELETE, Delete my account. Signs in first when signed out, as it
+ * always is in the clean-up's own context.
+ */
+const deleteAccount = async (pg = p) => {
+  await open("/settings", pg);
+  if (path(pg).startsWith("/sign-in")) {
+    const landed = await testSignIn(pg);
     // Still at the name step: Create my account never finished, so there is no account to delete.
     if (landed.startsWith("/sign-up/finish")) {
       deleted = true;
       return;
     }
     if (!landed.startsWith("/today")) throw new Error(`signing in to delete went to ${landed}`);
-    await open("/settings");
+    await open("/settings", pg);
   }
-  await p.getByRole("button", { name: "Delete", exact: true }).click();
-  await p.getByLabel("Type DELETE to confirm", { exact: true }).fill("DELETE");
-  await p.getByRole("button", { name: "Delete my account", exact: true }).click();
-  await p.waitForURL(/\/account\/deleted/, { timeout: upTo(30000) });
+  await pg.getByRole("button", { name: "Delete", exact: true }).click();
+  await pg.getByLabel("Type DELETE to confirm", { exact: true }).fill("DELETE");
+  await pg.getByRole("button", { name: "Delete my account", exact: true }).click();
+  await pg.waitForURL(/\/account\/deleted/, { timeout: upTo(30000) });
   deleted = true;
-  await p.goto(BASE + "/today");
-  await p.waitForURL(/\/sign-in/, { timeout: upTo(30000) });
+  await pg.goto(BASE + "/today");
+  await pg.waitForURL(/\/sign-in/, { timeout: upTo(30000) });
 };
 
 /**
  * The step in flight after the deadline or a signal (T116): it gets `graceMs` to finish under the short waits. If it
- * hasn't, its screenshot is taken, it is given up (its step() call fails at once, whatever it is waiting for), and the
- * deletion gets a fresh page (or the old one if none comes within CLEAN_ACTION_MS) while the old one is closed, which
- * ends its waits. Runs once; the clean-up waits for it. Never touches a page the clean-up is already using.
+ * hasn't, its screenshot is taken, it is given up (its step() call fails at once, whatever it is waiting for, and the
+ * flow helpers refuse to go on), and the flow page is closed, which ends its waits. The clean-up never waits for this
+ * and never shares that page: it has its own context. The clean-up's own step is never given up here; it has
+ * CLEAN_PART_MS. Runs once.
  */
 let givingUp = null;
 const giveUpStep = (why, graceMs) =>
   (givingUp ??= (async () => {
-    const done = await Promise.race([current.then(() => true), new Promise((r) => setTimeout(() => r(false), graceMs))]);
-    if (done || cleaning) {
+    // The step in flight now: a clean-up step started during the grace is never the one given up.
+    const flow = current;
+    const name = currentName;
+    const done = await Promise.race([flow.then(() => true), new Promise((r) => setTimeout(() => r(false), graceMs))]);
+    if (done || (currentIsCleanup && current === flow)) {
       if (!p.isClosed()) capPage(p);
       return;
     }
-    const old = p;
-    await shoot(old, `${currentName} (given up at the ${why})`);
+    await shoot(p, `${name} (given up at the ${why})`);
+    givenUp = true;
     abandon(Object.assign(new Error(`still running ${graceMs / 1000} seconds after the ${why}; given up so the test account can be deleted in time`), { givenUp: true }));
-    let timer;
-    const late = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error("no new page")), CLEAN_ACTION_MS)));
-    p = await Promise.race([ctx.newPage(), late]).catch(() => old).finally(() => clearTimeout(timer));
-    if (p !== old) await old.close().catch(() => {});
-    capPage(p);
+    await p.close().catch(() => {});
   })());
 
 /** At most `ms` for `run`: the clean-up must end inside the workflow step's cap whatever it waits for. */
@@ -252,27 +277,42 @@ const within = (run, ms, what) => {
 
 /**
  * After a failure, the deadline or a signal the test account still goes, so a preview never keeps a half-checked one.
- * Runs once: a signal during it waits for the same run. After the deadline or a signal the deletion has CLEAN_PART_MS.
+ * It runs in a fresh browser context with its own page (signing in again as the test user), so a step given up at the
+ * deadline, still running on the flow page, can never act on the deletion's page (T116). The new context and page get
+ * CLEAN_ACTION_MS together and the deletion CLEAN_PART_MS. Runs once: a signal during it waits for the same run.
  */
 let cleaning = null;
 const cleanUp = () =>
   (cleaning ??= (async () => {
-    if (givingUp) await givingUp;
     if (!signedUp || deleted) return;
     blockedBy = "";
-    const run = () => (interrupted ? within(deleteAccount(), CLEAN_PART_MS, "the account deletion") : deleteAccount());
-    await step("8 clean-up: delete the test account after the failure", run, { cleanup: true });
+    const name = "8 clean-up: delete the test account after the failure";
+    let cleanCtx = null;
+    let page = null;
+    try {
+      // One CLEAN_ACTION_MS for both, so the whole clean-up stays inside the step's cap.
+      const made = newContext().then(async (c) => ((cleanCtx = c), await c.newPage()));
+      page = await within(made, CLEAN_ACTION_MS, "a new browser context and page");
+    } catch (e) {
+      failed++;
+      console.log("FAIL", name, `(no fresh page: ${redact(e?.message ?? e)})`);
+      return;
+    }
+    capPage(page);
+    await step(name, () => within(deleteAccount(page), CLEAN_PART_MS, "the account deletion"), { cleanup: true, page });
+    await within(cleanCtx.close(), CLEAN_ACTION_MS, "closing the clean-up context").catch(() => {});
   })());
 
 // A cancel (SIGINT), a kill (SIGTERM, as at the step's cap) or a hang-up: the step running gets 3 seconds to finish,
-// then it is given up, the account is deleted on a fresh page and the script exits.
+// then it is given up, the account is deleted in a fresh context and the script exits. A signal during the deadline's
+// 15-second grace waits at most 3 seconds of it too, then goes on to the clean-up.
 for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
   process.once(signal, async () => {
     failed++;
     interrupted = true;
     console.log(`FAIL interrupted by ${signal}: deleting the test account before exiting`);
     capMs = CLEAN_ACTION_MS;
-    await giveUpStep(signal, 3000);
+    await Promise.race([giveUpStep(signal, 3000), new Promise((r) => setTimeout(r, 3000))]);
     await cleanUp().catch((e) => console.log(`FAIL clean-up: ${redact(e?.message ?? e)}`));
     await browser.close().catch(() => {});
     process.exit(1);
@@ -281,7 +321,8 @@ for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
 
 // The script's own deadline, 3 minutes inside the workflow step's 15-minute cap: once it passes, the step running gets
 // 15 seconds under short waits and is then given up, the rest are skipped, and the account is deleted within 90 seconds
-// on a fresh page, so it all ends about 2 minutes after the deadline. T116: as in staging-screens.mjs, it is also never
+// in a fresh browser context, so it all ends within about 2.5 minutes of the deadline (15 s grace, 15 s screenshot,
+// 15 s for the new context, 90 s deletion, 15 s to close it). T116: as in staging-screens.mjs, it is also never
 // later than 12 minutes before the job's own limit, counted from the job's start (JOB_STARTED, epoch seconds, and
 // SMOKE_JOB_LIMIT_MIN, both set in GITHUB_ENV by the workflow), with a floor of a minute.
 const DEADLINE_MIN = Number(process.env.SMOKE_DRY_RUN_DEADLINE_MIN) || 12;
