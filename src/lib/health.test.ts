@@ -1,6 +1,6 @@
 import { APIConnectionError, APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import { checkHealth, checkParse, deployEnv, missingSecrets, type HealthDeps } from "./health";
+import { checkHealth, checkParse, deployEnv, MARKET_CHECK_MS, missingSecrets, type HealthDeps } from "./health";
 
 const usage = { input_tokens: 8, output_tokens: 1 };
 
@@ -73,6 +73,48 @@ describe("checkHealth", () => {
   it("does not fail the check when logging the call fails", async () => {
     const d = deps({ record: vi.fn(async () => Promise.reject(new Error("insert failed"))) });
     expect(await checkHealth(d)).toEqual({ ok: true, database: "ok", claude: "ok" });
+  });
+});
+
+describe("checkHealth's market read (T122)", () => {
+  const pg = (code: string) => Object.assign(new Error("Failed query: select 1 from market_openings_monthly"), { cause: Object.assign(new Error("db"), { code }) });
+
+  it("says ok when the rollup table answers, and leaves the field out when there is no read to run", async () => {
+    expect(await checkHealth(deps({ readMarket: async () => {} }))).toEqual({ ok: true, database: "ok", market: "ok", claude: "ok" });
+    expect(await checkHealth(deps())).not.toHaveProperty("market");
+  });
+
+  it.each([
+    [pg("57014"), "timeout"],
+    [pg("55P03"), "timeout"],
+    [pg("42P01"), "missing"],
+    [pg("08006"), "error"],
+    [new Error("connection ended"), "error"],
+  ])("names %s in one word, and never fails the check", async (error, market) => {
+    const health = await checkHealth(deps({ readMarket: async () => Promise.reject(error) }));
+    expect(health).toEqual({ ok: true, database: "ok", market, claude: "ok" });
+    // Nothing of the error rides along.
+    expect(JSON.stringify(health)).not.toMatch(/Failed query|market_openings_monthly|57014|55P03|42P01/);
+  });
+
+  it("gives up on a read that never answers after MARKET_CHECK_MS and says timeout", async () => {
+    vi.useFakeTimers();
+    try {
+      const pending = checkHealth(deps({ readMarket: () => new Promise<void>(() => {}) }));
+      await vi.advanceTimersByTimeAsync(MARKET_CHECK_MS);
+      expect(await pending).toEqual({ ok: true, database: "ok", market: "timeout", claude: "ok" });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("isn't run when the database is down, and keeps a red schema red", async () => {
+    const readMarket = vi.fn(async () => {});
+    const down = await checkHealth(deps({ pingDb: async () => Promise.reject(new Error("down")), readMarket }));
+    expect(down).not.toHaveProperty("market");
+    expect(readMarket).not.toHaveBeenCalled();
+    const behind = await checkHealth(deps({ countMigrations: async () => ({ applied: 12, expected: 13 }), readMarket: async () => Promise.reject(pg("42P01")) }));
+    expect(behind).toMatchObject({ ok: false, schema: "behind", market: "missing" });
   });
 });
 

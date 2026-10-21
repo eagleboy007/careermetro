@@ -12,6 +12,9 @@ import { hasBearer } from "@/lib/secret";
 const CACHE_MS = 60_000;
 let cached: { at: number; result: Promise<Health> } | undefined;
 
+/** The market read's statement limit (checkHealth's own MARKET_CHECK_MS is a little longer). */
+const MARKET_STATEMENT_MS = 3000;
+
 /** A parse can take up to 100 s (PARSE_DEADLINE_MS), as in the upload route. */
 export const maxDuration = 120;
 
@@ -54,6 +57,17 @@ function runCheck(): Promise<Health> {
     countMigrations: async () => {
       const [row] = await getDb().execute<{ applied: number }>(sql`select count(*)::int as applied from drizzle.__drizzle_migrations`);
       return { applied: row?.applied ?? 0, expected: journal.entries.length };
+    },
+    // T122: the one table only /market reads. Its own read-only transaction, so SET LOCAL holds through the transaction
+    // pooler; a lock or a stuck read fails in 3 s (57014 or 55P03) and health says "timeout" instead of waiting.
+    readMarket: async () => {
+      await getDb().transaction(
+        async (tx) => {
+          await tx.execute(sql.raw(`set local statement_timeout = ${MARKET_STATEMENT_MS}`));
+          await tx.execute(sql`select 1 from market_openings_monthly limit 1`);
+        },
+        { accessMode: "read only" },
+      );
     },
     pingClaude: async () => {
       const client = new Anthropic({ timeout: 15_000, maxRetries: 0 });

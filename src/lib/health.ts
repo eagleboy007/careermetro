@@ -4,6 +4,7 @@ import type { AiCallRecord } from "@/lib/ai/log";
 import { describeAiError } from "@/lib/ai/errors";
 import { PARSE_MODEL, type ParseResult } from "@/lib/resume/parse";
 import { errorFields, logEvent } from "@/lib/log";
+import { failureReason, withinLimit } from "@/lib/time-limit";
 
 /** The ping uses the parse model, so it proves access to the model uploads need. */
 export const HEALTH_MODEL = PARSE_MODEL;
@@ -13,7 +14,23 @@ export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model
 /** claudeError names a failed ping (status, type and, for a rejected request, the API's reason). The ping's input is fixed text, so the reason can't hold user data. */
 /** `schema` is "behind" when the database is missing migrations this build expects (pages that use the new tables fail). */
 /** `missingSecrets` names (never shows) production secrets that aren't set; without them the cleanup job can't run. */
-export type Health = { ok: boolean; database: "ok" | "down"; schema?: "ok" | "behind"; claude: ClaudeStatus; claudeError?: string; missingSecrets?: string[]; env?: DeployEnv };
+/** `market` says whether the Market's rollup table answers a one-row read in time (T122); it never fails the check. */
+export type Health = {
+  ok: boolean;
+  database: "ok" | "down";
+  schema?: "ok" | "behind";
+  market?: MarketStatus;
+  claude: ClaudeStatus;
+  claudeError?: string;
+  missingSecrets?: string[];
+  env?: DeployEnv;
+};
+
+/** "timeout": the read hit its statement or lock limit, or MARKET_CHECK_MS; "missing": no such table (42P01). */
+export type MarketStatus = "ok" | "timeout" | "missing" | "error";
+
+/** The health check's own limit on the market read, above the route's 3 s statement limit (it covers a pool wait). */
+export const MARKET_CHECK_MS = 4000;
 
 /** Which kind of deployment answers (T107): not secret, and lets the smoke scripts refuse production under any alias. */
 export type DeployEnv = "production" | "preview" | "development";
@@ -40,6 +57,8 @@ export type HealthDeps = {
   record: (call: AiCallRecord) => Promise<void>;
   /** How many migrations the database has applied, and how many this build's journal lists. */
   countMigrations?: () => Promise<{ applied: number; expected: number }>;
+  /** A one-row read of market_openings_monthly under its own statement limit (T122): the table only /market reads. */
+  readMarket?: () => Promise<void>;
   /** From missingSecrets(). */
   missingSecrets?: string[];
   /** From deployEnv(), shown as `env`. */
@@ -49,13 +68,14 @@ export type HealthDeps = {
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
   const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
-  const schema = database === "ok" ? await checkSchema(deps) : undefined;
+  const [schema, market] = database === "ok" ? await Promise.all([checkSchema(deps), checkMarket(deps)]) : ([undefined, undefined] as const);
   const missing = deps.missingSecrets?.length ? deps.missingSecrets : undefined;
   if (missing) logEvent("error", "health_secrets_missing", { missing: missing.join(",") });
   return {
     ok: database === "ok" && schema !== "behind" && claude === "ok" && !missing,
     database,
     ...(schema ? { schema } : {}),
+    ...(market ? { market } : {}),
     claude,
     ...(error ? { claudeError: error } : {}),
     ...(missing ? { missingSecrets: missing } : {}),
@@ -73,6 +93,20 @@ async function checkSchema(deps: HealthDeps): Promise<Health["schema"]> {
     logEvent("error", "health_schema_failed", errorFields(error));
     // No migrations table (or schema) at all means nothing has been applied; any other failure gives no verdict.
     return MISSING_CODES.has(pgCode(error)) ? "behind" : undefined;
+  }
+}
+
+/** Never throws and never changes `ok`: it only names how the read went, in one word. */
+async function checkMarket(deps: HealthDeps): Promise<MarketStatus | undefined> {
+  if (!deps.readMarket) return undefined;
+  try {
+    await withinLimit(deps.readMarket(), MARKET_CHECK_MS);
+    return "ok";
+  } catch (error) {
+    const reason = failureReason(error);
+    logEvent("error", "health_market_failed", { ...errorFields(error), reason });
+    if (reason === "missing") return "missing";
+    return reason === "error" ? "error" : "timeout";
   }
 }
 
