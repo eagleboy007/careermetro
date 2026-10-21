@@ -57,7 +57,7 @@ Sources: pending-items.md item 15; handoff section 12 ("Junction and Network (la
 
 ### Parts (one PR each, in order)
 
-1. **Data and rules**: migration 0048, Zod schemas, stores, ranking, limits, export, account delete, tests. No screens. FR-57 in REQUIREMENTS.
+1. **Data and rules**: the next free migration number, Zod schemas, stores, ranking, limits, export, account delete, tests. No screens. FR-57 in REQUIREMENTS.
 2. **Moderation first**: Report on posts and comments, `/admin/reports` for posts and comments, hide and the removal record, the author's notice and appeal, the reporter's outcome notice, terms and privacy drafts. Still no public screens: the admin side ships before anyone can post.
 3. **Junction screens**: `/junction` with the composer, feeds, post detail, the rail, `/design` entries, the e2e walk. Behind `JUNCTION_ENABLED` (off in production).
 4. **Profile and notifications**: pins on Me and `/u/[handle]`, the "Junction posts" profile switch, the new notification kinds, the Today "On your line right now" tip (`src/lib/today/live.ts` says it waits for Junction).
@@ -152,9 +152,9 @@ These already drive `src/lib/admin/report-deadlines.ts` and the Grievances page.
 - Rule 3(1)(a) asks for the rules in English or a language in the Eighth Schedule, and the 2022 amendment speaks of the user's language **(lawyer to confirm whether Hindi is needed at launch)**.
 - `/privacy` gains: what Junction stores (posts, comments, votes, saves, reshares, pins, interests), who sees what (section 4), that votes and saves are private (only counts show), that removed content and its records are kept 180 days (or longer on an order), that reports and appeals are kept as grievance records, and what account delete does to posts.
 
-## 3. Data model (migration 0048, expand only)
+## 3. Data model (the next free migration number, expand only)
 
-The highest existing migration is `drizzle/0047_job_check_role_source.sql`, so this is **0048** (`drizzle/0048_junction.sql`). Every new table: `ENABLE ROW LEVEL SECURITY` with no policies (the server reads as the table owner; `src/db/rls.test.ts` checks it). Every foreign key gets an index (`src/db/indexes.test.ts`), except admin-id columns, which are listed there as before.
+This takes the next free migration number when it is built (0048 went to the Market rollup, `drizzle/0048_market_openings_monthly.sql`), as `drizzle/<number>_junction.sql`. Every new table: `ENABLE ROW LEVEL SECURITY` with no policies (the server reads as the table owner; `src/db/rls.test.ts` checks it). Every foreign key gets an index (`src/db/indexes.test.ts`), except admin-id columns, which are listed there as before.
 
 ### New tables
 
@@ -165,7 +165,7 @@ The highest existing migration is `drizzle/0047_job_check_role_source.sql`, so t
 - Seeded with about 40 common interests (AI, Data, Design, Marketing, Public speaking, Writing, Finance, Product, Photography and so on) so the picker isn't empty.
 
 **`user_interests`** (existing, extended)
-- Adds `interest_id uuid → interests (cascade)`, nullable in 0048. The migration inserts one `interests` row per distinct `name_key` (the earliest `name`), then fills `interest_id`. Index `interest_id`. The store writes both from part 1. A later contract migration makes it not null; the PK stays (`user_id`, `name_key`), so nothing that reads interests today changes.
+- Adds `interest_id uuid → interests (cascade)`, nullable in that migration. The migration inserts one `interests` row per distinct `name_key` (the earliest `name`), then fills `interest_id`. Index `interest_id`. The store writes both from part 1. A later contract migration makes it not null; the PK stays (`user_id`, `name_key`), so nothing that reads interests today changes.
 
 **`junction_posts`**
 - `id uuid pk`, `author_id uuid not null → users (cascade)`, `kind text` (`idea` | `question` | `win` | `resource`), `title text`, `body text`, `link_url text`, `link_host text`, `resource_id uuid → resources (set null)` (when the link matches the catalog), `route_slug text` (the author's role at posting time, or null), `goal_id uuid → user_goals (set null)` (the "where I am" line, null unless chosen).
@@ -208,7 +208,7 @@ The highest existing migration is `drizzle/0047_job_check_role_source.sql`, so t
 
 ### Changed tables and enums
 
-- `report_target` enum gains `post`, `comment`; `report_reason` gains `child_safety`, `hate`, `privacy`, `misleading`, `copyright`. `ALTER TYPE ... ADD VALUE` can't be used in the same transaction it is added in, so 0048 only adds the values and nothing in 0048 uses them (`src/db/migrations.test.ts` checks).
+- `report_target` enum gains `post`, `comment`; `report_reason` gains `child_safety`, `hate`, `privacy`, `misleading`, `copyright`. `ALTER TYPE ... ADD VALUE` can't be used in the same transaction it is added in, so that migration only adds the values and nothing in it uses them (`src/db/migrations.test.ts` checks).
 - `reports` gains `reference text` (the "R-4F2K" shown to the reporter; unique, made from the id) and `decide_by timestamptz` (stored at filing so an order's deadline and a later change to the rules don't move old reports). Index `decide_by where status = 'open'`.
 - `notifications` gains `post_id → junction_posts (cascade)`, `comment_id → junction_comments (cascade)`, `report_id → reports (cascade)`, `appeal_id → junction_appeals (cascade)`, each indexed; the kind and refs checks are rewritten for the new kinds (section 4).
 - `user_settings` gains `show_junction_posts boolean default true` (the profile part switch) and `junction_rules_version text` (the last accepted version; the consent row is the record).
@@ -319,7 +319,7 @@ Adds `junction`: your posts (with text, tags, link, counts, status, and hidden n
 
 ### Build order (small PRs, one review pass each, the full check before the single push)
 
-1. **0048 and rules** (part 1): migration, schemas and their tests first, stores, ranking, limits, export v33, delete, cleanup jobs, FR-57 in REQUIREMENTS, STATUS. No screens.
+1. **The migration and rules** (part 1): migration, schemas and their tests first, stores, ranking, limits, export v33, delete, cleanup jobs, FR-57 in REQUIREMENTS, STATUS. No screens.
 2. **Moderation** (part 2): report targets and reasons, `/admin/reports` rows, hide and removal records, appeals, intake form, reporter and author notifications, `/account/suspended` copy, terms and privacy drafts, Grievances page reasons. `/design` for the admin rows.
 3. **Screens** (part 3): `/junction`, `/junction/p/[id]`, `/junction/mine`, the composer and rail, `/design`, e2e steps 1 to 4 and 7 to 9.
 4. **Profile and bell** (part 4): pins on Me and `/u/[handle]`, the profile switch, comment notifications, the Today tip, e2e steps 5 and 6.

@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-21 (Re-test 34 fixes and T119 notes; Junction plan in docs/plans)
+Last updated: 2026-10-21 (Market trends PR 1: monthly openings rollup, migration 0048)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -66,6 +66,7 @@ Last updated: 2026-10-21 (Re-test 34 fixes and T119 notes; Junction plan in docs
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).
 - T119: the toolbar hosts are also withheld when `VERCEL_TARGET_ENV` is production (every production alias); the idle-instance summary loss and the 404 for missing static files without the CSP header are documented. Junction plan: docs/plans/junction-plan.md (plan only; decision 13 asks whether it is free or Elite).
+- Market trends PR 1 (`docs/plans/market-trends-plan.md`; Milin's D1 to D6 of 2026-10-21): migration 0048 `market_openings_monthly` (month × role × state or `IN` × city × band, new posts, open at the month's last run, the month's lowest board count; unique with nulls not distinct; RLS, no policies, no grant). The daily feed rewrites the current month after its posts (`writeRollup`, `src/lib/market/rollup.mjs`), and the month before when its last run's rollup failed, so counts outlive the 180-day purge; the cleanup keeps them. A post counts in its first listed city only (unlike accumulate for multi-city posts); `boards_ok` skips runs where every board failed; NULLS NOT DISTINCT needs Postgres 15+. No screen change. Next: PR 2 (Market reads live counts), PR 3 (retire the accumulate step). When the T89 feed role is made, it also needs select, insert, update and delete on this table and a policy.
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
 
 ## Next up
@@ -80,13 +81,13 @@ Open, all waiting on someone else:
 
 Handover (2026-10-19 21:53 UTC): "Development 4" took over from Development 3 and starts from this page.
 
-Also waiting on Milin: T89's feed database role, item 45 (AI first interview, not to be built until he answers), and D1 to D6 of `docs/plans/market-trends-plan.md`.
+Also waiting on Milin: T89's feed database role, and item 45 (AI first interview, not to be built until he answers). D1 to D6 of `docs/plans/market-trends-plan.md` are decided (2026-10-21).
 
 Waiting: the end of Milin's name-search message ("city or …"); photo and certificate upload (storage keys); Market live data (Data research); Find people DB-side ranking (1,000 opt-ins or `find_scan_capped`, `dev/companies-find-me-plan.md`).
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0048**. `EXPORT_VERSION` (32) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

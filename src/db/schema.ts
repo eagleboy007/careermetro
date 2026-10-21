@@ -13,6 +13,7 @@ import {
   smallint,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -1519,6 +1520,45 @@ export const jobFeedRuns = pgTable(
     postsClosed: integer("posts_closed").notNull().default(0),
   },
   (t) => [index("job_feed_runs_finished").on(t.finishedAt)],
+);
+
+/* Market trends (docs/plans/market-trends-plan.md, migration 0048) ------------------------------------------- */
+
+/**
+ * Openings a month for /market: one row per month × role × state (or "IN" for all of India) × city (null for the
+ * whole state) × experience band (null when the posts state no years). Written by the daily feed
+ * (scripts/departures/fetch-feeds.mjs, writeRollup) from job_posts as an idempotent upsert of the current month (and
+ * of the month before when its rollup missed its last run), so it outlives the 180-day purge of closed posts; the daily cleanup never deletes it. Counts only: no post, no
+ * person. `boards_ok` is the month's lowest count of boards read over its runs that read at least one board (runs
+ * where every board failed are left out). A post counts in its one stored city (the first it lists) and that state. No foreign keys (role slugs are content).
+ */
+export const marketOpeningsMonthly = pgTable(
+  "market_openings_monthly",
+  {
+    id: id(),
+    /** The first day of the month (UTC). */
+    month: date("month").notNull(),
+    roleSlug: text("role_slug").notNull(),
+    /** A state's two-letter code, or "IN" for all of India. */
+    state: text("state").notNull(),
+    city: text("city"),
+    band: text("band", { enum: ["0-2", "3-5", "6-10", "10+"] }),
+    /** Posts first seen in the month. */
+    newPosts: integer("new_posts").notNull().default(0),
+    /** Posts open at the month's last run (for the current month, the latest run so far). */
+    openAtEnd: integer("open_at_end").notNull().default(0),
+    boardsOk: integer("boards_ok").notNull().default(0),
+    computedAt: timestamp("computed_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique("market_openings_monthly_cell").on(t.month, t.roleSlug, t.state, t.city, t.band).nullsNotDistinct(),
+    index("market_openings_monthly_role_month").on(t.roleSlug, t.month),
+    check("market_openings_monthly_month", sql`extract(day from ${t.month}) = 1`),
+    check("market_openings_monthly_state", sql`${t.state} ~ '^[A-Z]{2}$'`),
+    check("market_openings_monthly_city", sql`${t.city} is null or (char_length(${t.city}) between 1 and 60 and ${t.state} <> 'IN')`),
+    check("market_openings_monthly_band", sql`${t.band} is null or ${t.band} in ('0-2', '3-5', '6-10', '10+')`),
+    check("market_openings_monthly_counts", sql`${t.newPosts} >= 0 and ${t.openAtEnd} >= 0 and ${t.boardsOk} >= 0`),
+  ],
 );
 
 /* Library part 2 (docs/plans/library-part-2-plan.md) -------------------------------------------------------- */

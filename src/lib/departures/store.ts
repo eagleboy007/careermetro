@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, desc, eq, gt, isNotNull, isNull, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, isNotNull, inArray, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobFeedRuns, jobPosts, jobSaves } from "@/db/schema";
@@ -280,17 +280,39 @@ export async function exportDepartures(userId: string, db: Db = getDb()): Promis
 }
 
 /**
- * The daily cleanup: posts closed more than 180 days ago go with their saves (on delete cascade), and feed runs older
- * than 90 days. Open posts are never deleted here.
+ * Limits the cleanup to one test's own rows, so test files sharing a database never delete each other's posts or runs
+ * (the feed tests keep 2024 posts and runs on purpose). Tests only: the daily cleanup passes none.
  */
-export async function clearOldDepartures(db: Db = getDb(), now = new Date()): Promise<{ closedPostsDeleted: number; feedRunsDeleted: number }> {
+export type DeparturesCleanupScope = { boardToken: string; runIds: string[] };
+
+/**
+ * The daily cleanup: posts closed more than 180 days ago go with their saves (on delete cascade), and feed runs older
+ * than 90 days. Open posts are never deleted here, and neither are the Market's monthly rollups
+ * (market_openings_monthly), which outlive the posts on purpose.
+ */
+export async function clearOldDepartures(
+  db: Db = getDb(),
+  now = new Date(),
+  scope?: DeparturesCleanupScope,
+): Promise<{ closedPostsDeleted: number; feedRunsDeleted: number }> {
   const posts = await db
     .delete(jobPosts)
-    .where(and(isNotNull(jobPosts.closedAt), lt(jobPosts.closedAt, new Date(now.getTime() - CLOSED_KEEP_DAYS * DAY))))
+    .where(
+      and(
+        isNotNull(jobPosts.closedAt),
+        lt(jobPosts.closedAt, new Date(now.getTime() - CLOSED_KEEP_DAYS * DAY)),
+        scope ? eq(jobPosts.boardToken, scope.boardToken) : undefined,
+      ),
+    )
     .returning({ id: jobPosts.id });
-  const runs = await db
-    .delete(jobFeedRuns)
-    .where(lt(jobFeedRuns.startedAt, new Date(now.getTime() - RUN_KEEP_DAYS * DAY)))
-    .returning({ id: jobFeedRuns.id });
+  const runs =
+    scope && scope.runIds.length === 0
+      ? []
+      : await db
+          .delete(jobFeedRuns)
+          .where(
+            and(lt(jobFeedRuns.startedAt, new Date(now.getTime() - RUN_KEEP_DAYS * DAY)), scope ? inArray(jobFeedRuns.id, scope.runIds) : undefined),
+          )
+          .returning({ id: jobFeedRuns.id });
   return { closedPostsDeleted: posts.length, feedRunsDeleted: runs.length };
 }

@@ -7,7 +7,7 @@ name: Departures feed
 #
 # The database link (the existing repository secret DATABASE_MIGRATION_URL, as the link check uses) reaches only the
 # two steps that need it, and only on the default branch:
-# - default branch with the secret: the boards are read and job_posts and job_feed_runs are written;
+# - default branch with the secret: the boards are read and job_posts, job_feed_runs and market_openings_monthly are written;
 # - a scheduled run without it (a fork, or before the secret is set): a notice, and nothing is fetched or written;
 # - a manual run without it, or on another branch: a dry run that reads the boards and prints the counts only.
 on:
