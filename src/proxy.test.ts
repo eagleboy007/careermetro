@@ -7,6 +7,7 @@ vi.mock("@/lib/auth/proxy-session", () => ({ refreshSession: refresh }));
 import { NextResponse } from "next/server";
 import { TEST_USER_COOKIE, testUserCookie } from "@/lib/auth/test-user";
 import { LOCAL_ADMIN_EMAIL } from "@/lib/admin/access";
+import { vercelToolbarAllowed } from "@/lib/csp";
 import { config, NOT_FOUND_PATH, proxy } from "./proxy";
 
 const req = (path: string, cookie?: string) => {
@@ -120,6 +121,40 @@ describe("proxy", () => {
     expect(other.cookies.get("sb-x-auth-token")?.value).toBe("new");
     refresh.mockResolvedValue({ response: refreshed, signedIn: true, identity: { subject: "s2", email: "Reviewer@Example.com", emailVerified: true, name: null, method: "google" } });
     expect(rewrittenTo(await proxy(req("/admin/companies")))).toBeNull();
+  });
+
+  it("sends the report-only CSP on every answer, with the Vercel Toolbar's hosts only on a preview's own hosts, decided per request (T118)", async () => {
+    const policy = (r: Response) => r.headers.get("Content-Security-Policy-Report-Only");
+    const onPreview = (host: string, path = "/start") => new NextRequest(new URL(path, `https://${host}`));
+    // Production: none, on any host, and on the plain 404 too.
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("TODAY_PREVIEW", "");
+    vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "careermetro.vercel.app");
+    for (const r of [await proxy(req("/start")), await proxy(req("/today"))]) {
+      expect(policy(r)).toContain("report-uri /api/csp-report");
+      expect(policy(r)).not.toContain("vercel.live");
+    }
+    // A preview build, read at request time: its own hosts get the toolbar, the production domain never does, so a
+    // preview build promoted to production serves production without them.
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    refresh.mockImplementation(async () => ({ response: NextResponse.next(), signedIn: false }));
+    expect(policy(await proxy(onPreview("careermetro-git-staging-career-metro.vercel.app")))).toContain("script-src 'self' 'unsafe-inline' https://vercel.live");
+    expect(policy(await proxy(onPreview("careermetro.vercel.app")))).not.toContain("vercel.live");
+    expect(policy(await proxy(onPreview("CareerMetro.vercel.app")))).not.toContain("vercel.live");
+    // A redirect gets it too.
+    const redirect = await proxy(onPreview("careermetro-git-staging-career-metro.vercel.app", "/today"));
+    expect(redirect.headers.get("location")).toContain("/sign-in");
+    expect(policy(redirect)).toContain("https://vercel.live");
+  });
+
+  it("allows the Vercel Toolbar only on preview deployments, never on the production domain", () => {
+    const preview = { VERCEL_ENV: "preview", VERCEL_PROJECT_PRODUCTION_URL: "careermetro.vercel.app" };
+    expect(vercelToolbarAllowed("careermetro-git-staging-career-metro.vercel.app", preview)).toBe(true);
+    expect(vercelToolbarAllowed("careermetro.vercel.app", preview)).toBe(false);
+    expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "preview" })).toBe(true);
+    expect(vercelToolbarAllowed("careermetro-abc123.vercel.app", { VERCEL_ENV: "production" })).toBe(false);
+    expect(vercelToolbarAllowed("localhost:3000", {})).toBe(false);
   });
 
   it("skips static files", () => {

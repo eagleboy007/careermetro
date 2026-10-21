@@ -186,6 +186,27 @@ describe.skipIf(!db)("job checks (database)", () => {
     expect((await createJobCheck(request(own.resumeId), own.owner, { db: db!, client, clientHash: address })).ok).toBe(true);
   });
 
+  it("refuses the sample once the owner's own resume has gaps, before any reservation or model call (T117)", async () => {
+    const me = await seed({ account: true });
+    const [sample] = await db!
+      .insert(schema.resumes)
+      .values({ userId: me.userId, anonymousSessionId: null, mimeType: SAMPLE_MIME, sizeBytes: 10, status: "parsed" })
+      .returning();
+    resumeIds.push(sample.id);
+    await db!.insert(schema.profiles).values({ resumeId: sample.id, version: 1, data: profile, confirmedByUser: true });
+    const { client, create } = jdClient();
+    const address = `${run}-t117`;
+    expect(await createJobCheck(request(sample.id), me.owner, { db: db!, client, clientHash: address })).toEqual({ ok: false, reason: "not_found" });
+    expect(create).not.toHaveBeenCalled();
+    expect(await checksOf(sample.id)).toHaveLength(0);
+    // No reservation was made for it.
+    expect(await db!.select().from(schema.aiCalls).where(sql`${schema.aiCalls.inputRefs}->>'resumeId' = ${sample.id}`)).toHaveLength(0);
+    // The owner's own resume still checks, and so does a sample whose owner has no gaps of their own yet.
+    expect((await createJobCheck(request(me.resumeId), me.owner, { db: db!, client, clientHash: address })).ok).toBe(true);
+    const anon = await seed({ sample: true });
+    expect((await createJobCheck(request(anon.resumeId), anon.owner, { db: db!, client, clientHash: address })).ok).toBe(true);
+  });
+
   it("pauses when the day's budget is spent, and saves nothing", async () => {
     vi.stubEnv("JOB_CHECK_DAILY_BUDGET_USD", "0");
     const me = await seed();

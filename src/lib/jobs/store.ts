@@ -12,6 +12,7 @@ import { matchProfile } from "@/lib/gaps/match";
 import { indiaToday, lockPerson } from "@/lib/goals/store";
 import { jobTextHashKey } from "@/lib/hash-keys";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
+import { hasOwnAnalysis } from "@/lib/resume/sample";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { MAX_CHOICE_GOALS, MAX_GAPS, type GapAnalysis, type JobCheckRequest } from "@/lib/schemas";
@@ -103,6 +104,9 @@ export async function createJobCheck(
     const resume = await getResumeForOwner(resumeId, owner, tx);
     if (!resume) return { ok: false, reason: "not_found" };
     if (!resume.confirmed) return { ok: false, reason: "not_confirmed" };
+    // Once the person's own resume has gaps, the sample is refused (T114), here too (T117), as analyse() in
+    // src/lib/gaps/store.ts does: before any reservation or model call, and as not found, like a resume that is gone.
+    if (resume.sample && (await hasOwnAnalysis(owner, tx))) return { ok: false, reason: "not_found" };
     const existing = await existingCheck(tx, resumeId, roleSlug, textHash);
     if (existing) return { ok: true, id: existing, reused: true };
     // A new check of the sample resume also counts against its address (T113): every new anonymous session brings a

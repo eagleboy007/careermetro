@@ -112,3 +112,39 @@ export function localGuard({ perKey, total, windowMs, maxKeys = 10_000 }: GuardO
     },
   };
 }
+
+/**
+ * The violations seen in this window, by directive and blocked host (T118), per server and in memory only. A report
+ * already logged this hour is not logged or counted again, so one address (or one noisy browser) repeating the same
+ * violation can't use up the shared log cap and hide reports from everyone else. Only pairs actually logged are
+ * remembered, so a pair refused by the line cap is still logged when there is room. Past `maxKeys` the oldest is
+ * forgotten first.
+ */
+export function firstPerWindow({ windowMs, maxKeys = 2_000 }: { windowMs: number; maxKeys?: number }) {
+  let windowStart = 0;
+  const seen = new Set<string>();
+  const roll = (now: number) => {
+    const start = Math.floor(now / windowMs) * windowMs;
+    if (start !== windowStart) {
+      windowStart = start;
+      seen.clear();
+    }
+  };
+  return {
+    /** Whether this key was remembered in the current window. */
+    has(key: string, now = Date.now()): boolean {
+      roll(now);
+      return seen.has(key);
+    },
+    /** Remembers the key for the rest of the window. */
+    add(key: string, now = Date.now()): void {
+      roll(now);
+      seen.delete(key);
+      while (seen.size >= maxKeys) seen.delete(seen.values().next().value!);
+      seen.add(key);
+    },
+  };
+}
+
+/** The key firstPerWindow() remembers a violation by. Neither part can hold a space. */
+export const violationKey = (v: CspViolation) => `${v.directive} ${v.blocked}`;

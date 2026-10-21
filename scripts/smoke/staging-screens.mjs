@@ -11,8 +11,9 @@
 // in a third browser: B sets up a company with the test-mode code, the admin verifies it, B posts a job, A opens Gaps
 // for the built resume and sends it with Express apply, B moves A to Offer and A sees it under Offers on Arrivals; A
 // reports the job and B reports a Library link, and the admin acknowledges and dismisses both (Reports, Library
-// review). Without it, or on any other host, those steps print "skipped: ...". A deployment whose /api/health says
-// "env": "production" (any alias of it) is refused at the first step, before any sign-in.
+// review). Without it, or on any other host, those steps print "skipped: ...". A deployment whose /api/health doesn't
+// say "env": "preview" (production on any alias, an older build with no env, an error page) is refused at the first
+// step, before any sign-in (T115).
 //
 //   BASE=https://careermetro-git-staging-career-metro.vercel.app BYPASS=... node scripts/smoke/staging-screens.mjs
 //
@@ -532,8 +533,15 @@ try {
     const body = await res.json().catch(() => ({}));
     // T107: production also answers on careermetro-<team>.vercel.app aliases that pass the preview host check, so the
     // deployment says what it is: on production nothing runs, the admin address is never typed, no test user is made.
-    if (body.env === "production") throw new Error(`refused: ${HOST} is production; this script only runs on previews`);
-    if (!body.env) console.log("note: /api/health names no env (an older build); the host check alone keeps production out");
+    // T115: fail closed. Only an answer that says "preview" goes on: a missing env (an older build, an error page, a
+    // body that isn't JSON) or any other value is refused, so nothing here ever runs on production by mistake.
+    if (body.env !== "preview") {
+      throw new Error(
+        body.env === "production"
+          ? `refused: ${HOST} is production; this script only runs on previews`
+          : `refused: /api/health on ${HOST} says env ${body.env === undefined ? "nothing" : JSON.stringify(String(body.env)).slice(0, 40)}, not "preview" (HTTP ${res.status()}); this script only runs where it says "preview"`,
+      );
+    }
     if (res.status() !== 200 || body.ok !== true) {
       throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
     }

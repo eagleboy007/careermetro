@@ -7,11 +7,14 @@
 // BASE (or the first argument) is the site; BYPASS, when set, is sent as the x-vercel-protection-bypass header to that
 // site only, and only when it is a careermetro-*.vercel.app host. The header, the test email and anything from the resume are never printed. One line per step, ok or FAIL;
 // the exit code is 1 on any failure. The test account is deleted at the end, as section 8 says, even after a failure.
-// A deployment whose /api/health says "env": "production" (any alias of it) is refused at the first step, before any
-// sign-in, as in staging-screens.mjs. The script has its own deadline (SMOKE_DRY_RUN_DEADLINE_MIN, default 12), inside
-// the workflow step's 15-minute cap: once it passes, the step running finishes under short waits, the rest are skipped
-// and the account is deleted. On SIGINT, SIGTERM or SIGHUP (a cancel, or the step's cap) the deletion runs too, then
-// the script exits; GitHub gives a cancelled job only about 10 seconds, so the deadline is the dependable path.
+// A deployment whose /api/health doesn't say "env": "preview" (production on any alias, an older build with no env, an
+// error page) is refused at the first step, before any sign-in, as in staging-screens.mjs (T115).
+// The script has its own deadline (SMOKE_DRY_RUN_DEADLINE_MIN, default 12, and never later than 12 minutes before the
+// job's limit counted from JOB_STARTED, as in staging-screens.mjs), inside the workflow step's 15-minute cap: once it
+// passes, the step running gets 15 seconds under short waits and is then given up (T116), the rest are skipped and the
+// account is deleted on a fresh page within 90 seconds. On SIGINT, SIGTERM or SIGHUP (a cancel, or the step's cap) the
+// deletion runs too, then the script exits; GitHub gives a cancelled job only about 10 seconds, so the deadline is the
+// dependable path.
 // Run by .github/workflows/smoke-staging.yml. Playwright isn't a project dependency: `npm install --no-save playwright@1.56.1`.
 import { randomBytes } from "node:crypto";
 import { mkdirSync } from "node:fs";
@@ -47,7 +50,7 @@ if (!/^https?:\/\//.test(BASE)) {
 }
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 
-// Refused before any sign-in when the deployment says it is production (T107), checked in step 1.1.
+// Refused before any sign-in unless the deployment says it is a preview (T107, T115), checked in step 1.1.
 const HOST = new URL(BASE).host;
 
 // Playwright's own signal handlers would close the browser before the account deletion below can use it.
@@ -85,12 +88,16 @@ let blockedBy = "";
 let interrupted = false;
 /** The step running now, settled or not, so a signal can let it finish before the deletion starts. */
 let current = Promise.resolve();
+/** Its name, for the screenshot taken when it is given up. */
+let currentName = "";
 /**
  * The cap on any one wait once the deadline or a signal has come (0 before): the step in flight and the deletion must
  * fit in the minutes left inside the workflow step's cap.
  */
 let capMs = 0;
 const CLEAN_ACTION_MS = 15000;
+/** The whole account deletion after the deadline or a signal, signing in again included (T116). */
+const CLEAN_PART_MS = 90000;
 const upTo = (ms) => (capMs ? Math.min(ms, capMs) : ms);
 const capPage = (pg) => {
   pg.setDefaultTimeout(CLEAN_ACTION_MS);
@@ -104,6 +111,20 @@ const path = () => {
     return "?";
   }
 };
+/** With SMOKE_SHOTS, a screenshot of a failed step. The email field and any line with the test address are masked; the resume is synthetic. */
+const shoot = async (pg, name) => {
+  if (!SHOTS || pg.isClosed()) return;
+  const mask = [pg.locator('input[type="email"], input[name="email"]'), pg.getByText(EMAIL_DOMAIN, { exact: false })];
+  await pg.screenshot({ path: `${SHOTS}/${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask, timeout: upTo(30000) }).catch(() => {});
+};
+/**
+ * Rejects the step in flight once the deadline or a signal gives up on it (giveUpStep below). Every flow step races
+ * against it (T116), so a long wait (a 90-second waitForURL, the 60-second health request) can't hold the account
+ * deletion past the workflow step's cap. Clean-up steps don't: they have their own limit, CLEAN_PART_MS.
+ */
+let abandon = () => {};
+const abandoned = new Promise((_, reject) => (abandon = reject));
+abandoned.catch(() => {});
 /**
  * One line per step. A failed `critical` step skips the rest of the flow, since each later step needs it. After a
  * signal or the deadline only `cleanup` steps run.
@@ -121,18 +142,16 @@ const step = async (name, fn, { critical = false, cleanup = false } = {}) => {
   try {
     const run = fn();
     current = run.catch(() => {});
-    await run;
+    currentName = name;
+    await (cleanup ? run : Promise.race([run, abandoned]));
     console.log("ok  ", name, "->", path());
     return true;
   } catch (e) {
     failed++;
     console.log("FAIL", name, "@", path(), redact(e?.message ?? e).split("\n")[0].slice(0, 300));
     if (process.env.GITHUB_ACTIONS) console.log(`::error title=Staging dry run::${redact(name)}`);
-    if (SHOTS && !p.isClosed()) {
-      // The email field and any line with the test address are masked; the resume is synthetic.
-      const mask = [p.locator('input[type="email"], input[name="email"]'), p.getByText(EMAIL_DOMAIN, { exact: false })];
-      await p.screenshot({ path: `${SHOTS}/${String(++n).padStart(2, "0")}-${name.replace(/[^a-z0-9.-]+/gi, "-")}.png`, fullPage: true, mask }).catch(() => {});
-    }
+    // A step that was given up had its screenshot taken before its page was closed (giveUpStep).
+    if (!e?.givenUp) await shoot(p, name);
     if (critical) blockedBy = name;
     return false;
   }
@@ -201,52 +220,88 @@ const deleteAccount = async () => {
 };
 
 /**
+ * The step in flight after the deadline or a signal (T116): it gets `graceMs` to finish under the short waits. If it
+ * hasn't, its screenshot is taken, it is given up (its step() call fails at once, whatever it is waiting for), and the
+ * deletion gets a fresh page (or the old one if none comes within CLEAN_ACTION_MS) while the old one is closed, which
+ * ends its waits. Runs once; the clean-up waits for it. Never touches a page the clean-up is already using.
+ */
+let givingUp = null;
+const giveUpStep = (why, graceMs) =>
+  (givingUp ??= (async () => {
+    const done = await Promise.race([current.then(() => true), new Promise((r) => setTimeout(() => r(false), graceMs))]);
+    if (done || cleaning) {
+      if (!p.isClosed()) capPage(p);
+      return;
+    }
+    const old = p;
+    await shoot(old, `${currentName} (given up at the ${why})`);
+    abandon(Object.assign(new Error(`still running ${graceMs / 1000} seconds after the ${why}; given up so the test account can be deleted in time`), { givenUp: true }));
+    let timer;
+    const late = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error("no new page")), CLEAN_ACTION_MS)));
+    p = await Promise.race([ctx.newPage(), late]).catch(() => old).finally(() => clearTimeout(timer));
+    if (p !== old) await old.close().catch(() => {});
+    capPage(p);
+  })());
+
+/** At most `ms` for `run`: the clean-up must end inside the workflow step's cap whatever it waits for. */
+const within = (run, ms, what) => {
+  let timer;
+  const limit = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error(`${what} took over ${ms / 1000} seconds`)), ms)));
+  return Promise.race([run, limit]).finally(() => clearTimeout(timer));
+};
+
+/**
  * After a failure, the deadline or a signal the test account still goes, so a preview never keeps a half-checked one.
- * Runs once: a signal during it waits for the same run.
+ * Runs once: a signal during it waits for the same run. After the deadline or a signal the deletion has CLEAN_PART_MS.
  */
 let cleaning = null;
 const cleanUp = () =>
   (cleaning ??= (async () => {
+    if (givingUp) await givingUp;
     if (!signedUp || deleted) return;
     blockedBy = "";
-    await step("8 clean-up: delete the test account after the failure", deleteAccount, { cleanup: true });
+    const run = () => (interrupted ? within(deleteAccount(), CLEAN_PART_MS, "the account deletion") : deleteAccount());
+    await step("8 clean-up: delete the test account after the failure", run, { cleanup: true });
   })());
 
 // A cancel (SIGINT), a kill (SIGTERM, as at the step's cap) or a hang-up: the step running gets 3 seconds to finish,
-// then the account is deleted on a fresh page and the script exits.
+// then it is given up, the account is deleted on a fresh page and the script exits.
 for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
   process.once(signal, async () => {
     failed++;
     interrupted = true;
     console.log(`FAIL interrupted by ${signal}: deleting the test account before exiting`);
     capMs = CLEAN_ACTION_MS;
-    const done = await Promise.race([current.then(() => true), new Promise((r) => setTimeout(() => r(false), 3000))]);
-    if (!done) {
-      // The step still holds the page: the deletion gets a fresh one (or the old one if none comes in time).
-      let timer;
-      const late = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error("no new page")), CLEAN_ACTION_MS)));
-      const old = p;
-      p = await Promise.race([ctx.newPage(), late]).catch(() => old).finally(() => clearTimeout(timer));
-      if (p !== old) await old.close().catch(() => {});
-    }
-    capPage(p);
+    await giveUpStep(signal, 3000);
     await cleanUp().catch((e) => console.log(`FAIL clean-up: ${redact(e?.message ?? e)}`));
     await browser.close().catch(() => {});
     process.exit(1);
   });
 }
 
-// The script's own deadline, 3 minutes inside the workflow step's 15-minute cap: once it passes, the step running
-// finishes under short waits, the rest are skipped and the account is deleted with time to spare.
+// The script's own deadline, 3 minutes inside the workflow step's 15-minute cap: once it passes, the step running gets
+// 15 seconds under short waits and is then given up, the rest are skipped, and the account is deleted within 90 seconds
+// on a fresh page, so it all ends about 2 minutes after the deadline. T116: as in staging-screens.mjs, it is also never
+// later than 12 minutes before the job's own limit, counted from the job's start (JOB_STARTED, epoch seconds, and
+// SMOKE_JOB_LIMIT_MIN, both set in GITHUB_ENV by the workflow), with a floor of a minute.
 const DEADLINE_MIN = Number(process.env.SMOKE_DRY_RUN_DEADLINE_MIN) || 12;
+const JOB_STARTED_MS = Number(process.env.JOB_STARTED) * 1000;
+const JOB_LIMIT_MIN = Number(process.env.SMOKE_JOB_LIMIT_MIN) || 45;
+const JOB_MARGIN_MIN = 12;
+const deadlineMs = Math.max(
+  60_000,
+  Math.min(DEADLINE_MIN * 60_000, JOB_STARTED_MS > 0 ? JOB_STARTED_MS + (JOB_LIMIT_MIN - JOB_MARGIN_MIN) * 60_000 - Date.now() : Infinity),
+);
+if (deadlineMs < DEADLINE_MIN * 60_000) console.log(`note: the deadline is ${Math.round(deadlineMs / 60_000)} minutes from now, ${JOB_MARGIN_MIN} before the job's ${JOB_LIMIT_MIN}-minute limit`);
 setTimeout(() => {
   if (interrupted) return;
   failed++;
   interrupted = true;
-  console.log(`FAIL deadline: ${DEADLINE_MIN} minutes passed; skipping the rest and deleting the test account`);
+  console.log(`FAIL deadline: ${Math.round(deadlineMs / 60_000)} minutes passed; skipping the rest and deleting the test account`);
   capMs = CLEAN_ACTION_MS;
   if (!p.isClosed()) capPage(p);
-}, DEADLINE_MIN * 60_000).unref();
+  giveUpStep("deadline", CLEAN_ACTION_MS);
+}, deadlineMs).unref();
 
 await step("1.1 health answers ok", async () => {
   const res = await ctx.request.get(BASE + "/api/health", { timeout: 60000 });
@@ -254,8 +309,15 @@ await step("1.1 health answers ok", async () => {
   const body = await res.json().catch(() => ({}));
   // T107: production also answers on careermetro-<team>.vercel.app aliases that pass the bypass host check, so the
   // deployment says what it is: on production nothing runs and no test user is made.
-  if (body.env === "production") throw new Error(`refused: ${HOST} is production; this script only runs on previews`);
-  if (!body.env) console.log("note: /api/health names no env (an older build); nothing else here keeps production out");
+  // T115: fail closed. Only an answer that says "preview" goes on: a missing env (an older build, an error page, a
+  // body that isn't JSON) or any other value is refused, so nothing here ever runs on production by mistake.
+  if (body.env !== "preview") {
+    throw new Error(
+      body.env === "production"
+        ? `refused: ${HOST} is production; this script only runs on previews`
+        : `refused: /api/health on ${HOST} says env ${body.env === undefined ? "nothing" : JSON.stringify(String(body.env)).slice(0, 40)}, not "preview" (HTTP ${res.status()}); this script only runs where it says "preview"`,
+    );
+  }
   if (res.status() !== 200 || body.ok !== true) {
     throw new Error(`HTTP ${res.status()}: database ${body.database}, schema ${body.schema}, claude ${body.claude}${body.missingSecrets ? `, missing ${body.missingSecrets}` : ""}`);
   }

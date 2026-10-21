@@ -1,5 +1,6 @@
-// The Content-Security-Policy CareerMetro sends, built for next.config.ts headers(). Kept free of `@/` imports and
-// server-only code so the config can import it. See docs/dev/security-sweep-2026-10-20.md, "script-src CSP".
+// The Content-Security-Policy CareerMetro sends: the enforced one from next.config.ts headers(), the report-only one
+// per request from src/proxy.ts (T118). Kept free of `@/` imports and server-only code so the config can import it.
+// See docs/dev/security-sweep-2026-10-20.md, "script-src CSP".
 
 /** Where browsers send violation reports (src/app/api/csp-report/route.ts). */
 export const CSP_REPORT_PATH = "/api/csp-report";
@@ -56,6 +57,21 @@ export function cspReportOnly(options: CspOptions = {}): string {
     ["report-to", [CSP_REPORT_GROUP]],
   ];
   return directives.map(([name, sources]) => `${name} ${sources.join(" ")}`).join("; ");
+}
+
+/**
+ * Whether a request may get the Vercel Toolbar's hosts (T118). Decided per request in src/proxy.ts, not at build time:
+ * next.config.ts headers are fixed when the build runs, so a preview build later promoted to production kept the
+ * preview policy. Two runtime checks, both of which a promoted deployment answers correctly:
+ * - VERCEL_ENV, read when the request comes, not when the build ran: only "preview" gets the hosts.
+ * - The request's host: never on the project's production domain (VERCEL_PROJECT_PRODUCTION_URL, such as
+ *   careermetro.vercel.app), whatever the deployment's own VERCEL_ENV says, so a promoted build serving production
+ *   traffic never gets them even if it still carries its preview environment.
+ */
+export function vercelToolbarAllowed(host: string, env: Record<string, string | undefined> = process.env): boolean {
+  if (env.VERCEL_ENV !== "preview") return false;
+  const production = (env.VERCEL_PROJECT_PRODUCTION_URL ?? "").trim().toLowerCase();
+  return !production || host.trim().toLowerCase() !== production;
 }
 
 /** The Reporting-Endpoints header that names the report-to group. */
