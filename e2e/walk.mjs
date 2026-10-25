@@ -355,6 +355,10 @@ await step("path", async () => {
   await settled();
   pathUrl = p.url().split("?")[0];
   if (await p.getByText(/Works toward: (Missing skill|Skill with weak evidence|Outdated skill)$/).count()) throw new Error("jargon status on a step");
+  // The way on is there before any step is done (Milin, 2026-10-25): signed out, it is the sign-in of the path's end.
+  await p.getByRole("heading", { name: "You don't need to finish every step first" }).waitFor({ timeout: 10000 });
+  await p.getByRole("link", { name: "Sign in to keep your path" }).waitFor();
+  if (await p.getByRole("heading", { name: "Every step done" }).count()) throw new Error("finished card before any step is done");
   await shot("path");
   await a11y("path");
 });
@@ -4069,6 +4073,9 @@ await step("path finished: says what's next, and the gaps stay open", async () =
   const before = await p.locator("article").allInnerTexts();
   await p.goto(pathUrl);
   await settled();
+  // Signed in, the way on leads to Today before the last step is done, and only one card says what's next.
+  await p.getByRole("link", { name: "Continue to Today" }).waitFor({ timeout: 10000 });
+  if (await p.getByRole("heading", { name: "Every step done" }).count()) throw new Error("finished card before every step is done");
   for (let left = await p.getByRole("button", { name: /^Mark done: / }).count(); left > 0; left--) {
     await Promise.all([
       p.waitForResponse((r) => r.request().method() === "PUT" && r.url().includes("/api/path-steps/")),
@@ -4079,6 +4086,7 @@ await step("path finished: says what's next, and the gaps stay open", async () =
   await settled();
   await p.getByRole("heading", { name: "Every step done" }).waitFor({ timeout: 10000 });
   await p.getByRole("link", { name: "Go to Today" }).waitFor();
+  if (await p.getByRole("link", { name: "Continue to Today" }).count()) throw new Error("two cards say what's next on a finished path");
   await shot("path-finished");
   await a11y("path-finished");
   await p.goto(gapsUrl);

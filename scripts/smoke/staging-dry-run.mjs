@@ -430,6 +430,8 @@ await step("4.2 Build my path: steps with free resources and Works toward", asyn
   await p.getByRole("heading", { name: "Your path", exact: true, level: 1 }).waitFor();
   await p.getByText(/^Works toward: /).first().waitFor();
   await p.getByText(/^\d+ of \d+ steps done$/).waitFor();
+  // The way on is there before any step is done (Milin, 2026-10-25).
+  await p.getByRole("link", { name: "Continue to Today", exact: true }).waitFor();
 }, { critical: true });
 
 await step("4.3 Mark done on the first step: 1 of N steps done after a reload", async () => {

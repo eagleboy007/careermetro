@@ -87,8 +87,8 @@ The file is `fixtures/resumes/priya-sharma.pdf` in the repo (an invented person;
 
 | # | Do this | You should see | If not, look at |
 |---|---|---|---|
-| 4.1 | Pick **Data Analyst** | `/resume/<id>/gaps/data-analyst`: the gaps with a status and an explanation each, and "Build my path" | Explanations in plain template wording are fine (budget or Claude down) but say so in the report. Errors: Vercel logs; the `gap_analyses` table should have a new row |
-| 4.2 | Press **Build my path** | "Your path": sized steps with free resources and hours, "Works toward: <skill> (<status>)", and "0 of N steps done" | Vercel logs; template wording is the fallback when Claude is down |
+| 4.1 | Pick **Data Analyst** | `/resume/<id>/gaps/data-analyst`: the gaps with a status and an explanation each, and "Build my path" near the end, after the screening and job checks and before the rating | Explanations in plain template wording are fine (budget or Claude down) but say so in the report. Errors: Vercel logs; the `gap_analyses` table should have a new row |
+| 4.2 | Press **Build my path** | "Your path": sized steps with free resources and hours, "Works toward: <skill> (<status>)", "0 of N steps done", and below the steps "Continue to Today", there before any step is done | Vercel logs; template wording is the fallback when Claude is down |
 | 4.3 | Press **Mark done** on the first step | "1 of N steps done" | The step stays undone after a reload: Vercel logs at that minute |
 
 ## 5. Today: the ride and goals (2 minutes)

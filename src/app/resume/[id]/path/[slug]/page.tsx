@@ -7,6 +7,7 @@ import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ApplyHere } from "@/components/route/apply-here";
 import { MarkDone } from "@/components/route/mark-done";
 import { PathEnd, type PathNext } from "@/components/route/path-end";
+import { PathOnward, type PathOnwardNext, type TodayRide } from "@/components/route/path-onward";
 import { PathSteps } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { SiteHeader } from "@/components/site/site-header";
@@ -14,6 +15,7 @@ import { roleProfiles } from "@/content";
 import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { inPathOrder } from "@/lib/jobs/groups";
 import { goalSkillsOf, ownJobCheck, type OwnJobCheck } from "@/lib/jobs/store";
 import type { Owner } from "@/lib/owner";
@@ -92,7 +94,14 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
 
   const { path } = result;
   const share = path.steps.length ? path.doneCount / path.steps.length : 0;
-  const plan: { own: OwnJobCheck; skills: string[] | null; chosen?: Record<string, string> } | null = owner ? await jobPlan(query.job, owner, id, slug) : null;
+  const here = `/resume/${id}/path/${slug}`;
+  const finished = path.steps.length > 0 && path.doneCount === path.steps.length;
+  // The way on stands below the steps until the last is done (then PathEnd); a path with no steps shows neither.
+  const [plan, onward]: [{ own: OwnJobCheck; skills: string[] | null; chosen?: Record<string, string> } | null, PathOnwardNext | null] =
+    await Promise.all([
+      owner ? jobPlan(query.job, owner, id, slug) : null,
+      path.steps.length > 0 && !finished ? onwardNext(account?.id ?? null, id, slug, here) : null,
+    ]);
   const jobQuery = plan ? `&job=${plan.own.view.id}` : "";
   return (
     <div className="flex flex-col gap-6">
@@ -159,13 +168,14 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
           action: <MarkDone stepId={s.id} title={s.skillName} done={Boolean(s.doneAt)} />,
         }))}
       />
-      {path.steps.length > 0 && path.doneCount === path.steps.length && <PathEnd next={pathNext(!!account, `/resume/${id}/path/${slug}`)} />}
       {path.deferredCount > 0 && (
         <p className="text-sm text-muted">
           {path.deferredCount === 1 ? "One more gap waits" : `${path.deferredCount} more gaps wait`} for after this path, to keep it
           short. More hours a week fits more in.
         </p>
       )}
+      {/* One way on, right after the steps: always there, so no one thinks every step comes first (Milin, 2026-10-25). */}
+      {finished ? <PathEnd next={pathNext(!!account, here)} /> : onward && <PathOnward next={onward} />}
       <p className="text-xs text-muted">All resources are free. Hours are a rough estimate.</p>
       <p className="text-sm text-muted">
         <Link href={`/resume/${id}/gaps/${slug}`} className="underline underline-offset-2 hover:text-ink">
@@ -176,11 +186,39 @@ async function Path({ params, searchParams }: PageProps<"/resume/[id]/path/[slug
   );
 }
 
-/** After the last step: Today for a signed-in person, else sign in where accounts are on, else the waitlist. */
+/**
+ * The way on (PathOnward, then PathEnd after the last step): Today for a signed-in person, else sign in where accounts
+ * are on, else the waitlist.
+ */
 function pathNext(signedIn: boolean, here: string): PathNext {
-  if (signedIn) return { kind: "today" };
+  return signedIn ? { kind: "today" } : signedOutNext(here);
+}
+
+/** Signed out: sign in where accounts are on, else the waitlist. */
+function signedOutNext(here: string): Exclude<PathNext, { kind: "today" }> {
   if (authConfig() || testSignInEnabled()) return { kind: "sign-in", href: `/sign-in?next=${encodeURIComponent(here)}` };
   return { kind: "waitlist" };
+}
+
+/**
+ * The way on before the last step is done. Signed in, it says whether Today and the Map show this path's goals: they
+ * follow the person's newest gap check, which may be for another role or resume.
+ */
+async function onwardNext(userId: string | null, resumeId: string, slug: string, here: string): Promise<PathOnwardNext> {
+  if (userId === null) return signedOutNext(here);
+  let ride: TodayRide;
+  try {
+    const current = await currentAnalysis(userId);
+    if (!current) ride = { is: "unknown" };
+    else if (current.resumeId === resumeId && current.result.roleSlug === slug) ride = { is: "this-path" };
+    // The same role on a newer resume: naming the role would read as if it were this path's check.
+    else if (current.result.roleSlug === slug) ride = { is: "newer-resume" };
+    else ride = { is: "other-check", roleTitle: roleProfiles.find((r) => r.slug === current.result.roleSlug)?.title ?? null };
+  } catch (error) {
+    logEvent("error", "path_today_check_failed", { route: "/resume/[id]/path/[slug]", role: slug, ...errorFields(error) });
+    ride = { is: "unknown" };
+  }
+  return { kind: "today", ride };
 }
 
 function TryAgain() {

@@ -122,13 +122,6 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
       ) : null}
       <CoveredSkills title="Skills your resume already shows" skills={met} />
       <CoveredSkills title="Good to have" skills={analysis.niceToHave} />
-      {analysis.gaps.length > 0 && (
-        <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
-          <p className="font-semibold">Work on these gaps step by step</p>
-          <p className="text-sm text-muted">A short plan with free resources and a small task to prove each skill, sized to your week.</p>
-          <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
-        </section>
-      )}
       {screening && <ScreeningCheck view={screening} resumeId={id} />}
       <JobCheck
         resumeId={id}
@@ -142,6 +135,14 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         <p role="alert" className="rounded-lg border border-line bg-surface p-4 text-sm">
           We couldn&apos;t load your saved job checks just now. Please reload the page in a minute.
         </p>
+      )}
+      {/* The next step comes last, after the checks below the gaps, so the page ends on it (Milin, 2026-10-25). */}
+      {analysis.gaps.length > 0 && (
+        <section className="flex flex-col items-start gap-3 rounded-lg border border-line bg-surface p-4">
+          <p className="font-semibold">Work on these gaps step by step</p>
+          <p className="text-sm text-muted">A short plan with free resources and a small task to prove each skill, sized to your week.</p>
+          <ButtonLink href={`/resume/${id}/path/${role.slug}`}>Build my path</ButtonLink>
+        </section>
       )}
       <GapRating analysisId={analysisId} initial={rating} />
       <p className="text-sm text-muted">
