@@ -10,6 +10,8 @@ Every confirmed design, plan and decision is kept here as a file, so nothing has
 | `REQUIREMENTS.md` | Product requirements, the contract for all work |
 | `staging.md` | Where to see the newest build (staging address, test sign-in, Vercel login) |
 | `local-setup.md` | Run the whole app on your own computer (local database, test sign-in, stand-in Claude API) |
+| `stack.md` | Every outside service and tool we use: plan, limits that bite at scale, how to upgrade or switch |
+| `secrets.md` | Keys register: every setting and secret by name and where it lives (never a value) |
 
 ## Design
 
