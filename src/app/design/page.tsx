@@ -12,6 +12,7 @@ import { StandInNote, UnknownSkills } from "@/components/gaps/stand-in-note";
 import { GapCard } from "@/components/route/gap-card";
 import { MarkDone } from "@/components/route/mark-done";
 import { PathEnd } from "@/components/route/path-end";
+import { PathOnward } from "@/components/route/path-onward";
 import { PathSteps, type PathStepView } from "@/components/route/path-steps";
 import { ProgressRoute } from "@/components/route/progress-route";
 import { ReadinessCard } from "@/components/route/readiness-card";
@@ -1372,6 +1373,13 @@ export default function DesignPage() {
           <h2 className="text-xl font-semibold">Your path</h2>
           <ProgressRoute current="Path" />
           <PathSteps steps={exampleSteps} />
+          <p className="text-sm text-muted">
+            Below the steps, the way on is always there: signed in, Continue to Today (first when Today shows this path, then when it
+            follows another gap check); signed out, sign in or the waitlist. Once every step is done, the card after these takes its place.
+          </p>
+          <PathOnward next={{ kind: "today", ride: { is: "this-path" } }} />
+          <PathOnward next={{ kind: "today", ride: { is: "other-check", roleTitle: "Data Engineer" } }} />
+          <PathOnward next={{ kind: "sign-in", href: "/sign-in" }} />
           <PathEnd next={{ kind: "waitlist" }} />
         </div>
       </section>
