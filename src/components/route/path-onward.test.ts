@@ -12,16 +12,20 @@ describe("the path's way on", () => {
     const html = renderToStaticMarkup(createElement(PathOnward, { next: { kind: "today", ride: { is: "this-path" } } }));
     expect(html).toContain(CONTINUE_LABEL);
     expect(html).toContain('href="/today"');
-    expect(html).toContain("stay on your Today ride and your Map");
+    expect(html).toContain("Your goals for this role stay on Today and your Map");
+    expect(html).not.toMatch(/courses|practice tasks/);
     expect(html).toContain("finish every step first");
   });
 
   it("never claims this path is on Today when Today follows another gap check", () => {
     const text = todayText({ is: "other-check", roleTitle: "Data Engineer" });
     expect(text).toContain("for Data Engineer, not this path");
-    expect(text).not.toContain("stay on your Today ride");
+    expect(text).not.toContain("stay on Today");
+    const newer = todayText({ is: "newer-resume" });
+    expect(newer).toContain("the gap check for your newer resume, not this one");
+    expect(newer).not.toContain("stay on Today");
     expect(todayText({ is: "other-check", roleTitle: null })).toContain("latest gap check, not this path");
-    expect(todayText({ is: "unknown" })).not.toMatch(/this path|these steps/);
+    expect(todayText({ is: "unknown" })).toBe("Today shows your goals and daily ride.");
   });
 
   it("signed out, keeps the sign-in and waitlist words of the path's end", () => {
@@ -40,7 +44,9 @@ describe("the path's way on", () => {
     const onward = page.indexOf("<PathOnward");
     expect(steps).toBeGreaterThan(0);
     expect(onward).toBeGreaterThan(steps);
-    expect(page).toContain("onward ? <PathOnward next={onward} /> : <PathEnd");
+    expect(page).toContain("{finished ? <PathEnd next={pathNext(!!account, here)} /> : onward && <PathOnward next={onward} />}");
+    // No way on for a path with no steps.
+    expect(page).toContain("path.steps.length > 0 && !finished ? onwardNext(");
   });
 });
 
@@ -48,10 +54,15 @@ describe("the path's way on", () => {
 describe("the Gaps page's order", () => {
   it("puts Build my path after the screening and job checks and before the rating", () => {
     const page = readFileSync(join(__dirname, "../../app/resume/[id]/gaps/[slug]/page.tsx"), "utf8");
-    const build = page.indexOf("Build my path");
-    expect(build).toBeGreaterThan(page.indexOf("<ScreeningCheck"));
-    expect(build).toBeGreaterThan(page.indexOf("<JobCheck"));
-    expect(build).toBeLessThan(page.indexOf("<GapRating"));
-    expect(build).toBeLessThan(page.indexOf("Pick another role"));
+    const at = (marker: string) => {
+      const i = page.indexOf(marker);
+      expect(i, marker).toBeGreaterThan(0);
+      return i;
+    };
+    const build = at("Build my path");
+    expect(build).toBeGreaterThan(at("<ScreeningCheck"));
+    expect(build).toBeGreaterThan(at("<JobCheck"));
+    expect(build).toBeLessThan(at("<GapRating"));
+    expect(build).toBeLessThan(at("Pick another role"));
   });
 });

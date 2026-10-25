@@ -5,10 +5,14 @@ import { NEXT, type PathNext } from "./path-end";
 
 /**
  * What Today shows for a signed-in person, compared with this path: Today and the Map follow their newest gap check
- * (`currentAnalysis`), so this path's goals are there only when that check is for this resume and role. `unknown`
- * when the check couldn't be read.
+ * (`currentAnalysis`), so this path's goals are there only when that check is for this resume and role;
+ * `newer-resume` is the same role checked on a newer resume. `unknown` when there is no check or it couldn't be read.
  */
-export type TodayRide = { is: "this-path" } | { is: "other-check"; roleTitle: string | null } | { is: "unknown" };
+export type TodayRide =
+  | { is: "this-path" }
+  | { is: "newer-resume" }
+  | { is: "other-check"; roleTitle: string | null }
+  | { is: "unknown" };
 
 /** The way on from a path that isn't finished: Today when signed in, else sign in (when accounts are on) or the waitlist. */
 export type PathOnwardNext = { kind: "today"; ride: TodayRide } | Exclude<PathNext, { kind: "today" }>;
@@ -18,12 +22,13 @@ export const CONTINUE_LABEL = "Continue to Today";
 /** The line under the heading for a signed-in person, true to what Today and the Map show. */
 export function todayText(ride: TodayRide): string {
   if (ride.is === "this-path") {
-    return "Your goals for this role stay on your Today ride and your Map, with your path's free courses and practice tasks, so you can tick them off as you go.";
+    return "Your goals for this role stay on Today and your Map, so you can tick them off as you go.";
   }
+  if (ride.is === "newer-resume") return "Today and your Map follow the gap check for your newer resume, not this one. You can still mark steps done here.";
   if (ride.is === "other-check") {
     return `Today and your Map follow your latest gap check${ride.roleTitle ? `, for ${ride.roleTitle}` : ""}, not this path. You can still mark steps done here.`;
   }
-  return "Your goals and your daily ride are on Today.";
+  return "Today shows your goals and daily ride.";
 }
 
 /**
