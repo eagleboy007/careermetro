@@ -1375,11 +1375,11 @@ export default function DesignPage() {
           <PathSteps steps={exampleSteps} />
           <p className="text-sm text-muted">
             Below the steps, the way on is always there: signed in, Continue to Today (when Today shows this path, when it follows
-            the same role on a newer resume, and when it follows another role); signed out, sign in or the waitlist. Once every step
+            the same role on another resume, and when it follows another role); signed out, sign in or the waitlist. Once every step
             is done, the card after these takes its place.
           </p>
           <PathOnward next={{ kind: "today", ride: { is: "this-path" } }} />
-          <PathOnward next={{ kind: "today", ride: { is: "newer-resume" } }} />
+          <PathOnward next={{ kind: "today", ride: { is: "other-resume" } }} />
           <PathOnward next={{ kind: "today", ride: { is: "other-check", roleTitle: "Data Engineer" } }} />
           <PathOnward next={{ kind: "sign-in", href: "/sign-in" }} />
           <PathEnd next={{ kind: "waitlist" }} />

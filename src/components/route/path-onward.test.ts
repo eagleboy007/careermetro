@@ -21,8 +21,8 @@ describe("the path's way on", () => {
     const text = todayText({ is: "other-check", roleTitle: "Data Engineer" });
     expect(text).toContain("for Data Engineer, not this path");
     expect(text).not.toContain("stay on Today");
-    const newer = todayText({ is: "newer-resume" });
-    expect(newer).toContain("the gap check for your newer resume, not this one");
+    const newer = todayText({ is: "other-resume" });
+    expect(newer).toContain("the gap check on another of your resumes, not this one");
     expect(newer).not.toContain("stay on Today");
     expect(todayText({ is: "other-check", roleTitle: null })).toContain("latest gap check, not this path");
     expect(todayText({ is: "unknown" })).toBe("Today shows your goals and daily ride.");

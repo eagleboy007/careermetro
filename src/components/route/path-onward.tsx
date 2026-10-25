@@ -6,11 +6,11 @@ import { NEXT, type PathNext } from "./path-end";
 /**
  * What Today shows for a signed-in person, compared with this path: Today and the Map follow their newest gap check
  * (`currentAnalysis`), so this path's goals are there only when that check is for this resume and role;
- * `newer-resume` is the same role checked on a newer resume. `unknown` when there is no check or it couldn't be read.
+ * `other-resume` is the same role checked on another resume (the newest gap check, not necessarily the newest resume; T123). `unknown` when there is no check or it couldn't be read.
  */
 export type TodayRide =
   | { is: "this-path" }
-  | { is: "newer-resume" }
+  | { is: "other-resume" }
   | { is: "other-check"; roleTitle: string | null }
   | { is: "unknown" };
 
@@ -24,7 +24,7 @@ export function todayText(ride: TodayRide): string {
   if (ride.is === "this-path") {
     return "Your goals for this role stay on Today and your Map, so you can tick them off as you go.";
   }
-  if (ride.is === "newer-resume") return "Today and your Map follow the gap check for your newer resume, not this one. You can still mark steps done here.";
+  if (ride.is === "other-resume") return "Today and your Map follow the gap check on another of your resumes, not this one. You can still mark steps done here.";
   if (ride.is === "other-check") {
     return `Today and your Map follow your latest gap check${ride.roleTitle ? `, for ${ride.roleTitle}` : ""}, not this path. You can still mark steps done here.`;
   }
