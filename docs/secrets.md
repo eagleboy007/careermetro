@@ -6,6 +6,8 @@ Keep the values in a password manager, for example 1Password, Bitwarden or Apple
 
 Last checked against the code: 2026-10-19 (main, after PR 160). The full comments for every setting are in `.env.example`, and the key rules are in `src/lib/hash-keys.ts`. The master copy is this file, `docs/secrets.md`; the copy in the project files follows it.
 
+Which services these keys belong to, their plans and limits, and how to upgrade or switch each one: `docs/stack.md`.
+
 ## 1. Settings in the app's hosting (today: Vercel > Project > Settings > Environment Variables)
 
 Set each one for both **Production** and **Preview**, unless the table says otherwise. A change only takes effect after a **redeploy**. `/api/health` names (never shows) any of CRON_SECRET, NAME_HASH_KEY and IP_HASH_KEY that production is missing.

@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-21 (T122: /market's live reads bounded)
+Last updated: 2026-10-25 (docs/stack.md: technology register)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -114,6 +114,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 
 ## Known issues and blockers
 
+- Plans and accounts to fix before real users (Supabase backups on Pro, Vercel Pro for commercial use, a private repository, domain lock, Resend limits, AI daily caps), each Milin's call: `docs/stack.md` (2026-10-25).
 - **Keys register:** `docs/secrets.md` names every key and secret, where it lives and whether it can be changed, with no values. Its section 4 is what a move away from Vercel involves, including setting `VERCEL_ENV=production` on the new host.
 - **Milin, keys** (never ask for them in chat): sign-in keys (`docs/plans/signin-setup-steps.md`), `NAME_HASH_KEY` and the other H7 hash keys, the Vercel preview bypass secret for Testing, storage keys, and the email sender.
 - **Milin, decisions:** the cut-off end of his name-search message; the employer-hiding rule (Project manager's call, reversible); the Junction intermediary compliance question (pending item 15); formal approval of the Market design.
