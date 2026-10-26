@@ -108,10 +108,18 @@ async function placesFor(userId: string | null): Promise<string[]> {
   }
 }
 
-/** The feed's roles and the person's own lists. If they can't be read, Departures shows its other roles and says nothing is listed yet. */
-async function liveBoard(userId: string, roleSlug: string | null): Promise<DeparturesBoard> {
+/** The City filter's `?city=`: a place name as the feed stores one, or none. */
+function cityFilter(value: string | string[] | undefined): string | null {
+  return typeof value === "string" && value.trim() && value.length <= 60 ? value.trim() : null;
+}
+
+/**
+ * The feed's roles and the person's own lists, with the newest roles in their places and the picked city read too. If
+ * they can't be read, Departures shows its other roles and says nothing is listed yet.
+ */
+async function liveBoard(userId: string, roleSlug: string | null, city: string | null): Promise<DeparturesBoard> {
   try {
-    return await departuresBoard(userId, { roleSlug });
+    return await departuresBoard(userId, { roleSlug, placesOf: userId, city });
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_board_failed", errorFields(error));
@@ -144,6 +152,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const params = await searchParams;
   const state = params.state;
   const role = roleFilter(params.role);
+  const city = cityFilter(params.city);
   await connection();
   const account = await currentAccount();
   // Signed in, the roles are the daily feed's (docs/plans/departures-live-plan.md), with fit read on the server against
@@ -155,7 +164,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const [analysis, read, board, fit, states, criteria, elite, search, places] = await Promise.all([
     analysisRead,
     postedRead,
-    account ? liveBoard(account.id, role?.slug ?? null) : null,
+    account ? liveBoard(account.id, role?.slug ?? null, city) : null,
     analysisRead.then((a) => (account && a ? fitFor(account.id, a) : null)),
     postedRead.then((jobs) => postedStates(account?.id ?? null, jobs ?? [])),
     postedRead.then((jobs) => postedCriteria(account?.id ?? null, jobs ?? [])),
@@ -219,6 +228,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
             demo={!account}
             prep={prep}
             places={places}
+            initialCity={city}
             searchSwitch={<JobSearchSwitch />}
           />
         </div>

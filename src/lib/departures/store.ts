@@ -1,8 +1,8 @@
 import "server-only";
-import { and, asc, count, desc, eq, gt, isNotNull, inArray, isNull, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, isNotNull, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
-import { jobFeedRuns, jobPosts, jobSaves } from "@/db/schema";
+import { jobFeedRuns, jobPosts, jobSaves, userSettings } from "@/db/schema";
 import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { goalsOf, provedSkills } from "@/lib/goals/store";
 import { getResumeForOwner } from "@/lib/resume/store";
@@ -83,16 +83,47 @@ export async function lastFeedRun(db: Db | Tx = getDb()): Promise<Date | null> {
   return row?.finishedAt ?? null;
 }
 
+/** Newest first by posted time (first seen when the post gives none), then id: the order the open posts index keeps. */
+const newestFirst = (a: StoredPost, b: StoredPost) =>
+  (b.postedAt ?? b.firstSeenAt).getTime() - (a.postedAt ?? a.firstSeenAt).getTime() || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+
 /**
  * The board for one person (null: signed out, open posts only). Read only. `roleSlug` (the page's `?role=`) keeps only
  * posts read as that role, the person's own included. Saved and Applied are read as at most `ownMax` each, newest
  * change first (OWN_LIST_MAX, which the writes keep them under).
+ *
+ * Besides the newest `limit` open posts anywhere, the newest `limit` in the places `placesOf`'s person is open to work
+ * in (Settings, FR-55) and in `city` (the City filter, `?city=`) are read too, so a city's roles aren't only those
+ * that happen to be among the newest in India.
  */
 export async function departuresBoard(
   userId: string | null,
-  { db = getDb(), limit = PAGE_POSTS, roleSlug = null, ownMax = OWN_LIST_MAX }: { db?: Db; limit?: number; roleSlug?: string | null; ownMax?: number } = {},
+  {
+    db = getDb(),
+    limit = PAGE_POSTS,
+    roleSlug = null,
+    ownMax = OWN_LIST_MAX,
+    placesOf = null,
+    city = null,
+  }: { db?: Db; limit?: number; roleSlug?: string | null; ownMax?: number; placesOf?: string | null; city?: string | null } = {},
 ): Promise<DeparturesBoard> {
   const ofRole = roleSlug ? eq(jobPosts.roleSlug, roleSlug) : undefined;
+  const near =
+    placesOf || city
+      ? or(
+          placesOf
+            ? sql`${jobPosts.city} = any(coalesce((select ${userSettings.openToWorkIn} from ${userSettings} where ${userSettings.userId} = ${placesOf}), '{}'::text[]))`
+            : undefined,
+          city ? eq(jobPosts.city, city) : undefined,
+        )
+      : undefined;
+  const openOf = (where: ReturnType<typeof and>) =>
+    db
+      .select(postColumns)
+      .from(jobPosts)
+      .where(and(isNull(jobPosts.closedAt), ofRole, where))
+      .orderBy(desc(sql`coalesce(${jobPosts.postedAt}, ${jobPosts.firstSeenAt})`), asc(jobPosts.id))
+      .limit(limit);
   const ownOf = (id: string, list: "saved" | "applied") =>
     db
       .select({ ...postColumns, savedAt: jobSaves.savedAt, stage: jobSaves.stage })
@@ -107,16 +138,13 @@ export async function departuresBoard(
     const [saved, applied] = await Promise.all([ownOf(id, "saved"), ownOf(id, "applied")]);
     return { saved, applied };
   };
-  const [open, own, updatedAt] = await Promise.all([
-    db
-      .select(postColumns)
-      .from(jobPosts)
-      .where(and(isNull(jobPosts.closedAt), ofRole))
-      .orderBy(desc(sql`coalesce(${jobPosts.postedAt}, ${jobPosts.firstSeenAt})`), asc(jobPosts.id))
-      .limit(limit),
+  const [newest, nearby, own, updatedAt] = await Promise.all([
+    openOf(undefined),
+    near ? openOf(near) : Promise.resolve([]),
     userId ? ownRows(userId) : Promise.resolve({ saved: [] as OwnRow[], applied: [] as OwnRow[] }),
     lastFeedRun(db),
   ]);
+  const open = [...new Map([...newest, ...nearby].map((p) => [p.id, p])).values()].sort(newestFirst);
   const ids = new Set(open.map((p) => p.id));
   const posts: StoredPost[] = [...open];
   for (const r of [...own.saved, ...own.applied]) {

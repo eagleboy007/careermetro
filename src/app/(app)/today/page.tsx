@@ -81,10 +81,10 @@ async function Today({ searchParams }: PageProps<"/today">) {
   // The current analysis is read once here and handed to the ride and the board (docs/plans/perf-pass.md).
   const [analysis, searching] = await Promise.all([currentAnalysis(account.id), jobSearchForRequest(account.id).then((s) => s.on)]);
   const name = firstName(account.name);
-  // The board's open posts need nothing of the person's, so their read starts now, beside the ride; fit is read after
+  // The board's open posts need only the person's places (Settings), so their read starts now, beside the ride; fit is read after
   // the ride, which syncs the goals fit reads. Job search off, or No resume, reads none. The no-op catch only keeps a
   // failed read from counting as unhandled while the ride runs: the board below still sees the failure.
-  const openPosts = analysis && searching ? departuresBoard(null) : null;
+  const openPosts = analysis && searching ? departuresBoard(null, { placesOf: account.id }) : null;
   if (openPosts) openPosts.catch(() => {});
   const [found, sample] = await Promise.all([todayStateFor(account.id, now, undefined, analysis), analysis ? isSampleResumeId(analysis.resumeId) : false]);
   // The live cards never fail the page: a card that can't be read is left out (the board shows it has no rows).

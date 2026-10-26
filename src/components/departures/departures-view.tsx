@@ -63,6 +63,7 @@ export function DeparturesView({
   searchSwitch = null,
   updated = null,
   places = [],
+  initialCity = null,
   actions,
 }: {
   jobs: JobPost[];
@@ -78,9 +79,12 @@ export function DeparturesView({
   updated?: string | null;
   /** "Open to work in" from Settings (FR-55), read on the server: with any, the City filter opens on "Your places". */
   places?: string[];
+  /** The page's `?city=`: the City filter the board was read for, picked when Departures opens. */
+  initialCity?: string | null;
   actions?: DepartureActions;
 }) {
-  const [filters, setFilters] = useState<DepartureFilters>(() => startFilters(places));
+  const router = useRouter();
+  const [filters, setFilters] = useState<DepartureFilters>(() => (initialCity ? { ...startFilters([]), city: initialCity } : startFilters(places)));
   const [saved, setSaved] = useState(() => new Set(initialSaved));
   const [applied, setApplied] = useState(() => new Map(initialApplied));
   const [selected, setSelected] = useState<string | null>(() => jobs[0]?.id ?? null);
@@ -182,7 +186,16 @@ export function DeparturesView({
             value={filters.yourPlaces ? null : filters.city}
             options={cities}
             any="Any city"
-            onPick={(city) => set({ city, yourPlaces: false })}
+            onPick={(city) => {
+              set({ city, yourPlaces: false });
+              // The server reads the newest roles in the picked city too, so the list isn't only the newest in India.
+              // Signed out, the example roles are all there is.
+              if (!actions) return;
+              const url = new URL(window.location.href);
+              if (city) url.searchParams.set("city", city);
+              else url.searchParams.delete("city");
+              router.replace(`${url.pathname}${url.search}`, { scroll: false });
+            }}
             first={
               places.length > 0 ? (
                 <button type="button" aria-pressed={filters.yourPlaces} className={pill} onClick={() => set({ yourPlaces: true, city: null })}>
