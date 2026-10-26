@@ -391,6 +391,37 @@ export function placeLine(/** @type {{ city: string }[]} */ rows, top = 10) {
   return `Posts kept by place: ${shown.join(", ")}.`;
 }
 
+/**
+ * The kept posts by live role, for the summary: "Posts kept by role: data-analyst 40, cloud-engineer 12, no role 300."
+ * Role slugs only, never post text.
+ */
+export function roleLine(/** @type {{ roleSlug: string | null }[]} */ rows) {
+  if (!rows.length) return null;
+  const count = new Map();
+  for (const r of rows) if (r.roleSlug) count.set(r.roleSlug, (count.get(r.roleSlug) ?? 0) + 1);
+  const shown = [...count.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).map(([slug, n]) => `${slug} ${n}`);
+  const none = rows.length - [...count.values()].reduce((sum, n) => sum + n, 0);
+  if (none) shown.push(`no role ${none}`);
+  return `Posts kept by role: ${shown.join(", ")}.`;
+}
+
+/**
+ * The commonest titles that read as no live role, so the title rules can be checked against what boards really post.
+ * A title is cut at its first " - ", ",", "(", "|" or "/" and lowercased, so "Sales Manager - Pune" and "sales manager"
+ * count together. Company job titles are public; nothing a person wrote is printed.
+ */
+export function unmatchedLine(/** @type {{ title: string; roleSlug: string | null }[]} */ rows, top = 25) {
+  const count = new Map();
+  for (const r of rows) {
+    if (r.roleSlug) continue;
+    const key = r.title.split(/ [-–] |[,(|/]/)[0].toLowerCase().replace(/\s+/g, " ").trim();
+    if (key) count.set(key, (count.get(key) ?? 0) + 1);
+  }
+  if (!count.size) return null;
+  const shown = [...count.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).slice(0, top).map(([t, n]) => `${t} ${n}`);
+  return `Commonest titles with no role: ${shown.join("; ")}.`;
+}
+
 export async function main() {
   const startedAt = new Date();
   const boards = loadBoards();
@@ -417,6 +448,7 @@ export async function main() {
   const lines = summaryLines(results, rows.length, written, rollup);
   const places = placeLine(rows);
   if (places) lines.splice(1, 0, places);
+  for (const line of [roleLine(rows), unmatchedLine(rows)]) if (line) lines.push(line);
   for (const line of lines) console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Departures feed\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`);
   // Every board failing is the runner's network or an outage, not the boards: fail so someone looks.

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, ROLE_TITLES, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
@@ -151,11 +151,28 @@ describe("feed rules", () => {
       ["AWS Architect", "cloud-engineer"],
       ["DevOps Engineer", "devops-engineer"],
       ["Data Scientist", "data-scientist"],
+      ["AWS Solutions Architect", "cloud-engineer"],
+      ["ML Ops Engineer", "ml-engineer"],
+      ["Security Engineer, Cloud", "cloud-security-engineer"],
+      ["Security Engineer", "cyber-security-analyst"],
+      ["GRC Manager", "grc-manager"],
+      ["GRC Analyst", "information-security-analyst"],
+      ["SOC Lead", "soc-lead"],
+      ["SOC Analyst L2", "soc-analyst-l2"],
+      ["Senior Software Engineer", "senior-backend-engineer"],
+      ["Senior Java Developer", "senior-backend-engineer"],
+      ["Java Developer", "java-backend-developer"],
+      ["Senior Frontend Engineer", "frontend-developer"],
+      ["Senior Android Developer", "android-developer"],
+      ["Engineering Manager", "engineering-manager"],
+      ["Senior Data Scientist", "senior-data-scientist"],
+      ["Software Engineer", null],
+      ["Staff Software Engineer", null],
       ["Graphic Designer", null],
     ];
     expect(cases.map(([title]) => [title, classify(title)])).toEqual(cases);
-    const roles = new Set(readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")));
-    expect(Object.keys(ROLE_TITLES).filter((slug) => !roles.has(slug))).toEqual([]);
+    const roles = readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")).sort();
+    expect(Object.keys(ROLE_TITLES).sort()).toEqual(roles);
   });
 
   it("keeps India and remote-India posts only, with an https link and a title", () => {
@@ -595,5 +612,27 @@ describe("placeLine", () => {
   it("folds cities past the top ones into one count, and says nothing with no posts", () => {
     expect(placeLine([{ city: "Mumbai" }, { city: "Pune" }, { city: "Pune" }], 1)).toBe("Posts kept by place: Pune 2, other cities 1.");
     expect(placeLine([])).toBeNull();
+  });
+});
+
+describe("roleLine and unmatchedLine", () => {
+  const rows = [
+    { title: "Data Analyst", roleSlug: "data-analyst" },
+    { title: "Cloud Engineer", roleSlug: "cloud-engineer" },
+    { title: "Data Analyst II", roleSlug: "data-analyst" },
+    { title: "Sales Manager - Pune", roleSlug: null },
+    { title: "Sales  manager (Mumbai)", roleSlug: null },
+    { title: "Accountant", roleSlug: null },
+  ];
+
+  it("counts kept posts by role, most first, then those with no role", () => {
+    expect(roleLine(rows)).toBe("Posts kept by role: data-analyst 2, cloud-engineer 1, no role 3.");
+    expect(roleLine([])).toBeNull();
+  });
+
+  it("lists the commonest unmatched titles, folding place and case", () => {
+    expect(unmatchedLine(rows)).toBe("Commonest titles with no role: sales manager 2; accountant 1.");
+    expect(unmatchedLine(rows, 1)).toBe("Commonest titles with no role: sales manager 2.");
+    expect(unmatchedLine(rows.slice(0, 3))).toBeNull();
   });
 });
