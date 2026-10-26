@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, desc, eq, gt, isNotNull, inArray, isNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, isNotNull, inArray, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobFeedRuns, jobPosts, jobSaves, userSettings } from "@/db/schema";
@@ -108,15 +108,11 @@ export async function departuresBoard(
   }: { db?: Db; limit?: number; roleSlug?: string | null; ownMax?: number; placesOf?: string | null; city?: string | null } = {},
 ): Promise<DeparturesBoard> {
   const ofRole = roleSlug ? eq(jobPosts.roleSlug, roleSlug) : undefined;
-  const near =
-    placesOf || city
-      ? or(
-          placesOf
-            ? sql`${jobPosts.city} = any(coalesce((select ${userSettings.openToWorkIn} from ${userSettings} where ${userSettings.userId} = ${placesOf}), '{}'::text[]))`
-            : undefined,
-          city ? eq(jobPosts.city, city) : undefined,
-        )
-      : undefined;
+  // Each read on its own, so the picked city's roles don't crowd out the places' (or the other way).
+  const inPlaces = placesOf
+    ? sql`${jobPosts.city} = any(coalesce((select ${userSettings.openToWorkIn} from ${userSettings} where ${userSettings.userId} = ${placesOf}), '{}'::text[]))`
+    : undefined;
+  const inCity = city ? eq(jobPosts.city, city) : undefined;
   const openOf = (where: ReturnType<typeof and>) =>
     db
       .select(postColumns)
@@ -138,13 +134,14 @@ export async function departuresBoard(
     const [saved, applied] = await Promise.all([ownOf(id, "saved"), ownOf(id, "applied")]);
     return { saved, applied };
   };
-  const [newest, nearby, own, updatedAt] = await Promise.all([
+  const [newest, placed, picked, own, updatedAt] = await Promise.all([
     openOf(undefined),
-    near ? openOf(near) : Promise.resolve([]),
+    inPlaces ? openOf(inPlaces) : Promise.resolve([]),
+    inCity ? openOf(inCity) : Promise.resolve([]),
     userId ? ownRows(userId) : Promise.resolve({ saved: [] as OwnRow[], applied: [] as OwnRow[] }),
     lastFeedRun(db),
   ]);
-  const open = [...new Map([...newest, ...nearby].map((p) => [p.id, p])).values()].sort(newestFirst);
+  const open = [...new Map([...newest, ...placed, ...picked].map((p) => [p.id, p])).values()].sort(newestFirst);
   const ids = new Set(open.map((p) => p.id));
   const posts: StoredPost[] = [...open];
   for (const r of [...own.saved, ...own.applied]) {
