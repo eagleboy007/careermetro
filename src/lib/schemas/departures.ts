@@ -12,7 +12,8 @@ export const workType = z.enum(WORK_TYPES);
 
 export const jobPost = z.object({
   id: z.string().min(1).max(60),
-  role: z.string().min(1).max(120),
+  /** As long as the feed stores a title (jobPostRow in src/lib/departures/feed-schemas.mjs), or a live post can't show. */
+  role: z.string().min(1).max(160),
   company: z.string().min(1).max(80),
   /** A city, or "Remote". */
   city: z.string().min(1).max(60),

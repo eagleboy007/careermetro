@@ -3,7 +3,8 @@ import { and, asc, count, desc, eq, gte, isNull, sql, type SQL } from "drizzle-o
 import { getDb } from "@/db";
 import { blocks, connections, userGoals, userSettings, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
-import { postView } from "@/lib/departures/fit";
+import { postViews } from "@/lib/departures/fit";
+import { logEvent } from "@/lib/log";
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
 import type { CurrentAnalysis } from "@/lib/gaps/current";
 import { onYourLine, type Departure, type OnYourLine } from "@/lib/schemas";
@@ -34,8 +35,10 @@ export async function todayBoardFor(
 ): Promise<Departure[]> {
   const [board, ctx] = await Promise.all([posts ?? departuresBoard(null, { db }), fitContextFor(userId, db, analysis)]);
   if (!ctx) return [];
+  const { jobs, skipped } = postViews(board.posts, ctx, now);
+  if (skipped.length) logEvent("error", "today_posts_skipped", { count: skipped.length, first: skipped[0] });
   return boardRows(
-    board.posts.map((p) => postView(p, ctx, now)),
+    jobs,
     (slug) => roleTitles.get(slug) ?? null,
   );
 }

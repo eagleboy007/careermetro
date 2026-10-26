@@ -789,7 +789,7 @@ function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: ()
           {s.fromGoal && <span className="text-[0.7rem] text-muted">{own ? "From your goal" : "From a goal"}</span>}
         </span>
       </summary>
-      <dl className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] gap-x-2.5 gap-y-1 text-[0.8rem] [&>dt]:font-mono [&>dt]:text-[0.66rem] [&>dt]:uppercase [&>dt]:tracking-[0.05em] [&>dt]:text-muted">
+      <dl className="mt-2 flex flex-col gap-0.5 text-[0.8rem] [&>dd]:break-words [&>dt:not(:first-child)]:mt-1.5 [&>dt]:font-mono [&>dt]:text-[0.66rem] [&>dt]:uppercase [&>dt]:tracking-[0.05em] [&>dt]:text-muted">
         <dt>Situation</dt>
         <dd>{s.situation}</dd>
         <dt>Task</dt>
