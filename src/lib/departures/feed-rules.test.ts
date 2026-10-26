@@ -175,7 +175,10 @@ describe("feed rules", () => {
       ["Senior Software Engineer, Android", "android-developer"],
       ["Senior Software Engineer - Frontend", "frontend-developer"],
       ["Security Operations Center Lead", "soc-lead"],
-      ["Software Engineer", null],
+      ["Software Engineer", "software-engineer"],
+      ["SDE II", "software-engineer"],
+      ["Embedded Software Engineer", null],
+      ["Software Engineer in Test", null],
       ["Staff Software Engineer", null],
       ["Graphic Designer", null],
     ];

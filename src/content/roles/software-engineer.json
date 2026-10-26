@@ -1,0 +1,163 @@
+{
+  "slug": "software-engineer",
+  "title": "Software Engineer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write clean, working code in one main language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Solve array, string, tree and graph problems and explain time and space cost",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Model a problem with classes, interfaces and clear responsibilities",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write joins and aggregations and design simple tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches, pull requests and code review",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build or call REST APIs and handle errors",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write unit tests for your own code",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Break an unclear problem into steps and debug methodically",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain your code and decisions in reviews and stand-ups",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Use the command line to run, debug and read logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run a service in a container",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy or use services on one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Deploy or use services on one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "gcp",
+      "importance": "nice_to_have",
+      "expectation": "Deploy or use services on one major cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Sketch a simple service design and its trade-offs (expected from about 3 years)",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Understand how code is built, tested and released in a pipeline",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "main-language",
+      "label": "A main programming language (Java, Python, C++, JavaScript, Go or C#)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "optional",
+      "why": "Shows you can build and deploy on a cloud"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from the role's common requirements in public India job descriptions titled 'Software Engineer' (46 untagged India posts in the live job feed, 2026-10-26) and Indian campus and lateral hiring practice (Data researcher, 2026-10-26). postingShare to be computed by Development from those posts. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-26"
+}

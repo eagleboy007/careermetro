@@ -21,6 +21,7 @@
         "qa-automation-engineer",
         "soc-analyst-l2",
         "soc-lead",
+        "software-engineer",
         "ui-ux-designer"
       ],
       "skillId": "communication",
@@ -67,6 +68,7 @@
         "qa-automation-engineer",
         "soc-analyst-l2",
         "soc-lead",
+        "software-engineer",
         "ui-ux-designer"
       ],
       "skillId": "communication",
@@ -117,6 +119,7 @@
         "qa-automation-engineer",
         "soc-analyst-l2",
         "soc-lead",
+        "software-engineer",
         "ui-ux-designer"
       ],
       "skillId": "communication",
@@ -168,6 +171,7 @@
         "qa-automation-engineer",
         "soc-analyst-l2",
         "soc-lead",
+        "software-engineer",
         "ui-ux-designer"
       ],
       "skillId": "communication",
@@ -209,6 +213,7 @@
         "qa-automation-engineer",
         "soc-analyst-l2",
         "soc-lead",
+        "software-engineer",
         "ui-ux-designer"
       ],
       "skillId": "communication",
@@ -263,7 +268,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -313,7 +319,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -365,7 +372,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -419,7 +427,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -470,7 +479,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -518,7 +528,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -564,7 +575,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -613,7 +625,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -659,7 +672,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -705,7 +719,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -746,7 +761,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -789,7 +805,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -834,7 +851,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -878,7 +896,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -921,7 +940,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -961,7 +981,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -999,7 +1020,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -1036,7 +1058,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -1076,7 +1099,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -1120,7 +1144,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -1358,7 +1383,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -1403,7 +1429,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -1449,7 +1476,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -1490,7 +1518,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -1536,7 +1565,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -1579,7 +1609,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -1622,7 +1653,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -1660,7 +1692,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -1704,7 +1737,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -1746,7 +1780,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -1788,7 +1823,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "azure",
       "topic": "Azure",
@@ -1825,7 +1861,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "azure",
       "topic": "Azure",
@@ -1864,7 +1901,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "azure",
       "topic": "Azure",
@@ -1904,7 +1942,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "azure",
       "topic": "Azure",
@@ -1945,7 +1984,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "azure",
       "topic": "Azure",
@@ -1984,7 +2024,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "gcp",
       "topic": "Google Cloud",
@@ -2019,7 +2060,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "gcp",
       "topic": "Google Cloud",
@@ -2059,7 +2101,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "gcp",
       "topic": "Google Cloud",
@@ -2100,7 +2143,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "gcp",
       "topic": "Google Cloud",
@@ -2141,7 +2185,8 @@
         "data-engineer",
         "devops-engineer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "gcp",
       "topic": "Google Cloud",
@@ -2183,7 +2228,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "system-design",
       "topic": "System design",
@@ -2223,7 +2269,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "system-design",
       "topic": "System design",
@@ -2264,7 +2311,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "system-design",
       "topic": "System design",
@@ -2308,7 +2356,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "system-design",
       "topic": "System design",
@@ -2351,7 +2400,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "system-design",
       "topic": "System design",
@@ -2593,7 +2643,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -2632,7 +2683,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -2673,7 +2725,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -2714,7 +2767,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -2753,7 +2807,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -2796,7 +2851,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -2837,7 +2893,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -2880,7 +2937,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -2921,7 +2979,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -2962,7 +3021,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -3965,7 +4025,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -3997,7 +4058,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -4029,7 +4091,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -4061,7 +4124,8 @@
         "product-manager",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "senior-data-scientist"
+        "senior-data-scientist",
+        "software-engineer"
       ],
       "skillId": "sql",
       "topic": "SQL",
@@ -4098,7 +4162,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -4135,7 +4200,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -4172,7 +4238,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -4209,7 +4276,8 @@
         "senior-backend-engineer",
         "senior-data-scientist",
         "site-reliability-engineer",
-        "soc-analyst-l2"
+        "soc-analyst-l2",
+        "software-engineer"
       ],
       "skillId": "python",
       "topic": "Python",
@@ -4237,7 +4305,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -4265,7 +4334,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -4293,7 +4363,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -4321,7 +4392,8 @@
         "full-stack-developer",
         "ios-developer",
         "java-backend-developer",
-        "qa-automation-engineer"
+        "qa-automation-engineer",
+        "software-engineer"
       ],
       "skillId": "git",
       "topic": "Git",
@@ -4347,7 +4419,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -4373,7 +4446,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -4399,7 +4473,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -4425,7 +4500,8 @@
         "devops-engineer",
         "penetration-tester",
         "qa-automation-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "linux",
       "topic": "Linux",
@@ -4450,7 +4526,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -4475,7 +4552,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -4500,7 +4578,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -4525,7 +4604,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "senior-backend-engineer"
+        "senior-backend-engineer",
+        "software-engineer"
       ],
       "skillId": "docker",
       "topic": "Docker",
@@ -4551,7 +4631,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -4577,7 +4658,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -4603,7 +4685,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -4629,7 +4712,8 @@
         "frontend-developer",
         "full-stack-developer",
         "ios-developer",
-        "java-backend-developer"
+        "java-backend-developer",
+        "software-engineer"
       ],
       "skillId": "rest-apis",
       "topic": "REST APIs",
@@ -4656,7 +4740,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -4683,7 +4768,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -4710,7 +4796,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -4737,7 +4824,8 @@
         "java-backend-developer",
         "qa-automation-engineer",
         "senior-backend-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "ci-cd",
       "topic": "CI/CD",
@@ -5118,7 +5206,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -5147,7 +5236,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -5176,7 +5266,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",
@@ -5205,7 +5296,8 @@
         "full-stack-developer",
         "java-backend-developer",
         "ml-engineer",
-        "site-reliability-engineer"
+        "site-reliability-engineer",
+        "software-engineer"
       ],
       "skillId": "aws",
       "topic": "AWS",

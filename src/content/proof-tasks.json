@@ -76,6 +76,10 @@
     "task": "Write a 600-word blog post, 3 social posts and landing page copy for a fictional product, all aimed at one persona with one call to action."
   },
   {
+    "skillId": "cpp",
+    "task": "Write a C++17 command-line program that reads a synthetic log file, counts events by type with STL containers, manages memory with RAII and smart pointers, and includes unit tests (GoogleTest or Catch2)."
+  },
+  {
     "skillId": "crm-tools",
     "task": "In a free HubSpot or Salesforce Developer account, set up a sales pipeline with 5 stages, import 20 synthetic leads and build a simple report. Share screenshots."
   },
