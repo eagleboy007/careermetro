@@ -90,6 +90,24 @@ describe.skipIf(!db)("departures store (database)", () => {
     expect(await fitContextFor(me, db!, null)).toBeNull();
   });
 
+  it("reads the newest roles in the person's places and the picked city too, not only the newest in India", async () => {
+    const me = await person();
+    const slug = `${run}-near`;
+    const old = new Date("2020-01-01T00:00:00Z");
+    const mumbai = await post({ roleSlug: slug, city: "Mumbai", postedAt: old });
+    const pune = await post({ roleSlug: slug, city: "Pune", postedAt: old });
+    const newer = await post({ roleSlug: slug, city: "Delhi", postedAt: new Date() });
+    const ids = async (opts: { placesOf?: string; city?: string }) => (await departuresBoard(null, { db: db!, roleSlug: slug, limit: 1, ...opts })).posts.map((p) => p.id);
+    expect(await ids({})).toEqual([newer]);
+    // No settings row yet: no places, so only the newest.
+    expect(await ids({ placesOf: me })).toEqual([newer]);
+    await db!.insert(schema.userSettings).values({ userId: me, openToWorkIn: ["Mumbai"] });
+    expect(await ids({ placesOf: me })).toEqual([newer, mumbai]);
+    expect(await ids({ city: "Pune" })).toEqual([newer, pune]);
+    // Newest first, each post once.
+    expect(await ids({ placesOf: me, city: "Delhi" })).toEqual([newer, mumbai]);
+  });
+
   it("keeps only one role's posts for ?role=, the person's own included", async () => {
     const me = await person();
     const slug = `${run}-role`;
