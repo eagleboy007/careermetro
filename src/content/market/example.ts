@@ -61,6 +61,7 @@ const ROLE_SEED: Record<string, { openings: number; pay: [number, number, number
   "site-reliability-engineer": { openings: 550, pay: [7, 13, 22, 33], yearChange: 0.07, seniority: "mid" },
   "soc-analyst-l2": { openings: 360, pay: [4.5, 7.5, 11, 16], yearChange: 0.06, seniority: "mid" },
   "soc-lead": { openings: 120, pay: [8, 12, 19, 28], yearChange: 0.04, seniority: "senior" },
+  "software-engineer": { openings: 1700, pay: [4.5, 8, 14, 22], yearChange: -0.02, seniority: "entry" },
   "ui-ux-designer": { openings: 650, pay: [4, 8, 14, 22], yearChange: -0.01, seniority: "entry" },
 };
 export const exampleRoleSlugs = Object.keys(ROLE_SEED);

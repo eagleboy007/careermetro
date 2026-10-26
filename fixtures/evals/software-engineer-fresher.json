@@ -1,0 +1,72 @@
+{
+  "id": "software-engineer-fresher",
+  "roleSlug": "software-engineer",
+  "persona": "Final-year BTech student with internships and DSA practice",
+  "resumeText": "Ananya Iyer | Chennai | ananya.iyer@example.com\n\nEDUCATION\nBTech Computer Science, Sri Venkateswara College of Engineering, 2026 (CGPA 8.4)\n\nINTERNSHIP\nSoftware Intern, Kaveri Logistics, Chennai (May - Jul 2025)\n- Built Java Spring Boot REST endpoints for shipment tracking.\n- Wrote JUnit tests for the tracking service, raising coverage from 40% to 70%.\n- Used Git feature branches and pull requests with code review.\n\nPROJECTS\n- Library management system in Java with classes for books, members and loans, backed by MySQL.\n- Solved 300+ data structures and algorithms problems on arrays, trees and graphs.\n\nSKILLS\nJava, SQL, Git, Python, Docker\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Built Java Spring Boot REST endpoints"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "REST endpoints for shipment tracking"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Wrote JUnit tests for the tracking service"
+      },
+      {
+        "skillId": "git",
+        "quote": "Used Git feature branches and pull requests"
+      },
+      {
+        "skillId": "oop",
+        "quote": "classes for books, members and loans"
+      },
+      {
+        "skillId": "sql",
+        "quote": "backed by MySQL"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Solved 300+ data structures and algorithms problems"
+      },
+      {
+        "skillId": "python",
+        "quote": "Java, SQL, Git, Python, Docker"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Java, SQL, Git, Python, Docker"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "python",
+        "status": "weak"
+      },
+      {
+        "skillId": "docker",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "system-design",
+      "kubernetes",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

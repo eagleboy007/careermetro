@@ -89,6 +89,8 @@ export const ROLE_TITLES = {
   "site-reliability-engineer": /\b(site reliability|sre)\b/i,
   "cloud-engineer": /\b(cloud( solutions?)? (engineer|architect|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp|google cloud)( solutions?)? (engineer|architect|consultant|administrator|developer))\b|\bsoftware (engineer|developer)\b.*\bcloud\b/i,
   "devops-engineer": /\b(devops|devsecops|platform engineer|infrastructure engineer)\b|\bsoftware (engineer|developer)\b.*\b(infra(structure)?|platform)\b/i,
+  // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
+  "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i,
 };
 const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager"]);

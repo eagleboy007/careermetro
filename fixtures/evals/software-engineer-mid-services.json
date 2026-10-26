@@ -1,0 +1,72 @@
+{
+  "id": "software-engineer-mid-services",
+  "roleSlug": "software-engineer",
+  "persona": "Python developer with 3 years at an IT services firm",
+  "resumeText": "Rohit Kulkarni | Pune | rohit.kulkarni@example.com\n\nEXPERIENCE\nSoftware Engineer, Deccan Infotech, Pune (2023 - present)\n- Build Python Flask REST APIs for an insurance client's claims portal.\n- Wrote pytest unit tests and fixed defects reported by the QA team.\n- Wrote PostgreSQL queries and stored procedures for monthly claim reports.\n- Deploy builds through the client's Jenkins pipeline to AWS EC2.\n- Present sprint demos to the client and explain fixes on calls.\n- Investigated a memory leak in the claims service by reading Linux server logs and profiling.\n\nEDUCATION\nBE Information Technology, Savitribai Phule Pune University, 2023\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Build Python Flask REST APIs"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Flask REST APIs for an insurance client's claims portal"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Wrote pytest unit tests"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote PostgreSQL queries and stored procedures"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Deploy builds through the client's Jenkins pipeline"
+      },
+      {
+        "skillId": "aws",
+        "quote": "to AWS EC2"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present sprint demos to the client and explain fixes on calls"
+      },
+      {
+        "skillId": "linux",
+        "quote": "reading Linux server logs"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Investigated a memory leak in the claims service"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "missing"
+      },
+      {
+        "skillId": "oop",
+        "status": "missing"
+      },
+      {
+        "skillId": "system-design",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "java",
+      "docker",
+      "kubernetes",
+      "react"
+    ]
+  },
+  "reviewedBy": null
+}

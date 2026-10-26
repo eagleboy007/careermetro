@@ -59,6 +59,7 @@ import seniorDataScientist from "./roles/senior-data-scientist.json";
 import siteReliabilityEngineer from "./roles/site-reliability-engineer.json";
 import socAnalystL2 from "./roles/soc-analyst-l2.json";
 import socLead from "./roles/soc-lead.json";
+import softwareEngineer from "./roles/software-engineer.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
 
 /** The skill taxonomy. Validated at import so a bad edit fails tests and the build. */
@@ -131,6 +132,7 @@ export const roleProfiles: RoleProfile[] = z
     siteReliabilityEngineer,
     socAnalystL2,
     socLead,
+    softwareEngineer,
     uiUxDesigner,
   ]);
 
