@@ -110,6 +110,23 @@ export function postView(post: StoredPost, ctx: FitContext | null, now = new Dat
   });
 }
 
+/**
+ * Every post that makes a valid row, in order. One the row schema refuses is left out and its id returned in `skipped`
+ * for the caller to log, so one odd post never takes Departures or Today's board down.
+ */
+export function postViews(posts: readonly StoredPost[], ctx: FitContext | null, now = new Date()): { jobs: JobPost[]; skipped: string[] } {
+  const jobs: JobPost[] = [];
+  const skipped: string[] = [];
+  for (const p of posts) {
+    try {
+      jobs.push(postView(p, ctx, now));
+    } catch {
+      skipped.push(p.id);
+    }
+  }
+  return { jobs, skipped };
+}
+
 const TIME = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" });
 const DATE = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 

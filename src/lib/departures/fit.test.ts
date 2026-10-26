@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
 import { jobPost } from "@/lib/schemas";
-import { MIN_FIT_SKILLS, postedWords, postView, TOO_FEW_SKILLS, updatedWords, type FitContext, type StoredPost } from "./fit";
+import { MIN_FIT_SKILLS, postedWords, postView, postViews, TOO_FEW_SKILLS, updatedWords, type FitContext, type StoredPost } from "./fit";
 import { filterDepartures, NO_FILTERS } from "./filter";
 
 const NOW = new Date("2026-10-20T14:12:00Z"); // 19:42 in India
@@ -97,6 +97,23 @@ describe("postView", () => {
   it("falls back to the day the feed first saw a post with no posted date, and shows work type and no experience in words", () => {
     const view = postView(post({ postedAt: null, experienceNote: null, workType: "part_time" }), ctx(), NOW);
     expect(view).toMatchObject({ posted: "2 days ago", experience: "", workType: "Part time" });
+  });
+});
+
+describe("postViews", () => {
+  it("shows a title as long as the feed stores (160 characters)", () => {
+    const title = "Senior data analyst ".repeat(8); // 160
+    expect(title).toHaveLength(160);
+    const { jobs, skipped } = postViews([post({ title })], null, NOW);
+    expect(skipped).toEqual([]);
+    expect(jobs[0]!.role).toBe(title);
+  });
+
+  it("leaves out a post the row schema refuses and keeps the rest", () => {
+    const bad = post({ id: "6f1c2b9e-0000-4000-8000-000000000009", company: "" });
+    const { jobs, skipped } = postViews([post(), bad], null, NOW);
+    expect(jobs.map((j) => j.id)).toEqual([post().id]);
+    expect(skipped).toEqual([bad.id]);
   });
 });
 

@@ -13,7 +13,7 @@ import { currentAccount } from "@/lib/auth/server";
 import { applyStates, criteriaStates } from "@/lib/corporate/applications-store";
 import { liveJobs } from "@/lib/corporate/jobs-store";
 import type { ApplyState, CriteriaView, PostedJobView } from "@/lib/corporate/types";
-import { postView, updatedWords, type FitContext } from "@/lib/departures/fit";
+import { postViews, updatedWords, type FitContext } from "@/lib/departures/fit";
 import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
 import { suggestedCanJoin } from "@/lib/job-search/rules";
@@ -165,7 +165,9 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   ]);
   const posted = read ?? [];
   const now = new Date();
-  const jobs = board ? board.posts.map((p) => postView(p, fit === "failed" ? null : fit, now)) : exampleJobs;
+  const rows = board ? postViews(board.posts, fit === "failed" ? null : fit, now) : null;
+  if (rows?.skipped.length) logEvent("error", "departures_posts_skipped", { count: rows.skipped.length, first: rows.skipped[0] });
+  const jobs = rows ? rows.jobs : exampleJobs;
   // A resume on file is enough to say so; a fit that can't be shown gets its own reason, not "add your resume".
   const hasResume = account ? analysis !== null : state !== "no_resume";
   const noFit = account && analysis ? noFitWords(fit) : account ? "Add your resume to see your fit for each role." : null;
