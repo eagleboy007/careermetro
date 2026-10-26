@@ -211,8 +211,8 @@ async function onwardNext(userId: string | null, resumeId: string, slug: string,
     const current = await currentAnalysis(userId);
     if (!current) ride = { is: "unknown" };
     else if (current.resumeId === resumeId && current.result.roleSlug === slug) ride = { is: "this-path" };
-    // The same role on a newer resume: naming the role would read as if it were this path's check.
-    else if (current.result.roleSlug === slug) ride = { is: "newer-resume" };
+    // The same role on another resume (the newest check, which may be an older resume; T123): naming the role would read as if it were this path's check.
+    else if (current.result.roleSlug === slug) ride = { is: "other-resume" };
     else ride = { is: "other-check", roleTitle: roleProfiles.find((r) => r.slug === current.result.roleSlug)?.title ?? null };
   } catch (error) {
     logEvent("error", "path_today_check_failed", { route: "/resume/[id]/path/[slug]", role: slug, ...errorFields(error) });
