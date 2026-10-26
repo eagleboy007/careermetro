@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, ROLE_TITLES, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
@@ -595,5 +595,27 @@ describe("placeLine", () => {
   it("folds cities past the top ones into one count, and says nothing with no posts", () => {
     expect(placeLine([{ city: "Mumbai" }, { city: "Pune" }, { city: "Pune" }], 1)).toBe("Posts kept by place: Pune 2, other cities 1.");
     expect(placeLine([])).toBeNull();
+  });
+});
+
+describe("roleLine and unmatchedLine", () => {
+  const rows = [
+    { title: "Data Analyst", roleSlug: "data-analyst" },
+    { title: "Cloud Engineer", roleSlug: "cloud-engineer" },
+    { title: "Data Analyst II", roleSlug: "data-analyst" },
+    { title: "Sales Manager - Pune", roleSlug: null },
+    { title: "Sales  manager (Mumbai)", roleSlug: null },
+    { title: "Accountant", roleSlug: null },
+  ];
+
+  it("counts kept posts by role, most first, then those with no role", () => {
+    expect(roleLine(rows)).toBe("Posts kept by role: data-analyst 2, cloud-engineer 1, no role 3.");
+    expect(roleLine([])).toBeNull();
+  });
+
+  it("lists the commonest unmatched titles, folding place and case", () => {
+    expect(unmatchedLine(rows)).toBe("Commonest titles with no role: sales manager 2; accountant 1.");
+    expect(unmatchedLine(rows, 1)).toBe("Commonest titles with no role: sales manager 2.");
+    expect(unmatchedLine(rows.slice(0, 3))).toBeNull();
   });
 });
