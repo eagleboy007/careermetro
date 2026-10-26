@@ -76,7 +76,7 @@ export const ROLE_TITLES = {
   "ios-developer": /\bios\b.*\b(engineer|developer)\b|\b(engineer|developer)\b.*\bios\b/i,
   "cross-platform-mobile-developer": /\b(react native|flutter|mobile( app)?)\b.*\b(engineer|developer)\b/i,
   // Not a test, front-end, mobile, ML, data, security, cloud or infrastructure title ("Senior Software Engineer, Data"):\n  // the later rules catch those.
-  "senior-backend-engineer": /\b(senior|sr\.?|lead) (software|back[- ]?end|java|python|golang|go|node(\.?js)?|server[- ]side) (engineer|developer)\b(?!.*\b(test|qa|sdet|front[- ]?end|ui|mobile|android|ios|full[- ]?stack|machine learning|ml|ai|data|security|infra(structure)?|platform|cloud|sre|site reliability|devops)\b)/i,
+  "senior-backend-engineer": /\b(senior|sr\.?|lead) (software|back[- ]?end|java|python|golang|go|node(\.?js)?|server[- ]side) (engineer|developer)\b(?!.*\b(test|qa|sdet|front[- ]?end|ui|mobile|android|ios|full[- ]?stack|machine learning|ml|ai|data|security|infra(structure)?|platform|cloud|sre|site reliability|devops)\b)|^(?!.*\b(test|qa)\b).*\b(software (development )?engineer|sde),? (iii|3)\b/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
   "frontend-developer": /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b|\b(engineer|developer)\b.*\b(front[- ]?end|react)\b/i,
   "full-stack-developer": /\bfull[- ]?stack\b/i,
@@ -85,7 +85,7 @@ export const ROLE_TITLES = {
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist)\b/i,
   "product-manager": /\b(product manager|product owner|associate product manager)\b/i,
   "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience) designer\b|\bux (researcher|writer)\b/i,
-  "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b/i,
+  "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b/i,
   "site-reliability-engineer": /\b(site reliability|sre)\b/i,
   "cloud-engineer": /\b(cloud( solutions?)? (engineer|architect|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp|google cloud)( solutions?)? (engineer|architect|consultant|administrator|developer))\b|\bsoftware (engineer|developer)\b.*\bcloud\b/i,
   "devops-engineer": /\b(devops|devsecops|platform engineer|infrastructure engineer)\b|\bsoftware (engineer|developer)\b.*\b(infra(structure)?|platform)\b/i,

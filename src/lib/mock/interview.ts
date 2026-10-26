@@ -67,6 +67,8 @@ export function spread(pool: readonly Open[], seed: string, n: number, taken: Re
 /**
  * The session's questions, picked by code from the bank's open questions and seeded by the session id:
  * - Mix: one "about you" question first (two in a full round), then the role's technical ones across its skills.
+ * Mix and Technical ask about the role's required skills before its nice-to-haves, so a role with many nice-to-have
+ * questions (cloud, tooling) still gets a round about what it needs (T127).
  * - Your gaps: questions on the skills of the person's open goals, then the role's others.
  * - Technical: the role's questions other than "about you" ones.
  * - About you: the "about you" questions, then the role's others.
@@ -85,17 +87,23 @@ export function pickInterviewQuestions(
   const forRole = roleOpen(bank, role);
   const about = bank.filter(isOpen).filter((q) => ABOUT_SKILLS.has(q.skillId));
   const technical = forRole.filter((q) => !ABOUT_SKILLS.has(q.skillId));
+  const extra = new Set(role.skills.filter((s) => s.importance === "nice_to_have").map((s) => s.skillId));
+  const required = technical.filter((q) => !extra.has(q.skillId));
   const goals = new Set(goalSkills);
   const firsts: { pool: readonly Open[]; take: number }[] =
     focus === "mix"
       ? [
           { pool: about, take: Math.max(1, Math.floor(n / 4)) },
+          { pool: required, take: n },
           { pool: technical, take: n },
         ]
       : focus === "gaps"
         ? [{ pool: bank.filter(isOpen).filter((q) => goals.has(q.skillId)), take: n }]
         : focus === "technical"
-          ? [{ pool: technical, take: n }]
+          ? [
+              { pool: required, take: n },
+              { pool: technical, take: n },
+            ]
           : [{ pool: about, take: n }];
   const out: string[] = [];
   for (const step of [...firsts, { pool: forRole, take: n }, { pool: about, take: n }]) {

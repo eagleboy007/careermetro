@@ -64,6 +64,20 @@ describe("pickInterviewQuestions", () => {
     expect(about.every((id) => ABOUT_SKILLS.has(skillOf(id)))).toBe(true);
   });
 
+  it("asks about the role's required skills before its nice-to-haves (T127)", () => {
+    const engineer = roleFor(roleProfiles, "software-engineer", null);
+    const extra = new Set(engineer.skills.filter((s) => s.importance === "nice_to_have").map((s) => s.skillId));
+    const asked = mockQuestions.filter((q) => q.kind === "open" && q.roleSlugs.includes("software-engineer") && !ABOUT_SKILLS.has(q.skillId));
+    const requiredCount = asked.filter((q) => !extra.has(q.skillId)).length;
+    expect(requiredCount).toBeGreaterThan(0);
+    for (const focus of ["technical", "mix"] as const) {
+      const ids = pickInterviewQuestions(mockQuestions, engineer, focus, "full", SEED)!.filter((id) => !ABOUT_SKILLS.has(skillOf(id)));
+      const firstExtra = ids.findIndex((id) => extra.has(skillOf(id)));
+      // Every required-skill question comes before the first nice-to-have one, until the required ones run out.
+      expect(firstExtra === -1 || firstExtra >= Math.min(requiredCount, ids.length)).toBe(true);
+    }
+  });
+
   it("asks about the person's open goals first for Your gaps, then fills from the role", () => {
     const ids = pickInterviewQuestions(mockQuestions, analyst, "gaps", "full", SEED, ["sql"])!;
     expect(ids).toHaveLength(8);

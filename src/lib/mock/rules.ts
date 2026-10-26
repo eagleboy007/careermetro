@@ -19,7 +19,7 @@ import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, ROLE_PREP_FREE_OPEN, ROLE_PR
  */
 
 /** What the rules need of a role profile: its slug, title and skills in order. */
-export type MockRoleProfile = { slug: string; title: string; skills: readonly { skillId: string }[] };
+export type MockRoleProfile = { slug: string; title: string; skills: readonly { skillId: string; importance?: string }[] };
 type Role = MockRoleProfile;
 export type BankQuestion = MockQuestion;
 
