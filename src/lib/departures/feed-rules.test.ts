@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, failureCode, getJson, loadBoards, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
@@ -557,5 +557,17 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     await expect(
       sql!`insert into job_posts (ats, board_token, external_id, url, title, company, city) values ('naukri', ${`${run}x`}, '1', 'https://example.com', 'Data Analyst', 'Example', 'Pune')`,
     ).rejects.toThrow();
+  });
+});
+
+describe("placeLine", () => {
+  it("counts kept posts by city, most first, then Remote and India with no city", () => {
+    const rows = ["Mumbai", "Bengaluru", "Bengaluru", "Remote", "India", "Pune", "Mumbai", "Bengaluru"].map((city) => ({ city }));
+    expect(placeLine(rows)).toBe("Posts kept by place: Bengaluru 3, Mumbai 2, Pune 1, Remote 1, India (no city) 1.");
+  });
+
+  it("folds cities past the top ones into one count, and says nothing with no posts", () => {
+    expect(placeLine([{ city: "Mumbai" }, { city: "Pune" }, { city: "Pune" }], 1)).toBe("Posts kept by place: Pune 2, other cities 1.");
+    expect(placeLine([])).toBeNull();
   });
 });
