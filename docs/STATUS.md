@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-26 (Departures reads each city's roles)
+Last updated: 2026-10-26 (feed titles read as 25 role profiles)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -118,6 +118,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 - Departures failed on production (2026-10-26, Milin): the feed keeps titles up to 160 characters but a row allowed 120, so one long title threw and took the page down (Today hid its board). Rows now allow 160, and Departures and Today leave out any post that still fails, logging `departures_posts_skipped` or `today_posts_skipped` with the count. Me's story cards put each Situation, Task, Action, Result label above its text so narrow board columns read.
 - Departures and Today read the newest roles in the person's "Open to work in" places, and Departures in the city picked on the City filter (`?city=`), as well as the newest 300 in India. Before, a city showed only its share of the newest 300 (about 20 of Mumbai's 237) (2026-10-26).
 - T124: the staging build now keeps three example feed posts open on staging (board `staging-example`, one with a 160-character title), so the staging checks walk real Departures and Today rows (`scripts/staging-db.mjs`).
+- The feed now reads job titles as all 25 live role profiles, not 13: cloud security, privacy, pen testing, appsec, data engineering, ML, Android, iOS, cross-platform mobile, UI/UX, SRE and cloud engineering are new (`ROLE_TITLES` in `src/lib/departures/feed-rules.mjs`; first match wins, so the specific ones come first). About 88% of posts matched no role before (2026-10-26).
 - Departures boards: 65 of Data research's 80 cloud, DevOps and security candidates passed the board check (200 with India posts) and were added, 212 of the 300-board cap (2026-10-26). The feed's run summary now adds "Posts kept by place" (city counts, then Remote and India with no city), so the open-role numbers by city can be read from the Actions run (2026-10-26).
 - Plans and accounts to fix before real users (Supabase backups on Pro, Vercel Pro for commercial use, a private repository, domain lock, Resend limits, AI daily caps), each Milin's call: `docs/stack.md` (2026-10-25).
 - **Keys register:** `docs/secrets.md` names every key and secret, where it lives and whether it can be changed, with no values. Its section 4 is what a move away from Vercel involves, including setting `VERCEL_ENV=production` on the new host.
