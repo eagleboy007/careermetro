@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-26 (feed titles read as 25 role profiles)
+Last updated: 2026-10-26 (feed titles read as all 31 role profiles)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -120,6 +120,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 - T124: the staging build now keeps three example feed posts open on staging (board `staging-example`, one with a 160-character title), so the staging checks walk real Departures and Today rows (`scripts/staging-db.mjs`).
 - The feed now reads job titles as all 25 live role profiles, not 13: cloud security, privacy, pen testing, appsec, data engineering, ML, Android, iOS, cross-platform mobile, UI/UX, SRE and cloud engineering are new (`ROLE_TITLES` in `src/lib/departures/feed-rules.mjs`; first match wins, so the specific ones come first). About 88% of posts matched no role before (2026-10-26).
 - The feed summary also counts kept posts by role and lists the 25 commonest titles with no role (`roleLine`, `unmatchedLine` in `scripts/departures/fetch-feeds.mjs`), so the title rules can be checked against what boards post. After #226, 735 posts have a role and 2,958 none (2026-10-26).
+- Feed titles now also read as the six senior and lead profiles (senior backend, senior data scientist, engineering manager, GRC manager, SOC lead, SOC analyst L2), so every role file has a title rule, and a test keeps it that way. T125: "AWS/Azure Solutions Architect", "ML Ops Engineer" and "Security Engineer, Cloud" now match. Plain "Software Engineer" (46 posts) stays unmatched: no profile fits it yet (2026-10-26).
 - Departures boards: 65 of Data research's 80 cloud, DevOps and security candidates passed the board check (200 with India posts) and were added, 212 of the 300-board cap (2026-10-26). The feed's run summary now adds "Posts kept by place" (city counts, then Remote and India with no city), so the open-role numbers by city can be read from the Actions run (2026-10-26).
 - Plans and accounts to fix before real users (Supabase backups on Pro, Vercel Pro for commercial use, a private repository, domain lock, Resend limits, AI daily caps), each Milin's call: `docs/stack.md` (2026-10-25).
 - **Keys register:** `docs/secrets.md` names every key and secret, where it lives and whether it can be changed, with no values. Its section 4 is what a move away from Vercel involves, including setting `VERCEL_ENV=production` on the new host.

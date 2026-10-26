@@ -58,33 +58,40 @@ const SENIOR = /\b(director|head of|vice president|vp|principal|staff|chief|inte
 // Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
 // ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
-  "cloud-security-engineer": /\bcloud security\b/i,
+  "cloud-security-engineer": /\b(cloud security|security engineer,? cloud)\b/i,
+  "grc-manager": /\b(grc|governance,? risk|risk and compliance|security governance|it risk|cyber ?risk)\b.*\b(manager|lead)\b/i,
   "privacy-analyst": /\b(privacy|data protection)\b.*\b(analyst|specialist|associate|engineer|consultant)\b/i,
   "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit)\b/i,
   "penetration-tester": /\b(penetration test(er|ing)?|pen ?test(er|ing)?|offensive security|red team)\b/i,
   "appsec-engineer": /\b(appsec|application security|product security)\b/i,
+  "soc-lead": /\bsoc (lead|manager)\b|\b(lead|manager),? soc\b/i,
+  "soc-analyst-l2": /\b(soc|security) analyst,? (l2|ii|2|level ?2)\b|\bl2 soc\b/i,
   "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|incident respon|detection engineer|blue team)\b/i,
   "database-architect": /\b(database (architect|administrator|engineer|reliability)|dba|data architect|data modeler)\b/i,
   "data-engineer": /\b(data engineer|big data engineer|etl (engineer|developer)|analytics engineer|data platform engineer)\b/i,
-  "ml-engineer": /\b(machine learning|ml|ai|mlops|deep learning|computer vision|nlp) engineer\b/i,
+  "ml-engineer": /\b(machine learning|ml|ai|ml ?ops|deep learning|computer vision|nlp) engineer\b/i,
   "data-analyst": /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i,
   "business-analyst": /\bbusiness (systems )?analyst\b/i,
   "android-developer": /\bandroid\b.*\b(engineer|developer)\b/i,
   "ios-developer": /\bios\b.*\b(engineer|developer)\b/i,
   "cross-platform-mobile-developer": /\b(react native|flutter|mobile( app)?)\b.*\b(engineer|developer)\b/i,
+  // Not a test, front-end or mobile title: those have their own roles, and a senior one is none of ours.
+  "senior-backend-engineer": /\b(senior|sr\.?|lead) (software|back[- ]?end|java|python|golang|go|node(\.?js)?|server[- ]side) (engineer|developer)\b(?!.*\b(test|qa|sdet|front[- ]?end|ui|mobile|android|ios|full[- ]?stack)\b)/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
   "frontend-developer": /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b/i,
   "full-stack-developer": /\bfull[- ]?stack\b/i,
+  "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager)\b/i,
+  "senior-data-scientist": /\b(senior|sr\.?|lead) (data|applied|ml|machine learning) scientist\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist)\b/i,
   "product-manager": /\b(product manager|product owner|associate product manager)\b/i,
   "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience) designer\b|\bux (researcher|writer)\b/i,
   "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b/i,
   "site-reliability-engineer": /\b(site reliability|sre)\b/i,
-  "cloud-engineer": /\b(cloud (engineer|architect|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp) (engineer|architect|consultant|administrator|developer))\b/i,
+  "cloud-engineer": /\b(cloud( solutions?)? (engineer|architect|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp|google cloud)( solutions?)? (engineer|architect|consultant|administrator|developer))\b/i,
   "devops-engineer": /\b(devops|devsecops|platform engineer|infrastructure engineer)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;

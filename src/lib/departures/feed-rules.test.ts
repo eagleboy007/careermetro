@@ -151,11 +151,28 @@ describe("feed rules", () => {
       ["AWS Architect", "cloud-engineer"],
       ["DevOps Engineer", "devops-engineer"],
       ["Data Scientist", "data-scientist"],
+      ["AWS Solutions Architect", "cloud-engineer"],
+      ["ML Ops Engineer", "ml-engineer"],
+      ["Security Engineer, Cloud", "cloud-security-engineer"],
+      ["Security Engineer", "cyber-security-analyst"],
+      ["GRC Manager", "grc-manager"],
+      ["GRC Analyst", "information-security-analyst"],
+      ["SOC Lead", "soc-lead"],
+      ["SOC Analyst L2", "soc-analyst-l2"],
+      ["Senior Software Engineer", "senior-backend-engineer"],
+      ["Senior Java Developer", "senior-backend-engineer"],
+      ["Java Developer", "java-backend-developer"],
+      ["Senior Frontend Engineer", "frontend-developer"],
+      ["Senior Android Developer", "android-developer"],
+      ["Engineering Manager", "engineering-manager"],
+      ["Senior Data Scientist", "senior-data-scientist"],
+      ["Software Engineer", null],
+      ["Staff Software Engineer", null],
       ["Graphic Designer", null],
     ];
     expect(cases.map(([title]) => [title, classify(title)])).toEqual(cases);
-    const roles = new Set(readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")));
-    expect(Object.keys(ROLE_TITLES).filter((slug) => !roles.has(slug))).toEqual([]);
+    const roles = readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")).sort();
+    expect(Object.keys(ROLE_TITLES).sort()).toEqual(roles);
   });
 
   it("keeps India and remote-India posts only, with an https link and a title", () => {
