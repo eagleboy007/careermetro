@@ -52,8 +52,10 @@ describe("parseCsv", () => {
   it("reads the candidates file Data research collected", () => {
     const rows = parseCsv(readFileSync(resolve(root, "scripts/departures/board-candidates.csv"), "utf8"));
     expect(Object.keys(rows[0])).toEqual(HEADER.split(","));
-    const { boards } = candidatesFrom(rows);
-    expect(boards.length).toBeGreaterThan(100);
+    const { boards, skipped } = candidatesFrom(rows);
+    // Each batch replaces the file, so its size changes; nearly every row should be a board the check can ask.
+    expect(boards.length).toBeGreaterThan(0);
+    expect(skipped).toBeLessThanOrEqual(Math.ceil(rows.length / 10));
     expect(boards.filter((b) => b.host === "eu").every((b) => b.ats === "greenhouse")).toBe(true);
   });
 });

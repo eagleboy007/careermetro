@@ -1174,5 +1174,525 @@
     "careersUrl": "https://job-boards.greenhouse.io/zyngacareers",
     "addedBy": "Data research (checked by the board check)",
     "addedOn": "2026-10-20"
+  },
+  {
+    "company": "Mactores",
+    "ats": "lever",
+    "token": "mactores",
+    "careersUrl": "https://jobs.lever.co/mactores",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Nielsen",
+    "ats": "smartrecruiters",
+    "token": "TheNielsenCompany",
+    "careersUrl": "https://jobs.smartrecruiters.com/TheNielsenCompany",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "NEC Software Solutions",
+    "ats": "smartrecruiters",
+    "token": "NECSWS",
+    "careersUrl": "https://jobs.smartrecruiters.com/NECSWS",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Version 1",
+    "ats": "smartrecruiters",
+    "token": "Version1",
+    "careersUrl": "https://jobs.smartrecruiters.com/Version1",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Experian",
+    "ats": "smartrecruiters",
+    "token": "Experian",
+    "careersUrl": "https://jobs.smartrecruiters.com/Experian",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Skynet Secure Solutions",
+    "ats": "smartrecruiters",
+    "token": "SkynetSecureSolutions",
+    "careersUrl": "https://jobs.smartrecruiters.com/SkynetSecureSolutions",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "PayPay India",
+    "ats": "greenhouse",
+    "token": "pay2dc",
+    "careersUrl": "https://job-boards.greenhouse.io/pay2dc",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Miratech",
+    "ats": "smartrecruiters",
+    "token": "Miratech1",
+    "careersUrl": "https://jobs.smartrecruiters.com/Miratech1",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Agilisys",
+    "ats": "greenhouse",
+    "token": "agilisys",
+    "careersUrl": "https://job-boards.greenhouse.io/agilisys",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Blenheim Chalcot India",
+    "ats": "greenhouse",
+    "token": "blenheimchalcotindia",
+    "careersUrl": "https://job-boards.greenhouse.io/blenheimchalcotindia",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Speechify",
+    "ats": "greenhouse",
+    "token": "speechify",
+    "careersUrl": "https://job-boards.greenhouse.io/speechify",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Fospha",
+    "ats": "greenhouse",
+    "token": "fosphamarketing",
+    "careersUrl": "https://job-boards.greenhouse.io/fosphamarketing",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "ElevenLabs",
+    "ats": "ashby",
+    "token": "elevenlabs",
+    "careersUrl": "https://jobs.ashbyhq.com/elevenlabs",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "ConnectWise",
+    "ats": "greenhouse",
+    "token": "connectwise",
+    "careersUrl": "https://job-boards.greenhouse.io/connectwise",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Perforce",
+    "ats": "lever",
+    "token": "perforce",
+    "careersUrl": "https://jobs.lever.co/perforce",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Allata",
+    "ats": "lever",
+    "token": "Allata",
+    "careersUrl": "https://jobs.lever.co/Allata",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "METRO Global Solution Center",
+    "ats": "smartrecruiters",
+    "token": "METROMAKRO",
+    "careersUrl": "https://jobs.smartrecruiters.com/METROMAKRO",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Applied Cloud Computing",
+    "ats": "smartrecruiters",
+    "token": "AppliedCloudComputing",
+    "careersUrl": "https://jobs.smartrecruiters.com/AppliedCloudComputing",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "MicroStrategy (Strategy)",
+    "ats": "smartrecruiters",
+    "token": "MicroStrategy1",
+    "careersUrl": "https://jobs.smartrecruiters.com/MicroStrategy1",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Nexla",
+    "ats": "greenhouse",
+    "token": "nexla",
+    "careersUrl": "https://job-boards.greenhouse.io/nexla",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Ping Identity",
+    "ats": "greenhouse",
+    "token": "pingidentity",
+    "careersUrl": "https://job-boards.greenhouse.io/pingidentity",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Sumo Logic",
+    "ats": "greenhouse",
+    "token": "sumologic",
+    "careersUrl": "https://job-boards.greenhouse.io/sumologic",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "AlphaSense",
+    "ats": "greenhouse",
+    "token": "alphasense",
+    "careersUrl": "https://job-boards.greenhouse.io/alphasense",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "GitLab",
+    "ats": "greenhouse",
+    "token": "gitlab",
+    "careersUrl": "https://job-boards.greenhouse.io/gitlab",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "SPAN",
+    "ats": "ashby",
+    "token": "span",
+    "careersUrl": "https://jobs.ashbyhq.com/span",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Nexthink",
+    "ats": "smartrecruiters",
+    "token": "Nexthink",
+    "careersUrl": "https://jobs.smartrecruiters.com/Nexthink",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "LinkedIn (employer)",
+    "ats": "smartrecruiters",
+    "token": "LinkedIn3",
+    "careersUrl": "https://jobs.smartrecruiters.com/LinkedIn3",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "BitGo",
+    "ats": "greenhouse",
+    "token": "bitgo",
+    "careersUrl": "https://job-boards.greenhouse.io/bitgo",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "IntegriChain",
+    "ats": "smartrecruiters",
+    "token": "IntegriChain1",
+    "careersUrl": "https://jobs.smartrecruiters.com/IntegriChain1",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Jitterbit",
+    "ats": "smartrecruiters",
+    "token": "Jitterbit",
+    "careersUrl": "https://jobs.smartrecruiters.com/Jitterbit",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Anteelo",
+    "ats": "smartrecruiters",
+    "token": "Anteelo",
+    "careersUrl": "https://jobs.smartrecruiters.com/Anteelo",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Galaxy Digital",
+    "ats": "greenhouse",
+    "token": "galaxydigitalservices",
+    "careersUrl": "https://job-boards.greenhouse.io/galaxydigitalservices",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Litmos",
+    "ats": "greenhouse",
+    "token": "litmos",
+    "careersUrl": "https://job-boards.greenhouse.io/litmos",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Intuit",
+    "ats": "smartrecruiters",
+    "token": "Intuit2",
+    "careersUrl": "https://jobs.smartrecruiters.com/Intuit2",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Britive",
+    "ats": "greenhouse",
+    "token": "britive",
+    "careersUrl": "https://job-boards.greenhouse.io/britive",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "TEGNA India",
+    "ats": "greenhouse",
+    "token": "tegnaindia",
+    "careersUrl": "https://job-boards.greenhouse.io/tegnaindia",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Zenoti",
+    "ats": "greenhouse",
+    "token": "zenoti",
+    "careersUrl": "https://job-boards.greenhouse.io/zenoti",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Backbase",
+    "ats": "greenhouse",
+    "token": "workatbackbase",
+    "careersUrl": "https://job-boards.greenhouse.io/workatbackbase",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "StarRez",
+    "ats": "greenhouse",
+    "token": "starrez",
+    "careersUrl": "https://job-boards.greenhouse.io/starrez",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "SingleStore",
+    "ats": "greenhouse",
+    "token": "singlestore",
+    "careersUrl": "https://job-boards.greenhouse.io/singlestore",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Renesas Electronics",
+    "ats": "smartrecruiters",
+    "token": "RenesasElectronics",
+    "careersUrl": "https://jobs.smartrecruiters.com/RenesasElectronics",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Beghou Consulting",
+    "ats": "lever",
+    "token": "beghouconsulting",
+    "careersUrl": "https://jobs.lever.co/beghouconsulting",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Zscaler",
+    "ats": "greenhouse",
+    "token": "zscaler",
+    "careersUrl": "https://job-boards.greenhouse.io/zscaler",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Coupang",
+    "ats": "greenhouse",
+    "token": "coupang",
+    "careersUrl": "https://job-boards.greenhouse.io/coupang",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Smartsheet",
+    "ats": "greenhouse",
+    "token": "smartsheet",
+    "careersUrl": "https://job-boards.greenhouse.io/smartsheet",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "project44",
+    "ats": "greenhouse",
+    "token": "project44",
+    "careersUrl": "https://job-boards.greenhouse.io/project44",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "AH Infotech",
+    "ats": "smartrecruiters",
+    "token": "AHInfotech",
+    "careersUrl": "https://jobs.smartrecruiters.com/AHInfotech",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "SiteMinder",
+    "ats": "ashby",
+    "token": "siteminder",
+    "careersUrl": "https://jobs.ashbyhq.com/siteminder",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Model N",
+    "ats": "lever",
+    "token": "modeln",
+    "careersUrl": "https://jobs.lever.co/modeln",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "ION Group",
+    "ats": "lever",
+    "token": "ion",
+    "careersUrl": "https://jobs.lever.co/ion",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "TTEC Digital",
+    "ats": "lever",
+    "token": "ttecdigital",
+    "careersUrl": "https://jobs.lever.co/ttecdigital",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Spotify",
+    "ats": "lever",
+    "token": "spotify",
+    "careersUrl": "https://jobs.lever.co/spotify",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Couchbase",
+    "ats": "greenhouse",
+    "token": "couchbaseinc",
+    "careersUrl": "https://job-boards.greenhouse.io/couchbaseinc",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "AirTrunk",
+    "ats": "greenhouse",
+    "token": "airtrunk",
+    "careersUrl": "https://job-boards.greenhouse.io/airtrunk",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Grafana Labs",
+    "ats": "greenhouse",
+    "token": "grafanalabs",
+    "careersUrl": "https://job-boards.greenhouse.io/grafanalabs",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Anthropic",
+    "ats": "greenhouse",
+    "token": "anthropic",
+    "careersUrl": "https://job-boards.greenhouse.io/anthropic",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Toradex",
+    "ats": "greenhouse",
+    "token": "toradex",
+    "careersUrl": "https://job-boards.greenhouse.io/toradex",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Get Well Network",
+    "ats": "greenhouse",
+    "token": "getwellnetwork",
+    "careersUrl": "https://job-boards.greenhouse.io/getwellnetwork",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "CommerceIQ",
+    "ats": "greenhouse",
+    "token": "commerceiq",
+    "careersUrl": "https://job-boards.greenhouse.io/commerceiq",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Konovo",
+    "ats": "greenhouse",
+    "token": "konovo",
+    "careersUrl": "https://job-boards.greenhouse.io/konovo",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Ramboll",
+    "ats": "smartrecruiters",
+    "token": "Ramboll3",
+    "careersUrl": "https://jobs.smartrecruiters.com/Ramboll3",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Sopra Steria",
+    "ats": "smartrecruiters",
+    "token": "SopraSteria1",
+    "careersUrl": "https://jobs.smartrecruiters.com/SopraSteria1",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Cprime",
+    "ats": "lever",
+    "token": "cprime",
+    "careersUrl": "https://jobs.lever.co/cprime",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "zaimler",
+    "ats": "lever",
+    "token": "zaimler",
+    "careersUrl": "https://jobs.lever.co/zaimler",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
+  },
+  {
+    "company": "Granica",
+    "ats": "ashby",
+    "token": "granica",
+    "careersUrl": "https://jobs.ashbyhq.com/granica",
+    "addedBy": "Data research (checked by the board check)",
+    "addedOn": "2026-10-26"
   }
 ]

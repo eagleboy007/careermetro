@@ -374,6 +374,23 @@ export function summaryLines(
   return lines;
 }
 
+/**
+ * The kept posts by place, for the summary: "Posts kept by place: Bengaluru 120, Mumbai 40, Remote 10, India (no city) 5".
+ * Every kept post is in India or remote India, so the counts add up to the posts kept. Place names only, never post text.
+ */
+export function placeLine(/** @type {{ city: string }[]} */ rows, top = 10) {
+  if (!rows.length) return null;
+  const count = new Map();
+  for (const r of rows) count.set(r.city, (count.get(r.city) ?? 0) + 1);
+  const named = [...count.entries()].filter(([c]) => c !== "Remote" && c !== "India").sort(([a, x], [b, y]) => y - x || a.localeCompare(b));
+  const shown = named.slice(0, top).map(([c, n]) => `${c} ${n}`);
+  const rest = named.slice(top).reduce((sum, [, n]) => sum + n, 0);
+  if (rest) shown.push(`other cities ${rest}`);
+  if (count.get("Remote")) shown.push(`Remote ${count.get("Remote")}`);
+  if (count.get("India")) shown.push(`India (no city) ${count.get("India")}`);
+  return `Posts kept by place: ${shown.join(", ")}.`;
+}
+
 export async function main() {
   const startedAt = new Date();
   const boards = loadBoards();
@@ -398,6 +415,8 @@ export async function main() {
     }
   }
   const lines = summaryLines(results, rows.length, written, rollup);
+  const places = placeLine(rows);
+  if (places) lines.splice(1, 0, places);
   for (const line of lines) console.log(line);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Departures feed\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`);
   // Every board failing is the runner's network or an outage, not the boards: fail so someone looks.
