@@ -112,22 +112,19 @@
       "skillId": "aws",
       "importance": "nice_to_have",
       "expectation": "Deploy or use services on one major cloud",
-      "postingShare": null,
-      "oneOf": "cloud"
+      "postingShare": null
     },
     {
       "skillId": "azure",
       "importance": "nice_to_have",
       "expectation": "Deploy or use services on one major cloud",
-      "postingShare": null,
-      "oneOf": "cloud"
+      "postingShare": null
     },
     {
       "skillId": "gcp",
       "importance": "nice_to_have",
       "expectation": "Deploy or use services on one major cloud",
-      "postingShare": null,
-      "oneOf": "cloud"
+      "postingShare": null
     },
     {
       "skillId": "system-design",
@@ -146,10 +143,6 @@
     {
       "id": "main-language",
       "label": "A main programming language (Java, Python, C++, JavaScript, Go or C#)"
-    },
-    {
-      "id": "cloud",
-      "label": "One major cloud (AWS, Azure or Google Cloud)"
     }
   ],
   "certifications": [
