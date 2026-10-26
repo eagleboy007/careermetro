@@ -45,14 +45,6 @@
     ],
     "gaps": [
       {
-        "skillId": "python",
-        "status": "weak"
-      },
-      {
-        "skillId": "docker",
-        "status": "weak"
-      },
-      {
         "skillId": "communication",
         "status": "missing"
       },

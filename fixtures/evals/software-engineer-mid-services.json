@@ -55,10 +55,6 @@
       {
         "skillId": "oop",
         "status": "missing"
-      },
-      {
-        "skillId": "system-design",
-        "status": "missing"
       }
     ],
     "mustNotClaim": [
