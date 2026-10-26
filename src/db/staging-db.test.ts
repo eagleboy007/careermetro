@@ -2,7 +2,10 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
-import { isStagingBuild, sessionUrl } from "../../scripts/staging-db.mjs";
+import { roleProfiles } from "@/content";
+import { postView } from "@/lib/departures/fit";
+import { isStagingBuild, sessionUrl, STAGING_POSTS } from "../../scripts/staging-db.mjs";
+import skills from "../content/skills.json";
 
 const script = resolve(__dirname, "../../scripts/staging-db.mjs");
 const run = (env: Record<string, string>) =>
@@ -20,6 +23,20 @@ describe("staging-db", () => {
     expect(sessionUrl("postgres://u:p@aws-0-ap-south-1.pooler.supabase.com:6543/postgres")).toBe("postgres://u:p@aws-0-ap-south-1.pooler.supabase.com:5432/postgres");
     expect(sessionUrl("postgres://u:p@127.0.0.1:6543/cm")).toBe("postgres://u:p@127.0.0.1:6543/cm");
     expect(sessionUrl("not a link")).toBe("not a link");
+  });
+
+  it("seeds example feed posts that show as rows, one with the longest title the feed stores", () => {
+    const skillIds = new Set(skills.map((x) => x.id));
+    expect(Math.max(...STAGING_POSTS.map((p) => p.title.length))).toBe(160);
+    for (const p of STAGING_POSTS) {
+      expect(roleProfiles.some((r) => r.slug === p.role)).toBe(true);
+      expect(p.required.every((id) => skillIds.has(id))).toBe(true);
+      const row = postView(
+        { ...p, workType: "full_time", experienceNote: "2 to 4 years", roleSlug: p.role, requiredSkillIds: p.required, niceSkillIds: [], url: `https://example.com/jobs/${p.id}`, postedAt: new Date(), firstSeenAt: new Date(), closedAt: null },
+        null,
+      );
+      expect(row.role).toBe(p.title);
+    }
   });
 
   it("does nothing outside the staging build", () => {
@@ -53,7 +70,7 @@ describe.skipIf(!url)("staging-db on a real database", () => {
     for (let i = 0; i < 2; i++) {
       const out = run(env);
       expect(out.status).toBe(0);
-      expect(out.stdout).toMatch(/migrations applied[\s\S]*content loaded/);
+      expect(out.stdout).toMatch(/migrations applied[\s\S]*content loaded[\s\S]*example feed posts in place/);
     }
     const db = postgres(target, { max: 1, onnotice: () => {} });
     try {
@@ -62,6 +79,8 @@ describe.skipIf(!url)("staging-db on a real database", () => {
       expect(applied).toBe(journal.entries.length);
       const [{ roles }] = await db`select count(*)::int as roles from role_profiles`;
       expect(roles).toBeGreaterThan(0);
+      const [{ posts }] = await db`select count(*)::int as posts from job_posts where board_token = 'staging-example' and closed_at is null`;
+      expect(posts).toBe(STAGING_POSTS.length);
     } finally {
       await db.end();
     }
