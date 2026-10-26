@@ -55,20 +55,33 @@ export function careersUrlOf(/** @type {Ats} */ ats, /** @type {string} */ token
 
 const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executive|recruit(er|ing)|partner manager)\b/i;
 const SENIOR = /\b(director|head of|vice president|vp|principal|staff|chief|intern|internship)\b/i;
-// Order matters: the first matching role wins.
+// Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
+// ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
+  "cloud-security-engineer": /\bcloud security\b/i,
+  "privacy-analyst": /\b(privacy|data protection)\b.*\b(analyst|specialist|associate|engineer|consultant)\b/i,
   "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit)\b/i,
-  "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|incident respon|penetration|pen ?tester|appsec|application security|detection engineer|offensive security|red team|blue team)\b/i,
+  "penetration-tester": /\b(penetration test(er|ing)?|pen ?test(er|ing)?|offensive security|red team)\b/i,
+  "appsec-engineer": /\b(appsec|application security|product security)\b/i,
+  "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|incident respon|detection engineer|blue team)\b/i,
   "database-architect": /\b(database (architect|administrator|engineer|reliability)|dba|data architect|data modeler)\b/i,
+  "data-engineer": /\b(data engineer|big data engineer|etl (engineer|developer)|analytics engineer|data platform engineer)\b/i,
+  "ml-engineer": /\b(machine learning|ml|ai|mlops|deep learning|computer vision|nlp) engineer\b/i,
   "data-analyst": /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i,
   "business-analyst": /\bbusiness (systems )?analyst\b/i,
+  "android-developer": /\bandroid\b.*\b(engineer|developer)\b/i,
+  "ios-developer": /\bios\b.*\b(engineer|developer)\b/i,
+  "cross-platform-mobile-developer": /\b(react native|flutter|mobile( app)?)\b.*\b(engineer|developer)\b/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
   "frontend-developer": /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b/i,
   "full-stack-developer": /\bfull[- ]?stack\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist)\b/i,
   "product-manager": /\b(product manager|product owner|associate product manager)\b/i,
+  "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience) designer\b|\bux (researcher|writer)\b/i,
   "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b/i,
-  "devops-engineer": /\b(devops|site reliability|sre|cloud engineer|platform engineer|infrastructure engineer|cloud ops)\b/i,
+  "site-reliability-engineer": /\b(site reliability|sre)\b/i,
+  "cloud-engineer": /\b(cloud (engineer|architect|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp) (engineer|architect|consultant|administrator|developer))\b/i,
+  "devops-engineer": /\b(devops|devsecops|platform engineer|infrastructure engineer)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i,
 };
 const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive"]);

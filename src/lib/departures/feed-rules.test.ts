@@ -1,9 +1,9 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, summaryLines, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
-import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
+import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, ROLE_TITLES, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 
 // The daily Departures feed (docs/plans/departures-live-plan.md) against saved, synthetic answers of each public
@@ -130,6 +130,32 @@ describe("feed rules", () => {
     expect([workTypeOf("Full-time"), workTypeOf("Part-time"), workTypeOf("Contract"), workTypeOf("FullTime"), workTypeOf(null)]).toEqual(["full_time", "part_time", "freelance", "full_time", "full_time"]);
     expect(classify("Junior Data Analyst")).toBe("data-analyst");
     expect(classify("Director, Data Analytics")).toBeNull();
+  });
+
+  it("reads a title as one of the live role profiles, the most specific first", () => {
+    const cases: [string, string | null][] = [
+      ["Cloud Security Engineer", "cloud-security-engineer"],
+      ["Privacy Analyst", "privacy-analyst"],
+      ["Penetration Tester", "penetration-tester"],
+      ["Application Security Engineer", "appsec-engineer"],
+      ["SOC Analyst", "cyber-security-analyst"],
+      ["Data Engineer", "data-engineer"],
+      ["Machine Learning Engineer", "ml-engineer"],
+      ["Android Developer", "android-developer"],
+      ["iOS Engineer", "ios-developer"],
+      ["React Native Developer", "cross-platform-mobile-developer"],
+      ["UI/UX Designer", "ui-ux-designer"],
+      ["Product Designer", "ui-ux-designer"],
+      ["Site Reliability Engineer", "site-reliability-engineer"],
+      ["Cloud Engineer", "cloud-engineer"],
+      ["AWS Architect", "cloud-engineer"],
+      ["DevOps Engineer", "devops-engineer"],
+      ["Data Scientist", "data-scientist"],
+      ["Graphic Designer", null],
+    ];
+    expect(cases.map(([title]) => [title, classify(title)])).toEqual(cases);
+    const roles = new Set(readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")));
+    expect(Object.keys(ROLE_TITLES).filter((slug) => !roles.has(slug))).toEqual([]);
   });
 
   it("keeps India and remote-India posts only, with an https link and a title", () => {
