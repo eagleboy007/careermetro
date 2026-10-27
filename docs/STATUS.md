@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-27 (SmartRecruiters boards read India posts across pages)
+Last updated: 2026-10-27 (Mock rounds count a "one of these" group as one topic; T129)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -125,6 +125,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 - New role profile Software Engineer (`software-engineer`, 0 to 5 years; Data research's draft, awaiting expert review): one main language (Java, Python, C++, JavaScript, Go or C#) plus DSA, OOP, SQL, Git, REST APIs and unit testing. Its feed title rule comes last, so plain "Software Engineer" and "SDE" posts (46 on 2026-10-26) get a role; two eval resumes, the mock questions on its skills, a C++ proof task and an example Market row come with it. postingShare stays null like the other roles (2026-10-26).
 - Mix and Technical mock rounds ask about the role's required skills before its nice-to-haves (T127), so a Software Engineer round is no longer mostly cloud and tooling; and Data research's 30 practice questions and 6 multiple-choice ones on DSA, OOP, unit testing, Java, JavaScript and C++ fill the gap (practice bank 25 skills, 125 open questions; follow-ups unreviewed, so preview only). Feed titles: "Software Engineer in Test" and "- QA" go to QA, "Software Engineer III" and "SDE 3" to senior backend (T128) (2026-10-26).
 - The feed asks SmartRecruiters for India posts only and reads up to 5 pages of 100 per board, so the 16 large boards (Swiggy, Bosch, NielsenIQ and others) that came back cut short every run are read whole and can close posts they no longer list (2026-10-27).
+- Mock rounds and the question bank's free five count a "one of these" group (six main languages) as one topic, and a round asks about the language the resume shows, so a Java developer gets Java and not C++ (T129) (2026-10-27).
 - Departures boards: 65 of Data research's 80 cloud, DevOps and security candidates passed the board check (200 with India posts) and were added, 212 of the 300-board cap (2026-10-26). The feed's run summary now adds "Posts kept by place" (city counts, then Remote and India with no city), so the open-role numbers by city can be read from the Actions run (2026-10-26).
 - Plans and accounts to fix before real users (Supabase backups on Pro, Vercel Pro for commercial use, a private repository, domain lock, Resend limits, AI daily caps), each Milin's call: `docs/stack.md` (2026-10-25).
 - **Keys register:** `docs/secrets.md` names every key and secret, where it lives and whether it can be changed, with no values. Its section 4 is what a move away from Vercel involves, including setting `VERCEL_ENV=production` on the new host.

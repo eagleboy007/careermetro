@@ -78,6 +78,19 @@ describe("pickInterviewQuestions", () => {
     }
   });
 
+  it("counts the main-language group as one topic, and asks about the person's own language when the resume shows it (T129)", () => {
+    const engineer = roleFor(roleProfiles, "software-engineer", null);
+    const languages = new Set(engineer.skills.filter((s) => s.oneOf === "main-language").map((s) => s.skillId));
+    expect(languages.size).toBeGreaterThan(1);
+    for (let i = 0; i < 20; i++) {
+      const seed = `${SEED.slice(0, -2)}${String(i).padStart(2, "0")}`;
+      const quick = pickInterviewQuestions(mockQuestions, engineer, "technical", "quick", seed)!;
+      expect(quick.filter((id) => languages.has(skillOf(id))).length).toBeLessThanOrEqual(1);
+      const own = pickInterviewQuestions(mockQuestions, engineer, "technical", "full", seed, [], ["java", "sql"])!;
+      expect(own.filter((id) => languages.has(skillOf(id))).every((id) => skillOf(id) === "java")).toBe(true);
+    }
+  });
+
   it("asks about the person's open goals first for Your gaps, then fills from the role", () => {
     const ids = pickInterviewQuestions(mockQuestions, analyst, "gaps", "full", SEED, ["sql"])!;
     expect(ids).toHaveLength(8);

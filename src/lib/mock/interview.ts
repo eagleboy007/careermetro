@@ -18,7 +18,7 @@ import {
   MOCK_SESSIONS_PER_DAY,
 } from "@/lib/schemas/constants";
 import { countWords } from "@/lib/practice/words";
-import { ABOUT_SKILLS, followUpsOf, hash32, type MockRoleProfile } from "./rules";
+import { ABOUT_SKILLS, followUpsOf, hash32, topicOf, type MockRoleProfile } from "./rules";
 
 /*
  * Mock interview rules (FR-50 part 3, handoff 12l), apart from the database so they can be tested on their own. The
@@ -43,13 +43,20 @@ function roleOpen(bank: readonly MockQuestion[], role: MockRoleProfile): Open[] 
 }
 
 /**
- * Up to `n` of `pool`, the same every time for the same seed: each skill's questions shuffled by the seed and taken in
- * turns across the skills, so a round mixes topics. Skips ids already in `taken`.
+ * Up to `n` of `pool`, the same every time for the same seed: each topic's questions shuffled by the seed and taken in
+ * turns across the topics, so a round mixes them. A topic is a skill, or the "one of these" group it is in (`topic`).
+ * Skips ids already in `taken`.
  */
-export function spread(pool: readonly Open[], seed: string, n: number, taken: ReadonlySet<string> = new Set()): string[] {
+export function spread(
+  pool: readonly Open[],
+  seed: string,
+  n: number,
+  taken: ReadonlySet<string> = new Set(),
+  topic: (skillId: string) => string = (id) => id,
+): string[] {
   const order = (id: string) => hash32(`${seed}|${id}`);
   const bySkill = new Map<string, Open[]>();
-  for (const q of pool) if (!taken.has(q.id)) bySkill.set(q.skillId, [...(bySkill.get(q.skillId) ?? []), q]);
+  for (const q of pool) if (!taken.has(q.id)) bySkill.set(topic(q.skillId), [...(bySkill.get(topic(q.skillId)) ?? []), q]);
   const lists = [...bySkill.entries()]
     .sort((a, b) => order(a[0]) - order(b[0]) || (a[0] < b[0] ? -1 : 1))
     .map(([, qs]) => [...qs].sort((a, b) => order(a.id) - order(b.id) || (a.id < b.id ? -1 : 1)));
@@ -74,6 +81,8 @@ export function spread(pool: readonly Open[], seed: string, n: number, taken: Re
  * - About you: the "about you" questions, then the role's others.
  * Each fills up from the role's remaining questions, then the "about you" ones; a role with fewer questions than the
  * length gets all it has. Null when there is nothing to ask.
+ * A "one of these" group (six main languages) is one topic, and when the resume shows some of its skills (`ownSkills`)
+ * the round asks about those only, so a Java developer isn't asked about C++ (T129).
  */
 export function pickInterviewQuestions(
   bank: readonly MockQuestion[],
@@ -82,9 +91,13 @@ export function pickInterviewQuestions(
   length: MockLength,
   seed: string,
   goalSkills: readonly string[] = [],
+  ownSkills: readonly string[] = [],
 ): string[] | null {
   const n = MOCK_LENGTH_QUESTIONS[length];
-  const forRole = roleOpen(bank, role);
+  const topic = topicOf(role);
+  const own = new Set(ownSkills);
+  const ownTopics = new Set(ownSkills.map(topic).filter((t) => t.startsWith("group:")));
+  const forRole = roleOpen(bank, role).filter((q) => !ownTopics.has(topic(q.skillId)) || own.has(q.skillId));
   const about = bank.filter(isOpen).filter((q) => ABOUT_SKILLS.has(q.skillId));
   const technical = forRole.filter((q) => !ABOUT_SKILLS.has(q.skillId));
   const extra = new Set(role.skills.filter((s) => s.importance === "nice_to_have").map((s) => s.skillId));
@@ -108,7 +121,7 @@ export function pickInterviewQuestions(
   const out: string[] = [];
   for (const step of [...firsts, { pool: forRole, take: n }, { pool: about, take: n }]) {
     if (out.length >= n) break;
-    out.push(...spread(step.pool, seed, Math.min(step.take, n - out.length), new Set(out)));
+    out.push(...spread(step.pool, seed, Math.min(step.take, n - out.length), new Set(out), topic));
   }
   return out.length ? out : null;
 }

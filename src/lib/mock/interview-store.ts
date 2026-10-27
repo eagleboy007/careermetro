@@ -8,6 +8,7 @@ import { mockQuestions, roleProfiles, skillGroupMembers } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { eliteOn } from "@/lib/elite/store";
+import { currentAnalysis, type Db as AnalysisDb } from "@/lib/gaps/current";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
@@ -140,7 +141,9 @@ export async function startMockInterview(userId: string, raw: unknown, deps: Int
   return db.transaction(async (tx): Promise<StartOutcome> => {
     if (!(await eliteOn(userId, tx))) return { ok: false, error: "not_elite" };
     const goalSkills = input.data.focus === "gaps" ? await openGoalSkills(userId, tx) : [];
-    const questionIds = pickInterviewQuestions(c.bank, role, input.data.focus, input.data.length, id, goalSkills);
+    // The skills the resume shows, so a "one of these" group asks about the person's own language (T129).
+    const ownSkills = (await currentAnalysis(userId, tx as unknown as AnalysisDb))?.result.metSkillIds ?? [];
+    const questionIds = pickInterviewQuestions(c.bank, role, input.data.focus, input.data.length, id, goalSkills, ownSkills);
     if (!questionIds) return { ok: false, error: "no_questions" };
     if (!(await takeShared(LIMITS.mockSessionsPerUserDay, userId, { db: tx, now: now.getTime() }))) return { ok: false, error: "limit" };
     const [row] = await tx
