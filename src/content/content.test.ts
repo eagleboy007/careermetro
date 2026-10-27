@@ -173,7 +173,8 @@ describe("resource catalog", () => {
 });
 
 // The practice bank (handoff 12h) is v1: 15 skills from Data research and 4 data-analyst skills (statistics, data
-// cleaning, data visualization, Excel) written by Development. Self-checked only; no expert has reviewed it yet.
+// cleaning, data visualization, Excel) written by Development, plus 6 software-engineering skills from Data research
+// (DSA, OOP, unit testing, Java, JavaScript, C++; T127, 2026-10-26). Self-checked only; no expert has reviewed it yet.
 describe("practice question bank", () => {
   const known = new Set(skills.map((s) => s.id));
 
@@ -181,7 +182,7 @@ describe("practice question bank", () => {
     expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
     const perSkill = new Map<string, number>();
     for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
-    expect(perSkill.size).toBe(19);
+    expect(perSkill.size).toBe(25);
     expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
   });
 
@@ -262,7 +263,7 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
 
   it("gives every open question one or two follow-ups, numbered in order, each its own text", () => {
     const open = mockQuestions.filter((q) => q.kind === "open");
-    expect(open).toHaveLength(95);
+    expect(open).toHaveLength(125);
     for (const q of open) {
       const ups = followUpsOf(q, true);
       expect([q.id, ups.length >= 1 && ups.length <= 2]).toEqual([q.id, true]);

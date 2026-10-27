@@ -5312,6 +5312,1115 @@
       "explanation": "A role gives the instance short-lived credentials that change on their own, with no keys to leak.",
       "level": "L1",
       "reviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-1",
+      "kind": "open",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "How would you check whether a string has all unique characters, and what is the time cost?",
+      "strongCovers": "A set or fixed-size array giving O(n) time, compared with the O(n log n) sort approach and its space trade-off.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-structures-algorithms-1-fu-1",
+          "text": "How would you do it without any extra data structure?",
+          "skipIf": [
+            "sort",
+            "sorting",
+            "in place",
+            "bit vector"
+          ]
+        },
+        {
+          "id": "data-structures-algorithms-1-fu-2",
+          "text": "What changes if the string can hold any Unicode character?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-2",
+      "kind": "open",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "Explain the difference between an array and a linked list, and when you would pick each.",
+      "strongCovers": "Indexed access versus cheap insertion and deletion, memory layout and cache use, with a fitting example for each.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-structures-algorithms-2-fu-1",
+          "text": "Which would you use for a queue that grows and shrinks a lot, and why?",
+          "skipIf": [
+            "deque",
+            "circular buffer",
+            "ring buffer"
+          ]
+        },
+        {
+          "id": "data-structures-algorithms-2-fu-2",
+          "text": "How does a dynamic array grow, and what does that cost on average?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-3",
+      "kind": "open",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "How would you find two numbers in an array that add up to a target value?",
+      "strongCovers": "A hash map pass in O(n) time, or the two-pointer method on a sorted array, with the trade-offs explained.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-structures-algorithms-3-fu-1",
+          "text": "What if the array is already sorted and you cannot use extra memory?",
+          "skipIf": [
+            "two pointer",
+            "two-pointer",
+            "two pointers"
+          ]
+        },
+        {
+          "id": "data-structures-algorithms-3-fu-2",
+          "text": "How would you return every pair instead of just one?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-4",
+      "kind": "open",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "What is the difference between breadth-first and depth-first search on a graph?",
+      "strongCovers": "Queue versus stack or recursion, level-by-level versus deep paths, and BFS giving shortest paths in unweighted graphs.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-structures-algorithms-4-fu-1",
+          "text": "Which one would you use to find the fewest hops between two cities, and why?",
+          "skipIf": [
+            "shortest path",
+            "fewest edges",
+            "level order"
+          ]
+        },
+        {
+          "id": "data-structures-algorithms-4-fu-2",
+          "text": "How do you avoid visiting the same node twice?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-5",
+      "kind": "open",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "What is Big-O notation, and what is the time cost of binary search?",
+      "strongCovers": "Growth rate as input size rises, worst case focus, and O(log n) for binary search on sorted data.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "data-structures-algorithms-5-fu-1",
+          "text": "Why does binary search need the data to be sorted?",
+          "skipIf": [
+            "halve",
+            "halves",
+            "discard half"
+          ]
+        },
+        {
+          "id": "data-structures-algorithms-5-fu-2",
+          "text": "Give an example of an O(n squared) approach you have improved.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "oop-1",
+      "kind": "open",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "Explain the four pillars of object-oriented programming with an example.",
+      "strongCovers": "Encapsulation, abstraction, inheritance and polymorphism, each tied to a small concrete example rather than definitions only.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "oop-1-fu-1",
+          "text": "Which of the four do you use most in your own code, and where?",
+          "skipIf": [
+            "project",
+            "internship",
+            "my code"
+          ]
+        },
+        {
+          "id": "oop-1-fu-2",
+          "text": "When can inheritance make code harder to change?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "oop-2",
+      "kind": "open",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "What is the difference between an abstract class and an interface?",
+      "strongCovers": "Shared state and partial implementation versus a contract only, multiple interfaces, and when to choose each.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "oop-2-fu-1",
+          "text": "Give a case where you would use both together.",
+          "skipIf": [
+            "template",
+            "base class",
+            "contract"
+          ]
+        },
+        {
+          "id": "oop-2-fu-2",
+          "text": "How have default methods changed this in recent Java versions?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "oop-3",
+      "kind": "open",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "What is the difference between method overloading and method overriding?",
+      "strongCovers": "Same name with different parameters at compile time versus a subclass replacing behaviour at run time.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "oop-3-fu-1",
+          "text": "Which one gives run-time polymorphism, and how does the program decide which method to call?",
+          "skipIf": [
+            "dynamic dispatch",
+            "runtime",
+            "run time",
+            "virtual"
+          ]
+        },
+        {
+          "id": "oop-3-fu-2",
+          "text": "Can a static method be overridden?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "oop-4",
+      "kind": "open",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "Why is composition often preferred over inheritance?",
+      "strongCovers": "Looser coupling, easier change and testing, avoiding deep hierarchies, with an example such as a car having an engine.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "oop-4-fu-1",
+          "text": "Show how you would change an inheritance design into one using composition.",
+          "skipIf": [
+            "has-a",
+            "has a",
+            "delegate",
+            "delegation"
+          ]
+        },
+        {
+          "id": "oop-4-fu-2",
+          "text": "When is inheritance still the right choice?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "oop-5",
+      "kind": "open",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "Design the classes for a simple parking lot system.",
+      "strongCovers": "Clear classes such as ParkingLot, Level, Slot, Vehicle and Ticket, sensible responsibilities and relationships, and room to extend.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "oop-5-fu-1",
+          "text": "How would you add support for electric vehicle charging slots?",
+          "skipIf": [
+            "subclass",
+            "new slot type",
+            "enum"
+          ]
+        },
+        {
+          "id": "oop-5-fu-2",
+          "text": "How would you find the nearest free slot quickly?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "unit-testing-1",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "What is a unit test, and how is it different from an integration test?",
+      "strongCovers": "Testing one small piece in isolation versus several parts working together, with speed and scope differences.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "unit-testing-1-fu-1",
+          "text": "Give an example of a bug that only an integration test would catch.",
+          "skipIf": [
+            "database",
+            "network",
+            "api call"
+          ]
+        },
+        {
+          "id": "unit-testing-1-fu-2",
+          "text": "How many of each kind would you aim for in a typical service?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "unit-testing-2",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "What are mocks and stubs, and when do you use them?",
+      "strongCovers": "Replacing slow or external dependencies, stubs returning fixed data, mocks checking interactions, and not over-mocking.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "unit-testing-2-fu-1",
+          "text": "What can go wrong when a test mocks too much?",
+          "skipIf": [
+            "brittle",
+            "implementation details",
+            "false confidence"
+          ]
+        },
+        {
+          "id": "unit-testing-2-fu-2",
+          "text": "Name the mocking library you have used and one thing it does well.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "unit-testing-3",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "How would you write unit tests for a function that calculates a discount based on order value?",
+      "strongCovers": "Normal cases, boundary values at each threshold, invalid inputs, and clear test names using arrange-act-assert.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "unit-testing-3-fu-1",
+          "text": "Which boundary values would you test, and why?",
+          "skipIf": [
+            "boundary",
+            "edge case",
+            "edge cases"
+          ]
+        },
+        {
+          "id": "unit-testing-3-fu-2",
+          "text": "How would you test it if the discount rules came from a database?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "unit-testing-4",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "What is test-driven development, and what are its pros and cons?",
+      "strongCovers": "Writing a failing test first, then code, then refactoring, with better design and coverage traded against early speed.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "unit-testing-4-fu-1",
+          "text": "Describe the red, green, refactor cycle in your own words.",
+          "skipIf": [
+            "red",
+            "green",
+            "refactor"
+          ]
+        },
+        {
+          "id": "unit-testing-4-fu-2",
+          "text": "When would you not use TDD?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "unit-testing-5",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "What does code coverage tell you, and what does it not tell you?",
+      "strongCovers": "Which lines ran during tests, not whether the assertions are meaningful, and why 100% coverage is not the goal.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "unit-testing-5-fu-1",
+          "text": "What coverage target would you set for a new service, and why?",
+          "skipIf": [
+            "percent",
+            "per cent",
+            "aim for"
+          ]
+        },
+        {
+          "id": "unit-testing-5-fu-2",
+          "text": "How else would you judge whether tests are good?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "java-1",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "What is the difference between == and equals() in Java?",
+      "strongCovers": "Reference comparison versus value comparison, String examples, and overriding equals together with hashCode.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "java-1-fu-1",
+          "text": "Why must hashCode change when you override equals?",
+          "skipIf": [
+            "hashmap",
+            "hash map",
+            "hashset",
+            "bucket"
+          ]
+        },
+        {
+          "id": "java-1-fu-2",
+          "text": "What happens with == on two Integer objects holding 127 and 128?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "java-2",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "How does a HashMap work internally?",
+      "strongCovers": "Hashing keys to buckets, handling collisions with lists or trees, resizing at the load factor, and key immutability.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "java-2-fu-1",
+          "text": "What happens when two keys land in the same bucket?",
+          "skipIf": [
+            "collision",
+            "linked list",
+            "tree"
+          ]
+        },
+        {
+          "id": "java-2-fu-2",
+          "text": "Why should keys be immutable?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "java-3",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "What is the difference between checked and unchecked exceptions?",
+      "strongCovers": "Compile-time enforced handling versus runtime exceptions, examples of each, and when to throw which.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "java-3-fu-1",
+          "text": "Give an example of each from code you have written.",
+          "skipIf": [
+            "ioexception",
+            "nullpointerexception",
+            "illegalargumentexception"
+          ]
+        },
+        {
+          "id": "java-3-fu-2",
+          "text": "Why do many teams avoid checked exceptions in new code?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "java-4",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "How do you make a class immutable in Java?",
+      "strongCovers": "Final class and fields, no setters, defensive copies of mutable fields, and why immutability helps with threads.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "java-4-fu-1",
+          "text": "How would you handle a field that holds a List?",
+          "skipIf": [
+            "defensive copy",
+            "unmodifiable",
+            "list.of",
+            "copy"
+          ]
+        },
+        {
+          "id": "java-4-fu-2",
+          "text": "Name one immutable class from the Java standard library.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "java-5",
+      "kind": "open",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "What are Java streams, and when would you use them instead of a loop?",
+      "strongCovers": "Declarative pipelines with map, filter and collect, readability, laziness, and cases where a loop is clearer.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "java-5-fu-1",
+          "text": "Write a stream that returns the names of employees earning above a value, sorted.",
+          "skipIf": [
+            "filter",
+            "sorted",
+            "collect"
+          ]
+        },
+        {
+          "id": "java-5-fu-2",
+          "text": "What is the risk of using parallel streams?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "javascript-1",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "What is the difference between var, let and const?",
+      "strongCovers": "Function versus block scope, hoisting, reassignment rules, and const not making objects immutable.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "javascript-1-fu-1",
+          "text": "What does the temporal dead zone mean?",
+          "skipIf": [
+            "hoisting",
+            "hoisted",
+            "before declaration"
+          ]
+        },
+        {
+          "id": "javascript-1-fu-2",
+          "text": "Why can you still change an object declared with const?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "javascript-2",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "Explain how the event loop works in JavaScript.",
+      "strongCovers": "Single thread, call stack, task and microtask queues, and why promises run before setTimeout callbacks.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "javascript-2-fu-1",
+          "text": "In what order would a promise callback and a setTimeout of zero run, and why?",
+          "skipIf": [
+            "microtask",
+            "microtasks",
+            "job queue"
+          ]
+        },
+        {
+          "id": "javascript-2-fu-2",
+          "text": "How can a long loop freeze a web page?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "javascript-3",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "What is a closure, and where have you used one?",
+      "strongCovers": "A function keeping access to its outer scope after that scope ends, with a practical example such as a counter or event handler.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "javascript-3-fu-1",
+          "text": "How can closures cause a memory leak?",
+          "skipIf": [
+            "reference",
+            "references",
+            "garbage"
+          ]
+        },
+        {
+          "id": "javascript-3-fu-2",
+          "text": "Explain the classic loop problem with var and closures.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "javascript-4",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "What is the difference between == and === in JavaScript?",
+      "strongCovers": "Type coercion versus strict comparison, surprising examples, and defaulting to ===.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "javascript-4-fu-1",
+          "text": "Give one surprising result of using ==.",
+          "skipIf": [
+            "coercion",
+            "null",
+            "undefined"
+          ]
+        },
+        {
+          "id": "javascript-4-fu-2",
+          "text": "When, if ever, would you use ==?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "javascript-5",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "How do promises and async/await help with asynchronous code?",
+      "strongCovers": "Avoiding nested callbacks, chaining, error handling with catch or try/catch, and running tasks in parallel with Promise.all.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "javascript-5-fu-1",
+          "text": "How would you run three API calls in parallel and wait for all of them?",
+          "skipIf": [
+            "promise.all",
+            "all settled",
+            "allsettled"
+          ]
+        },
+        {
+          "id": "javascript-5-fu-2",
+          "text": "What happens if you forget to await a promise?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "cpp-1",
+      "kind": "open",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "What is the difference between a pointer and a reference in C++?",
+      "strongCovers": "Nullability, reassignment, syntax, and when each is the clearer choice in function parameters.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "cpp-1-fu-1",
+          "text": "When would you pass by const reference instead of by value?",
+          "skipIf": [
+            "copy",
+            "large object",
+            "expensive"
+          ]
+        },
+        {
+          "id": "cpp-1-fu-2",
+          "text": "Can a reference be null?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "cpp-2",
+      "kind": "open",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "What is RAII, and why is it important in C++?",
+      "strongCovers": "Tying resource lifetime to object lifetime, destructors releasing resources, and examples such as smart pointers and locks.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "cpp-2-fu-1",
+          "text": "How do smart pointers use RAII?",
+          "skipIf": [
+            "unique_ptr",
+            "shared_ptr",
+            "destructor"
+          ]
+        },
+        {
+          "id": "cpp-2-fu-2",
+          "text": "What problem does RAII solve when an exception is thrown?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "cpp-3",
+      "kind": "open",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "What is the difference between unique_ptr and shared_ptr?",
+      "strongCovers": "Single versus shared ownership, reference counting cost, and the risk of cycles with shared_ptr.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "cpp-3-fu-1",
+          "text": "How do you break a reference cycle between two shared_ptr objects?",
+          "skipIf": [
+            "weak_ptr",
+            "weak pointer"
+          ]
+        },
+        {
+          "id": "cpp-3-fu-2",
+          "text": "Why should you prefer make_unique over new?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "cpp-4",
+      "kind": "open",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "What is a virtual function, and how does it work?",
+      "strongCovers": "Run-time polymorphism through a base class pointer, the vtable idea, and virtual destructors in base classes.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "cpp-4-fu-1",
+          "text": "Why should a base class with virtual functions have a virtual destructor?",
+          "skipIf": [
+            "delete",
+            "leak",
+            "undefined behaviour",
+            "undefined behavior"
+          ]
+        },
+        {
+          "id": "cpp-4-fu-2",
+          "text": "What is a pure virtual function?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "cpp-5",
+      "kind": "open",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "How would you choose between a vector, a list and a map in the STL?",
+      "strongCovers": "Contiguous storage and fast index access, cheap insertion in the middle, and sorted key lookup, with typical use cases.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "cpp-5-fu-1",
+          "text": "What happens to iterators when a vector grows?",
+          "skipIf": [
+            "invalidate",
+            "invalidated",
+            "reallocate"
+          ]
+        },
+        {
+          "id": "cpp-5-fu-2",
+          "text": "When would you use unordered_map instead of map?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-structures-algorithms-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "data-scientist",
+        "full-stack-developer",
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "data-structures-algorithms",
+      "topic": "Data structures and algorithms",
+      "question": "Which data structure gives O(1) average time for checking whether an item exists?",
+      "options": [
+        "Sorted array",
+        "Hash set",
+        "Linked list",
+        "Binary heap"
+      ],
+      "answer": 1,
+      "explanation": "A hash set looks items up by their hash in constant time on average. A sorted array needs O(log n) binary search, and a linked list or heap needs a scan.",
+      "level": "L1",
+      "reviewed": false
+    },
+    {
+      "id": "oop-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "java-backend-developer",
+        "software-engineer"
+      ],
+      "skillId": "oop",
+      "topic": "Object-oriented programming",
+      "question": "Which principle hides an object's internal data behind methods?",
+      "options": [
+        "Inheritance",
+        "Polymorphism",
+        "Abstraction",
+        "Encapsulation"
+      ],
+      "answer": 3,
+      "explanation": "Encapsulation keeps fields private and exposes behaviour through methods, so internal data can change without breaking callers.",
+      "level": "L1",
+      "reviewed": false
+    },
+    {
+      "id": "unit-testing-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "android-developer",
+        "cross-platform-mobile-developer",
+        "frontend-developer",
+        "full-stack-developer",
+        "ios-developer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "software-engineer"
+      ],
+      "skillId": "unit-testing",
+      "topic": "Unit testing",
+      "question": "A unit test calls a real payment gateway over the network. What is the main problem?",
+      "options": [
+        "It is slow and can fail for reasons outside the code",
+        "It improves coverage too much",
+        "It makes the test too short",
+        "It cannot use assertions"
+      ],
+      "answer": 0,
+      "explanation": "Network calls make tests slow and flaky. Unit tests should replace external services with stubs or mocks.",
+      "level": "L1",
+      "reviewed": false
+    },
+    {
+      "id": "java-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "android-developer",
+        "appsec-engineer",
+        "java-backend-developer",
+        "qa-automation-engineer",
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "java",
+      "topic": "Java",
+      "question": "Which collection keeps keys in sorted order?",
+      "options": [
+        "HashMap",
+        "TreeMap",
+        "LinkedList",
+        "ArrayList"
+      ],
+      "answer": 1,
+      "explanation": "TreeMap stores keys in a red-black tree, so they stay sorted. HashMap keeps no order, and the lists are not key-value maps.",
+      "level": "L1",
+      "reviewed": false
+    },
+    {
+      "id": "javascript-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "appsec-engineer",
+        "frontend-developer",
+        "full-stack-developer",
+        "software-engineer"
+      ],
+      "skillId": "javascript",
+      "topic": "JavaScript",
+      "question": "What does typeof null return in JavaScript?",
+      "options": [
+        "\"null\"",
+        "\"undefined\"",
+        "\"object\"",
+        "\"number\""
+      ],
+      "answer": 2,
+      "explanation": "typeof null returns \"object\" because of a long-standing quirk in the language. Check for null with === null instead.",
+      "level": "L1",
+      "reviewed": false
+    },
+    {
+      "id": "cpp-mc-1",
+      "kind": "choice",
+      "roleSlugs": [
+        "software-engineer"
+      ],
+      "skillId": "cpp",
+      "topic": "C++",
+      "question": "Which smart pointer allows only one owner of an object?",
+      "options": [
+        "shared_ptr",
+        "weak_ptr",
+        "auto_ptr",
+        "unique_ptr"
+      ],
+      "answer": 3,
+      "explanation": "unique_ptr has sole ownership and can only be moved, not copied. shared_ptr allows many owners, and auto_ptr is removed from modern C++.",
+      "level": "L1",
+      "reviewed": false
     }
   ]
 }

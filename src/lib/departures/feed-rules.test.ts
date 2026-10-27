@@ -178,7 +178,12 @@ describe("feed rules", () => {
       ["Software Engineer", "software-engineer"],
       ["SDE II", "software-engineer"],
       ["Embedded Software Engineer", null],
-      ["Software Engineer in Test", null],
+      ["Software Engineer in Test", "qa-automation-engineer"],
+      ["Software Development Engineer in Test", "qa-automation-engineer"],
+      ["Software Engineer - QA", "qa-automation-engineer"],
+      ["Software Engineer III", "senior-backend-engineer"],
+      ["SDE 3", "senior-backend-engineer"],
+      ["Software Engineer II", "software-engineer"],
       ["Staff Software Engineer", null],
       ["Graphic Designer", null],
     ];

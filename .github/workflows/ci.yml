@@ -41,7 +41,8 @@ jobs:
   # Walks the whole app in a real browser against a production build, signed-in screens included (e2e/README.md).
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # The walk takes about 6 minutes; a slow apt mirror during the browser install has taken 8.
+    timeout-minutes: 25
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/cm
     steps:

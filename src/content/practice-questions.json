@@ -663,5 +663,215 @@
     "question": "What checks do you do before sending a spreadsheet to your manager?",
     "lookFor": "Totals cross-checked, formulas not broken, clear labels and no hidden mistakes.",
     "level": "L1"
+  },
+  {
+    "id": "data-structures-algorithms-1",
+    "skillId": "data-structures-algorithms",
+    "question": "How would you check whether a string has all unique characters, and what is the time cost?",
+    "lookFor": "A set or fixed-size array giving O(n) time, compared with the O(n log n) sort approach and its space trade-off.",
+    "level": "L1"
+  },
+  {
+    "id": "data-structures-algorithms-2",
+    "skillId": "data-structures-algorithms",
+    "question": "Explain the difference between an array and a linked list, and when you would pick each.",
+    "lookFor": "Indexed access versus cheap insertion and deletion, memory layout and cache use, with a fitting example for each.",
+    "level": "L1"
+  },
+  {
+    "id": "data-structures-algorithms-3",
+    "skillId": "data-structures-algorithms",
+    "question": "How would you find two numbers in an array that add up to a target value?",
+    "lookFor": "A hash map pass in O(n) time, or the two-pointer method on a sorted array, with the trade-offs explained.",
+    "level": "L1"
+  },
+  {
+    "id": "data-structures-algorithms-4",
+    "skillId": "data-structures-algorithms",
+    "question": "What is the difference between breadth-first and depth-first search on a graph?",
+    "lookFor": "Queue versus stack or recursion, level-by-level versus deep paths, and BFS giving shortest paths in unweighted graphs.",
+    "level": "L1"
+  },
+  {
+    "id": "data-structures-algorithms-5",
+    "skillId": "data-structures-algorithms",
+    "question": "What is Big-O notation, and what is the time cost of binary search?",
+    "lookFor": "Growth rate as input size rises, worst case focus, and O(log n) for binary search on sorted data.",
+    "level": "L1"
+  },
+  {
+    "id": "oop-1",
+    "skillId": "oop",
+    "question": "Explain the four pillars of object-oriented programming with an example.",
+    "lookFor": "Encapsulation, abstraction, inheritance and polymorphism, each tied to a small concrete example rather than definitions only.",
+    "level": "L1"
+  },
+  {
+    "id": "oop-2",
+    "skillId": "oop",
+    "question": "What is the difference between an abstract class and an interface?",
+    "lookFor": "Shared state and partial implementation versus a contract only, multiple interfaces, and when to choose each.",
+    "level": "L1"
+  },
+  {
+    "id": "oop-3",
+    "skillId": "oop",
+    "question": "What is the difference between method overloading and method overriding?",
+    "lookFor": "Same name with different parameters at compile time versus a subclass replacing behaviour at run time.",
+    "level": "L1"
+  },
+  {
+    "id": "oop-4",
+    "skillId": "oop",
+    "question": "Why is composition often preferred over inheritance?",
+    "lookFor": "Looser coupling, easier change and testing, avoiding deep hierarchies, with an example such as a car having an engine.",
+    "level": "L1"
+  },
+  {
+    "id": "oop-5",
+    "skillId": "oop",
+    "question": "Design the classes for a simple parking lot system.",
+    "lookFor": "Clear classes such as ParkingLot, Level, Slot, Vehicle and Ticket, sensible responsibilities and relationships, and room to extend.",
+    "level": "L1"
+  },
+  {
+    "id": "unit-testing-1",
+    "skillId": "unit-testing",
+    "question": "What is a unit test, and how is it different from an integration test?",
+    "lookFor": "Testing one small piece in isolation versus several parts working together, with speed and scope differences.",
+    "level": "L1"
+  },
+  {
+    "id": "unit-testing-2",
+    "skillId": "unit-testing",
+    "question": "What are mocks and stubs, and when do you use them?",
+    "lookFor": "Replacing slow or external dependencies, stubs returning fixed data, mocks checking interactions, and not over-mocking.",
+    "level": "L1"
+  },
+  {
+    "id": "unit-testing-3",
+    "skillId": "unit-testing",
+    "question": "How would you write unit tests for a function that calculates a discount based on order value?",
+    "lookFor": "Normal cases, boundary values at each threshold, invalid inputs, and clear test names using arrange-act-assert.",
+    "level": "L1"
+  },
+  {
+    "id": "unit-testing-4",
+    "skillId": "unit-testing",
+    "question": "What is test-driven development, and what are its pros and cons?",
+    "lookFor": "Writing a failing test first, then code, then refactoring, with better design and coverage traded against early speed.",
+    "level": "L1"
+  },
+  {
+    "id": "unit-testing-5",
+    "skillId": "unit-testing",
+    "question": "What does code coverage tell you, and what does it not tell you?",
+    "lookFor": "Which lines ran during tests, not whether the assertions are meaningful, and why 100% coverage is not the goal.",
+    "level": "L1"
+  },
+  {
+    "id": "java-1",
+    "skillId": "java",
+    "question": "What is the difference between == and equals() in Java?",
+    "lookFor": "Reference comparison versus value comparison, String examples, and overriding equals together with hashCode.",
+    "level": "L1"
+  },
+  {
+    "id": "java-2",
+    "skillId": "java",
+    "question": "How does a HashMap work internally?",
+    "lookFor": "Hashing keys to buckets, handling collisions with lists or trees, resizing at the load factor, and key immutability.",
+    "level": "L1"
+  },
+  {
+    "id": "java-3",
+    "skillId": "java",
+    "question": "What is the difference between checked and unchecked exceptions?",
+    "lookFor": "Compile-time enforced handling versus runtime exceptions, examples of each, and when to throw which.",
+    "level": "L1"
+  },
+  {
+    "id": "java-4",
+    "skillId": "java",
+    "question": "How do you make a class immutable in Java?",
+    "lookFor": "Final class and fields, no setters, defensive copies of mutable fields, and why immutability helps with threads.",
+    "level": "L1"
+  },
+  {
+    "id": "java-5",
+    "skillId": "java",
+    "question": "What are Java streams, and when would you use them instead of a loop?",
+    "lookFor": "Declarative pipelines with map, filter and collect, readability, laziness, and cases where a loop is clearer.",
+    "level": "L1"
+  },
+  {
+    "id": "javascript-1",
+    "skillId": "javascript",
+    "question": "What is the difference between var, let and const?",
+    "lookFor": "Function versus block scope, hoisting, reassignment rules, and const not making objects immutable.",
+    "level": "L1"
+  },
+  {
+    "id": "javascript-2",
+    "skillId": "javascript",
+    "question": "Explain how the event loop works in JavaScript.",
+    "lookFor": "Single thread, call stack, task and microtask queues, and why promises run before setTimeout callbacks.",
+    "level": "L1"
+  },
+  {
+    "id": "javascript-3",
+    "skillId": "javascript",
+    "question": "What is a closure, and where have you used one?",
+    "lookFor": "A function keeping access to its outer scope after that scope ends, with a practical example such as a counter or event handler.",
+    "level": "L1"
+  },
+  {
+    "id": "javascript-4",
+    "skillId": "javascript",
+    "question": "What is the difference between == and === in JavaScript?",
+    "lookFor": "Type coercion versus strict comparison, surprising examples, and defaulting to ===.",
+    "level": "L1"
+  },
+  {
+    "id": "javascript-5",
+    "skillId": "javascript",
+    "question": "How do promises and async/await help with asynchronous code?",
+    "lookFor": "Avoiding nested callbacks, chaining, error handling with catch or try/catch, and running tasks in parallel with Promise.all.",
+    "level": "L1"
+  },
+  {
+    "id": "cpp-1",
+    "skillId": "cpp",
+    "question": "What is the difference between a pointer and a reference in C++?",
+    "lookFor": "Nullability, reassignment, syntax, and when each is the clearer choice in function parameters.",
+    "level": "L1"
+  },
+  {
+    "id": "cpp-2",
+    "skillId": "cpp",
+    "question": "What is RAII, and why is it important in C++?",
+    "lookFor": "Tying resource lifetime to object lifetime, destructors releasing resources, and examples such as smart pointers and locks.",
+    "level": "L1"
+  },
+  {
+    "id": "cpp-3",
+    "skillId": "cpp",
+    "question": "What is the difference between unique_ptr and shared_ptr?",
+    "lookFor": "Single versus shared ownership, reference counting cost, and the risk of cycles with shared_ptr.",
+    "level": "L1"
+  },
+  {
+    "id": "cpp-4",
+    "skillId": "cpp",
+    "question": "What is a virtual function, and how does it work?",
+    "lookFor": "Run-time polymorphism through a base class pointer, the vtable idea, and virtual destructors in base classes.",
+    "level": "L1"
+  },
+  {
+    "id": "cpp-5",
+    "skillId": "cpp",
+    "question": "How would you choose between a vector, a list and a map in the STL?",
+    "lookFor": "Contiguous storage and fast index access, cheap insertion in the middle, and sorted key lookup, with typical use cases.",
+    "level": "L1"
   }
 ]
