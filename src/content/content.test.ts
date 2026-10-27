@@ -182,7 +182,7 @@ describe("practice question bank", () => {
     expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
     const perSkill = new Map<string, number>();
     for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
-    expect(perSkill.size).toBe(25);
+    expect(perSkill.size).toBe(27);
     expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
   });
 
