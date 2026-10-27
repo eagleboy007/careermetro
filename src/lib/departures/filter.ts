@@ -4,6 +4,9 @@ import type { JobPost, WorkType } from "@/lib/schemas";
 export const DEPARTURES_LEDE =
   "Roles from public company job boards and posts you paste. Apply on the company's site, or with Express apply where the company takes it.";
 
+/** Under the list (Data research's feed terms note, 2026-10-27): where the roles come from, and how an employer opts out. */
+export const DEPARTURES_SOURCE = "We show each role's title, company and place as its job board publishes them, and link to the original posting. Run a company's careers board?";
+
 export type DepartureTab = "all" | "saved" | "applied";
 
 export type DepartureFilters = {

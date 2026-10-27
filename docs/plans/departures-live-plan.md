@@ -43,7 +43,8 @@ Two PRs. PR 1 is the feed, the tables and Departures (items 40 and 42). PR 2 is 
 
 - **Feed job**: `scripts/departures/fetch-feeds.mjs` in a GitHub Actions workflow `departures.yml`, daily at 01:00 UTC (06:30 IST). It writes with `DATABASE_MIGRATION_URL`, as the link check does, and adds no new key.
   - One GET per board per day, through the public APIs only: Greenhouse boards-api, Lever v0 postings, Ashby posting-api and SmartRecruiters v1 postings.
-  - The user-agent is "CareerMetro jobs (careermetro.vercel.app)". Each request times out after 15 s, and a 4xx or 5xx skips that board with a `last_error` in the run summary.
+  - The user-agent is "CareerMetroJobs/1.0 (+https://careermetro.vercel.app/terms#job-boards)" (2026-10-27; before that "CareerMetro jobs (careermetro.vercel.app)"). Each request times out after 15 s, and a 4xx or 5xx skips that board with a `last_error` in the run summary.
+  - SmartRecruiters (2026-10-27): India posts only (`country=in`), up to 20 pages of 100 per board, at least 160 ms between its requests across the run and at most 4 at once (its published limit is 10 a second and 8 at once), and one more try after a 429's Retry-After (at most 10 s).
   - It keeps posts located in India or listed as remote-India, matching `INDIA` from `mine.mjs`, moved to `src/lib/departures/feed-rules.mjs` and shared.
   - It upserts by external id and closes rows not seen in this run. A board whose fetch failed closes nothing.
   - Caps: 300 boards, 500 posts a board, 10,000 open posts in all (raised from 150 and 5,000 on 2026-10-20; 144 boards ran in about 75 seconds). Above that the newest are kept.
@@ -62,6 +63,17 @@ Two PRs. PR 1 is the feed, the tables and Departures (items 40 and 42). PR 2 is 
 - **On your line**:
   - It counts other people with an active goal on the same skill who have "Let people find me" on and are not deleting their account, suspended, blocked either way or the viewer.
   - Initials are shown only for those people.
+
+## Feed terms: safe practice (Data research, data/market/ats-feed-terms.md, 2026-10-27)
+
+- **What is stored**: a post's title, company (from `src/content/job-boards.json`), one city, work type, a stated-experience note, the role read from the title and the skill ids found by code. The description is read only to find skills and is never stored or logged; no recruiter name, email or other contact field is read into a row.
+- **Shown unchanged, linked out**: Departures shows the title as the board publishes it (HTML stripped) and "Apply on company site" opens the original posting. CareerMetro hosts no application form for a board's role. Skill tags are labelled as CareerMetro's reading in `/terms#job-boards`.
+- **Freshness**: the feed runs daily; a board read whole closes the posts it no longer lists, and Departures shows "Updated" with the last run's time.
+- **Removing an employer's board** (target: within 2 working days of the request, which comes through `/grievances`):
+  1. Delete the board's entry from `src/content/job-boards.json` in a PR and add a line to the "Removed on request" list below (company, ATS and token, date), so nobody adds it back.
+  2. After the merge, run the Departures feed workflow on main (or wait for the daily run). A board off the list has all its open posts closed and its `job_feed_boards` row deleted in that run.
+  3. Reply to the employer from the grievance mailbox saying it is done.
+- **Removed on request**: none yet.
 
 ## Choices made
 

@@ -84,6 +84,27 @@ const sections: LegalSection[] = [
     ),
   },
   {
+    id: "job-boards",
+    heading: "Jobs from company job boards",
+    body: (
+      <>
+        <p>
+          Departures lists roles that companies publish on their public job boards (Greenhouse, Lever, Ashby and SmartRecruiters). We read each board
+          once a day through its public feed, keep the role&apos;s title, company and place as the board publishes them, and link to the original posting.
+          You apply on the company&apos;s own site. We don&apos;t copy the job description, and we don&apos;t keep any recruiter&apos;s name or contact
+          details. The skills we tag on a role are our own reading of the post, not the employer&apos;s.
+        </p>
+        <p>
+          A role leaves Departures when its board stops listing it. If your company wants its board removed, write to us from the{" "}
+          <Link href="/grievances" className={a}>
+            Grievances
+          </Link>{" "}
+          page and name the board. We take it off within 2 working days, and its roles leave Departures on the next daily read.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "content",
     heading: "Your content",
     body: (
