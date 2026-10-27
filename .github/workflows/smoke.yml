@@ -60,4 +60,9 @@ jobs:
             env_name=$(jq -r '.env // empty' health.json 2>/dev/null || true)
             if [ "$env_name" != production ]; then echo "::error title=Health::${SITE} says env \"${env_name:-none}\", not production"; exit 1; fi
           fi
+          # Feed health never turns the run red: a warning names how many job boards keep failing, or a feed that stopped.
+          dead=$(jq -r '.feed.deadBoards // 0' health.json 2>/dev/null || echo 0)
+          hours=$(jq -r '.feed.hoursSinceRun // empty' health.json 2>/dev/null || true)
+          if [ "${dead:-0}" -gt 0 ] 2>/dev/null; then echo "::warning title=Feed boards::${dead} job boards had a problem on 3 daily runs in a row; the Departures feed run summary names them"; fi
+          if [ -n "$hours" ] && [ "$hours" -gt 30 ] 2>/dev/null; then echo "::warning title=Feed::The Departures feed last read a board ${hours} hours ago"; fi
           if [ "$code" = 200 ]; then echo "::notice title=Health::HTTP $code: $esc"; else echo "::error title=Health::HTTP $code: $esc"; exit 1; fi

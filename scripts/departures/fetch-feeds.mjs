@@ -201,6 +201,50 @@ export function boardsToClose(openKeys, results, boards, unlisted = true) {
   return [...new Set([...read, ...(unlisted ? openKeys.filter((k) => !listed.has(k)) : [])])].filter((k) => SAFE_KEY.test(k)).sort();
 }
 
+/** A board's problem this run in one word: its failure code, "empty" when it kept no India post, or null. */
+export function boardProblem(/** @type {BoardResult} */ r) {
+  if (!r.ok) return (r.error ?? "error").slice(0, 20);
+  return r.posts === 0 ? "empty" : null;
+}
+
+/**
+ * Each board's health after this run, in job_feed_boards: `bad_runs` counts the runs in a row it had a problem
+ * (boardProblem) and goes back to 0 after a good run. Rows of boards taken off the list are deleted (unless
+ * `closeUnlisted` is false, for tests sharing a database). A run where every board failed is the runner's network, not
+ * the boards, so it counts for none. Returns the boards at FEED_LIMITS.badRuns or more.
+ * @param {import("postgres").TransactionSql} tx
+ * @param {BoardResult[]} results
+ * @param {Board[]} boards
+ * @param {Date} now
+ * @param {boolean} closeUnlisted
+ * @returns {Promise<{ key: string; problem: string; runs: number }[]>}
+ */
+async function writeBoardHealth(tx, results, boards, now, closeUnlisted) {
+  if (!results.some((r) => r.ok)) return [];
+  const rows = results.map((r) => ({ ats: r.ats, board_token: r.token, problem: boardProblem(r) }));
+  if (rows.length) {
+    await tx`
+      insert into job_feed_boards (ats, board_token, bad_runs, last_problem, last_ok_at, updated_at)
+      select x.ats, x.board_token, case when x.problem is null then 0 else 1 end, x.problem,
+        case when x.problem is null then ${now}::timestamptz end, ${now}
+      from jsonb_to_recordset(${JSON.stringify(rows)}::text::jsonb) as x(ats text, board_token text, problem text)
+      on conflict (ats, board_token) do update set
+        bad_runs = case when excluded.last_problem is null then 0 else job_feed_boards.bad_runs + 1 end,
+        last_problem = excluded.last_problem, last_ok_at = coalesce(excluded.last_ok_at, job_feed_boards.last_ok_at),
+        updated_at = excluded.updated_at`;
+  }
+  if (closeUnlisted) {
+    const listed = boards.map(key).filter((k) => SAFE_KEY.test(k));
+    await tx`delete from job_feed_boards where not ((ats || ':' || board_token) = any(${pgArray(listed)}::text[]))`;
+  }
+  const keys = rows.map((r) => `${r.ats}:${r.board_token}`).filter((k) => SAFE_KEY.test(k));
+  const stuck = await tx`
+    select ats || ':' || board_token as key, last_problem, bad_runs from job_feed_boards
+    where bad_runs >= ${FEED_LIMITS.badRuns} and (ats || ':' || board_token) = any(${pgArray(keys)}::text[])
+    order by bad_runs desc, ats, board_token`;
+  return stuck.map((r) => ({ key: r.key, problem: r.last_problem, runs: Number(r.bad_runs) }));
+}
+
 /**
  * Writes one run in a single transaction: the run row, the posts (new ones inserted, seen ones updated and reopened),
  * then closes what this run didn't see on a board it read, and every open post of a board no longer on the list.
@@ -263,7 +307,8 @@ export async function writeRun(sql, { boards, rows, results, seen = [], startedA
       update job_feed_runs set finished_at = ${now}, boards_ok = ${ok}, boards_failed = ${results.length - ok},
         posts_open = ${count}, posts_closed = ${closed.length}
       where id = ${run.id}`;
-    return { runId: String(run.id), open: Number(count), closed: closed.length };
+    const stuck = await writeBoardHealth(tx, results, boards, now, closeUnlisted);
+    return { runId: String(run.id), open: Number(count), closed: closed.length, stuck };
   });
 }
 
@@ -377,7 +422,7 @@ export function loadBoards(path = new URL("src/content/job-boards.json", root)) 
 export function summaryLines(
   /** @type {BoardResult[]} */ results,
   /** @type {number} */ kept,
-  /** @type {{ open: number; closed: number } | null} */ written,
+  /** @type {{ open: number; closed: number; stuck?: { key: string; problem: string; runs: number }[] } | null} */ written,
   /** @type {{ month: string; rows: number; counted: number; unmatched: number; indiaOnly: number; previous?: string | null } | { failed: string } | null | undefined} */ rollup = undefined,
 ) {
   const ok = results.filter((r) => r.ok);
@@ -393,6 +438,12 @@ export function summaryLines(
     );
     if (rollup.previous) lines.push(`Market ${rollup.previous.slice(0, 7)} was behind its last run, so it was rewritten as of that run.`);
   }
+  if (written?.stuck?.length)
+    lines.push(
+      `Boards with a problem ${FEED_LIMITS.badRuns} runs in a row or more: ` +
+        written.stuck.map((b) => `${b.key.replace(":", "/")} (${b.problem}, ${b.runs} runs)`).join(", ") +
+        ". Check each board's careers page, then fix or remove it in src/content/job-boards.json.",
+    );
   for (const r of results.filter((x) => !x.ok)) lines.push(`Skipped ${r.ats}/${r.token}: last_error ${r.error}`);
   for (const r of results.filter((x) => x.ok && x.truncated)) lines.push(`Kept open ${r.ats}/${r.token}: answer cut short, so nothing on it was closed`);
   for (const r of results.filter((x) => x.ok && x.capped && !x.truncated))
@@ -476,6 +527,8 @@ export async function main() {
   if (places) lines.splice(1, 0, places);
   for (const line of [roleLine(rows), unmatchedLine(rows)]) if (line) lines.push(line);
   for (const line of lines) console.log(line);
+  // An annotation too, so a dead board shows on the run's page, not only in its log.
+  if (written?.stuck.length) console.log(`::warning title=Feed boards::${written.stuck.length} boards had a problem ${FEED_LIMITS.badRuns} runs in a row or more`);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Departures feed\n\n${lines.map((l) => `- ${l}`).join("\n")}\n`);
   // Every board failing is the runner's network or an outage, not the boards: fail so someone looks.
   if (results.length && !results.some((r) => r.ok)) process.exitCode = 1;
