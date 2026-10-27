@@ -24,7 +24,7 @@ export function LegalPage({ title, intro, updated, draft, sections }: { title: s
           )}
         </section>
         {sections.map((s) => (
-          <section key={s.id} aria-labelledby={`${s.id}-h`} className="flex flex-col gap-3">
+          <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className="flex scroll-mt-6 flex-col gap-3">
             <h2 id={`${s.id}-h`} className="text-xl font-semibold">
               {s.heading}
             </h2>
