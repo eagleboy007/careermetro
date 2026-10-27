@@ -22,7 +22,7 @@ export const FEED_LIMITS = {
   openPosts: 10000,
   /** One SmartRecruiters page, and the most pages read per board; India posts past them leave the board cut short. */
   smartRecruitersPage: 100,
-  smartRecruitersPages: 5,
+  smartRecruitersPages: 20,
   timeoutMs: 15_000,
   /** The biggest board answer read. A large Greenhouse board with full descriptions is a few MB. */
   maxBytes: 25 * 1024 * 1024,
