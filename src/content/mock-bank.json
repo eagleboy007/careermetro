@@ -6284,6 +6284,327 @@
       "followUpsReviewed": false
     },
     {
+      "id": "go-1",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "devops-engineer",
+        "java-backend-developer",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "software-engineer"
+      ],
+      "skillId": "go",
+      "topic": "Go",
+      "question": "What are goroutines, and how are they different from operating system threads?",
+      "strongCovers": "Lightweight, runtime-scheduled functions with small growable stacks, many goroutines on few threads, and started with the go keyword.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "go-1-fu-1",
+          "text": "How would you wait for ten goroutines to finish before continuing?",
+          "skipIf": [
+            "waitgroup",
+            "wait group",
+            "sync.waitgroup"
+          ]
+        },
+        {
+          "id": "go-1-fu-2",
+          "text": "What happens to running goroutines when main returns?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "go-2",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "devops-engineer",
+        "java-backend-developer",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "software-engineer"
+      ],
+      "skillId": "go",
+      "topic": "Go",
+      "question": "How do channels work in Go, and when would you use a buffered channel?",
+      "strongCovers": "Typed pipes for passing values between goroutines, blocking send and receive, buffers to decouple producer and consumer speed.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "go-2-fu-1",
+          "text": "What happens if you send on a channel that nobody reads from?",
+          "skipIf": [
+            "deadlock",
+            "block forever",
+            "blocks forever"
+          ]
+        },
+        {
+          "id": "go-2-fu-2",
+          "text": "How does select help when reading from several channels?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "go-3",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "devops-engineer",
+        "java-backend-developer",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "software-engineer"
+      ],
+      "skillId": "go",
+      "topic": "Go",
+      "question": "How does error handling work in Go compared with exceptions?",
+      "strongCovers": "Errors as returned values checked with if err != nil, wrapping with fmt.Errorf and %w, errors.Is and errors.As, and panic only for bugs.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "go-3-fu-1",
+          "text": "How would you add context to an error while keeping the original error checkable?",
+          "skipIf": [
+            "wrap",
+            "wrapping",
+            "errors.is",
+            "%w"
+          ]
+        },
+        {
+          "id": "go-3-fu-2",
+          "text": "When is it acceptable to use panic?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "go-4",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "devops-engineer",
+        "java-backend-developer",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "software-engineer"
+      ],
+      "skillId": "go",
+      "topic": "Go",
+      "question": "What is an interface in Go, and how does a type satisfy one?",
+      "strongCovers": "Method sets satisfied implicitly with no implements keyword, small interfaces such as io.Reader, and accepting interfaces in function parameters.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "go-4-fu-1",
+          "text": "Why are small interfaces like io.Reader considered good Go style?",
+          "skipIf": [
+            "single method",
+            "one method",
+            "composable"
+          ]
+        },
+        {
+          "id": "go-4-fu-2",
+          "text": "What is the empty interface, and what replaced most of its uses?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "go-5",
+      "kind": "open",
+      "roleSlugs": [
+        "appsec-engineer",
+        "devops-engineer",
+        "java-backend-developer",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "software-engineer"
+      ],
+      "skillId": "go",
+      "topic": "Go",
+      "question": "How would you build a simple REST API in Go using the standard library?",
+      "strongCovers": "net/http handlers, routing, JSON encoding and decoding, status codes, and graceful shutdown with context.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "go-5-fu-1",
+          "text": "How would you stop a slow request from running forever?",
+          "skipIf": [
+            "timeout",
+            "context.withtimeout",
+            "deadline"
+          ]
+        },
+        {
+          "id": "go-5-fu-2",
+          "text": "How would you test a handler without starting a real server?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "csharp-dotnet-1",
+      "kind": "open",
+      "roleSlugs": [
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "csharp-dotnet",
+      "topic": "C# and .NET",
+      "question": "What is the difference between a class and a struct in C#?",
+      "strongCovers": "Reference type on the heap versus value type copied on assignment, when structs fit small immutable data, and boxing costs.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "csharp-dotnet-1-fu-1",
+          "text": "What happens when you pass a struct to a method and change it inside?",
+          "skipIf": [
+            "copy",
+            "copied",
+            "by value"
+          ]
+        },
+        {
+          "id": "csharp-dotnet-1-fu-2",
+          "text": "What is boxing, and why can it slow code down?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "csharp-dotnet-2",
+      "kind": "open",
+      "roleSlugs": [
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "csharp-dotnet",
+      "topic": "C# and .NET",
+      "question": "How do async and await work in C#?",
+      "strongCovers": "Tasks representing work, await freeing the thread while waiting on I/O, avoiding .Result and .Wait, and async all the way down.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "csharp-dotnet-2-fu-1",
+          "text": "Why can calling .Result on a task cause a deadlock?",
+          "skipIf": [
+            "synchronization context",
+            "sync context",
+            "blocking"
+          ]
+        },
+        {
+          "id": "csharp-dotnet-2-fu-2",
+          "text": "What is the difference between Task.WhenAll and awaiting tasks one by one?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "csharp-dotnet-3",
+      "kind": "open",
+      "roleSlugs": [
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "csharp-dotnet",
+      "topic": "C# and .NET",
+      "question": "What is dependency injection in ASP.NET Core, and what are the service lifetimes?",
+      "strongCovers": "Registering services in the container, constructor injection, and the transient, scoped and singleton lifetimes with an example of each.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "csharp-dotnet-3-fu-1",
+          "text": "What goes wrong if a singleton depends on a scoped service?",
+          "skipIf": [
+            "captive dependency",
+            "captive",
+            "disposed"
+          ]
+        },
+        {
+          "id": "csharp-dotnet-3-fu-2",
+          "text": "How would you swap a real email service for a fake one in tests?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "csharp-dotnet-4",
+      "kind": "open",
+      "roleSlugs": [
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "csharp-dotnet",
+      "topic": "C# and .NET",
+      "question": "What is LINQ, and what is the difference between IEnumerable and IQueryable?",
+      "strongCovers": "Query syntax over collections, in-memory evaluation versus translation to SQL, and deferred execution.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "csharp-dotnet-4-fu-1",
+          "text": "Why can calling ToList too early make a database query slow?",
+          "skipIf": [
+            "deferred execution",
+            "in memory",
+            "whole table"
+          ]
+        },
+        {
+          "id": "csharp-dotnet-4-fu-2",
+          "text": "Write a LINQ query that groups orders by customer and sums the totals.",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "csharp-dotnet-5",
+      "kind": "open",
+      "roleSlugs": [
+        "senior-backend-engineer",
+        "software-engineer"
+      ],
+      "skillId": "csharp-dotnet",
+      "topic": "C# and .NET",
+      "question": "How does garbage collection work in .NET, and when do you need IDisposable?",
+      "strongCovers": "Generational collection of managed memory, and releasing unmanaged resources such as files and connections with Dispose and using.",
+      "level": "L1",
+      "followUps": [
+        {
+          "id": "csharp-dotnet-5-fu-1",
+          "text": "What does a using statement do for a database connection?",
+          "skipIf": [
+            "dispose",
+            "disposed",
+            "finally"
+          ]
+        },
+        {
+          "id": "csharp-dotnet-5-fu-2",
+          "text": "What are the generations in the .NET garbage collector?",
+          "skipIf": []
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
       "id": "data-structures-algorithms-mc-1",
       "kind": "choice",
       "roleSlugs": [
