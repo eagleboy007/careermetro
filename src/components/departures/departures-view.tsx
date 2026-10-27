@@ -10,6 +10,7 @@ import { StatusChip } from "@/components/ui/status-chip";
 import {
   citiesOf,
   DEPARTURES_LEDE,
+  DEPARTURES_SOURCE,
   departuresEmpty,
   filterDepartures,
   initials,
@@ -258,6 +259,13 @@ export function DeparturesView({
         )}
 
         <PasteBox id={pasteId} resumeId={resumeId} demo={demo} />
+        <p data-departures-source className="text-[0.8rem] text-muted">
+          {DEPARTURES_SOURCE}{" "}
+          <Link href="/terms#job-boards" className="underline underline-offset-2">
+            Ask us to remove your board
+          </Link>
+          .
+        </p>
         <p
           role="status"
           className={`pointer-events-none fixed bottom-24 left-1/2 z-40 w-max max-w-[calc(100%-32px)] -translate-x-1/2 rounded-2xl bg-ink px-4 py-2.5 text-[0.84rem] font-[550] text-bg transition-opacity min-[700px]:rounded-full min-[760px]:bottom-6 ${toast ? "opacity-100" : "opacity-0"}`}

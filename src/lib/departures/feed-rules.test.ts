@@ -102,7 +102,7 @@ describe("feed rules", () => {
     expect(new URL(feedUrl("lever", "a")).hostname).toBe("api.lever.co");
     expect(new URL(feedUrl("ashby", "a")).hostname).toBe("api.ashbyhq.com");
     expect(new URL(feedUrl("smartrecruiters", "a")).hostname).toBe("api.smartrecruiters.com");
-    expect(USER_AGENT).toBe("CareerMetro jobs (careermetro.vercel.app)");
+    expect(USER_AGENT).toBe("CareerMetroJobs/1.0 (+https://careermetro.vercel.app/terms#job-boards)");
   });
 
   it("splits skills by heading: requirements are required, nice to have and bonus are not, and other sections don't count", () => {
@@ -364,6 +364,31 @@ describe("collect", () => {
     expect(summaryLines(sr.results, sr.rows.length, null).join("\n")).toContain("Kept open smartrecruiters/ExampleWorks: answer cut short");
   });
 
+  it("spaces SmartRecruiters requests, and tries once more after a 429's Retry-After", async () => {
+    const page = fixture("smartrecruiters");
+    const url = feedUrl("smartrecruiters", "ExampleWorks");
+    const waits: number[] = [];
+    const sleep = async (ms: number) => void waits.push(ms);
+    let calls = 0;
+    const busyOnce = vi.fn(async () => {
+      calls++;
+      return calls === 1 ? new Response("{}", { status: 429, headers: { "retry-after": "3" } }) : json(page);
+    }) as unknown as typeof fetch;
+    const read = await collect(boards.slice(3, 4), matchers, { fetchImpl: busyOnce, sleep, gapMs: 0 });
+    expect(read.results[0]).toMatchObject({ ok: true });
+    expect(calls).toBe(2);
+    expect(waits).toContain(3000);
+    // A second 429 is the board's answer for this run.
+    const busy = vi.fn(async () => new Response("{}", { status: 429 })) as unknown as typeof fetch;
+    const failed = await collect(boards.slice(3, 4), matchers, { fetchImpl: busy, sleep, gapMs: 0 });
+    expect(failed.results[0]).toMatchObject({ ok: false, error: "429" });
+    expect(busy).toHaveBeenCalledTimes(2);
+    // Requests a gap apart wait for it.
+    waits.length = 0;
+    await collect([boards[3], boards[3]], matchers, { fetchImpl: fakeFetch({ [url]: page }), sleep, gapMs: 500, concurrency: 1 });
+    expect(waits.some((ms) => ms > 0 && ms <= 500)).toBe(true);
+  });
+
   it("reads a SmartRecruiters board page by page, and counts it whole once every page came back", async () => {
     const page = fixture("smartrecruiters") as { content: unknown[] };
     const n = FEED_LIMITS.smartRecruitersPage;
@@ -382,7 +407,7 @@ describe("collect", () => {
 
     // Past the last page read, the board is cut short.
     const pages = Object.fromEntries(Array.from({ length: FEED_LIMITS.smartRecruitersPages }, (_, i) => [url(i * n), { content: fill(n), totalFound: 100 * n }]));
-    const capped = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(pages) });
+    const capped = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(pages), gapMs: 0 });
     expect(capped.results[0]).toMatchObject({ ok: true, truncated: true });
   });
 

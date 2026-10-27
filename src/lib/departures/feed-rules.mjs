@@ -28,11 +28,18 @@ export const FEED_LIMITS = {
   maxBytes: 25 * 1024 * 1024,
   /** Skill ids kept per list. */
   skills: 40,
+  /**
+   * The least time between two SmartRecruiters requests across the run, and the longest Retry-After waited on a 429:
+   * SmartRecruiters publishes 10 requests a second and 8 at once; the feed stays near 6 a second and at most 4 at once.
+   */
+  smartRecruitersGapMs: 160,
+  retryAfterMaxMs: 10_000,
   /** Runs in a row a board fails or keeps no India post before the run summary and /api/health name it. */
   badRuns: 3,
 };
 
-export const USER_AGENT = "CareerMetro jobs (careermetro.vercel.app)";
+/** Names CareerMetro and where an employer reads how its board is used and asks for it to be removed (/terms#job-boards). */
+export const USER_AGENT = "CareerMetroJobs/1.0 (+https://careermetro.vercel.app/terms#job-boards)";
 
 /** @typedef {"eu"} BoardHost A Greenhouse board on its EU host; every other board is on the default host. */
 

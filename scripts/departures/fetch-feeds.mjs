@@ -35,7 +35,8 @@ const root = new URL("../../", import.meta.url);
  * "too_large", "not_json", "network"), never with text from the answer.
  * @param {string} url
  * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number }} [deps]
- * @returns {Promise<{ ok: true; data: unknown } | { ok: false; error: string }>}
+ * A 429 answer also gives its Retry-After in milliseconds, when it says one in seconds.
+ * @returns {Promise<{ ok: true; data: unknown } | { ok: false; error: string; retryAfterMs?: number }>}
  */
 export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.timeoutMs, maxBytes = FEED_LIMITS.maxBytes } = {}) {
   const signal = AbortSignal.timeout(timeoutMs);
@@ -47,7 +48,8 @@ export async function getJson(url, { fetchImpl = fetch, timeoutMs = FEED_LIMITS.
     }
     if (!res.ok) {
       await res.body?.cancel();
-      return { ok: false, error: String(res.status) };
+      const wait = res.status === 429 ? Number(res.headers.get("retry-after")) : NaN;
+      return { ok: false, error: String(res.status), ...(Number.isFinite(wait) && wait >= 0 ? { retryAfterMs: wait * 1000 } : {}) };
     }
     if (Number(res.headers.get("content-length") ?? 0) > maxBytes) {
       await res.body?.cancel();
@@ -110,15 +112,44 @@ export function boardRows(board, data, matchers, now = new Date()) {
 }
 
 /**
+ * @typedef {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; sleep?: (ms: number) => Promise<void>; gapMs?: number }} SmartRecruitersDeps
+ * `sleep` and `gapMs` are for tests; the run uses setTimeout and FEED_LIMITS.smartRecruitersGapMs.
+ */
+
+/** When the next SmartRecruiters request may start, shared by every board in the run. */
+let smartRecruitersNextAt = 0;
+
+/**
+ * One SmartRecruiters GET, spaced at least `gapMs` after the run's previous one so the feed stays under the published
+ * 10 requests a second, and tried once more after a 429's Retry-After (at most FEED_LIMITS.retryAfterMaxMs; 2 s when
+ * it says none).
+ * @param {string} url
+ * @param {SmartRecruitersDeps} deps
+ */
+async function smartRecruitersGet(url, deps) {
+  const sleep = deps.sleep ?? ((/** @type {number} */ ms) => new Promise((done) => setTimeout(done, ms)));
+  const gap = deps.gapMs ?? FEED_LIMITS.smartRecruitersGapMs;
+  for (let attempt = 0; ; attempt++) {
+    const now = Date.now();
+    const start = Math.max(now, smartRecruitersNextAt);
+    smartRecruitersNextAt = start + gap;
+    if (start > now) await sleep(start - now);
+    const got = await getJson(url, deps);
+    if (got.ok || got.error !== "429" || attempt > 0) return got;
+    await sleep(Math.min(got.retryAfterMs ?? 2000, FEED_LIMITS.retryAfterMaxMs));
+  }
+}
+
+/**
  * A SmartRecruiters board read a page at a time, up to FEED_LIMITS.smartRecruitersPages, as one answer: every page's
  * postings in `content`, with the first page's totalFound. A later page that fails ends the read with the pages so far,
  * and the board then counts as cut short (totalFound above what came back). Only the first page failing fails the board.
  * @param {Board} board
- * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number }} deps
+ * @param {SmartRecruitersDeps} deps
  * @returns {Promise<{ ok: true; data: unknown } | { ok: false; error: string }>}
  */
 export async function smartRecruitersPages(board, deps) {
-  const first = await getJson(feedUrl(board.ats, board.token, board.host), deps);
+  const first = await smartRecruitersGet(feedUrl(board.ats, board.token, board.host), deps);
   if (!first.ok) return first;
   const envelope = smartRecruitersBoard.safeParse(first.data);
   if (!envelope.success) return first;
@@ -126,7 +157,7 @@ export async function smartRecruitersPages(board, deps) {
   const content = [...envelope.data.content];
   const totalFound = envelope.data.totalFound;
   for (let n = 1; n < FEED_LIMITS.smartRecruitersPages && content.length === n * page && (totalFound ?? Infinity) > content.length; n++) {
-    const got = await getJson(feedUrl(board.ats, board.token, board.host, content.length), deps);
+    const got = await smartRecruitersGet(feedUrl(board.ats, board.token, board.host, content.length), deps);
     const more = got.ok ? smartRecruitersBoard.safeParse(got.data) : null;
     if (!more?.success) return { ok: true, data: { content, totalFound: totalFound ?? content.length + 1 } };
     content.push(...more.data.content);
@@ -139,7 +170,7 @@ export async function smartRecruitersPages(board, deps) {
  * doesn't fit its schema fails as a whole; one posting that doesn't fit is skipped. The caps are applied at the end.
  * @param {Board[]} boards
  * @param {import("../../src/lib/departures/feed-rules.mjs").SkillMatcher[]} matchers
- * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number; perBoard?: number; total?: number; now?: Date }} [deps]
+ * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; concurrency?: number; perBoard?: number; total?: number; now?: Date; sleep?: (ms: number) => Promise<void>; gapMs?: number }} [deps]
  */
 export async function collect(boards, matchers, deps = {}) {
   /** @type {BoardResult[]} */
