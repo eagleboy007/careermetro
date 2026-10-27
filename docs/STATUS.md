@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-27 (Go and C# questions in the bank)
+Last updated: 2026-10-27 (Terms and privacy sections take link anchors)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -127,6 +127,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 - The feed asks SmartRecruiters for India posts only and reads up to 5 pages of 100 per board, so the 16 large boards (Swiggy, Bosch, NielsenIQ and others) that came back cut short every run are read whole and can close posts they no longer list (2026-10-27).
 - Mock rounds and the question bank's free five count a "one of these" group (six main languages) as one topic, and a round asks about the language the resume shows, so a Java developer gets Java and not C++ (T129) (2026-10-27).
 - The bank has 10 open questions for Go and C# (5 each, from Data research, follow-ups not yet reviewed), so a Go or C# resume gets a language question too (T129) (2026-10-27).
+- Each section of Terms and Privacy carries its own id, so links such as `/terms#job-boards` open at that section (T130) (2026-10-27).
 - SmartRecruiters reads go to 20 pages, so BoschGroup, the last board cut short, is read whole: it keeps the 500-post cap and closes the posts it no longer lists (2026-10-27).
 - Feed health: migration 0049 `job_feed_boards` counts each board's runs in a row that failed or kept no India post. The run summary names boards at 3 or more (with a warning annotation), `/api/health` gives `feed.deadBoards` and `feed.hoursSinceRun`, and the 6-hourly smoke check warns on either, without turning red (2026-10-27).
 - Feed terms (Data research's `data/market/ats-feed-terms.md`): the User-Agent links to `/terms#job-boards`; SmartRecruiters requests are spaced 160 ms apart and retried once after a 429's Retry-After. Terms gain "Jobs from company job boards" (what is kept, link-out, removal within 2 working days through Grievances), Departures says where roles come from and links to it, and `docs/plans/departures-live-plan.md` has the removal steps. No contact fields were ever stored (2026-10-27).
