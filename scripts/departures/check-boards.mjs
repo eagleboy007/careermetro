@@ -22,7 +22,7 @@ export const ADDED_BY = "Data research (checked by the board check)";
 /** @typedef {{ company: string; ats: Ats; token: string; host?: "eu" }} Candidate */
 /**
  * `status`: "200", another HTTP status, or the feed's short error code ("timeout", "too_large", "not_json", "network",
- * "invalid"). `truncated`: a full SmartRecruiters page, so `total` is a floor.
+ * "invalid"). `truncated`: more India posts than one SmartRecruiters page, so `total` is a floor.
  * @typedef {{ company: string; ats: Ats; token: string; host?: "eu"; status: string; total: number; india: number; truncated?: boolean }} CheckResult
  */
 

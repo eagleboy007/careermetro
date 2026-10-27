@@ -68,7 +68,8 @@ describe("the board list (src/content/job-boards.json)", () => {
   it("keeps a token's case, takes a dot in an Ashby token only, and refuses anything unsafe in a URL", () => {
     const sr = board("smartrecruiters", "SWIGGY", "Swiggy");
     expect(jobBoardsFile.parse([sr, board("smartrecruiters", "NielsenIQ", "NielsenIQ"), board("smartrecruiters", "KLA-Tencor", "KLA")]).map((b) => b.token)).toEqual(["SWIGGY", "NielsenIQ", "KLA-Tencor"]);
-    expect(feedUrl("smartrecruiters", "SWIGGY")).toBe("https://api.smartrecruiters.com/v1/companies/SWIGGY/postings?limit=100");
+    expect(feedUrl("smartrecruiters", "SWIGGY")).toBe("https://api.smartrecruiters.com/v1/companies/SWIGGY/postings?country=in&limit=100");
+    expect(feedUrl("smartrecruiters", "SWIGGY", undefined, 200)).toBe("https://api.smartrecruiters.com/v1/companies/SWIGGY/postings?country=in&limit=100&offset=200");
     expect(jobBoardsFile.safeParse([board("ashby", "flagright.com", "Flagright")]).success).toBe(true);
     expect(feedUrl("ashby", "flagright.com")).toBe("https://api.ashbyhq.com/posting-api/job-board/flagright.com");
     expect(jobBoardsFile.safeParse([board("lever", "flagright.com", "Flagright")]).success).toBe(false);
@@ -360,6 +361,28 @@ describe("collect", () => {
     const whole = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(allAnswers()) });
     expect(whole.results[0].truncated).toBeUndefined();
     expect(summaryLines(sr.results, sr.rows.length, null).join("\n")).toContain("Kept open smartrecruiters/ExampleWorks: answer cut short");
+  });
+
+  it("reads a SmartRecruiters board page by page, and counts it whole once every page came back", async () => {
+    const page = fixture("smartrecruiters") as { content: unknown[] };
+    const n = FEED_LIMITS.smartRecruitersPage;
+    const fill = (length: number) => Array.from({ length }, (_, i) => page.content[i % page.content.length]);
+    const url = (offset = 0) => feedUrl("smartrecruiters", "ExampleWorks", undefined, offset);
+    const two = { [url()]: { content: fill(n), totalFound: n + 3 }, [url(n)]: { content: fill(3), totalFound: n + 3 } };
+    const whole = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(two) });
+    expect(whole.results[0].truncated).toBeUndefined();
+    expect(whole.seen).toHaveLength((await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch({ [url()]: { content: fill(n + 3) } }) })).seen.length);
+    expect(boardsToClose([], whole.results, boards, false)).toEqual(["smartrecruiters:ExampleWorks"]);
+
+    // A later page that fails keeps what came back, and the board closes nothing.
+    const broken = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch({ [url()]: two[url()], [url(n)]: 500 }) });
+    expect(broken.results[0]).toMatchObject({ ok: true, truncated: true });
+    expect(broken.seen.length).toBeGreaterThan(0);
+
+    // Past the last page read, the board is cut short.
+    const pages = Object.fromEntries(Array.from({ length: FEED_LIMITS.smartRecruitersPages }, (_, i) => [url(i * n), { content: fill(n), totalFound: 10 * n }]));
+    const capped = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(pages) });
+    expect(capped.results[0]).toMatchObject({ ok: true, truncated: true });
   });
 
   it("closes only boards it read, and boards taken off the list", () => {
