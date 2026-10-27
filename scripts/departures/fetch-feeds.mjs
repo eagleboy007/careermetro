@@ -1,8 +1,9 @@
 // The daily Departures feed (docs/plans/departures-live-plan.md; .github/workflows/departures.yml). One public GET per
-// reviewed board (src/content/job-boards.json) through the job-board APIs of Greenhouse, Lever, Ashby and
-// SmartRecruiters only: never a web page, never LinkedIn, Naukri or any site whose terms forbid it. Each answer is
-// checked with Zod; posts in India (or remote India) are kept with the skill ids the taxonomy finds by code, and no
-// model is called. No post text is stored or logged: the log and the run summary name boards and counts only.
+// reviewed board (src/content/job-boards.json; a few pages for a large SmartRecruiters board) through the job-board
+// APIs of Greenhouse, Lever, Ashby and SmartRecruiters only: never a web page, never LinkedIn, Naukri or any site
+// whose terms forbid it. Each answer is checked with Zod; posts in India (or remote India) are kept with the skill ids
+// the taxonomy finds by code, and no model is called. No post text is stored or logged: the log and the run summary
+// name boards and counts only.
 //
 // With DATABASE_URL set it upserts job_posts by external id, closes the open posts of each board it read that this run
 // didn't see (a board that failed closes nothing; a board taken off the list closes all of its posts) and records the
@@ -15,7 +16,7 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 import { capPosts, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
-import { FEED_SCHEMAS, jobBoardsFile, jobPostRow, TOKEN_PATTERN } from "../../src/lib/departures/feed-schemas.mjs";
+import { FEED_SCHEMAS, jobBoardsFile, jobPostRow, smartRecruitersBoard, TOKEN_PATTERN } from "../../src/lib/departures/feed-schemas.mjs";
 import { monthBounds, monthOf, rollupMonth } from "../../src/lib/market/rollup.mjs";
 
 const root = new URL("../../", import.meta.url);
@@ -109,6 +110,31 @@ export function boardRows(board, data, matchers, now = new Date()) {
 }
 
 /**
+ * A SmartRecruiters board read a page at a time, up to FEED_LIMITS.smartRecruitersPages, as one answer: every page's
+ * postings in `content`, with the first page's totalFound. A later page that fails ends the read with the pages so far,
+ * and the board then counts as cut short (totalFound above what came back). Only the first page failing fails the board.
+ * @param {Board} board
+ * @param {{ fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number }} deps
+ * @returns {Promise<{ ok: true; data: unknown } | { ok: false; error: string }>}
+ */
+export async function smartRecruitersPages(board, deps) {
+  const first = await getJson(feedUrl(board.ats, board.token, board.host), deps);
+  if (!first.ok) return first;
+  const envelope = smartRecruitersBoard.safeParse(first.data);
+  if (!envelope.success) return first;
+  const page = FEED_LIMITS.smartRecruitersPage;
+  const content = [...envelope.data.content];
+  const totalFound = envelope.data.totalFound;
+  for (let n = 1; n < FEED_LIMITS.smartRecruitersPages && content.length === n * page && (totalFound ?? Infinity) > content.length; n++) {
+    const got = await getJson(feedUrl(board.ats, board.token, board.host, content.length), deps);
+    const more = got.ok ? smartRecruitersBoard.safeParse(got.data) : null;
+    if (!more?.success) return { ok: true, data: { content, totalFound: totalFound ?? content.length + 1 } };
+    content.push(...more.data.content);
+  }
+  return { ok: true, data: { content, totalFound } };
+}
+
+/**
  * Every board, read in turn (a few at once), as checked job_posts rows and one result per board. A board whose answer
  * doesn't fit its schema fails as a whole; one posting that doesn't fit is skipped. The caps are applied at the end.
  * @param {Board[]} boards
@@ -125,7 +151,7 @@ export async function collect(boards, matchers, deps = {}) {
   let next = 0;
   const now = deps.now ?? new Date();
   const one = async (/** @type {Board} */ board) => {
-    const got = await getJson(feedUrl(board.ats, board.token, board.host), deps);
+    const got = board.ats === "smartrecruiters" ? await smartRecruitersPages(board, deps) : await getJson(feedUrl(board.ats, board.token, board.host), deps);
     if (!got.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: got.error });
     const read = boardRows(board, got.data, matchers, now);
     if (!read.ok) return results.push({ ats: board.ats, token: board.token, ok: false, posts: 0, error: read.error });

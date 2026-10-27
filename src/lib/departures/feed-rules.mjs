@@ -20,8 +20,9 @@ export const FEED_LIMITS = {
   boards: 300,
   postsPerBoard: 500,
   openPosts: 10000,
-  /** One SmartRecruiters page; the feed reads one page per board, so a full page counts as cut short. */
+  /** One SmartRecruiters page, and the most pages read per board; India posts past them leave the board cut short. */
   smartRecruitersPage: 100,
+  smartRecruitersPages: 5,
   timeoutMs: 15_000,
   /** The biggest board answer read. A large Greenhouse board with full descriptions is a few MB. */
   maxBytes: 25 * 1024 * 1024,
@@ -33,13 +34,16 @@ export const USER_AGENT = "CareerMetro jobs (careermetro.vercel.app)";
 
 /** @typedef {"eu"} BoardHost A Greenhouse board on its EU host; every other board is on the default host. */
 
-/** The one public GET per board. A Greenhouse board with `host: "eu"` is read from Greenhouse's EU host. */
-export function feedUrl(/** @type {Ats} */ ats, /** @type {string} */ token, /** @type {BoardHost | undefined} */ host = undefined) {
+/**
+ * The one public GET per board. A Greenhouse board with `host: "eu"` is read from Greenhouse's EU host. SmartRecruiters
+ * answers a page at a time, asked for India posts only; `offset` reads a later page.
+ */
+export function feedUrl(/** @type {Ats} */ ats, /** @type {string} */ token, /** @type {BoardHost | undefined} */ host = undefined, offset = 0) {
   const t = encodeURIComponent(token);
   if (ats === "greenhouse") return `https://boards-api${host === "eu" ? ".eu" : ""}.greenhouse.io/v1/boards/${t}/jobs?content=true`;
   if (ats === "lever") return `https://api.lever.co/v0/postings/${t}?mode=json`;
   if (ats === "ashby") return `https://api.ashbyhq.com/posting-api/job-board/${t}`;
-  return `https://api.smartrecruiters.com/v1/companies/${t}/postings?limit=${FEED_LIMITS.smartRecruitersPage}`;
+  return `https://api.smartrecruiters.com/v1/companies/${t}/postings?country=in&limit=${FEED_LIMITS.smartRecruitersPage}${offset ? `&offset=${offset}` : ""}`;
 }
 
 /** The company's careers page on its job board, as job-boards.json lists it. */

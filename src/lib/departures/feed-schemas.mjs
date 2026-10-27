@@ -130,8 +130,9 @@ const whole = () => false;
 
 /**
  * The envelope and the posting schema of each ATS, and whether the answer may be only part of the board. Greenhouse,
- * Lever and Ashby answer with every posting. SmartRecruiters answers one page of `limit=100` and the feed doesn't page
- * it, so a full page (or a totalFound above what came back) counts as cut short, and that board closes nothing.
+ * Lever and Ashby answer with every posting. SmartRecruiters answers a page of `limit=100`; the feed reads up to five
+ * pages and joins them, so a totalFound above what came back (or, with no totalFound, a full page) counts as cut short,
+ * and that board closes nothing.
  */
 export const FEED_SCHEMAS = {
   greenhouse: { board: greenhouseBoard, job: greenhouseJob, jobs: (/** @type {any} */ d) => d.jobs, truncated: whole },
@@ -141,7 +142,8 @@ export const FEED_SCHEMAS = {
     board: smartRecruitersBoard,
     job: smartRecruitersJob,
     jobs: (/** @type {any} */ d) => d.content,
-    truncated: (/** @type {any} */ d) => d.content.length >= FEED_LIMITS.smartRecruitersPage || (d.totalFound ?? 0) > d.content.length,
+    truncated: (/** @type {any} */ d) =>
+      d.totalFound == null ? d.content.length >= FEED_LIMITS.smartRecruitersPage : d.totalFound > d.content.length,
   },
 };
 
