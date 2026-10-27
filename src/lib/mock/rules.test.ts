@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { mockQuestions, roleProfiles } from "@/content";
 import { rolePrepView, type MockChoiceQuestion, type MockQuestion } from "@/lib/schemas";
 import {
   bankViewFor,
