@@ -121,6 +121,15 @@ describe("the question bank", () => {
     });
   });
 
+  it("opens one main-language question of the free five, so the rest go to other required skills (T129)", () => {
+    const engineer = roleProfiles.find((r) => r.slug === "software-engineer")!;
+    const languages = new Set(engineer.skills.filter((s) => s.oneOf === "main-language").map((s) => s.skillId));
+    const skill = new Map(mockQuestions.map((q) => [q.id, q.skillId]));
+    const open = bankViewFor(mockQuestions, engineer, false).items.filter((q) => q.open);
+    expect(open).toHaveLength(5);
+    expect(open.filter((q) => languages.has(skill.get(q.id)!))).toHaveLength(1);
+  });
+
   it("opens 5 on Free, one of each topic first, and sends nothing of the locked ones' notes", () => {
     const view = bankViewFor(bank, analyst, false);
     const open = view.items.filter((q) => q.open).map((q) => q.id);

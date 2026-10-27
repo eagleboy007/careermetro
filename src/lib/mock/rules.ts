@@ -19,7 +19,16 @@ import { ELITE_NEEDED_MESSAGE, MOCK_BANK_FREE_OPEN, ROLE_PREP_FREE_OPEN, ROLE_PR
  */
 
 /** What the rules need of a role profile: its slug, title and skills in order. */
-export type MockRoleProfile = { slug: string; title: string; skills: readonly { skillId: string; importance?: string }[] };
+export type MockRoleProfile = { slug: string; title: string; skills: readonly { skillId: string; importance?: string; oneOf?: string | null }[] };
+
+/**
+ * A skill's topic in a role's rounds and bank: its "one of these" group when it has one (T129), so a role asking for one
+ * main language of six counts the six as one topic, not six; else the skill itself.
+ */
+export function topicOf(role: MockRoleProfile): (skillId: string) => string {
+  const group = new Map(role.skills.filter((s) => s.oneOf).map((s) => [s.skillId, `group:${s.oneOf}`]));
+  return (skillId) => group.get(skillId) ?? skillId;
+}
 type Role = MockRoleProfile;
 export type BankQuestion = MockQuestion;
 
@@ -89,15 +98,18 @@ export function mockRoles(bank: readonly BankQuestion[], roles: readonly Role[],
 
 /**
  * Which open questions a Free person can open: the first question of each topic in role order, up to 5, then the next
- * ones, so the free five spread across the role's skills. Elite opens all of them.
+ * ones, so the free five spread across the role's skills. A "one of these" group is one topic (T129). Elite opens all
+ * of them.
  */
-export function freeOpenIds(open: readonly BankQuestion[]): Set<string> {
+export function freeOpenIds(open: readonly BankQuestion[], role?: Role): Set<string> {
   const ids: string[] = [];
   const topics = new Set<string>();
+  const group = role ? topicOf(role) : (id: string) => id;
   for (const q of open) {
     if (ids.length >= MOCK_BANK_FREE_OPEN) break;
-    if (!topics.has(q.topic)) {
-      topics.add(q.topic);
+    const t = group(q.skillId) === q.skillId ? q.topic : group(q.skillId);
+    if (!topics.has(t)) {
+      topics.add(t);
       ids.push(q.id);
     }
   }
@@ -119,7 +131,7 @@ export function rolePrepFor(bank: readonly BankQuestion[], role: Role, elite: bo
     bank.filter((q) => q.kind === "open"),
     role,
   );
-  const free = freeOpenIds(open);
+  const free = freeOpenIds(open, role);
   const first = open.find((q) => free.has(q.id));
   const eliteOnly = open.filter((q) => !free.has(q.id)).slice(0, ROLE_PREP_QUESTIONS - 1);
   if (!first || eliteOnly.length < ROLE_PREP_QUESTIONS - 1) return null;
@@ -154,7 +166,7 @@ export function bankViewFor(bank: readonly BankQuestion[], role: Role, elite: bo
     bank.filter((q) => q.kind === "open"),
     role,
   );
-  const free = freeOpenIds(open);
+  const free = freeOpenIds(open, role);
   const items = open.map((q): MockBankItem =>
     (elite || free.has(q.id)) && q.kind === "open"
       ? {
