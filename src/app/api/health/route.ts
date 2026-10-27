@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { getDb } from "@/db";
 import journal from "../../../../drizzle/meta/_journal.json";
 import { recordAiCalls } from "@/lib/ai/log";
-import { checkHealth, checkParse, deployEnv, HEALTH_MODEL, missingSecrets, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
+import { checkHealth, checkParse, deployEnv, FEED_BAD_RUNS, HEALTH_MODEL, missingSecrets, SYNTHETIC_RESUME, type Health, type ParseHealth } from "@/lib/health";
 import { parseResume } from "@/lib/resume/parse";
 import { hasBearer } from "@/lib/secret";
 
@@ -71,6 +71,19 @@ function runCheck(): Promise<Health> {
         { accessMode: "read only" },
       );
     },
+    // Feed health: counts only, in its own read-only transaction under the same limits as the market read.
+    readFeed: async () =>
+      getDb().transaction(
+        async (tx) => {
+          await tx.execute(sql.raw(`set local statement_timeout = ${MARKET_STATEMENT_MS}`));
+          await tx.execute(sql.raw(`set local lock_timeout = ${MARKET_LOCK_MS}`));
+          const [row] = await tx.execute<{ dead: number; last: string | Date | null }>(sql`
+            select (select count(*)::int from job_feed_boards where bad_runs >= ${FEED_BAD_RUNS}) as dead,
+              (select max(finished_at) from job_feed_runs where boards_ok > 0) as last`);
+          return { deadBoards: row?.dead ?? 0, lastRunAt: row?.last ? new Date(row.last) : null };
+        },
+        { accessMode: "read only" },
+      ),
     pingClaude: async () => {
       const client = new Anthropic({ timeout: 15_000, maxRetries: 0 });
       // The same request shape as the parse call, so the ping also proves access to the fallback beta.

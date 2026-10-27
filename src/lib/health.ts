@@ -15,11 +15,13 @@ export type ClaudeStatus = "ok" | "no_key" | "bad_key" | "no_credit" | "no_model
 /** `schema` is "behind" when the database is missing migrations this build expects (pages that use the new tables fail). */
 /** `missingSecrets` names (never shows) production secrets that aren't set; without them the cleanup job can't run. */
 /** `market` says whether the Market's rollup table answers a one-row read in time (T122); it never fails the check. */
+/** `feed` counts the job boards with a problem on FEED_LIMITS.badRuns daily runs in a row, and the hours since the last run that read a board; it never fails the check, and the smoke check warns on it. */
 export type Health = {
   ok: boolean;
   database: "ok" | "down";
   schema?: "ok" | "behind";
   market?: MarketStatus;
+  feed?: FeedHealth;
   claude: ClaudeStatus;
   claudeError?: string;
   missingSecrets?: string[];
@@ -28,6 +30,12 @@ export type Health = {
 
 /** "timeout": the read hit its statement or lock limit, or MARKET_CHECK_MS; "missing": no such table (42P01). */
 export type MarketStatus = "ok" | "timeout" | "missing" | "error";
+
+/** Board counts only: no board is named on this public page (the feed's run summary names them). */
+export type FeedHealth = { deadBoards: number; hoursSinceRun: number | null };
+
+/** FEED_LIMITS.badRuns in src/lib/departures/feed-rules.mjs, which the app doesn't import (a test keeps them equal). */
+export const FEED_BAD_RUNS = 3;
 
 /** The health check's own limit on the market read, above the route's 3 s statement limit (it covers a pool wait). */
 export const MARKET_CHECK_MS = 4000;
@@ -59,6 +67,10 @@ export type HealthDeps = {
   countMigrations?: () => Promise<{ applied: number; expected: number }>;
   /** A one-row read of market_openings_monthly under its own statement limit (T122): the table only /market reads. */
   readMarket?: () => Promise<void>;
+  /** The boards at the bad-run limit and the last run that read a board (job_feed_boards, job_feed_runs). */
+  readFeed?: () => Promise<{ deadBoards: number; lastRunAt: Date | null }>;
+  /** The time `hoursSinceRun` counts from; now when unset. */
+  now?: Date;
   /** From missingSecrets(). */
   missingSecrets?: string[];
   /** From deployEnv(), shown as `env`. */
@@ -68,7 +80,8 @@ export type HealthDeps = {
 /** Says whether the database and the Claude API work, naming the cause when Claude doesn't. Never returns the key; for a rejected request it returns the API's reason, which can't hold user data because the ping's input is fixed. */
 export async function checkHealth(deps: HealthDeps): Promise<Health> {
   const [database, { status: claude, error }] = await Promise.all([checkDb(deps), checkClaude(deps)]);
-  const [schema, market] = database === "ok" ? await Promise.all([checkSchema(deps), checkMarket(deps)]) : ([undefined, undefined] as const);
+  const [schema, market, feed] =
+    database === "ok" ? await Promise.all([checkSchema(deps), checkMarket(deps), checkFeed(deps)]) : ([undefined, undefined, undefined] as const);
   const missing = deps.missingSecrets?.length ? deps.missingSecrets : undefined;
   if (missing) logEvent("error", "health_secrets_missing", { missing: missing.join(",") });
   return {
@@ -76,6 +89,7 @@ export async function checkHealth(deps: HealthDeps): Promise<Health> {
     database,
     ...(schema ? { schema } : {}),
     ...(market ? { market } : {}),
+    ...(feed ? { feed } : {}),
     claude,
     ...(error ? { claudeError: error } : {}),
     ...(missing ? { missingSecrets: missing } : {}),
@@ -107,6 +121,19 @@ async function checkMarket(deps: HealthDeps): Promise<MarketStatus | undefined> 
     logEvent("error", "health_market_failed", { ...errorFields(error), reason });
     if (reason === "missing") return "missing";
     return reason === "error" ? "error" : "timeout";
+  }
+}
+
+/** Never throws and never changes `ok`: a read that fails or runs past MARKET_CHECK_MS leaves `feed` out. */
+async function checkFeed(deps: HealthDeps): Promise<FeedHealth | undefined> {
+  if (!deps.readFeed) return undefined;
+  try {
+    const { deadBoards, lastRunAt } = await withinLimit(deps.readFeed(), MARKET_CHECK_MS);
+    const now = (deps.now ?? new Date()).getTime();
+    return { deadBoards, hoursSinceRun: lastRunAt ? Math.max(0, Math.floor((now - lastRunAt.getTime()) / 3_600_000)) : null };
+  } catch (error) {
+    logEvent("error", "health_feed_failed", { ...errorFields(error), reason: failureReason(error) });
+    return undefined;
   }
 }
 

@@ -344,6 +344,13 @@
       "when": 1792496400000,
       "tag": "0048_market_openings_monthly",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1792500000000,
+      "tag": "0049_job_feed_boards",
+      "breakpoints": true
     }
   ]
 }

@@ -28,6 +28,8 @@ export const FEED_LIMITS = {
   maxBytes: 25 * 1024 * 1024,
   /** Skill ids kept per list. */
   skills: 40,
+  /** Runs in a row a board fails or keeps no India post before the run summary and /api/health name it. */
+  badRuns: 3,
 };
 
 export const USER_AGENT = "CareerMetro jobs (careermetro.vercel.app)";

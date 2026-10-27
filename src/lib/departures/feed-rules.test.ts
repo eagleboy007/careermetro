@@ -2,9 +2,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardProblem, boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, ROLE_TITLES, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
+import { FEED_BAD_RUNS } from "@/lib/health";
 
 // The daily Departures feed (docs/plans/departures-live-plan.md) against saved, synthetic answers of each public
 // job-board API (fixtures/feeds): no network. Every company here is made up.
@@ -422,6 +423,7 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
   afterAll(async () => {
     await sql!`delete from job_posts where board_token in ${sql!(mine.map((b) => b.token))} or board_token = ${`${run}m`}`;
     if (runIds.length) await sql!`delete from job_feed_runs where id in ${sql!(runIds)}`;
+    await sql!`delete from job_feed_boards where board_token in ${sql!(mine.map((b) => b.token))}`;
     await sql!`delete from market_openings_monthly where month in ${sql!(rollupMonths)}`;
     await sql!.end();
   });
@@ -640,6 +642,30 @@ describe.skipIf(!sql)("the feed's writes (database)", () => {
     await expect(
       sql!`insert into job_posts (ats, board_token, external_id, url, title, company, city) values ('naukri', ${`${run}x`}, '1', 'https://example.com', 'Data Analyst', 'Example', 'Pune')`,
     ).rejects.toThrow();
+  });
+
+  it("counts a board's bad runs in a row, names it at the limit, and starts again after a good run", async () => {
+    const lever = `lever:${run}l`;
+    for (const day of [30, 31]) expect((await once(answers(fixture("greenhouse"), 404), day)).stuck.map((b) => b.key)).not.toContain(lever);
+    const third = await once(answers(fixture("greenhouse"), 404), 32);
+    expect(third.stuck).toContainEqual({ key: lever, problem: "404", runs: FEED_LIMITS.badRuns });
+    expect(third.stuck.map((b) => b.key)).not.toContain(`greenhouse:${run}g`);
+    expect(summaryLines([], 0, third).join("\n")).toContain(`lever/${run}l (404, 3 runs)`);
+    const good = await once(answers(fixture("greenhouse"), fixture("lever")), 33);
+    expect(good.stuck).toEqual([]);
+    const [row] = await sql!`select bad_runs, last_problem, last_ok_at from job_feed_boards where ats = 'lever' and board_token = ${`${run}l`}`;
+    expect(row).toMatchObject({ bad_runs: 0, last_problem: null });
+    expect(row.last_ok_at).not.toBeNull();
+  });
+});
+
+describe("boardProblem", () => {
+  it("names a failure by its code, a board with no India post as empty, and a good board as null", () => {
+    const r = { ats: "lever", token: "x", ok: true, posts: 3, error: null } as const;
+    expect(boardProblem({ ...r, ok: false, posts: 0, error: "timeout" })).toBe("timeout");
+    expect(boardProblem({ ...r, posts: 0 })).toBe("empty");
+    expect(boardProblem(r)).toBeNull();
+    expect(FEED_LIMITS.badRuns).toBe(FEED_BAD_RUNS);
   });
 });
 

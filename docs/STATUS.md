@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-27 (Bosch's SmartRecruiters board read whole)
+Last updated: 2026-10-27 (Feed health: boards with a problem 3 runs in a row are named)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -127,6 +127,7 @@ Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib
 - The feed asks SmartRecruiters for India posts only and reads up to 5 pages of 100 per board, so the 16 large boards (Swiggy, Bosch, NielsenIQ and others) that came back cut short every run are read whole and can close posts they no longer list (2026-10-27).
 - Mock rounds and the question bank's free five count a "one of these" group (six main languages) as one topic, and a round asks about the language the resume shows, so a Java developer gets Java and not C++ (T129) (2026-10-27).
 - SmartRecruiters reads go to 20 pages, so BoschGroup, the last board cut short, is read whole: it keeps the 500-post cap and closes the posts it no longer lists (2026-10-27).
+- Feed health: migration 0049 `job_feed_boards` counts each board's runs in a row that failed or kept no India post. The run summary names boards at 3 or more (with a warning annotation), `/api/health` gives `feed.deadBoards` and `feed.hoursSinceRun`, and the 6-hourly smoke check warns on either, without turning red (2026-10-27).
 - Departures boards: 65 of Data research's 80 cloud, DevOps and security candidates passed the board check (200 with India posts) and were added, 212 of the 300-board cap (2026-10-26). The feed's run summary now adds "Posts kept by place" (city counts, then Remote and India with no city), so the open-role numbers by city can be read from the Actions run (2026-10-26).
 - Plans and accounts to fix before real users (Supabase backups on Pro, Vercel Pro for commercial use, a private repository, domain lock, Resend limits, AI daily caps), each Milin's call: `docs/stack.md` (2026-10-25).
 - **Keys register:** `docs/secrets.md` names every key and secret, where it lives and whether it can be changed, with no values. Its section 4 is what a move away from Vercel involves, including setting `VERCEL_ENV=production` on the new host.

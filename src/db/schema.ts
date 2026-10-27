@@ -1522,6 +1522,31 @@ export const jobFeedRuns = pgTable(
   (t) => [index("job_feed_runs_finished").on(t.finishedAt)],
 );
 
+/**
+ * Each listed board's health over the daily feed's runs, counts only: how many runs in a row it failed or kept no India
+ * post (`bad_runs`, 0 after a good run), the last problem in one word, and when it last had posts. The feed writes it
+ * in the run's transaction and deletes the rows of boards taken off the list; the run summary and /api/health name the
+ * boards at FEED_BAD_RUNS or more, so a dead board doesn't quietly drop out. No post and no person.
+ */
+export const jobFeedBoards = pgTable(
+  "job_feed_boards",
+  {
+    id: id(),
+    ats: text("ats").notNull(),
+    boardToken: text("board_token").notNull(),
+    badRuns: integer("bad_runs").notNull().default(0),
+    /** A failure code ("404", "timeout", "network", "invalid", ...) or "empty"; null after a good run. */
+    lastProblem: text("last_problem"),
+    lastOkAt: timestamp("last_ok_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    unique("job_feed_boards_board").on(t.ats, t.boardToken),
+    check("job_feed_boards_bad_runs", sql`${t.badRuns} >= 0`),
+    check("job_feed_boards_problem", sql`${t.lastProblem} is null or char_length(${t.lastProblem}) between 1 and 20`),
+  ],
+);
+
 /* Market trends (docs/plans/market-trends-plan.md, migration 0048) ------------------------------------------- */
 
 /**

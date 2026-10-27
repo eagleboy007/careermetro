@@ -76,6 +76,22 @@ describe("checkHealth", () => {
   });
 });
 
+describe("checkHealth's feed read", () => {
+  const now = new Date("2026-10-27T07:00:00Z");
+  it("counts the boards at the bad-run limit and the hours since the last run, and never fails the check", async () => {
+    const readFeed = async () => ({ deadBoards: 2, lastRunAt: new Date("2026-10-27T01:30:00Z") });
+    expect(await checkHealth(deps({ readFeed, now }))).toEqual({ ok: true, database: "ok", feed: { deadBoards: 2, hoursSinceRun: 5 }, claude: "ok" });
+    expect((await checkHealth(deps({ readFeed: async () => ({ deadBoards: 0, lastRunAt: null }), now }))).feed).toEqual({ deadBoards: 0, hoursSinceRun: null });
+  });
+
+  it("leaves feed out when the read fails, and when the database is down", async () => {
+    const failing = await checkHealth(deps({ readFeed: async () => Promise.reject(new Error("no such table")), now }));
+    expect(failing).toEqual({ ok: true, database: "ok", claude: "ok" });
+    const down = await checkHealth(deps({ pingDb: async () => Promise.reject(new Error("down")), readFeed: async () => ({ deadBoards: 1, lastRunAt: now }) }));
+    expect(down).not.toHaveProperty("feed");
+  });
+});
+
 describe("checkHealth's market read (T122)", () => {
   const pg = (code: string) => Object.assign(new Error("Failed query: select 1 from market_openings_monthly"), { cause: Object.assign(new Error("db"), { code }) });
 
