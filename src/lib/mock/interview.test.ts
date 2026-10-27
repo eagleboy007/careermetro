@@ -82,13 +82,19 @@ describe("pickInterviewQuestions", () => {
     const engineer = roleFor(roleProfiles, "software-engineer", null);
     const languages = new Set(engineer.skills.filter((s) => s.oneOf === "main-language").map((s) => s.skillId));
     expect(languages.size).toBeGreaterThan(1);
+    let goAsked = 0;
     for (let i = 0; i < 20; i++) {
       const seed = `${SEED.slice(0, -2)}${String(i).padStart(2, "0")}`;
       const quick = pickInterviewQuestions(mockQuestions, engineer, "technical", "quick", seed)!;
       expect(quick.filter((id) => languages.has(skillOf(id))).length).toBeLessThanOrEqual(1);
       const own = pickInterviewQuestions(mockQuestions, engineer, "technical", "full", seed, [], ["java", "sql"])!;
       expect(own.filter((id) => languages.has(skillOf(id))).every((id) => skillOf(id) === "java")).toBe(true);
+      const go = pickInterviewQuestions(mockQuestions, engineer, "technical", "full", seed, [], ["go"])!;
+      expect(go.filter((id) => languages.has(skillOf(id))).every((id) => skillOf(id) === "go")).toBe(true);
+      goAsked += go.filter((id) => skillOf(id) === "go").length;
     }
+    // Go and C# have bank questions now, so a Go resume gets a Go question in some rounds.
+    expect(goAsked).toBeGreaterThan(0);
   });
 
   it("asks about the person's open goals first for Your gaps, then fills from the role", () => {
