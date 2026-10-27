@@ -130,7 +130,7 @@ const whole = () => false;
 
 /**
  * The envelope and the posting schema of each ATS, and whether the answer may be only part of the board. Greenhouse,
- * Lever and Ashby answer with every posting. SmartRecruiters answers a page of `limit=100`; the feed reads up to five
+ * Lever and Ashby answer with every posting. SmartRecruiters answers a page of `limit=100`; the feed reads up to 20
  * pages and joins them, so a totalFound above what came back (or, with no totalFound, a full page) counts as cut short,
  * and that board closes nothing.
  */

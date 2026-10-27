@@ -380,7 +380,7 @@ describe("collect", () => {
     expect(broken.seen.length).toBeGreaterThan(0);
 
     // Past the last page read, the board is cut short.
-    const pages = Object.fromEntries(Array.from({ length: FEED_LIMITS.smartRecruitersPages }, (_, i) => [url(i * n), { content: fill(n), totalFound: 10 * n }]));
+    const pages = Object.fromEntries(Array.from({ length: FEED_LIMITS.smartRecruitersPages }, (_, i) => [url(i * n), { content: fill(n), totalFound: 100 * n }]));
     const capped = await collect(boards.slice(3, 4), matchers, { fetchImpl: fakeFetch(pages) });
     expect(capped.results[0]).toMatchObject({ ok: true, truncated: true });
   });
