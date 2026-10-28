@@ -106,7 +106,6 @@ export const LINK_HINTS = {
   invalid: "Use the job's https link, as it shows in your browser.",
 } as const;
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 type Ref = { kind: "post"; postId: string } | { kind: "check"; checkId: string };
 
 /** A job in an address ("Prepare for this job"): `post:<id>` or `check:<id>`, as the row's key. */

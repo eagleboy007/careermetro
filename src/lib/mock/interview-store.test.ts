@@ -348,7 +348,7 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     const skillId = mockQuestions.find((q) => q.kind === "open" && q.roleSlugs.includes("devops-engineer") && !q.roleSlugs.includes("data-analyst"))!.skillId;
     const [post] = await db!
       .insert(schema.jobPosts)
-      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/2", title: "Platform analyst", company: "Example Cloud", requiredSkillIds: [skillId] })
+      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/2", title: "Platform analyst", company: "Example Cloud", city: "Pune", requiredSkillIds: [skillId] })
       .returning({ id: schema.jobPosts.id });
     const [save] = await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: post.id, savedAt: new Date() }).returning({ id: schema.jobSaves.id });
     const job = { kind: "post", postId: post.id } as const;

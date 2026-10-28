@@ -75,7 +75,7 @@ describe.skipIf(!db)("practice store (database)", () => {
     const other = await person("job-other", [{ skillId: "python" }]);
     const [post] = await db!
       .insert(schema.jobPosts)
-      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/3", title: "Data analyst", company: "Example Retail", requiredSkillIds: ["sql", "python"] })
+      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/3", title: "Data analyst", company: "Example Retail", city: "Pune", requiredSkillIds: ["sql", "python"] })
       .returning({ id: schema.jobPosts.id });
     await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: post.id, savedAt: clock });
     const job = { kind: "post", postId: post.id } as const;

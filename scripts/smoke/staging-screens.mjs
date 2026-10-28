@@ -803,16 +803,65 @@ try {
     await detail.getByRole("group", { name: "Did you apply?" }).getByRole("button", { name: "Yes, I applied", exact: true }).click();
     await toast(p, "Marked as applied to ");
     await detail.getByRole("heading", { name: "Your application" }).waitFor({ timeout: 10000 });
-    // Both lists keep it after a reload.
+    // After a reload, My jobs (handoff 12m, one tab for Saved and Applied now) has it from a company job board, Applied (T131).
     await p.reload();
     await p.waitForLoadState("networkidle");
     await settled(p);
-    const tabs = p.getByRole("group", { name: "Show" });
-    const kept = p.locator("main li").filter({ has: saveButton() }).first();
-    await tabs.getByRole("button", { name: /^Saved/ }).click();
-    await kept.waitFor({ timeout: 10000 });
-    await tabs.getByRole("button", { name: /^Applied/ }).click();
-    await kept.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+    await p.getByRole("group", { name: "Show" }).getByRole("button", { name: /^My jobs/ }).click();
+    const kept = p.getByRole("region", { name: "My jobs" }).getByRole("listitem").filter({ hasText: role }).first();
+    await kept.getByText("Company job board", { exact: true }).waitFor({ timeout: 10000 });
+    await kept.getByRole("button", { name: /^Status: Applied/ }).waitFor({ timeout: 10000 });
+  });
+
+  // ---- My jobs (handoff 12m, T131) -------------------------------------------------------------------------------------
+  // A pastes the synthetic posting (the real parse call), checks the company and title, saves it, moves it through all
+  // seven statuses (a closed one shows its closed date), keeps a note with its counter, reads the job again and deletes
+  // it. Screenshots at 1280 and 390, light and dark, are kept every run for the fidelity check against v48.
+  await step("my jobs: A adds a pasted job, moves it through every status, keeps a note, reads it again and deletes it", A, async (p) => {
+    const posting = JSON.parse(readFileSync(new URL("../../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
+    const company = "Example Analytics Pvt Ltd (smoke)";
+    const NOTE = "Round 1 is a SQL test (smoke).";
+    await open(p, "/departures?tab=mine");
+    const box = p.getByRole("region", { name: "Add a job you found" });
+    await box.getByLabel("Job description").fill(posting.text);
+    await box.getByRole("button", { name: "Add and check my gaps" }).click();
+    const result = box.locator("[data-added-job]");
+    await result.getByRole("heading", { name: "Check these, then save" }).waitFor({ timeout: upTo(90000) });
+    await result.getByLabel(/^Company/).fill(company);
+    await result.getByLabel(/^Title/).fill(posting.title);
+    await result.getByRole("button", { name: "Save to My jobs" }).click();
+    const row = p.getByRole("region", { name: "My jobs" }).getByRole("listitem").filter({ hasText: company });
+    await row.getByText("You added", { exact: true }).waitFor({ timeout: 15000 });
+    for (const [label, closed] of [["Applied"], ["Heard back"], ["Interview"], ["Offer"], ["Not this time", true], ["Withdrawn", true], ["Saved"]]) {
+      await row.getByRole("button", { name: /^Status: / }).click();
+      await row.getByRole("menu").getByRole("menuitemradio", { name: new RegExp(`^${label}`) }).click();
+      await row.getByRole("button", { name: new RegExp(`^Status: ${label}`) }).waitFor({ timeout: 10000 });
+      if (closed) await row.getByText(new RegExp(`^${label} \\d`)).waitFor({ timeout: 10000 });
+    }
+    await row.getByRole("button", { name: `Edit ${posting.title} at ${company}` }).click();
+    const sheet = p.getByRole("dialog", { name: posting.title });
+    await sheet.getByLabel("Private note").fill(NOTE);
+    await sheet.getByText(`${NOTE.length} / 2000`).waitFor({ timeout: 5000 });
+    await sheet.getByRole("button", { name: "Save", exact: true }).click();
+    await toast(p, "Saved. Only you see it.");
+    await row.getByText(NOTE).waitFor({ timeout: 10000 });
+    for (const [width, height] of [[1280, 900], [390, 844]]) {
+      for (const colorScheme of ["light", "dark"]) {
+        await p.setViewportSize({ width, height });
+        await p.emulateMedia({ colorScheme });
+        await row.getByText(NOTE).waitFor({ timeout: 10000 });
+        await shoot(p, `my-jobs-${width}-${colorScheme}`);
+      }
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await row.getByRole("button", { name: `Edit ${posting.title} at ${company}` }).click();
+    await sheet.getByText("Read the job again").click();
+    await sheet.getByText(/Example Analytics Pvt Ltd helps retail brands/).waitFor({ timeout: 10000 });
+    await shoot(p, "my-jobs-edit-sheet-1280-light");
+    await sheet.getByRole("button", { name: "Delete this job" }).click();
+    await toast(p, "Deleted. Nothing is kept.");
+    if (await row.count()) throw new Error("a deleted job still shows in My jobs");
   });
 
   // ---- Market on live counts (T121) ------------------------------------------------------------------------------------
