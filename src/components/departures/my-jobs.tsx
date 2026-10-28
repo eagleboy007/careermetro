@@ -157,11 +157,14 @@ function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJ
   return (
     <li
       data-my-job={job.key}
-      className={`grid grid-cols-[36px_minmax(0,1fr)] items-start gap-2.5 rounded-[18px] border border-line bg-surface p-3.5 min-[760px]:grid-cols-[44px_minmax(0,1fr)_auto] min-[760px]:gap-3.5 min-[760px]:p-4 ${closed ? "opacity-[.72]" : ""}`}
+      className={`grid grid-cols-[36px_minmax(0,1fr)] items-start gap-2.5 rounded-[18px] border border-line bg-surface p-3.5 min-[760px]:grid-cols-[44px_minmax(0,1fr)_auto] min-[760px]:gap-3.5 min-[760px]:p-4 ${closed ? "bg-bg" : ""}`}
     >
-      <Logo name={job.company} />
+      {/* A closed row is dimmed in its logo and title only, so the small grey text keeps its contrast. */}
+      <div className={closed ? "opacity-[.72]" : undefined}>
+        <Logo name={job.company} />
+      </div>
       <div className="flex min-w-0 flex-col gap-1.5">
-        <b className="text-[0.98rem] font-semibold [overflow-wrap:anywhere]">{job.title}</b>
+        <b className={`text-[0.98rem] font-semibold [overflow-wrap:anywhere] ${closed ? "opacity-[.72]" : ""}`}>{job.title}</b>
         <p className="flex flex-wrap items-center gap-1.5 text-[0.8rem] text-muted">
           {meta.map((m, i) => (
             <span key={i} className="contents">
@@ -459,9 +462,9 @@ export function EditSheet({
               Read the job again
               <span className={`${mono} rounded-[6px] bg-surface-2 px-[7px] py-0.5 text-[0.64rem] font-normal text-muted`}>your own copy</span>
             </summary>
-            <p className="mt-2.5 max-h-[40vh] overflow-y-auto whitespace-pre-line text-[0.86rem] leading-[1.5] [overflow-wrap:anywhere]">
+            <div role="region" tabIndex={0} aria-label="The job description" className="mt-2.5 max-h-[40vh] overflow-y-auto whitespace-pre-line text-[0.86rem] leading-[1.5] [overflow-wrap:anywhere]">
               {description === undefined ? "Loading…" : (description ?? "No copy kept for this job.")}
-            </p>
+            </div>
             <small className="mt-2 block text-[0.76rem] text-muted">
               Your own copy, kept so you can reread it before the interview, even after the posting comes down. Never shown to anyone.
             </small>
