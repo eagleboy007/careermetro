@@ -648,6 +648,7 @@ const EXAMPLE_ADDED: AddedJob = {
 export function AddJobBox({
   id,
   resumeId,
+  finishHref = null,
   demo = false,
   save,
   onSaved,
@@ -655,6 +656,8 @@ export function AddJobBox({
 }: {
   id: string;
   resumeId: string | null;
+  /** A resume read but with no gaps yet: the box sends the person to finish it (T134). */
+  finishHref?: string | null;
   demo?: boolean;
   save?: MyJobActions["save"];
   onSaved: (job: AddedJob, labels: { company: string; title: string; city: string | null }) => void;
@@ -828,10 +831,21 @@ export function AddJobBox({
         </>
       ) : (
         <div className="flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface p-[18px]">
-          <p className="text-[0.88rem] text-muted">Upload your resume first. Then add the jobs you&apos;re applying to and see the gaps for each.</p>
-          <Link href="/start" className={`${primary} ${small} self-start`}>
-            Upload your resume
-          </Link>
+          {finishHref ? (
+            <>
+              <p className="text-[0.88rem] text-muted">Check your gaps first. Then add the jobs you&apos;re applying to and see the gaps for each.</p>
+              <Link href={finishHref} className={`${primary} ${small} self-start`}>
+                Check your gaps
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="text-[0.88rem] text-muted">Upload your resume first. Then add the jobs you&apos;re applying to and see the gaps for each.</p>
+              <Link href="/start" className={`${primary} ${small} self-start`}>
+                Upload your resume
+              </Link>
+            </>
+          )}
         </div>
       )}
     </section>

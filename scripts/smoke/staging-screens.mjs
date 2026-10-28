@@ -821,6 +821,10 @@ try {
     const posting = JSON.parse(readFileSync(new URL("../../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
     const company = "Example Analytics Pvt Ltd (smoke)";
     const NOTE = "Round 1 is a SQL test (smoke).";
+    // A job is checked against the person's gaps, so A's built resume gets them first, with no admin step (T133).
+    if (!aResume) throw new Error("the builder step saved no resume");
+    await open(p, `${aResume}/gaps/data-analyst`);
+    await p.getByRole("heading", { name: "Your gaps", exact: true, level: 1 }).waitFor({ timeout: upTo(90000) });
     await open(p, "/departures?tab=mine");
     const box = p.getByRole("region", { name: "Add a job you found" });
     await box.getByLabel("Job description").fill(posting.text);
@@ -869,7 +873,7 @@ try {
     await sheet.getByRole("button", { name: "Delete this job" }).click();
     await toast(p, "Deleted. Nothing is kept.");
     if (await row.count()) throw new Error("a deleted job still shows in My jobs");
-  });
+  }, { needs: ["builder: A answers the seven sections, Review my resume, then Download gives a PDF"] });
 
   // ---- Market on live counts (T121) ------------------------------------------------------------------------------------
   // T122: /market's live reads carry statement and lock limits and the page gives up on them after a few seconds, so

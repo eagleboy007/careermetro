@@ -62,6 +62,7 @@ export function DeparturesView({
   initialApplied = [],
   noFit = null,
   resumeId = null,
+  finishHref = null,
   prep = {},
   demo = false,
   searchSwitch = null,
@@ -79,6 +80,8 @@ export function DeparturesView({
   initialSaved?: string[];
   initialApplied?: [string, number][];
   resumeId?: string | null;
+  /** With no gaps yet: the person's resume to finish first (T134). */
+  finishHref?: string | null;
   prep?: Record<string, RolePrepView | null>;
   demo?: boolean;
   /** "Looking for a job" (src/components/job-search), in the header. */
@@ -387,7 +390,7 @@ export function DeparturesView({
           />
         )}
 
-        <AddJobBox id={pasteId} resumeId={resumeId} demo={demo} save={mineActions?.save} onSaved={added} onPost={savedPost} />
+        <AddJobBox id={pasteId} resumeId={resumeId} finishHref={finishHref} demo={demo} save={mineActions?.save} onSaved={added} onPost={savedPost} />
         {editingJob && (
           <EditSheet
             key={editingJob.key}
