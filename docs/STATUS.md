@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-28 (My jobs plan, waiting on Milin)
+Last updated: 2026-10-28 (My jobs plan keeps the pasted description)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -78,7 +78,7 @@ Last updated: 2026-10-28 (My jobs plan, waiting on Milin)
 
 ## Next up
 
-- My jobs (Milin, 2026-10-28, the onboarding feature): plan only in `docs/plans/application-tracker-plan.md`. It extends `job_saves` to jobs the person adds (pasted, or read from a company-board link), with Not this time and Withdrawn, an interview date and a note, Prepare for this job and a first check before sign-up (migration 0050). Waiting on Milin's approval, the keep-description decision and design entries.
+- My jobs (Milin, 2026-10-28, the onboarding feature): plan only in `docs/plans/application-tracker-plan.md`. It extends `job_saves` to jobs the person adds (pasted, or read from a company-board link), with Not this time and Withdrawn, an interview date and a note, Prepare for this job and a first check before sign-up (migration 0050). Milin chose to keep the pasted description (28 Oct). Waiting on his approval of the plan and the design entries.
 
 The Project manager's queue of 2026-10-15 is done: launch readiness (c) 6 and 7, Practice (#145), Match (#143) and the report removal tools (#146). Detail for each is in `dev/launch-readiness.md`, `dev/practice-match-plan.md` and `docs/plans/reports-review-plan.md`.
 
