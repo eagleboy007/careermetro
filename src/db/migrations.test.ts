@@ -136,6 +136,8 @@ const GRANDFATHERED: Record<string, string> = {
     "old code always sets job_post_id and never job_check_id",
   "0050_my_jobs.sql: adds a constraint to an existing table: ALTER TABLE \"job_saves\" ADD CONSTRAINT \"job_saves_closed\"":
     "old code never writes closed_at, which is new in 0050",
+  "0051_mock_for_a_job.sql: adds a constraint to an existing table: ALTER TABLE \"mock_sessions\" ADD CONSTRAINT \"mock_sessions_focus\"":
+    "widens the focus check by 'job'; old code writes only the four it knew",
 };
 
 describe("migrations", () => {

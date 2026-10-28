@@ -65,11 +65,12 @@ export async function finishTimedTestAction(testId: unknown): Promise<TimedTestF
 }
 
 /** "Start mock interview" for a role, length and focus. */
-export async function startMockInterviewAction(roleSlug: unknown, length: unknown, focus: unknown): Promise<MockInterviewStartResult> {
+export async function startMockInterviewAction(roleSlug: unknown, length: unknown, focus: unknown, job?: unknown): Promise<MockInterviewStartResult> {
   const account = await currentAccount();
   if (!account) return { ok: false, message: SIGN_IN };
   try {
-    const out = await startMockInterview(account.id, { roleSlug, length, focus });
+    // "This job's skills" names the job in My jobs; the store checks it is the person's own.
+    const out = await startMockInterview(account.id, job === undefined ? { roleSlug, length, focus } : { roleSlug, length, focus, job });
     return out.ok ? out : { ok: false, message: MOCK_INTERVIEW_MESSAGES[out.error] };
   } catch (error) {
     logEvent("error", "mock_interview_start_failed", errorFields(error));

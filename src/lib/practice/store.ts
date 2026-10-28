@@ -12,6 +12,7 @@ import { practiceCapFor } from "@/lib/elite/rules";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
+import { jobPrep, savedJobNames } from "@/lib/my-jobs/store";
 import {
   PRACTICE_DAILY_ANSWERS,
   PRACTICE_KEEP_DAYS,
@@ -19,6 +20,7 @@ import {
   practiceRateInput,
   practiceTrend,
   practiceView,
+  type MyJobRef,
   type PracticeAnswerResult,
   type PracticeFeedback,
   type PracticeQuestion,
@@ -131,7 +133,8 @@ export async function submitPracticeAnswer(
       // A goal swapped to this skill ("Not for me", FR-48) practises it too (T58).
       .where(and(eq(userGoals.userId, userId), or(eq(userGoals.skillId, question.skillId), eq(userGoals.swappedTo, question.skillId))))
       .limit(1);
-    if (!goal) return { ok: false, reason: "not_goal" };
+    // A skill only one of the person's saved jobs asks for practises too, from "Prepare for this job" (handoff 12m).
+    if (!goal && !(await savedJobNames(userId, question.skillId, tx))) return { ok: false, reason: "not_goal" };
     const used = await usedAnswers(tx, userId, now);
     // 10 a day on Free; Elite has no daily cap (FR-50), though feedback calls still stop at 20 a day.
     const cap = practiceCapFor(await eliteOn(userId, tx));
@@ -203,9 +206,17 @@ async function ratingsBySkill(db: Db, userId: string): Promise<Map<string, numbe
  * The Practice page for this person (handoff 12h): their goals that have bank questions, each tagged as the current
  * goal, a goal ahead or a goal met, with their own ratings; how many answers are left today; and goals with no
  * questions yet. Read only: practice never changes goals.
+ * Set to one job of their own My jobs ("Practice on this job's skills", handoff 12m), it lists that job's still-open
+ * goals first, then the skills only the job asks for (tagged `job`, never goals), then the other goals.
  */
-export async function practiceFor(userId: string, now = new Date(), db: Db = getDb()): Promise<PracticeView> {
-  const [goals, ratings, used, elite] = await Promise.all([goalsOf(userId, db), ratingsBySkill(db, userId), usedAnswers(db, userId, now), eliteOn(userId, db)]);
+export async function practiceFor(userId: string, now = new Date(), db: Db = getDb(), jobRef: MyJobRef | null = null): Promise<PracticeView> {
+  const [goals, ratings, used, elite, prep] = await Promise.all([
+    goalsOf(userId, db),
+    ratingsBySkill(db, userId),
+    usedAnswers(db, userId, now),
+    eliteOn(userId, db),
+    jobRef ? jobPrep(userId, jobRef, { db, now }) : null,
+  ]);
   const cap = practiceCapFor(elite);
   const open = goals.filter((g) => g.status !== "skipped");
   const current = open.find((g) => g.status !== "met" && !g.proved);
@@ -228,7 +239,23 @@ export async function practiceFor(userId: string, now = new Date(), db: Db = get
       ratings: ratings.get(skillId) ?? [],
     });
   }
-  return practiceView.parse({ skills: skillsOut, left: cap === null ? null : Math.max(0, cap - used), noQuestions });
+  const left = cap === null ? null : Math.max(0, cap - used);
+  if (!prep) return practiceView.parse({ skills: skillsOut, left, noQuestions, job: null });
+  const openIds = prep.open.map((s) => s.skillId);
+  const firsts = openIds.flatMap((id) => skillsOut.filter((s) => s.skillId === id));
+  const goalIds = new Set(skillsOut.map((s) => s.skillId));
+  const extras = prep.only.flatMap((s): PracticeSkill[] => {
+    const questions = questionsBySkill.get(s.skillId);
+    if (!questions || goalIds.has(s.skillId)) return [];
+    return [{ skillId: s.skillId, name: skillNames.get(s.skillId) ?? s.skillName, tag: "job", questions: questions.map((q) => ({ id: q.id, question: q.question, lookFor: q.lookFor })), ratings: ratings.get(s.skillId) ?? [] }];
+  });
+  const shown = new Set([...firsts, ...extras].map((s) => s.skillId));
+  return practiceView.parse({
+    skills: [...firsts, ...extras, ...skillsOut.filter((s) => !shown.has(s.skillId))],
+    left,
+    noQuestions,
+    job: { company: prep.company, title: prep.title },
+  });
 }
 
 /**

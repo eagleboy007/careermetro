@@ -1408,12 +1408,15 @@ export const mockSessions = pgTable(
     endedAt: timestamp("ended_at", { withTimezone: true }),
     feedback: jsonb("feedback").$type<MockSessionFeedback>(),
     aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
+    /** The job in My jobs a "This job's skills" round is for (migration 0051); null once that job is deleted. */
+    jobSaveId: uuid("job_save_id").references(() => jobSaves.id, { onDelete: "set null" }),
   },
   (t) => [
     index("mock_sessions_user").on(t.userId, t.startedAt),
     index("mock_sessions_started").on(t.startedAt),
+    index("mock_sessions_job_save").on(t.jobSaveId),
     check("mock_sessions_length", sql`${t.length} in ('quick', 'full')`),
-    check("mock_sessions_focus", sql`${t.focus} in ('mix', 'gaps', 'technical', 'about')`),
+    check("mock_sessions_focus", sql`${t.focus} in ('mix', 'gaps', 'technical', 'about', 'job')`),
   ],
 );
 

@@ -12,6 +12,7 @@ import { currentAnalysis, type Db as AnalysisDb } from "@/lib/gaps/current";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
+import { jobLabel, jobPrep } from "@/lib/my-jobs/store";
 import {
   mockInterviewAnswerInput,
   mockInterviewEndInput,
@@ -84,6 +85,7 @@ const sessionColumns = {
   startedAt: mockSessions.startedAt,
   endedAt: mockSessions.endedAt,
   feedback: mockSessions.feedback,
+  jobSaveId: mockSessions.jobSaveId,
 };
 const answerColumns = {
   position: mockAnswers.position,
@@ -116,7 +118,7 @@ export async function runningInterview(userId: string, deps: InterviewDeps = {})
     .orderBy(desc(mockSessions.startedAt))
     .limit(1);
   if (!row || !sessionRunning(row, now)) return null;
-  return sessionViewOf(row, await answersOf(db, row.id), c.byId, titleOf(c, row.roleSlug), now);
+  return sessionViewOf(row, await answersOf(db, row.id), c.byId, titleOf(c, row.roleSlug), now, await jobLabel(userId, row.jobSaveId, db));
 }
 
 type StartOutcome = { ok: true; session: MockSessionView } | { ok: false; error: MockInterviewError };
@@ -127,7 +129,8 @@ type EndOutcome = { ok: true; result: MockSessionResult } | { ok: false; error: 
 /**
  * "Start mock interview": Elite only, a role from the profiles, and at most 5 starts a day per person (each start
  * counts). The questions are picked from the bank by code, seeded by the session's id; the model never writes or
- * picks one.
+ * picks one. "This job's skills" names a job of the person's own My jobs: its skills come first, the round keeps its
+ * job_saves id, and the target role stays the role (handoff 12m). No new prompt: feedback is the same call.
  */
 export async function startMockInterview(userId: string, raw: unknown, deps: InterviewDeps = {}): Promise<StartOutcome> {
   const db = deps.db ?? getDb();
@@ -140,17 +143,20 @@ export async function startMockInterview(userId: string, raw: unknown, deps: Int
   const id = randomUUID();
   return db.transaction(async (tx): Promise<StartOutcome> => {
     if (!(await eliteOn(userId, tx))) return { ok: false, error: "not_elite" };
+    const prep = input.data.job ? await jobPrep(userId, input.data.job, { db: tx, now }) : null;
+    if (input.data.job && !prep) return { ok: false, error: "no_job" };
     const goalSkills = input.data.focus === "gaps" ? await openGoalSkills(userId, tx) : [];
     // The skills the resume shows, so a "one of these" group asks about the person's own language (T129).
     const ownSkills = (await currentAnalysis(userId, tx as unknown as AnalysisDb))?.result.metSkillIds ?? [];
-    const questionIds = pickInterviewQuestions(c.bank, role, input.data.focus, input.data.length, id, goalSkills, ownSkills);
+    const jobSkills = prep ? { open: prep.open.map((s) => s.skillId), only: prep.only.map((s) => s.skillId), rest: prep.rest } : undefined;
+    const questionIds = pickInterviewQuestions(c.bank, role, input.data.focus, input.data.length, id, goalSkills, ownSkills, jobSkills);
     if (!questionIds) return { ok: false, error: "no_questions" };
     if (!(await takeShared(LIMITS.mockSessionsPerUserDay, userId, { db: tx, now: now.getTime() }))) return { ok: false, error: "limit" };
     const [row] = await tx
       .insert(mockSessions)
-      .values({ id, userId, roleSlug: role.slug, length: input.data.length, focus: input.data.focus, questionIds, startedAt: now })
+      .values({ id, userId, roleSlug: role.slug, length: input.data.length, focus: input.data.focus, questionIds, startedAt: now, jobSaveId: prep?.saveId ?? null })
       .returning(sessionColumns);
-    const session = sessionViewOf(row, [], c.byId, role.title, now);
+    const session = sessionViewOf(row, [], c.byId, role.title, now, prep ? { company: prep.company, title: prep.title } : null);
     if (!session) throw new Error("mock interview questions missing from the bank");
     logEvent("info", "mock_interview_started", { questions: questionIds.length });
     return { ok: true, session };
@@ -357,7 +363,7 @@ export async function endMockInterview(userId: string, raw: unknown, deps: Inter
     }
   }
   logEvent("info", "mock_interview_ended", { answered: answers.length, questions: row.questionIds.length, feedback: state });
-  return { ok: true, result: resultOf(row, answers, c.byId, titleOf(c, row.roleSlug), state, summary) };
+  return { ok: true, result: resultOf(row, answers, c.byId, titleOf(c, row.roleSlug), state, summary, await jobLabel(userId, row.jobSaveId, db)) };
 }
 
 /**

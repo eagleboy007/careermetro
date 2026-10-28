@@ -6,9 +6,10 @@ import { PageLoading } from "@/components/app/page-loading";
 import { MockView } from "@/components/mock/mock-view";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
-import { exampleMockPage } from "@/lib/mock/fixtures";
+import { exampleJobPrep, exampleMockPage } from "@/lib/mock/fixtures";
 import { mockPageFor } from "@/lib/mock/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
+import { refFromParam } from "@/lib/my-jobs/rules";
 import { mockTab, type MockPageView, type MockTab } from "@/lib/schemas";
 import {
   endMockInterviewAction,
@@ -35,18 +36,20 @@ async function MockScreen({ searchParams }: PageProps<"/mock">) {
   const role = one(params.role);
   const asked = mockTab.safeParse(one(params.tab));
   const tab: MockTab | null = asked.success ? asked.data : null;
+  // "Mock interview for this job" from My jobs (handoff 12m): a job of the person's own, else none.
+  const job = refFromParam(params.job);
   const account = await currentAccount();
   if (!account) {
     return (
       <div className="flex flex-col gap-4">
         <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">Preview with example data. Nothing you press here is saved.</p>
-        <MockView key={`${tab}-${role}`} view={exampleMockPage(role, false, null, null, unreviewedAllowed())} tab={tab ?? "bank"} />
+        <MockView key={`${tab}-${role}-${job ? "job" : ""}`} view={exampleMockPage(role, false, null, null, unreviewedAllowed(), job ? exampleJobPrep : null)} tab={tab ?? "bank"} />
       </div>
     );
   }
   let view: MockPageView;
   try {
-    view = await mockPageFor(account.id, role);
+    view = await mockPageFor(account.id, role, { job });
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "mock_page_failed", errorFields(error));
@@ -59,7 +62,7 @@ async function MockScreen({ searchParams }: PageProps<"/mock">) {
   return (
     <MockView
       // A link to another tab or role (a skipped question's "Open it in the bank") opens it afresh.
-      key={`${tab}-${role}`}
+      key={`${tab}-${role}-${one(params.job) ?? ""}`}
       view={view}
       // Elite opens on the mock interview; Free on the bank, which it can use.
       tab={tab ?? (view.elite ? "interview" : "bank")}

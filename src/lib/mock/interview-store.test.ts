@@ -342,4 +342,39 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     await db!.delete(schema.users).where(eq(schema.users.id, me));
     expect(await sessionOf(session.id)).toBeUndefined();
   });
+
+  it("sets a round up for one job in the person's own My jobs: its skills first, its name kept, never someone else's job", async () => {
+    const me = await person();
+    const skillId = mockQuestions.find((q) => q.kind === "open" && q.roleSlugs.includes("devops-engineer") && !q.roleSlugs.includes("data-analyst"))!.skillId;
+    const [post] = await db!
+      .insert(schema.jobPosts)
+      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/2", title: "Platform analyst", company: "Example Cloud", city: "Pune", requiredSkillIds: [skillId] })
+      .returning({ id: schema.jobPosts.id });
+    const [save] = await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: post.id, savedAt: new Date() }).returning({ id: schema.jobSaves.id });
+    const job = { kind: "post", postId: post.id } as const;
+
+    const page = await mockPageFor(me, null, { db: db!, job });
+    expect(page.job).toMatchObject({ ref: job, company: "Example Cloud", title: "Platform analyst", open: [], only: [], skipped: [] });
+    expect((await mockPageFor(me, null, { db: db! })).job).toBeNull();
+
+    const out = await startMockInterview(me, { roleSlug: "data-analyst", length: "quick", focus: "job", job }, { db: db! });
+    if (!out.ok) throw new Error(out.error);
+    expect(out.session.job).toEqual({ company: "Example Cloud", title: "Platform analyst" });
+    expect(mockQuestions.find((q) => q.id === out.session.questions[0].id)!.skillId).toBe(skillId);
+    expect(await sessionOf(out.session.id)).toMatchObject({ focus: "job", roleSlug: "data-analyst", jobSaveId: save.id });
+    expect((await runningInterview(me, { db: db! }))?.job).toEqual({ company: "Example Cloud", title: "Platform analyst" });
+
+    // Someone else's job, or a job round that names none, starts nothing.
+    const other = await person();
+    expect(await startMockInterview(other, { roleSlug: "data-analyst", length: "quick", focus: "job", job }, { db: db! })).toEqual({ ok: false, error: "no_job" });
+    expect(await startMockInterview(other, { roleSlug: "data-analyst", length: "quick", focus: "job" }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+    expect((await mockPageFor(other, null, { db: db!, job })).job).toBeNull();
+
+    // Deleting the job keeps the round and its feedback, without the job's name.
+    await db!.delete(schema.jobSaves).where(eq(schema.jobSaves.id, save.id));
+    expect((await sessionOf(out.session.id)).jobSaveId).toBeNull();
+    const ended = await endMockInterview(me, { sessionId: out.session.id, answers: [{ position: 1, answer: ANSWER }] }, { db: db!, client: client().client });
+    expect(ended.ok && ended.result.job).toBeNull();
+    await db!.delete(schema.jobPosts).where(eq(schema.jobPosts.id, post.id));
+  });
 });

@@ -34,6 +34,14 @@ describe("mock interview schemas", () => {
     expect(mockInterviewStartInput.safeParse({ roleSlug: "data-analyst", length: "full", focus: "gaps", extra: 1 }).success).toBe(false);
   });
 
+  it("names the job in My jobs for a round on this job's skills, and only then", () => {
+    const job = { kind: "check", checkId: SESSION };
+    expect(mockInterviewStartInput.safeParse({ roleSlug: "data-analyst", length: "quick", focus: "job", job }).success).toBe(true);
+    expect(mockInterviewStartInput.safeParse({ roleSlug: "data-analyst", length: "quick", focus: "job" }).success).toBe(false);
+    expect(mockInterviewStartInput.safeParse({ roleSlug: "data-analyst", length: "quick", focus: "mix", job }).success).toBe(false);
+    expect(mockInterviewStartInput.safeParse({ roleSlug: "data-analyst", length: "quick", focus: "job", job: { kind: "check", checkId: "x" } }).success).toBe(false);
+  });
+
   it("takes an answer of up to 4,000 characters after trimming, at positions 1 to 8; empty is a skip", () => {
     const ok = mockInterviewAnswerInput.safeParse({ sessionId: SESSION, position: 1, answer: "  I would start with the data.  " });
     expect(ok.success && ok.data.answer).toBe("I would start with the data.");
@@ -61,14 +69,18 @@ describe("mock interview schemas", () => {
       roleTitle: "Data Analyst",
       length: "quick",
       focus: "mix",
+      job: null,
       questions: [{ position: 1, id: "sql-1", topic: "SQL", question: "Explain a join." }],
       answers: [""],
       secondsLeft: 600,
     };
     expect(mockSessionView.safeParse(view).success).toBe(true);
+    expect(mockSessionView.safeParse({ ...view, focus: "job", job: { company: "Zephyr Payments", title: "SOC analyst" } }).success).toBe(true);
+    expect(mockSessionView.safeParse({ ...view, job: undefined }).success).toBe(false);
     const result = {
       id: SESSION,
       roleTitle: "Data Analyst",
+      job: null,
       length: "quick",
       answered: 1,
       total: 1,

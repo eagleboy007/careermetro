@@ -82,8 +82,9 @@ jobs:
           SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || 'admin@careermetro.test' }}
           SMOKE_SHOTS: smoke-results
         run: node scripts/smoke/staging-screens.mjs
-      - name: Keep screenshots of failed steps
-        if: failure()
+      # Failed steps' screenshots, and the My jobs screenshots every run (T131: the fidelity check against v48).
+      - name: Keep screenshots
+        if: always()
         timeout-minutes: 5
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

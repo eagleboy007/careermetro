@@ -140,6 +140,14 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - parse-jd v2 (company, title and city, kept only when found word for word in the posting) is used for every check.
 - The interview field, the Prepare menu and "Save and prepare" come in PR 2 and PR 3.
 
+## Choices made while building (PR 2)
+
+- The job is named in the address as `post:<id>` or `check:<id>`, the same key My jobs uses, and is looked up for the signed-in person only. Someone else's job, or a deleted one, falls back to the role.
+- Practice accepts answers on a skill one of the person's saved jobs asks for, without making it a goal.
+- A job round asks the job's still-open goals, then its "Only for this job" skills, then the role's other questions. One question in four is "About you" from the target role.
+- Starting a round for a job that has left My jobs says "That job isn't in My jobs any more" (`no_job`). Deleting the job keeps past rounds, with the job link cleared.
+- The running round's job line uses an ink dot, not cobalt, which stays for progress.
+
 ## Phase 2 (planned after phase 1 ships)
 
 - **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".

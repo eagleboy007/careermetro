@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { JOB_TEXT_MAX, JOB_TEXT_MIN } from "./constants";
-import { addJobRequest, jobLink, jobStatusRequest, myJobRef, saveJobRequest, updateJobRequest } from "./my-jobs";
+import { addJobRequest, jobLink, jobPrepView, jobStatusRequest, myJobRef, saveJobRequest, updateJobRequest } from "./my-jobs";
 
 const resumeId = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
 const checkId = "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f";
@@ -99,5 +99,15 @@ describe("updateJobRequest", () => {
     expect(updateJobRequest.safeParse({ ref, status: "ghosted" }).success).toBe(false);
     expect(updateJobRequest.safeParse({ ref, status: "saved", url: "http://example.com" }).success).toBe(false);
     expect(updateJobRequest.safeParse({ ref, status: "saved", description: "x" }).success).toBe(false);
+  });
+});
+
+describe("jobPrepView", () => {
+  const prep = { ref: { kind: "check", checkId }, company: "Zephyr Payments", title: "SOC analyst", open: ["SIEM"], only: ["KQL"], skipped: ["KQL"] };
+  it("names the job and its skills in words, never a job text", () => {
+    expect(jobPrepView.parse(prep)).toEqual(prep);
+    expect(jobPrepView.safeParse({ ...prep, description: text }).success).toBe(false);
+    expect(jobPrepView.safeParse({ ...prep, company: "" }).success).toBe(false);
+    expect(jobPrepView.safeParse({ ...prep, ref: { kind: "check", checkId: "x" } }).success).toBe(false);
   });
 });

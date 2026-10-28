@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, stageOf, statusOf } from "./rules";
+import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, prepareHref, refFromParam, refParam, stageOf, statusOf } from "./rules";
 
 describe("statuses and stages", () => {
   it("maps each status to its stage and back", () => {
@@ -77,5 +77,21 @@ describe("boardLinkOf", () => {
     expect(linkKind("https://careers.example.com/soc")).toBe("other");
     expect(linkKind("http://careers.example.com/soc")).toBe("invalid");
     expect(linkKind("careers.example.com")).toBe("invalid");
+  });
+});
+
+describe("a job in an address", () => {
+  const id = "4b7c6e1a-2f3d-4c5b-8a9e-0d1f2e3a4b5c";
+  it("writes and reads post and check refs", () => {
+    expect(refParam({ kind: "post", postId: id })).toBe(`post:${id}`);
+    expect(refFromParam(`post:${id}`)).toEqual({ kind: "post", postId: id });
+    expect(refFromParam(`check:${id.toUpperCase()}`)).toEqual({ kind: "check", checkId: id });
+  });
+  it("reads nothing else", () => {
+    for (const bad of [undefined, ["post", id], "", id, `job:${id}`, "post:not-a-uuid", `post:${id}:x`, `check:`]) expect(refFromParam(bad)).toBeNull();
+  });
+  it("links Practice and the mock interview to the job", () => {
+    expect(prepareHref({ kind: "check", checkId: id }, "practice")).toBe(`/practice?job=check%3A${id}`);
+    expect(prepareHref({ kind: "post", postId: id }, "mock")).toBe(`/mock?tab=interview&job=post%3A${id}`);
   });
 });

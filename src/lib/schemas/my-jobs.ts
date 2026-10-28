@@ -144,6 +144,21 @@ export const myJobView = z.object({
 });
 export type MyJobView = z.infer<typeof myJobView>;
 
+/**
+ * "Prepare for this job" on /mock and Practice: the job's company and title, and in the order a round asks them, the
+ * names of its still-open goals and of the skills only this job asks for; `skipped` are those of them the question bank
+ * has no questions for yet.
+ */
+export const jobPrepView = z.strictObject({
+  ref: myJobRef,
+  company: z.string().min(1).max(120),
+  title: z.string().min(1).max(160),
+  open: z.array(z.string().min(1).max(120)).max(40),
+  only: z.array(z.string().min(1).max(120)).max(40),
+  skipped: z.array(z.string().min(1).max(120)).max(40),
+});
+export type JobPrepView = z.infer<typeof jobPrepView>;
+
 /** One row of `my_jobs` in Download your data (added in export version 33). */
 export const myJobExport = z.object({
   source: z.enum(["you_added", "company_job_board"]),

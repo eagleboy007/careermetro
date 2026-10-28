@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { jobPrepView, myJobRef } from "./my-jobs";
 import {
   MOCK_ANSWER_MAX_CHARS,
   MOCK_FEEDBACK_STATES,
@@ -234,8 +235,10 @@ const position = z.number().int().min(1).max(MOCK_MAX_QUESTIONS);
 /** An answer as typed: trimmed, at most 4,000 characters. Empty means the question was skipped. */
 const answerText = z.string().trim().max(MOCK_ANSWER_MAX_CHARS);
 
-/** "Start mock interview": the role, Quick or Full, and the focus. */
-export const mockInterviewStartInput = z.strictObject({ roleSlug: z.string().min(1).max(80).regex(slug), length: mockLength, focus: mockFocus });
+/** "Start mock interview": the role, Quick or Full, and the focus; "This job's skills" names the job in My jobs. */
+export const mockInterviewStartInput = z
+  .strictObject({ roleSlug: z.string().min(1).max(80).regex(slug), length: mockLength, focus: mockFocus, job: myJobRef.optional() })
+  .refine((v) => (v.focus === "job") === (v.job !== undefined), { message: "a job round names its job, and only a job round does" });
 /** "Next": the answer to one question of the person's running session (empty clears a saved one). */
 export const mockInterviewAnswerInput = z.strictObject({ sessionId: uuid, position, answer: answerText });
 /** The reply to the follow-up asked at one position of the person's running session: 1 to 4,000 characters. */
@@ -263,6 +266,8 @@ export type MockInterviewFeedback = z.infer<typeof mockInterviewFeedback>;
 export type MockSessionFeedback = { summary: string };
 
 const roleTitle = z.string().min(1).max(120);
+/** The job in My jobs a round is for: "Mock interview for <company>, <title>". Null for a round for the role. */
+const roundJob = z.strictObject({ company: z.string().min(1).max(120), title: z.string().min(1).max(160) }).nullable();
 export const mockInterviewQuestion = z.strictObject({ position, id: questionId, topic, question: text(300) });
 export type MockInterviewQuestion = z.infer<typeof mockInterviewQuestion>;
 
@@ -273,6 +278,7 @@ export const mockSessionView = z.strictObject({
   roleTitle,
   length: mockLength,
   focus: mockFocus,
+  job: roundJob,
   questions: z.array(mockInterviewQuestion).min(1).max(MOCK_MAX_QUESTIONS),
   answers: z.array(z.string().max(MOCK_ANSWER_MAX_CHARS)).max(MOCK_MAX_QUESTIONS),
   secondsLeft: z.number().int().min(0),
@@ -286,6 +292,7 @@ export type MockFeedbackState = z.infer<typeof mockFeedbackState>;
 export const mockSessionResult = z.strictObject({
   id: uuid,
   roleTitle,
+  job: roundJob,
   length: mockLength,
   answered: z.number().int().min(0).max(MOCK_MAX_QUESTIONS),
   total: z.number().int().min(1).max(MOCK_MAX_QUESTIONS),
@@ -310,7 +317,7 @@ export const mockSessionResult = z.strictObject({
 });
 export type MockSessionResult = z.infer<typeof mockSessionResult>;
 
-export const MOCK_INTERVIEW_ERRORS = ["invalid", "not_elite", "limit", "no_questions", "not_found", "over"] as const;
+export const MOCK_INTERVIEW_ERRORS = ["invalid", "not_elite", "limit", "no_questions", "not_found", "over", "no_job"] as const;
 export type MockInterviewError = (typeof MOCK_INTERVIEW_ERRORS)[number];
 
 export type MockInterviewStartResult = { ok: true; session: MockSessionView } | { ok: false; message: string };
@@ -328,5 +335,7 @@ export const mockPageView = z.strictObject({
   bank: mockBankView,
   test: timedTestView.nullable(),
   interview: mockSessionView.nullable(),
+  /** `/mock?job=`: the job in My jobs the set-up is for, when it is the person's own. */
+  job: jobPrepView.nullable(),
 });
 export type MockPageView = z.infer<typeof mockPageView>;

@@ -628,7 +628,8 @@ export const MOCK_TABS = ["interview", "test", "bank"] as const;
  * feedback in words when the session ends. No score anywhere.
  */
 export const MOCK_LENGTHS = ["quick", "full"] as const;
-export const MOCK_FOCUSES = ["mix", "gaps", "technical", "about"] as const;
+/** `job` is "This job's skills", for one job in My jobs (handoff 12m); it shows only when the round is for a job. */
+export const MOCK_FOCUSES = ["mix", "gaps", "technical", "about", "job"] as const;
 /** Quick is 4 questions in 10 minutes, Full 8 in 20. */
 export const MOCK_LENGTH_QUESTIONS = { quick: 4, full: 8 } as const;
 export const MOCK_LENGTH_MINUTES = { quick: 10, full: 20 } as const;

@@ -20,6 +20,18 @@ export const examplePractice: PracticeView = practiceView.parse({
   skills: [skill("python", "current", [1, 2, 2, 3]), skill("communication", "ahead", [2]), skill("sql", "met", [3, 3, 4])],
   left: 7,
   noQuestions: [nameOf("tableau"), nameOf("power-bi")],
+  job: null,
+});
+
+/**
+ * Practice set to the example My jobs row Example Analytics, Data Analyst ("Practice on this job's skills"): its
+ * still-open goals first, then Python, which only this job asks for and is never a goal.
+ */
+export const examplePracticeForJob: PracticeView = practiceView.parse({
+  skills: [skill("statistics", "current", []), skill("data-cleaning", "ahead", [2]), skill("python", "job", [])],
+  left: 7,
+  noQuestions: [],
+  job: { company: "Example Analytics", title: "Data Analyst" },
 });
 
 /** The same person at 0 answers left today, for the design page. */

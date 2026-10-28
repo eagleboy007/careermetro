@@ -83,6 +83,9 @@ export function spread(
  * length gets all it has. Null when there is nothing to ask.
  * A "one of these" group (six main languages) is one topic, and when the resume shows some of its skills (`ownSkills`)
  * the round asks about those only, so a Java developer isn't asked about C++ (T129).
+ * - This job's skills (one job in My jobs, handoff 12m): questions from the whole bank on the job's still-open goals,
+ *   then on what only this job asks for, then on its other skills; then "about you" questions (one in four, as Mix),
+ *   and the target role's own fill the rest.
  */
 export function pickInterviewQuestions(
   bank: readonly MockQuestion[],
@@ -92,6 +95,7 @@ export function pickInterviewQuestions(
   seed: string,
   goalSkills: readonly string[] = [],
   ownSkills: readonly string[] = [],
+  job: JobSkills = NO_JOB,
 ): string[] | null {
   const n = MOCK_LENGTH_QUESTIONS[length];
   const topic = topicOf(role);
@@ -103,6 +107,16 @@ export function pickInterviewQuestions(
   const extra = new Set(role.skills.filter((s) => s.importance === "nice_to_have").map((s) => s.skillId));
   const required = technical.filter((q) => !extra.has(q.skillId));
   const goals = new Set(goalSkills);
+  const out: string[] = [];
+  if (focus === "job") {
+    const aboutTake = Math.max(1, Math.floor(n / 4));
+    for (const skillIds of [job.open, job.only, job.rest]) {
+      const want = new Set(skillIds);
+      const pool = bank.filter(isOpen).filter((q) => want.has(q.skillId) && !ABOUT_SKILLS.has(q.skillId));
+      out.push(...spread(pool, seed, Math.max(0, n - aboutTake - out.length), new Set(out), topic));
+    }
+    out.push(...spread(about, seed, Math.min(aboutTake, n - out.length), new Set(out), topic));
+  }
   const firsts: { pool: readonly Open[]; take: number }[] =
     focus === "mix"
       ? [
@@ -117,13 +131,40 @@ export function pickInterviewQuestions(
               { pool: required, take: n },
               { pool: technical, take: n },
             ]
-          : [{ pool: about, take: n }];
-  const out: string[] = [];
+          : focus === "about"
+            ? [{ pool: about, take: n }]
+            : [];
   for (const step of [...firsts, { pool: forRole, take: n }, { pool: about, take: n }]) {
     if (out.length >= n) break;
     out.push(...spread(step.pool, seed, Math.min(step.take, n - out.length), new Set(out), topic));
   }
   return out.length ? out : null;
+}
+
+/** A job's skill ids for a round on it, in the order it asks them: still-open goals, only this job's, then the rest. */
+export type JobSkills = { open: readonly string[]; only: readonly string[]; rest: readonly string[] };
+const NO_JOB: JobSkills = { open: [], only: [], rest: [] };
+
+/** Which of these skills the bank has no open questions for (other than "about you"): a job round skips them. */
+export function withoutQuestions(bank: readonly MockQuestion[], skillIds: readonly string[]): string[] {
+  const asked = new Set(bank.filter(isOpen).map((q) => q.skillId));
+  return [...new Set(skillIds)].filter((id) => !asked.has(id));
+}
+
+/**
+ * The banner on a round set up for one job (handoff 12m): "Asks first for SIEM and Threat detection (still open), then
+ * Phishing triage and KQL (only for this job). No practice questions for KQL yet; it is skipped." and a line on the
+ * "about you" questions.
+ */
+export function jobRoundText(prep: { open: readonly string[]; only: readonly string[]; skipped: readonly string[] }): string {
+  const and = (names: readonly string[]) => (names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`);
+  const asks: string[] = [];
+  if (prep.open.length) asks.push(`Asks first for ${and(prep.open)} (still open)`);
+  if (prep.only.length) asks.push(`${asks.length ? "then" : "Asks first for"} ${and(prep.only)} (only for this job)`);
+  const parts = asks.length ? [`${asks.join(", ")}.`] : [];
+  if (prep.skipped.length) parts.push(`No practice questions for ${and(prep.skipped)} yet; ${prep.skipped.length === 1 ? "it is" : "they are"} skipped.`);
+  parts.push('"About you" questions still come from your target role.');
+  return parts.join(" ");
 }
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -190,8 +231,17 @@ const openOf = (byId: ReadonlyMap<string, MockQuestion>, id: string): Open | nul
   return q && isOpen(q) ? q : null;
 };
 
+type RoundJob = MockSessionView["job"];
+
 /** A running session for the screen, with its saved answers. Null when a question has left the bank. */
-export function sessionViewOf(row: SessionRow, answers: readonly AnswerRow[], byId: ReadonlyMap<string, MockQuestion>, roleTitle: string, now: Date): MockSessionView | null {
+export function sessionViewOf(
+  row: SessionRow,
+  answers: readonly AnswerRow[],
+  byId: ReadonlyMap<string, MockQuestion>,
+  roleTitle: string,
+  now: Date,
+  job: RoundJob = null,
+): MockSessionView | null {
   const questions = row.questionIds.map((id) => openOf(byId, id));
   if (questions.some((q) => q === null)) return null;
   const saved = new Map(answers.map((a) => [a.position, a.answer]));
@@ -201,6 +251,7 @@ export function sessionViewOf(row: SessionRow, answers: readonly AnswerRow[], by
     roleTitle,
     length: row.length,
     focus: row.focus,
+    job,
     questions: questions.map((q, i) => ({ position: i + 1, id: q!.id, topic: q!.topic, question: q!.question })),
     answers: row.questionIds.map((_, i) => saved.get(i + 1) ?? ""),
     secondsLeft: Math.max(0, Math.floor((sessionDeadline(row.startedAt, row.length).getTime() - now.getTime()) / 1000)),
@@ -215,6 +266,7 @@ export function resultOf(
   roleTitle: string,
   feedback: MockFeedbackState,
   summary: string | null,
+  job: RoundJob = null,
 ): MockSessionResult {
   const saved = new Map(answers.map((a) => [a.position, a]));
   const items = row.questionIds.flatMap((id, i) => {
@@ -239,6 +291,7 @@ export function resultOf(
   return {
     id: row.id,
     roleTitle,
+    job,
     length: row.length,
     answered: answers.length,
     total: row.questionIds.length,
@@ -313,6 +366,7 @@ export const MOCK_INTERVIEW_MESSAGES: Record<MockInterviewError, string> = {
   no_questions: "Mock interview for this role is coming. The question bank is open now.",
   not_found: "We couldn't find that mock interview. Start a new one.",
   over: "Time is up for this mock interview. Your answers so far are in the feedback.",
+  no_job: "That job isn't in My jobs any more. Practise for the role instead.",
 };
 
 /** What the feedback screen says when there is no feedback in words. */

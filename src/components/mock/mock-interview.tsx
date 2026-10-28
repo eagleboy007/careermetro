@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowRight, Clock, Flag, Info, Lock, MessageSquareText, Mic, Play, Square } from "lucide-react";
+import { ArrowRight, Briefcase, Clock, Flag, Info, Lock, MessageSquareText, Mic, Play, Square } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { MOCK_FEEDBACK_TEXT } from "@/lib/mock/interview";
+import { jobRoundText, MOCK_FEEDBACK_TEXT } from "@/lib/mock/interview";
 import { countWords } from "@/lib/practice/words";
 import type {
+  JobPrepView,
   MockFocus,
   MockFollowUpAnswerResult,
   MockFollowUpAsked,
@@ -17,6 +18,7 @@ import type {
   MockRole,
   MockSessionResult,
   MockSessionView,
+  MyJobRef,
 } from "@/lib/schemas";
 import { MOCK_ANSWER_MAX_CHARS, MOCK_FOCUSES, MOCK_FOLLOW_UP_MIN_WORDS, MOCK_LENGTH_MINUTES, MOCK_LENGTH_QUESTIONS, MOCK_LENGTHS } from "@/lib/schemas/constants";
 import { listen, localLanguage, onDeviceRecognition, withSpoken } from "./speech";
@@ -33,7 +35,7 @@ const CHOICE = `flex min-h-11 cursor-pointer items-center gap-2 rounded-md borde
 const LENGTH_CHOICE = `flex min-h-11 min-w-[170px] cursor-pointer flex-col items-start gap-0.5 rounded-md border border-line-strong bg-surface px-3.5 py-2.5 text-[0.88rem] text-ink ${PICKED}`;
 
 const LENGTH_TEXT: Record<MockLength, string> = { quick: "Quick round", full: "Full round" };
-const FOCUS_TEXT: Record<MockFocus, string> = { mix: "Mix", gaps: "Your gaps", technical: "Technical", about: "About you" };
+const FOCUS_TEXT: Record<MockFocus, string> = { mix: "Mix", gaps: "Your gaps", technical: "Technical", about: "About you", job: "This job's skills" };
 const FAILED = "That didn't work. Please try again.";
 const NOT_SAVED = "That answer didn't save. It goes with the round when you end it.";
 
@@ -84,12 +86,15 @@ type Phase = { kind: "setup" } | { kind: "running"; session: MockSessionView } |
  * round has ended. After a long answer the server may ask one follow-up from the bank (picked by code): it opens in
  * the interviewer's row with a fresh answer box and "Skip follow-up"; the progress bar and the question count stay,
  * and the clock keeps running. Cobalt is only the progress bar. Without actions (example data) nothing is saved.
+ * Set up for one job in My jobs (`job`, handoff 12m): "Practise for <company>, <title>", a banner on what it asks
+ * first, no role picker, and "This job's skills" picked; the round and its feedback carry the job's name.
  */
 export function MockInterview({
   elite,
   roles,
   roleSlug,
   initial,
+  job: forJob = null,
   initialResult,
   initialFollowUp,
   onStart,
@@ -101,11 +106,13 @@ export function MockInterview({
   roles: readonly MockRole[];
   roleSlug: string;
   initial: MockSessionView | null;
+  /** `/mock?job=`: the job in My jobs to set the round up for. */
+  job?: JobPrepView | null;
   /** For /design: open on a feedback screen. */
   initialResult?: MockSessionResult;
   /** For /design: the running round opens on this follow-up. */
   initialFollowUp?: MockFollowUpAsked | null;
-  onStart?: (roleSlug: string, length: MockLength, focus: MockFocus) => Promise<MockInterviewStartResult>;
+  onStart?: (roleSlug: string, length: MockLength, focus: MockFocus, job?: MyJobRef) => Promise<MockInterviewStartResult>;
   onAnswer?: (sessionId: string, position: number, answer: string) => Promise<MockInterviewAnswerResult>;
   onFollowUp?: (sessionId: string, position: number, answer: string) => Promise<MockFollowUpAnswerResult>;
   onEnd?: (sessionId: string, answers: { position: number; answer: string }[], followUps: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
@@ -114,7 +121,9 @@ export function MockInterview({
   const [phase, setPhase] = useState<Phase>(initialResult ? { kind: "result", result: initialResult } : initial ? { kind: "running", session: initial } : { kind: "setup" });
   const [role, setRole] = useState(roleSlug);
   const [length, setLength] = useState<MockLength>("quick");
-  const [focus, setFocus] = useState<MockFocus>("mix");
+  // "Practise for the role instead" lets go of the job.
+  const [job, setJob] = useState<JobPrepView | null>(forJob);
+  const [focus, setFocus] = useState<MockFocus>(forJob ? "job" : "mix");
   const [speaking, setSpeaking] = useState(false);
   const [at, setAt] = useState(() => (initial && initialFollowUp ? initialFollowUp.position - 1 : initial ? Math.max(0, initial.answers.findIndex((a) => a === "")) : 0));
   const [drafts, setDrafts] = useState<string[]>(initial?.answers ?? []);
@@ -237,7 +246,9 @@ export function MockInterview({
       return;
     }
     setBusy(true);
-    const out = await onStart(role, length, focus).catch((): MockInterviewStartResult => ({ ok: false, message: FAILED }));
+    const out = await (focus === "job" && job ? onStart(role, length, focus, job.ref) : onStart(role, length, focus === "job" ? "mix" : focus)).catch(
+      (): MockInterviewStartResult => ({ ok: false, message: FAILED }),
+    );
     setBusy(false);
     if (!out.ok) {
       setMessage(out.message);
@@ -280,7 +291,7 @@ export function MockInterview({
         <div className={CARD}>
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <h2 id={`${id}-fh`} ref={resultHeading} tabIndex={-1} className="mr-auto font-sans text-[1.05rem] font-semibold focus-visible:outline-2 focus-visible:outline-accent">
-              Feedback on your round
+              {r.job ? `Feedback on your round for ${r.job.company}` : "Feedback on your round"}
             </h2>
             <span className={LABEL}>
               {r.roleTitle} · {answeredText(r.answered, r.total)}
@@ -364,24 +375,46 @@ export function MockInterview({
   if (phase.kind === "setup") {
     return (
       <section aria-labelledby={`${id}-sh`} className={CARD}>
-        <h2 id={`${id}-sh`} className="font-sans text-[1.05rem] font-semibold">
-          Set up your mock interview
+        <h2 id={`${id}-sh`} className="font-sans text-[1.05rem] font-semibold [overflow-wrap:anywhere]">
+          {job ? `Practise for ${job.company}, ${job.title}` : "Set up your mock interview"}
         </h2>
-        <label htmlFor={`${id}-role`} className="flex flex-col gap-1 text-[0.78rem] text-muted">
-          Role
-          <select
-            id={`${id}-role`}
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="min-h-11 max-w-[360px] rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
-          >
-            {roles.map((r) => (
-              <option key={r.slug} value={r.slug}>
-                {r.title}
-              </option>
-            ))}
-          </select>
-        </label>
+        {job ? (
+          <div data-job-round className="flex flex-wrap items-center gap-3 rounded-md border border-line bg-bg px-4 py-3 text-[0.86rem]">
+            <Briefcase size={18} {...ICON} className="shrink-0 text-ink" />
+            <span className="min-w-[200px] flex-1 [overflow-wrap:anywhere]">
+              <b className="font-semibold">
+                For one job: {job.company}, {job.title}.
+              </b>{" "}
+              {jobRoundText(job)}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setJob(null);
+                setFocus("mix");
+              }}
+              className="inline-flex min-h-11 items-center rounded-full px-3 text-[0.82rem] font-[550] text-ink hover:bg-surface-2"
+            >
+              Practise for the role instead
+            </button>
+          </div>
+        ) : (
+          <label htmlFor={`${id}-role`} className="flex flex-col gap-1 text-[0.78rem] text-muted">
+            Role
+            <select
+              id={`${id}-role`}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="min-h-11 max-w-[360px] rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
+            >
+              {roles.map((r) => (
+                <option key={r.slug} value={r.slug}>
+                  {r.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <fieldset className="flex flex-col gap-1.5">
           <legend className="mb-1.5 text-[0.78rem] text-muted">Length</legend>
           <div className="flex flex-wrap gap-2.5">
@@ -397,7 +430,7 @@ export function MockInterview({
         <fieldset className="flex flex-col gap-1.5">
           <legend className="mb-1.5 text-[0.78rem] text-muted">Focus</legend>
           <div className="flex flex-wrap gap-2">
-            {MOCK_FOCUSES.map((f) => (
+            {(job ? (["job", ...MOCK_FOCUSES.filter((f) => f !== "job")] as MockFocus[]) : MOCK_FOCUSES.filter((f) => f !== "job")).map((f) => (
               <label key={f} className={CHOICE}>
                 <input type="radio" name={`${id}-focus`} value={f} checked={focus === f} onChange={() => setFocus(f)} className="sr-only" />
                 {FOCUS_TEXT[f]}
@@ -579,6 +612,12 @@ export function MockInterview({
 
   return (
     <section aria-labelledby={`${id}-q`} className={CARD}>
+      {session.job && (
+        <p className={`${LABEL} flex items-center gap-1.5 [overflow-wrap:anywhere]`}>
+          <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-ink" />
+          Mock interview for {session.job.company}, {session.job.title}
+        </p>
+      )}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <span className={`${LABEL} mr-auto`}>
           Question {at + 1} of {total} · {q.topic}

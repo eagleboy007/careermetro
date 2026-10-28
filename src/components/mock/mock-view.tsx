@@ -14,6 +14,7 @@ import type {
   MockPageView,
   MockSessionResult,
   MockTab,
+  MyJobRef,
   TimedTestFinishResult,
   TimedTestPickResult,
   TimedTestReview,
@@ -55,7 +56,7 @@ export function MockView({
   onFinish?: (testId: string) => Promise<TimedTestFinishResult>;
   /** For /design: the timed test tab opens on this review. */
   initialReview?: TimedTestReview;
-  onInterviewStart?: (roleSlug: string, length: MockLength, focus: MockFocus) => Promise<MockInterviewStartResult>;
+  onInterviewStart?: (roleSlug: string, length: MockLength, focus: MockFocus, job?: MyJobRef) => Promise<MockInterviewStartResult>;
   onInterviewAnswer?: (sessionId: string, position: number, answer: string) => Promise<MockInterviewAnswerResult>;
   onInterviewFollowUp?: (sessionId: string, position: number, answer: string) => Promise<MockFollowUpAnswerResult>;
   onInterviewEnd?: (sessionId: string, answers: { position: number; answer: string }[], followUps: { position: number; answer: string }[]) => Promise<MockInterviewEndResult>;
@@ -140,6 +141,7 @@ export function MockView({
           roles={view.roles}
           roleSlug={view.interview?.roleSlug ?? view.role.slug}
           initial={view.interview}
+          job={view.job}
           initialResult={initialInterviewResult}
           initialFollowUp={initialInterviewFollowUp}
           onStart={onInterviewStart}

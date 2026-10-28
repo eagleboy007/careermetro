@@ -15,21 +15,29 @@ const BTN = "inline-flex min-h-11 items-center justify-center gap-2 rounded-full
 const PRIMARY = `${BTN} bg-accent text-on-accent hover:opacity-90 aria-disabled:cursor-not-allowed aria-disabled:opacity-50`;
 const GHOST = `${BTN} border border-line-strong bg-surface text-ink hover:bg-surface-2`;
 
-const TAG_TEXT: Record<PracticeTag, string> = { current: "Current goal", ahead: "Goal ahead", met: "Goal met · keep sharp" };
+const TAG_TEXT: Record<PracticeTag, string> = { current: "Current goal", ahead: "Goal ahead", met: "Goal met · keep sharp", job: "Only for this job" };
 
 /** "7 of 10 answers left today" for the chip at the top; Elite has no daily cap (FR-50), shown as `left` null. */
 export const leftText = (left: number | null) => (left === null ? "No daily cap with Elite" : `${left} of ${PRACTICE_DAILY_ANSWERS} answers left today`);
 /** Whether "Get feedback" can be pressed: enough words and answers left today (always, on Elite). */
 export const canSend = (words: number, left: number | null) => words >= PRACTICE_MIN_WORDS && (left === null || left > 0);
 
-/** Where Practice opens: the question asked for (from the interview prep bank's "Practise this one"), else the first question of the current goal. */
-export function startAt(skills: readonly Pick<PracticeSkill, "tag" | "questions">[], questionId: string | null | undefined): { skill: number; question: number } {
+/**
+ * Where Practice opens: the question asked for (from the interview prep bank's "Practise this one"), else the first
+ * question of the current goal; set to one job (`forJob`), the first of its skills.
+ */
+export function startAt(
+  skills: readonly Pick<PracticeSkill, "tag" | "questions">[],
+  questionId: string | null | undefined,
+  forJob = false,
+): { skill: number; question: number } {
   if (questionId) {
     for (let i = 0; i < skills.length; i++) {
       const q = skills[i].questions.findIndex((x) => x.id === questionId);
       if (q >= 0) return { skill: i, question: q };
     }
   }
+  if (forJob) return { skill: 0, question: 0 };
   return { skill: Math.max(0, skills.findIndex((s) => s.tag === "current")), question: 0 };
 }
 
@@ -65,7 +73,7 @@ export function PracticeView({
   startQuestion?: string | null;
 }) {
   const id = useId();
-  const [first] = useState(() => startAt(view.skills, startQuestion));
+  const [first] = useState(() => startAt(view.skills, startQuestion, view.job !== null));
   const [skillAt, setSkillAt] = useState(first.skill);
   const [questionAt, setQuestionAt] = useState(first.question);
   const [answer, setAnswer] = useState(initial?.answer ?? "");
@@ -183,7 +191,7 @@ export function PracticeView({
           <h2 id={`${id}-pick`} className="font-sans text-[1.05rem] font-semibold">
             Pick a skill
           </h2>
-          <span className={LABEL}>your goals · 5 questions each</span>
+          <span className={LABEL}>{view.job ? "this job's skills first" : "your goals · 5 questions each"}</span>
         </div>
         <div role="group" aria-labelledby={`${id}-pick`} className="flex gap-2 overflow-x-auto p-0.5 min-[760px]:flex-wrap">
           {view.skills.map((s, i) => (

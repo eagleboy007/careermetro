@@ -1054,6 +1054,22 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     await p.reload();
     await settled();
     await row.getByText(NOTE).waitFor({ timeout: 10000 });
+
+    // Prepare for this job: Practice opens on this job's skills, and the mock link carries the job in the address.
+    await row.getByRole("button", { name: "Prepare for this job" }).click();
+    const prepare = row.getByRole("menu", { name: `Prepare for ${posting.title}` });
+    const mockHref = await prepare.getByRole("menuitem", { name: /^Mock interview for this job/ }).getAttribute("href");
+    if (!/^\/mock\?tab=interview&job=check%3A[0-9a-f-]{36}$/.test(mockHref ?? "")) throw new Error("the mock interview link doesn't name the job");
+    await a11y("my-jobs-prepare-menu");
+    await prepare.getByRole("menuitem", { name: /^Practice on this job's skills/ }).click();
+    await p.getByText(`For one job: ${posting.company}, ${posting.title}.`, { exact: false }).waitFor({ timeout: 15000 });
+    await settled();
+    await a11y("practice-for-a-job");
+    await shot("practice-for-a-job");
+    await p.goto(BASE + "/departures?tab=mine");
+    await settled();
+    await row.getByText(NOTE).waitFor({ timeout: 10000 });
+
     await row.getByRole("button", { name: `Edit ${posting.title} at ${posting.company}` }).click();
     await sheet.getByText("Read the job again").click();
     await sheet.getByText(/Example Analytics Pvt Ltd helps retail brands/).waitFor({ timeout: 10000 });

@@ -9,6 +9,7 @@ import {
   feedbackProblems,
   feedbackShowable,
   followUpText,
+  jobRoundText,
   matchFeedback,
   mentions,
   MOCK_FEEDBACK_TEXT,
@@ -20,6 +21,7 @@ import {
   sessionEndOf,
   sessionRunning,
   sessionViewOf,
+  withoutQuestions,
 } from "./interview";
 import { roleFor } from "./rules";
 
@@ -32,6 +34,41 @@ const SEED = "00000000-0000-4000-8000-000000000001";
 const skillOf = (id: string) => byId.get(id)!.skillId;
 
 describe("pickInterviewQuestions", () => {
+  it("asks a job round on the job's still-open goals, then what only it asks for, then about you, from the whole bank", () => {
+    const openQs = mockQuestions.filter((q) => q.kind === "open" && !ABOUT_SKILLS.has(q.skillId));
+    const devSkills = [...new Set(openQs.filter((q) => q.roleSlugs.includes("devops-engineer") && !q.roleSlugs.includes("data-analyst")).map((q) => q.skillId))];
+    const [open, only] = devSkills;
+    expect(open && only).toBeTruthy();
+    const ids = pickInterviewQuestions(mockQuestions, analyst, "job", "full", SEED, [], [], { open: [open], only: [only], rest: [] })!;
+    expect(ids).toHaveLength(8);
+    expect(new Set(ids).size).toBe(8);
+    const skillsAsked = ids.map(skillOf);
+    // Six job questions at most (one in four is about you), the still-open goal's first.
+    const jobPart = skillsAsked.filter((id) => id === open || id === only);
+    expect(jobPart.length).toBeGreaterThan(0);
+    expect(skillsAsked[0]).toBe(open);
+    const firstOnly = skillsAsked.indexOf(only);
+    if (firstOnly >= 0) expect(skillsAsked.slice(0, firstOnly).every((id) => id === open)).toBe(true);
+    expect(skillsAsked.filter((id) => ABOUT_SKILLS.has(id)).length).toBeGreaterThanOrEqual(2);
+    expect(pickInterviewQuestions(mockQuestions, analyst, "job", "full", SEED, [], [], { open: [open], only: [only], rest: [] })).toEqual(ids);
+  });
+
+  it("fills a job round naming no skills the bank knows from about you and the target role", () => {
+    const ids = pickInterviewQuestions(mockQuestions, analyst, "job", "quick", SEED, [], [], { open: [], only: ["no-such-skill"], rest: [] })!;
+    expect(ids).toHaveLength(4);
+    expect(ABOUT_SKILLS.has(skillOf(ids[0]))).toBe(true);
+    expect(ids.slice(1).every((id) => byId.get(id)!.roleSlugs.includes("data-analyst") || ABOUT_SKILLS.has(skillOf(id)))).toBe(true);
+    expect(withoutQuestions(mockQuestions, ["no-such-skill", skillOf(ids[1]), "no-such-skill"])).toEqual(["no-such-skill"]);
+  });
+
+  it("says in words what a job round asks first and what it skips", () => {
+    expect(jobRoundText({ open: ["SIEM", "Threat detection"], only: ["Phishing triage", "KQL"], skipped: ["KQL"] })).toBe(
+      'Asks first for SIEM and Threat detection (still open), then Phishing triage and KQL (only for this job). No practice questions for KQL yet; it is skipped. "About you" questions still come from your target role.',
+    );
+    expect(jobRoundText({ open: [], only: ["KQL"], skipped: [] })).toBe('Asks first for KQL (only for this job). "About you" questions still come from your target role.');
+    expect(jobRoundText({ open: [], only: [], skipped: [] })).toBe('"About you" questions still come from your target role.');
+  });
+
   it("picks 4 for Quick and 8 for Full, all open bank questions, none twice, the same for the same seed", () => {
     const quick = pickInterviewQuestions(mockQuestions, analyst, "mix", "quick", SEED)!;
     const full = pickInterviewQuestions(mockQuestions, analyst, "mix", "full", SEED)!;

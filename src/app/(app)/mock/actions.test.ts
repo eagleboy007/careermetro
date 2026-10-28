@@ -100,6 +100,10 @@ describe("mock interview actions", () => {
     startMock.mockResolvedValueOnce({ ok: true, session: { id: SESSION } });
     expect(await startMockInterviewAction("data-analyst", "full", "gaps")).toEqual({ ok: true, session: { id: SESSION } });
     expect(startMock).toHaveBeenCalledWith("u1", { roleSlug: "data-analyst", length: "full", focus: "gaps" });
+    const job = { kind: "check", checkId: SESSION };
+    startMock.mockResolvedValueOnce({ ok: false, error: "no_job" });
+    expect(await startMockInterviewAction("data-analyst", "quick", "job", job)).toEqual({ ok: false, message: "That job isn't in My jobs any more. Practise for the role instead." });
+    expect(startMock).toHaveBeenLastCalledWith("u1", { roleSlug: "data-analyst", length: "quick", focus: "job", job });
     saveAnswer.mockResolvedValueOnce({ ok: false, error: "over" });
     expect(await saveMockAnswerAction(SESSION, 2, "An answer")).toMatchObject({ ok: false, over: true });
     expect(saveAnswer).toHaveBeenCalledWith("u1", { sessionId: SESSION, position: 2, answer: "An answer" });

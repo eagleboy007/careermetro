@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { currentAccount } from "@/lib/auth/server";
 import { clearStage, DEPARTURE_MESSAGES, saveRole, setStage, type DepartureResult } from "@/lib/departures/store";
 import { errorFields, logEvent } from "@/lib/log";
@@ -78,6 +79,8 @@ export async function deleteMyJobAction(input: unknown): Promise<string | null> 
 export async function myJobDescriptionAction(checkId: string): Promise<{ text: string | null } | { error: string }> {
   const account = await currentAccount();
   if (!account) return { error: SIGN_IN };
+  // Not a job id: nothing to read, and no database error to log (T132).
+  if (!z.uuid().safeParse(checkId).success) return { text: null };
   try {
     return { text: await jobDescription(account.id, checkId) };
   } catch (error) {
