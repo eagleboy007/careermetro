@@ -124,6 +124,18 @@ const GRANDFATHERED: Record<string, string> = {
     "conversations.application_id was never written before 0021",
   "0021_company_chats.sql: adds a unique index to an existing table: CREATE UNIQUE INDEX \"conversations_application\"":
     "conversations.application_id was never written before 0021",
+  // Checked by hand (My jobs PR 1): code before 0050 writes only job_post_id and stage 1-4 and never closed_at or
+  // job_check_id, so none of these refuses a write it makes; (user_id, job_post_id) was the primary key until 0050.
+  "0050_my_jobs.sql: adds a unique index to an existing table: CREATE UNIQUE INDEX \"job_saves_user_post\"":
+    "(user_id, job_post_id) was the primary key before 0050, so existing rows are already unique",
+  "0050_my_jobs.sql: adds a unique index to an existing table: CREATE UNIQUE INDEX \"job_saves_user_check\"":
+    "job_saves.job_check_id is new in 0050 and null on every existing row",
+  "0050_my_jobs.sql: adds a constraint to an existing table: ALTER TABLE \"job_saves\" ADD CONSTRAINT \"job_saves_stage\"":
+    "widens the stage range from 1-4 to 1-6",
+  "0050_my_jobs.sql: adds a constraint to an existing table: ALTER TABLE \"job_saves\" ADD CONSTRAINT \"job_saves_one_job\"":
+    "old code always sets job_post_id and never job_check_id",
+  "0050_my_jobs.sql: adds a constraint to an existing table: ALTER TABLE \"job_saves\" ADD CONSTRAINT \"job_saves_closed\"":
+    "old code never writes closed_at, which is new in 0050",
 };
 
 describe("migrations", () => {
