@@ -88,8 +88,10 @@ describe("roleRequestBody", () => {
 
 describe("postingSkills", () => {
   it("takes only required or nice skills, each with a quote", () => {
-    expect(postingSkills.safeParse({ skills: [{ name: "SQL", quote: "SQL", level: "required" }] }).success).toBe(true);
-    expect(postingSkills.safeParse({ skills: [{ name: "SQL", quote: "SQL", level: "must" }] }).success).toBe(false);
-    expect(postingSkills.safeParse({ skills: [{ name: "SQL", level: "nice" }] }).success).toBe(false);
+    expect(postingSkills.safeParse({ company: null, title: "Data Analyst", city: null, skills: [{ name: "SQL", quote: "SQL", level: "required" }] }).success).toBe(true);
+    expect(postingSkills.safeParse({ company: null, title: null, city: null, skills: [{ name: "SQL", quote: "SQL", level: "must" }] }).success).toBe(false);
+    expect(postingSkills.safeParse({ company: null, title: null, city: null, skills: [{ name: "SQL", level: "nice" }] }).success).toBe(false);
+    // From v2 the company, title and city are always there, null when the posting doesn't print them.
+    expect(postingSkills.safeParse({ skills: [] }).success).toBe(false);
   });
 });

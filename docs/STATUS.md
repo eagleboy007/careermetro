@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-28 (My jobs plan keeps the pasted description)
+Last updated: 2026-10-28 (My jobs phase 1 PR 1: migration 0050 and the My jobs tab)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -78,7 +78,7 @@ Last updated: 2026-10-28 (My jobs plan keeps the pasted description)
 
 ## Next up
 
-- My jobs (Milin, 2026-10-28, the onboarding feature): plan only in `docs/plans/application-tracker-plan.md`. It extends `job_saves` to jobs the person adds (pasted, or read from a company-board link), with Not this time and Withdrawn, an interview date and a note, Prepare for this job and a first check before sign-up (migration 0050). Milin chose to keep the pasted description (28 Oct). Waiting on his approval of the plan and the design entries.
+- My jobs phase 1 (Milin approved plan and screens, 28 Oct; `docs/plans/application-tracker-plan.md`, handoff 12m, C18, C19). PR 1 builds migration 0050 (`job_saves` keyed by id, for feed posts or added job checks, stages 1–6, closed date and note; `job_checks` keeps link, source, city and the description), parse-jd v2 (company, title, city), the My jobs tab on Departures with "Add a job you found" (pasted text or a Greenhouse, Lever, Ashby or SmartRecruiters link read from its public API), the status menu and edit sheet, and export v33. PR 2 adds Prepare for this job; PR 3 the interview date, Today card and the first check before sign-up.
 
 The Project manager's queue of 2026-10-15 is done: launch readiness (c) 6 and 7, Practice (#145), Match (#143) and the report removal tools (#146). Detail for each is in `dev/launch-readiness.md`, `dev/practice-match-plan.md` and `docs/plans/reports-review-plan.md`.
 

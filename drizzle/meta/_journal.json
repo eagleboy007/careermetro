@@ -351,6 +351,13 @@
       "when": 1792500000000,
       "tag": "0049_job_feed_boards",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1792503600000,
+      "tag": "0050_my_jobs",
+      "breakpoints": true
     }
   ]
 }

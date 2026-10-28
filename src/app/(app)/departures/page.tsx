@@ -14,7 +14,7 @@ import { applyStates, criteriaStates } from "@/lib/corporate/applications-store"
 import { liveJobs } from "@/lib/corporate/jobs-store";
 import type { ApplyState, CriteriaView, PostedJobView } from "@/lib/corporate/types";
 import { postViews, updatedWords, type FitContext } from "@/lib/departures/fit";
-import { exampleApplied, exampleJobs, exampleSaved } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleMine, exampleSaved } from "@/lib/departures/fixtures";
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
 import { suggestedCanJoin } from "@/lib/job-search/rules";
 import { openToWorkInFor } from "@/lib/job-search/store";
@@ -25,11 +25,14 @@ import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_JOB_SEARCH } from "@/lib/schemas";
 import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { applyAction, previewAction } from "../arrivals/actions";
-import { saveDepartureAction, stageDepartureAction } from "./actions";
+import { myJobs } from "@/lib/my-jobs/store";
+import type { JobPost, MyJobView } from "@/lib/schemas";
+import { deleteMyJobAction, myJobDescriptionAction, myJobStatusAction, saveDepartureAction, saveMyJobAction, stageDepartureAction, updateMyJobAction } from "./actions";
 import { reportJobAction } from "../corporate/jobs/actions";
 import { switchJobSearch } from "../settings/job-search-actions";
 
 const DEPARTURE_ACTIONS = { save: saveDepartureAction, stage: stageDepartureAction };
+const MY_JOB_ACTIONS = { save: saveMyJobAction, status: myJobStatusAction, update: updateMyJobAction, remove: deleteMyJobAction, description: myJobDescriptionAction };
 
 export const metadata: Metadata = { title: "Departures · CareerMetro", robots: { index: false } };
 
@@ -141,6 +144,25 @@ async function fitFor(userId: string, analysis: CurrentAnalysis): Promise<FitCon
   }
 }
 
+/**
+ * My jobs (docs/plans/application-tracker-plan.md): feed jobs take their fit from their Departures rows, added jobs are
+ * read again against the current resume. If the list can't be read, the tab shows it empty and says nothing more.
+ */
+async function mineFor(userId: string, jobs: JobPost[], fit: FitContext | null | "failed", analysis: CurrentAnalysis | null): Promise<MyJobView[]> {
+  try {
+    const shown = fit !== null && fit !== "failed" ? fit : null;
+    return await myJobs(userId, {
+      posts: new Map(jobs.map((j) => [j.id, j])),
+      fitShown: shown !== null,
+      ctx: shown && analysis ? { profile: shown.profile, target: analysis.result, proved: shown.proved } : null,
+    });
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "departures_my_jobs_failed", errorFields(error));
+    return [];
+  }
+}
+
 /** Why a signed-in person with a resume sees no fit, or null when fit shows. */
 function noFitWords(fit: FitContext | null | "failed"): string | null {
   if (fit === "failed") return "Your fit can't be read right now. Reload the page to try again.";
@@ -177,6 +199,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const rows = board ? postViews(board.posts, fit === "failed" ? null : fit, now) : null;
   if (rows?.skipped.length) logEvent("error", "departures_posts_skipped", { count: rows.skipped.length, first: rows.skipped[0] });
   const jobs = rows ? rows.jobs : exampleJobs;
+  const mine = account ? await mineFor(account.id, jobs, fit, analysis) : exampleMine;
   // A resume on file is enough to say so; a fit that can't be shown gets its own reason, not "add your resume".
   const hasResume = account ? analysis !== null : state !== "no_resume";
   const noFit = account && analysis ? noFitWords(fit) : account ? "Add your resume to see your fit for each role." : null;
@@ -230,6 +253,9 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
             places={places}
             initialCity={city}
             searchSwitch={<JobSearchSwitch />}
+            initialMine={mine}
+            mineActions={account ? MY_JOB_ACTIONS : undefined}
+            initialTab={params.tab === "mine" ? "mine" : "all"}
           />
         </div>
       </JobSearchGate>

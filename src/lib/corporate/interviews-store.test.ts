@@ -342,7 +342,7 @@ describe.skipIf(!db)("interviews (database)", () => {
     expect(JSON.stringify(await myApplications(s.me, at(2)))).not.toContain("debrief");
     const theirs = await exportAccountData(s.me, db!, clock);
     expect(theirs!.exportVersion).toBe(EXPORT_VERSION);
-    expect(EXPORT_VERSION).toBe(32);
+    expect(EXPORT_VERSION).toBe(33);
     expect(JSON.stringify(theirs)).not.toContain("debrief");
     // The interviewer's download has the interviews they were on and their own feedback, never the candidate's name.
     const hers = await exportInterviewer(s.iv, db!);

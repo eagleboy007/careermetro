@@ -129,6 +129,17 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
   - the mock title for a job;
   - the landing entry and sign-up prompt.
 
+## Choices made while building (PR 1)
+
+- `job_checks` gets no `user_id`: ownership stays through `resume_id` (NOT NULL, cascade), since an account's resumes go only with the account.
+- An added job reuses an existing check with the same text, resume and role (the Gaps job check). Deleting it from My jobs deletes that check.
+- An added job that is never saved loses its description and link after 24 hours (`clearUnsavedJobText` in the daily cleanup).
+- Ashby has no single-posting API, so its board is read whole with a 5 MB cap; the other boards are read one posting at a time with a 1 MB cap. Recruiter fields are never read.
+- A link to a posting already in the feed saves the feed post instead of a new check.
+- SmartRecruiters needs no spacing: one request per add, and adds share the 5-a-day job check limit.
+- parse-jd v2 (company, title and city, kept only when found word for word in the posting) is used for every check.
+- The interview field, the Prepare menu and "Save and prepare" come in PR 2 and PR 3.
+
 ## Phase 2 (planned after phase 1 ships)
 
 - **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".

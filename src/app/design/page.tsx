@@ -151,7 +151,7 @@ import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleSaved } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleMine, exampleSaved } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
 import { DeparturesBoard } from "@/components/today/departures-board";
@@ -539,18 +539,43 @@ export default function DesignPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">Departures (signed in)</h2>
         <p className="text-sm text-muted">
-          Roles with readiness in words, filters, Saved and Applied, the detail panel with Interview prep for this role (on Free: one question open, the
-          rest locked; the MIS, trainer and freelance roles say it is coming), and the paste box checking a post against the resume. Then the same on Elite,
-          and the page before a resume, whose paste box links to the upload.
+          Roles with readiness in words, filters, the All and My jobs tabs, the detail panel with Interview prep for this role (on Free: one question open,
+          the rest locked; the MIS, trainer and freelance roles say it is coming), and &quot;Add a job you found&quot;. Then the same on Elite, and the page
+          before a resume, whose add box links to the upload.
         </p>
-        <DeparturesView jobs={exampleJobs} initialSaved={exampleSaved} initialApplied={exampleApplied} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, false)} demo />
+        <DeparturesView
+          jobs={exampleJobs}
+          initialSaved={exampleSaved}
+          initialApplied={exampleApplied}
+          initialMine={exampleMine}
+          resumeId="example"
+          prep={exampleDeparturesPrep(exampleJobs, false)}
+          demo
+        />
+        <p className="text-sm text-muted">
+          My jobs (handoff 12m, prototype v48): feed jobs and jobs added from any site in one list, newest change first, with the filter chips, the source
+          tag, Open the original, fit (still-open gaps as chips, &quot;Only for this job&quot; in muted words), dates, the private note under a lock, and the
+          status chip with its menu. The pen opens the edit sheet. Closed rows are dimmed. Below it, &quot;Add a job you found&quot;: try a Greenhouse,
+          Lever, Ashby or SmartRecruiters link to see the hint turn green, then &quot;Add and check my gaps&quot; for &quot;Check these, then save&quot;.
+          Then My jobs with nothing in it.
+        </p>
+        <DeparturesView
+          jobs={exampleJobs}
+          initialSaved={exampleSaved}
+          initialApplied={exampleApplied}
+          initialMine={exampleMine}
+          initialTab="mine"
+          resumeId="example"
+          prep={exampleDeparturesPrep(exampleJobs, false)}
+          demo
+        />
+        <DeparturesView jobs={exampleJobs.slice(1, 3)} initialTab="mine" resumeId="example" demo />
         <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
         <p className="text-sm text-muted">
           Live roles from public company job boards (docs/plans/departures-live-plan.md): &quot;Updated 19:42&quot; in the header, Apply on company site
-          opening the post in a new tab and then asking &quot;Did you apply?&quot;, a role that closed on its company&apos;s board (off All, still in Saved and
-          Applied with its tracker, no Apply), and a post that names too few skills we know (no fit). Then the board before the first feed run, and Saved
-          with nothing saved.
+          opening the post in a new tab and then asking &quot;Did you apply?&quot;, a role that closed on its company&apos;s board (off All; it stays in My jobs
+          with its tracker, no Apply), and a post that names too few skills we know (no fit). Then the board before the first feed run.
         </p>
         <DeparturesView
           jobs={exampleLiveJobs}
@@ -569,8 +594,7 @@ export default function DesignPage() {
         <DeparturesView jobs={exampleJobs} places={["Remote", "Bengaluru"]} resumeId="example" demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} places={["Kochi"]} resumeId="example" demo />
         <p className="text-sm text-muted">
-          No open roles at all: the empty list points to the paste box. Filters that hide every role offer Clear filters, and an empty Saved or Applied
-          tab offers See all roles.
+          No open roles at all: the empty list points to the add box. Filters that hide every role offer Clear filters.
         </p>
         <DeparturesView jobs={[]} updated="Updated 07:00" resumeId="example" demo />
       </section>

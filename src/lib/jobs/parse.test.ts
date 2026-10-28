@@ -3,13 +3,15 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
 import type { PostingSkills } from "@/lib/schemas";
-import { mapPostingSkills, MAX_UNKNOWN_SKILLS, parseJobPosting, wrapPosting, type ParseJdClient } from "./parse";
+import { mapPostingSkills, MAX_UNKNOWN_SKILLS, parseJobPosting, postingLabels, wrapPosting, type ParseJdClient } from "./parse";
 
 const fixture = JSON.parse(readFileSync("fixtures/job-postings/example-analytics-data-analyst.json", "utf8")) as {
+  company: string;
+  title: string;
   text: string;
   skills: PostingSkills["skills"];
 };
-const answer = JSON.stringify({ skills: fixture.skills });
+const answer = JSON.stringify({ company: fixture.company, title: fixture.title, city: "Atlantis", skills: fixture.skills });
 
 type Reply = Partial<Anthropic.Beta.BetaMessage> & { text?: string };
 const usage = { input_tokens: 2000, output_tokens: 500 } as Anthropic.Beta.BetaUsage;
@@ -118,12 +120,37 @@ describe("wrapPosting", () => {
   });
 });
 
+describe("postingLabels", () => {
+  const text = "Data Analyst - Example Analytics Pvt Ltd, Pune (Hybrid)\n\nWrite SQL queries every day.";
+
+  it("keeps a company, title and city only when the posting prints them", () => {
+    expect(postingLabels({ company: "Example Analytics Pvt Ltd", title: "Data  Analyst", city: "Pune" }, text)).toEqual({
+      company: "Example Analytics Pvt Ltd",
+      title: "Data Analyst",
+      city: "Pune",
+    });
+    expect(postingLabels({ company: "Example Analytics Private Limited", title: "Senior Data Analyst", city: "Mumbai" }, text)).toEqual({
+      company: null,
+      title: null,
+      city: null,
+    });
+    expect(postingLabels({ company: null, title: "", city: null }, text)).toEqual({ company: null, title: null, city: null });
+  });
+
+  it("drops one too long for its column", () => {
+    const long = "Analyst ".repeat(20).trim();
+    expect(postingLabels({ company: null, title: long, city: null }, `${long}. Write SQL.`).title).toBeNull();
+  });
+});
+
 describe("parseJobPosting", () => {
   it("returns the mapped skills and one logged call, sending the posting only as wrapped data", async () => {
     const { client, create } = fakeClient({ text: answer });
     const result = await parseJobPosting(fixture.text, { resumeId: "r1", roleSlug: "data-analyst" }, client);
     expect(result).toMatchObject({ ok: true, requiredSkillIds: expect.arrayContaining(["sql", "power-bi"]), unknownSkills: ["Alteryx", "SAS"], dropped: 1 });
-    expect(result.calls).toEqual([expect.objectContaining({ purpose: "parse-jd", promptVersion: "parse-jd/v1", ok: true, inputRefs: { resumeId: "r1", roleSlug: "data-analyst" } })]);
+    // The posting prints its company and title; "Atlantis" isn't in it, so it is dropped.
+    expect(result).toMatchObject({ company: fixture.company, title: fixture.title, city: null });
+    expect(result.calls).toEqual([expect.objectContaining({ purpose: "parse-jd", promptVersion: "parse-jd/v2", ok: true, inputRefs: { resumeId: "r1", roleSlug: "data-analyst" } })]);
     const request = create.mock.calls[0][0];
     expect(request.model).toBe("claude-opus-5-5");
     expect(request.messages[0].content).toBe(wrapPosting(fixture.text));

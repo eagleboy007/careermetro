@@ -42,7 +42,8 @@ const IN_FLIGHT_JD_USD = 0.1;
 
 /**
  * Keyed hash of a posting's text, so the same posting sent again for the same resume and role reuses its check.
- * Spacing doesn't matter. The text itself is never stored.
+ * Spacing doesn't matter. The Gaps page's check never stores the text; a job added to My jobs keeps the person's own
+ * copy (KeptJob).
  */
 export function jobTextHash(text: string, env: Record<string, string | undefined> = process.env): string {
   return createHmac("sha256", jobTextHashKey(env)).update(text.replace(/\s+/g, " ").trim()).digest("base64url");
@@ -90,13 +91,43 @@ async function existingCheck(tx: Tx, resumeId: string, roleSlug: string | null, 
  *
  * The model call runs between two short locked transactions, never inside one, like the Gaps page's explanations.
  */
-export async function createJobCheck(
-  input: JobCheckRequest,
+export async function createJobCheck(input: JobCheckRequest, owner: Owner, deps: JobCheckDeps = {}): Promise<CreateJobCheckResult> {
+  return checkPosting(input, owner, deps);
+}
+
+export type JobCheckDeps = { db?: Db; client?: ParseJdClient; env?: Record<string, string | undefined>; clientHash?: string };
+
+/** Where an added job's company and title come from when the person didn't type them, and the model found none. */
+export const UNNAMED_COMPANY = "Company not named";
+export const UNNAMED_TITLE = "Job you added";
+
+/**
+ * What "Add a job you found" keeps with its check besides the skills (src/lib/my-jobs/store.ts): the link, where it
+ * came from, its city and the person's own copy of the description (Milin, 2026-10-28). Private, never logged.
+ */
+export type KeptJob = { url: string | null; source: "pasted" | "board"; city: string | null; description: string };
+
+/**
+ * createJobCheck for any caller: `company` and `title` may be null, and are then the ones the model read from the
+ * posting (kept only when the posting prints them), else UNNAMED_COMPANY and UNNAMED_TITLE for the person to fix.
+ * `kept` saves an added job's link, source, city and description with a new check, or with the saved check the same
+ * text already has when that one keeps no description yet.
+ */
+export async function checkPosting(
+  input: { resumeId: string; roleSlug: string | null; company: string | null; title: string | null; text: string; kept?: KeptJob },
   owner: Owner,
-  deps: { db?: Db; client?: ParseJdClient; env?: Record<string, string | undefined>; clientHash?: string } = {},
+  deps: JobCheckDeps = {},
 ): Promise<CreateJobCheckResult> {
   const db = deps.db ?? getDb();
-  const { resumeId, roleSlug, company, title, text } = input;
+  const { resumeId, roleSlug, company, title, text, kept } = input;
+  /** An added job's text, link and city go with the check it reuses, unless that one already keeps a description. */
+  const keepOn = async (tx: Tx, id: string) => {
+    if (!kept) return;
+    await tx
+      .update(jobChecks)
+      .set({ url: kept.url, source: kept.source, city: kept.city, description: kept.description })
+      .where(and(eq(jobChecks.id, id), isNull(jobChecks.description)));
+  };
   const textHash = jobTextHash(text, deps.env);
   const lockKey = `cm-jobs:${ownerKey(owner)}`;
 
@@ -108,7 +139,10 @@ export async function createJobCheck(
     // src/lib/gaps/store.ts does: before any reservation or model call, and as not found, like a resume that is gone.
     if (resume.sample && (await hasOwnAnalysis(owner, tx))) return { ok: false, reason: "not_found" };
     const existing = await existingCheck(tx, resumeId, roleSlug, textHash);
-    if (existing) return { ok: true, id: existing, reused: true };
+    if (existing) {
+      await keepOn(tx, existing);
+      return { ok: true, id: existing, reused: true };
+    }
     // A new check of the sample resume also counts against its address (T113): every new anonymous session brings a
     // fresh per-owner count, so without it a script could spend the parse budget through the sample. Each new try is
     // counted, like the sample's own limits.
@@ -130,14 +164,18 @@ export async function createJobCheck(
     // The resume may have been deleted meanwhile, or the same text saved by a second tab.
     if (!(await getResumeForOwner(resumeId, owner, tx))) return { ok: false, reason: "not_found" };
     const existing = await existingCheck(tx, resumeId, roleSlug, textHash);
-    if (existing) return { ok: true, id: existing, reused: true };
+    if (existing) {
+      await keepOn(tx, existing);
+      return { ok: true, id: existing, reused: true };
+    }
     const [row] = await tx
       .insert(jobChecks)
       .values({
         resumeId,
         roleSlug,
-        company,
-        title,
+        company: company ?? parsed.company ?? UNNAMED_COMPANY,
+        title: title ?? parsed.title ?? UNNAMED_TITLE,
+        ...(kept ? { url: kept.url, source: kept.source, city: kept.city ?? parsed.city, description: kept.description } : {}),
         requiredSkillIds: parsed.requiredSkillIds,
         niceSkillIds: parsed.niceSkillIds,
         unknownSkills: parsed.unknownSkills,

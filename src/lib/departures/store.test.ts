@@ -192,11 +192,24 @@ describe.skipIf(!db)("departures store (database)", () => {
     ]);
   });
 
-  it("allows stage 1 to 4 only and never a row with neither a save nor a stage, in the table itself", async () => {
+  it("allows stage 1 to 6 only, closed on only for 5 and 6, one job a row, and never a row with neither a save nor a stage, in the table itself", async () => {
     const me = await person();
     const p = await post();
-    await expect(db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, stage: 5 })).rejects.toThrow();
+    await expect(db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, stage: 7 })).rejects.toThrow();
     await expect(db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p })).rejects.toThrow();
+    await expect(db!.insert(schema.jobSaves).values({ userId: me, stage: 1 })).rejects.toThrow();
+    await expect(db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, stage: 4, closedAt: now })).rejects.toThrow();
+    await expect(db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, savedAt: now, note: "" })).rejects.toThrow();
+  });
+
+  it("keeps a post marked Not this time in My jobs off the Applied tracker, and opens it again when applied to", async () => {
+    const me = await person();
+    const p = await post();
+    await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: p, stage: 5, appliedAt: now, closedAt: now });
+    expect((await departuresBoard(me, { db: db! })).applied).toEqual([]);
+    expect(await setStage(me, { postId: p, stage: 1 }, { db: db!, now })).toEqual({ ok: true });
+    const [row] = await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.jobPostId, p));
+    expect(row).toMatchObject({ stage: 1, closedAt: null });
   });
 
   it("keeps a closed post in Saved and Applied, refuses new saves and applications on it, and lets its stage move", async () => {
@@ -272,8 +285,8 @@ describe.skipIf(!db)("departures store (database)", () => {
     ]);
     for (const r of rows) expect(departureExport.safeParse(r).success).toBe(true);
     const data = await exportAccountData(me, db!);
-    expect(EXPORT_VERSION).toBe(32);
-    expect(data!.exportVersion).toBe(32);
+    expect(EXPORT_VERSION).toBe(33);
+    expect(data!.exportVersion).toBe(33);
     expect(data!.departures).toEqual(rows);
     // Deleting the account removes its saves (on delete cascade); the post belongs to no one and stays.
     await db!.delete(schema.users).where(eq(schema.users.id, me));
