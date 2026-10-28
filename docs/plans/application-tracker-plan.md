@@ -1,6 +1,6 @@
 # My jobs: plan (bring any job to CareerMetro)
 
-Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will onboard"), as written up in the PM's proposal `dev/my-jobs-proposal.md`. It changes the data model, so **nothing is built and no schema changes until Milin approves**. One decision is open on Milin's card: keep the pasted description, or keep skills only. The plan covers both where it matters.
+Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will onboard"), as written up in the PM's proposal `dev/my-jobs-proposal.md`. It changes the data model, so **nothing is built and no schema changes until Milin approves**. Milin decided on 28 Oct (20:29 UTC card) to **keep the pasted description**: private, at most 20,000 characters, in the export, deleted with the account, never logged.
 
 **The rule this keeps:** CareerMetro never copies jobs from portals, by script or by hand. The person brings a job they chose, for their own use. We fetch nothing on the server except a single posting from the four public company-board APIs we already read (Greenhouse, Lever, Ashby, SmartRecruiters).
 
@@ -53,14 +53,14 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
   - "About you" questions still come from the target role.
   - Skills with no bank questions are listed as "No practice questions for these yet".
 - **The model's job is unchanged:** it reads skills from the description and gives feedback on answers. It never writes or rewrites the job. No new prompt, so `ai_calls` logs the existing prompt versions.
-- **If the description is kept** (decision below): "Read the job again" shows the person's own copy. A future prompt version can re-read skills from it without asking them to paste again. **If skills only:** prep works the same, but a better parse later needs a fresh paste.
+- **The kept description:** "Read the job again" shows the person's own copy, and a future prompt version can re-read skills from it without asking them to paste again.
 
 ### 4. First check before sign-up
 
 - **Landing and Gaps:** both offer "Paste the job you're applying for and see what it asks that you don't have". This is the existing anonymous resume plus a job check, under FR-2's one analysis before sign-up.
 - **After the result:** "Sign up to keep it in My jobs and prepare for the interview."
 - **At sign-in:** the claim moves the resume and its checks, as now. The newest claimed check becomes a My jobs row with status Saved, so it is waiting there.
-- **Unclaimed:** a check that is never claimed is deleted with its anonymous resume after 24 hours, together with its description if kept.
+- **Unclaimed:** a check that is never claimed is deleted with its anonymous resume after 24 hours, together with its description.
 - **Empty My jobs** says "Add the jobs you're already applying to" above the feed.
 
 ## Data (one migration, 0050)
@@ -72,10 +72,9 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
     - `source`: `pasted` or `board`.
     - `city`: from the board posting when known.
   - **`resume_id`** becomes nullable, with `on delete set null`, so a saved job outlives a replaced resume. The daily cleanup deletes checks with no resume that no `job_saves` row points to, so unsaved checks still go with their resume as today.
-  - **If the description is kept:** a `description` text column, at most 20,000 characters.
+  - **`description`:** text, at most 20,000 characters (Milin's keep-text decision). For a board link it holds the posting's description with HTML stripped.
     - Private to the owner, never logged, never sent anywhere but the parse call.
     - In Download your data, and deleted with the account or with the row.
-    - **If skills only:** no column, as today.
 - **`job_saves`:**
   - A surrogate `id` replaces the (user, post) key.
   - `job_post_id` becomes nullable, and a new `job_check_id` is added (cascade).
@@ -93,7 +92,7 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - **Kept and deleted:** it goes with the account (cascade, on the 30-day account-delete clock) and is in Download your data. Deleting a job deletes it, with nothing archived.
 - **Logs and analytics:** job text, notes and links never go into logs or analytics, the same rule as resumes. Logs carry ids, sources and statuses only.
 - **Board reads:** only the posting the person linked is fetched. Recruiter names and contacts are dropped, as in the feed (`ats-feed-terms`).
-- **Privacy notice:** one line under what we keep, in the same PR. It says either "the job description you add" or "the skills from the job you add", following Milin's decision.
+- **Privacy notice:** one line under what we keep, in the same PR. It says we keep "the job description you add, for you only".
 
 ## Zod schema and tests first
 
@@ -113,7 +112,7 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
   - cleanup removes unsaved orphan checks only;
   - claim makes the Saved row;
   - account delete and export;
-  - with the description kept, it is never in a log line.
+  - the description is never in a log line.
 - **Mock tests:** `job` focus order, a role fallback, and skills with no questions.
 - **Final check:** the full check before the single push.
 
