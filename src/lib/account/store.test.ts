@@ -203,6 +203,25 @@ describe.skipIf(!db)("account store (database)", () => {
     await db!.delete(schema.resumes).where(eq(schema.resumes.id, stale));
   });
 
+  it("puts the newest job checked before sign-up in My jobs, marked Saved, once (handoff 12m, C19)", async () => {
+    const session = `${run}-job`;
+    const resumeId = await upload(session);
+    const check = (title: string, createdAt: Date) =>
+      db!
+        .insert(schema.jobChecks)
+        .values({ resumeId, roleSlug: "data-analyst", company: "Example Labs", title, requiredSkillIds: ["sql"], textHash: `t-${run}-${title}`, createdAt })
+        .returning({ id: schema.jobChecks.id });
+    await check("Older analyst", new Date(Date.now() - 60_000));
+    const [newest] = await check("Data analyst", new Date());
+    const user = await signUp("job", session);
+    const saves = await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.userId, user.id));
+    expect(saves).toMatchObject([{ jobCheckId: newest.id, jobPostId: null, stage: null }]);
+    expect(saves[0].savedAt).not.toBeNull();
+    // A second sign-in claims nothing new and adds no second row.
+    expect(await claimAnonymousResumes(user.id, session, db!)).toEqual({ claimed: 0, refused: 0 });
+    expect(await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.userId, user.id))).toHaveLength(1);
+  });
+
   it("adds a resume to an account only when the account's name matches the resume's", async () => {
     const named = async (owner: { sessionId: string } | { userId: string }) =>
       ingestResume({ bytes, as: "text", owner, clientHash: `h-name-${run}` }, { db: db!, client: namedClient });

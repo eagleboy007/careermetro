@@ -90,6 +90,7 @@ const step = async (name, fn) => {
 };
 await step("home", async () => {
   await p.goto(BASE + "/");
+  await p.getByRole("heading", { name: "Paste the job you're applying for and see what it asks that you don't have." }).waitFor({ timeout: 10000 });
   await shot("home");
   await a11y("home");
 });
@@ -209,6 +210,11 @@ await step("check against a job: the groups show, and the gaps stay as they were
   // Not signed in: goals are kept for an account, so "Only for this job" asks to sign in instead of adding.
   if (!(await p.getByRole("link", { name: "Sign in to keep goals" }).count())) throw new Error("no sign-in link on Only for this job");
   if (await p.getByRole("button", { name: /^Add as my goal/ }).count()) throw new Error("Add as my goal shown while signed out");
+  // The first check before sign-up (handoff 12m, C19): keep it in My jobs by signing up.
+  const keep = p.getByRole("region", { name: "Keep it in My jobs" });
+  await keep.getByRole("heading", { name: "Sign up to keep it in My jobs and prepare for the interview." }).waitFor({ timeout: 5000 });
+  if ((await keep.getByRole("link", { name: "Sign up with email" }).getAttribute("href")) !== "/sign-in?next=%2Fdepartures%3Ftab%3Dmine")
+    throw new Error("Sign up with email doesn't lead to My jobs");
   await shot("job-check");
   await a11y("job-check");
   await p.emulateMedia({ colorScheme: "dark" });
@@ -1010,6 +1016,9 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     await p.emulateMedia({ colorScheme: "light" });
     await p.goto(BASE + "/departures?tab=mine");
     await settled();
+    // Signing in claimed the resume, and the newest job checked before it (the stand-in posting) waits here, Saved.
+    const claimed = p.getByRole("region", { name: "My jobs" }).getByRole("listitem").filter({ hasText: "Supply Chain Analyst" }).filter({ hasText: "Example Freight Pvt Ltd" });
+    await claimed.getByRole("button", { name: /^Status: Saved/ }).waitFor({ timeout: 10000 });
     const box = p.getByRole("region", { name: "Add a job you found" });
     const link = box.getByLabel("Link to the job");
     await link.fill("https://jobs.lever.co/example/0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69");
