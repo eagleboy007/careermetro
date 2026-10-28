@@ -38,7 +38,7 @@ export default function Home() {
         <ol className="grid gap-4 sm:grid-cols-2">
           <li className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
             <p className="font-mono text-xs uppercase tracking-wider text-muted">1 · Your resume</p>
-            <p className="text-sm">We read it and you check what we found. Nothing is stored until you sign up; without sign-up it is deleted in 24 hours.</p>
+            <p className="text-sm">We read it and you check what we found. Without an account it is kept for 24 hours, then deleted.</p>
             <Link href="/start" className="inline-flex w-fit items-center gap-1.5 font-medium underline underline-offset-4 hover:text-ink">
               Add your resume
               <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
@@ -47,8 +47,8 @@ export default function Home() {
               No resume yet?{" "}
               <Link href="/builder" className="font-medium text-ink underline underline-offset-2">
                 Answer a few questions and we write one with you
-              </Link>
-              .
+              </Link>{" "}
+              (with a free account).
             </p>
           </li>
           <li className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
