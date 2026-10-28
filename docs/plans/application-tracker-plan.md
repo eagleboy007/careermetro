@@ -1,119 +1,144 @@
-# Application tracker: plan (Milin, 2026-10-28)
+# My jobs: plan (bring any job to CareerMetro)
 
-Development 4, 2026-10-28. Source: Milin's idea relayed by the Project manager on 28 Oct at 20:15 UTC. People find jobs on any portal, bring each one to CareerMetro, track the application here and prepare from that job's skills. It touches the data model, so **nothing is built until Milin approves**.
+Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will onboard"), as written up in the PM's proposal `dev/my-jobs-proposal.md`. It changes the data model, so **nothing is built and no schema changes until Milin approves**. One decision is open on Milin's card: keep the pasted description, or keep skills only. The plan covers both where it matters.
 
-The tracker uses only what the person pastes. CareerMetro never enters portal jobs itself, fetches or reads the link, or copies postings by hand (CLAUDE.md, 2026-10-06 decision).
+**The rule this keeps:** CareerMetro never copies jobs from portals, by script or by hand. The person brings a job they chose, for their own use. We fetch nothing on the server except a single posting from the four public company-board APIs we already read (Greenhouse, Lever, Ashby, SmartRecruiters).
 
-## What is already there
+## What is already built
 
-- **Job checks** (`job_checks`, "Saw a role somewhere else?" on Departures and Gaps):
-  - The person pastes a posting. The model reads only its company, title and skills (`prompts/parse-jd`), and the code matches those skills to the resume.
-  - The posting text is never stored, only its keyed hash. A check belongs to a resume and goes when that resume goes (cascade).
-  - The limit is 5 new checks a day.
-- **Departures' Saved and Applied tabs** (`job_saves`): these cover feed roles only, with stages 1 to 4 (Applied, Heard back, Interview, Offer).
-- **Mock interview picking** (`pickInterviewQuestions`): it already takes a list of skills to ask about first (the "Your gaps" focus).
-- **Practice bank**: open questions per skill.
-- **Calendar files** (`src/lib/calendar/ics.ts`): an interview `.ics` with a 19:00 IST reminder the evening before.
-- **In-app notifications**: sentences built from live rows when the panel opens, so no cron is needed.
+| Piece | Today | Gap for My jobs |
+|---|---|---|
+| `job_checks` | Paste a posting. The model reads company, title and skills, and code matches them to the resume. Only a hash of the text is kept. | Belongs to a **resume** (cascade), so replacing the resume deletes it. Has no link. |
+| `job_saves` | Saved and Applied on Departures, with stages 1 to 4. Key is (user, feed post). | Feed posts only. No end states, interview date or note. |
+| Mock and practice | Picks by skill and asks the role's required skills first. Takes a list of skills to ask about first. | No "for this job" entry. |
+| Anonymous first check (FR-2) | An anonymous resume and its checks move to the account at sign-in (`claimAnonymousResumes`). | Nothing turns that check into a saved job. |
 
-## 1. My applications
+## Phase 1
 
-- **Signed in only.** A pasted-job check's result gains "Track this application". The new row starts as **Saved**, or **Applied** if the person picks that.
-- **Fields:**
+### 1. Add a job you found
 
-  | Field | Rules |
-  |---|---|
-  | Job link | Optional. https only, at most 2,000 characters. Shown as a plain outbound link (`rel="noopener nofollow"`). We never fetch it. |
-  | Company | From the check, 1 to 120 characters, editable. |
-  | Title | From the check, 1 to 160 characters, editable. Long titles are clamped on screen, as Departures does since the 26 Oct fix. |
-  | Status | `saved`, `applied`, `interview`, `offer`, `rejected` or `withdrawn`. The person sets it; nothing moves it on its own. |
-  | Dates | Saved on, applied on and closed on are set when the status changes and can be edited. Interview date is section 3. |
-  | Notes | Private, at most 2,000 characters. Never sent to the model, never logged, never shown to anyone else. |
+- **Where it starts:** "Add a job you found" on Departures, replacing "Saw a role somewhere else?" and growing out of it. The box takes the description and an optional link. The model fills company and title, and the person checks them, as job checks do today.
+- **Links from company boards:**
+  - **Which links:** a link on `boards.greenhouse.io`/`job-boards.greenhouse.io`, `jobs.lever.co`, `jobs.ashbyhq.com` or `jobs.smartrecruiters.com` is read through that board's public posting API. Then nothing needs pasting.
+    - Hosts are matched exactly, https only.
+    - The board token and posting id come from the URL path.
+    - One request per link, with no redirects followed.
+    - It has a 15 s timeout and a 1 MB cap, and sends the feed's User-Agent and SmartRecruiters spacing.
+  - **Already in our feed:** if that posting is already in `job_posts`, the job is saved as the feed post. It gets no second copy.
+  - **Text that goes to the model:** the posting's description, with HTML stripped, goes to the same parse prompt as pasted text.
+  - **Any other link:** it is only stored and shown, never fetched. The box says "Paste the description too: we only read links from company job boards."
+- **Limits:** the existing limits stay (5 new checks a day, the daily budget). Reading a board link counts as a check.
 
-- **Limit:** at most 200 tracked applications per person, which covers a heavy search.
-- **Feed roles** keep `job_saves`, and the list shows both kinds together, newest change first. *Default I'm picking:* give `job_saves` the same two end states (stages 5 Rejected and 6 Withdrawn) so both kinds read alike. It is a one-line check change in the same migration. If Milin says no, feed roles stay at four stages.
+### 2. My jobs
 
-## 2. Prepare from that job
+- **Departures tabs:** the Saved and Applied tabs become **My jobs**. It holds feed jobs and added jobs in one list, newest change first. It has a filter (All, Saved, Applied, Interview, Closed) and a "where it came from" label: "You added" or "Company job board".
+- **What each row shows:**
+  - company, title, city when known, and "Open the original" when there is a link;
+  - its status and dates;
+  - the fit from the job check ("You have / Still open / Only for this job"). For added jobs, the fit is recomputed against the current resume in code, so it stays right after a new upload and needs no model call.
+- **Status:** Saved, then Applied, Heard back, Interview, Offer, **Not this time** and **Withdrawn**.
+  - Dates are set when the status moves. Applied on and closed on are editable.
+  - Nothing moves a status on its own.
+- **Interview date:** optional, date and time in IST. Setting it moves the status to Interview if it was earlier. "Add to calendar" uses the existing `.ics` builder (title and company only, 19:00 IST alarm the evening before).
+- **Private note:** up to 2,000 characters, with the hint "For you only. Don't add other people's phone numbers or emails."
+- **Gaps stay where they belong** (Milin's 12 Oct rule): a job's extras never become main goals unless the person adds them as goals tied to that job. That path already exists (`user_goals.job_check_id`).
 
-- **Skills come from the check**, which is already the model's only job. Matching stays deterministic. The tracker copies the check's required and nice-to-have skill ids onto its own row, so preparation still works after the resume is replaced and the check is gone.
-- **Mock interview:**
-  - "Practise for this job" opens `/mock` with a new focus, `job`.
-  - The round asks the job's required skills first, then its nice-to-have ones, then the role's own questions.
-  - Questions are picked by skill id from the whole bank, not only the role's list, since a portal job may mix roles.
-  - The "about you" questions still come from the person's target role.
-  - The session stores which application it was for.
-- **Practice:** the question bank page filters to the job's skills, using the same free and Elite rules as today.
-- **Skills with no bank questions** are listed as "No practice questions for these yet". Unknown skills (not in our list) are shown and never scored, as on job checks today.
-- **No new AI call:** feedback on mock answers stays the existing call and prompt, logged in `ai_calls` as now.
+### 3. Prepare for this job
 
-## 3. Interview date and reminder
+- **Where:** a button on each row, also shown after "Add a job you found".
+- **Practice:** this job's skills, still-open goals first, then "Only for this job" extras. The free and Elite rules are the same as today.
+- **Mock interview for this job:**
+  - `/mock` gets a new focus, `job`, titled "{title} at {company}".
+  - Questions are picked by skill id from the whole bank, not only the target role's: required skills first, then nice-to-have, then the role's own.
+  - "About you" questions still come from the target role.
+  - Skills with no bank questions are listed as "No practice questions for these yet".
+- **The model's job is unchanged:** it reads skills from the description and gives feedback on answers. It never writes or rewrites the job. No new prompt, so `ai_calls` logs the existing prompt versions.
+- **If the description is kept** (decision below): "Read the job again" shows the person's own copy. A future prompt version can re-read skills from it without asking them to paste again. **If skills only:** prep works the same, but a better parse later needs a fresh paste.
 
-- **Setting a date:** the person can set an optional interview date and time (IST), which also moves the status to Interview if it was earlier.
-- **Reminders:**
-  - "Add to calendar" downloads the existing `.ics` file. It carries the job title and company only, with the 19:00 IST alarm the evening before.
-  - In-app, a notification reads "Interview tomorrow for {title} at {company}. Practise for this job." It shows from 00:00 IST the day before and is built at read time like the others.
-- **Email reminder:** *Default I'm picking:* none. Email is now possible (Resend is live), but a daily email needs a cron at a fixed hour on Hobby and a settings switch. That can be a later item if Milin wants it.
+### 4. First check before sign-up
 
-## 4. Privacy and DPDP
+- **Landing and Gaps:** both offer "Paste the job you're applying for and see what it asks that you don't have". This is the existing anonymous resume plus a job check, under FR-2's one analysis before sign-up.
+- **After the result:** "Sign up to keep it in My jobs and prepare for the interview."
+- **At sign-in:** the claim moves the resume and its checks, as now. The newest claimed check becomes a My jobs row with status Saved, so it is waiting there.
+- **Unclaimed:** a check that is never claimed is deleted with its anonymous resume after 24 hours, together with its description if kept.
+- **Empty My jobs** says "Add the jobs you're already applying to" above the feed.
 
-- **What is stored:** link, company, title, status, dates, notes and skill ids. No posting text is stored (the hash stays on the check). No recruiter names or contacts: there are no fields for them, and the notes hint says "Don't add other people's contact details".
-- **Who sees it:** only the owner. It is never shown to companies, never sent with Express apply, and never counted in Network or the Market.
-- **Download your data:** the export includes it, `EXPORT_VERSION` 33.
-- **Deletion:** it goes with the account (on delete cascade), on the same 30-day account-delete clock. The person can delete one row at any time, and deleting it removes it, nothing is archived. Logs carry ids and statuses only, never notes, links or titles.
-- **Privacy notice:** gains one line under what we keep, as part of the same PR.
+## Data (one migration, 0050)
 
-## 5. Schema and migration (0050)
+- **`job_checks`:**
+  - **New columns:**
+    - `user_id`: set at claim or for signed-in checks, cascade.
+    - `url`: https, at most 2,000 characters, shown and never fetched unless it is a board link.
+    - `source`: `pasted` or `board`.
+    - `city`: from the board posting when known.
+  - **`resume_id`** becomes nullable, with `on delete set null`, so a saved job outlives a replaced resume. The daily cleanup deletes checks with no resume that no `job_saves` row points to, so unsaved checks still go with their resume as today.
+  - **If the description is kept:** a `description` text column, at most 20,000 characters.
+    - Private to the owner, never logged, never sent anywhere but the parse call.
+    - In Download your data, and deleted with the account or with the row.
+    - **If skills only:** no column, as today.
+- **`job_saves`:**
+  - A surrogate `id` replaces the (user, post) key.
+  - `job_post_id` becomes nullable, and a new `job_check_id` is added (cascade).
+  - A check requires exactly one of the two.
+  - Unique indexes on (user, post) and (user, check).
+  - `saved_at` stays the Saved bookmark. The stage check becomes 1 to 6, with 5 = Not this time and 6 = Withdrawn. Existing rows keep their numbers.
+  - New `interview_at`, `closed_at` and `note` (at most 2,000 characters).
+  - At most 300 rows per person, checked in code.
+- **`mock_sessions`:** `job_save_id` (set null), and `job` joins the focus check.
+- **Also:** RLS on, no policies (`scripts/check-rls.mjs`). Hand-written SQL, journal entry and snapshot. `EXPORT_VERSION` 33.
 
-- **New table `job_applications`:**
-  - Columns:
-    - `id`
-    - `user_id` (cascade)
-    - `job_check_id` (set null)
-    - `url`, `company`, `title`, `status`
-    - `required_skill_ids`, `nice_skill_ids` (text[])
-    - `saved_at`, `applied_at`, `interview_at`, `closed_at`
-    - `notes`
-    - `created_at`, `updated_at`
-  - Checks enforce:
-    - the status list;
-    - the field lengths;
-    - `url` starting with `https://`;
-    - `closed_at` only on rejected or withdrawn.
-  - Unique on (`user_id`, `job_check_id`), so the same check is tracked once.
-  - Index on (`user_id`, `updated_at`).
-- **`mock_sessions`** gains `job_application_id` (set null), and `job` joins the `MOCK_FOCUSES` check.
-- **`job_saves`** stage check becomes 1 to 6, if the default in section 1 stands.
-- **Mechanics:** RLS on, no policies, as for every table (`scripts/check-rls.mjs`). Hand-written SQL, journal entry and snapshot, as usual.
+## Privacy (DPDP)
 
-## 6. Zod schema and tests first
+- **Private:** everything here belongs to the person only. It is never shown to companies, never sent with Express apply, and never counted in Network, the Market or "On your line right now".
+- **Kept and deleted:** it goes with the account (cascade, on the 30-day account-delete clock) and is in Download your data. Deleting a job deletes it, with nothing archived.
+- **Logs and analytics:** job text, notes and links never go into logs or analytics, the same rule as resumes. Logs carry ids, sources and statuses only.
+- **Board reads:** only the posting the person linked is fetched. Recruiter names and contacts are dropped, as in the feed (`ats-feed-terms`).
+- **Privacy notice:** one line under what we keep, in the same PR. It says either "the job description you add" or "the skills from the job you add", following Milin's decision.
 
-- **Schemas:** `src/lib/schemas/application.ts` holds `applicationStatus`, `trackApplicationRequest`, `updateApplicationRequest` (status, dates, notes, link, company, title) and `applicationView`. These are written first, and a link that is not https, an over-long field and an unknown status are rejected.
-- **Tests before the store:**
-  - status change sets and clears the right dates;
-  - tracking the same check twice reuses the row;
-  - the 200 limit;
-  - only the owner can read or change a row;
-  - a replaced resume keeps the row and its skills;
-  - deleting the account removes the rows;
-  - the export includes them.
-- **Mock tests:** `job` focus asks required skills first, falls back to the role, and handles a job whose skills have no questions.
-- **Other tests:** the reminder's day boundary in IST, and the `.ics` holding no notes or link.
+## Zod schema and tests first
+
+- **Schemas:** `src/lib/schemas/my-jobs.ts` holds `jobStage`, `addJobRequest` (description and/or link), `updateJobRequest` (stage, dates, interview date, note) and `myJobView`. These are written before the store.
+- **Schema tests:**
+  - only https links are accepted;
+  - long fields are rejected;
+  - unknown stages are rejected;
+  - a request needs a description or a board link.
+- **Board-link parser tests:** each of the four hosts, look-alike hosts refused, and a feed post found and reused.
+- **Store tests (DB, against TEST_DATABASE_URL):**
+  - exactly one of post or check;
+  - stage moves set and clear the right dates;
+  - the 300 cap;
+  - owner only;
+  - a replaced resume keeps the saved job and recomputes its fit;
+  - cleanup removes unsaved orphan checks only;
+  - claim makes the Saved row;
+  - account delete and export;
+  - with the description kept, it is never in a log line.
+- **Mock tests:** `job` focus order, a role fallback, and skills with no questions.
 - **Final check:** the full check before the single push.
 
-## 7. Where it sits
+## Where it sits, and design entries needed
 
-- **Departures:** the Applied tab becomes **My applications**. It holds feed roles and tracked portal jobs together, each with its status chip and the job's readiness in words. The paste box result gets "Track this application".
-- **Today:** a **Next interview** card when one falls in the next 7 days. It shows the date, company and title, plus "Practise for this job".
-- **Me:** no change. Me is the profile others can see, and applications are private.
-- **Arrivals:** no change. It stays for applications to CareerMetro postings that companies move.
-- **Needs design entries** (design thread, before build):
-  - the My applications row and its status menu (6 states as neutral chips: red, amber and green stay for gap status, and cobalt for progress);
-  - the edit sheet (link, dates, notes);
-  - the Next interview card on Today;
-  - the "Practise for this job" entry on `/mock`.
+- **Departures:** My jobs tab, "Add a job you found", and Prepare for this job.
+- **Landing and Gaps:** the paste-a-job entry before sign-up.
+- **Today:** no change in phase 1.
+- **Me and Arrivals:** no change. Me is seen by others, and Arrivals is for CareerMetro postings that companies move.
+- **Design entries** (design thread, before build):
+  - My jobs row with its status menu (neutral chips: red, amber and green stay for gaps, cobalt for progress);
+  - the edit sheet (status, dates, interview, note);
+  - the "Add a job you found" box with link handling;
+  - the mock title for a job;
+  - the landing entry and sign-up prompt.
+
+## Phase 2 (planned after phase 1 ships)
+
+- **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".
+- **Today:** "Interview with X in 3 days", and that job's skills join the daily ride.
+- **Weekly email, opt-in in Settings:** "2 jobs waiting on a reply, 1 interview Thursday, practise these 3 skills." It needs a weekly cron on Hobby (allowed) and Resend, which is live.
+- **Later, after a lawyer's view of the portals' terms:** a browser button that reads the open page, and forwarding job-alert emails.
 
 ## Build order once approved
 
-- **PR 1:** migration, schemas, store and the My applications tab.
-- **PR 2:** job-focused mock and practice.
-- **PR 3:** interview date, `.ics`, notification and the Today card.
+- **PR 1:** migration 0050, schemas, store, board-link reading and the My jobs tab.
+- **PR 2:** Prepare for this job (practice and mock).
+- **PR 3:** the first check before sign-up and the claim into My jobs.
