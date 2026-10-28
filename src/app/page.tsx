@@ -24,6 +24,44 @@ export default function Home() {
         </p>
       </section>
 
+      {/* The first check before sign-up (handoff 12m, C19): the resume here, then the job on the Gaps page. */}
+      <section aria-labelledby="first-check" className="flex flex-col gap-5">
+        <div className="flex max-w-2xl flex-col gap-2">
+          <h2 id="first-check" className="text-2xl font-semibold">
+            Paste the job you&apos;re applying for and see what it asks that you don&apos;t have.
+          </h2>
+          <p className="text-muted">
+            Your resume plus one job description. In a minute you see what you have, what is still open, and what only this job asks for. The first
+            check needs no sign-up.
+          </p>
+        </div>
+        <ol className="grid gap-4 sm:grid-cols-2">
+          <li className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted">1 · Your resume</p>
+            <p className="text-sm">We read it and you check what we found. Nothing is stored until you sign up; without sign-up it is deleted in 24 hours.</p>
+            <Link href="/start" className="inline-flex w-fit items-center gap-1.5 font-medium underline underline-offset-4 hover:text-ink">
+              Add your resume
+              <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+            </Link>
+            <p className="text-sm text-muted">
+              No resume yet?{" "}
+              <Link href="/builder" className="font-medium text-ink underline underline-offset-2">
+                Answer a few questions and we write one with you
+              </Link>
+              .
+            </p>
+          </li>
+          <li className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted">2 · The job</p>
+            <p className="text-sm">
+              On your Gaps page, paste the job description under Check against a job and press Check this job. We read only the skills it names. The
+              job is never shared.
+            </p>
+            <p className="text-sm text-muted">Sign up after, and the job waits in My jobs, marked Saved, ready to prepare for the interview.</p>
+          </li>
+        </ol>
+      </section>
+
       <section aria-labelledby="how" className="flex flex-col gap-6">
         <h2 id="how" className="text-2xl font-semibold">
           How it works

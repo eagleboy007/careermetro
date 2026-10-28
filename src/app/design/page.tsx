@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { designGalleryEnabled } from "@/lib/preview";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
-import { JobCheck } from "@/components/gaps/job-check";
+import { JobCheck, KeepInMyJobs } from "@/components/gaps/job-check";
 import { JobCheckResult } from "@/components/gaps/job-check-result";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
 import { ApplyHere } from "@/components/route/apply-here";
@@ -1472,6 +1472,7 @@ export default function DesignPage() {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Job check form</h2>
           <JobCheck resumeId="example" roleSlug="data-analyst" roleTitle="Data Analyst" checks={[]} goals={{ skills: [], here: "/design" }} demo />
+          <KeepInMyJobs demo />
           <h2 className="text-2xl font-semibold">To apply here (Path page)</h2>
           <p className="text-sm text-muted">&quot;Plan for this job&quot; opens the path with this section on top. The path below it stays as it is.</p>
           <ApplyHere

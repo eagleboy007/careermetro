@@ -1,10 +1,10 @@
 import "server-only";
-import { and, eq, gt, inArray, isNull, lt, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, inArray, isNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { consents, resumes, users } from "@/db/schema";
+import { consents, jobChecks, jobSaves, resumes, users } from "@/db/schema";
 import { ANONYMOUS_TTL_HOURS } from "@/lib/owner";
 import { checkName, hasUsableName } from "@/lib/resume/name-match";
-import { WEEKLY_HOURS } from "@/lib/schemas";
+import { MY_JOBS_MAX, WEEKLY_HOURS } from "@/lib/schemas";
 import { fullName } from "./name";
 
 type Db = ReturnType<typeof getDb>;
@@ -82,7 +82,7 @@ export type ClaimResult = { claimed: number; refused: number };
  * name stays anonymous and is deleted after its 24 hours. Once claimed, the session no longer reaches them (see
  * `ownsResume`); the session id stays only so the session's daily limits still count them. A resume still being read
  * isn't claimed, since its name isn't known yet; it stays anonymous for the next sign-in. An account with no name
- * claims nothing.
+ * claims nothing. The newest job checked on the claimed resumes joins My jobs as Saved (handoff 12m).
  */
 export async function claimAnonymousResumes(userId: string, sessionId: string, db: Db | Tx = getDb()): Promise<ClaimResult> {
   const waiting = await db
@@ -109,7 +109,25 @@ export async function claimAnonymousResumes(userId: string, sessionId: string, d
     .returning({ id: resumes.id, consentId: resumes.consentId });
   const consentIds = claimed.flatMap((r) => (r.consentId ? [r.consentId] : []));
   if (consentIds.length) await db.update(consents).set({ userId }).where(and(inArray(consents.id, consentIds), isNull(consents.userId)));
+  if (claimed.length) await saveNewestCheck(userId, claimed.map((r) => r.id), db);
   return { claimed: claimed.length, refused };
+}
+
+/**
+ * The first check before sign-up (handoff 12m, C19): the newest job checked on the claimed resumes waits in My jobs,
+ * marked Saved. Nothing else moves; a job already in the list, or a full list, is left as it is.
+ */
+async function saveNewestCheck(userId: string, resumeIds: string[], db: Db | Tx) {
+  const [newest] = await db
+    .select({ id: jobChecks.id })
+    .from(jobChecks)
+    .where(inArray(jobChecks.resumeId, resumeIds))
+    .orderBy(desc(jobChecks.createdAt), desc(jobChecks.id))
+    .limit(1);
+  if (!newest) return;
+  const [list] = await db.select({ n: count() }).from(jobSaves).where(eq(jobSaves.userId, userId));
+  if (list.n >= MY_JOBS_MAX) return;
+  await db.insert(jobSaves).values({ userId, jobCheckId: newest.id, savedAt: new Date() }).onConflictDoNothing();
 }
 
 /** refused: anonymous resumes left out of the account because they show a different name. */

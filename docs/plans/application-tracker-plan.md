@@ -157,6 +157,12 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - An interview set on a closed job is kept, but the status stays closed and Today leaves it out.
 - Download your data carries `interview_at` from export version 34.
 
+## Choices made while building (PR 4)
+
+- The landing page shows C19's heading, lead and the two steps as cards. The job is pasted on the Gaps page, because a job check needs the confirmed resume first; putting both on one page would change the resume confirm step, which is the AI pipeline.
+- The Gaps page shows "Sign up to keep it in My jobs" to a visitor once a check exists. "Sign up with email" opens sign-in with My jobs as the next page; "Not now" hides the card.
+- At sign-in the claim adds the newest check on the claimed resumes to My jobs as Saved, unless it is already there or the list is full. A check made on Gaps keeps no description, so "Read the job again" doesn't show for it.
+
 ## Phase 2 (planned after phase 1 ships)
 
 - **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".

@@ -128,6 +128,7 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         profileVersion={screening?.profileVersion ?? null}
         roleSlug={role.slug}
         roleTitle={role.title}
+        signedIn={owner?.userId !== undefined}
         checks={checks ?? []}
         goals={{ skills: goalSkills?.skills ?? null, chosen: goalSkills?.chosen, here: `/resume/${id}/gaps/${role.slug}` }}
       />
