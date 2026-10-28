@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-27 (Terms and privacy sections take link anchors)
+Last updated: 2026-10-28 (My jobs plan, waiting on Milin)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -77,6 +77,8 @@ Last updated: 2026-10-27 (Terms and privacy sections take link anchors)
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
 
 ## Next up
+
+- My jobs (Milin, 2026-10-28, the onboarding feature): plan only in `docs/plans/application-tracker-plan.md`. It extends `job_saves` to jobs the person adds (pasted, or read from a company-board link), with Not this time and Withdrawn, an interview date and a note, Prepare for this job and a first check before sign-up (migration 0050). Waiting on Milin's approval, the keep-description decision and design entries.
 
 The Project manager's queue of 2026-10-15 is done: launch readiness (c) 6 and 7, Practice (#145), Match (#143) and the report removal tools (#146). Detail for each is in `dev/launch-readiness.md`, `dev/practice-match-plan.md` and `docs/plans/reports-review-plan.md`.
 
