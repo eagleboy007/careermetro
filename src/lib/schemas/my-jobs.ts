@@ -86,6 +86,20 @@ export type JobStatusRequest = z.infer<typeof jobStatusRequest>;
 /** A day in IST as the date field sends it. */
 const day = z.preprocess(blankIsNull, z.iso.date().nullable());
 
+/** A date and time in IST as the datetime field sends it ("2026-10-30T10:30"): the interview. */
+export const istMinute = z.preprocess(
+  blankIsNull,
+  z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Pick the interview's date and time.")
+    // A real day and time (not 30 Feb or 25:00) in a sensible range: read as IST, it writes back the same.
+    .refine((v) => {
+      const at = Date.parse(`${v}:00+05:30`);
+      return Number.isFinite(at) && new Date(at + 5.5 * 3600_000).toISOString().slice(0, 16) === v && v >= "2000" && v < "2101";
+    }, "Pick the interview's date and time.")
+    .nullable(),
+);
+
 const note = z.preprocess(
   blankIsNull,
   z.string().trim().max(MY_JOB_NOTE_MAX, `Keep the note under ${MY_JOB_NOTE_MAX.toLocaleString("en-IN")} characters.`).nullable(),
@@ -105,6 +119,8 @@ export const updateJobRequest = z
     status: myJobStatus,
     appliedOn: day.default(null),
     closedOn: day.default(null),
+    /** The interview, IST. Setting it moves an earlier status to Interview; empty clears it. */
+    interviewAt: istMinute.default(null),
     note: note.default(null),
   })
   .strict();
@@ -127,6 +143,8 @@ export const myJobView = z.object({
   savedAt: z.string().nullable(),
   appliedAt: z.string().nullable(),
   closedAt: z.string().nullable(),
+  /** The interview's date and time (ISO), when the person set one. */
+  interviewAt: z.string().nullable(),
   note: z.string().nullable(),
   updatedAt: z.string(),
   /** The feed post left its board. */
@@ -159,6 +177,18 @@ export const jobPrepView = z.strictObject({
 });
 export type JobPrepView = z.infer<typeof jobPrepView>;
 
+/**
+ * Today's "Next interview" card (handoff 12m: "Today counts down to it"): the soonest interview the person set in My
+ * jobs that hasn't started more than two hours ago, on a job still at Interview or Offer.
+ */
+export const nextInterviewView = z.strictObject({
+  ref: myJobRef,
+  company: z.string().min(1).max(120),
+  title: z.string().min(1).max(160),
+  interviewAt: z.iso.datetime(),
+});
+export type NextInterviewView = z.infer<typeof nextInterviewView>;
+
 /** One row of `my_jobs` in Download your data (added in export version 33). */
 export const myJobExport = z.object({
   source: z.enum(["you_added", "company_job_board"]),
@@ -170,6 +200,8 @@ export const myJobExport = z.object({
   saved_at: z.string().nullable(),
   applied_at: z.string().nullable(),
   closed_at: z.string().nullable(),
+  /** From export version 34. */
+  interview_at: z.string().nullable(),
   note: z.string().nullable(),
   description: z.string().nullable(),
 });

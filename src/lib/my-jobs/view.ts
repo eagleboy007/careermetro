@@ -57,3 +57,27 @@ export function dayValue(iso: string | null): string {
   if (!iso) return "";
   return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Kolkata" }).format(new Date(iso));
 }
+
+const IST_MS = 5.5 * 3600_000;
+
+/** "2026-10-30T10:30" in IST, for the interview's date and time field. */
+export function minuteValue(iso: string | null): string {
+  if (!iso) return "";
+  return new Date(Date.parse(iso) + IST_MS).toISOString().slice(0, 16);
+}
+
+/** "Thu 30 Oct, 10:30" in IST, as the row and Today show the interview. */
+export function interviewWhen(iso: string): string {
+  const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).formatToParts(new Date(iso));
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${part("weekday")} ${part("day")} ${part("month")}, ${part("hour")}:${part("minute")}`;
+}
+
+/** Whole India days from `now` to the interview: 0 on its day, 1 the day before. */
+export function daysUntil(iso: string, now: Date): number {
+  const day = (t: number) => Math.floor((t + IST_MS) / 86_400_000);
+  return day(Date.parse(iso)) - day(now.getTime());
+}
+
+/** Today's countdown: "today", "tomorrow" or "in 3 days". */
+export const countdownWords = (days: number): string => (days <= 0 ? "today" : days === 1 ? "tomorrow" : `in ${days} days`);

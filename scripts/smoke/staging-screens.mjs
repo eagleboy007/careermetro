@@ -837,6 +837,13 @@ try {
       await row.getByRole("menu").getByRole("menuitemradio", { name: new RegExp(`^${label}`) }).click();
       await row.getByRole("button", { name: new RegExp(`^Status: ${label}`) }).waitFor({ timeout: 10000 });
       if (closed) await row.getByText(new RegExp(`^${label} \\d`)).waitFor({ timeout: 10000 });
+      // Interview with no date opens the edit sheet on its date field; Cancel leaves it for now.
+      if (label === "Interview") {
+        const asked = p.getByRole("dialog", { name: posting.title });
+        await asked.getByLabel("Interview · date and time, IST").waitFor({ timeout: 10000 });
+        await asked.getByRole("button", { name: "Cancel", exact: true }).click();
+        await asked.waitFor({ state: "hidden", timeout: 10000 });
+      }
     }
     await row.getByRole("button", { name: `Edit ${posting.title} at ${company}` }).click();
     const sheet = p.getByRole("dialog", { name: posting.title });

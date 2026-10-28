@@ -148,6 +148,15 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - Starting a round for a job that has left My jobs says "That job isn't in My jobs any more" (`no_job`). Deleting the job keeps past rounds, with the job link cleared.
 - The running round's job line uses an ink dot, not cobalt, which stays for progress.
 
+## Choices made while building (PR 3)
+
+- The build order became four PRs: the interview date and Today's card here, and the first check before sign-up with the claim into My jobs in PR 4.
+- Prototype v48 has no Today card, so it follows the other Today rail cards: "Interview in 3 days" (today, tomorrow), the job, the day and time in IST, and links to Practice, the mock interview and My jobs. Neutral colours, as cobalt is for progress.
+- Today shows the soonest interview on a job at Interview or Offer, until two hours after it starts.
+- The calendar file is an hour long, with the title and company only, made on the device as on Arrivals.
+- An interview set on a closed job is kept, but the status stays closed and Today leaves it out.
+- Download your data carries `interview_at` from export version 34.
+
 ## Phase 2 (planned after phase 1 ships)
 
 - **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".

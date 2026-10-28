@@ -1,15 +1,16 @@
 "use client";
 
-import { Briefcase, Check, ChevronDown, ExternalLink, Link2, Lock, Pen, Play, ShieldCheck, Target, X } from "lucide-react";
+import { Briefcase, CalendarPlus, Check, ChevronDown, ExternalLink, Link2, Lock, Pen, Play, ShieldCheck, Target, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { actionFailed, readApiReply } from "@/lib/api-reply";
+import { interviewIcs } from "@/lib/calendar/ics";
 import { initials } from "@/lib/departures/filter";
 import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, prepareHref, type MyJobFilter, type MyJobStatus } from "@/lib/my-jobs/rules";
-import { dayValue, fitSentence, fitWords, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
+import { dayValue, fitSentence, fitWords, interviewWhen, minuteValue, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
 import type { MyJobRef, MyJobView } from "@/lib/schemas";
 import {
   JOB_COMPANY_MAX,
@@ -48,6 +49,8 @@ export type EditValues = {
   status: MyJobStatus;
   appliedOn: string | null;
   closedOn: string | null;
+  /** The interview's date and time in IST ("2026-10-30T10:30"), or none. */
+  interviewAt: string | null;
   note: string | null;
 };
 
@@ -153,6 +156,7 @@ function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJ
   const dates: [string, string][] = [];
   if (job.status === "saved" && job.savedAt) dates.push(["Saved", shortDay(job.savedAt)!]);
   if (job.appliedAt) dates.push(["Applied", shortDay(job.appliedAt)!]);
+  if (job.interviewAt && !closed) dates.push(["Interview", interviewWhen(job.interviewAt)]);
   if (closed && job.closedAt) dates.push([MY_JOB_STATUS_LABELS[job.status], shortDay(job.closedAt)!]);
   const meta: ReactNode[] = [job.company, job.city ?? "City not given"];
   return (
@@ -385,8 +389,11 @@ export function EditSheet({
   onSave,
   onDelete,
   readDescription,
+  focus,
 }: {
   job: MyJobView;
+  /** "interview": opened from the status menu's Interview with no date, on the interview field. */
+  focus?: "interview";
   onClose: () => void;
   onSave: (values: EditValues) => Promise<string | null>;
   onDelete: () => Promise<string | null>;
@@ -403,8 +410,10 @@ export function EditSheet({
     status: job.status,
     appliedOn: dayValue(job.appliedAt),
     closedOn: dayValue(job.closedAt),
+    interviewAt: minuteValue(job.interviewAt),
     note: job.note ?? "",
   });
+  const interviewField = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [description, setDescription] = useState<string | null | undefined>(undefined);
@@ -412,8 +421,9 @@ export function EditSheet({
   useEffect(() => {
     const d = dialog.current;
     if (d && !d.open) d.showModal();
+    if (focus === "interview") interviewField.current?.focus();
     return () => d?.close();
-  }, []);
+  }, [focus]);
   const run = async (call: () => Promise<string | null>) => {
     if (busy) return;
     setBusy(true);
@@ -430,6 +440,7 @@ export function EditSheet({
         status: values.status,
         appliedOn: values.appliedOn || null,
         closedOn: isClosed(values.status) ? values.closedOn || null : null,
+        interviewAt: values.interviewAt || null,
         note: values.note.trim() || null,
       }),
     );
@@ -503,6 +514,26 @@ export function EditSheet({
             <span className={fieldLabel}>Applied on</span>
             <input type="date" value={values.appliedOn} onChange={(e) => set({ appliedOn: e.target.value })} className={fieldInput} />
           </label>
+          <div className={`${field} min-[560px]:col-span-2`}>
+            <label className="flex flex-col gap-[5px]">
+              <span className={fieldLabel}>Interview · date and time, IST</span>
+              <input
+                ref={interviewField}
+                type="datetime-local"
+                value={values.interviewAt}
+                onChange={(e) => set({ interviewAt: e.target.value })}
+                aria-describedby={`${ids}-interview`}
+                className={fieldInput}
+              />
+            </label>
+            {values.interviewAt ? (
+              <AddToCalendar id={`${ids}-interview`} company={values.company} title={values.title} at={values.interviewAt} jobKey={job.key} />
+            ) : (
+              <span id={`${ids}-interview`} className="text-[0.76rem] text-muted">
+                Setting a date moves the status to Interview if it is earlier. Today counts down to it.
+              </span>
+            )}
+          </div>
           {isClosed(values.status) && (
             <label className={`${field} min-[560px]:col-span-2`}>
               <span className={fieldLabel}>Closed on</span>
@@ -559,6 +590,32 @@ export function EditSheet({
         </div>
       </form>
     </dialog>
+  );
+}
+
+/**
+ * "Add to calendar" for an interview in My jobs: a .ics file made on the device (src/lib/calendar/ics.ts) with the
+ * title and company only, an hour long, and a reminder at 19:00 IST the evening before. Never the note.
+ */
+function AddToCalendar({ id, company, title, at, jobKey }: { id: string; company: string; title: string; at: string; jobKey: string }) {
+  const download = () => {
+    const startsAt = new Date(`${at}:00+05:30`);
+    if (Number.isNaN(startsAt.getTime())) return;
+    const ics = interviewIcs({ interviewId: `myjob-${jobKey}`, startsAt, minutes: 60, summary: `Interview for ${title} at ${company}`, now: new Date() });
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "careermetro-interview.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  return (
+    <button type="button" id={id} onClick={download} className="inline-flex items-center gap-1.5 self-start py-1 text-[0.8rem] font-[550] text-ink hover:underline">
+      <CalendarPlus size={15} {...ICON} />
+      Add to calendar (reminder the evening before, 19:00)
+    </button>
   );
 }
 

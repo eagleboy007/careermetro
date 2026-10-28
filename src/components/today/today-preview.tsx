@@ -22,7 +22,7 @@ import { JobSearchBoardSlot } from "@/components/job-search/job-search";
 import { DeparturesBoard } from "./departures-board";
 import { GoalsCard } from "./goals-card";
 import { NoResumeHero, WhileYouDecide } from "./no-resume-hero";
-import { OnYourLineCard, TimetableTeaser } from "./rail-cards";
+import { NextInterviewCard, OnYourLineCard, TimetableTeaser, type NextInterview } from "./rail-cards";
 import { RideCard } from "./ride-card";
 import { SignalCheckCard } from "./signal-check";
 import { WelcomeHero, type FirstTally } from "./welcome-hero";
@@ -56,6 +56,8 @@ export type TodayData = {
   events: EventTeaser[];
   /** Null hides the card: fewer than three people on the goal who can be counted. */
   onYourLine: OnYourLine | null;
+  /** The soonest interview set in My jobs (handoff 12m); null or absent hides the card. */
+  nextInterview?: NextInterview | null;
   /** "Morning", "Afternoon" or "Evening" in the user's time zone. */
   greeting: string;
   /** No resume state: a resume that was read but whose gaps were never shown. */
@@ -173,6 +175,7 @@ export function TodayView({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
+        {state !== "no_resume" && data.nextInterview && <NextInterviewCard next={data.nextInterview} />}
         {/* Inside a JobSearchProvider, job search off shows "Job search is off" in the board's place (handoff 6). */}
         {state === "no_resume" ? (
           <DeparturesBoard rows={data.departures} locked allHref={departuresHref} />

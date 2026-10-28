@@ -19,7 +19,7 @@ import {
   startFilters,
   type DepartureFilters,
 } from "@/lib/departures/filter";
-import { isClosed, isMoving, stageOf, statusOf, type MyJobStatus } from "@/lib/my-jobs/rules";
+import { isClosed, isMoving, stageOf, statusOf, withInterview, type MyJobStatus } from "@/lib/my-jobs/rules";
 import { newestChange, postFit } from "@/lib/my-jobs/view";
 import type { JobPost, MyJobRef, MyJobView, RolePrepView } from "@/lib/schemas";
 import { APPLY_STAGES, MY_JOB_STATUS_LABELS, WORK_TYPES } from "@/lib/schemas/constants";
@@ -103,6 +103,8 @@ export function DeparturesView({
   const [tab, setTab] = useState<"all" | "mine">(initialTab);
   const [mine, setMine] = useState<MyJobView[]>(() => [...initialMine].sort(newestChange));
   const [editing, setEditing] = useState<string | null>(null);
+  // Picking Interview with no date opens the sheet on the interview field (handoff 12m).
+  const [editFocus, setEditFocus] = useState<"interview" | undefined>(undefined);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const say = (text: string) => {
@@ -213,17 +215,29 @@ export function DeparturesView({
   const setStatus = (job: MyJobView, status: MyJobStatus) => {
     const now = new Date().toISOString();
     const next = mine.map((j) => (j.key === job.key ? withStatus(j, status, now) : j));
-    const done =
-      status === "offer" ? "An offer. Well done." : isClosed(status) ? `Marked ${MY_JOB_STATUS_LABELS[status].toLowerCase()}. It stays under Closed.` : `${MY_JOB_STATUS_LABELS[status]} · ${shortToday()}`;
+    const askDate = status === "interview" && !job.interviewAt;
+    const done = askDate
+      ? "Interview. Add the date so Today can count down to it."
+      : status === "offer"
+        ? "An offer. Well done."
+        : isClosed(status)
+          ? `Marked ${MY_JOB_STATUS_LABELS[status].toLowerCase()}. It stays under Closed.`
+          : `${MY_JOB_STATUS_LABELS[status]} · ${shortToday()}`;
     change(next, mineActions?.status({ ref: job.ref, status }), done, () => followPost(job.ref, status));
+    if (askDate) {
+      setEditFocus("interview");
+      setEditing(job.key);
+    }
   };
   const saveEdit = async (job: MyJobView, values: EditValues): Promise<string | null> => {
     const message = mineActions ? await mineActions.update({ ref: job.ref, ...values }) : null;
     if (message) return message;
     const now = new Date().toISOString();
-    const edited = edit(withStatus(job, values.status, now), values, now);
+    // As the server does: a date moves an earlier status to Interview.
+    const status = withInterview(values.status, values.interviewAt);
+    const edited = edit(withStatus(job, status, now), values, now);
     setMine((l) => l.map((j) => (j.key === job.key ? edited : j)).sort(newestChange));
-    followPost(job.ref, values.status);
+    followPost(job.ref, status);
     say("Saved. Only you see it.");
     return null;
   };
@@ -247,6 +261,7 @@ export function DeparturesView({
       savedAt: now,
       appliedAt: null,
       closedAt: null,
+      interviewAt: null,
       note: null,
       updatedAt: now,
       postClosed: false,
@@ -377,7 +392,11 @@ export function DeparturesView({
           <EditSheet
             key={editingJob.key}
             job={editingJob}
-            onClose={() => setEditing(null)}
+            focus={editFocus}
+            onClose={() => {
+              setEditing(null);
+              setEditFocus(undefined);
+            }}
             onSave={(values) => saveEdit(editingJob, values)}
             onDelete={() => deleteJob(editingJob)}
             readDescription={mineActions?.description}
@@ -451,6 +470,7 @@ function edit(j: MyJobView, v: EditValues, now: string): MyJobView {
     city: v.city === undefined ? j.city : v.city,
     appliedAt: v.appliedOn ? istNoon(v.appliedOn) : j.appliedAt,
     closedAt: isClosed(v.status) && v.closedOn ? istNoon(v.closedOn) : j.closedAt,
+    interviewAt: v.interviewAt ? new Date(`${v.interviewAt}:00+05:30`).toISOString() : null,
     note: v.note,
     updatedAt: now,
   };
@@ -470,6 +490,7 @@ function postRow(job: JobPost, status: MyJobStatus, now: string, fitShown: boole
     savedAt: status === "saved" ? now : null,
     appliedAt: isMoving(status) ? now : null,
     closedAt: null,
+    interviewAt: null,
     note: null,
     updatedAt: now,
     postClosed: job.closed,

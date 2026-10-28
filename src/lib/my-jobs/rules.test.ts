@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, prepareHref, refFromParam, refParam, stageOf, statusOf } from "./rules";
+import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, prepareHref, refFromParam, refParam, stageOf, statusOf, withInterview } from "./rules";
 
 describe("statuses and stages", () => {
   it("maps each status to its stage and back", () => {
@@ -93,5 +93,13 @@ describe("a job in an address", () => {
   it("links Practice and the mock interview to the job", () => {
     expect(prepareHref({ kind: "check", checkId: id }, "practice")).toBe(`/practice?job=check%3A${id}`);
     expect(prepareHref({ kind: "post", postId: id }, "mock")).toBe(`/mock?tab=interview&job=post%3A${id}`);
+  });
+});
+
+describe("withInterview", () => {
+  it("moves an earlier status to Interview, and leaves Offer, a closed job or no date alone (handoff 12m)", () => {
+    for (const s of ["saved", "applied", "heard", "interview"] as const) expect(withInterview(s, "2026-10-30T10:30")).toBe("interview");
+    for (const s of ["offer", "no", "withdrawn"] as const) expect(withInterview(s, "2026-10-30T10:30")).toBe(s);
+    expect(withInterview("applied", null)).toBe("applied");
   });
 });

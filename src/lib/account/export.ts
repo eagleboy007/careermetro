@@ -28,7 +28,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 33;
+export const EXPORT_VERSION = 34;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -268,7 +268,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     departures: departureRows,
     // My jobs (from version 33, docs/plans/application-tracker-plan.md): every job in your list, from our company job
     // boards or added by you from any site, with its company, title, place and link, its status (Saved, Applied, Heard
-    // back, Interview, Offer, Not this time or Withdrawn) and dates, your private note, and your own copy of the
+    // back, Interview, Offer, Not this time or Withdrawn) and dates, the interview date you set (from version 34), your private note, and your own copy of the
     // description of a job you added. Only you ever see these.
     myJobs: myJobRows,
     // Library (docs/plans/library-part-2-plan.md): the resources you saved, ticked "I finished this" on and added to your

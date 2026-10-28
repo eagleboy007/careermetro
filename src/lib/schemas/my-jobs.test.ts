@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { JOB_TEXT_MAX, JOB_TEXT_MIN } from "./constants";
-import { addJobRequest, jobLink, jobPrepView, jobStatusRequest, myJobRef, saveJobRequest, updateJobRequest } from "./my-jobs";
+import { addJobRequest, jobLink, jobPrepView, jobStatusRequest, myJobRef, nextInterviewView, saveJobRequest, updateJobRequest } from "./my-jobs";
 
 const resumeId = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
 const checkId = "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f";
@@ -90,6 +90,14 @@ describe("updateJobRequest", () => {
     expect(updateJobRequest.safeParse({ ref, status: "applied", appliedOn: "2026-02-30" }).success).toBe(false);
   });
 
+  it("takes the interview as a date and time in IST, and empty as none (handoff 12m)", () => {
+    expect(updateJobRequest.parse({ ref, status: "applied", interviewAt: "2026-10-30T10:30" }).interviewAt).toBe("2026-10-30T10:30");
+    expect(updateJobRequest.parse({ ref, status: "applied", interviewAt: "" }).interviewAt).toBeNull();
+    expect(updateJobRequest.parse({ ref, status: "applied" }).interviewAt).toBeNull();
+    for (const bad of ["2026-02-30T10:30", "2026-10-30T25:00", "2026-10-30 10:30", "2026-10-30T10:30:00Z", "30 Oct, 10:30", "1999-12-31T10:00"])
+      expect(updateJobRequest.safeParse({ ref, status: "applied", interviewAt: bad }).success, bad).toBe(false);
+  });
+
   it("keeps the note under 2,000 characters", () => {
     expect(updateJobRequest.safeParse({ ref, status: "saved", note: "x".repeat(2000) }).success).toBe(true);
     expect(updateJobRequest.safeParse({ ref, status: "saved", note: "x".repeat(2001) }).success).toBe(false);
@@ -109,5 +117,14 @@ describe("jobPrepView", () => {
     expect(jobPrepView.safeParse({ ...prep, description: text }).success).toBe(false);
     expect(jobPrepView.safeParse({ ...prep, company: "" }).success).toBe(false);
     expect(jobPrepView.safeParse({ ...prep, ref: { kind: "check", checkId: "x" } }).success).toBe(false);
+  });
+});
+
+describe("nextInterviewView", () => {
+  it("names the job and when, nothing else", () => {
+    const next = { ref: { kind: "check", checkId }, company: "Zephyr Payments", title: "SOC analyst", interviewAt: "2026-10-30T05:00:00.000Z" };
+    expect(nextInterviewView.parse(next)).toEqual(next);
+    expect(nextInterviewView.safeParse({ ...next, note: "Ask about nights" }).success).toBe(false);
+    expect(nextInterviewView.safeParse({ ...next, interviewAt: "Thu 30 Oct" }).success).toBe(false);
   });
 });
