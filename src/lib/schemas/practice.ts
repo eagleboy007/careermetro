@@ -52,8 +52,11 @@ export const practiceFeedback = z.object({
   strongerAnswer: z.string().min(1).max(2000),
 });
 
-/** How a goal skill sits on the person's line: the goal the train is on, one ahead of it, or one already met. */
-export const PRACTICE_TAGS = ["current", "ahead", "met"] as const;
+/**
+ * How a skill sits on the person's line: the goal the train is on, one ahead of it, or one already met. `job` is a skill
+ * only one job in My jobs asks for, never a goal (handoff 12m), shown when Practice is set to that job.
+ */
+export const PRACTICE_TAGS = ["current", "ahead", "met", "job"] as const;
 
 /**
  * Ratings one skill can hold: answers are kept 30 days, and feedback calls stop at 20 a person a day
@@ -81,6 +84,8 @@ export const practiceView = z
     left: z.number().int().min(0).max(PRACTICE_DAILY_ANSWERS).nullable(),
     /** Names of the person's goals with no questions yet. */
     noQuestions: z.array(z.string().min(1).max(120)).max(60),
+    /** Set to one job in My jobs ("Practice on this job's skills"): its still-open goals first, then what only it asks for. */
+    job: z.strictObject({ company: z.string().min(1).max(120), title: z.string().min(1).max(160) }).nullable(),
   })
   .refine((v) => new Set(v.skills.map((s) => s.skillId)).size === v.skills.length, { message: "a skill is listed once" })
   .refine((v) => v.skills.filter((s) => s.tag === "current").length <= 1, { message: "one current goal at most" });

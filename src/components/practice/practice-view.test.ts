@@ -42,5 +42,8 @@ describe("Practice wording", () => {
     expect(startAt(skills, "python-1")).toEqual({ skill: 1, question: 0 });
     expect(startAt(skills, null)).toEqual({ skill: 1, question: 0 });
     expect(startAt([{ tag: "ahead" as const, questions: [q("git-1")] }], null)).toEqual({ skill: 0, question: 0 });
+    // Set to one job, it opens on the job's first skill, its first still-open goal.
+    expect(startAt(skills, null, true)).toEqual({ skill: 0, question: 0 });
+    expect(startAt(skills, "excel-2", true)).toEqual({ skill: 1, question: 1 });
   });
 });

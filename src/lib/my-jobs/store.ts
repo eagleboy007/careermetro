@@ -1,5 +1,6 @@
 import "server-only";
 import { and, asc, count, desc, eq, inArray, isNotNull, lt, sql } from "drizzle-orm";
+import { skills as allSkills } from "@/content";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobChecks, jobPosts, jobSaves, resumes } from "@/db/schema";
@@ -474,4 +475,104 @@ export async function clearUnsavedJobText(db: Db = getDb(), now = new Date(), ch
     )
     .returning({ id: jobChecks.id });
   return { unsavedJobTextCleared: cleared.length };
+}
+
+/* Prepare for this job -------------------------------------------------------------------------------------------- */
+
+export type PrepSkill = { skillId: string; skillName: string };
+/**
+ * One job of the person's My jobs, for "Prepare for this job" (handoff 12m): its job_saves id, company and title, and
+ * its skills against the current resume: still-open goals, what only this job asks for, and the rest it names (shown
+ * on the resume, or nice to have). `roleSlug` is the current target role. Without a confirmed resume every skill is
+ * in `rest`. Never the description.
+ */
+export type JobPrep = {
+  saveId: string;
+  ref: MyJobRef;
+  company: string;
+  title: string;
+  roleSlug: string | null;
+  open: PrepSkill[];
+  only: PrepSkill[];
+  rest: string[];
+};
+
+const skillName = new Map(allSkills.map((s) => [s.id, s.name]));
+
+/** The job a ref names in the person's own My jobs, or null when it isn't there. Read only. */
+export async function jobPrep(userId: string, ref: MyJobRef, { db = getDb(), now = new Date() }: { db?: Db | Tx; now?: Date } = {}): Promise<JobPrep | null> {
+  const [row] = await db
+    .select({
+      saveId: jobSaves.id,
+      postTitle: jobPosts.title,
+      postCompany: jobPosts.company,
+      postRequired: jobPosts.requiredSkillIds,
+      postNice: jobPosts.niceSkillIds,
+      checkId: jobChecks.id,
+      checkTitle: jobChecks.title,
+      checkCompany: jobChecks.company,
+      checkRequired: jobChecks.requiredSkillIds,
+      checkNice: jobChecks.niceSkillIds,
+      checkUnknown: jobChecks.unknownSkills,
+      checkCreatedAt: jobChecks.createdAt,
+    })
+    .from(jobSaves)
+    .leftJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
+    .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
+    .where(refWhere(userId, ref))
+    .limit(1);
+  if (!row) return null;
+  const check = {
+    id: row.checkId ?? row.saveId,
+    company: row.checkCompany ?? row.postCompany ?? "",
+    title: row.checkTitle ?? row.postTitle ?? "",
+    requiredSkillIds: row.checkRequired ?? row.postRequired ?? [],
+    niceSkillIds: row.checkNice ?? row.postNice ?? [],
+    unknownSkills: row.checkUnknown ?? [],
+    createdAt: row.checkCreatedAt ?? now,
+  };
+  if (!check.company || !check.title) return null;
+  const [analysis, ctx] = await Promise.all([currentAnalysis(userId, db as Db), fitContext(userId, db as Db)]);
+  const named = [...new Set([...check.requiredSkillIds, ...check.niceSkillIds])];
+  const base = { saveId: row.saveId, ref, company: check.company, title: check.title, roleSlug: analysis?.result.roleSlug ?? null };
+  if (!ctx) return { ...base, open: [], only: [], rest: named };
+  const view = jobCheckView(check, ctx.profile, ctx.target, ctx.proved, { now });
+  const pick = (list: { skillId: string; skillName: string }[]) => list.map(({ skillId, skillName: name }) => ({ skillId, skillName: skillName.get(skillId) ?? name }));
+  const open = pick(view.alsoGoals);
+  const only = pick(view.onlyThisJob);
+  const first = new Set([...open, ...only].map((s) => s.skillId));
+  return { ...base, open, only, rest: named.filter((id) => !first.has(id)) };
+}
+
+/** The label of the job a mock interview was for, by its job_saves id: null when it has left My jobs. */
+export async function jobLabel(userId: string, saveId: string | null, db: Db | Tx = getDb()): Promise<{ company: string; title: string } | null> {
+  if (!saveId) return null;
+  const [row] = await db
+    .select({ company: sql<string | null>`coalesce(${jobChecks.company}, ${jobPosts.company})`, title: sql<string | null>`coalesce(${jobChecks.title}, ${jobPosts.title})` })
+    .from(jobSaves)
+    .leftJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
+    .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
+    .where(and(eq(jobSaves.id, saveId), eq(jobSaves.userId, userId)))
+    .limit(1);
+  return row?.company && row.title ? { company: row.company, title: row.title } : null;
+}
+
+/**
+ * Whether one of the person's saved jobs names this skill: Practice on a job's skills also takes the skills only that
+ * job asks for, which are never goals (handoff 12m).
+ */
+export async function savedJobNames(userId: string, skillId: string, db: Db | Tx = getDb()): Promise<boolean> {
+  const [row] = await db
+    .select({ id: jobSaves.id })
+    .from(jobSaves)
+    .leftJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
+    .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
+    .where(
+      and(
+        eq(jobSaves.userId, userId),
+        sql`(${skillId} = any(${jobChecks.requiredSkillIds}) or ${skillId} = any(${jobChecks.niceSkillIds}) or ${skillId} = any(${jobPosts.requiredSkillIds}) or ${skillId} = any(${jobPosts.niceSkillIds}))`,
+      ),
+    )
+    .limit(1);
+  return Boolean(row);
 }

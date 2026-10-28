@@ -1,13 +1,14 @@
 "use client";
 
-import { Briefcase, Check, ChevronDown, ExternalLink, Link2, Lock, Pen, ShieldCheck, Target, X } from "lucide-react";
+import { Briefcase, Check, ChevronDown, ExternalLink, Link2, Lock, Pen, Play, ShieldCheck, Target, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { actionFailed, readApiReply } from "@/lib/api-reply";
 import { initials } from "@/lib/departures/filter";
-import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, type MyJobFilter, type MyJobStatus } from "@/lib/my-jobs/rules";
+import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, prepareHref, type MyJobFilter, type MyJobStatus } from "@/lib/my-jobs/rules";
 import { dayValue, fitSentence, fitWords, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
 import type { MyJobRef, MyJobView } from "@/lib/schemas";
 import {
@@ -211,14 +212,17 @@ function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJ
       </div>
       <div className="col-start-2 flex flex-wrap items-center justify-between gap-2 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
         <StatusMenu job={job} onPick={onStatus} />
-        <button
-          type="button"
-          onClick={onEdit}
-          aria-label={`Edit ${job.title} at ${job.company}`}
-          className="grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted hover:text-ink"
-        >
-          <Pen size={16} {...ICON} />
-        </button>
+        <div className="flex items-center gap-1.5">
+          {!closed && <PrepareMenu job={job} />}
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label={`Edit ${job.title} at ${job.company}`}
+            className="grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted hover:text-ink"
+          >
+            <Pen size={16} {...ICON} />
+          </button>
+        </div>
       </div>
     </li>
   );
@@ -296,6 +300,74 @@ function StatusMenu({ job, onPick }: { job: MyJobView; onPick: (s: MyJobStatus) 
             </div>
           ))}
           <p className="px-2.5 pb-1.5 pt-1 text-[0.74rem] text-muted">Only you see this. Nothing moves on its own.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * "Prepare for this job" on an open row (handoff 12m): a menu of two links, Practice on the job's skills (free) and the
+ * mock interview set up for it (Elite, free in the beta). Arrow keys move between them; Escape and a click outside
+ * close it, with focus back on the button.
+ */
+function PrepareMenu({ job }: { job: MyJobView }) {
+  const [open, setOpen] = useState(false);
+  const ids = useId();
+  const wrap = useRef<HTMLDivElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    wrap.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+    const away = (e: PointerEvent) => !wrap.current?.contains(e.target as Node) && setOpen(false);
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, [open]);
+  const keys = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setOpen(false);
+      button.current?.focus();
+      return;
+    }
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    e.preventDefault();
+    const items = [...(wrap.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [])];
+    const at = items.indexOf(document.activeElement as HTMLElement);
+    items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+  };
+  const item = "flex flex-col items-start gap-0.5 rounded-[9px] px-2.5 py-2 text-left text-[0.86rem] text-ink outline-none hover:bg-surface-2 focus-visible:bg-surface-2";
+  return (
+    <div ref={wrap} className="relative" onKeyDown={open ? keys : undefined}>
+      <button
+        ref={button}
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-controls={open ? `${ids}-menu` : undefined}
+        onClick={() => setOpen((o) => !o)}
+        className={`${ghost} ${small}`}
+      >
+        <Play size={14} {...ICON} />
+        Prepare for this job
+      </button>
+      {open && (
+        <div
+          id={`${ids}-menu`}
+          role="menu"
+          aria-label={`Prepare for ${job.title}`}
+          className="absolute left-0 top-[calc(100%+6px)] z-20 flex min-w-[280px] flex-col rounded-[14px] border border-line bg-surface p-1.5 shadow-[0_14px_40px_-20px_var(--shadow)] min-[760px]:left-auto min-[760px]:right-0"
+        >
+          <Link role="menuitem" href={prepareHref(job.ref, "practice")} className={item}>
+            Practice on this job&apos;s skills
+            <span className="text-[0.76rem] text-muted">Still-open goals first, then what only this job asks for. Free.</span>
+          </Link>
+          <Link role="menuitem" href={prepareHref(job.ref, "mock")} className={item}>
+            <span className="inline-flex items-center gap-1.5">
+              Mock interview for this job
+              <span className="rounded-full bg-elite px-1.5 py-px font-mono text-[0.6rem] font-medium uppercase tracking-[0.06em] text-on-elite">Elite</span>
+            </span>
+            <span className="text-[0.76rem] text-muted">Titled for {job.company}, with an AI interviewer and a timer. Free in the beta.</span>
+          </Link>
         </div>
       )}
     </div>
@@ -532,6 +604,7 @@ export function AddJobBox({
   onPost: (postId: string) => void;
 }) {
   const ids = useId();
+  const router = useRouter();
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
@@ -579,7 +652,7 @@ export function AddJobBox({
     setUrl("");
     setAdded(null);
   };
-  const keep = async () => {
+  const keep = async (prepare = false) => {
     if (!added || busy) return;
     const checked = { company: labels.company.trim(), title: labels.title.trim(), city: labels.city.trim() || null };
     if (!checked.company || !checked.title) return setError("Add the company and the job title.");
@@ -591,8 +664,10 @@ export function AddJobBox({
       if (message) return setError(message);
     }
     reset();
-    setSaid(demo ? "This is an example, so nothing was saved." : `${checked.company} saved to My jobs.`);
+    setSaid(demo ? "This is an example, so nothing was saved." : prepare ? `${checked.company} saved. Mock interview set up for it.` : `${checked.company} saved to My jobs.`);
     onSaved(added, checked);
+    // "Save and prepare" opens the mock interview set up for the job just saved.
+    if (prepare && !demo) router.push(prepareHref({ kind: "check", checkId: added.checkId }, "mock"));
   };
 
   return (
@@ -673,9 +748,13 @@ export function AddJobBox({
                 <p className="text-[0.84rem] text-muted">Confirm your resume&apos;s skills to see your fit for this job.</p>
               )}
               <div className="flex flex-wrap items-center gap-2.5">
-                <button type="button" onClick={keep} aria-disabled={busy || undefined} className={`${primary} ${small}`}>
+                <button type="button" onClick={() => void keep()} aria-disabled={busy || undefined} className={`${primary} ${small}`}>
                   <Briefcase size={16} {...ICON} />
                   Save to My jobs
+                </button>
+                <button type="button" onClick={() => void keep(true)} aria-disabled={busy || undefined} className={`${ghost} ${small}`}>
+                  <Play size={15} {...ICON} />
+                  Save and prepare
                 </button>
                 <span className="text-[0.78rem] text-muted">
                   Saved as &quot;{added.source === "board" ? "Company job board" : "You added"}&quot;. The AI read the company and title; the skills check is code.

@@ -73,7 +73,7 @@ import { PracticeView } from "@/components/practice/practice-view";
 import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
-import { exampleFeedback, examplePractice, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
+import { exampleFeedback, examplePractice, examplePracticeForJob, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
@@ -89,7 +89,7 @@ import { EliteView } from "@/components/elite/elite-view";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { PlanCard } from "@/components/settings/plan-card";
 import { MockView } from "@/components/mock/mock-view";
-import { exampleDeparturesPrep, exampleMockFollowUp, exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
+import { exampleDeparturesPrep, exampleJobPrep, exampleMockFollowUp, exampleMockPage, exampleMockResult, exampleMockSession, exampleTimedReview, exampleTimedTest } from "@/lib/mock/fixtures";
 import { CompanyAudit } from "@/components/corporate/audit-view";
 import { CompanyChat, CompanyMessages } from "@/components/corporate/company-messages";
 import { OverviewPanel } from "@/components/corporate/overview-panel";
@@ -747,7 +747,8 @@ export default function DesignPage() {
         <PracticeView view={examplePractice} sampleFeedback={exampleFeedback} />
         <PracticeView view={examplePractice} initial={{ answer: "A list can change and a tuple can't, so I use tuples for fixed records.", feedback: exampleFeedback }} />
         <PracticeView view={{ ...examplePracticeSpent, skills: examplePracticeSpent.skills.filter((s) => s.tag === "met") }} sampleFeedback={exampleFeedback} />
-        <PracticeView view={{ skills: [], left: 10, noQuestions: ["Statistics", "Data visualization"] }} />
+        <PracticeView view={{ skills: [], left: 10, noQuestions: ["Statistics", "Data visualization"], job: null }} />
+        <PracticeView view={examplePracticeForJob} sampleFeedback={exampleFeedback} />
         <div className="max-w-[300px] rounded-lg border border-line bg-surface p-4">
           <ConfidenceSpark ratings={[1, 2, 2, 3, 4]} width={260} height={70} />
         </div>
@@ -892,7 +893,7 @@ export default function DesignPage() {
           and the screen when feedback isn&apos;t available today. No score anywhere. Example data from the real bank for Data Analyst, so nothing
           saves. Follow-ups (docs/plans/mock-followups-plan.md): the set-up note says the interviewer asks them; the round running on a follow-up
           from the bank (&quot;Follow-up · topic&quot;, Skip follow-up, the count and progress bar unchanged); the Elite bank listing each open
-          question&apos;s follow-ups to study; a feedback item with the follow-up and its reply, and one with &quot;Follow-up skipped.&quot;
+          question&apos;s follow-ups to study; the set-up for one job from My jobs (&quot;Practise for Example Analytics&quot;, the job&apos;s skills first, a skill with no questions skipped); a feedback item with the follow-up and its reply, and one with &quot;Follow-up skipped.&quot;
         </p>
         <MockView view={exampleMockPage("data-analyst", false)} tab="bank" />
         {exampleTimedTest && <MockView view={exampleMockPage("data-analyst", true, exampleTimedTest)} tab="test" />}
@@ -900,6 +901,7 @@ export default function DesignPage() {
         <MockView view={exampleMockPage("grc-manager", true)} tab="test" />
         <MockView view={exampleMockPage("data-analyst", false)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true)} tab="interview" />
+        <MockView view={exampleMockPage("data-analyst", true, null, null, undefined, exampleJobPrep)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true, null, exampleMockSession)} tab="interview" />
         <MockView view={exampleMockPage("data-analyst", true, null, exampleMockSession)} tab="interview" initialInterviewFollowUp={exampleMockFollowUp} />
         <MockView view={exampleMockPage("data-analyst", true)} tab="bank" />

@@ -70,6 +70,27 @@ describe.skipIf(!db)("practice store (database)", () => {
     expect(await answersOf(me)).toEqual([]);
   });
 
+  it("takes a skill one of the person's saved jobs asks for, and sets the picker to that job (handoff 12m)", async () => {
+    const me = await person("job", [{ skillId: "python" }]);
+    const other = await person("job-other", [{ skillId: "python" }]);
+    const [post] = await db!
+      .insert(schema.jobPosts)
+      .values({ ats: "lever", boardToken: run, externalId: `${run}-job`, url: "https://jobs.lever.co/example/3", title: "Data analyst", company: "Example Retail", requiredSkillIds: ["sql", "python"] })
+      .returning({ id: schema.jobPosts.id });
+    await db!.insert(schema.jobSaves).values({ userId: me, jobPostId: post.id, savedAt: clock });
+    const job = { kind: "post", postId: post.id } as const;
+    const { client: c } = client(JSON.stringify(good));
+    expect(await submitPracticeAnswer(me, { questionId: "sql-1", answer: ANSWER }, { db: db!, client: c, now: clock })).toMatchObject({ ok: true, feedback: good });
+    expect(await submitPracticeAnswer(other, { questionId: "sql-1", answer: ANSWER }, { db: db!, client: c, now: clock })).toEqual({ ok: false, message: PRACTICE_MESSAGES.not_goal });
+    const view = await practiceFor(me, clock, db!, job);
+    expect(view.job).toEqual({ company: "Example Retail", title: "Data analyst" });
+    expect(view.skills.map((s) => s.skillId)).toEqual(["python"]);
+    expect((await practiceFor(other, clock, db!, job)).job).toBeNull();
+    expect((await practiceFor(me, clock, db!)).job).toBeNull();
+    await db!.delete(schema.jobSaves).where(eq(schema.jobSaves.userId, me));
+    await db!.delete(schema.jobPosts).where(eq(schema.jobPosts.id, post.id));
+  });
+
   it("saves the answer with the model's feedback, logs the call with its prompt version and ids only, and counts one answer", async () => {
     const me = await person("feedback", [{ skillId: "python" }, { skillId: "sql", status: "met" }]);
     const goalsOf = () => db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, me)).orderBy(asc(schema.userGoals.position));

@@ -66,15 +66,22 @@ describe("practice feedback (model output)", () => {
 
 describe("practice view and trend", () => {
   it("lists a skill once, with one current goal at most", () => {
-    expect(practiceView.parse({ skills: [skill], left: 10, noQuestions: ["Statistics"] }).skills).toHaveLength(1);
-    expect(practiceView.safeParse({ skills: [skill, skill], left: 10, noQuestions: [] }).success).toBe(false);
-    expect(practiceView.safeParse({ skills: [skill, { ...skill, skillId: "sql" }], left: 10, noQuestions: [] }).success).toBe(false);
-    expect(practiceView.safeParse({ skills: [], left: 11, noQuestions: [] }).success).toBe(false);
+    expect(practiceView.parse({ skills: [skill], left: 10, noQuestions: ["Statistics"], job: null }).skills).toHaveLength(1);
+    expect(practiceView.safeParse({ skills: [skill, skill], left: 10, noQuestions: [], job: null }).success).toBe(false);
+    expect(practiceView.safeParse({ skills: [skill, { ...skill, skillId: "sql" }], left: 10, noQuestions: [], job: null }).success).toBe(false);
+    expect(practiceView.safeParse({ skills: [], left: 11, noQuestions: [], job: null }).success).toBe(false);
+  });
+
+  it("can be set to one job in My jobs, with skills only that job asks for", () => {
+    const job = { company: "Zephyr Payments", title: "SOC analyst" };
+    expect(practiceView.parse({ skills: [{ ...skill, tag: "job" }], left: 10, noQuestions: [], job }).job).toEqual(job);
+    expect(practiceView.safeParse({ skills: [skill], left: 10, noQuestions: [] }).success).toBe(false);
+    expect(practiceView.safeParse({ skills: [skill], left: 10, noQuestions: [], job: { company: "", title: "SOC analyst" } }).success).toBe(false);
   });
 
   it("has no daily count on Elite (FR-50): left is null", () => {
-    expect(practiceView.parse({ skills: [skill], left: null, noQuestions: [] }).left).toBeNull();
-    expect(practiceView.safeParse({ skills: [skill], left: -1, noQuestions: [] }).success).toBe(false);
+    expect(practiceView.parse({ skills: [skill], left: null, noQuestions: [], job: null }).left).toBeNull();
+    expect(practiceView.safeParse({ skills: [skill], left: -1, noQuestions: [], job: null }).success).toBe(false);
   });
 
   it("has a trend only for a rated skill", () => {

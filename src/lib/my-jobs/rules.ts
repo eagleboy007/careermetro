@@ -105,3 +105,23 @@ export const LINK_HINTS = {
   other: "We keep this link to open the original. Paste the description too: we only read links from company job boards.",
   invalid: "Use the job's https link, as it shows in your browser.",
 } as const;
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+type Ref = { kind: "post"; postId: string } | { kind: "check"; checkId: string };
+
+/** A job in an address ("Prepare for this job"): `post:<id>` or `check:<id>`, as the row's key. */
+export const refParam = (ref: Ref): string => (ref.kind === "post" ? `post:${ref.postId}` : `check:${ref.checkId}`);
+
+/** The job an address names, or null for anything else. */
+export function refFromParam(raw: unknown): Ref | null {
+  if (typeof raw !== "string") return null;
+  const [kind, id, ...rest] = raw.split(":");
+  if (rest.length || !id || !UUID.test(id)) return null;
+  if (kind === "post") return { kind, postId: id.toLowerCase() };
+  if (kind === "check") return { kind, checkId: id.toLowerCase() };
+  return null;
+}
+
+/** Where "Prepare for this job" goes: Practice on its skills, or the mock interview set up for it. */
+export const prepareHref = (ref: Ref, to: "practice" | "mock"): string =>
+  to === "practice" ? `/practice?job=${encodeURIComponent(refParam(ref))}` : `/mock?tab=interview&job=${encodeURIComponent(refParam(ref))}`;

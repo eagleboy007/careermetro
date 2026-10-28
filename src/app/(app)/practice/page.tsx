@@ -7,6 +7,7 @@ import { PracticeView } from "@/components/practice/practice-view";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleFeedback, examplePractice } from "@/lib/practice/fixtures";
+import { refFromParam } from "@/lib/my-jobs/rules";
 import { practiceFor } from "@/lib/practice/store";
 import type { PracticeView as View } from "@/lib/schemas";
 import { ratePracticeAction, submitPracticeAction } from "./actions";
@@ -19,9 +20,12 @@ export const metadata: Metadata = { title: "Practice · CareerMetro", robots: { 
  * own goals, read by their user id; the questions come from the bank, never from the model.
  */
 async function PracticeScreen({ searchParams }: PageProps<"/practice">) {
-  const asked = (await searchParams).q;
+  const params = await searchParams;
+  const asked = params.q;
   // "Practise this one" on /mock opens that question when it is one of the person's goals.
   const startQuestion = typeof asked === "string" ? asked.slice(0, 80) : null;
+  // "Practice on this job's skills" from My jobs (handoff 12m): one job of the person's own, else none.
+  const job = refFromParam(params.job);
   await connection();
   const account = await currentAccount();
   if (!account) {
@@ -34,7 +38,7 @@ async function PracticeScreen({ searchParams }: PageProps<"/practice">) {
   }
   let view: View;
   try {
-    view = await practiceFor(account.id);
+    view = await practiceFor(account.id, undefined, undefined, job);
   } catch (error) {
     unstable_rethrow(error);
     // Database and schema errors can carry values; errorFields keeps only the name and code.
@@ -47,7 +51,11 @@ async function PracticeScreen({ searchParams }: PageProps<"/practice">) {
   }
   return (
     <div className="flex flex-col gap-4">
-      <Banner>Questions for the goals on your line. Practice gets you ready; only proof fills a goal or moves your train.</Banner>
+      <Banner>
+        {view.job
+          ? `For one job: ${view.job.company}, ${view.job.title}. Its still-open goals first, then what only this job asks for, which never becomes a goal. Practice gets you ready; only proof fills a goal or moves your train.`
+          : "Questions for the goals on your line. Practice gets you ready; only proof fills a goal or moves your train."}
+      </Banner>
       <PracticeView view={view} onSubmit={submitPracticeAction} onRate={ratePracticeAction} startQuestion={startQuestion} />
     </div>
   );

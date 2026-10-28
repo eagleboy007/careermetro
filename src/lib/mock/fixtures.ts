@@ -1,6 +1,6 @@
-import { mockQuestions, roleProfiles } from "@/content";
-import type { MockFollowUpAsked, MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
-import { pickInterviewQuestions, resultOf, sessionViewOf } from "./interview";
+import { mockQuestions, roleProfiles, skills } from "@/content";
+import type { JobPrepView, MockFollowUpAsked, MockPageView, MockSessionResult, MockSessionView, RolePrepView, TimedTestReview, TimedTestView } from "@/lib/schemas";
+import { pickInterviewQuestions, resultOf, sessionViewOf, withoutQuestions } from "./interview";
 import { bankViewFor, choicePool, followUpsOf, mockRoles, pickTestQuestions, prepForJobs, reviewOf, roleFor, scorePicks, testViewOf, unreviewedAllowed } from "./rules";
 
 /*
@@ -27,11 +27,28 @@ export function exampleMockPage(
   test: TimedTestView | null = null,
   interview: MockSessionView | null = null,
   allowUnreviewed = unreviewedAllowed(),
+  job: JobPrepView | null = null,
 ): MockPageView {
   const roles = mockRoles(mockQuestions, roleProfiles, allowUnreviewed);
   const role = roleFor(roleProfiles, askedRole, null);
-  return { elite, role: roles.find((r) => r.slug === role.slug)!, roles, bank: bankViewFor(mockQuestions, role, elite, allowUnreviewed), test, interview };
+  return { elite, role: roles.find((r) => r.slug === role.slug)!, roles, bank: bankViewFor(mockQuestions, role, elite, allowUnreviewed), test, interview, job };
 }
+
+const prepSkills = { open: ["statistics", "data-cleaning"], only: ["python", "looker"] };
+const prepName = new Map(skills.map((s) => [s.id, s.name]));
+const prepSkipped = new Set(withoutQuestions(mockQuestions, [...prepSkills.open, ...prepSkills.only]));
+/**
+ * "Prepare for this job" on the example My jobs row Example Analytics, Data Analyst: two still-open goals and two
+ * skills only this job asks for, one of which the bank has no questions for yet.
+ */
+export const exampleJobPrep: JobPrepView = {
+  ref: { kind: "check", checkId: "00000000-0000-4000-8000-0000000000a1" },
+  company: "Example Analytics",
+  title: "Data Analyst",
+  open: prepSkills.open.map((id) => prepName.get(id) ?? id),
+  only: prepSkills.only.map((id) => prepName.get(id) ?? id),
+  skipped: [...prepSkills.open, ...prepSkills.only].filter((id) => prepSkipped.has(id)).map((id) => prepName.get(id) ?? id),
+};
 
 const analyst = roleFor(roleProfiles, "data-analyst", null);
 const ids = pickTestQuestions(choicePool(mockQuestions, analyst, unreviewedAllowed()), EXAMPLE_ID) ?? [];

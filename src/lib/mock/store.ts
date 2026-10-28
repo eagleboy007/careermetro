@@ -8,12 +8,15 @@ import { mockQuestions, roleProfiles } from "@/content";
 import { eliteOn } from "@/lib/elite/store";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { logEvent } from "@/lib/log";
+import { jobPrep } from "@/lib/my-jobs/store";
+import { withoutQuestions } from "./interview";
 import { runningInterview } from "./interview-store";
 import {
   timedTestFinishInput,
   timedTestPickInput,
   timedTestStartInput,
   type MockPageView,
+  type MyJobRef,
   type TimedTestError,
   type TimedTestReview,
   type TimedTestView,
@@ -79,13 +82,25 @@ async function runningTest(userId: string, c: Content, db: Db, now: Date): Promi
  * /mock for a signed-in person: the role asked for in the address, else their target role, else Data Analyst; the bank
  * for that role (5 open on Free, all on Elite); and a test and a mock interview still running, on Elite only.
  */
-export async function mockPageFor(userId: string, askedRole: string | null, deps: MockDeps = {}): Promise<MockPageView> {
+export async function mockPageFor(userId: string, askedRole: string | null, deps: MockDeps & { job?: MyJobRef | null } = {}): Promise<MockPageView> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
   const c = contentOf(deps);
-  const [elite, analysis] = await Promise.all([eliteOn(userId, db), currentAnalysis(userId, db)]);
+  const [elite, analysis, prep] = await Promise.all([eliteOn(userId, db), currentAnalysis(userId, db), deps.job ? jobPrep(userId, deps.job, { db, now }) : null]);
   const roles = mockRoles(c.bank, c.roles, c.allowUnreviewed);
   const role = roleFor(c.roles, askedRole, analysis?.result.roleSlug);
+  // "Prepare for this job": the set-up for one job of the person's own My jobs (handoff 12m); its skills by name.
+  const skipped = new Set(prep ? withoutQuestions(c.bank, [...prep.open, ...prep.only].map((s) => s.skillId)) : []);
+  const job = prep
+    ? {
+        ref: prep.ref,
+        company: prep.company,
+        title: prep.title,
+        open: prep.open.map((s) => s.skillName),
+        only: prep.only.map((s) => s.skillName),
+        skipped: [...prep.open, ...prep.only].filter((s) => skipped.has(s.skillId)).map((s) => s.skillName),
+      }
+    : null;
   return {
     elite,
     role: roles.find((r) => r.slug === role.slug)!,
@@ -93,6 +108,7 @@ export async function mockPageFor(userId: string, askedRole: string | null, deps
     bank: bankViewFor(c.bank, role, elite, c.allowUnreviewed),
     test: elite ? await runningTest(userId, c, db, now) : null,
     interview: elite ? await runningInterview(userId, { db, now, bank: c.bank, roles: c.roles, allowUnreviewed: c.allowUnreviewed }) : null,
+    job,
   };
 }
 
