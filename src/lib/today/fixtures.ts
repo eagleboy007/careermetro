@@ -155,7 +155,7 @@ export const exampleOnYourLine: OnYourLine = {
   },
 };
 
-/** Today's "Interview in 2 days" from the example My jobs (src/lib/departures/fixtures.ts): Thu 30 Oct, 10:30 IST. */
+/** Today's "Interview in 2 days" from the example My jobs (src/lib/departures/fixtures.ts): Fri 30 Oct, 10:30 IST. */
 export const exampleNextInterview = {
   ref: { kind: "check" as const, checkId: "00000000-0000-4000-8000-0000000000a1" },
   company: "Example Analytics Pvt Ltd",

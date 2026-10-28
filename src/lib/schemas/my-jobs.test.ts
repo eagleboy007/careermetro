@@ -125,6 +125,6 @@ describe("nextInterviewView", () => {
     const next = { ref: { kind: "check", checkId }, company: "Zephyr Payments", title: "SOC analyst", interviewAt: "2026-10-30T05:00:00.000Z" };
     expect(nextInterviewView.parse(next)).toEqual(next);
     expect(nextInterviewView.safeParse({ ...next, note: "Ask about nights" }).success).toBe(false);
-    expect(nextInterviewView.safeParse({ ...next, interviewAt: "Thu 30 Oct" }).success).toBe(false);
+    expect(nextInterviewView.safeParse({ ...next, interviewAt: "Fri 30 Oct" }).success).toBe(false);
   });
 });

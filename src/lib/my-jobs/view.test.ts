@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { countdownWords, daysUntil, interviewWhen, minuteValue } from "./view";
 
 describe("the interview in IST (handoff 12m)", () => {
-  const at = "2026-10-30T05:00:00.000Z"; // 10:30 IST on Thursday 30 October
+  const at = "2026-10-30T05:00:00.000Z"; // 10:30 IST on Friday 30 October
 
   it("fills the date and time field in IST", () => {
     expect(minuteValue(at)).toBe("2026-10-30T10:30");
@@ -10,7 +10,7 @@ describe("the interview in IST (handoff 12m)", () => {
   });
 
   it("shows the day and time in IST", () => {
-    expect(interviewWhen(at)).toBe("Thu 30 Oct, 10:30");
+    expect(interviewWhen(at)).toBe("Fri 30 Oct, 10:30");
     expect(interviewWhen("2026-10-30T19:00:00.000Z")).toBe("Sat 31 Oct, 00:30");
   });
 

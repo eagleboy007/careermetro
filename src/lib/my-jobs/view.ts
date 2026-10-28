@@ -66,7 +66,7 @@ export function minuteValue(iso: string | null): string {
   return new Date(Date.parse(iso) + IST_MS).toISOString().slice(0, 16);
 }
 
-/** "Thu 30 Oct, 10:30" in IST, as the row and Today show the interview. */
+/** "Fri 30 Oct, 10:30" in IST, as the row and Today show the interview. */
 export function interviewWhen(iso: string): string {
   const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).formatToParts(new Date(iso));
   const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";

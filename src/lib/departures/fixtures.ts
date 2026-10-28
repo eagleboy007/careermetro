@@ -195,7 +195,7 @@ export const exampleMine: MyJobView[] = [
     savedAt: "2026-10-19T06:30:00.000Z",
     appliedAt: "2026-10-21T06:30:00.000Z",
     closedAt: null,
-    // Thu 30 Oct, 10:30 IST.
+    // Fri 30 Oct, 10:30 IST.
     interviewAt: "2026-10-30T05:00:00.000Z",
     note: "Spoke to the hiring lead. Round 1 is a SQL test, then a case study on store sales.",
     updatedAt: "2026-10-27T06:30:00.000Z",
