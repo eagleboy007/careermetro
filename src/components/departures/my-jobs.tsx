@@ -117,7 +117,7 @@ export function MyJobsList({
     <section aria-label="My jobs" className="flex flex-col gap-3">
       <div className="flex flex-col gap-2.5">
         <p className="text-[0.86rem] text-muted">Jobs you saved or applied to, from our company boards and from anywhere else. Only you see this list.</p>
-        <div role="group" aria-label="Show" className="inline-flex flex-wrap gap-1">
+        <div role="group" aria-label="Filter My jobs" className="inline-flex flex-wrap gap-1">
           {MY_JOB_FILTERS.map((f) => (
             <button key={f} type="button" aria-pressed={filter === f} className={pill} onClick={() => setFilter(f)}>
               {MY_JOB_FILTER_LABELS[f]}
