@@ -856,11 +856,15 @@ try {
     await sheet.getByRole("button", { name: "Save", exact: true }).click();
     await toast(p, "Saved. Only you see it.");
     await row.getByText(NOTE).waitFor({ timeout: 10000 });
+    // T137: the toast clears and the page is at the top first, so the full-page shots don't draw the sticky bars
+    // mid-page or the toast over a row.
+    await p.getByRole("status").filter({ hasText: "Saved. Only you see it." }).first().waitFor({ state: "hidden", timeout: 15000 });
     for (const [width, height] of [[1280, 900], [390, 844]]) {
       for (const colorScheme of ["light", "dark"]) {
         await p.setViewportSize({ width, height });
         await p.emulateMedia({ colorScheme });
         await row.getByText(NOTE).waitFor({ timeout: 10000 });
+        await p.evaluate(() => window.scrollTo(0, 0));
         await shoot(p, `my-jobs-${width}-${colorScheme}`);
       }
     }
