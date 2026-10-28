@@ -92,3 +92,34 @@ jobs:
           path: smoke-results/
           if-no-files-found: ignore
           retention-days: 3
+
+  # The My jobs screenshots on the smoke-screenshots branch, replaced each run (one commit, no history), so threads
+  # whose network can't reach artifact storage can read them through the GitHub API. A separate job, so the write token
+  # never sits next to npm ci or the scripts. Synthetic test users only, with test addresses masked (shoot in
+  # staging-screens.mjs); the repo is public.
+  publish-shots:
+    needs: dry-run
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Push them
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # gh is on the runner; no artifact (nothing kept) means nothing to push.
+          gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" -n smoke-staging-results -D smoke-results || true
+          shopt -s nullglob
+          files=(smoke-results/*my-jobs-*.png)
+          if [ ${#files[@]} -eq 0 ]; then echo "no My jobs screenshots"; exit 0; fi
+          mkdir shots-branch && cp "${files[@]}" shots-branch/
+          cd shots-branch
+          git init -q -b smoke-screenshots
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -q -m "My jobs screenshots from run ${GITHUB_RUN_ID}"
+          git push -q --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" smoke-screenshots
+          echo "pushed ${#files[@]} screenshots to smoke-screenshots"
