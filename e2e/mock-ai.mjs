@@ -59,8 +59,9 @@ const profile = {
   certifications: [{ name: "Google Data Analytics Professional Certificate", earned: null, expires: null }],
   personName: "Priya Sharma",
 };
-// Job postings (prompts/parse-jd): for a synthetic posting from fixtures/job-postings, its listed skills (quotes from the
-// posting, plus one invented on purpose that the app must drop); for any other posting, no skills.
+// Job postings (prompts/parse-jd): for a synthetic posting from fixtures/job-postings, its company, title and city and
+// its listed skills (quotes from the posting, plus one invented on purpose that the app must drop); for any other
+// posting, no skills.
 const postingsDir = new URL("fixtures/job-postings/", root);
 const postings = readdirSync(postingsDir)
   .filter((f) => f.endsWith(".json"))
@@ -119,7 +120,7 @@ http
       const text = isMock
         ? JSON.stringify(mockReply(content))
         : isJd
-        ? JSON.stringify({ skills: posting?.skills ?? [] })
+        ? JSON.stringify({ company: posting?.company ?? null, title: posting?.title ?? null, city: posting?.city ?? null, skills: posting?.skills ?? [] })
         : isBuild
           ? JSON.stringify(buildReply(content))
         : isPractice

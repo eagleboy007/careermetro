@@ -49,7 +49,7 @@ function jdClient(skillsOut: PostingSkills["skills"] = fixture.skills) {
     model: "claude-opus-5-5",
     stop_reason: "end_turn",
     usage: { input_tokens: 2000, output_tokens: 400 },
-    content: [{ type: "text", text: JSON.stringify({ skills: skillsOut }) }],
+    content: [{ type: "text", text: JSON.stringify({ company: null, title: null, city: null, skills: skillsOut }) }],
   }));
   return { client: { beta: { messages: { create } } } as unknown as ParseJdClient, create };
 }
@@ -134,7 +134,7 @@ describe.skipIf(!db)("job checks (database)", () => {
     });
     expect(JSON.stringify(row)).not.toContain("category managers");
     const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
-    expect(call).toMatchObject({ purpose: "parse-jd", promptVersion: "parse-jd/v1", ok: true, status: "done", inputRefs: { resumeId: me.resumeId, roleSlug: "data-analyst" } });
+    expect(call).toMatchObject({ purpose: "parse-jd", promptVersion: "parse-jd/v2", ok: true, status: "done", inputRefs: { resumeId: me.resumeId, roleSlug: "data-analyst" } });
     expect(JSON.stringify(call)).not.toContain("category managers");
 
     // The page sorts it into groups against the stored analysis.

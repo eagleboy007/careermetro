@@ -137,7 +137,7 @@ describe.skipIf(!db)("screening check (database)", () => {
     try {
       await db!.update(schema.resumes).set({ userId: user.id }).where(eq(schema.resumes.id, id));
       const exported = await exportAccountData(user.id, db!);
-      expect(exported?.exportVersion).toBe(32);
+      expect(exported?.exportVersion).toBe(33);
       expect(exported?.resumes[0].screening).toMatchObject({ version: 1, layout: "pasted", headings: { experience: "standard" } });
     } finally {
       await db!.delete(schema.users).where(eq(schema.users.id, user.id));

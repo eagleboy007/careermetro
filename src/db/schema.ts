@@ -394,8 +394,11 @@ export const jobDescriptions = pgTable("job_descriptions", {
 
 /**
  * "Check against a job" (role-suggest-plan.md part B): the skills one pasted posting asks for, checked against a resume
- * and its target role. The posting text itself is never stored, only a keyed hash of it so the same text isn't read
- * twice. Goes with its resume: an anonymous one with the 24-hour cleanup, an account's with account deletion.
+ * and its target role, with a keyed hash of the text so the same text isn't read twice. A job added to My jobs ("Add a
+ * job you found", docs/plans/application-tracker-plan.md) also keeps its link, where it came from, its city and the
+ * person's own copy of the description (Milin, 2026-10-28): private, never logged, in Download your data. The Gaps
+ * page's check keeps no text. Goes with its resume: an anonymous one with the 24-hour cleanup, an account's with
+ * account deletion (an account's resumes are never deleted before that).
  */
 export const jobChecks = pgTable(
   "job_checks",
@@ -412,12 +415,25 @@ export const jobChecks = pgTable(
     niceSkillIds: text("nice_skill_ids").array().notNull().default(sql`'{}'::text[]`),
     /** Names the posting asks for that aren't in our skill list yet. Shown, never scored. */
     unknownSkills: text("unknown_skills").array().notNull().default(sql`'{}'::text[]`),
-    /** HMAC of the posting text (src/lib/jobs/store.ts); the text itself is never kept. */
+    /** HMAC of the posting text (src/lib/jobs/store.ts). */
     textHash: text("text_hash").notNull(),
     aiCallId: uuid("ai_call_id").references(() => aiCalls.id),
+    /** The job's own page, https, from "Add a job you found"; fetched only when it is a company job board's. */
+    url: text("url"),
+    /** "pasted" (the person pasted it) or "board" (read from a company job board's public API). */
+    source: text("source", { enum: ["pasted", "board"] }).notNull().default("pasted"),
+    city: text("city"),
+    /** The person's own copy of the description, for My jobs only; never logged. */
+    description: text("description"),
     createdAt: createdAt(),
   },
-  (t) => [index("job_checks_resume").on(t.resumeId, t.createdAt)],
+  (t) => [
+    index("job_checks_resume").on(t.resumeId, t.createdAt),
+    check("job_checks_source", sql`${t.source} in ('pasted', 'board')`),
+    check("job_checks_url", sql`${t.url} is null or (${t.url} like 'https://%' and char_length(${t.url}) <= 2000)`),
+    check("job_checks_city_length", sql`${t.city} is null or char_length(${t.city}) between 1 and 60`),
+    check("job_checks_description_length", sql`${t.description} is null or char_length(${t.description}) <= 20000`),
+  ],
 );
 
 /**
@@ -1481,29 +1497,41 @@ export const jobPosts = pgTable(
 );
 
 /**
- * The person's own Saved and Applied lists on Departures: `saved_at` for the bookmark, `stage` 1 to 4 (Applied, Heard
- * back, Interview, Offer) for the tracker. Owner only; a row with neither is deleted, not kept. Goes with the account
- * and with its post (on delete cascade); in Download your data.
+ * My jobs (docs/plans/application-tracker-plan.md): the person's own list of jobs, each either a feed post or a job they
+ * added from any site (a job check), exactly one. `saved_at` is the bookmark; `stage` 1 to 6 (Applied, Heard back,
+ * Interview, Offer, Not this time, Withdrawn) is where it stands, set only by the person. `closed_at` goes with Not
+ * this time and Withdrawn; `interview_at` and the private `note` (never logged) are the person's. A row with neither a
+ * bookmark nor a stage is deleted, not kept. Owner only; goes with the account, its post or its check (on delete
+ * cascade); in Download your data.
  */
 export const jobSaves = pgTable(
   "job_saves",
   {
+    id: id(),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    jobPostId: uuid("job_post_id")
-      .notNull()
-      .references(() => jobPosts.id, { onDelete: "cascade" }),
+    jobPostId: uuid("job_post_id").references(() => jobPosts.id, { onDelete: "cascade" }),
+    jobCheckId: uuid("job_check_id").references(() => jobChecks.id, { onDelete: "cascade" }),
     savedAt: timestamp("saved_at", { withTimezone: true }),
     stage: smallint("stage"),
     appliedAt: timestamp("applied_at", { withTimezone: true }),
+    interviewAt: timestamp("interview_at", { withTimezone: true }),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+    note: text("note"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
-    primaryKey({ columns: [t.userId, t.jobPostId] }),
+    uniqueIndex("job_saves_user_post").on(t.userId, t.jobPostId),
+    uniqueIndex("job_saves_user_check").on(t.userId, t.jobCheckId),
     index("job_saves_job_post").on(t.jobPostId),
-    check("job_saves_stage", sql`${t.stage} is null or ${t.stage} between 1 and 4`),
+    index("job_saves_job_check").on(t.jobCheckId),
+    index("job_saves_user_updated").on(t.userId, t.updatedAt),
+    check("job_saves_one_job", sql`num_nonnulls(${t.jobPostId}, ${t.jobCheckId}) = 1`),
+    check("job_saves_stage", sql`${t.stage} is null or ${t.stage} between 1 and 6`),
     check("job_saves_not_empty", sql`${t.savedAt} is not null or ${t.stage} is not null`),
+    check("job_saves_closed", sql`${t.closedAt} is null or ${t.stage} in (5, 6)`),
+    check("job_saves_note_length", sql`${t.note} is null or char_length(${t.note}) between 1 and 2000`),
   ],
 );
 

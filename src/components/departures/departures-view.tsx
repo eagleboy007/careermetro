@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight, Bookmark, CircleHelp, Clock, ExternalLink, FileUp, Lock, Play, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight, Bookmark, Briefcase, CircleHelp, Clock, ExternalLink, Lock, Play, Search, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
-import { JobPostingForm } from "@/components/gaps/job-posting-form";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { AddJobBox, EditSheet, MyJobsList, type AddedJob, type EditValues, type MyJobActions } from "@/components/departures/my-jobs";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import {
@@ -18,10 +18,11 @@ import {
   readiness,
   startFilters,
   type DepartureFilters,
-  type DepartureTab,
 } from "@/lib/departures/filter";
-import type { JobPost, RolePrepView } from "@/lib/schemas";
-import { APPLY_STAGES, WORK_TYPES } from "@/lib/schemas/constants";
+import { isClosed, isMoving, stageOf, statusOf, type MyJobStatus } from "@/lib/my-jobs/rules";
+import { newestChange, postFit } from "@/lib/my-jobs/view";
+import type { JobPost, MyJobRef, MyJobView, RolePrepView } from "@/lib/schemas";
+import { APPLY_STAGES, MY_JOB_STATUS_LABELS, WORK_TYPES } from "@/lib/schemas/constants";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
 const WHEN_TONE = { now: "bg-good-soft text-good", soon: "bg-warn-soft text-warn", later: "bg-surface-2 text-muted" } as const;
@@ -48,9 +49,11 @@ const CLOSED = "Closed on the company's board";
  * (the signed-out example and /design) they change on the screen only. `updated` is the header's "Updated 19:42".
  * `hasResume` false hides fit until there is a resume; `noFit` hides it with its own reason. A post that names too
  * few skills we know (`fitNote`) shows no fit on its own; a closed post stays in Saved and Applied with no Apply.
- * `resumeId` is the person's latest resume, which "Saw a role somewhere else?" checks a pasted post against; null
- * links to the upload instead. `prep` is each role's interview prep, locked on the server; a role with none says it
- * is coming. `demo` skips the network call of the paste box (for /design).
+ * `resumeId` is the person's latest resume, which "Add a job you found" checks a job against; null links to the upload
+ * instead. `prep` is each role's interview prep, locked on the server; a role with none says it is coming. `demo`
+ * skips the network call of the add box (for /design). My jobs (handoff 12m) is the person's own list of feed jobs and
+ * jobs they added from any site (`initialMine`), kept on the server by `mineActions`; Saving or applying on All adds a
+ * feed job to it, and its status menu moves the feed job's Saved and Applied too.
  */
 export function DeparturesView({
   jobs,
@@ -66,6 +69,9 @@ export function DeparturesView({
   places = [],
   initialCity = null,
   actions,
+  initialMine = [],
+  mineActions,
+  initialTab = "all",
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
@@ -83,6 +89,10 @@ export function DeparturesView({
   /** The page's `?city=`: the City filter the board was read for, picked when Departures opens. */
   initialCity?: string | null;
   actions?: DepartureActions;
+  initialMine?: MyJobView[];
+  mineActions?: MyJobActions;
+  /** "mine" opens on My jobs (`?tab=mine`). */
+  initialTab?: "all" | "mine";
 }) {
   const router = useRouter();
   const [filters, setFilters] = useState<DepartureFilters>(() => (initialCity ? { ...startFilters([]), city: initialCity } : startFilters(places)));
@@ -90,6 +100,9 @@ export function DeparturesView({
   const [applied, setApplied] = useState(() => new Map(initialApplied));
   const [selected, setSelected] = useState<string | null>(() => jobs[0]?.id ?? null);
   const [toast, setToast] = useState<string | null>(null);
+  const [tab, setTab] = useState<"all" | "mine">(initialTab);
+  const [mine, setMine] = useState<MyJobView[]>(() => [...initialMine].sort(newestChange));
+  const [editing, setEditing] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const say = (text: string) => {
@@ -100,8 +113,13 @@ export function DeparturesView({
     timer.current = setTimeout(() => setToast(null), 3200);
   };
   const detailId = useId();
-  // The paste box's id, for the empty list's "Paste a job post" link: one per instance, as /design shows several.
+  // The add box's id, for the empty lists' links to it: one per instance, as /design shows several.
   const pasteId = useId();
+  const toAdd = () => {
+    const box = document.getElementById(pasteId);
+    box?.scrollIntoView({ block: "start" });
+    box?.querySelector("textarea")?.focus();
+  };
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
@@ -136,8 +154,17 @@ export function DeparturesView({
         else next.delete(job.id);
         return next;
       });
+    const before = mine;
     flip(!was);
-    keep(actions?.save(job.id, !was), () => flip(was), was ? "Removed from saved." : "Saved.");
+    setMine((list) => mineAfterSave(list, job, !was, fit));
+    keep(
+      actions?.save(job.id, !was),
+      () => {
+        flip(was);
+        setMine(before);
+      },
+      was ? "Removed from saved." : "Saved.",
+    );
   };
   const put = (id: string, stage: number) =>
     setApplied((m) => {
@@ -148,13 +175,99 @@ export function DeparturesView({
     });
   const setStage = (job: JobPost, stage: number) => {
     const before = applied.get(job.id) ?? 0;
+    const list = mine;
     put(job.id, stage);
-    keep(actions?.stage(job.id, stage), () => put(job.id, before), stage === 0 ? "No longer marked as applied." : stage === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[stage - 1]}.`);
+    setMine((l) => mineAfterStage(l, job, stage, saved.has(job.id), fit));
+    keep(
+      actions?.stage(job.id, stage),
+      () => {
+        put(job.id, before);
+        setMine(list);
+      },
+      stage === 0 ? "No longer marked as applied." : stage === 1 ? `Marked as applied to ${job.company}.` : `Moved to ${APPLY_STAGES[stage - 1]}.`,
+    );
   };
 
+  /** A feed job's Saved and Applied on All follow its row in My jobs. */
+  const followPost = (ref: MyJobRef, status: MyJobStatus | null) => {
+    if (ref.kind !== "post") return;
+    const id = ref.postId;
+    if (status === null) {
+      setSaved((s) => new Set([...s].filter((x) => x !== id)));
+      return put(id, 0);
+    }
+    if (status === "saved") setSaved((s) => new Set(s).add(id));
+    put(id, isMoving(status) ? stageOf(status)! : 0);
+  };
+  /** Runs a My jobs change: the screen shows it at once, and goes back if the server says no. */
+  const change = (next: MyJobView[], call: Promise<string | null> | undefined, done: string, follow?: () => void) => {
+    const before = { mine, saved, applied };
+    setMine(next.sort(newestChange));
+    follow?.();
+    keep(call, () => {
+      setMine(before.mine);
+      setSaved(before.saved);
+      setApplied(before.applied);
+    }, done);
+  };
+  const setStatus = (job: MyJobView, status: MyJobStatus) => {
+    const now = new Date().toISOString();
+    const next = mine.map((j) => (j.key === job.key ? withStatus(j, status, now) : j));
+    const done =
+      status === "offer" ? "An offer. Well done." : isClosed(status) ? `Marked ${MY_JOB_STATUS_LABELS[status].toLowerCase()}. It stays under Closed.` : `${MY_JOB_STATUS_LABELS[status]} · ${shortToday()}`;
+    change(next, mineActions?.status({ ref: job.ref, status }), done, () => followPost(job.ref, status));
+  };
+  const saveEdit = async (job: MyJobView, values: EditValues): Promise<string | null> => {
+    const message = mineActions ? await mineActions.update({ ref: job.ref, ...values }) : null;
+    if (message) return message;
+    const now = new Date().toISOString();
+    const edited = edit(withStatus(job, values.status, now), values, now);
+    setMine((l) => l.map((j) => (j.key === job.key ? edited : j)).sort(newestChange));
+    followPost(job.ref, values.status);
+    say("Saved. Only you see it.");
+    return null;
+  };
+  const deleteJob = async (job: MyJobView): Promise<string | null> => {
+    const message = mineActions ? await mineActions.remove({ ref: job.ref }) : null;
+    if (message) return message;
+    setMine((l) => l.filter((j) => j.key !== job.key));
+    followPost(job.ref, null);
+    say("Deleted. Nothing is kept.");
+    return null;
+  };
+  const added = (job: AddedJob, labels: { company: string; title: string; city: string | null }) => {
+    const now = new Date().toISOString();
+    const row: MyJobView = {
+      key: `check:${job.checkId}`,
+      ref: { kind: "check", checkId: job.checkId },
+      ...labels,
+      source: job.source,
+      url: job.url,
+      status: "saved",
+      savedAt: now,
+      appliedAt: null,
+      closedAt: null,
+      note: null,
+      updatedAt: now,
+      postClosed: false,
+      hasDescription: !demo,
+      fit: job.fit,
+    };
+    setMine((l) => [row, ...l.filter((j) => j.key !== row.key)]);
+    setTab("mine");
+    say(`${labels.company} saved to My jobs.`);
+  };
+  const savedPost = (postId: string) => {
+    const job = jobs.find((j) => j.id === postId);
+    setSaved((s) => new Set(s).add(postId));
+    if (job) setMine((l) => mineAfterSave(l, job, true, fit));
+    setTab("mine");
+  };
+  const editingJob = mine.find((j) => j.key === editing) ?? null;
+
   return (
-    <div className="grid min-w-0 min-[760px]:min-h-[700px] min-[760px]:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="flex min-w-0 flex-col gap-4 pb-8 min-[760px]:pr-7">
+    <div className={`grid min-w-0 min-[760px]:min-h-[700px] ${tab === "all" ? "min-[760px]:grid-cols-[minmax(0,1fr)_360px]" : ""}`}>
+      <div className={`flex min-w-0 flex-col gap-4 pb-8 ${tab === "all" ? "min-[760px]:pr-7" : ""}`}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-[2rem] font-semibold leading-[1.1]">Departures</h2>
@@ -169,67 +282,69 @@ export function DeparturesView({
           </div>
         </div>
 
-        <label className="flex items-center gap-2.5 rounded-full border border-line-strong bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
-          <Search size={18} {...ICON} />
-          <input
-            type="search"
-            value={filters.query}
-            onChange={(e) => set({ query: e.target.value })}
-            placeholder="Search role, skill or company"
-            aria-label="Search roles"
-            className="min-w-0 flex-1 bg-transparent text-ink outline-none"
-          />
-        </label>
+        {tab === "all" && (
+          <>
+            <label className="flex items-center gap-2.5 rounded-full border border-line-strong bg-surface px-3.5 py-[11px] text-[0.9rem] text-muted focus-within:outline-2 focus-within:outline-accent">
+              <Search size={18} {...ICON} />
+              <input
+                type="search"
+                value={filters.query}
+                onChange={(e) => set({ query: e.target.value })}
+                placeholder="Search role, skill or company"
+                aria-label="Search roles"
+                className="min-w-0 flex-1 bg-transparent text-ink outline-none"
+              />
+            </label>
 
-        <div role="group" aria-label="Filters" className="flex flex-wrap items-center justify-between gap-3.5">
-          <Pills
-            label="City"
-            value={filters.yourPlaces ? null : filters.city}
-            options={cities}
-            any="Any city"
-            onPick={(city) => {
-              set({ city, yourPlaces: false });
-              // The server reads the newest roles in the picked city too, so the list isn't only the newest in India.
-              // Signed out, the example roles are all there is.
-              if (!actions) return;
-              const url = new URL(window.location.href);
-              if (city) url.searchParams.set("city", city);
-              else url.searchParams.delete("city");
-              router.replace(`${url.pathname}${url.search}`, { scroll: false });
-            }}
-            first={
-              places.length > 0 ? (
-                <button type="button" aria-pressed={filters.yourPlaces} className={pill} onClick={() => set({ yourPlaces: true, city: null })}>
-                  Your places
-                </button>
-              ) : null
-            }
-            anyPressed={!filters.yourPlaces && filters.city === null}
-          />
-          <Pills label="Work type" value={filters.workType} options={WORK_TYPES} any="Any type" onPick={(workType) => set({ workType })} />
-          <label className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap text-[0.84rem] font-[550]">
-            <input type="checkbox" checked={filters.boardingOnly} onChange={(e) => set({ boardingOnly: e.target.checked })} className="peer sr-only" />
-            <i className="relative h-5 w-9 rounded-full bg-line-strong transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] peer-checked:bg-ink peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent" />
-            Boarding now only
-          </label>
-        </div>
+            <div role="group" aria-label="Filters" className="flex flex-wrap items-center justify-between gap-3.5">
+              <Pills
+                label="City"
+                value={filters.yourPlaces ? null : filters.city}
+                options={cities}
+                any="Any city"
+                onPick={(city) => {
+                  set({ city, yourPlaces: false });
+                  // The server reads the newest roles in the picked city too, so the list isn't only the newest in India.
+                  // Signed out, the example roles are all there is.
+                  if (!actions) return;
+                  const url = new URL(window.location.href);
+                  if (city) url.searchParams.set("city", city);
+                  else url.searchParams.delete("city");
+                  router.replace(`${url.pathname}${url.search}`, { scroll: false });
+                }}
+                first={
+                  places.length > 0 ? (
+                    <button type="button" aria-pressed={filters.yourPlaces} className={pill} onClick={() => set({ yourPlaces: true, city: null })}>
+                      Your places
+                    </button>
+                  ) : null
+                }
+                anyPressed={!filters.yourPlaces && filters.city === null}
+              />
+              <Pills label="Work type" value={filters.workType} options={WORK_TYPES} any="Any type" onPick={(workType) => set({ workType })} />
+              <label className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap text-[0.84rem] font-[550]">
+                <input type="checkbox" checked={filters.boardingOnly} onChange={(e) => set({ boardingOnly: e.target.checked })} className="peer sr-only" />
+                <i className="relative h-5 w-9 rounded-full bg-line-strong transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface after:transition-[left] peer-checked:bg-ink peer-checked:after:left-[18px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent" />
+                Boarding now only
+              </label>
+            </div>
+          </>
+        )}
 
         <div role="group" aria-label="Show" className="inline-flex gap-0.5 self-start rounded-full bg-surface-2 p-[3px]">
-          {(
-            [
-              ["all", "All", null],
-              ["saved", "Saved", saved.size],
-              ["applied", "Applied", applied.size],
-            ] as [DepartureTab, string, number | null][]
-          ).map(([tab, name, n]) => (
-            <button key={tab} type="button" aria-pressed={filters.tab === tab} className={seg} onClick={() => set({ tab })}>
-              {name}
-              {n !== null && <span className="ml-1 font-mono text-[0.72rem] text-muted">{n}</span>}
-            </button>
-          ))}
+          <button type="button" aria-pressed={tab === "all"} className={seg} onClick={() => setTab("all")}>
+            All
+          </button>
+          <button type="button" aria-pressed={tab === "mine"} className={seg} onClick={() => setTab("mine")}>
+            <Briefcase size={14} {...ICON} className="mr-1 inline-block align-[-2px]" />
+            My jobs
+            <span className="ml-1 font-mono text-[0.72rem] text-muted">{mine.length}</span>
+          </button>
         </div>
 
-        {shown.length > 0 ? (
+        {tab === "mine" ? (
+          <MyJobsList jobs={mine} onStatus={setStatus} onEdit={(j) => setEditing(j.key)} onAdd={toAdd} />
+        ) : shown.length > 0 ? (
           <ul className="flex flex-col gap-2.5">
             {shown.map((j) => (
               <JobRow
@@ -254,11 +369,20 @@ export function DeparturesView({
             pasteId={pasteId}
             onClear={() => set({ ...NO_FILTERS, tab: filters.tab })}
             onEveryCity={() => set({ yourPlaces: false, city: null })}
-            onAll={() => set({ tab: "all" })}
           />
         )}
 
-        <PasteBox id={pasteId} resumeId={resumeId} demo={demo} />
+        <AddJobBox id={pasteId} resumeId={resumeId} demo={demo} save={mineActions?.save} onSaved={added} onPost={savedPost} />
+        {editingJob && (
+          <EditSheet
+            key={editingJob.key}
+            job={editingJob}
+            onClose={() => setEditing(null)}
+            onSave={(values) => saveEdit(editingJob, values)}
+            onDelete={() => deleteJob(editingJob)}
+            readDescription={mineActions?.description}
+          />
+        )}
         <p data-departures-source className="text-[0.8rem] text-muted">
           {DEPARTURES_SOURCE}{" "}
           <Link href="/terms#job-boards" className="underline underline-offset-2">
@@ -276,6 +400,7 @@ export function DeparturesView({
 
       <aside
         id={detailId}
+        hidden={tab !== "all"}
         aria-label="Role details"
         className="flex min-w-0 flex-col gap-4 border-t border-line pt-5 min-[760px]:border-l min-[760px]:border-t-0 min-[760px]:pl-[22px] min-[760px]:pt-1"
       >
@@ -297,6 +422,88 @@ export function DeparturesView({
 }
 
 const NO_RESUME = "Add your resume and this shows what you have and what is missing for this role.";
+
+const shortToday = () => new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date());
+
+/** A day from a date field as noon in IST, as the server keeps it. */
+const istNoon = (day: string) => new Date(`${day}T12:00:00+05:30`).toISOString();
+
+/** A row's dates after a status change, as the server sets them (src/lib/my-jobs/store.ts). */
+function withStatus(j: MyJobView, status: MyJobStatus, now: string): MyJobView {
+  if (status === j.status) return j;
+  return {
+    ...j,
+    status,
+    appliedAt: isMoving(status) ? (j.appliedAt ?? now) : status === "saved" ? null : j.appliedAt,
+    closedAt: isClosed(status) ? (isClosed(j.status) && j.closedAt ? j.closedAt : now) : null,
+    savedAt: status === "saved" ? (j.savedAt ?? now) : j.savedAt,
+    updatedAt: now,
+  };
+}
+
+/** A row after the edit sheet's Save. */
+function edit(j: MyJobView, v: EditValues, now: string): MyJobView {
+  return {
+    ...j,
+    company: v.company ?? j.company,
+    title: v.title ?? j.title,
+    url: v.url === undefined ? j.url : v.url,
+    city: v.city === undefined ? j.city : v.city,
+    appliedAt: v.appliedOn ? istNoon(v.appliedOn) : j.appliedAt,
+    closedAt: isClosed(v.status) && v.closedOn ? istNoon(v.closedOn) : j.closedAt,
+    note: v.note,
+    updatedAt: now,
+  };
+}
+
+/** A feed job's new row in My jobs. */
+function postRow(job: JobPost, status: MyJobStatus, now: string, fitShown: boolean): MyJobView {
+  return {
+    key: `post:${job.id}`,
+    ref: { kind: "post", postId: job.id },
+    company: job.company,
+    title: job.role,
+    city: job.city,
+    source: "board",
+    url: job.applyUrl,
+    status,
+    savedAt: status === "saved" ? now : null,
+    appliedAt: isMoving(status) ? now : null,
+    closedAt: null,
+    note: null,
+    updatedAt: now,
+    postClosed: job.closed,
+    hasDescription: false,
+    fit: postFit(job, fitShown),
+  };
+}
+
+/** My jobs after the bookmark on All: a new save adds the job; taking it off removes a job that was only saved. */
+function mineAfterSave(list: MyJobView[], job: JobPost, on: boolean, fitShown: boolean): MyJobView[] {
+  const now = new Date().toISOString();
+  const key = `post:${job.id}`;
+  const row = list.find((j) => j.key === key);
+  if (on) return row ? list.map((j) => (j.key === key ? { ...j, savedAt: now, updatedAt: now } : j)) : [postRow(job, "saved", now, fitShown), ...list];
+  if (!row) return list;
+  return row.status === "saved" ? list.filter((j) => j.key !== key) : list.map((j) => (j.key === key ? { ...j, savedAt: null, updatedAt: now } : j));
+}
+
+/** My jobs after the tracker on All: a stage moves the job's status; "I didn't apply" leaves it Saved or removes it. */
+function mineAfterStage(list: MyJobView[], job: JobPost, stage: number, isSaved: boolean, fitShown: boolean): MyJobView[] {
+  const now = new Date().toISOString();
+  const key = `post:${job.id}`;
+  const row = list.find((j) => j.key === key);
+  if (stage > 0) {
+    const status = statusOf(stage);
+    if (!row) return [postRow(job, status, now, fitShown), ...list];
+    return list.map((j) => (j.key === key ? { ...j, status, appliedAt: j.appliedAt ?? now, closedAt: null, updatedAt: now } : j));
+  }
+  if (!row) return list;
+  return isSaved || row.savedAt
+    ? list.map((j) => (j.key === key ? { ...j, status: "saved", appliedAt: null, closedAt: null, updatedAt: now } : j))
+    : list.filter((j) => j.key !== key);
+}
+
 
 function Pills<T extends string>({
   label,
@@ -669,13 +876,11 @@ function EmptyList({
   pasteId,
   onClear,
   onEveryCity,
-  onAll,
 }: {
   empty: ReturnType<typeof departuresEmpty>;
   pasteId: string;
   onClear: () => void;
   onEveryCity: () => void;
-  onAll: () => void;
 }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line p-5 text-center text-[0.9rem] text-muted">
@@ -701,56 +906,7 @@ function EmptyList({
             Paste a job post
           </a>
         )}
-        {(empty.kind === "no_saved" || empty.kind === "no_applied") && (
-          <button type="button" className={quiet} onClick={onAll}>
-            See all roles
-          </button>
-        )}
       </div>
     </div>
-  );
-}
-
-/**
- * "Saw a role somewhere else?": the pasted-job check (role-suggest-plan.md part B) against the person's latest
- * resume, through the same form and /api/job-checks as "My role isn't listed". Once checked, the job's Gaps page
- * opens. Only the skills the post asks for are kept, never the post. With no resume, it links to the upload. `demo`
- * (the signed-out example and /design) checks the fields and saves nothing.
- */
-function PasteBox({ id, resumeId, demo }: { id: string; resumeId: string | null; demo: boolean }) {
-  const router = useRouter();
-  const [opening, startOpening] = useTransition();
-  return (
-    <section id={id} aria-label="Paste a job post" className="mt-1.5 flex scroll-mt-20 flex-col gap-2.5">
-      <div className="flex flex-wrap items-baseline gap-2.5">
-        <h3 className="text-[1.05rem] font-semibold">Saw a role somewhere else?</h3>
-        <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">paste the job post</span>
-      </div>
-      {resumeId ? (
-        <>
-          <p className="text-[0.84rem] text-muted">
-            Paste the full job description. We compare it with your resume and show the gaps for this one role. We keep the skills it asks for, never the
-            post itself, and nothing is shared.
-          </p>
-          <JobPostingForm
-            resumeId={resumeId}
-            roleSlug={null}
-            submitLabel="Check my gaps"
-            busy={opening}
-            demo={demo}
-            doneMessage={() => (demo ? "This is an example, so nothing was checked or saved. Signed in, your gaps for this job open here." : "Checked. Opening your gaps for this job…")}
-            onSaved={({ id }) => startOpening(() => router.push(`/resume/${resumeId}/job/${id}`))}
-          />
-        </>
-      ) : (
-        <div className="flex flex-col gap-2.5 rounded-[18px] border border-line bg-surface p-[18px]">
-          <p className="text-[0.88rem] text-muted">Upload your resume first. Then paste a job post here to see the gaps for that one role.</p>
-          <Link href="/start" className={`${primary} self-start px-[11px] py-1.5 text-[0.8rem]`}>
-            <FileUp size={17} {...ICON} />
-            Upload your resume
-          </Link>
-        </div>
-      )}
-    </section>
   );
 }

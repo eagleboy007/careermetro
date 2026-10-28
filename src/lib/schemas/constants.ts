@@ -21,6 +21,36 @@ export const JOB_TEXT_MAX = 12_000;
 export const JOB_COMPANY_MAX = 100;
 export const JOB_TITLE_MAX = 120;
 
+/* My jobs (handoff 12m, docs/plans/application-tracker-plan.md) ------------------------------------------------------ */
+
+/** A job's status, in the status menu's order. Its stage in job_saves is its place here: Saved has none, Applied is 1. */
+export const MY_JOB_STATUSES = ["saved", "applied", "heard", "interview", "offer", "no", "withdrawn"] as const;
+export const MY_JOB_STATUS_LABELS: Record<(typeof MY_JOB_STATUSES)[number], string> = {
+  saved: "Saved",
+  applied: "Applied",
+  heard: "Heard back",
+  interview: "Interview",
+  offer: "Offer",
+  no: "Not this time",
+  withdrawn: "Withdrawn",
+};
+/** The list's filter chips: Applied takes Heard back too, Interview takes Offer, Closed takes Not this time and Withdrawn. */
+export const MY_JOB_FILTERS = ["all", "saved", "applied", "interview", "closed"] as const;
+export const MY_JOB_FILTER_LABELS: Record<(typeof MY_JOB_FILTERS)[number], string> = {
+  all: "All",
+  saved: "Saved",
+  applied: "Applied",
+  interview: "Interview",
+  closed: "Closed",
+};
+/** Jobs in My jobs a person, feed jobs and added ones together. A new one past it is refused. */
+export const MY_JOBS_MAX = 300;
+export const MY_JOB_NOTE_MAX = 2000;
+export const MY_JOB_URL_MAX = 2000;
+export const MY_JOB_CITY_MAX = 60;
+/** The person's own copy of an added job's description (Milin, 2026-10-28). */
+export const MY_JOB_DESCRIPTION_MAX = 20_000;
+
 /* Library (FR-51, handoff 12a) --------------------------------------------------------------------------------------- */
 
 export const LIBRARY_TABS = ["goals", "interests", "saved", "finished", "elite"] as const;

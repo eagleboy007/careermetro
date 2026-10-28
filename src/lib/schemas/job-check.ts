@@ -32,8 +32,15 @@ export type JobCheckRequest = z.infer<typeof jobCheckRequest>;
 /** How strongly a posting asks for a skill: what it requires, or what it would like ("good to have"). */
 export const postingSkillLevel = z.enum(["required", "nice"]);
 
-/** What the parse-jd prompt returns: only the skills the posting names, each with its exact words from the posting. */
+/**
+ * What the parse-jd prompt returns: only the skills the posting names, each with its exact words from the posting, and
+ * (from v2) the company, title and city as the posting prints them, or null. Code keeps a company, title or city only
+ * when the posting itself prints it (src/lib/jobs/parse.ts); the Gaps page's check keeps the ones the person typed.
+ */
 export const postingSkills = z.object({
+  company: z.string().nullable(),
+  title: z.string().nullable(),
+  city: z.string().nullable(),
   skills: z.array(z.object({ name: z.string(), quote: z.string(), level: postingSkillLevel })),
 });
 export type PostingSkills = z.infer<typeof postingSkills>;

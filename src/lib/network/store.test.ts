@@ -608,7 +608,7 @@ describe.skipIf(!db)("network store (database)", () => {
     await ask(c, a, "event", deps());
     await answerRequest(a, c, "ignore", deps());
     const data = await exportAccountData(a, db!);
-    expect(data!.exportVersion).toBe(32);
+    expect(data!.exportVersion).toBe(33);
     expect(data!.network).toMatchObject({ peopleCanFind: true, gapsVisibleTo: "connections", requestsFrom: "anyone" });
     expect(data!.network.connections).toMatchObject([{ name: `Om ${tag}`, username: null, how: "same_line" }]);
     expect(data!.network.requestsReceived).toMatchObject([{ name: `Pia ${tag}`, how: "event", status: "ignored" }]);

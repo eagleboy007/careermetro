@@ -47,8 +47,9 @@ const sections: LegalSection[] = [
           (exam results, certificates and Credly badges). A certificate&apos;s credential number is kept only as a one-way code.
         </li>
         <li>
-          <strong>Job descriptions you paste:</strong> we keep the skills the posting asks for, to check your resume against them, but not the posting&apos;s
-          text.
+          <strong>Job descriptions you paste:</strong> we keep the skills the posting asks for, to check your resume against them. On the Gaps page we
+          don&apos;t keep the posting&apos;s text. In My jobs we keep the job description you add, for you only, with its link, status, dates and your
+          private note, so you can read it again later. It is never shown to anyone and is deleted with the job or your account.
         </li>
         <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
@@ -160,5 +161,5 @@ const sections: LegalSection[] = [
 ];
 
 export default function PrivacyPage() {
-  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="15 Oct 2026" draft sections={sections} />;
+  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="28 Oct 2026" draft sections={sections} />;
 }

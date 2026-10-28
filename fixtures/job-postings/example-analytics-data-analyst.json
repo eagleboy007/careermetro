@@ -2,6 +2,7 @@
   "note": "Synthetic job posting for tests and the browser walk. The company is invented. `skills` is what the stand-in Claude API (e2e/mock-ai.mjs) answers for this posting; one quote is invented on purpose and must be dropped.",
   "company": "Example Analytics Pvt Ltd",
   "title": "Data Analyst",
+  "city": "Pune",
   "text": "Data Analyst - Example Analytics Pvt Ltd, Pune (Hybrid)\n\nAbout the role\nExample Analytics Pvt Ltd helps retail brands understand their stores. You will join a team of six analysts and work with category managers every week.\n\nWhat you will do\n- Write SQL queries to pull sales and inventory data from our warehouse\n- Build weekly reports in Excel for category managers\n- Automate data pulls with Python scripts\n- Use statistics to explain changes in weekly sales\n- Publish dashboards in Power BI for regional heads\n- Schedule data pipelines with Apache Airflow\n\nWhat we need\n- 1 to 3 years of experience as an analyst\n- Strong SQL and Excel\n- Working knowledge of Python\n- Experience with Alteryx workflows\n\nGood to have\n- Tableau\n- Git for version control\n- Exposure to SAS\n\nNotice period: 30 days or less. CTC as per industry standards.",
   "skills": [
     { "name": "SQL", "quote": "Write SQL queries", "level": "required" },

@@ -30,6 +30,10 @@ export type ParseJdClient = Pick<Anthropic, "beta">;
 
 /** The posting's skills in our taxonomy, plus names we don't know yet. Plain code decides all of it. */
 export type MappedPosting = {
+  /** The company, title and city the model read, each kept only when the posting prints it (postingLabels). */
+  company: string | null;
+  title: string | null;
+  city: string | null;
   requiredSkillIds: string[];
   niceSkillIds: string[];
   unknownSkills: string[];
@@ -74,7 +78,23 @@ function quoteNames(quote: string, skillId: string): boolean {
   return (termsById.get(skillId) ?? []).some((t) => containsPhrase(q, normalizeForMatch(t)));
 }
 
-export function mapPostingSkills(parsed: PostingSkills, postingText: string): MappedPosting {
+/** The longest company, title and city kept from a posting, as job_checks stores them. */
+const LABEL_MAX = { company: 100, title: 120, city: 60 } as const;
+
+/**
+ * The company, title and city the model read, each tidied to one line and kept only when the posting itself prints it
+ * and it fits its column; else null, and the person types it. Nothing kept is the model's own words.
+ */
+export function postingLabels(parsed: Pick<PostingSkills, "company" | "title" | "city">, postingText: string): Pick<MappedPosting, "company" | "title" | "city"> {
+  const haystack = normalizeForMatch(postingText);
+  const keep = (raw: string | null, max: number) => {
+    const line = (raw ?? "").replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim();
+    return line && line.length <= max && containsPhrase(haystack, normalizeForMatch(line)) ? line : null;
+  };
+  return { company: keep(parsed.company, LABEL_MAX.company), title: keep(parsed.title, LABEL_MAX.title), city: keep(parsed.city, LABEL_MAX.city) };
+}
+
+export function mapPostingSkills(parsed: Pick<PostingSkills, "skills">, postingText: string): Omit<MappedPosting, "company" | "title" | "city"> {
   const haystack = normalizeForMatch(postingText);
   const inPosting = (s: string) => containsPhrase(haystack, normalizeForMatch(s));
   const required: string[] = [];
@@ -180,7 +200,7 @@ export async function parseJobPosting(
     // Validated here rather than by the SDK's parse helper so the tokens of a malformed attempt are still logged.
     const parsed = response.stop_reason === "max_tokens" ? null : readPostingSkills(response.content);
     record(response.model, response.usage, parsed !== null);
-    if (parsed) return { ok: true, calls, ...mapPostingSkills(parsed, postingText) };
+    if (parsed) return { ok: true, calls, ...mapPostingSkills(parsed, postingText), ...postingLabels(parsed, postingText) };
   }
   return { ok: false, reason: "malformed", calls };
 }

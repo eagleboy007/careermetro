@@ -917,7 +917,7 @@ await step("hardening: the Library's broken-link menu opens with Enter and close
     await p.setViewportSize({ width: 1280, height: 900 });
   }
 });
-await step("departures: live roles, Updated, save, apply on the company site, Saved and Applied after a reload, a closed role", async () => {
+await step("departures: live roles, Updated, save, apply on the company site, My jobs after a reload, a closed role", async () => {
   if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed the feed");
   const { default: postgres } = await import("postgres");
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
@@ -963,31 +963,116 @@ await step("departures: live roles, Updated, save, apply on the company site, Sa
 
     await p.reload();
     await settled();
+    // Saved and Applied are one My jobs tab now (handoff 12m): the role is there as Applied, from a company job board.
     const tabs = p.getByRole("group", { name: "Show" });
-    await tabs.getByRole("button", { name: /^Saved/ }).click();
-    await row.waitFor({ timeout: 10000 });
-    await tabs.getByRole("button", { name: /^Applied/ }).click();
-    await row.getByText("Applied", { exact: true }).waitFor({ timeout: 10000 });
+    const mine = p.getByRole("region", { name: "My jobs" });
+    const mineRow = mine.getByRole("listitem").filter({ hasText: ROLE });
+    await tabs.getByRole("button", { name: /^My jobs/ }).click();
+    await mineRow.getByRole("button", { name: /^Status: Applied/ }).waitFor({ timeout: 10000 });
+    await mineRow.getByText("Company job board", { exact: true }).waitFor();
 
-    // The role leaves its board: off All, still in Saved with no Apply.
+    // The role leaves its board: off All, still in My jobs with its status.
     await sql`update job_posts set closed_at = now() where board_token = 'e2e-example' and external_id = 'e2e-1'`;
     await p.reload();
     await settled();
     await p.getByRole("button", { name: "Reporting analyst (e2e) at Example Labs" }).waitFor({ timeout: 10000 });
     if (await row.count()) throw new Error("a closed role still shows on All");
-    await tabs.getByRole("button", { name: /^Saved/ }).click();
-    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    await tabs.getByRole("button", { name: /^My jobs/ }).click();
+    await mineRow.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
     await p.setViewportSize({ width: 390, height: 844 });
     await p.emulateMedia({ colorScheme: "dark" });
     // Reload so every colour is drawn dark from the start, as on the other dark checks; the reload goes back to All.
     await p.reload();
     await settled();
-    await tabs.getByRole("button", { name: /^Saved/ }).click();
-    await row.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
+    await tabs.getByRole("button", { name: /^My jobs/ }).click();
+    await mineRow.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
     if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("Departures scrolls sideways at 390px (dark)");
     await a11y("departures-live-closed-phone-dark");
     await shot("departures-live-closed-phone-dark");
     await tabs.getByRole("button", { name: /^All/ }).click();
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
+// My jobs (docs/plans/application-tracker-plan.md, handoff 12m): "Add a job you found" with a pasted description and a
+// link that is only kept, "Check these, then save" with the company and title the stand-in API read, Save to My jobs,
+// the status menu, a private note in the edit sheet, the kept description under "Read the job again", and Delete.
+await step("my jobs: add a job you found, save it, move its status, keep a note, read it again, delete it", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check what is kept");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
+  const NOTE = "Round 1 is a SQL test (e2e).";
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/departures?tab=mine");
+    await settled();
+    const box = p.getByRole("region", { name: "Add a job you found" });
+    const link = box.getByLabel("Link to the job");
+    await link.fill("https://jobs.lever.co/example/0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69");
+    await box.getByText("A company job board. We read the posting from there: nothing to paste.").waitFor({ timeout: 5000 });
+    await link.fill("https://careers.example.com/data-analyst");
+    await box.getByText(/^We keep this link to open the original\./).waitFor({ timeout: 5000 });
+    await box.getByLabel("Job description").fill(posting.text);
+    await box.getByRole("button", { name: "Add and check my gaps" }).click();
+    const result = box.locator("[data-added-job]");
+    await result.getByRole("heading", { name: "Check these, then save" }).waitFor({ timeout: 60000 });
+    if ((await result.getByLabel(/^Company/).inputValue()) !== posting.company) throw new Error("the company read from the description isn't shown");
+    if ((await result.getByLabel(/^Title/).inputValue()) !== posting.title) throw new Error("the title read from the description isn't shown");
+    if ((await result.getByLabel(/^City/).inputValue()) !== posting.city) throw new Error("the city read from the description isn't shown");
+    if (await result.getByText("Kubernetes").count()) throw new Error("a skill with an invented quote was kept");
+    await a11y("my-jobs-added");
+    await result.getByRole("button", { name: "Save to My jobs" }).click();
+    const list = p.getByRole("region", { name: "My jobs" });
+    const row = list.getByRole("listitem").filter({ hasText: posting.title }).filter({ hasText: posting.company });
+    await row.getByText("You added", { exact: true }).waitFor({ timeout: 10000 });
+    await row.getByRole("link", { name: /^Open the original/ }).waitFor();
+
+    await row.getByRole("button", { name: /^Status: Saved/ }).click();
+    await row.getByRole("menu").getByRole("menuitemradio", { name: /^Applied/ }).click();
+    await row.getByRole("button", { name: /^Status: Applied/ }).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: `Edit ${posting.title} at ${posting.company}` }).click();
+    const sheet = p.getByRole("dialog", { name: posting.title });
+    await sheet.getByLabel("Private note").fill(NOTE);
+    await sheet.getByRole("button", { name: "Save", exact: true }).click();
+    await p.getByText("Saved. Only you see it.", { exact: true }).waitFor({ timeout: 10000 });
+    await row.getByText(NOTE).waitFor();
+    await shot("my-jobs");
+    await a11y("my-jobs");
+
+    const [kept] = await sql`
+      select s.stage, s.note, s.applied_at, c.url, c.source, c.city, c.description
+      from job_saves s join job_checks c on c.id = s.job_check_id where s.note = ${NOTE}`;
+    if (kept?.stage !== 1 || !kept.applied_at || kept.url !== "https://careers.example.com/data-analyst" || kept.source !== "pasted" || kept.city !== "Pune")
+      throw new Error("the added job's status, link or city were not kept");
+    if (!kept.description?.includes("Example Analytics Pvt Ltd helps retail brands")) throw new Error("the person's copy of the description was not kept");
+
+    // After a reload, ?tab=mine opens on My jobs, with the note; "Read the job again" shows the person's own copy.
+    await p.reload();
+    await settled();
+    await row.getByText(NOTE).waitFor({ timeout: 10000 });
+    await row.getByRole("button", { name: `Edit ${posting.title} at ${posting.company}` }).click();
+    await sheet.getByText("Read the job again").click();
+    await sheet.getByText(/Example Analytics Pvt Ltd helps retail brands/).waitFor({ timeout: 10000 });
+    await a11y("my-jobs-edit-sheet");
+    await shot("my-jobs-edit-sheet");
+    await sheet.getByRole("button", { name: "Delete this job" }).click();
+    await p.getByText("Deleted. Nothing is kept.", { exact: true }).waitFor({ timeout: 10000 });
+    if (await row.count()) throw new Error("a deleted job still shows in My jobs");
+    if ((await sql`select 1 from job_checks where description like ${"%" + "helps retail brands" + "%"} and id in (select job_check_id from job_saves)`).length)
+      throw new Error("a deleted job's description is still kept");
+
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await list.waitFor({ timeout: 10000 });
+    if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("My jobs scrolls sideways at 390px (dark)");
+    await a11y("my-jobs-phone-dark");
+    await shot("my-jobs-phone-dark");
   } finally {
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
@@ -1060,7 +1145,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 32 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 33 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1406,7 +1491,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1564,7 +1649,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await p.emulateMedia({ colorScheme: "light" });
 
     const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
     if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
     if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
     if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
@@ -1728,7 +1813,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -2110,7 +2195,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -2208,7 +2293,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -2317,7 +2402,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 32) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 33) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
     const ups = round.answers.map((a) => a.followUp);

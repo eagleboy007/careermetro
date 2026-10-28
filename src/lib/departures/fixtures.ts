@@ -1,4 +1,5 @@
-import { jobPost, type JobPost, type JobPostInput } from "@/lib/schemas";
+import { postFit } from "@/lib/my-jobs/view";
+import { jobPost, type JobPost, type JobPostInput, type MyJobView } from "@/lib/schemas";
 
 /*
  * Synthetic Departures for the design page and the preview: Priya's Data Analyst line (goals in order: SQL window
@@ -150,6 +151,94 @@ export const exampleSaved = ["j4"];
 export const exampleApplied: [string, number][] = [
   ["j1", 3],
   ["j6", 2],
+];
+
+/** Feed rows of the example My jobs: the saved and applied example roles. */
+const feedMine = (id: string, status: MyJobView["status"], over: Partial<MyJobView> = {}): MyJobView => {
+  const j = exampleJobs.find((x) => x.id === id)!;
+  return {
+    key: `post:${id}`,
+    ref: { kind: "post", postId: id },
+    company: j.company,
+    title: j.role,
+    city: j.city,
+    source: "board",
+    url: j.applyUrl,
+    status,
+    savedAt: status === "saved" ? "2026-10-18T06:30:00.000Z" : null,
+    appliedAt: status === "saved" ? null : "2026-10-20T06:30:00.000Z",
+    closedAt: null,
+    note: null,
+    updatedAt: "2026-10-24T06:30:00.000Z",
+    postClosed: j.closed,
+    hasDescription: false,
+    fit: postFit(j, true),
+    ...over,
+  };
+};
+
+/**
+ * The example person's My jobs (handoff 12m, prototype v48): the example roles they saved and applied to, and three jobs
+ * they added from other sites (one with a private note, one closed). Made-up companies; the links go nowhere real.
+ */
+export const exampleMine: MyJobView[] = [
+  {
+    key: "check:00000000-0000-4000-8000-0000000000a1",
+    ref: { kind: "check", checkId: "00000000-0000-4000-8000-0000000000a1" },
+    company: "Example Analytics Pvt Ltd",
+    title: "Data analyst",
+    city: "Pune",
+    source: "you",
+    url: "https://careers.example.com/data-analyst",
+    status: "interview",
+    savedAt: "2026-10-19T06:30:00.000Z",
+    appliedAt: "2026-10-21T06:30:00.000Z",
+    closedAt: null,
+    note: "Spoke to the hiring lead. Round 1 is a SQL test, then a case study on store sales.",
+    updatedAt: "2026-10-27T06:30:00.000Z",
+    postClosed: false,
+    hasDescription: true,
+    fit: { have: 3, open: [{ status: "weak", name: "SQL window functions" }, { status: "missing", name: "Power BI" }], only: ["Alteryx"] },
+  },
+  feedMine("j1", "interview", { updatedAt: "2026-10-26T06:30:00.000Z", note: "Round 1 is a 30-minute call with the team lead." }),
+  {
+    key: "check:00000000-0000-4000-8000-0000000000a2",
+    ref: { kind: "check", checkId: "00000000-0000-4000-8000-0000000000a2" },
+    company: "Orbit Freight",
+    title: "Supply chain analyst",
+    city: null,
+    source: "you",
+    url: null,
+    status: "saved",
+    savedAt: "2026-10-27T06:30:00.000Z",
+    appliedAt: null,
+    closedAt: null,
+    note: null,
+    updatedAt: "2026-10-25T06:30:00.000Z",
+    postClosed: false,
+    hasDescription: true,
+    fit: { have: 4, open: [], only: ["SAP MM"] },
+  },
+  feedMine("j6", "heard"),
+  feedMine("j4", "saved", { updatedAt: "2026-10-18T06:30:00.000Z" }),
+  {
+    key: "check:00000000-0000-4000-8000-0000000000a3",
+    ref: { kind: "check", checkId: "00000000-0000-4000-8000-0000000000a3" },
+    company: "Lotus Bank",
+    title: "MIS analyst, branch reports",
+    city: "Mumbai",
+    source: "board",
+    url: "https://jobs.example.com/lotus-bank/mis",
+    status: "no",
+    savedAt: "2026-10-10T06:30:00.000Z",
+    appliedAt: "2026-10-12T06:30:00.000Z",
+    closedAt: "2026-10-24T06:30:00.000Z",
+    note: null,
+    updatedAt: "2026-10-12T06:30:00.000Z",
+    postClosed: false,
+    hasDescription: true,
+    fit: { have: 2, open: [{ status: "missing", name: "Power BI" }], only: [] },
+  },
 ];
 
 /*

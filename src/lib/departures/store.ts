@@ -126,7 +126,7 @@ export async function departuresBoard(
       .from(jobSaves)
       .innerJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
       .where(and(eq(jobSaves.userId, id), list === "saved" ? isNotNull(jobSaves.savedAt) : isNotNull(jobSaves.stage), ofRole))
-      .orderBy(desc(jobSaves.updatedAt), asc(jobSaves.jobPostId))
+      .orderBy(desc(jobSaves.updatedAt), asc(jobSaves.id))
       .limit(ownMax);
   type OwnRow = Awaited<ReturnType<typeof ownOf>>[number];
   // Each list on its own, so a saved row past the Applied cap (or the other way) doesn't slip into the other list.
@@ -152,7 +152,8 @@ export async function departuresBoard(
   return {
     posts,
     saved: own.saved.map((r) => r.id),
-    applied: own.applied.map((r) => [r.id, r.stage!] as [string, number]),
+    // Applied to Offer only: a job marked Not this time or Withdrawn in My jobs has no tracker step on Departures.
+    applied: own.applied.filter((r) => r.stage! <= 4).map((r) => [r.id, r.stage!] as [string, number]),
     updatedAt,
   };
 }
@@ -254,7 +255,8 @@ export async function setStage(userId: string, raw: unknown, deps: Deps = {}): P
       .values({ userId, jobPostId: postId, stage, appliedAt: now, updatedAt: now })
       .onConflictDoUpdate({
         target: [jobSaves.userId, jobSaves.jobPostId],
-        set: { stage, appliedAt: sql`coalesce(${jobSaves.appliedAt}, ${now.toISOString()}::timestamptz)`, updatedAt: now },
+        // A job marked Not this time or Withdrawn in My jobs that is applied to again is open again.
+        set: { stage, appliedAt: sql`coalesce(${jobSaves.appliedAt}, ${now.toISOString()}::timestamptz)`, closedAt: null, updatedAt: now },
       });
     return { ok: true };
   });
@@ -270,7 +272,7 @@ export async function clearStage(userId: string, raw: unknown, deps: Deps = {}):
     if (!found) return { ok: false, error: "not_found" };
     if (!found.row) return { ok: true };
     if (found.row.savedAt === null) await tx.delete(jobSaves).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
-    else await tx.update(jobSaves).set({ stage: null, appliedAt: null, updatedAt: now }).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
+    else await tx.update(jobSaves).set({ stage: null, appliedAt: null, closedAt: null, updatedAt: now }).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
     return { ok: true };
   });
 }
