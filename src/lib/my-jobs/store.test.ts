@@ -13,7 +13,7 @@ import type { ParseJdClient } from "@/lib/jobs/parse";
 import { myJobExport, type PostingSkills, type Profile } from "@/lib/schemas";
 import { USER_AGENT as FEED_USER_AGENT } from "@/lib/departures/feed-rules.mjs";
 import { boardApiUrl, htmlText, postingOf, readBoardPosting, USER_AGENT } from "./board-read";
-import { addJob, clearUnsavedJobText, deleteJob, exportMyJobs, jobDescription, myJobs, saveJob, setJobStatus, updateJob } from "./store";
+import { addJob, clearUnsavedJobText, deleteJob, exportMyJobs, jobDescription, myJobs, nextInterview, saveJob, setJobStatus, updateJob } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -250,6 +250,39 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(feed).toMatchObject({ company: "Example Labs", title: "Junior data analyst", status: "interview", note: "Call with the team lead.", source: "board" });
   });
 
+  it("keeps an interview date that moves an earlier status to Interview, and Today counts down to the soonest (handoff 12m)", async () => {
+    const me = await person();
+    const someone = await person();
+    const added = await add(me);
+    if (!added.ok || added.kind !== "check") throw new Error("not added");
+    const ref = { kind: "check", checkId: added.job.checkId } as const;
+    await saveJob(me.userId, { checkId: ref.checkId, company: "Example Analytics", title: "Data analyst" }, { db: db!, now });
+    expect(await nextInterview(me.userId, { db: db!, now })).toBeNull();
+    // 10:30 IST, two days after `now`.
+    const day = new Date(now.getTime() + 2 * 86_400_000 + 5.5 * 3600_000).toISOString().slice(0, 10);
+    expect(await updateJob(me.userId, { ref, status: "saved", interviewAt: `${day}T10:30` }, { db: db!, now })).toEqual({ ok: true });
+    let [view] = await myJobs(me.userId, { db: db!, now });
+    expect(view).toMatchObject({ status: "interview", interviewAt: `${day}T05:00:00.000Z` });
+    expect(view.appliedAt).toBe(now.toISOString());
+    expect(await nextInterview(me.userId, { db: db!, now })).toEqual({ ref, company: "Example Analytics", title: "Data analyst", interviewAt: `${day}T05:00:00.000Z` });
+    expect(await nextInterview(someone.userId, { db: db!, now })).toBeNull();
+    // Offer keeps it on Today; past its start by more than two hours, or closed, it leaves.
+    await setJobStatus(me.userId, { ref, status: "offer" }, { db: db!, now });
+    expect(await nextInterview(me.userId, { db: db!, now })).not.toBeNull();
+    expect(await nextInterview(me.userId, { db: db!, now: new Date(Date.parse(`${day}T05:00:00.000Z`) + 3 * 3600_000) })).toBeNull();
+    expect(await updateJob(me.userId, { ref, status: "no", interviewAt: `${day}T10:30` }, { db: db!, now })).toEqual({ ok: true });
+    [view] = await myJobs(me.userId, { db: db!, now });
+    expect(view).toMatchObject({ status: "no", interviewAt: `${day}T05:00:00.000Z` });
+    expect(await nextInterview(me.userId, { db: db!, now })).toBeNull();
+    // An empty field clears it; the export carries it from version 34.
+    await updateJob(me.userId, { ref, status: "interview", interviewAt: `${day}T10:30` }, { db: db!, now });
+    expect((await exportMyJobs(me.userId, db!))[0].interview_at).toBe(`${day}T05:00:00.000Z`);
+    await updateJob(me.userId, { ref, status: "interview", interviewAt: "" }, { db: db!, now });
+    [view] = await myJobs(me.userId, { db: db!, now });
+    expect(view).toMatchObject({ status: "interview", interviewAt: null });
+    expect(await updateJob(me.userId, { ref, status: "interview", interviewAt: "30 Oct, 10:30" }, { db: db!, now })).toEqual({ ok: false, error: "invalid" });
+  });
+
   it("deletes an added job with its description, and takes a feed job off the list while the post stays", async () => {
     const me = await person();
     const added = await add(me);
@@ -302,7 +335,7 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(rows.find((r) => r.id === saved.job.checkId)?.description).toContain("category managers");
   });
 
-  it("is in Download your data (version 33) with the note and description, and goes with the account", async () => {
+  it("is in Download your data (from version 33, the interview from 34) with the note and description, and goes with the account", async () => {
     const me = await person();
     const added = await add(me);
     if (!added.ok || added.kind !== "check") throw new Error("not added");
@@ -313,7 +346,7 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(rows[0].description).toContain("category managers");
     for (const r of rows) expect(myJobExport.safeParse(r).success).toBe(true);
     const data = await exportAccountData(me.userId, db!);
-    expect(EXPORT_VERSION).toBe(33);
+    expect(EXPORT_VERSION).toBe(34);
     expect(data!.myJobs).toEqual(rows);
     await db!.delete(schema.resumes).where(eq(schema.resumes.userId, me.userId));
     await db!.delete(schema.users).where(eq(schema.users.id, me.userId));

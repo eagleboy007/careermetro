@@ -155,7 +155,7 @@ import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, examp
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
 import { DeparturesBoard } from "@/components/today/departures-board";
-import { OnYourLineCard } from "@/components/today/rail-cards";
+import { NextInterviewCard, OnYourLineCard } from "@/components/today/rail-cards";
 import { SignalCheckCard } from "@/components/today/signal-check";
 import { boardRows } from "@/lib/today/live-board";
 import type { JobCheckView } from "@/lib/jobs/groups";
@@ -169,6 +169,7 @@ import {
   exampleGoals,
   exampleGoalsWithTracks,
   exampleName,
+  exampleNextInterview,
   exampleOnYourLine,
   exampleRide,
   exampleSignalCheck,
@@ -390,6 +391,7 @@ const exampleToday: TodayData = {
   signalCheck: exampleSignalCheck,
   events: exampleEvents,
   onYourLine: exampleOnYourLine,
+  nextInterview: exampleNextInterview,
   greeting: "Evening",
 };
 
@@ -496,6 +498,7 @@ export default function DesignPage() {
           <DeparturesBoard rows={exampleLiveBoard} allHref="/departures" label="Departures, live rows" />
           <DeparturesBoard rows={[]} allHref="/departures" label="Departures, no rows yet" />
           <OnYourLineCard line={{ ...exampleOnYourLine, tip: null }} firstDay label="On your line, first day" />
+          <NextInterviewCard next={{ ...exampleNextInterview, days: 1 }} />
         </div>
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />

@@ -24,6 +24,7 @@ import { prepForJobs } from "@/lib/mock/rules";
 import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_JOB_SEARCH } from "@/lib/schemas";
 import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
+import { todayStateFor } from "@/lib/today/state";
 import { applyAction, previewAction } from "../arrivals/actions";
 import { myJobs } from "@/lib/my-jobs/store";
 import type { JobPost, MyJobView } from "@/lib/schemas";
@@ -202,6 +203,9 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   const mine = account ? await mineFor(account.id, jobs, fit, analysis) : exampleMine;
   // A resume on file is enough to say so; a fit that can't be shown gets its own reason, not "add your resume".
   const hasResume = account ? analysis !== null : state !== "no_resume";
+  // A resume read but with no gaps yet: "Add a job you found" sends the person to finish it, not to upload (T134).
+  const unfinished = account && !analysis ? await todayStateFor(account.id, now, undefined, null) : null;
+  const finishHref = unfinished?.state === "no_resume" && unfinished.unfinishedResumeId ? `/resume/${unfinished.unfinishedResumeId}` : null;
   const noFit = account && analysis ? noFitWords(fit) : account ? "Add your resume to see your fit for each role." : null;
   // Interview prep for each role, locked on the server: on Free, only the first question's text reaches the browser.
   const prep = prepForJobs(jobs, mockQuestions, roleProfiles, elite);
@@ -248,6 +252,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
             // A pasted post is checked against the person's latest resume; without one the box links to the upload. The
             // signed-out example has the example person's resume, so its box is an example too and saves nothing.
             resumeId={account ? (analysis?.resumeId ?? null) : hasResume ? "example" : null}
+            finishHref={finishHref}
             demo={!account}
             prep={prep}
             places={places}

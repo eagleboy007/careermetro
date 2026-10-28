@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, desc, eq, inArray, isNotNull, lt, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import { skills as allSkills } from "@/content";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
@@ -22,12 +22,13 @@ import {
   type MyJobExport,
   type MyJobRef,
   type MyJobView,
+  type NextInterviewView,
   type Profile,
 } from "@/lib/schemas";
 import { JOB_TEXT_MAX } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { readBoardPosting, listedCompany, type BoardReadResult } from "./board-read";
-import { boardLinkOf, isClosed, isMoving, stageOf, statusOf, type BoardLink, type MyJobStatus } from "./rules";
+import { boardLinkOf, isClosed, isMoving, stageOf, statusOf, withInterview, type BoardLink, type MyJobStatus } from "./rules";
 import { checkFit, newestChange, postFit, type MyJobFit } from "./view";
 
 /*
@@ -53,6 +54,8 @@ export const MY_JOB_MESSAGES: Record<MyJobError, string> = {
 
 /** A day from a date field, as noon in IST, so it reads as the same day everywhere in India. */
 const istDay = (day: string) => new Date(`${day}T12:00:00+05:30`);
+/** The interview field's date and time, read as IST. */
+const istMinute = (minute: string) => new Date(`${minute}:00+05:30`);
 
 /** The rows of this person that a ref names: their own only. */
 const refWhere = (userId: string, ref: MyJobRef) =>
@@ -272,7 +275,9 @@ export async function setJobStatus(userId: string, raw: unknown, deps: Deps = {}
 export async function updateJob(userId: string, raw: unknown, deps: Deps = {}): Promise<MyJobResult> {
   const input = updateJobRequest.safeParse(raw);
   if (!input.success) return { ok: false, error: "invalid" };
-  const { ref, status, appliedOn, closedOn, note, company, title, url, city } = input.data;
+  const { ref, appliedOn, closedOn, interviewAt, note, company, title, url, city } = input.data;
+  // Setting an interview moves an earlier status to Interview (handoff 12m); a closed job stays closed.
+  const status = withInterview(input.data.status, interviewAt);
   return change(userId, deps, async (tx, now) => {
     const row = await rowFor(tx, userId, ref);
     if (!row) return { ok: false, error: "not_found" };
@@ -288,6 +293,7 @@ export async function updateJob(userId: string, raw: unknown, deps: Deps = {}): 
         stage: dates.stage,
         appliedAt: appliedOn ? istDay(appliedOn) : dates.appliedAt,
         closedAt: isClosed(status) && closedOn ? istDay(closedOn) : dates.closedAt,
+        interviewAt: interviewAt ? istMinute(interviewAt) : null,
         savedAt: status === "saved" ? (row.savedAt ?? now) : row.savedAt,
         note,
         updatedAt: now,
@@ -345,6 +351,7 @@ export async function myJobs(
       stage: jobSaves.stage,
       appliedAt: jobSaves.appliedAt,
       closedAt: jobSaves.closedAt,
+      interviewAt: jobSaves.interviewAt,
       note: jobSaves.note,
       updatedAt: jobSaves.updatedAt,
       postTitle: jobPosts.title,
@@ -374,6 +381,7 @@ export async function myJobs(
       savedAt: iso(r.savedAt),
       appliedAt: iso(r.appliedAt),
       closedAt: iso(r.closedAt),
+      interviewAt: iso(r.interviewAt),
       note: r.note,
       updatedAt: r.updatedAt.toISOString(),
     };
@@ -411,7 +419,7 @@ export async function myJobs(
   return views.sort(newestChange);
 }
 
-/** For Download your data (added in export version 33): every job in My jobs with its note and description, oldest change first. */
+/** For Download your data (added in export version 33, the interview from 34): every job in My jobs with its note and description, oldest change first. */
 export async function exportMyJobs(userId: string, db: Db = getDb()): Promise<MyJobExport[]> {
   const rows = await db
     .select({
@@ -420,6 +428,7 @@ export async function exportMyJobs(userId: string, db: Db = getDb()): Promise<My
       stage: jobSaves.stage,
       appliedAt: jobSaves.appliedAt,
       closedAt: jobSaves.closedAt,
+      interviewAt: jobSaves.interviewAt,
       note: jobSaves.note,
       postTitle: jobPosts.title,
       postCompany: jobPosts.company,
@@ -448,6 +457,7 @@ export async function exportMyJobs(userId: string, db: Db = getDb()): Promise<My
     saved_at: iso(r.savedAt),
     applied_at: iso(r.appliedAt),
     closed_at: iso(r.closedAt),
+    interview_at: iso(r.interviewAt),
     note: r.note,
     description: r.description,
   }));
@@ -575,4 +585,39 @@ export async function savedJobNames(userId: string, skillId: string, db: Db | Tx
     )
     .limit(1);
   return Boolean(row);
+}
+
+/* Today's countdown ------------------------------------------------------------------------------------------------ */
+
+/** How long after it starts an interview still shows on Today. */
+const INTERVIEW_SHOWS_FOR_MS = 2 * 3600_000;
+
+/**
+ * Today's "Next interview" (handoff 12m: "Today counts down to it"): the soonest interview the person set in My jobs,
+ * on a job at Interview or Offer, from two hours before now on. Read only; never the note or the description.
+ */
+export async function nextInterview(userId: string, { db = getDb(), now = new Date() }: { db?: Db; now?: Date } = {}): Promise<NextInterviewView | null> {
+  const [row] = await db
+    .select({
+      postId: jobSaves.jobPostId,
+      checkId: jobSaves.jobCheckId,
+      interviewAt: jobSaves.interviewAt,
+      company: sql<string | null>`coalesce(${jobChecks.company}, ${jobPosts.company})`,
+      title: sql<string | null>`coalesce(${jobChecks.title}, ${jobPosts.title})`,
+    })
+    .from(jobSaves)
+    .leftJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
+    .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
+    .where(
+      and(
+        eq(jobSaves.userId, userId),
+        inArray(jobSaves.stage, [stageOf("interview")!, stageOf("offer")!]),
+        gte(jobSaves.interviewAt, new Date(now.getTime() - INTERVIEW_SHOWS_FOR_MS)),
+      ),
+    )
+    .orderBy(asc(jobSaves.interviewAt), asc(jobSaves.id))
+    .limit(1);
+  if (!row?.interviewAt || !row.company || !row.title) return null;
+  const ref: MyJobRef = row.postId ? { kind: "post", postId: row.postId } : { kind: "check", checkId: row.checkId! };
+  return { ref, company: row.company, title: row.title, interviewAt: row.interviewAt.toISOString() };
 }

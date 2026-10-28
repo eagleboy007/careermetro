@@ -1,6 +1,8 @@
-import { ArrowRight, MessageSquare } from "lucide-react";
+import { ArrowRight, CalendarClock, MessageSquare } from "lucide-react";
 import Link from "next/link";
-import type { EventTeaser, OnYourLine } from "@/lib/schemas";
+import { prepareHref } from "@/lib/my-jobs/rules";
+import { countdownWords, interviewWhen } from "@/lib/my-jobs/view";
+import type { EventTeaser, NextInterviewView, OnYourLine } from "@/lib/schemas";
 
 const card = "flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5";
 const avatar = "grid shrink-0 place-items-center rounded-full font-mono font-medium text-ink";
@@ -75,6 +77,42 @@ export function OnYourLineCard({ line, firstDay = false, label = "On your line" 
         <Link href="/network" className="inline-flex min-h-11 items-center gap-1 px-2 text-[0.8rem] font-semibold text-ink hover:text-muted">
           See people
           <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/** Today's countdown to an interview in My jobs: the job, and `days` worked out on the server in India days. */
+export type NextInterview = NextInterviewView & { days: number };
+
+/**
+ * "Interview in 2 days" (handoff 12m: "Today counts down to it"): the soonest interview the person set in My jobs, with
+ * Practice on its skills, the mock interview for it, and My jobs. Neutral colours: cobalt stays for progress.
+ */
+export function NextInterviewCard({ next }: { next: NextInterview }) {
+  const link = "inline-flex min-h-11 items-center gap-1 px-2 text-[0.8rem] font-semibold text-ink hover:text-muted";
+  return (
+    <section aria-label="Next interview" className={card}>
+      <div className="flex flex-wrap items-center gap-2.5">
+        <CalendarClock size={18} strokeWidth={1.75} aria-hidden="true" className="text-muted" />
+        <h3 className="text-[1.08rem] font-semibold tracking-[-0.01em]">Interview {countdownWords(next.days)}</h3>
+        <span className="ml-auto font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">My jobs</span>
+      </div>
+      <p className="text-[0.9rem] [overflow-wrap:anywhere]">
+        <b className="font-semibold">{next.title}</b> at {next.company}
+        <small className="mt-0.5 block font-mono text-[0.72rem] tracking-[0.04em] text-muted">{interviewWhen(next.interviewAt)} IST</small>
+      </p>
+      <div className="flex flex-wrap items-center gap-1">
+        <Link href={prepareHref(next.ref, "practice")} className="inline-flex items-center gap-1.5 rounded-full border border-line-strong px-3.5 py-2 text-[0.82rem] font-[550] text-ink hover:bg-surface-2">
+          Practise its skills
+        </Link>
+        <Link href={prepareHref(next.ref, "mock")} className={link}>
+          Mock interview
+          <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
+        <Link href="/departures?tab=mine" className={link}>
+          My jobs
         </Link>
       </div>
     </section>

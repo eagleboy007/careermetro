@@ -25,6 +25,10 @@ export const isClosed = (status: MyJobStatus): boolean => status === "no" || sta
 /** Applied to Offer: the application is moving. */
 export const isMoving = (status: MyJobStatus): boolean => status === "applied" || status === "heard" || status === "interview" || status === "offer";
 
+/** The status after the edit sheet sets an interview: an earlier one moves to Interview; Offer and closed ones stay (handoff 12m). */
+export const withInterview = (status: MyJobStatus, interviewAt: string | null): MyJobStatus =>
+  interviewAt && !isClosed(status) && (stageOf(status) ?? 0) < (stageOf("interview") ?? 0) ? "interview" : status;
+
 /** Whether a job shows under one of the list's filter chips. */
 export function inFilter(status: MyJobStatus, filter: MyJobFilter): boolean {
   if (filter === "all") return true;

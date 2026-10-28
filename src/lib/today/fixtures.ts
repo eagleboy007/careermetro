@@ -155,6 +155,15 @@ export const exampleOnYourLine: OnYourLine = {
   },
 };
 
+/** Today's "Interview in 2 days" from the example My jobs (src/lib/departures/fixtures.ts): Fri 30 Oct, 10:30 IST. */
+export const exampleNextInterview = {
+  ref: { kind: "check" as const, checkId: "00000000-0000-4000-8000-0000000000a1" },
+  company: "Example Analytics Pvt Ltd",
+  title: "Data analyst",
+  interviewAt: "2026-10-30T05:00:00.000Z",
+  days: 2,
+};
+
 export const exampleFirstTally = { skillsFound: 9, gaps: 5, goals: 5, boardable: 1 };
 
 export const USER_STATE_LABELS: Record<UserState, string> = {

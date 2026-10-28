@@ -12,12 +12,14 @@ import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
 import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { isSampleResumeId } from "@/lib/resume/sample";
-import { USER_STATES, type Departure, type OnYourLine, type UserState } from "@/lib/schemas";
+import { USER_STATES, type Departure, type NextInterviewView, type OnYourLine, type UserState } from "@/lib/schemas";
 import { jobSearchForRequest } from "@/lib/request-reads";
 import { errorFields, logEvent } from "@/lib/log";
 import { rideWithSignal, withSignalTask } from "@/lib/ride/build";
 import { greetingAt } from "@/lib/today/board";
 import { departuresBoard } from "@/lib/departures/store";
+import { nextInterview } from "@/lib/my-jobs/store";
+import { daysUntil } from "@/lib/my-jobs/view";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
 import { currentAnalysis, todayStateFor } from "@/lib/today/state";
 import { switchJobSearch } from "../settings/job-search-actions";
@@ -29,6 +31,7 @@ import {
   exampleFirstTasks,
   exampleGoals,
   exampleName,
+  exampleNextInterview,
   exampleOnYourLine,
   exampleRide,
   exampleSignalCheck,
@@ -53,6 +56,7 @@ const data: TodayData = {
   signalCheck: exampleSignalCheck,
   events: exampleEvents,
   onYourLine: exampleOnYourLine,
+  nextInterview: exampleNextInterview,
   greeting: "Evening",
 };
 
@@ -88,9 +92,9 @@ async function Today({ searchParams }: PageProps<"/today">) {
   if (openPosts) openPosts.catch(() => {});
   const [found, sample] = await Promise.all([todayStateFor(account.id, now, undefined, analysis), analysis ? isSampleResumeId(analysis.resumeId) : false]);
   // The live cards never fail the page: a card that can't be read is left out (the board shows it has no rows).
-  const [board, line]: [Departure[], OnYourLine | null] =
+  const [board, line, interview]: [Departure[], OnYourLine | null, NextInterviewView | null] =
     found.state === "no_resume"
-      ? [[], null]
+      ? [[], null, null]
       : await Promise.all([
           // Job search off sends no board rows; the card says how to turn it on (handoff 6).
           openPosts
@@ -99,7 +103,10 @@ async function Today({ searchParams }: PageProps<"/today">) {
           found.current
             ? onYourLineFor(account.id, found.current, { firstDay: found.state === "first", now }).catch(failed<OnYourLine | null>("today_line_failed", null))
             : Promise.resolve(null),
+          // "Interview in 2 days" from My jobs (handoff 12m), counted in India days here so the page and the card agree.
+          nextInterview(account.id, { now }).catch(failed<NextInterviewView | null>("today_interview_failed", null)),
         ]);
+  const nextUp = interview ? { ...interview, days: daysUntil(interview.interviewAt, now) } : null;
   const signal = found.state === "no_resume" ? null : found.signal;
   const own: TodayData =
     found.state === "first"
@@ -117,6 +124,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
           signalCheck: null,
           signalLive: signal?.live ?? null,
           onYourLine: line,
+          nextInterview: nextUp,
         }
       : found.state === "returning"
         ? {
@@ -131,6 +139,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
             signalCheck: null,
             signalLive: signal?.live ?? null,
             onYourLine: line,
+            nextInterview: nextUp,
           }
         : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
   return (
