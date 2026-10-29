@@ -1,0 +1,144 @@
+{
+  "slug": "golang-developer",
+  "title": "Go Developer",
+  "summary": "Go developers build fast backend services and APIs in the Go language, often for fintech, e-commerce and infrastructure products. They sit in a backend or platform team and own services from design to running them in production.",
+  "dailyDuties": [
+    "Build and change REST or gRPC services in Go",
+    "Write concurrent code with goroutines and channels",
+    "Write unit and integration tests",
+    "Design database tables and queries",
+    "Review pull requests from teammates",
+    "Debug slow or failing services using logs and metrics"
+  ],
+  "typicalTitles": [
+    "Golang Developer",
+    "Golang Engineer",
+    "Backend Engineer - Golang",
+    "Go Backend Developer",
+    "Software Engineer - Go",
+    "SDE 2 - Golang"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Write production backend services in Go",
+      "postingShare": null
+    },
+    {
+      "skillId": "go-concurrency",
+      "importance": "required",
+      "expectation": "Use goroutines, channels and sync primitives safely",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design and build REST APIs used by other teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "required",
+      "expectation": "Build and run small services that talk to each other",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Model data and write queries in PostgreSQL or MySQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "required",
+      "expectation": "Package services as Docker images",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write table-driven unit and integration tests in Go",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in Git with code review",
+      "postingShare": null
+    },
+    {
+      "skillId": "grpc",
+      "importance": "nice_to_have",
+      "expectation": "Define gRPC services with Protocol Buffers",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Produce and consume Kafka or RabbitMQ events",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Cache data in Redis",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and debug services on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Ship services through a CI/CD pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Use AWS services for hosting and storage",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Design for high traffic and failure",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Add metrics and dashboards for services",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "ckad",
+      "importance": "optional",
+      "why": "Deploying Go services on Kubernetes"
+    },
+    {
+      "certId": "aws-developer-associate",
+      "importance": "optional",
+      "why": "Building on AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

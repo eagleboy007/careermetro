@@ -1,0 +1,56 @@
+{
+  "id": "php-developer-wordpress-freelancer",
+  "roleSlug": "php-developer",
+  "persona": "WordPress agency developer aiming for a PHP developer role",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nWordPress Developer, Sahyadri Web Studio, Pune (2024 - present)\n- Build custom WordPress themes and plugins for 12 client websites using hooks, filters and custom post types.\n- Write PHP functions that pull booking data from MySQL tables for a hotel client.\n- Add JavaScript form validation with jQuery and AJAX search to client sites.\n- Convert Figma designs into responsive HTML5 and CSS3 pages.\n- Push code to GitHub and deploy through cPanel.\n\nEDUCATION\nBCA, Savitribai Phule Pune University, 2024\n\nSKILLS\nPHP, WordPress, WooCommerce, MySQL, JavaScript, REST API, Elementor\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "wordpress-development",
+        "quote": "Build custom WordPress themes and plugins for 12 client websites"
+      },
+      {
+        "skillId": "php",
+        "quote": "Write PHP functions that pull booking data"
+      },
+      {
+        "skillId": "sql",
+        "quote": "pull booking data from MySQL tables"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Add JavaScript form validation with jQuery"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Convert Figma designs into responsive HTML5 and CSS3 pages"
+      },
+      {
+        "skillId": "git",
+        "quote": "Push code to GitHub and deploy through cPanel"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "REST API"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rest-apis",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "php-frameworks",
+      "unit-testing",
+      "aws",
+      "docker"
+    ]
+  },
+  "reviewedBy": null
+}

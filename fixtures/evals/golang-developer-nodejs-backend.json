@@ -1,0 +1,52 @@
+{
+  "id": "golang-developer-nodejs-backend",
+  "roleSlug": "golang-developer",
+  "persona": "Node.js backend developer moving to Go",
+  "resumeText": "Arjun Nair | Bengaluru | arjun.nair@example.com\n\nEXPERIENCE\nBackend Developer, Kaveri Commerce Tech, Bengaluru (2022 - present)\n- Build REST APIs in Node.js and Express for the order and returns services.\n- Split the monolith checkout module into four microservices behind an API gateway.\n- Wrote a small Go service that sends order status webhooks to sellers.\n- Design PostgreSQL tables and write SQL queries for seller reports.\n- Package every service in Docker images for the staging cluster.\n- Write Jest unit tests and keep coverage above 80 percent.\n- Raise pull requests on GitHub and review teammates' code.\n\nEDUCATION\nBTech Computer Science, College of Engineering Trivandrum, 2022\n\nSKILLS\nNode.js, TypeScript, Golang, PostgreSQL, Redis, Docker, Kafka\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "rest-apis",
+        "quote": "Build REST APIs in Node.js and Express"
+      },
+      {
+        "skillId": "microservices",
+        "quote": "Split the monolith checkout module into four microservices"
+      },
+      {
+        "skillId": "go",
+        "quote": "Wrote a small Go service that sends order status webhooks"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Design PostgreSQL tables and write SQL queries"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Package every service in Docker images"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Write Jest unit tests and keep coverage above 80 percent"
+      },
+      {
+        "skillId": "git",
+        "quote": "Raise pull requests on GitHub"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "go-concurrency",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "grpc",
+      "kubernetes",
+      "system-design",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

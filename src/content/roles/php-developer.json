@@ -1,0 +1,129 @@
+{
+  "slug": "php-developer",
+  "title": "PHP Developer",
+  "summary": "PHP developers build and maintain websites and web apps in PHP, usually on Laravel or WordPress, with a MySQL database behind them. They often work in small agency or product teams, close to designers, front-end developers and sometimes the client.",
+  "dailyDuties": [
+    "Build features and pages in Laravel or WordPress",
+    "Create and connect REST APIs, such as payment gateways",
+    "Write and fix MySQL queries",
+    "Build custom WordPress themes and plugins",
+    "Debug bugs reported by testers or clients",
+    "Push code to Git and deploy to the server"
+  ],
+  "typicalTitles": [
+    "Laravel Developer",
+    "PHP Laravel Developer",
+    "WordPress Developer",
+    "Core PHP Developer",
+    "CodeIgniter Developer",
+    "PHP Web Developer",
+    "Senior PHP Developer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "php",
+      "importance": "required",
+      "expectation": "Write clean, modern PHP for web applications",
+      "postingShare": null
+    },
+    {
+      "skillId": "php-frameworks",
+      "importance": "required",
+      "expectation": "Build sites and APIs on a PHP framework such as Laravel or CodeIgniter",
+      "postingShare": null,
+      "oneOf": "php-platform"
+    },
+    {
+      "skillId": "wordpress-development",
+      "importance": "required",
+      "expectation": "Build custom WordPress themes and plugins with hooks and custom post types",
+      "postingShare": null,
+      "oneOf": "php-platform"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write MySQL queries and design tables for the app",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build and integrate REST APIs, including payment and third-party APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Add front-end behaviour with JavaScript, jQuery and AJAX",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Turn designs into responsive HTML and CSS pages",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Follow object-oriented and MVC structure in PHP code",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in Git branches and raise pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write PHPUnit tests for important features",
+      "postingShare": null
+    },
+    {
+      "skillId": "orm-databases",
+      "importance": "nice_to_have",
+      "expectation": "Use Eloquent models and migrations well",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Find and fix slow MySQL queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and debug on a Linux server with Apache or Nginx",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo",
+      "importance": "nice_to_have",
+      "expectation": "Keep WordPress sites fast and search-friendly",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "php-platform",
+      "label": "A PHP framework (Laravel, CodeIgniter) or WordPress"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "etl-developer-sql-server-developer",
+  "roleSlug": "etl-developer",
+  "persona": "SQL Server developer with SSIS moving into a full ETL developer role",
+  "resumeText": "Mohammed Irfan | Hyderabad | mohammed.irfan@example.com\n\nEXPERIENCE\nSQL Developer, Deccan Health Analytics, Hyderabad (2021 - present)\n- Write T-SQL stored procedures that load claims data into reporting tables.\n- Built 15 SSIS packages that move daily claim files from SFTP into SQL Server staging tables.\n- Tune slow queries using execution plans and new indexes, cutting a report from 9 minutes to 40 seconds.\n- Design fact and dimension tables in a star schema for the claims data mart.\n- Reconcile row counts and totals between source files and the warehouse after each load.\n- Build SSRS reports for the finance team.\n\nEDUCATION\nBSc Computer Science, Osmania University, 2021\n\nSKILLS\nSQL Server, T-SQL, SSIS, SSRS, Excel, Unix basics\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Write T-SQL stored procedures that load claims data"
+      },
+      {
+        "skillId": "ssis",
+        "quote": "Built 15 SSIS packages that move daily claim files"
+      },
+      {
+        "skillId": "etl",
+        "quote": "move daily claim files from SFTP into SQL Server staging tables"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Tune slow queries using execution plans and new indexes"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Design fact and dimension tables in a star schema"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "Reconcile row counts and totals between source files and the warehouse"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "scripting-bash",
+        "status": "missing"
+      },
+      {
+        "skillId": "batch-scheduling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "informatica",
+      "talend",
+      "python",
+      "cloud-data-warehouse"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,147 @@
+{
+  "slug": "qa-lead",
+  "title": "QA Lead",
+  "summary": "A QA lead (quality assurance lead) owns testing for a product or release: planning what gets tested, leading a team of manual and automation testers, and saying whether a release is ready to ship. They sit in the QA or engineering team and report quality risks to product and engineering leads.",
+  "dailyDuties": [
+    "Write the test strategy and test plan for each release",
+    "Estimate test effort and assign work to testers",
+    "Run defect triage meetings with developers and product owners",
+    "Review test cases and automation code written by the team",
+    "Track regression runs in the CI pipeline and chase flaky tests",
+    "Share test status and give go/no-go input before each release",
+    "Coach junior testers on test design and tools"
+  ],
+  "typicalTitles": [
+    "Test Lead",
+    "QA Test Lead",
+    "Quality Assurance Lead",
+    "Lead QA Engineer",
+    "Automation Test Lead",
+    "QA Automation Lead",
+    "Testing Lead",
+    "Lead SDET"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Write the test strategy, test plan and effort estimates for each release",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a team of testers: assign work, track progress and grow their skills",
+      "postingShare": null
+    },
+    {
+      "skillId": "selenium",
+      "importance": "required",
+      "expectation": "Guide the team's UI automation framework and review automation code",
+      "postingShare": null,
+      "oneOf": "ui-automation-tool"
+    },
+    {
+      "skillId": "playwright-cypress",
+      "importance": "required",
+      "expectation": "Guide the team's UI automation framework and review automation code",
+      "postingShare": null,
+      "oneOf": "ui-automation-tool"
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "required",
+      "expectation": "Test and automate REST APIs with Postman or Rest Assured",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Run defect triage and track defects to closure in Jira or a similar tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Plan testing inside sprints with developers and product owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Give go/no-go input on releases and report quality risks to product and engineering leads",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear test status and release quality reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "nice_to_have",
+      "expectation": "Do exploratory and functional testing alongside the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run automated regression suites in the CI pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-testing",
+      "importance": "nice_to_have",
+      "expectation": "Plan load tests with JMeter or similar tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Validate data in the database with SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate user acceptance testing with business users",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "ui-automation-tool",
+      "label": "A UI automation tool (Selenium, Playwright or Cypress)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-foundation",
+      "importance": "recommended",
+      "why": "Baseline testing credential most Indian QA postings recognise"
+    },
+    {
+      "certId": "istqb-test-automation",
+      "importance": "optional",
+      "why": "Automation strategy and framework design"
+    },
+    {
+      "certId": "csm",
+      "importance": "optional",
+      "why": "Scrum knowledge for leads working inside agile teams"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

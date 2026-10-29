@@ -56,6 +56,10 @@
     "task": "On an Azure free account, deploy a web app with a managed database, put secrets in Key Vault, and share an architecture diagram with screenshots in a README."
   },
   {
+    "skillId": "batch-scheduling",
+    "task": "Design a nightly batch flow of 6 jobs for a fictional bank with dependencies, a file trigger and a restart point, in the free Control-M Workbench or as an Autosys JIL file, and write a runbook for when job 3 fails."
+  },
+  {
     "skillId": "bug-tracking",
     "task": "Find 3 real bugs on a public demo site and write clear reports for each with steps to reproduce, expected vs actual, environment, severity and a screenshot."
   },
@@ -66,6 +70,10 @@
   {
     "skillId": "ci-cd",
     "task": "Add a GitHub Actions workflow to a small repo that lints, tests and builds a Docker image on every pull request, and share a link to a passing run."
+  },
+  {
+    "skillId": "cics",
+    "task": "On IBM Z Xplore or another free z/OS learning system, write a small CICS COBOL program with a BMS map that looks up a customer by ID in a sample file, handles not-found, and share the code with screenshots of the screen."
   },
   {
     "skillId": "cloud-cost",
@@ -100,12 +108,28 @@
     "task": "Given a list of 10 synthetic cloud misconfigurations (open storage bucket, wildcard IAM policy, unencrypted disk, etc.), rank them by risk and write the fix for each."
   },
   {
+    "skillId": "cobol",
+    "task": "Write a COBOL batch program (GnuCOBOL on your laptop or IBM Z Xplore) that reads a synthetic transactions file, validates each record, writes totals and an error report, and share the code with sample input and output."
+  },
+  {
+    "skillId": "code-review",
+    "task": "Open a pull request of about 200 lines in a practice repo of your own, then review it as if a teammate wrote it: leave 8 or more comments on bugs, naming and tests, and write a one-page note on what you would block and why."
+  },
+  {
     "skillId": "communication",
     "task": "Write a 200-word status email for a delayed project (what slipped, why, the new date, the ask) and a 3-slide summary for a senior manager. Share both as a PDF."
   },
   {
     "skillId": "compliance-frameworks",
     "task": "Map 10 ISO 27001 Annex A controls to SOC 2 criteria and NIST CSF functions in a spreadsheet, with an example of evidence that would satisfy each."
+  },
+  {
+    "skillId": "computer-vision",
+    "task": "Fine-tune a YOLO or Faster R-CNN detector on a free public dataset (such as a Roboflow Universe or Kaggle set) of about 500 images, report mAP per class, show 10 failure cases, and share the notebook and a short write-up."
+  },
+  {
+    "skillId": "container-security",
+    "task": "Scan a sample Docker image with Trivy or Grype, fix the critical findings with a slimmer base image and a non-root user, add the scan to a GitHub Actions build that fails on criticals, and share the before and after reports."
   },
   {
     "skillId": "content-marketing",
@@ -126,6 +150,10 @@
   {
     "skillId": "csharp-dotnet",
     "task": "Build a small ASP.NET Core Web API with two endpoints, input validation and one unit test project. Share the repo."
+  },
+  {
+    "skillId": "data-catalog-tools",
+    "task": "Set up OpenMetadata or DataHub locally with Docker over a sample database, add owners, a business glossary of 10 terms and lineage for one table, and share screenshots with a note on who would use each part."
   },
   {
     "skillId": "data-cleaning",
@@ -152,6 +180,10 @@
     "task": "For a synthetic food-delivery app, list the personal data it collects, the lawful ground under India's DPDP Act for each, the notice the user must see and how consent is withdrawn."
   },
   {
+    "skillId": "data-quality-management",
+    "task": "Write 10 data quality rules (completeness, validity, uniqueness) for a synthetic customer table with Great Expectations or SQL checks, run them, publish a simple scorecard and write a note on who should fix each failure."
+  },
+  {
     "skillId": "data-structures-algorithms",
     "task": "Solve 10 easy and medium LeetCode problems covering arrays, hashing, two pointers, trees and graphs, and push solutions with a time and space complexity note for each."
   },
@@ -162,6 +194,14 @@
   {
     "skillId": "database-security",
     "task": "On a local PostgreSQL database, create read-only and app roles, enable row-level security, mask a sensitive column with a view, and turn on audit logging. Document each step."
+  },
+  {
+    "skillId": "dataverse",
+    "task": "In the free Power Apps Developer Plan, design 3 related Dataverse tables for a fictional asset tracker with choices, a lookup, business rules and a security role, and share the data model diagram and screenshots."
+  },
+  {
+    "skillId": "db2",
+    "task": "On IBM Z Xplore or the free Db2 Community Edition, create tables for a synthetic loan portfolio, load sample rows, write 5 queries with joins and aggregates, read one EXPLAIN plan, and share the SQL and results."
   },
   {
     "skillId": "dbt",
@@ -240,6 +280,10 @@
     "task": "Build a Flutter app with two screens, state managed with Provider or Riverpod, and data from a public API with loading and error states. Share the repo."
   },
   {
+    "skillId": "game-math",
+    "task": "Build a small Unity or Godot scene that uses vectors, dot products and quaternions for a turret that tracks a moving target, with ray-based line-of-sight and simple collisions. Share the code and a short video."
+  },
+  {
     "skillId": "gcp",
     "task": "On a Google Cloud free trial, deploy a container to Cloud Run with a Cloud Storage bucket, set a budget alert and share a diagram and screenshots."
   },
@@ -256,6 +300,10 @@
     "task": "Write a small Go CLI that checks a list of URLs concurrently and reports status codes and latency, with tests, and publish it on GitHub."
   },
   {
+    "skillId": "go-concurrency",
+    "task": "Write a Go command-line tool that fetches 100 public test URLs with a worker pool of goroutines and channels, a context timeout and graceful cancellation, passes go test -race, and shares the code with timing results."
+  },
+  {
     "skillId": "graphql",
     "task": "Build a small GraphQL API with a schema, 2 queries and 1 mutation, and a client that consumes it. Share the repo with example queries."
   },
@@ -266,6 +314,10 @@
   {
     "skillId": "html-css",
     "task": "Build a responsive, semantic landing page with Flexbox and Grid that works from 320px to desktop, deploy it on GitHub Pages and share the link."
+  },
+  {
+    "skillId": "hyperledger-fabric",
+    "task": "Run the Hyperledger Fabric test network from fabric-samples on your laptop, write and deploy chaincode for a simple asset transfer with an access check, call it from a client app and share the code and logs."
   },
   {
     "skillId": "identity-access-management",
@@ -282,6 +334,14 @@
   {
     "skillId": "incident-management",
     "task": "Write a blameless postmortem for a synthetic 40-minute outage (timeline given): impact, root cause, what went well, and five action items with owners."
+  },
+  {
+    "skillId": "industrial-control-systems",
+    "task": "In OpenPLC and a free HMI or SCADA simulator, build a tank-fill control loop with ladder logic, read its values over Modbus TCP, and share the ladder diagram, HMI screenshots and a note on each tag. Never touch a live plant."
+  },
+  {
+    "skillId": "informatica",
+    "task": "In a free Informatica Cloud Data Integration trial, build a mapping that loads a synthetic sales CSV into a staging table with a lookup, a reject file and an incremental load, then share screenshots of the mapping and a run."
   },
   {
     "skillId": "interaction-design",
@@ -302,6 +362,10 @@
   {
     "skillId": "javascript",
     "task": "Build a small vanilla JavaScript app that fetches public API data with async/await and handles loading, error and empty states. Deploy it and share the repo."
+  },
+  {
+    "skillId": "jcl",
+    "task": "On IBM Z Xplore or another free z/OS learning system, write JCL that sorts a sample dataset, runs a COBOL step, writes a new GDG generation and skips a step on a bad return code. Share the JCL and job output."
   },
   {
     "skillId": "kotlin",
@@ -334,6 +398,10 @@
   {
     "skillId": "machine-learning",
     "task": "Train and compare a logistic regression and a gradient boosting model on a public tabular dataset, tune one, and explain the top features in a notebook."
+  },
+  {
+    "skillId": "mainframe-tools",
+    "task": "On IBM Z Xplore, use TSO/ISPF to create and edit datasets, submit a job, read its output in SDSF and browse a dataset, then write a short how-to with screenshots for a new teammate doing the same."
   },
   {
     "skillId": "malware-analysis",
@@ -412,6 +480,10 @@
     "task": "Design a parking lot or library system in Java with classes, interfaces and 2 design patterns, and include a UML class diagram and a short rationale."
   },
   {
+    "skillId": "opencv",
+    "task": "With OpenCV in Python, build a script that reads a short sample video, corrects lighting, finds and counts moving objects with background subtraction and contours, and share the code with an annotated output clip."
+  },
+  {
     "skillId": "oracle-database",
     "task": "In Oracle Live SQL, create a small schema, write PL/SQL for a stored procedure and a trigger, and share the script and output."
   },
@@ -422,6 +494,10 @@
   {
     "skillId": "osint",
     "task": "Build a passive OSINT profile of a fictional or your own test domain using only public sources (WHOIS, certificate logs, Shodan, search engines). Never touch the target. List 10 findings, each with its source and why it matters."
+  },
+  {
+    "skillId": "ot-ics-security",
+    "task": "For a fictional chemical plant, draw a Purdue model network with zones and conduits per IEC 62443, list 10 risks with the controls you would add, and write a one-page plan for safe monitoring. Use only made-up assets."
   },
   {
     "skillId": "pandas",
@@ -448,8 +524,24 @@
     "task": "Write a k6 or JMeter load test for a public test API, ramp to 50 virtual users, and report p95 latency, error rate and the point where it degrades."
   },
   {
+    "skillId": "php",
+    "task": "Write a small PHP 8 app without a framework: a contact list with create, edit and delete over MySQL using PDO prepared statements, input validation and sessions for login. Share the repo with a README and screenshots."
+  },
+  {
+    "skillId": "php-frameworks",
+    "task": "Build a Laravel or CodeIgniter app for a small library: books and members with Eloquent relations, authentication, form validation, a REST endpoint and feature tests. Share the repo and a short screen recording."
+  },
+  {
     "skillId": "playwright-cypress",
     "task": "Write 5 end-to-end tests with Playwright or Cypress for a public demo site (login, search, checkout), run them in CI and share the report."
+  },
+  {
+    "skillId": "power-apps",
+    "task": "In the free Power Apps Developer Plan, build a canvas app for a fictional field team to log site visits with photos, offline-friendly forms and a manager approval screen, and share screenshots with the Power Fx you wrote."
+  },
+  {
+    "skillId": "power-automate",
+    "task": "In the free Power Apps Developer Plan, build a Power Automate flow that routes a leave request for approval, emails the result and logs it to a SharePoint list or Dataverse table, with error handling. Share screenshots."
   },
   {
     "skillId": "power-bi",
@@ -580,6 +672,10 @@
     "task": "Write a Bash script that scans a log folder, counts errors per hour, and emails or prints a summary, with argument checks and a usage message."
   },
   {
+    "skillId": "secrets-management",
+    "task": "Move hard-coded passwords out of a sample app into HashiCorp Vault in dev mode or a cloud secrets manager free tier, add gitleaks to a pre-commit hook and CI, and share the repo with a note on how secrets rotate."
+  },
+  {
     "skillId": "secure-code-review",
     "task": "Review a synthetic 150-line login and file-upload handler, list every security flaw with its OWASP category and severity, and write the corrected code."
   },
@@ -624,8 +720,16 @@
     "task": "In a free ServiceNow developer instance, write a business rule, a client script and a script include called with GlideAjax for a custom incident check, then test each one and share the code with screenshots and a short note."
   },
   {
+    "skillId": "sharepoint",
+    "task": "In a free Microsoft 365 developer tenant, build a SharePoint Online team site with 2 lists, a document library with metadata and versioning, and permissions for 3 test groups. Document each step with screenshots."
+  },
+  {
     "skillId": "siem",
     "task": "Using the free Splunk BOTS v3 dataset or a Sentinel free trial, write 3 searches that find suspicious logins or processes, and document each with a screenshot and what it detects."
+  },
+  {
+    "skillId": "smart-contract-security",
+    "task": "Solve 5 levels of OpenZeppelin Ethernaut or Damn Vulnerable DeFi on a test network, run Slither on each vulnerable contract, and write a short audit note per issue with the fix. Use test networks only, never mainnet."
   },
   {
     "skillId": "soar",
@@ -634,6 +738,14 @@
   {
     "skillId": "social-media-marketing",
     "task": "Write a 4-week Meta and LinkedIn campaign plan for a fictional brand with audiences, 6 ad creatives (copy plus mock visuals), budget split and KPIs."
+  },
+  {
+    "skillId": "software-supply-chain-security",
+    "task": "For a sample open-source app, generate an SBOM with Syft or CycloneDX, scan it with Grype or OWASP Dependency-Check, fix 3 vulnerable dependencies, and add both steps to a GitHub Actions build. Share the reports."
+  },
+  {
+    "skillId": "solidity",
+    "task": "Write an ERC-20 token and a simple escrow contract in Solidity with OpenZeppelin, test them with Hardhat or Foundry on a local chain, deploy to a public testnet such as Sepolia, and share the repo and test results."
   },
   {
     "skillId": "spark",
@@ -654,6 +766,10 @@
   {
     "skillId": "sre-practices",
     "task": "Define 2 SLIs and SLOs with an error budget for a fictional API, then write a blameless postmortem for a made-up outage using a standard template."
+  },
+  {
+    "skillId": "ssis",
+    "task": "With the free SQL Server Developer edition and Visual Studio Community, build an SSIS package that loads synthetic daily CSV files into staging, checks row counts, logs errors and moves done files. Share the package and logs."
   },
   {
     "skillId": "stakeholder-management",
@@ -686,6 +802,10 @@
   {
     "skillId": "tableau",
     "task": "Build and publish a Tableau Public dashboard on a public Indian dataset with at least one filter, one calculated field and a clear title that states the takeaway."
+  },
+  {
+    "skillId": "talend",
+    "task": "In Talend Open Studio or a Qlik Talend Cloud trial, build a job that joins two synthetic CSV files, cleans dates and duplicates, loads a database table, and logs rejects. Share the job export and screenshots of a run."
   },
   {
     "skillId": "technical-leadership",
@@ -732,6 +852,14 @@
     "task": "Write 10 unit tests for a small module or React component with Jest or Vitest plus Testing Library, and show a coverage report in the README."
   },
   {
+    "skillId": "unity-engine",
+    "task": "Build a small 2D or 3D game in Unity with a player controller, 2 enemy types, a score and a menu, pool its bullets, check frame time in the Profiler, and share a playable WebGL build or video with the repo."
+  },
+  {
+    "skillId": "unreal-engine",
+    "task": "Build a small third-person level in Unreal Engine 5 with a pickup, a door that opens on a trigger and a simple enemy, using Blueprints and one C++ class. Share a packaged build or video and the project repo."
+  },
+  {
     "skillId": "usability-testing",
     "task": "Run a five-person usability test of a public website task, write the script, log the issues by severity and recommend three fixes."
   },
@@ -746,6 +874,10 @@
   {
     "skillId": "virtualization",
     "task": "On a free hypervisor (Proxmox, Hyper-V or VirtualBox), create 2 VMs from one template, set CPU and memory limits, take and restore a snapshot, and write a short runbook with screenshots of each step."
+  },
+  {
+    "skillId": "vsam",
+    "task": "On IBM Z Xplore or another free z/OS learning system, define a VSAM KSDS with IDCAMS, load it from a sample file, and write a COBOL program that reads, updates and deletes records by key. Share the JCL, code and output."
   },
   {
     "skillId": "vulnerability-management",
@@ -766,6 +898,10 @@
   {
     "skillId": "wireframing",
     "task": "Sketch low-fidelity wireframes for 4 screens of a job-search app (search, results, detail, apply) in Figma or on paper, and annotate the key interactions."
+  },
+  {
+    "skillId": "wordpress-development",
+    "task": "Build a custom WordPress theme and a small plugin with a custom post type, a shortcode and a settings page on a local install (LocalWP or XAMPP), escaping all output. Share the code and screenshots of the admin and site."
   },
   {
     "skillId": "mobile-architecture",

@@ -1,0 +1,147 @@
+{
+  "slug": "etl-developer",
+  "title": "ETL Developer",
+  "summary": "ETL developers build the jobs that extract data from source systems, clean and reshape it, and load it into a data warehouse, using tools such as Informatica, SSIS or Talend. They sit in a data warehousing or data integration team and hand clean data to report and BI developers.",
+  "dailyDuties": [
+    "Build and change mappings, packages or jobs in the ETL tool",
+    "Write SQL and stored procedures for transforms",
+    "Load fact and dimension tables, including slowly changing dimensions",
+    "Tune slow loads and queries",
+    "Monitor scheduled loads and fix failures",
+    "Reconcile counts between source and target"
+  ],
+  "typicalTitles": [
+    "Informatica Developer",
+    "SSIS Developer",
+    "Talend Developer",
+    "IICS Developer",
+    "ETL Informatica Developer",
+    "Data Warehouse Developer",
+    "DataStage Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "informatica",
+      "importance": "required",
+      "expectation": "Build mappings and workflows in Informatica PowerCenter or IICS",
+      "postingShare": null,
+      "oneOf": "etl-tool"
+    },
+    {
+      "skillId": "ssis",
+      "importance": "required",
+      "expectation": "Build SSIS packages that load SQL Server",
+      "postingShare": null,
+      "oneOf": "etl-tool"
+    },
+    {
+      "skillId": "talend",
+      "importance": "required",
+      "expectation": "Build Talend jobs that move and transform data",
+      "postingShare": null,
+      "oneOf": "etl-tool"
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Design loads from source files and databases into a data warehouse",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write complex SQL and PL/SQL or T-SQL procedures",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Load star schemas and handle slowly changing dimensions",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "required",
+      "expectation": "Tune slow queries and long-running loads",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write Unix shell scripts to run and check jobs",
+      "postingShare": null
+    },
+    {
+      "skillId": "batch-scheduling",
+      "importance": "required",
+      "expectation": "Schedule and monitor loads in Control-M or Autosys",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-cleaning",
+      "importance": "required",
+      "expectation": "Check data quality and reconcile source and target counts",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Work with Oracle as a source or target",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Load Snowflake, Redshift or Synapse",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate checks and small transforms in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Use Azure data services alongside the ETL tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep ETL code and scripts in version control",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "etl-tool",
+      "label": "An ETL tool (Informatica, SSIS or Talend)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "optional",
+      "why": "Proves solid SQL on Oracle"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "Useful where loads move to Snowflake"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,129 @@
+{
+  "slug": "blockchain-developer",
+  "title": "Blockchain Developer",
+  "summary": "A blockchain developer writes smart contracts (programs that run on a blockchain) and the backend code that connects them to apps, on public chains like Ethereum or private ones like Hyperledger Fabric. They sit in a product team at a web3 startup, fintech or IT services firm, working with backend, front-end and security engineers.",
+  "dailyDuties": [
+    "Write and update smart contracts in Solidity or Fabric chaincode",
+    "Write unit tests for contracts and run them before every deployment",
+    "Deploy contracts to test networks and check them on a block explorer",
+    "Build backend APIs that read from and write to the chain",
+    "Review contract code for security issues and gas cost",
+    "Fix issues raised in internal or external audits"
+  ],
+  "typicalTitles": [
+    "Solidity Developer",
+    "Smart Contract Developer",
+    "Smart Contract Engineer",
+    "Blockchain Engineer",
+    "Web3 Developer",
+    "Hyperledger Fabric Developer",
+    "dApp Developer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "solidity",
+      "importance": "required",
+      "expectation": "Write, test and deploy smart contracts on Ethereum or another EVM chain, or on Hyperledger Fabric",
+      "postingShare": null,
+      "oneOf": "smart-contract-platform"
+    },
+    {
+      "skillId": "hyperledger-fabric",
+      "importance": "required",
+      "expectation": "Write, test and deploy smart contracts on Ethereum or another EVM chain, or on Hyperledger Fabric",
+      "postingShare": null,
+      "oneOf": "smart-contract-platform"
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Build the backend services and chaincode that talk to the chain",
+      "postingShare": null,
+      "oneOf": "chain-language"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Build the backend services and chaincode that talk to the chain",
+      "postingShare": null,
+      "oneOf": "chain-language"
+    },
+    {
+      "skillId": "smart-contract-security",
+      "importance": "required",
+      "expectation": "Avoid common contract bugs such as reentrancy and prepare code for audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "required",
+      "expectation": "Understand hashing, public and private keys and digital signatures",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write automated tests for contracts and services before deployment",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Expose blockchain features to apps through REST APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in Git with branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "web3-integration",
+      "importance": "nice_to_have",
+      "expectation": "Connect apps and wallets to contracts with ethers.js or web3.js",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "nice_to_have",
+      "expectation": "Build simple dApp front ends",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run local chains and Fabric networks in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Write typed backend and test code",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "smart-contract-platform",
+      "label": "A smart contract platform (Solidity/EVM or Hyperledger Fabric)"
+    },
+    {
+      "id": "chain-language",
+      "label": "A backend language for chain services (Node.js or Go)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

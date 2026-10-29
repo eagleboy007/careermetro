@@ -1,0 +1,133 @@
+{
+  "slug": "ot-security-engineer",
+  "title": "OT/ICS Security Engineer",
+  "summary": "An OT/ICS security engineer protects the computers and networks that run factories, power plants and utilities, such as PLCs (programmable logic controllers) and SCADA (supervisory control) systems. They sit in a cybersecurity or plant engineering team and work with control engineers so that security changes never stop production.",
+  "dailyDuties": [
+    "Review OT network alerts from monitoring tools such as Nozomi or Claroty",
+    "Keep the inventory of PLCs, HMIs and servers up to date",
+    "Design firewall rules and segmentation between plant and corporate networks",
+    "Run risk assessments against IEC 62443 for a plant or site",
+    "Plan patching and OT-safe vulnerability scans around shutdowns",
+    "Approve and monitor secure remote access for vendors",
+    "Explain security changes to plant operators and control engineers"
+  ],
+  "typicalTitles": [
+    "OT Security Engineer",
+    "OT Cybersecurity Engineer",
+    "ICS Security Engineer",
+    "Industrial Cybersecurity Engineer",
+    "OT Security Consultant",
+    "OT Security Analyst",
+    "SCADA Security Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ot-ics-security",
+      "importance": "required",
+      "expectation": "Apply IEC 62443 and the Purdue model to secure plant networks and control systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-control-systems",
+      "importance": "required",
+      "expectation": "Understand how PLCs, SCADA, DCS and HMIs work and talk to each other on the plant floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Design and maintain firewalls, industrial DMZs and zone-and-conduit segmentation",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Run OT risk assessments and gap assessments against IEC 62443 or NIST 800-82",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "required",
+      "expectation": "Find and fix vulnerabilities in OT assets with OT-safe scanning and planned patching",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Monitor OT network alerts from tools such as Nozomi, Claroty or Dragos and escalate anomalies",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain security changes to plant operators, control engineers and IT teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "nice_to_have",
+      "expectation": "Configure VLANs and switches on control networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "nice_to_have",
+      "expectation": "Support OT incident response plans and tabletop exercises",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Map controls to NIST CSF or ISO 27001 alongside IEC 62443",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "nice_to_have",
+      "expectation": "Control secure remote access and accounts for vendors and engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "nice_to_have",
+      "expectation": "Harden Windows servers that run HMIs, historians and engineering workstations",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate asset inventory and reporting tasks",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Security fundamentals for engineers coming from controls or networking"
+    },
+    {
+      "certId": "ccna",
+      "importance": "optional",
+      "why": "Networking basics for segmenting plant networks"
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "Broad security credential asked for in senior OT roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

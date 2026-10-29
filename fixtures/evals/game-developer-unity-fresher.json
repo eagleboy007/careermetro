@@ -1,0 +1,47 @@
+{
+  "id": "game-developer-unity-fresher",
+  "roleSlug": "game-developer",
+  "persona": "Computer science fresher with a Unity internship and game jam project",
+  "resumeText": "Rohan Deshmukh | Nagpur | rohan.deshmukh@example.com\n\nEXPERIENCE\nGame Development Intern, Vidarbha Pixel Games, Nagpur (Jan 2026 - Jun 2026)\n- Scripted player movement, jumping and enemy AI in C# for a 2D Unity platformer.\n- Used vector math and raycasts to handle collisions and line-of-sight checks.\n- Used the Unity Profiler to cut garbage collection spikes by pooling bullets.\n- Committed daily work to a shared Git repository and fixed merge conflicts.\n\nPROJECTS\n- Built a 3D endless runner in Unity for a 48-hour game jam with two friends.\n\nEDUCATION\nBTech Computer Science, Shri Ramdeobaba College of Engineering, Nagpur, 2026\n\nSKILLS\nUnity, C#, C++, Blender, Git, OOP\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "unity-engine",
+        "quote": "enemy AI in C# for a 2D Unity platformer"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Scripted player movement, jumping and enemy AI in C#"
+      },
+      {
+        "skillId": "game-math",
+        "quote": "Used vector math and raycasts to handle collisions"
+      },
+      {
+        "skillId": "performance-profiling",
+        "quote": "Used the Unity Profiler to cut garbage collection spikes"
+      },
+      {
+        "skillId": "git",
+        "quote": "Committed daily work to a shared Git repository"
+      },
+      {
+        "skillId": "oop",
+        "quote": "OOP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oop",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "unreal-engine",
+      "game-networking",
+      "mobile-release"
+    ]
+  },
+  "reviewedBy": null
+}

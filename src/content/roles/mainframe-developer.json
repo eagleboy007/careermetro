@@ -1,0 +1,115 @@
+{
+  "slug": "mainframe-developer",
+  "title": "Mainframe Developer",
+  "summary": "Mainframe developers write and maintain COBOL programs on IBM mainframes (large central computers) that run banking, cards and insurance systems. Most work in IT services or bank technology centres, with an onshore client team and a batch support rota.",
+  "dailyDuties": [
+    "Change COBOL programs for new business rules",
+    "Write and fix JCL for batch jobs",
+    "Write DB2 SQL to read and check data",
+    "Fix abends in the nightly batch cycle",
+    "Promote code through Endevor or ChangeMan",
+    "Update the onshore team on ticket status"
+  ],
+  "typicalTitles": [
+    "COBOL Developer",
+    "Mainframe Programmer",
+    "Mainframe Software Engineer",
+    "Mainframe Application Developer",
+    "Senior Mainframe Developer",
+    "COBOL Programmer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "cobol",
+      "importance": "required",
+      "expectation": "Write and change COBOL batch and online programs",
+      "postingShare": null
+    },
+    {
+      "skillId": "jcl",
+      "importance": "required",
+      "expectation": "Write and fix JCL for batch jobs",
+      "postingShare": null
+    },
+    {
+      "skillId": "db2",
+      "importance": "required",
+      "expectation": "Write DB2 SQL in programs and for data checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "cics",
+      "importance": "required",
+      "expectation": "Build and fix CICS online transactions",
+      "postingShare": null
+    },
+    {
+      "skillId": "vsam",
+      "importance": "required",
+      "expectation": "Read and update VSAM files",
+      "postingShare": null
+    },
+    {
+      "skillId": "mainframe-tools",
+      "importance": "required",
+      "expectation": "Use TSO/ISPF, Endevor or ChangeMan, and File-AID or Xpediter",
+      "postingShare": null
+    },
+    {
+      "skillId": "batch-scheduling",
+      "importance": "required",
+      "expectation": "Monitor and rerun batch cycles in Control-M or CA-7",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Fix abends and production issues within the agreed time",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking, cards or insurance processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in sprints with an onshore team",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Help move mainframe logic to Java services",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Expose mainframe programs as APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Give clear status updates to onshore clients",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

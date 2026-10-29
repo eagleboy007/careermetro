@@ -1,0 +1,123 @@
+{
+  "slug": "game-developer",
+  "title": "Game Developer",
+  "summary": "Game developers write the code that makes a game work: player controls, game rules, menus and performance, usually in Unity (C#) or Unreal Engine (C++). They sit in a game studio team with designers and artists, and many Indian studios make mobile games.",
+  "dailyDuties": [
+    "Build gameplay features in Unity or Unreal",
+    "Fix bugs found in playtests",
+    "Profile and improve frame rate and memory",
+    "Hook up art, animation and sound from the art team",
+    "Integrate ad, analytics and store SDKs",
+    "Review code and merge work in Git"
+  ],
+  "typicalTitles": [
+    "Unity Developer",
+    "Unity Game Developer",
+    "Unreal Engine Developer",
+    "Game Programmer",
+    "Gameplay Programmer",
+    "Mobile Game Developer",
+    "Unity 3D Developer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "unity-engine",
+      "importance": "required",
+      "expectation": "Build gameplay, UI and scenes in Unity",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "unreal-engine",
+      "importance": "required",
+      "expectation": "Build gameplay in Unreal Engine with C++ and Blueprints",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write game code in C# (Unity)",
+      "postingShare": null,
+      "oneOf": "game-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write game code in C++ (Unreal)",
+      "postingShare": null,
+      "oneOf": "game-language"
+    },
+    {
+      "skillId": "game-math",
+      "importance": "required",
+      "expectation": "Use vector math, physics and collisions in gameplay code",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Structure game code with OOP and common game patterns",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-profiling",
+      "importance": "required",
+      "expectation": "Profile frame rate and memory and fix the slow parts",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Share work through Git with artists and other developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "game-networking",
+      "importance": "nice_to_have",
+      "expectation": "Build multiplayer features with Photon or Netcode",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-release",
+      "importance": "nice_to_have",
+      "expectation": "Ship builds to the Play Store and App Store",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "nice_to_have",
+      "expectation": "Pick the right data structures for game systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Integrate ad, analytics and backend SDKs",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "game-engine",
+      "label": "A game engine (Unity or Unreal)"
+    },
+    {
+      "id": "game-language",
+      "label": "A game language (C# or C++)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

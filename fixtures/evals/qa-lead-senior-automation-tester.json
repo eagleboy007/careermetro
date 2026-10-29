@@ -1,0 +1,56 @@
+{
+  "id": "qa-lead-senior-automation-tester",
+  "roleSlug": "qa-lead",
+  "persona": "Senior automation tester who plans releases but has not yet led a team",
+  "resumeText": "Kavya Reddy | Hyderabad | kavya.reddy@example.com\n\nEXPERIENCE\nSenior QA Engineer, Banjara Health Systems, Hyderabad (2018 - present)\n- Wrote the test strategy and test plan for each quarterly release of the patient app.\n- Built a Selenium WebDriver framework in Java with 900 regression tests.\n- Automate REST API checks with Postman and Rest Assured.\n- Run defect triage calls with developers and log bugs in Jira.\n- Take part in sprint planning and backlog grooming with the Scrum team.\n- Present release quality reports to the product and engineering heads.\n- Guide three junior testers on writing test cases.\n\nQA Engineer, Charminar Softlabs, Hyderabad (2016 - 2018)\n- Tested web forms and reports by hand against written test cases.\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2016\n\nCERTIFICATIONS\nISTQB Certified Tester Foundation Level (2017)\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "test-planning",
+        "quote": "Wrote the test strategy and test plan for each quarterly release"
+      },
+      {
+        "skillId": "selenium",
+        "quote": "Built a Selenium WebDriver framework in Java with 900 regression tests"
+      },
+      {
+        "skillId": "api-testing",
+        "quote": "Automate REST API checks with Postman and Rest Assured"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Run defect triage calls with developers and log bugs in Jira"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Take part in sprint planning and backlog grooming"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present release quality reports to the product and engineering heads"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Present release quality reports to the product and engineering heads"
+      },
+      {
+        "skillId": "manual-testing",
+        "quote": "Tested web forms and reports by hand against written test cases"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "people-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "playwright-cypress",
+      "performance-testing",
+      "sql",
+      "uat"
+    ]
+  },
+  "reviewedBy": null
+}

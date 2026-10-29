@@ -1,0 +1,139 @@
+{
+  "slug": "computer-vision-engineer",
+  "title": "Computer Vision Engineer",
+  "summary": "Computer vision engineers build models that understand images and video, such as spotting defects, reading number plates or counting people. They sit in an AI or product team and take a model from labelled data to something that runs on servers or small edge devices (cameras and boards on site).",
+  "dailyDuties": [
+    "Prepare and check labelled image datasets",
+    "Train and fine-tune detection or segmentation models",
+    "Pre-process images and video with OpenCV",
+    "Measure models with mAP, precision and recall",
+    "Speed up models for edge devices or GPUs",
+    "Ship inference code to the product team"
+  ],
+  "typicalTitles": [
+    "Computer Vision Developer",
+    "CV Engineer",
+    "Vision AI Engineer",
+    "Image Processing Engineer",
+    "Machine Vision Engineer",
+    "Video Analytics Engineer",
+    "Perception Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write training and inference code in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "computer-vision",
+      "importance": "required",
+      "expectation": "Train detection, segmentation or classification models on images and video",
+      "postingShare": null
+    },
+    {
+      "skillId": "opencv",
+      "importance": "required",
+      "expectation": "Pre-process images and video with OpenCV",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "required",
+      "expectation": "Understand CNNs and modern vision architectures",
+      "postingShare": null
+    },
+    {
+      "skillId": "pytorch",
+      "importance": "required",
+      "expectation": "Train and fine-tune vision models in PyTorch",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Measure models with mAP, IoU, precision and recall",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Linux GPU machines",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep code and experiments in Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "edge-model-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Speed up models with ONNX, TensorRT or quantization for edge devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Write fast inference code in C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-annotation",
+      "importance": "nice_to_have",
+      "expectation": "Run annotation in CVAT or Label Studio and check label quality",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "nice_to_have",
+      "expectation": "Deploy models behind an API",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package inference in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Train or host models on a cloud GPU",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "nice_to_have",
+      "expectation": "Track experiments and model versions",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Training and deploying models on AWS"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Training and deploying models on Google Cloud"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

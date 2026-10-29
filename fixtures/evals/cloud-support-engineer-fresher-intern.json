@@ -1,0 +1,60 @@
+{
+  "id": "cloud-support-engineer-fresher-intern",
+  "roleSlug": "cloud-support-engineer",
+  "persona": "Fresh BTech graduate with a six-month AWS internship",
+  "resumeText": "Mohammed Irfan | Hyderabad | irfan.m@example.com\n\nINTERNSHIP\nCloud Intern, Golconda Cloud Services, Hyderabad (Jan 2026 - Jun 2026)\n- Launched and troubleshot EC2 Linux instances for student lab environments.\n- Fixed SSH and DNS resolution issues raised by lab users.\n- Created IAM users and least-privilege policies for 40 students.\n- Logged and closed 60 lab support tickets in Jira Service Management within SLA.\n- Wrote Bash scripts to stop idle instances every night.\n- Explained fixes to students in plain language over chat and email.\n\nSKILLS\nAWS, Linux, VPC, Python\n\nEDUCATION\nBTech Computer Science, Osmania University, 2026\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "aws",
+        "quote": "Launched and troubleshot EC2 Linux instances"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Launched and troubleshot EC2 Linux instances"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Fixed SSH and DNS resolution issues"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Fixed SSH and DNS resolution issues raised by lab users"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Created IAM users and least-privilege policies"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "closed 60 lab support tickets in Jira Service Management within SLA"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote Bash scripts to stop idle instances"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained fixes to students in plain language"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "VPC"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cloud-networking",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "windows-server",
+      "sql",
+      "monitoring"
+    ]
+  },
+  "reviewedBy": null
+}

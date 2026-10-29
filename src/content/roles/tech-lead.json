@@ -1,0 +1,155 @@
+{
+  "slug": "tech-lead",
+  "title": "Technical Lead",
+  "summary": "A technical lead is a senior engineer who still writes code but also guides a small team of about 4 to 8 developers: setting the design, reviewing code and making sure work ships on time. They sit inside a product or delivery team, between the developers and the engineering manager or product manager, and usually do not own hiring and appraisals.",
+  "dailyDuties": [
+    "Review pull requests from the team and enforce coding standards",
+    "Write and ship code for the hardest parts of the feature",
+    "Lead design discussions and write design documents",
+    "Break stories into tasks and give estimates in sprint planning",
+    "Unblock developers and pair with juniors on tricky problems",
+    "Agree scope and timelines with the product manager",
+    "Keep the build and deploy pipeline green"
+  ],
+  "typicalTitles": [
+    "Tech Lead",
+    "Technical Team Lead",
+    "Lead Software Engineer",
+    "Software Development Lead",
+    "Full Stack Technical Lead",
+    "Java Technical Lead",
+    ".NET Technical Lead"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write production code daily in the team's main language",
+      "postingShare": null,
+      "oneOf": "lead-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write production code daily in the team's main language",
+      "postingShare": null,
+      "oneOf": "lead-language"
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Write production code daily in the team's main language",
+      "postingShare": null,
+      "oneOf": "lead-language"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write production code daily in the team's main language",
+      "postingShare": null,
+      "oneOf": "lead-language"
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Own the design of the team's services and lead design discussions",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "required",
+      "expectation": "Split and build services with clear APIs and data ownership",
+      "postingShare": null
+    },
+    {
+      "skillId": "code-review",
+      "importance": "required",
+      "expectation": "Review pull requests and set coding standards for the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Guide and mentor a team of about 4 to 8 engineers while staying hands-on",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Break work into tasks, estimate it and drive sprint planning and delivery",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Keep the team's build, test and deploy pipeline healthy",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree scope and timelines with product managers and other teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain technical trade-offs clearly to engineers and non-engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "nice_to_have",
+      "expectation": "Review and contribute to front-end work in full-stack teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package services as containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Design for and deploy to a public cloud, most often AWS",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "nice_to_have",
+      "expectation": "Take part in hiring, appraisals and task allocation for the team",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "lead-language",
+      "label": "A main language (Java, Python, Node.js or C#/.NET)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "Cloud design basics that many lead postings expect"
+    },
+    {
+      "certId": "ckad",
+      "importance": "optional",
+      "why": "Kubernetes skills for teams that deploy to Kubernetes"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

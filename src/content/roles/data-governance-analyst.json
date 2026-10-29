@@ -1,0 +1,123 @@
+{
+  "slug": "data-governance-analyst",
+  "title": "Data Governance Analyst",
+  "summary": "A data governance analyst makes sure a company's important data is defined, owned and trustworthy, by keeping a business glossary (agreed definitions), a data catalog and data quality checks. They sit in a data office or data management team, often in banks and large companies, and work between business data owners and the technical data teams.",
+  "dailyDuties": [
+    "Add and update terms in the business glossary with data owners",
+    "Write and run data quality rules on critical data elements",
+    "Publish data quality scorecards and follow up on failed checks",
+    "Map data lineage from source systems to reports",
+    "Run catalog updates in Collibra, Alation or Microsoft Purview",
+    "Meet data stewards to agree definitions and fix issues",
+    "Prepare governance updates for the data governance council"
+  ],
+  "typicalTitles": [
+    "Data Governance Specialist",
+    "Data Governance Associate",
+    "Data Quality Analyst",
+    "Data Steward",
+    "Collibra Analyst",
+    "Metadata Analyst",
+    "Data Quality and Governance Analyst",
+    "Data Catalog Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "data-governance",
+      "importance": "required",
+      "expectation": "Maintain data ownership, stewardship, lineage and critical data elements under a governance framework such as DAMA-DMBOK",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-quality-management",
+      "importance": "required",
+      "expectation": "Write data quality rules, profile data and publish data quality scorecards",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-catalog-tools",
+      "importance": "required",
+      "expectation": "Keep the business glossary and catalog current in Collibra, Alation or Microsoft Purview",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL to profile data, test quality rules and trace lineage",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Read data models to find where critical data elements live and how they flow",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with data owners and stewards across business teams to agree definitions and fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear definitions, policies and governance updates for non-technical teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Tag personal data and support DPDP Act or GDPR requirements",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate data quality checks with Python or PySpark",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build governance and data quality dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking rules such as BCBS 239 and regulatory reporting",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "nice_to_have",
+      "expectation": "Understand data pipelines well enough to map lineage across them",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sc-900",
+      "importance": "optional",
+      "why": "Microsoft compliance basics, including Purview, for Purview-based teams"
+    },
+    {
+      "certId": "dsci-dcpp",
+      "importance": "optional",
+      "why": "Indian privacy credential for roles that also handle DPDP tagging"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
