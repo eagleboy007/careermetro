@@ -75,7 +75,7 @@ vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures
 vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
-vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff, WEEKLY_EMAIL_CAP: 80 }));
+vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff, WEEKLY_EMAIL_CAP: 40 }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -491,7 +491,7 @@ describe("the weekly My jobs email", () => {
     });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     expect(await json(await weeklyCron(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, considered: 1, sent: 1, empty: 0, failed: 0, capped: false } });
-    expect(m.runWeekly.mock.calls[0]![0].cap).toBe(80);
+    expect(m.runWeekly.mock.calls[0]![0].cap).toBe(40);
     const body = JSON.parse(String((fetch.mock.calls[0]![1] as RequestInit).body));
     expect(body.from).toBe("CareerMetro <hello@careermetro.com>");
     expect(body.headers).toEqual({ "List-Unsubscribe": `<${SITE}/api/email/off?t=${TOKEN}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });

@@ -33,7 +33,7 @@ These are the free or public settings most likely to hurt us. Each one is a mone
 - **Switch later?** Yes, with planning. The database is plain Postgres with standard migrations (`drizzle/`), so it can move to AWS RDS, Google Cloud SQL, Neon or a self-run Postgres. Sign-in is the harder part: moving off Supabase Auth means a new sign-in provider and a one-time move of user accounts. Development would plan this as its own project.
 
 ### Resend: sending emails
-- **Used for:** sign-in codes (through Supabase's SMTP settings), and the app's own emails sent straight to Resend's API (`src/lib/email/send.ts`): company sign-up, join and re-check codes, the current-job work-email check, and the weekly My jobs email (opt-in, from hello@ on the same domain, Monday to Wednesday at 08:00 IST, at most 80 a run; C22, 29 Oct 2026).
+- **Used for:** sign-in codes (through Supabase's SMTP settings), and the app's own emails sent straight to Resend's API (`src/lib/email/send.ts`): company sign-up, join and re-check codes, the current-job work-email check, and the weekly My jobs email (opt-in, from hello@ on the same domain, Monday to Wednesday at 08:00 IST, at most 40 a run so 60 of the free plan's 100 a day stay for codes, and a run stops at Resend's limit; C22, 29 Oct 2026, T142).
 - **Plan now:** free plan, set up 25 Oct 2026.
 - **What bites:** 3,000 emails a month and 100 a day (approx.). On a busy launch day, 100 a day can run out. The weekly My jobs email shares these limits: once about 200 people have it on, it needs Pro (Milin's call).
 - **Upgrade:** Pro (approx. US$20/month for 50,000 a month). Upgrade before any public launch push.

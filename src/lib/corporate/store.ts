@@ -232,7 +232,7 @@ export async function issueCode(
   // An unsent code can't be used: spend it, so a retry starts clean. The send still counted toward the limits.
   if (!sent.ok) {
     await db.update(workEmailCodes).set({ email: null, codeHash: null }).where(eq(workEmailCodes.id, id));
-    return fail(sent.reason === "failed" ? "not_sent" : "closed");
+    return fail(sent.reason === "not_configured" ? "closed" : "not_sent");
   }
   logEvent("info", "work_email_code_issued", { delivery });
   return { ok: true };
