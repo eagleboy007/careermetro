@@ -1,0 +1,136 @@
+{
+  "slug": "security-architect",
+  "title": "Security Architect",
+  "experienceBand": {
+    "minYears": 8,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "security-architecture",
+      "importance": "required",
+      "expectation": "Define security reference architectures, patterns and zero trust designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-modeling",
+      "importance": "required",
+      "expectation": "Threat model new systems and major changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Set identity, privileged access and MFA standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Design segmentation, firewall and VPN controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "required",
+      "expectation": "Secure designs on AWS, Azure or GCP",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "required",
+      "expectation": "Choose encryption, PKI and key management approaches",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-security",
+      "importance": "required",
+      "expectation": "Review application designs against common attack patterns",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Map designs to ISO 27001, NIST, PCI DSS or RBI requirements",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Assess and document design risks and exceptions",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree controls with engineering, risk and business teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write security standards and present reviews to senior leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Turn architecture into policies and baseline standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "devsecops",
+      "importance": "nice_to_have",
+      "expectation": "Build security checks into delivery pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security-posture",
+      "importance": "nice_to_have",
+      "expectation": "Use posture tools to track cloud misconfigurations",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Set endpoint protection standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Design for DPDP Act and other privacy duties",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cissp",
+      "importance": "recommended",
+      "why": "The certificate most Indian security architect listings ask for"
+    },
+    {
+      "certId": "ccsp",
+      "importance": "optional",
+      "why": "Cloud security depth"
+    },
+    {
+      "certId": "cism",
+      "importance": "optional",
+      "why": "Governance and management focus"
+    },
+    {
+      "certId": "aws-security-specialty",
+      "importance": "optional",
+      "why": "AWS security depth"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

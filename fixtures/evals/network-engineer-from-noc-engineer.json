@@ -1,0 +1,55 @@
+{
+  "id": "network-engineer-from-noc-engineer",
+  "roleSlug": "network-engineer",
+  "persona": "NOC engineer with a CCNA moving into a network engineer role",
+  "resumeText": "Imran Shaikh | Mumbai | imran.shaikh@example.com\n\nEXPERIENCE\nNOC Engineer, Gateway Netlink, Navi Mumbai (2024 - present)\n- Monitor 600 branch routers and switches in SolarWinds on a 24x7 shift.\n- Troubleshoot DNS and TCP/IP issues for branch users.\n- Configure VLANs and OSPF on Cisco switches under change approval.\n- Log and update every outage in BMC Remedy.\n\nSKILLS\nCisco IOS, firewall, communication skills\n\nEDUCATION\nBSc IT, Mumbai University, 2024\n\nCERTIFICATIONS\nCCNA (2024)\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "network-monitoring",
+        "quote": "Monitor 600 branch routers and switches in SolarWinds"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot DNS and TCP/IP issues"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Configure VLANs and OSPF on Cisco switches"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Log and update every outage in BMC Remedy"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "firewall"
+      },
+      {
+        "skillId": "communication",
+        "quote": "communication skills"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "network-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "cloud-networking",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

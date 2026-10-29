@@ -1,0 +1,135 @@
+{
+  "slug": "ai-engineer",
+  "title": "AI Engineer (Generative AI)",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write production Python for LLM services",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Build features on hosted or open-source LLMs with sound prompt design",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "required",
+      "expectation": "Build RAG pipelines with embeddings, chunking and a vector database",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-agents",
+      "importance": "required",
+      "expectation": "Build agents that call tools and APIs, using a framework such as LangGraph",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "required",
+      "expectation": "Measure answer quality, catch hallucinations and add guardrails",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Expose LLM features as APIs, often with FastAPI",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Deploy LLM services on at least one major cloud and its AI services",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Deploy LLM services on at least one major cloud and its AI services",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Deploy LLM services on at least one major cloud and its AI services",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "docker",
+      "importance": "required",
+      "expectation": "Package LLM services in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "nlp",
+      "importance": "nice_to_have",
+      "expectation": "Apply classic NLP methods where an LLM is not needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "nice_to_have",
+      "expectation": "Fine-tune open models when prompting is not enough",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "nice_to_have",
+      "expectation": "Host and scale open-weight models",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query business data that feeds the assistant",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Run LLM services on a cluster",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Work in shared repositories with code review",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "AWS machine learning and Bedrock-adjacent services"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Google Cloud ML platform including Vertex AI"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

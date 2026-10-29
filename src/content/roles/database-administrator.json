@@ -1,0 +1,138 @@
+{
+  "slug": "database-administrator",
+  "title": "Database Administrator",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Run SQL Server, PostgreSQL, MySQL or Oracle in production",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Run backups, test restores and look after replication or Always On",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "required",
+      "expectation": "Find slow queries and fix them with indexes and plan changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-security",
+      "importance": "required",
+      "expectation": "Manage logins, roles, permissions and audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "required",
+      "expectation": "Watch database health and act on alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Linux or Windows database servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Handle incidents in rotational or on-call shifts",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Automate routine DBA tasks with scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate routine DBA tasks with scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Administer Oracle with RMAN and Data Guard",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-databases",
+      "importance": "nice_to_have",
+      "expectation": "Run Amazon RDS, Aurora or Azure SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Support MongoDB or Redis",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Work with AWS database and storage services",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Work with Azure database services",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Provision databases as code",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "scripting-language",
+      "label": "A scripting language (Python or Bash)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-database-admin",
+      "importance": "recommended",
+      "why": "SQL Server and Azure SQL administration (DP-300)"
+    },
+    {
+      "certId": "oracle-dba-professional",
+      "importance": "optional",
+      "why": "Oracle administration"
+    },
+    {
+      "certId": "gcp-professional-database-engineer",
+      "importance": "optional",
+      "why": "Managed databases on Google Cloud"
+    },
+    {
+      "certId": "mongodb-dba",
+      "importance": "optional",
+      "why": "MongoDB administration"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

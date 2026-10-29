@@ -1,0 +1,55 @@
+{
+  "id": "ai-engineer-from-python-backend",
+  "roleSlug": "ai-engineer",
+  "persona": "Python backend developer who built one RAG chatbot",
+  "resumeText": "Ananya Rao | Bengaluru | ananya.rao@example.com\n\nEXPERIENCE\nSoftware Engineer, Kaveri Fintech Labs, Bengaluru (2022 - present)\n- Build REST APIs in Python with FastAPI for the loan servicing platform.\n- Built an internal support chatbot on the OpenAI API that answers questions from 3,000 policy PDFs.\n- Added retrieval augmented generation with pgvector so answers cite the source policy.\n- Package services with Docker and deploy them to AWS ECS.\n\nEDUCATION\nBE Computer Science, RV College of Engineering, 2022\n\nSKILLS\nPython, FastAPI, LangChain, LangGraph, Docker, AWS, PostgreSQL\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Build REST APIs in Python with FastAPI"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Build REST APIs in Python with FastAPI"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "Built an internal support chatbot on the OpenAI API"
+      },
+      {
+        "skillId": "vector-search",
+        "quote": "retrieval augmented generation with pgvector"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Package services with Docker"
+      },
+      {
+        "skillId": "aws",
+        "quote": "deploy them to AWS ECS"
+      },
+      {
+        "skillId": "ai-agents",
+        "quote": "LangGraph"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ai-agents",
+        "status": "weak"
+      },
+      {
+        "skillId": "llm-evaluation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "deep-learning",
+      "model-serving"
+    ]
+  },
+  "reviewedBy": null
+}

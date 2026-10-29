@@ -1,0 +1,124 @@
+{
+  "slug": "incident-response-analyst",
+  "title": "Incident Response Analyst (DFIR)",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Contain, investigate and close security incidents using a structured process",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-forensics",
+      "importance": "required",
+      "expectation": "Collect and analyse disk, memory and log evidence and build timelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Search and correlate logs across sources during investigations",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "required",
+      "expectation": "Use EDR tools to investigate and isolate hosts",
+      "postingShare": null
+    },
+    {
+      "skillId": "malware-analysis",
+      "importance": "required",
+      "expectation": "Triage suspicious files in a sandbox and pull out indicators",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Map attacker activity to MITRE ATT&CK and hunt for related activity",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Read network traffic and logs to trace attacker movement",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear incident reports and brief stakeholders under pressure",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Enrich indicators and track threat actors",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script parsing and triage tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Investigate incidents in cloud accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "soar",
+      "importance": "nice_to_have",
+      "expectation": "Automate response playbooks",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-breach-response",
+      "importance": "nice_to_have",
+      "expectation": "Support breach notification, including CERT-In reporting timelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Investigate Linux hosts",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "gcih",
+      "importance": "recommended",
+      "why": "The incident-handling certificate Indian IR listings name most often"
+    },
+    {
+      "certId": "comptia-cysa-plus",
+      "importance": "optional",
+      "why": "Analyst-level detection and response"
+    },
+    {
+      "certId": "sc-200",
+      "importance": "optional",
+      "why": "Microsoft security operations tooling"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Broad security base"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

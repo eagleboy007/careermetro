@@ -1,0 +1,60 @@
+{
+  "id": "incident-response-analyst-from-soc-l2",
+  "roleSlug": "incident-response-analyst",
+  "persona": "SOC L2 analyst moving into incident response and forensics",
+  "resumeText": "Karan Mehta | Bengaluru | karan.mehta@example.com\n\nEXPERIENCE\nSOC Analyst L2, Nandi Hills Security Services, Bengaluru (2023 - present)\n- Investigate escalated alerts in Splunk across firewall, proxy and Windows logs.\n- Map confirmed attacks to MITRE ATT&CK techniques for the weekly report.\n- Isolate infected laptops with CrowdStrike and collect triage packages.\n- Led incident response for 3 phishing campaigns, from containment to closure.\n\nSOC Analyst L1, Cubbon Cyber, Bengaluru (2022 - 2023)\n- Triaged SIEM alerts and raised tickets.\n\nSKILLS\nSplunk, CrowdStrike, memory forensics, TCP/IP\n\nEDUCATION\nBTech Computer Science, RV College of Engineering, 2022\n\nCERTIFICATIONS\nCompTIA Security+ (2023)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "siem",
+        "quote": "Investigate escalated alerts in Splunk"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Map confirmed attacks to MITRE ATT&CK techniques"
+      },
+      {
+        "skillId": "endpoint-security",
+        "quote": "Isolate infected laptops with CrowdStrike"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "Led incident response for 3 phishing campaigns"
+      },
+      {
+        "skillId": "digital-forensics",
+        "quote": "memory forensics"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "TCP/IP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "digital-forensics",
+        "status": "weak"
+      },
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "malware-analysis",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "cloud-security",
+      "soar",
+      "penetration-testing"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -9,7 +9,7 @@ mkdirSync(OUT, { recursive: true });
 let failed = 0;
 // Nearby lines the walk expects, worked out by src/lib/nearby/build.ts and pinned in its test (keep the two in step).
 const NEARBY_WALK_EMPTY =
-  "None of our other roles shares at least half its key skills with you yet. The closest, Senior Data Scientist, shares 2 of its 7.";
+  "None of our other roles shares at least half its key skills with you yet. The closest, BI Developer (Power BI), shares 2 of its 7.";
 const NEARBY_WALK_SWITCHER = [
   ["Data Analyst", 4, 7],
   ["Senior Data Scientist", 5, 7],

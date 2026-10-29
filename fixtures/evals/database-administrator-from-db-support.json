@@ -1,0 +1,56 @@
+{
+  "id": "database-administrator-from-db-support",
+  "roleSlug": "database-administrator",
+  "persona": "Database support engineer on SQL Server shifts",
+  "resumeText": "Arjun Mehta | Gurugram | arjun.mehta@example.com\n\nEXPERIENCE\nDatabase Support Engineer, Aravali Payments, Gurugram (2023 - present)\n- Monitor 40 SQL Server instances and respond to disk and blocking alerts in a 24x7 rotational shift.\n- Run nightly backups and test restores every month.\n- Create logins, roles and permissions for application and audit users.\n- Tune slow queries by reading execution plans and adding indexes.\n\nEDUCATION\nBTech Computer Science, Guru Gobind Singh Indraprastha University, 2023\n\nSKILLS\nSQL Server, T-SQL, PowerShell, Linux, Always On\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Monitor 40 SQL Server instances"
+      },
+      {
+        "skillId": "monitoring",
+        "quote": "respond to disk and blocking alerts"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "in a 24x7 rotational shift"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Run nightly backups and test restores every month"
+      },
+      {
+        "skillId": "database-security",
+        "quote": "Create logins, roles and permissions"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Tune slow queries by reading execution plans and adding indexes"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "linux",
+        "status": "weak"
+      },
+      {
+        "skillId": "scripting-bash",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-database",
+      "nosql",
+      "cloud-databases",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

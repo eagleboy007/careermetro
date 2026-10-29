@@ -1,0 +1,150 @@
+{
+  "slug": "mlops-engineer",
+  "title": "MLOps Engineer",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write Python for pipelines, tooling and services",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Understand training, validation and retraining well enough to support data scientists",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Track experiments, register models and monitor drift with a tool such as MLflow",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "required",
+      "expectation": "Deploy models as batch jobs or real-time endpoints",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "required",
+      "expectation": "Containerise training and inference code",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Run ML workloads on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Automate testing and release of models and pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "required",
+      "expectation": "Schedule training and data pipelines with Airflow, Kubeflow or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Use a cloud ML platform such as SageMaker, Azure ML or Vertex AI",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Use a cloud ML platform such as SageMaker, Azure ML or Vertex AI",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Use a cloud ML platform such as SageMaker, Azure ML or Vertex AI",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Provision ML infrastructure as code",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Set up dashboards and alerts for model services",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "nice_to_have",
+      "expectation": "Prepare features at scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate routine tasks with shell scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "gitops",
+      "importance": "nice_to_have",
+      "expectation": "Release to clusters with Argo CD or Flux",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "recommended",
+      "why": "Covers deploying and monitoring models on AWS"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Covers Vertex AI pipelines and serving"
+    },
+    {
+      "certId": "azure-data-scientist",
+      "importance": "optional",
+      "why": "Covers Azure Machine Learning workspaces and deployment"
+    },
+    {
+      "certId": "cka",
+      "importance": "optional",
+      "why": "Kubernetes operations"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Infrastructure as code"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

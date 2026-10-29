@@ -1,0 +1,63 @@
+{
+  "id": "mlops-engineer-from-devops",
+  "roleSlug": "mlops-engineer",
+  "persona": "Azure DevOps engineer moving into MLOps",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nEXPERIENCE\nDevOps Engineer, Sahyadri Retail Tech, Pune (2021 - present)\n- Run 12 AKS clusters for the order and inventory services.\n- Built Azure DevOps pipelines that build, test and release 30 microservices.\n- Write Dockerfiles and cut image sizes by 40 percent.\n- Write Python scripts to rotate secrets and clean up unused Azure resources.\n- Manage infrastructure with Terraform modules.\n\nEDUCATION\nBE Information Technology, Pune Institute of Computer Technology, 2021\n\nSKILLS\nAzure, Kubernetes, Docker, Terraform, Python, Airflow, Grafana\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "kubernetes",
+        "quote": "Run 12 AKS clusters"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Built Azure DevOps pipelines that build, test and release 30 microservices"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Write Dockerfiles"
+      },
+      {
+        "skillId": "python",
+        "quote": "Write Python scripts to rotate secrets"
+      },
+      {
+        "skillId": "azure",
+        "quote": "clean up unused Azure resources"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Manage infrastructure with Terraform modules"
+      },
+      {
+        "skillId": "data-orchestration",
+        "quote": "Airflow"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-orchestration",
+        "status": "weak"
+      },
+      {
+        "skillId": "mlops",
+        "status": "missing"
+      },
+      {
+        "skillId": "model-serving",
+        "status": "missing"
+      },
+      {
+        "skillId": "machine-learning",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "spark",
+      "gitops"
+    ]
+  },
+  "reviewedBy": null
+}

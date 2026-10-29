@@ -239,4 +239,4 @@ describe("the e2e walk's resume", () => {
 });
 
 /** Mirrored in e2e/walk.mjs. */
-const WALK_CLOSEST = { slug: "senior-data-scientist", title: "Senior Data Scientist", shared: 2, total: 7 };
+const WALK_CLOSEST = { slug: "bi-developer", title: "BI Developer (Power BI)", shared: 2, total: 7 };

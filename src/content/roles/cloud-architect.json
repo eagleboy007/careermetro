@@ -1,0 +1,150 @@
+{
+  "slug": "cloud-architect",
+  "title": "Cloud Architect",
+  "experienceBand": {
+    "minYears": 7,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Design and govern estates on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Design and govern estates on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Design and govern estates on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "cloud-landing-zones",
+      "importance": "required",
+      "expectation": "Design multi-account landing zones, guardrails and reference architectures",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "required",
+      "expectation": "Design hub-and-spoke networks, hybrid connectivity and private endpoints",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Set infrastructure-as-code standards and reusable modules",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Design identity, roles and access across accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "required",
+      "expectation": "Build security and compliance controls into the platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "required",
+      "expectation": "Assess workloads and plan migration and modernisation waves",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Set availability, backup and disaster recovery targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "required",
+      "expectation": "Design for cost and set FinOps practices such as tagging and right-sizing",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree cloud strategy with business, security and delivery teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Design container platforms on managed Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-databases",
+      "importance": "nice_to_have",
+      "expectation": "Choose managed database services",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security-posture",
+      "importance": "nice_to_have",
+      "expectation": "Use posture tools to keep accounts compliant",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Set logging, monitoring and tracing standards",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "Widely asked baseline for AWS architecture work"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Infrastructure as code standard"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Azure operations base for the Azure architect track"
+    },
+    {
+      "certId": "gcp-associate-cloud-engineer",
+      "importance": "optional",
+      "why": "Google Cloud base certificate"
+    },
+    {
+      "certId": "ccsp",
+      "importance": "optional",
+      "why": "Vendor-neutral cloud security for senior architects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

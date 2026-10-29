@@ -1,0 +1,60 @@
+{
+  "id": "solutions-architect-from-backend-tech-lead",
+  "roleSlug": "solutions-architect",
+  "persona": "Java backend tech lead at an IT services firm moving into solution architecture",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nEXPERIENCE\nTech Lead, Sahyadri Softworks, Pune (2019 - present)\n- Tech lead for a team of 8 building the loan origination platform.\n- Split a monolith into 14 Spring Boot microservices running on AWS.\n- Designed REST APIs for partner banks and documented them in OpenAPI.\n- Introduced Kafka for loan status events between services.\n- Wrote the high level design for the collections module and reviewed it with the credit and operations heads.\n\nSenior Software Engineer, Deccan Infotech, Pune (2016 - 2019)\n- Built Java services for a payments gateway on EC2 and RDS.\n\nSKILLS\nJava, Spring Boot, AWS, Kafka, MySQL, BRD\n\nEDUCATION\nBE Computer Engineering, Pune University, 2016\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "technical-leadership",
+        "quote": "Tech lead for a team of 8"
+      },
+      {
+        "skillId": "microservices",
+        "quote": "Split a monolith into 14 Spring Boot microservices"
+      },
+      {
+        "skillId": "aws",
+        "quote": "microservices running on AWS"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Designed REST APIs for partner banks"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Introduced Kafka for loan status events"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Wrote the high level design for the collections module"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "reviewed it with the credit and operations heads"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "BRD"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "presales-solutioning",
+      "azure",
+      "kubernetes",
+      "security-architecture"
+    ]
+  },
+  "reviewedBy": null
+}

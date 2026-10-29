@@ -1,0 +1,127 @@
+{
+  "slug": "iam-engineer",
+  "title": "Identity and Access Management Engineer",
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Run directory, SSO, MFA and privileged access platforms such as Okta, Entra ID or CyberArk",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "required",
+      "expectation": "Set up SAML, OIDC and SCIM integrations for applications",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-governance",
+      "importance": "required",
+      "expectation": "Configure provisioning, joiner-mover-leaver flows and access reviews in an IGA tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Automate identity tasks with scripts",
+      "postingShare": null,
+      "oneOf": "iam-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate identity tasks with scripts",
+      "postingShare": null,
+      "oneOf": "iam-scripting"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build connectors and automation against identity platform APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Troubleshoot login, provisioning and access issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Onboard application owners and document access processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "nice_to_have",
+      "expectation": "Produce access evidence for audits and IT general controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Know the access controls in ISO 27001, SOX or PCI DSS",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Customise IGA rules and connectors written in Java",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Administer Entra ID and Azure role assignments",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query identity data and application user tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "nice_to_have",
+      "expectation": "Manage certificates and signing keys used in federation",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "iam-scripting",
+      "label": "A scripting language for identity automation (PowerShell or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "sc-300",
+      "importance": "recommended",
+      "why": "Microsoft identity administration, common in Entra ID shops"
+    },
+    {
+      "certId": "sc-900",
+      "importance": "optional",
+      "why": "Entry-level identity and security fundamentals"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Broad security base"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

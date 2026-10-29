@@ -1,0 +1,51 @@
+{
+  "id": "iam-engineer-from-active-directory-admin",
+  "roleSlug": "iam-engineer",
+  "persona": "Active Directory administrator moving into IAM engineering",
+  "resumeText": "Divya Raman | Chennai | divya.raman@example.com\n\nEXPERIENCE\nAD Administrator L2, Marina Managed Services, Chennai (2022 - present)\n- Manage Active Directory for 6,000 users across 4 domains.\n- Wrote PowerShell scripts that create and disable accounts from the HR joining list.\n- Reset passwords and unlocked accounts for the service desk queue.\n- Cleaned up 1,200 stale computer objects every quarter.\n\nSKILLS\nActive Directory, PowerShell, SAML, Exchange Online\n\nEDUCATION\nBSc Computer Science, Madras Christian College, 2022\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "identity-access-management",
+        "quote": "Manage Active Directory for 6,000 users"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "Wrote PowerShell scripts that create and disable accounts"
+      },
+      {
+        "skillId": "identity-federation",
+        "quote": "SAML"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "identity-federation",
+        "status": "weak"
+      },
+      {
+        "skillId": "identity-governance",
+        "status": "missing"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "java",
+      "sql",
+      "compliance-frameworks"
+    ]
+  },
+  "reviewedBy": null
+}

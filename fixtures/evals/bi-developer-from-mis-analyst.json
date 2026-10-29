@@ -1,0 +1,64 @@
+{
+  "id": "bi-developer-from-mis-analyst",
+  "roleSlug": "bi-developer",
+  "persona": "MIS analyst who has started building Power BI dashboards",
+  "resumeText": "Sneha Kulkarni | Mumbai | sneha.k@example.com\n\nEXPERIENCE\nMIS Analyst, Konkan Mutual Finance, Mumbai (2022 - present)\n- Prepare weekly branch performance reports in Excel with pivot tables and XLOOKUP.\n- Built 6 Power BI dashboards with DAX measures for collections and disbursals.\n- Write SQL queries on SQL Server to pull loan data for the reports.\n- Meet regional managers to agree report requirements and KPIs.\n\nEDUCATION\nBCom, Narsee Monjee College of Commerce and Economics, 2022\n\nSKILLS\nExcel, Power BI, Power Query, SQL, Star schema\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "power-bi",
+        "quote": "Built 6 Power BI dashboards with DAX measures"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Built 6 Power BI dashboards"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries on SQL Server"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "agree report requirements and KPIs"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Meet regional managers to agree report requirements"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel with pivot tables and XLOOKUP"
+      },
+      {
+        "skillId": "power-query",
+        "quote": "Power Query"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Star schema"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "power-query",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-modeling",
+        "status": "weak"
+      },
+      {
+        "skillId": "etl",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "tableau",
+      "python",
+      "cloud-data-warehouse",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

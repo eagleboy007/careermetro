@@ -12,6 +12,10 @@
     "task": "Set up a free Jira or Trello board for a small app, write a backlog of 12 stories with estimates, plan a two-week sprint and share a screenshot with a one-paragraph sprint goal."
   },
   {
+    "skillId": "ai-agents",
+    "task": "Build a small agent with LangGraph or plain tool calling that uses 2 tools (a calculator and a search over local files) on 10 synthetic questions. Log each tool call and share the repo with a README on where it failed."
+  },
+  {
     "skillId": "android",
     "task": "Build a two-screen Android app in Jetpack Compose that loads a list from a public API, shows loading and error states, and survives screen rotation. Share the repo and a short screen recording."
   },
@@ -44,12 +48,24 @@
     "task": "Add a GitHub Actions workflow to a small repo that lints, tests and builds a Docker image on every pull request, and share a link to a passing run."
   },
   {
+    "skillId": "cloud-cost",
+    "task": "Price a synthetic 3-tier web app in the free AWS, Azure or Google Cloud pricing calculator, cut the monthly estimate by 25% with right-sizing, reserved capacity and storage tiers, and write a one-page tagging and budget-alert plan."
+  },
+  {
     "skillId": "cloud-data-warehouse",
     "task": "In the BigQuery sandbox, query a public dataset to answer 3 business questions, note bytes scanned per query, and show one partitioning or filtering change that cut the cost."
   },
   {
     "skillId": "cloud-databases",
     "task": "Launch a free-tier managed database (RDS, Azure SQL or Cloud SQL), configure automated backups and private access, and write a one-page comparison of the three options."
+  },
+  {
+    "skillId": "cloud-landing-zones",
+    "task": "Draw a landing zone for a fictional 3-team company on one cloud: accounts or subscriptions, OUs or management groups, a network hub, 5 guardrail policies and central logging. Share the diagram with a one-page rationale."
+  },
+  {
+    "skillId": "cloud-migration",
+    "task": "Take a synthetic list of 12 on-premises servers, give each a migration strategy (rehost, replatform, refactor, retire or retain), group them into 3 waves by dependency, and write the cutover and rollback steps for wave 1."
   },
   {
     "skillId": "cloud-networking",
@@ -136,6 +152,10 @@
     "task": "Add a SAST scan, a dependency scan and a secret scan to a sample repo's CI pipeline, then explain which findings should block a merge and why."
   },
   {
+    "skillId": "digital-forensics",
+    "task": "Analyse a public practice disk image or memory sample (such as one from Digital Corpora) with Autopsy or Volatility 3, build a timeline of 10 key events, and write a short report with the evidence for each finding."
+  },
+  {
     "skillId": "docker",
     "task": "Containerise a small web app and its database with a multi-stage Dockerfile and docker-compose.yml, and document how to run it in a README."
   },
@@ -208,12 +228,24 @@
     "task": "Design an access model for a fictional 50-person company: roles, groups, joiner-mover-leaver steps, MFA policy and a quarterly access review checklist. Share as a 2-page doc."
   },
   {
+    "skillId": "identity-federation",
+    "task": "Set up single sign-on for a sample web app in a free Okta or Microsoft Entra developer tenant with SAML or OIDC, map 2 user attributes, and document the login flow with screenshots and a decoded token or assertion."
+  },
+  {
+    "skillId": "identity-governance",
+    "task": "For a synthetic company of 30 users and 5 apps, write joiner, mover and leaver steps and a role-to-access matrix, then run one access review on sample data and list the access you would remove, with the reason for each."
+  },
+  {
     "skillId": "incident-management",
     "task": "Write a blameless postmortem for a synthetic 40-minute outage (timeline given): impact, root cause, what went well, and five action items with owners."
   },
   {
     "skillId": "interaction-design",
     "task": "Redesign one cluttered screen from a public Indian app: show before and after, and explain the hierarchy, spacing and state changes you made."
+  },
+  {
+    "skillId": "itsm",
+    "task": "In a free ServiceNow developer instance or a spreadsheet, log 5 synthetic tickets (incident, request, problem, change), set each priority from impact and urgency, and write the change record for one server patch with its risk and backout plan."
   },
   {
     "skillId": "java",
@@ -240,12 +272,20 @@
     "task": "Build a small RAG demo over 5 public documents using an LLM API, write 10 test questions with expected answers, and report how many it got right and why it failed on the rest."
   },
   {
+    "skillId": "llm-evaluation",
+    "task": "Write 20 test questions with expected answers for a small LLM or RAG app, score its answers with Ragas, DeepEval or your own checks, add one guardrail, and report the scores before and after."
+  },
+  {
     "skillId": "looker",
     "task": "Build a Looker Studio report on a public Google Sheet or BigQuery public dataset with a date filter, 3 charts and a scorecard, and share the view-only link."
   },
   {
     "skillId": "machine-learning",
     "task": "Train and compare a logistic regression and a gradient boosting model on a public tabular dataset, tune one, and explain the top features in a notebook."
+  },
+  {
+    "skillId": "malware-analysis",
+    "task": "Pick one known sample's public report on a free sandbox (Hybrid Analysis or ANY.RUN), note its hashes, processes, files and network calls, and write 5 indicators of compromise with a detection idea for each. Never run the sample yourself."
   },
   {
     "skillId": "manual-testing",
@@ -278,6 +318,14 @@
   {
     "skillId": "monitoring",
     "task": "Run Prometheus and Grafana with Docker, scrape a sample app, build a dashboard with 4 panels and one alert rule, and share screenshots and config files."
+  },
+  {
+    "skillId": "network-monitoring",
+    "task": "Monitor 3 devices or VMs over SNMP with free Zabbix or LibreNMS, set alerts for an interface going down and high CPU, trigger one alert on purpose, and share screenshots with a short note on what each alert means."
+  },
+  {
+    "skillId": "network-security",
+    "task": "In Cisco Packet Tracer or a pfSense VM, put a small office network behind a firewall with 3 zones, write 8 allow and deny rules with a reason for each, set up one site-to-site VPN, and show the tests with screenshots."
   },
   {
     "skillId": "networking-basics",
@@ -344,6 +392,14 @@
     "task": "Build a Power BI report on a synthetic sales dataset with a star schema, 3 DAX measures (e.g. YoY growth) and slicers. Share the .pbix file and screenshots."
   },
   {
+    "skillId": "power-query",
+    "task": "In Power BI Desktop, combine 3 messy synthetic CSV files in Power Query: fix data types, unpivot a month-wise table, merge with a lookup table and add one custom M column. Share the .pbix or screenshots of the applied steps."
+  },
+  {
+    "skillId": "powershell-scripting",
+    "task": "Write a PowerShell script that reads a synthetic CSV of new joiners, creates test Active Directory or local users with their groups, logs each action and supports -WhatIf. Put it in a repo with a README and sample output."
+  },
+  {
     "skillId": "prd-writing",
     "task": "Write a one-page PRD for a 'save job for later' feature with a problem statement, success metric and five user stories, each with Given/When/Then acceptance criteria."
   },
@@ -374,6 +430,10 @@
   {
     "skillId": "python",
     "task": "Write a Python script that reads a sample log or CSV file, counts events by type and hour, and writes a summary CSV. Include a README and one test."
+  },
+  {
+    "skillId": "python-web-frameworks",
+    "task": "Build a small Django, Flask or FastAPI app for a fictional clinic with 4 endpoints (book, list, change, cancel appointments), a database model, input checks and 5 tests. Share the repo with a README."
   },
   {
     "skillId": "pytorch",
@@ -408,6 +468,10 @@
     "task": "Score 10 feature ideas for a fictional app with RICE in a spreadsheet, turn them into a Now/Next/Later roadmap, and write a paragraph on the trade-offs."
   },
   {
+    "skillId": "routing-switching",
+    "task": "In Cisco Packet Tracer or GNS3, build a lab with 2 routers and 2 switches: 3 VLANs, inter-VLAN routing and OSPF between the routers. Share the saved lab, the configs and ping and traceroute screenshots."
+  },
+  {
     "skillId": "scikit-learn",
     "task": "Build a scikit-learn Pipeline with ColumnTransformer, preprocessing and a model, tune it with GridSearchCV, and save the notebook to GitHub."
   },
@@ -418,6 +482,10 @@
   {
     "skillId": "secure-code-review",
     "task": "Review a synthetic 150-line login and file-upload handler, list every security flaw with its OWASP category and severity, and write the corrected code."
+  },
+  {
+    "skillId": "security-architecture",
+    "task": "Draw a security architecture for a fictional UPI payments app: trust zones, identity, encryption, logging and 3 zero trust controls, and map each control to an ISO 27001 or RBI requirement. Share the diagram with a 2-page rationale."
   },
   {
     "skillId": "security-audits",
@@ -552,6 +620,14 @@
     "task": "Write a usability test plan with 5 tasks for a public website, run it with 3 people, and report the top issues with severity and suggested fixes."
   },
   {
+    "skillId": "vector-search",
+    "task": "Index 200 synthetic support answers with free embeddings in pgvector, Chroma or FAISS, try 2 chunk sizes, and report how many of 15 test questions find the right answer in the top 3, with the settings that worked best."
+  },
+  {
+    "skillId": "virtualization",
+    "task": "On a free hypervisor (Proxmox, Hyper-V or VirtualBox), create 2 VMs from one template, set CPU and memory limits, take and restore a snapshot, and write a short runbook with screenshots of each step."
+  },
+  {
     "skillId": "vulnerability-management",
     "task": "Scan a deliberately vulnerable VM or container you own (e.g. Metasploitable) with a free scanner, prioritise the top 10 findings using CVSS and the CISA KEV list, and write a fix plan."
   },
@@ -562,6 +638,10 @@
   {
     "skillId": "web-performance",
     "task": "Measure Core Web Vitals on a page with Lighthouse, make 3 fixes (images, fonts, JavaScript) and document the before-and-after numbers."
+  },
+  {
+    "skillId": "windows-server",
+    "task": "On a Windows Server evaluation VM, set up a domain controller, create 3 OUs with users and groups, apply 2 Group Policies (password rules and a mapped drive) and show them working on a client VM with screenshots."
   },
   {
     "skillId": "wireframing",

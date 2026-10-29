@@ -1,0 +1,109 @@
+{
+  "slug": "dotnet-developer",
+  "title": ".NET Developer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Build applications in C# on .NET and ASP.NET Core",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build Web API services",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write queries and stored procedures in SQL Server",
+      "postingShare": null
+    },
+    {
+      "skillId": "orm-databases",
+      "importance": "required",
+      "expectation": "Use Entity Framework Core and LINQ for data access",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Apply object-oriented design and common design patterns",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write unit tests with xUnit, NUnit or MSTest",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Use Git branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Deploy to Azure App Service or Azure Functions",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Work on Angular or React screens that call your APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "nice_to_have",
+      "expectation": "Build front-end screens in React",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "nice_to_have",
+      "expectation": "Split services and talk through queues or APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run services in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Ship through Azure DevOps or GitHub Actions pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in Scrum sprints",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basic Azure for developers new to cloud"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

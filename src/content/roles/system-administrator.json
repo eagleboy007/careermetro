@@ -1,0 +1,139 @@
+{
+  "slug": "system-administrator",
+  "title": "System Administrator",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer Linux servers: users, services, storage and logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Administer Windows Server, DNS and Group Policy",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Manage Active Directory users, groups and permissions",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "required",
+      "expectation": "Run virtual machines on VMware vSphere or Hyper-V",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Automate routine admin tasks with scripts",
+      "postingShare": null,
+      "oneOf": "admin-scripting"
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Automate routine admin tasks with scripts",
+      "postingShare": null,
+      "oneOf": "admin-scripting"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Troubleshoot DNS, DHCP and basic connectivity",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Run backups, test restores and support recovery plans",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "required",
+      "expectation": "Patch servers on schedule and close scan findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Handle incidents, requests and changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Diagnose server and service faults",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Set up alerts for server health",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Run servers on a public cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Run servers and identity on a public cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Automate configuration with Ansible or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Write runbooks and explain issues to users",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "admin-scripting",
+      "label": "A scripting language for server admin (Bash or PowerShell)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "rhcsa",
+      "importance": "recommended",
+      "why": "The common Linux administration certificate"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Moves on-premises admin skills to Azure"
+    },
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Networking base"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

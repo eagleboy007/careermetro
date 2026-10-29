@@ -1,0 +1,140 @@
+{
+  "slug": "solutions-architect",
+  "title": "Solutions Architect",
+  "experienceBand": {
+    "minYears": 7,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Turn business needs into end-to-end solution designs with clear trade-offs",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "required",
+      "expectation": "Design service boundaries and modernise older applications into services",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Define APIs and integration patterns between systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "required",
+      "expectation": "Choose event-driven or queue-based integration where it fits",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Design solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Design solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Design solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run discovery with business teams and capture functional and non-functional needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Win agreement on a design from business, engineering and security teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs in documents, diagrams and architecture reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Guide delivery teams and record architecture decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "presales-solutioning",
+      "importance": "nice_to_have",
+      "expectation": "Shape proposals, estimates and RFP responses for clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-architecture",
+      "importance": "nice_to_have",
+      "expectation": "Build security controls into the design from the start",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "nice_to_have",
+      "expectation": "Plan availability and disaster recovery targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Plan moves of existing systems to the cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Use containers and Kubernetes as a deployment target",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "Common first architecture certificate asked for in Indian listings"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Shows hands-on infrastructure as code"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Entry point to the Azure architect track"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}
