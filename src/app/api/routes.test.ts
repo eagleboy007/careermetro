@@ -32,6 +32,9 @@ const m = vi.hoisted(() => ({
   clearNotifications: vi.fn(async () => 0),
   clearJobText: vi.fn(async () => ({ unsavedJobTextCleared: 0 })),
   clearShared: vi.fn(async () => ({ sharedJobsCleared: 0 })),
+  clearWeekly: vi.fn(async () => ({ weeklyEmailRowsCleared: 0 })),
+  runWeekly: vi.fn(async (_o: { site: string; cap: number; send: (m: { to: string; subject: string; text: string; html: string; preheader: string; offUrl: string }) => Promise<{ ok: boolean }> }) => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
+  turnOff: vi.fn(async (_t: string) => {}),
   holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -70,6 +73,7 @@ vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures
 vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
+vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff, WEEKLY_EMAIL_CAP: 80 }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -98,6 +102,8 @@ import { POST as upload } from "@/app/api/resume/route";
 import { POST as trySample } from "@/app/api/resume/sample/route";
 import { OPTIONS as waitlistPreflight, POST as waitlist } from "@/app/api/waitlist/route";
 import { GET as shareGet, POST as share } from "@/app/share/route";
+import { GET as weeklyCron } from "@/app/api/cron/weekly-email/route";
+import { GET as emailOffGet, POST as emailOff } from "@/app/api/email/off/route";
 import { SESSION_COOKIE } from "@/lib/session";
 
 const SITE = "https://careermetro.test";
@@ -448,6 +454,59 @@ describe("share from the phone (POST /share)", () => {
   });
 });
 
+describe("the weekly My jobs email", () => {
+  const get = (auth?: string) => new Request(SITE + "/api/cron/weekly-email", { headers: auth ? { authorization: auth } : {} });
+  const TOKEN = "T".repeat(43);
+
+  it("runs only with the cron secret", async () => {
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    for (const auth of [undefined, "Bearer wrong", "s3cret-value"]) expect((await weeklyCron(get(auth))).status).toBe(401);
+    expect(m.runWeekly).not.toHaveBeenCalled();
+  });
+
+  it("sends nothing until the email sender is set up", async () => {
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    vi.stubEnv("RESEND_API_KEY", "");
+    expect(await json(await weeklyCron(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, sent: 0 } });
+    expect(m.runWeekly).not.toHaveBeenCalled();
+  });
+
+  it("sends up to the cap, from hello@, with the one-click unsubscribe headers, and logs counts only", async () => {
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    vi.stubEnv("RESEND_API_KEY", "re_test");
+    vi.stubEnv("EMAIL_FROM", "CareerMetro <codes@careermetro.com>");
+    const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response('{"id":"x"}', { status: 200 }));
+    m.runWeekly.mockImplementationOnce(async (o) => {
+      const offUrl = `${o.site}/api/email/off?t=${TOKEN}`;
+      await o.send({ to: "priya.sharma@example.test", subject: "1 job waiting on a reply", text: "Priya, your week on My jobs.", html: "<p>Priya</p>", preheader: "", offUrl });
+      return { considered: 1, sent: 1, empty: 0, failed: 0, capped: false };
+    });
+    const logs = vi.spyOn(console, "log").mockImplementation(() => {});
+    expect(await json(await weeklyCron(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, considered: 1, sent: 1, empty: 0, failed: 0, capped: false } });
+    expect(m.runWeekly.mock.calls[0]![0].cap).toBe(80);
+    const body = JSON.parse(String((fetch.mock.calls[0]![1] as RequestInit).body));
+    expect(body.from).toBe("CareerMetro <hello@careermetro.com>");
+    expect(body.headers).toEqual({ "List-Unsubscribe": `<${SITE}/api/email/off?t=${TOKEN}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
+    expect(body.html).toBe("<p>Priya</p>");
+    const all = logs.mock.calls.map((c) => String(c[0])).join("\n");
+    expect(all).toContain("weekly_email_done");
+    for (const secret of ["priya", "Priya", TOKEN]) expect(all).not.toContain(secret);
+    logs.mockRestore();
+    fetch.mockRestore();
+  });
+
+  it("turns off only on POST, and a GET only leads to the page that asks", async () => {
+    const res = emailOffGet(new Request(`${SITE}/api/email/off?t=${TOKEN}`));
+    expect(res.status).toBe(303);
+    expect(res.headers.get("location")).toBe(`${SITE}/email/off?t=${TOKEN}`);
+    expect(m.turnOff).not.toHaveBeenCalled();
+    const off = await emailOff(new Request(`${SITE}/api/email/off?t=${TOKEN}`, { method: "POST", body: "List-Unsubscribe=One-Click" }));
+    expect(off.status).toBe(303);
+    expect(off.headers.get("location")).toBe(`${SITE}/email/off?done=1`);
+    expect(m.turnOff).toHaveBeenCalledWith(TOKEN);
+  });
+});
+
 describe("daily cleanup", () => {
   const get = (auth?: string) => new Request(SITE + "/api/cron/cleanup", { headers: auth ? { authorization: auth } : {} });
 
@@ -481,13 +540,14 @@ describe("daily cleanup", () => {
     m.clearNotifications.mockResolvedValueOnce(4);
     m.clearJobText.mockResolvedValueOnce({ unsavedJobTextCleared: 2 });
     m.clearShared.mockResolvedValueOnce({ sharedJobsCleared: 3 });
+    m.clearWeekly.mockResolvedValueOnce({ weeklyEmailRowsCleared: 5 });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyEmailRowsCleared":5/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

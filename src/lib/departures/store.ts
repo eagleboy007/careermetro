@@ -252,11 +252,18 @@ export async function setStage(userId: string, raw: unknown, deps: Deps = {}): P
     if (found.row?.stage == null && (await listFull(tx, userId, "applied", deps.listMax ?? OWN_LIST_MAX))) return { ok: false, error: "applied_full" };
     await tx
       .insert(jobSaves)
-      .values({ userId, jobPostId: postId, stage, appliedAt: now, updatedAt: now })
+      .values({ userId, jobPostId: postId, stage, appliedAt: now, statusAt: now, updatedAt: now })
       .onConflictDoUpdate({
         target: [jobSaves.userId, jobSaves.jobPostId],
-        // A job marked Not this time or Withdrawn in My jobs that is applied to again is open again.
-        set: { stage, appliedAt: sql`coalesce(${jobSaves.appliedAt}, ${now.toISOString()}::timestamptz)`, closedAt: null, updatedAt: now },
+        // A job marked Not this time or Withdrawn in My jobs that is applied to again is open again. The status time
+        // moves only when the stage does.
+        set: {
+          stage,
+          appliedAt: sql`coalesce(${jobSaves.appliedAt}, ${now.toISOString()}::timestamptz)`,
+          statusAt: sql`case when ${jobSaves.stage} is distinct from ${stage} then ${now.toISOString()}::timestamptz else ${jobSaves.statusAt} end`,
+          closedAt: null,
+          updatedAt: now,
+        },
       });
     return { ok: true };
   });
@@ -272,7 +279,11 @@ export async function clearStage(userId: string, raw: unknown, deps: Deps = {}):
     if (!found) return { ok: false, error: "not_found" };
     if (!found.row) return { ok: true };
     if (found.row.savedAt === null) await tx.delete(jobSaves).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
-    else await tx.update(jobSaves).set({ stage: null, appliedAt: null, closedAt: null, updatedAt: now }).where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
+    else
+      await tx
+        .update(jobSaves)
+        .set({ stage: null, appliedAt: null, closedAt: null, statusAt: now, updatedAt: now })
+        .where(and(eq(jobSaves.userId, userId), eq(jobSaves.jobPostId, postId)));
     return { ok: true };
   });
 }

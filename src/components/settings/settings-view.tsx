@@ -71,6 +71,7 @@ export function SettingsView({
   unblockPerson,
   planActions,
   jobSearch,
+  weekly,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
@@ -79,6 +80,8 @@ export function SettingsView({
   planActions?: PlanActions;
   /** "Looking for a job" and the notice period (SettingsJobSearch); example data without it. */
   jobSearch?: ReactNode;
+  /** The weekly My jobs email's "See this week's" preview (WeeklyPreview), under its switch. */
+  weekly?: ReactNode;
 }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
@@ -149,8 +152,8 @@ export function SettingsView({
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />
         </Section>
 
-        <Section id="acc-notif" title="Notifications" tag="stored only">
-          <NotificationFields />
+        <Section id="acc-notif" title="Notifications">
+          <NotificationFields weekly={weekly} />
         </Section>
 
         <Section id="acc-company" title="Company" tag="for employers">

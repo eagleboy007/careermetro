@@ -12,7 +12,11 @@ import { logEvent } from "@/lib/log";
 
 type Env = Record<string, string | undefined>;
 
-export type EmailMessage = { to: string; subject: string; text: string };
+/**
+ * One email. `html` goes with the plain text, never instead of it; `headers` adds headers such as List-Unsubscribe;
+ * `from` replaces EMAIL_FROM (the weekly email comes from hello@ on the same domain, weeklyFrom).
+ */
+export type EmailMessage = { to: string; subject: string; text: string; html?: string; headers?: Record<string, string>; from?: string };
 
 export type SendResult = { ok: true } | { ok: false; reason: "not_configured" | "failed" };
 
@@ -27,7 +31,17 @@ export function emailReady(env: Env = process.env): boolean {
   return !!env.RESEND_API_KEY?.trim() && FROM.test(env.EMAIL_FROM?.trim() ?? "");
 }
 
-/** Sends one plain-text email through Resend. Never throws: a network error or a refusal is { ok: false, "failed" }. */
+/**
+ * The weekly My jobs email's sender (C22): "CareerMetro <hello@…>" on EMAIL_FROM's own domain, which Resend already
+ * verified, so no new key or setting is needed. Null when EMAIL_FROM isn't set.
+ */
+export function weeklyFrom(env: Env = process.env): string | null {
+  if (!emailReady(env)) return null;
+  const domain = env.EMAIL_FROM!.trim().match(/@([^\s@<>]+)>?$/)?.[1];
+  return domain ? `CareerMetro <hello@${domain}>` : null;
+}
+
+/** Sends one email through Resend: plain text, with HTML too when given. Never throws: a network error or a refusal is { ok: false, "failed" }. */
 export async function sendEmail(
   message: EmailMessage,
   env: Env = process.env,
@@ -39,7 +53,14 @@ export async function sendEmail(
     const res = await doFetch(RESEND_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY!.trim()}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: env.EMAIL_FROM!.trim(), to: [message.to], subject: message.subject, text: message.text }),
+      body: JSON.stringify({
+        from: message.from ?? env.EMAIL_FROM!.trim(),
+        to: [message.to],
+        subject: message.subject,
+        text: message.text,
+        ...(message.html ? { html: message.html } : {}),
+        ...(message.headers ? { headers: message.headers } : {}),
+      }),
       signal: AbortSignal.timeout(deps.timeoutMs ?? SEND_TIMEOUT_MS),
       cache: "no-store",
     });

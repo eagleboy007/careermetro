@@ -19,7 +19,7 @@ These are the free or public settings most likely to hurt us. Each one is a mone
 ## Services in use
 
 ### Vercel: hosting the website and app
-- **Used for:** running the app in Mumbai (`bom1`), the staging site (the `staging` branch's preview build; other branches get no preview), and the daily 03:00 IST cleanup job (`vercel.json`, `/api/cron/cleanup`).
+- **Used for:** running the app in Mumbai (`bom1`), the staging site (the `staging` branch's preview build; other branches get no preview), the daily 03:00 IST cleanup job (`vercel.json`, `/api/cron/cleanup`), and the weekly My jobs email at 08:00 IST Monday to Wednesday (`/api/cron/weekly-email`; once a day at most, as Hobby allows).
 - **Plan now:** Hobby (free).
 - **What bites:** commercial use isn't allowed on Hobby, there are 100 deploys a day, logs are kept only briefly, and there's no log drain or alerts. Function time and bandwidth limits apply as traffic grows.
 - **Upgrade:** Pro (approx. US$20/month per member). This adds commercial use, higher limits, log drains and longer logs.
@@ -33,9 +33,9 @@ These are the free or public settings most likely to hurt us. Each one is a mone
 - **Switch later?** Yes, with planning. The database is plain Postgres with standard migrations (`drizzle/`), so it can move to AWS RDS, Google Cloud SQL, Neon or a self-run Postgres. Sign-in is the harder part: moving off Supabase Auth means a new sign-in provider and a one-time move of user accounts. Development would plan this as its own project.
 
 ### Resend: sending emails
-- **Used for:** sign-in codes (through Supabase's SMTP settings), and the app's own emails sent straight to Resend's API (`src/lib/email/send.ts`): company sign-up, join and re-check codes, and the current-job work-email check.
+- **Used for:** sign-in codes (through Supabase's SMTP settings), and the app's own emails sent straight to Resend's API (`src/lib/email/send.ts`): company sign-up, join and re-check codes, the current-job work-email check, and the weekly My jobs email (opt-in, from hello@ on the same domain, Monday to Wednesday at 08:00 IST, at most 80 a run; C22, 29 Oct 2026).
 - **Plan now:** free plan, set up 25 Oct 2026.
-- **What bites:** 3,000 emails a month and 100 a day (approx.). On a busy launch day, 100 a day can run out.
+- **What bites:** 3,000 emails a month and 100 a day (approx.). On a busy launch day, 100 a day can run out. The weekly My jobs email shares these limits: once about 200 people have it on, it needs Pro (Milin's call).
 - **Upgrade:** Pro (approx. US$20/month for 50,000 a month). Upgrade before any public launch push.
 - **Switch later?** Yes. For sign-in codes it's only new SMTP settings in Supabase. The app's own emails call Resend directly, so moving those means a small code change. Alternatives: Amazon SES (cheapest at volume), Brevo, Postmark.
 

@@ -231,6 +231,18 @@ Later, after a lawyer's view of the portals' terms: a browser button that reads 
 - The Settings copy says "Open CareerMetro in Chrome" rather than naming careermetro.com, as the domain isn't pointed yet.
 - Icons are rendered from `src/app/icon.svg` into `public/icons/` (192, 512 and a maskable 512). No service worker.
 
+## Choices made while building (PR 6)
+
+- Migration 0053 carries the weekly email's parts: `job_saves.status_at` (backfilled, then not null with a default), `user_settings.email_off_token` (unique) and `weekly_emails`.
+- `status_at` moves only when the stage changes: the status menu, the edit sheet, and Departures' Applied and "I didn't apply". A note or a date edit leaves it.
+- The off token is made on the first send rather than when the switch turns on, so a person who never gets an email holds no token. It is replaced each time it turns the email off.
+- The email's links: List-Unsubscribe points to `/api/email/off?t=` (a POST turns it off, RFC 8058). A GET there only redirects to the page `/email/off`, which asks first. Mail scanners can't turn it off by opening the link.
+- The sender is `CareerMetro <hello@…>` on EMAIL_FROM's own domain (`weeklyFrom`), so no new key or setting is needed.
+- A week found empty also gets its `weekly_emails` row, so Tuesday and Wednesday don't read it again. A failed send gets no row, so the next day tries again.
+- Interviews this week count from the moment of the run until Sunday 23:59 IST, so Tuesday's run doesn't list Monday's interview. The link is "Mock interview" with Elite on, otherwise "Practise".
+- Heard back says "Heard back 20 Oct · 9 days, nothing since"; the handoff shows only the Applied line.
+- The Notifications section loses its "stored only" tag, and its note now says the weekly email is sent.
+
 ## Build order once approved
 
 - **PR 1:** migration 0050, schemas, store, board-link reading and the My jobs tab.

@@ -1183,6 +1183,51 @@ await step("share from the phone: the shared job fills the add box, checks at on
     await sql.end();
   }
 });
+// The weekly My jobs email (C22, docs/plans/application-tracker-plan.md section 6): Settings shows the switch with its
+// words and "See this week's", which sends nothing. The email's "Turn it off" needs no sign-in: opening the link
+// changes nothing, the button turns it off and replaces the token, and an unknown token gets the same page.
+await step("weekly My jobs email: Settings preview, and the one-tap turn-off without sign-in", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check what is kept");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const TOKEN = "e2eWeeklyOffToken".padEnd(43, "x");
+  try {
+    await p.goto(BASE + "/settings#acc-notif");
+    await settled();
+    const notif = p.getByRole("region", { name: "Notifications" });
+    await notif.getByText("Weekly My jobs email", { exact: true }).waitFor({ timeout: 10000 });
+    await notif.getByText(/^Mondays at 8:00 IST: jobs waiting on a reply/).waitFor();
+    await notif.getByRole("button", { name: "See this week's" }).click();
+    await notif.getByText(/Nothing is moving this week|your week on My jobs\./).first().waitFor({ timeout: 5000 });
+    await a11y("settings-weekly-preview");
+    await shot("settings-weekly-preview");
+
+    const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    await sql`insert into user_settings (user_id, email_weekly_summary, email_off_token) values (${me.id}, true, ${TOKEN})
+      on conflict (user_id) do update set email_weekly_summary = true, email_off_token = ${TOKEN}`;
+    // Signed out, as from a mail app: a fresh browser context with no cookies.
+    const mail = await b.newContext({ viewport: { width: 390, height: 844 } });
+    const q = await mail.newPage();
+    try {
+      await q.goto(`${BASE}/api/email/off?t=${TOKEN}`);
+      await q.getByRole("heading", { name: "Turn off the weekly My jobs email?" }).waitFor({ timeout: 10000 });
+      const [still] = await sql`select email_weekly_summary as on from user_settings where user_id = ${me.id}`;
+      if (!still.on) throw new Error("opening the link turned the email off");
+      await a11yOn(q, "email-off");
+      await q.getByRole("button", { name: "Turn it off" }).click();
+      await q.getByRole("heading", { name: "The weekly My jobs email is off" }).waitFor({ timeout: 10000 });
+      const [after] = await sql`select email_weekly_summary as on, email_off_token as token from user_settings where user_id = ${me.id}`;
+      if (after.on || after.token === TOKEN) throw new Error("the button didn't turn the email off and replace the token");
+      // An unknown token gets the same page.
+      await q.goto(`${BASE}/api/email/off?t=${"n".repeat(43)}`);
+      await q.getByRole("heading", { name: "Turn off the weekly My jobs email?" }).waitFor({ timeout: 10000 });
+    } finally {
+      await mail.close();
+    }
+  } finally {
+    await sql.end();
+  }
+});
 // Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
 // shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
 // Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.
