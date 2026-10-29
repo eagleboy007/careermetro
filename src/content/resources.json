@@ -7591,17 +7591,6 @@
     "free": true
   },
   {
-    "title": "Cube: introduction",
-    "url": "https://docs.cube.dev/introduction",
-    "provider": "Cube",
-    "kind": "docs",
-    "skillIds": [
-      "semantic-layer"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Oracle Database 19c PL/SQL Language Reference",
     "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/toc.htm",
     "provider": "Oracle",
@@ -7679,17 +7668,6 @@
       "robotic-process-automation"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Advanced RPA Professional learning trail",
-    "url": "https://university.automationanywhere.com/trail-details/advanced-rpa-professional/",
-    "provider": "Automation Anywhere University",
-    "kind": "course",
-    "skillIds": [
-      "automation-anywhere"
-    ],
-    "minutes": 240,
     "free": true
   },
   {
@@ -7968,17 +7946,6 @@
     "free": true
   },
   {
-    "title": "Dive into VR development with a new pathway",
-    "url": "https://blog.unity.com/en/games/dive-into-vr-development-with-a-new-pathway",
-    "provider": "Unity",
-    "kind": "docs",
-    "skillIds": [
-      "xr-development"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
     "title": "Fortinet Training Institute: courses for cybersecurity professionals",
     "url": "https://www.fortinet.com/training/cybersecurity-professionals.html",
     "provider": "Fortinet",
@@ -8200,18 +8167,6 @@
     "free": true
   },
   {
-    "title": "(SLAM) Navigating while mapping",
-    "url": "https://docs.nav2.org/tutorials/docs/navigation2_with_slam.html",
-    "provider": "Nav2",
-    "kind": "docs",
-    "skillIds": [
-      "slam-localization",
-      "robot-navigation-planning"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Online training: Mobile Robotics (Cyrill Stachniss)",
     "url": "https://www.ipb.uni-bonn.de/online-training-robotics/",
     "provider": "University of Bonn",
@@ -8221,17 +8176,6 @@
       "sensor-fusion"
     ],
     "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "Nav2 navigation concepts",
-    "url": "https://docs.nav2.org/concepts/",
-    "provider": "Nav2",
-    "kind": "docs",
-    "skillIds": [
-      "robot-navigation-planning"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -8276,17 +8220,6 @@
       "sensor-fusion"
     ],
     "minutes": 39,
-    "free": true
-  },
-  {
-    "title": "Smoothing odometry using robot_localization",
-    "url": "https://docs.nav2.org/setup_guides/odom/setup_robot_localization.html",
-    "provider": "Nav2",
-    "kind": "docs",
-    "skillIds": [
-      "sensor-fusion"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -8677,17 +8610,6 @@
     "free": true
   },
   {
-    "title": "SAN Fabric Administration Best Practices Guide",
-    "url": "https://docs.broadcom.com/doc/12379730",
-    "provider": "Broadcom (Brocade)",
-    "kind": "docs",
-    "skillIds": [
-      "san-storage"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "ONTAP 9 documentation",
     "url": "https://docs.netapp.com/us-en/ontap/",
     "provider": "NetApp",
@@ -8751,18 +8673,6 @@
       "backup-software"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "STM32 MCU training zone (MOOCs and online trainings)",
-    "url": "https://wiki.st.com/stm32mcu/wiki/Training_zone",
-    "provider": "STMicroelectronics",
-    "kind": "course",
-    "skillIds": [
-      "microcontrollers",
-      "rtos"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
