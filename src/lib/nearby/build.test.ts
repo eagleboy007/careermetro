@@ -236,6 +236,11 @@ describe("the e2e walk's resume", () => {
   it("has no Nearby line of Data Analyst, and names the closest role with its counts", () => {
     expect(nearbyLinesFor({ profile: priya, targetSlug: "data-analyst", now: NOW })).toEqual({ lines: [], closest: WALK_CLOSEST });
   });
+  it("names a data role as the closest, not an automation one (src/evals/closest-eval.test.ts)", () => {
+    const { families } = JSON.parse(readFileSync("fixtures/evals/closest/role-families.json", "utf8")) as { families: Record<string, string[]> };
+    const dataRoles = [...families["data-analytics"], ...families["data-engineering"], ...families["data-science-ml"], ...families.delivery];
+    expect(dataRoles).toContain(nearbyLinesFor({ profile: priya, targetSlug: "data-analyst", now: NOW }).closest?.slug);
+  });
 });
 
 /** Mirrored in e2e/walk.mjs. */
