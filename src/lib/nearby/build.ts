@@ -108,7 +108,8 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
         a.line.title.localeCompare(b.line.title),
     );
 
-  const near = scored.filter((s) => s.share >= NEARBY_MIN_SHARE && s.line.shared >= NEARBY_MIN_SHARED).slice(0, NEARBY_MAX);
+  // Near on key skills: a role isn't near because the resume shows communication. The line still shows every shared skill.
+  const near = scored.filter((s) => s.keyShare >= NEARBY_MIN_SHARE && s.key >= NEARBY_MIN_SHARED).slice(0, NEARBY_MAX);
   if (near.length) return nearbyLines.parse({ lines: near.map((s) => s.line), closest: null });
   // Closest when none is near: the role holding the most of the resume's key skills (half for each one only listed),
   // at least two, then the one asking for more of the resume, then share, then likeness to the target role. So a small
