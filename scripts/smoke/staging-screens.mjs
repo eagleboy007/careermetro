@@ -816,8 +816,11 @@ try {
   // ---- My jobs (handoff 12m, T131) -------------------------------------------------------------------------------------
   // A pastes the synthetic posting (the real parse call), checks the company and title, saves it, moves it through all
   // seven statuses (a closed one shows its closed date), keeps a note with its counter, reads the job again and deletes
-  // it. Screenshots at 1280 and 390, light and dark, are kept every run for the fidelity check against v48.
-  await step("my jobs: A adds a pasted job, moves it through every status, keeps a note, reads it again and deletes it", A, async (p) => {
+  // it. Screenshots at 1280 and 390, light and dark, are kept every run for the fidelity check against v48. Before the
+// delete, an interview date three India days out moves it to Interview and Today shows "Interview in 3 days"; then
+// Prepare for this job opens Practice and the mock set-up for it (A turns on Elite, free in the beta, for the mock).
+// Those screens are kept too (names start my-jobs- so the workflow publishes them).
+  await step("my jobs: A adds a pasted job, moves it through every status, keeps a note, sets an interview date (Today counts down), opens Prepare for this job (practice and the mock set-up), reads it again and deletes it", A, async (p) => {
     const posting = JSON.parse(readFileSync(new URL("../../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
     const company = "Example Analytics Pvt Ltd (smoke)";
     const NOTE = "Round 1 is a SQL test (smoke).";
@@ -870,6 +873,55 @@ try {
     }
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
+    // The interview date (PR 242): three India days out, 10:30 IST, moves Saved to Interview; Today counts down to it.
+    const inThree = new Date(Date.now() + 5.5 * 3600_000 + 3 * 86_400_000).toISOString().slice(0, 10);
+    await row.getByRole("button", { name: `Edit ${posting.title} at ${company}` }).click();
+    await sheet.getByLabel("Interview · date and time, IST").fill(`${inThree}T10:30`);
+    await sheet.getByRole("button", { name: /^Add to calendar/ }).waitFor({ timeout: 5000 });
+    await shoot(p, "my-jobs-interview-sheet-1280-light");
+    await sheet.getByRole("button", { name: "Save", exact: true }).click();
+    await row.getByRole("button", { name: /^Status: Interview/ }).waitFor({ timeout: 10000 });
+    await row.getByText(/, 10:30$/).first().waitFor({ timeout: 10000 });
+    await open(p, "/today");
+    const card = p.getByRole("region", { name: "Next interview" });
+    await card.getByRole("heading", { name: "Interview in 3 days" }).waitFor({ timeout: 15000 });
+    await card.getByText(company, { exact: false }).first().waitFor({ timeout: 5000 });
+    for (const [width, height] of [[1280, 900], [390, 844]]) {
+      await p.setViewportSize({ width, height });
+      await card.waitFor({ timeout: 10000 });
+      await p.evaluate(() => window.scrollTo(0, 0));
+      await shoot(p, `my-jobs-today-interview-${width}-light`);
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    // Prepare for this job (PR 241): the menu, Practice on this job's skills, and the mock set-up for the job.
+    await open(p, "/elite");
+    const main = p.locator("main");
+    const eliteOn = main.getByRole("button", { name: "Elite is on, free in the beta", exact: true });
+    if (!(await eliteOn.count())) {
+      await main.getByRole("button", { name: "Turn on Elite, free in the beta", exact: true }).click();
+      await eliteOn.waitFor({ timeout: 15000 });
+    }
+    const prepare = row.getByRole("menu", { name: `Prepare for ${posting.title}` });
+    const prepareMenu = async () => {
+      await open(p, "/departures?tab=mine");
+      await row.getByText(NOTE).waitFor({ timeout: 10000 });
+      await row.getByRole("button", { name: "Prepare for this job" }).click();
+      await prepare.waitFor({ timeout: 10000 });
+    };
+    await prepareMenu();
+    await shoot(p, "my-jobs-prepare-menu-1280-light");
+    await prepare.getByRole("menuitem", { name: /^Practice on this job's skills/ }).click();
+    await p.getByText(`For one job: ${company}, ${posting.title}.`, { exact: false }).first().waitFor({ timeout: 15000 });
+    await settled(p);
+    await shoot(p, "my-jobs-practice-1280-light");
+    await prepareMenu();
+    await prepare.getByRole("menuitem", { name: /^Mock interview for this job/ }).click();
+    const mockSetup = main.getByRole("region", { name: `Practise for ${company}, ${posting.title}` });
+    await mockSetup.getByText(`For one job: ${company}, ${posting.title}.`, { exact: false }).waitFor({ timeout: 15000 });
+    await settled(p);
+    await shoot(p, "my-jobs-mock-setup-1280-light");
+    await open(p, "/departures?tab=mine");
+    await row.getByText(NOTE).waitFor({ timeout: 10000 });
     await row.getByRole("button", { name: `Edit ${posting.title} at ${company}` }).click();
     await sheet.getByText("Read the job again").click();
     await sheet.getByText(/Example Analytics Pvt Ltd helps retail brands/).waitFor({ timeout: 10000 });
