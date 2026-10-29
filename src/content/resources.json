@@ -5693,18 +5693,6 @@
     "free": true
   },
   {
-    "title": "STM32 MOOCs",
-    "url": "https://st.com/content/st_com/en/support/learning/stm32-education/stm32-moocs.html",
-    "provider": "STMicroelectronics",
-    "kind": "course",
-    "skillIds": [
-      "microcontrollers",
-      "rtos"
-    ],
-    "minutes": 480,
-    "free": true
-  },
-  {
     "title": "Real Time Operating System (IIT Kharagpur)",
     "url": "https://onlinecourses.nptel.ac.in/noc26_cs47/preview",
     "provider": "NPTEL",
@@ -5713,17 +5701,6 @@
       "rtos"
     ],
     "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "FreeRTOS Kernel Quick Start Guide",
-    "url": "https://FreeRTOS.org/FreeRTOS-quick-start-guide.html",
-    "provider": "FreeRTOS",
-    "kind": "docs",
-    "skillIds": [
-      "rtos"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -5826,17 +5803,6 @@
       "embedded-linux"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Embedded Linux system development slides",
-    "url": "https://bootlin.com/doc/training/embedded-linux-4d/embedded-linux-4d-slides.pdf",
-    "provider": "Bootlin",
-    "kind": "docs",
-    "skillIds": [
-      "embedded-linux"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
@@ -6116,17 +6082,6 @@
     "free": true
   },
   {
-    "title": "Introducing the ABAP RESTful Application Programming Model (RAP)",
-    "url": "https://learning.sap.com/learning-journeys/acquire-core-abap-skills/introducing-the-abap-restful-application-programming-model-rap-_e86bbfde-50be-4c7b-8716-53bacc94c5a0",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-abap-hana"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Create and Enhance a CDS View in ABAP on-Premise",
     "url": "https://developers.sap.com/group.abap-dev-cds.html",
     "provider": "SAP Developers",
@@ -6158,17 +6113,6 @@
       "sap-fiori-ui5"
     ],
     "minutes": 1200,
-    "free": true
-  },
-  {
-    "title": "UI5 TypeScript Walkthrough",
-    "url": "https://sap-samples.github.io/ui5-typescript-walkthrough",
-    "provider": "SAP Samples (GitHub)",
-    "kind": "practice",
-    "skillIds": [
-      "sap-fiori-ui5"
-    ],
-    "minutes": 300,
     "free": true
   },
   {
@@ -6290,17 +6234,6 @@
       "m365-administration"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Start here: Zendesk Training Offerings Overview",
-    "url": "https://support.zendesk.com/hc/en-us/articles/4408843500058-Start-here-Zendesk-Training-Offerings-Overview",
-    "provider": "Zendesk",
-    "kind": "docs",
-    "skillIds": [
-      "support-ticketing-tools"
-    ],
-    "minutes": 15,
     "free": true
   },
   {

@@ -52,7 +52,7 @@ async function Role({ params }: { params: PageProps<"/roles/[slug]">["params"] }
           All roles
         </Link>
         <h1 className="text-4xl font-semibold leading-[1.05] sm:text-5xl">{role.title}</h1>
-        {role.summary && <p className="text-muted">{role.summary}</p>}
+        {role.summary && <p className="max-w-[60ch] text-lg leading-snug text-muted">{role.summary}</p>}
         <p className="font-mono text-xs uppercase tracking-wider text-muted">
           {role.experience}
           {role.postingsAnalysed !== null && ` · ${role.postingsAnalysed} postings analysed`}
