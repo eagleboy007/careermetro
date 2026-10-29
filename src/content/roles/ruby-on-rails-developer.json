@@ -1,0 +1,127 @@
+{
+  "slug": "ruby-on-rails-developer",
+  "title": "Ruby on Rails Developer",
+  "summary": "A Ruby on Rails developer builds and maintains web applications and APIs with the Rails framework, usually on the back end with a PostgreSQL or MySQL database. In India you often work in a product startup or a services team building for overseas clients, alongside front-end developers, testers and a product owner.",
+  "dailyDuties": [
+    "Build features and APIs in Rails from user stories",
+    "Write and fix RSpec tests before merging",
+    "Review pull requests from teammates",
+    "Fix slow database queries and background jobs",
+    "Debug production issues from logs and error reports",
+    "Join sprint calls and demos with the client"
+  ],
+  "typicalTitles": [
+    "Ruby Developer",
+    "RoR Developer",
+    "Ruby on Rails Engineer",
+    "Senior Ruby on Rails Developer",
+    "Rails Backend Developer",
+    "Full Stack Ruby on Rails Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "ruby-on-rails",
+      "importance": "required",
+      "expectation": "Build and maintain Rails apps with ActiveRecord, background jobs and clean MVC code",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Design tables and write queries in PostgreSQL or MySQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build JSON APIs for web and mobile clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write RSpec or Minitest tests and practise TDD",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in a pull-request workflow on Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Apply object-oriented design and common design patterns",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work directly with overseas clients and product owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Find N+1 queries and slow SQL and fix them",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Use Redis for caching and job queues",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "nice_to_have",
+      "expectation": "Build front-end features in React",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Write Rails views with HTML, CSS and Hotwire",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run apps in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and run apps on AWS",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Keep CI pipelines green",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "optional",
+      "why": "Shows you can deploy and run apps on AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

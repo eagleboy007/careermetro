@@ -1,0 +1,60 @@
+{
+  "id": "build-release-engineer-from-developer",
+  "roleSlug": "build-release-engineer",
+  "persona": "Java developer who owns his team's Jenkins jobs and monthly releases",
+  "resumeText": "Ankit Sharma | Noida | ankit.sharma@example.com\n\nEXPERIENCE\nSoftware Engineer, Yamuna Logistics Software, Noida (2021 - present)\n- Maintain 30 Jenkins pipelines that build and test the Java services.\n- Moved the build from Ant to Gradle and cut build time by 40 percent.\n- Manage Git branches and tags for monthly releases with the team lead.\n- Write Bash scripts to package releases on Linux build servers.\n- Build Docker images for the shipment tracking services.\n- Track release defects in Jira and update the release checklist.\n\nSKILLS\nNexus, Python, Kubernetes\n\nEDUCATION\nBTech Information Technology, Dr. A.P.J. Abdul Kalam Technical University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "ci-cd",
+        "quote": "Maintain 30 Jenkins pipelines that build and test"
+      },
+      {
+        "skillId": "build-tools",
+        "quote": "Moved the build from Ant to Gradle"
+      },
+      {
+        "skillId": "git",
+        "quote": "Manage Git branches and tags"
+      },
+      {
+        "skillId": "release-management",
+        "quote": "Manage Git branches and tags for monthly releases"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Write Bash scripts to package releases"
+      },
+      {
+        "skillId": "linux",
+        "quote": "package releases on Linux build servers"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Build Docker images for the shipment tracking services"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Track release defects in Jira"
+      },
+      {
+        "skillId": "artifact-repositories",
+        "quote": "Nexus"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "artifact-repositories",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "terraform",
+      "software-supply-chain-security",
+      "cpp"
+    ]
+  },
+  "reviewedBy": null
+}

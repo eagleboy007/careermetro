@@ -1,0 +1,123 @@
+{
+  "slug": "unified-communications-engineer",
+  "title": "Unified Communications Engineer",
+  "summary": "A unified communications (UC) engineer runs a company's phone calls, voicemail and video meetings on platforms such as Cisco CUCM, Webex or Microsoft Teams Phone. You usually sit in the network or infrastructure team, connect these platforms to telecom carriers, and fix call quality problems for users.",
+  "dailyDuties": [
+    "Add and change users, phones and numbers on the calling platform",
+    "Configure SIP trunks and session border controllers to carriers",
+    "Troubleshoot dropped calls and one-way audio from call traces",
+    "Resolve P1 and P2 voice tickets within SLA",
+    "Plan and test upgrades or migrations to cloud calling",
+    "Update dial plans, call flows and runbooks"
+  ],
+  "typicalTitles": [
+    "VoIP Engineer",
+    "Collaboration Engineer",
+    "Cisco Voice Engineer",
+    "Microsoft Teams Voice Engineer",
+    "UC Engineer",
+    "Unified Communications Administrator",
+    "Telephony Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "voip-sip-sbc",
+      "importance": "required",
+      "expectation": "Build and troubleshoot SIP trunks, call flows and session border controllers",
+      "postingShare": null
+    },
+    {
+      "skillId": "cisco-collaboration-cucm",
+      "importance": "required",
+      "expectation": "Run calling on at least one UC platform",
+      "postingShare": null,
+      "oneOf": "uc-platform"
+    },
+    {
+      "skillId": "teams-phone-voice",
+      "importance": "required",
+      "expectation": "Run calling on at least one UC platform",
+      "postingShare": null,
+      "oneOf": "uc-platform"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Fix NAT, DNS and firewall issues that break voice and video",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Set up voice VLANs and QoS on switches and routers",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work P1/P2 voice incidents and changes through an ITIL ticket queue",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain call issues and plans to users, carriers and other teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "m365-administration",
+      "importance": "nice_to_have",
+      "expectation": "Manage Teams and Microsoft 365 user settings",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Bulk-provision users and phone numbers with PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Run UC servers on VMware ESXi",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "nice_to_have",
+      "expectation": "Take part in on-call for voice outages",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Document dial plans and call flows",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "uc-platform",
+      "label": "A calling platform (Cisco CUCM/Webex or Microsoft Teams Phone)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "optional",
+      "why": "Networking base that Cisco voice roles expect"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

@@ -1,0 +1,135 @@
+{
+  "slug": "noc-engineer",
+  "title": "NOC Engineer",
+  "summary": "A NOC (network operations centre) engineer watches an organisation's networks, servers and links around the clock and acts first when something breaks. You sit in a shift team that triages alerts, raises tickets and fixes simple faults, and hands harder problems to senior network or system engineers.",
+  "dailyDuties": [
+    "Monitor network and server alerts on dashboards during a rotational shift",
+    "Triage alerts by severity and open incident tickets",
+    "Run first-level checks on links, switches and servers",
+    "Escalate unresolved faults to L2/L3 teams or the service provider",
+    "Join outage bridge calls and post status updates",
+    "Write shift handover notes and update runbooks",
+    "Follow change windows and confirm services after maintenance"
+  ],
+  "typicalTitles": [
+    "Network Operations Center Engineer",
+    "NOC Analyst",
+    "L1 NOC Engineer",
+    "L2 NOC Engineer",
+    "NOC Support Engineer",
+    "Network Monitoring Engineer",
+    "NOC Technician"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "network-monitoring",
+      "importance": "required",
+      "expectation": "Watch network health on SolarWinds, PRTG, Nagios or Zabbix and act on alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Triage alerts by severity, open incidents and escalate to L2/L3 within SLA",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Log incidents, problems and changes in an ITIL ticketing tool such as ServiceNow or Remedy",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Troubleshoot TCP/IP, DNS, DHCP and link faults",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Check routing, VLAN and switch-port faults and run first-level fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run basic health checks on servers",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Run basic health checks on servers",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write shift handovers and update stakeholders on outage bridge calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Read Grafana or Prometheus dashboards for services",
+      "postingShare": null
+    },
+    {
+      "skillId": "firewall-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Check firewall and VPN tunnel status",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "nice_to_have",
+      "expectation": "Monitor AWS or Azure network components",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate routine checks with small scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Check VMware host and VM alerts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "server-os",
+      "label": "A server operating system (Linux or Windows Server)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "recommended",
+      "why": "Most-asked networking cert in India NOC postings"
+    },
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral networking basics for freshers"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

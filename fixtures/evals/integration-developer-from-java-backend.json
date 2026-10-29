@@ -1,0 +1,56 @@
+{
+  "id": "integration-developer-from-java-backend",
+  "roleSlug": "integration-developer",
+  "persona": "Java backend developer who built REST and SOAP integrations and has only tried MuleSoft",
+  "resumeText": "Priya Nair | Bengaluru | priya.nair@example.com\n\nEXPERIENCE\nSoftware Engineer, Nilgiri Retail Tech, Bengaluru (2020 - present)\n- Built REST APIs in Spring Boot for the order and inventory services.\n- Consumed SOAP web services from the warehouse system using WSDL contracts.\n- Mapped XML and JSON payloads between the ERP and the online store.\n- Wrote SQL joins and views on PostgreSQL for order reconciliation.\n- Published events to Kafka topics for stock updates.\n- Maintain Jenkins pipelines that build and deploy the services.\n\nSKILLS\nMuleSoft, Anypoint Studio, Git\n\nEDUCATION\nBTech Electronics and Communication, RV College of Engineering, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs in Spring Boot"
+      },
+      {
+        "skillId": "java",
+        "quote": "Built REST APIs in Spring Boot for the order and inventory services"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Consumed SOAP web services from the warehouse system"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL joins and views on PostgreSQL"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Published events to Kafka topics"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Maintain Jenkins pipelines that build and deploy"
+      },
+      {
+        "skillId": "mulesoft",
+        "quote": "MuleSoft"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "mulesoft",
+        "status": "weak"
+      },
+      {
+        "skillId": "agile-scrum",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "boomi",
+      "identity-federation",
+      "aws",
+      "api-documentation"
+    ]
+  },
+  "reviewedBy": null
+}

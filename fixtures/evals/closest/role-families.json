@@ -21,7 +21,8 @@
       "ml-engineer",
       "mlops-engineer",
       "ai-engineer",
-      "computer-vision-engineer"
+      "computer-vision-engineer",
+      "nlp-engineer"
     ],
     "security": [
       "cyber-security-analyst",
@@ -40,7 +41,8 @@
       "iam-engineer",
       "ot-security-engineer",
       "grc-manager",
-      "privacy-analyst"
+      "privacy-analyst",
+      "digital-forensics-analyst"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -55,7 +57,10 @@
       "storage-backup-engineer",
       "it-support-engineer",
       "technical-support-engineer",
-      "application-support-engineer"
+      "application-support-engineer",
+      "build-release-engineer",
+      "noc-engineer",
+      "unified-communications-engineer"
     ],
     "backend": [
       "software-engineer",
@@ -70,7 +75,10 @@
       "blockchain-developer",
       "mainframe-developer",
       "solutions-architect",
-      "tech-lead"
+      "tech-lead",
+      "cpp-developer",
+      "gis-developer",
+      "ruby-on-rails-developer"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -89,7 +97,12 @@
       "dynamics-365-developer",
       "oracle-fusion-technical-consultant",
       "power-platform-developer",
-      "rpa-developer"
+      "rpa-developer",
+      "integration-developer",
+      "pega-developer",
+      "salesforce-administrator",
+      "sap-basis-administrator",
+      "sap-fico-consultant"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -108,7 +121,8 @@
       "engineering-manager",
       "product-manager",
       "scrum-master",
-      "technical-writer"
+      "technical-writer",
+      "technical-program-manager"
     ],
     "marketing": [
       "digital-marketing-executive"

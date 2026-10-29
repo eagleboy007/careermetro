@@ -1,0 +1,48 @@
+{
+  "id": "sap-basis-administrator-from-basis-associate",
+  "roleSlug": "sap-basis-administrator",
+  "persona": "Junior SAP Basis associate at an IT services company, no upgrade projects yet",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nEXPERIENCE\nSAP Basis Associate, Sahyadri Infotech Services, Pune (2021 - present)\n- Import transport requests through STMS for 14 ECC and BW systems.\n- Perform client copies and system refreshes from production to quality.\n- Apply SAP kernel patches and support packages during weekend downtime.\n- Administer SUSE Linux servers that host the SAP application layer.\n- Monitor HANA database backups and log volumes in HANA Studio.\n- Handle incidents and change requests in ServiceNow within agreed SLAs.\n\nSKILLS\nOracle, AWS, shell scripting\n\nEDUCATION\nBE Computer Engineering, Savitribai Phule Pune University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "sap-basis-administration",
+        "quote": "Import transport requests through STMS for 14 ECC and BW systems"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Administer SUSE Linux servers that host the SAP application layer"
+      },
+      {
+        "skillId": "sap-hana-administration",
+        "quote": "Monitor HANA database backups and log volumes"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Handle incidents and change requests in ServiceNow"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-upgrades-migrations",
+        "status": "missing"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "sap-abap",
+      "kubernetes",
+      "terraform"
+    ]
+  },
+  "reviewedBy": null
+}

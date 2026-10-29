@@ -1,0 +1,51 @@
+{
+  "id": "salesforce-administrator-from-sales-ops",
+  "roleSlug": "salesforce-administrator",
+  "persona": "Sales operations executive who works daily in Salesforce",
+  "resumeText": "Pooja Agarwal | Jaipur | pooja.agarwal@example.com\n\nEXPERIENCE\nSales Operations Executive, Aravalli Realty Solutions, Jaipur (2022 - present)\n- Build Salesforce reports and dashboards for the weekly sales review.\n- Import 15,000 leads a quarter with Data Loader and merge duplicates.\n- Created validation rules and a record-triggered flow for lead assignment.\n- Gather requirements from regional sales heads for pipeline changes.\n- Train 40 new sales users on Sales Cloud every year.\n\nSKILLS\nExcel, Permission sets\n\nEDUCATION\nBCom, University of Rajasthan, 2021\n\nCERTIFICATIONS\nSalesforce Certified Administrator (in progress)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "data-visualization",
+        "quote": "Build Salesforce reports and dashboards for the weekly sales review"
+      },
+      {
+        "skillId": "salesforce-data-management",
+        "quote": "Import 15,000 leads a quarter with Data Loader"
+      },
+      {
+        "skillId": "salesforce-flows",
+        "quote": "Created validation rules and a record-triggered flow"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gather requirements from regional sales heads"
+      },
+      {
+        "skillId": "salesforce-clouds",
+        "quote": "Train 40 new sales users on Sales Cloud"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Train 40 new sales users on Sales Cloud every year"
+      },
+      {
+        "skillId": "salesforce-security-model",
+        "quote": "Permission sets"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "salesforce-security-model",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "salesforce-apex",
+      "salesforce-lwc",
+      "uat"
+    ]
+  },
+  "reviewedBy": null
+}

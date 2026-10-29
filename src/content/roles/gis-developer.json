@@ -1,0 +1,128 @@
+{
+  "slug": "gis-developer",
+  "title": "GIS Developer",
+  "summary": "A GIS (geographic information system) developer builds software that stores, analyses and shows location data, such as web maps for utilities, telecom networks, city planning or land records. You sit in an engineering or geospatial team, connecting spatial databases and map servers to web apps that field staff and planners use.",
+  "dailyDuties": [
+    "Build web map screens with layers, search and editing tools",
+    "Write spatial queries and tune PostGIS tables",
+    "Publish and update map services on ArcGIS Server or GeoServer",
+    "Automate data processing with Python and ArcPy scripts",
+    "Load and clean survey, satellite and CAD data",
+    "Fix map display and performance issues reported by users"
+  ],
+  "typicalTitles": [
+    "GIS Software Engineer",
+    "Web GIS Developer",
+    "ArcGIS Developer",
+    "Esri Developer",
+    "Geospatial Developer",
+    "GIS Application Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "gis-platforms",
+      "importance": "required",
+      "expectation": "Work with ArcGIS or QGIS and publish map services with ArcGIS Server or GeoServer",
+      "postingShare": null
+    },
+    {
+      "skillId": "postgis-spatial-sql",
+      "importance": "required",
+      "expectation": "Store spatial data in PostGIS and write fast spatial queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-mapping-libraries",
+      "importance": "required",
+      "expectation": "Build web maps with Leaflet, OpenLayers or the ArcGIS Maps SDK",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate geoprocessing with Python, ArcPy or GeoPandas",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write JavaScript for map interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "required",
+      "expectation": "Build the app front end in a modern framework",
+      "postingShare": null,
+      "oneOf": "frontend-framework"
+    },
+    {
+      "skillId": "angular",
+      "importance": "required",
+      "expectation": "Build the app front end in a modern framework",
+      "postingShare": null,
+      "oneOf": "frontend-framework"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Consume and build REST APIs, including ArcGIS REST and OGC services",
+      "postingShare": null
+    },
+    {
+      "skillId": "python-web-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Build spatial APIs with Django or FastAPI",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "nice_to_have",
+      "expectation": "Load and convert spatial data between formats",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Deploy map services in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Work in a Git workflow",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Deploy GIS apps on Azure",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy GIS apps on AWS",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "frontend-framework",
+      "label": "A front-end framework (React or Angular)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

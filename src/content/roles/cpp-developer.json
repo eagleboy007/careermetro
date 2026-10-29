@@ -1,0 +1,117 @@
+{
+  "slug": "cpp-developer",
+  "title": "C++ Developer",
+  "summary": "A C++ developer writes fast, reliable software in C++, such as trading systems, engineering and simulation tools, databases, networking software or desktop applications. They sit in a product engineering team and care a lot about performance, memory use and multithreaded code, mostly on Linux.",
+  "dailyDuties": [
+    "Write and refactor C++ features from design documents",
+    "Debug crashes, memory leaks and race conditions",
+    "Profile slow code paths and improve performance",
+    "Write unit tests and keep the build green",
+    "Review merge requests from teammates",
+    "Discuss designs with senior engineers and architects"
+  ],
+  "typicalTitles": [
+    "C++ Software Engineer",
+    "Software Engineer - C++",
+    "Senior C++ Developer",
+    "C++ Programmer",
+    "C/C++ Developer",
+    "Linux C++ Developer",
+    "C++ Application Developer",
+    "Systems Software Engineer (C++)"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write production C++ for application or systems software",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-cpp",
+      "importance": "required",
+      "expectation": "Use C++11/14/17 features, the STL, smart pointers and RAII",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "required",
+      "expectation": "Write and debug multithreaded code with threads, mutexes and condition variables",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Choose data structures and algorithms that meet performance needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Design classes and interfaces with object-oriented principles and design patterns",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Build, run and debug code on Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in Git with branches and merge requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write unit tests with Google Test or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "build-tools",
+      "importance": "nice_to_have",
+      "expectation": "Maintain CMake or Make builds",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "nice_to_have",
+      "expectation": "Write socket and TCP/IP code",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script tests and tools in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Design components for performance and scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "code-review",
+      "importance": "nice_to_have",
+      "expectation": "Review teammates' code",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

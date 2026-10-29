@@ -716,7 +716,9 @@
       "tdd",
       "xunit",
       "nunit",
-      "mstest"
+      "mstest",
+      "rspec",
+      "minitest"
     ]
   },
   {
@@ -4406,6 +4408,669 @@
       "avamar",
       "ibm spectrum protect",
       "tape library"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-basis-administration",
+    "name": "SAP Basis administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "sap basis",
+      "sap basis administration",
+      "basis administration",
+      "sap netweaver administration",
+      "stms",
+      "sap transport management",
+      "sap kernel upgrade",
+      "sap system copy",
+      "sap client copy",
+      "sap system refresh"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-hana-administration",
+    "name": "SAP HANA database administration",
+    "category": "data",
+    "aliases": [
+      "sap hana administration",
+      "hana database administration",
+      "hana db administration",
+      "hana dba",
+      "hana studio",
+      "hana cockpit",
+      "hana system replication"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-upgrades-migrations",
+    "name": "SAP upgrades and S/4HANA conversions",
+    "category": "cloud-devops",
+    "aliases": [
+      "sum/dmo",
+      "sap sum",
+      "software update manager",
+      "database migration option",
+      "maintenance planner",
+      "sap upgrade",
+      "sap upgrades",
+      "ecc to s/4hana conversion",
+      "ecc to s/4hana migration",
+      "spdd",
+      "spau"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-fi-configuration",
+    "name": "SAP FI configuration (Financial Accounting)",
+    "category": "business",
+    "aliases": [
+      "sap fi",
+      "sap fi configuration",
+      "sap financial accounting",
+      "s/4hana finance",
+      "sap s/4hana finance",
+      "new gl",
+      "document splitting",
+      "asset accounting",
+      "sap asset accounting",
+      "bank accounting",
+      "universal journal",
+      "sap fi-ap",
+      "sap fi-ar"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-co-configuration",
+    "name": "SAP CO configuration (Controlling)",
+    "category": "business",
+    "aliases": [
+      "sap co",
+      "sap controlling",
+      "cost center accounting",
+      "profit center accounting",
+      "internal orders",
+      "product costing",
+      "co-pa",
+      "copa",
+      "cost element accounting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "financial-accounting",
+    "name": "Financial accounting",
+    "category": "business",
+    "aliases": [
+      "financial accounting",
+      "accounting principles",
+      "month-end close",
+      "month end closing",
+      "ind as",
+      "ifrs",
+      "books finalisation",
+      "general ledger accounting",
+      "bank reconciliation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "gst-tds-compliance",
+    "name": "Indian GST and TDS",
+    "category": "business",
+    "aliases": [
+      "gst",
+      "goods and services tax",
+      "tds",
+      "withholding tax",
+      "gst compliance",
+      "e-invoicing",
+      "gst returns"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pega-platform",
+    "name": "Pega platform development",
+    "category": "programming",
+    "aliases": [
+      "pega",
+      "pega prpc",
+      "prpc",
+      "pega infinity",
+      "pega platform",
+      "pega development",
+      "pega 8",
+      "pega constellation",
+      "pega data transforms",
+      "pega activities",
+      "pega data pages"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pega-case-management",
+    "name": "Pega case management",
+    "category": "programming",
+    "aliases": [
+      "pega case management",
+      "pega case design",
+      "pega case types",
+      "pega case life cycle",
+      "pega flows"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "pega-platform"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "pega-decisioning",
+    "name": "Pega decisioning (Customer Decision Hub)",
+    "category": "business",
+    "aliases": [
+      "pega decisioning",
+      "customer decision hub",
+      "pega cdh",
+      "next best action",
+      "pega marketing",
+      "pega decision strategies"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "pega-platform"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "mulesoft",
+    "name": "MuleSoft Anypoint Platform",
+    "category": "tools",
+    "aliases": [
+      "mulesoft",
+      "mule 4",
+      "mule esb",
+      "anypoint platform",
+      "anypoint studio",
+      "dataweave",
+      "cloudhub",
+      "munit",
+      "raml"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "boomi",
+    "name": "Boomi integration platform",
+    "category": "tools",
+    "aliases": [
+      "boomi",
+      "dell boomi",
+      "boomi atomsphere",
+      "atomsphere",
+      "boomi integration",
+      "boomi processes"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "soap-xml",
+    "name": "SOAP web services and XML",
+    "category": "web",
+    "aliases": [
+      "soap",
+      "soap web services",
+      "wsdl",
+      "xml schema",
+      "xsd",
+      "xslt",
+      "xpath"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "program-management",
+    "name": "Technical program management",
+    "category": "product",
+    "aliases": [
+      "program management",
+      "programme management",
+      "technical program management",
+      "program governance",
+      "raid log",
+      "raid logs",
+      "dependency management",
+      "cross-team dependencies",
+      "program status reporting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "build-tools",
+    "name": "Build tools (Maven, Gradle, CMake)",
+    "category": "tools",
+    "aliases": [
+      "maven",
+      "apache maven",
+      "gradle",
+      "apache ant",
+      "cmake",
+      "msbuild",
+      "bazel",
+      "makefiles",
+      "build scripts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "artifact-repositories",
+    "name": "Artifact repositories",
+    "category": "tools",
+    "aliases": [
+      "jfrog artifactory",
+      "artifactory",
+      "nexus repository",
+      "sonatype nexus",
+      "nexus repository manager",
+      "artifact management",
+      "binary repository"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "release-management",
+    "name": "Release management and versioning",
+    "category": "cloud-devops",
+    "aliases": [
+      "release management",
+      "semantic versioning",
+      "semver",
+      "release branching",
+      "branching strategy",
+      "branching strategies",
+      "hotfix releases",
+      "release cut",
+      "release candidate builds",
+      "version tagging"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "modern-cpp",
+    "name": "Modern C++ (C++11 and later, STL)",
+    "category": "programming",
+    "aliases": [
+      "modern c++",
+      "c++11",
+      "c++14",
+      "c++17",
+      "c++20",
+      "stl",
+      "standard template library",
+      "smart pointers",
+      "raii",
+      "move semantics",
+      "c++ templates",
+      "template metaprogramming"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "cpp"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "concurrency-multithreading",
+    "name": "Concurrency and multithreading",
+    "category": "programming",
+    "aliases": [
+      "multithreading",
+      "multi-threading",
+      "multithreaded programming",
+      "concurrent programming",
+      "pthreads",
+      "posix threads",
+      "mutexes",
+      "condition variables",
+      "thread synchronization",
+      "lock-free programming"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ruby-on-rails",
+    "name": "Ruby on Rails",
+    "category": "web",
+    "aliases": [
+      "ruby on rails",
+      "rails",
+      "ror",
+      "activerecord",
+      "active record",
+      "sidekiq",
+      "hotwire",
+      "rails 7"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "gis-platforms",
+    "name": "GIS platforms and geoprocessing (ArcGIS, QGIS, GeoServer)",
+    "category": "tools",
+    "aliases": [
+      "arcgis",
+      "arcgis pro",
+      "arcgis enterprise",
+      "arcgis server",
+      "arcgis online",
+      "arcpy",
+      "arcgis api for python",
+      "qgis",
+      "geoserver",
+      "esri",
+      "gdal",
+      "geopandas",
+      "shapely"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "postgis-spatial-sql",
+    "name": "PostGIS and spatial SQL",
+    "category": "data",
+    "aliases": [
+      "postgis",
+      "spatial sql",
+      "spatial queries",
+      "spatial database",
+      "spatial indexing",
+      "oracle spatial"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sql"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "web-mapping-libraries",
+    "name": "Web mapping libraries (Leaflet, OpenLayers, ArcGIS Maps SDK)",
+    "category": "web",
+    "aliases": [
+      "leaflet",
+      "leaflet.js",
+      "openlayers",
+      "mapbox gl",
+      "mapbox gl js",
+      "maplibre",
+      "arcgis maps sdk for javascript",
+      "arcgis api for javascript",
+      "cesiumjs",
+      "google maps api"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "voip-sip-sbc",
+    "name": "VoIP, SIP trunking and session border controllers",
+    "category": "cloud-devops",
+    "aliases": [
+      "voip",
+      "sip trunking",
+      "sip trunks",
+      "sip protocol",
+      "rtp",
+      "session border controller",
+      "session border controllers",
+      "audiocodes",
+      "ribbon sbc",
+      "cisco cube",
+      "oracle sbc",
+      "call flow analysis"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "networking-basics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cisco-collaboration-cucm",
+    "name": "Cisco collaboration (CUCM, Webex Calling)",
+    "category": "tools",
+    "aliases": [
+      "cucm",
+      "cisco unified communications manager",
+      "cisco call manager",
+      "callmanager",
+      "cisco unity connection",
+      "cisco expressway",
+      "webex calling",
+      "webex control hub",
+      "cisco uccx",
+      "cisco ip telephony"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "teams-phone-voice",
+    "name": "Microsoft Teams Phone and Direct Routing",
+    "category": "tools",
+    "aliases": [
+      "teams phone",
+      "teams voice",
+      "microsoft teams voice",
+      "direct routing",
+      "teams direct routing",
+      "operator connect",
+      "teams calling plans",
+      "teams enterprise voice",
+      "skype for business"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hugging-face-transformers",
+    "name": "Hugging Face Transformers and fine-tuning",
+    "category": "ml",
+    "aliases": [
+      "hugging face",
+      "huggingface",
+      "hugging face transformers",
+      "bert",
+      "roberta",
+      "fine-tuning bert",
+      "transformer models"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "deep-learning"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "nlp-information-extraction",
+    "name": "Information extraction (NER, relation extraction)",
+    "category": "ml",
+    "aliases": [
+      "named entity recognition",
+      "information extraction",
+      "entity extraction",
+      "relation extraction",
+      "spacy",
+      "entity linking",
+      "key phrase extraction"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "nlp"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "indic-nlp",
+    "name": "Indian-language NLP (Indic models, transliteration)",
+    "category": "ml",
+    "aliases": [
+      "indic nlp",
+      "indicbert",
+      "indictrans2",
+      "muril",
+      "ai4bharat",
+      "bhashini",
+      "transliteration",
+      "multilingual nlp",
+      "hindi nlp",
+      "indic languages"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "nlp"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-security-model",
+    "name": "Salesforce security and access (profiles, permission sets, sharing)",
+    "category": "tools",
+    "aliases": [
+      "permission sets",
+      "permission set groups",
+      "salesforce profiles",
+      "sharing rules",
+      "role hierarchy",
+      "organization-wide defaults",
+      "field-level security",
+      "salesforce user management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-data-management",
+    "name": "Salesforce data management (Data Loader, imports, duplicates)",
+    "category": "tools",
+    "aliases": [
+      "data loader",
+      "salesforce data loader",
+      "dataloader.io",
+      "data import wizard",
+      "duplicate rules",
+      "matching rules",
+      "salesforce data migration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "forensic-tool-suites",
+    "name": "Forensic suites (EnCase, FTK, X-Ways, AXIOM)",
+    "category": "security",
+    "aliases": [
+      "encase",
+      "ftk",
+      "ftk imager",
+      "forensic toolkit",
+      "x-ways",
+      "x-ways forensics",
+      "magnet axiom",
+      "autopsy",
+      "belkasoft",
+      "volatility"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "digital-forensics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "mobile-forensics",
+    "name": "Mobile device forensics",
+    "category": "security",
+    "aliases": [
+      "mobile forensics",
+      "cellebrite",
+      "cellebrite ufed",
+      "ufed",
+      "oxygen forensic detective",
+      "oxygen forensics",
+      "graykey",
+      "mobile device extraction"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "digital-forensics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "forensic-evidence-handling",
+    "name": "Forensic evidence handling and reporting",
+    "category": "security",
+    "aliases": [
+      "chain of custody",
+      "evidence preservation",
+      "forensic imaging",
+      "write blocker",
+      "write blockers",
+      "section 65b certificate",
+      "65b certificate",
+      "forensic report writing",
+      "hash verification"
     ],
     "ambiguous": [],
     "implies": [],

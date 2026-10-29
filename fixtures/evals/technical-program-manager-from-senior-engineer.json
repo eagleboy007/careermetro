@@ -1,0 +1,56 @@
+{
+  "id": "technical-program-manager-from-senior-engineer",
+  "roleSlug": "technical-program-manager",
+  "persona": "Senior Java engineer at a payments company who already coordinates cross-team work",
+  "resumeText": "Vikram Iyer | Bengaluru | vikram.iyer@example.com\n\nEXPERIENCE\nSenior Software Engineer, Cauvery Payments Pvt Ltd, Bengaluru (2017 - present)\n- Led the UPI switch migration across four teams and tracked dependencies weekly.\n- Wrote the high level design for the refund service handling 2 million requests a day.\n- Write Java services for the settlement platform.\n- Run sprint planning and daily stand-ups for a team of seven.\n- Present monthly delivery status to the payments leadership team.\n- Raise and track release blockers in Jira with QA and SRE teams.\n\nSKILLS\nSQL, roadmap, CI/CD\n\nEDUCATION\nBTech Computer Science, NIT Tiruchirappalli, 2017\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "program-management",
+        "quote": "Led the UPI switch migration across four teams and tracked dependencies weekly"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Wrote the high level design for the refund service"
+      },
+      {
+        "skillId": "java",
+        "quote": "Write Java services for the settlement platform"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Run sprint planning and daily stand-ups"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present monthly delivery status to the payments leadership team"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Present monthly delivery status to the payments leadership team"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Raise and track release blockers in Jira"
+      },
+      {
+        "skillId": "roadmapping",
+        "quote": "roadmap"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "roadmapping",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "scaled-agile",
+      "aws",
+      "python",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}

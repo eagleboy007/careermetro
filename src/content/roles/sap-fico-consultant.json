@@ -1,0 +1,111 @@
+{
+  "slug": "sap-fico-consultant",
+  "title": "SAP FICO Consultant",
+  "summary": "An SAP FICO consultant sets up the finance (FI) and controlling (CO) parts of SAP so that a company's accounts, costs and reports run correctly inside the system. They sit between the finance team and the technical team, turning accounting needs into SAP settings and into written specs that ABAP developers build from.",
+  "dailyDuties": [
+    "Configure ledgers, payables, receivables and asset accounting in SAP",
+    "Run workshops with finance users to capture requirements",
+    "Write functional specs for reports, interfaces and forms for ABAP developers",
+    "Test configuration and support users during acceptance testing",
+    "Support month-end close and fix finance tickets",
+    "Prepare data migration templates and cutover steps"
+  ],
+  "typicalTitles": [
+    "SAP FI/CO Consultant",
+    "SAP S/4HANA Finance Consultant",
+    "SAP Finance Consultant",
+    "SAP FICO Functional Consultant",
+    "SAP FI Consultant",
+    "SAP CO Consultant",
+    "Senior SAP FICO Consultant",
+    "SAP FICO Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-fi-configuration",
+      "importance": "required",
+      "expectation": "Configure general ledger, payables, receivables, asset and bank accounting in S/4HANA",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-co-configuration",
+      "importance": "required",
+      "expectation": "Configure cost centres, profit centres, internal orders and product costing",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "required",
+      "expectation": "Understand accounting entries, month-end close and financial statements",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather finance requirements and write functional specs for ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map current and future finance processes during blueprint workshops",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and run integration and user acceptance testing with finance users",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Run workshops and train finance users in plain language",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Configure Indian GST and withholding tax in SAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Debug ABAP and review custom code with the technical team",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "nice_to_have",
+      "expectation": "Specify IDocs and BAPIs for bank and third-party interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Resolve finance tickets within SLAs on support projects",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare data migration templates and reconciliations",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

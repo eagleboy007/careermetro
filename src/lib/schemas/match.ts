@@ -41,7 +41,7 @@ export const matchList = z
       .nullable(),
     /** Where the hours select starts: the person's own hours a week, to the nearest choice. */
     weeklyHours: matchHours,
-    roles: z.array(matchRole).max(200),
+    roles: z.array(matchRole).max(500),
   })
   .refine((l) => new Set(l.roles.map((r) => r.slug)).size === l.roles.length, { message: "a role is listed once" })
   .refine((l) => l.roles.filter((r) => r.onLine).length <= 1, { message: "only the target role is on the line" });

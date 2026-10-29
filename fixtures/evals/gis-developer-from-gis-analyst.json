@@ -1,0 +1,55 @@
+{
+  "id": "gis-developer-from-gis-analyst",
+  "roleSlug": "gis-developer",
+  "persona": "Desktop GIS analyst moving into web GIS development",
+  "resumeText": "Kavya Sharma | Dehradun | kavya.sharma@example.com\n\nEXPERIENCE\nGIS Analyst, Doon Geomatics, Dehradun (2021 - present)\n- Digitised land parcel layers in QGIS and ArcGIS Pro for state survey projects.\n- Automated map production with ArcPy scripts, cutting a 3-day task to 4 hours.\n- Wrote spatial queries in PostGIS to find parcels inside flood zones.\n- Built a small Leaflet map page to share survey progress with the client.\n\nSKILLS\nJavaScript, Python, React, GeoServer, Git\n\nEDUCATION\nMSc Geoinformatics, Uttarakhand Technical University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "gis-platforms",
+        "quote": "Digitised land parcel layers in QGIS and ArcGIS Pro"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automated map production with ArcPy scripts"
+      },
+      {
+        "skillId": "postgis-spatial-sql",
+        "quote": "Wrote spatial queries in PostGIS to find parcels"
+      },
+      {
+        "skillId": "web-mapping-libraries",
+        "quote": "Built a small Leaflet map page to share survey progress"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "JavaScript"
+      },
+      {
+        "skillId": "react",
+        "quote": "React"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "javascript",
+        "status": "weak"
+      },
+      {
+        "skillId": "react",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "aws",
+      "python-web-frameworks"
+    ]
+  },
+  "reviewedBy": null
+}

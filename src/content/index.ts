@@ -37,6 +37,7 @@ import appsecEngineer from "./roles/appsec-engineer.json";
 import arVrDeveloper from "./roles/ar-vr-developer.json";
 import biDeveloper from "./roles/bi-developer.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
+import buildReleaseEngineer from "./roles/build-release-engineer.json";
 import businessAnalyst from "./roles/business-analyst.json";
 import cloudArchitect from "./roles/cloud-architect.json";
 import cloudEngineer from "./roles/cloud-engineer.json";
@@ -44,6 +45,7 @@ import cloudFinopsAnalyst from "./roles/cloud-finops-analyst.json";
 import cloudSecurityEngineer from "./roles/cloud-security-engineer.json";
 import cloudSupportEngineer from "./roles/cloud-support-engineer.json";
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
+import cppDeveloper from "./roles/cpp-developer.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
@@ -56,6 +58,7 @@ import databaseArchitect from "./roles/database-architect.json";
 import databaseDeveloper from "./roles/database-developer.json";
 import devopsEngineer from "./roles/devops-engineer.json";
 import devsecopsEngineer from "./roles/devsecops-engineer.json";
+import digitalForensicsAnalyst from "./roles/digital-forensics-analyst.json";
 import digitalMarketingExecutive from "./roles/digital-marketing-executive.json";
 import dotnetDeveloper from "./roles/dotnet-developer.json";
 import dynamics365Developer from "./roles/dynamics-365-developer.json";
@@ -66,11 +69,13 @@ import frontendArchitect from "./roles/frontend-architect.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
 import gameDeveloper from "./roles/game-developer.json";
+import gisDeveloper from "./roles/gis-developer.json";
 import golangDeveloper from "./roles/golang-developer.json";
 import grcManager from "./roles/grc-manager.json";
 import iamEngineer from "./roles/iam-engineer.json";
 import incidentResponseAnalyst from "./roles/incident-response-analyst.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
+import integrationDeveloper from "./roles/integration-developer.json";
 import iosDeveloper from "./roles/ios-developer.json";
 import iotEngineer from "./roles/iot-engineer.json";
 import itSupportEngineer from "./roles/it-support-engineer.json";
@@ -81,9 +86,12 @@ import mlEngineer from "./roles/ml-engineer.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
 import networkEngineer from "./roles/network-engineer.json";
 import networkSecurityEngineer from "./roles/network-security-engineer.json";
+import nlpEngineer from "./roles/nlp-engineer.json";
+import nocEngineer from "./roles/noc-engineer.json";
 import nodejsDeveloper from "./roles/nodejs-developer.json";
 import oracleFusionTechnicalConsultant from "./roles/oracle-fusion-technical-consultant.json";
 import otSecurityEngineer from "./roles/ot-security-engineer.json";
+import pegaDeveloper from "./roles/pega-developer.json";
 import penetrationTester from "./roles/penetration-tester.json";
 import performanceTestEngineer from "./roles/performance-test-engineer.json";
 import phpDeveloper from "./roles/php-developer.json";
@@ -96,8 +104,12 @@ import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
 import qaLead from "./roles/qa-lead.json";
 import roboticsEngineer from "./roles/robotics-engineer.json";
 import rpaDeveloper from "./roles/rpa-developer.json";
+import rubyOnRailsDeveloper from "./roles/ruby-on-rails-developer.json";
+import salesforceAdministrator from "./roles/salesforce-administrator.json";
 import salesforceDeveloper from "./roles/salesforce-developer.json";
 import sapAbapDeveloper from "./roles/sap-abap-developer.json";
+import sapBasisAdministrator from "./roles/sap-basis-administrator.json";
+import sapFicoConsultant from "./roles/sap-fico-consultant.json";
 import scrumMaster from "./roles/scrum-master.json";
 import securityArchitect from "./roles/security-architect.json";
 import seniorBackendEngineer from "./roles/senior-backend-engineer.json";
@@ -111,10 +123,12 @@ import solutionsArchitect from "./roles/solutions-architect.json";
 import storageBackupEngineer from "./roles/storage-backup-engineer.json";
 import systemAdministrator from "./roles/system-administrator.json";
 import techLead from "./roles/tech-lead.json";
+import technicalProgramManager from "./roles/technical-program-manager.json";
 import technicalSupportEngineer from "./roles/technical-support-engineer.json";
 import technicalWriter from "./roles/technical-writer.json";
 import threatIntelligenceAnalyst from "./roles/threat-intelligence-analyst.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
+import unifiedCommunicationsEngineer from "./roles/unified-communications-engineer.json";
 import vlsiDesignEngineer from "./roles/vlsi-design-engineer.json";
 import vulnerabilityManagementAnalyst from "./roles/vulnerability-management-analyst.json";
 
@@ -166,6 +180,7 @@ export const roleProfiles: RoleProfile[] = z
     arVrDeveloper,
     biDeveloper,
     blockchainDeveloper,
+    buildReleaseEngineer,
     businessAnalyst,
     cloudArchitect,
     cloudEngineer,
@@ -173,6 +188,7 @@ export const roleProfiles: RoleProfile[] = z
     cloudSecurityEngineer,
     cloudSupportEngineer,
     computerVisionEngineer,
+    cppDeveloper,
     crossPlatformMobileDeveloper,
     cyberSecurityAnalyst,
     dataAnalyst,
@@ -185,6 +201,7 @@ export const roleProfiles: RoleProfile[] = z
     databaseDeveloper,
     devopsEngineer,
     devsecopsEngineer,
+    digitalForensicsAnalyst,
     digitalMarketingExecutive,
     dotnetDeveloper,
     dynamics365Developer,
@@ -195,11 +212,13 @@ export const roleProfiles: RoleProfile[] = z
     frontendDeveloper,
     fullStackDeveloper,
     gameDeveloper,
+    gisDeveloper,
     golangDeveloper,
     grcManager,
     iamEngineer,
     incidentResponseAnalyst,
     informationSecurityAnalyst,
+    integrationDeveloper,
     iosDeveloper,
     iotEngineer,
     itSupportEngineer,
@@ -210,9 +229,12 @@ export const roleProfiles: RoleProfile[] = z
     mlopsEngineer,
     networkEngineer,
     networkSecurityEngineer,
+    nlpEngineer,
+    nocEngineer,
     nodejsDeveloper,
     oracleFusionTechnicalConsultant,
     otSecurityEngineer,
+    pegaDeveloper,
     penetrationTester,
     performanceTestEngineer,
     phpDeveloper,
@@ -225,8 +247,12 @@ export const roleProfiles: RoleProfile[] = z
     qaLead,
     roboticsEngineer,
     rpaDeveloper,
+    rubyOnRailsDeveloper,
+    salesforceAdministrator,
     salesforceDeveloper,
     sapAbapDeveloper,
+    sapBasisAdministrator,
+    sapFicoConsultant,
     scrumMaster,
     securityArchitect,
     seniorBackendEngineer,
@@ -240,10 +266,12 @@ export const roleProfiles: RoleProfile[] = z
     storageBackupEngineer,
     systemAdministrator,
     techLead,
+    technicalProgramManager,
     technicalSupportEngineer,
     technicalWriter,
     threatIntelligenceAnalyst,
     uiUxDesigner,
+    unifiedCommunicationsEngineer,
     vlsiDesignEngineer,
     vulnerabilityManagementAnalyst,
   ]);
