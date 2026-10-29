@@ -491,7 +491,7 @@ describe("the weekly My jobs email", () => {
     });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     expect(await json(await weeklyCron(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, considered: 1, sent: 1, empty: 0, failed: 0, capped: false } });
-    expect(m.runWeekly.mock.calls[0]![0].cap).toBe(80);
+    expect(m.runWeekly.mock.calls[0]![0].cap).toBe(40);
     const body = JSON.parse(String((fetch.mock.calls[0]![1] as RequestInit).body));
     expect(body.from).toBe("CareerMetro <hello@careermetro.com>");
     expect(body.headers).toEqual({ "List-Unsubscribe": `<${SITE}/api/email/off?t=${TOKEN}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
