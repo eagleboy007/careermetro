@@ -48,5 +48,6 @@ describe("closest-role eval", () => {
       misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got}) ${lines.length ? "near" : "closest"}; most shared: ${others.join(", ")}`);
     }
     expect(misses).toEqual([]);
-  });
+    // Every fixture against every role: a few seconds, more as batches grow.
+  }, 30_000);
 });
