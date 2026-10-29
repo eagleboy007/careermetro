@@ -25,8 +25,9 @@ import {
   type NextInterviewView,
   type Profile,
 } from "@/lib/schemas";
-import { JOB_TEXT_MAX } from "@/lib/schemas/constants";
+import { JOB_COMPANY_SHOWN, JOB_TEXT_MAX, JOB_TITLE_SHOWN } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
+import { clip } from "@/lib/text";
 import { readBoardPosting, listedCompany, type BoardReadResult } from "./board-read";
 import { boardLinkOf, isClosed, isMoving, stageOf, statusOf, withInterview, type BoardLink, type MyJobStatus } from "./rules";
 import { checkFit, newestChange, postFit, type MyJobFit } from "./view";
@@ -544,7 +545,7 @@ export async function jobPrep(userId: string, ref: MyJobRef, { db = getDb(), now
   if (!check.company || !check.title) return null;
   const [analysis, ctx] = await Promise.all([currentAnalysis(userId, db as Db), fitContext(userId, db as Db)]);
   const named = [...new Set([...check.requiredSkillIds, ...check.niceSkillIds])];
-  const base = { saveId: row.saveId, ref, company: check.company, title: check.title, roleSlug: analysis?.result.roleSlug ?? null };
+  const base = { saveId: row.saveId, ref, ...jobName(check.company, check.title), roleSlug: analysis?.result.roleSlug ?? null };
   if (!ctx) return { ...base, open: [], only: [], rest: named };
   const view = jobCheckView(check, ctx.profile, ctx.target, ctx.proved, { now });
   const pick = (list: { skillId: string; skillName: string }[]) => list.map(({ skillId, skillName: name }) => ({ skillId, skillName: skillName.get(skillId) ?? name }));
@@ -553,6 +554,12 @@ export async function jobPrep(userId: string, ref: MyJobRef, { db = getDb(), now
   const first = new Set([...open, ...only].map((s) => s.skillId));
   return { ...base, open, only, rest: named.filter((id) => !first.has(id)) };
 }
+
+/**
+ * A job's company and title for Practice, the mock round and Today, clipped with "…" to the shared display limit
+ * (JOB_TITLE_SHOWN), so a long feed or board title is shortened there, never rejected (T140). My jobs shows it whole.
+ */
+export const jobName = (company: string, title: string) => ({ company: clip(company, JOB_COMPANY_SHOWN), title: clip(title, JOB_TITLE_SHOWN) });
 
 /** The label of the job a mock interview was for, by its job_saves id: null when it has left My jobs. */
 export async function jobLabel(userId: string, saveId: string | null, db: Db | Tx = getDb()): Promise<{ company: string; title: string } | null> {
@@ -564,7 +571,7 @@ export async function jobLabel(userId: string, saveId: string | null, db: Db | T
     .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
     .where(and(eq(jobSaves.id, saveId), eq(jobSaves.userId, userId)))
     .limit(1);
-  return row?.company && row.title ? { company: row.company, title: row.title } : null;
+  return row?.company && row.title ? jobName(row.company, row.title) : null;
 }
 
 /**
@@ -619,5 +626,5 @@ export async function nextInterview(userId: string, { db = getDb(), now = new Da
     .limit(1);
   if (!row?.interviewAt || !row.company || !row.title) return null;
   const ref: MyJobRef = row.postId ? { kind: "post", postId: row.postId } : { kind: "check", checkId: row.checkId! };
-  return { ref, company: row.company, title: row.title, interviewAt: row.interviewAt.toISOString() };
+  return { ref, ...jobName(row.company, row.title), interviewAt: row.interviewAt.toISOString() };
 }

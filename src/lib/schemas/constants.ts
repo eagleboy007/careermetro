@@ -20,6 +20,13 @@ export const JOB_TEXT_MIN = 200;
 export const JOB_TEXT_MAX = 12_000;
 export const JOB_COMPANY_MAX = 100;
 export const JOB_TITLE_MAX = 120;
+/**
+ * The one display limit for a job's title and company on Practice, the mock round and Today (T140): the builders clip
+ * to it with "…" (jobName in src/lib/my-jobs/store.ts), so a long feed or board title is shortened, never rejected.
+ * The feed stores titles up to the same 160 (feed-rules.mjs).
+ */
+export const JOB_TITLE_SHOWN = 160;
+export const JOB_COMPANY_SHOWN = 120;
 
 /* My jobs (handoff 12m, docs/plans/application-tracker-plan.md) ------------------------------------------------------ */
 

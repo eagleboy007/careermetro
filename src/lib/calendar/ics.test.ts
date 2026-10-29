@@ -45,6 +45,13 @@ describe("interview calendar file", () => {
     expect(interviewIcs({ ...iv, now: new Date("2026-10-13T00:00:00.000Z") })).toContain("UID:interview-6f1c2a9e-0b1d-4c3e-9f00-1234567890ab@careermetro.app");
   });
 
+  it("folds a 300-character title into lines of at most 75 octets and keeps it whole (T140)", () => {
+    const title = `Senior data analyst ${"for the payments platform ".repeat(11)}`.trim();
+    const ics = interviewIcs({ ...iv, summary: `Interview for ${title} at Example Labs` });
+    for (const line of ics.split("\r\n")) expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+    expect(ics.replace(/\r\n /g, "")).toContain(`SUMMARY:Interview for ${title} at Example Labs`);
+  });
+
   it("escapes the company and title, and holds nothing else about the person", () => {
     const ics = interviewIcs({ ...iv, summary: "Level 2 team interview for Analyst, payments at Sample; Fintech" });
     expect(ics.replace(/\r\n /g, "")).toContain("SUMMARY:Level 2 team interview for Analyst\\, payments at Sample\\; Fintech");

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { countWords } from "@/lib/practice/words";
-import { PRACTICE_CONFIDENCE_WORDS, PRACTICE_DAILY_ANSWERS, PRACTICE_MAX_CHARS, PRACTICE_MIN_WORDS } from "./constants";
+import { JOB_COMPANY_SHOWN, JOB_TITLE_SHOWN, PRACTICE_CONFIDENCE_WORDS, PRACTICE_DAILY_ANSWERS, PRACTICE_MAX_CHARS, PRACTICE_MIN_WORDS } from "./constants";
 export { PRACTICE_CONFIDENCE_WORDS, PRACTICE_DAILY_ANSWERS, PRACTICE_KEEP_DAYS, PRACTICE_MAX_CHARS, PRACTICE_MIN_WORDS } from "./constants";
 
 const slug = /^[a-z0-9]+(-[a-z0-9]+)*$/;
@@ -87,8 +87,8 @@ export const practiceView = z
     /** Set to one job in My jobs ("Practice on this job's skills"): its still-open goals first, then what only it asks for. */
     job: z
       .strictObject({
-        company: z.string().min(1).max(120),
-        title: z.string().min(1).max(160),
+        company: z.string().min(1).max(JOB_COMPANY_SHOWN),
+        title: z.string().min(1).max(JOB_TITLE_SHOWN),
         // Skills only this job asks for that the bank has no questions for yet: named on the banner (T138).
         skipped: z.array(z.string().min(1).max(120)).max(50),
       })

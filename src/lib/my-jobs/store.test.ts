@@ -10,10 +10,10 @@ import { setStage } from "@/lib/departures/store";
 import { buildGapAnalysis } from "@/lib/gaps/analysis";
 import { matchProfile, MATCHER_VERSION } from "@/lib/gaps/match";
 import type { ParseJdClient } from "@/lib/jobs/parse";
-import { myJobExport, type PostingSkills, type Profile } from "@/lib/schemas";
+import { myJobExport, nextInterviewView, type PostingSkills, type Profile } from "@/lib/schemas";
 import { USER_AGENT as FEED_USER_AGENT } from "@/lib/departures/feed-rules.mjs";
 import { boardApiUrl, htmlText, postingOf, readBoardPosting, USER_AGENT } from "./board-read";
-import { addJob, clearUnsavedJobText, deleteJob, exportMyJobs, jobDescription, myJobs, nextInterview, saveJob, setJobStatus, updateJob } from "./store";
+import { addJob, clearUnsavedJobText, deleteJob, exportMyJobs, jobDescription, jobLabel, jobPrep, myJobs, nextInterview, saveJob, setJobStatus, updateJob } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -248,6 +248,31 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(await updateJob(me.userId, { ref: { kind: "post", postId: p }, status: "interview", note: "Call with the team lead." }, { db: db!, now })).toEqual({ ok: true });
     const feed = (await myJobs(me.userId, { db: db!, now })).find((j) => j.key === `post:${p}`);
     expect(feed).toMatchObject({ company: "Example Labs", title: "Junior data analyst", status: "interview", note: "Call with the team lead.", source: "board" });
+  });
+
+  it("shows a 300-character title whole in My jobs and clipped on Prepare, the mock round and Today (T140)", async () => {
+    const me = await person();
+    const title = `Senior data analyst ${"for the payments platform ".repeat(11)}`.trim();
+    expect(title.length).toBeGreaterThan(300);
+    // Feed posts are held to 160 by job_posts_title_length; a job the person added has no such limit in the table.
+    const added = await add(me);
+    if (!added.ok || added.kind !== "check") throw new Error("not added");
+    const ref = { kind: "check", checkId: added.job.checkId } as const;
+    await saveJob(me.userId, { checkId: ref.checkId, company: "Example Analytics", title: "Data analyst" }, { db: db!, now });
+    await db!.update(schema.jobChecks).set({ title }).where(eq(schema.jobChecks.id, ref.checkId));
+    const day = new Date(now.getTime() + 2 * 86_400_000 + 5.5 * 3600_000).toISOString().slice(0, 10);
+    expect(await updateJob(me.userId, { ref, status: "interview", interviewAt: `${day}T10:30` }, { db: db!, now })).toEqual({ ok: true });
+    const prep = await jobPrep(me.userId, ref, { db: db!, now });
+    const soon = await nextInterview(me.userId, { db: db!, now });
+    const [row] = await rowOf(me.userId);
+    const label = await jobLabel(me.userId, row.id, db!);
+    for (const named of [prep, soon, label]) {
+      expect(named?.title.length).toBeLessThanOrEqual(160);
+      expect(named?.title).toMatch(/^Senior data analyst for the payments platform .*…$/);
+    }
+    expect(nextInterviewView.safeParse(soon).success).toBe(true);
+    const [mine] = await myJobs(me.userId, { db: db!, now });
+    expect(mine.title).toBe(title);
   });
 
   it("keeps an interview date that moves an earlier status to Interview, and Today counts down to the soonest (handoff 12m)", async () => {
