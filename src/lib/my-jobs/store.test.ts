@@ -250,10 +250,11 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(feed).toMatchObject({ company: "Example Labs", title: "Junior data analyst", status: "interview", note: "Call with the team lead.", source: "board" });
   });
 
-  it("clips a feed post's long title for Practice, the mock round and Today (T140)", async () => {
+  it("shows a 300-character title whole in My jobs and clipped on Prepare, the mock round and Today (T140)", async () => {
     const me = await person();
     const title = `Senior data analyst ${"for the payments platform ".repeat(11)}`.trim();
     expect(title.length).toBeGreaterThan(300);
+    // A board or an older row can hold more than the feed's 160 (feed-rules.mjs clips new feed titles to it).
     const p = await post({ title });
     const ref = { kind: "post", postId: p } as const;
     await setStage(me.userId, { postId: p, stage: 1 }, { db: db!, now });
@@ -268,6 +269,8 @@ describe.skipIf(!db)("my jobs (database)", () => {
       expect(named?.title).toMatch(/^Senior data analyst for the payments platform .*…$/);
     }
     expect(nextInterviewView.safeParse(soon).success).toBe(true);
+    const mine = (await myJobs(me.userId, { db: db!, now })).find((j) => j.key === `post:${p}`);
+    expect(mine?.title).toBe(title);
   });
 
   it("keeps an interview date that moves an earlier status to Interview, and Today counts down to the soonest (handoff 12m)", async () => {

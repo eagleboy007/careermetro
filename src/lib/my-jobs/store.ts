@@ -25,7 +25,7 @@ import {
   type NextInterviewView,
   type Profile,
 } from "@/lib/schemas";
-import { JOB_TEXT_MAX } from "@/lib/schemas/constants";
+import { JOB_COMPANY_SHOWN, JOB_TEXT_MAX, JOB_TITLE_SHOWN } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { clip } from "@/lib/text";
 import { readBoardPosting, listedCompany, type BoardReadResult } from "./board-read";
@@ -556,10 +556,10 @@ export async function jobPrep(userId: string, ref: MyJobRef, { db = getDb(), now
 }
 
 /**
- * A job's company and title for Practice, the mock round and Today, clipped to their views' limits: a feed post's
- * title has no length limit since PR 223, so a long one would fail those views' parse (T140).
+ * A job's company and title for Practice, the mock round and Today, clipped with "…" to the shared display limit
+ * (JOB_TITLE_SHOWN), so a long feed or board title is shortened there, never rejected (T140). My jobs shows it whole.
  */
-const jobName = (company: string, title: string) => ({ company: clip(company, 120), title: clip(title, 160) });
+export const jobName = (company: string, title: string) => ({ company: clip(company, JOB_COMPANY_SHOWN), title: clip(title, JOB_TITLE_SHOWN) });
 
 /** The label of the job a mock interview was for, by its job_saves id: null when it has left My jobs. */
 export async function jobLabel(userId: string, saveId: string | null, db: Db | Tx = getDb()): Promise<{ company: string; title: string } | null> {

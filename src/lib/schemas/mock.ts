@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { jobPrepView, myJobRef } from "./my-jobs";
 import {
+  JOB_COMPANY_SHOWN,
+  JOB_TITLE_SHOWN,
   MOCK_ANSWER_MAX_CHARS,
   MOCK_FEEDBACK_STATES,
   MOCK_FOCUSES,
@@ -267,7 +269,7 @@ export type MockSessionFeedback = { summary: string };
 
 const roleTitle = z.string().min(1).max(120);
 /** The job in My jobs a round is for: "Mock interview for <company>, <title>". Null for a round for the role. */
-const roundJob = z.strictObject({ company: z.string().min(1).max(120), title: z.string().min(1).max(160) }).nullable();
+const roundJob = z.strictObject({ company: z.string().min(1).max(JOB_COMPANY_SHOWN), title: z.string().min(1).max(JOB_TITLE_SHOWN) }).nullable();
 export const mockInterviewQuestion = z.strictObject({ position, id: questionId, topic, question: text(300) });
 export type MockInterviewQuestion = z.infer<typeof mockInterviewQuestion>;
 

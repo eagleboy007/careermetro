@@ -3,15 +3,17 @@ import { boardLinkOf } from "@/lib/my-jobs/rules";
 import { gapStatus } from "./gap";
 import {
   JOB_COMPANY_MAX,
+  JOB_COMPANY_SHOWN,
   JOB_TEXT_MAX,
   JOB_TEXT_MIN,
   JOB_TITLE_MAX,
+  JOB_TITLE_SHOWN,
   MY_JOB_CITY_MAX,
   MY_JOB_NOTE_MAX,
   MY_JOB_STATUSES,
   MY_JOB_URL_MAX,
 } from "./constants";
-export { MY_JOB_STATUSES, MY_JOB_STATUS_LABELS, MY_JOB_FILTERS, MY_JOB_FILTER_LABELS, MY_JOBS_MAX, MY_JOB_NOTE_MAX, MY_JOB_DESCRIPTION_MAX, MY_JOB_URL_MAX } from "./constants";
+export { JOB_COMPANY_SHOWN, JOB_TITLE_SHOWN, MY_JOB_STATUSES, MY_JOB_STATUS_LABELS, MY_JOB_FILTERS, MY_JOB_FILTER_LABELS, MY_JOBS_MAX, MY_JOB_NOTE_MAX, MY_JOB_DESCRIPTION_MAX, MY_JOB_URL_MAX } from "./constants";
 
 /*
  * My jobs (handoff 12m, docs/plans/application-tracker-plan.md): every input is checked here and scoped to the session
@@ -169,8 +171,8 @@ export type MyJobView = z.infer<typeof myJobView>;
  */
 export const jobPrepView = z.strictObject({
   ref: myJobRef,
-  company: z.string().min(1).max(120),
-  title: z.string().min(1).max(160),
+  company: z.string().min(1).max(JOB_COMPANY_SHOWN),
+  title: z.string().min(1).max(JOB_TITLE_SHOWN),
   open: z.array(z.string().min(1).max(120)).max(40),
   only: z.array(z.string().min(1).max(120)).max(40),
   skipped: z.array(z.string().min(1).max(120)).max(40),
@@ -183,8 +185,8 @@ export type JobPrepView = z.infer<typeof jobPrepView>;
  */
 export const nextInterviewView = z.strictObject({
   ref: myJobRef,
-  company: z.string().min(1).max(120),
-  title: z.string().min(1).max(160),
+  company: z.string().min(1).max(JOB_COMPANY_SHOWN),
+  title: z.string().min(1).max(JOB_TITLE_SHOWN),
   interviewAt: z.iso.datetime(),
 });
 export type NextInterviewView = z.infer<typeof nextInterviewView>;
