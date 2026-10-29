@@ -1,0 +1,103 @@
+{
+  "slug": "manual-test-engineer",
+  "title": "Manual Test Engineer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "manual-testing",
+      "importance": "required",
+      "expectation": "Write and run functional, regression, smoke and sanity tests by hand",
+      "postingShare": null
+    },
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Follow the testing life cycle and turn requirements into test scenarios",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Log clear defects with steps and track them to closure in Jira or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "required",
+      "expectation": "Check APIs with Postman",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL to check data in the database",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Test inside Scrum sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Report test status and defects clearly to developers and leads",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Support business users through acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "selenium",
+      "importance": "nice_to_have",
+      "expectation": "Start automating repeat checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-testing",
+      "importance": "nice_to_have",
+      "expectation": "Run basic load tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "accessibility",
+      "importance": "nice_to_have",
+      "expectation": "Check pages against WCAG",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Test banking, payments or lending flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "nice_to_have",
+      "expectation": "Find the cause behind odd behaviour",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-foundation",
+      "importance": "recommended",
+      "why": "The standard entry-level testing certificate"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

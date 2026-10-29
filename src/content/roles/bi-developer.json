@@ -1,0 +1,114 @@
+{
+  "slug": "bi-developer",
+  "title": "BI Developer (Power BI)",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "power-bi",
+      "importance": "required",
+      "expectation": "Build Power BI reports with DAX measures and publish them to the service",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-query",
+      "importance": "required",
+      "expectation": "Shape and combine source data in Power Query",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design star-schema semantic models with clean relationships",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL against the source databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Load and refresh data from several sources on a schedule",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "required",
+      "expectation": "Design clear dashboards for business users",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business questions into report requirements and KPIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain numbers and walk users through reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Report from Snowflake, Synapse or a similar warehouse",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Use Azure data services such as Data Factory or Fabric",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql-window-functions",
+      "importance": "nice_to_have",
+      "expectation": "Use window functions and CTEs for complex logic",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Speed up slow queries and refreshes",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Hand off data in Excel when users need it",
+      "postingShare": null
+    },
+    {
+      "skillId": "tableau",
+      "importance": "nice_to_have",
+      "expectation": "Maintain reports in a second BI tool",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "power-bi-data-analyst",
+      "importance": "recommended",
+      "why": "The standard Power BI exam (PL-300)"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basic Azure for BI work on Azure data services"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

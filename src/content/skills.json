@@ -2039,5 +2039,266 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "presales-solutioning",
+    "name": "Pre-sales solutioning",
+    "category": "business",
+    "aliases": [
+      "presales",
+      "pre-sales",
+      "rfp response",
+      "rfp responses",
+      "solution proposals",
+      "technical proposals"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-landing-zones",
+    "name": "Cloud landing zones and governance",
+    "category": "cloud-devops",
+    "aliases": [
+      "landing zone",
+      "landing zones",
+      "aws control tower",
+      "azure landing zone",
+      "cloud adoption framework",
+      "well-architected framework",
+      "well-architected review"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "cloud-security"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-migration",
+    "name": "Cloud migration",
+    "category": "cloud-devops",
+    "aliases": [
+      "cloud migration",
+      "lift and shift",
+      "rehost",
+      "replatform",
+      "data center migration",
+      "datacenter migration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "identity-federation",
+    "name": "Identity federation (SAML, OIDC, SCIM)",
+    "category": "security",
+    "aliases": [
+      "saml",
+      "saml 2.0",
+      "oidc",
+      "openid connect",
+      "oauth 2.0",
+      "oauth2",
+      "scim",
+      "identity federation"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "identity-access-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "identity-governance",
+    "name": "Identity governance and administration",
+    "category": "security",
+    "aliases": [
+      "identity governance",
+      "identity governance and administration",
+      "sailpoint",
+      "identityiq",
+      "identitynow",
+      "saviynt",
+      "access certification",
+      "user access review",
+      "access reviews",
+      "joiner mover leaver"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "identity-access-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "powershell-scripting",
+    "name": "PowerShell scripting",
+    "category": "cloud-devops",
+    "aliases": [
+      "powershell",
+      "powershell scripting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "routing-switching",
+    "name": "Routing and switching",
+    "category": "cloud-devops",
+    "aliases": [
+      "routing and switching",
+      "bgp",
+      "ospf",
+      "eigrp",
+      "vlan",
+      "vlans",
+      "spanning tree",
+      "hsrp",
+      "vrrp",
+      "mpls"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "networking-basics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "network-monitoring",
+    "name": "Network monitoring",
+    "category": "cloud-devops",
+    "aliases": [
+      "network monitoring",
+      "snmp",
+      "solarwinds",
+      "prtg",
+      "netflow"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "windows-server",
+    "name": "Windows Server administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "windows server",
+      "windows server administration",
+      "group policy",
+      "gpo",
+      "wsus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "virtualization",
+    "name": "Server virtualisation",
+    "category": "cloud-devops",
+    "aliases": [
+      "vmware",
+      "vsphere",
+      "esxi",
+      "vcenter",
+      "hyper-v",
+      "virtualization",
+      "virtualisation",
+      "kvm"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "itsm",
+    "name": "IT service management (ITIL)",
+    "category": "tools",
+    "aliases": [
+      "itil",
+      "itil v4",
+      "itsm",
+      "it service management",
+      "bmc remedy"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ai-agents",
+    "name": "AI agents and tool calling",
+    "category": "ml",
+    "aliases": [
+      "ai agents",
+      "agentic ai",
+      "agentic workflows",
+      "langgraph",
+      "crewai",
+      "multi-agent systems",
+      "function calling",
+      "tool calling"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "llm-apps"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "llm-evaluation",
+    "name": "LLM evaluation and guardrails",
+    "category": "ml",
+    "aliases": [
+      "llm evaluation",
+      "llm evals",
+      "ragas",
+      "deepeval",
+      "llm-as-a-judge",
+      "llm as a judge",
+      "hallucination detection",
+      "llm guardrails"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "llm-apps"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "python-web-frameworks",
+    "name": "Python web frameworks (Django, Flask, FastAPI)",
+    "category": "web",
+    "aliases": [
+      "django",
+      "django rest framework",
+      "flask",
+      "fastapi",
+      "python web framework"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "python"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-query",
+    "name": "Power Query (M)",
+    "category": "data",
+    "aliases": [
+      "power query",
+      "power query m",
+      "m language",
+      "m query"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

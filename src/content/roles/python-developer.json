@@ -1,0 +1,120 @@
+{
+  "slug": "python-developer",
+  "title": "Python Developer",
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean, idiomatic Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "python-web-frameworks",
+      "importance": "required",
+      "expectation": "Build web back ends with Django, Flask or FastAPI",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design and build REST APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL for MySQL or PostgreSQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "orm-databases",
+      "importance": "required",
+      "expectation": "Model tables with an ORM such as Django ORM or SQLAlchemy",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Use classes and object-oriented design",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write tests with pytest or unittest",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Use Git branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run services in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy to a cloud such as AWS",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Work on Linux servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Use Redis or MongoDB alongside SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Run background jobs through a queue",
+      "postingShare": null
+    },
+    {
+      "skillId": "pandas",
+      "importance": "nice_to_have",
+      "expectation": "Process data files with pandas",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "nice_to_have",
+      "expectation": "Solve coding problems in interviews",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "pcap",
+      "importance": "recommended",
+      "why": "Shows core Python beyond the basics"
+    },
+    {
+      "certId": "pcep",
+      "importance": "optional",
+      "why": "Entry-level Python for freshers"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

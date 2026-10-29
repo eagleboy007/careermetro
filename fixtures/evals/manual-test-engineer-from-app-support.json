@@ -1,0 +1,55 @@
+{
+  "id": "manual-test-engineer-from-app-support",
+  "roleSlug": "manual-test-engineer",
+  "persona": "Application support executive moving into testing",
+  "resumeText": "Kavya Reddy | Hyderabad | kavya.reddy@example.com\n\nEXPERIENCE\nApplication Support Executive, Golconda HealthTech, Hyderabad (2024 - present)\n- Reproduce issues reported by clinics in the patient booking app and log them in Jira with steps and screenshots.\n- Check fixed builds before release and confirm the reported issue is solved.\n- Run SQL queries to verify appointment records for support tickets.\n\nTRAINING\nSoftware testing course, 2024: wrote 120 test cases for a demo e-commerce site.\n\nEDUCATION\nBSc Computer Science, Osmania University, 2024\n\nSKILLS\nManual testing, Jira, SQL, Postman, STLC\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "bug-tracking",
+        "quote": "log them in Jira with steps and screenshots"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Run SQL queries to verify appointment records"
+      },
+      {
+        "skillId": "manual-testing",
+        "quote": "wrote 120 test cases for a demo e-commerce site"
+      },
+      {
+        "skillId": "api-testing",
+        "quote": "Postman"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "STLC"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "api-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "test-planning",
+        "status": "weak"
+      },
+      {
+        "skillId": "agile-scrum",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "selenium",
+      "performance-testing",
+      "playwright-cypress"
+    ]
+  },
+  "reviewedBy": null
+}

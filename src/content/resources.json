@@ -5093,5 +5093,479 @@
     ],
     "minutes": 600,
     "free": true
+  },
+  {
+    "title": "Discover customer needs as a Solution Architect for Dynamics 365 and Power Platform",
+    "url": "https://learn.microsoft.com/en-us/training/modules/discover-customer-needs/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "presales-solutioning"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Propose a solution as a Solution Architect for Power Platform and Dynamics 365",
+    "url": "https://learn.microsoft.com/en-us/training/modules/propose-solution/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "presales-solutioning"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Architect solutions for Dynamics 365 and Microsoft Power Platform (learning path)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/become-solution-architect/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "presales-solutioning"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Azure landing zone (Cloud Adoption Framework, Ready)",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/",
+    "provider": "Microsoft Azure Cloud Adoption Framework",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-landing-zones"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Landing zone design in Google Cloud",
+    "url": "https://docs.cloud.google.com/architecture/landing-zones",
+    "provider": "Google Cloud Architecture Center",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-landing-zones"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Designing an AWS Control Tower landing zone",
+    "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/designing-control-tower-landing-zone/introduction.html",
+    "provider": "AWS Prescriptive Guidance",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-landing-zones"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "About the migration strategies (7 Rs) - large migration guide",
+    "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies",
+    "provider": "AWS Prescriptive Guidance",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-migration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Plan your migration - Cloud Adoption Framework",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/migrate/plan-migration",
+    "provider": "Microsoft Azure Cloud Adoption Framework",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-migration"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Migrate to Google Cloud: Get started",
+    "url": "https://docs.cloud.google.com/architecture/migration-to-gcp-getting-started",
+    "provider": "Google Cloud Architecture Center",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-migration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "OAuth 2.0 and OpenID Connect overview",
+    "url": "https://developer.okta.com/docs/concepts/oauth-openid/",
+    "provider": "Okta Developer",
+    "kind": "docs",
+    "skillIds": [
+      "identity-federation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "OpenID Connect & OAuth 2.0 (Okta standards reference)",
+    "url": "https://developer.okta.com/standards/OIDC/",
+    "provider": "Okta Developer",
+    "kind": "docs",
+    "skillIds": [
+      "identity-federation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "OAuth 2.0 (Okta standards reference)",
+    "url": "https://developer.okta.com/standards/OAuth",
+    "provider": "Okta Developer",
+    "kind": "docs",
+    "skillIds": [
+      "identity-federation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What are access reviews? (Microsoft Entra ID Governance)",
+    "url": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview",
+    "provider": "Microsoft Learn (Entra docs)",
+    "kind": "docs",
+    "skillIds": [
+      "identity-governance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Plan a Microsoft Entra access reviews deployment",
+    "url": "https://learn.microsoft.com/entra/id-governance/deploy-access-reviews",
+    "provider": "Microsoft Learn (Entra docs)",
+    "kind": "docs",
+    "skillIds": [
+      "identity-governance"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Introduction to PowerShell",
+    "url": "https://learn.microsoft.com/training/modules/introduction-to-powershell/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "powershell-scripting"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Discover commands in PowerShell",
+    "url": "https://learn.microsoft.com/en-us/training/modules/discover-commands/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "powershell-scripting"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Introduction to scripting in PowerShell",
+    "url": "https://learn.microsoft.com/en-us/training/modules/script-with-powershell/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "powershell-scripting"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "Learn How Computer Networks Work with a Free 9-Hour Course (Network+)",
+    "url": "https://www.freecodecamp.org/news/free-computer-networking-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "routing-switching"
+    ],
+    "minutes": 540,
+    "free": true
+  },
+  {
+    "title": "Computer Networking Fundamentals (12-hour course)",
+    "url": "https://www.freecodecamp.org/news/computer-networking-fundamentals/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "routing-switching"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "SNMP agent items - Zabbix manual",
+    "url": "https://www.zabbix.com/documentation/current/en/manual/config/items/itemtypes/snmp",
+    "provider": "Zabbix",
+    "kind": "docs",
+    "skillIds": [
+      "network-monitoring"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "SNMP trap items - Zabbix manual",
+    "url": "https://www.zabbix.com/documentation/current/en/manual/config/items/itemtypes/snmptrap",
+    "provider": "Zabbix",
+    "kind": "docs",
+    "skillIds": [
+      "network-monitoring"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Cisco IOS NetFlow configuration guides",
+    "url": "https://www.cisco.com/en/US/tech/tk812/tech_configuration_guides_list.html",
+    "provider": "Cisco",
+    "kind": "docs",
+    "skillIds": [
+      "network-monitoring"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Group Policy overview",
+    "url": "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview",
+    "provider": "Microsoft Learn (Windows Server docs)",
+    "kind": "docs",
+    "skillIds": [
+      "windows-server"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Introduction to AD DS",
+    "url": "https://learn.microsoft.com/en-us/training/modules/introduction-to-ad-ds/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "windows-server"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Microsoft Active Directory: An Introduction (video series)",
+    "url": "https://learn.microsoft.com/en-us/shows/introtoad/",
+    "provider": "Microsoft Learn",
+    "kind": "video",
+    "skillIds": [
+      "windows-server"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Hyper-V overview",
+    "url": "https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/overview",
+    "provider": "Microsoft Learn (Windows Server docs)",
+    "kind": "docs",
+    "skillIds": [
+      "virtualization"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Configure and manage Hyper-V",
+    "url": "https://learn.microsoft.com/en-us/training/modules/configure-manage-hyper-v",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "virtualization",
+      "windows-server"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "Proxmox VE Administration Guide",
+    "url": "https://pve.proxmox.com/pve-docs",
+    "provider": "Proxmox",
+    "kind": "docs",
+    "skillIds": [
+      "virtualization"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "What is ITIL?",
+    "url": "https://www.axelos.com/certifications/itil-service-management/what-is-itil",
+    "provider": "AXELOS",
+    "kind": "docs",
+    "skillIds": [
+      "itsm"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is Incident Management?",
+    "url": "https://www.servicenow.com/products/itsm/what-is-incident-management.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "itsm"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Hugging Face AI Agents Course",
+    "url": "https://huggingface.co/learn/agents-course",
+    "provider": "Hugging Face",
+    "kind": "course",
+    "skillIds": [
+      "ai-agents"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "LangGraph quickstart",
+    "url": "https://docs.langchain.com/oss/python/langgraph/quickstart.md",
+    "provider": "LangChain",
+    "kind": "practice",
+    "skillIds": [
+      "ai-agents"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Building effective agents",
+    "url": "https://www.anthropic.com/research/building-effective-agents",
+    "provider": "Anthropic",
+    "kind": "docs",
+    "skillIds": [
+      "ai-agents"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Ragas quickstart",
+    "url": "https://docs.ragas.io/en/latest/getstarted/quickstart",
+    "provider": "Ragas",
+    "kind": "practice",
+    "skillIds": [
+      "llm-evaluation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Evaluate a simple LLM application (Ragas)",
+    "url": "https://docs.ragas.io/en/stable/getstarted/evals/",
+    "provider": "Ragas",
+    "kind": "docs",
+    "skillIds": [
+      "llm-evaluation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Evaluate generative AI performance in Microsoft Foundry portal",
+    "url": "https://learn.microsoft.com/en-us/training/modules/evaluate-models-azure-ai-studio",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "llm-evaluation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Writing your first Django app, part 1",
+    "url": "https://docs.djangoproject.com/en/5.0/intro/tutorial01",
+    "provider": "Django",
+    "kind": "practice",
+    "skillIds": [
+      "python-web-frameworks"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Flask tutorial (Flaskr blog app)",
+    "url": "https://flask.palletsprojects.com/tutorial",
+    "provider": "Pallets / Flask",
+    "kind": "practice",
+    "skillIds": [
+      "python-web-frameworks"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Django Crash Course for Beginners",
+    "url": "https://www.freecodecamp.org/news/django-crash-course-for-beginners/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "python-web-frameworks"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Learn Flask Web Development for Python in this Free 1-hour Course",
+    "url": "https://www.freecodecamp.org/news/learn-flask-for-python-full-tutorial/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "python-web-frameworks"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get and transform data with Power BI (learning path)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/get-transform-data-power-bi",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-query"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Clean, transform, and load data in Power BI",
+    "url": "https://learn.microsoft.com/en-us/training/modules/clean-data-power-bi/",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "power-query"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Power Query documentation",
+    "url": "https://learn.microsoft.com/en-us/power-query/",
+    "provider": "Microsoft Learn (Power Query docs)",
+    "kind": "docs",
+    "skillIds": [
+      "power-query"
+    ],
+    "minutes": 60,
+    "free": true
   }
 ]

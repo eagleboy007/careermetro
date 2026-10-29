@@ -1,0 +1,64 @@
+{
+  "id": "system-administrator-from-desktop-support",
+  "roleSlug": "system-administrator",
+  "persona": "Desktop support engineer now working as a junior system administrator",
+  "resumeText": "Pooja Joshi | Pune | pooja.joshi@example.com\n\nEXPERIENCE\nSystem Administrator, Mula River Systems, Pune (2023 - present)\n- Manage 80 Windows Server 2019 machines and the domain Group Policy.\n- Create and remove Active Directory users and security groups for 900 staff.\n- Run 60 virtual machines on VMware vSphere and handle snapshots.\n- Wrote PowerShell scripts for disk space and service checks.\n- Fix DNS and DHCP issues in the office network.\n- Own monthly patch management for all servers.\n- Run nightly backups with Veeam and test one restore every month.\n- Work incidents and changes under ITIL in the service desk tool.\n\nDesktop Support Engineer, Shaniwar Tech, Pune (2021 - 2023)\n- Supported 400 laptops and printers.\n\nSKILLS\nWindows Server, VMware, Linux, PowerShell\n\nEDUCATION\nBCA, Symbiosis, 2021\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "windows-server",
+        "quote": "Manage 80 Windows Server 2019 machines"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Create and remove Active Directory users"
+      },
+      {
+        "skillId": "virtualization",
+        "quote": "Run 60 virtual machines on VMware vSphere"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "Wrote PowerShell scripts for disk space and service checks"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Fix DNS and DHCP issues"
+      },
+      {
+        "skillId": "vulnerability-management",
+        "quote": "Own monthly patch management for all servers"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "test one restore every month"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Work incidents and changes under ITIL"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "linux",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "azure",
+      "terraform",
+      "monitoring"
+    ]
+  },
+  "reviewedBy": null
+}

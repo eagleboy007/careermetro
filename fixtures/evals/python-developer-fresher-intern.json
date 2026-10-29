@@ -1,0 +1,59 @@
+{
+  "id": "python-developer-fresher-intern",
+  "roleSlug": "python-developer",
+  "persona": "Fresher with a six-month Django internship",
+  "resumeText": "Mohammed Irfan | Hyderabad | irfan.m@example.com\n\nEDUCATION\nBTech Computer Science, Vardhaman College of Engineering, 2026\n\nINTERNSHIP\nPython Developer Intern, Deccan Byte Solutions, Hyderabad (Jan 2026 - Jun 2026)\n- Built REST APIs with Django REST Framework for a clinic appointment app.\n- Wrote Django ORM models and migrations for PostgreSQL tables.\n- Pushed code through GitHub pull requests reviewed by a senior developer.\n\nPROJECTS\n- Expense tracker in Flask with SQLite and a login page.\n\nSKILLS\nPython, Django, Flask, SQL, Git, pytest, OOP\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Python Developer Intern"
+      },
+      {
+        "skillId": "python-web-frameworks",
+        "quote": "Built REST APIs with Django REST Framework"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs with Django REST Framework"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Wrote Django ORM models and migrations"
+      },
+      {
+        "skillId": "sql",
+        "quote": "migrations for PostgreSQL tables"
+      },
+      {
+        "skillId": "git",
+        "quote": "Pushed code through GitHub pull requests"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "pytest"
+      },
+      {
+        "skillId": "oop",
+        "quote": "OOP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "aws",
+      "nosql"
+    ]
+  },
+  "reviewedBy": null
+}

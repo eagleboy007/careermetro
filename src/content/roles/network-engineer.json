@@ -1,0 +1,96 @@
+{
+  "slug": "network-engineer",
+  "title": "Network Engineer",
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Know TCP/IP, DNS, DHCP and load balancing well enough to troubleshoot",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Configure and troubleshoot routers and switches, VLANs, OSPF and BGP",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Manage firewall rules and site-to-site VPNs",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-monitoring",
+      "importance": "required",
+      "expectation": "Watch links and devices with monitoring tools and act on alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work tickets and changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Find root causes of outages and slow links",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Keep network diagrams and handover notes current and update users during incidents",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "nice_to_have",
+      "expectation": "Connect offices and data centres to cloud VPCs or VNets",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Use the Linux command line for diagnostics",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate device checks and changes with scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Automate device configuration with Ansible",
+      "postingShare": null
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "recommended",
+      "why": "The baseline certificate most network engineer listings ask for"
+    },
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral networking base"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-29"
+}

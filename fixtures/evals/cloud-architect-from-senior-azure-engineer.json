@@ -1,0 +1,64 @@
+{
+  "id": "cloud-architect-from-senior-azure-engineer",
+  "roleSlug": "cloud-architect",
+  "persona": "Senior Azure cloud engineer moving into a cloud architect role",
+  "resumeText": "Sneha Reddy | Hyderabad | sneha.reddy@example.com\n\nEXPERIENCE\nSenior Cloud Engineer, Godavari Digital Services, Hyderabad (2020 - present)\n- Built the Azure landing zone for 30 subscriptions with management groups and Azure Policy.\n- Designed hub-and-spoke VNet networking with ExpressRoute to two data centres.\n- Wrote Terraform modules used by 12 product teams.\n- Set up Azure AD groups and role-based access for every subscription.\n- Enabled Defender for Cloud and fixed its high-severity cloud security findings.\n- Set up geo-redundant backups and ran a yearly disaster recovery drill for the core banking API.\n\nSystems Engineer, Charminar Tech, Hyderabad (2018 - 2020)\n- Ran Windows servers and Azure virtual machines for internal tools.\n\nSKILLS\nAzure, Terraform, Azure DevOps, cloud migration\n\nEDUCATION\nBTech Electronics, JNTU Hyderabad, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "azure",
+        "quote": "Built the Azure landing zone for 30 subscriptions"
+      },
+      {
+        "skillId": "cloud-landing-zones",
+        "quote": "Azure landing zone for 30 subscriptions"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "Designed hub-and-spoke VNet networking"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Wrote Terraform modules used by 12 product teams"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Set up Azure AD groups and role-based access"
+      },
+      {
+        "skillId": "cloud-security",
+        "quote": "fixed its high-severity cloud security findings"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "ran a yearly disaster recovery drill"
+      },
+      {
+        "skillId": "cloud-migration",
+        "quote": "cloud migration"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cloud-migration",
+        "status": "weak"
+      },
+      {
+        "skillId": "cloud-cost",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "gcp",
+      "kubernetes",
+      "cloud-databases"
+    ]
+  },
+  "reviewedBy": null
+}

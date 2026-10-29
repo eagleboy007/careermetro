@@ -1,0 +1,60 @@
+{
+  "id": "dotnet-developer-claims-portal",
+  "roleSlug": "dotnet-developer",
+  "persona": "ASP.NET Core developer with three years on one product",
+  "resumeText": "Priya Natarajan | Chennai | priya.natarajan@example.com\n\nEXPERIENCE\nAssociate Software Engineer, Marina Softworks, Chennai (2023 - present)\n- Develop ASP.NET Core Web API services in C# for an insurance claims portal.\n- Write stored procedures and queries in SQL Server for claim reports.\n- Map tables with Entity Framework Core and write LINQ queries.\n- Build screens in Angular that call these APIs.\n- Work in two-week Scrum sprints and track tasks in Jira.\n\nEDUCATION\nBE Computer Science, Anna University, 2023\n\nSKILLS\nC#, .NET 8, ASP.NET Core, SQL Server, Entity Framework, Angular, Git, NUnit\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Develop ASP.NET Core Web API services in C#"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Develop ASP.NET Core Web API services"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write stored procedures and queries in SQL Server"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Map tables with Entity Framework Core"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Work in two-week Scrum sprints"
+      },
+      {
+        "skillId": "git",
+        "quote": "Git"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "NUnit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "git",
+        "status": "weak"
+      },
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "docker",
+      "microservices",
+      "react"
+    ]
+  },
+  "reviewedBy": null
+}

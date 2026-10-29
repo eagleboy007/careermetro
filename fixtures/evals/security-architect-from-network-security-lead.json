@@ -1,0 +1,67 @@
+{
+  "id": "security-architect-from-network-security-lead",
+  "roleSlug": "security-architect",
+  "persona": "Bank network security lead moving into security architecture",
+  "resumeText": "Aditya Deshmukh | Mumbai | aditya.deshmukh@example.com\n\nEXPERIENCE\nNetwork Security Lead, Konkan Coastal Bank, Mumbai (2018 - present)\n- Designed network segmentation for 220 branches and the data centre.\n- Ran firewall rule reviews on Palo Alto and Check Point every quarter.\n- Rolled out MFA for all administrators and privileged access management for 400 server accounts.\n- Managed the internal PKI and TLS certificate renewals for 90 applications.\n- Led the risk assessment for the new UPI switch.\n- Mapped network controls to ISO 27001 and the RBI cyber security framework for audits.\n- Presented quarterly network risk reports to the CISO.\n\nNetwork Engineer, Arabian Sea Networks, Mumbai (2014 - 2018)\n- Configured branch VPNs and core switches.\n\nSKILLS\nZero trust, Palo Alto, Check Point, CyberArk\n\nEDUCATION\nBE Electronics and Telecommunication, Mumbai University, 2014\n\nCERTIFICATIONS\nCCNP Security (2017)\n",
+  "expected": {
+    "totalYearsExperience": 12,
+    "skills": [
+      {
+        "skillId": "network-security",
+        "quote": "Designed network segmentation for 220 branches"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Rolled out MFA for all administrators"
+      },
+      {
+        "skillId": "cryptography-basics",
+        "quote": "Managed the internal PKI and TLS certificate renewals"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Led the risk assessment for the new UPI switch"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Mapped network controls to ISO 27001 and the RBI cyber security framework"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented quarterly network risk reports to the CISO"
+      },
+      {
+        "skillId": "security-architecture",
+        "quote": "Zero trust"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-architecture",
+        "status": "weak"
+      },
+      {
+        "skillId": "threat-modeling",
+        "status": "missing"
+      },
+      {
+        "skillId": "application-security",
+        "status": "missing"
+      },
+      {
+        "skillId": "cloud-security",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "devsecops",
+      "penetration-testing",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}
