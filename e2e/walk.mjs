@@ -1191,6 +1191,7 @@ await step("weekly My jobs email: Settings preview, and the one-tap turn-off wit
   const { default: postgres } = await import("postgres");
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
   const TOKEN = "e2eWeeklyOffToken".padEnd(43, "x");
+  let madeFor = null;
   try {
     await p.goto(BASE + "/settings#acc-notif");
     await settled();
@@ -1204,6 +1205,9 @@ await step("weekly My jobs email: Settings preview, and the one-tap turn-off wit
     await shot("settings-weekly-preview");
 
     const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    // A row made here takes the table's defaults, not the app's (later steps check a new user's defaults), so it goes again.
+    const [had] = await sql`select 1 as one from user_settings where user_id = ${me.id}`;
+    madeFor = had ? null : me.id;
     await sql`insert into user_settings (user_id, email_weekly_summary, email_off_token) values (${me.id}, true, ${TOKEN})
       on conflict (user_id) do update set email_weekly_summary = true, email_off_token = ${TOKEN}`;
     // Signed out, as from a mail app: a fresh browser context with no cookies.
@@ -1226,6 +1230,7 @@ await step("weekly My jobs email: Settings preview, and the one-tap turn-off wit
       await mail.close();
     }
   } finally {
+    if (madeFor) await sql`delete from user_settings where user_id = ${madeFor}`;
     await sql.end();
   }
 });
