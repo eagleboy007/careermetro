@@ -83,7 +83,8 @@ describe.skipIf(!db)("practice store (database)", () => {
     expect(await submitPracticeAnswer(me, { questionId: "sql-1", answer: ANSWER }, { db: db!, client: c, now: clock })).toMatchObject({ ok: true, feedback: good });
     expect(await submitPracticeAnswer(other, { questionId: "sql-1", answer: ANSWER }, { db: db!, client: c, now: clock })).toEqual({ ok: false, message: PRACTICE_MESSAGES.not_goal });
     const view = await practiceFor(me, clock, db!, job);
-    expect(view.job).toEqual({ company: "Example Retail", title: "Data analyst" });
+    expect(view.job).toMatchObject({ company: "Example Retail", title: "Data analyst" });
+    expect(view.job?.skipped).toEqual([]);
     expect(view.skills.map((s) => s.skillId)).toEqual(["python"]);
     expect((await practiceFor(other, clock, db!, job)).job).toBeNull();
     expect((await practiceFor(me, clock, db!)).job).toBeNull();

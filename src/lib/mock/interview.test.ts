@@ -10,6 +10,7 @@ import {
   feedbackShowable,
   followUpText,
   jobRoundText,
+  skippedText,
   matchFeedback,
   mentions,
   MOCK_FEEDBACK_TEXT,
@@ -66,6 +67,9 @@ describe("pickInterviewQuestions", () => {
       'Asks first for SIEM and Threat detection (still open), then Phishing triage and KQL (only for this job). No practice questions for KQL yet; it is skipped. "About you" questions still come from your target role.',
     );
     expect(jobRoundText({ open: [], only: ["KQL"], skipped: [] })).toBe('Asks first for KQL (only for this job). "About you" questions still come from your target role.');
+    // The same line on Practice for a job (T138).
+    expect(skippedText([])).toBe("");
+    expect(skippedText(["Power BI", "Data pipeline orchestration"])).toBe("No practice questions for Power BI and Data pipeline orchestration yet; they are skipped.");
     expect(jobRoundText({ open: [], only: [], skipped: [] })).toBe('"About you" questions still come from your target role.');
   });
 

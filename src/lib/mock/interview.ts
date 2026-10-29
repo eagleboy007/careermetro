@@ -151,6 +151,13 @@ export function withoutQuestions(bank: readonly MockQuestion[], skillIds: readon
   return [...new Set(skillIds)].filter((id) => !asked.has(id));
 }
 
+/** "No practice questions for KQL yet; it is skipped." for a job's skills the bank has no questions for (T138). */
+export function skippedText(names: readonly string[]): string {
+  if (!names.length) return "";
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return `No practice questions for ${list} yet; ${names.length === 1 ? "it is" : "they are"} skipped.`;
+}
+
 /**
  * The banner on a round set up for one job (handoff 12m): "Asks first for SIEM and Threat detection (still open), then
  * Phishing triage and KQL (only for this job). No practice questions for KQL yet; it is skipped." and a line on the
@@ -162,7 +169,7 @@ export function jobRoundText(prep: { open: readonly string[]; only: readonly str
   if (prep.open.length) asks.push(`Asks first for ${and(prep.open)} (still open)`);
   if (prep.only.length) asks.push(`${asks.length ? "then" : "Asks first for"} ${and(prep.only)} (only for this job)`);
   const parts = asks.length ? [`${asks.join(", ")}.`] : [];
-  if (prep.skipped.length) parts.push(`No practice questions for ${and(prep.skipped)} yet; ${prep.skipped.length === 1 ? "it is" : "they are"} skipped.`);
+  if (prep.skipped.length) parts.push(skippedText(prep.skipped));
   parts.push('"About you" questions still come from your target role.');
   return parts.join(" ");
 }
