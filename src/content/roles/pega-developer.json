@@ -1,0 +1,111 @@
+{
+  "slug": "pega-developer",
+  "title": "Pega Developer",
+  "summary": "A Pega developer builds business workflow applications, such as loan approvals or insurance claims, on the Pega low-code platform. They usually sit in a delivery team at a bank, insurer or IT services company, working with business analysts, Pega architects and testers.",
+  "dailyDuties": [
+    "Build case types, flows and UI screens from user stories",
+    "Configure data pages, data transforms and activities",
+    "Connect the application to other systems through REST or SOAP",
+    "Debug issues with the Tracer and fix defects from testing",
+    "Review rules and guardrail warnings before deployment",
+    "Join sprint planning and daily stand-ups"
+  ],
+  "typicalTitles": [
+    "Pega System Architect",
+    "Senior Pega Developer",
+    "Pega CSSA Developer",
+    "Pega Senior System Architect",
+    "Pega Lead System Architect",
+    "Pega Consultant",
+    "Pega PRPC Developer",
+    "Pega Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "pega-platform",
+      "importance": "required",
+      "expectation": "Build applications in Pega Infinity with rules, data pages, data transforms and activities",
+      "postingShare": null
+    },
+    {
+      "skillId": "pega-case-management",
+      "importance": "required",
+      "expectation": "Design case types, stages, flows and parent-child cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Read and write Java for custom functions and debugging",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and tune the database behind Pega reports and data pages",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Connect Pega to other systems with REST connectors and services",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Deliver user stories in Scrum sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Talk through designs with business analysts and testers",
+      "postingShare": null
+    },
+    {
+      "skillId": "pega-decisioning",
+      "importance": "nice_to_have",
+      "expectation": "Build next-best-action strategies in Customer Decision Hub",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Customise Pega UI sections with JavaScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Adjust UI layouts and styles",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking or insurance processes, where most Pega work is",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Move rules through environments with deployment pipelines",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

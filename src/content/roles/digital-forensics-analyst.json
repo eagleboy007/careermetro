@@ -1,0 +1,133 @@
+{
+  "slug": "digital-forensics-analyst",
+  "title": "Digital Forensics Analyst",
+  "summary": "A digital forensics analyst collects and examines evidence from computers, phones and storage devices to find out what happened in a cyber attack, fraud or legal dispute. You work in a forensics lab, a consulting firm's investigations team or a government cyber cell, and your reports may be used in court, so careful handling of evidence matters as much as technical skill.",
+  "dailyDuties": [
+    "Make forensic images of laptops, drives and phones",
+    "Record chain of custody and verify hashes for every item",
+    "Analyse files, logs, browser history and chats with forensic tools",
+    "Extract data from mobile phones for investigators",
+    "Build timelines of user and attacker activity",
+    "Write forensic reports and evidence certificates",
+    "Brief lawyers, clients or investigators on findings"
+  ],
+  "typicalTitles": [
+    "Cyber Forensic Analyst",
+    "Forensic Analyst",
+    "Digital Forensic Examiner",
+    "Mobile Forensics Analyst",
+    "Forensic Technology Analyst",
+    "Cyber Forensics Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "digital-forensics",
+      "importance": "required",
+      "expectation": "Examine disks, memory and system artefacts to rebuild what happened",
+      "postingShare": null
+    },
+    {
+      "skillId": "forensic-tool-suites",
+      "importance": "required",
+      "expectation": "Image and analyse evidence with EnCase, FTK, X-Ways, AXIOM or Autopsy",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-forensics",
+      "importance": "required",
+      "expectation": "Extract and analyse phone data with tools such as Cellebrite UFED",
+      "postingShare": null
+    },
+    {
+      "skillId": "forensic-evidence-handling",
+      "importance": "required",
+      "expectation": "Keep chain of custody, hash every image and prepare court-ready evidence",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Support breach and fraud investigations with the response team",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "required",
+      "expectation": "Write clear forensic reports that hold up in legal review",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain findings to lawyers, clients and investigators",
+      "postingShare": null
+    },
+    {
+      "skillId": "malware-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Triage malicious files found during an examination",
+      "postingShare": null
+    },
+    {
+      "skillId": "osint",
+      "importance": "nice_to_have",
+      "expectation": "Research people and accounts from open sources",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Work with Linux-based forensic tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script parsing and timeline tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "nice_to_have",
+      "expectation": "Handle encrypted drives and hashing",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "nice_to_have",
+      "expectation": "Read network logs and packet captures",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "nice_to_have",
+      "expectation": "Pull logs from SIEM tools for an investigation",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "gcih",
+      "importance": "optional",
+      "why": "Incident handling depth for corporate DFIR roles"
+    },
+    {
+      "certId": "ceh",
+      "importance": "optional",
+      "why": "Common entry security cert in Indian postings"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

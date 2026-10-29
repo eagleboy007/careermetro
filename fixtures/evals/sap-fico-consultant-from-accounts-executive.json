@@ -1,0 +1,60 @@
+{
+  "id": "sap-fico-consultant-from-accounts-executive",
+  "roleSlug": "sap-fico-consultant",
+  "persona": "Accounts executive and SAP FI key user moving into FICO consulting",
+  "resumeText": "Sneha Kulkarni | Mumbai | sneha.kulkarni@example.com\n\nEXPERIENCE\nSenior Accounts Executive, Konkan Agro Foods Pvt Ltd, Mumbai (2019 - present)\n- Lead month-end close and bank reconciliation for 6 company codes.\n- Post vendor invoices and payments in SAP FI as a key user.\n- File monthly GST returns and reconcile them with the purchase register.\n- Tested the new fixed asset screens as a UAT tester during the S/4HANA rollout.\n- Wrote business requirements for the vendor payment approval workflow.\n- Train 12 plant accountants on SAP posting steps every quarter.\n\nSKILLS\nSAP CO, Excel, Pivot tables\n\nEDUCATION\nMCom, University of Mumbai, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "financial-accounting",
+        "quote": "Lead month-end close and bank reconciliation"
+      },
+      {
+        "skillId": "sap-fi-configuration",
+        "quote": "Post vendor invoices and payments in SAP FI as a key user"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "File monthly GST returns and reconcile them"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Tested the new fixed asset screens as a UAT tester"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Wrote business requirements for the vendor payment approval workflow"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Train 12 plant accountants on SAP posting steps"
+      },
+      {
+        "skillId": "sap-co-configuration",
+        "quote": "SAP CO"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-fi-configuration",
+        "status": "weak"
+      },
+      {
+        "skillId": "sap-co-configuration",
+        "status": "weak"
+      },
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-interfaces",
+      "sql",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

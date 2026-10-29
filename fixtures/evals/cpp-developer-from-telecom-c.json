@@ -1,0 +1,60 @@
+{
+  "id": "cpp-developer-from-telecom-c",
+  "roleSlug": "cpp-developer",
+  "persona": "C and C++ developer on telecom server software who lists modern C++ only as a skill",
+  "resumeText": "Karthika Raman | Chennai | karthika.raman@example.com\n\nEXPERIENCE\nSoftware Engineer, Coromandel Network Systems, Chennai (2019 - present)\n- Write C and C++ modules for the call routing server on Linux.\n- Fixed race conditions in the session manager using pthreads and mutexes.\n- Implemented a trie for prefix lookup that cut routing time by half.\n- Write Google Test unit tests for every new module.\n- Review merge requests in GitLab for a team of five.\n- Debug core dumps with gdb on production servers.\n\nSKILLS\nC++17, STL, CMake, Python\n\nEDUCATION\nBE Electronics and Communication, Anna University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "cpp",
+        "quote": "Write C and C++ modules for the call routing server"
+      },
+      {
+        "skillId": "linux",
+        "quote": "C++ modules for the call routing server on Linux"
+      },
+      {
+        "skillId": "concurrency-multithreading",
+        "quote": "Fixed race conditions in the session manager using pthreads and mutexes"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Implemented a trie for prefix lookup"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Write Google Test unit tests for every new module"
+      },
+      {
+        "skillId": "git",
+        "quote": "Review merge requests in GitLab"
+      },
+      {
+        "skillId": "code-review",
+        "quote": "Review merge requests in GitLab for a team of five"
+      },
+      {
+        "skillId": "modern-cpp",
+        "quote": "C++17"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "modern-cpp",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "system-design",
+      "java",
+      "docker",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "nlp-engineer-from-data-scientist",
+  "roleSlug": "nlp-engineer",
+  "persona": "Fintech data scientist with some text classification work",
+  "resumeText": "Meera Nair | Kochi | meera.nair@example.com\n\nEXPERIENCE\nData Scientist, Periyar Fintech, Kochi (2021 - present)\n- Built a TF-IDF and logistic regression classifier to route 20,000 customer emails a month.\n- Cleaned and normalised Malayalam and English chat transcripts before training.\n- Fine-tuned a BERT model with Hugging Face to tag complaint categories.\n- Report precision, recall and F1 for every model before release.\n- Write Python pipelines with pandas and scikit-learn.\n\nSKILLS\nPyTorch, spaCy, SQL, Tableau\n\nEDUCATION\nMSc Statistics, University of Kerala, 2020\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "nlp",
+        "quote": "Built a TF-IDF and logistic regression classifier to route 20,000 customer emails"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "Cleaned and normalised Malayalam and English chat transcripts"
+      },
+      {
+        "skillId": "hugging-face-transformers",
+        "quote": "Fine-tuned a BERT model with Hugging Face"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "Report precision, recall and F1 for every model"
+      },
+      {
+        "skillId": "python",
+        "quote": "Write Python pipelines with pandas and scikit-learn"
+      },
+      {
+        "skillId": "scikit-learn",
+        "quote": "Write Python pipelines with pandas and scikit-learn"
+      },
+      {
+        "skillId": "pytorch",
+        "quote": "PyTorch"
+      },
+      {
+        "skillId": "nlp-information-extraction",
+        "quote": "spaCy"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "pytorch",
+        "status": "weak"
+      },
+      {
+        "skillId": "nlp-information-extraction",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "llm-apps",
+      "vector-search",
+      "model-serving"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "digital-forensics-analyst-from-soc",
+  "roleSlug": "digital-forensics-analyst",
+  "persona": "L1 SOC analyst moving into forensics",
+  "resumeText": "Arjun Reddy | Hyderabad | arjun.reddy@example.com\n\nEXPERIENCE\nSOC Analyst, Deccan CyberShield, Hyderabad (2022 - present)\n- Triage SIEM alerts in Splunk and escalate confirmed incidents to L2.\n- Took part in incident response for a ransomware case at a client hospital.\n- Captured disk images with FTK Imager and verified hashes for the IR team.\n- Wrote incident reports for clients after each investigation.\n\nSKILLS\nAutopsy, Cellebrite, Linux, Python\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2021\n\nCERTIFICATIONS\nCEH (2023)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "security-incident-response",
+        "quote": "Took part in incident response for a ransomware case"
+      },
+      {
+        "skillId": "forensic-tool-suites",
+        "quote": "Captured disk images with FTK Imager"
+      },
+      {
+        "skillId": "forensic-evidence-handling",
+        "quote": "Captured disk images with FTK Imager and verified hashes"
+      },
+      {
+        "skillId": "digital-forensics",
+        "quote": "Captured disk images with FTK Imager and verified hashes for the IR team"
+      },
+      {
+        "skillId": "technical-writing",
+        "quote": "Wrote incident reports for clients after each investigation"
+      },
+      {
+        "skillId": "siem",
+        "quote": "Triage SIEM alerts in Splunk"
+      },
+      {
+        "skillId": "mobile-forensics",
+        "quote": "Cellebrite"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "digital-forensics",
+        "status": "weak"
+      },
+      {
+        "skillId": "mobile-forensics",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "malware-analysis",
+      "osint",
+      "windows-server"
+    ]
+  },
+  "reviewedBy": null
+}

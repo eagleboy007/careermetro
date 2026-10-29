@@ -1,0 +1,124 @@
+{
+  "slug": "integration-developer",
+  "title": "Integration Developer",
+  "summary": "An integration developer connects a company's separate systems, such as its CRM, ERP and online store, so that data flows between them through APIs and automated flows. They work in an integration or middleware team, building on platforms like MuleSoft or Boomi with architects, application teams and testers.",
+  "dailyDuties": [
+    "Build APIs and integration flows from mapping specs",
+    "Map and transform JSON and XML data between systems",
+    "Connect to REST and SOAP services, databases and queues",
+    "Deploy integrations through the build pipeline",
+    "Fix failed messages and production integration errors",
+    "Write API specs and unit tests for each flow"
+  ],
+  "typicalTitles": [
+    "MuleSoft Developer",
+    "Boomi Developer",
+    "Dell Boomi Developer",
+    "Integration Engineer",
+    "API Integration Developer",
+    "MuleSoft Integration Developer",
+    "Senior MuleSoft Developer",
+    "Middleware Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "mulesoft",
+      "importance": "required",
+      "expectation": "Build and deploy APIs and flows on an integration platform such as MuleSoft or Boomi",
+      "postingShare": null,
+      "oneOf": "integration-platform"
+    },
+    {
+      "skillId": "boomi",
+      "importance": "required",
+      "expectation": "Build and deploy APIs and flows on an integration platform such as MuleSoft or Boomi",
+      "postingShare": null,
+      "oneOf": "integration-platform"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design, build and consume REST APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Consume SOAP services and map XML and JSON payloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query source and target databases while mapping data",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Deploy integrations through Maven and Jenkins or similar pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Deliver integration stories in sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Write custom Java components when the platform falls short",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Use JMS, Kafka or similar queues for async flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "nice_to_have",
+      "expectation": "Secure APIs with OAuth 2.0",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Write OpenAPI or RAML specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep integration code in Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write unit tests for flows and mappings",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "integration-platform",
+      "label": "An integration platform (MuleSoft or Boomi)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

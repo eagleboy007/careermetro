@@ -1,0 +1,109 @@
+{
+  "slug": "salesforce-administrator",
+  "title": "Salesforce Administrator",
+  "summary": "A Salesforce administrator looks after a company's Salesforce system, the customer relationship management (CRM) tool its sales and service teams use, by setting it up through clicks rather than code. You sit between the business users and the developers: you add users and permissions, build reports and simple automations, keep data clean and pass coding work to Salesforce developers.",
+  "dailyDuties": [
+    "Add users and manage profiles, permission sets and roles",
+    "Build reports and dashboards for sales and service leaders",
+    "Create fields, validation rules and Flows from business requests",
+    "Import and clean records with Data Loader",
+    "Test changes in a sandbox and move them to production",
+    "Answer user tickets and run training sessions"
+  ],
+  "typicalTitles": [
+    "Salesforce Admin",
+    "SFDC Administrator",
+    "Salesforce System Administrator",
+    "Senior Salesforce Administrator",
+    "Salesforce Platform Administrator",
+    "CRM Administrator (Salesforce)"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "salesforce-flows",
+      "importance": "required",
+      "expectation": "Configure objects, fields, page layouts, validation rules and Flows without code",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-security-model",
+      "importance": "required",
+      "expectation": "Manage users, profiles, permission sets, roles and sharing rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-data-management",
+      "importance": "required",
+      "expectation": "Import, update and clean records with Data Loader and duplicate rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "required",
+      "expectation": "Build Salesforce reports and dashboards for business teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-clouds",
+      "importance": "required",
+      "expectation": "Know Sales Cloud or Service Cloud processes well",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business requests into configuration changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train users and answer their support tickets",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-apex",
+      "importance": "nice_to_have",
+      "expectation": "Read Apex and write SOQL queries to support developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Test changes with users in a sandbox before release",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check data files before imports",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in sprints with a Salesforce team",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write user guides and release notes",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

@@ -8729,5 +8729,1085 @@
     ],
     "minutes": 60,
     "free": true
+  },
+  {
+    "title": "Introducing SAP ABAP Platform Fundamentals",
+    "url": "https://learning.sap.com/courses/introducing-sap-abap-platform-fundamentals",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-basis-administration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Transport Management System (TMS)",
+    "url": "https://help.sap.com/saphelp_nwes72/helpdata/en/09/88f339db9911d2b41a00609419f767/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-basis-administration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Becoming a Certified Database Administrator: SAP HANA",
+    "url": "https://learning.sap.com/learning-journeys/becoming-a-certified-database-administrator-sap-hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-hana-administration"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Provisioning and Administering Databases in SAP HANA Cloud",
+    "url": "https://learning.sap.com/courses/provisioning-and-administering-databases-in-sap-hana-cloud",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-hana-administration"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "SAP HANA System Replication: Configuration",
+    "url": "https://help.sap.com/docs/SAP_HANA_PLATFORM/4e9b18c116aa42fc84c7dbfd02111aba/8cb9d1c0ddde4e0d9eeec8b53d75d69c.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hana-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Key Technical Topics in a System Conversion to SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/key-technical-topics-in-a-system-conversion-to-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-upgrades-migrations"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "System Conversion to SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/system-conversion-to-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-upgrades-migrations"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Software Update Manager (SUM)",
+    "url": "https://support.sap.com/en/tools/software-logistics-tools/software-update-manager.html",
+    "provider": "SAP Support Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-upgrades-migrations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Implementing Financial Accounting in SAP S/4HANA",
+    "url": "https://learning.sap.com/learning-journeys/implementing-financial-accounting-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fi-configuration"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Outlining the Financial Accounting Overview in SAP S/4HANA",
+    "url": "https://learning.sap.com/learning-journeys/outlining-the-financial-accounting-overview-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fi-configuration"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Configuring Asset Accounting in SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/configuring-asset-accounting-in-sap-s4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fi-configuration"
+    ],
+    "minutes": 1320,
+    "free": true
+  },
+  {
+    "title": "Implementing Management Accounting in SAP S/4HANA",
+    "url": "https://learning.sap.com/learning-journeys/implementing-management-accounting-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-co-configuration"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Cost Center and Internal Order Accounting in SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/cost-center-and-internal-order-accounting-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-co-configuration"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Overhead Cost Controlling basics",
+    "url": "https://learning.sap.com/courses/overhead-cost-controlling-basics",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-co-configuration"
+    ],
+    "minutes": 70,
+    "free": true
+  },
+  {
+    "title": "Financial Accounting (IIT Bombay, Prof. Varadraj Bapat)",
+    "url": "https://nptel.ac.in/courses/110101131",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "financial-accounting"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "GST Portal user manual: creating the GSTR-1 outward supplies return",
+    "url": "https://tutorial.gst.gov.in/userguide/returns/Creation_of_Outward_Supplies_Return_in_GSTR-1.htm",
+    "provider": "GSTN (GST Portal tutorials)",
+    "kind": "docs",
+    "skillIds": [
+      "gst-tds-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "GST frequently asked questions",
+    "url": "https://cbic-gst.gov.in/faq.html",
+    "provider": "CBIC, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "gst-tds-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Tax Deductor Guide (TDS)",
+    "url": "https://www.incometaxindia.gov.in/tax-deductor",
+    "provider": "Income Tax Department, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "gst-tds-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "System Architect mission",
+    "url": "https://academy.pega.com/mission/system-architect/v8",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-platform"
+    ],
+    "minutes": 2070,
+    "free": true
+  },
+  {
+    "title": "Introduction to Pega Platform mission",
+    "url": "https://academy.pega.com/mission/introduction-pega-platform/v6",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-platform"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Case Management Intermediate mission",
+    "url": "https://academy.pega.com/mission/case-management-intermediate/v7",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-case-management"
+    ],
+    "minutes": 255,
+    "free": true
+  },
+  {
+    "title": "Controlling case workflow",
+    "url": "https://academy.pega.com/module/controlling-case-workflow/v3",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-case-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Pega Customer Decision Hub Foundation mission",
+    "url": "https://academy.pega.com/mission/pega-customer-decision-hub-foundation/v11",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-decisioning"
+    ],
+    "minutes": 280,
+    "free": true
+  },
+  {
+    "title": "End-to-end Pega Customer Decision Hub Implementation",
+    "url": "https://academy.pega.com/mission/end-end-pega-customer-decision-hub-implementation/v6",
+    "provider": "Pega Academy",
+    "kind": "practice",
+    "skillIds": [
+      "pega-decisioning"
+    ],
+    "minutes": 525,
+    "free": true
+  },
+  {
+    "title": "Build Great APIs and Integrations with MuleSoft",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/great-integrations-mulesoft",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "mulesoft"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "MuleSoft: Design and Manage APIs with Anypoint Platform",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/drive-success-with-mulesoft-anypoint-platform",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "mulesoft"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Tutorial: Create a Mule app that uses the Database Connector and DataWeave",
+    "url": "https://docs.mulesoft.com/mule-runtime/latest/mule-app-tutorial",
+    "provider": "MuleSoft Documentation",
+    "kind": "practice",
+    "skillIds": [
+      "mulesoft"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Building a Boomi Integration",
+    "url": "https://help.boomi.com/docs/Atomsphere/Integration/Getting%20started/int-First_Boomi_Integration_process_eb8e485d-0d81-4cfb-8a0e-10ddd6fecee9",
+    "provider": "Boomi Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "boomi"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Process building",
+    "url": "https://help.boomi.com/docs/Atomsphere/Integration/Process%20building/c-atm-Process_building_b422a00a-b17b-4ea8-ae01-d04adaf97e16",
+    "provider": "Boomi Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "boomi"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Boomi training and certification (free self-paced courses)",
+    "url": "https://boomi.com/services/training/",
+    "provider": "Boomi",
+    "kind": "course",
+    "skillIds": [
+      "boomi"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SOAP Version 1.2 Part 0: Primer",
+    "url": "https://www.w3.org/TR/soap12-part0/",
+    "provider": "W3C",
+    "kind": "docs",
+    "skillIds": [
+      "soap-xml"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "XSLT introduction",
+    "url": "https://w3schools.com/xml/xsl_intro.asp",
+    "provider": "W3Schools",
+    "kind": "docs",
+    "skillIds": [
+      "soap-xml"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "XPath tutorial",
+    "url": "https://www.w3schools.com/xml/XPath_intro.asp",
+    "provider": "W3Schools",
+    "kind": "docs",
+    "skillIds": [
+      "soap-xml"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is program management?",
+    "url": "https://www.atlassian.com/agile/project-management/program-management",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "program-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Program manager vs. project manager",
+    "url": "https://www.atlassian.com/agile/project-management/program-vs-project-manager",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "program-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Project Management: Planning, Execution, Evaluation and Control (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105167",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "program-management"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Maven Getting Started Guide",
+    "url": "https://maven.apache.org/guides/getting-started/",
+    "provider": "Apache Maven",
+    "kind": "docs",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Gradle tutorial, part 1: initializing the project",
+    "url": "https://docs.gradle.org/current/userguide/part1_gradle_init.html",
+    "provider": "Gradle",
+    "kind": "practice",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 55,
+    "free": true
+  },
+  {
+    "title": "CMake tutorial: start here",
+    "url": "https://cmake.org/cmake-tutorial/",
+    "provider": "Kitware (CMake)",
+    "kind": "docs",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Artifactory repository management",
+    "url": "https://docs.jfrog.com/artifactory/docs/repository-management",
+    "provider": "JFrog Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "artifact-repositories"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Using Nexus Repository",
+    "url": "https://help.sonatype.com/en/using-nexus-repository.html",
+    "provider": "Sonatype",
+    "kind": "docs",
+    "skillIds": [
+      "artifact-repositories"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "JFrog Academy (free self-paced Artifactory courses)",
+    "url": "https://academy.jfrog.com",
+    "provider": "JFrog",
+    "kind": "course",
+    "skillIds": [
+      "artifact-repositories"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Semantic Versioning 2.0.0",
+    "url": "https://semver.org/",
+    "provider": "semver.org",
+    "kind": "docs",
+    "skillIds": [
+      "release-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Branch for release",
+    "url": "https://trunkbaseddevelopment.com/branch-for-release",
+    "provider": "trunkbaseddevelopment.com",
+    "kind": "docs",
+    "skillIds": [
+      "release-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Git Basics: Tagging",
+    "url": "https://git-scm.com/book/en/v2/Git-Basics-Tagging",
+    "provider": "Pro Git (git-scm.com)",
+    "kind": "docs",
+    "skillIds": [
+      "release-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Intro to smart pointers and move semantics",
+    "url": "https://www.learncpp.com/cpp-tutorial/intro-to-smart-pointers-move-semantics",
+    "provider": "LearnCpp.com",
+    "kind": "docs",
+    "skillIds": [
+      "modern-cpp"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "std::unique_ptr reference",
+    "url": "https://en.cppreference.com/cpp/memory/unique_ptr",
+    "provider": "cppreference.com",
+    "kind": "docs",
+    "skillIds": [
+      "modern-cpp"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "C++ Core Guidelines",
+    "url": "https://github.com/isocpp/CppCoreGuidelines",
+    "provider": "Standard C++ Foundation (isocpp)",
+    "kind": "docs",
+    "skillIds": [
+      "modern-cpp"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "POSIX Threads Programming",
+    "url": "https://hpc-tutorials.llnl.gov/posix/",
+    "provider": "Lawrence Livermore National Laboratory",
+    "kind": "docs",
+    "skillIds": [
+      "concurrency-multithreading"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Concurrency support library (C++11 and later)",
+    "url": "https://cppreference.com/cpp/thread",
+    "provider": "cppreference.com",
+    "kind": "docs",
+    "skillIds": [
+      "concurrency-multithreading"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "std::condition_variable",
+    "url": "https://en.cppreference.com/cpp/thread/condition_variable",
+    "provider": "cppreference.com",
+    "kind": "docs",
+    "skillIds": [
+      "concurrency-multithreading"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Rails",
+    "url": "https://guides.rubyonrails.org/getting_started.html",
+    "provider": "Ruby on Rails Guides",
+    "kind": "docs",
+    "skillIds": [
+      "ruby-on-rails"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Full Stack Ruby on Rails path",
+    "url": "https://theodinproject.com/paths/full-stack-ruby-on-rails",
+    "provider": "The Odin Project",
+    "kind": "course",
+    "skillIds": [
+      "ruby-on-rails"
+    ],
+    "minutes": 6000,
+    "free": true
+  },
+  {
+    "title": "Learn Ruby on Rails: full video course",
+    "url": "https://www.freecodecamp.org/news/learn-ruby-on-rails-video-course",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "ruby-on-rails"
+    ],
+    "minutes": 243,
+    "free": true
+  },
+  {
+    "title": "QGIS Training Manual",
+    "url": "https://docs.qgis.org/3.44/en/docs/training_manual/foreword/foreword.html",
+    "provider": "QGIS",
+    "kind": "course",
+    "skillIds": [
+      "gis-platforms"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Geospatial Analysis",
+    "url": "https://www.kaggle.com/learn/geospatial-analysis",
+    "provider": "Kaggle Learn",
+    "kind": "course",
+    "skillIds": [
+      "gis-platforms"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Introduction to GeoPandas",
+    "url": "https://geopandas.org/en/stable/getting_started/introduction.html",
+    "provider": "GeoPandas",
+    "kind": "docs",
+    "skillIds": [
+      "gis-platforms"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Introduction to PostGIS workshop",
+    "url": "https://postgis.net/workshops/postgis-intro",
+    "provider": "PostGIS",
+    "kind": "course",
+    "skillIds": [
+      "postgis-spatial-sql"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "PostGIS manual: Spatial Queries",
+    "url": "https://postgis.net/docs/using_postgis_query.html",
+    "provider": "PostGIS",
+    "kind": "docs",
+    "skillIds": [
+      "postgis-spatial-sql"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "How do I use spatial indexes?",
+    "url": "https://postgis.net/documentation/faq/spatial-indexes/",
+    "provider": "PostGIS",
+    "kind": "docs",
+    "skillIds": [
+      "postgis-spatial-sql"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Leaflet Quick Start Guide",
+    "url": "https://leafletjs.com/examples/quick-start/",
+    "provider": "Leaflet",
+    "kind": "docs",
+    "skillIds": [
+      "web-mapping-libraries"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OpenLayers Quick Start",
+    "url": "https://openlayers.org/doc/quickstart.html",
+    "provider": "OpenLayers",
+    "kind": "docs",
+    "skillIds": [
+      "web-mapping-libraries"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ArcGIS Maps SDK for JavaScript: Display a map",
+    "url": "https://developers.arcgis.com/javascript/latest/tutorials/display-a-map/",
+    "provider": "Esri Developer",
+    "kind": "practice",
+    "skillIds": [
+      "web-mapping-libraries"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "RFC 3261: SIP: Session Initiation Protocol",
+    "url": "https://rfc-editor.org/rfc/rfc3261",
+    "provider": "RFC Editor (IETF)",
+    "kind": "docs",
+    "skillIds": [
+      "voip-sip-sbc"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Session Border Controller basics",
+    "url": "https://transnexus.com/whitepapers/session-border-controller-basics/",
+    "provider": "TransNexus",
+    "kind": "docs",
+    "skillIds": [
+      "voip-sip-sbc"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Cisco Unified Border Element (CUBE) documentation",
+    "url": "https://www.cisco.com/c/en/us/support/unified-communications/unified-border-element/series.html",
+    "provider": "Cisco",
+    "kind": "docs",
+    "skillIds": [
+      "voip-sip-sbc"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Cisco Unified Communications Manager (CallManager) documentation",
+    "url": "https://www.cisco.com/c/en/us/support/unified-communications/unified-communications-manager-callmanager/series.html",
+    "provider": "Cisco",
+    "kind": "docs",
+    "skillIds": [
+      "cisco-collaboration-cucm"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with Webex Calling",
+    "url": "https://help.webex.com/en-us/article/nk1shtj",
+    "provider": "Webex Help Center (Cisco)",
+    "kind": "docs",
+    "skillIds": [
+      "cisco-collaboration-cucm"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Get started with Control Hub",
+    "url": "https://help.webex.com/gyg1bdb",
+    "provider": "Webex Help Center (Cisco)",
+    "kind": "docs",
+    "skillIds": [
+      "cisco-collaboration-cucm"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Plan Direct Routing",
+    "url": "https://learn.microsoft.com/en-us/microsoftteams/direct-routing-plan",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "teams-phone-voice"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "MS-721: Plan and design Teams collaboration communications systems",
+    "url": "https://learn.microsoft.com/en-us/training/paths/plan-configure-teams-voice/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "teams-phone-voice"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "PSTN connectivity options for Teams Phone",
+    "url": "https://learn.microsoft.com/en-us/microsoftteams/pstn-connectivity",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "teams-phone-voice"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Transformers: Fine-tuning",
+    "url": "https://huggingface.co/docs/transformers/training",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "hugging-face-transformers"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Transformers quickstart",
+    "url": "https://huggingface.co/docs/transformers/quicktour",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "hugging-face-transformers"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Token classification (NER) with Transformers",
+    "url": "https://huggingface.co/docs/transformers/tasks/token_classification",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "hugging-face-transformers",
+      "nlp-information-extraction"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Advanced NLP with spaCy",
+    "url": "https://course.spacy.io/en/",
+    "provider": "Explosion (spaCy)",
+    "kind": "course",
+    "skillIds": [
+      "nlp-information-extraction"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "What is token classification?",
+    "url": "https://huggingface.co/tasks/token-classification",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "nlp-information-extraction"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "AI4Bharat transliteration (IndicXlit, Aksharantar)",
+    "url": "https://ai4bharat.iitm.ac.in/areas/xlit",
+    "provider": "AI4Bharat, IIT Madras",
+    "kind": "docs",
+    "skillIds": [
+      "indic-nlp"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IndicBERT v2 model collection",
+    "url": "https://huggingface.co/collections/ai4bharat/indicbert-v2",
+    "provider": "AI4Bharat on Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "indic-nlp"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Indic NLP Library: transliterate package",
+    "url": "https://indic-nlp-library.readthedocs.io/en/latest/indicnlp.transliterate.html",
+    "provider": "Indic NLP Library",
+    "kind": "docs",
+    "skillIds": [
+      "indic-nlp"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Data Security",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/data_security",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-security-model"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Keep data secure in a recruiting app: field-level security, permission sets and sharing",
+    "url": "https://trailhead.salesforce.com/content/learn/projects/keep-data-secure-in-a-recruiting-app/fls-perm-sets-sharing",
+    "provider": "Salesforce Trailhead",
+    "kind": "practice",
+    "skillIds": [
+      "salesforce-security-model"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Data Management (import and export)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/lex_implementation_data_management",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-data-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Duplicate Management",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/sales_admin_duplicate_management",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-data-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Import and Export with Data Management Tools",
+    "url": "https://trailhead.salesforce.com/en/projects/import-and-export-with-data-management-tools",
+    "provider": "Salesforce Trailhead",
+    "kind": "practice",
+    "skillIds": [
+      "salesforce-data-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Volatility 3 documentation",
+    "url": "https://volatility3.readthedocs.io/en/latest/",
+    "provider": "Volatility Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-tool-suites"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FTK Imager",
+    "url": "https://exterro.com/digital-forensics-software/ftk-imager",
+    "provider": "Exterro",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-tool-suites",
+      "forensic-evidence-handling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-101 Rev. 1: Guidelines on Mobile Device Forensics",
+    "url": "https://csrc.nist.gov/pubs/sp/800/101/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "mobile-forensics"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "ALEAPP: Android Logs Events And Protobuf Parser",
+    "url": "https://github.com/abrignoni/ALEAPP",
+    "provider": "ALEAPP (open source)",
+    "kind": "practice",
+    "skillIds": [
+      "mobile-forensics"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "iLEAPP: iOS Logs, Events, And Plists Parser",
+    "url": "https://github.com/abrignoni/iLEAPP",
+    "provider": "iLEAPP (open source)",
+    "kind": "practice",
+    "skillIds": [
+      "mobile-forensics"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SWGDE Best Practices for Digital Evidence Collection",
+    "url": "https://www.swgde.org/documents/published-complete-listing/18-f-002-swgde-best-practices-for-digital-evidence-collection/",
+    "provider": "SWGDE",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-evidence-handling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SWGDE Best Practices for Computer Forensic Acquisitions",
+    "url": "https://www.swgde.org/wp-content/uploads/2024/03/2023-06-15-SWGDE-Best-Practices-for-Computer-Forensic-Acquisitions-17-F-002-2.0.pdf",
+    "provider": "SWGDE",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-evidence-handling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "dbt Semantic Layer",
+    "url": "https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-semantic-layer",
+    "provider": "dbt Labs",
+    "kind": "docs",
+    "skillIds": [
+      "semantic-layer"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Build your metrics (dbt)",
+    "url": "https://docs.getdbt.com/docs/build/build-metrics-intro",
+    "provider": "dbt Labs",
+    "kind": "docs",
+    "skillIds": [
+      "semantic-layer"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Configuring robot_localization (ROS 2)",
+    "url": "https://docs.ros.org/en/rolling/p/robot_localization/configuring_robot_localization.html",
+    "provider": "ROS documentation",
+    "kind": "docs",
+    "skillIds": [
+      "slam-localization"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "slam_toolbox package (ROS Index)",
+    "url": "https://index.ros.org/p/slam_toolbox/",
+    "provider": "ROS Index",
+    "kind": "docs",
+    "skillIds": [
+      "slam-localization"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Nav2 quickstart: navigate a simulated robot",
+    "url": "https://docs.nav2.org/lyrical/getting_started/quickstart/quickstart/",
+    "provider": "Nav2",
+    "kind": "docs",
+    "skillIds": [
+      "robot-navigation-planning"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "navigation2 package (ROS Index)",
+    "url": "https://index.ros.org/p/navigation2/",
+    "provider": "ROS Index",
+    "kind": "docs",
+    "skillIds": [
+      "robot-navigation-planning"
+    ],
+    "minutes": 20,
+    "free": true
   }
 ]

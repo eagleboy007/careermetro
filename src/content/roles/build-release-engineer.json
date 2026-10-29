@@ -1,0 +1,141 @@
+{
+  "slug": "build-release-engineer",
+  "title": "Build and Release Engineer",
+  "summary": "A build and release engineer makes sure code from many developers compiles, passes tests and ships as a versioned release on a fixed schedule. They sit in the engineering productivity or release team, focusing on build systems, CI pipelines, branching and release trains rather than on running cloud infrastructure.",
+  "dailyDuties": [
+    "Fix broken builds and keep the CI pipeline green",
+    "Cut release branches and tag versions on the release calendar",
+    "Maintain build scripts and speed up slow builds",
+    "Publish and clean up artifacts in the artifact repository",
+    "Chair go/no-go checks with development and QA leads",
+    "Automate release steps with Python or shell scripts"
+  ],
+  "typicalTitles": [
+    "Build Engineer",
+    "Software Build Engineer",
+    "Build and Integration Engineer",
+    "SCM Engineer",
+    "Software Configuration Management Engineer",
+    "Release Management Engineer",
+    "Build Automation Engineer",
+    "Release Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Build and maintain CI pipelines in Jenkins, GitLab CI or GitHub Actions",
+      "postingShare": null
+    },
+    {
+      "skillId": "build-tools",
+      "importance": "required",
+      "expectation": "Own build scripts in Maven, Gradle, CMake or similar and keep builds fast",
+      "postingShare": null
+    },
+    {
+      "skillId": "release-management",
+      "importance": "required",
+      "expectation": "Run branching, versioning, tagging and the release calendar",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Manage branches, merges and tags across many repositories",
+      "postingShare": null
+    },
+    {
+      "skillId": "artifact-repositories",
+      "importance": "required",
+      "expectation": "Publish and manage build artifacts in Artifactory or Nexus",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script build and release automation in Python or Bash",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Script build and release automation in Python or Bash",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run and troubleshoot Linux build servers and agents",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Track release items and blockers in Jira",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package builds as container images",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Wire test suites and quality gates into the pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Run build agents on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "software-supply-chain-security",
+      "importance": "nice_to_have",
+      "expectation": "Add dependency scanning and SBOMs to builds",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Agree release dates and go/no-go with development and QA leads",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "scripting-language",
+      "label": "A scripting language (Python or Bash)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-devops-expert",
+      "importance": "optional",
+      "why": "Covers pipelines and release on Azure DevOps"
+    },
+    {
+      "certId": "aws-devops-professional",
+      "importance": "optional",
+      "why": "Covers CI/CD on AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

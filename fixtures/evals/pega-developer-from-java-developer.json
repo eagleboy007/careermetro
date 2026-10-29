@@ -1,0 +1,52 @@
+{
+  "id": "pega-developer-from-java-developer",
+  "roleSlug": "pega-developer",
+  "persona": "Java developer at a lending company who has built a few Pega screens",
+  "resumeText": "Arjun Reddy | Hyderabad | arjun.reddy@example.com\n\nEXPERIENCE\nSoftware Engineer, Deccan Finserv Technologies, Hyderabad (2020 - present)\n- Build Spring Boot services for the loan origination system in Java 11.\n- Write SQL queries and stored procedures on Oracle for loan reports.\n- Built two loan servicing screens in Pega 8.7 with data pages.\n- Work in two-week Scrum sprints with the product owner and testers.\n- Connect the loan system to the credit bureau through REST services.\n\nSKILLS\nPega Case Management, JavaScript, Jenkins\n\nCERTIFICATIONS\nPega Certified System Architect (CSA), 2024\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Build Spring Boot services for the loan origination system in Java 11"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries and stored procedures on Oracle"
+      },
+      {
+        "skillId": "pega-platform",
+        "quote": "Built two loan servicing screens in Pega 8.7"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Work in two-week Scrum sprints"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Connect the loan system to the credit bureau through REST services"
+      },
+      {
+        "skillId": "pega-case-management",
+        "quote": "Pega Case Management"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "pega-case-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "pega-decisioning",
+      "aws",
+      "angular",
+      "docker"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,157 @@
+{
+  "slug": "technical-program-manager",
+  "title": "Technical Program Manager",
+  "summary": "A technical program manager (TPM) leads large engineering efforts that cut across several teams, making sure the work is planned, dependencies are handled and the launch happens on time. They sit between engineering, product and leadership, and need enough technical depth to discuss architecture and risks with engineers.",
+  "dailyDuties": [
+    "Track progress, dependencies and risks across several engineering teams",
+    "Run weekly program reviews and send status updates to leadership",
+    "Work with engineers on technical designs and trade-offs",
+    "Plan milestones and launch dates with product managers",
+    "Remove blockers by escalating to the right owners",
+    "Coordinate release readiness with QA, SRE and support teams"
+  ],
+  "typicalTitles": [
+    "Senior Technical Program Manager",
+    "Technical Program Manager II",
+    "Associate Technical Program Manager",
+    "Engineering Program Manager",
+    "Technical Project Manager",
+    "Program Manager - Engineering",
+    "Staff Technical Program Manager",
+    "Principal Technical Program Manager"
+  ],
+  "experienceBand": {
+    "minYears": 5,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "program-management",
+      "importance": "required",
+      "expectation": "Run programs that span several engineering teams: plans, dependencies, risks and status",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align engineering, product and business leaders on scope and dates",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear status updates and run reviews with leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Understand system architecture well enough to judge technical trade-offs and risks",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run delivery in Scrum or Kanban teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Turn priorities into a sequenced roadmap and milestones",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Track work, blockers and launches in Jira",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Have hands-on software development experience in a mainstream language",
+      "postingShare": null,
+      "oneOf": "main-language"
+    },
+    {
+      "skillId": "scaled-agile",
+      "importance": "nice_to_have",
+      "expectation": "Run PI planning in SAFe programs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull data to track program metrics",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Understand release pipelines and launch gates",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "main-language",
+      "label": "A programming language (C++, C#, Go, Java, JavaScript or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "recommended",
+      "why": "Widely asked for program and project roles in India"
+    },
+    {
+      "certId": "csm",
+      "importance": "optional",
+      "why": "Shows Scrum knowledge"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

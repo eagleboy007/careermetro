@@ -1,0 +1,134 @@
+{
+  "slug": "sap-basis-administrator",
+  "title": "SAP Basis Administrator",
+  "summary": "An SAP Basis administrator keeps a company's SAP systems (the business software that runs finance, sales and supply chain) installed, patched, fast and safe to change. They sit in the IT infrastructure or SAP technology team, often at an IT services company, and work with the database, server and functional SAP teams.",
+  "dailyDuties": [
+    "Import transport requests between development, quality and production systems",
+    "Check system health, background jobs, dumps and HANA backups",
+    "Apply kernel patches and support packages in planned downtime",
+    "Run client copies and system refreshes for test teams",
+    "Work incidents and change requests within agreed SLAs",
+    "Plan upgrades and S/4HANA conversions with the project team"
+  ],
+  "typicalTitles": [
+    "SAP Basis Consultant",
+    "SAP Basis Engineer",
+    "SAP Basis and HANA Administrator",
+    "SAP HANA DBA",
+    "SAP Basis Specialist",
+    "SAP Basis Lead",
+    "SAP NetWeaver Administrator",
+    "Senior SAP Basis Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-basis-administration",
+      "importance": "required",
+      "expectation": "Run SAP systems day to day: transports, client copies, kernel patches and system refreshes",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-hana-administration",
+      "importance": "required",
+      "expectation": "Administer HANA databases: backups, memory, log volumes and system replication",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-upgrades-migrations",
+      "importance": "required",
+      "expectation": "Plan and run upgrades and ECC to S/4HANA conversions with SUM/DMO",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer the server that runs SAP, usually Linux and sometimes Windows",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Administer the server that runs SAP, usually Linux and sometimes Windows",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Set up backups, high availability and disaster recovery for SAP landscapes",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work incidents and change requests under ITIL processes and SLAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain outages and planned downtime clearly to functional teams and clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Support older SAP systems that still run on Oracle",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate routine checks with shell scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Run SAP on AWS or under RISE with SAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Run SAP on Azure",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "server-os",
+      "label": "A server operating system (Linux or Windows Server)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "Useful where SAP runs on AWS"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Useful where SAP runs on Azure"
+    },
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Proves Linux administration skills"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}

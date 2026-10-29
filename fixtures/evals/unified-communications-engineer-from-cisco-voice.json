@@ -1,0 +1,44 @@
+{
+  "id": "unified-communications-engineer-from-cisco-voice",
+  "roleSlug": "unified-communications-engineer",
+  "persona": "Cisco voice support engineer with no Teams Phone work",
+  "resumeText": "Sneha Iyer | Chennai | sneha.iyer@example.com\n\nEXPERIENCE\nVoice Support Engineer, Coromandel Netlink Services, Chennai (2020 - present)\n- Administer Cisco CUCM 12.5 clusters with 4,000 IP phones across 12 sites.\n- Configure SIP trunking between CUCM and Cisco CUBE for PSTN breakout.\n- Configure voice VLANs and QoS policies on Catalyst access switches.\n- Resolve P1 and P2 voice incidents within SLA in the ITSM queue.\n- Troubleshoot NAT, DNS and firewall issues affecting SIP signalling.\n\nSKILLS\nMicrosoft Teams, PowerShell\n\nEDUCATION\nBE Electronics and Communication, Anna University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "cisco-collaboration-cucm",
+        "quote": "Administer Cisco CUCM 12.5 clusters with 4,000 IP phones"
+      },
+      {
+        "skillId": "voip-sip-sbc",
+        "quote": "Configure SIP trunking between CUCM and Cisco CUBE"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Configure voice VLANs and QoS policies"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Resolve P1 and P2 voice incidents within SLA in the ITSM queue"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot NAT, DNS and firewall issues"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "teams-phone-voice",
+      "m365-administration",
+      "python",
+      "virtualization"
+    ]
+  },
+  "reviewedBy": null
+}

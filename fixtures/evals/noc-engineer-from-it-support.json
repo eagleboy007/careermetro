@@ -1,0 +1,51 @@
+{
+  "id": "noc-engineer-from-it-support",
+  "roleSlug": "noc-engineer",
+  "persona": "IT support engineer moving into a NOC role",
+  "resumeText": "Rohan Deshmukh | Pune | rohan.deshmukh@example.com\n\nEXPERIENCE\nIT Support Engineer, Sahyadri InfoServices, Pune (2022 - present)\n- Log and update incidents in ServiceNow following ITIL incident and change processes.\n- Monitor branch links and switches on PRTG and raise alerts to the network team.\n- Troubleshoot DNS, DHCP and TCP/IP issues for 600 users across three offices.\n- Manage Windows Server 2019 domain controllers and group policy for the Pune office.\n- Write daily shift handover notes for the support team.\n\nSKILLS\nVLANs, Linux, Bash\n\nEDUCATION\nBSc Computer Science, Savitribai Phule Pune University, 2021\n\nCERTIFICATIONS\nCCNA (2024)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "itsm",
+        "quote": "Log and update incidents in ServiceNow following ITIL"
+      },
+      {
+        "skillId": "network-monitoring",
+        "quote": "Monitor branch links and switches on PRTG"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot DNS, DHCP and TCP/IP issues"
+      },
+      {
+        "skillId": "windows-server",
+        "quote": "Manage Windows Server 2019 domain controllers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write daily shift handover notes for the support team"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "VLANs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "routing-switching",
+        "status": "weak"
+      },
+      {
+        "skillId": "incident-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "firewall-platforms",
+      "cloud-networking",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

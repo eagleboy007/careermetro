@@ -1,0 +1,59 @@
+{
+  "id": "ruby-on-rails-developer-from-laravel",
+  "roleSlug": "ruby-on-rails-developer",
+  "persona": "Laravel PHP developer moving to Rails",
+  "resumeText": "Aditya Kulkarni | Bengaluru | aditya.k@example.com\n\nEXPERIENCE\nSoftware Engineer, Kaveri Commerce Labs, Bengaluru (2021 - present)\n- Built REST APIs in Laravel for the seller dashboard used by 8,000 merchants.\n- Tuned slow MySQL queries and added indexes for the order reports.\n- Wrote PHPUnit tests and kept coverage above 80 percent.\n- Review pull requests on GitHub and follow a Git branching workflow.\n- Moved two internal admin tools to Ruby on Rails 7 with ActiveRecord models.\n- Demo features to the US client every sprint and answer their questions.\n\nSKILLS\nPHP, Laravel, Ruby, React, Docker, OOP\n\nEDUCATION\nBTech Computer Science, RV College of Engineering, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs in Laravel for the seller dashboard"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Tuned slow MySQL queries and added indexes"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Tuned slow MySQL queries and added indexes"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Wrote PHPUnit tests and kept coverage above 80 percent"
+      },
+      {
+        "skillId": "git",
+        "quote": "follow a Git branching workflow"
+      },
+      {
+        "skillId": "ruby-on-rails",
+        "quote": "Moved two internal admin tools to Ruby on Rails 7"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Demo features to the US client every sprint"
+      },
+      {
+        "skillId": "oop",
+        "quote": "OOP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ruby-on-rails",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "nosql",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

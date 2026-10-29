@@ -42,7 +42,7 @@ export type RoleTracks = z.infer<typeof roleTracks>;
 export const roleTracksFile = z.strictObject({
   reviewed: z.boolean(),
   note: z.string().min(1).max(1000),
-  roles: z.array(roleTracks).max(200),
+  roles: z.array(roleTracks).max(500),
 });
 export type RoleTracksFile = z.infer<typeof roleTracksFile>;
 

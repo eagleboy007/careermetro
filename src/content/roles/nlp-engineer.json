@@ -1,0 +1,133 @@
+{
+  "slug": "nlp-engineer",
+  "title": "NLP Engineer",
+  "summary": "An NLP (natural language processing) engineer builds models that read and understand text, such as tagging support tickets, pulling names and amounts out of documents, or handling Hindi and other Indian languages. You sit in a data science or AI team and own the text models from cleaning the data through training, testing and handing the model to engineers for production.",
+  "dailyDuties": [
+    "Clean and label text data for a new model",
+    "Fine-tune transformer models for classification or entity extraction",
+    "Measure model accuracy and study the errors",
+    "Test models on Indian-language and mixed-language text",
+    "Package models for the engineering team to serve",
+    "Read recent papers and try promising methods"
+  ],
+  "typicalTitles": [
+    "Natural Language Processing Engineer",
+    "NLP Scientist",
+    "NLP Data Scientist",
+    "Applied NLP Engineer",
+    "Computational Linguist",
+    "Text Analytics Engineer",
+    "Indic NLP Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "nlp",
+      "importance": "required",
+      "expectation": "Build text classification, search and tagging systems over real, noisy text",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean Python for data pipelines and model code",
+      "postingShare": null
+    },
+    {
+      "skillId": "pytorch",
+      "importance": "required",
+      "expectation": "Train and debug deep learning models in PyTorch",
+      "postingShare": null
+    },
+    {
+      "skillId": "hugging-face-transformers",
+      "importance": "required",
+      "expectation": "Fine-tune BERT-style transformer models with Hugging Face",
+      "postingShare": null
+    },
+    {
+      "skillId": "nlp-information-extraction",
+      "importance": "required",
+      "expectation": "Extract entities and fields from documents with NER and spaCy-style pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Measure precision, recall and F1 and do error analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-cleaning",
+      "importance": "required",
+      "expectation": "Clean, normalise and tokenise messy, mixed-language text",
+      "postingShare": null
+    },
+    {
+      "skillId": "indic-nlp",
+      "importance": "nice_to_have",
+      "expectation": "Work with Hindi and other Indian languages using Indic models and transliteration",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Use or fine-tune LLMs where they beat smaller models",
+      "postingShare": null
+    },
+    {
+      "skillId": "scikit-learn",
+      "importance": "nice_to_have",
+      "expectation": "Build quick classical baselines",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-annotation",
+      "importance": "nice_to_have",
+      "expectation": "Write labelling guidelines and manage text annotation",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "nice_to_have",
+      "expectation": "Serve models behind an API",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "nice_to_have",
+      "expectation": "Build semantic search with embeddings",
+      "postingShare": null
+    },
+    {
+      "skillId": "intelligent-document-processing",
+      "importance": "nice_to_have",
+      "expectation": "Extract text from scanned documents with OCR",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Shows you can build and run ML systems on Google Cloud"
+    },
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Shows you can build and run ML systems on AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-02"
+}
