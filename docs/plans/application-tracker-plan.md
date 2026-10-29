@@ -233,7 +233,7 @@ Later, after a lawyer's view of the portals' terms: a browser button that reads 
 
 ## Choices made while building (PR 6)
 
-- Migration 0053 carries the weekly email's parts: `job_saves.status_at` (backfilled, then not null with a default), `user_settings.email_off_token` (unique) and `weekly_emails`.
+- Migration 0053 carries the weekly email's parts: `job_saves.status_at` (backfilled, with a default for new rows; left nullable because migrations only expand, and reads fall back to the applied date, then the last change), `user_settings.email_off_token` (unique) and `weekly_emails`.
 - `status_at` moves only when the stage changes: the status menu, the edit sheet, and Departures' Applied and "I didn't apply". A note or a date edit leaves it.
 - The off token is made on the first send rather than when the switch turns on, so a person who never gets an email holds no token. It is replaced each time it turns the email off.
 - The email's links: List-Unsubscribe points to `/api/email/off?t=` (a POST turns it off, RFC 8058). A GET there only redirects to the page `/email/off`, which asks first. Mail scanners can't turn it off by opening the link.
