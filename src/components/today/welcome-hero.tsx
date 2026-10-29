@@ -112,7 +112,7 @@ export function WelcomeHero({
         <ol className="flex flex-col gap-4">
           <Setup n={1} done title="Resume read">
             <small className="text-[0.76rem] text-muted">
-              {tally.skillsFound} skills found, {tally.gaps} gaps, all with evidence
+              {tally.skillsFound} {tally.skillsFound === 1 ? "skill" : "skills"} found, {tally.gaps} {tally.gaps === 1 ? "gap" : "gaps"}, all with evidence
             </small>
           </Setup>
           <Setup n={2} title="Hours a week for learning">

@@ -85,7 +85,14 @@ export const practiceView = z
     /** Names of the person's goals with no questions yet. */
     noQuestions: z.array(z.string().min(1).max(120)).max(60),
     /** Set to one job in My jobs ("Practice on this job's skills"): its still-open goals first, then what only it asks for. */
-    job: z.strictObject({ company: z.string().min(1).max(120), title: z.string().min(1).max(160) }).nullable(),
+    job: z
+      .strictObject({
+        company: z.string().min(1).max(120),
+        title: z.string().min(1).max(160),
+        // Skills only this job asks for that the bank has no questions for yet: named on the banner (T138).
+        skipped: z.array(z.string().min(1).max(120)).max(50),
+      })
+      .nullable(),
   })
   .refine((v) => new Set(v.skills.map((s) => s.skillId)).size === v.skills.length, { message: "a skill is listed once" })
   .refine((v) => v.skills.filter((s) => s.tag === "current").length <= 1, { message: "one current goal at most" });

@@ -6,6 +6,7 @@ import { PageLoading } from "@/components/app/page-loading";
 import { PracticeView } from "@/components/practice/practice-view";
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
+import { skippedText } from "@/lib/mock/interview";
 import { exampleFeedback, examplePractice } from "@/lib/practice/fixtures";
 import { refFromParam } from "@/lib/my-jobs/rules";
 import { practiceFor } from "@/lib/practice/store";
@@ -53,7 +54,7 @@ async function PracticeScreen({ searchParams }: PageProps<"/practice">) {
     <div className="flex flex-col gap-4">
       <Banner>
         {view.job
-          ? `For one job: ${view.job.company}, ${view.job.title}. Its still-open goals first, then what only this job asks for, which never becomes a goal. Practice gets you ready; only proof fills a goal or moves your train.`
+          ? `For one job: ${view.job.company}, ${view.job.title}. Its still-open goals first, then what only this job asks for, which never becomes a goal.${view.job.skipped.length ? ` ${skippedText(view.job.skipped)}` : ""} Practice gets you ready; only proof fills a goal or moves your train.`
           : "Questions for the goals on your line. Practice gets you ready; only proof fills a goal or moves your train."}
       </Banner>
       <PracticeView view={view} onSubmit={submitPracticeAction} onRate={ratePracticeAction} startQuestion={startQuestion} />

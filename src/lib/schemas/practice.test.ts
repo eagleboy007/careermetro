@@ -73,10 +73,10 @@ describe("practice view and trend", () => {
   });
 
   it("can be set to one job in My jobs, with skills only that job asks for", () => {
-    const job = { company: "Zephyr Payments", title: "SOC analyst" };
+    const job = { company: "Zephyr Payments", title: "SOC analyst", skipped: ["KQL"] };
     expect(practiceView.parse({ skills: [{ ...skill, tag: "job" }], left: 10, noQuestions: [], job }).job).toEqual(job);
     expect(practiceView.safeParse({ skills: [skill], left: 10, noQuestions: [] }).success).toBe(false);
-    expect(practiceView.safeParse({ skills: [skill], left: 10, noQuestions: [], job: { company: "", title: "SOC analyst" } }).success).toBe(false);
+    expect(practiceView.safeParse({ skills: [skill], left: 10, noQuestions: [], job: { company: "", title: "SOC analyst", skipped: [] } }).success).toBe(false);
   });
 
   it("has no daily count on Elite (FR-50): left is null", () => {

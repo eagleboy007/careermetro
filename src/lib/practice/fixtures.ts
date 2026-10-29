@@ -31,7 +31,7 @@ export const examplePracticeForJob: PracticeView = practiceView.parse({
   skills: [skill("statistics", "current", []), skill("data-cleaning", "ahead", [2]), skill("python", "job", [])],
   left: 7,
   noQuestions: [],
-  job: { company: "Example Analytics", title: "Data Analyst" },
+  job: { company: "Example Analytics", title: "Data Analyst", skipped: ["Data pipeline orchestration"] },
 });
 
 /** The same person at 0 answers left today, for the design page. */

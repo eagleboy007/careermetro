@@ -250,11 +250,12 @@ export async function practiceFor(userId: string, now = new Date(), db: Db = get
     return [{ skillId: s.skillId, name: skillNames.get(s.skillId) ?? s.skillName, tag: "job", questions: questions.map((q) => ({ id: q.id, question: q.question, lookFor: q.lookFor })), ratings: ratings.get(s.skillId) ?? [] }];
   });
   const shown = new Set([...firsts, ...extras].map((s) => s.skillId));
+  const skipped = prep.only.filter((s) => !questionsBySkill.has(s.skillId) && !goalIds.has(s.skillId)).map((s) => skillNames.get(s.skillId) ?? s.skillName);
   return practiceView.parse({
     skills: [...firsts, ...extras, ...skillsOut.filter((s) => !shown.has(s.skillId))],
     left,
     noQuestions,
-    job: { company: prep.company, title: prep.title },
+    job: { company: prep.company, title: prep.title, skipped },
   });
 }
 
