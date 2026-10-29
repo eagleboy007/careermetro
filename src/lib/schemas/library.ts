@@ -3,6 +3,8 @@ import { cleanSuggestedUrl } from "@/lib/library/links";
 import {
   LIBRARY_KINDS,
   LIBRARY_LANGUAGES,
+  GOAL_CERTIFICATES_MAX,
+  LIBRARY_ITEMS_MAX,
   LIBRARY_MARKS,
   ON_RIDE_MAX,
   RESOURCE_REPORT_REASONS,
@@ -48,7 +50,7 @@ export const libraryGoal = z.object({
   /** Its resources, best first: the path's courses for it, then more from the catalog for the same skill. */
   resourceIds: z.array(z.string().min(1).max(60)).max(8),
   /** Certificates on our list that fill this goal (dev/proof-plan.md). Empty when none does. */
-  certificates: z.array(z.object({ name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) })).max(40),
+  certificates: z.array(z.object({ name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) })).max(GOAL_CERTIFICATES_MAX),
 });
 
 export const libraryView = z
@@ -64,19 +66,19 @@ export const libraryView = z
     /** One card per open goal (not proved, not skipped), in map order. */
     goals: z.array(libraryGoal).max(MAX_GAPS),
     /** The whole healthy catalog, for search and for the goals' resources. */
-    items: z.array(libraryItem).max(3000),
+    items: z.array(libraryItem).max(LIBRARY_ITEMS_MAX),
     /** The courses on today's ride ("On your ride"): the path's, and what the person added (Add to my rides). */
     onRide: z.array(z.string().min(1).max(60)).max(2 + ON_RIDE_MAX),
     /** The person's ride and Path ticks: ride tasks ticked and learn pitstops marked done. We can't see progress on other sites. */
-    finished: z.array(z.string().min(1).max(60)).max(3000),
+    finished: z.array(z.string().min(1).max(60)).max(LIBRARY_ITEMS_MAX),
     /** Saved with the bookmark, newest first (user_resources.saved_at). */
-    saved: z.array(z.string().min(1).max(60)).max(3000).default([]),
+    saved: z.array(z.string().min(1).max(60)).max(LIBRARY_ITEMS_MAX).default([]),
     /** "I finished this" ticked in the details panel (user_resources.finished_at). Finished is these or `finished`. */
-    ticked: z.array(z.string().min(1).max(60)).max(3000).default([]),
+    ticked: z.array(z.string().min(1).max(60)).max(LIBRARY_ITEMS_MAX).default([]),
     /** Added with Add to my rides and not yet finished (user_resources.on_ride_at): the button reads "On your rides". */
     added: z.array(z.string().min(1).max(60)).max(ON_RIDE_MAX).default([]),
     /** Each open goal's own ride courses (its path's first two): on the rides already, so the button reads "On your rides". */
-    rideCourses: z.array(z.string().min(1).max(60)).max(3000).default([]),
+    rideCourses: z.array(z.string().min(1).max(60)).max(LIBRARY_ITEMS_MAX).default([]),
   })
   .superRefine((v, ctx) => {
     const ids = new Set(v.items.map((i) => i.id));

@@ -150,8 +150,9 @@ export const mockBankItem = z.union([
 export type MockBankItem = z.infer<typeof mockBankItem>;
 
 export const mockBankView = z.strictObject({
-  topics: z.array(topic).max(40),
-  items: z.array(mockBankItem).max(400),
+  // A role's open questions and their topics; shared questions file under many roles, so both grow with the bank.
+  topics: z.array(topic).max(300),
+  items: z.array(mockBankItem).max(2000),
 });
 export type MockBankView = z.infer<typeof mockBankView>;
 

@@ -1,7 +1,7 @@
 import { certificatesFor } from "@/lib/proofs/eligible";
 import { addedTaskId, MAX_COURSES, parseAddedTask, rideParts, type RideGoal } from "@/lib/ride/build";
 import { libraryItem, libraryView, type LibraryGoal, type LibraryItem, type LibraryLanguage, type LibraryView, type Ride } from "@/lib/schemas";
-import { ON_RIDE_MAX } from "@/lib/schemas/constants";
+import { GOAL_CERTIFICATES_MAX, ON_RIDE_MAX } from "@/lib/schemas/constants";
 import { clip } from "@/lib/text";
 
 /** Resources on one goal card: the path's courses first, then the catalog's for the same skill. */
@@ -113,7 +113,7 @@ export function buildLibrary(input: LibraryInput): LibraryView {
       learnDone: g.learnDone || (courses.length > 0 && courses.every((id) => input.ticked.has(taskId(g.goalId, id))) && input.ticked.has(`${g.goalId}:practice`)),
       resourceIds,
       certificates: certificatesFor(g.proofSkills ?? [g.skillId])
-        .slice(0, 40)
+        .slice(0, GOAL_CERTIFICATES_MAX)
         .map((c) => ({ name: clip(c.name, 120), issuer: clip(c.issuer, 80) })),
     });
   }
