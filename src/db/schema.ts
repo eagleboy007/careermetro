@@ -1555,6 +1555,7 @@ export const sharedJobHolds = pgTable(
   },
   (t) => [
     index("shared_job_holds_created").on(t.createdAt),
+    index("shared_job_holds_user").on(t.userId),
     check("shared_job_holds_text_length", sql`char_length(${t.text}) <= 12000`),
     check("shared_job_holds_url", sql`${t.url} is null or (${t.url} like 'https://%' and char_length(${t.url}) <= 2000)`),
   ],

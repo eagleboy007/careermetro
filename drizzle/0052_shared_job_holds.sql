@@ -11,4 +11,5 @@ CREATE TABLE "shared_job_holds" (
 --> statement-breakpoint
 ALTER TABLE "shared_job_holds" ADD CONSTRAINT "shared_job_holds_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "shared_job_holds_created" ON "shared_job_holds" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "shared_job_holds_user" ON "shared_job_holds" USING btree ("user_id");--> statement-breakpoint
 ALTER TABLE "shared_job_holds" ENABLE ROW LEVEL SECURITY;

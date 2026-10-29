@@ -8880,6 +8880,21 @@
           "with": {},
           "method": "btree",
           "concurrently": false
+        },
+        "shared_job_holds_user": {
+          "name": "shared_job_holds_user",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
