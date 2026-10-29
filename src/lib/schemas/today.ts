@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MAX_CHOICE_GOALS, USER_STATES } from "./constants";
+import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, USER_STATES } from "./constants";
 import { trackPicker } from "./role-track";
 import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
@@ -41,7 +41,7 @@ export const provePitstop = z.object({
   /** Certificates on our list that fill this goal (dev/proof-plan.md). Empty when none does. */
   certificates: z
     .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
-    .max(40)
+    .max(GOAL_CERTIFICATES_MAX)
     .default([]),
   /** The goal's certificate expired, so it needs a current one to fill the gap again. */
   renew: z.boolean().default(false),

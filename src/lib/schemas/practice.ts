@@ -72,14 +72,15 @@ export const practiceSkill = z.strictObject({
   questions: z
     .array(z.strictObject({ id: z.string().min(1).max(80), question: z.string().min(1).max(300), lookFor: z.string().min(1).max(300) }))
     .min(1)
-    .max(20),
+    .max(100),
   ratings: z.array(practiceConfidence).max(PRACTICE_RATINGS_MAX),
 });
 
 /** The Practice page: the picker's skills, the answers left today, and goals the bank has no questions for yet. */
 export const practiceView = z
   .strictObject({
-    skills: z.array(practiceSkill).max(60),
+    // Each skill once: the person's goals and one job's skills that the bank has questions for, which grows with the bank.
+    skills: z.array(practiceSkill).max(300),
     /** Answers with feedback left today on Free; null on Elite, which has no daily cap (FR-50). */
     left: z.number().int().min(0).max(PRACTICE_DAILY_ANSWERS).nullable(),
     /** Names of the person's goals with no questions yet. */

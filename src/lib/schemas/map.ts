@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MAX_CHOICE_GOALS } from "./constants";
+import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS } from "./constants";
 import { MAX_GAPS } from "./gap";
 import { goalChoice, notForMeOffer } from "./goals";
 import { nearbyLines } from "./nearby";
@@ -31,7 +31,7 @@ export const mapGoal = z.object({
   /** Certificates on our list that fill this goal (dev/proof-plan.md). */
   certificates: z
     .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
-    .max(40)
+    .max(GOAL_CERTIFICATES_MAX)
     .default([]),
   /** Its certificate expired, so it waits for a current one. */
   renew: z.boolean().default(false),
