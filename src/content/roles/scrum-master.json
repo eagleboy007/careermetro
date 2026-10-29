@@ -1,0 +1,114 @@
+{
+  "slug": "scrum-master",
+  "title": "Scrum Master",
+  "summary": "Scrum Masters help a software team plan and deliver work in short cycles called sprints, by running the team's meetings, tracking progress and clearing blockers. They sit inside one or two delivery teams alongside the product owner and do not manage people directly.",
+  "dailyDuties": [
+    "Facilitate daily stand-ups, sprint planning, reviews and retrospectives",
+    "Keep the Jira or Azure DevOps board and backlog up to date",
+    "Track velocity and burndown and share sprint status",
+    "Remove blockers and manage dependencies with other teams",
+    "Coach the team and product owner on Scrum practices",
+    "Report delivery risks to stakeholders"
+  ],
+  "typicalTitles": [
+    "Agile Scrum Master",
+    "SAFe Scrum Master",
+    "Scrum Master - Agile Delivery",
+    "Agile Project Manager",
+    "Agile Delivery Lead",
+    "Iteration Manager"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run sprint planning, daily stand-ups, reviews and retrospectives",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-coaching",
+      "importance": "required",
+      "expectation": "Coach the team and product owner on Scrum practices as a servant leader",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-metrics",
+      "importance": "required",
+      "expectation": "Track velocity, burndown and cycle time and use them to improve delivery",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Keep boards, backlogs and dashboards in Jira or Azure DevOps up to date",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Manage dependencies and keep product, QA and other teams informed",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Facilitate meetings and report sprint status clearly",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Find and remove impediments that block the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "scaled-agile",
+      "importance": "required",
+      "expectation": "Work in a SAFe release train and take part in PI planning",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Understand release pipelines and deployment readiness",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull delivery data with JQL or SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare delivery reports",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "csm",
+      "importance": "recommended",
+      "why": "Scrum Master certification most often named in Indian postings"
+    },
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Helps when the role also covers project delivery"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

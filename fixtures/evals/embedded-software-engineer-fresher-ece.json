@@ -1,0 +1,48 @@
+{
+  "id": "embedded-software-engineer-fresher-ece",
+  "roleSlug": "embedded-software-engineer",
+  "persona": "ECE fresher with a firmware internship",
+  "resumeText": "Arun Prakash | Coimbatore | arun.prakash@example.com\n\nEDUCATION\nBE Electronics and Communication Engineering, Kongu Institute of Technology, 2026, CGPA 8.1\n\nINTERNSHIP\nFirmware Intern, Nilgiri Controls, Coimbatore (Jan 2026 - Jun 2026)\n- Wrote embedded C drivers for a temperature logger on an STM32F103 board.\n- Read sensor data over I2C and sent readings to a PC over UART.\n- Kept the project code on GitHub and raised pull requests for review.\n\nPROJECTS\n- Smart irrigation controller: an ESP32 reads soil moisture and switches a pump relay.\n\nSKILLS\nEmbedded C, STM32, ESP32, FreeRTOS, I2C, UART, SPI\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote embedded C drivers for a temperature logger"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "on an STM32F103 board"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Read sensor data over I2C and sent readings to a PC over UART"
+      },
+      {
+        "skillId": "git",
+        "quote": "Kept the project code on GitHub"
+      },
+      {
+        "skillId": "rtos",
+        "quote": "FreeRTOS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rtos",
+        "status": "weak"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "embedded-linux",
+      "cpp",
+      "python",
+      "unit-testing"
+    ]
+  },
+  "reviewedBy": null
+}

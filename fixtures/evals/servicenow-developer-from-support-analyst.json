@@ -1,0 +1,48 @@
+{
+  "id": "servicenow-developer-from-support-analyst",
+  "roleSlug": "servicenow-developer",
+  "persona": "ServiceNow support analyst moving into development",
+  "resumeText": "Ankit Verma | Noida | ankit.verma@example.com\n\nEXPERIENCE\nServiceNow Support Analyst, Yamuna Tech Services, Noida (2022 - present)\n- Handle incident, problem and change records for 3 clients under ITIL v4 processes.\n- Wrote 15 client scripts and UI policies in JavaScript to make incident forms easier to fill.\n- Built 10 catalog items with variables for laptop and access requests.\n- Present the weekly SLA report to the client's IT manager.\n\nSKILLS\nServiceNow, ITSM, JavaScript, client scripts, Flow Designer\n\nCERTIFICATIONS\nServiceNow Certified System Administrator (2023)\n\nEDUCATION\nBCA, Amity University, Noida, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "itsm",
+        "quote": "under ITIL v4 processes"
+      },
+      {
+        "skillId": "servicenow-scripting",
+        "quote": "Wrote 15 client scripts and UI policies"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "UI policies in JavaScript"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present the weekly SLA report to the client's IT manager"
+      },
+      {
+        "skillId": "servicenow-flow-designer",
+        "quote": "Flow Designer"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "servicenow-flow-designer",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "servicenow-itom",
+      "servicenow-service-portal",
+      "html-css",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,6 +1,24 @@
 {
   "slug": "business-analyst",
   "title": "Business Analyst",
+  "summary": "A business analyst works out what a business needs from a software change and writes it down clearly enough for developers to build. They sit between business teams and the tech team, often in banking or insurance projects, and stay with the change through testing.",
+  "dailyDuties": [
+    "Run requirement workshops and write the BRD or FRD (business and functional requirement documents)",
+    "Write user stories with acceptance criteria and keep the Jira backlog in order",
+    "Draw as-is and to-be process flows",
+    "Pull and check data with basic SQL and Excel",
+    "Join Scrum ceremonies and keep business and tech aligned on scope and dates",
+    "Plan and run user acceptance testing (UAT) with business users",
+    "Send status mails and present progress to senior stakeholders"
+  ],
+  "typicalTitles": [
+    "IT Business Analyst",
+    "Business Systems Analyst",
+    "Functional Analyst",
+    "Functional Consultant",
+    "Requirements Analyst",
+    "Techno-Functional Analyst"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

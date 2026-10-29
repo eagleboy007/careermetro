@@ -1,6 +1,26 @@
 {
   "slug": "digital-marketing-executive",
   "title": "Digital Marketing Executive",
+  "summary": "A digital marketing executive runs a brand's online campaigns on search, social media and email to bring in leads and sales. They sit in a marketing team or agency and report campaign results to a manager or client.",
+  "dailyDuties": [
+    "Set up and optimise Google Ads search campaigns",
+    "Plan and run Meta and LinkedIn campaigns",
+    "Track campaigns in GA4 and Google Tag Manager",
+    "Do keyword research and on-page SEO",
+    "Write ad copy, posts and landing page text",
+    "Test ad creatives and landing pages",
+    "Report campaign numbers in Excel and explain results to a manager or client"
+  ],
+  "typicalTitles": [
+    "Digital Marketing Specialist",
+    "Performance Marketing Executive",
+    "SEO Executive",
+    "SEM Executive",
+    "PPC Executive",
+    "Social Media Executive",
+    "Online Marketing Executive",
+    "Growth Marketing Executive"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 3

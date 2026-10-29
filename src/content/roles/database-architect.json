@@ -1,6 +1,22 @@
 {
   "slug": "database-architect",
   "title": "Database Architect",
+  "summary": "A database architect designs how an organisation stores its data: the schemas, the choice of database and how it scales and recovers. It is a senior role that works with developers, DBAs and data teams, common in banks and large enterprises.",
+  "dailyDuties": [
+    "Design logical and physical data models, including dimensional models",
+    "Choose between relational, NoSQL and managed cloud databases for each use",
+    "Review complex SQL and execution plans and fix slow queries",
+    "Design replication, failover, backups and disaster recovery",
+    "Set roles, encryption, masking and auditing for databases",
+    "Set data ownership, lineage and quality rules",
+    "Explain data architecture trade-offs in design reviews"
+  ],
+  "typicalTitles": [
+    "Data Modeler",
+    "Database Engineer",
+    "Principal Database Engineer",
+    "Database Design Engineer"
+  ],
   "experienceBand": {
     "minYears": 5,
     "maxYears": 12

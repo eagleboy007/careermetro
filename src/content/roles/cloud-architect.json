@@ -1,6 +1,25 @@
 {
   "slug": "cloud-architect",
   "title": "Cloud Architect",
+  "summary": "A cloud architect designs how a company's systems should be set up on a public cloud platform, and sets the rules other teams build within. They are a senior role above cloud and DevOps engineers, agreeing strategy, security, cost and disaster recovery with business and security leaders.",
+  "dailyDuties": [
+    "Design landing zones (the base setup of accounts, networks and guardrails) and reference architectures",
+    "Design hub-and-spoke networks, hybrid links to data centres and private endpoints",
+    "Set Terraform standards and reusable infrastructure-as-code modules",
+    "Assess workloads and plan migration and modernisation waves",
+    "Set availability, backup and disaster recovery targets",
+    "Review cloud cost and push FinOps practices such as tagging and right-sizing",
+    "Agree cloud strategy and security controls with business, security and delivery teams"
+  ],
+  "typicalTitles": [
+    "Cloud Solutions Architect",
+    "Cloud Infrastructure Architect",
+    "Cloud Platform Architect",
+    "AWS Cloud Architect",
+    "Azure Cloud Architect",
+    "GCP Cloud Architect",
+    "Multi-Cloud Architect"
+  ],
   "experienceBand": {
     "minYears": 7,
     "maxYears": 15

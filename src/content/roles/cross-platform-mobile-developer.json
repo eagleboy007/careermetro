@@ -1,6 +1,25 @@
 {
   "slug": "cross-platform-mobile-developer",
   "title": "Mobile Developer (Flutter / React Native)",
+  "summary": "A cross-platform mobile developer builds one app that runs on both Android and iPhone, using Flutter or React Native. They work in a mobile or product team and ship to both the Play Store and the App Store.",
+  "dailyDuties": [
+    "Build screens and features in Flutter or React Native",
+    "Integrate APIs and handle offline states",
+    "Manage app state with Riverpod, Bloc, Provider or Redux",
+    "Write widget or component tests",
+    "Fix native Android and iOS build issues",
+    "Raise pull requests and review teammates' code",
+    "Release builds to both the Play Store and the App Store"
+  ],
+  "typicalTitles": [
+    "Flutter Developer",
+    "Flutter Engineer",
+    "React Native Developer",
+    "React Native Engineer",
+    "Cross-Platform App Developer",
+    "Hybrid Mobile App Developer",
+    "Mobile App Developer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

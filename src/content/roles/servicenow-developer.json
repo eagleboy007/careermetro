@@ -1,0 +1,103 @@
+{
+  "slug": "servicenow-developer",
+  "title": "ServiceNow Developer",
+  "summary": "ServiceNow developers configure and script the ServiceNow platform, which companies use to run IT help desks, requests and other workflows. They usually work in IT services firms or internal IT teams, alongside process owners, admins and testers.",
+  "dailyDuties": [
+    "Write business rules, client scripts and script includes",
+    "Build catalog items and approval flows in Flow Designer",
+    "Configure incident, change and request processes",
+    "Build a REST integration with another tool",
+    "Fix defects raised by users and testers",
+    "Demo changes to process owners"
+  ],
+  "typicalTitles": [
+    "ServiceNow Engineer",
+    "ServiceNow Technical Consultant",
+    "ServiceNow ITSM Developer",
+    "ServiceNow HRSD Developer",
+    "ServiceNow ITOM Developer",
+    "Senior ServiceNow Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "servicenow-scripting",
+      "importance": "required",
+      "expectation": "Write business rules, client scripts, script includes and UI policies with the Glide API",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write clean server-side and client-side JavaScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Configure incident, problem, change and request processes the ITIL way",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-flow-designer",
+      "importance": "required",
+      "expectation": "Automate approvals and tasks with Flow Designer and IntegrationHub",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build REST or SOAP integrations with other tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Gather requirements from process owners and demo changes to them",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-itom",
+      "importance": "nice_to_have",
+      "expectation": "Work with the CMDB, Discovery and MID Servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-service-portal",
+      "importance": "nice_to_have",
+      "expectation": "Build Service Portal pages and widgets",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Style portal widgets",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver stories in sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "nice_to_have",
+      "expectation": "Set up LDAP or SSO sign-in and roles for users",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

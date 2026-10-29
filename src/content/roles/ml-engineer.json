@@ -1,6 +1,23 @@
 {
   "slug": "ml-engineer",
   "title": "Machine Learning Engineer",
+  "summary": "A machine learning engineer turns models into production systems that train, serve predictions and keep working at scale. They sit between data scientists and software engineers, owning the code, deployment and monitoring of models.",
+  "dailyDuties": [
+    "Pull and prepare training data with SQL",
+    "Train and tune models, including neural networks in PyTorch",
+    "Choose evaluation metrics and catch data leakage",
+    "Deploy models behind APIs in containers and monitor them",
+    "Track experiments and automate retraining",
+    "Build retrieval over embeddings and LLM features with evaluation",
+    "Design end-to-end ML systems on a cloud ML stack"
+  ],
+  "typicalTitles": [
+    "AI/ML Engineer",
+    "AI/ML Developer",
+    "Machine Learning Developer",
+    "Deep Learning Engineer",
+    "Applied Machine Learning Engineer"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 6

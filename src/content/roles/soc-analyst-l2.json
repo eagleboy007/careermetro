@@ -1,6 +1,24 @@
 {
   "slug": "soc-analyst-l2",
   "title": "SOC Analyst (L2) / Incident Responder",
+  "summary": "An L2 SOC analyst handles the security alerts that first-level analysts escalate, investigating them deeply and leading the response. They sit in the SOC (security operations centre), often on shifts, between L1 analysts and the SOC lead.",
+  "dailyDuties": [
+    "Investigate escalated alerts and write complex SIEM searches",
+    "Write detection rules and tune noisy alerts",
+    "Lead containment and eradication and write the incident report",
+    "Hunt for attacker techniques across logs, endpoints and network data",
+    "Enrich indicators with threat feeds and isolate hosts with EDR",
+    "Build or improve SOAR automation playbooks",
+    "Brief stakeholders during an incident"
+  ],
+  "typicalTitles": [
+    "Senior SOC Analyst",
+    "Security Operations Analyst",
+    "Cyber Defense Analyst",
+    "SIEM Analyst",
+    "Detection Engineer",
+    "Threat Hunter"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 5

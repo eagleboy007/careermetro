@@ -1,0 +1,116 @@
+{
+  "slug": "technical-writer",
+  "title": "Technical Writer",
+  "summary": "Technical writers explain how software works to its users and developers, through user guides, help articles, release notes and API references. They sit in product or engineering teams and gather information from developers, product managers and testers.",
+  "dailyDuties": [
+    "Interview developers and product managers about new features",
+    "Write and update user guides and help articles",
+    "Document APIs from OpenAPI or Swagger specs",
+    "Prepare release notes for each release",
+    "Review docs pull requests and fix formatting in Markdown or XML",
+    "Keep content consistent with the style guide"
+  ],
+  "typicalTitles": [
+    "Associate Technical Writer",
+    "Senior Technical Writer",
+    "Documentation Specialist",
+    "API Documentation Writer",
+    "Information Developer",
+    "Content Developer - Technical Documentation"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "technical-writing",
+      "importance": "required",
+      "expectation": "Write user guides, how-to articles, release notes and online help for software",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-documentation",
+      "importance": "required",
+      "expectation": "Document APIs from OpenAPI or Swagger specs and check them with test calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "docs-as-code",
+      "importance": "required",
+      "expectation": "Author in Markdown with a static site generator, or in DITA with a tool like MadCap Flare",
+      "postingShare": null,
+      "oneOf": "authoring-toolchain"
+    },
+    {
+      "skillId": "structured-authoring",
+      "importance": "required",
+      "expectation": "Author in Markdown with a static site generator, or in DITA with a tool like MadCap Flare",
+      "postingShare": null,
+      "oneOf": "authoring-toolchain"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep docs in Git and work through pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Edit HTML or XML source and fix formatting",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain technical features in plain, consistent language that follows a style guide",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Interview developers, product managers and QA to gather and verify content",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "nice_to_have",
+      "expectation": "Try endpoints in Postman or cURL",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Plan docs work inside sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Track docs tasks in Jira",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Read code samples and script small docs tasks",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "authoring-toolchain",
+      "label": "An authoring toolchain (docs-as-code or DITA/MadCap Flare)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

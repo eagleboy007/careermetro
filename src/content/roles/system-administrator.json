@@ -1,6 +1,26 @@
 {
   "slug": "system-administrator",
   "title": "System Administrator",
+  "summary": "A system administrator keeps a company's servers, user accounts and core IT services running, patched and backed up. They sit in the IT operations or infrastructure team and handle requests and incidents through ITIL processes.",
+  "dailyDuties": [
+    "Administer Linux and Windows servers, services and storage",
+    "Manage Active Directory users, groups and Group Policy",
+    "Run virtual machines on VMware vSphere or Hyper-V",
+    "Patch servers on schedule and close scan findings",
+    "Run backups and test restores",
+    "Handle incidents, requests and changes through ITIL processes",
+    "Automate routine tasks with Bash or PowerShell and write runbooks"
+  ],
+  "typicalTitles": [
+    "Linux Administrator",
+    "Windows Server Administrator",
+    "Wintel Engineer",
+    "Server Administrator",
+    "IT Administrator",
+    "VMware Administrator",
+    "Systems Engineer",
+    "Infrastructure Support Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 6

@@ -1,6 +1,24 @@
 {
   "slug": "data-analyst",
   "title": "Data Analyst",
+  "summary": "A data analyst pulls business data, cleans it and turns it into dashboards and findings that help managers decide. They sit in a business, product or analytics team and answer questions such as why sales dropped or which customers stay.",
+  "dailyDuties": [
+    "Write SQL to pull data from business tables",
+    "Clean data and fix duplicates, gaps and inconsistent formats",
+    "Analyse data in Excel or Google Sheets with pivot tables and lookups",
+    "Build dashboards in Power BI, Tableau or Looker",
+    "Use Python when a spreadsheet is not enough",
+    "Read A/B test results and basic statistics",
+    "Present findings as a short story with a clear recommendation"
+  ],
+  "typicalTitles": [
+    "MIS Analyst",
+    "Reporting Analyst",
+    "Analytics Associate",
+    "Product Analyst",
+    "Insights Analyst",
+    "Business Data Analyst"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 4

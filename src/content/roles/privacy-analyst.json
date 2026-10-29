@@ -1,6 +1,24 @@
 {
   "slug": "privacy-analyst",
   "title": "Data Protection / Privacy Analyst",
+  "summary": "A privacy analyst makes sure a company collects and uses personal data lawfully under India's DPDP Act 2023 and laws such as GDPR. They sit in a legal, risk or security team and work with product teams on consent, data flows and breaches.",
+  "dailyDuties": [
+    "Apply the DPDP Act and GDPR to real processing activities",
+    "Run DPIAs (data protection impact assessments) and keep records of processing",
+    "Manage consent and map where personal data flows",
+    "Review processors and data processing agreements",
+    "Write privacy notices and internal policies",
+    "Assess personal data breaches and notify the Data Protection Board, CERT-In and users on time",
+    "Explain privacy duties to product and legal teams"
+  ],
+  "typicalTitles": [
+    "Privacy Specialist",
+    "Privacy Consultant",
+    "Privacy Compliance Analyst",
+    "Data Protection Associate",
+    "DPDP Compliance Analyst",
+    "GDPR Analyst"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

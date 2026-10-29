@@ -1,0 +1,51 @@
+{
+  "id": "scrum-master-team-lead-developer",
+  "roleSlug": "scrum-master",
+  "persona": "Senior developer who has run Scrum for their team, moving into a full-time Scrum Master role",
+  "resumeText": "Meera Joshi | Bengaluru | meera.joshi@example.com\n\nEXPERIENCE\nSenior Software Engineer, Ulsoor Retail Tech, Bengaluru (2019 - present)\n- Ran daily stand-ups, sprint planning and retrospectives for a team of 8 for the last two years.\n- Maintain the team's Jira board and share sprint velocity in each sprint review.\n- Chase blockers with other teams so stories close within the sprint.\n- Work with product, design and QA leads to plan monthly releases.\n- Build checkout APIs in Java and Spring Boot.\n\nEDUCATION\nBE Computer Science, RV College of Engineering, 2019\n\nCERTIFICATIONS\nCertified ScrumMaster (CSM), Scrum Alliance, 2025\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "agile-scrum",
+        "quote": "Ran daily stand-ups, sprint planning and retrospectives for a team of 8"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Maintain the team's Jira board"
+      },
+      {
+        "skillId": "agile-metrics",
+        "quote": "share sprint velocity in each sprint review"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Chase blockers with other teams so stories close within the sprint"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Work with product, design and QA leads to plan monthly releases"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "agile-coaching",
+        "status": "missing"
+      },
+      {
+        "skillId": "scaled-agile",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "scaled-agile",
+      "people-management",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

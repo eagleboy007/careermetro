@@ -79,16 +79,25 @@ export const ROLE_TITLES = {
   "iam-engineer": /^(?=.*\b(engineer|analyst|developer|specialist|consultant|administrator|admin)\b).*\b(iam|idam|identity (and |& )?access( management)?|identity (governance|management|security)|access management|sailpoint|saviynt|okta|cyberark|ping ?identity|privileged access( management)?|pam)\b/i,
   "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit)\b/i,
   "penetration-tester": /\b(penetration test(er|ing)?|pen ?test(er|ing)?|offensive security|red team)\b/i,
+  // After the penetration testing rule, so a "VAPT" pen tester title stays there.
+  "vulnerability-management-analyst": /\b(vulnerability (management|analyst|engineer|specialist)|vapt analyst|qualys (analyst|engineer)|cyber hygiene)\b/i,
   "appsec-engineer": /\b(appsec|application security|product security)\b|\bsoftware (engineer|developer)\b.*\bsecurity\b/i,
   "soc-lead": /\b(soc|security operations cent(er|re)) (lead|manager)\b|\b(lead|manager),? soc\b/i,
   "soc-analyst-l2": /\b(soc|security) analyst,? (l2|ii|2|level ?2)\b|\bl2 soc\b/i,
+  // Before the broad security rule, which reads "threat" as any security title ("Threat Hunter" stays there).
+  "threat-intelligence-analyst": /^(?=.*\b(analyst|engineer|specialist|researcher|consultant)\b).*\b(threat intel(ligence)?|cti|threat research|dark web)\b/i,
   "incident-response-analyst": /\b(incident respon(se|der)s?|dfir|digital forensics?|cyber forensics?|forensic (analyst|investigator|examiner|specialist))\b/i,
   "cyber-security-analyst": /\b(security (analyst|engineer|operations|specialist)|soc analyst|cyber ?security|threat|detection engineer|blue team)\b/i,
   // After the security rules, so "Network Security Engineer" stays a security title.
   "network-engineer": /\b(network (automation |operations |support |infrastructure |implementation )?(engineer|administrator|admin|specialist|consultant|analyst)|noc (engineer|analyst|specialist)|(routing (and|&) switching|lan|wan|sd-?wan) (engineer|specialist))\b/i,
   "system-administrator": /\b(sys ?admin|systems? (administrator|admin)|(it )?server (administrator|admin)|(linux|unix|windows|wintel|vmware|active directory)( server| system| systems)? (administrator|admin|engineer|support engineer))\b/i,
+  "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician)\b/i,
+  // A product support title; "Cloud Support Engineer" stays a cloud one and "Database Support Engineer" a DBA one.
+  "technical-support-engineer": /\b(technical|tech|product|customer|saas|application|l[123]) support (engineer|specialist|associate|analyst)\b|\bcustomer success engineer\b/i,
   "database-administrator": /\b(database (administrator|admin|support engineer)|dba|(sql server|oracle|mysql|postgres(ql)?|mongodb|db2) (database administrator|administrator|admin))\b/i,
-  "database-architect": /\b(database (architect|engineer|reliability)|data architect|data modeler)\b/i,
+  // A data architect designs the whole data platform; a database architect stays with database design.
+  "data-architect": /\b(data|data platform|lakehouse) architect\b/i,
+  "database-architect": /\b(database (architect|engineer|reliability)|data modeler)\b/i,
   "data-engineer": /\b(data engineer|big data engineer|etl (engineer|developer)|analytics engineer|data platform engineer)\b|\bsoftware (engineer|developer)\b.*\bdata\b/i,
   "mlops-engineer": /\b(ml[- ]?ops|llm[- ]?ops|machine learning operations)\b.*\b(engineer|developer|specialist)\b|\b(ml|machine learning|ai) (platform|infrastructure|infra) engineer\b|\bsoftware (engineer|developer)\b.*\b(ml[- ]?ops|llm[- ]?ops)\b/i,
   // A generative AI title; "AI/ML Engineer" and "ML/AI Engineer" stay machine learning ones.
@@ -99,33 +108,47 @@ export const ROLE_TITLES = {
   "data-analyst": /\b(data|analytics|bi|business intelligence|product|insights|reporting) analyst\b/i,
   "business-analyst": /\bbusiness (systems )?analyst\b/i,
   // A manual testing title, never an automation one, before the mobile and front-end rules ("Mobile Manual Tester").
+  // Before the manual and automation test rules, which would read "QA" or "Test" in it.
+  "performance-test-engineer": /^(?!.*\bmarket).*\b(performance|load|stress|non-functional|nft)\b.*\b(test(er|ing)?|engineer|consultant)\b/i,
   "manual-test-engineer": /^(?!.*\b(automation|sdet|selenium)\b).*(\bmanual\b.*\b(test(er|ers|ing)?|qa|quality)\b|\b(test(er|ing)?|qa|quality)\b.*\bmanual\b|\b(software|functional|manual|qa) tester\b)/i,
+  // Platform developer titles before the front-end and back-end rules that would read "Lightning" or "Backend" in them.
+  "salesforce-developer": /\b(salesforce|sfdc)\b.*\b(developer|engineer|technical consultant)\b|\b(apex|salesforce lightning) developer\b/i,
+  "servicenow-developer": /\bservicenow\b.*\b(developer|engineer|technical consultant)\b/i,
+  "sap-abap-developer": /^(?=.*\b(developer|consultant|engineer|lead|programmer)\b).*\babap\b|\bsap technical consultant\b/i,
+  // Never a test or validation title: those stay with hardware testing, which no role covers.
+  "embedded-software-engineer": /^(?!.*\b(test|tester|testing|validation|qa)\b).*\b(embedded|firmware)\b.*\b(engineer|developer|programmer)\b/i,
   "android-developer": /\bandroid\b.*\b(engineer|developer)\b|\b(engineer|developer)\b.*\bandroid\b/i,
   "ios-developer": /\bios\b.*\b(engineer|developer)\b|\b(engineer|developer)\b.*\bios\b/i,
   "cross-platform-mobile-developer": /\b(react native|flutter|mobile( app)?)\b.*\b(engineer|developer)\b/i,
   // Not a test, front-end, mobile, ML, data, security, cloud or infrastructure title ("Senior Software Engineer, Data"):\n  // the later rules catch those.
   "senior-backend-engineer": /\b(senior|sr\.?|lead) (software|back[- ]?end|java|python|golang|go|node(\.?js)?|server[- ]side) (engineer|developer)\b(?!.*\b(test|qa|sdet|front[- ]?end|ui|mobile|android|ios|full[- ]?stack|machine learning|ml|ai|data|security|infra(structure)?|platform|cloud|sre|site reliability|devops)\b)|^(?!.*\b(test|qa)\b).*\b(software (development )?engineer|sde),? (iii|3)\b/i,
   "python-developer": /^(?!.*\b(full[- ]?stack|test|tester|testing|qa|sdet|automation)\b).*\b(python|django|flask|fastapi)\b.*\b(engineer|developer|programmer)\b/i,
+  "nodejs-developer": /^(?!.*\b(full[- ]?stack|mern|mean|test|tester|testing|qa|sdet|automation)\b)(?=.*\b(engineer|developer|programmer)\b).*\b(node(\.?js)?|nest\.?js)\b/i,
   "dotnet-developer": /^(?!.*\b(full[- ]?stack|test|tester|testing|qa|sdet)\b)(?=.*\b(engineer|developer|programmer|lead)\b).*(?<![\w.])(\.net|dot ?net|asp\.net|c#|vb\.net)(?![\w#])/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
   "frontend-developer": /\b(front[- ]?end|ui|react|web)\b.*\b(engineer|developer)\b|\b(engineer|developer)\b.*\b(front[- ]?end|react)\b/i,
   "full-stack-developer": /\bfull[- ]?stack\b/i,
+  "scrum-master": /\b(scrum master|agile (coach|delivery lead|project manager)|iteration manager)\b/i,
   "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager)\b/i,
   "senior-data-scientist": /\b(senior|sr\.?|lead) (data|applied|ml|machine learning) scientist\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist)\b/i,
   "product-manager": /\b(product manager|product owner|associate product manager)\b/i,
   "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience) designer\b|\bux (researcher|writer)\b/i,
+  // After the designer rule, which keeps "UX Writer".
+  "technical-writer": /\b(technical|api|documentation|docs) (writer|author|editor)\b|\bdocumentation (specialist|engineer|lead)\b|\binformation developer\b|\bcontent developer\b.*\btechnical\b/i,
   "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b/i,
   "site-reliability-engineer": /\b(site reliability|sre)\b/i,
   "cloud-architect": /\b(cloud( solutions?| infrastructure| platform)? architect|(aws|azure|gcp|google cloud|multi-?cloud|hybrid cloud)( cloud)?( solutions?)? architect)\b/i,
   "solutions-architect": /\b(solutions?|technical|software|application|integration) architect\b/i,
   "cloud-engineer": /\b(cloud( solutions?)? (engineer|consultant|administrator|developer|operations|ops|support engineer)|(aws|azure|gcp|google cloud)( solutions?)? (engineer|consultant|administrator|developer))\b|\bsoftware (engineer|developer)\b.*\bcloud\b/i,
-  "devops-engineer": /\b(devops|devsecops|platform engineer|infrastructure engineer)\b|\bsoftware (engineer|developer)\b.*\b(infra(structure)?|platform)\b/i,
+  // A platform title before DevOps, never a DevOps or reliability one; "ML Platform Engineer" is MLOps (above).
+  "platform-engineer": /^(?!.*\b(devops|devsecops|reliability|sre)\b).*(\bplatform (engineer|engineering|developer)\b|\b(engineer|developer)\b.*\bplatform\b)/i,
+  "devops-engineer": /\b(devops|devsecops|infrastructure engineer)\b|\bsoftware (engineer|developer)\b.*\binfra(structure)?\b/i,
   // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search) (specialist|executive|manager|associate)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
@@ -136,7 +159,7 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
     if (!re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
-    if ((slug === "qa-automation-engineer" || slug === "manual-test-engineer") && NOT_SOFTWARE.test(title)) continue;
+    if ((slug === "qa-automation-engineer" || slug === "manual-test-engineer" || slug === "performance-test-engineer") && NOT_SOFTWARE.test(title)) continue;
     if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text)) continue;
     return slug;
   }

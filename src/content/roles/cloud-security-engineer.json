@@ -1,6 +1,24 @@
 {
   "slug": "cloud-security-engineer",
   "title": "Cloud Security Engineer",
+  "summary": "A cloud security engineer keeps a company's cloud accounts, networks and workloads safe from misconfiguration and attack. They sit in the security team and work with cloud and DevOps engineers, adding guardrails to how infrastructure is built.",
+  "dailyDuties": [
+    "Review cloud IAM and remove excess permissions",
+    "Find and fix misconfigurations flagged by a CSPM tool (cloud security posture management)",
+    "Review Terraform and add security guardrails to infrastructure as code",
+    "Scan IaC and container images in pipelines",
+    "Secure Kubernetes clusters, VPCs, security groups and private endpoints",
+    "Investigate cloud security incidents",
+    "Automate security checks with Python scripts"
+  ],
+  "typicalTitles": [
+    "Cloud Security Analyst",
+    "Cloud Security Specialist",
+    "Cloud Security Consultant",
+    "AWS Security Engineer",
+    "Azure Security Engineer",
+    "CSPM Engineer"
+  ],
   "experienceBand": {
     "minYears": 3,
     "maxYears": 8

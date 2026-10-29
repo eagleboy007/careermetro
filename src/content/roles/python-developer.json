@@ -1,6 +1,24 @@
 {
   "slug": "python-developer",
   "title": "Python Developer",
+  "summary": "A Python developer builds web back ends, APIs and scripts in Python, usually with Django, Flask or FastAPI. They work in product or IT services teams and handle the server code and database behind an app.",
+  "dailyDuties": [
+    "Build web back ends with Django, Flask or FastAPI",
+    "Design and build REST APIs",
+    "Model tables with Django ORM or SQLAlchemy and write SQL",
+    "Write tests with pytest or unittest",
+    "Run services in Docker on Linux servers",
+    "Raise pull requests and review teammates' code",
+    "Deploy services to a cloud such as AWS"
+  ],
+  "typicalTitles": [
+    "Django Developer",
+    "Flask Developer",
+    "FastAPI Developer",
+    "Python Backend Developer",
+    "Python Software Engineer",
+    "Python Web Developer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

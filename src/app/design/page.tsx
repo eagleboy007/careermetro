@@ -33,6 +33,7 @@ import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
 import { PostingShareBar } from "@/components/roles/posting-share-bar";
 import { RoleCard } from "@/components/roles/role-card";
+import { RoleDay } from "@/components/roles/role-day";
 import { RoleSkillList } from "@/components/roles/role-skill-list";
 import { SiteHeader } from "@/components/site/site-header";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -369,6 +370,8 @@ const exampleCerts: RoleCertificationView[] = [
 const exampleRole: RoleView = {
   slug: "data-analyst",
   title: "Data Analyst",
+  summary: "A data analyst turns a company's data into answers for the people who run it, usually in a business or analytics team.",
+  dailyDuties: ["Write SQL to pull and join data", "Clean messy spreadsheets", "Build and update dashboards", "Answer questions from sales and finance", "Check the numbers before they go out"],
   experience: "Up to 3 years",
   required: exampleRoleSkills,
   niceToHave: [],
@@ -1453,6 +1456,7 @@ export default function DesignPage() {
           <PostingShareBar share={0.2} />
           <PostingShareBar share={null} />
         </div>
+        <RoleDay duties={exampleRole.dailyDuties} />
         <RoleSkillList skills={exampleRoleSkills} />
         <CertificationList certifications={exampleCerts} />
         <CertificationList certifications={[]} />

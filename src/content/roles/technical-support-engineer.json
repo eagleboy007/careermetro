@@ -1,0 +1,127 @@
+{
+  "slug": "technical-support-engineer",
+  "title": "Technical Support Engineer (Product/SaaS)",
+  "summary": "Technical support engineers help a software company's customers when the product does not work as expected, by reproducing the problem, finding the cause and guiding the fix. They sit in the customer support team between customers and the engineering team, and often work in shifts that match customer time zones.",
+  "dailyDuties": [
+    "Respond to and resolve customer tickets within SLA",
+    "Reproduce reported issues in a test account of the product",
+    "Run SQL queries and read API logs to find the root cause",
+    "Escalate confirmed bugs to engineering in Jira with steps to reproduce",
+    "Join calls with customers to debug integrations",
+    "Write and update knowledge base articles"
+  ],
+  "typicalTitles": [
+    "Product Support Engineer",
+    "Customer Support Engineer",
+    "Application Support Engineer",
+    "L2 Support Engineer",
+    "SaaS Support Engineer",
+    "Associate Technical Support Engineer",
+    "Customer Success Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Reproduce customer issues in the product, find the root cause and suggest a fix or workaround",
+      "postingShare": null
+    },
+    {
+      "skillId": "support-ticketing-tools",
+      "importance": "required",
+      "expectation": "Own customer tickets in Zendesk, Freshdesk or a similar tool and meet response SLAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL queries to check customer data and investigate data issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Read API requests, responses, logs and HTTP status codes to debug integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Understand DNS, HTTP and network basics behind connection problems",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Escalate confirmed bugs to engineering in Jira with clear reproduction steps",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear replies and knowledge base articles for customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Narrow down unclear problems methodically under time pressure",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "nice_to_have",
+      "expectation": "Send test API calls with Postman or cURL",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Read server logs and run basic commands",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script small checks and support automations",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Inspect web pages with browser developer tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Understand how the product runs on the cloud",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "Basic cloud vocabulary for support on cloud-hosted products"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basic cloud vocabulary for products hosted on Azure"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

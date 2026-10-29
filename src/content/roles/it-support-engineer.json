@@ -1,0 +1,122 @@
+{
+  "slug": "it-support-engineer",
+  "title": "IT Support Engineer (Desktop Support)",
+  "summary": "IT support engineers keep staff laptops, accounts, email and office networks working, and fix problems raised through a ticket queue or at the desk. They sit in the IT service desk or end-user computing team and pass harder issues to server, network or security teams.",
+  "dailyDuties": [
+    "Pick up and close tickets in the service desk queue within SLA",
+    "Fix laptop, desktop and printer problems for staff",
+    "Reset passwords and manage user accounts in Active Directory",
+    "Set up mailboxes, Teams and OneDrive for new joiners",
+    "Prepare and hand over laptops for onboarding and collect them at exit",
+    "Troubleshoot Wi-Fi, LAN and VPN connection issues",
+    "Escalate unresolved issues to L2 or L3 teams with clear notes"
+  ],
+  "typicalTitles": [
+    "Desktop Support Engineer",
+    "Service Desk Engineer",
+    "IT Helpdesk Engineer",
+    "End User Computing (EUC) Engineer",
+    "L1 Desktop Support Engineer",
+    "IT Support Specialist",
+    "Field Support Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "desktop-support",
+      "importance": "required",
+      "expectation": "Fix laptop, desktop, printer and operating system problems for staff",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Create users, reset passwords and manage groups in Active Directory or Entra ID",
+      "postingShare": null
+    },
+    {
+      "skillId": "m365-administration",
+      "importance": "required",
+      "expectation": "Set up mailboxes, Teams and OneDrive in Microsoft 365 or Google Workspace",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Troubleshoot Wi-Fi, LAN, VPN, DNS and DHCP issues on user devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Log, update and close tickets within SLA in a service desk tool such as ServiceNow",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain fixes clearly to non-technical staff in person, on calls and in tickets",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Work through a fault step by step and escalate to L2 or L3 with clear notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-management",
+      "importance": "nice_to_have",
+      "expectation": "Enrol and patch devices with Intune, SCCM or Jamf",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "nice_to_have",
+      "expectation": "Apply group policies and handle basic server tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Automate routine account and device tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Check antivirus or EDR alerts on user machines",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Support users on Citrix or VMware virtual desktops",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Proves the networking basics used daily in desktop support"
+    },
+    {
+      "certId": "ccna",
+      "importance": "optional",
+      "why": "Useful for support engineers moving towards network roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

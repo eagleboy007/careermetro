@@ -1,6 +1,24 @@
 {
   "slug": "site-reliability-engineer",
   "title": "Site Reliability Engineer (SRE)",
+  "summary": "A site reliability engineer keeps production services fast and available, using software engineering to run operations. They sit in a platform or infrastructure team, set reliability targets called SLOs (service level objectives) and take part in on-call.",
+  "dailyDuties": [
+    "Set SLOs and error budgets and act on them",
+    "Instrument services with logs, metrics and traces",
+    "Take on-call shifts and write blameless postmortems",
+    "Operate production Kubernetes and debug performance at the OS level",
+    "Write tooling in Go or Python",
+    "Build safe deploys with canaries and rollbacks",
+    "Plan failover and disaster recovery"
+  ],
+  "typicalTitles": [
+    "Production Engineer",
+    "Reliability Engineer",
+    "Systems Reliability Engineer",
+    "Infrastructure Reliability Engineer",
+    "Platform Reliability Engineer",
+    "Observability Engineer"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 7

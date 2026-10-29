@@ -1,6 +1,25 @@
 {
   "slug": "ai-engineer",
   "title": "AI Engineer (Generative AI)",
+  "summary": "An AI engineer builds product features on top of large language models (LLMs), the models behind chat assistants. They sit in a product or platform engineering team and turn a model into a reliable feature, using retrieval (RAG, where the model looks up your own documents before answering), tools and checks on answer quality.",
+  "dailyDuties": [
+    "Write and refine prompts for LLM features",
+    "Build RAG pipelines that chunk documents, create embeddings and load them into a vector database",
+    "Build agents that call tools and internal APIs",
+    "Run evaluation sets to measure answer quality and catch hallucinations",
+    "Expose LLM features as APIs, often with FastAPI, and ship them in containers to the cloud",
+    "Fine-tune or host an open model when prompting is not enough",
+    "Review teammates' code in shared repositories"
+  ],
+  "typicalTitles": [
+    "Generative AI Engineer",
+    "GenAI Developer",
+    "LLM Engineer",
+    "Applied AI Engineer",
+    "Prompt Engineer",
+    "Conversational AI Engineer",
+    "AI Application Developer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 6

@@ -1,6 +1,24 @@
 {
   "slug": "software-engineer",
   "title": "Software Engineer",
+  "summary": "A software engineer writes, tests and maintains code for a product or service in one main language such as Java, Python or C++. It is the main entry route into tech in India, working in a team under senior engineers with code review and stand-ups.",
+  "dailyDuties": [
+    "Write and debug code for assigned features in one main language",
+    "Write unit tests for your own code",
+    "Build or call REST APIs and handle errors",
+    "Write SQL queries and design simple tables",
+    "Raise pull requests and respond to code review",
+    "Run services and read logs on the command line",
+    "Explain your work in stand-ups"
+  ],
+  "typicalTitles": [
+    "Software Developer",
+    "Software Development Engineer",
+    "SDE",
+    "Programmer Analyst",
+    "Application Developer",
+    "Member of Technical Staff"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

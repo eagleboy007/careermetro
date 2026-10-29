@@ -1,6 +1,22 @@
 {
   "slug": "product-manager",
   "title": "Product Manager",
+  "summary": "A product manager decides what a product team builds next and why, based on users, data and business goals. They sit at the centre of engineering, design and business, writing requirements and owning whether a feature succeeds.",
+  "dailyDuties": [
+    "Run user interviews and turn findings into problem statements",
+    "Write PRDs (product requirement documents) and user stories",
+    "Prioritise the roadmap and explain the trade-offs",
+    "Define success metrics and read funnels and retention",
+    "Run the product backlog in an agile team",
+    "Run experiments and pull your own data with SQL",
+    "Align engineering, design and business and present to leadership"
+  ],
+  "typicalTitles": [
+    "Product Owner",
+    "Technical Product Owner",
+    "Product Lead",
+    "Product Specialist"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 6

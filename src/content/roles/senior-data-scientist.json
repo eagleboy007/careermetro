@@ -1,6 +1,24 @@
 {
   "slug": "senior-data-scientist",
   "title": "Senior Data Scientist",
+  "summary": "A senior data scientist leads analysis and modelling work, choosing the right methods and defending the results. They turn business questions into analysis, review juniors' work and hand models to production teams.",
+  "dailyDuties": [
+    "Turn business questions into analysis plans",
+    "Pick, build and defend the right model",
+    "Design experiments and A/B tests and avoid false conclusions",
+    "Choose metrics that match the business goal",
+    "Write clean, tested Python and complex SQL",
+    "Evaluate LLM features where they are used",
+    "Review juniors' work and hand models to production"
+  ],
+  "typicalTitles": [
+    "Lead Data Scientist",
+    "Principal Data Scientist",
+    "Staff Data Scientist",
+    "Data Science Lead",
+    "Data Science Manager",
+    "Senior Applied Scientist"
+  ],
   "experienceBand": {
     "minYears": 5,
     "maxYears": 12

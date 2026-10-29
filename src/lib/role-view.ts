@@ -19,6 +19,10 @@ export type RoleCertificationView = Pick<Certification, "id" | "name" | "issuer"
 export type RoleView = {
   slug: string;
   title: string;
+  /** What the role is, in two or three plain sentences, or null when the profile has none. */
+  summary: string | null;
+  /** What someone in the role does on a normal day; empty when the profile has none. */
+  dailyDuties: string[];
   experience: string;
   required: RoleSkillView[];
   niceToHave: RoleSkillView[];
@@ -88,6 +92,8 @@ export function toRoleView(role: RoleProfile): RoleView {
   return {
     slug: role.slug,
     title: role.title,
+    summary: role.summary ?? null,
+    dailyDuties: role.dailyDuties ?? [],
     experience: formatExperience(role.experienceBand),
     required: pick("required"),
     niceToHave: pick("nice_to_have"),

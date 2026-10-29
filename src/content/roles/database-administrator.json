@@ -1,6 +1,25 @@
 {
   "slug": "database-administrator",
   "title": "Database Administrator",
+  "summary": "A database administrator (DBA) keeps a company's production databases running, backed up, fast and secure. They sit in an IT operations or infrastructure team and often work rotational or on-call shifts.",
+  "dailyDuties": [
+    "Check database health and act on alerts",
+    "Run backups and test restores",
+    "Look after replication, Always On or Data Guard",
+    "Find slow queries and fix them with indexes and plan changes",
+    "Manage logins, roles, permissions and audits",
+    "Handle database incidents during rotational or on-call shifts",
+    "Automate routine DBA tasks with scripts"
+  ],
+  "typicalTitles": [
+    "SQL Server DBA",
+    "Oracle DBA",
+    "PostgreSQL DBA",
+    "MySQL DBA",
+    "Production DBA",
+    "Cloud DBA",
+    "Database Support Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 7

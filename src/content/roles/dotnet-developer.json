@@ -1,6 +1,24 @@
 {
   "slug": "dotnet-developer",
   "title": ".NET Developer",
+  "summary": ".NET developers build business applications and web APIs in C# on the .NET platform. They work in product or IT services teams, often alongside front-end developers using Angular or React, and deploy to the cloud.",
+  "dailyDuties": [
+    "Build features in C# on .NET and ASP.NET Core",
+    "Build Web API services for front-end screens",
+    "Write SQL queries and stored procedures in SQL Server",
+    "Use Entity Framework Core and LINQ for data access",
+    "Write unit tests with xUnit, NUnit or MSTest",
+    "Raise pull requests and work in Scrum sprints",
+    "Deploy to Azure App Service or Azure Functions"
+  ],
+  "typicalTitles": [
+    "C# Developer",
+    "ASP.NET Developer",
+    ".NET Core Developer",
+    "Full Stack .NET Developer",
+    ".NET Software Engineer",
+    ".NET Web API Developer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 6

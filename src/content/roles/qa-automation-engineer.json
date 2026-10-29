@@ -1,6 +1,24 @@
 {
   "slug": "qa-automation-engineer",
   "title": "QA Automation Engineer",
+  "summary": "A QA automation engineer writes code that tests software automatically, so every release is checked quickly. They sit in the QA or engineering team and build test suites for web apps and APIs that run in the CI pipeline.",
+  "dailyDuties": [
+    "Design test cases and plan testing for each release",
+    "Build and maintain Selenium WebDriver suites in Java or Python",
+    "Automate UI tests with Playwright or Cypress",
+    "Test APIs with Postman and automate them",
+    "Run test suites in the CI pipeline and debug failures",
+    "Verify data with SQL queries",
+    "Write reproducible bug reports in Jira"
+  ],
+  "typicalTitles": [
+    "Automation Test Engineer",
+    "Test Automation Engineer",
+    "Automation Tester",
+    "SDET",
+    "Software Development Engineer in Test",
+    "Selenium Automation Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

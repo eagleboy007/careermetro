@@ -1,0 +1,55 @@
+{
+  "id": "technical-support-engineer-broadband-support",
+  "roleSlug": "technical-support-engineer",
+  "persona": "Broadband support associate moving into SaaS technical support",
+  "resumeText": "Ananya Iyer | Coimbatore | ananya.iyer@example.com\n\nEXPERIENCE\nTechnical Support Associate, Kovai Broadband Services, Coimbatore (2023 - present)\n- Handle 40 to 50 customer tickets a day in Freshdesk within a 4-hour SLA.\n- Troubleshoot DNS, router and Wi-Fi faults with customers over phone and chat.\n- Wrote 12 troubleshooting articles for the internal knowledge base.\n- Escalate area outages to the network operations team with ping and traceroute output.\n\nPROJECTS\n- Online SQL course project: built a MySQL database of sample orders and wrote join queries to find failed payments.\n\nEDUCATION\nBSc Computer Science, PSG College of Arts and Science, 2023\n\nSKILLS\nSQL, Postman, Jira, Linux basics, Freshdesk\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "support-ticketing-tools",
+        "quote": "Handle 40 to 50 customer tickets a day in Freshdesk within a 4-hour SLA"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot DNS, router and Wi-Fi faults"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Troubleshoot DNS, router and Wi-Fi faults with customers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Wrote 12 troubleshooting articles for the internal knowledge base"
+      },
+      {
+        "skillId": "sql",
+        "quote": "wrote join queries to find failed payments"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Jira"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "application-support",
+        "status": "missing"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      },
+      {
+        "skillId": "bug-tracking",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "aws",
+      "javascript"
+    ]
+  },
+  "reviewedBy": null
+}

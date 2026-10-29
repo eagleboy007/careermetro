@@ -116,6 +116,10 @@ describe("role profiles", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it.each(roleProfiles.map((r) => [r.slug, r] as const))("%s has a summary, daily duties and typical titles", (_, role) => {
+    expect([role.summary === undefined, role.dailyDuties === undefined, role.typicalTitles === undefined]).toEqual([false, false, false]);
+  });
+
   it("gives a group id the same skills in every role, so a goal's group means one set", () => {
     const seen = new Map<string, string>();
     const clashes: string[] = [];

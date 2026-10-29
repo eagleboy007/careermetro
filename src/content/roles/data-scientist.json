@@ -1,6 +1,24 @@
 {
   "slug": "data-scientist",
   "title": "Data Scientist",
+  "summary": "A data scientist uses statistics and machine learning to predict outcomes and answer business questions, such as which customers may leave. They sit in an analytics or product team and work with engineers and business teams to put models to use.",
+  "dailyDuties": [
+    "Pull training data with SQL and prepare it in pandas",
+    "Create features and check for data leakage",
+    "Build and tune models such as decision trees and gradient boosting with scikit-learn",
+    "Pick the right metric and validate models properly",
+    "Design experiments and read A/B test results",
+    "Show results in clear charts",
+    "Explain a model's results and limits to business teams"
+  ],
+  "typicalTitles": [
+    "Data Science Associate",
+    "Data Science Analyst",
+    "Decision Scientist",
+    "Applied Scientist",
+    "Predictive Modeler",
+    "Statistical Modeller"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

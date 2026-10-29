@@ -5567,5 +5567,1038 @@
     ],
     "minutes": 60,
     "free": true
+  },
+  {
+    "title": "Backstage Software Catalog",
+    "url": "https://backstage.io/docs/features/software-catalog",
+    "provider": "Backstage (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "internal-developer-platform"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Backstage technical overview",
+    "url": "https://backstage.io/docs/overview/technical-overview/",
+    "provider": "Backstage (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "internal-developer-platform"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "CNCF Platforms White Paper",
+    "url": "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+    "provider": "CNCF TAG App Delivery",
+    "kind": "docs",
+    "skillIds": [
+      "internal-developer-platform"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "TechDocs: Getting Started",
+    "url": "https://backstage.io/docs/features/techdocs/getting-started/",
+    "provider": "Backstage (CNCF)",
+    "kind": "practice",
+    "skillIds": [
+      "docs-as-code",
+      "internal-developer-platform"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is the medallion lakehouse architecture?",
+    "url": "https://docs.databricks.com/lakehouse/medallion.html",
+    "provider": "Databricks",
+    "kind": "docs",
+    "skillIds": [
+      "data-lakehouse"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Data warehousing concepts (lakehouse)",
+    "url": "https://docs.databricks.com/aws/en/sql/get-started/data-warehousing-concepts",
+    "provider": "Databricks",
+    "kind": "docs",
+    "skillIds": [
+      "data-lakehouse"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Databricks architecture overview",
+    "url": "https://docs.databricks.com/aws/en/getting-started/architecture",
+    "provider": "Databricks",
+    "kind": "docs",
+    "skillIds": [
+      "data-lakehouse"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Embedded System Design (IIT Jammu, MSP430)",
+    "url": "https://elearn.nptel.ac.in/?p=28583",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "embedded-c",
+      "microcontrollers"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Complete C Programming Course from Dr. Chuck",
+    "url": "https://www.freecodecamp.org/news/complete-c-programming-course-from-dr-chuck",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "embedded-c"
+    ],
+    "minutes": 1140,
+    "free": true
+  },
+  {
+    "title": "Embedded System Design with ARM (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_cs29/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "microcontrollers",
+      "embedded-c"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Microprocessors and Microcontrollers (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/108105102",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "microcontrollers"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "STM32 MOOCs",
+    "url": "https://st.com/content/st_com/en/support/learning/stm32-education/stm32-moocs.html",
+    "provider": "STMicroelectronics",
+    "kind": "course",
+    "skillIds": [
+      "microcontrollers",
+      "rtos"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Real Time Operating System (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_cs47/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rtos"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "FreeRTOS Kernel Quick Start Guide",
+    "url": "https://FreeRTOS.org/FreeRTOS-quick-start-guide.html",
+    "provider": "FreeRTOS",
+    "kind": "docs",
+    "skillIds": [
+      "rtos"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introduction to RTOS (12-part series)",
+    "url": "https://www.youtube.com/watch?v=F321087yYy4&list=PLEBQazB0HUyQ4hAPU1cJED6t3DU0h34bz",
+    "provider": "DigiKey (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "rtos"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "I2C protocol overview",
+    "url": "https://www.ti.com/video/6047548123001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "embedded-protocols"
+    ],
+    "minutes": 9,
+    "free": true
+  },
+  {
+    "title": "I2C: I2C microcontroller basics",
+    "url": "https://www.ti.com/video/6288214656001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "embedded-protocols",
+      "microcontrollers"
+    ],
+    "minutes": 8,
+    "free": true
+  },
+  {
+    "title": "Modbus Specifications and Implementation Guides",
+    "url": "https://www.modbus.org/modbus-specifications",
+    "provider": "Modbus Organization",
+    "kind": "docs",
+    "skillIds": [
+      "embedded-protocols"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Debugging with GDB",
+    "url": "https://sourceware.org/gdb/current/onlinedocs/gdb",
+    "provider": "GNU Project",
+    "kind": "docs",
+    "skillIds": [
+      "embedded-debugging"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn the architecture: Introducing CoreSight debug and trace",
+    "url": "https://developer.arm.com/documentation/102520",
+    "provider": "Arm",
+    "kind": "docs",
+    "skillIds": [
+      "embedded-debugging",
+      "microcontrollers"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Saleae Logic: Getting started setup",
+    "url": "https://www.saleae.com/support/getting-started/setup",
+    "provider": "Saleae",
+    "kind": "practice",
+    "skillIds": [
+      "embedded-debugging",
+      "embedded-protocols"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "A Beginner's Guide to Linux Kernel Development (LFD103)",
+    "url": "https://training.linuxfoundation.org/training/a-beginners-guide-to-linux-kernel-development-lfd103/",
+    "provider": "Linux Foundation",
+    "kind": "course",
+    "skillIds": [
+      "embedded-linux"
+    ],
+    "minutes": 840,
+    "free": true
+  },
+  {
+    "title": "Yocto Project Quick Build",
+    "url": "https://docs.yoctoproject.org/5.0.17/brief-yoctoprojectqs",
+    "provider": "Yocto Project",
+    "kind": "practice",
+    "skillIds": [
+      "embedded-linux"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Embedded Linux system development slides",
+    "url": "https://bootlin.com/doc/training/embedded-linux-4d/embedded-linux-4d-slides.pdf",
+    "provider": "Bootlin",
+    "kind": "docs",
+    "skillIds": [
+      "embedded-linux"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Apex Basics & Database",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/apex_database",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-apex"
+    ],
+    "minutes": 165,
+    "free": true
+  },
+  {
+    "title": "Apex Triggers",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/apex_triggers",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-apex"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Lightning Web Components Basics",
+    "url": "https://trailhead.salesforce.com/en/content/learn/modules/lightning-web-components-basics",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-lwc"
+    ],
+    "minutes": 70,
+    "free": true
+  },
+  {
+    "title": "Lightning Web Components Developer Guide: Reference",
+    "url": "https://developer.salesforce.com/docs/platform/lwc/guide/reference.html",
+    "provider": "Salesforce Developers",
+    "kind": "docs",
+    "skillIds": [
+      "salesforce-lwc"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "LWC: Explore Trailhead and Sample Code",
+    "url": "https://developer.salesforce.com/docs/platform/lwc/guide/install-sample-code-repo.html",
+    "provider": "Salesforce Developers",
+    "kind": "practice",
+    "skillIds": [
+      "salesforce-lwc"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Record-Triggered Flows: Get Started with Triggered Flows",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/record-triggered-flows/get-started-with-triggered-flows",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-flows"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Learn Sales Cloud Fundamentals (trail)",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/learn-sales-cloud-fundamentals",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-clouds"
+    ],
+    "minutes": 425,
+    "free": true
+  },
+  {
+    "title": "Service Cloud Essentials Basics",
+    "url": "https://trailhead.salesforce.com/modules/service-cloud-essentials-basics",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-clouds",
+      "support-ticketing-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Experience Cloud Site Strategy",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/experience-cloud-site-strategy",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-clouds"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Server-side Scripting (learning module)",
+    "url": "https://developer.servicenow.com/print_page.do?release=zurich&category=learning-module&identifier=SSS_About_zurich%2Cservicenow_administrator&module=learning+plan",
+    "provider": "ServiceNow Developer Program",
+    "kind": "course",
+    "skillIds": [
+      "servicenow-scripting"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Client-side Scripting (learning module)",
+    "url": "https://developer.servicenow.com/print_page.do?release=yokohama&category=learning-module&identifier=app_store_learnv2_scripting_yokohama_creating_client_scripts%2Cnew_to_servicenow&module=learning+plan",
+    "provider": "ServiceNow Developer Program",
+    "kind": "course",
+    "skillIds": [
+      "servicenow-scripting"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "GlideRecord - Client (API reference)",
+    "url": "https://www.servicenow.com/docs/r/api-reference/c_GlideRecordClientSideAPI.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Flow Designer",
+    "url": "https://www.servicenow.com/docs/r/zurich/application-development/flow-designer.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-flow-designer"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Exploring MID Server",
+    "url": "https://www.servicenow.com/docs/r/q4dSP2Icgr1SFv5wanVXvQ/CbN2LcGFL9LmEprItPfBWQ",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-itom"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Exploring Discovery",
+    "url": "https://www.servicenow.com/docs/r/sPnEbors95h6DhgBlE~f0A/TkFiXYVAhlsNUm7PyZAjFw",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-itom"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "CSDM 101 Primer",
+    "url": "https://www.servicenow.com/content/dam/servicenow-assets/public/en-us/doc-type/resource-center/ebook/ebk-csdm-101-primer.pdf",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-itom"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Service Portal widget developer guide",
+    "url": "https://docs.servicenow.com/bundle/newyork-servicenow-platform/page/build/service-portal/concept/widget-dev-guide.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-service-portal"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Acquiring Core ABAP Skills",
+    "url": "https://learning.sap.com/learning-journeys/acquiring-core-abap-skills",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-abap"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "ABAP Keyword Documentation",
+    "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/abenabap.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-abap"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Describing Remote Function Calls and BAPIs",
+    "url": "https://learning.sap.com/courses/technical-implementation-and-operation-i-of-sap-s-4hana-and-sap-business-suite/describing-remote-function-calls-and-bapis",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-interfaces"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RFC: Test the Business API (BAPI) with an ABAP Console App",
+    "url": "https://developers.sap.com/tutorials/abap-environment-test-rfc.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-interfaces"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a Simple IDoc Interface",
+    "url": "https://developers.sap.com/tutorials/aif-idoc-monitoring-interface-create.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-interfaces"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn making first Smartform step by step",
+    "url": "https://help.sap.com/docs/SUPPORT_CONTENT/abap/3353523871.html",
+    "provider": "SAP Help Portal",
+    "kind": "practice",
+    "skillIds": [
+      "sap-forms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SAP Interactive Forms by Adobe",
+    "url": "https://help.sap.com/saphelp_em92/helpdata/en/a9/b128543eaa4a508b5120b695e29391/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-forms"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Using Forms in SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/getting-started-with-sap-forms-service-by-adobe/using-forms-in-sap-s-4hana_d6303f15-f634-4b91-8ed4-2c0324293c15",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-forms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introducing the ABAP RESTful Application Programming Model (RAP)",
+    "url": "https://learning.sap.com/learning-journeys/acquire-core-abap-skills/introducing-the-abap-restful-application-programming-model-rap-_e86bbfde-50be-4c7b-8716-53bacc94c5a0",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-abap-hana"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create and Enhance a CDS View in ABAP on-Premise",
+    "url": "https://developers.sap.com/group.abap-dev-cds.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-abap-hana"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Creating an SAP Fiori Elements App Based on an OData V4 RAP Service",
+    "url": "https://learning.sap.com/courses/getting-started-with-creating-an-sap-fiori-elements-app-based-on-an-odata-v4-rap-service",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fiori-ui5",
+      "sap-abap-hana"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Developing SAPUI5 Applications",
+    "url": "https://learning.sap.com/learning-journeys/developing-sapui5-applications",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fiori-ui5"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "UI5 TypeScript Walkthrough",
+    "url": "https://sap-samples.github.io/ui5-typescript-walkthrough",
+    "provider": "SAP Samples (GitHub)",
+    "kind": "practice",
+    "skillIds": [
+      "sap-fiori-ui5"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "NestJS: First steps",
+    "url": "https://docs.nestjs.com/first-steps",
+    "provider": "NestJS",
+    "kind": "docs",
+    "skillIds": [
+      "nestjs"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn NestJS by Building a CRUD API",
+    "url": "https://www.freecodecamp.org/news/learn-nestjs-by-building-a-crud-api/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "nestjs"
+    ],
+    "minutes": 222,
+    "free": true
+  },
+  {
+    "title": "Learn NestJS for Beginners",
+    "url": "https://www.freecodecamp.org/news/learn-nestjs-for-beginners/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "nestjs"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Explore support and diagnostic tools",
+    "url": "https://learn.microsoft.com/en-us/training/modules/explore-support-diagnostic-tools/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "desktop-support"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Troubleshoot physical failures on Windows clients",
+    "url": "https://learn.microsoft.com/en-us/training/modules/troubleshoot-physical-failures-windows-clients/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "desktop-support"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Troubleshoot Windows startup",
+    "url": "https://learn.microsoft.com/en-us/training/modules/troubleshoot-windows-startup/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "desktop-support"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Microsoft Intune fundamentals",
+    "url": "https://learn.microsoft.com/en-us/training/paths/endpoint-manager-fundamentals/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "endpoint-management"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "What is Microsoft Intune?",
+    "url": "https://learn.microsoft.com/en-us/intune/fundamentals/what-is-intune",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "endpoint-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Tutorial: Walkthrough the Microsoft Intune admin center",
+    "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/tutorial-walkthrough-endpoint-manager",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "endpoint-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "MS-102 Configure your Microsoft 365 tenant",
+    "url": "https://learn.microsoft.com/training/paths/configure-microsoft-365-tenant",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "m365-administration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Exchange Online (manage mail flow)",
+    "url": "https://learn.microsoft.com/en-us/training/modules/manage-mail-flow/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "m365-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Start here: Zendesk Training Offerings Overview",
+    "url": "https://support.zendesk.com/hc/en-us/articles/4408843500058-Start-here-Zendesk-Training-Offerings-Overview",
+    "provider": "Zendesk",
+    "kind": "docs",
+    "skillIds": [
+      "support-ticketing-tools"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Freshdesk Agent Certification",
+    "url": "https://www.freshworks.com/academy/courses/freshdesk-agent-certification/",
+    "provider": "Freshworks Academy",
+    "kind": "course",
+    "skillIds": [
+      "support-ticketing-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Zoho Desk",
+    "url": "https://help.zoho.com/portal/en/kb/desk/getting-started/articles/introduction-to-desk",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "support-ticketing-tools"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Inspect network activity",
+    "url": "https://developer.chrome.com/docs/devtools/network",
+    "provider": "Chrome for Developers",
+    "kind": "practice",
+    "skillIds": [
+      "application-support"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Network features reference",
+    "url": "https://developer.chrome.com/docs/devtools/network/reference",
+    "provider": "Chrome for Developers",
+    "kind": "docs",
+    "skillIds": [
+      "application-support"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Postmortem Culture: Learning from Failure (SRE Workbook ch. 10)",
+    "url": "https://sre.google/workbook/postmortem-culture/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "application-support"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Reconnaissance, Tactic TA0043",
+    "url": "https://attack.mitre.org/tactics/TA0043/",
+    "provider": "MITRE ATT&CK",
+    "kind": "docs",
+    "skillIds": [
+      "osint"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Cyber Threat Intelligence SIG Curriculum",
+    "url": "https://www.first.org/global/sigs/cti/curriculum/",
+    "provider": "FIRST",
+    "kind": "course",
+    "skillIds": [
+      "osint"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "New Relic University",
+    "url": "https://docs.newrelic.com/nru",
+    "provider": "New Relic",
+    "kind": "course",
+    "skillIds": [
+      "apm-tools"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Get started with Dynatrace",
+    "url": "https://docs.dynatrace.com/docs/discover-dynatrace/get-started",
+    "provider": "Dynatrace",
+    "kind": "docs",
+    "skillIds": [
+      "apm-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Install OneAgent on a server",
+    "url": "https://docs.dynatrace.com/docs/ingest-from/dynatrace-oneagent/installation-and-operation",
+    "provider": "Dynatrace",
+    "kind": "practice",
+    "skillIds": [
+      "apm-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "OpenTelemetry documentation",
+    "url": "https://opentelemetry.io/docs/",
+    "provider": "OpenTelemetry (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "apm-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Java SE 11 Troubleshooting Guide",
+    "url": "https://docs.oracle.com/en/java/javase/11/troubleshoot/troubleshooting-guide.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "performance-profiling"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "VisualVM (GraalVM docs)",
+    "url": "https://www.graalvm.org/21.3/tools/visualvm",
+    "provider": "GraalVM (Oracle)",
+    "kind": "docs",
+    "skillIds": [
+      "performance-profiling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The 8 Stances of a Scrum Master",
+    "url": "https://www.scrum.org/resources/8-stances-scrum-master",
+    "provider": "Scrum.org",
+    "kind": "docs",
+    "skillIds": [
+      "agile-coaching"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Team Coaching Canvas",
+    "url": "https://www.scrum.org/resources/blog/team-coaching-canvas",
+    "provider": "Scrum.org",
+    "kind": "practice",
+    "skillIds": [
+      "agile-coaching"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Agile Burndown Chart Tutorial",
+    "url": "https://www.atlassian.com/agile/tutorials/burndown-charts",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "agile-metrics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Jira Software: Burndown Chart",
+    "url": "https://confluence.atlassian.com/jirasoftware/burndown-chart-1688899014.html",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "agile-metrics"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "PI Planning",
+    "url": "https://scaledagileframework.com/PI-planning",
+    "provider": "Scaled Agile Framework",
+    "kind": "docs",
+    "skillIds": [
+      "scaled-agile"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Technical Writing Course (Improve your technical writing skills)",
+    "url": "https://www.freecodecamp.org/news/improve-your-technical-writing-skills-to-advance-your-career/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "technical-writing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Write the Docs documentation guide",
+    "url": "https://writethedocs-www.readthedocs.io/guide/contributing/",
+    "provider": "Write the Docs",
+    "kind": "docs",
+    "skillIds": [
+      "technical-writing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introduction - OpenAPI Documentation",
+    "url": "https://learn.openapis.org/introduction.html",
+    "provider": "OpenAPI Initiative",
+    "kind": "docs",
+    "skillIds": [
+      "api-documentation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The OpenAPI Specification Explained",
+    "url": "https://learn.openapis.org/specification/",
+    "provider": "OpenAPI Initiative",
+    "kind": "docs",
+    "skillIds": [
+      "api-documentation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "OpenAPI Specification v3.1.1",
+    "url": "https://spec.openapis.org/oas/v3.1.1.html",
+    "provider": "OpenAPI Initiative",
+    "kind": "docs",
+    "skillIds": [
+      "api-documentation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Docs as Code",
+    "url": "https://writethedocs.org/guide/docs-as-code",
+    "provider": "Write the Docs",
+    "kind": "docs",
+    "skillIds": [
+      "docs-as-code",
+      "technical-writing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introduction to DITA 1.3",
+    "url": "https://docs.oasis-open.org/dita/dita/v1.3/errata02/os/complete/part3-all-inclusive/introduction/dita-release-overview.html",
+    "provider": "OASIS",
+    "kind": "docs",
+    "skillIds": [
+      "structured-authoring"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Getting started (DITA)",
+    "url": "https://dita.xml.org/book/getting-started.html",
+    "provider": "OASIS DITA (dita.xml.org)",
+    "kind": "docs",
+    "skillIds": [
+      "structured-authoring"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "5 Minutes Tutorial to Getting Started with DITA Open Toolkit",
+    "url": "https://dita.xml.org/resource/5-minute-tutorial-to-getting-started-with-dita-open-toolkit.html",
+    "provider": "OASIS DITA (dita.xml.org)",
+    "kind": "practice",
+    "skillIds": [
+      "structured-authoring"
+    ],
+    "minutes": 15,
+    "free": true
   }
 ]

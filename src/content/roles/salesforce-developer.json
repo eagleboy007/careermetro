@@ -1,0 +1,109 @@
+{
+  "slug": "salesforce-developer",
+  "title": "Salesforce Developer",
+  "summary": "Salesforce developers customise and extend Salesforce, the customer management platform many sales and service teams use, with code (Apex and Lightning components) and low-code automation (Flows). They work with admins, business analysts and testers, often in IT services firms or in a company's CRM team.",
+  "dailyDuties": [
+    "Write Apex classes and triggers for business rules",
+    "Build Lightning Web Components for custom screens",
+    "Automate a process with a Flow",
+    "Integrate Salesforce with another system through APIs",
+    "Write Apex test classes and deploy changes between orgs",
+    "Clarify requirements with admins and business users"
+  ],
+  "typicalTitles": [
+    "SFDC Developer",
+    "Salesforce Lightning Developer",
+    "Salesforce Apex Developer",
+    "Salesforce Technical Consultant",
+    "Senior Salesforce Developer",
+    "Salesforce Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "salesforce-apex",
+      "importance": "required",
+      "expectation": "Write bulk-safe Apex classes, triggers and SOQL that stay within governor limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-lwc",
+      "importance": "required",
+      "expectation": "Build Lightning Web Components for custom screens",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-flows",
+      "importance": "required",
+      "expectation": "Automate processes with Flows and know when code is the better choice",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write the JavaScript behind Lightning components",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate Salesforce with other systems over REST or SOAP APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep metadata in Git and deploy through a shared process",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Turn business requests into clear stories and explain trade-offs to admins and users",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-clouds",
+      "importance": "nice_to_have",
+      "expectation": "Know the data model of Sales Cloud, Service Cloud or Experience Cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Deploy with Salesforce DX and a release tool such as Copado or Gearset",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write Apex test classes with meaningful assertions",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in sprints with admins, testers and business analysts",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Style components to match the Lightning design system",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

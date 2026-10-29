@@ -1,6 +1,24 @@
 {
   "slug": "appsec-engineer",
   "title": "Application Security Engineer",
+  "summary": "An application security engineer helps developers find and fix security flaws in web apps and APIs before attackers do. They sit in the security team but work closely with engineering, reviewing code, designs and the CI/CD pipeline (the automated build and release process).",
+  "dailyDuties": [
+    "Threat-model new features with developers before they ship",
+    "Review code and triage findings from SAST and DAST scanners (tools that test code and running apps)",
+    "Test web apps and APIs with Burp Suite for OWASP Top 10 issues",
+    "Tune security scans in CI/CD so they catch real issues without blocking releases",
+    "Check API authentication, sessions and tokens such as OAuth and JWT",
+    "Explain each vulnerability and its fix to the developers who own the code",
+    "Flag cloud misconfiguration risks in app designs"
+  ],
+  "typicalTitles": [
+    "Product Security Engineer",
+    "Software Security Engineer",
+    "Application Security Analyst",
+    "Secure Code Reviewer",
+    "Web Application Security Engineer",
+    "DevSecOps Engineer"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 6

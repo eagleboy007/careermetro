@@ -1,0 +1,56 @@
+{
+  "id": "salesforce-developer-from-admin",
+  "roleSlug": "salesforce-developer",
+  "persona": "Salesforce administrator moving into development",
+  "resumeText": "Neha Joshi | Bengaluru | neha.joshi@example.com\n\nEXPERIENCE\nSalesforce Administrator, Kaveri Insurance Services, Bengaluru (2023 - present)\n- Built 25 record-triggered flows for lead routing and renewal reminders in Sales Cloud.\n- Set up case queues, assignment rules and email-to-case in Service Cloud.\n- Created validation rules, page layouts and permission sets for 400 users.\n- Ran monthly training sessions for 60 sales users and wrote release notes for each change.\n\nSKILLS\nSalesforce administration, flows, reports and dashboards, data loader, Apex triggers (Trailhead)\n\nCERTIFICATIONS\nSalesforce Certified Administrator (2023)\n\nEDUCATION\nBCom, Christ University, Bengaluru, 2022\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "salesforce-flows",
+        "quote": "Built 25 record-triggered flows for lead routing"
+      },
+      {
+        "skillId": "salesforce-clouds",
+        "quote": "assignment rules and email-to-case in Service Cloud"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Ran monthly training sessions for 60 sales users"
+      },
+      {
+        "skillId": "salesforce-apex",
+        "quote": "Apex triggers (Trailhead)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "salesforce-apex",
+        "status": "weak"
+      },
+      {
+        "skillId": "salesforce-lwc",
+        "status": "missing"
+      },
+      {
+        "skillId": "javascript",
+        "status": "missing"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ci-cd",
+      "unit-testing",
+      "html-css",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

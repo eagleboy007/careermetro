@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CertificationList } from "@/components/roles/certification-list";
 import { DraftNotice } from "@/components/roles/draft-notice";
+import { RoleDay } from "@/components/roles/role-day";
 import { RoleSkillList } from "@/components/roles/role-skill-list";
 import { SiteHeader } from "@/components/site/site-header";
 import { getRoleView, roleViews } from "@/lib/role-view";
@@ -51,12 +52,22 @@ async function Role({ params }: { params: PageProps<"/roles/[slug]">["params"] }
           All roles
         </Link>
         <h1 className="text-4xl font-semibold leading-[1.05] sm:text-5xl">{role.title}</h1>
+        {role.summary && <p className="text-muted">{role.summary}</p>}
         <p className="font-mono text-xs uppercase tracking-wider text-muted">
           {role.experience}
           {role.postingsAnalysed !== null && ` · ${role.postingsAnalysed} postings analysed`}
         </p>
       </section>
       {!role.reviewed && <DraftNotice />}
+
+      {role.dailyDuties.length > 0 && (
+        <section aria-labelledby="day" className="flex flex-col gap-4">
+          <h2 id="day" className="text-2xl font-semibold">
+            A normal day
+          </h2>
+          <RoleDay duties={role.dailyDuties} />
+        </section>
+      )}
 
       <section aria-labelledby="required" className="flex flex-col gap-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
