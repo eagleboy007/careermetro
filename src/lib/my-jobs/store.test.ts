@@ -254,10 +254,12 @@ describe.skipIf(!db)("my jobs (database)", () => {
     const me = await person();
     const title = `Senior data analyst ${"for the payments platform ".repeat(11)}`.trim();
     expect(title.length).toBeGreaterThan(300);
-    // A board or an older row can hold more than the feed's 160 (feed-rules.mjs clips new feed titles to it).
-    const p = await post({ title });
-    const ref = { kind: "post", postId: p } as const;
-    await setStage(me.userId, { postId: p, stage: 1 }, { db: db!, now });
+    // Feed posts are held to 160 by job_posts_title_length; a job the person added has no such limit in the table.
+    const added = await add(me);
+    if (!added.ok || added.kind !== "check") throw new Error("not added");
+    const ref = { kind: "check", checkId: added.job.checkId } as const;
+    await saveJob(me.userId, { checkId: ref.checkId, company: "Example Analytics", title: "Data analyst" }, { db: db!, now });
+    await db!.update(schema.jobChecks).set({ title }).where(eq(schema.jobChecks.id, ref.checkId));
     const day = new Date(now.getTime() + 2 * 86_400_000 + 5.5 * 3600_000).toISOString().slice(0, 10);
     expect(await updateJob(me.userId, { ref, status: "interview", interviewAt: `${day}T10:30` }, { db: db!, now })).toEqual({ ok: true });
     const prep = await jobPrep(me.userId, ref, { db: db!, now });
@@ -269,8 +271,8 @@ describe.skipIf(!db)("my jobs (database)", () => {
       expect(named?.title).toMatch(/^Senior data analyst for the payments platform .*…$/);
     }
     expect(nextInterviewView.safeParse(soon).success).toBe(true);
-    const mine = (await myJobs(me.userId, { db: db!, now })).find((j) => j.key === `post:${p}`);
-    expect(mine?.title).toBe(title);
+    const [mine] = await myJobs(me.userId, { db: db!, now });
+    expect(mine.title).toBe(title);
   });
 
   it("keeps an interview date that moves an earlier status to Interview, and Today counts down to the soonest (handoff 12m)", async () => {
