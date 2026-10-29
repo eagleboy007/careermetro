@@ -1195,7 +1195,8 @@ await step("weekly My jobs email: Settings preview, and the one-tap turn-off wit
     await p.goto(BASE + "/settings#acc-notif");
     await settled();
     const notif = p.getByRole("region", { name: "Notifications" });
-    await notif.getByText("Weekly My jobs email", { exact: true }).waitFor({ timeout: 10000 });
+    // The switch's words and its hint share one label, so the check box is found by the label's start.
+    await notif.getByRole("checkbox", { name: /^Weekly My jobs email/ }).waitFor({ state: "attached", timeout: 10000 });
     await notif.getByText(/^Mondays at 8:00 IST: jobs waiting on a reply/).waitFor();
     await notif.getByRole("button", { name: "See this week's" }).click();
     await notif.getByText(/Nothing is moving this week|your week on My jobs\./).first().waitFor({ timeout: 5000 });
