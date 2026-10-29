@@ -10,8 +10,16 @@ import { addressKey, LIMITS, takeShared } from "@/lib/shared-limit";
 /** The largest form worth reading: the longest text and title (up to 4 bytes a character, percent-encoded) and a link. */
 const MAX_BODY_BYTES = (JOB_TEXT_MAX * 2 + MY_JOB_URL_MAX) * 12 + 4 * 1024;
 
+/**
+ * Whether the browser itself sent the share (the share sheet: Sec-Fetch-Site "none") or one of our own pages did.
+ * Only then does the box check the job at once; a form another site posted only fills the box and waits for a tap
+ * (T141), so no page can spend someone's job checks.
+ */
+const fromPhoneOrUs = (request: Request) => ["none", "same-origin"].includes(request.headers.get("sec-fetch-site") ?? "");
+
 /** Where the person lands: My jobs with "Add a job you found" filled, or a short word on why it isn't. */
-const landing = (request: Request, shared: string) => new URL(`/departures?tab=mine&shared=${shared}`, request.url);
+const landing = (request: Request, shared: string) =>
+  new URL(`/departures?tab=mine&shared=${shared}${fromPhoneOrUs(request) ? "&check=1" : ""}`, request.url);
 const to = (request: Request, shared: string) => NextResponse.redirect(landing(request, shared), 303);
 
 /**
@@ -22,7 +30,8 @@ const to = (request: Request, shared: string) => NextResponse.redirect(landing(r
  * board's link is read later by the usual add path, and any other link is only kept.
  *
  * Another site could post a form here too. That only fills the person's own add box, which saves nothing until they
- * press Save; the hold opens only in the browser that holds its cookie, and each address may share 20 an hour.
+ * press Save and checks nothing until they tap (fromPhoneOrUs); the hold opens only in the browser that holds its
+ * cookie, and each address may share 20 an hour.
  */
 export async function POST(request: Request) {
   // Where the signed-in app is off, there is no My jobs to land in.

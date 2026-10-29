@@ -228,6 +228,7 @@ Later, after a lawyer's view of the portals' terms: a browser button that reads 
 - The check runs at once only when it can work: a description of at least 200 characters, or a company job board's link alone. A link and a short blurb fill the box and wait for the description.
 - `?shared=` leaves the address after the page opens (history.replaceState), so a reload doesn't say the share has gone. Other outcomes (`empty`, `limit`, `failed`, or a hold that has gone) show one line in the box's alert.
 - Paste puts a link into the link field and other text into an empty description; it reads the clipboard only on the tap.
+- T141 (Testing, 29 Oct): another site can post a form to `/share`, so the box checks at once only when the browser itself sent the share (`Sec-Fetch-Site: none`, the share sheet) or one of our pages did (`same-origin`); `/share` adds `&check=1` to the landing address then. Any other share fills the box and waits for the person's tap, so no page can spend someone's job checks.
 - The Settings copy says "Open CareerMetro in Chrome" rather than naming careermetro.com, as the domain isn't pointed yet.
 - Icons are rendered from `src/app/icon.svg` into `public/icons/` (192, 512 and a maskable 512). No service worker.
 

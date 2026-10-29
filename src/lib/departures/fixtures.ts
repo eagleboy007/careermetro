@@ -311,6 +311,7 @@ export const exampleShared = {
     text: "SOC Analyst, Night shift\n\nMonitor alerts in Microsoft Sentinel, triage phishing reports, write KQL queries and map incidents to MITRE ATT&CK. 1 to 3 years. Rotational night shifts, 4 days on, 3 off. Mumbai, hybrid.",
   },
   note: null,
+  check: true,
 } as const;
 
 /**

@@ -388,7 +388,7 @@ describe("try a sample resume", () => {
 describe("share from the phone (POST /share)", () => {
   const HOLD = "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f";
   const DESCRIPTION = "Monitor alerts in Microsoft Sentinel, triage phishing reports and write KQL queries. ".repeat(4).trim();
-  const form = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
+  const form = (fields: Record<string, string>, headers: Record<string, string> = { "sec-fetch-site": "none" }) =>
     new Request(SITE + "/share", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", ...headers }, body: new URLSearchParams(fields).toString() });
 
   it("refuses a GET, so job text never sits in an address", async () => {
@@ -402,7 +402,7 @@ describe("share from the phone (POST /share)", () => {
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const res = await share(form({ title: "SOC Analyst", text: DESCRIPTION, url: "https://jobs.lever.co/acme/0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69" }));
     expect(res.status).toBe(303);
-    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}`);
+    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}&check=1`);
     const cookie = res.headers.get("set-cookie") ?? "";
     expect(cookie).toContain(`cm_share=${HOLD}`);
     expect(cookie).toMatch(/HttpOnly/i);
@@ -417,6 +417,12 @@ describe("share from the phone (POST /share)", () => {
     expect(all).not.toContain("Sentinel");
     expect(all).not.toContain("lever.co");
     logs.mockRestore();
+  });
+
+  it("checks at once only for the browser's own share sheet or our pages, never for a form another site posted (T141)", async () => {
+    expect((await share(form({ text: DESCRIPTION }, { "sec-fetch-site": "same-origin" }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}&check=1`);
+    for (const site of ["cross-site", "same-site"]) expect((await share(form({ text: DESCRIPTION }, { "sec-fetch-site": site }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}`);
+    expect((await share(form({ text: DESCRIPTION }, {}))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}`);
   });
 
   it("keeps the person's id when they are signed in", async () => {
@@ -438,9 +444,9 @@ describe("share from the phone (POST /share)", () => {
   });
 
   it("holds nothing for an empty share, and stops at 20 an hour from one address", async () => {
-    expect((await share(form({ title: "Only a title" }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=empty`);
+    expect((await share(form({ title: "Only a title" }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=empty&check=1`);
     m.takeShared.mockResolvedValueOnce(false);
-    expect((await share(form({ text: DESCRIPTION }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=limit`);
+    expect((await share(form({ text: DESCRIPTION }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=limit&check=1`);
     expect(m.takeShared).toHaveBeenCalledWith(expect.objectContaining({ bucket: "share-ip", max: 20 }), expect.any(String));
     expect(m.holdShared).not.toHaveBeenCalled();
   });
@@ -449,7 +455,7 @@ describe("share from the phone (POST /share)", () => {
     m.holdShared.mockRejectedValueOnce(Object.assign(new Error(`insert ${DESCRIPTION}`), { code: "23514" }));
     const logs = vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await share(form({ text: DESCRIPTION }));
-    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=failed`);
+    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=failed&check=1`);
     expect(res.headers.get("set-cookie")).toBeNull();
     expect(logs.mock.calls.map((c) => String(c[0])).join("\n")).not.toContain("Sentinel");
     logs.mockRestore();

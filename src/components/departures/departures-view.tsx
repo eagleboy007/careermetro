@@ -135,6 +135,7 @@ export function DeparturesView({
     document.getElementById(pasteId)?.scrollIntoView({ block: "start" });
     const url = new URL(window.location.href);
     url.searchParams.delete("shared");
+    url.searchParams.delete("check");
     window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}`);
   }, [shared, pasteId, demo]);
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
