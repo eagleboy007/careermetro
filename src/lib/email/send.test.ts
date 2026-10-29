@@ -57,6 +57,8 @@ describe("the app's email sender", () => {
   it("says it failed, without throwing or logging the message, when Resend refuses or the network fails", async () => {
     quiet();
     expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response("{}", { status: 422 })) })).toEqual({ ok: false, reason: "failed" });
+    // Resend's rate or daily limit: a batch stops on it (T142).
+    expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response("{}", { status: 429 })) })).toEqual({ ok: false, reason: "limited" });
     expect(await sendEmail(message, env, { fetch: vi.fn(async () => Promise.reject(new TypeError("fetch failed"))) })).toEqual({ ok: false, reason: "failed" });
     expect(lines.join("\n")).toContain("email_send_refused");
     expect(lines.join("\n")).toContain("email_send_failed");

@@ -18,7 +18,8 @@ type Env = Record<string, string | undefined>;
  */
 export type EmailMessage = { to: string; subject: string; text: string; html?: string; headers?: Record<string, string>; from?: string };
 
-export type SendResult = { ok: true } | { ok: false; reason: "not_configured" | "failed" };
+/** "limited" is Resend saying no more for now (429: its rate or daily limit), so a batch should stop rather than go on. */
+export type SendResult = { ok: true } | { ok: false; reason: "not_configured" | "failed" | "limited" };
 
 const RESEND_URL = "https://api.resend.com/emails";
 const SEND_TIMEOUT_MS = 10_000;
@@ -66,7 +67,7 @@ export async function sendEmail(
     });
     if (res.ok) return { ok: true };
     logEvent("warn", "email_send_refused", { status: res.status });
-    return { ok: false, reason: "failed" };
+    return { ok: false, reason: res.status === 429 ? "limited" : "failed" };
   } catch (error) {
     logEvent("warn", "email_send_failed", { kind: error instanceof Error ? error.name : "unknown" });
     return { ok: false, reason: "failed" };

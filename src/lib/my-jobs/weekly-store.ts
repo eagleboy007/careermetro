@@ -110,16 +110,20 @@ export async function turnOffWeeklyEmail(token: string, db: Db = getDb()): Promi
   await db.update(userSettings).set({ emailWeeklySummary: false, emailOffToken: newOffToken() }).where(eq(userSettings.emailOffToken, token));
 }
 
-/** Most weekly emails one cron run sends (Resend's free plan allows 100 a day, shared with sign-in codes). */
-export const WEEKLY_EMAIL_CAP = 80;
+/**
+ * Most weekly emails one cron run sends. Resend's free plan allows 100 a day, shared with sign-in codes and work-email
+ * codes, so 60 a day stay for codes (T142). Raise it with Resend Pro (docs/stack.md).
+ */
+export const WEEKLY_EMAIL_CAP = 40;
 
 export type WeeklyRun = { considered: number; sent: number; empty: number; failed: number; capped: boolean };
-export type WeeklySend = (message: WeeklyEmail & { to: string; offUrl: string }) => Promise<{ ok: boolean }>;
+/** `limited`: the sender refused for its rate or daily limit, so the run stops and the next day picks up the rest. */
+export type WeeklySend = (message: WeeklyEmail & { to: string; offUrl: string }) => Promise<{ ok: boolean; limited?: boolean }>;
 
 /**
  * One cron run (Monday to Wednesday, 08:00 IST): everyone with the switch on and no email yet this India week gets
  * one, when their week isn't empty, up to `cap`. A week sent, or found empty, gets its row, so a later run skips it;
- * a failed send gets none and is tried again the next day. Stops before `deadline`. Counts only.
+ * a failed send gets none and is tried again the next day. Stops before `deadline`, or at the sender's limit. Counts only.
  */
 export async function runWeeklyEmails({
   db = getDb(),
@@ -174,6 +178,10 @@ export async function runWeeklyEmails({
       const result = await send({ ...email, to: person.email, offUrl });
       if (!result.ok) {
         run.failed++;
+        if (result.limited) {
+          run.capped = true;
+          break;
+        }
         continue;
       }
       await db.insert(weeklyEmails).values({ userId: person.id, week, sentAt: now }).onConflictDoNothing();

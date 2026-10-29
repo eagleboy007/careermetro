@@ -96,6 +96,21 @@ describe.skipIf(!db)("the weekly My jobs email (database)", () => {
     expect([...capped.sent, ...rest.sent].map((m) => m.to).sort()).toEqual([a.email, b.email].sort());
   });
 
+  it("stops at the sender's daily limit, and the next day sends the rest", async () => {
+    const a = await person();
+    const b = await person();
+    const only = [a.userId, b.userId];
+    let calls = 0;
+    const limited: WeeklySend = async () => {
+      calls++;
+      return { ok: false, limited: true };
+    };
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: limited, only })).toMatchObject({ sent: 0, failed: 1, capped: true });
+    expect(calls).toBe(1);
+    const rest = sender();
+    expect(await runWeeklyEmails({ db: d(), now: TUESDAY, site: "https://careermetro.test", send: rest.send, only })).toMatchObject({ sent: 2, capped: false });
+  });
+
   it("turns off from the email's token, once, and an unknown token changes nothing", async () => {
     const a = await person();
     await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: sender().send, only: [a.userId] });

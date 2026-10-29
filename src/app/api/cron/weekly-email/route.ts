@@ -15,7 +15,7 @@ const siteOf = (request: Request) =>
  * The weekly My jobs email (C22, docs/plans/application-tracker-plan.md section 6), run by Vercel Cron at 08:00 IST
  * Monday to Wednesday (vercel.json). Monday sends; Tuesday and Wednesday pick up anyone a cap, a time limit or a failed
  * send left out, and skip anyone already sent this India week. Up to WEEKLY_EMAIL_CAP a run, because Resend's free plan
- * allows 100 a day, shared with sign-in codes. Counts only in the logs: never a name, an address or a job.
+ * allows 100 a day, shared with sign-in codes, and stops at Resend's limit (T142). Counts only in the logs: never a name, an address or a job.
  */
 export async function GET(request: Request) {
   if (!hasBearer(request, process.env.CRON_SECRET)) return Response.json({ ok: false }, { status: 401 });
@@ -29,8 +29,8 @@ export async function GET(request: Request) {
       site: siteOf(request),
       cap: WEEKLY_EMAIL_CAP,
       deadline: Date.now() + RUN_MS,
-      send: (m) =>
-        sendEmail({
+      send: async (m) => {
+        const sent = await sendEmail({
           to: m.to,
           from,
           subject: m.subject,
@@ -38,7 +38,9 @@ export async function GET(request: Request) {
           html: m.html,
           // One-click unsubscribe (RFC 8058), which Gmail and Yahoo expect from bulk senders.
           headers: { "List-Unsubscribe": `<${m.offUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
-        }),
+        });
+        return { ok: sent.ok, limited: !sent.ok && sent.reason === "limited" };
+      },
     });
     logEvent("info", "weekly_email_done", run);
     return Response.json({ ok: true, ...run });
