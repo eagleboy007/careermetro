@@ -128,3 +128,43 @@ export function refFromParam(raw: unknown): Ref | null {
 /** Where "Prepare for this job" goes: Practice on its skills, or the mock interview set up for it. */
 export const prepareHref = (ref: Ref, to: "practice" | "mock"): string =>
   to === "practice" ? `/practice?job=${encodeURIComponent(refParam(ref))}` : `/mock?tab=interview&job=${encodeURIComponent(refParam(ref))}`;
+
+/** What a phone shared to CareerMetro (C21): the description to check and the job's link, either may be empty. */
+export type SharedJob = { text: string; url: string };
+
+/** An https link as the share sheet sent it, or "" for anything else (http, other schemes, too long). */
+function httpsLink(raw: string, max: number): string {
+  const text = raw.trim();
+  if (!text || text.length > max) return "";
+  try {
+    return new URL(text).protocol === "https:" ? text : "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * The fields of a share (manifest share_target: title, text, url) as "Add a job you found" takes them. Many apps send
+ * the link inside the text ("See this job: https://…"), so with no url the first https link in the text becomes the
+ * link and leaves the text. The title leads the text only when there is a description with it. Control characters go,
+ * line breaks stay, and anything over the caps is cut, never refused: the person checks the box before saving.
+ */
+export function sharedJobOf(fields: { title?: string; text?: string; url?: string }, caps: { text: number; url: number }): SharedJob {
+  const clean = (s: string | undefined) => (s ?? "").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f]+/g, " ").trim();
+  let text = clean(fields.text);
+  let url = httpsLink(clean(fields.url), caps.url);
+  if (!url) {
+    const raw = text.match(/https:\/\/[^\s<>"']+/)?.[0];
+    const found = raw?.replace(/[).,;:!?\]]+$/, "");
+    if (raw && found && httpsLink(found, caps.url)) {
+      url = found;
+      // The link goes with the bracket and punctuation around it: "Look (https://…)." reads "Look".
+      const at = text.indexOf(raw);
+      const from = at > 0 && "([".includes(text[at - 1]!) ? at - 1 : at;
+      text = `${text.slice(0, from)} ${text.slice(at + raw.length)}`.replace(/[ \t]+/g, " ").trim();
+    }
+  }
+  const title = clean(fields.title).replace(/\s+/g, " ");
+  if (text && title && !text.toLowerCase().includes(title.toLowerCase())) text = `${title}\n\n${text}`;
+  return { text: text.slice(0, caps.text).trim(), url };
+}

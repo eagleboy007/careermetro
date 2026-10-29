@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, prepareHref, refFromParam, refParam, stageOf, statusOf, withInterview } from "./rules";
+import { boardLinkOf, inFilter, isClosed, linkKind, myJobsEmpty, prepareHref, refFromParam, refParam, sharedJobOf, stageOf, statusOf, withInterview } from "./rules";
 
 describe("statuses and stages", () => {
   it("maps each status to its stage and back", () => {
@@ -101,5 +101,37 @@ describe("withInterview", () => {
     for (const s of ["saved", "applied", "heard", "interview"] as const) expect(withInterview(s, "2026-10-30T10:30")).toBe("interview");
     for (const s of ["offer", "no", "withdrawn"] as const) expect(withInterview(s, "2026-10-30T10:30")).toBe(s);
     expect(withInterview("applied", null)).toBe("applied");
+  });
+});
+
+describe("a job shared from the phone", () => {
+  const caps = { text: 60, url: 60 };
+
+  it("keeps the text and an https link as sent", () => {
+    expect(sharedJobOf({ text: "Monitor alerts.\r\nTriage phishing.", url: " https://example.com/job " }, caps)).toEqual({ text: "Monitor alerts.\nTriage phishing.", url: "https://example.com/job" });
+  });
+
+  it("drops a link that isn't https, or is too long", () => {
+    expect(sharedJobOf({ text: "Monitor alerts.", url: "http://example.com/job" }, caps).url).toBe("");
+    expect(sharedJobOf({ text: "Monitor alerts.", url: "javascript:alert(1)" }, caps).url).toBe("");
+    expect(sharedJobOf({ text: "Monitor alerts.", url: `https://example.com/${"a".repeat(60)}` }, caps).url).toBe("");
+  });
+
+  it("takes the first https link out of the text when no url came", () => {
+    expect(sharedJobOf({ text: "Look at this (https://jobs.lever.co/acme/1)." }, caps)).toEqual({ text: "Look at this", url: "https://jobs.lever.co/acme/1" });
+    expect(sharedJobOf({ text: "https://example.com/job" }, caps)).toEqual({ text: "", url: "https://example.com/job" });
+    expect(sharedJobOf({ text: "Not a link: http://example.com/job" }, caps)).toEqual({ text: "Not a link: http://example.com/job", url: "" });
+  });
+
+  it("puts the title first only when there is a description with it", () => {
+    expect(sharedJobOf({ title: "SOC Analyst", text: "Monitor alerts." }, caps).text).toBe("SOC Analyst\n\nMonitor alerts.");
+    expect(sharedJobOf({ title: "SOC Analyst", text: "SOC Analyst. Monitor alerts." }, caps).text).toBe("SOC Analyst. Monitor alerts.");
+    expect(sharedJobOf({ title: "SOC Analyst", url: "https://example.com/job" }, caps)).toEqual({ text: "", url: "https://example.com/job" });
+  });
+
+  it("cuts a long text instead of refusing it, and drops control characters", () => {
+    expect(sharedJobOf({ text: "a".repeat(100) }, caps).text).toBe("a".repeat(60));
+    expect(sharedJobOf({ text: "one\u0000two\u0007three" }, caps).text).toBe("one two three");
+    expect(sharedJobOf({}, caps)).toEqual({ text: "", url: "" });
   });
 });

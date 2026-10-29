@@ -163,9 +163,9 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - The Gaps page shows "Sign up to keep it in My jobs" to a visitor once a check exists. "Sign up with email" opens sign-in with My jobs as the next page; "Not now" hides the card.
 - At sign-in the claim adds the newest check on the claimed resumes to My jobs as Saved, unless it is already there or the list is full. A check made on Gaps keeps no description, so "Read the job again" doesn't show for it.
 
-## Phase 2 (plan only; build waits for Milin's approval of C21 and C22)
+## Phase 2 (C21 and C22 approved by Milin, 2026-10-29)
 
-From Design's proposed C21 and C22 (2026-10-29, prototype v50, handoff 12m and 12c). C20 (the skills line on Today's interview card) is a separate card and is not part of this plan. Nothing here is built until Milin answers the card.
+From Design's C21 and C22 (2026-10-29, prototype v50, handoff 12m and 12c), approved by Milin on 29 Oct via the Project manager's card. C20 (the skills line on Today's interview card) is a separate card, still unanswered, and is not part of this plan.
 
 ### 5. Share from the phone (C21)
 
@@ -219,6 +219,17 @@ From Design's proposed C21 and C22 (2026-10-29, prototype v50, handoff 12m and 1
 - **PR 6:** the weekly builder, Settings preview, `sendEmail` HTML and headers, `/email/off`, the weekly cron, export v35, and the privacy notice lines.
 
 Later, after a lawyer's view of the portals' terms: a browser button that reads the open page, and forwarding job-alert emails.
+
+## Choices made while building (PR 5)
+
+- The hold table went into its own migration, 0052 `shared_job_holds`; the weekly email's columns and table come with PR 6 as 0053, so each PR carries what it uses.
+- The hold keeps `text` and `url` only. The share's title leads the text when there is a description with it, and with no `url` the first https link in the text becomes the link (`sharedJobOf` in `src/lib/my-jobs/rules.ts`), because many Android apps put the link in the text.
+- `/share` always lands on `/departures?tab=mine&shared=<id>`; the proxy sends a signed-out person through sign-in with that address as `next`, so the hold waits. The proxy's redirect is a GET, so no form is posted twice. Holds made signed in also keep `user_id`.
+- The check runs at once only when it can work: a description of at least 200 characters, or a company job board's link alone. A link and a short blurb fill the box and wait for the description.
+- `?shared=` leaves the address after the page opens (history.replaceState), so a reload doesn't say the share has gone. Other outcomes (`empty`, `limit`, `failed`, or a hold that has gone) show one line in the box's alert.
+- Paste puts a link into the link field and other text into an empty description; it reads the clipboard only on the tap.
+- The Settings copy says "Open CareerMetro in Chrome" rather than naming careermetro.com, as the domain isn't pointed yet.
+- Icons are rendered from `src/app/icon.svg` into `public/icons/` (192, 512 and a maskable 512). No service worker.
 
 ## Build order once approved
 

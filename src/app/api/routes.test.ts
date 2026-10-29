@@ -31,6 +31,8 @@ const m = vi.hoisted(() => ({
   clearLibrary: vi.fn(async () => ({ resourceReportsDeleted: 0, resourceSuggestionsDeleted: 0 })),
   clearNotifications: vi.fn(async () => 0),
   clearJobText: vi.fn(async () => ({ unsavedJobTextCleared: 0 })),
+  clearShared: vi.fn(async () => ({ sharedJobsCleared: 0 })),
+  holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
   exportData: vi.fn(),
   signOut: vi.fn(),
   completeGoogleRedirect: vi.fn(),
@@ -68,6 +70,7 @@ vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures
 vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
+vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
 vi.mock("@/lib/account/export", () => ({ exportAccountData: m.exportData }));
@@ -94,6 +97,7 @@ import { PUT as saveProfile } from "@/app/api/resume/[id]/profile/route";
 import { POST as upload } from "@/app/api/resume/route";
 import { POST as trySample } from "@/app/api/resume/sample/route";
 import { OPTIONS as waitlistPreflight, POST as waitlist } from "@/app/api/waitlist/route";
+import { GET as shareGet, POST as share } from "@/app/share/route";
 import { SESSION_COOKIE } from "@/lib/session";
 
 const SITE = "https://careermetro.test";
@@ -373,6 +377,77 @@ describe("try a sample resume", () => {
   });
 });
 
+describe("share from the phone (POST /share)", () => {
+  const HOLD = "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f";
+  const DESCRIPTION = "Monitor alerts in Microsoft Sentinel, triage phishing reports and write KQL queries. ".repeat(4).trim();
+  const form = (fields: Record<string, string>, headers: Record<string, string> = {}) =>
+    new Request(SITE + "/share", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", ...headers }, body: new URLSearchParams(fields).toString() });
+
+  it("refuses a GET, so job text never sits in an address", async () => {
+    const res = shareGet();
+    expect(res.status).toBe(405);
+    expect(res.headers.get("allow")).toBe("POST");
+    expect(m.holdShared).not.toHaveBeenCalled();
+  });
+
+  it("holds the text and link, sets the hour-long cookie and sends the person to My jobs", async () => {
+    const logs = vi.spyOn(console, "log").mockImplementation(() => {});
+    const res = await share(form({ title: "SOC Analyst", text: DESCRIPTION, url: "https://jobs.lever.co/acme/0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69" }));
+    expect(res.status).toBe(303);
+    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=${HOLD}`);
+    const cookie = res.headers.get("set-cookie") ?? "";
+    expect(cookie).toContain(`cm_share=${HOLD}`);
+    expect(cookie).toMatch(/HttpOnly/i);
+    expect(cookie).toMatch(/SameSite=lax/i);
+    expect(cookie).toMatch(/Max-Age=3600/);
+    const [job, userId] = m.holdShared.mock.calls[0]!;
+    expect(job).toEqual({ text: `SOC Analyst\n\n${DESCRIPTION}`, url: "https://jobs.lever.co/acme/0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69" });
+    expect(userId).toBeNull();
+    // Counts only: never the text or the link.
+    const all = logs.mock.calls.map((c) => String(c[0])).join("\n");
+    expect(all).toContain("job_shared");
+    expect(all).not.toContain("Sentinel");
+    expect(all).not.toContain("lever.co");
+    logs.mockRestore();
+  });
+
+  it("keeps the person's id when they are signed in", async () => {
+    m.account = { id: ID };
+    await share(form({ text: DESCRIPTION }));
+    expect(m.holdShared.mock.calls[0]![1]).toBe(ID);
+  });
+
+  it("drops a link that isn't https, and cuts a text over the cap instead of refusing it", async () => {
+    await share(form({ text: "x".repeat(20_000), url: "http://example.com/job" }));
+    const [job] = m.holdShared.mock.calls[0]!;
+    expect(job.url).toBe("");
+    expect(job.text.length).toBe(12_000);
+  });
+
+  it("takes the link out of the text when the app sends it there", async () => {
+    await share(form({ text: "See this job: https://careers.example.com/soc-analyst." }));
+    expect(m.holdShared.mock.calls[0]![0]).toEqual({ text: "See this job:", url: "https://careers.example.com/soc-analyst" });
+  });
+
+  it("holds nothing for an empty share, and stops at 20 an hour from one address", async () => {
+    expect((await share(form({ title: "Only a title" }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=empty`);
+    m.takeShared.mockResolvedValueOnce(false);
+    expect((await share(form({ text: DESCRIPTION }))).headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=limit`);
+    expect(m.takeShared).toHaveBeenCalledWith(expect.objectContaining({ bucket: "share-ip", max: 20 }), expect.any(String));
+    expect(m.holdShared).not.toHaveBeenCalled();
+  });
+
+  it("says it failed, without the text, when the hold can't be kept", async () => {
+    m.holdShared.mockRejectedValueOnce(Object.assign(new Error(`insert ${DESCRIPTION}`), { code: "23514" }));
+    const logs = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await share(form({ text: DESCRIPTION }));
+    expect(res.headers.get("location")).toBe(`${SITE}/departures?tab=mine&shared=failed`);
+    expect(res.headers.get("set-cookie")).toBeNull();
+    expect(logs.mock.calls.map((c) => String(c[0])).join("\n")).not.toContain("Sentinel");
+    logs.mockRestore();
+  });
+});
+
 describe("daily cleanup", () => {
   const get = (auth?: string) => new Request(SITE + "/api/cron/cleanup", { headers: auth ? { authorization: auth } : {} });
 
@@ -405,13 +480,14 @@ describe("daily cleanup", () => {
     m.clearLibrary.mockResolvedValueOnce({ resourceReportsDeleted: 3, resourceSuggestionsDeleted: 1 });
     m.clearNotifications.mockResolvedValueOnce(4);
     m.clearJobText.mockResolvedValueOnce({ unsavedJobTextCleared: 2 });
+    m.clearShared.mockResolvedValueOnce({ sharedJobsCleared: 3 });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

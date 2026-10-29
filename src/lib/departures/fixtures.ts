@@ -302,3 +302,12 @@ export const exampleLiveJobs: JobPost[] = [
 ];
 export const exampleLiveSaved = ["l2"];
 export const exampleLiveApplied: [string, number][] = [["l2", 2]];
+
+/** A job shared from the phone (C21), for /design: what an Android app sends, the link and its text. */
+export const exampleShared = {
+  job: {
+    url: "https://zephyrpay.example/careers/soc-analyst",
+    text: "SOC Analyst, Night shift\n\nMonitor alerts in Microsoft Sentinel, triage phishing reports, write KQL queries and map incidents to MITRE ATT&CK. 1 to 3 years. Rotational night shifts, 4 days on, 3 off. Mumbai, hybrid.",
+  },
+  note: null,
+} as const;

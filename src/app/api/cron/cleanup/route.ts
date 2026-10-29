@@ -7,6 +7,7 @@ import { clearOldDepartures } from "@/lib/departures/store";
 import { renewExpiredGoals, reopenUnconfirmedGoals } from "@/lib/goals/store";
 import { clearOldLibraryRecords } from "@/lib/library/store";
 import { clearOldMockAnswers } from "@/lib/mock/interview-store";
+import { clearOldSharedJobs } from "@/lib/my-jobs/share";
 import { clearUnsavedJobText } from "@/lib/my-jobs/store";
 import { clearOldNotifications } from "@/lib/notifications/store";
 import { clearOldPracticeAnswers } from "@/lib/practice/store";
@@ -28,7 +29,8 @@ import { clearOldRateLimits } from "@/lib/shared-limit";
  * (docs/plans/departures-live-plan.md), and Library link reports and suggestions decided more than 180 days ago
  * (docs/plans/library-part-2-plan.md), and notifications read more than 60 days ago or made more than 90 days ago
  * (docs/plans/notifications-plan.md), and the description and link of a job checked from "Add a job you found" but never
- * saved to My jobs, after 24 hours (docs/plans/application-tracker-plan.md).
+ * saved to My jobs, after 24 hours (docs/plans/application-tracker-plan.md), and jobs shared from a phone that no one
+ * opened within the hour (section 5 of that plan).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -58,6 +60,7 @@ export async function GET(request: Request) {
     library: clearOldLibraryRecords(),
     notifications: clearOldNotifications().then((n) => ({ notificationsDeleted: n })),
     myJobs: clearUnsavedJobText(),
+    sharedJobs: clearOldSharedJobs(),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -77,6 +80,7 @@ export async function GET(request: Request) {
     library: { resourceReportsDeleted: null, resourceSuggestionsDeleted: null },
     notifications: { notificationsDeleted: null },
     myJobs: { unsavedJobTextCleared: null },
+    sharedJobs: { sharedJobsCleared: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

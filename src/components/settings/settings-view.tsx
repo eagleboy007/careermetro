@@ -15,6 +15,7 @@ import { ProfileLinkFields } from "./profile-link-fields";
 import { SettingsDraft, type SettingsDraftValues } from "./settings-draft";
 import { LocationFields, NotificationFields, PayFields, PrivacyFields, WhoSeesWhat } from "./settings-fields";
 import { SettingsNav } from "./settings-nav";
+import { ShareFromPhone } from "./share-from-phone";
 
 export type SettingsData = {
   firstName: string;
@@ -51,6 +52,7 @@ export const SETTINGS_SECTIONS = [
   { id: "acc-privacy", label: "Privacy" },
   { id: "acc-notif", label: "Notifications" },
   { id: "acc-company", label: "Company" },
+  { id: "acc-share", label: "Add from your phone" },
   { id: "acc-data", label: "Your data" },
 ] as const;
 
@@ -174,6 +176,10 @@ export function SettingsView({
               }
             />
           </List>
+        </Section>
+
+        <Section id="acc-share" title="Add from your phone">
+          <ShareFromPhone />
         </Section>
 
         <Section id="acc-data" title="Your data">

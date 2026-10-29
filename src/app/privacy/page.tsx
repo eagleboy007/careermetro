@@ -52,6 +52,11 @@ const sections: LegalSection[] = [
           private note, so you can read it again later. It is never shown to anyone and is deleted with the job or your account.
         </li>
         <li>
+          <strong>Jobs you share from your phone:</strong> only the link and text the app sends. We hold them for up to an hour, until you open them in
+          &quot;Add a job you found&quot;, and delete them when you do, or within a day if you never do. Nothing joins My jobs until you save it. We never
+          read your clipboard on our own: the Paste button reads it only when you tap it.
+        </li>
+        <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
           with it, so we can act on it and keep a record of the complaint.
         </li>
@@ -111,6 +116,7 @@ const sections: LegalSection[] = [
     body: (
       <ul>
         <li>A resume checked without an account: deleted after 24 hours.</li>
+        <li>A job shared from your phone: deleted when you open it, and within a day if you don&apos;t.</li>
         <li>
           Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,
           except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.
@@ -148,8 +154,8 @@ const sections: LegalSection[] = [
     heading: "Cookies",
     body: (
       <p>
-        We use only the cookies the app needs: one that keeps you signed in, and one that links a resume you check without an account to your browser for
-        24 hours. There are no advertising or tracking cookies.
+        We use only the cookies the app needs: one that keeps you signed in, one that links a resume you check without an account to your browser for
+        24 hours, and one that lets only your browser open a job you shared from your phone, for an hour. There are no advertising or tracking cookies.
       </p>
     ),
   },
@@ -161,5 +167,5 @@ const sections: LegalSection[] = [
 ];
 
 export default function PrivacyPage() {
-  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="28 Oct 2026" draft sections={sections} />;
+  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="29 Oct 2026" draft sections={sections} />;
 }

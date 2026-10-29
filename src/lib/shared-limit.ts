@@ -37,6 +37,8 @@ export const LIMITS = {
   signInCodePerEmail: { bucket: "signin-code-email", max: 5, windowMs: HOUR },
   /** Sign-in codes asked for from one network address, to any addresses. */
   signInCodePerIp: { bucket: "signin-code-ip", max: 20, windowMs: HOUR },
+  /** Jobs shared from a phone to POST /share (C21) from one network address: each keeps a hold for up to an hour. */
+  sharesPerIp: { bucket: "share-ip", max: 20, windowMs: HOUR },
   /** Waitlist sign-ups from one network address: enough for a family on one connection, not for a script. */
   waitlistPerIp: { bucket: "waitlist", max: 10, windowMs: HOUR },
   /** Files that couldn't be read, per network address per day (T18). Generous: a college network shares one address. */

@@ -151,7 +151,7 @@ import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleMine, exampleSaved } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleMine, exampleSaved, exampleShared } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
 import { DeparturesBoard } from "@/components/today/departures-board";
@@ -573,6 +573,19 @@ export default function DesignPage() {
           demo
         />
         <DeparturesView jobs={exampleJobs.slice(1, 3)} initialTab="mine" resumeId="example" demo />
+        <p className="text-sm text-muted">
+          Shared from the phone (C21): &quot;Add a job you found&quot; opens filled with what the app sent, under the &quot;Shared from your phone&quot;
+          banner with Clear, and checks it at once. Nothing is kept until Save. The Paste button in the link field shows where the browser can read
+          the clipboard, and reads it only when tapped. Then a share whose hour passed.
+        </p>
+        <DeparturesView jobs={exampleJobs.slice(1, 2)} initialTab="mine" resumeId="example" shared={exampleShared} demo />
+        <DeparturesView
+          jobs={exampleJobs.slice(1, 2)}
+          initialTab="mine"
+          resumeId="example"
+          shared={{ job: null, note: "That shared job has gone: we keep a share for an hour until you open it. Share it again, or paste it below." }}
+          demo
+        />
         <DeparturesView jobs={exampleJobs.slice(1, 3)} resumeId="example" prep={exampleDeparturesPrep(exampleJobs, true)} demo />
         <DeparturesView jobs={exampleJobs.slice(0, 3)} hasResume={false} prep={exampleDeparturesPrep(exampleJobs, false)} />
         <p className="text-sm text-muted">
