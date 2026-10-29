@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles, skills } from "@/content";
-import { formatExperience, getRoleView, postingsAnalysed, roleViews } from "./role-view";
+import { formatExperience, getRoleView, postingsAnalysed, roleViews, toRoleView } from "./role-view";
 
 describe("role views", () => {
   it("has one view per role profile, sorted by title", () => {
@@ -44,6 +44,14 @@ describe("role views", () => {
   it("formats experience bands", () => {
     expect(formatExperience({ minYears: 0, maxYears: 2 })).toBe("Up to 2 years");
     expect(formatExperience({ minYears: 3, maxYears: 8 })).toBe("3 to 8 years");
+  });
+
+  it("carries each profile's summary and daily duties", () => {
+    for (const r of roleViews) {
+      const profile = roleProfiles.find((p) => p.slug === r.slug)!;
+      expect([r.summary, r.dailyDuties]).toEqual([profile.summary ?? null, profile.dailyDuties ?? []]);
+    }
+    expect(toRoleView({ ...roleProfiles[0], summary: undefined, dailyDuties: undefined })).toMatchObject({ summary: null, dailyDuties: [] });
   });
 
   it("returns undefined for an unknown slug", () => {

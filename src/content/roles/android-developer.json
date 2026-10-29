@@ -1,6 +1,24 @@
 {
   "slug": "android-developer",
   "title": "Android Developer",
+  "summary": "An Android developer builds and maintains the Android version of a company's app. They work in a mobile or product team with designers, back-end engineers and testers, and own the app from screen code to Play Store release.",
+  "dailyDuties": [
+    "Build screens in Jetpack Compose using Kotlin and coroutines",
+    "Call back-end APIs with Retrofit and handle errors and offline states",
+    "Structure features with ViewModel and an architecture such as MVVM",
+    "Write unit tests for view models",
+    "Maintain and fix older Java code",
+    "Raise pull requests and review teammates' code",
+    "Prepare and roll out releases on the Play Store"
+  ],
+  "typicalTitles": [
+    "Android Engineer",
+    "Android App Developer",
+    "Kotlin Developer",
+    "Android Software Engineer",
+    "Jetpack Compose Developer",
+    "Mobile Application Developer (Android)"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

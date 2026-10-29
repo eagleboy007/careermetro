@@ -1,0 +1,125 @@
+{
+  "slug": "threat-intelligence-analyst",
+  "title": "Threat Intelligence Analyst",
+  "summary": "Threat intelligence analysts study who might attack an organisation and how, using threat feeds, open sources and underground forums, and turn this into short reports and indicators the security team can act on. They usually sit in the security operations or cyber defence team and feed the SOC, incident response and vulnerability teams.",
+  "dailyDuties": [
+    "Collect and enrich indicators of compromise from feeds and reports",
+    "Monitor open sources, forums and leak sites for threats to the organisation",
+    "Map threat actor techniques to MITRE ATT&CK",
+    "Search SIEM logs for newly reported indicators",
+    "Write intelligence reports and advisories for technical and business readers",
+    "Share detection ideas with SOC and detection engineers"
+  ],
+  "typicalTitles": [
+    "Cyber Threat Intelligence Analyst",
+    "CTI Analyst",
+    "Threat Research Analyst",
+    "Dark Web Intelligence Analyst",
+    "Threat Intel Analyst",
+    "Senior Analyst - Threat Intelligence"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "threat-intelligence",
+      "importance": "required",
+      "expectation": "Collect, enrich and assess indicators and threat reports, and track threat actors",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Map adversary tactics and techniques to MITRE ATT&CK and suggest detections",
+      "postingShare": null
+    },
+    {
+      "skillId": "osint",
+      "importance": "required",
+      "expectation": "Research open sources, underground forums and leak sites for threats to the organisation",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Search SIEM logs to check whether reported indicators appear in the environment",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Pivot on IP addresses, domains and DNS records to map attacker infrastructure",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write short intelligence reports and advisories for technical and business readers",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Weigh sources, judge confidence and separate signal from noise",
+      "postingShare": null
+    },
+    {
+      "skillId": "malware-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Do basic static and sandbox analysis of samples",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script feed collection and enrichment",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "nice_to_have",
+      "expectation": "Support incident handlers with intelligence during live cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "nice_to_have",
+      "expectation": "Flag exploited vulnerabilities so patching can be prioritised",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Search EDR telemetry for indicators",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "comptia-cysa-plus",
+      "importance": "recommended",
+      "why": "Covers threat intelligence, detection and analysis at analyst level"
+    },
+    {
+      "certId": "gcih",
+      "importance": "optional",
+      "why": "Incident handling depth that helps intelligence analysts support responders"
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "Broad security credential for senior analysts"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

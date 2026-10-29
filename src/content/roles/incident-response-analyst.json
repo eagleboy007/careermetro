@@ -1,6 +1,24 @@
 {
   "slug": "incident-response-analyst",
   "title": "Incident Response Analyst (DFIR)",
+  "summary": "An incident response analyst investigates confirmed security breaches, works out what the attacker did and helps contain and clean up. DFIR stands for digital forensics and incident response; the role sits above the SOC (security operations centre) and steps in when an alert turns into a real incident.",
+  "dailyDuties": [
+    "Contain, investigate and close security incidents using a structured process",
+    "Collect disk, memory and log evidence and build attack timelines",
+    "Search and correlate logs in the SIEM during investigations",
+    "Isolate and investigate hosts with EDR tools",
+    "Triage suspicious files in a sandbox and pull out indicators",
+    "Map attacker activity to MITRE ATT&CK and hunt for related activity",
+    "Write incident reports and support CERT-In breach reporting"
+  ],
+  "typicalTitles": [
+    "Digital Forensics Analyst",
+    "Cyber Forensics Investigator",
+    "Incident Handler",
+    "CSIRT Analyst",
+    "CERT Analyst",
+    "DFIR Consultant"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 7

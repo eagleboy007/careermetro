@@ -1,6 +1,24 @@
 {
   "slug": "mlops-engineer",
   "title": "MLOps Engineer",
+  "summary": "An MLOps engineer builds the platform and pipelines that take machine learning models from a data scientist's notebook into reliable production. They sit in a platform or ML team and handle model deployment, monitoring and retraining, much as DevOps does for regular software.",
+  "dailyDuties": [
+    "Track experiments, register models and monitor drift with a tool such as MLflow",
+    "Deploy models as batch jobs or real-time endpoints",
+    "Containerise training and inference code and run it on Kubernetes",
+    "Build CI/CD pipelines that test and release models",
+    "Schedule training and data pipelines with Airflow or Kubeflow",
+    "Provision ML infrastructure with Terraform",
+    "Set up dashboards and alerts for model services"
+  ],
+  "typicalTitles": [
+    "ML Platform Engineer",
+    "ML Infrastructure Engineer",
+    "AI Platform Engineer",
+    "ML DevOps Engineer",
+    "Model Ops Engineer",
+    "LLMOps Engineer"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 7

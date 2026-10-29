@@ -1,0 +1,141 @@
+{
+  "slug": "performance-test-engineer",
+  "title": "Performance Test Engineer",
+  "summary": "Performance test engineers check how fast and stable an application stays when many users use it at once, by simulating load and finding what slows it down. They sit in the QA or quality engineering team and work with developers and infrastructure teams to fix bottlenecks before release.",
+  "dailyDuties": [
+    "Agree performance requirements and workload models with business and IT teams",
+    "Script user journeys in JMeter, LoadRunner, Gatling or k6",
+    "Run load, stress and endurance tests",
+    "Monitor servers and applications with APM tools during tests",
+    "Analyse slow queries, thread dumps and heap dumps to find bottlenecks",
+    "Write test reports with findings and tuning suggestions"
+  ],
+  "typicalTitles": [
+    "Performance Tester",
+    "Performance Engineer",
+    "Performance Testing Consultant",
+    "Senior QA Engineer - Performance Testing",
+    "Non-Functional Test Engineer",
+    "Load Test Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "performance-testing",
+      "importance": "required",
+      "expectation": "Script and run load, stress and endurance tests in JMeter, LoadRunner, Gatling or k6",
+      "postingShare": null
+    },
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Turn non-functional requirements into workload models, test plans and pass criteria",
+      "postingShare": null
+    },
+    {
+      "skillId": "apm-tools",
+      "importance": "required",
+      "expectation": "Find bottlenecks during tests with Dynatrace, AppDynamics or New Relic",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-profiling",
+      "importance": "required",
+      "expectation": "Analyse CPU, memory, thread and heap dumps to find root causes",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query the database to find slow queries during a test",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Understand HTTP requests, sessions and APIs to script realistic user journeys",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write and debug test scripts in Java, JavaScript or Python",
+      "postingShare": null,
+      "oneOf": "load-script-language"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write and debug test scripts in Java, JavaScript or Python",
+      "postingShare": null,
+      "oneOf": "load-script-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write and debug test scripts in Java, JavaScript or Python",
+      "postingShare": null,
+      "oneOf": "load-script-language"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present results and tuning advice to developers and business teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run performance tests in Jenkins or GitLab pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Build test dashboards in Grafana",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Check server resources during tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Suggest index or query fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Use traces to follow slow requests across services",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "load-script-language",
+      "label": "A scripting language for load tests (Java, JavaScript or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-foundation",
+      "importance": "optional",
+      "why": "Common testing baseline in Indian QA hiring"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

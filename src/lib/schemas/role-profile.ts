@@ -30,6 +30,17 @@ export const roleCertification = z.object({
 export const roleProfile = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
+  /** What the role is and where it sits, in two or three plain sentences, shown on the role page. */
+  summary: z.string().min(40).max(400).optional(),
+  /** What someone in the role does on a normal working day, one short line each, shown on the role page. */
+  dailyDuties: z.array(z.string().min(1).max(140)).min(5).max(7).optional(),
+  /** Job titles the role goes by in postings. Kept as data: the feed title rules in departures don't read them. */
+  typicalTitles: z
+    .array(z.string().min(1).max(60))
+    .min(3)
+    .max(8)
+    .refine((titles) => new Set(titles.map((t) => t.toLowerCase())).size === titles.length, "lists a title twice")
+    .optional(),
   experienceBand: z.object({
     minYears: z.number().int().nonnegative(),
     maxYears: z.number().int().positive(),

@@ -1,6 +1,25 @@
 {
   "slug": "cloud-engineer",
   "title": "Cloud Engineer",
+  "summary": "A cloud engineer builds and runs a company's servers, networks and services on a public cloud platform. They sit in an infrastructure or platform team and keep production workloads secure, monitored and within budget.",
+  "dailyDuties": [
+    "Build VPCs, subnets, load balancers and DNS",
+    "Write and review Terraform for infrastructure as code",
+    "Administer Linux servers and run containers on managed Kubernetes",
+    "Set up least-privilege access in cloud IAM",
+    "Set up alerts and dashboards and respond when they fire",
+    "Automate routine tasks with shell and Python scripts",
+    "Find and cut waste in the cloud bill"
+  ],
+  "typicalTitles": [
+    "Cloud Operations Engineer",
+    "Cloud Infrastructure Engineer",
+    "Cloud Administrator",
+    "Cloud Support Engineer",
+    "AWS Cloud Engineer",
+    "Azure Cloud Engineer",
+    "GCP Cloud Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

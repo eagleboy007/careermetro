@@ -1,6 +1,24 @@
 {
   "slug": "penetration-tester",
   "title": "Penetration Tester (VAPT)",
+  "summary": "A penetration tester is paid to attack a company's web apps, networks and APIs the way a real attacker would, and report what they find. VAPT stands for vulnerability assessment and penetration testing; the role sits in a security team or consultancy, often running CERT-In empanelled audits.",
+  "dailyDuties": [
+    "Run web, network and API penetration tests end to end",
+    "Scan and enumerate networks with Nmap from Kali Linux",
+    "Exploit OWASP Top 10 issues in web apps",
+    "Rate findings by CVSS severity",
+    "Write small exploit and automation scripts in Python or Bash",
+    "Write clear VAPT reports",
+    "Retest fixes and close findings"
+  ],
+  "typicalTitles": [
+    "Ethical Hacker",
+    "Security Tester",
+    "Offensive Security Engineer",
+    "Red Team Analyst",
+    "Web Application Security Tester",
+    "Vulnerability Assessment Analyst"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

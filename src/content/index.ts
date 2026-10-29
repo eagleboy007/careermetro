@@ -40,6 +40,7 @@ import cloudSecurityEngineer from "./roles/cloud-security-engineer.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
+import dataArchitect from "./roles/data-architect.json";
 import dataEngineer from "./roles/data-engineer.json";
 import dataScientist from "./roles/data-scientist.json";
 import databaseAdministrator from "./roles/database-administrator.json";
@@ -47,6 +48,7 @@ import databaseArchitect from "./roles/database-architect.json";
 import devopsEngineer from "./roles/devops-engineer.json";
 import digitalMarketingExecutive from "./roles/digital-marketing-executive.json";
 import dotnetDeveloper from "./roles/dotnet-developer.json";
+import embeddedSoftwareEngineer from "./roles/embedded-software-engineer.json";
 import engineeringManager from "./roles/engineering-manager.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
@@ -55,26 +57,38 @@ import iamEngineer from "./roles/iam-engineer.json";
 import incidentResponseAnalyst from "./roles/incident-response-analyst.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
 import iosDeveloper from "./roles/ios-developer.json";
+import itSupportEngineer from "./roles/it-support-engineer.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
 import manualTestEngineer from "./roles/manual-test-engineer.json";
 import mlEngineer from "./roles/ml-engineer.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
 import networkEngineer from "./roles/network-engineer.json";
+import nodejsDeveloper from "./roles/nodejs-developer.json";
 import penetrationTester from "./roles/penetration-tester.json";
+import performanceTestEngineer from "./roles/performance-test-engineer.json";
+import platformEngineer from "./roles/platform-engineer.json";
 import privacyAnalyst from "./roles/privacy-analyst.json";
 import productManager from "./roles/product-manager.json";
 import pythonDeveloper from "./roles/python-developer.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
+import salesforceDeveloper from "./roles/salesforce-developer.json";
+import sapAbapDeveloper from "./roles/sap-abap-developer.json";
+import scrumMaster from "./roles/scrum-master.json";
 import securityArchitect from "./roles/security-architect.json";
 import seniorBackendEngineer from "./roles/senior-backend-engineer.json";
 import seniorDataScientist from "./roles/senior-data-scientist.json";
+import servicenowDeveloper from "./roles/servicenow-developer.json";
 import siteReliabilityEngineer from "./roles/site-reliability-engineer.json";
 import socAnalystL2 from "./roles/soc-analyst-l2.json";
 import socLead from "./roles/soc-lead.json";
 import softwareEngineer from "./roles/software-engineer.json";
 import solutionsArchitect from "./roles/solutions-architect.json";
 import systemAdministrator from "./roles/system-administrator.json";
+import technicalSupportEngineer from "./roles/technical-support-engineer.json";
+import technicalWriter from "./roles/technical-writer.json";
+import threatIntelligenceAnalyst from "./roles/threat-intelligence-analyst.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
+import vulnerabilityManagementAnalyst from "./roles/vulnerability-management-analyst.json";
 
 /** The skill taxonomy. Validated at import so a bad edit fails tests and the build. */
 export const skills: Skill[] = z.array(skill).parse(skillsJson);
@@ -127,6 +141,7 @@ export const roleProfiles: RoleProfile[] = z
     crossPlatformMobileDeveloper,
     cyberSecurityAnalyst,
     dataAnalyst,
+    dataArchitect,
     dataEngineer,
     dataScientist,
     databaseAdministrator,
@@ -134,6 +149,7 @@ export const roleProfiles: RoleProfile[] = z
     devopsEngineer,
     digitalMarketingExecutive,
     dotnetDeveloper,
+    embeddedSoftwareEngineer,
     engineeringManager,
     frontendDeveloper,
     fullStackDeveloper,
@@ -142,26 +158,38 @@ export const roleProfiles: RoleProfile[] = z
     incidentResponseAnalyst,
     informationSecurityAnalyst,
     iosDeveloper,
+    itSupportEngineer,
     javaBackendDeveloper,
     manualTestEngineer,
     mlEngineer,
     mlopsEngineer,
     networkEngineer,
+    nodejsDeveloper,
     penetrationTester,
+    performanceTestEngineer,
+    platformEngineer,
     privacyAnalyst,
     productManager,
     pythonDeveloper,
     qaAutomationEngineer,
+    salesforceDeveloper,
+    sapAbapDeveloper,
+    scrumMaster,
     securityArchitect,
     seniorBackendEngineer,
     seniorDataScientist,
+    servicenowDeveloper,
     siteReliabilityEngineer,
     socAnalystL2,
     socLead,
     softwareEngineer,
     solutionsArchitect,
     systemAdministrator,
+    technicalSupportEngineer,
+    technicalWriter,
+    threatIntelligenceAnalyst,
     uiUxDesigner,
+    vulnerabilityManagementAnalyst,
   ]);
 
 export function normalizeSkillTerm(term: string): string {

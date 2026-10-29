@@ -1,0 +1,99 @@
+{
+  "slug": "embedded-software-engineer",
+  "title": "Embedded Software Engineer",
+  "summary": "Embedded software engineers write the firmware that runs on microcontrollers inside devices such as meters, vehicles, medical equipment and consumer electronics. They work closely with hardware engineers and testers, often in product companies or engineering-services firms.",
+  "dailyDuties": [
+    "Write and review firmware in embedded C",
+    "Bring up a new board and test its peripherals",
+    "Write drivers for sensors over I2C, SPI or UART",
+    "Debug a fault with a JTAG debugger and an oscilloscope",
+    "Fix timing issues between RTOS tasks",
+    "Test firmware on hardware with the hardware and QA teams"
+  ],
+  "typicalTitles": [
+    "Firmware Engineer",
+    "Embedded Firmware Engineer",
+    "Embedded Systems Engineer",
+    "Embedded Engineer",
+    "Embedded C Developer",
+    "Junior Firmware Engineer",
+    "Senior Embedded Software Engineer",
+    "Embedded Developer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write clean, memory-safe firmware in embedded C",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "required",
+      "expectation": "Program microcontrollers such as STM32, ARM Cortex-M or ESP32, including timers, GPIO and interrupts",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtos",
+      "importance": "required",
+      "expectation": "Build firmware with tasks, queues and semaphores on an RTOS such as FreeRTOS or Zephyr",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Write and debug drivers for UART, SPI, I2C or CAN",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Find faults with a JTAG or SWD debugger, an oscilloscope and a logic analyser",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep firmware in Git and work through code reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Write firmware or tools in C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-linux",
+      "importance": "nice_to_have",
+      "expectation": "Bring up boards and write drivers on embedded Linux with Yocto or Buildroot",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Write test and flashing scripts in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Unit test firmware modules on the host",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

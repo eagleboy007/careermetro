@@ -1,6 +1,25 @@
 {
   "slug": "frontend-developer",
   "title": "Frontend Developer (React)",
+  "summary": "A frontend developer builds the parts of a website or web app that people see and click, mostly with React. They work with designers and back-end engineers to turn designs into fast, accessible screens.",
+  "dailyDuties": [
+    "Build responsive React components from Figma designs",
+    "Write TypeScript for components and API responses",
+    "Call APIs and handle loading, error and empty states",
+    "Manage shared state with Context, Redux or a similar library",
+    "Test components with Jest and Testing Library",
+    "Raise pull requests and pass CI checks",
+    "Discuss UI decisions with designers and back-end engineers"
+  ],
+  "typicalTitles": [
+    "React Developer",
+    "ReactJS Developer",
+    "UI Developer",
+    "UI Engineer",
+    "Front End Engineer",
+    "JavaScript Developer",
+    "Next.js Developer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 4

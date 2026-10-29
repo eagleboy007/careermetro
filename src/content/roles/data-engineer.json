@@ -1,6 +1,25 @@
 {
   "slug": "data-engineer",
   "title": "Data Engineer",
+  "summary": "A data engineer builds the pipelines that move data from apps and systems into a warehouse where analysts and data scientists can use it. They sit in a data or platform team and own how data is loaded, transformed, scheduled and checked for quality.",
+  "dailyDuties": [
+    "Build batch ETL or ELT pipelines in Python and SQL (jobs that extract, transform and load data)",
+    "Schedule and monitor pipelines in Airflow or a similar tool",
+    "Process large datasets with Spark or PySpark",
+    "Model and load data into Snowflake, BigQuery, Redshift or Databricks",
+    "Build tested transformations in dbt",
+    "Add data quality checks and track lineage",
+    "Build streaming pipelines with Kafka or Kinesis"
+  ],
+  "typicalTitles": [
+    "Big Data Engineer",
+    "ETL Developer",
+    "Data Pipeline Engineer",
+    "Analytics Engineer",
+    "PySpark Developer",
+    "Databricks Engineer",
+    "Data Integration Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

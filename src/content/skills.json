@@ -269,7 +269,10 @@
       "normalization",
       "jpa",
       "hibernate",
-      "orm"
+      "orm",
+      "entity framework",
+      "ef core",
+      "sqlalchemy"
     ]
   },
   {
@@ -496,7 +499,9 @@
       "llm",
       "large language models",
       "chatgpt",
-      "openai api"
+      "openai api",
+      "langchain",
+      "llamaindex"
     ],
     "ambiguous": []
   },
@@ -707,7 +712,10 @@
       "pytest",
       "jest",
       "testng",
-      "tdd"
+      "tdd",
+      "xunit",
+      "nunit",
+      "mstest"
     ]
   },
   {
@@ -718,7 +726,9 @@
       "jmeter",
       "load testing",
       "gatling",
-      "k6"
+      "k6",
+      "loadrunner",
+      "neoload"
     ]
   },
   {
@@ -2224,7 +2234,8 @@
       "itil v4",
       "itsm",
       "it service management",
-      "bmc remedy"
+      "bmc remedy",
+      "servicenow itsm"
     ],
     "ambiguous": [],
     "implies": [],
@@ -2296,6 +2307,656 @@
       "power query m",
       "m language",
       "m query"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "internal-developer-platform",
+    "name": "Internal developer platforms",
+    "category": "cloud-devops",
+    "aliases": [
+      "internal developer platform",
+      "internal developer platforms",
+      "backstage",
+      "developer portal",
+      "golden paths",
+      "golden path",
+      "platform engineering"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "kubernetes"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-lakehouse",
+    "name": "Data lakes and lakehouses",
+    "category": "data",
+    "aliases": [
+      "lakehouse",
+      "data lakehouse",
+      "delta lake",
+      "apache iceberg",
+      "medallion architecture",
+      "data lake",
+      "adls gen2",
+      "aws lake formation",
+      "unity catalog"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "embedded-c",
+    "name": "Embedded C",
+    "category": "programming",
+    "aliases": [
+      "embedded c",
+      "c programming",
+      "c language",
+      "ansi c",
+      "misra c"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "microcontrollers",
+    "name": "Microcontroller programming",
+    "category": "programming",
+    "aliases": [
+      "microcontrollers",
+      "microcontroller",
+      "stm32",
+      "arm cortex-m",
+      "cortex-m",
+      "esp32",
+      "8051",
+      "avr",
+      "pic microcontroller",
+      "bare-metal firmware",
+      "bare metal firmware"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rtos",
+    "name": "Real-time operating systems",
+    "category": "programming",
+    "aliases": [
+      "rtos",
+      "freertos",
+      "zephyr rtos",
+      "zephyr",
+      "threadx",
+      "vxworks",
+      "qnx",
+      "real-time operating system"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "embedded-protocols",
+    "name": "Embedded communication protocols",
+    "category": "programming",
+    "aliases": [
+      "uart",
+      "spi",
+      "i2c",
+      "can bus",
+      "can protocol",
+      "modbus",
+      "rs-485",
+      "rs485"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "embedded-debugging",
+    "name": "Hardware and firmware debugging",
+    "category": "tools",
+    "aliases": [
+      "jtag",
+      "swd",
+      "oscilloscope",
+      "logic analyzer",
+      "logic analyser",
+      "hardware debugging",
+      "gdb"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "embedded-linux",
+    "name": "Embedded Linux",
+    "category": "programming",
+    "aliases": [
+      "embedded linux",
+      "yocto",
+      "buildroot",
+      "device drivers",
+      "linux device drivers",
+      "board support package",
+      "u-boot",
+      "linux kernel"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "linux"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-apex",
+    "name": "Salesforce Apex",
+    "category": "programming",
+    "aliases": [
+      "salesforce apex",
+      "apex triggers",
+      "apex classes",
+      "batch apex",
+      "soql",
+      "sosl",
+      "governor limits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-lwc",
+    "name": "Lightning Web Components",
+    "category": "web",
+    "aliases": [
+      "lightning web components",
+      "lwc",
+      "aura components",
+      "visualforce"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-flows",
+    "name": "Salesforce Flows and configuration",
+    "category": "tools",
+    "aliases": [
+      "salesforce flows",
+      "flow builder",
+      "record-triggered flows",
+      "process builder",
+      "salesforce administration",
+      "salesforce admin"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-clouds",
+    "name": "Salesforce clouds (Sales, Service, Experience)",
+    "category": "business",
+    "aliases": [
+      "sales cloud",
+      "service cloud",
+      "experience cloud",
+      "salesforce cpq",
+      "revenue cloud",
+      "agentforce"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "servicenow-scripting",
+    "name": "ServiceNow scripting (Glide API)",
+    "category": "programming",
+    "aliases": [
+      "gliderecord",
+      "glide api",
+      "glideajax",
+      "client scripts",
+      "script includes",
+      "ui policies",
+      "servicenow scripting",
+      "servicenow development"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "servicenow-flow-designer",
+    "name": "ServiceNow Flow Designer and IntegrationHub",
+    "category": "tools",
+    "aliases": [
+      "flow designer",
+      "integrationhub",
+      "integration hub",
+      "servicenow workflow",
+      "workflow editor"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "servicenow-itom",
+    "name": "ServiceNow ITOM and CMDB",
+    "category": "tools",
+    "aliases": [
+      "itom",
+      "servicenow itom",
+      "cmdb",
+      "servicenow discovery",
+      "service mapping",
+      "mid server",
+      "csdm"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "servicenow-service-portal",
+    "name": "ServiceNow Service Portal",
+    "category": "web",
+    "aliases": [
+      "service portal",
+      "servicenow portal",
+      "service portal widgets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-abap",
+    "name": "SAP ABAP",
+    "category": "programming",
+    "aliases": [
+      "abap",
+      "sap abap",
+      "abap objects",
+      "oo abap",
+      "alv reports",
+      "alv",
+      "module pool",
+      "abap data dictionary",
+      "badi",
+      "badis",
+      "user exits",
+      "enhancement framework"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-interfaces",
+    "name": "SAP interfaces (BAPI, RFC, IDoc)",
+    "category": "programming",
+    "aliases": [
+      "bapi",
+      "bapis",
+      "rfc function modules",
+      "idoc",
+      "idocs",
+      "ale/idoc",
+      "sap pi/po"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-forms",
+    "name": "SAP forms (Smartforms, Adobe Forms)",
+    "category": "programming",
+    "aliases": [
+      "smartforms",
+      "smart forms",
+      "adobe forms",
+      "sapscript"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-abap-hana",
+    "name": "ABAP on HANA (CDS, AMDP, RAP)",
+    "category": "programming",
+    "aliases": [
+      "abap on hana",
+      "cds views",
+      "abap cds",
+      "amdp",
+      "abap restful application programming model",
+      "s/4hana abap",
+      "sap gateway",
+      "sap odata"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sap-abap"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-fiori-ui5",
+    "name": "SAP Fiori and SAPUI5",
+    "category": "web",
+    "aliases": [
+      "sapui5",
+      "sap ui5",
+      "openui5",
+      "sap fiori",
+      "fiori",
+      "fiori elements"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "nestjs",
+    "name": "NestJS",
+    "category": "web",
+    "aliases": [
+      "nestjs",
+      "nest.js",
+      "nest js"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "nodejs",
+      "typescript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "desktop-support",
+    "name": "Desktop and end-user support",
+    "category": "tools",
+    "aliases": [
+      "desktop support",
+      "end user support",
+      "end-user support",
+      "hardware troubleshooting",
+      "laptop troubleshooting",
+      "desktop troubleshooting",
+      "os imaging",
+      "printer troubleshooting",
+      "deskside support"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "endpoint-management",
+    "name": "Endpoint management (Intune, SCCM, Jamf)",
+    "category": "cloud-devops",
+    "aliases": [
+      "intune",
+      "microsoft intune",
+      "sccm",
+      "mecm",
+      "microsoft endpoint configuration manager",
+      "jamf",
+      "jamf pro",
+      "kandji",
+      "windows autopilot",
+      "mobile device management",
+      "endpoint management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "m365-administration",
+    "name": "Microsoft 365 and Google Workspace administration",
+    "category": "tools",
+    "aliases": [
+      "microsoft 365 administration",
+      "office 365 administration",
+      "m365 administration",
+      "exchange online",
+      "exchange server",
+      "microsoft 365 admin center",
+      "google workspace administration",
+      "google workspace admin",
+      "g suite administration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "support-ticketing-tools",
+    "name": "Customer support ticketing tools",
+    "category": "tools",
+    "aliases": [
+      "zendesk",
+      "freshdesk",
+      "zoho desk",
+      "salesforce service cloud",
+      "help desk software"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "application-support",
+    "name": "Application and product support",
+    "category": "cloud-devops",
+    "aliases": [
+      "application support",
+      "production support",
+      "l2 support",
+      "l3 support",
+      "root cause analysis",
+      "har files",
+      "browser developer tools"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "osint",
+    "name": "OSINT and dark web research",
+    "category": "security",
+    "aliases": [
+      "osint",
+      "open source intelligence",
+      "dark web monitoring",
+      "dark web",
+      "maltego",
+      "spiderfoot",
+      "shodan"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "threat-intelligence"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "apm-tools",
+    "name": "Application performance monitoring (APM)",
+    "category": "cloud-devops",
+    "aliases": [
+      "dynatrace",
+      "appdynamics",
+      "new relic",
+      "application performance monitoring"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "monitoring"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "performance-profiling",
+    "name": "Performance profiling and tuning",
+    "category": "programming",
+    "aliases": [
+      "thread dump",
+      "thread dumps",
+      "heap dump",
+      "heap dumps",
+      "gc tuning",
+      "garbage collection tuning",
+      "jvm tuning",
+      "memory leak analysis",
+      "jprofiler",
+      "visualvm"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "agile-coaching",
+    "name": "Agile coaching and facilitation",
+    "category": "product",
+    "aliases": [
+      "agile coaching",
+      "agile coach",
+      "servant leadership",
+      "team coaching",
+      "scrum coaching"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "agile-scrum"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "agile-metrics",
+    "name": "Agile delivery metrics",
+    "category": "product",
+    "aliases": [
+      "velocity tracking",
+      "sprint velocity",
+      "burndown chart",
+      "burndown charts",
+      "burn-up chart",
+      "agile metrics",
+      "sprint metrics"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "scaled-agile",
+    "name": "Scaled agile (SAFe)",
+    "category": "product",
+    "aliases": [
+      "scaled agile framework",
+      "safe framework",
+      "agile release train",
+      "pi planning",
+      "program increment planning",
+      "release train engineer"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "agile-scrum"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "technical-writing",
+    "name": "Technical writing",
+    "category": "workplace",
+    "aliases": [
+      "technical writing",
+      "technical documentation",
+      "user guides",
+      "user manuals",
+      "release notes",
+      "online help",
+      "software documentation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "api-documentation",
+    "name": "API documentation",
+    "category": "web",
+    "aliases": [
+      "api documentation",
+      "openapi",
+      "swagger",
+      "openapi specification",
+      "developer documentation",
+      "api reference documentation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "docs-as-code",
+    "name": "Docs-as-code tooling",
+    "category": "tools",
+    "aliases": [
+      "docs as code",
+      "docs-as-code",
+      "markdown",
+      "mkdocs",
+      "docusaurus",
+      "sphinx",
+      "asciidoc",
+      "static site generators"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "structured-authoring",
+    "name": "Structured authoring (DITA, MadCap Flare)",
+    "category": "tools",
+    "aliases": [
+      "dita",
+      "dita xml",
+      "madcap flare",
+      "oxygen xml",
+      "framemaker",
+      "adobe framemaker",
+      "ccms",
+      "component content management",
+      "robohelp"
     ],
     "ambiguous": [],
     "implies": [],

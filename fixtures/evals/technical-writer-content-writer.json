@@ -1,0 +1,51 @@
+{
+  "id": "technical-writer-content-writer",
+  "roleSlug": "technical-writer",
+  "persona": "Edtech content writer moving into software technical writing",
+  "resumeText": "Fatima Shaikh | Mumbai | fatima.shaikh@example.com\n\nEXPERIENCE\nContent Writer, Marine Drive Learning, Mumbai (2023 - present)\n- Write 8 to 10 how-to articles a month for the learning app's help centre.\n- Interview course designers and engineers to explain new app features in plain language.\n- Publish articles in WordPress and edit their HTML when the layout breaks.\n- Keep my drafts in Markdown and version them on GitHub.\n\nEDUCATION\nBA English Literature, St. Xavier's College, Mumbai, 2023\n\nSKILLS\nSEO, Markdown, Canva, Swagger (learning)\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "technical-writing",
+        "quote": "Write 8 to 10 how-to articles a month for the learning app's help centre"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Interview course designers and engineers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "explain new app features in plain language"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "edit their HTML when the layout breaks"
+      },
+      {
+        "skillId": "docs-as-code",
+        "quote": "Keep my drafts in Markdown"
+      },
+      {
+        "skillId": "git",
+        "quote": "version them on GitHub"
+      },
+      {
+        "skillId": "api-documentation",
+        "quote": "Swagger (learning)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "api-documentation",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "structured-authoring",
+      "python",
+      "api-testing"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,6 +1,23 @@
 {
   "slug": "full-stack-developer",
   "title": "Full Stack Developer (MERN)",
+  "summary": "A full stack developer builds both the screens and the server side of a web app, here with the MERN stack (MongoDB, Express, React and Node.js). They work in product teams, often at startups, and take a feature from database to UI.",
+  "dailyDuties": [
+    "Build React front ends with hooks and routing",
+    "Build Node.js and Express APIs with validation and error handling",
+    "Model data in MongoDB or a SQL database",
+    "Write unit and API tests",
+    "Run the app in Docker and ship through a CI/CD pipeline",
+    "Deploy to AWS or a similar cloud",
+    "Raise pull requests and review teammates' code"
+  ],
+  "typicalTitles": [
+    "MERN Stack Developer",
+    "Full Stack Engineer",
+    "Full Stack Web Developer",
+    "Full Stack JavaScript Developer",
+    "Web Developer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

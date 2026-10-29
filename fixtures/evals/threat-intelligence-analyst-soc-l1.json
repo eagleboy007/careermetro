@@ -1,0 +1,55 @@
+{
+  "id": "threat-intelligence-analyst-soc-l1",
+  "roleSlug": "threat-intelligence-analyst",
+  "persona": "SOC L1 analyst moving into threat intelligence",
+  "resumeText": "Varun Menon | Kochi | varun.menon@example.com\n\nEXPERIENCE\nSOC Analyst L1, Periyar CyberDefense, Kochi (2023 - present)\n- Triage 60 to 80 alerts a shift in Splunk and escalate true positives to L2.\n- Enrich IOCs from alerts with VirusTotal and AbuseIPDB before escalation.\n- Map escalated incidents to MITRE ATT&CK techniques in the case notes.\n- Check suspicious IPs and domains with WHOIS and passive DNS lookups.\n- Write the weekly alert summary for the client's IT team.\n\nEDUCATION\nBTech Computer Science, Model Engineering College, Kochi, 2023\n\nSKILLS\nSplunk, MITRE ATT&CK, Python (basic), Wireshark, OSINT\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "siem",
+        "quote": "Triage 60 to 80 alerts a shift in Splunk"
+      },
+      {
+        "skillId": "threat-intelligence",
+        "quote": "Enrich IOCs from alerts with VirusTotal and AbuseIPDB"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Map escalated incidents to MITRE ATT&CK techniques"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Check suspicious IPs and domains with WHOIS and passive DNS lookups"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write the weekly alert summary for the client's IT team"
+      },
+      {
+        "skillId": "osint",
+        "quote": "OSINT"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "threat-intelligence",
+        "status": "weak"
+      },
+      {
+        "skillId": "osint",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "malware-analysis",
+      "digital-forensics",
+      "soar"
+    ]
+  },
+  "reviewedBy": null
+}

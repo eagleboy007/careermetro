@@ -1,0 +1,146 @@
+{
+  "slug": "nodejs-developer",
+  "title": "Node.js Backend Developer",
+  "summary": "Node.js backend developers build the server-side code and APIs behind web and mobile apps using JavaScript or TypeScript on Node.js. They usually sit in a product team with frontend and mobile developers, often at startups, fintechs and e-commerce companies.",
+  "dailyDuties": [
+    "Build and change REST API endpoints",
+    "Write database queries and migrations",
+    "Write unit and API tests",
+    "Review pull requests from teammates",
+    "Debug slow or failing requests from logs",
+    "Agree API contracts with frontend and mobile developers"
+  ],
+  "typicalTitles": [
+    "Node.js Developer",
+    "NodeJS Developer",
+    "Backend Developer - Node.js",
+    "Software Engineer - Backend (Node.js)",
+    "SDE 1 - Backend",
+    "Node.js Engineer",
+    "Backend Engineer - NestJS"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Build backend services in Node.js with Express or a similar framework, and understand the event loop",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write modern async JavaScript with promises and async/await",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "required",
+      "expectation": "Write typed backend code in TypeScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design and build REST APIs with validation and error handling",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Store data in a SQL or document database and write efficient queries",
+      "postingShare": null,
+      "oneOf": "app-database"
+    },
+    {
+      "skillId": "nosql",
+      "importance": "required",
+      "expectation": "Store data in a SQL or document database and write efficient queries",
+      "postingShare": null,
+      "oneOf": "app-database"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work with branches and pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write unit and API tests with Jest or Mocha",
+      "postingShare": null
+    },
+    {
+      "skillId": "nestjs",
+      "importance": "nice_to_have",
+      "expectation": "Build structured services with NestJS",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package services in Docker",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy services to AWS",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "nice_to_have",
+      "expectation": "Split work across small services",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Use Redis, Kafka, RabbitMQ or SQS for queues and events",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphql",
+      "importance": "nice_to_have",
+      "expectation": "Build GraphQL APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "nice_to_have",
+      "expectation": "Clear coding rounds that test data structures",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "app-database",
+      "label": "A database (SQL or a document store such as MongoDB)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "optional",
+      "why": "Building and deploying apps on AWS"
+    },
+    {
+      "certId": "mongodb-developer",
+      "importance": "optional",
+      "why": "MongoDB for application developers"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

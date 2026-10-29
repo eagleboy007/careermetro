@@ -1,6 +1,25 @@
 {
   "slug": "network-engineer",
   "title": "Network Engineer",
+  "summary": "A network engineer keeps a company's office, data centre and cloud networks connected and secure. They sit in the IT infrastructure team and handle routers, switches, firewalls and VPNs, often working tickets through ITIL processes (a standard way IT teams handle incidents and changes).",
+  "dailyDuties": [
+    "Configure and troubleshoot routers, switches, VLANs, OSPF and BGP",
+    "Manage firewall rules and site-to-site VPNs",
+    "Watch links and devices in monitoring tools and act on alerts",
+    "Work tickets and changes through ITIL processes",
+    "Find root causes of outages and slow links",
+    "Connect offices and data centres to cloud VPCs or VNets",
+    "Update network diagrams and handover notes"
+  ],
+  "typicalTitles": [
+    "Network Administrator",
+    "Network Support Engineer",
+    "NOC Engineer",
+    "Routing and Switching Engineer",
+    "Firewall Engineer",
+    "Network Security Engineer",
+    "LAN/WAN Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 6

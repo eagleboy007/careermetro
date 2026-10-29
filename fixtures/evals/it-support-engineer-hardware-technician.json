@@ -1,0 +1,51 @@
+{
+  "id": "it-support-engineer-hardware-technician",
+  "roleSlug": "it-support-engineer",
+  "persona": "Computer service shop technician moving into corporate desktop support",
+  "resumeText": "Rahul Yadav | Lucknow | rahul.yadav@example.com\n\nSUMMARY\nHardware and networking technician looking for a desktop support role.\n\nEXPERIENCE\nSupport Technician, Gomti Computer Care, Lucknow (2024 - present)\n- Diagnose and repair 15 to 20 laptops and desktops a week, including RAM, SSD and motherboard faults.\n- Install Windows 11 and drivers, and set up shared printers for small offices.\n- Configure Wi-Fi routers, DHCP ranges and static IPs for client offices.\n- Reset user passwords and unlock accounts in Active Directory for a 60-seat client office on an annual contract.\n- Explain fixes to customers on the phone and in person, and keep a job log in Excel.\n\nEDUCATION\nBCA, University of Lucknow, 2024\n\nSKILLS\nHardware troubleshooting, Windows 10/11, LAN/Wi-Fi, ITIL basics, MS Office\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "desktop-support",
+        "quote": "Diagnose and repair 15 to 20 laptops and desktops a week"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Diagnose and repair 15 to 20 laptops and desktops a week"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Configure Wi-Fi routers, DHCP ranges and static IPs"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Reset user passwords and unlock accounts in Active Directory"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explain fixes to customers on the phone and in person"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "ITIL basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "itsm",
+        "status": "weak"
+      },
+      {
+        "skillId": "m365-administration",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "endpoint-management",
+      "powershell-scripting",
+      "windows-server"
+    ]
+  },
+  "reviewedBy": null
+}

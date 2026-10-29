@@ -1,0 +1,60 @@
+{
+  "id": "data-architect-from-lead-data-engineer",
+  "roleSlug": "data-architect",
+  "persona": "Azure lead data engineer moving into data architecture",
+  "resumeText": "Sravani Reddy | Hyderabad | sravani.reddy@example.com\n\nEXPERIENCE\nLead Data Engineer, Golconda Retail Analytics, Hyderabad (2019 - present)\n- Designed star schemas for sales, inventory and loyalty data used by 40 Power BI reports.\n- Built a medallion architecture on Delta Lake with bronze, silver and gold layers.\n- Moved 300 nightly SSIS jobs to Azure Data Factory pipelines.\n- Tuned PySpark jobs on Databricks and cut the nightly run from 6 hours to 2.\n- Load curated tables into Azure Synapse for the finance team.\n- Lead a team of 5 data engineers and review their code.\n\nData Engineer, Charminar Software Services, Hyderabad (2016 - 2019)\n- Wrote SQL stored procedures and ETL jobs for a bank's reporting warehouse.\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2016\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed star schemas for sales, inventory and loyalty data"
+      },
+      {
+        "skillId": "data-lakehouse",
+        "quote": "Built a medallion architecture on Delta Lake"
+      },
+      {
+        "skillId": "etl",
+        "quote": "Moved 300 nightly SSIS jobs to Azure Data Factory pipelines"
+      },
+      {
+        "skillId": "azure",
+        "quote": "Azure Data Factory pipelines"
+      },
+      {
+        "skillId": "spark",
+        "quote": "Tuned PySpark jobs on Databricks"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "Load curated tables into Azure Synapse"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL stored procedures"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Lead a team of 5 data engineers and review their code"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-governance",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "gcp",
+      "streaming-data",
+      "data-orchestration"
+    ]
+  },
+  "reviewedBy": null
+}

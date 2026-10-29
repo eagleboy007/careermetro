@@ -1,0 +1,98 @@
+{
+  "slug": "sap-abap-developer",
+  "title": "SAP ABAP Developer",
+  "summary": "SAP ABAP developers write custom programs in ABAP, SAP's own programming language, to add reports, interfaces, forms and enhancements to a company's SAP system. They work from specs written by SAP functional consultants, mostly in IT services firms and on S/4HANA migration projects.",
+  "dailyDuties": [
+    "Build reports and enhancements from functional specs",
+    "Build or fix interfaces with BAPIs and IDocs",
+    "Change invoice and delivery forms in Smartforms or Adobe Forms",
+    "Write CDS views and OData services for S/4HANA",
+    "Debug and tune slow programs",
+    "Write technical specs and support testing with functional consultants"
+  ],
+  "typicalTitles": [
+    "SAP ABAP Consultant",
+    "SAP Technical Consultant",
+    "ABAP Developer",
+    "SAP ABAP on HANA Developer",
+    "SAP S/4HANA ABAP Developer",
+    "Senior SAP ABAP Developer",
+    "SAP ABAP Technical Lead"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "sap-abap",
+      "importance": "required",
+      "expectation": "Build reports, ALV grids, enhancements (BADIs, user exits) and OO ABAP from functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "required",
+      "expectation": "Build interfaces with BAPIs, RFCs and IDocs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-forms",
+      "importance": "required",
+      "expectation": "Build and fix print forms in Smartforms or Adobe Forms",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap-hana",
+      "importance": "required",
+      "expectation": "Write CDS views, AMDPs or OData services for S/4HANA",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write efficient Open SQL against SAP tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "required",
+      "expectation": "Find and fix slow programs with the SQL trace and runtime analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fiori-ui5",
+      "importance": "nice_to_have",
+      "expectation": "Build or extend Fiori apps with SAPUI5",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Read and change the JavaScript in UI5 apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Work with functional consultants on specs and testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver objects in sprints on S/4HANA projects",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

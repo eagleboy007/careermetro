@@ -1,6 +1,24 @@
 {
   "slug": "grc-manager",
   "title": "GRC Manager / Information Security Manager",
+  "summary": "A GRC manager (governance, risk and compliance) runs a company's information security programme: its policies, risk process, audits and certifications. It is a senior role that leads analysts and auditors and reports security risk to leadership and the board.",
+  "dailyDuties": [
+    "Own the ISMS (information security management system) and policy set",
+    "Run certification programmes such as ISO 27001, SOC 2 and PCI DSS",
+    "Face external auditors and regulators such as RBI, SEBI and IRDAI",
+    "Run the enterprise risk process and agree risk treatment with business heads",
+    "Run the vendor risk programme and BCP/DR tests",
+    "Coordinate DPDP Act compliance with legal",
+    "Lead a team of analysts and present risk posture to leadership"
+  ],
+  "typicalTitles": [
+    "ISMS Manager",
+    "IT Risk Manager",
+    "Cyber Risk Manager",
+    "Information Security Compliance Manager",
+    "Risk and Compliance Manager",
+    "Head of GRC"
+  ],
   "experienceBand": {
     "minYears": 7,
     "maxYears": 18

@@ -1,0 +1,159 @@
+{
+  "slug": "data-architect",
+  "title": "Data Architect",
+  "summary": "Data architects decide how a company's data is stored, modelled, moved and governed across its warehouses, data lakes and pipelines. They sit above data engineering teams, agree data strategy with business leaders and set the standards that engineers build to.",
+  "dailyDuties": [
+    "Design data models for a new business area",
+    "Review pipeline and warehouse designs from data engineers",
+    "Plan the move of a legacy warehouse to a cloud lakehouse",
+    "Set data quality, lineage and access rules with the governance team",
+    "Meet business leaders to agree reporting and AI data needs",
+    "Write architecture documents and decision records"
+  ],
+  "typicalTitles": [
+    "Lead Data Architect",
+    "Principal Data Architect",
+    "Enterprise Data Architect",
+    "Azure Data Architect",
+    "AWS Data Architect",
+    "Data Platform Architect",
+    "Big Data Architect",
+    "Lakehouse Architect"
+  ],
+  "experienceBand": {
+    "minYears": 8,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design dimensional, data vault or lakehouse models and set modelling standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-lakehouse",
+      "importance": "required",
+      "expectation": "Design a lake or lakehouse with clear layers such as bronze, silver and gold",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Choose and design warehouses such as Snowflake, BigQuery, Redshift or Synapse",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Set the patterns for batch ingestion and transformation pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Read and review complex SQL across the platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "required",
+      "expectation": "Design large-scale processing on Spark or Databricks",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "required",
+      "expectation": "Set up data quality checks, lineage, catalogues and ownership",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Design data platforms on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Design data platforms on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Design data platforms on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree data strategy and roadmaps with business and engineering leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "nice_to_have",
+      "expectation": "Guide data engineers and review their designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "streaming-data",
+      "importance": "nice_to_have",
+      "expectation": "Design real-time pipelines with Kafka, Kinesis or Event Hub",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "nice_to_have",
+      "expectation": "Choose and standardise a scheduler such as Airflow",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Prototype pipelines and checks in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Plan moves from on-premise warehouses to the cloud",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "Hands-on Databricks and lakehouse basics"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "Snowflake fundamentals"
+    },
+    {
+      "certId": "aws-data-engineer-associate",
+      "importance": "optional",
+      "why": "AWS data services such as Glue, Redshift and Kinesis"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

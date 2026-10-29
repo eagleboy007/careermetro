@@ -1,6 +1,24 @@
 {
   "slug": "java-backend-developer",
   "title": "Java Backend Developer",
+  "summary": "A Java backend developer builds the server-side services and APIs that apps rely on, mostly with Spring Boot. They work in product or IT services teams, handling business logic, databases and integrations behind the screens users see.",
+  "dailyDuties": [
+    "Build and test Spring Boot services in Java",
+    "Design REST endpoints with proper status codes, validation and pagination",
+    "Write efficient SQL and use Redis or MongoDB where it fits",
+    "Write JUnit tests with mocks",
+    "Produce and consume events with Kafka or RabbitMQ",
+    "Package services in Docker and debug them on Kubernetes",
+    "Raise pull requests and review teammates' code"
+  ],
+  "typicalTitles": [
+    "Java Developer",
+    "Spring Boot Developer",
+    "Java Software Engineer",
+    "J2EE Developer",
+    "Core Java Developer",
+    "Java Microservices Developer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

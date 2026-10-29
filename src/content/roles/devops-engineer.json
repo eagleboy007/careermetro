@@ -1,6 +1,25 @@
 {
   "slug": "devops-engineer",
   "title": "DevOps / Cloud Engineer",
+  "summary": "A DevOps engineer automates how code is built, tested and released, and keeps the servers it runs on healthy. They sit between development and operations, owning CI/CD pipelines (automated build and release), containers and cloud infrastructure.",
+  "dailyDuties": [
+    "Build and fix CI/CD pipelines in Jenkins, GitHub Actions or GitLab CI",
+    "Write Dockerfiles and deploy workloads to Kubernetes",
+    "Provision AWS infrastructure with Terraform",
+    "Set up metrics, logs and alerts with Prometheus and Grafana",
+    "Debug DNS, ports, load balancers and firewalls",
+    "Automate operations tasks with shell and Python scripts",
+    "Join the on-call rotation and incident reviews"
+  ],
+  "typicalTitles": [
+    "Build and Release Engineer",
+    "Release Engineer",
+    "CI/CD Engineer",
+    "DevOps Consultant",
+    "DevOps Specialist",
+    "Infrastructure Automation Engineer",
+    "Kubernetes Engineer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

@@ -8,6 +8,14 @@
     "task": "Audit a page you built with Lighthouse and axe, fix the issues (labels, contrast, keyboard focus, alt text) and document before-and-after scores."
   },
   {
+    "skillId": "agile-coaching",
+    "task": "Run a retrospective for a real or volunteer team of at least 3 with a format you choose, write down what the team agreed, then coach one practice for 2 sprints and share a one-page note on what changed and what you would try next."
+  },
+  {
+    "skillId": "agile-metrics",
+    "task": "From a synthetic 6-sprint Jira or spreadsheet export, chart velocity, a sprint burndown and cycle time, spot one pattern (such as carry-over) and write a one-page note on what the team should change and how you would measure it."
+  },
+  {
     "skillId": "agile-scrum",
     "task": "Set up a free Jira or Trello board for a small app, write a backlog of 12 stories with estimates, plan a two-week sprint and share a screenshot with a one-paragraph sprint goal."
   },
@@ -20,12 +28,24 @@
     "task": "Build a two-screen Android app in Jetpack Compose that loads a list from a public API, shows loading and error states, and survives screen rotation. Share the repo and a short screen recording."
   },
   {
+    "skillId": "api-documentation",
+    "task": "Write an OpenAPI 3 file for a public practice API (such as Swagger Petstore) with 4 endpoints, examples and error responses, render it in Swagger UI or Redoc, and add a getting-started page with a curl example for each call."
+  },
+  {
     "skillId": "api-testing",
     "task": "Create a Postman collection for a public test API with 10 requests, tests on status and body, environment variables, and run it with Newman. Share the export."
   },
   {
+    "skillId": "apm-tools",
+    "task": "Instrument a small sample web app with a free tier of Dynatrace, New Relic or AppDynamics (or OpenTelemetry with Jaeger), put it under a short load, find the slowest transaction and share screenshots with a note on its cause."
+  },
+  {
     "skillId": "application-security",
     "task": "Run OWASP Juice Shop locally, exploit 5 challenges from different OWASP Top 10 categories, and write up each flaw with the code-level fix."
+  },
+  {
+    "skillId": "application-support",
+    "task": "For a synthetic web app incident (sample logs and a HAR file given or made up), find the failing call with browser developer tools, write the root cause analysis, the customer reply and a known-error article with the workaround."
   },
   {
     "skillId": "aws",
@@ -116,6 +136,10 @@
     "task": "Write a data catalogue entry and classification for 5 synthetic datasets (owner, sensitivity, retention, lineage), and note which DPDP Act obligations apply to each."
   },
   {
+    "skillId": "data-lakehouse",
+    "task": "Build a bronze, silver and gold medallion pipeline on Databricks Community Edition or local Spark with Delta Lake over a synthetic sales CSV: fix bad rows, merge late updates, and show one time-travel query with a README."
+  },
+  {
     "skillId": "data-modeling",
     "task": "Design a star schema for a fictional food delivery business (facts and dimensions with grain stated) and share the ER diagram with a short rationale."
   },
@@ -148,6 +172,10 @@
     "task": "Train a small image or text classifier in PyTorch or TensorFlow on a public dataset, plot training curves, and note what you changed to reduce overfitting."
   },
   {
+    "skillId": "desktop-support",
+    "task": "On a spare laptop or a VM, install Windows 11 from scratch, join it to a test domain or workgroup, set up a shared printer and fix 3 faults you create yourself. Write a runbook with screenshots for each fix."
+  },
+  {
     "skillId": "devsecops",
     "task": "Add a SAST scan, a dependency scan and a secret scan to a sample repo's CI pipeline, then explain which findings should block a merge and why."
   },
@@ -160,12 +188,28 @@
     "task": "Containerise a small web app and its database with a multi-stage Dockerfile and docker-compose.yml, and document how to run it in a README."
   },
   {
+    "skillId": "docs-as-code",
+    "task": "Publish a 5-page docs site for a small open-source tool with MkDocs or Docusaurus from Markdown in a GitHub repo, add a link check and a build in GitHub Actions on every pull request, and share the live site and repo."
+  },
+  {
     "skillId": "domain-bfsi",
     "task": "Map the end-to-end flow of a retail home loan in India (lead, KYC, credit check, sanction, disbursal, EMI) as a diagram with a short note on the systems and regulations at each step."
   },
   {
     "skillId": "email-marketing",
     "task": "Design a 3-email welcome sequence for a fictional online course with subject lines, copy, send timing and the metrics you would track. Share as a doc or screenshots."
+  },
+  {
+    "skillId": "embedded-c",
+    "task": "Write an Embedded C ring buffer and a debounced button driver for a microcontroller or a host simulation, with unit tests run on your laptop (Unity or CppUTest), no dynamic memory, and a README on timing and memory use."
+  },
+  {
+    "skillId": "embedded-debugging",
+    "task": "On a development board (STM32, ESP32 or Arduino), plant a bug that hangs the firmware, find it with a debugger over SWD or JTAG (or GDB in an emulator such as QEMU), and write up the breakpoints, registers and fix with screenshots."
+  },
+  {
+    "skillId": "embedded-protocols",
+    "task": "Read a temperature sensor over I2C or SPI on a development board and send the readings over UART to your laptop, capture one transaction with a logic analyser or a simulator trace, and explain each byte in a README."
   },
   {
     "skillId": "endpoint-security",
@@ -244,6 +288,10 @@
     "task": "Redesign one cluttered screen from a public Indian app: show before and after, and explain the hierarchy, spacing and state changes you made."
   },
   {
+    "skillId": "internal-developer-platform",
+    "task": "Set up Backstage locally with a software catalog of 3 sample services and one template that creates a new service repo with CI, then write a one-page note on the golden path it gives a new developer and what is still manual."
+  },
+  {
     "skillId": "itsm",
     "task": "In a free ServiceNow developer instance or a spreadsheet, log 5 synthetic tickets (incident, request, problem, change), set each priority from impact and urgency, and write the change record for one server patch with its risk and backout plan."
   },
@@ -280,6 +328,10 @@
     "task": "Build a Looker Studio report on a public Google Sheet or BigQuery public dataset with a date filter, 3 charts and a scorecard, and share the view-only link."
   },
   {
+    "skillId": "m365-administration",
+    "task": "In a free Microsoft 365 developer tenant or a Google Workspace trial, create 5 test users with licences and groups, set up a shared mailbox and one mail flow rule, and document the steps with screenshots and a rollback for each."
+  },
+  {
     "skillId": "machine-learning",
     "task": "Train and compare a logistic regression and a gradient boosting model on a public tabular dataset, tune one, and explain the top features in a notebook."
   },
@@ -294,6 +346,10 @@
   {
     "skillId": "messaging-queues",
     "task": "Run Kafka or RabbitMQ in Docker, write a producer and consumer for order events with retries, and document what happens when the consumer goes down."
+  },
+  {
+    "skillId": "microcontrollers",
+    "task": "Program an STM32, ESP32 or Arduino board (or a simulator such as Wokwi) to read a button with an interrupt, blink an LED from a hardware timer and sleep in between. Share the code and a short video or a simulator link."
   },
   {
     "skillId": "microservices",
@@ -364,6 +420,10 @@
     "task": "Normalise a flat synthetic spreadsheet of student enrolments to 3NF, then write the PostgreSQL DDL with primary keys, foreign keys, unique and check constraints."
   },
   {
+    "skillId": "osint",
+    "task": "Build a passive OSINT profile of a fictional or your own test domain using only public sources (WHOIS, certificate logs, Shodan, search engines). Never touch the target. List 10 findings, each with its source and why it matters."
+  },
+  {
     "skillId": "pandas",
     "task": "In a pandas notebook, explore a public data.gov.in dataset using merge, groupby, pivot_table and date handling, and answer 5 questions with short written findings."
   },
@@ -378,6 +438,10 @@
   {
     "skillId": "performance-marketing",
     "task": "Build a spreadsheet media plan for a fictional D2C brand with a budget of Rs 1 lakh: channels, target CAC and ROAS, funnel assumptions and a weekly optimisation plan."
+  },
+  {
+    "skillId": "performance-profiling",
+    "task": "Profile a sample Java, Node.js or Python service under load with VisualVM, async-profiler, clinic.js or py-spy, take a heap or thread dump, find one hotspot or leak, fix it and share the before and after numbers with the flame graph."
   },
   {
     "skillId": "performance-testing",
@@ -472,6 +536,42 @@
     "task": "In Cisco Packet Tracer or GNS3, build a lab with 2 routers and 2 switches: 3 VLANs, inter-VLAN routing and OSPF between the routers. Share the saved lab, the configs and ping and traceroute screenshots."
   },
   {
+    "skillId": "rtos",
+    "task": "Write a FreeRTOS or Zephyr app on a board or in QEMU with 3 tasks at different priorities that share data through a queue and a mutex, then show one priority inversion you fix. Share the code and the trace or log output."
+  },
+  {
+    "skillId": "salesforce-apex",
+    "task": "In a free Salesforce Developer Edition org, write a bulk-safe Apex trigger with a handler class on a custom object, a SOQL query outside loops, and test classes with at least 85% coverage. Share the code and the test run."
+  },
+  {
+    "skillId": "salesforce-flows",
+    "task": "In a free Salesforce Developer Edition org, build a record-triggered flow that assigns and notifies on new cases by priority, with a fault path and a validation rule, and document how you tested it with screenshots and sample records."
+  },
+  {
+    "skillId": "salesforce-lwc",
+    "task": "Build a Lightning Web Component in a free Developer Edition org that lists and filters a custom object's records through an Apex controller, with loading and error states and a Jest test. Share the repo and a screen recording."
+  },
+  {
+    "skillId": "sap-abap",
+    "task": "In a free SAP ABAP trial or the ABAP Cloud developer trial, build an ALV report over sample flight data (SFLIGHT) with a selection screen, one class for the logic and an input check. Share the code and screenshots of the output."
+  },
+  {
+    "skillId": "sap-abap-hana",
+    "task": "In a free SAP BTP ABAP trial, build a CDS view with an association over sample flight data, expose it as an OData service with a RAP business object (read and one action), and share the code and a Fiori elements preview screenshot."
+  },
+  {
+    "skillId": "sap-forms",
+    "task": "In a free SAP ABAP trial, design a Smartform or Adobe Form for a synthetic invoice with a header, line items and totals, call it from a small driver program, and share the code and the printed PDF preview."
+  },
+  {
+    "skillId": "sap-interfaces",
+    "task": "In a free SAP ABAP trial, write a remote-enabled function module that returns sample flight bookings, call it from a test program or a BAPI wrapper with error handling, and document the parameters and test results."
+  },
+  {
+    "skillId": "scaled-agile",
+    "task": "Plan a mock PI planning for a fictional 3-team release train: write 6 features with team objectives, a program board with dependencies and 3 risks sorted by ROAM, and share it as a one-page board with a short note."
+  },
+  {
     "skillId": "scikit-learn",
     "task": "Build a scikit-learn Pipeline with ColumnTransformer, preprocessing and a model, tune it with GridSearchCV, and save the notebook to GitHub."
   },
@@ -514,6 +614,14 @@
   {
     "skillId": "seo",
     "task": "Do keyword research for a small local business site, then write an on-page SEO audit of one page covering title, headings, internal links, speed and schema, with fixes."
+  },
+  {
+    "skillId": "servicenow-flow-designer",
+    "task": "In a free ServiceNow developer instance, build a Flow Designer flow for a catalog request with an approval, a task and a REST step to a public test API, and document the trigger, steps and test runs with screenshots."
+  },
+  {
+    "skillId": "servicenow-scripting",
+    "task": "In a free ServiceNow developer instance, write a business rule, a client script and a script include called with GlideAjax for a custom incident check, then test each one and share the code with screenshots and a short note."
   },
   {
     "skillId": "siem",
@@ -560,6 +668,14 @@
     "task": "Using a public data.gov.in dataset, compute summary statistics, plot a distribution and run one hypothesis test, then explain the result in 150 plain-English words for a manager."
   },
   {
+    "skillId": "structured-authoring",
+    "task": "Write a small DITA set for a fictional app (3 tasks, 1 concept, 1 reference topic and a map) in the DITA Open Toolkit or the Oxygen trial, reuse one step with a conref, and publish it to HTML and PDF."
+  },
+  {
+    "skillId": "support-ticketing-tools",
+    "task": "In a free Zendesk, Freshdesk or Zoho Desk trial, set up 2 groups, SLA policies, 3 macros and one automation, run 10 synthetic tickets through it and share screenshots with a note on how each ticket was routed."
+  },
+  {
     "skillId": "swift-ios",
     "task": "Build a SwiftUI app with a list and a detail view backed by a public API using async/await, with an error state. Share the repo and a screen recording."
   },
@@ -574,6 +690,10 @@
   {
     "skillId": "technical-leadership",
     "task": "Write a one-page design decision record for a synthetic choice (for example queue vs direct API call): options, trade-offs, decision and how you would revisit it."
+  },
+  {
+    "skillId": "technical-writing",
+    "task": "Rewrite the installation and first-use guide of an open-source tool as a task-based user guide of about 1,000 words with screenshots, test every step on a clean machine, and share the before and after with a note on your choices."
   },
   {
     "skillId": "terraform",

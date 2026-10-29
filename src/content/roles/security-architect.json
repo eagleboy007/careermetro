@@ -1,6 +1,25 @@
 {
   "slug": "security-architect",
   "title": "Security Architect",
+  "summary": "A security architect designs the security controls for a company's systems, networks and cloud before they are built. It is a senior role that sets security standards and reviews designs, working with engineering, risk and business teams.",
+  "dailyDuties": [
+    "Define security reference architectures and zero trust designs",
+    "Threat-model new systems and major changes",
+    "Set identity, privileged access and MFA standards",
+    "Design network segmentation, firewall and VPN controls",
+    "Choose encryption, PKI and key management approaches",
+    "Map designs to ISO 27001, NIST, PCI DSS or RBI requirements and document risks",
+    "Write security standards and present design reviews to senior leaders"
+  ],
+  "typicalTitles": [
+    "Cyber Security Architect",
+    "Information Security Architect",
+    "Enterprise Security Architect",
+    "Network Security Architect",
+    "Cloud Security Architect",
+    "Zero Trust Architect",
+    "Security Solutions Architect"
+  ],
   "experienceBand": {
     "minYears": 8,
     "maxYears": 15

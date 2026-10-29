@@ -1,0 +1,60 @@
+{
+  "id": "platform-engineer-from-devops",
+  "roleSlug": "platform-engineer",
+  "persona": "AWS DevOps engineer moving into platform engineering",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nEXPERIENCE\nDevOps Engineer, Sahyadri Fintech Systems, Pune (2020 - present)\n- Run 12 EKS clusters that host 80 microservices for the lending platform.\n- Write Terraform modules for VPCs, RDS and IAM on AWS.\n- Built Jenkins pipelines that build, scan and deploy Docker images to the clusters.\n- Wrote Python scripts that clean up unused EBS volumes every night.\n- Patch and harden Ubuntu Linux build agents.\n\nJunior Systems Engineer, Deccan Infotech, Pune (2018 - 2020)\n- Supported 200 Linux servers and wrote cron jobs for backups.\n\nSKILLS\nKubernetes, Terraform, Jenkins, ArgoCD, Docker, AWS, Python, Prometheus\n\nEDUCATION\nBE Computer Engineering, Savitribai Phule Pune University, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "kubernetes",
+        "quote": "Run 12 EKS clusters that host 80 microservices"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Write Terraform modules for VPCs, RDS and IAM on AWS"
+      },
+      {
+        "skillId": "aws",
+        "quote": "IAM on AWS"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Built Jenkins pipelines that build, scan and deploy Docker images"
+      },
+      {
+        "skillId": "docker",
+        "quote": "deploy Docker images to the clusters"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts that clean up unused EBS volumes"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Patch and harden Ubuntu Linux build agents"
+      },
+      {
+        "skillId": "gitops",
+        "quote": "ArgoCD"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "gitops",
+        "status": "weak"
+      },
+      {
+        "skillId": "internal-developer-platform",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "go",
+      "gcp",
+      "devsecops",
+      "cloud-cost"
+    ]
+  },
+  "reviewedBy": null
+}

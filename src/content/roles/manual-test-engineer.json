@@ -1,6 +1,26 @@
 {
   "slug": "manual-test-engineer",
   "title": "Manual Test Engineer",
+  "summary": "A manual test engineer checks software by hand to find bugs before users do. They sit in the QA (quality assurance) team inside a Scrum team, turning requirements into test cases and tracking defects until they are fixed.",
+  "dailyDuties": [
+    "Turn requirements into test scenarios and test cases",
+    "Run functional, regression, smoke and sanity tests by hand",
+    "Log clear defects with steps in Jira and track them to closure",
+    "Check APIs with Postman",
+    "Check data in the database with SQL",
+    "Support business users through acceptance testing",
+    "Report test status to developers and leads"
+  ],
+  "typicalTitles": [
+    "Software Tester",
+    "Manual Tester",
+    "Functional Tester",
+    "QA Analyst",
+    "Quality Analyst",
+    "Software Test Engineer",
+    "Test Engineer",
+    "QA Engineer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 4

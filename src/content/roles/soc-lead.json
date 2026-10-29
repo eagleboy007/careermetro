@@ -1,6 +1,24 @@
 {
   "slug": "soc-lead",
   "title": "SOC Lead / SOC Manager",
+  "summary": "A SOC lead runs the security operations centre, the team that watches for and responds to attacks around the clock. They manage L1 and L2 analysts and shift rosters, own major incidents and report to senior management.",
+  "dailyDuties": [
+    "Run shift rosters and coach L1 and L2 analysts",
+    "Lead major incidents and own the incident response plan",
+    "Plan the detection roadmap and SIEM coverage against MITRE ATT&CK",
+    "Drive SOAR automation to cut alert fatigue",
+    "Track SLA and risk metrics and report them to leadership",
+    "Meet RBI, CERT-In and ISO 27001 reporting duties",
+    "Work with IT, legal and business owners during incidents"
+  ],
+  "typicalTitles": [
+    "Security Operations Manager",
+    "Security Operations Lead",
+    "Head of Security Operations",
+    "Cyber Defense Manager",
+    "Detection and Response Manager",
+    "SOC Shift Lead"
+  ],
   "experienceBand": {
     "minYears": 6,
     "maxYears": 15

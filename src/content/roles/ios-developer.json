@@ -1,6 +1,22 @@
 {
   "slug": "ios-developer",
   "title": "iOS Developer",
+  "summary": "An iOS developer builds and maintains a company's iPhone app in Swift. They work in a mobile or product team with designers and back-end engineers and own the app through App Store review.",
+  "dailyDuties": [
+    "Build screens in SwiftUI or UIKit",
+    "Call APIs with URLSession and Codable",
+    "Structure features with MVVM and async/await",
+    "Write XCTest unit tests",
+    "Raise pull requests and review teammates' code",
+    "Ship builds through TestFlight and App Store review"
+  ],
+  "typicalTitles": [
+    "iOS Engineer",
+    "iOS App Developer",
+    "iPhone App Developer",
+    "Swift Developer",
+    "SwiftUI Developer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

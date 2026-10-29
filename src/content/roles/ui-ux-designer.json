@@ -1,6 +1,25 @@
 {
   "slug": "ui-ux-designer",
   "title": "UI/UX Designer",
+  "summary": "A UI/UX designer works out how a product should work and look, from user research to final screens. They sit in a product team with product managers and developers, and test designs with real users.",
+  "dailyDuties": [
+    "Plan and run user interviews",
+    "Turn problems into wireframes and user flows",
+    "Design screens and components in Figma",
+    "Build clickable prototypes and run usability tests",
+    "Use and extend the design system",
+    "Check designs for WCAG contrast and screen reader support",
+    "Present and defend design decisions"
+  ],
+  "typicalTitles": [
+    "Product Designer",
+    "UX Designer",
+    "UI Designer",
+    "Interaction Designer",
+    "Visual Designer",
+    "Experience Designer",
+    "Web Designer"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 5

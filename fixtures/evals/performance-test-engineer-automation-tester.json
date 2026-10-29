@@ -1,0 +1,55 @@
+{
+  "id": "performance-test-engineer-automation-tester",
+  "roleSlug": "performance-test-engineer",
+  "persona": "Selenium automation tester moving into performance testing",
+  "resumeText": "Pradeep Reddy | Hyderabad | pradeep.reddy@example.com\n\nEXPERIENCE\nQA Automation Engineer, Charminar Fintech Labs, Hyderabad (2022 - present)\n- Automate regression suites for the loan app in Java with Selenium and TestNG.\n- Test REST APIs with Postman and Rest Assured, checking status codes and response times.\n- Write SQL queries to validate loan data in PostgreSQL after each test run.\n- Ran a JMeter test with 200 virtual users on the login API before a festive sale.\n- Write test plans and test cases for each release.\n- Present test results to the product team in the sprint review.\n\nEDUCATION\nBTech Electronics, JNTU Hyderabad, 2022\n\nSKILLS\nJava, Selenium, TestNG, Postman, JMeter, Jenkins, Git\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Automate regression suites for the loan app in Java"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Test REST APIs with Postman and Rest Assured, checking status codes"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries to validate loan data in PostgreSQL"
+      },
+      {
+        "skillId": "performance-testing",
+        "quote": "Ran a JMeter test with 200 virtual users on the login API"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "Write test plans and test cases for each release"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present test results to the product team in the sprint review"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "performance-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "apm-tools",
+        "status": "missing"
+      },
+      {
+        "skillId": "performance-profiling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "observability",
+      "query-optimization",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

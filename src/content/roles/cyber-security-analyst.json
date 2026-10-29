@@ -1,6 +1,23 @@
 {
   "slug": "cyber-security-analyst",
   "title": "Cyber Security Analyst",
+  "summary": "A cyber security analyst is an entry-level security role that watches for attacks, checks for weaknesses and helps handle incidents. They usually sit in a security operations team, using a SIEM (a tool that gathers logs and raises alerts) and other tools under a senior analyst.",
+  "dailyDuties": [
+    "Investigate alerts and write searches in a SIEM such as Splunk or Sentinel",
+    "Triage, contain and document security incidents",
+    "Run vulnerability scans, prioritise findings and track fixes",
+    "Check endpoints with an EDR tool such as CrowdStrike or Defender",
+    "Review access in Active Directory, SSO and MFA",
+    "Write Python scripts to automate log checks and enrichment",
+    "Write incident notes and explain risk to non-specialists"
+  ],
+  "typicalTitles": [
+    "Security Analyst",
+    "Junior Security Analyst",
+    "Cyber Security Associate",
+    "Cyber Security Engineer",
+    "SOC Analyst L1"
+  ],
   "experienceBand": {
     "minYears": 0,
     "maxYears": 4

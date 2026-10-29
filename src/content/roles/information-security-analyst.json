@@ -1,6 +1,25 @@
 {
   "slug": "information-security-analyst",
   "title": "Information Security Analyst (GRC)",
+  "summary": "An information security analyst on the GRC side (governance, risk and compliance) makes sure a company meets security standards such as ISO 27001 and SOC 2. They sit in the security or risk team, writing policies, testing controls and getting other teams to close findings.",
+  "dailyDuties": [
+    "Map controls to ISO 27001, SOC 2, PCI DSS or the DPDP Act",
+    "Write and update security policies and the ISMS",
+    "Run risk assessments, including third-party vendor risk",
+    "Prepare audit evidence and test controls",
+    "Run access reviews and joiner-mover-leaver checks",
+    "Track open findings and follow up with engineering and business teams",
+    "Track controls and risks in spreadsheets"
+  ],
+  "typicalTitles": [
+    "GRC Analyst",
+    "IT Risk Analyst",
+    "Cyber Risk Analyst",
+    "ISMS Analyst",
+    "IT Compliance Analyst",
+    "Information Security Compliance Analyst",
+    "Third-Party Risk Analyst"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 5

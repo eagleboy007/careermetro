@@ -1,0 +1,169 @@
+{
+  "slug": "platform-engineer",
+  "title": "Platform Engineer",
+  "summary": "Platform engineers build the shared internal platform that other developers use to build, test and deploy their code, usually on Kubernetes and a public cloud. They sit in a platform or infrastructure team and treat the product teams as their customers, giving them ready-made 'golden paths' (standard, pre-approved ways to ship a service).",
+  "dailyDuties": [
+    "Upgrade and patch shared Kubernetes clusters",
+    "Write Terraform modules that product teams reuse",
+    "Add a new service template to the developer portal",
+    "Fix a broken deploy pipeline for another team",
+    "Review pull requests to platform repositories",
+    "Answer developer questions and update platform docs"
+  ],
+  "typicalTitles": [
+    "Platform Engineer II",
+    "Senior Platform Engineer",
+    "Kubernetes Platform Engineer",
+    "Infrastructure Engineer - Platform",
+    "Developer Platform Engineer",
+    "Software Engineer - Platform",
+    "Cloud Platform Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Run and upgrade shared Kubernetes clusters that product teams deploy to",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-developer-platform",
+      "importance": "required",
+      "expectation": "Build self-service templates and a developer portal so teams can ship without tickets",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Write reusable infrastructure-as-code modules and manage state safely",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Own the shared build and deploy pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "gitops",
+      "importance": "required",
+      "expectation": "Deploy to clusters from Git with Argo CD or Flux",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Debug containers and nodes from the Linux command line",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Run the platform on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Run the platform on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Run the platform on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Write platform tools, operators or CLIs in Go or Python",
+      "postingShare": null,
+      "oneOf": "tooling-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write platform tools, operators or CLIs in Go or Python",
+      "postingShare": null,
+      "oneOf": "tooling-language"
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Write lean, secure container images and base images",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Give teams default metrics, logs and traces",
+      "postingShare": null
+    },
+    {
+      "skillId": "devsecops",
+      "importance": "nice_to_have",
+      "expectation": "Add image scanning and policy checks to the golden path",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Show teams what their workloads cost",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Write docs and onboard developers to the platform",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    },
+    {
+      "id": "tooling-language",
+      "label": "A language for tooling (Go or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cka",
+      "importance": "recommended",
+      "why": "Kubernetes administration, asked for in most platform postings"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "recommended",
+      "why": "Infrastructure as code with Terraform"
+    },
+    {
+      "certId": "ckad",
+      "importance": "optional",
+      "why": "Kubernetes from the application team's side"
+    },
+    {
+      "certId": "aws-devops-professional",
+      "importance": "optional",
+      "why": "Pipelines and automation on AWS at a senior level"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-30"
+}

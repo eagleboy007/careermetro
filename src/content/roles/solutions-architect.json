@@ -1,6 +1,24 @@
 {
   "slug": "solutions-architect",
   "title": "Solutions Architect",
+  "summary": "A solutions architect turns a business need into a complete technical design, choosing the systems, integrations and cloud services to use. It is a senior role that leads design for delivery teams and often supports pre-sales proposals for clients.",
+  "dailyDuties": [
+    "Run discovery with business teams and capture functional and non-functional needs",
+    "Design end-to-end solutions on a major cloud with clear trade-offs",
+    "Define APIs, service boundaries and integration patterns",
+    "Plan migration and modernisation of existing systems",
+    "Shape proposals, estimates and RFP responses",
+    "Present designs in architecture reviews and record decisions",
+    "Guide delivery teams through build"
+  ],
+  "typicalTitles": [
+    "Technical Architect",
+    "Application Architect",
+    "Software Architect",
+    "Integration Architect",
+    "Enterprise Architect",
+    "Pre-Sales Architect"
+  ],
   "experienceBand": {
     "minYears": 7,
     "maxYears": 15

@@ -1,0 +1,47 @@
+{
+  "id": "sap-abap-developer-ecc-to-s4",
+  "roleSlug": "sap-abap-developer",
+  "persona": "ECC ABAP developer preparing for S/4HANA projects",
+  "resumeText": "Pooja Deshpande | Pune | pooja.deshpande@example.com\n\nEXPERIENCE\nSAP ABAP Developer, Indrayani Consulting, Pune (2022 - present)\n- Build ALV reports for SD and MM users from functional specs.\n- Wrote BAPI-based uploads and inbound IDocs for sales orders from a dealer portal.\n- Built Smartforms for invoices and delivery notes.\n- Implemented BADIs and user exits for pricing checks in sales orders.\n- Did performance tuning on slow reports by rewriting Open SQL selects and adding secondary indexes.\n\nSKILLS\nABAP, OO ABAP, ALV, BAPI, BADI, IDoc, Smartforms, CDS views\n\nEDUCATION\nBE Information Technology, Pune Institute of Computer Technology, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "sap-abap",
+        "quote": "Build ALV reports for SD and MM users"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "inbound IDocs for sales orders"
+      },
+      {
+        "skillId": "sap-forms",
+        "quote": "Built Smartforms for invoices and delivery notes"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Did performance tuning on slow reports"
+      },
+      {
+        "skillId": "sql",
+        "quote": "rewriting Open SQL selects"
+      },
+      {
+        "skillId": "sap-abap-hana",
+        "quote": "CDS views"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-abap-hana",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-fiori-ui5",
+      "javascript",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

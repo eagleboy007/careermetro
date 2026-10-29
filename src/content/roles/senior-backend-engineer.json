@@ -1,6 +1,24 @@
 {
   "slug": "senior-backend-engineer",
   "title": "Senior Backend Engineer",
+  "summary": "A senior backend engineer designs and builds server-side systems that must scale and survive failure. They lead designs, review code and mentor juniors in a product engineering team, and are expert in at least one backend language.",
+  "dailyDuties": [
+    "Design services for scale and failure",
+    "Split and integrate microservices cleanly",
+    "Model data and fix slow queries with plans and indexes",
+    "Use Kafka or RabbitMQ for async work",
+    "Add logs, metrics and traces so services can be debugged in production",
+    "Own safe releases to Kubernetes",
+    "Review code and mentor junior engineers"
+  ],
+  "typicalTitles": [
+    "Senior Software Engineer",
+    "Lead Backend Engineer",
+    "Backend Tech Lead",
+    "Staff Backend Engineer",
+    "Principal Backend Engineer",
+    "Senior Server-Side Developer"
+  ],
   "experienceBand": {
     "minYears": 5,
     "maxYears": 10

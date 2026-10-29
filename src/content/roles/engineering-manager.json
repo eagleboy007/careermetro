@@ -1,6 +1,23 @@
 {
   "slug": "engineering-manager",
   "title": "Engineering Manager",
+  "summary": "An engineering manager leads a team of 5 to 12 software engineers, owning hiring, growth and delivery rather than writing most of the code. They sit between the team, product and business, and answer for both people and engineering outcomes.",
+  "dailyDuties": [
+    "Hold one-on-ones, coach engineers and run performance reviews",
+    "Interview and hire engineers",
+    "Run sprint planning and track delivery",
+    "Agree scope, dates and the quarterly roadmap with product and business",
+    "Review designs for scale and risk",
+    "Track on-call health, postmortems and DORA delivery metrics",
+    "Write updates for leadership"
+  ],
+  "typicalTitles": [
+    "Software Development Manager",
+    "Development Manager",
+    "Technical Manager",
+    "Head of Engineering",
+    "Engineering Lead"
+  ],
   "experienceBand": {
     "minYears": 8,
     "maxYears": 20

@@ -1,6 +1,25 @@
 {
   "slug": "bi-developer",
   "title": "BI Developer (Power BI)",
+  "summary": "A BI developer builds the reports and dashboards that business teams use to track numbers, most often in Power BI. They sit between the data or IT team and business users, turning raw data from databases into clean data models and clear reports.",
+  "dailyDuties": [
+    "Meet business users to turn their questions into report requirements and KPIs",
+    "Write SQL against source databases and the data warehouse",
+    "Shape and combine source data in Power Query",
+    "Design star-schema data models with clean relationships",
+    "Build Power BI reports with DAX measures and publish them to the service",
+    "Schedule data refreshes and fix slow queries and refreshes",
+    "Walk users through reports and explain the numbers"
+  ],
+  "typicalTitles": [
+    "Power BI Developer",
+    "Power BI Consultant",
+    "BI Engineer",
+    "MSBI Developer",
+    "Reporting Developer",
+    "BI Analyst",
+    "Dashboard Developer"
+  ],
   "experienceBand": {
     "minYears": 1,
     "maxYears": 6

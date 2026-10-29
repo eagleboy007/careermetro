@@ -1,6 +1,25 @@
 {
   "slug": "iam-engineer",
   "title": "Identity and Access Management Engineer",
+  "summary": "An identity and access management (IAM) engineer controls who can log in to which systems and what they can do there. They sit in the security or IT team and run tools for single sign-on (SSO), multi-factor login (MFA), privileged access and access reviews.",
+  "dailyDuties": [
+    "Run directory, SSO, MFA and privileged access platforms such as Okta, Entra ID or CyberArk",
+    "Integrate applications using SAML, OIDC and SCIM",
+    "Configure provisioning, joiner-mover-leaver flows and access reviews in an IGA tool",
+    "Automate identity tasks with PowerShell or Python and platform APIs",
+    "Troubleshoot login, provisioning and access issues",
+    "Produce access evidence for audits",
+    "Onboard application owners and document access processes"
+  ],
+  "typicalTitles": [
+    "IAM Analyst",
+    "Identity Governance Engineer",
+    "Access Management Specialist",
+    "Okta Engineer",
+    "SailPoint Developer",
+    "CyberArk Engineer",
+    "PAM Engineer"
+  ],
   "experienceBand": {
     "minYears": 2,
     "maxYears": 7
