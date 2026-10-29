@@ -1,0 +1,55 @@
+{
+  "id": "mainframe-developer-batch-support-engineer",
+  "roleSlug": "mainframe-developer",
+  "persona": "Service-company engineer in mainframe batch support moving into development",
+  "resumeText": "Divya Raghavan | Chennai | divya.raghavan@example.com\n\nEXPERIENCE\nSystems Engineer, Coromandel Infotech Services, Chennai (2024 - present)\nClient: a UK retail bank\n- Monitor nightly Control-M batch cycles for the cards platform and restart failed jobs.\n- Fix S0C7 and S322 abends by correcting COBOL programs and rerunning the JCL.\n- Change JCL procs to add new GDG versions and sort steps.\n- Write DB2 SQL queries in SPUFI to check customer balances after month-end runs.\n- Promote code changes through Endevor and browse VSAM files with File-AID.\n- Join daily calls with the onshore team to update ticket status.\n\nTRAINING\nMainframe fundamentals programme (COBOL, JCL, DB2, CICS), 2024\n\nEDUCATION\nBE Electronics and Communication, Anna University, 2024\n\nSKILLS\nCOBOL, JCL, DB2, CICS, VSAM, Control-M, Endevor, TSO/ISPF\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "batch-scheduling",
+        "quote": "Monitor nightly Control-M batch cycles"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Fix S0C7 and S322 abends"
+      },
+      {
+        "skillId": "cobol",
+        "quote": "correcting COBOL programs and rerunning the JCL"
+      },
+      {
+        "skillId": "jcl",
+        "quote": "Change JCL procs to add new GDG versions"
+      },
+      {
+        "skillId": "db2",
+        "quote": "Write DB2 SQL queries in SPUFI"
+      },
+      {
+        "skillId": "mainframe-tools",
+        "quote": "Promote code changes through Endevor"
+      },
+      {
+        "skillId": "vsam",
+        "quote": "browse VSAM files with File-AID"
+      },
+      {
+        "skillId": "cics",
+        "quote": "CICS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cics",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "java",
+      "rest-apis",
+      "git"
+    ]
+  },
+  "reviewedBy": null
+}

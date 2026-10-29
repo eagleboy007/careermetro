@@ -1,0 +1,52 @@
+{
+  "id": "blockchain-developer-nodejs-backend",
+  "roleSlug": "blockchain-developer",
+  "persona": "Node.js backend developer with a Solidity side project, moving into blockchain development",
+  "resumeText": "Rohan Agarwal | Jaipur | rohan.agarwal@example.com\n\nEXPERIENCE\nBackend Developer, Pink City Payments, Jaipur (2022 - present)\n- Build REST APIs in Node.js and Express for the merchant dashboard.\n- Write Jest unit tests for payment services with 85% coverage.\n- Implemented HMAC request signing and AES encryption for webhook payloads.\n- Use Git feature branches and pull requests for every change.\n\nPROJECTS\n- Wrote an ERC-20 loyalty token in Solidity and deployed it to the Sepolia testnet.\n- Connected a small React page to MetaMask using ethers.js to show token balances.\n\nEDUCATION\nBTech Information Technology, Malaviya National Institute of Technology Jaipur, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "nodejs",
+        "quote": "Build REST APIs in Node.js and Express"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Build REST APIs in Node.js and Express for the merchant dashboard"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Write Jest unit tests for payment services"
+      },
+      {
+        "skillId": "cryptography-basics",
+        "quote": "Implemented HMAC request signing and AES encryption"
+      },
+      {
+        "skillId": "git",
+        "quote": "Use Git feature branches and pull requests"
+      },
+      {
+        "skillId": "solidity",
+        "quote": "Wrote an ERC-20 loyalty token in Solidity"
+      },
+      {
+        "skillId": "web3-integration",
+        "quote": "Connected a small React page to MetaMask using ethers.js"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "smart-contract-security",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "go",
+      "hyperledger-fabric",
+      "docker",
+      "typescript"
+    ]
+  },
+  "reviewedBy": null
+}

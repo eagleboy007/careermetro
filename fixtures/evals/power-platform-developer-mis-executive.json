@@ -1,0 +1,56 @@
+{
+  "id": "power-platform-developer-mis-executive",
+  "roleSlug": "power-platform-developer",
+  "persona": "MIS executive who built Power Apps for a factory, moving to a developer role",
+  "resumeText": "Pooja Mehta | Ahmedabad | pooja.mehta@example.com\n\nEXPERIENCE\nMIS Executive, Sabarmati Textiles Ltd, Ahmedabad (2023 - present)\n- Built a canvas app in Power Apps for 40 field staff to log daily dye-house output.\n- Created Power Automate flows that email the plant head when a batch fails quality checks.\n- Store app data in SharePoint lists and manage list permissions for each plant.\n- Meet plant managers to collect their reporting needs and write them up as a one-page brief.\n- Build Power BI dashboards on top of the SharePoint data.\n- Present monthly production numbers to the leadership team.\n\nEDUCATION\nBCom, Gujarat University, 2023\n\nSKILLS\nExcel, VBA, Power Apps, Power Automate, Power BI, SharePoint, Dataverse\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "power-apps",
+        "quote": "Built a canvas app in Power Apps for 40 field staff"
+      },
+      {
+        "skillId": "power-automate",
+        "quote": "Created Power Automate flows that email the plant head"
+      },
+      {
+        "skillId": "sharepoint",
+        "quote": "Store app data in SharePoint lists"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Meet plant managers to collect their reporting needs"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present monthly production numbers to the leadership team"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "Build Power BI dashboards on top of the SharePoint data"
+      },
+      {
+        "skillId": "dataverse",
+        "quote": "Dataverse"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "dataverse",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "csharp-dotnet",
+      "azure",
+      "javascript",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

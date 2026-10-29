@@ -1,0 +1,56 @@
+{
+  "id": "tech-lead-senior-java-developer",
+  "roleSlug": "tech-lead",
+  "persona": "Senior Java developer who reviews code and mentors juniors, moving into a tech lead role",
+  "resumeText": "Arjun Menon | Kochi | arjun.menon@example.com\n\nEXPERIENCE\nSenior Software Engineer, Periyar Logistics Tech, Kochi (2019 - present)\n- Design and build Spring Boot microservices for shipment tracking in Java.\n- Review pull requests for a team of six developers and enforce coding standards.\n- Mentor two junior engineers through their first production releases.\n- Wrote the high level design for moving the billing module to event-driven services.\n- Set up Jenkins pipelines that run tests and deploy to staging on every merge.\n- Break stories into tasks and give estimates in sprint planning.\n\nSoftware Engineer, Marine Drive Infosolutions, Kochi (2017 - 2019)\n- Built REST APIs in Java for a port billing system.\n\nEDUCATION\nBTech Computer Science, Cochin University of Science and Technology, 2017\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Spring Boot microservices for shipment tracking in Java"
+      },
+      {
+        "skillId": "microservices",
+        "quote": "Design and build Spring Boot microservices for shipment tracking"
+      },
+      {
+        "skillId": "code-review",
+        "quote": "Review pull requests for a team of six developers"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Mentor two junior engineers through their first production releases"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Wrote the high level design for moving the billing module"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Set up Jenkins pipelines that run tests and deploy to staging"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Break stories into tasks and give estimates in sprint planning"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "react",
+      "people-management",
+      "kubernetes",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

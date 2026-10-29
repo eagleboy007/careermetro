@@ -1,0 +1,175 @@
+{
+  "slug": "devsecops-engineer",
+  "title": "DevSecOps Engineer",
+  "summary": "A DevSecOps engineer builds security checks into the automated build and release pipeline (CI/CD), so code, open-source libraries, containers and cloud setup are scanned before anything reaches production. They usually sit in a DevOps, platform or security team and work with developers to fix what the scans find without slowing releases.",
+  "dailyDuties": [
+    "Add SAST, dependency and container image scans to CI/CD pipelines",
+    "Triage scan findings and help developers fix the real ones",
+    "Set rules for which findings block a merge or a release",
+    "Move secrets out of code into Vault or a cloud secrets manager",
+    "Scan Terraform and Kubernetes manifests for misconfigurations",
+    "Harden Kubernetes clusters and container base images",
+    "Collect pipeline evidence for ISO 27001, SOC 2 or PCI DSS audits"
+  ],
+  "typicalTitles": [
+    "Senior DevSecOps Engineer",
+    "DevSecOps Specialist",
+    "DevSecOps Consultant",
+    "Cloud DevSecOps Engineer",
+    "Security Platform Engineer",
+    "CI/CD Security Engineer",
+    "DevSecOps Lead"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "devsecops",
+      "importance": "required",
+      "expectation": "Build security checks into CI/CD pipelines and decide which findings block a release",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Own Jenkins, GitHub Actions, GitLab CI or Azure DevOps pipelines end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "secure-code-review",
+      "importance": "required",
+      "expectation": "Run and tune SAST and DAST tools such as SonarQube, Checkmarx or OWASP ZAP in the pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "software-supply-chain-security",
+      "importance": "required",
+      "expectation": "Scan open-source dependencies with Snyk or similar tools and produce SBOMs",
+      "postingShare": null
+    },
+    {
+      "skillId": "container-security",
+      "importance": "required",
+      "expectation": "Scan container images and harden Kubernetes workloads with tools such as Trivy",
+      "postingShare": null
+    },
+    {
+      "skillId": "secrets-management",
+      "importance": "required",
+      "expectation": "Keep secrets out of code with Vault or a cloud secrets manager and secret scanning",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Run and secure workloads on Kubernetes clusters such as EKS, AKS or GKE",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Write infrastructure as code and scan it for misconfigurations before it is applied",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Work daily on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate security checks and glue tools together with scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Automate security checks and glue tools together with scripts",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "application-security",
+      "importance": "nice_to_have",
+      "expectation": "Explain OWASP Top 10 issues to developers and help them fix findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security-posture",
+      "importance": "nice_to_have",
+      "expectation": "Use a CSPM tool such as Wiz or Defender for Cloud to track cloud misconfigurations",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Map pipeline controls to ISO 27001, SOC 2 or PCI DSS evidence",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    },
+    {
+      "id": "scripting-language",
+      "label": "A scripting language (Python or Bash)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "cks",
+      "importance": "recommended",
+      "why": "Kubernetes security, which most DevSecOps postings ask for"
+    },
+    {
+      "certId": "aws-security-specialty",
+      "importance": "optional",
+      "why": "AWS security depth for AWS-heavy teams"
+    },
+    {
+      "certId": "azure-devops-expert",
+      "importance": "optional",
+      "why": "Azure DevOps pipelines for Microsoft-stack teams"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Infrastructure as code basics"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Security fundamentals for engineers coming from DevOps"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

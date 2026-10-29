@@ -2928,17 +2928,6 @@
     "free": true
   },
   {
-    "title": "GNU Bash manual",
-    "url": "https://www.gnu.org/software/bash/manual/bash.html",
-    "provider": "GNU",
-    "kind": "docs",
-    "skillIds": [
-      "scripting-bash"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "FastAPI tutorial",
     "url": "https://fastapi.tiangolo.com/tutorial/",
     "provider": "FastAPI",
@@ -6520,6 +6509,1074 @@
       "structured-authoring"
     ],
     "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "PHP Programming Language Tutorial - Full Course",
+    "url": "https://www.youtube.com/watch?v=OK_JCtrrv-c",
+    "provider": "freeCodeCamp.org (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "php"
+    ],
+    "minutes": 277,
+    "free": true
+  },
+  {
+    "title": "PHP Manual: A simple tutorial",
+    "url": "https://www.php.net/manual/en/tutorial.php",
+    "provider": "PHP.net",
+    "kind": "docs",
+    "skillIds": [
+      "php"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Laravel (Laravel Learn)",
+    "url": "https://laravel.com/learn/getting-started-with-laravel",
+    "provider": "Laravel",
+    "kind": "course",
+    "skillIds": [
+      "php-frameworks"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn Laravel by Building a Medium Clone",
+    "url": "https://www.freecodecamp.org/news/learn-laravel-by-building-a-medium-clone/",
+    "provider": "freeCodeCamp.org",
+    "kind": "video",
+    "skillIds": [
+      "php-frameworks"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "WordPress Plugin Handbook",
+    "url": "https://developer.wordpress.org/plugins/",
+    "provider": "WordPress.org",
+    "kind": "docs",
+    "skillIds": [
+      "wordpress-development"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "WordPress Theme Handbook",
+    "url": "https://developer.wordpress.org/themes/",
+    "provider": "WordPress.org",
+    "kind": "docs",
+    "skillIds": [
+      "wordpress-development"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "How to Build a Website from Start to Finish: Free 5-hour WordPress and PHP Course",
+    "url": "https://www.freecodecamp.org/news/build-a-website-from-start-to-finish-using-wordpress-and-php/",
+    "provider": "freeCodeCamp.org",
+    "kind": "video",
+    "skillIds": [
+      "wordpress-development",
+      "php"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Go Concurrency Patterns: Pipelines and cancellation",
+    "url": "https://go.dev/blog/pipelines",
+    "provider": "The Go Blog",
+    "kind": "docs",
+    "skillIds": [
+      "go-concurrency"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Concurrency is not parallelism (Rob Pike talk)",
+    "url": "https://go.dev/blog/waza-talk",
+    "provider": "The Go Blog",
+    "kind": "video",
+    "skillIds": [
+      "go-concurrency"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Go Concurrency Patterns (Google I/O 2012 slides)",
+    "url": "https://go.dev/talks/2012/concurrency.slide",
+    "provider": "Go project",
+    "kind": "docs",
+    "skillIds": [
+      "go-concurrency"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "gRPC Basics tutorial (Go)",
+    "url": "https://grpc.io/docs/languages/go/basics/",
+    "provider": "gRPC (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "grpc"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to gRPC",
+    "url": "https://grpc.io/docs/what-is-grpc/introduction/",
+    "provider": "gRPC (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "grpc"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Protocol Buffers Language Guide (proto 3)",
+    "url": "https://protobuf.dev/programming-guides/proto3/",
+    "provider": "Protocol Buffers (Google)",
+    "kind": "docs",
+    "skillIds": [
+      "grpc"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "IBM Z Xplore",
+    "url": "https://ibmzxplore.ibm.com/",
+    "provider": "IBM",
+    "kind": "practice",
+    "skillIds": [
+      "cobol",
+      "jcl",
+      "mainframe-tools",
+      "vsam",
+      "db2"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Open Mainframe Project COBOL Programming Course",
+    "url": "https://github.com/openmainframeproject/cobol-programming-course",
+    "provider": "Open Mainframe Project",
+    "kind": "course",
+    "skillIds": [
+      "cobol"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Enterprise COBOL for z/OS documentation library",
+    "url": "https://www.ibm.com/support/pages/enterprise-cobol-zos-documentation-library",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "cobol"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "z/OS Basic Skills: basic JCL concepts",
+    "url": "https://www.ibm.com/docs/zosbasics/com.ibm.zos.zjcl/zjclc_basicjclconcepts.htm",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "jcl"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "z/OS 3.1 MVS JCL User's Guide",
+    "url": "https://www.ibm.com/docs/en/SSLTBW_3.1.0/pdf/ieab500_v3r1.pdf",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "jcl"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Db2 13 for z/OS: Introduction to Db2 for z/OS",
+    "url": "https://www.ibm.com/docs/en/SSEPEK_13.0.0/pdf/db2z_13_introbook.pdf",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "db2"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Db2 13 for z/OS SQL Reference",
+    "url": "https://www.ibm.com/docs/en/SSEPEK_13.0.0/pdf/db2z_13_sqlrefbook.pdf",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "db2"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "z/OS Basic Skills: Online Workloads for z/OS (CICS, IMS, transaction processing)",
+    "url": "https://www.ibm.com/docs/en/zosbasics/com.ibm.zos.zmidwebs/zmiddle_book.pdf",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "cics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "CICS Transaction Server from Start to Finish (IBM Redbook)",
+    "url": "https://www.redbooks.ibm.com/redbooks/pdfs/sg247952.pdf",
+    "provider": "IBM Redbooks",
+    "kind": "docs",
+    "skillIds": [
+      "cics"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "VSAM Demystified (IBM Redbook)",
+    "url": "https://www.redbooks.ibm.com/redbooks/pdfs/sg246105.pdf",
+    "provider": "IBM Redbooks",
+    "kind": "docs",
+    "skillIds": [
+      "vsam"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Everything You Always Wanted to Know about IDCAMS (IBM Redpaper)",
+    "url": "https://www.redbooks.ibm.com/redpapers/pdfs/redp5389.pdf",
+    "provider": "IBM Redbooks",
+    "kind": "docs",
+    "skillIds": [
+      "vsam"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "z/OS Basic Skills: ISPF Course Module",
+    "url": "https://www.ibm.com/docs/en/zosbasics/com.ibm.zos.zcourses/zcourses_ispfmain_book.pdf",
+    "provider": "IBM",
+    "kind": "course",
+    "skillIds": [
+      "mainframe-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "What is ISPF? (z/OS Basic Skills)",
+    "url": "https://www.ibm.com/docs/en/zos-basic-skills?topic=interfaces-what-is-ispf",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "mainframe-tools"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introduction to the New Mainframe: z/OS Basics (IBM Redbook)",
+    "url": "https://www.redbooks.ibm.com/redbooks/pdfs/sg246366.pdf",
+    "provider": "IBM Redbooks",
+    "kind": "docs",
+    "skillIds": [
+      "mainframe-tools",
+      "jcl"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Control-M SaaS: Getting Started",
+    "url": "https://documents.bmc.com/supportu/controlm-saas/en-US/Documentation/Getting_Started.htm",
+    "provider": "BMC",
+    "kind": "docs",
+    "skillIds": [
+      "batch-scheduling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "AutoSys Learning Path: Getting Started with AutoSys Job Creation",
+    "url": "https://techdocs.broadcom.com/us/en/ca-enterprise-software/intelligent-automation/autosys-workload-automation/24-2-00/getting-started/learning-autosys/autosys-education-and-training/lp-getting-started-with-autosys-job-creation.html",
+    "provider": "Broadcom",
+    "kind": "course",
+    "skillIds": [
+      "batch-scheduling"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "AutoSys: Manage JIL",
+    "url": "https://techdocs.broadcom.com/us/en/ca-enterprise-software/intelligent-automation/autosys-workload-automation/24-0-00/scheduling/ae-scheduling/manage-jil.html",
+    "provider": "Broadcom",
+    "kind": "docs",
+    "skillIds": [
+      "batch-scheduling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Informatica Cloud Data Integration: Mapping tutorial",
+    "url": "https://docs.informatica.com/integration-cloud/data-integration/current-version/mappings/mapping-tutorial.html",
+    "provider": "Informatica",
+    "kind": "practice",
+    "skillIds": [
+      "informatica"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "PowerCenter learning path (Informatica Success)",
+    "url": "https://success.informatica.com/learning-path/powercenter.html",
+    "provider": "Informatica",
+    "kind": "course",
+    "skillIds": [
+      "informatica"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SSIS: How to Create an ETL Package (tutorial)",
+    "url": "https://learn.microsoft.com/en-us/sql/integration-services/ssis-how-to-create-an-etl-package?view=sql-server-ver17",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "ssis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Load data into SQL Server or Azure SQL Database with SSIS",
+    "url": "https://learn.microsoft.com/en-us/sql/integration-services/load-data-to-sql-database-with-ssis?view=sql-server-ver17",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "ssis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Talend Studio: Getting started with a basic Job",
+    "url": "https://help.qlik.com/talend/en-US/studio-user-guide/8.0-R2025-05/getting-started-with-basic-job",
+    "provider": "Qlik Talend",
+    "kind": "practice",
+    "skillIds": [
+      "talend"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Talend Studio Getting Started Guide (Data Integration): launching Studio for the first time",
+    "url": "https://help.qlik.com/talend/en-US/studio-getting-started-guide-data-integration/8.0/launching-studio-for-first-time",
+    "provider": "Qlik Talend",
+    "kind": "docs",
+    "skillIds": [
+      "talend"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create a canvas app in Power Apps (learning path)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/create-powerapps/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-apps"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Create and manage canvas apps with Power Apps (PL-7001)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/create-manage-canvas-apps-power-apps/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-apps"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Get started with Power Automate",
+    "url": "https://learn.microsoft.com/en-us/training/modules/get-started-flows/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-automate"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Build and optimize cloud flows in Power Automate",
+    "url": "https://learn.microsoft.com/en-us/training/paths/build-optimize-cloud-flows-power-automate/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "power-automate"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Get started using Microsoft Dataverse (learning path)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/get-started-cds/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dataverse"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Manage tables in Dataverse",
+    "url": "https://learn.microsoft.com/en-us/training/modules/create-manage-entities/",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "dataverse"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Configure a SharePoint Framework development environment",
+    "url": "https://learn.microsoft.com/en-us/training/modules/sharepoint-spfx-get-started/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "sharepoint"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Build your first SharePoint client-side web part (Hello World part 1)",
+    "url": "https://learn.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/build-a-hello-world-web-part",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "sharepoint"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with Power Apps and SharePoint",
+    "url": "https://learn.microsoft.com/en-us/training/modules/get-started-power-apps-sharepoint/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "sharepoint",
+      "power-apps"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Unity Essentials Pathway",
+    "url": "https://learn.unity.com/pathway/unity-essentials",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "unity-engine"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Junior Programmer Pathway",
+    "url": "https://learn.unity.com/pathway/junior-programmer",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "unity-engine"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "First Hour in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/unreal-engine/first-hour-in-unreal-engine",
+    "provider": "Epic Games",
+    "kind": "course",
+    "skillIds": [
+      "unreal-engine"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to Blueprints Visual Scripting in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-blueprints-visual-scripting-in-unreal-engine",
+    "provider": "Epic Games",
+    "kind": "docs",
+    "skillIds": [
+      "unreal-engine"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Math for Game Developers - Character Movement (Points and Vectors)",
+    "url": "https://www.youtube.com/watch?v=sKCF8A3XGxQ",
+    "provider": "BSVino (Jorge Rodriguez), YouTube",
+    "kind": "video",
+    "skillIds": [
+      "game-math"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Vector Maths (Unity Learn)",
+    "url": "https://learn.unity.com/tutorial/vector-maths",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "game-math"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Moving objects with vectors (Unity Manual)",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-vectors.html",
+    "provider": "Unity",
+    "kind": "docs",
+    "skillIds": [
+      "game-math"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get started with Netcode for GameObjects",
+    "url": "https://learn.unity.com/tutorial/get-started-with-netcode-for-gameobjects",
+    "provider": "Unity Learn",
+    "kind": "practice",
+    "skillIds": [
+      "game-networking"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Photon Fusion 2: Host Mode Basics - Getting Started",
+    "url": "https://doc.photonengine.com/fusion/v2/tutorials/host-mode-basics/1-getting-started",
+    "provider": "Photon Engine",
+    "kind": "practice",
+    "skillIds": [
+      "game-networking"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Kaggle Learn: Computer Vision",
+    "url": "https://www.kaggle.com/learn/computer-vision",
+    "provider": "Kaggle",
+    "kind": "course",
+    "skillIds": [
+      "computer-vision"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Deep Learning for Computer Vision (NPTEL, IIT Hyderabad)",
+    "url": "https://nptel.ac.in/courses/106106224",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "computer-vision"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "OpenCV-Python Tutorials",
+    "url": "https://docs.opencv.org/4.13.0/d6/d00/tutorial_py_root.html",
+    "provider": "OpenCV",
+    "kind": "docs",
+    "skillIds": [
+      "opencv"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "OpenCV: Image Thresholding",
+    "url": "https://docs.opencv.org/4.13.0/d7/d4d/tutorial_py_thresholding.html",
+    "provider": "OpenCV",
+    "kind": "practice",
+    "skillIds": [
+      "opencv"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn How to Use the OpenCV Computer Vision Library (full course)",
+    "url": "https://www.freecodecamp.org/news/opencv-full-course/",
+    "provider": "freeCodeCamp.org",
+    "kind": "video",
+    "skillIds": [
+      "opencv",
+      "computer-vision"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Quantize ONNX models",
+    "url": "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html",
+    "provider": "ONNX Runtime",
+    "kind": "docs",
+    "skillIds": [
+      "edge-model-optimization"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "TensorRT: Build Your First Engine",
+    "url": "https://docs.nvidia.com/deeplearning/tensorrt/latest/getting-started/build-your-first-engine.html",
+    "provider": "NVIDIA",
+    "kind": "practice",
+    "skillIds": [
+      "edge-model-optimization"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Export a PyTorch model to ONNX",
+    "url": "https://docs.pytorch.org/tutorials/beginner/onnx/export_simple_model_to_onnx_tutorial.html",
+    "provider": "PyTorch",
+    "kind": "practice",
+    "skillIds": [
+      "edge-model-optimization"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "CVAT Overview",
+    "url": "https://docs.cvat.ai/docs/getting_started/overview/",
+    "provider": "CVAT",
+    "kind": "docs",
+    "skillIds": [
+      "data-annotation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "CVAT: Annotation with rectangles",
+    "url": "https://docs.cvat.ai/docs/annotation/manual-annotation/shapes/annotation-with-rectangles/",
+    "provider": "CVAT",
+    "kind": "practice",
+    "skillIds": [
+      "data-annotation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Getting Started With Label Studio: Labeling Your Data",
+    "url": "https://labelstud.io/learn/getting-started-with-label-studio/labeling-your-data/",
+    "provider": "Label Studio (HumanSignal)",
+    "kind": "practice",
+    "skillIds": [
+      "data-annotation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SLSA: Get started",
+    "url": "https://slsa.dev/how-to/get-started",
+    "provider": "SLSA (OpenSSF)",
+    "kind": "docs",
+    "skillIds": [
+      "software-supply-chain-security"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Developing Secure Software (LFD121)",
+    "url": "https://openssf.org/training/courses/",
+    "provider": "OpenSSF / Linux Foundation",
+    "kind": "course",
+    "skillIds": [
+      "software-supply-chain-security"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "OWASP Dependency Graph SBOM Cheat Sheet",
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Dependency_Graph_SBOM_Cheat_Sheet.html",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "software-supply-chain-security"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Kubernetes Security Checklist",
+    "url": "https://kubernetes.io/docs/concepts/security/security-checklist/",
+    "provider": "Kubernetes",
+    "kind": "docs",
+    "skillIds": [
+      "container-security"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Apply Pod Security Standards at the Cluster Level",
+    "url": "https://kubernetes.io/docs/tutorials/security/cluster-level-pss/",
+    "provider": "Kubernetes",
+    "kind": "practice",
+    "skillIds": [
+      "container-security"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Trivy: First steps",
+    "url": "https://trivy.dev/docs/latest/getting-started/",
+    "provider": "Trivy (Aqua Security)",
+    "kind": "practice",
+    "skillIds": [
+      "container-security",
+      "software-supply-chain-security"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Vault Operations quick start",
+    "url": "https://developer.hashicorp.com/vault/docs/get-started/operations-qs",
+    "provider": "HashiCorp",
+    "kind": "practice",
+    "skillIds": [
+      "secrets-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Vault foundations for app devs",
+    "url": "https://developer.hashicorp.com/vault/tutorials/get-started-for-developers",
+    "provider": "HashiCorp",
+    "kind": "course",
+    "skillIds": [
+      "secrets-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "OWASP Secrets Management Cheat Sheet",
+    "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+    "provider": "OWASP",
+    "kind": "docs",
+    "skillIds": [
+      "secrets-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-82r3: Guide to Operational Technology (OT) Security",
+    "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "ot-ics-security"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Industrial Automation and Control (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/108105088",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "industrial-control-systems"
+    ],
+    "minutes": 2600,
+    "free": true
+  },
+  {
+    "title": "PLC Hardware Explained",
+    "url": "https://www.youtube.com/watch?v=pPUnihpL6UI",
+    "provider": "RealPars (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "industrial-control-systems"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Try GX Core (Great Expectations)",
+    "url": "https://docs.greatexpectations.io/docs/core/introduction/try_gx/",
+    "provider": "Great Expectations",
+    "kind": "practice",
+    "skillIds": [
+      "data-quality-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Overview of data quality in Microsoft Purview Unified Catalog",
+    "url": "https://learn.microsoft.com/en-us/purview/unified-catalog-data-quality",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-quality-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "OpenMetadata Day 1 Getting Started",
+    "url": "https://docs.open-metadata.org/v2.0.x/quick-start/getting-started/day-1",
+    "provider": "OpenMetadata",
+    "kind": "practice",
+    "skillIds": [
+      "data-catalog-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "DataHub Quickstart Guide",
+    "url": "https://archive.docs.datahub.com/docs/1.5.0/quickstart",
+    "provider": "DataHub",
+    "kind": "practice",
+    "skillIds": [
+      "data-catalog-tools"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Learn about Microsoft Purview Unified Catalog",
+    "url": "https://learn.microsoft.com/en-us/purview/unified-catalog",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-catalog-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Code Reviews - Engineering Fundamentals Playbook",
+    "url": "https://microsoft.github.io/code-with-engineering-playbook/code-reviews/",
+    "provider": "Microsoft",
+    "kind": "docs",
+    "skillIds": [
+      "code-review"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Reviewing proposed changes in a pull request",
+    "url": "https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request",
+    "provider": "GitHub Docs",
+    "kind": "practice",
+    "skillIds": [
+      "code-review"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Smart Contracts (Solidity docs)",
+    "url": "https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html",
+    "provider": "Solidity",
+    "kind": "docs",
+    "skillIds": [
+      "solidity"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Solidity by Example",
+    "url": "https://docs.soliditylang.org/en/latest/solidity-by-example.html",
+    "provider": "Solidity",
+    "kind": "docs",
+    "skillIds": [
+      "solidity"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Learn Blockchain, Solidity, and Full Stack JavaScript Development (32-hour course)",
+    "url": "https://www.freecodecamp.org/news/learn-blockchain-solidity-full-stack-javascript-development/",
+    "provider": "freeCodeCamp.org",
+    "kind": "video",
+    "skillIds": [
+      "solidity",
+      "web3-integration"
+    ],
+    "minutes": 1920,
+    "free": true
+  },
+  {
+    "title": "JavaScript API libraries (ethereum.org)",
+    "url": "https://ethereum.org/developers/docs/apis/javascript/",
+    "provider": "ethereum.org",
+    "kind": "docs",
+    "skillIds": [
+      "web3-integration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ethers v6: Getting Started",
+    "url": "https://docs.ethers.org/v6/getting-started/",
+    "provider": "ethers.js",
+    "kind": "docs",
+    "skillIds": [
+      "web3-integration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Hello World Smart Contract for Beginners - Fullstack",
+    "url": "https://ethereum.org/developers/tutorials/hello-world-smart-contract-fullstack/",
+    "provider": "ethereum.org",
+    "kind": "practice",
+    "skillIds": [
+      "web3-integration",
+      "solidity"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Security Considerations (Solidity docs)",
+    "url": "https://docs.soliditylang.org/en/latest/security-considerations.html",
+    "provider": "Solidity",
+    "kind": "docs",
+    "skillIds": [
+      "smart-contract-security"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "The Ethernaut",
+    "url": "https://ethernaut.openzeppelin.com/",
+    "provider": "OpenZeppelin",
+    "kind": "practice",
+    "skillIds": [
+      "smart-contract-security"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Slither static analyzer",
+    "url": "https://github.com/crytic/slither",
+    "provider": "Trail of Bits (crytic)",
+    "kind": "docs",
+    "skillIds": [
+      "smart-contract-security"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Running a Fabric Application",
+    "url": "https://hyperledger-fabric.readthedocs.io/en/latest/write_first_app.html",
+    "provider": "Hyperledger Fabric",
+    "kind": "practice",
+    "skillIds": [
+      "hyperledger-fabric"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Hyperledger Fabric Tutorials",
+    "url": "https://hyperledger-fabric.readthedocs.io/en/latest/tutorials.html",
+    "provider": "Hyperledger Fabric",
+    "kind": "docs",
+    "skillIds": [
+      "hyperledger-fabric"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Introduction to Control Systems in Cybersecurity (101)",
+    "url": "https://www.cisa.gov/resources-tools/training/introduction-control-systems-cybersecurity-101",
+    "provider": "CISA",
+    "kind": "course",
+    "skillIds": [
+      "ot-ics-security",
+      "industrial-control-systems"
+    ],
+    "minutes": 480,
     "free": true
   }
 ]

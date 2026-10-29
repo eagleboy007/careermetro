@@ -1,0 +1,181 @@
+{
+  "slug": "cloud-support-engineer",
+  "title": "Cloud Support Engineer",
+  "summary": "A cloud support engineer helps customers or internal teams fix problems with servers, networks, access and services running on AWS, Azure or Google Cloud, working through support tickets within agreed response times. They sit in a cloud provider's support team or a managed services team, and pass product bugs or deep issues to senior engineers.",
+  "dailyDuties": [
+    "Pick up support cases and reply within the agreed SLA",
+    "Reproduce customer issues in a test account",
+    "Troubleshoot Linux or Windows virtual machines that will not start or connect",
+    "Debug DNS, VPC, security group and load balancer problems",
+    "Fix access errors caused by IAM roles and policies",
+    "Write clear case notes and escalate to the next tier when needed",
+    "Cover rotational shifts, including some nights and weekends"
+  ],
+  "typicalTitles": [
+    "Cloud Support Associate",
+    "Cloud Support Engineer I",
+    "AWS Support Engineer",
+    "Azure Support Engineer",
+    "Cloud Technical Support Engineer",
+    "L1 Cloud Support Engineer",
+    "Technical Solutions Engineer - Cloud Support"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Troubleshoot customer or internal issues on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Troubleshoot customer or internal issues on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Troubleshoot customer or internal issues on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer and debug Linux servers: logs, services, disks and permissions",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Debug TCP/IP, DNS, DHCP, routing and firewall problems",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "required",
+      "expectation": "Troubleshoot VPCs, subnets, security groups and load balancers",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Fix access issues caused by IAM roles, policies and users",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work tickets within SLA, follow ITIL processes and escalate cleanly to the next tier",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain the cause and fix to customers in clear written and spoken English",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Narrow down a fault step by step and find the root cause",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write small scripts to check, reproduce or fix issues",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write small scripts to check, reproduce or fix issues",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Write small scripts to check, reproduce or fix issues",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "nice_to_have",
+      "expectation": "Troubleshoot Windows virtual machines and Active Directory",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Read CloudWatch, Azure Monitor or similar dashboards and alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Help with managed database issues using SQL",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    },
+    {
+      "id": "support-scripting",
+      "label": "A scripting language (Python, Bash or PowerShell)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "Entry-level AWS basics for freshers"
+    },
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "Core AWS services and design, named as a plus in cloud support postings"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "recommended",
+      "why": "Azure administration for Azure-focused support teams"
+    },
+    {
+      "certId": "gcp-associate-cloud-engineer",
+      "importance": "optional",
+      "why": "Google Cloud basics for GCP support roles"
+    },
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Proves hands-on Linux administration"
+    },
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Networking fundamentals used in daily troubleshooting"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,68 @@
+{
+  "id": "devsecops-engineer-from-devops",
+  "roleSlug": "devsecops-engineer",
+  "persona": "AWS DevOps engineer who has added some security scans to pipelines, moving into DevSecOps",
+  "resumeText": "Aditya Kulkarni | Pune | aditya.kulkarni@example.com\n\nEXPERIENCE\nDevOps Engineer, Sahyadri Fintech Systems, Pune (2021 - present)\n- Build Jenkins and GitHub Actions pipelines for 30 Java microservices.\n- Integrated SonarQube SAST scans into every pull request build and blocked merges on critical findings.\n- Added Trivy image scanning to the release pipeline for all Docker images.\n- Run production workloads on Amazon EKS clusters across three AWS accounts.\n- Write Terraform modules for VPCs, IAM roles and RDS databases.\n- Automated nightly environment clean-up with Python scripts.\n\nSKILLS\nSnyk, HashiCorp Vault, Docker, Kubernetes, Terraform, Jenkins\n\nEDUCATION\nBE Computer Engineering, Pune Institute of Computer Technology, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "ci-cd",
+        "quote": "Build Jenkins and GitHub Actions pipelines for 30 Java microservices"
+      },
+      {
+        "skillId": "secure-code-review",
+        "quote": "Integrated SonarQube SAST scans into every pull request build"
+      },
+      {
+        "skillId": "devsecops",
+        "quote": "Integrated SonarQube SAST scans into every pull request build and blocked merges on critical findings"
+      },
+      {
+        "skillId": "container-security",
+        "quote": "Added Trivy image scanning to the release pipeline"
+      },
+      {
+        "skillId": "kubernetes",
+        "quote": "Run production workloads on Amazon EKS clusters"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Amazon EKS clusters across three AWS accounts"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Write Terraform modules for VPCs, IAM roles"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automated nightly environment clean-up with Python scripts"
+      },
+      {
+        "skillId": "software-supply-chain-security",
+        "quote": "Snyk"
+      },
+      {
+        "skillId": "secrets-management",
+        "quote": "HashiCorp Vault"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "software-supply-chain-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "secrets-management",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "gcp",
+      "cloud-security-posture",
+      "compliance-frameworks"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,56 @@
+{
+  "id": "computer-vision-engineer-tabular-data-scientist",
+  "roleSlug": "computer-vision-engineer",
+  "persona": "Manufacturing data scientist moving from tabular ML to computer vision",
+  "resumeText": "Ananya Iyer | Coimbatore | ananya.iyer@example.com\n\nEXPERIENCE\nData Scientist, Kongu Manufacturing Analytics, Coimbatore (2023 - present)\n- Trained a PyTorch CNN that classifies fabric images as defective or clean for the quality team.\n- Used OpenCV to crop, resize and threshold 20,000 line-camera images before training.\n- Report precision and recall per defect type to the plant head every week.\n- Built XGBoost models in Python to predict machine downtime from sensor data.\n- Keep notebooks and training scripts in a GitLab repository.\n\nEDUCATION\nMSc Data Science, PSG College of Technology, 2023\n\nSKILLS\nPython, PyTorch, OpenCV, scikit-learn, SQL, YOLO, Linux\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "pytorch",
+        "quote": "Trained a PyTorch CNN that classifies fabric images"
+      },
+      {
+        "skillId": "deep-learning",
+        "quote": "Trained a PyTorch CNN that classifies fabric images"
+      },
+      {
+        "skillId": "computer-vision",
+        "quote": "classifies fabric images as defective or clean"
+      },
+      {
+        "skillId": "opencv",
+        "quote": "Used OpenCV to crop, resize and threshold"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "Report precision and recall per defect type"
+      },
+      {
+        "skillId": "python",
+        "quote": "Built XGBoost models in Python"
+      },
+      {
+        "skillId": "git",
+        "quote": "Keep notebooks and training scripts in a GitLab repository"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "linux",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "edge-model-optimization",
+      "cpp",
+      "model-serving",
+      "data-annotation"
+    ]
+  },
+  "reviewedBy": null
+}

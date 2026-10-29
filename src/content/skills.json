@@ -26,7 +26,8 @@
     "aliases": [
       "js",
       "es6",
-      "ecmascript"
+      "ecmascript",
+      "jquery"
     ]
   },
   {
@@ -1570,7 +1571,9 @@
     "aliases": [
       "shift left security",
       "security in ci/cd",
-      "pipeline security"
+      "pipeline security",
+      "checkov",
+      "tfsec"
     ],
     "ambiguous": [],
     "implies": [],
@@ -2957,6 +2960,660 @@
       "ccms",
       "component content management",
       "robohelp"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "php",
+    "name": "PHP",
+    "category": "programming",
+    "aliases": [
+      "php",
+      "core php",
+      "php 8",
+      "php7"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "php-frameworks",
+    "name": "PHP frameworks (Laravel, CodeIgniter, Symfony)",
+    "category": "web",
+    "aliases": [
+      "laravel",
+      "codeigniter",
+      "symfony",
+      "cakephp",
+      "yii",
+      "laravel framework",
+      "eloquent"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "php"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "wordpress-development",
+    "name": "WordPress theme and plugin development",
+    "category": "web",
+    "aliases": [
+      "wordpress",
+      "wordpress development",
+      "wordpress plugins",
+      "wordpress themes",
+      "woocommerce",
+      "custom post types",
+      "advanced custom fields",
+      "elementor"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "php"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "go-concurrency",
+    "name": "Go concurrency (goroutines and channels)",
+    "category": "programming",
+    "aliases": [
+      "goroutines",
+      "go concurrency",
+      "golang concurrency",
+      "go channels",
+      "worker pools"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "go"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "grpc",
+    "name": "gRPC and Protocol Buffers",
+    "category": "web",
+    "aliases": [
+      "grpc",
+      "protobuf",
+      "protocol buffers"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cobol",
+    "name": "COBOL",
+    "category": "programming",
+    "aliases": [
+      "cobol",
+      "enterprise cobol",
+      "cobol-85",
+      "cobol programming"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "jcl",
+    "name": "JCL (Job Control Language)",
+    "category": "programming",
+    "aliases": [
+      "jcl",
+      "job control language",
+      "jcl procs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "db2",
+    "name": "IBM Db2",
+    "category": "data",
+    "aliases": [
+      "db2",
+      "ibm db2",
+      "db2 z/os",
+      "spufi"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sql"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cics",
+    "name": "CICS online transactions",
+    "category": "programming",
+    "aliases": [
+      "cics",
+      "cics transaction server",
+      "cics programming",
+      "bms maps"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vsam",
+    "name": "VSAM files",
+    "category": "data",
+    "aliases": [
+      "vsam",
+      "vsam ksds",
+      "vsam files",
+      "idcams"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mainframe-tools",
+    "name": "Mainframe development tools (TSO/ISPF, Endevor, ChangeMan, File-AID)",
+    "category": "tools",
+    "aliases": [
+      "tso/ispf",
+      "ispf",
+      "endevor",
+      "changeman",
+      "file-aid",
+      "xpediter",
+      "ispw",
+      "z/os",
+      "mvs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "batch-scheduling",
+    "name": "Batch job scheduling (Control-M, Autosys, CA-7)",
+    "category": "tools",
+    "aliases": [
+      "control-m",
+      "autosys",
+      "ca-7",
+      "ca7",
+      "tivoli workload scheduler",
+      "batch scheduling",
+      "job scheduling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "informatica",
+    "name": "Informatica PowerCenter and IICS",
+    "category": "data",
+    "aliases": [
+      "informatica",
+      "informatica powercenter",
+      "powercenter",
+      "iics",
+      "idmc",
+      "informatica cloud"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "etl"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "ssis",
+    "name": "SQL Server Integration Services (SSIS)",
+    "category": "data",
+    "aliases": [
+      "ssis",
+      "sql server integration services",
+      "ssis packages"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "etl",
+      "sql"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "talend",
+    "name": "Talend",
+    "category": "data",
+    "aliases": [
+      "talend",
+      "talend open studio",
+      "talend data integration",
+      "talend studio"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "etl"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-apps",
+    "name": "Power Apps",
+    "category": "tools",
+    "aliases": [
+      "power apps",
+      "powerapps",
+      "canvas apps",
+      "model-driven apps",
+      "power fx"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-automate",
+    "name": "Power Automate",
+    "category": "tools",
+    "aliases": [
+      "power automate",
+      "microsoft flow",
+      "power automate desktop",
+      "cloud flows"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dataverse",
+    "name": "Microsoft Dataverse",
+    "category": "data",
+    "aliases": [
+      "dataverse",
+      "microsoft dataverse",
+      "common data service"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sharepoint",
+    "name": "SharePoint Online",
+    "category": "tools",
+    "aliases": [
+      "sharepoint",
+      "sharepoint online",
+      "sharepoint lists",
+      "spfx"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "unity-engine",
+    "name": "Unity game engine",
+    "category": "programming",
+    "aliases": [
+      "unity3d",
+      "unity 3d",
+      "unity engine",
+      "unity game development",
+      "unity game engine"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "unreal-engine",
+    "name": "Unreal Engine",
+    "category": "programming",
+    "aliases": [
+      "unreal engine",
+      "ue4",
+      "ue5",
+      "unreal engine 5",
+      "unreal blueprints"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-math",
+    "name": "3D math and game physics",
+    "category": "programming",
+    "aliases": [
+      "vector math",
+      "3d math",
+      "game physics",
+      "quaternions",
+      "collision detection"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-networking",
+    "name": "Multiplayer game networking",
+    "category": "programming",
+    "aliases": [
+      "photon",
+      "photon pun",
+      "photon fusion",
+      "netcode for gameobjects",
+      "multiplayer networking"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "computer-vision",
+    "name": "Computer vision (detection, segmentation, classification)",
+    "category": "ml",
+    "aliases": [
+      "computer vision",
+      "object detection",
+      "image segmentation",
+      "image classification",
+      "instance segmentation",
+      "semantic segmentation",
+      "yolo",
+      "faster r-cnn"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "deep-learning"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "opencv",
+    "name": "OpenCV and image processing",
+    "category": "ml",
+    "aliases": [
+      "opencv",
+      "cv2",
+      "image processing",
+      "camera calibration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "edge-model-optimization",
+    "name": "Edge model optimization (ONNX, TensorRT, quantization)",
+    "category": "ml",
+    "aliases": [
+      "tensorrt",
+      "onnx",
+      "onnx runtime",
+      "model quantization",
+      "nvidia jetson",
+      "openvino",
+      "deepstream",
+      "edge ai"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-annotation",
+    "name": "Dataset annotation and curation",
+    "category": "ml",
+    "aliases": [
+      "cvat",
+      "label studio",
+      "data annotation",
+      "image annotation",
+      "roboflow"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "software-supply-chain-security",
+    "name": "Software supply chain security (SCA and SBOM)",
+    "category": "security",
+    "aliases": [
+      "software composition analysis",
+      "dependency scanning",
+      "sbom",
+      "software bill of materials",
+      "snyk",
+      "black duck",
+      "dependabot",
+      "owasp dependency-check"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "container-security",
+    "name": "Container and Kubernetes security",
+    "category": "security",
+    "aliases": [
+      "container security",
+      "container image scanning",
+      "image scanning",
+      "trivy",
+      "grype",
+      "falco",
+      "kubernetes security",
+      "aqua security"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "secrets-management",
+    "name": "Secrets management",
+    "category": "security",
+    "aliases": [
+      "secrets management",
+      "secret management",
+      "hashicorp vault",
+      "aws secrets manager",
+      "azure key vault",
+      "gitleaks",
+      "trufflehog",
+      "secret scanning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ot-ics-security",
+    "name": "OT/ICS security",
+    "category": "security",
+    "aliases": [
+      "ot security",
+      "ics security",
+      "ot/ics security",
+      "ot cybersecurity",
+      "industrial cybersecurity",
+      "scada security",
+      "iec 62443",
+      "isa/iec 62443",
+      "purdue model",
+      "nozomi networks",
+      "claroty",
+      "dragos",
+      "nerc cip",
+      "nist 800-82"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "industrial-control-systems",
+    "name": "Industrial control systems (PLC, SCADA, DCS)",
+    "category": "tools",
+    "aliases": [
+      "scada",
+      "plc programming",
+      "programmable logic controllers",
+      "distributed control systems",
+      "hmi",
+      "historian",
+      "dnp3",
+      "opc ua",
+      "profinet",
+      "siemens s7",
+      "allen bradley",
+      "rockwell automation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-quality-management",
+    "name": "Data quality management",
+    "category": "data",
+    "aliases": [
+      "data quality management",
+      "data quality rules",
+      "data profiling",
+      "data quality scorecards",
+      "data quality dimensions",
+      "data quality monitoring",
+      "informatica data quality",
+      "informatica idq",
+      "collibra data quality",
+      "great expectations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-catalog-tools",
+    "name": "Data catalog and metadata tools",
+    "category": "data",
+    "aliases": [
+      "collibra",
+      "alation",
+      "microsoft purview",
+      "azure purview",
+      "atlan",
+      "informatica axon",
+      "informatica edc",
+      "business glossary",
+      "metadata management",
+      "openmetadata"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "data-governance"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "code-review",
+    "name": "Code review",
+    "category": "programming",
+    "aliases": [
+      "code review",
+      "code reviews",
+      "pull request reviews",
+      "peer code review",
+      "reviewing pull requests",
+      "pr reviews"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "solidity",
+    "name": "Solidity smart contract development",
+    "category": "programming",
+    "aliases": [
+      "solidity",
+      "smart contract development",
+      "smart contracts",
+      "erc-20",
+      "erc20",
+      "erc-721",
+      "erc721",
+      "erc-1155",
+      "openzeppelin",
+      "hardhat",
+      "truffle"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "web3-integration",
+    "name": "Web3 front-end and back-end integration",
+    "category": "web",
+    "aliases": [
+      "ethers.js",
+      "web3.js",
+      "web3.py",
+      "wagmi",
+      "viem",
+      "metamask integration",
+      "wallet integration",
+      "dapp development"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "smart-contract-security",
+    "name": "Smart contract security",
+    "category": "security",
+    "aliases": [
+      "smart contract security",
+      "smart contract audit",
+      "smart contract audits",
+      "smart contract auditing",
+      "slither",
+      "mythril",
+      "echidna",
+      "reentrancy"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "solidity"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "hyperledger-fabric",
+    "name": "Hyperledger Fabric",
+    "category": "programming",
+    "aliases": [
+      "hyperledger fabric",
+      "hyperledger",
+      "chaincode",
+      "fabric chaincode"
     ],
     "ambiguous": [],
     "implies": [],

@@ -1,0 +1,56 @@
+{
+  "id": "data-governance-analyst-mis-analyst",
+  "roleSlug": "data-governance-analyst",
+  "persona": "MIS analyst at a finance company who already runs data checks, moving into data governance",
+  "resumeText": "Pooja Iyer | Mumbai | pooja.iyer@example.com\n\nEXPERIENCE\nMIS Analyst, Konkan Housing Finance, Mumbai (2022 - present)\n- Write SQL queries on the loan data warehouse for monthly regulatory MIS reports.\n- Built data quality rules that flag missing PAN and invalid pincode values in customer records.\n- Maintain a data dictionary of 300 report fields with owners and business definitions.\n- Present reconciliation breaks to the finance and risk teams every month.\n- Agree fixes with branch operations heads before the month-end close.\n- Build Power BI dashboards for branch-wise collection MIS.\n\nSKILLS\nSQL, Excel, Power BI, Collibra\n\nEDUCATION\nBSc Statistics, Ramnarain Ruia College, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries on the loan data warehouse"
+      },
+      {
+        "skillId": "data-quality-management",
+        "quote": "Built data quality rules that flag missing PAN"
+      },
+      {
+        "skillId": "data-governance",
+        "quote": "Maintain a data dictionary of 300 report fields with owners and business definitions"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present reconciliation breaks to the finance and risk teams"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agree fixes with branch operations heads"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "Build Power BI dashboards for branch-wise collection MIS"
+      },
+      {
+        "skillId": "data-catalog-tools",
+        "quote": "Collibra"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-catalog-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-modeling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "data-privacy",
+      "etl",
+      "tableau"
+    ]
+  },
+  "reviewedBy": null
+}

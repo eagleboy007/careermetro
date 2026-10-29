@@ -1,0 +1,56 @@
+{
+  "id": "ot-security-engineer-plant-network-engineer",
+  "roleSlug": "ot-security-engineer",
+  "persona": "Instrumentation engineer turned plant network engineer, moving into OT security",
+  "resumeText": "Vikram Rathod | Vadodara | vikram.rathod@example.com\n\nEXPERIENCE\nNetwork Engineer, Narmada Process Industries, Vadodara (2020 - present)\n- Configure Fortinet firewalls between the plant control network and the corporate IT network.\n- Split the control network into VLANs by process area and documented every zone.\n- Review firewall and IDS alerts every morning and escalate unusual traffic to the security team.\n- Coordinate Windows patching for HMI and historian servers during planned shutdowns.\n- Walk plant operators and shift engineers through every network change before go-live.\n\nInstrumentation Engineer, Mahi Chemicals, Bharuch (2018 - 2020)\n- Maintained Siemens S7 PLC and SCADA systems for two batch reactors.\n\nSKILLS\nFortinet, Cisco switches, Modbus, IEC 62443\n\nEDUCATION\nBE Instrumentation and Control, L.D. College of Engineering, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "industrial-control-systems",
+        "quote": "Maintained Siemens S7 PLC and SCADA systems for two batch reactors"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "Configure Fortinet firewalls between the plant control network"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Split the control network into VLANs by process area"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Review firewall and IDS alerts every morning and escalate unusual traffic"
+      },
+      {
+        "skillId": "vulnerability-management",
+        "quote": "Coordinate Windows patching for HMI and historian servers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Walk plant operators and shift engineers through every network change"
+      },
+      {
+        "skillId": "ot-ics-security",
+        "quote": "IEC 62443"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ot-ics-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "risk-assessment",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "security-incident-response",
+      "identity-access-management",
+      "cloud-security"
+    ]
+  },
+  "reviewedBy": null
+}

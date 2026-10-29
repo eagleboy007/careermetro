@@ -1,0 +1,126 @@
+{
+  "slug": "power-platform-developer",
+  "title": "Power Platform Developer",
+  "summary": "Power Platform developers build business apps and automated workflows on Microsoft's low-code tools (tools where much of the app is built visually): Power Apps, Power Automate and Dataverse. They work with business teams in an IT, digital or consulting group and replace spreadsheets and email processes with apps.",
+  "dailyDuties": [
+    "Build canvas and model-driven apps in Power Apps",
+    "Build Power Automate flows for approvals and alerts",
+    "Design Dataverse tables and security roles",
+    "Connect apps to SharePoint, SQL and other systems",
+    "Meet business users to gather requirements",
+    "Move solutions from test to production"
+  ],
+  "typicalTitles": [
+    "Power Apps Developer",
+    "Power Automate Developer",
+    "Power Platform Consultant",
+    "Power Platform Engineer",
+    "Power Apps and SharePoint Developer",
+    "Low-Code Developer (Power Platform)"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "power-apps",
+      "importance": "required",
+      "expectation": "Build canvas and model-driven apps with Power Fx",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-automate",
+      "importance": "required",
+      "expectation": "Build cloud flows for approvals, alerts and data sync",
+      "postingShare": null
+    },
+    {
+      "skillId": "dataverse",
+      "importance": "required",
+      "expectation": "Design Dataverse tables, relationships and security roles",
+      "postingShare": null
+    },
+    {
+      "skillId": "sharepoint",
+      "importance": "required",
+      "expectation": "Use SharePoint lists and libraries as app data sources",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Connect apps to other systems through connectors and REST APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business requests into app and flow designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Demo apps to business users and explain trade-offs",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Embed or build Power BI reports for the apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Write JavaScript or PCF code where low-code is not enough",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "nice_to_have",
+      "expectation": "Write Dataverse plug-ins in C#",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Use Azure Functions or Logic Apps behind custom connectors",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Move solutions between environments with pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query SQL Server data used by apps",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "power-bi-data-analyst",
+      "importance": "optional",
+      "why": "Many postings pair Power Apps with Power BI"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basics of the Azure services used with Power Platform"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
