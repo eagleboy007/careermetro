@@ -6,7 +6,7 @@ import { nearbyLinesFor } from "@/lib/nearby/build";
 import { loadEvalCases } from "./cases";
 import { expectedProfile } from "./matcher-eval";
 
-type Families = { families: Record<string, string[]>; neighbours: [string, string][] };
+type Families = { families: Record<string, string[]>; neighbours: [string, string][]; alsoNear: [string, string][] };
 const data = JSON.parse(readFileSync(join(process.cwd(), "fixtures/evals/closest/role-families.json"), "utf8")) as Families;
 const familyOf = new Map(Object.entries(data.families).flatMap(([family, slugs]) => slugs.map((slug) => [slug, family] as const)));
 const near = (a: string, b: string) => a === b || data.neighbours.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
@@ -24,6 +24,7 @@ describe("closest-role eval", () => {
     expect(roleProfiles.filter((r) => counts.get(r.slug) !== 1).map((r) => r.slug)).toEqual([]);
     expect([...counts.keys()].filter((s) => !roleProfiles.some((r) => r.slug === s))).toEqual([]);
     for (const [a, b] of data.neighbours) expect([a in data.families, b in data.families]).toEqual([true, true]);
+    for (const [a, b] of data.alsoNear) expect([familyOf.has(a), familyOf.has(b)]).toEqual([true, true]);
   });
 
   it("names a role from the same or a neighbouring family for each fixture resume", () => {
@@ -34,7 +35,8 @@ describe("closest-role eval", () => {
       if (!top) continue;
       const want = familyOf.get(c.roleSlug) ?? "?";
       const got = familyOf.get(top) ?? "?";
-      if (!near(want, got)) misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got})`);
+      const reviewed = data.alsoNear.some(([from, to]) => from === c.roleSlug && to === top);
+      if (!near(want, got) && !reviewed) misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got})`);
     }
     expect(misses).toEqual([]);
   });

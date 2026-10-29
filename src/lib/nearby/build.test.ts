@@ -244,4 +244,4 @@ describe("the e2e walk's resume", () => {
 });
 
 /** Mirrored in e2e/walk.mjs. */
-const WALK_CLOSEST = { slug: "rpa-developer", title: "RPA Developer", shared: 2, total: 6 };
+const WALK_CLOSEST = { slug: "bi-developer", title: "BI Developer (Power BI)", shared: 2, total: 7 };

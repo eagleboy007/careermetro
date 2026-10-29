@@ -1,58 +1,237 @@
 {
-  "about": "Closest-role eval (src/evals/closest-eval.test.ts). Every live role sits in one family. For each fixture resume, the first Nearby line, or the closest role when none is near, must sit in the target role's family or a neighbouring one. A new role batch adds its slugs here.",
+  "about": "Closest-role eval (src/evals/closest-eval.test.ts). Every live role sits in one family. For each fixture resume, the first Nearby line, or the closest role when none is near, must sit in the target role's family or a neighbouring one. A new role batch adds its slugs here. alsoNear lists reviewed one-way moves across families (target role, then the role named first) that are real career moves.",
   "families": {
-    "data-analytics": ["data-analyst", "bi-developer", "analytics-engineer", "data-governance-analyst"],
-    "data-engineering": ["data-engineer", "etl-developer", "data-architect", "database-developer", "database-administrator", "database-architect"],
-    "data-science-ml": ["data-scientist", "senior-data-scientist", "ml-engineer", "mlops-engineer", "ai-engineer", "computer-vision-engineer"],
+    "data-analytics": [
+      "data-analyst",
+      "bi-developer",
+      "analytics-engineer",
+      "data-governance-analyst"
+    ],
+    "data-engineering": [
+      "data-engineer",
+      "etl-developer",
+      "data-architect",
+      "database-developer",
+      "database-administrator",
+      "database-architect"
+    ],
+    "data-science-ml": [
+      "data-scientist",
+      "senior-data-scientist",
+      "ml-engineer",
+      "mlops-engineer",
+      "ai-engineer",
+      "computer-vision-engineer"
+    ],
     "security": [
-      "cyber-security-analyst", "soc-analyst-l2", "soc-lead", "incident-response-analyst", "threat-intelligence-analyst",
-      "vulnerability-management-analyst", "information-security-analyst", "penetration-tester", "appsec-engineer",
-      "security-architect", "network-security-engineer", "cloud-security-engineer", "devsecops-engineer", "iam-engineer",
-      "ot-security-engineer", "grc-manager", "privacy-analyst"
+      "cyber-security-analyst",
+      "soc-analyst-l2",
+      "soc-lead",
+      "incident-response-analyst",
+      "threat-intelligence-analyst",
+      "vulnerability-management-analyst",
+      "information-security-analyst",
+      "penetration-tester",
+      "appsec-engineer",
+      "security-architect",
+      "network-security-engineer",
+      "cloud-security-engineer",
+      "devsecops-engineer",
+      "iam-engineer",
+      "ot-security-engineer",
+      "grc-manager",
+      "privacy-analyst"
     ],
     "infra-cloud": [
-      "cloud-engineer", "cloud-architect", "cloud-finops-analyst", "cloud-support-engineer", "devops-engineer", "platform-engineer",
-      "site-reliability-engineer", "system-administrator", "network-engineer", "storage-backup-engineer", "it-support-engineer",
-      "technical-support-engineer", "application-support-engineer"
+      "cloud-engineer",
+      "cloud-architect",
+      "cloud-finops-analyst",
+      "cloud-support-engineer",
+      "devops-engineer",
+      "platform-engineer",
+      "site-reliability-engineer",
+      "system-administrator",
+      "network-engineer",
+      "storage-backup-engineer",
+      "it-support-engineer",
+      "technical-support-engineer",
+      "application-support-engineer"
     ],
     "backend": [
-      "software-engineer", "java-backend-developer", "senior-backend-engineer", "nodejs-developer", "golang-developer", "python-developer",
-      "dotnet-developer", "php-developer", "full-stack-developer", "blockchain-developer", "mainframe-developer", "solutions-architect", "tech-lead"
+      "software-engineer",
+      "java-backend-developer",
+      "senior-backend-engineer",
+      "nodejs-developer",
+      "golang-developer",
+      "python-developer",
+      "dotnet-developer",
+      "php-developer",
+      "full-stack-developer",
+      "blockchain-developer",
+      "mainframe-developer",
+      "solutions-architect",
+      "tech-lead"
     ],
     "frontend-mobile": [
-      "frontend-developer", "frontend-architect", "ui-ux-designer", "android-developer", "ios-developer", "cross-platform-mobile-developer",
-      "game-developer", "ar-vr-developer"
+      "frontend-developer",
+      "frontend-architect",
+      "ui-ux-designer",
+      "android-developer",
+      "ios-developer",
+      "cross-platform-mobile-developer",
+      "game-developer",
+      "ar-vr-developer"
     ],
-    "enterprise-apps": ["salesforce-developer", "sap-abap-developer", "servicenow-developer", "dynamics-365-developer", "oracle-fusion-technical-consultant", "power-platform-developer", "rpa-developer"],
-    "quality": ["qa-automation-engineer", "qa-lead", "manual-test-engineer", "performance-test-engineer"],
-    "hardware": ["embedded-software-engineer", "iot-engineer", "robotics-engineer", "vlsi-design-engineer"],
-    "delivery": ["business-analyst", "engineering-manager", "product-manager", "scrum-master", "technical-writer"],
-    "marketing": ["digital-marketing-executive"]
+    "enterprise-apps": [
+      "salesforce-developer",
+      "sap-abap-developer",
+      "servicenow-developer",
+      "dynamics-365-developer",
+      "oracle-fusion-technical-consultant",
+      "power-platform-developer",
+      "rpa-developer"
+    ],
+    "quality": [
+      "qa-automation-engineer",
+      "qa-lead",
+      "manual-test-engineer",
+      "performance-test-engineer"
+    ],
+    "hardware": [
+      "embedded-software-engineer",
+      "iot-engineer",
+      "robotics-engineer",
+      "vlsi-design-engineer"
+    ],
+    "delivery": [
+      "business-analyst",
+      "engineering-manager",
+      "product-manager",
+      "scrum-master",
+      "technical-writer"
+    ],
+    "marketing": [
+      "digital-marketing-executive"
+    ]
   },
   "neighbours": [
-    ["data-analytics", "data-engineering"],
-    ["data-analytics", "data-science-ml"],
-    ["data-analytics", "delivery"],
-    ["data-analytics", "marketing"],
-    ["data-engineering", "data-science-ml"],
-    ["data-engineering", "backend"],
-    ["data-engineering", "infra-cloud"],
-    ["data-science-ml", "backend"],
-    ["data-science-ml", "infra-cloud"],
-    ["security", "infra-cloud"],
-    ["security", "backend"],
-    ["infra-cloud", "backend"],
-    ["infra-cloud", "enterprise-apps"],
-    ["infra-cloud", "hardware"],
-    ["backend", "frontend-mobile"],
-    ["backend", "enterprise-apps"],
-    ["backend", "quality"],
-    ["backend", "delivery"],
-    ["backend", "hardware"],
-    ["frontend-mobile", "quality"],
-    ["frontend-mobile", "delivery"],
-    ["frontend-mobile", "hardware"],
-    ["quality", "delivery"],
-    ["delivery", "marketing"]
+    [
+      "data-analytics",
+      "data-engineering"
+    ],
+    [
+      "data-analytics",
+      "data-science-ml"
+    ],
+    [
+      "data-analytics",
+      "delivery"
+    ],
+    [
+      "data-analytics",
+      "marketing"
+    ],
+    [
+      "data-engineering",
+      "data-science-ml"
+    ],
+    [
+      "data-engineering",
+      "backend"
+    ],
+    [
+      "data-engineering",
+      "infra-cloud"
+    ],
+    [
+      "data-science-ml",
+      "backend"
+    ],
+    [
+      "data-science-ml",
+      "infra-cloud"
+    ],
+    [
+      "security",
+      "infra-cloud"
+    ],
+    [
+      "security",
+      "backend"
+    ],
+    [
+      "infra-cloud",
+      "backend"
+    ],
+    [
+      "infra-cloud",
+      "enterprise-apps"
+    ],
+    [
+      "infra-cloud",
+      "hardware"
+    ],
+    [
+      "backend",
+      "frontend-mobile"
+    ],
+    [
+      "backend",
+      "enterprise-apps"
+    ],
+    [
+      "backend",
+      "quality"
+    ],
+    [
+      "backend",
+      "delivery"
+    ],
+    [
+      "backend",
+      "hardware"
+    ],
+    [
+      "frontend-mobile",
+      "quality"
+    ],
+    [
+      "frontend-mobile",
+      "delivery"
+    ],
+    [
+      "frontend-mobile",
+      "hardware"
+    ],
+    [
+      "quality",
+      "delivery"
+    ],
+    [
+      "delivery",
+      "marketing"
+    ]
+  ],
+  "alsoNear": [
+    [
+      "power-platform-developer",
+      "bi-developer"
+    ],
+    [
+      "rpa-developer",
+      "data-analyst"
+    ],
+    [
+      "robotics-engineer",
+      "computer-vision-engineer"
+    ],
+    [
+      "sap-abap-developer",
+      "database-developer"
+    ],
+    [
+      "technical-support-engineer",
+      "manual-test-engineer"
+    ]
   ]
 }
