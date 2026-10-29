@@ -224,6 +224,10 @@
     [
       "delivery",
       "marketing"
+    ],
+    [
+      "delivery",
+      "enterprise-apps"
     ]
   ],
   "alsoNear": [
@@ -246,6 +250,10 @@
     [
       "technical-support-engineer",
       "manual-test-engineer"
+    ],
+    [
+      "salesforce-administrator",
+      "bi-developer"
     ]
   ]
 }
