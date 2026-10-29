@@ -1,0 +1,142 @@
+{
+  "slug": "frontend-architect",
+  "title": "Frontend Architect",
+  "summary": "A frontend architect decides how a company's web front ends are built: the structure of the code, shared component libraries, and the standards for speed, accessibility and testing. It is a senior hands-on role that guides several frontend teams and works with product, design and backend architects.",
+  "dailyDuties": [
+    "Set frontend architecture and coding standards for teams",
+    "Review designs and pull requests from several teams",
+    "Own the shared component library and design system",
+    "Track and improve page speed and Core Web Vitals",
+    "Mentor senior and junior frontend engineers",
+    "Explain technical options to product and client teams",
+    "Build proofs of concept for new tools and patterns"
+  ],
+  "typicalTitles": [
+    "UI Architect",
+    "Front End Architect",
+    "React Architect",
+    "Angular Architect",
+    "Principal Frontend Engineer",
+    "Staff Frontend Engineer",
+    "Frontend Technical Architect"
+  ],
+  "experienceBand": {
+    "minYears": 8,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "frontend-architecture",
+      "importance": "required",
+      "expectation": "Set the frontend architecture: app structure, micro-frontends or monorepo, shared code and standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "required",
+      "expectation": "Have deep, hands-on experience in at least one major framework",
+      "postingShare": null,
+      "oneOf": "frontend-framework"
+    },
+    {
+      "skillId": "angular",
+      "importance": "required",
+      "expectation": "Have deep, hands-on experience in at least one major framework",
+      "postingShare": null,
+      "oneOf": "frontend-framework"
+    },
+    {
+      "skillId": "typescript",
+      "importance": "required",
+      "expectation": "Set TypeScript standards for large codebases",
+      "postingShare": null
+    },
+    {
+      "skillId": "design-systems",
+      "importance": "required",
+      "expectation": "Build or own a component library and design system used by several teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "required",
+      "expectation": "Set performance budgets and improve Core Web Vitals",
+      "postingShare": null
+    },
+    {
+      "skillId": "accessibility",
+      "importance": "required",
+      "expectation": "Make sure products meet WCAG and fix accessibility issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Lead and mentor frontend engineers and make architecture decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "code-review",
+      "importance": "required",
+      "expectation": "Review designs and pull requests across teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain trade-offs to product, design, backend and client teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "nextjs",
+      "importance": "nice_to_have",
+      "expectation": "Use server-side rendering with Next.js or a similar framework",
+      "postingShare": null
+    },
+    {
+      "skillId": "state-management",
+      "importance": "nice_to_have",
+      "expectation": "Choose state management patterns for large apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Set the frontend testing strategy with Jest and Testing Library",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Set up frontend build and deployment pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "nice_to_have",
+      "expectation": "Build backend-for-frontend services in Node.js",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-security",
+      "importance": "nice_to_have",
+      "expectation": "Prevent XSS and other browser security issues",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "frontend-framework",
+      "label": "A frontend framework (React or Angular)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

@@ -1,0 +1,118 @@
+{
+  "slug": "vlsi-design-engineer",
+  "title": "VLSI Design Engineer",
+  "summary": "A VLSI design engineer writes and checks the RTL code (a hardware description of a chip's logic) that becomes part of a chip, or builds the testbenches that prove it works. In India they usually sit in a design or verification team at a semiconductor company or design-services firm, often starting as freshers with training.",
+  "dailyDuties": [
+    "Write RTL for assigned blocks from a design spec",
+    "Build and run simulation testbenches and debug waveforms",
+    "Run lint, clock domain crossing and synthesis checks",
+    "Fix timing and coverage issues raised in reviews",
+    "Script regression runs with Tcl, Perl or Python",
+    "Document block behaviour and review specs with the team"
+  ],
+  "typicalTitles": [
+    "RTL Design Engineer",
+    "ASIC Design Engineer",
+    "Design Verification Engineer",
+    "ASIC Verification Engineer",
+    "Digital Design Engineer",
+    "FPGA Design Engineer",
+    "VLSI Engineer",
+    "Verification Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Know logic gates, flip-flops, FSMs and CMOS basics well",
+      "postingShare": null
+    },
+    {
+      "skillId": "verilog-rtl",
+      "importance": "required",
+      "expectation": "Write synthesizable RTL in Verilog and debug it in simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "systemverilog-uvm",
+      "importance": "required",
+      "expectation": "Write SystemVerilog testbenches and read UVM environments",
+      "postingShare": null
+    },
+    {
+      "skillId": "synthesis-timing",
+      "importance": "required",
+      "expectation": "Understand synthesis, timing constraints and setup and hold",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run EDA tools and regressions on Linux servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "required",
+      "expectation": "Automate tool flows with Tcl, Perl or Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate tool flows with Tcl, Perl or Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "rtl-lint-cdc",
+      "importance": "nice_to_have",
+      "expectation": "Run lint and clock domain crossing checks and fix issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "amba-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Design or verify AXI, AHB or APB interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpga-design",
+      "importance": "nice_to_have",
+      "expectation": "Prototype RTL on FPGA boards with Vivado or Quartus",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Build or verify UART, SPI or I2C blocks",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Version RTL and testbench code",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vlsi-scripting",
+      "label": "A flow scripting language (Tcl, Perl or Python)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

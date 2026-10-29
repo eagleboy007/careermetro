@@ -1,0 +1,135 @@
+{
+  "slug": "ar-vr-developer",
+  "title": "AR/VR Developer",
+  "summary": "An AR/VR developer builds apps where 3D content is laid over the real world (augmented reality, AR) or where users step into a virtual space (virtual reality, VR), usually in Unity or Unreal for phones and headsets such as Meta Quest. In India they mostly work in small XR studios or innovation teams, building training simulators, product demos and industrial apps with 3D artists and designers.",
+  "dailyDuties": [
+    "Build AR and VR features in Unity or Unreal",
+    "Set up tracking, hand input and controller interactions",
+    "Bring 3D models and animations from artists into scenes",
+    "Profile and fix frame rate drops on headsets and phones",
+    "Test builds on devices such as Meta Quest and phones",
+    "Demo builds to clients and change them from feedback"
+  ],
+  "typicalTitles": [
+    "XR Developer",
+    "AR Developer",
+    "VR Developer",
+    "Unity XR Developer",
+    "Unity AR Developer",
+    "Mixed Reality Developer",
+    "AR/VR Unity Developer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "xr-development",
+      "importance": "required",
+      "expectation": "Build AR or VR apps with AR Foundation, ARKit, ARCore, OpenXR or the Meta XR SDK",
+      "postingShare": null
+    },
+    {
+      "skillId": "unity-engine",
+      "importance": "required",
+      "expectation": "Build XR apps in a real-time 3D engine",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "unreal-engine",
+      "importance": "required",
+      "expectation": "Build XR apps in a real-time 3D engine",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write engine code in C# (Unity) or C++ (Unreal)",
+      "postingShare": null,
+      "oneOf": "game-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write engine code in C# (Unity) or C++ (Unreal)",
+      "postingShare": null,
+      "oneOf": "game-language"
+    },
+    {
+      "skillId": "game-math",
+      "importance": "required",
+      "expectation": "Use 3D math for tracking, placement, physics and hand interactions",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-profiling",
+      "importance": "required",
+      "expectation": "Profile and hold a steady frame rate on headsets and phones",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in Git with designers and other developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "interaction-design",
+      "importance": "nice_to_have",
+      "expectation": "Design comfortable 3D interactions and menus for XR",
+      "postingShare": null
+    },
+    {
+      "skillId": "mobile-release",
+      "importance": "nice_to_have",
+      "expectation": "Publish AR apps to the Play Store and App Store",
+      "postingShare": null
+    },
+    {
+      "skillId": "computer-vision",
+      "importance": "nice_to_have",
+      "expectation": "Use image tracking or object detection in AR",
+      "postingShare": null
+    },
+    {
+      "skillId": "game-networking",
+      "importance": "nice_to_have",
+      "expectation": "Build multi-user sessions for training or collaboration",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Build web AR with WebXR or Three.js",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Connect XR apps to backend data or IoT feeds",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "game-engine",
+      "label": "A game engine (Unity or Unreal)"
+    },
+    {
+      "id": "game-language",
+      "label": "A game language (C# or C++)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

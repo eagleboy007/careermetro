@@ -1,0 +1,63 @@
+{
+  "id": "oracle-fusion-technical-consultant-ebs-technical-consultant",
+  "roleSlug": "oracle-fusion-technical-consultant",
+  "persona": "Oracle EBS technical consultant moving to Oracle Fusion Cloud",
+  "resumeText": "Venkatesh Reddy | Hyderabad | venkatesh.reddy@example.com\n\nEXPERIENCE\nOracle Apps Technical Consultant, Charminar Consulting Services, Hyderabad (2019 - present)\n- Developed PL/SQL packages for AP invoice interfaces in Oracle EBS R12.\n- Built BI Publisher reports with RTF templates for finance users.\n- Loaded supplier and invoice data into Oracle Fusion using FBDI templates during a pilot migration.\n- Wrote technical design documents and walked functional consultants through them.\n- Built SOAP and REST web service calls from Oracle EBS to a bank payment system.\n\nEDUCATION\nMCA, Osmania University, 2019\n\nSKILLS\nOracle EBS R12, PL/SQL, SQL, BI Publisher, XML, Oracle Fusion (basic), OIC (training)\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "database-programming",
+        "quote": "Developed PL/SQL packages for AP invoice interfaces"
+      },
+      {
+        "skillId": "sql",
+        "quote": "PL/SQL packages for AP invoice interfaces in Oracle EBS R12"
+      },
+      {
+        "skillId": "oracle-bi-publisher-otbi",
+        "quote": "Built BI Publisher reports with RTF templates"
+      },
+      {
+        "skillId": "oracle-fusion-data-loads",
+        "quote": "Loaded supplier and invoice data into Oracle Fusion using FBDI templates"
+      },
+      {
+        "skillId": "oracle-fusion-cloud",
+        "quote": "into Oracle Fusion using FBDI templates during a pilot migration"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built SOAP and REST web service calls"
+      },
+      {
+        "skillId": "communication",
+        "quote": "walked functional consultants through them"
+      },
+      {
+        "skillId": "technical-writing",
+        "quote": "Wrote technical design documents and walked"
+      },
+      {
+        "skillId": "oracle-integration-cloud",
+        "quote": "OIC"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oracle-fusion-cloud",
+        "status": "weak"
+      },
+      {
+        "skillId": "oracle-integration-cloud",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-paas-extensions",
+      "python",
+      "cloud-data-warehouse"
+    ]
+  },
+  "reviewedBy": null
+}

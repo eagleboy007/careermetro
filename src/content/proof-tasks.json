@@ -28,6 +28,10 @@
     "task": "Build a two-screen Android app in Jetpack Compose that loads a list from a public API, shows loading and error states, and survives screen rotation. Share the repo and a short screen recording."
   },
   {
+    "skillId": "angular",
+    "task": "Build an Angular app for a fictional clinic's appointment list with routing, a reactive form with validation, a service that calls a mock REST API with RxJS, and unit tests. Share the repo and a short screen recording."
+  },
+  {
     "skillId": "api-documentation",
     "task": "Write an OpenAPI 3 file for a public practice API (such as Swagger Petstore) with 4 endpoints, examples and error responses, render it in Swagger UI or Redoc, and add a getting-started page with a curl example for each call."
   },
@@ -48,12 +52,20 @@
     "task": "For a synthetic web app incident (sample logs and a HAR file given or made up), find the failing call with browser developer tools, write the root cause analysis, the customer reply and a known-error article with the workaround."
   },
   {
+    "skillId": "automation-anywhere",
+    "task": "In the free Automation Anywhere Community Edition, build a bot that reads a synthetic invoice Excel file, enters each row into a demo web form, logs failures to a CSV and emails a summary. Share the bot export and screenshots."
+  },
+  {
     "skillId": "aws",
     "task": "On the AWS free tier, host a static site on S3 behind CloudFront, lock down the bucket, add a budget alarm, and share a diagram and screenshots in a short README."
   },
   {
     "skillId": "azure",
     "task": "On an Azure free account, deploy a web app with a managed database, put secrets in Key Vault, and share an architecture diagram with screenshots in a README."
+  },
+  {
+    "skillId": "backup-software",
+    "task": "In a home lab with the free Veeam Community Edition, back up 2 test VMs on a schedule, restore one file and one whole VM, and write a runbook with the retention you set and how long each restore took."
   },
   {
     "skillId": "batch-scheduling",
@@ -74,6 +86,10 @@
   {
     "skillId": "cics",
     "task": "On IBM Z Xplore or another free z/OS learning system, write a small CICS COBOL program with a BMS map that looks up a customer by ID in a sample file, handles not-found, and share the code with screenshots of the screen."
+  },
+  {
+    "skillId": "cloud-billing-analysis",
+    "task": "Load a synthetic AWS cost and usage report or the FinOps Foundation's FOCUS sample data into a notebook or BigQuery sandbox, find the top 10 cost drivers by service and team, and share a one-page summary with charts."
   },
   {
     "skillId": "cloud-cost",
@@ -116,6 +132,10 @@
     "task": "Open a pull request of about 200 lines in a practice repo of your own, then review it as if a teammate wrote it: leave 8 or more comments on bugs, naming and tests, and write a one-page note on what you would block and why."
   },
   {
+    "skillId": "commitment-discounts",
+    "task": "From a synthetic 12-month usage file for 40 cloud VMs, work out how many reserved instances or savings plans to buy, the coverage and the break-even month, and share the spreadsheet with a one-page buy recommendation."
+  },
+  {
     "skillId": "communication",
     "task": "Write a 200-word status email for a delayed project (what slipped, why, the new date, the ask) and a 3-slide summary for a senior manager. Share both as a PDF."
   },
@@ -134,6 +154,10 @@
   {
     "skillId": "content-marketing",
     "task": "Write a 600-word blog post, 3 social posts and landing page copy for a fictional product, all aimed at one persona with one call to action."
+  },
+  {
+    "skillId": "cost-allocation",
+    "task": "Write a tagging policy (owner, team, environment, cost centre) for a fictional company, apply it to a synthetic cost export with 15% untagged spend, build a showback report per team and note how you split shared costs."
   },
   {
     "skillId": "cpp",
@@ -192,6 +216,10 @@
     "task": "Build a one-page dashboard from a public data.gov.in dataset with 3 to 4 charts that answer one clear question, and add a short note on why you chose each chart type."
   },
   {
+    "skillId": "database-programming",
+    "task": "On the free Oracle Live SQL or Oracle XE, write a PL/SQL package for a synthetic loan table with a procedure that applies monthly interest using BULK COLLECT, exception handling and a log table. Share the code and output."
+  },
+  {
     "skillId": "database-security",
     "task": "On a local PostgreSQL database, create read-only and app roles, enable row-level security, mask a sensitive column with a view, and turn on audit logging. Document each step."
   },
@@ -212,6 +240,10 @@
     "task": "Train a small image or text classifier in PyTorch or TensorFlow on a public dataset, plot training curves, and note what you changed to reduce overfitting."
   },
   {
+    "skillId": "design-systems",
+    "task": "Build a small design system in Storybook for a fictional brand: tokens for colour, spacing and type, and 6 components (button, input, select, card, modal, toast) with states and accessibility notes. Share the repo and Storybook."
+  },
+  {
     "skillId": "desktop-support",
     "task": "On a spare laptop or a VM, install Windows 11 from scratch, join it to a test domain or workgroup, set up a shared printer and fix 3 faults you create yourself. Write a runbook with screenshots for each fix."
   },
@@ -224,6 +256,10 @@
     "task": "Analyse a public practice disk image or memory sample (such as one from Digital Corpora) with Autopsy or Volatility 3, build a timeline of 10 key events, and write a short report with the evidence for each finding."
   },
   {
+    "skillId": "digital-logic-design",
+    "task": "Design a traffic-light controller as a finite state machine: draw the state diagram and state table, write it in Verilog, simulate it in the free Icarus Verilog with a GTKWave waveform, and share the code and waveform."
+  },
+  {
     "skillId": "docker",
     "task": "Containerise a small web app and its database with a multi-stage Dockerfile and docker-compose.yml, and document how to run it in a README."
   },
@@ -234,6 +270,18 @@
   {
     "skillId": "domain-bfsi",
     "task": "Map the end-to-end flow of a retail home loan in India (lead, KYC, credit check, sanction, disbursal, EMI) as a diagram with a short note on the systems and regulations at each step."
+  },
+  {
+    "skillId": "dynamics-365-ce",
+    "task": "In a free Dynamics 365 trial, set up a fictional support desk: a custom table, a model-driven app with forms and views, a business rule and a security role for agents. Share screenshots and a note on each design choice."
+  },
+  {
+    "skillId": "dynamics-365-extensibility",
+    "task": "In a Dynamics 365 trial, write a C# plugin that validates a field on create, register it with the Plugin Registration Tool, add a JavaScript form script using Xrm.WebApi, and share the code with screenshots of both running."
+  },
+  {
+    "skillId": "eda-scripting",
+    "task": "Write a Tcl or Perl script that parses a sample timing report or log from an open-source flow such as OpenROAD's examples, lists the 10 worst paths or errors, and writes a CSV summary. Share the script and its output."
   },
   {
     "skillId": "email-marketing",
@@ -276,8 +324,16 @@
     "task": "Recreate one screen of a popular app in Figma using auto layout, components and variants, and share the view-only link."
   },
   {
+    "skillId": "firewall-platforms",
+    "task": "In a home lab with the free pfSense or a FortiGate or Palo Alto trial VM, build rules for 3 zones (inside, DMZ, outside), NAT a test web server, log denied traffic, and share the rule base with a one-page review."
+  },
+  {
     "skillId": "flutter",
     "task": "Build a Flutter app with two screens, state managed with Provider or Riverpod, and data from a public API with loading and error states. Share the repo."
+  },
+  {
+    "skillId": "frontend-architecture",
+    "task": "Split a sample React app into 2 micro-frontends with Module Federation or an Nx monorepo, share a design-system package between them, and write a one-page decision record on the trade-offs. Share the repo."
   },
   {
     "skillId": "game-math",
@@ -350,6 +406,18 @@
   {
     "skillId": "internal-developer-platform",
     "task": "Set up Backstage locally with a software catalog of 3 sample services and one template that creates a new service repo with CI, then write a one-page note on the golden path it gives a new developer and what is still manual."
+  },
+  {
+    "skillId": "iot-cloud-platforms",
+    "task": "Connect a simulated device (a Python script) to the AWS IoT Core or Azure IoT Hub free tier over MQTT with certificates, route its telemetry to storage, add an alert rule, and share the code and screenshots."
+  },
+  {
+    "skillId": "iot-device-management",
+    "task": "With the AWS IoT or Azure IoT Hub free tier and a simulated device, change a setting remotely through a device shadow or twin, run a test OTA update job that rolls back on failure, and document each step with screenshots."
+  },
+  {
+    "skillId": "iot-protocols",
+    "task": "Run a local Mosquitto broker, write a Python publisher that sends synthetic sensor readings with QoS 1 and retained messages and a subscriber that flags out-of-range values, secure it with TLS, and share the code."
   },
   {
     "skillId": "itsm",
@@ -444,6 +512,14 @@
     "task": "Run Prometheus and Grafana with Docker, scrape a sample app, build a dashboard with 4 panels and one alert rule, and share screenshots and config files."
   },
   {
+    "skillId": "nas-storage",
+    "task": "In a TrueNAS VM or the NetApp ONTAP simulator, create NFS and SMB shares with quotas, snapshots and permissions for 2 test groups, restore a file from a snapshot, and write a how-to with screenshots."
+  },
+  {
+    "skillId": "network-access-control",
+    "task": "In a lab with FreeRADIUS and a virtual switch or Cisco Packet Tracer, set up 802.1X so test users land in the right VLAN and an unknown device falls into a guest VLAN. Share the configs and a one-page design note."
+  },
+  {
     "skillId": "network-monitoring",
     "task": "Monitor 3 devices or VMs over SNMP with free Zabbix or LibreNMS, set alerts for an interface going down and high CPU, trigger one alert on purpose, and share screenshots with a short note on what each alert means."
   },
@@ -484,8 +560,24 @@
     "task": "With OpenCV in Python, build a script that reads a short sample video, corrects lighting, finds and counts moving objects with background subtraction and contours, and share the code with an annotated output clip."
   },
   {
+    "skillId": "oracle-bi-publisher-otbi",
+    "task": "With the free BI Publisher Template Builder for Word, design an RTF template for a synthetic supplier invoice XML file with grouping, subtotals and conditional formatting, and share the template, data and PDF output."
+  },
+  {
     "skillId": "oracle-database",
     "task": "In Oracle Live SQL, create a small schema, write PL/SQL for a stored procedure and a trigger, and share the script and output."
+  },
+  {
+    "skillId": "oracle-fusion-cloud",
+    "task": "For a fictional company moving from Oracle EBS to Fusion Cloud, map 3 modules (such as AP, GL and Core HR) to Fusion, list the extensions, reports and integrations each needs, and share a one-page scope with a diagram."
+  },
+  {
+    "skillId": "oracle-fusion-data-loads",
+    "task": "Using Oracle's published FBDI or HDL template for suppliers or workers, fill it with 50 synthetic records, write SQL or a script that checks them before loading, and share the file, the checks and a note on fixing load errors."
+  },
+  {
+    "skillId": "oracle-integration-cloud",
+    "task": "In a free Oracle Cloud trial, build an OIC integration that takes a synthetic order over REST, maps it, writes it to a file or database and sends a notification on a fault. Share screenshots of the flow and a test run."
   },
   {
     "skillId": "orm-databases",
@@ -624,6 +716,22 @@
     "task": "Score 10 feature ideas for a fictional app with RICE in a spreadsheet, turn them into a Now/Next/Later roadmap, and write a paragraph on the trade-offs."
   },
   {
+    "skillId": "robot-navigation-planning",
+    "task": "In ROS 2 with Gazebo and the TurtleBot3 simulation, set up Nav2 with a saved map, tune the planner and costmap for a narrow corridor, send 5 goals from a script, and share a video and the parameter files. Simulation only."
+  },
+  {
+    "skillId": "robot-simulation",
+    "task": "Build a Gazebo or Webots world for a simulated differential-drive robot with a lidar and a camera, write its URDF, show the sensor data in RViz, and share the files with a short video. Use simulation only, never a real robot."
+  },
+  {
+    "skillId": "robotic-process-automation",
+    "task": "Pick a repetitive task such as copying synthetic invoice data into a demo web form, write a one-page process definition, build the bot in a free RPA tool with retries and error logging, and share the bot and a run log."
+  },
+  {
+    "skillId": "ros",
+    "task": "Write 2 ROS 2 nodes in Python or C++ on your laptop: one publishes simulated sensor readings, the other filters them and exposes a parameter you can change, with a launch file and tests. Share the package and a short demo."
+  },
+  {
     "skillId": "routing-switching",
     "task": "In Cisco Packet Tracer or GNS3, build a lab with 2 routers and 2 switches: 3 VLANs, inter-VLAN routing and OSPF between the routers. Share the saved lab, the configs and ping and traceroute screenshots."
   },
@@ -642,6 +750,10 @@
   {
     "skillId": "salesforce-lwc",
     "task": "Build a Lightning Web Component in a free Developer Edition org that lists and filters a custom object's records through an Apex controller, with loading and error states and a Jest test. Share the repo and a screen recording."
+  },
+  {
+    "skillId": "san-storage",
+    "task": "In a lab with a free iSCSI target (TrueNAS or targetcli on Linux), create LUNs, present them to a test VM with multipathing, extend one, and write a runbook with screenshots for a new teammate doing the same."
   },
   {
     "skillId": "sap-abap",
@@ -708,6 +820,10 @@
     "task": "Draft a Google Ads search campaign for a local coaching institute: keyword groups, match types, negatives, 2 responsive search ads and bid strategy, in a spreadsheet."
   },
   {
+    "skillId": "sensor-fusion",
+    "task": "Write a Python Kalman filter that fuses synthetic noisy GPS and IMU data for a moving cart, plot raw against filtered position, report the error before and after, and share the notebook with a short write-up."
+  },
+  {
     "skillId": "seo",
     "task": "Do keyword research for a small local business site, then write an on-page SEO audit of one page covering title, headings, internal links, speed and schema, with fixes."
   },
@@ -726,6 +842,10 @@
   {
     "skillId": "siem",
     "task": "Using the free Splunk BOTS v3 dataset or a Sentinel free trial, write 3 searches that find suspicious logins or processes, and document each with a screenshot and what it detects."
+  },
+  {
+    "skillId": "slam-localization",
+    "task": "In ROS 2 with the TurtleBot3 Gazebo simulation, build a map with SLAM Toolbox or Cartographer, localise the robot on it with AMCL, and share the saved map, a short video and notes on the parameters you tuned."
   },
   {
     "skillId": "smart-contract-security",
@@ -750,6 +870,10 @@
   {
     "skillId": "spark",
     "task": "Use PySpark locally or on Databricks Free Edition to aggregate a public dataset of over 1 million rows, write results as Parquet, and note one optimisation you made."
+  },
+  {
+    "skillId": "spend-forecasting",
+    "task": "From a synthetic 18-month cloud spend file, build a monthly forecast for the next 6 months in a spreadsheet or Python, compare it with a budget, explain the 3 biggest variances, and share the model and a one-page summary."
   },
   {
     "skillId": "spring-boot",
@@ -796,8 +920,16 @@
     "task": "Build a SwiftUI app with a list and a detail view backed by a public API using async/await, with an error state. Share the repo and a screen recording."
   },
   {
+    "skillId": "synthesis-timing",
+    "task": "Synthesise a small Verilog design such as a counter or ALU with the open-source Yosys, run timing with OpenSTA or OpenROAD using an SDC file, fix one setup violation, and share the scripts and before and after reports."
+  },
+  {
     "skillId": "system-design",
     "task": "Write a 2-page design for a URL shortener or job-alert service: requirements, API, data model, scaling plan and the trade-offs you made, with a diagram."
+  },
+  {
+    "skillId": "systemverilog-uvm",
+    "task": "On the free EDA Playground, write a UVM testbench in SystemVerilog for a simple FIFO with a sequence, driver, monitor, scoreboard and a covergroup, run it to full coverage, and share the code and the log."
   },
   {
     "skillId": "tableau",
@@ -848,6 +980,10 @@
     "task": "Write a UAT plan and 10 business-readable test scenarios for a fictional loan application form, with entry and exit criteria and a sign-off template."
   },
   {
+    "skillId": "uipath",
+    "task": "In the free UiPath Community edition, build a REFramework bot that reads a synthetic orders Excel file, enters each order into a demo web app, retries on errors and logs to Orchestrator. Share the project and run logs."
+  },
+  {
     "skillId": "unit-testing",
     "task": "Write 10 unit tests for a small module or React component with Jest or Vitest plus Testing Library, and show a coverage report in the README."
   },
@@ -870,6 +1006,10 @@
   {
     "skillId": "vector-search",
     "task": "Index 200 synthetic support answers with free embeddings in pgvector, Chroma or FAISS, try 2 chunk sizes, and report how many of 15 test questions find the right answer in the top 3, with the settings that worked best."
+  },
+  {
+    "skillId": "verilog-rtl",
+    "task": "Write a UART transmitter and receiver in Verilog or VHDL with a self-checking testbench in the free Icarus Verilog or GHDL that sends 20 bytes and checks each one. Share the code, waveforms and a short design note."
   },
   {
     "skillId": "virtualization",
@@ -900,8 +1040,16 @@
     "task": "Sketch low-fidelity wireframes for 4 screens of a job-search app (search, results, detail, apply) in Figma or on paper, and annotate the key interactions."
   },
   {
+    "skillId": "wireless-connectivity",
+    "task": "With an ESP32 board or the free Wokwi simulator, build a BLE peripheral that sends synthetic sensor readings to a phone app such as nRF Connect, measure its range or power use, and share the code with a short write-up."
+  },
+  {
     "skillId": "wordpress-development",
     "task": "Build a custom WordPress theme and a small plugin with a custom post type, a shortcode and a settings page on a local install (LocalWP or XAMPP), escaping all output. Share the code and screenshots of the admin and site."
+  },
+  {
+    "skillId": "xr-development",
+    "task": "Build a small AR or VR app in Unity with AR Foundation or the XR Interaction Toolkit that lets users place and move a 3D object at a steady frame rate, and share the repo with a video from a phone or the XR simulator."
   },
   {
     "skillId": "mobile-architecture",

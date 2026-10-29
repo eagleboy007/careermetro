@@ -7578,5 +7578,1156 @@
     ],
     "minutes": 480,
     "free": true
+  },
+  {
+    "title": "About MetricFlow",
+    "url": "https://docs.getdbt.com/docs/build/about-metricflow",
+    "provider": "dbt Labs",
+    "kind": "docs",
+    "skillIds": [
+      "semantic-layer"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle Database 19c PL/SQL Language Reference",
+    "url": "https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/toc.htm",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "database-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Create stored procedures (T-SQL training unit)",
+    "url": "https://learn.microsoft.com/en-us/training/modules/implement-programmability-objects/3-create-stored-procedures",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "database-programming"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introduction to robotic process automation",
+    "url": "https://learn.microsoft.com/en-us/training/modules/robotic-process-automation/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "robotic-process-automation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Automation Developer Associate training",
+    "url": "https://academy.uipath.com/learning-plans/automation-developer-associate-training",
+    "provider": "UiPath Academy",
+    "kind": "course",
+    "skillIds": [
+      "uipath",
+      "robotic-process-automation"
+    ],
+    "minutes": 1980,
+    "free": true
+  },
+  {
+    "title": "Robotic Enterprise Framework (REFramework)",
+    "url": "https://github.com/UiPath/ReFrameWork",
+    "provider": "UiPath",
+    "kind": "docs",
+    "skillIds": [
+      "uipath",
+      "robotic-process-automation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get started with Automation 360 Cloud",
+    "url": "https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/getting-started/cloud-getting-started.html",
+    "provider": "Automation Anywhere",
+    "kind": "docs",
+    "skillIds": [
+      "automation-anywhere"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Automation Anywhere University RPA courses",
+    "url": "https://university.automationanywhere.com/training/rpa-courses",
+    "provider": "Automation Anywhere University",
+    "kind": "course",
+    "skillIds": [
+      "automation-anywhere",
+      "robotic-process-automation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "What is Amazon Textract?",
+    "url": "https://docs.aws.amazon.com/textract/latest/dg/what-is.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "intelligent-document-processing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Document AI documentation",
+    "url": "https://docs.cloud.google.com/document-ai/docs",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "intelligent-document-processing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What is Azure Document Intelligence?",
+    "url": "https://learn.microsoft.com/en-us/training/modules/extract-data-with-document-intelligence/2-what-is-document-intelligence",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "intelligent-document-processing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Microsoft Learn for Dynamics 365 Sales",
+    "url": "https://learn.microsoft.com/en-us/training/dynamics365/sales",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dynamics-365-ce"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to sales in Dynamics 365",
+    "url": "https://learn.microsoft.com/training/paths/introduction-sales-dynamics-365",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dynamics-365-ce"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Write a plug-in (Dataverse)",
+    "url": "https://learn.microsoft.com/power-apps/developer/data-platform/write-plug-in",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "dynamics-365-extensibility"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Client API reference for model-driven apps",
+    "url": "https://learn.microsoft.com/power-apps/developer/model-driven-apps/clientapi/reference",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "dynamics-365-extensibility"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get started with Power Apps component framework (PCF)",
+    "url": "https://learn.microsoft.com/en-us/shows/powerful-devs/get-started-with-power-apps-component-framework-pcf",
+    "provider": "Microsoft Learn",
+    "kind": "video",
+    "skillIds": [
+      "dynamics-365-extensibility"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle Financials: Implement",
+    "url": "https://docs.oracle.com/en/cloud/saas/financials/26a/implement.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fusion-cloud"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Oracle MyLearn free training",
+    "url": "https://www.oracle.com/education/training/",
+    "provider": "Oracle University",
+    "kind": "course",
+    "skillIds": [
+      "oracle-fusion-cloud"
+    ],
+    "minutes": 420,
+    "free": true
+  },
+  {
+    "title": "Oracle Integration 3 documentation",
+    "url": "https://docs.oracle.com/en/cloud/paas/application-integration/books.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-integration-cloud"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Overview of Oracle Integration 3",
+    "url": "https://docs.oracle.com/iaas/application-integration/doc/overview.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-integration-cloud"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Creating Analyses and Dashboards in OTBI",
+    "url": "https://docs.oracle.com/en/cloud/saas/otbi/otbi-user/index.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-bi-publisher-otbi"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Creating and Administering Analytics and Reports (25A)",
+    "url": "https://docs.oracle.com/cd/G24923_01/trans/G17870-01/creating-and-administering-analytics-and-reports.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-bi-publisher-otbi"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "File-Based Data Import (FBDI)",
+    "url": "https://docs.oracle.com/en/cloud/saas/supply-chain-and-manufacturing/25c/faips/file-based-data-import.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fusion-data-loads"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "HCM Data Loader guide (24C)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/24c/fahdl/toc.htm",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fusion-data-loads"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Build web and mobile apps in minutes (Visual Builder)",
+    "url": "https://docs.oracle.com/en/cloud/paas/application-integration/int-get-started/build-web-and-mobile-apps-minutes.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-paas-extensions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Oracle APEX App Builder User's Guide (26.1)",
+    "url": "https://docs.oracle.com/en/database/oracle/apex/26.1/htmdb/preface.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-paas-extensions"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with APEX",
+    "url": "https://blogs.oracle.com/database/get-started-with-apex",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-paas-extensions"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Build your first Angular app",
+    "url": "https://angular.dev/tutorials/first-app",
+    "provider": "Angular",
+    "kind": "course",
+    "skillIds": [
+      "angular"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Angular for Beginners course",
+    "url": "https://www.freecodecamp.org/news/angular-for-beginners-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "angular"
+    ],
+    "minutes": 1080,
+    "free": true
+  },
+  {
+    "title": "Module Federation",
+    "url": "https://webpack.js.org/concepts/module-federation",
+    "provider": "webpack",
+    "kind": "docs",
+    "skillIds": [
+      "frontend-architecture"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Nx: getting started",
+    "url": "https://nx.dev/docs/getting-started",
+    "provider": "Nx",
+    "kind": "docs",
+    "skillIds": [
+      "frontend-architecture"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Unity tutorial: Hello VR",
+    "url": "https://developers.meta.com/vr/documentation/unity/unity-tutorial-hello-vr/",
+    "provider": "Meta",
+    "kind": "docs",
+    "skillIds": [
+      "xr-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Develop for Meta Quest (Unity manual)",
+    "url": "https://docs.unity.com/en-us/engine/6000.0/manual/xr/configuring-project-for/meta-quest-develop",
+    "provider": "Unity",
+    "kind": "docs",
+    "skillIds": [
+      "xr-development"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Fortinet Training Institute: courses for cybersecurity professionals",
+    "url": "https://www.fortinet.com/training/cybersecurity-professionals.html",
+    "provider": "Fortinet",
+    "kind": "course",
+    "skillIds": [
+      "firewall-platforms",
+      "sase-ztna"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "FortiGate Administration Guide (7.6)",
+    "url": "https://docs.fortinet.com/document/fortigate/7.6.7/administration-guide/562247",
+    "provider": "Fortinet",
+    "kind": "docs",
+    "skillIds": [
+      "firewall-platforms"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is network access control (NAC)?",
+    "url": "https://www.cisco.com/c/en_uk/products/security/what-is-network-access-control-nac.html",
+    "provider": "Cisco",
+    "kind": "docs",
+    "skillIds": [
+      "network-access-control"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Cisco ISE 3.3 documentation",
+    "url": "https://www.cisco.com/c/en/us/td/docs/security/ise/collections/ise-3-3.html",
+    "provider": "Cisco",
+    "kind": "docs",
+    "skillIds": [
+      "network-access-control"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "About ClearPass (ClearPass Policy Manager 6.12 user guide)",
+    "url": "https://arubanetworking.hpe.com/techdocs/ClearPass/6.12/PolicyManager/Content/CPPM_UserGuide/About%20ClearPass/About_ClearPass.htm",
+    "provider": "HPE Aruba Networking",
+    "kind": "docs",
+    "skillIds": [
+      "network-access-control"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Replace your VPN (learning path)",
+    "url": "https://developers.cloudflare.com/learning-paths/replace-vpn/get-started",
+    "provider": "Cloudflare",
+    "kind": "course",
+    "skillIds": [
+      "sase-ztna"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "MQTT: Getting started",
+    "url": "https://mqtt.org/getting-started/",
+    "provider": "MQTT.org",
+    "kind": "docs",
+    "skillIds": [
+      "iot-protocols"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Mosquitto documentation",
+    "url": "https://mosquitto.org/documentation/",
+    "provider": "Eclipse Mosquitto",
+    "kind": "docs",
+    "skillIds": [
+      "iot-protocols"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RFC 7252: The Constrained Application Protocol (CoAP)",
+    "url": "https://rfc-editor.org/rfc/rfc7252",
+    "provider": "IETF",
+    "kind": "docs",
+    "skillIds": [
+      "iot-protocols"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Azure IoT Hub concepts overview",
+    "url": "https://learn.microsoft.com/azure/iot-hub/iot-hub-devguide",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "iot-cloud-platforms"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Azure IoT Hub documentation",
+    "url": "https://learn.microsoft.com/azure/iot-hub",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "iot-cloud-platforms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "AWS IoT Core Developer Guide (PDF)",
+    "url": "https://docs.aws.amazon.com/iot/latest/developerguide/iot-dg.pdf",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "iot-cloud-platforms"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Bluetooth Low Energy Fundamentals",
+    "url": "https://academy.nordicsemi.com/?p=6036",
+    "provider": "Nordic Developer Academy",
+    "kind": "course",
+    "skillIds": [
+      "wireless-connectivity"
+    ],
+    "minutes": 540,
+    "free": true
+  },
+  {
+    "title": "What are LoRa and LoRaWAN?",
+    "url": "https://www.thethingsnetwork.org/docs/lorawan/what-is-lorawan",
+    "provider": "The Things Network",
+    "kind": "docs",
+    "skillIds": [
+      "wireless-connectivity"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ESP-IDF Wi-Fi driver guide (ESP32)",
+    "url": "https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/wifi-driver/index.html",
+    "provider": "Espressif",
+    "kind": "docs",
+    "skillIds": [
+      "wireless-connectivity"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is Azure IoT Hub Device Provisioning Service?",
+    "url": "https://learn.microsoft.com/azure/iot-dps/about-iot-dps",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "iot-device-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating an OTA update (AWS IoT console)",
+    "url": "https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "iot-device-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "AWS FOTA library (nRF Connect SDK)",
+    "url": "https://nrfconnectdocs.nordicsemi.com/ncs/latest/nrf/libraries/networking/aws_fota.html",
+    "provider": "Nordic Semiconductor",
+    "kind": "docs",
+    "skillIds": [
+      "iot-device-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ROS 2 Jazzy tutorials",
+    "url": "https://docs.ros.org/en/jazzy/Tutorials.html",
+    "provider": "Open Robotics",
+    "kind": "docs",
+    "skillIds": [
+      "ros"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Introduction to ROS Part 1: What is the Robot Operating System?",
+    "url": "https://www.digikey.ca/en/videos/d/digi-key-electronics/introduction-to-ros-part-1-what-is-the-robot-operating-system-digikey",
+    "provider": "DigiKey",
+    "kind": "video",
+    "skillIds": [
+      "ros"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Online training: Mobile Robotics (Cyrill Stachniss)",
+    "url": "https://www.ipb.uni-bonn.de/online-training-robotics/",
+    "provider": "University of Bonn",
+    "kind": "video",
+    "skillIds": [
+      "slam-localization",
+      "sensor-fusion"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "MoveIt 2 documentation",
+    "url": "https://moveit.picknik.ai/main/",
+    "provider": "MoveIt",
+    "kind": "docs",
+    "skillIds": [
+      "robot-navigation-planning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Getting started with Gazebo",
+    "url": "https://gazebosim.org/docs/all/getstarted/",
+    "provider": "Gazebo",
+    "kind": "docs",
+    "skillIds": [
+      "robot-simulation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Getting started with Isaac Sim",
+    "url": "https://docs.nvidia.com/learning/physical-ai/getting-started-with-isaac-sim/latest/",
+    "provider": "NVIDIA",
+    "kind": "course",
+    "skillIds": [
+      "robot-simulation"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Sensor Fusion and Tracking with MATLAB",
+    "url": "https://au.mathworks.com/videos/sensor-fusion-and-tracking-with-matlab-1544801036885.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "sensor-fusion"
+    ],
+    "minutes": 39,
+    "free": true
+  },
+  {
+    "title": "Digital Circuits (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ee75/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "digital-logic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "From Nand to Tetris",
+    "url": "https://www.nand2tetris.org/",
+    "provider": "nand2tetris",
+    "kind": "course",
+    "skillIds": [
+      "digital-logic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Hardware Modeling Using Verilog (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_cs94/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "verilog-rtl"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Verilog tutorial",
+    "url": "https://chipverify.com/tutorials/verilog",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "verilog-rtl"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "UVM tutorial",
+    "url": "https://www.chipverify.com/tutorials/uvm",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "systemverilog-uvm"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "UVM and Coverage Cookbooks",
+    "url": "https://www.verificationacademy.com/cookbook",
+    "provider": "Siemens Verification Academy",
+    "kind": "docs",
+    "skillIds": [
+      "systemverilog-uvm"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Introduction to Verilator linting",
+    "url": "https://www.chipverify.com/rtl-synthesis/introduction-to-verilator",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "rtl-lint-cdc"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Clock domain crossing considerations",
+    "url": "https://www.intel.com/content/www/us/en/content-details/652881/clock-domain-crossing-considerations.html",
+    "provider": "Intel",
+    "kind": "course",
+    "skillIds": [
+      "rtl-lint-cdc"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "A primer on clock domain crossing (CDC) theory",
+    "url": "https://fpgacpu.ca/fpga/cdc.html",
+    "provider": "FPGA Design Elements",
+    "kind": "docs",
+    "skillIds": [
+      "rtl-lint-cdc"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "VLSI Physical Design with Timing Analysis (IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/108107380",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "synthesis-timing"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "OpenSTA static timing analyzer",
+    "url": "https://github.com/parallaxsw/OpenSTA",
+    "provider": "Parallax Software",
+    "kind": "docs",
+    "skillIds": [
+      "synthesis-timing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Yosys Open SYnthesis Suite",
+    "url": "https://github.com/YosysHQ/yosys",
+    "provider": "YosysHQ",
+    "kind": "docs",
+    "skillIds": [
+      "synthesis-timing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn the architecture: An introduction to AMBA AXI",
+    "url": "https://documentation-service.arm.com/static/6560cd802c8b3557fee70a89",
+    "provider": "Arm",
+    "kind": "docs",
+    "skillIds": [
+      "amba-protocols"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Learn the architecture: system and component architectures",
+    "url": "https://www.arm.com/architecture/learn-the-architecture/system-architecture",
+    "provider": "Arm",
+    "kind": "docs",
+    "skillIds": [
+      "amba-protocols"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Getting started with AMBA and AMBA AXI",
+    "url": "https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/getting-started-with-amba-and-amba-axi",
+    "provider": "Arm",
+    "kind": "docs",
+    "skillIds": [
+      "amba-protocols"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Vivado Design Flows Overview tutorial (UG888)",
+    "url": "https://docs.amd.com/r/en-US/ug888-vivado-design-flows-overview-tutorial",
+    "provider": "AMD",
+    "kind": "docs",
+    "skillIds": [
+      "fpga-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Intel FPGA technical training",
+    "url": "https://www.intel.com/fpgatraining",
+    "provider": "Intel",
+    "kind": "course",
+    "skillIds": [
+      "fpga-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FPGA Based Signal Processing Systems (IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/108107870",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "fpga-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Tcl tutorial",
+    "url": "https://www.tcl-lang.org/man/tcl8.5/tutorial/Tcl0.html",
+    "provider": "Tcl Developer Xchange",
+    "kind": "docs",
+    "skillIds": [
+      "eda-scripting"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Perl first steps",
+    "url": "https://learn.perl.org/first_steps/",
+    "provider": "Perl.org",
+    "kind": "docs",
+    "skillIds": [
+      "eda-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Perl tutorials",
+    "url": "https://learn.perl.org/tutorials/",
+    "provider": "Perl.org",
+    "kind": "docs",
+    "skillIds": [
+      "eda-scripting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is Microsoft Cost Management and Billing?",
+    "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/cost-management-billing-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-billing-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Getting started with AWS Cost Explorer, part 1",
+    "url": "https://aws.amazon.com/blogs/aws-cost-management/getting-started-with-aws-cost-explorer-part-1/",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-billing-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Export Cloud Billing data to BigQuery",
+    "url": "https://docs.cloud.google.com/billing/docs/how-to/export-data-file",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-billing-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OpenCost documentation",
+    "url": "https://www.opencost.io/docs",
+    "provider": "OpenCost (CNCF)",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-billing-analysis",
+      "cost-allocation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Cost allocation tags (AWS tagging best practices)",
+    "url": "https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/cost-allocation-tags.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "cost-allocation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "FinOps Framework",
+    "url": "https://learn.microsoft.com/en-us/cloud-computing/finops/framework/finops-framework",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cost-allocation",
+      "spend-forecasting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What are Savings Plans?",
+    "url": "https://docs.aws.amazon.com/cost-management/latest/userguide/manage-sp.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "commitment-discounts"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What are Azure Reservations?",
+    "url": "https://learn.microsoft.com/azure/cost-management-billing/reservations/save-compute-costs-reservations",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "commitment-discounts"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Committed use discounts",
+    "url": "https://docs.cloud.google.com/docs/cuds",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "commitment-discounts"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "FinOps forecasting",
+    "url": "https://learn.microsoft.com/en-us/cloud-computing/finops/framework/quantify/forecasting",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "spend-forecasting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Managing your costs with AWS Budgets",
+    "url": "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "spend-forecasting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Tutorial: Create and manage budgets",
+    "url": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "spend-forecasting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What is a SAN?",
+    "url": "https://www.snia.org/education/storage_networking_primer/san/what_san",
+    "provider": "SNIA",
+    "kind": "docs",
+    "skillIds": [
+      "san-storage"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Configuring device mapper multipath (RHEL 10)",
+    "url": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/configuring_device_mapper_multipath/index",
+    "provider": "Red Hat",
+    "kind": "docs",
+    "skillIds": [
+      "san-storage"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ONTAP 9 documentation",
+    "url": "https://docs.netapp.com/us-en/ontap/",
+    "provider": "NetApp",
+    "kind": "docs",
+    "skillIds": [
+      "nas-storage"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ONTAP Associate learning path",
+    "url": "https://www.netapp.com/en/support-and-training/netapp-learning-services/learning-paths/ontap-associate/",
+    "provider": "NetApp",
+    "kind": "course",
+    "skillIds": [
+      "nas-storage"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "PowerScale OneFS Info Hubs",
+    "url": "https://www.dell.com/support/kbdoc/000152189/powerscale-onefs-info-hubs",
+    "provider": "Dell",
+    "kind": "docs",
+    "skillIds": [
+      "nas-storage"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Veeam Backup & Replication: Getting started",
+    "url": "https://helpcenter.veeam.com/docs/vbr/qsg/getting_started.html",
+    "provider": "Veeam",
+    "kind": "docs",
+    "skillIds": [
+      "backup-software"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Veeam University Free",
+    "url": "https://www.veeam.com/support/training/veeam-university-free.html",
+    "provider": "Veeam",
+    "kind": "course",
+    "skillIds": [
+      "backup-software"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Commvault quick start guide (2024e)",
+    "url": "https://documentation.commvault.com/2024e/software/quick_start_guide.html",
+    "provider": "Commvault",
+    "kind": "docs",
+    "skillIds": [
+      "backup-software"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Mastering the FreeRTOS Real Time Kernel (book)",
+    "url": "https://en.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book",
+    "provider": "FreeRTOS",
+    "kind": "docs",
+    "skillIds": [
+      "rtos"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Embedded Linux system development slides",
+    "url": "https://bootlin.com/doc/training/embedded-linux/embedded-linux-slides.pdf",
+    "provider": "Bootlin",
+    "kind": "docs",
+    "skillIds": [
+      "embedded-linux"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Building transactional apps with the ABAP RESTful Application Programming Model",
+    "url": "https://learning.sap.com/courses/building-transactional-apps-with-the-abap-restful-application-programming-model",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-abap-hana"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Walkthrough tutorial (TypeScript)",
+    "url": "https://ui5.github.io/docs/03_Get-Started/walkthrough-tutorial-typescript-dad1905.html",
+    "provider": "OpenUI5",
+    "kind": "course",
+    "skillIds": [
+      "sap-fiori-ui5"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Zendesk getting started guides",
+    "url": "https://support.zendesk.com/hc/en-us/categories/6191839589274",
+    "provider": "Zendesk",
+    "kind": "docs",
+    "skillIds": [
+      "support-ticketing-tools"
+    ],
+    "minutes": 60,
+    "free": true
   }
 ]

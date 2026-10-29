@@ -1,0 +1,147 @@
+{
+  "slug": "cloud-finops-analyst",
+  "title": "Cloud FinOps Analyst",
+  "summary": "A cloud FinOps analyst (FinOps means cloud financial operations) tracks what a company spends on AWS, Azure or Google Cloud, explains where the money goes and finds ways to spend less. They sit between finance and engineering, often in a cloud platform or central IT team.",
+  "dailyDuties": [
+    "Review daily cloud spend and flag unusual jumps",
+    "Build monthly cost reports for each team or product",
+    "Check that resources follow the tagging rules",
+    "Track reservation and savings plan coverage and suggest purchases",
+    "Find idle or oversized resources and agree fixes with engineers",
+    "Update the cloud budget forecast and explain variances to finance"
+  ],
+  "typicalTitles": [
+    "FinOps Analyst",
+    "FinOps Engineer",
+    "Cloud Cost Analyst",
+    "Cloud Financial Analyst",
+    "Cloud Cost Optimization Analyst",
+    "Senior Cloud FinOps Analyst",
+    "FinOps Specialist"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "cloud-cost",
+      "importance": "required",
+      "expectation": "Find savings and track cloud spend against targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-billing-analysis",
+      "importance": "required",
+      "expectation": "Analyse cost data in Cost Explorer, Azure Cost Management or a FinOps tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Know the pricing of at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Know the pricing of at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Know the pricing of at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "cost-allocation",
+      "importance": "required",
+      "expectation": "Set tagging rules and report costs back to each team",
+      "postingShare": null
+    },
+    {
+      "skillId": "commitment-discounts",
+      "importance": "required",
+      "expectation": "Plan reservations and savings plans and track their use",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query billing exports and cost and usage reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Forecast cloud spend and explain budget variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build cost models and reports in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree savings actions with engineering and finance teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build cost dashboards for leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate cost reports and clean-up checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Allocate shared Kubernetes cluster costs",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "nice_to_have",
+      "expectation": "Query billing exports in BigQuery or similar",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "AWS pricing and billing basics"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Azure pricing and cost management basics"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

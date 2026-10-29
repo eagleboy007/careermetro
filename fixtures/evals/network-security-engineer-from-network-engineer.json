@@ -1,0 +1,52 @@
+{
+  "id": "network-security-engineer-from-network-engineer",
+  "roleSlug": "network-security-engineer",
+  "persona": "Network engineer who already manages branch firewalls",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nEXPERIENCE\nNetwork Engineer, Sahyadri Netcom Services, Pune (2021 - present)\n- Configure OSPF and BGP routing on Cisco core switches for 12 branch offices.\n- Manage FortiGate firewalls at 12 branches and push policies from FortiManager.\n- Built site-to-site IPsec VPN tunnels between branches and the Mumbai data centre.\n- Raise and close change requests in ServiceNow following ITIL change management.\n- Troubleshoot DNS, DHCP and TCP/IP issues for 900 users.\n\nSKILLS\nCisco ISE, Palo Alto, Python\n\nEDUCATION\nBE Electronics and Telecommunication, Savitribai Phule Pune University, 2021\n\nCERTIFICATIONS\nCCNA (2022)\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "routing-switching",
+        "quote": "Configure OSPF and BGP routing on Cisco core switches"
+      },
+      {
+        "skillId": "firewall-platforms",
+        "quote": "Manage FortiGate firewalls at 12 branches"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "Built site-to-site IPsec VPN tunnels between branches"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "following ITIL change management"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshoot DNS, DHCP and TCP/IP issues"
+      },
+      {
+        "skillId": "network-access-control",
+        "quote": "Cisco ISE"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "network-access-control",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sase-ztna",
+      "siem",
+      "cloud-networking",
+      "vulnerability-management"
+    ]
+  },
+  "reviewedBy": null
+}

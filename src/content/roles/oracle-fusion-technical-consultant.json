@@ -1,0 +1,116 @@
+{
+  "slug": "oracle-fusion-technical-consultant",
+  "title": "Oracle Fusion Technical Consultant",
+  "summary": "An Oracle Fusion technical consultant builds the reports, integrations (connections to other systems) and data loads around Oracle's cloud ERP and HR software, using tools such as BI Publisher, OTBI, OIC, FBDI and HDL. They work on implementation and support projects in consulting firms and company IT teams, alongside functional consultants who set up the business processes.",
+  "dailyDuties": [
+    "Build BI Publisher and OTBI reports from requirements",
+    "Build and fix OIC integrations with other systems",
+    "Prepare and load data files with FBDI or HDL",
+    "Write SQL and PL/SQL for reports and conversions",
+    "Write technical design documents for each object",
+    "Fix failed integrations and data issues in live systems"
+  ],
+  "typicalTitles": [
+    "Oracle Cloud Technical Consultant",
+    "Oracle Fusion Technical Developer",
+    "Oracle OIC Developer",
+    "Oracle Integration Cloud Consultant",
+    "Oracle Fusion HCM Technical Consultant",
+    "Oracle Fusion Financials Technical Consultant",
+    "Oracle Cloud ERP Technical Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "oracle-fusion-cloud",
+      "importance": "required",
+      "expectation": "Know the Fusion ERP, HCM or SCM modules and their data well enough to build on them",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-bi-publisher-otbi",
+      "importance": "required",
+      "expectation": "Build BI Publisher and OTBI reports with data models and templates",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-integration-cloud",
+      "importance": "required",
+      "expectation": "Build OIC integrations with Fusion adapters, REST and SOAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-fusion-data-loads",
+      "importance": "required",
+      "expectation": "Convert and load legacy data with FBDI, HDL or ADFdi",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL against Fusion tables for reports and checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "required",
+      "expectation": "Write PL/SQL for report logic, conversions and validations",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call Fusion REST and SOAP services and map data with XSLT",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work with functional consultants and clients to agree technical designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-paas-extensions",
+      "importance": "nice_to_have",
+      "expectation": "Build extensions with VBCS or APEX",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write technical design documents for each report and integration",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Support live Fusion systems and fix failed integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Keep client teams updated during implementation projects",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "optional",
+      "why": "SQL basics that every Fusion technical role uses"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

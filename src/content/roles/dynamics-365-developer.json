@@ -1,0 +1,116 @@
+{
+  "slug": "dynamics-365-developer",
+  "title": "Dynamics 365 Developer",
+  "summary": "A Dynamics 365 developer customises Microsoft's CRM (customer relationship management: sales, service and customer data) with code such as C# plugins and JavaScript form scripts, and connects it to other systems. They usually work in a CRM practice of an IT services firm or a company's own IT team, alongside functional consultants and testers.",
+  "dailyDuties": [
+    "Write and register C# plugins for business rules",
+    "Write JavaScript for forms, fields and ribbon buttons",
+    "Build integrations with other systems over APIs",
+    "Build Power Automate flows on CRM data",
+    "Move solutions from development to test and production",
+    "Fix issues raised by users and functional consultants"
+  ],
+  "typicalTitles": [
+    "Dynamics CRM Developer",
+    "Dynamics 365 CRM Developer",
+    "D365 CE Developer",
+    "MS CRM Developer",
+    "D365 Technical Consultant",
+    "Dynamics 365 CE Technical Consultant",
+    "Senior Dynamics 365 Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "dynamics-365-ce",
+      "importance": "required",
+      "expectation": "Customise Dynamics 365 Sales or Customer Service: tables, forms, views and security roles",
+      "postingShare": null
+    },
+    {
+      "skillId": "dynamics-365-extensibility",
+      "importance": "required",
+      "expectation": "Write and register plugins, custom workflow activities and form scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write plugins and integration code in C#",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write form and ribbon scripts with the Dynamics client API",
+      "postingShare": null
+    },
+    {
+      "skillId": "dataverse",
+      "importance": "required",
+      "expectation": "Query Dataverse with FetchXML, QueryExpression and the Web API",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate Dynamics 365 with other systems over REST and SOAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-automate",
+      "importance": "required",
+      "expectation": "Build Power Automate flows that run on Dynamics 365 data",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-apps",
+      "importance": "nice_to_have",
+      "expectation": "Build model-driven or canvas apps on the same data",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Write form scripts and PCF controls in TypeScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Use Azure Functions, Service Bus or Logic Apps for integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Move solutions between environments with Azure DevOps pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query SQL Server for reports and data migration",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "nice_to_have",
+      "expectation": "Turn functional consultant notes into technical designs",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "storage-backup-engineer",
+  "title": "Storage and Backup Engineer",
+  "summary": "A storage and backup engineer looks after the disk arrays, file storage and backup systems that hold a company's data, and makes sure lost data can be restored. They usually sit in a data centre or infrastructure operations team, often at an IT services company supporting several clients in shifts.",
+  "dailyDuties": [
+    "Check overnight backup jobs and fix failures",
+    "Restore files, databases or virtual machines on request",
+    "Provision storage and zone SAN switches for new servers",
+    "Watch array capacity and performance and plan for growth",
+    "Run restore tests and disaster recovery drills",
+    "Apply firmware upgrades through change requests"
+  ],
+  "typicalTitles": [
+    "Storage Engineer",
+    "Backup Engineer",
+    "Storage Administrator",
+    "Backup Administrator",
+    "SAN Engineer",
+    "Storage and Backup Administrator",
+    "Data Protection Engineer",
+    "NetApp Storage Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "san-storage",
+      "importance": "required",
+      "expectation": "Provision LUNs, zone SAN fabrics and manage block arrays",
+      "postingShare": null
+    },
+    {
+      "skillId": "nas-storage",
+      "importance": "required",
+      "expectation": "Manage NetApp or Isilon file shares, snapshots and replication",
+      "postingShare": null
+    },
+    {
+      "skillId": "backup-software",
+      "importance": "required",
+      "expectation": "Run Commvault, Veeam, NetBackup or similar backup platforms",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Test restores, set retention and support disaster recovery drills",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "required",
+      "expectation": "Back up and present storage to VMware or Hyper-V hosts",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Protect Windows file and application servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Protect Linux servers and use the command line for checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Handle storage and backup tickets and changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Understand IP storage traffic, iSCSI and NFS networking",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Automate reports and checks with PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate checks with shell scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Automate storage tasks with Ansible or Terraform",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Back up to or from AWS storage",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Back up to or from Azure storage",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

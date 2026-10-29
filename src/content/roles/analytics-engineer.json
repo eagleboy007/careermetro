@@ -1,0 +1,133 @@
+{
+  "slug": "analytics-engineer",
+  "title": "Analytics Engineer",
+  "summary": "An analytics engineer turns raw tables in a data warehouse into clean, tested models (ready-to-query tables) that analysts and dashboards rely on, mostly with SQL and dbt. They sit between data engineers, who bring the data in, and analysts and business teams, who use it.",
+  "dailyDuties": [
+    "Build and change dbt models from staging to marts",
+    "Write tests and documentation for each model",
+    "Agree metric definitions with analysts and business teams",
+    "Review pull requests from other analytics engineers",
+    "Fix failing dbt runs and data quality alerts",
+    "Tune slow models and warehouse costs"
+  ],
+  "typicalTitles": [
+    "Senior Analytics Engineer",
+    "Associate Analytics Engineer",
+    "Data Analytics Engineer",
+    "dbt Developer",
+    "Snowflake dbt Developer",
+    "Analytics Engineer II",
+    "Data Modelling Engineer - Analytics"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "dbt",
+      "importance": "required",
+      "expectation": "Build and maintain dbt models from staging to marts, with tests and docs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write clean, well-structured SQL every day",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql-window-functions",
+      "importance": "required",
+      "expectation": "Use window functions and CTEs for metrics and deduplication",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design facts, dimensions and star schemas that analysts can query",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Work in Snowflake, BigQuery, Redshift or a similar warehouse",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-quality-management",
+      "importance": "required",
+      "expectation": "Add tests and freshness checks so broken data is caught early",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work through pull requests and code review in Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Turn business questions into agreed metric definitions with analysts and teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "semantic-layer",
+      "importance": "nice_to_have",
+      "expectation": "Define metrics once in a semantic layer such as LookML or the dbt Semantic Layer",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Use Python for small transformations, tests and tooling",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "nice_to_have",
+      "expectation": "Schedule dbt runs with Airflow or a similar tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run dbt builds and tests in CI before merging",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Check that models work in the BI dashboards built on them",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "nice_to_have",
+      "expectation": "Understand funnels, retention and revenue metrics",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "recommended",
+      "why": "Snowflake is the warehouse most often named in Indian dbt postings"
+    },
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "For teams that run dbt on a lakehouse"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

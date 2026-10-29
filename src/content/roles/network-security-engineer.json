@@ -1,0 +1,128 @@
+{
+  "slug": "network-security-engineer",
+  "title": "Network Security Engineer",
+  "summary": "A network security engineer runs the firewalls, VPNs and network access control (NAC, which checks a device before it joins the network) that protect a company's network. They usually sit in the network or infrastructure team and work with security operations and application teams on rule changes and incidents.",
+  "dailyDuties": [
+    "Review and apply firewall rule change requests",
+    "Troubleshoot blocked traffic with logs and packet captures",
+    "Set up and fix site-to-site and remote-access VPNs",
+    "Onboard devices and fix access failures on the NAC system",
+    "Upgrade firewall software and keep configuration backups",
+    "Clean up unused or risky firewall rules before audits",
+    "Handle escalated tickets and join outage calls"
+  ],
+  "typicalTitles": [
+    "Firewall Engineer",
+    "Firewall Administrator",
+    "Network Security Administrator",
+    "Palo Alto Firewall Engineer",
+    "NAC Engineer",
+    "Network Security Specialist",
+    "Zscaler Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Design firewall policy, NAT, VPN and network segmentation",
+      "postingShare": null
+    },
+    {
+      "skillId": "firewall-platforms",
+      "importance": "required",
+      "expectation": "Run Palo Alto, Fortinet or Check Point firewalls day to day",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Understand routing, VLANs and switching that firewalls sit in",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Troubleshoot TCP/IP, DNS and traffic flows with packet captures",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-access-control",
+      "importance": "required",
+      "expectation": "Run NAC such as Cisco ISE or Forescout with 802.1X",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Make rule changes through change and incident processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain rule requests and outages to app teams and auditors",
+      "postingShare": null
+    },
+    {
+      "skillId": "sase-ztna",
+      "importance": "nice_to_have",
+      "expectation": "Manage Zscaler or Prisma Access for web and private app access",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "nice_to_have",
+      "expectation": "Handle certificates for SSL decryption and VPNs",
+      "postingShare": null
+    },
+    {
+      "skillId": "siem",
+      "importance": "nice_to_have",
+      "expectation": "Send firewall logs to a SIEM and review alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-networking",
+      "importance": "nice_to_have",
+      "expectation": "Secure Azure or AWS network edges",
+      "postingShare": null
+    },
+    {
+      "skillId": "vulnerability-management",
+      "importance": "nice_to_have",
+      "expectation": "Patch firewall software and close audit findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate rule reviews and backups with scripts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "recommended",
+      "why": "Networking base most firewall jobs ask for"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral security basics"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

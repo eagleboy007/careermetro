@@ -1,0 +1,63 @@
+{
+  "id": "cloud-finops-analyst-from-cloud-ops",
+  "roleSlug": "cloud-finops-analyst",
+  "persona": "AWS cloud operations engineer moving into FinOps",
+  "resumeText": "Vikram Malhotra | Gurugram | vikram.malhotra@example.com\n\nEXPERIENCE\nCloud Operations Engineer, Aravali Digital Services, Gurugram (2020 - present)\n- Run 30 AWS accounts for the e-commerce platform.\n- Built monthly AWS Cost Explorer reports for each product team.\n- Wrote a tagging policy and fixed untagged resources so costs could be shown per team.\n- Wrote SQL queries on the cost and usage report in Athena.\n- Shut down idle EC2 instances and rightsized databases, cutting the monthly bill by 18%.\n- Present a monthly cost review to engineering managers.\n\nSKILLS\nExcel, Power BI, Savings Plans\n\nEDUCATION\nBTech Computer Science, Amity University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "aws",
+        "quote": "Run 30 AWS accounts for the e-commerce platform"
+      },
+      {
+        "skillId": "cloud-billing-analysis",
+        "quote": "Built monthly AWS Cost Explorer reports"
+      },
+      {
+        "skillId": "cost-allocation",
+        "quote": "Wrote a tagging policy and fixed untagged resources"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries on the cost and usage report"
+      },
+      {
+        "skillId": "cloud-cost",
+        "quote": "Shut down idle EC2 instances and rightsized databases"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Present a monthly cost review to engineering managers"
+      },
+      {
+        "skillId": "commitment-discounts",
+        "quote": "Savings Plans"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "commitment-discounts",
+        "status": "weak"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "spend-forecasting",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "python",
+      "cloud-data-warehouse"
+    ]
+  },
+  "reviewedBy": null
+}

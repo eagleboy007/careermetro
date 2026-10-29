@@ -1,0 +1,116 @@
+{
+  "slug": "database-developer",
+  "title": "Database Developer (PL/SQL)",
+  "summary": "A database developer writes the code that lives inside the database: PL/SQL packages, stored procedures (saved programs the database runs), triggers and complex queries that applications and reports depend on. They work with application developers, testers and DBAs, often in banks, insurers and large IT services teams.",
+  "dailyDuties": [
+    "Write and change PL/SQL packages, procedures and functions",
+    "Tune slow queries using explain plans and indexes",
+    "Design new tables and views for application changes",
+    "Write shell scripts that run and check database jobs",
+    "Fix data issues raised by support and business users",
+    "Review database code and deploy it through test environments"
+  ],
+  "typicalTitles": [
+    "PL/SQL Developer",
+    "Oracle PL/SQL Developer",
+    "Senior PL/SQL Developer",
+    "Oracle Developer",
+    "SQL Developer",
+    "T-SQL Developer",
+    "Database Programmer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "database-programming",
+      "importance": "required",
+      "expectation": "Write PL/SQL packages, procedures, functions and triggers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write complex joins, subqueries and set-based SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "required",
+      "expectation": "Develop on Oracle Database, usually 12c to 19c",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql-window-functions",
+      "importance": "required",
+      "expectation": "Use analytic functions and CTEs in reports and reconciliations",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "required",
+      "expectation": "Read explain plans, add indexes and tune slow SQL and PL/SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design tables, keys and views for new features",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write Unix shell scripts to run and monitor database jobs",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "nice_to_have",
+      "expectation": "Load and transform data with SQL*Loader, external tables or an ETL tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "batch-scheduling",
+      "importance": "nice_to_have",
+      "expectation": "Run PL/SQL jobs from Control-M, Autosys or a similar scheduler",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Use Python for data checks and automation",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep database code in version control",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking or regulatory reporting data, where many of these roles sit",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "recommended",
+      "why": "Oracle SQL basics; the PL/SQL professional exam builds on it"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "robotics-engineer",
+  "title": "Robotics Software Engineer",
+  "summary": "A robotics software engineer writes the code that lets a robot sense its surroundings, know where it is and move safely, mostly using ROS (Robot Operating System, a common software framework for robots). They work in a robotics team alongside mechanical, electronics and test engineers and spend time both in simulation and on real robots.",
+  "dailyDuties": [
+    "Write and debug ROS 2 nodes in C++ or Python",
+    "Tune navigation and motion planning for new sites",
+    "Test changes in simulation before field trials",
+    "Integrate and calibrate lidar, camera and IMU sensors",
+    "Analyse recorded robot logs to find faults",
+    "Support field tests and fix issues found on site"
+  ],
+  "typicalTitles": [
+    "Robotics Engineer",
+    "ROS Developer",
+    "ROS 2 Engineer",
+    "Robotics Software Developer",
+    "Autonomy Software Engineer",
+    "SLAM Engineer",
+    "Robotics Navigation Engineer",
+    "Motion Planning Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "ros",
+      "importance": "required",
+      "expectation": "Build ROS 2 nodes, launch files and packages",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write real-time robot code in modern C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write tools, tests and nodes in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Develop and debug on Ubuntu Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "robot-navigation-planning",
+      "importance": "required",
+      "expectation": "Tune Nav2 or MoveIt planners and controllers",
+      "postingShare": null
+    },
+    {
+      "skillId": "slam-localization",
+      "importance": "required",
+      "expectation": "Run and tune SLAM and localization on the robot",
+      "postingShare": null
+    },
+    {
+      "skillId": "sensor-fusion",
+      "importance": "required",
+      "expectation": "Combine lidar, IMU and wheel data into a reliable pose",
+      "postingShare": null
+    },
+    {
+      "skillId": "robot-simulation",
+      "importance": "required",
+      "expectation": "Test robot software in Gazebo or Isaac Sim before field trials",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work in a shared repository with reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "opencv",
+      "importance": "nice_to_have",
+      "expectation": "Process camera images for perception tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package robot software in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write gtest or pytest tests for robot code",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run builds and tests in a pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "edge-model-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Deploy models on NVIDIA Jetson boards",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

@@ -1,0 +1,71 @@
+{
+  "id": "application-support-engineer-l2-banking",
+  "roleSlug": "application-support-engineer",
+  "persona": "L2 production support analyst on a lending application",
+  "resumeText": "Kavya Reddy | Chennai | kavya.reddy@example.com\n\nEXPERIENCE\nProduction Support Analyst, Marina FinServe Technologies, Chennai (2022 - present)\n- Provide L2 support for the loan origination application used by 40 branches.\n- Monitor overnight Control-M batch jobs and rerun failed jobs.\n- Write SQL queries on Oracle to find and correct stuck transactions.\n- Search application logs on Linux servers with grep and tail.\n- Log incidents and problem records in ServiceNow following ITIL.\n- Join the bridge call for P1 incidents and send hourly updates to the business.\n\nSKILLS\nShell scripting, Dynatrace, Java\n\nEDUCATION\nBSc Computer Science, Loyola College, Chennai, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "application-support",
+        "quote": "Provide L2 support for the loan origination application"
+      },
+      {
+        "skillId": "batch-scheduling",
+        "quote": "Monitor overnight Control-M batch jobs"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries on Oracle to find and correct stuck transactions"
+      },
+      {
+        "skillId": "oracle-database",
+        "quote": "SQL queries on Oracle to find"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Search application logs on Linux servers"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Log incidents and problem records in ServiceNow following ITIL"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "Join the bridge call for P1 incidents"
+      },
+      {
+        "skillId": "communication",
+        "quote": "send hourly updates to the business"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Shell scripting"
+      },
+      {
+        "skillId": "apm-tools",
+        "quote": "Dynatrace"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "scripting-bash",
+        "status": "weak"
+      },
+      {
+        "skillId": "apm-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "messaging-queues",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

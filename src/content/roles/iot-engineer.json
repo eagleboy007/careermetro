@@ -1,0 +1,131 @@
+{
+  "slug": "iot-engineer",
+  "title": "IoT Engineer",
+  "summary": "An IoT (Internet of Things) engineer connects sensors and devices to the cloud so their data can be collected, shown on dashboards and acted on. They sit between the firmware and cloud teams and own the whole path from device to gateway to cloud platform.",
+  "dailyDuties": [
+    "Write device or gateway code that reads sensors",
+    "Publish device data to an MQTT broker or cloud IoT platform",
+    "Set up device provisioning and certificates",
+    "Ship and track over-the-air firmware updates",
+    "Debug Wi-Fi, BLE or cellular connection drops on field devices",
+    "Build dashboards and alerts for device data",
+    "Test prototypes with the hardware team"
+  ],
+  "typicalTitles": [
+    "IoT Developer",
+    "IoT Software Engineer",
+    "IoT Solutions Engineer",
+    "IIoT Engineer",
+    "Edge Gateway Engineer",
+    "Connected Devices Engineer",
+    "IoT Application Developer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "iot-protocols",
+      "importance": "required",
+      "expectation": "Send device data over MQTT or CoAP to a broker",
+      "postingShare": null
+    },
+    {
+      "skillId": "iot-cloud-platforms",
+      "importance": "required",
+      "expectation": "Connect devices to AWS IoT Core, Azure IoT Hub or a similar platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "wireless-connectivity",
+      "importance": "required",
+      "expectation": "Work with Wi-Fi, BLE, cellular or LoRaWAN links",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "required",
+      "expectation": "Program boards such as ESP32 or STM32",
+      "postingShare": null
+    },
+    {
+      "skillId": "iot-device-management",
+      "importance": "required",
+      "expectation": "Provision devices and ship firmware updates over the air",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Debug TCP/IP, TLS and gateway connectivity in the field",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write device or gateway code in C, C++ or Python",
+      "postingShare": null,
+      "oneOf": "iot-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write device or gateway code in C, C++ or Python",
+      "postingShare": null,
+      "oneOf": "iot-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write device or gateway code in C, C++ or Python",
+      "postingShare": null,
+      "oneOf": "iot-language"
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Read sensors and machines over I2C, SPI or Modbus",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtos",
+      "importance": "nice_to_have",
+      "expectation": "Use FreeRTOS on connected devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-linux",
+      "importance": "nice_to_have",
+      "expectation": "Build gateways on Raspberry Pi or embedded Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package edge gateway software in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Build Grafana dashboards and alerts for device data",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "iot-language",
+      "label": "A device or gateway language (C, C++ or Python)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

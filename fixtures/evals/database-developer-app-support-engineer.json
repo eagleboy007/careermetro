@@ -1,0 +1,56 @@
+{
+  "id": "database-developer-app-support-engineer",
+  "roleSlug": "database-developer",
+  "persona": "Application support engineer moving into PL/SQL development",
+  "resumeText": "Rahul Deshmukh | Pune | rahul.deshmukh@example.com\n\nEXPERIENCE\nApplication Support Engineer, Sahyadri Finserv Technologies, Pune (2022 - present)\n- Wrote Oracle SQL queries to investigate failed loan disbursement records.\n- Fixed bugs in existing PL/SQL procedures for the EMI calculation module.\n- Wrote Unix shell scripts to restart batch jobs and archive log files.\n- Monitored nightly Control-M batch jobs and escalated failures.\n- Used analytic functions such as RANK and LAG in reconciliation reports.\n\nEDUCATION\nBE Computer Engineering, Savitribai Phule Pune University, 2022\n\nSKILLS\nOracle 19c, SQL, PL/SQL, Unix, Control-M, Toad\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote Oracle SQL queries to investigate"
+      },
+      {
+        "skillId": "oracle-database",
+        "quote": "Oracle SQL queries to investigate failed loan disbursement records"
+      },
+      {
+        "skillId": "database-programming",
+        "quote": "Fixed bugs in existing PL/SQL procedures"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote Unix shell scripts to restart batch jobs"
+      },
+      {
+        "skillId": "sql-window-functions",
+        "quote": "Used analytic functions such as RANK and LAG"
+      },
+      {
+        "skillId": "batch-scheduling",
+        "quote": "Monitored nightly Control-M batch jobs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "database-programming",
+        "status": "weak"
+      },
+      {
+        "skillId": "query-optimization",
+        "status": "missing"
+      },
+      {
+        "skillId": "data-modeling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "etl",
+      "git",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

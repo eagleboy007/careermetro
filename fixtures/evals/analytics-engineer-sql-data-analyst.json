@@ -1,0 +1,60 @@
+{
+  "id": "analytics-engineer-sql-data-analyst",
+  "roleSlug": "analytics-engineer",
+  "persona": "SQL data analyst moving into analytics engineering",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nEXPERIENCE\nData Analyst, Kaveri Commerce Pvt Ltd, Bengaluru (2021 - present)\n- Wrote complex SQL with window functions and CTEs for weekly revenue reporting.\n- Built 15 dbt models on Snowflake for the orders and returns marts.\n- Designed a star schema with order, customer and product dimensions.\n- Added dbt tests for nulls and duplicates on the orders models.\n- Present monthly metrics to category managers and agree definitions with them.\n- Built Tableau dashboards for the category team.\n\nEDUCATION\nBSc Statistics, Christ University, Bengaluru, 2021\n\nSKILLS\nSQL, dbt, Snowflake, Tableau, Excel, Git\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote complex SQL with window functions"
+      },
+      {
+        "skillId": "sql-window-functions",
+        "quote": "SQL with window functions and CTEs"
+      },
+      {
+        "skillId": "dbt",
+        "quote": "Built 15 dbt models on Snowflake"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "dbt models on Snowflake for the orders"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed a star schema with order, customer and product dimensions"
+      },
+      {
+        "skillId": "data-quality-management",
+        "quote": "Added dbt tests for nulls and duplicates"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Present monthly metrics to category managers and agree definitions"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Built Tableau dashboards for the category team"
+      },
+      {
+        "skillId": "git",
+        "quote": "Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "data-orchestration",
+      "semantic-layer",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}
