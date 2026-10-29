@@ -4431,18 +4431,6 @@
     "free": true
   },
   {
-    "title": "Product Discovery Handbook",
-    "url": "https://www.atlassian.com/software/jira/product-discovery/resources/discovery-handbook",
-    "provider": "Atlassian",
-    "kind": "docs",
-    "skillIds": [
-      "product-discovery",
-      "roadmapping"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Prioritization frameworks",
     "url": "https://www.atlassian.com/agile/product-management/prioritization-framework",
     "provider": "Atlassian Agile Coach",
