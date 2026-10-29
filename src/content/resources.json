@@ -2928,17 +2928,6 @@
     "free": true
   },
   {
-    "title": "GNU Bash manual",
-    "url": "https://www.gnu.org/software/bash/manual/bash.html",
-    "provider": "GNU",
-    "kind": "docs",
-    "skillIds": [
-      "scripting-bash"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "FastAPI tutorial",
     "url": "https://fastapi.tiangolo.com/tutorial/",
     "provider": "FastAPI",
