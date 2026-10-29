@@ -1,0 +1,64 @@
+{
+  "id": "storage-backup-engineer-from-sysadmin",
+  "roleSlug": "storage-backup-engineer",
+  "persona": "VMware and Windows administrator who runs backups",
+  "resumeText": "Manoj Pillai | Kochi | manoj.pillai@example.com\n\nEXPERIENCE\nSystem Administrator, Malabar Infotech Solutions, Kochi (2019 - present)\n- Manage 120 VMware ESXi hosts and vCenter for the data centre.\n- Administer Windows Server 2019 file servers for 2,000 users.\n- Run nightly Veeam backup jobs for 300 virtual machines.\n- Run quarterly disaster recovery drills and restore tests.\n- Present NetApp NFS datastores to the ESXi hosts.\n- Raise change requests in BMC Remedy for every production change.\n\nSKILLS\nSAN, Linux, PowerShell\n\nEDUCATION\nBTech Information Technology, Cochin University of Science and Technology, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "virtualization",
+        "quote": "Manage 120 VMware ESXi hosts and vCenter"
+      },
+      {
+        "skillId": "windows-server",
+        "quote": "Administer Windows Server 2019 file servers"
+      },
+      {
+        "skillId": "backup-software",
+        "quote": "Run nightly Veeam backup jobs for 300 virtual machines"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Run quarterly disaster recovery drills and restore tests"
+      },
+      {
+        "skillId": "nas-storage",
+        "quote": "Present NetApp NFS datastores to the ESXi hosts"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Raise change requests in BMC Remedy"
+      },
+      {
+        "skillId": "san-storage",
+        "quote": "SAN"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "san-storage",
+        "status": "weak"
+      },
+      {
+        "skillId": "linux",
+        "status": "weak"
+      },
+      {
+        "skillId": "networking-basics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "azure",
+      "terraform",
+      "scripting-bash"
+    ]
+  },
+  "reviewedBy": null
+}

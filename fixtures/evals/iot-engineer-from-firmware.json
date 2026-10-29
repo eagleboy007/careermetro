@@ -1,0 +1,55 @@
+{
+  "id": "iot-engineer-from-firmware",
+  "roleSlug": "iot-engineer",
+  "persona": "Firmware engineer on smart meters moving into IoT",
+  "resumeText": "Sneha Iyer | Coimbatore | sneha.iyer@example.com\n\nEXPERIENCE\nFirmware Engineer, Kovai Smart Meters Pvt Ltd, Coimbatore (2022 - present)\n- Write embedded C firmware for STM32 energy meters.\n- Read sensor data over I2C and Modbus RTU from field devices.\n- Added BLE pairing so technicians can read meters from a phone app.\n- Publish meter readings to a Mosquitto MQTT broker every 15 minutes.\n\nSKILLS\nAWS IoT Core, FreeRTOS, Git\n\nEDUCATION\nBE Electronics and Communication, PSG College of Technology, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "embedded-c",
+        "quote": "Write embedded C firmware for STM32 energy meters"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "embedded C firmware for STM32 energy meters"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Read sensor data over I2C and Modbus RTU"
+      },
+      {
+        "skillId": "wireless-connectivity",
+        "quote": "Added BLE pairing so technicians can read meters"
+      },
+      {
+        "skillId": "iot-protocols",
+        "quote": "Publish meter readings to a Mosquitto MQTT broker"
+      },
+      {
+        "skillId": "iot-cloud-platforms",
+        "quote": "AWS IoT Core"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "iot-cloud-platforms",
+        "status": "weak"
+      },
+      {
+        "skillId": "iot-device-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "networking-basics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "embedded-linux",
+      "monitoring"
+    ]
+  },
+  "reviewedBy": null
+}

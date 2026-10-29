@@ -1,0 +1,59 @@
+{
+  "id": "frontend-architect-lead-react-engineer",
+  "roleSlug": "frontend-architect",
+  "persona": "Lead React engineer moving into a frontend architect role",
+  "resumeText": "Priya Nair | Bengaluru | priya.nair@example.com\n\nEXPERIENCE\nLead Frontend Engineer, Nilgiri Retail Tech, Bengaluru (2018 - present)\n- Lead a team of 6 engineers building the React and TypeScript storefront.\n- Built a shared component library in Storybook used by four product teams.\n- Cut Largest Contentful Paint from 4.1s to 2.3s by splitting bundles and lazy loading images.\n- Review pull requests for the storefront team every day.\n- Fixed WCAG colour contrast and keyboard issues found in an accessibility audit.\n- Moved checkout state from prop drilling to Redux Toolkit.\n\nSoftware Engineer, Deccan Web Solutions, Bengaluru (2015 - 2018)\n- Built jQuery and Angular pages for a travel booking site.\n\nEDUCATION\nBE Information Science, RV College of Engineering, 2015\n\nSKILLS\nReact, TypeScript, Next.js, Redux, Jest, Storybook\n",
+  "expected": {
+    "totalYearsExperience": 11,
+    "skills": [
+      {
+        "skillId": "react",
+        "quote": "building the React and TypeScript storefront"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "the React and TypeScript storefront"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Lead a team of 6 engineers"
+      },
+      {
+        "skillId": "design-systems",
+        "quote": "Built a shared component library in Storybook"
+      },
+      {
+        "skillId": "web-performance",
+        "quote": "Cut Largest Contentful Paint from 4.1s to 2.3s"
+      },
+      {
+        "skillId": "code-review",
+        "quote": "Review pull requests for the storefront team"
+      },
+      {
+        "skillId": "accessibility",
+        "quote": "Fixed WCAG colour contrast and keyboard issues"
+      },
+      {
+        "skillId": "state-management",
+        "quote": "Moved checkout state from prop drilling to Redux Toolkit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "frontend-architecture",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "nodejs",
+      "application-security",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,55 @@
+{
+  "id": "dynamics-365-developer-dotnet-developer",
+  "roleSlug": "dynamics-365-developer",
+  "persona": ".NET developer moving into Dynamics 365",
+  "resumeText": "Arjun Menon | Kochi | arjun.menon@example.com\n\nEXPERIENCE\n.NET Developer, Backwater Software Labs, Kochi (2020 - present)\n- Build ASP.NET Core Web APIs in C# for an insurance claims portal.\n- Wrote JavaScript form validation for the customer self-service portal.\n- Integrated the portal with a payment gateway over REST APIs.\n- Wrote two Dynamics 365 plugins in C# to sync claim status from the portal.\n- Write SQL Server stored procedures for claims reports.\n\nEDUCATION\nBTech Computer Science, Cochin University of Science and Technology, 2020\n\nSKILLS\nC#, ASP.NET Core, JavaScript, SQL Server, Azure DevOps, Dynamics 365 CRM\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Build ASP.NET Core Web APIs in C#"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote JavaScript form validation for the customer"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Integrated the portal with a payment gateway over REST APIs"
+      },
+      {
+        "skillId": "dynamics-365-extensibility",
+        "quote": "Wrote two Dynamics 365 plugins in C#"
+      },
+      {
+        "skillId": "dynamics-365-ce",
+        "quote": "Dynamics 365 plugins in C# to sync claim status"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL Server stored procedures for claims reports"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "dynamics-365-ce",
+        "status": "weak"
+      },
+      {
+        "skillId": "dataverse",
+        "status": "missing"
+      },
+      {
+        "skillId": "power-automate",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "power-apps",
+      "typescript",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

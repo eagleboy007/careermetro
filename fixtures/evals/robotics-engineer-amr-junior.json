@@ -1,0 +1,64 @@
+{
+  "id": "robotics-engineer-amr-junior",
+  "roleSlug": "robotics-engineer",
+  "persona": "Junior engineer on warehouse mobile robots",
+  "resumeText": "Aditya Rao | Bengaluru | aditya.rao@example.com\n\nEXPERIENCE\nRobotics Engineer, Kaveri Automation Labs, Bengaluru (2023 - present)\n- Write ROS 2 nodes in C++ for a warehouse mobile robot.\n- Tuned Nav2 path planning parameters for narrow aisles.\n- Built Gazebo simulation worlds to test the robot before field trials.\n- Run the robot software on Ubuntu Linux and debug it over SSH.\n- Use Git with code review on every pull request.\n\nSKILLS\nPython, SLAM, OpenCV\n\nEDUCATION\nBTech Mechatronics, Manipal Institute of Technology, 2023\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "ros",
+        "quote": "Write ROS 2 nodes in C++"
+      },
+      {
+        "skillId": "cpp",
+        "quote": "nodes in C++ for a warehouse mobile robot"
+      },
+      {
+        "skillId": "robot-navigation-planning",
+        "quote": "Tuned Nav2 path planning parameters"
+      },
+      {
+        "skillId": "robot-simulation",
+        "quote": "Built Gazebo simulation worlds to test the robot"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Run the robot software on Ubuntu Linux"
+      },
+      {
+        "skillId": "git",
+        "quote": "Use Git with code review"
+      },
+      {
+        "skillId": "python",
+        "quote": "Python"
+      },
+      {
+        "skillId": "slam-localization",
+        "quote": "SLAM"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "python",
+        "status": "weak"
+      },
+      {
+        "skillId": "slam-localization",
+        "status": "weak"
+      },
+      {
+        "skillId": "sensor-fusion",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "edge-model-optimization",
+      "unit-testing",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

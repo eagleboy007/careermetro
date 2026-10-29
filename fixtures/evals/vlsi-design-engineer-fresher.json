@@ -1,0 +1,59 @@
+{
+  "id": "vlsi-design-engineer-fresher",
+  "roleSlug": "vlsi-design-engineer",
+  "persona": "ECE graduate with an RTL internship and a trainee role",
+  "resumeText": "Priya Nair | Hyderabad | priya.nair@example.com\n\nEXPERIENCE\nGraduate Engineer Trainee, Deccan Silicon Works, Hyderabad (Jul 2025 - present)\n- Run SpyGlass lint and CDC checks on RTL blocks and fix reported issues.\n\nDesign Engineer Intern, Deccan Silicon Works, Hyderabad (Jan 2025 - Jun 2025)\n- Wrote synthesizable Verilog RTL for a UART controller block.\n- Designed FSM-based control logic for the UART transmit path.\n- Simulated the block in QuestaSim and debugged waveforms.\n- Wrote Tcl scripts to run regression simulations on Linux servers.\n\nSKILLS\nSystemVerilog, UVM, Static timing analysis\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2025\n",
+  "expected": {
+    "totalYearsExperience": 1,
+    "skills": [
+      {
+        "skillId": "rtl-lint-cdc",
+        "quote": "Run SpyGlass lint and CDC checks"
+      },
+      {
+        "skillId": "verilog-rtl",
+        "quote": "Wrote synthesizable Verilog RTL for a UART controller block"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "RTL for a UART controller block"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Designed FSM-based control logic for the UART transmit path"
+      },
+      {
+        "skillId": "eda-scripting",
+        "quote": "Wrote Tcl scripts to run regression simulations"
+      },
+      {
+        "skillId": "linux",
+        "quote": "regression simulations on Linux servers"
+      },
+      {
+        "skillId": "systemverilog-uvm",
+        "quote": "SystemVerilog"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "quote": "Static timing analysis"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "systemverilog-uvm",
+        "status": "weak"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "fpga-design",
+      "amba-protocols",
+      "cpp"
+    ]
+  },
+  "reviewedBy": null
+}

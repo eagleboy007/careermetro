@@ -1,0 +1,52 @@
+{
+  "id": "rpa-developer-pad-ops-analyst",
+  "roleSlug": "rpa-developer",
+  "persona": "Operations analyst who builds Power Automate Desktop bots",
+  "resumeText": "Sneha Kulkarni | Mumbai | sneha.kulkarni@example.com\n\nEXPERIENCE\nProcess Automation Analyst, Arabian Sea Shared Services, Mumbai (2023 - present)\n- Built 6 Power Automate Desktop flows that download bank statements and update the reconciliation sheet.\n- Wrote Python scripts to clean vendor invoice files before upload.\n- Documented each process as a step-by-step flowchart with the finance team before building it.\n- Added retry and error handling steps so failed runs email the support mailbox.\n- Wrote SQL queries to check posted entries against the ledger tables.\n\nOperations Executive, Arabian Sea Shared Services, Mumbai (2021 - 2023)\n- Maintained Excel trackers with VLOOKUP and pivot tables for vendor payments.\n\nEDUCATION\nBCom, University of Mumbai, 2021\n\nSKILLS\nPower Automate Desktop, Python, SQL, Excel, UiPath (learning)\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "power-automate",
+        "quote": "Built 6 Power Automate Desktop flows"
+      },
+      {
+        "skillId": "robotic-process-automation",
+        "quote": "Added retry and error handling steps so failed runs email the support mailbox"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to clean vendor invoice files"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Documented each process as a step-by-step flowchart"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to check posted entries"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained Excel trackers with VLOOKUP and pivot tables"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "uipath",
+      "automation-anywhere",
+      "intelligent-document-processing",
+      "csharp-dotnet"
+    ]
+  },
+  "reviewedBy": null
+}

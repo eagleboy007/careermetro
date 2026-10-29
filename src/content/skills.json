@@ -3618,5 +3618,797 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "semantic-layer",
+    "name": "Semantic layer and metrics definitions",
+    "category": "data",
+    "aliases": [
+      "semantic layer",
+      "metrics layer",
+      "dbt semantic layer",
+      "metricflow",
+      "lookml",
+      "cube.dev",
+      "snowflake semantic views",
+      "headless bi"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "database-programming",
+    "name": "Database programming (PL/SQL packages and stored procedures)",
+    "category": "data",
+    "aliases": [
+      "stored procedures",
+      "plsql",
+      "pl sql",
+      "pl/sql packages",
+      "plsql packages",
+      "database triggers",
+      "bulk collect",
+      "ref cursors",
+      "t-sql stored procedures",
+      "oracle packages"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sql"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "robotic-process-automation",
+    "name": "Robotic process automation (RPA)",
+    "category": "tools",
+    "aliases": [
+      "robotic process automation",
+      "rpa",
+      "rpa development",
+      "reframework",
+      "re framework",
+      "unattended bots",
+      "attended bots",
+      "blue prism",
+      "process definition document"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "uipath",
+    "name": "UiPath",
+    "category": "tools",
+    "aliases": [
+      "uipath",
+      "ui path",
+      "uipath studio",
+      "uipath orchestrator",
+      "uipath studiox"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "robotic-process-automation"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "automation-anywhere",
+    "name": "Automation Anywhere",
+    "category": "tools",
+    "aliases": [
+      "automation anywhere",
+      "automation anywhere a360",
+      "automation 360",
+      "aa360",
+      "a360 bots",
+      "iq bot"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "robotic-process-automation"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "intelligent-document-processing",
+    "name": "Intelligent document processing (OCR and document extraction)",
+    "category": "ml",
+    "aliases": [
+      "intelligent document processing",
+      "document understanding",
+      "uipath document understanding",
+      "abbyy flexicapture",
+      "azure form recognizer",
+      "azure document intelligence",
+      "google document ai",
+      "invoice data extraction"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dynamics-365-ce",
+    "name": "Dynamics 365 Customer Engagement (CRM)",
+    "category": "tools",
+    "aliases": [
+      "dynamics 365 ce",
+      "dynamics 365 customer engagement",
+      "d365 ce",
+      "dynamics crm",
+      "microsoft dynamics crm",
+      "ms crm",
+      "dynamics 365 crm",
+      "d365 crm",
+      "dynamics 365 sales",
+      "dynamics 365 customer service"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "dataverse"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "dynamics-365-extensibility",
+    "name": "Dynamics 365 plugins and client scripting",
+    "category": "programming",
+    "aliases": [
+      "dynamics 365 plugins",
+      "crm plugins",
+      "d365 plugins",
+      "plugin registration tool",
+      "custom workflow activities",
+      "xrm client api",
+      "xrm.webapi",
+      "pcf controls",
+      "power apps component framework"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-fusion-cloud",
+    "name": "Oracle Fusion Cloud applications (ERP, HCM, SCM)",
+    "category": "tools",
+    "aliases": [
+      "oracle fusion",
+      "oracle fusion cloud",
+      "oracle fusion applications",
+      "oracle cloud erp",
+      "oracle erp cloud",
+      "oracle fusion hcm",
+      "oracle hcm cloud",
+      "oracle fusion financials",
+      "oracle scm cloud"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-integration-cloud",
+    "name": "Oracle Integration Cloud (OIC)",
+    "category": "tools",
+    "aliases": [
+      "oracle integration cloud",
+      "oic",
+      "oic gen 3",
+      "oracle ics",
+      "integration cloud service"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-bi-publisher-otbi",
+    "name": "Oracle BI Publisher and OTBI reporting",
+    "category": "data",
+    "aliases": [
+      "bi publisher",
+      "oracle bi publisher",
+      "bip reports",
+      "otbi",
+      "otbi reports",
+      "oracle transactional business intelligence"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-fusion-data-loads",
+    "name": "Oracle Fusion data loads (FBDI, HDL)",
+    "category": "data",
+    "aliases": [
+      "fbdi",
+      "file based data import",
+      "hdl",
+      "hcm data loader",
+      "hsdl",
+      "adfdi"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-paas-extensions",
+    "name": "Oracle VBCS and APEX extensions",
+    "category": "web",
+    "aliases": [
+      "vbcs",
+      "oracle visual builder",
+      "visual builder cloud service",
+      "oracle apex"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "angular",
+    "name": "Angular",
+    "category": "web",
+    "aliases": [
+      "angular",
+      "angularjs",
+      "angular js",
+      "angular 2+",
+      "rxjs",
+      "ngrx"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "frontend-architecture",
+    "name": "Frontend architecture (micro-frontends, monorepos)",
+    "category": "web",
+    "aliases": [
+      "frontend architecture",
+      "front-end architecture",
+      "ui architecture",
+      "micro frontends",
+      "micro-frontends",
+      "microfrontends",
+      "module federation",
+      "single-spa",
+      "nx monorepo",
+      "turborepo"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "xr-development",
+    "name": "AR/VR (XR) development",
+    "category": "programming",
+    "aliases": [
+      "augmented reality",
+      "virtual reality",
+      "mixed reality",
+      "ar/vr",
+      "xr development",
+      "arkit",
+      "arcore",
+      "ar foundation",
+      "xr interaction toolkit",
+      "openxr",
+      "meta xr sdk",
+      "oculus sdk",
+      "mrtk",
+      "vuforia",
+      "webxr",
+      "hololens",
+      "visionos"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "firewall-platforms",
+    "name": "Firewall platforms (Palo Alto, Fortinet, Check Point)",
+    "category": "security",
+    "aliases": [
+      "palo alto firewall",
+      "palo alto firewalls",
+      "palo alto ngfw",
+      "palo alto panorama",
+      "pan-os",
+      "globalprotect",
+      "fortigate",
+      "fortinet",
+      "fortimanager",
+      "check point firewall",
+      "checkpoint firewall",
+      "check point gaia",
+      "cisco asa",
+      "cisco firepower",
+      "sophos firewall",
+      "next-generation firewall",
+      "ngfw"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "network-security"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "network-access-control",
+    "name": "Network access control (NAC)",
+    "category": "security",
+    "aliases": [
+      "network access control",
+      "nac",
+      "cisco ise",
+      "forescout",
+      "aruba clearpass",
+      "clearpass",
+      "802.1x",
+      "radius authentication",
+      "tacacs+"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sase-ztna",
+    "name": "SASE and zero-trust network access",
+    "category": "security",
+    "aliases": [
+      "sase",
+      "ztna",
+      "zscaler",
+      "zscaler internet access",
+      "zscaler private access",
+      "prisma access",
+      "netskope",
+      "secure web gateway",
+      "secure access service edge"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "iot-protocols",
+    "name": "IoT messaging protocols (MQTT, CoAP)",
+    "category": "programming",
+    "aliases": [
+      "mqtt",
+      "mqtt broker",
+      "mosquitto",
+      "coap",
+      "lwm2m",
+      "emqx"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "iot-cloud-platforms",
+    "name": "IoT cloud platforms (AWS IoT, Azure IoT Hub)",
+    "category": "cloud-devops",
+    "aliases": [
+      "aws iot core",
+      "aws iot",
+      "aws iot greengrass",
+      "greengrass",
+      "azure iot hub",
+      "azure iot edge",
+      "azure iot central",
+      "thingsboard"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "wireless-connectivity",
+    "name": "Wireless connectivity for devices (BLE, Wi-Fi, LoRaWAN)",
+    "category": "programming",
+    "aliases": [
+      "ble",
+      "bluetooth low energy",
+      "lorawan",
+      "lora",
+      "zigbee",
+      "nb-iot",
+      "lte-m",
+      "thread protocol"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "iot-device-management",
+    "name": "IoT device provisioning and OTA updates",
+    "category": "cloud-devops",
+    "aliases": [
+      "ota updates",
+      "ota firmware updates",
+      "firmware over-the-air",
+      "fota",
+      "device provisioning",
+      "fleet provisioning",
+      "device twin",
+      "device shadow"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ros",
+    "name": "ROS and ROS 2",
+    "category": "programming",
+    "aliases": [
+      "ros",
+      "ros2",
+      "ros 2",
+      "robot operating system",
+      "rclcpp",
+      "rospy",
+      "colcon",
+      "urdf",
+      "tf2"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "slam-localization",
+    "name": "SLAM and robot localization",
+    "category": "programming",
+    "aliases": [
+      "slam",
+      "robot localization",
+      "amcl",
+      "cartographer",
+      "slam toolbox",
+      "visual odometry"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "robot-navigation-planning",
+    "name": "Robot navigation and motion planning",
+    "category": "programming",
+    "aliases": [
+      "nav2",
+      "navigation2",
+      "path planning",
+      "motion planning",
+      "moveit",
+      "moveit 2",
+      "moveit2",
+      "trajectory planning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "robot-simulation",
+    "name": "Robot simulation (Gazebo, Isaac Sim)",
+    "category": "tools",
+    "aliases": [
+      "gazebo",
+      "isaac sim",
+      "mujoco",
+      "webots",
+      "rviz"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sensor-fusion",
+    "name": "Sensor fusion and state estimation",
+    "category": "programming",
+    "aliases": [
+      "sensor fusion",
+      "kalman filter",
+      "extended kalman filter",
+      "ekf",
+      "imu",
+      "lidar",
+      "point cloud"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "digital-logic-design",
+    "name": "Digital logic design",
+    "category": "programming",
+    "aliases": [
+      "digital logic design",
+      "digital circuit design",
+      "digital electronics",
+      "fsm design",
+      "cmos",
+      "combinational and sequential circuits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "verilog-rtl",
+    "name": "RTL design in Verilog or VHDL",
+    "category": "programming",
+    "aliases": [
+      "verilog",
+      "verilog hdl",
+      "rtl design",
+      "rtl coding",
+      "vhdl",
+      "questasim",
+      "modelsim",
+      "synopsys vcs",
+      "xcelium"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "systemverilog-uvm",
+    "name": "SystemVerilog and UVM verification",
+    "category": "testing",
+    "aliases": [
+      "systemverilog",
+      "system verilog",
+      "uvm",
+      "universal verification methodology",
+      "sva",
+      "systemverilog assertions",
+      "functional coverage",
+      "constrained random verification"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rtl-lint-cdc",
+    "name": "RTL lint and clock domain crossing checks",
+    "category": "tools",
+    "aliases": [
+      "rtl lint",
+      "spyglass",
+      "spyglass lint",
+      "clock domain crossing",
+      "cdc checks",
+      "reset domain crossing",
+      "logic equivalence check"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "synthesis-timing",
+    "name": "Logic synthesis and static timing analysis",
+    "category": "tools",
+    "aliases": [
+      "logic synthesis",
+      "design compiler",
+      "cadence genus",
+      "static timing analysis",
+      "primetime",
+      "sdc constraints",
+      "timing closure",
+      "setup and hold"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "amba-protocols",
+    "name": "On-chip bus protocols (AMBA AXI, AHB, APB)",
+    "category": "programming",
+    "aliases": [
+      "amba",
+      "axi",
+      "axi4",
+      "ahb",
+      "apb"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fpga-design",
+    "name": "FPGA design and prototyping",
+    "category": "programming",
+    "aliases": [
+      "fpga",
+      "fpga design",
+      "fpga prototyping",
+      "vivado",
+      "quartus",
+      "xilinx"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "eda-scripting",
+    "name": "EDA flow scripting (Tcl, Perl)",
+    "category": "programming",
+    "aliases": [
+      "tcl",
+      "tcl scripting",
+      "perl",
+      "perl scripting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-billing-analysis",
+    "name": "Cloud billing data and cost tools",
+    "category": "cloud-devops",
+    "aliases": [
+      "aws cost explorer",
+      "cost explorer",
+      "cost and usage report",
+      "aws cur",
+      "azure cost management",
+      "gcp billing export",
+      "apptio cloudability",
+      "cloudability",
+      "cloudhealth",
+      "kubecost",
+      "opencost"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "cloud-cost"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cost-allocation",
+    "name": "Cloud cost allocation (tagging, showback, chargeback)",
+    "category": "cloud-devops",
+    "aliases": [
+      "cost allocation",
+      "showback",
+      "cloud chargeback",
+      "it chargeback",
+      "tagging policy",
+      "tagging strategy",
+      "tag governance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "commitment-discounts",
+    "name": "Cloud commitment discounts (reservations, savings plans)",
+    "category": "cloud-devops",
+    "aliases": [
+      "reserved instances",
+      "savings plans",
+      "committed use discounts",
+      "azure reservations",
+      "ri coverage"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "spend-forecasting",
+    "name": "Budgeting and spend forecasting",
+    "category": "business",
+    "aliases": [
+      "spend forecasting",
+      "cloud spend forecasting",
+      "budget forecasting",
+      "budget vs actuals",
+      "budget variance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "san-storage",
+    "name": "SAN storage administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "storage area network",
+      "san storage",
+      "san administration",
+      "fibre channel",
+      "fc zoning",
+      "san zoning",
+      "lun provisioning",
+      "lun masking",
+      "brocade",
+      "cisco mds",
+      "multipathing",
+      "powermax",
+      "pure storage",
+      "dell unity",
+      "hitachi vsp",
+      "3par"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "nas-storage",
+    "name": "NAS and file storage (NetApp, Isilon)",
+    "category": "cloud-devops",
+    "aliases": [
+      "network attached storage",
+      "nas storage",
+      "netapp",
+      "ontap",
+      "netapp ontap",
+      "snapmirror",
+      "snapvault",
+      "isilon",
+      "powerscale",
+      "nfs shares",
+      "cifs shares",
+      "smb shares"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "backup-software",
+    "name": "Enterprise backup software (Commvault, Veeam, NetBackup)",
+    "category": "cloud-devops",
+    "aliases": [
+      "commvault",
+      "veeam",
+      "veeam backup",
+      "netbackup",
+      "veritas netbackup",
+      "rubrik",
+      "cohesity",
+      "dell powerprotect",
+      "networker",
+      "data domain",
+      "avamar",
+      "ibm spectrum protect",
+      "tape library"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

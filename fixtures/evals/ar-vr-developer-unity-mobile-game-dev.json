@@ -1,0 +1,52 @@
+{
+  "id": "ar-vr-developer-unity-mobile-game-dev",
+  "roleSlug": "ar-vr-developer",
+  "persona": "Unity mobile game developer moving into AR/VR",
+  "resumeText": "Mohammed Faizal | Hyderabad | faizal.m@example.com\n\nEXPERIENCE\nUnity Developer, Golconda Games Studio, Hyderabad (2022 - present)\n- Build gameplay features in Unity with C# for two casual mobile games.\n- Wrote camera follow and collision logic using vector math and raycasts.\n- Profiled frame drops with the Unity Profiler and cut draw calls by 40 percent.\n- Manage feature branches and merges in Git with a team of five.\n- Published three builds to the Play Store and App Store.\n- Built a small AR Foundation demo that places furniture on a table for a client pitch.\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2022\n\nSKILLS\nUnity, C#, AR Foundation, Blender, Git\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "unity-engine",
+        "quote": "Build gameplay features in Unity with C#"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "gameplay features in Unity with C#"
+      },
+      {
+        "skillId": "game-math",
+        "quote": "collision logic using vector math and raycasts"
+      },
+      {
+        "skillId": "performance-profiling",
+        "quote": "Profiled frame drops with the Unity Profiler"
+      },
+      {
+        "skillId": "git",
+        "quote": "Manage feature branches and merges in Git"
+      },
+      {
+        "skillId": "mobile-release",
+        "quote": "Published three builds to the Play Store"
+      },
+      {
+        "skillId": "xr-development",
+        "quote": "Built a small AR Foundation demo"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "xr-development",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "unreal-engine",
+      "cpp",
+      "game-networking",
+      "computer-vision"
+    ]
+  },
+  "reviewedBy": null
+}

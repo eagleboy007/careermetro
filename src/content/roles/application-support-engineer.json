@@ -1,0 +1,140 @@
+{
+  "slug": "application-support-engineer",
+  "title": "Application Support Engineer (L2/L3)",
+  "summary": "An application support engineer keeps a company's business applications running in production, fixing issues that the first-line service desk (L1) cannot and finding the root cause of repeat problems. L2 engineers diagnose and work around issues; L3 engineers go deeper into code and data, and the team usually works in shifts with an operations or IT service group.",
+  "dailyDuties": [
+    "Pick up incident tickets and restore service within the agreed time",
+    "Monitor overnight batch jobs and rerun failures",
+    "Search application logs and run SQL to find the cause of errors",
+    "Join major incident calls and update the business",
+    "Write root cause reports and track permanent fixes",
+    "Automate routine checks with shell scripts",
+    "Support releases and check the application after deployment"
+  ],
+  "typicalTitles": [
+    "Production Support Engineer",
+    "L3 Application Support Engineer",
+    "Application Support Analyst",
+    "Production Support Analyst",
+    "L2 Production Support Engineer",
+    "Application Production Support Engineer",
+    "Java Application Support Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Own L2 or L3 support for business applications in production",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and fix data in Oracle, SQL Server or PostgreSQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Read logs and check processes on Unix or Linux servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write shell scripts to automate checks and fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "batch-scheduling",
+      "importance": "required",
+      "expectation": "Monitor and rerun batch jobs in Control-M or Autosys",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work incidents, problems and changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Join major incident calls and write root cause reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "apm-tools",
+      "importance": "required",
+      "expectation": "Use Dynatrace, AppDynamics or similar to find slow or failing services",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Send clear updates to users and business teams during outages",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Trace recurring faults to their root cause",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Read stack traces and Java code for L3 fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Support Oracle-based applications",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Check Kafka or MQ queues when messages get stuck",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Check pods and deployments for containerised apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking or payments business flows",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Linux administration basics"
+    },
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "Cloud basics for apps moving to AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}

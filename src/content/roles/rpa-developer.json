@@ -1,0 +1,149 @@
+{
+  "slug": "rpa-developer",
+  "title": "RPA Developer",
+  "summary": "An RPA developer builds software robots (bots) that copy the clicks and typing people do in business systems, using tools such as UiPath, Automation Anywhere or Power Automate Desktop. They usually sit in an automation team or shared services centre and work with finance, HR and operations staff to remove repetitive work.",
+  "dailyDuties": [
+    "Study a manual process with business users and map each step",
+    "Write the process and solution design documents",
+    "Build and test bots with exception handling and logging",
+    "Deploy bots to the orchestrator and schedule their runs",
+    "Fix failed bot runs and changes in target screens",
+    "Report hours saved and bot run results to the team"
+  ],
+  "typicalTitles": [
+    "UiPath Developer",
+    "Senior RPA Developer",
+    "RPA Engineer",
+    "RPA Analyst",
+    "Automation Anywhere Developer",
+    "Automation Developer",
+    "Intelligent Automation Developer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "robotic-process-automation",
+      "importance": "required",
+      "expectation": "Design bots with queues, retries, logging and exception handling, such as REFramework",
+      "postingShare": null
+    },
+    {
+      "skillId": "uipath",
+      "importance": "required",
+      "expectation": "Build and deploy bots on at least one RPA platform",
+      "postingShare": null,
+      "oneOf": "rpa-platform"
+    },
+    {
+      "skillId": "automation-anywhere",
+      "importance": "required",
+      "expectation": "Build and deploy bots on at least one RPA platform",
+      "postingShare": null,
+      "oneOf": "rpa-platform"
+    },
+    {
+      "skillId": "power-automate",
+      "importance": "required",
+      "expectation": "Build and deploy bots on at least one RPA platform",
+      "postingShare": null,
+      "oneOf": "rpa-platform"
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Study a manual process and write the PDD and solution design before building",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and update databases from bots, including joins and stored procedures",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call REST APIs and web services from bots instead of screen clicks where possible",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write small scripts or code activities that bots call",
+      "postingShare": null,
+      "oneOf": "automation-scripting"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write small scripts or code activities that bots call",
+      "postingShare": null,
+      "oneOf": "automation-scripting"
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Write small scripts or code activities that bots call",
+      "postingShare": null,
+      "oneOf": "automation-scripting"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Walk business users through the process and the bot, often on UK or US shifts",
+      "postingShare": null
+    },
+    {
+      "skillId": "intelligent-document-processing",
+      "importance": "nice_to_have",
+      "expectation": "Read invoices and forms with Document Understanding or a similar OCR tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Automate Excel workbooks, which most finance and operations bots touch",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Monitor production bots and fix failed runs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep bot projects in version control such as Azure DevOps or Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver bots in sprints with the automation team",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "rpa-platform",
+      "label": "An RPA platform (UiPath, Automation Anywhere or Power Automate Desktop)"
+    },
+    {
+      "id": "automation-scripting",
+      "label": "A language for bot code (Python, C# or PowerShell)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-01"
+}
