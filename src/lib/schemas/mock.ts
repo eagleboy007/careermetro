@@ -56,7 +56,7 @@ const text = (max: number) => z.string().min(3).max(max);
 
 const common = {
   id: questionId,
-  roleSlugs: z.array(z.string().regex(slug)).min(1).max(40),
+  roleSlugs: z.array(z.string().regex(slug)).min(1).max(200), // A shared question can file under every role (74 on 29 Oct), with room to grow.
   skillId: z.string().regex(slug),
   topic,
   question: text(300),
