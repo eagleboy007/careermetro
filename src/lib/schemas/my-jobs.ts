@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { boardLinkOf } from "@/lib/my-jobs/rules";
+import { boardLinkOf, sharedJobOf } from "@/lib/my-jobs/rules";
 import { gapStatus } from "./gap";
 import {
   JOB_COMPANY_MAX,
@@ -74,6 +74,24 @@ export const addJobRequest = z
       ctx.addIssue({ code: "custom", path: ["text"], message: "Paste the job description. We only read links from company job boards." });
   });
 export type AddJobRequest = z.infer<typeof addJobRequest>;
+
+/**
+ * POST /share, the phone's share sheet (C21, manifest share_target): title, text and url, each optional. Nothing is
+ * refused: an over-long text is cut and a link that isn't https is dropped (sharedJobOf), and the person checks the
+ * filled box before anything is saved.
+ */
+export const shareHold = z
+  .object({ title: z.string().optional(), text: z.string().optional(), url: z.string().optional() })
+  .transform((f) => sharedJobOf(f, { text: JOB_TEXT_MAX, url: MY_JOB_URL_MAX }));
+
+/** A held share as Departures fills "Add a job you found" with it. */
+export const sharedJobView = z
+  .object({
+    text: z.string().max(JOB_TEXT_MAX),
+    url: z.union([z.literal(""), z.string().max(MY_JOB_URL_MAX).startsWith("https://")]),
+  })
+  .strict();
+export type SharedJobView = z.infer<typeof sharedJobView>;
 
 /** "Save to My jobs" after "Check these, then save": the company, title and city the person checked. */
 export const saveJobRequest = z

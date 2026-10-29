@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
+import { cookies } from "next/headers";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
@@ -26,7 +27,9 @@ import { DEFAULT_JOB_SEARCH } from "@/lib/schemas";
 import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { todayStateFor } from "@/lib/today/state";
 import { applyAction, previewAction } from "../arrivals/actions";
+import { isHoldId, SHARE_COOKIE, takeSharedJob } from "@/lib/my-jobs/share";
 import { myJobs } from "@/lib/my-jobs/store";
+import type { SharedArrival } from "@/components/departures/my-jobs";
 import type { JobPost, MyJobView } from "@/lib/schemas";
 import { deleteMyJobAction, myJobDescriptionAction, myJobStatusAction, saveDepartureAction, saveMyJobAction, stageDepartureAction, updateMyJobAction } from "./actions";
 import { reportJobAction } from "../corporate/jobs/actions";
@@ -164,6 +167,32 @@ async function mineFor(userId: string, jobs: JobPost[], fit: FitContext | null |
   }
 }
 
+/** Why a share from the phone didn't fill the box (POST /share sends these instead of a hold's id). */
+const SHARE_NOTES: Record<string, string> = {
+  empty: "Your phone sent nothing we could use. Paste the description or the link below.",
+  limit: "Lots of jobs were shared from here in the last hour. Paste this one below instead.",
+  failed: "We couldn't keep what you shared. Please share it again, or paste it below.",
+};
+const SHARE_GONE = "That shared job has gone: we keep a share for an hour until you open it. Share it again, or paste it below.";
+
+/**
+ * A job shared from the phone (C21, `?shared=`): the hold, opened once and deleted, for the person who shared it or
+ * the browser holding its cookie. Null without `?shared=`; a note when there is nothing to fill the box with.
+ */
+async function sharedFor(userId: string, value: string | string[] | undefined): Promise<SharedArrival | null> {
+  if (typeof value !== "string") return null;
+  if (!isHoldId(value)) return SHARE_NOTES[value] ? { job: null, note: SHARE_NOTES[value] } : null;
+  try {
+    const cookie = (await cookies()).get(SHARE_COOKIE)?.value ?? null;
+    const job = await takeSharedJob(value, { userId, cookie });
+    return job ? { job, note: null } : { job: null, note: SHARE_GONE };
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "departures_shared_job_failed", errorFields(error));
+    return { job: null, note: SHARE_NOTES.failed };
+  }
+}
+
 /** Why a signed-in person with a resume sees no fit, or null when fit shows. */
 function noFitWords(fit: FitContext | null | "failed"): string | null {
   if (fit === "failed") return "Your fit can't be read right now. Reload the page to try again.";
@@ -184,6 +213,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   // and criteria only for the posted jobs, instead of the whole page waiting for each in turn.
   const analysisRead: Promise<CurrentAnalysis | null> = account ? currentAnalysis(account.id) : Promise.resolve(null);
   const postedRead = postedJobs(role?.slug);
+  const sharedRead = account ? sharedFor(account.id, params.shared) : Promise.resolve(null);
   const [analysis, read, board, fit, states, criteria, elite, search, places] = await Promise.all([
     analysisRead,
     postedRead,
@@ -195,6 +225,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
     account ? jobSearchForRequest(account.id) : DEFAULT_JOB_SEARCH,
     placesFor(account?.id ?? null),
   ]);
+  const shared = await sharedRead;
   const posted = read ?? [];
   const now = new Date();
   const rows = board ? postViews(board.posts, fit === "failed" ? null : fit, now) : null;
@@ -260,7 +291,8 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
             searchSwitch={<JobSearchSwitch />}
             initialMine={mine}
             mineActions={account ? MY_JOB_ACTIONS : undefined}
-            initialTab={params.tab === "mine" ? "mine" : "all"}
+            initialTab={params.tab === "mine" || shared ? "mine" : "all"}
+            shared={shared}
           />
         </div>
       </JobSearchGate>

@@ -1126,6 +1126,63 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     await sql.end();
   }
 });
+// Share from the phone (C21, docs/plans/application-tracker-plan.md section 5): the share sheet posts a form to /share,
+// which holds it and sends the person to My jobs with "Add a job you found" filled under the banner; the check runs at
+// once and nothing is kept until Save. The hold opens once. A GET is refused. Settings explains Android and iPhone.
+await step("share from the phone: the shared job fills the add box, checks at once, opens once; Settings shows how", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check what is kept");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
+  try {
+    const get = await p.request.get(BASE + "/share", { maxRedirects: 0 });
+    if (get.status() !== 405) throw new Error(`GET /share answered ${get.status()}, not 405`);
+    await p.goto(BASE + "/today");
+    await settled();
+    // What Android's share sheet does: a form POST to the manifest's share_target.
+    await Promise.all([
+      p.waitForURL(/\/departures\?tab=mine/, { timeout: 15000 }),
+      p.evaluate(
+        ({ text, url }) => {
+          const form = Object.assign(document.createElement("form"), { method: "post", action: "/share" });
+          for (const [name, value] of Object.entries({ title: "", text, url })) form.append(Object.assign(document.createElement("input"), { type: "hidden", name, value }));
+          document.body.append(form);
+          form.submit();
+        },
+        { text: posting.text, url: "https://careers.example.com/data-analyst" },
+      ),
+    ]);
+    const box = p.getByRole("region", { name: "Add a job you found" });
+    await box.getByText("Shared from your phone.", { exact: false }).waitFor({ timeout: 15000 });
+    if (!(await box.getByLabel("Job description").inputValue()).includes("Example Analytics Pvt Ltd helps retail brands")) throw new Error("the shared text didn't fill the box");
+    if ((await box.getByLabel("Link to the job").inputValue()) !== "https://careers.example.com/data-analyst") throw new Error("the shared link didn't fill the box");
+    if (p.url().includes("shared=")) throw new Error("the hold's id stayed in the address");
+    await box.locator("[data-added-job]").getByRole("heading", { name: "Check these, then save" }).waitFor({ timeout: 60000 });
+    await a11y("my-jobs-shared");
+    await shot("my-jobs-shared");
+    const [{ n }] = await sql`select count(*)::int as n from shared_job_holds`;
+    if (n !== 0) throw new Error("the hold was kept after it was opened");
+    await box.getByRole("button", { name: "Clear" }).click();
+    if (await box.getByText("Shared from your phone.", { exact: false }).count()) throw new Error("Clear left the banner");
+    if (await box.getByLabel("Job description").inputValue()) throw new Error("Clear left the shared text");
+
+    // A hold opens once: the same address again says it has gone.
+    await sql`insert into shared_job_holds (id, text) values ('6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f', 'old share (e2e)')`;
+    await sql`update shared_job_holds set created_at = now() - interval '2 hours' where id = '6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f'`;
+    await p.goto(BASE + "/departures?tab=mine&shared=6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f");
+    await box.getByText(/^That shared job has gone/).waitFor({ timeout: 15000 });
+    await sql`delete from shared_job_holds where id = '6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f'`;
+
+    await p.goto(BASE + "/settings#acc-share");
+    await settled();
+    const share = p.getByRole("region", { name: "Add from your phone" });
+    await share.getByText("We never read your clipboard or other apps on our own.", { exact: false }).waitFor({ timeout: 10000 });
+    await share.getByText("copy, then paste").waitFor();
+    await a11y("settings-add-from-phone");
+  } finally {
+    await sql.end();
+  }
+});
 // Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
 // shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
 // Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.

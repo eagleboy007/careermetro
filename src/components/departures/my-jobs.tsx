@@ -1,15 +1,15 @@
 "use client";
 
-import { Briefcase, CalendarPlus, Check, ChevronDown, ExternalLink, Link2, Lock, Pen, Play, ShieldCheck, Target, X } from "lucide-react";
+import { Briefcase, CalendarPlus, Check, ChevronDown, ClipboardPaste, ExternalLink, Link2, Lock, Pen, Play, Share2, ShieldCheck, Target, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import { actionFailed, readApiReply } from "@/lib/api-reply";
 import { interviewIcs } from "@/lib/calendar/ics";
 import { initials } from "@/lib/departures/filter";
-import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, prepareHref, type MyJobFilter, type MyJobStatus } from "@/lib/my-jobs/rules";
+import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, prepareHref, type MyJobFilter, type MyJobStatus, type SharedJob } from "@/lib/my-jobs/rules";
 import { dayValue, fitSentence, fitWords, interviewWhen, minuteValue, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
 import type { MyJobRef, MyJobView } from "@/lib/schemas";
 import {
@@ -21,6 +21,7 @@ import {
   MY_JOB_FILTERS,
   MY_JOB_NOTE_MAX,
   MY_JOB_STATUS_LABELS,
+  JOB_TEXT_MIN,
   MY_JOB_STATUSES,
   MY_JOB_URL_MAX,
 } from "@/lib/schemas/constants";
@@ -641,9 +642,21 @@ const EXAMPLE_ADDED: AddedJob = {
 };
 
 /**
+ * A job shared from the phone (C21): what fills "Add a job you found", or a note on why nothing does (the share was
+ * empty, came too often, or its hour passed).
+ */
+export type SharedArrival = { job: SharedJob; note: null } | { job: null; note: string };
+
+const noSubscribe = () => () => {};
+/** The Paste button shows only where the browser can read the clipboard when asked. */
+const canReadClipboard = () => typeof navigator !== "undefined" && typeof navigator.clipboard?.readText === "function";
+
+/**
  * "Add a job you found" (handoff 12m): the description, an optional link with a hint that changes with it, and the
  * result to check before saving. `onSaved` gets the saved job; `onPost` a board link the feed already has (saved as
- * that feed job). `demo` sends nothing. With no resume it links to the upload.
+ * that feed job). `demo` sends nothing. With no resume it links to the upload. `shared` is a job shared from the phone
+ * (C21): the box opens filled under the "Shared from your phone" banner and checks it at once when it can, and nothing
+ * is kept until Save. The Paste button in the link field reads the clipboard only when tapped.
  */
 export function AddJobBox({
   id,
@@ -653,6 +666,7 @@ export function AddJobBox({
   save,
   onSaved,
   onPost,
+  shared = null,
 }: {
   id: string;
   resumeId: string | null;
@@ -662,13 +676,16 @@ export function AddJobBox({
   save?: MyJobActions["save"];
   onSaved: (job: AddedJob, labels: { company: string; title: string; city: string | null }) => void;
   onPost: (postId: string) => void;
+  shared?: SharedArrival | null;
 }) {
   const ids = useId();
   const router = useRouter();
-  const [text, setText] = useState("");
-  const [url, setUrl] = useState("");
+  const [text, setText] = useState(shared?.job?.text ?? "");
+  const [url, setUrl] = useState(shared?.job?.url ?? "");
+  const [fromPhone, setFromPhone] = useState(shared?.job != null);
+  const canPaste = useSyncExternalStore(noSubscribe, canReadClipboard, () => false);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(shared?.note ?? null);
   const [said, setSaid] = useState("");
   const [added, setAdded] = useState<AddedJob | null>(null);
   const [labels, setLabels] = useState({ company: "", title: "", city: "" });
@@ -711,6 +728,30 @@ export function AddJobBox({
     setText("");
     setUrl("");
     setAdded(null);
+    setFromPhone(false);
+  };
+  // A shared job is checked once, at once, when it can be: a full description or a company job board's link. Otherwise
+  // the box waits for the person to paste the description.
+  useEffect(() => {
+    if (!shared?.job) return;
+    const { text: t, url: u } = shared.job;
+    if (t.length < JOB_TEXT_MIN && (t || linkKind(u) !== "board")) return;
+    // After the first paint, and cancelled on unmount, so a remount in development checks once.
+    const timer = setTimeout(() => void check(), 0);
+    return () => clearTimeout(timer);
+    // Runs once, for the share the page opened with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const paste = async () => {
+    setError(null);
+    try {
+      const clip = (await navigator.clipboard.readText()).trim();
+      if (!clip) return setError("There's nothing to paste. Copy the job's link first.");
+      if (/^https?:\/\//i.test(clip) && !/\s/.test(clip)) setUrl(clip.slice(0, MY_JOB_URL_MAX));
+      else setText((t) => (t ? t : clip.slice(0, JOB_TEXT_MAX)));
+    } catch {
+      setError("Your phone didn't allow the paste. Paste into the field instead.");
+    }
   };
   const keep = async (prepare = false) => {
     if (!added || busy) return;
@@ -738,6 +779,26 @@ export function AddJobBox({
       </div>
       {resumeId ? (
         <>
+          {fromPhone && (
+            <div data-shared-banner className="flex flex-wrap items-center gap-2.5 rounded-[12px] border border-line bg-bg px-3.5 py-2.5 text-[0.84rem]">
+              <Share2 size={16} {...ICON} className="shrink-0 text-ink" />
+              <span className="min-w-[200px] flex-1">
+                <b className="font-semibold">Shared from your phone.</b> We filled in what the app sent: the link and its text. Check it, then save. Nothing is kept
+                until you do.
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  reset();
+                  setError(null);
+                  setSaid("");
+                }}
+                className={`${btn} ${small} text-ink hover:bg-surface-2`}
+              >
+                Clear
+              </button>
+            </div>
+          )}
           <p className="text-[0.8rem] text-muted">
             Paste the description. We read the company, the title and the skills it asks for, check them against your resume, and keep the job in My jobs for you
             only.
@@ -766,6 +827,12 @@ export function AddJobBox({
               disabled={busy}
               className="min-w-0 flex-1 bg-transparent py-2.5 text-[0.88rem] text-ink outline-none"
             />
+            {canPaste && (
+              <button type="button" onClick={() => void paste()} disabled={busy} className={`${btn} ${small} my-1 shrink-0 text-ink hover:bg-surface-2`}>
+                <ClipboardPaste size={14} {...ICON} />
+                Paste
+              </button>
+            )}
           </label>
           <p id={`${ids}-hint`} data-link-hint={kind} className={`flex items-start gap-1.5 text-[0.8rem] ${kind === "board" ? "text-good" : "text-muted"}`}>
             {kind === "board" ? <Check size={14} {...ICON} className="mt-0.5 shrink-0" /> : <ShieldCheck size={14} {...ICON} className="mt-0.5 shrink-0" />}

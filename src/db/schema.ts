@@ -1538,6 +1538,29 @@ export const jobSaves = pgTable(
   ],
 );
 
+/**
+ * A job shared from the phone (C21, docs/plans/application-tracker-plan.md section 5), held until Departures opens it:
+ * the text and link the share sheet sent, cut to the caps. `user_id` is set when the person was signed in; otherwise
+ * only the browser holding the `cm_share` cookie can open it. Read once and deleted on read; refused after an hour and
+ * deleted by the daily cleanup. Never logged, never in an export (it is not kept).
+ */
+export const sharedJobHolds = pgTable(
+  "shared_job_holds",
+  {
+    id: id(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    text: text("text").notNull().default(""),
+    url: text("url"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("shared_job_holds_created").on(t.createdAt),
+    index("shared_job_holds_user").on(t.userId),
+    check("shared_job_holds_text_length", sql`char_length(${t.text}) <= 12000`),
+    check("shared_job_holds_url", sql`${t.url} is null or (${t.url} like 'https://%' and char_length(${t.url}) <= 2000)`),
+  ],
+);
+
 /** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */
 export const jobFeedRuns = pgTable(
   "job_feed_runs",

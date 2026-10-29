@@ -4,7 +4,7 @@ import { ArrowRight, Bookmark, Briefcase, CircleHelp, Clock, ExternalLink, Lock,
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
-import { AddJobBox, EditSheet, MyJobsList, type AddedJob, type EditValues, type MyJobActions } from "@/components/departures/my-jobs";
+import { AddJobBox, EditSheet, MyJobsList, type AddedJob, type EditValues, type MyJobActions, type SharedArrival } from "@/components/departures/my-jobs";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
 import {
@@ -73,6 +73,7 @@ export function DeparturesView({
   initialMine = [],
   mineActions,
   initialTab = "all",
+  shared = null,
 }: {
   jobs: JobPost[];
   hasResume?: boolean;
@@ -96,6 +97,8 @@ export function DeparturesView({
   mineActions?: MyJobActions;
   /** "mine" opens on My jobs (`?tab=mine`). */
   initialTab?: "all" | "mine";
+  /** A job shared from the phone (C21, `?shared=`), read once on the server: "Add a job you found" opens filled. */
+  shared?: SharedArrival | null;
 }) {
   const router = useRouter();
   const [filters, setFilters] = useState<DepartureFilters>(() => (initialCity ? { ...startFilters([]), city: initialCity } : startFilters(places)));
@@ -125,6 +128,15 @@ export function DeparturesView({
     box?.scrollIntoView({ block: "start" });
     box?.querySelector("textarea")?.focus();
   };
+  // A share opens at the add box. `?shared=` leaves the address, so a reload doesn't say the share has gone. Not on
+  // /design's examples.
+  useEffect(() => {
+    if (!shared || demo) return;
+    document.getElementById(pasteId)?.scrollIntoView({ block: "start" });
+    const url = new URL(window.location.href);
+    url.searchParams.delete("shared");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}`);
+  }, [shared, pasteId, demo]);
   const shown = useMemo(() => filterDepartures(jobs, filters, saved, applied, places), [jobs, filters, saved, applied, places]);
   const cities = useMemo(() => citiesOf(jobs), [jobs]);
   // The panel follows the list: a role the filters hide is not shown or changed.
@@ -390,7 +402,7 @@ export function DeparturesView({
           />
         )}
 
-        <AddJobBox id={pasteId} resumeId={resumeId} finishHref={finishHref} demo={demo} save={mineActions?.save} onSaved={added} onPost={savedPost} />
+        <AddJobBox id={pasteId} resumeId={resumeId} finishHref={finishHref} demo={demo} save={mineActions?.save} onSaved={added} onPost={savedPost} shared={shared} />
         {editingJob && (
           <EditSheet
             key={editingJob.key}
