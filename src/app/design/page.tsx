@@ -77,6 +77,7 @@ import { exampleFeedback, examplePractice, examplePracticeForJob, examplePractic
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView } from "@/components/settings/settings-view";
+import { WeeklyPreview } from "@/components/settings/weekly-preview";
 import { SettingsDraft } from "@/components/settings/settings-draft";
 import { LocationFields, MessageRequestsSwitch } from "@/components/settings/settings-fields";
 import { UsuallyFree } from "@/components/inbox/usually-free";
@@ -151,7 +152,7 @@ import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
-import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleMine, exampleSaved, exampleShared } from "@/lib/departures/fixtures";
+import { exampleApplied, exampleJobs, exampleLiveApplied, exampleLiveJobs, exampleLiveSaved, exampleMine, exampleSaved, exampleShared, exampleWeekly } from "@/lib/departures/fixtures";
 import { TodayStatePreview, type TodayData } from "@/components/today/today-preview";
 import { RideCard } from "@/components/today/ride-card";
 import { DeparturesBoard } from "@/components/today/departures-board";
@@ -813,11 +814,16 @@ export default function DesignPage() {
         <p className="text-sm text-muted">
           Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
           availability check and headline, the locked email, how the person signs in, private pay, privacy (who can open the profile and what it
-          shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications stored for
-          when email is on (with Language: English, Hindi coming later), download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked.
+          shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications (with
+          Language: English, Hindi coming later, and the Weekly My jobs email switch with &quot;See this week&apos;s&quot;, C22), Add from your phone (C21),
+          download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked, and the weekly preview on a
+          week when nothing is moving.
         </p>
         <div className="rounded-lg border border-line px-4 pt-6">
-          <SettingsView data={exampleSettings} />
+          <SettingsView data={exampleSettings} weekly={<WeeklyPreview view={exampleWeekly} name="Priya" />} />
+        </div>
+        <div className="max-w-[640px] rounded-lg border border-line p-4">
+          <WeeklyPreview view={null} name="Priya" />
         </div>
         <div className="max-w-[640px] rounded-lg border border-line p-4">
           <BlockedPeople people={[]} />

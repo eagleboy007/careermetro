@@ -1,7 +1,7 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
   GAPS_VISIBLE_TO,
@@ -407,8 +407,11 @@ const REMINDER_LABELS: Record<(typeof RIDE_REMINDERS)[number], string> = {
   off: "Off",
 };
 
-/** Notification choices, kept for when email is on (pending item 21). Nothing is sent yet. */
-export function NotificationFields() {
+/**
+ * Notification choices. The weekly My jobs email (C22) is sent; the others are kept for when their email is on
+ * (pending item 21). `weekly` is the "See this week's" preview under its switch.
+ */
+export function NotificationFields({ weekly = null }: { weekly?: ReactNode }) {
   const { draft, setSetting, editable } = useSettingsDraft();
   const s = draft.settings;
   return (
@@ -428,7 +431,7 @@ export function NotificationFields() {
         </select>
       </label>
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
-        These apply once CareerMetro starts sending email. Nothing is sent yet; we keep your choices for then.
+        The weekly My jobs email is sent. Ride reminders and company messages by email come later; we keep those choices for then.
       </p>
       <label className="flex max-w-[320px] flex-col gap-1.5">
         <span className="text-[0.82rem] font-semibold">Ride reminder</span>
@@ -450,9 +453,15 @@ export function NotificationFields() {
         <Switch checked={s.emailCompanyMessages} onChange={(on) => setSetting("emailCompanyMessages", on)} disabled={!editable}>
           Messages from companies, by email too
         </Switch>
-        <Switch checked={s.emailWeeklySummary} onChange={(on) => setSetting("emailWeeklySummary", on)} disabled={!editable}>
-          Weekly summary email
+        <Switch
+          checked={s.emailWeeklySummary}
+          onChange={(on) => setSetting("emailWeeklySummary", on)}
+          disabled={!editable}
+          hint="Mondays at 8:00 IST: jobs waiting on a reply, interviews this week and three skills to practise. Only on weeks when something is moving. One tap to turn it off, in the email or here."
+        >
+          Weekly My jobs email
         </Switch>
+        {weekly}
       </div>
       {/* docs/plans/notifications-plan.md: the bell in the top bar, in-app only until the email sender exists. */}
       <p className="text-[0.8rem] text-muted">In the app you see connection requests and updates on your applications. Email for these comes later.</p>

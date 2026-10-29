@@ -1,4 +1,5 @@
 import { postFit } from "@/lib/my-jobs/view";
+import { weeklyView } from "@/lib/my-jobs/weekly";
 import { jobPost, type JobPost, type JobPostInput, type MyJobView } from "@/lib/schemas";
 
 /*
@@ -310,4 +311,49 @@ export const exampleShared = {
     text: "SOC Analyst, Night shift\n\nMonitor alerts in Microsoft Sentinel, triage phishing reports, write KQL queries and map incidents to MITRE ATT&CK. 1 to 3 years. Rotational night shifts, 4 days on, 3 off. Mumbai, hybrid.",
   },
   note: null,
+  check: true,
 } as const;
+
+/**
+ * The weekly My jobs email for /design and Settings' example (C22): Priya's week on Monday 26 Oct 2026, 08:30 IST,
+ * two jobs waiting on a reply and one interview on Thursday. Made-up companies.
+ */
+export const exampleWeekly = weeklyView(
+  [
+    {
+      ref: { kind: "check", checkId: "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f" },
+      company: "Zephyr Pay",
+      title: "SOC Analyst",
+      status: "interview",
+      statusAt: new Date("2026-10-22T06:00:00Z"),
+      appliedAt: new Date("2026-10-12T06:00:00Z"),
+      interviewAt: new Date("2026-10-29T05:00:00Z"),
+      open: ["SIEM", "Threat detection"],
+      only: ["KQL"],
+    },
+    {
+      ref: { kind: "check", checkId: "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69" },
+      company: "Example Analytics Pvt Ltd",
+      title: "Data Analyst",
+      status: "applied",
+      statusAt: new Date("2026-10-17T06:00:00Z"),
+      appliedAt: new Date("2026-10-17T06:00:00Z"),
+      interviewAt: null,
+      open: ["SQL window functions"],
+      only: [],
+    },
+    {
+      ref: { kind: "check", checkId: "9a0b1c2d-3e4f-4a5b-8c6d-7e8f9a0b1c2d" },
+      company: "Northwind Retail",
+      title: "MIS Executive",
+      status: "heard",
+      statusAt: new Date("2026-10-15T06:00:00Z"),
+      appliedAt: new Date("2026-10-08T06:00:00Z"),
+      interviewAt: null,
+      open: ["SIEM"],
+      only: [],
+    },
+  ],
+  new Date("2026-10-26T03:00:00Z"),
+  { elite: true },
+);

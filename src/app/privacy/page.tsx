@@ -57,6 +57,11 @@ const sections: LegalSection[] = [
           read your clipboard on our own: the Paste button reads it only when you tap it.
         </li>
         <li>
+          <strong>The weekly My jobs email:</strong> only if you turn it on in Settings. It names the company and title of jobs waiting on a reply and
+          of interviews that week, and a few skills to practise; never a job&apos;s text, your notes or links. We keep only which weeks it went out, and
+          every email has a link that turns it off without signing in.
+        </li>
+        <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
           with it, so we can act on it and keep a record of the complaint.
         </li>
@@ -117,6 +122,7 @@ const sections: LegalSection[] = [
       <ul>
         <li>A resume checked without an account: deleted after 24 hours.</li>
         <li>A job shared from your phone: deleted when you open it, and within a day if you don&apos;t.</li>
+        <li>Which weeks the weekly My jobs email went out: 90 days.</li>
         <li>
           Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,
           except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.

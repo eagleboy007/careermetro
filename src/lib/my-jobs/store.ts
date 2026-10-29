@@ -85,10 +85,14 @@ async function listFull(tx: Tx, userId: string, max: number): Promise<boolean> {
   return row.n >= max;
 }
 
-/** The dates a row takes for a new status: Applied on from the first move to Applied or later, Closed on with a closed status. */
+/**
+ * The dates a row takes for a new status: Applied on from the first move to Applied or later, Closed on with a closed
+ * status, and `status_at` (the weekly email's "no word for 7 days") only when the status really changes.
+ */
 function datesFor(status: MyJobStatus, was: { appliedAt: Date | null; closedAt: Date | null; stage: number | null }, now: Date) {
   return {
     stage: stageOf(status),
+    statusAt: stageOf(status) !== was.stage ? now : undefined,
     appliedAt: isMoving(status) ? (was.appliedAt ?? now) : status === "saved" ? null : was.appliedAt,
     closedAt: isClosed(status) ? (was.stage !== null && isClosed(statusOf(was.stage)) && was.closedAt ? was.closedAt : now) : null,
   };
@@ -292,6 +296,7 @@ export async function updateJob(userId: string, raw: unknown, deps: Deps = {}): 
       .update(jobSaves)
       .set({
         stage: dates.stage,
+        statusAt: dates.statusAt,
         appliedAt: appliedOn ? istDay(appliedOn) : dates.appliedAt,
         closedAt: isClosed(status) && closedOn ? istDay(closedOn) : dates.closedAt,
         interviewAt: interviewAt ? istMinute(interviewAt) : null,

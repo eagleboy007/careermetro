@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView, type SettingsData } from "@/components/settings/settings-view";
+import { WeeklyPreview } from "@/components/settings/weekly-preview";
 import { splitName } from "@/lib/account/name";
 import { readAccountSettings } from "@/lib/account/settings-store";
 import { nameLocked } from "@/lib/account/store";
@@ -13,6 +15,9 @@ import { currentAccount, currentIdentity } from "@/lib/auth/server";
 import { discoveryFor } from "@/lib/corporate/find-store";
 import { planFor } from "@/lib/elite/store";
 import { jobSearchFor } from "@/lib/job-search/store";
+import { errorFields, logEvent } from "@/lib/log";
+import { weeklyFor } from "@/lib/my-jobs/weekly-store";
+import type { WeeklyView } from "@/lib/my-jobs/weekly";
 import { blockedPeople, networkSettingsFor } from "@/lib/network/store";
 import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
@@ -23,6 +28,17 @@ import { saveNotice, switchJobSearch } from "./job-search-actions";
 
 export const metadata: Metadata = { title: "Account settings · CareerMetro", robots: { index: false } };
 
+/** This week's email for the preview; undefined (no preview) when it can't be read. Sends nothing. */
+async function weeklyPreviewFor(userId: string, now: Date): Promise<WeeklyView | null | undefined> {
+  try {
+    return await weeklyFor(userId, { now });
+  } catch (error) {
+    unstable_rethrow(error);
+    logEvent("error", "settings_weekly_preview_failed", errorFields(error));
+    return undefined;
+  }
+}
+
 const dateText = (d: Date) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 
 async function SettingsScreen() {
@@ -30,13 +46,14 @@ async function SettingsScreen() {
   const [account, identity] = await Promise.all([currentAccount(), currentIdentity()]);
   if (!account) return <SettingsView data={exampleSettings} />;
   const now = new Date();
-  const [saved, discovery, network, plan, blocked, search] = await Promise.all([
+  const [saved, discovery, network, plan, blocked, search, week] = await Promise.all([
     readAccountSettings(account.id, now),
     discoveryFor(account.id, { now }),
     networkSettingsFor(account.id),
     planFor(account.id),
     blockedPeople(account.id),
     jobSearchFor(account.id),
+    weeklyPreviewFor(account.id, now),
   ]);
   // An account saved before first and last name were asked for starts from its full name.
   const names = account.firstName ? { first: account.firstName, last: account.lastName ?? "" } : splitName(account.name);
@@ -72,6 +89,7 @@ async function SettingsScreen() {
       unblockPerson={unblockFromNetwork}
       planActions={{ switchElite, switchBadge: switchEliteBadge }}
       jobSearch={<SettingsJobSearch view={search} today={indiaDay(now)} actions={{ jobSearch: switchJobSearch, notice: saveNotice }} />}
+      weekly={week === undefined ? undefined : <WeeklyPreview view={week} name={names.first || null} />}
     />
   );
 }

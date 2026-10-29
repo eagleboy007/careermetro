@@ -177,15 +177,16 @@ const SHARE_GONE = "That shared job has gone: we keep a share for an hour until 
 
 /**
  * A job shared from the phone (C21, `?shared=`): the hold, opened once and deleted, for the person who shared it or
- * the browser holding its cookie. Null without `?shared=`; a note when there is nothing to fill the box with.
+ * the browser holding its cookie. Null without `?shared=`; a note when there is nothing to fill the box with. `check`
+ * (`?check=1`, set by /share only for the phone's share sheet or our own pages) lets the box check it at once (T141).
  */
-async function sharedFor(userId: string, value: string | string[] | undefined): Promise<SharedArrival | null> {
+async function sharedFor(userId: string, value: string | string[] | undefined, check: boolean): Promise<SharedArrival | null> {
   if (typeof value !== "string") return null;
   if (!isHoldId(value)) return SHARE_NOTES[value] ? { job: null, note: SHARE_NOTES[value] } : null;
   try {
     const cookie = (await cookies()).get(SHARE_COOKIE)?.value ?? null;
     const job = await takeSharedJob(value, { userId, cookie });
-    return job ? { job, note: null } : { job: null, note: SHARE_GONE };
+    return job ? { job, note: null, check } : { job: null, note: SHARE_GONE };
   } catch (error) {
     unstable_rethrow(error);
     logEvent("error", "departures_shared_job_failed", errorFields(error));
@@ -213,7 +214,7 @@ async function DeparturesScreen({ searchParams }: PageProps<"/departures">) {
   // and criteria only for the posted jobs, instead of the whole page waiting for each in turn.
   const analysisRead: Promise<CurrentAnalysis | null> = account ? currentAnalysis(account.id) : Promise.resolve(null);
   const postedRead = postedJobs(role?.slug);
-  const sharedRead = account ? sharedFor(account.id, params.shared) : Promise.resolve(null);
+  const sharedRead = account ? sharedFor(account.id, params.shared, params.check === "1") : Promise.resolve(null);
   const [analysis, read, board, fit, states, criteria, elite, search, places] = await Promise.all([
     analysisRead,
     postedRead,

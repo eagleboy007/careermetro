@@ -209,7 +209,13 @@ export const userSettings = pgTable("user_settings", {
   requestsFrom: text("requests_from", { enum: REQUESTS_FROM }).notNull().default("anyone"),
   rideReminder: rideReminder("ride_reminder").notNull().default("19:30"),
   emailCompanyMessages: boolean("email_company_messages").notNull().default(true),
+  /** "Weekly My jobs email" (C22, docs/plans/application-tracker-plan.md section 6): off until the person turns it on. */
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
+  /**
+   * The email's one-tap "Turn it off" link (no sign-in): a random 32-byte token, base64url, made on the first send and
+   * replaced each time the email is turned off from it. Never logged.
+   */
+  emailOffToken: text("email_off_token").unique(),
   /**
    * "Looking for a job" (handoff 6, docs/plans/job-search-plan.md, migration 0039). Off pauses Departures and Arrivals:
    * no Express apply, out of company search, no Today board. Rides, streak and the map keep going.
@@ -1522,6 +1528,8 @@ export const jobSaves = pgTable(
     interviewAt: timestamp("interview_at", { withTimezone: true }),
     closedAt: timestamp("closed_at", { withTimezone: true }),
     note: text("note"),
+    /** When the status last changed (migration 0053): the weekly email's "no word for 7 days". Notes don't move it. */
+    statusAt: timestamp("status_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -1559,6 +1567,22 @@ export const sharedJobHolds = pgTable(
     check("shared_job_holds_text_length", sql`char_length(${t.text}) <= 12000`),
     check("shared_job_holds_url", sql`${t.url} is null or (${t.url} like 'https://%' and char_length(${t.url}) <= 2000)`),
   ],
+);
+
+/**
+ * The weekly My jobs email sent (C22): one row per person per India week (its Monday), so a re-run never sends twice.
+ * Goes with the account; rows over 90 days old are deleted by the daily cleanup. No content is kept.
+ */
+export const weeklyEmails = pgTable(
+  "weekly_emails",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    week: date("week").notNull(),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.week] }), index("weekly_emails_sent").on(t.sentAt)],
 );
 
 /** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */

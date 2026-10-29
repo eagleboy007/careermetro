@@ -645,7 +645,7 @@ const EXAMPLE_ADDED: AddedJob = {
  * A job shared from the phone (C21): what fills "Add a job you found", or a note on why nothing does (the share was
  * empty, came too often, or its hour passed).
  */
-export type SharedArrival = { job: SharedJob; note: null } | { job: null; note: string };
+export type SharedArrival = { job: SharedJob; note: null; check?: boolean } | { job: null; note: string; check?: undefined };
 
 const noSubscribe = () => () => {};
 /** The Paste button shows only where the browser can read the clipboard when asked. */
@@ -733,7 +733,8 @@ export function AddJobBox({
   // A shared job is checked once, at once, when it can be: a full description or a company job board's link. Otherwise
   // the box waits for the person to paste the description.
   useEffect(() => {
-    if (!shared?.job) return;
+    // Only a share from the phone's own share sheet checks at once: a form another site posted waits for a tap (T141).
+    if (!shared?.job || !shared.check) return;
     const { text: t, url: u } = shared.job;
     if (t.length < JOB_TEXT_MIN && (t || linkKind(u) !== "board")) return;
     // After the first paint, and cancelled on unmount, so a remount in development checks once.

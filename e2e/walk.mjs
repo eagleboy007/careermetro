@@ -1183,6 +1183,57 @@ await step("share from the phone: the shared job fills the add box, checks at on
     await sql.end();
   }
 });
+// The weekly My jobs email (C22, docs/plans/application-tracker-plan.md section 6): Settings shows the switch with its
+// words and "See this week's", which sends nothing. The email's "Turn it off" needs no sign-in: opening the link
+// changes nothing, the button turns it off and replaces the token, and an unknown token gets the same page.
+await step("weekly My jobs email: Settings preview, and the one-tap turn-off without sign-in", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to check what is kept");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const TOKEN = "e2eWeeklyOffToken".padEnd(43, "x");
+  let madeFor = null;
+  try {
+    await p.goto(BASE + "/settings#acc-notif");
+    await settled();
+    const notif = p.getByRole("region", { name: "Notifications" });
+    // The switch's words and its hint share one label, so the check box is found by the label's start.
+    await notif.getByRole("checkbox", { name: /^Weekly My jobs email/ }).waitFor({ state: "attached", timeout: 10000 });
+    await notif.getByText(/^Mondays at 8:00 IST: jobs waiting on a reply/).waitFor();
+    await notif.getByRole("button", { name: "See this week's" }).click();
+    await notif.getByText(/Nothing is moving this week|your week on My jobs\./).first().waitFor({ timeout: 5000 });
+    await a11y("settings-weekly-preview");
+    await shot("settings-weekly-preview");
+
+    const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    // A row made here takes the table's defaults, not the app's (later steps check a new user's defaults), so it goes again.
+    const [had] = await sql`select 1 as one from user_settings where user_id = ${me.id}`;
+    madeFor = had ? null : me.id;
+    await sql`insert into user_settings (user_id, email_weekly_summary, email_off_token) values (${me.id}, true, ${TOKEN})
+      on conflict (user_id) do update set email_weekly_summary = true, email_off_token = ${TOKEN}`;
+    // Signed out, as from a mail app: a fresh browser context with no cookies.
+    const mail = await b.newContext({ viewport: { width: 390, height: 844 } });
+    const q = await mail.newPage();
+    try {
+      await q.goto(`${BASE}/api/email/off?t=${TOKEN}`);
+      await q.getByRole("heading", { name: "Turn off the weekly My jobs email?" }).waitFor({ timeout: 10000 });
+      const [still] = await sql`select email_weekly_summary as on from user_settings where user_id = ${me.id}`;
+      if (!still.on) throw new Error("opening the link turned the email off");
+      await a11yOn(q, "email-off");
+      await q.getByRole("button", { name: "Turn it off" }).click();
+      await q.getByRole("heading", { name: "The weekly My jobs email is off" }).waitFor({ timeout: 10000 });
+      const [after] = await sql`select email_weekly_summary as on, email_off_token as token from user_settings where user_id = ${me.id}`;
+      if (after.on || after.token === TOKEN) throw new Error("the button didn't turn the email off and replace the token");
+      // An unknown token gets the same page.
+      await q.goto(`${BASE}/api/email/off?t=${"n".repeat(43)}`);
+      await q.getByRole("heading", { name: "Turn off the weekly My jobs email?" }).waitFor({ timeout: 10000 });
+    } finally {
+      await mail.close();
+    }
+  } finally {
+    if (madeFor) await sql`delete from user_settings where user_id = ${madeFor}`;
+    await sql.end();
+  }
+});
 // Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
 // shows the off card and the toast, keeps focus on the switch and is saved; Today shows its card in the board's place;
 // Me says "Working at" the resume's current employer; Arrivals is paused too, and its Turn on job search brings it back.
@@ -1249,7 +1300,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 34 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 35 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1595,7 +1646,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1753,7 +1804,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await p.emulateMedia({ colorScheme: "light" });
 
     const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
     if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
     if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
     if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
@@ -1917,7 +1968,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -2299,7 +2350,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -2397,7 +2448,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -2506,7 +2557,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 34) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 35) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
     const ups = round.answers.map((a) => a.followUp);

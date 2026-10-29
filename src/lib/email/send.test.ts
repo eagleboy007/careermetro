@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { emailReady, sendEmail } from "./send";
+import { emailReady, sendEmail, weeklyFrom } from "./send";
 
 const env = { RESEND_API_KEY: "re_test", EMAIL_FROM: "CareerMetro <codes@careermetro.com>" };
 const message = { to: "meera.iyer@example-labs.test", subject: "Your CareerMetro work email code", text: "Your code is 123456." };
@@ -22,6 +22,20 @@ describe("the app's email sender", () => {
     expect(emailReady({ EMAIL_FROM: env.EMAIL_FROM })).toBe(false);
     expect(emailReady({ ...env, EMAIL_FROM: "CareerMetro" })).toBe(false);
     expect(emailReady({ ...env, RESEND_API_KEY: "  " })).toBe(false);
+  });
+
+  it("sends HTML and headers with the plain text, from another sender when given", async () => {
+    const fetch = vi.fn(async () => new Response('{"id":"x"}', { status: 200 }));
+    const headers = { "List-Unsubscribe": "<https://careermetro.test/api/email/off?t=x>", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" };
+    await sendEmail({ ...message, html: "<p>Hi</p>", headers, from: "CareerMetro <hello@careermetro.com>" }, env, { fetch });
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({ from: "CareerMetro <hello@careermetro.com>", to: [message.to], subject: message.subject, text: message.text, html: "<p>Hi</p>", headers });
+  });
+
+  it("sends the weekly email from hello@ on the code sender's own domain", () => {
+    expect(weeklyFrom(env)).toBe("CareerMetro <hello@careermetro.com>");
+    expect(weeklyFrom({ ...env, EMAIL_FROM: "codes@mail.careermetro.com" })).toBe("CareerMetro <hello@mail.careermetro.com>");
+    expect(weeklyFrom({})).toBeNull();
   });
 
   it("sends nothing without the sender set up", async () => {

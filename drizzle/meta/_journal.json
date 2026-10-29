@@ -372,6 +372,13 @@
       "when": 1792510800000,
       "tag": "0052_shared_job_holds",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1792514400000,
+      "tag": "0053_weekly_my_jobs_email",
+      "breakpoints": true
     }
   ]
 }
