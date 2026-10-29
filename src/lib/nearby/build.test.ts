@@ -135,7 +135,8 @@ describe("nearbyLinesFor", () => {
     cloud.skills = cloud.skills.map((s) => (s.skillId === "aws" || s.skillId === "azure" ? { ...s, oneOf: "cloud" } : s));
     const without = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, cloud], now: NOW });
     expect(without.lines).toEqual([]);
-    expect(without.closest).toEqual({ slug: "cloud-role", title: "Cloud Role", shared: 1, total: 3 });
+    // One shared skill names no closest role.
+    expect(without.closest).toBeNull();
     const res = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, cloud], proved: new Set(["azure"]), now: NOW });
     expect(res.lines.map((l) => [l.shared, l.total])).toEqual([[2, 3]]);
   });
@@ -151,9 +152,11 @@ describe("nearbyLinesFor", () => {
     expect(res.lines[0].sharedSkills.map((s) => s.name)).not.toContain("A cloud platform (AWS or Azure)");
   });
 
-  it("says which role comes closest when none is near, and nothing when no role shares a skill", () => {
-    const none = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, far], now: NOW });
-    expect(none).toEqual({ lines: [], closest: { slug: "far-role", title: "Far Role", shared: 1, total: 5 } });
+  it("says which role comes closest when none is near, and nothing when no role shares two key skills", () => {
+    const wide = role("wide-role", ["sql", "excel", "machine-learning", "statistics", "aws", "linux"]); // 2 of 6
+    const none = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, far, wide], now: NOW });
+    expect(none).toEqual({ lines: [], closest: { slug: "wide-role", title: "Wide Role", shared: 2, total: 6 } });
+    expect(nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, far], now: NOW }).closest).toBeNull();
     const empty = nearbyLinesFor({ profile: profile({}), targetSlug: "target-role", roles: [target, far], now: NOW });
     expect(empty).toEqual({ lines: [], closest: null });
   });
@@ -236,7 +239,12 @@ describe("the e2e walk's resume", () => {
   it("has no Nearby line of Data Analyst, and names the closest role with its counts", () => {
     expect(nearbyLinesFor({ profile: priya, targetSlug: "data-analyst", now: NOW })).toEqual({ lines: [], closest: WALK_CLOSEST });
   });
+  it("names a data role as the closest, not an automation one (src/evals/closest-eval.test.ts)", () => {
+    const { families } = JSON.parse(readFileSync("fixtures/evals/closest/role-families.json", "utf8")) as { families: Record<string, string[]> };
+    const dataRoles = [...families["data-analytics"], ...families["data-engineering"], ...families["data-science-ml"], ...families.delivery];
+    expect(dataRoles).toContain(nearbyLinesFor({ profile: priya, targetSlug: "data-analyst", now: NOW }).closest?.slug);
+  });
 });
 
 /** Mirrored in e2e/walk.mjs. */
-const WALK_CLOSEST = { slug: "rpa-developer", title: "RPA Developer", shared: 2, total: 6 };
+const WALK_CLOSEST = { slug: "bi-developer", title: "BI Developer (Power BI)", shared: 2, total: 7 };
