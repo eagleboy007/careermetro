@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
+import { matchProfile } from "@/lib/gaps/match";
 import { nearbyLinesFor } from "@/lib/nearby/build";
 import { loadEvalCases } from "./cases";
 import { expectedProfile } from "./matcher-eval";
@@ -36,7 +37,15 @@ describe("closest-role eval", () => {
       const want = familyOf.get(c.roleSlug) ?? "?";
       const got = familyOf.get(top) ?? "?";
       const reviewed = data.alsoNear.some(([from, to]) => from === c.roleSlug && to === top);
-      if (!near(want, got) && !reviewed) misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got})`);
+      if (near(want, got) || reviewed) continue;
+      // The roles sharing most, so a miss shows what the ranking passed over.
+      const others = roleProfiles
+        .filter((r) => r.slug !== c.roleSlug)
+        .map((r) => ({ slug: r.slug, m: matchProfile(expectedProfile(c), r, NOW) }))
+        .sort((a, b) => b.m.met.length - a.m.met.length)
+        .slice(0, 4)
+        .map((o) => `${o.slug} ${o.m.met.length}/${o.m.readiness.requiredTotal}`);
+      misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got}) ${lines.length ? "near" : "closest"}; most shared: ${others.join(", ")}`);
     }
     expect(misses).toEqual([]);
   });
