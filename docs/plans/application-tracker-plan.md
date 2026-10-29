@@ -163,12 +163,62 @@ Development 4, 2026-10-28. Source: Milin's idea of 28 Oct ("only then users will
 - The Gaps page shows "Sign up to keep it in My jobs" to a visitor once a check exists. "Sign up with email" opens sign-in with My jobs as the next page; "Not now" hides the card.
 - At sign-in the claim adds the newest check on the claimed resumes to My jobs as Saved, unless it is already there or the list is full. A check made on Gaps keeps no description, so "Read the job again" doesn't show for it.
 
-## Phase 2 (planned after phase 1 ships)
+## Phase 2 (plan only; build waits for Milin's approval of C21 and C22)
 
-- **Android share target:** a `share_target` in the web app manifest posts title, text and link to "Add a job you found".
-- **Today:** "Interview with X in 3 days", and that job's skills join the daily ride.
-- **Weekly email, opt-in in Settings:** "2 jobs waiting on a reply, 1 interview Thursday, practise these 3 skills." It needs a weekly cron on Hobby (allowed) and Resend, which is live.
-- **Later, after a lawyer's view of the portals' terms:** a browser button that reads the open page, and forwarding job-alert emails.
+From Design's proposed C21 and C22 (2026-10-29, prototype v50, handoff 12m and 12c). C20 (the skills line on Today's interview card) is a separate card and is not part of this plan. Nothing here is built until Milin answers the card.
+
+### 5. Share from the phone (C21)
+
+- **Manifest.** Add `src/app/manifest.ts` (Next's metadata route): name, short name, `start_url: "/today"`, `display: "standalone"`, theme and background colours from the light tokens, 192 and 512 px icons (maskable too), and a `share_target`. The app has no manifest today, so this also makes it installable ("Add to Home screen"). No service worker: Chrome on Android installs a site with a manifest and icons, and a share target that posts to the server needs none. If a device refuses to install without one, add a minimal service worker with no caching. Check this on a real Android phone before the PR merges.
+- **Share target uses POST, never GET:** `{ action: "/share", method: "POST", enctype: "application/x-www-form-urlencoded", params: { title: "title", text: "text", url: "url" } }`. A GET would put the job text in the address, which ends up in request logs and browser history; job text never goes into logs.
+- **`POST /share` route.** It reads `title`, `text` and `url` from the form. Each is trimmed and capped: text to `JOB_TEXT_MAX`, title to 300 characters. The URL is kept only if it is https and at most `MY_JOB_URL_MAX`; anything else is dropped. It stores them in a hold and answers 303 to `/departures?tab=mine&shared=<holdId>`. Signed out, it answers 303 to `/sign-in?next=` with that address, so after sign-in the shared job is still there. It fetches nothing. A shared link to Greenhouse, Lever, Ashby or SmartRecruiters is read later by the usual "Add a job you found" path; any other link is kept as the person's link only, never fetched (the existing rule).
+- **Hold table, migration 0052 `shared_job_holds`.** Columns: `id uuid`, `user_id` (nullable while signed out), `title`, `text`, `url`, `created_at`. Checks: text at most `JOB_TEXT_MAX`, url https and at most 2000. The id also goes in a short-lived, httpOnly, SameSite=Lax cookie (`cm_share`, 1 hour), so only the browser that shared can open a hold made while signed out. Departures reads the hold once, only when the cookie matches or the hold's `user_id` is the viewer, then deletes it. Holds older than 1 hour are refused on read and deleted by the daily cleanup cron. Holds are never logged, and the route is rate-limited with the shared limit (20 an hour per address).
+- **Departures with `?shared=`.** "Add a job you found" opens filled with the text and link, under the banner "Shared from your phone. We filled in what the app sent: the link and its text. Check it, then save. Nothing is kept until you do.", with Clear. The check runs at once, the same `addJob` call as Add and check. When the share has only a link (many apps send just a URL), the board read fills the text for an ATS link; for any other link the box asks the person to paste the description, as today. Nothing joins My jobs until Save.
+- **Paste button** inside the link field. It calls `navigator.clipboard.readText()` only on that tap, so the phone asks once. Where the browser has no clipboard read, the button is hidden. We never read the clipboard on our own.
+- **Settings > "Add from your phone"** (handoff 12c). Two cards, Android (three steps) and iPhone (copy the link, open CareerMetro, tap Paste; add to Home Screen from Safari's share sheet), and the footer "We never read your clipboard or other apps on our own. Only what you share or paste reaches us." The "Ready on your Android phone" chip shows when the page runs as the installed app (`display-mode: standalone`); a browser can't tell whether the app is installed elsewhere, so the chip makes no other claim.
+- **Privacy.** A shared job is private like any other My jobs row. The hold's text is deleted on read or within 24 hours at most. The privacy notice gains one line: "If you share a job to CareerMetro from your phone, we keep what you shared for up to an hour until you open it."
+
+### 6. Weekly My jobs email (C22)
+
+- **The switch.** Reuse `user_settings.email_weekly_summary` (off by default; no sender uses it yet). Settings > Notifications relabels it "Weekly My jobs email", with the copy in 12c and a "See this week's" preview that renders the same builder for the signed-in person in the page, sending nothing.
+- **Migration 0052 (with the hold table):**
+  - `job_saves.status_at timestamptz`, set whenever the status changes (the `datesFor` path), and backfilled from `coalesce(applied_at, saved_at, updated_at)`. "Waiting on a reply" needs the time of the last status change; `updated_at` also moves on note edits.
+  - `user_settings.email_off_token text unique`: a random 32-byte token, base64url, made when the switch first turns on.
+  - `weekly_emails (user_id, week date, sent_at, primary key (user_id, week))`: one row per person per India week, so a re-run never sends twice. The cleanup cron deletes rows over 90 days old.
+- **What goes in** (pure builder `weeklyEmail(rows, now)` in `src/lib/my-jobs/weekly.ts`, data in, text and HTML out):
+  - Waiting on a reply: Applied or Heard back, with `status_at` 7 or more days ago. Shows title, company, "Applied 26 Oct · 9 days, no word yet", and an Update status link to `/departures?tab=mine`.
+  - Interview this week: `interview_at` from Monday 00:00 to Sunday 23:59 IST, at Interview or Offer. Shows title, company, day and time IST, and a Mock interview link (`/mock?tab=interview&job=`) or Practise link.
+  - Practise these 3 skills: the still-open skills those jobs ask for, ordered by how many of the listed jobs ask for each and then by name, plus one "only for this job" extra, three in all. One line says which jobs ask for them. This uses the same `jobPrep` code as Prepare for this job; there is no AI call.
+  - "Nothing here about your chances: that is for you and the company." No numbers about chances. Company and title only: never the job text, private notes or links to the posting.
+  - Empty week (nothing waiting and no interview): no email and no row.
+  - Subject from the parts that apply: "2 jobs waiting on a reply, 1 interview Thursday". Preheader: "And three skills worth an hour this week." From `hello@careermetro.com` (a new Resend sender on the verified domain; `EMAIL_FROM` stays for codes).
+- **Sending.** Extend `sendEmail` with optional `html` and `headers`, keeping the plain-text part. Each email carries `List-Unsubscribe: <https://careermetro.vercel.app/email/off?t=…>` and `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058, which Gmail and Yahoo expect from bulk senders). The HTML uses the light-mode token values inline, because email clients ignore CSS variables. The address, subject and body are never logged; only counts and Resend status codes are.
+- **Turn it off with one tap, no sign-in.** `GET /email/off?t=<token>` shows "Turn off the weekly My jobs email?" with one button. The button, or the one-click `POST` from the mail app, sets `email_weekly_summary = false` and rotates the token. The GET alone changes nothing, because mail scanners follow links. An unknown token gets the same page, with nothing to say whether the token existed.
+- **Cron within Vercel Hobby.** Add a second `vercel.json` cron, `GET /api/cron/weekly-email` at `30 2 * * 1-3` (08:00 IST Monday to Wednesday), checked with `CRON_SECRET` like the cleanup. Hobby allows crons at most once a day and may start one anywhere in its hour, so mail lands between 08:00 and 08:59 IST. Each run sends to people with the switch on, a non-empty week and no `weekly_emails` row for this India week, up to `WEEKLY_EMAIL_CAP` (80) a run. Tuesday and Wednesday pick up anyone Monday's cap left out. A run stops early, before the function time limit, and the next day continues. Resend's free plan allows 100 emails a day and 3,000 a month, shared with sign-in and work-email codes. Once opted-in people pass about 200, this needs Resend's paid plan, which is money and Milin's call; it goes on the tech-stack register when this ships.
+- **Account deletion and export.** The weekly rows and the token cascade with the user. Download your data gains `weekly_email: { on, last_sent_week }` (export version 35).
+
+### Zod schemas and tests first
+
+- `shareHold` (the POST fields and caps), `weeklyEmailView` (sections, at most 10 waiting, at most 7 interviews, exactly 3 skills or fewer when fewer exist), and `emailOffToken` (base64url, 43 characters).
+- Unit tests:
+  - the manifest has a POST `share_target`;
+  - `/share` refuses GET and drops a non-https url;
+  - a text over the cap is cut, never rejected;
+  - the hold is read once, only with the cookie or by its owner, and refused after an hour;
+  - the weekly builder: the 7-day waiting rule on `status_at`, the IST week edges (Sunday 23:59 versus Monday 00:00), an empty week gives null, at most three skills in a stable order, and no note, text or link anywhere in the output;
+  - the subject wording for each mix of parts;
+  - the off link: GET changes nothing, POST turns it off and rotates the token, an unknown token gets the same page;
+  - the cron: the bearer check, `weekly_emails` stops a second send in the same week, and the cap is respected.
+- DB tests for the migration backfill and the cleanup of old holds and rows.
+- e2e walk: share with a POSTed form, sign in, see the filled box and the banner, Save; Settings preview shows this week's email; open the off link and turn it off.
+- Staging smoke: the Settings preview only. No real email goes out from CI.
+
+### Build order for phase 2 (once approved)
+
+- **PR 5:** migration 0052 (holds, `status_at`, token, `weekly_emails`), the manifest, `/share`, Departures `?shared=`, the Paste button, Settings > Add from your phone.
+- **PR 6:** the weekly builder, Settings preview, `sendEmail` HTML and headers, `/email/off`, the weekly cron, export v35, and the privacy notice lines.
+
+Later, after a lawyer's view of the portals' terms: a browser button that reads the open page, and forwarding job-alert emails.
 
 ## Build order once approved
 
