@@ -120,7 +120,7 @@ describe("layoutLine", () => {
     const l = layoutLine(exampleMapLine);
     expect(l.crossings.map((c) => [c.slug, c.station.id, c.labelAtTop, c.nearby])).toEqual([
       ["data-scientist", "python-prove", false, true],
-      ["data-engineer", "sql-prove", true, false],
+      ["bi-developer", "power-bi-prove", true, false],
     ]);
   });
 
