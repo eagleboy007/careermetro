@@ -333,7 +333,7 @@ export type MockInterviewEndResult = { ok: true; result: MockSessionResult } | {
 export const mockPageView = z.strictObject({
   elite: z.boolean(),
   role: mockRole,
-  roles: z.array(mockRole).max(60),
+  roles: z.array(mockRole).max(200), // every role profile (74 on 29 Oct), with room to grow
   bank: mockBankView,
   test: timedTestView.nullable(),
   interview: mockSessionView.nullable(),
