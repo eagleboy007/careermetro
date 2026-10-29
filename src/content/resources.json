@@ -8731,17 +8731,6 @@
     "free": true
   },
   {
-    "title": "Managing the SAP System Landscape (SAP Landscape Management)",
-    "url": "https://learning.sap.com/learning-journey/managing-the-sap-system-landscape",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-basis-administration"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
     "title": "Introducing SAP ABAP Platform Fundamentals",
     "url": "https://learning.sap.com/courses/introducing-sap-abap-platform-fundamentals",
     "provider": "SAP Learning",
@@ -8907,17 +8896,6 @@
     "free": true
   },
   {
-    "title": "Financial Accounting (IIT Mandi)",
-    "url": "https://archive.nptel.ac.in/noc/courses/noc20/SEM2/noc20-mg71",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "financial-accounting"
-    ],
-    "minutes": 1800,
-    "free": true
-  },
-  {
     "title": "GST Portal user manual: creating the GSTR-1 outward supplies return",
     "url": "https://tutorial.gst.gov.in/userguide/returns/Creation_of_Outward_Supplies_Return_in_GSTR-1.htm",
     "provider": "GSTN (GST Portal tutorials)",
@@ -8992,17 +8970,6 @@
       "pega-case-management"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Adding case types to organize work",
-    "url": "https://docs.pega.com/getting-started-low-code-application-development/87/adding-case-types-organize-work",
-    "provider": "Pega Documentation",
-    "kind": "docs",
-    "skillIds": [
-      "pega-case-management"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
