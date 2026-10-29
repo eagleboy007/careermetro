@@ -83,7 +83,7 @@ export async function GET(request: Request) {
     notifications: { notificationsDeleted: null },
     myJobs: { unsavedJobTextCleared: null },
     sharedJobs: { sharedJobsCleared: null },
-    weeklyEmails: { weeklyEmailRowsCleared: null },
+    weeklyEmails: { weeklyRowsCleared: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
+import { Suspense } from "react";
+import { PageLoading } from "@/components/app/page-loading";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PageNotice } from "@/components/ui/page-notice";
 
@@ -10,7 +13,16 @@ const one = (v: string | string[] | undefined) => (typeof v === "string" ? v : "
  * The weekly My jobs email's "Turn it off" (C22), with no sign-in. Opening it changes nothing, because mail scanners
  * open links; the button posts to /api/email/off. The same page shows for any token, so it never says whether one existed.
  */
-export default async function EmailOffPage({ searchParams }: PageProps<"/email/off">) {
+export default function EmailOffPage(props: PageProps<"/email/off">) {
+  return (
+    <Suspense fallback={<PageLoading />}>
+      <EmailOff {...props} />
+    </Suspense>
+  );
+}
+
+async function EmailOff({ searchParams }: PageProps<"/email/off">) {
+  await connection();
   const params = await searchParams;
   if (one(params.done)) {
     return (

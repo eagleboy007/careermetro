@@ -32,9 +32,11 @@ const m = vi.hoisted(() => ({
   clearNotifications: vi.fn(async () => 0),
   clearJobText: vi.fn(async () => ({ unsavedJobTextCleared: 0 })),
   clearShared: vi.fn(async () => ({ sharedJobsCleared: 0 })),
-  clearWeekly: vi.fn(async () => ({ weeklyEmailRowsCleared: 0 })),
-  runWeekly: vi.fn(async (_o: { site: string; cap: number; send: (m: { to: string; subject: string; text: string; html: string; preheader: string; offUrl: string }) => Promise<{ ok: boolean }> }) => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
-  turnOff: vi.fn(async (_t: string) => {}),
+  clearWeekly: vi.fn(async () => ({ weeklyRowsCleared: 0 })),
+  runWeekly: vi.fn<
+    (o: { site: string; cap: number; send: (m: { to: string; subject: string; text: string; html: string; preheader: string; offUrl: string }) => Promise<{ ok: boolean }> }) => Promise<{ considered: number; sent: number; empty: number; failed: number; capped: boolean }>
+  >(async () => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
+  turnOff: vi.fn<(t: string) => Promise<void>>(async () => {}),
   holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -540,14 +542,14 @@ describe("daily cleanup", () => {
     m.clearNotifications.mockResolvedValueOnce(4);
     m.clearJobText.mockResolvedValueOnce({ unsavedJobTextCleared: 2 });
     m.clearShared.mockResolvedValueOnce({ sharedJobsCleared: 3 });
-    m.clearWeekly.mockResolvedValueOnce({ weeklyEmailRowsCleared: 5 });
+    m.clearWeekly.mockResolvedValueOnce({ weeklyRowsCleared: 5 });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyEmailRowsCleared":5/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyRowsCleared":5/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

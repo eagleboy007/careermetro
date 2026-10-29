@@ -28,7 +28,7 @@ export async function weeklyJobs(userId: string, { db = getDb(), now = new Date(
       postId: jobSaves.jobPostId,
       checkId: jobSaves.jobCheckId,
       stage: jobSaves.stage,
-      statusAt: jobSaves.statusAt,
+      statusAt: sql<Date>`coalesce(${jobSaves.statusAt}, ${jobSaves.appliedAt}, ${jobSaves.updatedAt})`.mapWith(jobSaves.updatedAt),
       appliedAt: jobSaves.appliedAt,
       interviewAt: jobSaves.interviewAt,
       company: sql<string | null>`coalesce(${jobChecks.company}, ${jobPosts.company})`,
@@ -42,7 +42,7 @@ export async function weeklyJobs(userId: string, { db = getDb(), now = new Date(
     .leftJoin(jobPosts, eq(jobPosts.id, jobSaves.jobPostId))
     .leftJoin(jobChecks, eq(jobChecks.id, jobSaves.jobCheckId))
     .where(and(eq(jobSaves.userId, userId), inArray(jobSaves.stage, MOVING.map((s) => stageOf(s)!))))
-    .orderBy(asc(jobSaves.statusAt), asc(jobSaves.id));
+    .orderBy(asc(jobSaves.id));
   const listed = rows.filter((r) => r.company && r.title);
   if (!listed.length) return [];
   const ctx = await fitContext(userId, db);
@@ -197,10 +197,10 @@ export async function lastWeeklyEmail(userId: string, db: Db = getDb()): Promise
 }
 
 /** Daily cleanup: weekly rows over 90 days old. */
-export async function clearOldWeeklyEmails(db: Db = getDb(), now = new Date()): Promise<{ weeklyEmailRowsCleared: number }> {
+export async function clearOldWeeklyEmails(db: Db = getDb(), now = new Date()): Promise<{ weeklyRowsCleared: number }> {
   const gone = await db
     .delete(weeklyEmails)
     .where(lt(weeklyEmails.sentAt, new Date(now.getTime() - 90 * 86_400_000)))
     .returning({ week: weeklyEmails.week });
-  return { weeklyEmailRowsCleared: gone.length };
+  return { weeklyRowsCleared: gone.length };
 }

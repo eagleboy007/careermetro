@@ -1529,7 +1529,7 @@ export const jobSaves = pgTable(
     closedAt: timestamp("closed_at", { withTimezone: true }),
     note: text("note"),
     /** When the status last changed (migration 0053): the weekly email's "no word for 7 days". Notes don't move it. */
-    statusAt: timestamp("status_at", { withTimezone: true }).notNull().defaultNow(),
+    statusAt: timestamp("status_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

@@ -116,11 +116,11 @@ describe.skipIf(!db)("the weekly My jobs email (database)", () => {
     const [before] = await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.userId, a.userId));
     expect(await updateJob(a.userId, { ref, status: "applied", note: "Called them (weekly)" }, { db: d(), now: MONDAY })).toEqual({ ok: true });
     let [row] = await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.userId, a.userId));
-    expect(row.statusAt.toISOString()).toBe(before.statusAt.toISOString());
+    expect(row.statusAt!.toISOString()).toBe(before.statusAt!.toISOString());
     expect((await weeklyFor(a.userId, { db: d(), now: MONDAY }))?.waiting).toHaveLength(1);
     expect(await setJobStatus(a.userId, { ref, status: "heard" }, { db: d(), now: MONDAY })).toEqual({ ok: true });
     [row] = await db!.select().from(schema.jobSaves).where(eq(schema.jobSaves.userId, a.userId));
-    expect(row.statusAt.toISOString()).toBe(MONDAY.toISOString());
+    expect(row.statusAt!.toISOString()).toBe(MONDAY.toISOString());
     expect(await weeklyFor(a.userId, { db: d(), now: MONDAY })).toBeNull();
   });
 });
