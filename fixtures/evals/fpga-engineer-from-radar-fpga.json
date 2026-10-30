@@ -37,6 +37,10 @@
       {
         "skillId": "fpga-high-speed-interfaces",
         "quote": "SerDes"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "quote": "MATLAB"
       }
     ],
     "gaps": [

@@ -29,13 +29,17 @@ import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
 import roleTracksJson from "./role-tracks.json";
 import skillsJson from "./skills.json";
+import adasEngineer from "./roles/adas-engineer.json";
+import aiArchitect from "./roles/ai-architect.json";
 import aiEngineer from "./roles/ai-engineer.json";
 import aiProductManager from "./roles/ai-product-manager.json";
+import aiResearchScientist from "./roles/ai-research-scientist.json";
 import analyticsEngineer from "./roles/analytics-engineer.json";
 import androidDeveloper from "./roles/android-developer.json";
 import applicationSupportEngineer from "./roles/application-support-engineer.json";
 import appsecEngineer from "./roles/appsec-engineer.json";
 import arVrDeveloper from "./roles/ar-vr-developer.json";
+import automotiveDiagnosticsEngineer from "./roles/automotive-diagnostics-engineer.json";
 import autosarEngineer from "./roles/autosar-engineer.json";
 import biDeveloper from "./roles/bi-developer.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
@@ -48,8 +52,10 @@ import cloudNetworkEngineer from "./roles/cloud-network-engineer.json";
 import cloudSecurityEngineer from "./roles/cloud-security-engineer.json";
 import cloudSupportEngineer from "./roles/cloud-support-engineer.json";
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
+import contactCenterDeveloper from "./roles/contact-center-developer.json";
 import cppDeveloper from "./roles/cpp-developer.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
+import customerSuccessManager from "./roles/customer-success-manager.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
 import dataArchitect from "./roles/data-architect.json";
@@ -74,6 +80,7 @@ import embeddedSoftwareEngineer from "./roles/embedded-software-engineer.json";
 import engineeringManager from "./roles/engineering-manager.json";
 import etlDeveloper from "./roles/etl-developer.json";
 import eucEngineer from "./roles/euc-engineer.json";
+import forwardDeployedEngineer from "./roles/forward-deployed-engineer.json";
 import fpgaEngineer from "./roles/fpga-engineer.json";
 import frontendArchitect from "./roles/frontend-architect.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
@@ -82,6 +89,8 @@ import gameDeveloper from "./roles/game-developer.json";
 import gisDeveloper from "./roles/gis-developer.json";
 import golangDeveloper from "./roles/golang-developer.json";
 import grcManager from "./roles/grc-manager.json";
+import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
+import hilTestEngineer from "./roles/hil-test-engineer.json";
 import hpcGpuEngineer from "./roles/hpc-gpu-engineer.json";
 import iamEngineer from "./roles/iam-engineer.json";
 import implementationConsultant from "./roles/implementation-consultant.json";
@@ -214,13 +223,17 @@ export const eliteShelfEntries: ShelfEntry[] = eliteShelfFile.parse(eliteShelfJs
 export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
   .parse([
+    adasEngineer,
+    aiArchitect,
     aiEngineer,
     aiProductManager,
+    aiResearchScientist,
     analyticsEngineer,
     androidDeveloper,
     applicationSupportEngineer,
     appsecEngineer,
     arVrDeveloper,
+    automotiveDiagnosticsEngineer,
     autosarEngineer,
     biDeveloper,
     blockchainDeveloper,
@@ -233,8 +246,10 @@ export const roleProfiles: RoleProfile[] = z
     cloudSecurityEngineer,
     cloudSupportEngineer,
     computerVisionEngineer,
+    contactCenterDeveloper,
     cppDeveloper,
     crossPlatformMobileDeveloper,
+    customerSuccessManager,
     cyberSecurityAnalyst,
     dataAnalyst,
     dataArchitect,
@@ -259,6 +274,7 @@ export const roleProfiles: RoleProfile[] = z
     engineeringManager,
     etlDeveloper,
     eucEngineer,
+    forwardDeployedEngineer,
     fpgaEngineer,
     frontendArchitect,
     frontendDeveloper,
@@ -267,6 +283,8 @@ export const roleProfiles: RoleProfile[] = z
     gisDeveloper,
     golangDeveloper,
     grcManager,
+    hardwareDesignEngineer,
+    hilTestEngineer,
     hpcGpuEngineer,
     iamEngineer,
     implementationConsultant,

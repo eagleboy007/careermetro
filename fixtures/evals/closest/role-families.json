@@ -24,7 +24,9 @@
       "mlops-engineer",
       "ai-engineer",
       "computer-vision-engineer",
-      "nlp-engineer"
+      "nlp-engineer",
+      "ai-research-scientist",
+      "ai-architect"
     ],
     "security": [
       "cyber-security-analyst",
@@ -100,7 +102,8 @@
       "quant-developer",
       "developer-advocate",
       "search-engineer",
-      "rust-developer"
+      "rust-developer",
+      "forward-deployed-engineer"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -137,7 +140,8 @@
       "servicenow-administrator",
       "plm-developer",
       "oracle-ebs-consultant",
-      "sap-pp-consultant"
+      "sap-pp-consultant",
+      "contact-center-developer"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -154,7 +158,11 @@
       "post-silicon-validation-engineer",
       "autosar-engineer",
       "plc-scada-engineer",
-      "linux-kernel-developer"
+      "linux-kernel-developer",
+      "hardware-design-engineer",
+      "adas-engineer",
+      "hil-test-engineer",
+      "automotive-diagnostics-engineer"
     ],
     "delivery": [
       "business-analyst",
@@ -164,7 +172,8 @@
       "technical-writer",
       "technical-program-manager",
       "it-project-manager",
-      "ai-product-manager"
+      "ai-product-manager",
+      "customer-success-manager"
     ],
     "marketing": [
       "digital-marketing-executive"
@@ -300,6 +309,10 @@
     [
       "sharepoint-developer",
       "frontend-developer"
+    ],
+    [
+      "hil-test-engineer",
+      "qa-automation-engineer"
     ]
   ]
 }

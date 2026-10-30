@@ -1,0 +1,52 @@
+{
+  "id": "ai-research-scientist-from-ml-engineer",
+  "roleSlug": "ai-research-scientist",
+  "persona": "Computer vision ML engineer with a master's moving into research",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nEXPERIENCE\nMachine Learning Engineer, Nilgiri Vision Labs, Bengaluru (2021 - present)\n- Trained convolutional and transformer models in PyTorch for retail shelf image classification.\n- Built the training and evaluation pipeline in Python for about 40 experiments a month.\n- Compared models with bootstrap confidence intervals and hypothesis testing on held-out sets.\n- Set up gradient boosting and logistic regression baselines for every new task.\n\nSKILLS\nPyTorch, Python, Statistics, CVPR workshop paper\n\nEDUCATION\nMTech Computer Science, IIT Madras, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "pytorch",
+        "quote": "Trained convolutional and transformer models in PyTorch"
+      },
+      {
+        "skillId": "deep-learning",
+        "quote": "Trained convolutional and transformer models"
+      },
+      {
+        "skillId": "computer-vision",
+        "quote": "for retail shelf image classification"
+      },
+      {
+        "skillId": "python",
+        "quote": "Built the training and evaluation pipeline in Python"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "bootstrap confidence intervals and hypothesis testing"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "gradient boosting and logistic regression baselines"
+      },
+      {
+        "skillId": "ml-research-publications",
+        "quote": "PyTorch, Python, Statistics, CVPR workshop paper"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ml-research-publications",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "large-model-training",
+      "nlp",
+      "cuda-gpu-programming",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

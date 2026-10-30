@@ -1,0 +1,134 @@
+{
+  "slug": "hil-test-engineer",
+  "title": "HIL Test Engineer",
+  "summary": "HIL (hardware-in-the-loop) test engineers test car control units on a bench that simulates the rest of the vehicle, so software can be checked before it goes into a real car. They write and automate test cases, keep the benches running and sit in the validation team of a vehicle maker or supplier.",
+  "dailyDuties": [
+    "Write test specifications from ECU requirements",
+    "Automate test cases in Python or C++ on the HIL bench",
+    "Set up restbus simulation and plant models",
+    "Run regression tests on each new software release",
+    "Analyse failures with network traces and measurement data",
+    "Log defects for the software team"
+  ],
+  "typicalTitles": [
+    "HIL Validation Engineer",
+    "dSPACE HIL Engineer",
+    "HIL Automation Engineer",
+    "HIL Framework Developer",
+    "ECU Validation Engineer",
+    "HiL Testing Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "hil-testing",
+      "importance": "required",
+      "expectation": "Run and maintain HIL benches such as dSPACE SCALEXIO or NI VeriStand",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate HIL test cases and build the test framework",
+      "postingShare": null,
+      "oneOf": "hil-language"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Automate HIL test cases and build the test framework",
+      "postingShare": null,
+      "oneOf": "hil-language"
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "required",
+      "expectation": "Use CANoe and CAPL for restbus simulation and UDS checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Work with CAN, LIN and other in-vehicle buses on the bench",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "required",
+      "expectation": "Use and adjust Simulink plant models for closed-loop tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Write test specifications from ECU requirements",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "required",
+      "expectation": "Execute and report regression tests for each ECU software release",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run HIL tests nightly from a CI pipeline such as Jenkins",
+      "postingShare": null
+    },
+    {
+      "skillId": "ecu-measurement-calibration",
+      "importance": "nice_to_have",
+      "expectation": "Measure ECU signals with CANape or INCA during tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "nice_to_have",
+      "expectation": "Cover safety requirements in HIL tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "adas-functions",
+      "importance": "nice_to_have",
+      "expectation": "Test ADAS features with sensor simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Log defects with traces for the software team",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep test scripts and framework code in version control",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "hil-language",
+      "label": "A test framework language (Python or C++)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-foundation",
+      "importance": "optional",
+      "why": "Shared testing vocabulary asked for in some postings"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

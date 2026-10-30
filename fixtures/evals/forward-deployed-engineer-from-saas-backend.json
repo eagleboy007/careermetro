@@ -1,0 +1,56 @@
+{
+  "id": "forward-deployed-engineer-from-saas-backend",
+  "roleSlug": "forward-deployed-engineer",
+  "persona": "Python backend engineer at a SaaS company who handles enterprise customer integrations",
+  "resumeText": "Rohan Mehta | Bengaluru | rohan.mehta@example.com\n\nEXPERIENCE\nSenior Software Engineer, Integrations, Kaveri Data Systems, Bengaluru (2021 - present)\n- Built Python services that sync customer ERP data into our analytics platform for 30 enterprise accounts.\n- Wrote SQL transformations to map each customer's schema onto our data model.\n- Designed REST APIs and webhooks that customer IT teams use to push orders and invoices.\n- Deployed customer-specific connectors on AWS with ECS and S3, and debugged them in production.\n- Ran discovery calls with customer engineers to scope integration requirements before each rollout.\n- Presented rollout plans and trade-offs to customer engineering managers every fortnight.\n\nSoftware Engineer, Kaveri Data Systems, Bengaluru (2019 - 2021)\n- Built internal billing jobs in Python and PostgreSQL.\n\nSKILLS\nPython, SQL, AWS, Docker, LangChain, Generative AI\n\nEDUCATION\nBTech Computer Science, RV College of Engineering, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Built Python services that sync customer ERP data"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL transformations to map each customer's schema"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Designed REST APIs and webhooks that customer IT teams use"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Deployed customer-specific connectors on AWS with ECS and S3"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "scope integration requirements before each rollout"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented rollout plans and trade-offs to customer engineering managers"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "LangChain, Generative AI"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "llm-apps",
+        "status": "weak"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "spark",
+      "typescript",
+      "azure",
+      "ai-agents"
+    ]
+  },
+  "reviewedBy": null
+}

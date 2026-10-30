@@ -1,0 +1,59 @@
+{
+  "id": "adas-engineer-from-vehicle-test",
+  "roleSlug": "adas-engineer",
+  "persona": "Vehicle test engineer at a Tier-1 supplier moving into ADAS application engineering",
+  "resumeText": "Arjun Nair | Bengaluru | arjun.nair@example.com\n\nEXPERIENCE\nVehicle Test Engineer - ADAS, Nandi Mobility Engineering, Bengaluru (2019 - present)\n- Validated adaptive cruise control and automatic emergency braking on test vehicles at the proving ground.\n- Tuned ACC following-distance parameters on vehicles using ETAS INCA calibration datasets.\n- Logged CAN and CAN-FD traffic from front radar and camera ECUs during test drives.\n- Analysed vehicle network traces in Vector CANoe to find missing radar object messages.\n- Wrote Python scripts to extract braking events from drive logs and build weekly reports.\n- Raised and tracked drive-test issues in Jira with logs attached.\n\nGraduate Engineer Trainee, Nandi Mobility Engineering, Bengaluru (2018 - 2019)\n- Supported chassis dynamometer testing.\n\nSKILLS\nMATLAB, Simulink, CANoe, INCA, Python\n\nEDUCATION\nBE Automobile Engineering, MS Ramaiah Institute of Technology, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "adas-functions",
+        "quote": "Validated adaptive cruise control and automatic emergency braking on test vehicles"
+      },
+      {
+        "skillId": "ecu-measurement-calibration",
+        "quote": "Tuned ACC following-distance parameters on vehicles using ETAS INCA"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Logged CAN and CAN-FD traffic from front radar"
+      },
+      {
+        "skillId": "automotive-network-diagnostics",
+        "quote": "Analysed vehicle network traces in Vector CANoe"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to extract braking events"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Raised and tracked drive-test issues in Jira"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "quote": "MATLAB, Simulink"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "matlab-simulink",
+        "status": "weak"
+      },
+      {
+        "skillId": "sensor-fusion",
+        "status": "missing"
+      },
+      {
+        "skillId": "automotive-functional-safety",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cpp",
+      "computer-vision",
+      "deep-learning"
+    ]
+  },
+  "reviewedBy": null
+}

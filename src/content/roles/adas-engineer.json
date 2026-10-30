@@ -1,0 +1,110 @@
+{
+  "slug": "adas-engineer",
+  "title": "ADAS Engineer",
+  "summary": "ADAS engineers work on driver-assistance features such as adaptive cruise control, emergency braking and lane keeping. They combine camera and radar data, tune and calibrate the features on test vehicles and check them against safety rules, inside a vehicle software or supplier engineering team.",
+  "dailyDuties": [
+    "Tune ADAS feature parameters on test vehicles",
+    "Analyse drive logs of camera and radar data",
+    "Calibrate functions with measurement and calibration tools",
+    "Simulate and check functions in MATLAB and Simulink",
+    "Review network signals in CANoe after a test drive",
+    "Report issues and fixes to the algorithm team"
+  ],
+  "typicalTitles": [
+    "ADAS Application Engineer",
+    "Application Engineering ADAS",
+    "ADAS Calibration Engineer",
+    "ADAS Sensor Fusion Engineer",
+    "ADAS Algorithm Engineer",
+    "ADAS Function Developer",
+    "ADAS Systems Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "adas-functions",
+      "importance": "required",
+      "expectation": "Work on driver-assistance features such as ACC, AEB and lane keeping",
+      "postingShare": null
+    },
+    {
+      "skillId": "sensor-fusion",
+      "importance": "required",
+      "expectation": "Combine camera, radar and ultrasonic data and tune tracking filters",
+      "postingShare": null
+    },
+    {
+      "skillId": "ecu-measurement-calibration",
+      "importance": "required",
+      "expectation": "Calibrate and tune ADAS functions on vehicles with INCA or CANape",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "required",
+      "expectation": "Model, simulate and analyse functions in MATLAB and Simulink",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Work with CAN and CAN-FD signals in the vehicle",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "required",
+      "expectation": "Log and analyse vehicle network traffic with CANoe or CANalyzer",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script log analysis and test reports from vehicle drives",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "required",
+      "expectation": "Follow ISO 26262 safety requirements for ADAS functions",
+      "postingShare": null
+    },
+    {
+      "skillId": "computer-vision",
+      "importance": "nice_to_have",
+      "expectation": "Understand camera perception outputs such as object and lane detection",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Read and change algorithm code in C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "test-planning",
+      "importance": "nice_to_have",
+      "expectation": "Plan vehicle and track tests for ADAS features",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Log and follow up issues found on test drives",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

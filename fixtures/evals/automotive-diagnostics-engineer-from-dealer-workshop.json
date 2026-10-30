@@ -1,0 +1,55 @@
+{
+  "id": "automotive-diagnostics-engineer-from-dealer-workshop",
+  "roleSlug": "automotive-diagnostics-engineer",
+  "persona": "Dealer workshop diagnostic technician moving to an engineering diagnostics role",
+  "resumeText": "Imran Shaikh | Pune | imran.shaikh@example.com\n\nEXPERIENCE\nSenior Diagnostic Technician, Deccan Motors (authorised dealer workshop), Pune (2019 - present)\n- Diagnosed electrical faults on passenger cars using automotive wiring diagrams and diagnostic trouble codes.\n- Read fault codes and live data with OBD-II scan tools and the OEM tester.\n- Traced sensor and actuator faults with a multimeter and oscilloscope on the vehicle.\n- Found the root cause of repeat no-start complaints and cut comebacks by a third.\n- Explained repeat field issues to the manufacturer's regional service engineers on monthly calls.\n- Handled hybrid vehicles under the workshop's high-voltage safety process.\n\nWorkshop Technician, Deccan Motors, Pune (2016 - 2019)\n- Carried out periodic maintenance and electrical repairs.\n\nSKILLS\nOBD-II, CAN bus, Excel\n\nEDUCATION\nDiploma in Automobile Engineering, Government Polytechnic Pune, 2016\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "vehicle-electrical-troubleshooting",
+        "quote": "Diagnosed electrical faults on passenger cars using automotive wiring diagrams"
+      },
+      {
+        "skillId": "automotive-network-diagnostics",
+        "quote": "Read fault codes and live data with OBD-II scan tools"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "Traced sensor and actuator faults with a multimeter and oscilloscope"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Found the root cause of repeat no-start complaints"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained repeat field issues to the manufacturer's regional service engineers"
+      },
+      {
+        "skillId": "ev-hev-systems",
+        "quote": "Handled hybrid vehicles under the workshop's high-voltage safety process"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "CAN bus"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "embedded-protocols",
+        "status": "weak"
+      },
+      {
+        "skillId": "technical-writing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "bug-tracking",
+      "automotive-functional-safety"
+    ]
+  },
+  "reviewedBy": null
+}

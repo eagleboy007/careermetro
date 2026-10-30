@@ -1,0 +1,159 @@
+{
+  "slug": "ai-architect",
+  "title": "AI Architect",
+  "summary": "AI architects design how generative AI and machine learning fit into a company's systems: which models and cloud AI services to use, how data reaches them, and how they stay safe, monitored and affordable. They sit between business leaders and AI engineering teams, often in a consulting or platform group, and own the design rather than writing most of the code.",
+  "dailyDuties": [
+    "Meet business teams to shape AI use cases",
+    "Write high-level designs for RAG, agent and ML solutions",
+    "Choose models, vector databases and cloud AI services",
+    "Review designs and code from AI engineering teams",
+    "Set guardrails, governance and cost rules for AI systems",
+    "Plan LLMOps and model monitoring with platform teams",
+    "Present solution options and estimates to clients"
+  ],
+  "typicalTitles": [
+    "Generative AI Architect",
+    "GenAI Solution Architect",
+    "AI Solution Architect",
+    "Applied AI Architect",
+    "Machine Learning Architect",
+    "AI/ML Architect",
+    "LLM Architect"
+  ],
+  "experienceBand": {
+    "minYears": 8,
+    "maxYears": 15
+  },
+  "skills": [
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Pick LLMs and design how prompts, context and fallbacks work in a product",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "required",
+      "expectation": "Design RAG pipelines with embeddings and a vector database",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-agents",
+      "importance": "required",
+      "expectation": "Design agent workflows with tools, memory and orchestration",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Design AI solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Design AI solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Design AI solutions on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "cloud-ai-platforms",
+      "importance": "required",
+      "expectation": "Use managed AI services such as Azure OpenAI, Bedrock or Vertex AI",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Set up MLOps and LLMOps for deployment, monitoring and model updates",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Write high-level designs that scale, stay secure and fit the budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "responsible-ai-governance",
+      "importance": "required",
+      "expectation": "Set guardrails, review risks and follow AI governance rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree solution choices with business heads and client teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Lead AI engineers and set technical standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "nice_to_have",
+      "expectation": "Define how the quality of AI answers is measured",
+      "postingShare": null
+    },
+    {
+      "skillId": "presales-solutioning",
+      "importance": "nice_to_have",
+      "expectation": "Write AI solution proposals and estimates for clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Build quick prototypes and review code",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-serving",
+      "importance": "nice_to_have",
+      "expectation": "Plan how models are hosted and scaled",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Shows ML delivery on AWS"
+    },
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Shows ML design on Google Cloud"
+    },
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "General cloud architecture on AWS"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

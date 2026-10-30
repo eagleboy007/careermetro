@@ -11496,5 +11496,492 @@
     ],
     "minutes": 20,
     "free": true
+  },
+  {
+    "title": "Getting Started in KiCad (KiCad 9.0 manual)",
+    "url": "https://docs.kicad.org/9.0/en/getting_started_in_kicad/",
+    "provider": "KiCad Docs",
+    "kind": "docs",
+    "skillIds": [
+      "pcb-schematic-design"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Electronic Systems Design: Hands-on Circuits and PCB Design with CAD Software",
+    "url": "https://nptel.ac.in/courses/108102481",
+    "provider": "NPTEL (IIT Delhi)",
+    "kind": "course",
+    "skillIds": [
+      "pcb-schematic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "PCB Design and Fundamentals of Electronic Circuits",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_ee127/preview",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "pcb-schematic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "LTspice simulator and tutorials",
+    "url": "https://www.analog.com/en/ltspice",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "analog-power-circuit-design"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Switched Mode Power Conversion",
+    "url": "https://nptel.ac.in/courses/108108036",
+    "provider": "NPTEL (IISc Bangalore)",
+    "kind": "course",
+    "skillIds": [
+      "analog-power-circuit-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Power Supply Design Seminar (PSDS)",
+    "url": "https://ti.com/design-resources/seminars/power-supply-design-seminar-psds.html",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "analog-power-circuit-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Designing a low-EMI power supply (video series)",
+    "url": "https://www.ti.com/video/series/designing-a-low-EMI-power-supply.html",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "emc-signal-integrity",
+      "analog-power-circuit-design"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Electromagnetic Compatibility (EMC)",
+    "url": "https://nptel.ac.in/courses/108106138",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "emc-signal-integrity"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Electromagnetic Compatibility course notes",
+    "url": "https://learnemc.com/emc-course-notes",
+    "provider": "LearnEMC",
+    "kind": "docs",
+    "skillIds": [
+      "emc-signal-integrity"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Be confident around automotive functional safety",
+    "url": "https://ti.com/video/6195174134001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "automotive-functional-safety"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "How to Use Simulink for ISO 26262 Projects",
+    "url": "https://www.mathworks.com/company/technical-articles/how-to-use-simulink-for-iso-26262-projects.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-functional-safety",
+      "matlab-simulink"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Understanding ISO 26262",
+    "url": "https://innovationspace.ansys.com/product/understanding-iso-26262/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "automotive-functional-safety"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "arXiv submission guidelines",
+    "url": "https://info.arxiv.org/help/submit/index.html",
+    "provider": "arXiv",
+    "kind": "docs",
+    "skillIds": [
+      "ml-research-publications"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NeurIPS paper checklist guidelines",
+    "url": "https://neurips.cc/public/guides/PaperChecklist",
+    "provider": "NeurIPS",
+    "kind": "docs",
+    "skillIds": [
+      "ml-research-publications"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NeurIPS 2026 reviewer guidelines",
+    "url": "https://neurips.cc/Conferences/2026/ReviewerGuidelines",
+    "provider": "NeurIPS",
+    "kind": "docs",
+    "skillIds": [
+      "ml-research-publications"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "DeepSpeed: Getting Started",
+    "url": "https://www.deepspeed.ai/getting-started/",
+    "provider": "DeepSpeed",
+    "kind": "docs",
+    "skillIds": [
+      "large-model-training"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FSDP vs DeepSpeed (Accelerate concept guide)",
+    "url": "https://huggingface.co/docs/accelerate/en/concept_guides/fsdp_and_deepspeed",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "large-model-training"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Fully Sharded Data Parallel (FSDP)",
+    "url": "https://pytorch.org/tutorials/intermediate/FSDP_tutorial.html",
+    "provider": "PyTorch",
+    "kind": "docs",
+    "skillIds": [
+      "large-model-training"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get started with AI applications and agents on Azure",
+    "url": "https://learn.microsoft.com/en-us/training/paths/get-started-ai-apps-agents/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cloud-ai-platforms"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Getting started with Amazon Bedrock",
+    "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/setting-up.html",
+    "provider": "AWS Docs",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-ai-platforms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Overview of Generative AI on Vertex AI",
+    "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs",
+    "provider": "Google Cloud Docs",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-ai-platforms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Embrace responsible AI principles and practices",
+    "url": "https://learn.microsoft.com/en-us/training/modules/embrace-responsible-ai-principles-practices",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "responsible-ai-governance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST AI RMF Playbook",
+    "url": "https://airc.nist.gov/airmf-resources/playbook",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "responsible-ai-governance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The EU AI Act Explorer",
+    "url": "https://artificialintelligenceact.eu/ai-act-explorer/",
+    "provider": "artificialintelligenceact.eu",
+    "kind": "docs",
+    "skillIds": [
+      "responsible-ai-governance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Customer Health Score Explained",
+    "url": "https://www.gainsight.com/customer-success/customer-health-scores/",
+    "provider": "Gainsight",
+    "kind": "docs",
+    "skillIds": [
+      "customer-retention-expansion"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Essential Guide to Churn",
+    "url": "https://www.gainsight.com/essential-guides/churn/",
+    "provider": "Gainsight",
+    "kind": "docs",
+    "skillIds": [
+      "customer-retention-expansion"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Use the flow designer in Amazon Connect to create flows",
+    "url": "https://docs.aws.amazon.com/en_us/connect/latest/adminguide/create-contact-flow.html",
+    "provider": "AWS Docs",
+    "kind": "docs",
+    "skillIds": [
+      "ccaas-ivr-development"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Amazon Connect, Lambda and Lex IVR workshop",
+    "url": "https://github.com/aws-samples/connect-lambda-lex-workshop",
+    "provider": "AWS Samples (GitHub)",
+    "kind": "practice",
+    "skillIds": [
+      "ccaas-ivr-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with Architect tutorial",
+    "url": "https://help.genesys.cloud/articles/get-started-architect-tutorial/",
+    "provider": "Genesys Cloud Resource Center",
+    "kind": "practice",
+    "skillIds": [
+      "ccaas-ivr-development"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Start Using CXone Studio",
+    "url": "https://help.nicecxone.com/Content/Studio/gettingstarted/startusingstudiocx.htm",
+    "provider": "NICE CXone Help",
+    "kind": "docs",
+    "skillIds": [
+      "ccaas-ivr-development"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get Started with Automated Driving Toolbox",
+    "url": "https://www.mathworks.com/help/driving/getting-started-with-automated-driving-toolbox.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "adas-functions"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "AEB Euro NCAP testing with RoadRunner Scenario",
+    "url": "https://www.mathworks.com/help/driving/ug/aeb-euro-ncap-testing-with-roadrunner-scenario.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "adas-functions"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Euro NCAP AEB Car-to-Car test protocol v4.3",
+    "url": "https://cdn.euroncap.com/media/79864/euro-ncap-aeb-c2c-test-protocol-v43.pdf",
+    "provider": "Euro NCAP",
+    "kind": "docs",
+    "skillIds": [
+      "adas-functions"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Simulink Onramp",
+    "url": "https://matlabacademy.mathworks.com/details/simulink-onramp/simulink",
+    "provider": "MathWorks",
+    "kind": "course",
+    "skillIds": [
+      "matlab-simulink"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Stateflow Onramp",
+    "url": "https://matlabacademy.mathworks.com/details/stateflow-onramp/stateflow",
+    "provider": "MathWorks",
+    "kind": "course",
+    "skillIds": [
+      "matlab-simulink"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "ASAM MCD-1 XCP standard overview",
+    "url": "https://www.asam.net/standards/detail/mcd-1-xcp/",
+    "provider": "ASAM",
+    "kind": "docs",
+    "skillIds": [
+      "ecu-measurement-calibration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ASAM MCD-1 XCP wiki",
+    "url": "https://www.asam.net/standards/detail/mcd-1-xcp/wiki",
+    "provider": "ASAM",
+    "kind": "docs",
+    "skillIds": [
+      "ecu-measurement-calibration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What Is Hardware-in-the-Loop (HIL)?",
+    "url": "https://www.ni.com/en/solutions/transportation/hardware-in-the-loop/what-is-hardware-in-the-loop-.html",
+    "provider": "NI",
+    "kind": "docs",
+    "skillIds": [
+      "hil-testing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Hardware-in-the-Loop (HIL) Simulation",
+    "url": "https://www.mathworks.com/help/rtw/ug/hardware-in-the-loop-hil-simulation.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "hil-testing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SCALEXIO LabBox getting started tutorial",
+    "url": "https://dspace.com/en/inc/home/medien/videos/tutorials/tvideo_scalexiolabboxgettingst.cfm",
+    "provider": "dSPACE",
+    "kind": "video",
+    "skillIds": [
+      "hil-testing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Automotive Systems",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_de01/preview",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "vehicle-electrical-troubleshooting",
+      "ev-hev-systems"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "On-Board Diagnostics (OBD) know-how",
+    "url": "https://www.vector.com/en/business-unit/testing-validation-diagnostics/diagnostics/standards-knowhow/obd/",
+    "provider": "Vector",
+    "kind": "docs",
+    "skillIds": [
+      "vehicle-electrical-troubleshooting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Hybrid and Electric Vehicles",
+    "url": "https://nptel.ac.in/courses/108103009",
+    "provider": "NPTEL (IIT Guwahati)",
+    "kind": "course",
+    "skillIds": [
+      "ev-hev-systems"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Electric Vehicles - Part 1",
+    "url": "https://nptel.ac.in/courses/108102121",
+    "provider": "NPTEL (IIT Delhi)",
+    "kind": "course",
+    "skillIds": [
+      "ev-hev-systems"
+    ],
+    "minutes": 1800,
+    "free": true
   }
 ]

@@ -1,0 +1,60 @@
+{
+  "id": "ai-architect-from-genai-lead",
+  "roleSlug": "ai-architect",
+  "persona": "Lead GenAI engineer on Azure moving into an AI architect role",
+  "resumeText": "Vikram Reddy | Hyderabad | vikram.reddy@example.com\n\nEXPERIENCE\nLead AI Engineer, Deccan Insight Systems, Hyderabad (2020 - present)\n- Designed a RAG assistant over 2 lakh insurance policy documents with embeddings and a vector database.\n- Wrote prompt templates and LLM fallbacks for the claims chatbot used by 900 agents.\n- Built a multi-agent claims triage workflow with LangGraph and tool calling.\n- Ran all AI workloads on Azure with private endpoints and managed identities.\n- Used Azure OpenAI and Azure AI Search as the managed services behind every assistant.\n- Set up LLMOps with MLflow tracking and model monitoring dashboards.\n- Wrote high level design documents for three GenAI platforms reviewed by the architecture board.\n- Led a team of 6 engineers and mentored two of them into tech lead roles.\n- Presented solution options and running costs to business heads in insurance and banking.\n\nSoftware Engineer, Godavari Tech, Hyderabad (2014 - 2020)\n- Built Java microservices for a loan origination system.\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2014\n",
+  "expected": {
+    "totalYearsExperience": 12,
+    "skills": [
+      {
+        "skillId": "vector-search",
+        "quote": "Designed a RAG assistant over 2 lakh insurance policy documents"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "Wrote prompt templates and LLM fallbacks for the claims chatbot"
+      },
+      {
+        "skillId": "ai-agents",
+        "quote": "Built a multi-agent claims triage workflow with LangGraph"
+      },
+      {
+        "skillId": "azure",
+        "quote": "Ran all AI workloads on Azure"
+      },
+      {
+        "skillId": "cloud-ai-platforms",
+        "quote": "Used Azure OpenAI and Azure AI Search"
+      },
+      {
+        "skillId": "mlops",
+        "quote": "Set up LLMOps with MLflow tracking"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Wrote high level design documents for three GenAI platforms"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Led a team of 6 engineers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Presented solution options and running costs to business heads"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "responsible-ai-governance",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "gcp",
+      "presales-solutioning",
+      "cuda-gpu-programming"
+    ]
+  },
+  "reviewedBy": null
+}

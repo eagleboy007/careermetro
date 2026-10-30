@@ -1,0 +1,150 @@
+{
+  "slug": "forward-deployed-engineer",
+  "title": "Forward Deployed Engineer",
+  "summary": "Forward deployed engineers are software engineers who work inside a customer's team to make a company's AI or data platform solve that customer's real problem. They write production code, wire the platform into customer systems and data, and carry what they learn back to the product team.",
+  "dailyDuties": [
+    "Meet customer teams to scope a problem worth solving",
+    "Write Python and SQL to bring customer data into the platform",
+    "Build LLM workflows and integrations for a customer use case",
+    "Debug deployments in the customer's cloud",
+    "Turn a proof of concept into a production rollout",
+    "Share customer feedback and reusable fixes with the product team"
+  ],
+  "typicalTitles": [
+    "Forward Deployed Software Engineer",
+    "Forward Deployed AI Engineer",
+    "AI Deployment Engineer",
+    "Customer-Embedded Software Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write production code and scripts inside customer environments",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and reshape customer data to fit the platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate the platform with customer systems through APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Build LLM-based workflows on the company's AI platform for customer use cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Deploy and debug on the customer's cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Deploy and debug on the customer's cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Deploy and debug on the customer's cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Scope the customer's problem into something the team can build",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain technical choices to customer engineers and business leads",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work directly with customer teams and feed their needs back to product",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "nice_to_have",
+      "expectation": "Build data pipelines that bring customer data into the platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "nice_to_have",
+      "expectation": "Work with large customer datasets on Spark or Databricks",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Build small internal apps and front ends for customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-agents",
+      "importance": "nice_to_have",
+      "expectation": "Build agent workflows with tools and retrieval",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package deployments for customer environments",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "nice_to_have",
+      "expectation": "Run proofs of concept that turn into production rollouts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "Cloud design for customer deployments"
+    },
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "Useful when the platform runs on Databricks or Spark"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}
